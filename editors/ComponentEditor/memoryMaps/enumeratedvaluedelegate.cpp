@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 28.8.2012
- *      Author: Antti Kamppi
- * 		filename: enumeratedvaluedelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: enumeratedvaluedelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 28.08.2012
+//
+// Description:
+// The delegate that provides editors to add/remove/edit the enumerated values of field.
+//-----------------------------------------------------------------------------
 
 #include "enumeratedvaluedelegate.h"
 #include "EnumeratedValueColumns.h"

@@ -11,6 +11,8 @@
 
 #include "ViewComparator.h"
 
+#include <IPXACTmodels/Component/View.h>
+
 //-----------------------------------------------------------------------------
 // Function: ViewComparator::ViewComparator()
 //-----------------------------------------------------------------------------
@@ -40,13 +42,12 @@ bool ViewComparator::compare(QSharedPointer<const View> first, QSharedPointer<co
 //-----------------------------------------------------------------------------
 bool ViewComparator::compareFields(QSharedPointer<const View> first, QSharedPointer<const View> second) const
 {
-    return first->getName() == second->getName() &&
+    return first->name() == second->name() &&
         first->isHierarchical() == second->isHierarchical() &&  
-        first->getHierarchyRef() == second->getHierarchyRef() &&
-        first->getLanguage() == second->getLanguage() &&
-        first->getModelName() == second->getModelName() &&
-        compareLists(first->getEnvIdentifiers(), second->getEnvIdentifiers()) &&
-        compareLists(first->getFileSetRefs(), second->getFileSetRefs());
+        compareLists(first->getEnvIdentifiers(), second->getEnvIdentifiers()) && 
+        first->getComponentInstantiationRef() == second->getComponentInstantiationRef() &&
+        first->getDesignInstantiationRef() == second->getDesignInstantiationRef() &&
+        first->getDesignConfigurationInstantiationRef() == second->getDesignConfigurationInstantiationRef();
 }
 
 //-----------------------------------------------------------------------------
@@ -73,20 +74,20 @@ QList<QSharedPointer<IPXactDiff> > ViewComparator::diff(QSharedPointer<const Vie
 QList<QSharedPointer<IPXactDiff> > ViewComparator::diffFields(QSharedPointer<const View> reference, 
     QSharedPointer<const View> subject) const
 {
-    QSharedPointer<IPXactDiff> add(new IPXactDiff(elementType(), reference->getName()));
+    QSharedPointer<IPXactDiff> add(new IPXactDiff(elementType(), reference->name()));
     add->setChangeType(IPXactDiff::MODIFICATION);
 
     add->checkForChange("environment identifiers", reference->getEnvIdentifiers().join(", "), 
         subject->getEnvIdentifiers().join(", "));
-    add->checkForChange("language", reference->getLanguage(), subject->getLanguage());
-    add->checkForChange("model name", reference->getModelName(), subject->getModelName());
+    add->checkForChange("component instantiation reference", reference->getComponentInstantiationRef(),
+        subject->getComponentInstantiationRef());
 
     add->checkForChange("hierarchy", viewHierarchyType(reference), viewHierarchyType(subject));
 
-    add->checkForChange("hierarchy ref", reference->getHierarchyRef().toString(), 
-        subject->getHierarchyRef().toString());
-    add->checkForChange("file set ref", reference->getFileSetRefs().join(", "), 
-        subject->getFileSetRefs().join(", "));
+    add->checkForChange("design instantiation reference", reference->getDesignInstantiationRef(),
+        subject->getDesignInstantiationRef());
+    add->checkForChange("design configuration instantiation reference",
+        reference->getDesignConfigurationInstantiationRef(), subject->getDesignConfigurationInstantiationRef());    
 
     QList<QSharedPointer<IPXactDiff> > list;
     list.append(add);

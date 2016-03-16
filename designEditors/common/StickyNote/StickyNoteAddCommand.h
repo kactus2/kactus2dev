@@ -14,7 +14,7 @@
 
 #include <QUndoCommand>
 
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/common/VendorExtension.h>
 
 #include <QGraphicsItem>
 #include <QGraphicsScene>

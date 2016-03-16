@@ -1,83 +1,89 @@
-/* 
- *  	Created on: 14.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorviewitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorviewitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.05.2012
+//
+// Description:
+// The item for a single view in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorviewitem.h"
 #include <editors/ComponentEditor/views/vieweditor.h>
 
+#include <library/LibraryManager/libraryhandler.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/Component/DesignInstantiation.h>
+#include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
+
+#include <IPXACTmodels/Component/validators/ViewValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorViewItem()
+// Function: ComponentEditorViewItem::ComponentEditorViewItem()
 //-----------------------------------------------------------------------------
-ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view,
-												 ComponentEditorTreeModel* model,
-												 LibraryInterface* libHandler,
-												 QSharedPointer<Component> component,
+ComponentEditorViewItem::ComponentEditorViewItem(QSharedPointer<View> view, ComponentEditorTreeModel* model,
+                                                 LibraryInterface* libHandler, QSharedPointer<Component> component,
                                                  QSharedPointer<ParameterFinder> parameterFinder,
-                                                 QSharedPointer<ExpressionFormatter> expresionFormatter,
-												 ComponentEditorItem* parent):
+                                                 QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                 QSharedPointer<ExpressionParser> expressionParser,
+                                                 QSharedPointer<ViewValidator> viewValidator,
+                                                 ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
     view_(view),
-    editAction_(new QAction(tr("Edit"), this))
+    editAction_(new QAction(tr("Edit"), this)),
+    expressionParser_(expressionParser),
+    viewValidator_(viewValidator)
 {
     setParameterFinder(parameterFinder);
-    setExpressionFormatter(expresionFormatter);
+    setExpressionFormatter(expressionFormatter);
 
 	Q_ASSERT(view_);
 
-	setObjectName(tr("ComponentEditorViewItem: %1").arg(view->getName()));
+	setObjectName(tr("ComponentEditorViewItem: %1").arg(view->name()));
 
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection); 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ComponentEditorViewItem()
+// Function: ComponentEditorViewItem::~ComponentEditorViewItem()
 //-----------------------------------------------------------------------------
-ComponentEditorViewItem::~ComponentEditorViewItem() {
+ComponentEditorViewItem::~ComponentEditorViewItem()
+{
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: text()
+// Function: ComponentEditorViewItem::text()
 //-----------------------------------------------------------------------------
-QString ComponentEditorViewItem::text() const {
-	return view_->getName();
+QString ComponentEditorViewItem::text() const
+{
+	return view_->name();
 }
 
 //-----------------------------------------------------------------------------
-// Function: isValid()
+// Function: ComponentEditorViewItem::isValid()
 //-----------------------------------------------------------------------------
-bool ComponentEditorViewItem::isValid() const {
-	// check that view is valid
-	if (!view_->isValid(component_->getFileSetNames(), component_->getChoices())) {
-		return false;
-	}
-	// check that the reference can be found
-	if (view_->isHierarchical() && !libHandler_->contains(view_->getHierarchyRef())) {
-		return false;
-	}
-    
-    if (!component_->validateParameters(view_->getParameters()))
+bool ComponentEditorViewItem::isValid() const
+{
+    return viewValidator_->validate(view_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorViewItem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorViewItem::editor()
+{
+	if (!editor_)
     {
-        return false;
-    }
-
-	// view was valid and the reference was found
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: editor()
-//-----------------------------------------------------------------------------
-ItemEditor* ComponentEditorViewItem::editor() {
-	if (!editor_) {
-		editor_ = new ViewEditor(component_, view_, libHandler_, parameterFinder_, expressionFormatter_);
+        editor_ = new ViewEditor(component_, view_, libHandler_, parameterFinder_, expressionFormatter_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()),
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
         connectItemEditorToReferenceCounter();
 
@@ -87,32 +93,20 @@ ItemEditor* ComponentEditorViewItem::editor() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: getTooltip()
+// Function: ComponentEditorViewItem::getTooltip()
 //-----------------------------------------------------------------------------
-QString ComponentEditorViewItem::getTooltip() const {
+QString ComponentEditorViewItem::getTooltip() const
+{
 	return tr("Specifies a representation level of the component");
 }
 
 //-----------------------------------------------------------------------------
-// Function: canBeOpened()
+// Function: ComponentEditorViewItem::canBeOpened()
 //-----------------------------------------------------------------------------
-bool ComponentEditorViewItem::canBeOpened() const {
-	// if view is not hierarchical then it can't be opened
-	if (!view_->isHierarchical()) {
-		return false;
-	}
-	// if the library does not contain the referenced object
-	else if (!libHandler_->contains(view_->getHierarchyRef())) {
-		return false;
-	}
-
-	// check that the reference has not been changed
-	// if it has then there is no way to open the design because the changes have not
-	// been made to the library
-	QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(*component_->getVlnv());
-	QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
-	VLNV originalRef = comp->getHierRef(view_->getName());
-	return originalRef == view_->getHierarchyRef();
+bool ComponentEditorViewItem::canBeOpened() const
+{
+    return viewValidator_->hasValidDesignInstantiationReference(view_) ||
+        viewValidator_->hasValidDesignConfigurationInstantiationReference(view_);
 }
 
 //-----------------------------------------------------------------------------
@@ -127,30 +121,26 @@ QList<QAction*> ComponentEditorViewItem::actions() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: openItem()
+// Function: ComponentEditorViewItem::openItem()
 //-----------------------------------------------------------------------------
-void ComponentEditorViewItem::openItem() {
-	// if item can't be opened
-	if (!canBeOpened()) {
-		return;
+void ComponentEditorViewItem::openItem()
+{
+	if (canBeOpened())
+    {
+        emit openDesign(component_->getVlnv(), view_->name());
 	}
-	QString viewName = view_->getName();
-	VLNV compVLNV = *component_->getVlnv();
-	emit openDesign(compVLNV, viewName);
 }
 
-
 //-----------------------------------------------------------------------------
-// Function: isHierarchical()
+// Function: ComponentEditorViewItem::isHierarchical()
 //-----------------------------------------------------------------------------
 bool ComponentEditorViewItem::isHierarchical() const
 {
     return view_->isHierarchical();       
 }
 
-
 //-----------------------------------------------------------------------------
-// Function: hasIcon()
+// Function: ComponentEditorViewItem::hasIcon()
 //-----------------------------------------------------------------------------
 bool ComponentEditorViewItem::hasIcon() const
 {
@@ -158,11 +148,11 @@ bool ComponentEditorViewItem::hasIcon() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: getIcon()
+// Function: ComponentEditorViewItem::getIcon()
 //-----------------------------------------------------------------------------
 QIcon ComponentEditorViewItem::getIcon() const
 {
-    if ( view_->isHierarchical() )
+    if (view_->isHierarchical())
     {
         return QIcon(":/icons/common/graphics/hierarchy.png");
     }

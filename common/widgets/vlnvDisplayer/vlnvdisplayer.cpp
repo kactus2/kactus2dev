@@ -1,19 +1,33 @@
-/* 
- *
- *  Created on: 11.3.2011
- *      Author: Antti Kamppi
- * 		filename: vlnvdisplayer.cpp
- */
+//-----------------------------------------------------------------------------
+// File: vlnvdisplayer.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.03.2011
+//
+// Description:
+// VLNVDisplayer is a widget to display a vlnv tag in a GUI item.
+//-----------------------------------------------------------------------------
 
 #include "vlnvdisplayer.h"
 
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QSizePolicy>
 
-VLNVDisplayer::VLNVDisplayer(QWidget *parent, const VLNV& vlnv, bool compact)
-    : QGroupBox(parent), vendorLabel_(tr("Vendor:"), this), libraryLabel_(tr("Library:"), this),
-      nameLabel_(tr("Name:"), this), versionLabel_(tr("Version:"), this),
-      vendor_(this), library_(this), name_(this), version_(this), layout_(0)
+//-----------------------------------------------------------------------------
+// Function: vlnvdisplayer::VLNVDisplayer()
+//-----------------------------------------------------------------------------
+VLNVDisplayer::VLNVDisplayer(QWidget *parent, const VLNV& vlnv, bool compact):
+QGroupBox(parent),
+vendorLabel_(tr("Vendor:"), this),
+libraryLabel_(tr("Library:"), this),
+nameLabel_(tr("Name:"), this),
+versionLabel_(tr("Version:"), this),
+vendor_(this), library_(this),
+name_(this),
+version_(this),
+layout_(0)
 {
 	layout_ = new QGridLayout();
 	layout_->addWidget(&vendorLabel_, 0, 0, 1, 1, Qt::AlignLeft);
@@ -39,6 +53,9 @@ VLNVDisplayer::VLNVDisplayer(QWidget *parent, const VLNV& vlnv, bool compact)
     setFlat(true);
 }
 
+//-----------------------------------------------------------------------------
+// Function: vlnvdisplayer::VLNVDisplayer()
+//-----------------------------------------------------------------------------
 VLNVDisplayer::VLNVDisplayer( QWidget *parent, const VLNV* vlnv, bool compact ):
 QGroupBox(parent),
 vendorLabel_(tr("Vendor:"), this), 
@@ -48,8 +65,8 @@ versionLabel_(tr("Version:"), this),
 vendor_(this), 
 library_(this),
 name_(this),
-version_(this) {
-
+version_(this)
+{
     layout_ = new QGridLayout();
 	layout_->addWidget(&vendorLabel_, 0, 0, 1, 1, Qt::AlignLeft);
 	layout_->addWidget(&libraryLabel_, 1, 0, 1, 1, Qt::AlignLeft);
@@ -86,10 +103,19 @@ version_(this) {
 	setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
 }
 
-VLNVDisplayer::VLNVDisplayer( QWidget* parent )
- : QGroupBox(parent), vendorLabel_(tr("Vendor:"), this), libraryLabel_(tr("Library:"), this),
-   nameLabel_(tr("Name:"), this), versionLabel_(tr("Version:"), this),
-   vendor_(this), library_(this),  name_(this), version_(this)
+//-----------------------------------------------------------------------------
+// Function: vlnvdisplayer::VLNVDisplayer()
+//-----------------------------------------------------------------------------
+VLNVDisplayer::VLNVDisplayer( QWidget* parent ):
+QGroupBox(parent),
+vendorLabel_(tr("Vendor:"), this),
+libraryLabel_(tr("Library:"), this),
+nameLabel_(tr("Name:"), this),
+versionLabel_(tr("Version:"), this),
+vendor_(this),
+library_(this),
+name_(this),
+version_(this)
 {
     layout_ = new QGridLayout();
     layout_->addWidget(&vendorLabel_, 0, 0, 1, 1, Qt::AlignLeft);
@@ -114,12 +140,19 @@ VLNVDisplayer::VLNVDisplayer( QWidget* parent )
     setFlat(true);
 }
 
-VLNVDisplayer::~VLNVDisplayer() {
-}
-
-void VLNVDisplayer::setVLNV( const VLNV& vlnv, bool compact )
+//-----------------------------------------------------------------------------
+// Function: vlnvdisplayer::~VLNVDisplayer()
+//-----------------------------------------------------------------------------
+VLNVDisplayer::~VLNVDisplayer()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: vlnvdisplayer::setVLNV()
+//-----------------------------------------------------------------------------
+void VLNVDisplayer::setVLNV( const VLNV& vlnv, bool compact )
+{
     vendor_.setText(vlnv.getVendor());
     library_.setText(vlnv.getLibrary());
     name_.setText(vlnv.getName());
@@ -184,8 +217,11 @@ void VLNVDisplayer::setVLNV( const VLNV& vlnv, bool compact )
     }
 }
 
-void VLNVDisplayer::setPath( const QString& path ) {
-	
+//-----------------------------------------------------------------------------
+// Function: vlnvdisplayer::setPath()
+//-----------------------------------------------------------------------------
+void VLNVDisplayer::setPath( const QString& path )
+{
 	QLabel* pathHeader = new QLabel(tr("Path:"), this);
 	QLabel* pathLabel = new QLabel(path, this);
     pathLabel->setMinimumWidth(20);

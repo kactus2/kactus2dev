@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Component instantiation editor</title>
+  </head>
+  <body>
+    <h2>Component instantiation editor</h2>
+    <p>
+        <b>Component instantiation</b> defines how a specific component instance is associated with a <i>view</i>.
+        This editor can be used to edit the details of a component instantiation.
+    </p>
+    <p>
+        Component instantiation has a unique <b>name</b> and textual <b>description</b>.
+        <b>Display name</b> can be more detailed or user-friendly than name
+    </p>
+    <h3>Implementation details</h3>
+    <p>
+        <b>Language</b> specifies the HDL used for a specific instantiation, for example, verilog or vhdl. The
+        checkbox <b>Strict</b> determines if the language shall be strictly enforced.
+    </p>
+    <p>
+        <b>Library</b> specifies the library name in which the model should be compiled.
+    </p>
+    <p>
+        <b>Package</b> describes the VHDL package containing the interface of the model. Defaults to the component 
+        VLNV name concatenated with the postfix _cmp_pkg, which stands for component package.
+    </p>
+    <p>
+        <b>Module name</b> describes the Verilog, SystemVerilog or SystemC module name or the VHDL entity name.
+        Defaults to the component VLNV name.
+    </p>
+    <p>
+        <b>Architecture</b> describes the VHDL architecture name. Defaults to rtl.
+    </p>
+    <p>
+        <b>Configuration</b> describes the Verilog, SystemVerilog or VHDL configuration name. Defaults to the 
+        design configuration VLNV name of the design configuration referenced in the view, or to the component 
+        VLNV name concatenated with the postfix _rtl_cfg.
+    </p>
+    <h3>File set references</h3>
+    <p>
+        An unbounded list of references to <b>file set</b> names within the containing document.
+    </p>
+    <p>
+
+    </p>
+    <h3>Default file build commands</h3>
+    <p>
+        <b>Default file build commands</b> is an unbounded list of build options for the <b>file sets</b> 
+        referenced in the containing <b>view</b>.
+    </p>
+    <p>
+        Component instantiations editor contains a context menu (right mouse button) providing following options:
+    </p>
+    <p>
+        <b>File type</b> defines which files are build by the given <b>command</b>.
+    </p>
+    <p>
+        <b>Build command</b> defines how to build the files within the file set by e.g. running gcc for C files 
+        or vcom for VHDL.
+    </p>
+    <p>
+        <b>Flags</b> define the command line options for the <i>command</i> e.g. -Wall.
+    </p>
+    <p>
+        The defined command can either <b>replace default flags</b> defined in the target <i>file</i> or be 
+        appended to it.
+    </p>
+    <p>
+        The defult file build commands contains a context menu, with the following functionalities:
+    </p>
+    <ul>
+      <li>Add new build command (Add row)</li>
+      <li>Remove build command (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+    </ul>
+    <h3>Module parameters</h3>
+    <p>
+        Module parameters editor can be used to add, remove and modify module parameters. Module parameters are 
+        often used in HDL to configure component instances. They represent e.g VHDL  generics and Verilog module 
+        parameters.
+    </p>
+    <p>
+        All columns of the editor are editable.  Double-clicking an empty space adds a new row.
+        <br />Columns with f(x) be given a value as an expression.  
+    </p>
+    <p>
+        <b>Name</b> column is mandatory. <b>Display name</b> provides a more user-friendly name for the module 
+        parameter. <b>Description</b> is free text for further details.
+    </p>
+	<p>
+        Legal <b>data type</b> depends on the language of the model. For  example in VHDL this could be 'integer' 
+        or 'std_logic', whereas in C-language int or 'char*' could be used. 
+	</p>
+    <p>
+        <b>Type</b> is an optional constraint for the type to which the module parameter value resolves. 
+        Possible types are:
+    </p>
+    <ul>
+        <li><b>bit</b> indicates that the value shall resolve to a System Verilog bit, which by default is 
+        resolved to a 1-bit value, unless a vector size has been specified.</li>
+
+        <li><b>byte</b> indicates that the value shall resolve to a System Verilog byte, which is resolved to an 
+        8-bit integer value.</li>
+
+        <li><b>shortint</b> indicates that the value shall resolve to a System Verilog shortint, which is resolved 
+        to a 16-bit integer value.</li>
+		
+		<li><b>int</b> indicates that the value shall resolve to a System Verilog int, which is resolved to a 
+        32-bit integer value.</li>
+		
+		<li><b>longint</b> indicates that the value shall resolve to a System Verilog longint, which is resolved 
+        to a 64-bit integer value.</li>
+		
+		<li><b>shortreal</b> indicates that the value shall resolve to a System Verilog shorint, which is resolved 
+        to a 32-bit floating point value. Both standard and scientific format (e.g 0.002 and 2e-3) are supported. 
+        This type applies also to <b>minimum value</b> and <b>maximum value</b>.</li>
+		
+		<li><b>real</b> indicates that the value shall resolve to a System Verilog shortreal, which is resolved 
+        to a 64-bit floating point value. Both standard and scientific format (e.g. 0.002 and 2e-3) are supported. 
+        This type applies also to <b>minimum value</b> and <b>maximum value</b>.</li>
+		
+		<li><b>string</b> indicates that the value shall contain text.</li>
+    </ul>
+    <p>
+        <b>Value</b> contains the mandatory default value of the module parameter. This value can be overridden in 
+        a design that instantiates this component. The value is given in SystemVerilog format and may be given as 
+        an expression. Any other text must be enclosed within quotes e.g. "Any text".
+    </p>
+    <p>
+        By selecting a <b>choice</b>, the user can restrict the allowed module parameter values to a set of 
+        predefined values. Possible values are defined in the choices of the containing component.
+    </p>
+    <p>
+        <b>Minimum value</b> and <b>maximum value</b> define the lower and upper boundary for the module parameter 
+        value. If the selected type is <b>bit</b> or <b>string</b>, these fields have no effect.
+    </p>
+	<p>
+	    <b>OO usage</b> specifies how this model parameter is used. Default is 'non-typed' since such parameters 
+        are found in all languages, i.e. all VHDL types are non-typed. 'Typed' parameters appear in 
+        object-oriented languages, i.e. in C++.
+    </p>
+    <p>
+        <b>Resolve</b> specifies the configuration of the model parameter. Possible resolve values are:
+    </p>
+        <ul>
+        <li><b>immediate</b> indicates that the the value is defined within the containing component. The value 
+        cannot be overridden by the user or a generator in design configuration. This is the default value</li>
+
+        <li><b>user</b> indicates that the user can override the default value in design configuration. Generators 
+        are not allowed to change the value.</li>
+
+        <li><b>generated</b> indicates that the a generator can override the default value in design configuration.
+        </li>
+    </ul>
+    <p>
+        <b>Bit vector left</b> and <b>bit vector right</b> define the left and right bounds of the bit vector.
+        These are valid only for a bit type parameter. A valid bit vector requires both the left and the right bit 
+        vector values.
+    </p>
+    <p>
+        <b>Array left</b> and <b>Array right</b> specify the left and right sides of array dimension for the 
+        parameter in an output language e.g. Verilog. Both of these are vendor attributes. The values can be given 
+        as an expression, but they must resolve into a decimal number. In order to get a valid array, both 
+        <b>array left</b> and <b>array right</b> values must be given.
+    </p>
+	<p>
+	    <b>Usage count</b> displays the number of references made to this module parameter. Selecting the usage 
+        count of a module parameter displays a reference analysis for it. The usage count can not be changed 
+        manually.
+	</p>
+    <p>
+        Module parameters editor contains a context menu (rigth mouse button) that has the following options:
+    </p>
+    <ul>
+      <li>Add new module parameter (Add row)</li>
+      <li>Remove module parameter (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li>
+    </ul>
+    <hr />
+  </body>
+</html>

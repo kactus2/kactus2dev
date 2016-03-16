@@ -11,15 +11,11 @@
 #include "alterabspgenerator_global.h"
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/fileset.h>
 
-#include <QObject>
-#include <QSharedPointer>
-#include <QString>
-#include <QIcon>
+#include <IPXACTmodels/common/Document.h>
+#include <IPXACTmodels/Component/FileSet.h>
+
 #include <QFileInfo>
-#include <QSettings>
 
 class IPluginUtility;
 
@@ -95,9 +91,9 @@ public:
      *
      * \return True, if the generator supports the given component. Otherwise false.
     */
-	 virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-		 QSharedPointer<LibraryComponent const> libDesConf = QSharedPointer<LibraryComponent const>(),
-		 QSharedPointer<LibraryComponent const> libDes = QSharedPointer<LibraryComponent const>()) const;
+	 virtual bool checkGeneratorSupport(QSharedPointer<Document const> libComp,
+		 QSharedPointer<Document const> libDesConf = QSharedPointer<Document const>(),
+		 QSharedPointer<Document const> libDes = QSharedPointer<Document const>()) const;
 
     /*! \brief Runs the generator.
      *
@@ -112,9 +108,9 @@ public:
      *
     */
 	 virtual void runGenerator(IPluginUtility* utility, 
-		 QSharedPointer<LibraryComponent> libComp, 
-		 QSharedPointer<LibraryComponent> libDesConf = QSharedPointer<LibraryComponent>(), 
-		 QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent>());
+		 QSharedPointer<Document> libComp, 
+		 QSharedPointer<Document> libDesConf = QSharedPointer<Document>(), 
+		 QSharedPointer<Document> libDes = QSharedPointer<Document>());
 
 	 //! \brief Returns the external program requirements of the plugin.
 	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();

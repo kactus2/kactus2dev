@@ -12,11 +12,7 @@
 #ifndef HIERARCHYREFWIDGET_H
 #define HIERARCHYREFWIDGET_H
 
-#include "ModuleParameterEditor.h"
-
 #include <common/widgets/vlnvEditor/vlnveditor.h>
-
-#include <IPXACTmodels/view.h>
 
 #include <QWidget>
 #include <QSharedPointer>
@@ -26,7 +22,12 @@
 class ExpressionFormatter;
 class LibraryInterface;
 class ParameterFinder;
-class ReferenceSelector;
+
+class Choice;
+class View;
+class DesignInstantiation;
+class DesignConfigurationInstantiation;
+
 //-----------------------------------------------------------------------------
 //! Editor to set the hierarchy reference for a hierarchical view.
 //-----------------------------------------------------------------------------
@@ -36,7 +37,8 @@ class HierarchyRefWidget : public QWidget
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
 	 *        @param [in] view                  The view being edited.
 	 *        @param [in] libHandler            The library handler instance to use.
@@ -45,20 +47,28 @@ public:
      *        @param [in] expressionFormatter   The formatter for module parameter expressions.
 	 *        @param [in] parent                The owner of this editor.
 	 */
-	HierarchyRefWidget(QSharedPointer<View> view, LibraryInterface* libHandler,
+	HierarchyRefWidget(QSharedPointer<View> view,
+        QSharedPointer<DesignInstantiation> designInstantiation,
+        QSharedPointer<DesignConfigurationInstantiation> designConfigurationInstantiation,
+        LibraryInterface* libHandler,
         QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
         QSharedPointer<ParameterFinder> parameterFinder, 
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget* parent);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~HierarchyRefWidget();
 
-	/*! Check for the validity of the edited view.
-	*
-	*       @return True, if the hierarchical reference is valid, otherwise false.
-	*/
+	/*!
+     *  Check for the validity of the edited view.
+	 *
+	 *      @return True, if the hierarchical reference is valid, otherwise false.
+	 */
 	bool isValid() const;
+
+    QSharedPointer<DesignInstantiation> getDesignInstantiation();
+
+    QSharedPointer<DesignConfigurationInstantiation> getDesignConfigurationInstantiation();
 
 public slots:
 
@@ -67,7 +77,7 @@ public slots:
      *
      *      @param [in] availableViews   The available view names.
      */
-    void refresh(QStringList const& availableViews);
+    void refresh();
 
 	//! Clear the hierarchy reference and top level view reference.
 	void clear();
@@ -103,7 +113,7 @@ signals:
 
 protected:
 
-	//! Handler for widget's show event
+	//! Handler for widget's show event.
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
@@ -111,11 +121,6 @@ private slots:
 	//! Handler for changes in hierarchy reference.
 	void onVLNVChanged();
 
-	//! Handler for changes in top level reference.
-    void onTopViewChanged(QString const& newViewName);
-
-    //! Called when design configuration group has been checked/unchecked.
-    void designConfigEditorClicked();
 
 private:
 
@@ -156,17 +161,15 @@ private:
 	//! Pointer to the view being edited.
 	QSharedPointer<View> view_;
 
+    QSharedPointer<DesignInstantiation> designInstantiation_;
+
+    QSharedPointer<DesignConfigurationInstantiation> designConfigurationInstantiation_;
+
 	//! The editor to set the design configuration as the hierarchical reference.
 	VLNVEditor* designConfigurationEditor_;
 
     //! The display for referenced design.
-    VLNVEditor* designReferenceDisplay_;
-
-    //! Editor to set the module parameters of the view.
-    ModuleParameterEditor moduleParameterEditor_;
-
-	//! The editor to set the reference to a top level implementation view.
-	ReferenceSelector* topLevelRef_;
+    VLNVEditor* designEditor_;
 };
 
 #endif // HIERARCHYREFWIDGET_H

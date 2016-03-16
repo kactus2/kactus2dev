@@ -13,8 +13,13 @@
 
 #include "BitMappingModel.h"
 #include "physlistview.h"
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/generaldeclarations.h>
+
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
+
 #include <editors/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h>
 
 #include <QHeaderView>
@@ -80,18 +85,19 @@ BitMappingView::BitMappingView(QSharedPointer<Component> component, QWidget *par
 //-----------------------------------------------------------------------------
 // Function: BitMappingView::~BitMappingView()
 //-----------------------------------------------------------------------------
-BitMappingView::~BitMappingView() {
+BitMappingView::~BitMappingView()
+{
 }
 
 //-----------------------------------------------------------------------------
 // Function: BitMappingView::keyPressEvent()
 //-----------------------------------------------------------------------------
-void BitMappingView::keyPressEvent( QKeyEvent* event ) {
-
-	// call the base class implementation
+void BitMappingView::keyPressEvent(QKeyEvent* event)
+{
 	QTableView::keyPressEvent(event);
 
-	if (event->matches(QKeySequence::Delete)) {
+	if (event->matches(QKeySequence::Delete))
+    {
 		onClearAction();
 	}
 }
@@ -99,12 +105,14 @@ void BitMappingView::keyPressEvent( QKeyEvent* event ) {
 //-----------------------------------------------------------------------------
 // Function: BitMappingView::mousePressEvent()
 //-----------------------------------------------------------------------------
-void BitMappingView::mousePressEvent( QMouseEvent* event ) {
+void BitMappingView::mousePressEvent(QMouseEvent* event)
+{
 	pressedPoint_ = event->pos();
 
 	// if user clicked area that has no item
 	QModelIndex pressedIndex = indexAt(pressedPoint_);
-	if (!pressedIndex.isValid()) {
+	if (!pressedIndex.isValid())
+    {
 		setCurrentIndex(pressedIndex);
 	}
 
@@ -114,7 +122,8 @@ void BitMappingView::mousePressEvent( QMouseEvent* event ) {
 //-----------------------------------------------------------------------------
 // Function: BitMappingView::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
-void BitMappingView::mouseReleaseEvent( QMouseEvent* event ) {
+void BitMappingView::mouseReleaseEvent(QMouseEvent* event)
+{
 	setCursor(QCursor(Qt::ArrowCursor));
 	QTableView::mouseReleaseEvent(event);
 }
@@ -122,7 +131,8 @@ void BitMappingView::mouseReleaseEvent( QMouseEvent* event ) {
 //-----------------------------------------------------------------------------
 // Function: BitMappingView::contextMenuEvent()
 //-----------------------------------------------------------------------------
-void BitMappingView::contextMenuEvent( QContextMenuEvent* event ) {
+void BitMappingView::contextMenuEvent(QContextMenuEvent* event)
+{
 	pressedPoint_ = event->pos();
 
 	QModelIndex index = indexAt(pressedPoint_);
@@ -130,7 +140,8 @@ void BitMappingView::contextMenuEvent( QContextMenuEvent* event ) {
 	QMenu menu(this);
 
 	// if at least one valid item is selected
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		menu.addAction(&clearAction_);		
 	}	
 
@@ -156,33 +167,30 @@ void BitMappingView::dragEnterEvent(QDragEnterEvent *event)
 //-----------------------------------------------------------------------------
 // Function: BitMappingView::setupActions()
 //-----------------------------------------------------------------------------
-void BitMappingView::setupActions() {
-
+void BitMappingView::setupActions()
+{
 	clearAction_.setToolTip(tr("Clear the contents of a cell"));
-	clearAction_.setStatusTip(tr("Clear the contents of a cell"));
-	connect(&clearAction_, SIGNAL(triggered()),
-		this, SLOT(onClearAction()), Qt::UniqueConnection);
+	clearAction_.setStatusTip(tr("Clear the contents of a cell"));	
 	clearAction_.setShortcut(QKeySequence::Delete);
+    connect(&clearAction_, SIGNAL(triggered()), 	this, SLOT(onClearAction()), Qt::UniqueConnection);
 
     selectBitsAction_.setToolTip(tr("Select physical bits to map"));
     selectBitsAction_.setStatusTip(tr("Select physical bits to map"));
-    connect(&selectBitsAction_, SIGNAL(triggered()),
-        this, SLOT(onSelectBitsAction()), Qt::UniqueConnection);
+    connect(&selectBitsAction_, SIGNAL(triggered()), this, SLOT(onSelectBitsAction()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
 // Function: BitMappingView::onClearAction()
 //-----------------------------------------------------------------------------
-void BitMappingView::onClearAction() {
-	
+void BitMappingView::onClearAction()
+{
 	QModelIndexList indexes = selectedIndexes();
 
-	// clear the contents of each cell
-	foreach (QModelIndex index, indexes) {
+	foreach (QModelIndex index, indexes)
+    {
 		model()->setData(index, QVariant(), Qt::EditRole);
 	}
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: BitMappingView::onSelectBitsAction()
@@ -198,8 +206,8 @@ void BitMappingView::onSelectBitsAction()
         {
             if (component_->hasPort(portName))
             {
-                int physLeft = component_->getPortLeftBound(portName);
-                int physRight = component_->getPortRightBound(portName);
+                int physLeft = component_->getPort(portName)->getLeftBound().toInt();
+                int physRight = component_->getPort(portName)->getRightBound().toInt();
                 int physSize = abs(physLeft - physRight) + 1;
                 int logicalBitsLeft = model()->rowCount() - targetBit;
                 BitSelectionDialog dialog(logicalPort_, targetBit, portName, physSize, logicalBitsLeft, this);
@@ -221,8 +229,8 @@ void BitMappingView::onSelectBitsAction()
 //-----------------------------------------------------------------------------
 // Function: BitMappingView::setModel()
 //-----------------------------------------------------------------------------
-void BitMappingView::setModel( QAbstractItemModel* model ) {
-	
+void BitMappingView::setModel(QAbstractItemModel* model)
+{
 	// the base class implementation does most of the work
 	QTableView::setModel(model);
 
@@ -231,8 +239,8 @@ void BitMappingView::setModel( QAbstractItemModel* model ) {
 
 	// set the widths for the columns
 	int columnCount = model->columnCount(QModelIndex());
-	for (int i = 0; i < columnCount; ++i) {
-
+	for (int i = 0; i < columnCount; ++i)
+    {
 		// the width required by the contents of the model
 		int contentSize = sizeHintForColumn(i);
 
@@ -274,7 +282,8 @@ void BitMappingView::dropEvent(QDropEvent *event)
         QModelIndex index = indexAt(dropPoint_);
         QMenu menu(this);
 
-        if (index.isValid()) {
+        if (index.isValid())
+        {
             menu.addAction(&selectBitsAction_);		
         }	
         if (event->mimeData()->hasText())

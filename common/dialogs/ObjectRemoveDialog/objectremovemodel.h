@@ -8,7 +8,7 @@
 #ifndef OBJECTREMOVEMODEL_H
 #define OBJECTREMOVEMODEL_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QAbstractTableModel>
 #include <QString>

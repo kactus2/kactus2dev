@@ -14,30 +14,30 @@
 #include "GraphicsColumn.h"
 #include "GraphicsColumnLayout.h"
 
+#include <IPXACTmodels/Design/Design.h>
+
 //-----------------------------------------------------------------------------
-// Function: GraphicsColumnMoveCommand()
+// Function: GraphicsColumnMoveCommand::GraphicsColumnMoveCommand()
 //-----------------------------------------------------------------------------
-GraphicsColumnMoveCommand::GraphicsColumnMoveCommand(GraphicsColumnLayout* layout,
-                                                     GraphicsColumn* column,
-                                                     QPointF const& oldPos,
-                                                     QUndoCommand* parent)
-    : QUndoCommand(parent),
-      layout_(layout),
-      column_(column),
-      oldPos_(oldPos),
-      newPos_(column->pos())
+GraphicsColumnMoveCommand::GraphicsColumnMoveCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
+    QPointF const& oldPos, QUndoCommand* parent):
+QUndoCommand(parent),
+    layout_(layout),
+    column_(column),
+    oldPos_(oldPos),
+    newPos_(column->pos())
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~GraphicsColumnMoveCommand()
+// Function: GraphicsColumnMoveCommand::~GraphicsColumnMoveCommand()
 //-----------------------------------------------------------------------------
 GraphicsColumnMoveCommand::~GraphicsColumnMoveCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: GraphicsColumnMoveCommand::undo()
 //-----------------------------------------------------------------------------
 void GraphicsColumnMoveCommand::undo()
 {
@@ -50,7 +50,7 @@ void GraphicsColumnMoveCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: GraphicsColumnMoveCommand::redo()
 //-----------------------------------------------------------------------------
 void GraphicsColumnMoveCommand::redo()
 {
@@ -66,11 +66,12 @@ void GraphicsColumnMoveCommand::redo()
 // Function: GraphicsColumnAddCommand()
 //-----------------------------------------------------------------------------
 GraphicsColumnAddCommand::GraphicsColumnAddCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
-                                                   QUndoCommand* parent)
+    QSharedPointer<Design> design, QUndoCommand* parent)
     : QUndoCommand(parent),
       layout_(layout),
       column_(column),
-      del_(false)
+      del_(false),
+      design_(design)
 {
 }
 
@@ -90,11 +91,15 @@ GraphicsColumnAddCommand::~GraphicsColumnAddCommand()
 //-----------------------------------------------------------------------------
 void GraphicsColumnAddCommand::undo()
 {
+    QUndoCommand::undo();
+
     Q_ASSERT(column_ != 0);
 
     // Remove the column from the layout.
     layout_->removeColumn(column_);
     del_ = true;
+
+    design_->removeColumn(column_->getColumnDesc());
 }
 
 //-----------------------------------------------------------------------------
@@ -103,19 +108,26 @@ void GraphicsColumnAddCommand::undo()
 void GraphicsColumnAddCommand::redo()
 {
     // Add the column to the layout.
-    layout_->addColumn(column_, true);
+    layout_->addColumn(column_, column_->pos().isNull());
     del_ = false;
+    design_->addColumn(column_->getColumnDesc());
+
+    QUndoCommand::redo();
 }
 
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumnChangeCommand()
 //-----------------------------------------------------------------------------
-GraphicsColumnChangeCommand::GraphicsColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
-                                         QUndoCommand* parent) : QUndoCommand(parent),
-                                         column_(column),
-                                         oldDesc_(column->getColumnDesc()),
-                                         newDesc_(newDesc)
-
+GraphicsColumnChangeCommand::GraphicsColumnChangeCommand(GraphicsColumn* column,
+                                                         QSharedPointer<ColumnDesc> newDesc,
+                                                         QSharedPointer<Design> containingDesign,
+                                                         QUndoCommand* parent):
+QUndoCommand(parent),
+columnItem_(column),
+columnDesc_(column->getColumnDesc()),
+oldDesc_(new ColumnDesc(*column->getColumnDesc().data())),
+newDesc_(newDesc),
+containingDesign_(containingDesign)
 {
 }
 
@@ -131,7 +143,7 @@ GraphicsColumnChangeCommand::~GraphicsColumnChangeCommand()
 //-----------------------------------------------------------------------------
 void GraphicsColumnChangeCommand::undo()
 {
-    column_->setColumnDesc(oldDesc_);
+    changeModifiedColumnInDesign(oldDesc_);
 }
 
 //-----------------------------------------------------------------------------
@@ -139,7 +151,19 @@ void GraphicsColumnChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void GraphicsColumnChangeCommand::redo()
 {
-    column_->setColumnDesc(newDesc_);
+    changeModifiedColumnInDesign(newDesc_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsColumnUndoCommands::changeModifiedColumnInDesign()
+//-----------------------------------------------------------------------------
+void GraphicsColumnChangeCommand::changeModifiedColumnInDesign(QSharedPointer<ColumnDesc> newColumn)
+{
+    columnDesc_->setAllowedItems(newColumn->getAllowedItems());
+    columnDesc_->setContentType(newColumn->getContentType());
+    columnDesc_->setName(newColumn->name());
+    //columnDesc_->setPosition(newColumn->getPosition());
+    columnDesc_->setWidth(newColumn->getWidth());
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +174,7 @@ GraphicsColumnResizeCommand::GraphicsColumnResizeCommand(GraphicsColumn* column,
     : QUndoCommand(parent),
       column_(column),
       oldWidth_(oldWidth),
-      newWidth_(column_->getColumnDesc().getWidth())
+      newWidth_(column_->getColumnDesc()->getWidth())
 {
 }
 

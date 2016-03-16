@@ -13,11 +13,11 @@
 #include <QObject>
 #include <QSharedPointer>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <Plugins/VHDLimport/VHDLPortParser.h>
 
-Q_DECLARE_METATYPE(General::Direction)
+Q_DECLARE_METATYPE(DirectionTypes::Direction)
 
 class tst_VHDLPortParser : public QObject
 {
@@ -48,7 +48,8 @@ private:
     VHDLPortParser parser_;
 
     //! Test component to add parsed ports to.
-    QSharedPointer<Component> importComponent_;
+	QSharedPointer<Component> importComponent_;
+	QSharedPointer<ComponentInstantiation> importComponentInstantiation_;
 };
 
 //-----------------------------------------------------------------------------
@@ -64,7 +65,10 @@ tst_VHDLPortParser::tst_VHDLPortParser() : parser_(this), importComponent_(new C
 //-----------------------------------------------------------------------------
 void tst_VHDLPortParser::init()
 {
-    importComponent_ = QSharedPointer<Component>(new Component());
+	importComponent_ = QSharedPointer<Component>(new Component());
+
+	importComponentInstantiation_ = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
+	importComponent_->getModel()->getComponentInstantiations()->append(importComponentInstantiation_);
 }
 
 //-----------------------------------------------------------------------------
@@ -74,23 +78,25 @@ void tst_VHDLPortParser::testPortIsParsed()
 {
     QFETCH(QString, fileContent);
     QFETCH(QString, expectedName);
-    QFETCH(General::Direction, expectedDirection);    
-    QFETCH(int, expectedSize);
+    QFETCH(DirectionTypes::Direction, expectedDirection);    
+	QFETCH(QString, leftBound);
+	QFETCH(QString, rightBound);
     QFETCH(QString, expectedType);    
     QFETCH(QString, expectedDefaultValue);
     QFETCH(QString, expectedDescription);
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getPorts().count(), 1);
+    QCOMPARE(importComponent_->getPorts()->count(), 1);
 
-    QSharedPointer<Port> createdPort = importComponent_->getPorts().first();
-    QCOMPARE(createdPort->getName(), expectedName);
+    QSharedPointer<Port> createdPort = importComponent_->getPorts()->first();
+    QCOMPARE(createdPort->name(), expectedName);
     QCOMPARE(createdPort->getDirection(), expectedDirection);
-    QCOMPARE(createdPort->getPortSize(), expectedSize);
+	QCOMPARE(createdPort->getLeftBound(), leftBound);
+	QCOMPARE(createdPort->getRightBound(), rightBound);
     QCOMPARE(createdPort->getTypeName(), expectedType);    
     QCOMPARE(createdPort->getDefaultValue(), expectedDefaultValue);
-    QCOMPARE(createdPort->getDescription(), expectedDescription);
+    QCOMPARE(createdPort->description(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------
@@ -100,8 +106,9 @@ void tst_VHDLPortParser::testPortIsParsed_data()
 {
     QTest::addColumn<QString>("fileContent");
     QTest::addColumn<QString>("expectedName");    
-    QTest::addColumn<General::Direction>("expectedDirection");
-    QTest::addColumn<int>("expectedSize");
+    QTest::addColumn<DirectionTypes::Direction>("expectedDirection");
+	QTest::addColumn<QString>("leftBound");
+	QTest::addColumn<QString>("rightBound");
     QTest::addColumn<QString>("expectedType");    
     QTest::addColumn<QString>("expectedDefaultValue");
     QTest::addColumn<QString>("expectedDescription");
@@ -112,26 +119,26 @@ void tst_VHDLPortParser::testPortIsParsed_data()
         "       clk : in std_logic \n"
         "   );\n"
         "end test;"
-        << "clk" << General::IN << 1 << "std_logic" << "" << "";
+        << "clk" << DirectionTypes::IN << "" << "" << "std_logic" << "" << "";
 
     QTest::newRow("name, type and direction on a single line") << 
         "entity test is\n"
         "   port (clk : in std_logic);\n"
         "end test;"
-        << "clk" << General::IN << 1 << "std_logic"<< "" << "";
+        << "clk" << DirectionTypes::IN << "" << "" << "std_logic"<< "" << "";
 
     QTest::newRow("name type, direction and default value") << 
         "entity test is\n"
         "   port (enable : in std_logic := '1');\n"
         "end test;"
-        << "enable" << General::IN << 1 << "std_logic" << "'1'" << "";
+        << "enable" << DirectionTypes::IN << "" << "" << "std_logic" << "'1'" << "";
 
     QTest::newRow("name type, direction, default value and description") << 
         "entity test is\n"
         "   port (data : out std_logic_vector(31 downto 0) := (others => '0') -- data from ip\n"
         ");\n"
         "end test;"
-        << "data" << General::OUT << 32 << "std_logic_vector" << "(others => '0')" << "data from ip";
+        << "data" << DirectionTypes::OUT << "31" << "0" << "std_logic_vector" << "(others => '0')" << "data from ip";
 
     QTest::newRow("name type, direction and default value on separate lines") << 
         "entity test is\n"
@@ -141,7 +148,7 @@ void tst_VHDLPortParser::testPortIsParsed_data()
         "std_logic := '1' --       Clk from top.\n"
         ");\n"
         "end test;"
-        << "clk" << General::IN << 1 << "std_logic" << "'1'" << "Clk from top.";
+        << "clk" << DirectionTypes::IN << "" << "" << "std_logic" << "'1'" << "Clk from top.";
 
     QTest::newRow("port after comment.") << 
         "entity test is\n"
@@ -150,7 +157,7 @@ void tst_VHDLPortParser::testPortIsParsed_data()
         "        i_clk : in std_logic\n"
         ");\n"
         "end test;"
-        << "i_clk" << General::IN << 1 << "std_logic" << "" << "";
+        << "i_clk" << DirectionTypes::IN << "" << "" << "std_logic" << "" << "";
 }
 
 //-----------------------------------------------------------------------------
@@ -158,7 +165,7 @@ void tst_VHDLPortParser::testPortIsParsed_data()
 //-----------------------------------------------------------------------------
 void tst_VHDLPortParser::runParser(QString const& fileContent)
 {
-    parser_.import(fileContent, importComponent_);
+    parser_.import(fileContent, importComponent_, importComponentInstantiation_);
 }
 
 //-----------------------------------------------------------------------------
@@ -171,7 +178,7 @@ void tst_VHDLPortParser::testMultiplePortsAreParsed()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getPorts().count(), expectedNumberOfPorts);
+    QCOMPARE(importComponent_->getPorts()->count(), expectedNumberOfPorts);
 }
 
 //-----------------------------------------------------------------------------
@@ -282,7 +289,7 @@ void tst_VHDLPortParser::testCommentedPortIsNotParsed()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getPorts().count(), 0);
+    QCOMPARE(importComponent_->getPorts()->count(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -306,7 +313,7 @@ void tst_VHDLPortParser::testPortsAreNotParsedOutsideEntity()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getPorts().count(), 0);
+    QCOMPARE(importComponent_->getPorts()->count(), 0);
 }
 
 QTEST_APPLESS_MAIN(tst_VHDLPortParser)

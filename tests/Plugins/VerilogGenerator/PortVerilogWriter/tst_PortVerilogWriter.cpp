@@ -12,17 +12,17 @@
 #include <QString>
 #include <QtTest>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+//#include <IPXACTmodels/Component/modelparameter.h>
+#include <IPXACTmodels/Component/Port.h>
 
 #include <Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h>
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 
-Q_DECLARE_METATYPE(General::Direction)
+Q_DECLARE_METATYPE(DirectionTypes::Direction)
 
 const QString INDENT = "    ";
 
@@ -33,7 +33,7 @@ class tst_PortVerilogWriter : public QObject
 public:
     tst_PortVerilogWriter();
 
-private Q_SLOTS:
+private slots:
     void initTestCase();
     void cleanupTestCase();
 
@@ -141,6 +141,7 @@ void tst_PortVerilogWriter::testNullPointerAsConstructorParameter()
 //-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::testWriteEmptyPort()
 {
+    port_->setDirection(DirectionTypes::DIRECTION_INVALID);
     makeWriter(port_);
 
     portWriter_->write(outputStream_);
@@ -153,7 +154,7 @@ void tst_PortVerilogWriter::testWriteEmptyPort()
 //-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::testWriteNormalPort()
 {
-    QFETCH(General::Direction, direction);
+    QFETCH(DirectionTypes::Direction, direction);
     QFETCH(QString, type);
     QFETCH(QString, expectedOutput);
 
@@ -173,15 +174,15 @@ void tst_PortVerilogWriter::testWriteNormalPort()
 //-----------------------------------------------------------------------------
 void tst_PortVerilogWriter::testWriteNormalPort_data()
 {
-    QTest::addColumn<General::Direction>("direction");
+    QTest::addColumn<DirectionTypes::Direction>("direction");
     QTest::addColumn<QString>("type");
     QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("input port")     << General::IN  << "integer" << "input  integer                      Data";
-    QTest::newRow("output port")    << General::OUT << "reg"     << "output reg                          Data";
-    QTest::newRow("inout port")     << General::INOUT << "tri"   << "inout  tri                          Data";
-    QTest::newRow("phantom port")   << General::DIRECTION_PHANTOM << "phantom" << "";
-    QTest::newRow("invalid direction port") << General::DIRECTION_INVALID << "invalid" << "";
+    QTest::newRow("input port")     << DirectionTypes::IN  << "integer" << "input  integer                      Data";
+    QTest::newRow("output port")    << DirectionTypes::OUT << "reg"     << "output reg                          Data";
+    QTest::newRow("inout port")     << DirectionTypes::INOUT << "tri"   << "inout  tri                          Data";
+    QTest::newRow("phantom port")   << DirectionTypes::DIRECTION_PHANTOM << "phantom" << "";
+    QTest::newRow("invalid direction port") << DirectionTypes::DIRECTION_INVALID << "invalid" << "";
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +191,7 @@ void tst_PortVerilogWriter::testWriteNormalPort_data()
 void tst_PortVerilogWriter::testWriteNonTypedPort()
 {
     port_->setName("Data");
-    port_->setDirection(General::IN);
+    port_->setDirection(DirectionTypes::IN);
 
     makeWriter(port_);
 
@@ -207,12 +208,12 @@ void tst_PortVerilogWriter::testWriteVectorPort()
     QFETCH(QString, portName);
     QFETCH(QString, type);
 
-    QFETCH(int, leftBound);
-    QFETCH(int, rightBound);
+    QFETCH(QString, leftBound);
+    QFETCH(QString, rightBound);
     QFETCH(QString, expectedOutput);
 
     port_->setName(portName);
-    port_->setDirection(General::OUT);
+    port_->setDirection(DirectionTypes::OUT);
     port_->setTypeName(type);
     port_->setLeftBound(leftBound);
     port_->setRightBound(rightBound);
@@ -231,17 +232,17 @@ void tst_PortVerilogWriter::testWriteVectorPort_data()
 {
     QTest::addColumn<QString>("portName");
     QTest::addColumn<QString>("type");
-    QTest::addColumn<int>("leftBound");
-    QTest::addColumn<int>("rightBound");
+    QTest::addColumn<QString>("leftBound");
+    QTest::addColumn<QString>("rightBound");
     QTest::addColumn<QString>("expectedOutput");
 
-    QTest::newRow("scalar port") << "enable" << "" << 0 << 0 
+    QTest::newRow("scalar port") << "enable" << "" << "0" << "0"
         << "output                              enable";
-    QTest::newRow("normal vector port") << "bus" << "reg" << 7 << 0 
+    QTest::newRow("normal vector port") << "bus" << "reg" << "7" << "0"
         << "output reg     [7:0]                bus";
-    QTest::newRow("sliced vector port") << "slicedBus" << "" << 7 << 4 
+    QTest::newRow("sliced vector port") << "slicedBus" << "" << "7" << "4"
         << "output         [7:4]                slicedBus";
-    QTest::newRow("big endian vector port") << "reversed" << "" << 0 << 15 
+    QTest::newRow("big endian vector port") << "reversed" << "" << "0" << "15"
         << "output         [0:15]               reversed";
 }
 
@@ -258,10 +259,10 @@ void tst_PortVerilogWriter::testWriteVectorArrayPort()
     QFETCH(QString, expectedOutput);
 
     port_->setName(portName);
-    port_->setDirection(General::OUT);
+    port_->setDirection(DirectionTypes::OUT);
     port_->setTypeName(type);
-    port_->setLeftBound(7);
-    port_->setRightBound(0);
+    port_->setLeftBound("7");
+    port_->setRightBound("0");
     port_->setArrayLeft(leftArrayBound);
     port_->setArrayRight(rightArrayBound);
 
@@ -300,28 +301,34 @@ void tst_PortVerilogWriter::testWriteParametrizedPort()
 {
     QFETCH(QString, leftArrayExpressions);
     QFETCH(QString, rightArrayExpression);
-    QFETCH(QString, leftVectorExpressions);
+    QFETCH(QString, leftVectorExpression);
     QFETCH(QString, rightVectorExpression);
     QFETCH(QString, expectedOutput);
 
-    QSharedPointer<ModelParameter> parameter1(new ModelParameter());
+    QSharedPointer<ModuleParameter> parameter1(new ModuleParameter());
     parameter1->setName("name");
     parameter1->setValueId("id");
 
-    QSharedPointer<ModelParameter> parameter2(new ModelParameter());
+    QSharedPointer<ModuleParameter> parameter2(new ModuleParameter());
     parameter2->setName("name2");
     parameter2->setValueId("id2");
 
-    enclosingComponent_->getModel()->addModelParameter(parameter1);
-    enclosingComponent_->getModel()->addModelParameter(parameter2);
+    QSharedPointer<ComponentInstantiation> testInstantiation (new ComponentInstantiation("testInstantiation"));
+    testInstantiation->getModuleParameters()->append(parameter1);
+    testInstantiation->getModuleParameters()->append(parameter2);
+    enclosingComponent_->getComponentInstantiations()->append(testInstantiation);
+
+    QSharedPointer<View> testView (new View("testView"));
+    testView->setComponentInstantiationRef(testInstantiation->name());
+    enclosingComponent_->getViews()->append(testView);
 
     port_->setName("data");
-    port_->setDirection(General::IN);
+    port_->setDirection(DirectionTypes::IN);
     port_->setTypeName("bit");
     port_->setArrayLeft(leftArrayExpressions);
     port_->setArrayRight(rightArrayExpression);
-    port_->setLeftBoundExpression(leftVectorExpressions);
-    port_->setRightBoundExpression(rightVectorExpression);
+    port_->setLeftBound(leftVectorExpression);
+    port_->setRightBound(rightVectorExpression);
 
     makeWriter(port_);
 
@@ -337,7 +344,7 @@ void tst_PortVerilogWriter::testWriteParametrizedPort_data()
 {
     QTest::addColumn<QString>("leftArrayExpressions");
     QTest::addColumn<QString>("rightArrayExpression");
-    QTest::addColumn<QString>("leftVectorExpressions");
+    QTest::addColumn<QString>("leftVectorExpression");
     QTest::addColumn<QString>("rightVectorExpression");
     QTest::addColumn<QString>("expectedOutput");
 

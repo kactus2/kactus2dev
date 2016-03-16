@@ -13,6 +13,8 @@
 #define IEDITPROVIDER_H
 
 #include <QObject>
+#include <QSharedPointer>
+#include <QUndoCommand>
 
 //-----------------------------------------------------------------------------
 //! IEditProvider interface.
@@ -26,6 +28,18 @@ public:
      *  Destructor.
      */
     virtual ~IEditProvider() {}
+
+    /*!
+     *  Stores a new command to the edit stack.
+     *
+     *      @param [in] command   The command to add.
+     */
+    virtual void addCommand(QSharedPointer<QUndoCommand> command) = 0;
+
+    /*!
+     *  Clears the undo & redo stacks.
+     */
+    virtual void clear() = 0;
 
     /*!
      *  Performs an undo.

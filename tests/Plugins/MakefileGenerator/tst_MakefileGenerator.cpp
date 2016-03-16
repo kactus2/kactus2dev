@@ -11,20 +11,15 @@
 
 #include <QtTest>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ComponentInstance.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/SWView.h>
-#include <IPXACTmodels/SystemView.h>
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
 #include <Plugins/MakefileGenerator/MakefileParser.h>
 #include <Plugins/MakefileGenerator/MakefileGenerator.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
+#include <Plugins/common/NameGenerationPolicy.h>
 
 #include <QRegExp>
 
@@ -38,47 +33,67 @@ public:
 private slots:
     void baseCase();
 
+	// Overrides.
     void fileBuildOverride();
     void fileSetBuildOverride();
-
     void fileFlagReplace();
-
     void fileSetFlagReplace();
-    void includeFile();
     void swSWViewFlagReplace();
+
+	// Hardware and references.
     void hwBuilder();
     void hwBuilderWithNoSoftView();
     void hwRef();
     void hwandswRef();
     void instanceHeaders();
 
+	// Multiple things.
     void multipleFiles();
     void multipleFileSets();
     void multipleComponents();
-    void noFilesComponent();
     void multipleHardWare();
-    void multipleHardWareMedRefs();
+	void multipleHardWareMedRefs();
+	void multipleInstances();
 
+	// Missing things.
 	void noHardWare();
+	void noFilesComponent();
 	void noFileType();
-    void multipleInstances();
+
+	// API usage.
     void apiUsage();
     void threeLevelStack();
     void fullCircularapiUsage();
-    void circularapiUsage();
+	void circularapiUsage();
+
+	// Conflicts.
+	void sameFile();
+	void sameFileSeparateExe();
+	void sameFileDiffCompiler();
+	void sameFileDiffFlags();
+
+	// Generation.
+	void basicGeneration();
+	void multiObjectGeneration();
+	void multiFileGeneration();
+	void includeFile();
+	void noCompiler();
+	void allTheWay();
 
 private:
     void getFile(QSharedPointer<File>& file, QSharedPointer<Component> component, QString fileName);
 
-    QSharedPointer<Component> createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design, QString softViewName, QMap<QString,QString>& activeViews, SWView*& softView, QString swInstanceName);
+    QSharedPointer<Component> createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design, QString softViewName,
+		 QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<SWView>& softView, QString swInstanceName);
 
-    QSharedPointer<FileSet> addFileSet(QSharedPointer<Component> component, QString fileSetName, SWView*& view);
+    QSharedPointer<FileSet> addFileSet(QSharedPointer<Component> component, QString fileSetName, QSharedPointer<SWView> view);
 
-    void addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType="cSource", bool isInclude=false);
+    QSharedPointer<File> addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType="cSource", bool isInclude=false);
 
-    void createSWSWView(SWView* softView, QString softViewName, QSharedPointer<Component> sw);
+    void createSWSWView(QSharedPointer<SWView> softView, QString softViewName, QSharedPointer<Component> sw);
 
-    QSharedPointer<Component> createHW(QString hwInstanceName, QSharedPointer<Design> design, QString hardViewName, QMap<QString,QString>& activeViews, SWView*& hardView, QString hwName="hardware");
+    QSharedPointer<Component> createHW(QString const& hwInstanceName, QSharedPointer<Design> design, QString const& hardViewName,
+		 QSharedPointer<DesignConfiguration> designConfig, QSharedPointer<SWView>& hardView, QString const& hwName="hardware");
 
     QSharedPointer<Component> createDesign(QSharedPointer<Design> &design, QSharedPointer<DesignConfiguration> &desgconf);
 
@@ -88,7 +103,11 @@ private:
 
     void addFileSetBuilder(QSharedPointer<FileSet> fileSet, QString command, QString fileType, QString flags, bool replace);
 
-    void addCmd2View(SWView* view, QString command, QString fileType, QString flags, bool replace);
+	void addCmd2View(QSharedPointer<SWView> view, QString command, QString fileType, QString flags, bool replace);
+
+	void addAPI(QSharedPointer<Component> asw, QString name, DependencyDirection dir);
+
+	void addAPIConnection(QSharedPointer<Design> design, QString com1, QString bus1, QString com2, QString bus2);
 
     //! The test mock for library interface.
     LibraryMock library_;
@@ -111,37 +130,32 @@ void tst_MakefileGenerator::baseCase()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
-    createHW("hardware_0", design, "firmware", activeViews, hardView);
+    createHW("hardware_0", design, "firmware", desgconf, hardView);
     addCmd2View(hardView, "gcc", "cSource", "-hw", false);
 
-    QSharedPointer<Component> sw = createSW("software", "hardware_0", design, "default", activeViews, softView,"software_0");
+    QSharedPointer<Component> sw = createSW("software", "hardware_0", design, "default", desgconf, softView, "software_0");
 
     QString fileSetName = "someFileSet";
-    addFileSet(sw, fileSetName, softView);
+    QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
 
-    QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, outputDir_ );
-    MakefileGenerator generator( parser, &utilityMock_ );
-    generator.generate(outputDir_,outputDir_,"tsydemi");
 
-    verifyOutputContains("software_0", "_OBJ= array.c.o");
-    verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
-    verifyOutputContains("software_0", "ODIR= obj");
-    verifyOutputContains("software_0", "ENAME= software_0");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS)");
-    verifyOutputContains("software_0", "EBUILDER= gcc");
-    verifyOutputContains("software_0", "$(ENAME): $(OBJ)\n\t$(EBUILDER) -o $(ENAME) $(OBJ) $(EFLAGS)");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 1 );
+
+	QCOMPARE( data.swObjects.first()->fileName, QString("array.c") );
+	QCOMPARE( data.swObjects.first()->compiler, QString("gcc") );
+	QCOMPARE( data.swObjects.first()->flags, QString(" -sw -hw") );
+	QCOMPARE( data.name, QString("software_0") );
 }
 
 // Case used to test if file builder properly overrides other builders.
@@ -151,38 +165,37 @@ void tst_MakefileGenerator::fileBuildOverride()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
 
-    addFileToSet(fileSet, "array.c");
+    QSharedPointer<File> file = addFileToSet(fileSet, "array.c");
     addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
 
-    QSharedPointer<File> file;
-    getFile(file, sw, "array.c");
     setFileBuilder(file, "python", "-l", false);
-
-    desgconf->setViewConfigurations(activeViews);
 
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
-    generator.generate(outputDir_,outputDir_,"tsydemi");
 
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
-    verifyOutputContains("software_0", "python -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -l -sw");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 1 );
+
+	QCOMPARE( data.swObjects.first()->compiler, QString("python") );
+	QCOMPARE( data.swObjects.first()->flags, QString("-l -sw") );
+	QCOMPARE( data.softViewFlags.contains("-sw"), true );
 }
 
 // Case used to test if file set builder properly overrides other builders.
@@ -192,18 +205,17 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
@@ -212,16 +224,17 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     addCmd2View(softView, "gcc -o", "cSource", "-sw", false);
     addFileSetBuilder(fileSet, "javac -beef", "cSource", "-lrt", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 1 );
 
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
-    verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -lrt -sw");
+	QCOMPARE( data.swObjects.first()->compiler, QString("javac -beef") );
+	QCOMPARE( data.swObjects.first()->flags.simplified(), QString("-lrt -sw") );
+	QCOMPARE( data.softViewFlags.contains("-sw"), true );
 }
 
 // Case used to test if file flags properly replace other flags if needed.
@@ -234,37 +247,35 @@ void tst_MakefileGenerator::fileFlagReplace()
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
 
-    addFileToSet(fileSet, "array.c");
+    QSharedPointer<File> file = addFileToSet(fileSet, "array.c");
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
-    QSharedPointer<File> file;
-    getFile(file, sw, "array.c");
     setFileBuilder(file, "", "-u", true);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 1 );
 
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -u");
+	QCOMPARE( data.swObjects.first()->compiler, QString("gcc") );
+	QCOMPARE( data.swObjects.first()->flags.simplified(), QString("-u") );
+	QCOMPARE( data.softViewFlags.contains("-sw"), true );
 }
 
 // Case used to test if file set flags properly replace other flags if needed.
@@ -274,18 +285,17 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
@@ -294,102 +304,55 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
     addFileSetBuilder(fileSet, "javac -beef", "cSource", "-lrt", true);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
     parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 1 );
 
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
-    verifyOutputContains("software_0", "javac -beef -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -lrt");
+	QCOMPARE( data.swObjects.first()->compiler, QString("javac -beef") );
+	QCOMPARE( data.swObjects.first()->flags.simplified(), QString("-lrt") );
+	QCOMPARE( data.softViewFlags.contains("-sw"), true );
 }
 
-// Include files shoudl not yield object files.
-void tst_MakefileGenerator::includeFile()
-{
-    QSharedPointer<Design> design;
-    QSharedPointer<DesignConfiguration> desgconf;
-    QSharedPointer<Component> topComponent = createDesign(design, desgconf);
-
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
-
-    QString hwInstanceName = "hardware_0";
-    QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
-
-    QString swInstanceName = "software_0";
-    QString softViewName = "default";
-
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
-
-    QString fileSetName = "someFileSet";
-    addFileSet(sw, fileSetName, softView);
-
-    QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
-    addFileToSet(fileSet, "array.c");
-    addFileToSet(fileSet, "array.h", "cSource", true);
-
-    addCmd2View(hardView, "gcc", "cSource", "-hw", false);
-    addCmd2View(softView, "gcc", "cSource", "-sw", false);
-
-    desgconf->setViewConfigurations(activeViews);
-
-    MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
-
-    generator.generate(outputDir_,outputDir_,"tsydemi");
-
-    verifyOutputContains("software_0", "_OBJ= array.c.o\n");
-    verifyOutputContains("software_0", "EBUILDER= gcc");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
-}
-
-// Softwaree view of the software component should be able to replace those of hardware component.
+// Software view of the software component should be able to replace flags of hardware component.
 void tst_MakefileGenerator::swSWViewFlagReplace()
 {
     QSharedPointer<Design> design;
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
-    QString fileSetName = "someFileSet";
-    addFileSet(sw, fileSetName, softView);
+    QSharedPointer<FileSet> fileSet = addFileSet(sw, "someFileSet", softView);
 
-    QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
 
     addCmd2View(hardView, "gcc", "cSource", "-hw", false);
     addCmd2View(softView, "gcc", "cSource", "-sw", true);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 1 );
 
-    verifyOutputContains("software_0", "EBUILDER= gcc");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw\n");
+	QCOMPARE( data.hwBuildCmd->getCommand(), QString("gcc") );
+	QCOMPARE( data.softViewFlags.contains("-sw"), true );
 }
 
 // See if hardware builder is taken account properly.
@@ -399,44 +362,38 @@ void tst_MakefileGenerator::hwBuilder()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
-    QString fileSetName = "someFileSet";
-    addFileSet(sw, fileSetName, softView);
+    QSharedPointer<FileSet> fileSet = addFileSet(sw, "someFileSet", softView);
 
-    QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
-    addFileToSet(fileSet, "array.c");
+    QSharedPointer<File> file = addFileToSet(fileSet, "array.c");
     addFileSetBuilder(fileSet, "", "cSource", "-lrt", false);
 
     addCmd2View(hardView, "super_asm", "cSource", "-hw", false);
     addCmd2View(softView, "", "cSource", "-sw", false);
 
-    QSharedPointer<File> file;
-    getFile(file, sw, "array.c");
     setFileBuilder(file, "", "-u", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 1 );
 
-    verifyOutputContains("software_0", "EBUILDER= super_asm");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
-    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -u -lrt -sw -hw");
+	QCOMPARE( data.swObjects.first()->compiler, QString("super_asm") );
+	QCOMPARE( data.swObjects.first()->flags.simplified(), QString("-u -lrt -sw -hw") );
 }
 
 // See if hardware builder works if there are no software view for the software component.
@@ -446,69 +403,60 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
-    QString fileSetName = "someFileSet";
-    addFileSet(sw, fileSetName, softView);
+    QSharedPointer<FileSet> fileSet = addFileSet(sw, "someFileSet", softView);
 
-    QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
-    addFileToSet(fileSet, "array.c");
+    QSharedPointer<File> file = addFileToSet(fileSet, "array.c");
     addFileSetBuilder(fileSet, "", "cSource", "-lrt", false);
 
     addCmd2View(hardView, "super_asm", "cSource", "-hw", false);
 
-    QSharedPointer<File> file;
-    getFile(file, sw, "array.c");
     setFileBuilder(file, "", "-u", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 1 );
 
-    verifyOutputContains("software_0", "EBUILDER= super_asm");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
-    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -u -lrt -hw");
+	QCOMPARE( data.swObjects.first()->compiler, QString("super_asm") );
+	QCOMPARE( data.swObjects.first()->flags.simplified(), QString("-u -lrt -hw") );
 }
 
-// See if hard ware's own file set references function.
+// See if file set of hardware references work.
 void tst_MakefileGenerator::hwRef()
 {
     QSharedPointer<Design> design;
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    QSharedPointer<Component> hw = createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    QSharedPointer<Component> hw = createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
-    QString fileSetName = "someFileSet";
-    addFileSet(hw, fileSetName, hardView);
+    QSharedPointer<FileSet> fileSet = addFileSet(hw, "someFileSet", hardView);
 
-    QSharedPointer<FileSet> fileSet = hw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
     addFileSetBuilder(fileSet, "", "cSource", "-lrt", false);
 
@@ -519,17 +467,16 @@ void tst_MakefileGenerator::hwRef()
     getFile(file, hw, "array.c");
     setFileBuilder(file, "", "-u", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 1 );
 
-    verifyOutputContains("software_0", "EBUILDER= super_asm");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
-    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -u -lrt -hw");
+	QCOMPARE( data.swObjects.first()->compiler, QString("super_asm") );
+	QCOMPARE( data.swObjects.first()->flags.simplified(), QString("-u -lrt -hw") );
 }
 
 // See if hard ware's own file set references function, while there are those of software component.
@@ -539,13 +486,12 @@ void tst_MakefileGenerator::hwandswRef()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    QSharedPointer<Component> hw = createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    QSharedPointer<Component> hw = createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
@@ -560,7 +506,7 @@ void tst_MakefileGenerator::hwandswRef()
     getFile(hfile, hw, "harray.c");
     setFileBuilder(hfile, "", "-hu", false);
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString sfileSetName = "softFileSet";
     addFileSet(sw, sfileSetName, softView);
@@ -574,19 +520,24 @@ void tst_MakefileGenerator::hwandswRef()
     getFile(sfile, sw, "sarray.c");
     setFileBuilder(sfile, "", "-su", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 2 );
 
-    verifyOutputContains("software_0", "_OBJ= sarray.c.o harray.c.o");
-    verifyOutputContains("software_0", "EBUILDER= super_asm");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
-    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/sarray.c.o ../../sarray.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -su -sset -sw -hw");
-    verifyOutputContains("software_0", "super_asm -c -o $(ODIR)/harray.c.o ../../harray.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hu -hset -hw");
+	QCOMPARE( data.swObjects.first()->compiler, QString("super_asm") );
+	QCOMPARE( data.swObjects.first()->fileName, QString("harray.c") );
+	QCOMPARE( data.swObjects.first()->flags.simplified(), QString("-hu -hset -hw") );
+	QCOMPARE( data.swObjects.last()->compiler, QString("super_asm") );
+	QCOMPARE( data.swObjects.last()->fileName, QString("sarray.c") );
+	QCOMPARE( data.swObjects.last()->flags.simplified(), QString("-su -sset -sw -hw") );
+
+	QCOMPARE( data.hwBuildCmd->getCommand(), QString("super_asm") );
+	QCOMPARE( data.hwBuildCmd->getFlags(), QString("-hw") );
+	QCOMPARE( data.softViewFlags.contains("-sw"), true );
 }
 
 // Instance specific header files must be included to the make file.
@@ -596,41 +547,49 @@ void tst_MakefileGenerator::instanceHeaders()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView, swInstanceName);
 
     QString fileSetName = "someFileSet";
     addFileSet(sw, fileSetName, softView);
     QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
     addFileToSet(fileSet, "array.c");
 
-    QString topFileSetName = "software_0_headers";
-    QSharedPointer<FileSet> topFileSet = topComponent->getFileSet(topFileSetName);
+    QString topFileSetName = NameGenerationPolicy::instanceFilesetName( "sysview", "software_0" );
+	QSharedPointer<FileSet> topFileSet = addFileSet(topComponent,topFileSetName,QSharedPointer<SWView>());
     addFileToSet(topFileSet, "array.h", "cSource", true);
+	
+	QSharedPointer<SWInstance> referrringInstance = design->getSWInstances().first();
+	referrringInstance->setFileSetRef( topFileSetName );
+
     QString topFileSetName2 = "esa-pekka";
-    QSharedPointer<FileSet> topFileSet2 = topComponent->getFileSet(topFileSetName2);
+    QSharedPointer<FileSet> topFileSet2 = addFileSet(topComponent,topFileSetName2,QSharedPointer<SWView>());
     addFileToSet(topFileSet2, "joku.h", "cSource", true);
 
     addCmd2View(hardView, "gcc", "cSource", "-hw", false);
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 2 );
+
+	QCOMPARE( data.swObjects.first()->file->isIncludeFile(), true );
+	QCOMPARE( data.swObjects.first()->compiler, QString("gcc") );
+	QCOMPARE( data.swObjects.first()->fileName, QString("array.h") );
+	QCOMPARE( data.swObjects.first()->flags.simplified(), QString("-hw") );
 }
 
 // Generate makefile with multiple source and header files.
@@ -640,18 +599,17 @@ void tst_MakefileGenerator::multipleFiles()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QString fileSetName = "someFileSet";
     addFileSet(sw, fileSetName, softView);
@@ -671,21 +629,26 @@ void tst_MakefileGenerator::multipleFiles()
     getFile(file, sw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 6 );
 
-    verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
-    verifyOutputContains("software_0", "EBUILDER= gcc");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
-    verifyOutputContains("software_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -sw -hw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+	QCOMPARE( data.swObjects.at(0)->compiler, QString("gcc" ) );
+	QCOMPARE( data.swObjects.at(0)->fileName, QString("array.c") );
+	QCOMPARE( data.swObjects.at(0)->flags.simplified(), QString("-sw -hw") );
+	QCOMPARE( data.swObjects.at(1)->compiler, QString("continental" ) );
+	QCOMPARE( data.swObjects.at(1)->fileName, QString("support.c") );
+	QCOMPARE( data.swObjects.at(1)->flags.simplified(), QString("-y -sw -hw") );
+	QCOMPARE( data.swObjects.at(2)->fileName, QString("additional.c") );
+	QCOMPARE( data.swObjects.at(3)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data.swObjects.at(4)->fileName, QString("array.h") );
+	QCOMPARE( data.swObjects.at(4)->file->isIncludeFile(), true );
+	QCOMPARE( data.swObjects.at(5)->fileName, QString("support.h") );
+	QCOMPARE( data.swObjects.at(5)->file->isIncludeFile(), true );
 }
 
 // Generate makefile when multiple file sets are featured.
@@ -696,17 +659,17 @@ void tst_MakefileGenerator::multipleFileSets()
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
     QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> softView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
 
-    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+    QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
     QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
     QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
@@ -725,21 +688,26 @@ void tst_MakefileGenerator::multipleFileSets()
     getFile(file, sw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 6 );
 
-    verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
-    verifyOutputContains("software_0", "EBUILDER= gcc");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
-    verifyOutputContains("software_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -sw -hw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+	QCOMPARE( data.swObjects.at(0)->compiler, QString("gcc" ) );
+	QCOMPARE( data.swObjects.at(0)->fileName, QString("array.c") );
+	QCOMPARE( data.swObjects.at(0)->flags.simplified(), QString("-sw -hw") );
+	QCOMPARE( data.swObjects.at(1)->compiler, QString("continental" ) );
+	QCOMPARE( data.swObjects.at(1)->fileName, QString("support.c") );
+	QCOMPARE( data.swObjects.at(1)->flags.simplified(), QString("-y -sw -hw") );
+	QCOMPARE( data.swObjects.at(2)->fileName, QString("array.h") );
+	QCOMPARE( data.swObjects.at(2)->file->isIncludeFile(), true );
+	QCOMPARE( data.swObjects.at(3)->fileName, QString("additional.c") );
+	QCOMPARE( data.swObjects.at(4)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data.swObjects.at(5)->fileName, QString("support.h") );
+	QCOMPARE( data.swObjects.at(5)->file->isIncludeFile(), true );
 }
 
 // Generate makefile when multiple components are featured.
@@ -749,17 +717,16 @@ void tst_MakefileGenerator::multipleComponents()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
+    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftView,"crapware_0");
+    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -778,73 +745,36 @@ void tst_MakefileGenerator::multipleComponents()
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 2 );
+	MakefileParser::MakeFileData data1 = datas.first();
+	QCOMPARE( data1.swObjects.size(), 3 );
+	QCOMPARE( data1.name, QString("crapware_0") );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	QCOMPARE( data1.swObjects.at(0)->compiler, QString("hopo" ) );
+	QCOMPARE( data1.swObjects.at(0)->fileName, QString("array.c") );
+	QCOMPARE( data1.swObjects.at(0)->flags.simplified(), QString("-hw") );
+	QCOMPARE( data1.swObjects.at(1)->compiler, QString("continental" ) );
+	QCOMPARE( data1.swObjects.at(1)->fileName, QString("support.c") );
+	QCOMPARE( data1.swObjects.at(1)->flags.simplified(), QString("-y -hw") );
+	QCOMPARE( data1.swObjects.at(2)->fileName, QString("array.h") );
+	QCOMPARE( data1.swObjects.at(2)->file->isIncludeFile(), true );
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
-    verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o");
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -hw");
+	MakefileParser::MakeFileData data2 = datas.last();
+	QCOMPARE( data2.swObjects.size(), 3 );
+	QCOMPARE( data2.softViewFlags.contains("-bmw"), true );
+	QCOMPARE( data2.name, QString("stackware_0") );
 
-    verifyOutputContains("stackware_0", "EBUILDER= hopo");
-    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -bmw");
-    verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
-}
-
-// Yield no makefile, if no files are present.
-void tst_MakefileGenerator::noFilesComponent()
-{
-    QSharedPointer<Design> design;
-    QSharedPointer<DesignConfiguration> desgconf;
-    QSharedPointer<Component> topComponent = createDesign(design, desgconf);
-
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
-
-    QString hwInstanceName = "hardware_0";
-    QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
-
-    QSharedPointer<Component> asw = createSW("whatware", hwInstanceName, design, "default", activeViews, asoftView,"whatware_0");
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
-
-    QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
-    QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
-
-    addFileToSet(bfileSet, "additional.c");
-    addFileToSet(bfileSet, "hiterbehn.c");
-    addFileToSet(bfileSet, "support.h", "cSource", true);
-
-    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
-    addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
-
-    desgconf->setViewConfigurations(activeViews);
-
-    MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
-
-    generator.generate(outputDir_,outputDir_,"tsydemi");
-
-    verifyOutputContains("stackware_0", "EBUILDER= hopo");
-    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -bmw");
-    verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
-
-    QFile outputFile(outputDir_ + "/sw_tsydemi/whatware_0/Makefile");
-
-    QVERIFY(!outputFile.open(QIODevice::ReadOnly));
+	QCOMPARE( data2.swObjects.at(0)->fileName, QString("additional.c") );
+	QCOMPARE( data2.swObjects.at(0)->compiler, QString("asm-meister" ) );
+	QCOMPARE( data2.swObjects.at(0)->flags.simplified(), QString("-bmw -hw") );
+	QCOMPARE( data2.swObjects.at(1)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data2.swObjects.at(1)->compiler, QString("asm-meister" ) );
+	QCOMPARE( data2.swObjects.at(1)->flags.simplified(), QString("-bmw -hw") );
+	QCOMPARE( data2.swObjects.at(2)->fileName, QString("support.h") );
+	QCOMPARE( data2.swObjects.at(2)->file->isIncludeFile(), true );
 }
 
 // Must work if there is multiple hardware where instances are mapped to.
@@ -854,17 +784,16 @@ void tst_MakefileGenerator::multipleHardWare()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* ahardView;
-    SWView* bhardView;
-    SWView* asoftView;
-    SWView* bsoftView;
+    QSharedPointer<SWView> ahardView;
+    QSharedPointer<SWView> bhardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
 
-    createHW("Lenit_0", design, "firmware", activeViews, ahardView, "Lenit");
-    createHW("MAR_0", design, "firmware", activeViews, bhardView, "MAR");
+    createHW("Lenit_0", design, "firmware", desgconf, ahardView, "Lenit");
+    createHW("MAR_0", design, "firmware", desgconf, bhardView, "MAR");
 
-    QSharedPointer<Component> asw = createSW("crapware", "Lenit_0", design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<Component> bsw = createSW("stackware", "MAR_0", design, "default", activeViews, bsoftView,"stackware_0");
+    QSharedPointer<Component> asw = createSW("crapware", "Lenit_0", design, "default", desgconf, asoftView,"crapware_0");
+    QSharedPointer<Component> bsw = createSW("stackware", "MAR_0", design, "default", desgconf, bsoftView,"stackware_0");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -886,25 +815,41 @@ void tst_MakefileGenerator::multipleHardWare()
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 2 );
+	MakefileParser::MakeFileData data1 = datas.first();
+	QCOMPARE( data1.swObjects.size(), 3 );
+	QCOMPARE( data1.name, QString("crapware_0") );
+	QCOMPARE( data1.hwBuildCmd->getCommand(), QString("hopo") );
+	QCOMPARE( data1.hwBuildCmd->getFlags(), QString("-ahw") );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	QCOMPARE( data1.swObjects.at(0)->compiler, QString("hopo" ) );
+	QCOMPARE( data1.swObjects.at(0)->fileName, QString("array.c") );
+	QCOMPARE( data1.swObjects.at(0)->flags.simplified(), QString("-ahw") );
+	QCOMPARE( data1.swObjects.at(1)->compiler, QString("continental" ) );
+	QCOMPARE( data1.swObjects.at(1)->fileName, QString("support.c") );
+	QCOMPARE( data1.swObjects.at(1)->flags.simplified(), QString("-y -ahw") );
+	QCOMPARE( data1.swObjects.at(2)->fileName, QString("array.h") );
+	QCOMPARE( data1.swObjects.at(2)->file->isIncludeFile(), true );
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -ahw");
-    verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o");
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -ahw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -ahw");
+	MakefileParser::MakeFileData data2 = datas.last();
+	QCOMPARE( data2.swObjects.size(), 3 );
+	QCOMPARE( data2.softViewFlags.contains("-bmw"), true );
+	QCOMPARE( data2.name, QString("stackware_0") );
+	QCOMPARE( data2.hwBuildCmd->getCommand(), QString("juu -f") );
+	QCOMPARE( data2.hwBuildCmd->getFlags(), QString("-bhw") );
+	QCOMPARE( data2.softViewFlags.contains("-bmw"), true );
 
-    verifyOutputContains("stackware_0", "EBUILDER= juu -f");
-    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bhw -bmw");
-    verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -bhw");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -bhw");
+	QCOMPARE( data2.swObjects.at(0)->fileName, QString("additional.c") );
+	QCOMPARE( data2.swObjects.at(0)->compiler, QString("asm-meister" ) );
+	QCOMPARE( data2.swObjects.at(0)->flags.simplified(), QString("-bmw -bhw") );
+	QCOMPARE( data2.swObjects.at(1)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data2.swObjects.at(1)->compiler, QString("asm-meister" ) );
+	QCOMPARE( data2.swObjects.at(1)->flags.simplified(), QString("-bmw -bhw") );
+	QCOMPARE( data2.swObjects.at(2)->fileName, QString("support.h") );
+	QCOMPARE( data2.swObjects.at(2)->file->isIncludeFile(), true );
 }
 
 // Multiple hardware, along with their references to their own files.
@@ -914,17 +859,16 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* ahardView;
-    SWView* bhardView;
-    SWView* asoftView;
-    SWView* bsoftView;
+    QSharedPointer<SWView> ahardView;
+    QSharedPointer<SWView> bhardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
 
-    QSharedPointer<Component> hw = createHW("Lenit_0", design, "firmware", activeViews, ahardView, "Lenit");
-    createHW("MAR_0", design, "firmware", activeViews, bhardView, "MAR");
+    QSharedPointer<Component> hw = createHW("Lenit_0", design, "firmware", desgconf, ahardView, "Lenit");
+    createHW("MAR_0", design, "firmware", desgconf, bhardView, "MAR");
 
-    QSharedPointer<Component> asw = createSW("crapware", "Lenit_0", design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<Component> bsw = createSW("stackware", "MAR_0", design, "default", activeViews, bsoftView,"stackware_0");
+    QSharedPointer<Component> asw = createSW("crapware", "Lenit_0", design, "default", desgconf, asoftView,"crapware_0");
+    QSharedPointer<Component> bsw = createSW("stackware", "MAR_0", design, "default", desgconf, bsoftView,"stackware_0");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -952,25 +896,79 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    desgconf->setViewConfigurations(activeViews);
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 2 );
+	MakefileParser::MakeFileData data1 = datas.first();
+	QCOMPARE( data1.swObjects.size(), 4 );
+	QCOMPARE( data1.name, QString("crapware_0") );
 
-    MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	QCOMPARE( data1.swObjects.at(0)->fileName, QString("harray.c") );
+	QCOMPARE( data1.swObjects.at(1)->fileName, QString("array.c") );
+	QCOMPARE( data1.swObjects.at(2)->fileName, QString("support.c") );
+	QCOMPARE( data1.swObjects.at(3)->fileName, QString("array.h") );
+	QCOMPARE( data1.swObjects.at(3)->file->isIncludeFile(), true );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	MakefileParser::MakeFileData data2 = datas.last();
+	QCOMPARE( data2.swObjects.size(), 3 );
+	QCOMPARE( data2.name, QString("stackware_0") );
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -ahw");
-    verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o");
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -ahw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -ahw");
+	QCOMPARE( data2.swObjects.at(0)->fileName, QString("additional.c") );
+	QCOMPARE( data2.swObjects.at(1)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data2.swObjects.at(2)->fileName, QString("support.h") );
+}
 
-    verifyOutputContains("stackware_0", "EBUILDER= juu");
-    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bhw -bmw");
-    verifyOutputContains("stackware_0", "_OBJ= additional.c.o hiterbehn.c.o");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -bhw");
-    verifyOutputContains("stackware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -bhw");
+// Must work with multiple instances of the same component.
+void tst_MakefileGenerator::multipleInstances()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> softView;
+
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+
+	QSharedPointer<Component> sw = createSW("stackware", hwInstanceName, design, "default", desgconf, softView,"stackware_0");
+
+	QSharedPointer<ConfigurableVLNVReference> swvlvnv( new ConfigurableVLNVReference(sw->getVlnv()) );
+	QSharedPointer<SWInstance> softInstance(new SWInstance);
+	softInstance->setInstanceName("stackware_1");
+	softInstance->setComponentRef(swvlvnv);
+	softInstance->setMapping(hwInstanceName);
+
+	desgconf->addViewConfiguration("stackware_1","default");
+
+	QList<QSharedPointer<SWInstance> > swInstances = design->getSWInstances();
+	swInstances.append(softInstance);
+	design->setSWInstances(swInstances);
+	library_.writeModelToFile("polku/stackware",sw);
+
+	QSharedPointer<FileSet> fileSet = addFileSet(sw, "FileSet", softView);
+
+	addFileToSet(fileSet, "additional.c");
+	addFileToSet(fileSet, "hiterbehn.c");
+	addFileToSet(fileSet, "array.h", "cSource", true);
+	addFileToSet(fileSet, "support.h", "cSource", true);
+
+	addCmd2View(hardView, "hopo", "cSource", "-hw", false);
+	addCmd2View(softView, "asm-meister", "cSource", "-bmw", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 2 );
+	MakefileParser::MakeFileData data1 = datas.first();
+	QCOMPARE( data1.swObjects.size(), 4 );
+	QCOMPARE( data1.name, QString("stackware_0") );
+
+	MakefileParser::MakeFileData data2 = datas.last();
+	QCOMPARE( data2.swObjects.size(), 4 );
+	QCOMPARE( data2.name, QString("stackware_1") );
 }
 
 // How it works without hardware. NOTICE: presently shall have no compiler!
@@ -980,10 +978,9 @@ void tst_MakefileGenerator::noHardWare()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* softView;
+    QSharedPointer<SWView> softView;
 
-    QSharedPointer<Component> sw = createSW("software", "", design, "default", activeViews, softView,"software_0");
+    QSharedPointer<Component> sw = createSW("software", "", design, "default", desgconf, softView,"software_0");
 
     QString fileSetName = "someFileSet";
     addFileSet(sw, fileSetName, softView);
@@ -992,128 +989,100 @@ void tst_MakefileGenerator::noHardWare()
     addFileToSet(fileSet, "array.c");
     addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
-    desgconf->setViewConfigurations(activeViews);
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
     MakefileGenerator generator( parser, &utilityMock_ );
-
-    generator.generate(outputDir_,outputDir_,"tsydemi");
-
-    verifyOutputContains("software_0", "_OBJ= array.c.o");
-    verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
-    verifyOutputContains("software_0", "EBUILDER= ");
-    verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
-    verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw");
+	generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	QCOMPARE( datas.first().hwBuildCmd, QSharedPointer<SWFileBuilder>() );
 }
 
-// File with unsupported file type must not be in makefile!
+// Yield no makefile, if no files are present.
+void tst_MakefileGenerator::noFilesComponent()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> asoftView;
+	QSharedPointer<SWView> bsoftView;
+
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+
+	QSharedPointer<Component> asw = createSW("whatware", hwInstanceName, design, "default", desgconf, asoftView,"whatware_0");
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
+
+	QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
+	QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
+
+	addFileToSet(bfileSet, "additional.c");
+	addFileToSet(bfileSet, "hiterbehn.c");
+	addFileToSet(bfileSet, "support.h", "cSource", true);
+
+	addCmd2View(hardView, "hopo", "cSource", "-hw", false);
+	addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 3 );
+
+	QCOMPARE( data.swObjects.at(0)->fileName, QString("additional.c") );
+	QCOMPARE( data.swObjects.at(1)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data.swObjects.at(2)->fileName, QString("support.h") );
+}
+
+// File with unsupported file type must not have compiler!
 void tst_MakefileGenerator::noFileType()
 {
 	QSharedPointer<Design> design;
 	QSharedPointer<DesignConfiguration> desgconf;
 	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-	QMap<QString,QString> activeViews;
-	SWView* hardView;
-	SWView* softView;
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> softView;
 
 	QString hwInstanceName = "hardware_0";
 	QString hardViewName = "firmware";
-	createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
 	QString swInstanceName = "software_0";
 	QString softViewName = "default";
 
-	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, activeViews, softView,swInstanceName);
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
 
 	QString fileSetName = "someFileSet";
 	addFileSet(sw, fileSetName, softView);
 
 	QSharedPointer<FileSet> fileSet = sw->getFileSet(fileSetName);
-	addFileToSet(fileSet, "array.c");
-	addFileToSet(fileSet, "support.c");
-	addFileToSet(fileSet, "additional.c");
 	addFileToSet(fileSet, "hiterbehn.c", "topSecret");
-	addFileToSet(fileSet, "array.h", "cSource", true);
+	addFileToSet(fileSet, "array.c");
 	addFileToSet(fileSet, "support.h", "cSource", true);
 
 	addCmd2View(hardView, "gcc", "cSource", "-hw", false);
 	addCmd2View(softView, "gcc", "cSource", "-sw", false);
 
-	QSharedPointer<File> file;
-	getFile(file, sw, "support.c");
-	setFileBuilder(file, "continental", "-y", false);
-
-	desgconf->setViewConfigurations(activeViews);
-
 	MakefileParser parser;
 	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-	MakefileGenerator generator( parser, &utilityMock_ );
 
-	generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 3 );
 
-	verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o additional.c.o");
-	verifyOutputContains("software_0", "EBUILDER= gcc");
-	verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -sw");
-	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
-	verifyOutputContains("software_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -sw -hw");
-	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
-}
+	QCOMPARE( data.swObjects.at(0)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data.swObjects.at(1)->fileName, QString("array.c") );
+	QCOMPARE( data.swObjects.at(2)->fileName, QString("support.h") );
 
-// Must work with multiple instances of the same component.
-void tst_MakefileGenerator::multipleInstances()
-{
-    QSharedPointer<Design> design;
-    QSharedPointer<DesignConfiguration> desgconf;
-    QSharedPointer<Component> topComponent = createDesign(design, desgconf);
-
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* softView;
-
-    QString hwInstanceName = "hardware_0";
-    QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
-
-    QSharedPointer<Component> sw = createSW("stackware", hwInstanceName, design, "default", activeViews, softView,"stackware_0");
-
-    VLNV* swvlvnv = sw->getVlnv();
-    SWInstance softInstance;
-    softInstance.setInstanceName("stackware_1");
-    softInstance.setComponentRef(*swvlvnv);
-    softInstance.setMapping(hwInstanceName);
-
-    activeViews.insert("stackware_1","default");
-
-    QList<SWInstance> swInstances = design->getSWInstances();
-    swInstances.append(softInstance);
-    design->setSWInstances(swInstances);
-    library_.writeModelToFile("polku/stackware",sw);
-
-    QSharedPointer<FileSet> fileSet = addFileSet(sw, "FileSet", softView);
-
-    addFileToSet(fileSet, "additional.c");
-    addFileToSet(fileSet, "hiterbehn.c");
-    addFileToSet(fileSet, "array.h", "cSource", true);
-    addFileToSet(fileSet, "support.h", "cSource", true);
-
-    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
-    addCmd2View(softView, "asm-meister", "cSource", "-bmw", false);
-
-    desgconf->setViewConfigurations(activeViews);
-
-    MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
-
-    generator.generate(outputDir_,outputDir_,"tsydemi");
-
-    verifyOutputContains("stackware_0", "EBUILDER= hopo");
-    verifyOutputContains("stackware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -bmw");
-
-    verifyOutputContains("stackware_1", "EBUILDER= hopo");
-    verifyOutputContains("stackware_1", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw -bmw");
+	QCOMPARE( data.swObjects.at(0)->compiler.isEmpty(), true );
 }
 
 // Must include API dependencies to the make file.
@@ -1123,67 +1092,49 @@ void tst_MakefileGenerator::apiUsage()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<ApiInterface> apina = QSharedPointer<ApiInterface>(new ApiInterface );
-    apina->setDependencyDirection(DEPENDENCY_REQUESTER);
-    apina->setName("apina");
-    asw->addApiInterface( apina );
+	QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftView,"crapware_0");
+	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
-    QSharedPointer<ApiInterface> banaani = QSharedPointer<ApiInterface>(new ApiInterface );
-    banaani->setDependencyDirection(DEPENDENCY_PROVIDER);
-    banaani->setName("banaani");
-    bsw->addApiInterface( banaani );
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
+	addAPI(bsw, "banaani", DEPENDENCY_PROVIDER);
 
-    QList<ApiConnection> deps = design->getApiDependencies();
-    ApiConnection dependency;
-    dependency.setInterface1(ApiInterfaceRef("crapware_0","apina"));
-    dependency.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
-    deps.append(dependency);
-    design->setApiDependencies(deps);
+	addAPIConnection(design,"crapware_0","apina","stackware_0","banaani");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
 
     addFileToSet(afileSet, "array.c");
     addFileToSet(afileSet, "support.c");
+    addFileToSet(afileSet, "array.h", "cSource", true);
+    
     addFileToSet(bfileSet, "additional.c");
     addFileToSet(bfileSet, "hiterbehn.c");
-    addFileToSet(afileSet, "array.h", "cSource", true);
     addFileToSet(bfileSet, "support.h", "cSource", true);
 
-    addCmd2View(hardView, "hopo -s", "cSource", "-hw", false);
-    addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
-
-    QSharedPointer<File> file;
-    getFile(file, asw, "support.c");
-    setFileBuilder(file, "continental", "-y", false);
-
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+    parser.parse(&library_, topComponent, desgconf, design, "tsydemi");
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE(datas.size(), 1);
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE(data.swObjects.size(), 6);
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo -s");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
-    verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o");
-    verifyOutputContains("crapware_0", "hopo -s -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -hw");
-
-    verifyOutputContains("crapware_0", "asm-meister -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
-    verifyOutputContains("crapware_0", "asm-meister -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -bmw -hw");
+	QCOMPARE(data.swObjects.at(0)->fileName, QString("array.c"));
+	QCOMPARE(data.swObjects.at(1)->fileName, QString("support.c"));
+	QCOMPARE(data.swObjects.at(2)->fileName, QString("array.h"));
+	QCOMPARE(data.swObjects.at(2)->file->isIncludeFile(), true);
+	QCOMPARE(data.swObjects.at(3)->fileName, QString("additional.c"));
+	QCOMPARE(data.swObjects.at(4)->fileName, QString("hiterbehn.c"));
+	QCOMPARE(data.swObjects.at(5)->fileName, QString("support.h"));
+	QCOMPARE(data.swObjects.at(5)->file->isIncludeFile(), true);
 }
 
 // A more complex situation with API dependency.
@@ -1193,49 +1144,28 @@ void tst_MakefileGenerator::threeLevelStack()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
-    SWView* gsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
+    QSharedPointer<SWView> gsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<ApiInterface> apina = QSharedPointer<ApiInterface>(new ApiInterface );
-    apina->setDependencyDirection(DEPENDENCY_REQUESTER);
-    apina->setName("apina");
-    asw->addApiInterface( apina );
+	QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftView,"crapware_0");
+	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
-    QSharedPointer<ApiInterface> banaani = QSharedPointer<ApiInterface>(new ApiInterface );
-    banaani->setDependencyDirection(DEPENDENCY_PROVIDER);
-    banaani->setName("banaani");
-    bsw->addApiInterface( banaani );
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
+	addAPI(bsw, "banaani", DEPENDENCY_PROVIDER);
 
-    QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", activeViews, gsoftView,"driver_0");
+    QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", desgconf, gsoftView,"driver_0");
 
-    QSharedPointer<ApiInterface> stackDriver = QSharedPointer<ApiInterface>(new ApiInterface );
-    stackDriver->setDependencyDirection(DEPENDENCY_REQUESTER);
-    stackDriver->setName("stackDriver");
-    bsw->addApiInterface( stackDriver );
-    QSharedPointer<ApiInterface> driverStack = QSharedPointer<ApiInterface>(new ApiInterface );
-    driverStack->setDependencyDirection(DEPENDENCY_PROVIDER);
-    driverStack->setName("driverStack");
-    gsw->addApiInterface( driverStack );
+	addAPI(bsw, "stackDriver", DEPENDENCY_REQUESTER);
+	addAPI(gsw, "driverStack", DEPENDENCY_PROVIDER);
 
-    QList<ApiConnection> deps = design->getApiDependencies();
-    ApiConnection dependency1;
-    dependency1.setInterface1(ApiInterfaceRef("crapware_0","apina"));
-    dependency1.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
-    deps.append(dependency1);
-    ApiConnection dependency2;
-    dependency2.setInterface1(ApiInterfaceRef("stackware_0","stackDriver"));
-    dependency2.setInterface2(ApiInterfaceRef("driver_0","driverStack"));
-    deps.append(dependency2);
-    design->setApiDependencies(deps);
+	addAPIConnection(design, "crapware_0","apina","stackware_0","banaani");
+	addAPIConnection(design, "stackware_0","stackDriver","driver_0","driverStack");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -1251,96 +1181,58 @@ void tst_MakefileGenerator::threeLevelStack()
     addFileToSet(cfileSet, "ok.c");
     addFileToSet(cfileSet, "ok.h", "cSource", true);
 
-    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
-
-    QSharedPointer<File> file;
-    getFile(file, asw, "support.c");
-    setFileBuilder(file, "continental", "-y", false);
-    addFileSetBuilder(bfileSet,"jaska","cSource","-g",false);
-
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 8 );
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
-    verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o ok.c.o");
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -hw");
-
-    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -g -hw");
-    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -g -hw");
-
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/ok.c.o ../../ok.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
+	QCOMPARE( data.swObjects.at(0)->fileName, QString("array.c") );
+	QCOMPARE( data.swObjects.at(1)->fileName, QString("support.c") );
+	QCOMPARE( data.swObjects.at(2)->fileName, QString("array.h") );
+	QCOMPARE( data.swObjects.at(2)->file->isIncludeFile(), true );
+	QCOMPARE( data.swObjects.at(3)->fileName, QString("additional.c") );
+	QCOMPARE( data.swObjects.at(4)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data.swObjects.at(5)->fileName, QString("support.h") );
+	QCOMPARE( data.swObjects.at(5)->file->isIncludeFile(), true );
+	QCOMPARE( data.swObjects.at(6)->fileName, QString("ok.c") );
+	QCOMPARE( data.swObjects.at(7)->fileName, QString("ok.h") );
+	QCOMPARE( data.swObjects.at(7)->file->isIncludeFile(), true );
 }
 
-// If no top level in the stack, there can be no executable!
+// If no top level in the stack, there can be no build!
 void tst_MakefileGenerator::fullCircularapiUsage()
 {
     QSharedPointer<Design> design;
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
-    SWView* gsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
+    QSharedPointer<SWView> gsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("topware", hwInstanceName, design, "default", activeViews, asoftView,"topware_0");
-    QSharedPointer<ApiInterface> apina = QSharedPointer<ApiInterface>(new ApiInterface );
-    apina->setDependencyDirection(DEPENDENCY_REQUESTER);
-    apina->setName("apina");
-    asw->addApiInterface( apina );
+	QSharedPointer<Component> asw = createSW("topware", hwInstanceName, design, "default", desgconf, asoftView,"topware_0");
+	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
-    QSharedPointer<ApiInterface> banaani = QSharedPointer<ApiInterface>(new ApiInterface );
-    banaani->setDependencyDirection(DEPENDENCY_PROVIDER);
-    banaani->setName("banaani");
-    bsw->addApiInterface( banaani );
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
+	addAPI(bsw, "banaani", DEPENDENCY_PROVIDER);
 
-    QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", activeViews, gsoftView,"driver_0");
+	QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", desgconf, gsoftView,"driver_0");
+	addAPI(bsw, "stackDriver", DEPENDENCY_REQUESTER);
+	addAPI(gsw, "driverStack", DEPENDENCY_PROVIDER);
+	addAPI(gsw, "bottomUp", DEPENDENCY_REQUESTER);
+	addAPI(asw, "upBottom", DEPENDENCY_PROVIDER);
 
-    QSharedPointer<ApiInterface> stackDriver = QSharedPointer<ApiInterface>(new ApiInterface );
-    stackDriver->setDependencyDirection(DEPENDENCY_REQUESTER);
-    stackDriver->setName("stackDriver");
-    bsw->addApiInterface( stackDriver );
-    QSharedPointer<ApiInterface> driverStack = QSharedPointer<ApiInterface>(new ApiInterface );
-    driverStack->setDependencyDirection(DEPENDENCY_PROVIDER);
-    driverStack->setName("driverStack");
-    gsw->addApiInterface( driverStack );
-
-    QSharedPointer<ApiInterface> bottomUp = QSharedPointer<ApiInterface>(new ApiInterface );
-    bottomUp->setDependencyDirection(DEPENDENCY_REQUESTER);
-    bottomUp->setName("bottomUp");
-    gsw->addApiInterface( bottomUp );
-    QSharedPointer<ApiInterface> upBottom = QSharedPointer<ApiInterface>(new ApiInterface );
-    upBottom->setDependencyDirection(DEPENDENCY_PROVIDER);
-    upBottom->setName("upBottom");
-    asw->addApiInterface( upBottom );
-
-    QList<ApiConnection> deps = design->getApiDependencies();
-    ApiConnection dependency1;
-    dependency1.setInterface1(ApiInterfaceRef("topware_0","apina"));
-    dependency1.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
-    deps.append(dependency1);
-    ApiConnection dependency2;
-    dependency2.setInterface1(ApiInterfaceRef("stackware_0","stackDriver"));
-    dependency2.setInterface2(ApiInterfaceRef("driver_0","driverStack"));
-    deps.append(dependency2);
-    ApiConnection dependency3;
-    dependency3.setInterface1(ApiInterfaceRef("topware_0","upBottom"));
-    dependency3.setInterface2(ApiInterfaceRef("driver_0","bottomUp"));
-    deps.append(dependency3);
-    design->setApiDependencies(deps);
+	addAPIConnection(design, "topware_0","apina","stackware_0","banaani");
+	addAPIConnection(design, "stackware_0","stackDriver","driver_0","driverStack");
+	addAPIConnection(design, "topware_0","upBottom","driver_0","bottomUp");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
@@ -1356,24 +1248,11 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     addFileToSet(cfileSet, "ok.c");
     addFileToSet(cfileSet, "ok.h", "cSource", true);
 
-    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
-
-    QSharedPointer<File> file;
-    getFile(file, asw, "support.c");
-    setFileBuilder(file, "continental", "-y", false);
-    addFileSetBuilder(bfileSet,"jaska","cSource","-g",false);
-
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
-
-    QFile outputFile(outputDir_ + "/sw_tsydemi/topware_0/Makefile");
-
-    QVERIFY(!outputFile.open(QIODevice::ReadOnly));
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 0 );
 }
 
 // Must be able to handle circular dependencies in lower levels.
@@ -1383,184 +1262,576 @@ void tst_MakefileGenerator::circularapiUsage()
     QSharedPointer<DesignConfiguration> desgconf;
     QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    QMap<QString,QString> activeViews;
-    SWView* hardView;
-    SWView* asoftView;
-    SWView* bsoftView;
-    SWView* gsoftView;
+    QSharedPointer<SWView> hardView;
+    QSharedPointer<SWView> asoftView;
+    QSharedPointer<SWView> bsoftView;
+    QSharedPointer<SWView> gsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, activeViews, hardView);
+    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", activeViews, asoftView,"crapware_0");
-    QSharedPointer<ApiInterface> apina = QSharedPointer<ApiInterface>(new ApiInterface );
-    apina->setDependencyDirection(DEPENDENCY_REQUESTER);
-    apina->setName("apina");
-    asw->addApiInterface( apina );
+    QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftView,"crapware_0");
+	addAPI(asw, "apina", DEPENDENCY_REQUESTER);
 
-    QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", activeViews, bsoftView,"stackware_0");
-    QSharedPointer<ApiInterface> banaani = QSharedPointer<ApiInterface>(new ApiInterface );
-    banaani->setDependencyDirection(DEPENDENCY_PROVIDER);
-    banaani->setName("banaani");
-    bsw->addApiInterface( banaani );
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
+	addAPI(bsw, "banaani", DEPENDENCY_PROVIDER);
 
-    QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", activeViews, gsoftView,"driver_0");
+    QSharedPointer<Component> gsw = createSW("driver", hwInstanceName, design, "default", desgconf, gsoftView,"driver_0");
 
     QSharedPointer<ApiInterface> stackDriver = QSharedPointer<ApiInterface>(new ApiInterface );
-    stackDriver->setDependencyDirection(DEPENDENCY_REQUESTER);
-    stackDriver->setName("stackDriver");
-    bsw->addApiInterface( stackDriver );
-    QSharedPointer<ApiInterface> driverStack = QSharedPointer<ApiInterface>(new ApiInterface );
-    driverStack->setDependencyDirection(DEPENDENCY_PROVIDER);
-    driverStack->setName("driverStack");
-    gsw->addApiInterface( driverStack );
+	addAPI(bsw, "stackDriver", DEPENDENCY_REQUESTER);
 
-    QSharedPointer<ApiInterface> bottomUp = QSharedPointer<ApiInterface>(new ApiInterface );
-    bottomUp->setDependencyDirection(DEPENDENCY_REQUESTER);
-    bottomUp->setName("bottomUp");
-    gsw->addApiInterface( bottomUp );
-    QSharedPointer<ApiInterface> upBottom = QSharedPointer<ApiInterface>(new ApiInterface );
-    upBottom->setDependencyDirection(DEPENDENCY_PROVIDER);
-    upBottom->setName("upBottom");
-    bsw->addApiInterface( upBottom );
+	QSharedPointer<ApiInterface> driverStack = QSharedPointer<ApiInterface>(new ApiInterface );
+	addAPI(gsw, "driverStack", DEPENDENCY_PROVIDER);
 
-    QList<ApiConnection> deps = design->getApiDependencies();
-    ApiConnection dependency1;
-    dependency1.setInterface1(ApiInterfaceRef("crapware_0","apina"));
-    dependency1.setInterface2(ApiInterfaceRef("stackware_0","banaani"));
-    deps.append(dependency1);
-    ApiConnection dependency2;
-    dependency2.setInterface1(ApiInterfaceRef("stackware_0","stackDriver"));
-    dependency2.setInterface2(ApiInterfaceRef("driver_0","driverStack"));
-    deps.append(dependency2);
-    ApiConnection dependency3;
-    dependency3.setInterface1(ApiInterfaceRef("stackware_0","upBottom"));
-    dependency3.setInterface2(ApiInterfaceRef("driver_0","bottomUp"));
-    deps.append(dependency3);
-    design->setApiDependencies(deps);
+	QSharedPointer<ApiInterface> bottomUp = QSharedPointer<ApiInterface>(new ApiInterface );
+	addAPI(gsw, "bottomUp", DEPENDENCY_REQUESTER);
+
+	QSharedPointer<ApiInterface> upBottom = QSharedPointer<ApiInterface>(new ApiInterface );
+	addAPI(bsw, "upBottom", DEPENDENCY_PROVIDER);;
+
+	addAPIConnection(design, "crapware_0","apina","stackware_0","banaani");
+	addAPIConnection(design, "stackware_0","stackDriver","driver_0","driverStack");
+	addAPIConnection(design, "stackware_0","upBottom","driver_0","bottomUp");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
     QSharedPointer<FileSet> cfileSet = addFileSet(gsw, "gamaFileSet", gsoftView);
 
     addFileToSet(afileSet, "array.c");
-    addFileToSet(afileSet, "support.c");
+	addFileToSet(afileSet, "support.c");
+	addFileToSet(afileSet, "array.h", "cSource", true);
+
     addFileToSet(bfileSet, "additional.c");
     addFileToSet(bfileSet, "hiterbehn.c");
-    addFileToSet(afileSet, "array.h", "cSource", true);
     addFileToSet(bfileSet, "support.h", "cSource", true);
 
     addFileToSet(cfileSet, "ok.c");
     addFileToSet(cfileSet, "ok.h", "cSource", true);
 
-    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
-
-    QSharedPointer<File> file;
-    getFile(file, asw, "support.c");
-    setFileBuilder(file, "continental", "-y", false);
-    addFileSetBuilder(bfileSet,"jaska","cSource","-g",false);
-
-    desgconf->setViewConfigurations(activeViews);
-
     MakefileParser parser;
-    parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
-    MakefileGenerator generator( parser, &utilityMock_ );
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
 
-    generator.generate(outputDir_,outputDir_,"tsydemi");
+	const QList<MakefileParser::MakeFileData> datas = parser.getParsedData();
+	QCOMPARE( datas.size(), 1 );
+	MakefileParser::MakeFileData data = datas.first();
+	QCOMPARE( data.swObjects.size(), 8 );
 
-    verifyOutputContains("crapware_0", "EBUILDER= hopo");
-    verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
-    verifyOutputContains("crapware_0", "_OBJ= array.c.o support.c.o additional.c.o hiterbehn.c.o ok.c.o");
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
-    verifyOutputContains("crapware_0", "continental -c -o $(ODIR)/support.c.o ../../support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -y -hw");
-
-    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/additional.c.o ../../additional.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -g -hw");
-    verifyOutputContains("crapware_0", "jaska -c -o $(ODIR)/hiterbehn.c.o ../../hiterbehn.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -g -hw");
-
-    verifyOutputContains("crapware_0", "hopo -c -o $(ODIR)/ok.c.o ../../ok.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -hw");
+	QCOMPARE( data.swObjects.at(0)->fileName, QString("array.c") );
+	QCOMPARE( data.swObjects.at(1)->fileName, QString("support.c") );
+	QCOMPARE( data.swObjects.at(2)->fileName, QString("array.h") );
+	QCOMPARE( data.swObjects.at(2)->file->isIncludeFile(), true );
+	QCOMPARE( data.swObjects.at(3)->fileName, QString("additional.c") );
+	QCOMPARE( data.swObjects.at(4)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data.swObjects.at(5)->fileName, QString("support.h") );
+	QCOMPARE( data.swObjects.at(5)->file->isIncludeFile(), true );
+	QCOMPARE( data.swObjects.at(6)->fileName, QString("ok.c") );
+	QCOMPARE( data.swObjects.at(7)->fileName, QString("ok.h") );
+	QCOMPARE( data.swObjects.at(7)->file->isIncludeFile(), true );
 }
 
-QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design> &design,
-    QSharedPointer<DesignConfiguration> &desgconf)
+// Same file in separate executables should not cause conflict
+void tst_MakefileGenerator::sameFileSeparateExe()
 {
-    VLNV dvlnv("","vendor","lib","design","1.0");
-    design = QSharedPointer<Design>(new Design(dvlnv));
-    VLNV dgvlnv("","vendor","lib","design-conf","1.0");
-    desgconf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(dgvlnv));
-    desgconf->setDesignRef(dvlnv);
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
 
-    VLNV topvlvnv("","vendor","lib","master-plan","1.0");
-    QSharedPointer<Component> top = QSharedPointer<Component>(new Component(topvlvnv));
-    top->setComponentImplementation(KactusAttribute::SYSTEM);
-    library_.addComponent(top);
-    library_.writeModelToFile("polku/master-plan",top);
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> asoftView;
+	QSharedPointer<SWView> bsoftView;
 
-    outputDir_ = QFileInfo(library_.getPath(*top->getVlnv())).absolutePath();
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
-    SystemView* sw = new SystemView("sysview");
-    sw->setHierarchyRef(dgvlnv);
-    top->addSystemView(sw);
+	QSharedPointer<Component> asw = createSW("crapware", hwInstanceName, design, "default", desgconf, asoftView,"crapware_0");
+	QSharedPointer<Component> bsw = createSW("stackware", hwInstanceName, design, "default", desgconf, bsoftView,"stackware_0");
 
-    return top;
+	QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
+	QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
+
+	addFileToSet(afileSet, "array.c");
+	addFileToSet(afileSet, "support.c");
+	addFileToSet(bfileSet, "array.c");
+	addFileToSet(bfileSet, "support.c");
+
+	addCmd2View(hardView, "hopo", "cSource", "-hw", false);
+	addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+
+	QCOMPARE( parser.findConflicts().size(), 0 );
 }
 
-void tst_MakefileGenerator::addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName, QString fileType/*="cSource"*/, bool isInclude/*=false*/)
+// Must detect if the same file is used by multiple component instances or file sets!
+void tst_MakefileGenerator::sameFileDiffCompiler()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> softView;
+
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+
+	QString swInstanceName = "software_0";
+	QString softViewName = "default";
+
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
+
+	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
+	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
+
+	addFileToSet(afileSet, "array.c");
+	addFileToSet(afileSet, "support.c");
+	addFileToSet(bfileSet, "array.c");
+	addFileToSet(bfileSet, "support.c");
+
+	addCmd2View(softView, "gcc", "cSource", "-sw", false);
+
+	addFileSetBuilder(afileSet, "javac -beef", "cSource", "-lrt -pthread", false);
+	addFileSetBuilder(bfileSet, "", "cSource", "-pthread -lrt", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+
+	QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > > conflicts = parser.findConflicts();
+
+	QCOMPARE( conflicts.size(), 2 );
+
+	QCOMPARE( conflicts.first().size(), 2 );
+	QCOMPARE( conflicts.last().size(), 2 );
+	QSharedPointer<MakefileParser::MakeObjectData> eka = *(conflicts.first().begin());
+	QSharedPointer<MakefileParser::MakeObjectData> toka = *(conflicts.first().end() - 1);
+	QCOMPARE( eka->path, toka->path );
+	QCOMPARE( eka->fileName, toka->fileName );
+
+	QCOMPARE( eka->fileName, QString("array.c") );
+
+	eka = *(conflicts.last().begin());
+	toka = *(conflicts.last().end() - 1);
+	QCOMPARE( eka->path, toka->path );
+	QCOMPARE( eka->fileName, toka->fileName );
+
+	QCOMPARE( eka->fileName, QString("support.c") );
+}
+
+// Must detect if the same file is used by multiple component instances or file sets!
+void tst_MakefileGenerator::sameFileDiffFlags()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> softView;
+
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+
+	QString swInstanceName = "software_0";
+	QString softViewName = "default";
+
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
+
+	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
+	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
+
+	addFileToSet(afileSet, "array.c");
+	addFileToSet(afileSet, "support.c");
+	addFileToSet(bfileSet, "array.c");
+	addFileToSet(bfileSet, "support.c");
+
+	addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+	addCmd2View(softView, "gcc", "cSource", "-sw", false);
+
+	addFileSetBuilder(afileSet, "javac -beef", "cSource", "-lrt -pthread", false);
+	addFileSetBuilder(bfileSet, "javac -beef", "cSource", "-pthread", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+
+	QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > > conflicts = parser.findConflicts();
+
+	QCOMPARE( conflicts.size(), 2 );
+
+	QCOMPARE( conflicts.first().size(), 2 );
+	QCOMPARE( conflicts.last().size(), 2 );
+	QSharedPointer<MakefileParser::MakeObjectData> eka = *(conflicts.first().begin());
+	QSharedPointer<MakefileParser::MakeObjectData> toka = *(conflicts.first().end() - 1);
+	QCOMPARE( eka->path, toka->path );
+	QCOMPARE( eka->fileName, toka->fileName );
+
+	QCOMPARE( eka->fileName, QString("array.c") );
+
+	eka = *(conflicts.last().begin());
+	toka = *(conflicts.last().end() - 1);
+	QCOMPARE( eka->path, toka->path );
+	QCOMPARE( eka->fileName, toka->fileName );
+
+	QCOMPARE( eka->fileName, QString("support.c") );
+}
+
+// If the files are completely same, that is, have the same flags, compiler, and include status, no conflict.
+void tst_MakefileGenerator::sameFile()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> softView;
+
+	QString hwInstanceName = "hardware_0";
+	QString hardViewName = "firmware";
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+
+	QString swInstanceName = "software_0";
+	QString softViewName = "default";
+
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
+
+	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
+	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
+
+	addFileToSet(afileSet, "array.c");
+	addFileToSet(afileSet, "support.c", "cSource", true);
+	addFileToSet(bfileSet, "array.c");
+	addFileToSet(bfileSet, "support.c", "cSource", true);
+
+	addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+	addCmd2View(softView, "gcc", "cSource", "-sw", false);
+
+	addFileSetBuilder(afileSet, "javac -beef", "cSource", "-lrt -pthread", false);
+	addFileSetBuilder(bfileSet, "javac -beef", "cSource", "-pthread -lrt", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, "tsydemi" );
+
+	QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > > conflicts = parser.findConflicts();
+
+	QCOMPARE( conflicts.size(), 0 );
+}
+
+// See if a really basic generation case works.
+void tst_MakefileGenerator::basicGeneration()
+{
+	MakefileParser parser;
+	QList<MakefileParser::MakeFileData>& data = parser.getParsedData();
+	data.append(MakefileParser::MakeFileData());
+	MakefileParser::MakeFileData& makeData = data.last();
+
+	makeData.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData.hwBuildCmd->setCommand("gcc");
+	makeData.name = "software_0";
+	makeData.hwBuildCmd->setFlags("-joku");
+	makeData.softViewFlags.append("-jotain");
+
+	QSharedPointer<MakefileParser::MakeObjectData> mod( new MakefileParser::MakeObjectData );
+	makeData.swObjects.append( mod );
+	mod->fileName = "array.c";
+	mod->compiler = "gcc";
+	mod->flags = "-sw -hw";
+
+	MakefileGenerator generator( parser, &utilityMock_ );
+	generator.generate(outputDir_,outputDir_,"tsydemi");
+
+	verifyOutputContains("software_0", "_OBJ= array.c.o");
+	verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
+	verifyOutputContains("software_0", "ODIR= obj");
+	verifyOutputContains("software_0", "ENAME= software_0");
+	verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -joku -jotain");
+	verifyOutputContains("software_0", "EBUILDER= gcc");
+	verifyOutputContains("software_0", "$(ENAME): $(OBJ)\n\t$(EBUILDER) -o $(ENAME) $(OBJ) $(EFLAGS)");
+	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+}
+
+// Must be able to generate multiple objects.
+void tst_MakefileGenerator::multiObjectGeneration()
+{
+	MakefileParser parser;
+	QList<MakefileParser::MakeFileData>& data = parser.getParsedData();
+	data.append(MakefileParser::MakeFileData());
+	MakefileParser::MakeFileData& makeData = data.last();
+
+	makeData.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData.hwBuildCmd->setCommand("gcc");
+	makeData.name = "software_0";
+
+	QSharedPointer<MakefileParser::MakeObjectData> mod1( new MakefileParser::MakeObjectData );
+	makeData.swObjects.append( mod1 );
+	mod1->fileName = "array.c";
+	mod1->compiler = "gcc";
+	mod1->flags = "-sw -hw";
+
+	QSharedPointer<MakefileParser::MakeObjectData> mod2( new MakefileParser::MakeObjectData );
+	makeData.swObjects.append( mod2 );
+	mod2->fileName = "support.c";
+	mod2->compiler = "super-asm";
+	mod2->flags = "-a -b";
+
+	MakefileGenerator generator( parser, &utilityMock_ );
+	generator.generate(outputDir_,outputDir_,"tsydemi");
+
+	verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o");
+	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+	verifyOutputContains("software_0", "super-asm -c -o $(ODIR)/support.c.o /support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -a -b");
+}
+
+// Must be able to generate multiple files.
+void tst_MakefileGenerator::multiFileGeneration()
+{
+	MakefileParser parser;
+	QList<MakefileParser::MakeFileData>& data = parser.getParsedData();
+	data.append(MakefileParser::MakeFileData());
+	MakefileParser::MakeFileData& makeData1 = data.last();
+
+	makeData1.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData1.hwBuildCmd->setCommand("gcc");
+	makeData1.name = "software_0";
+	makeData1.hwBuildCmd->setFlags("-joku");
+	makeData1.softViewFlags.append("-jotain");
+
+	QSharedPointer<MakefileParser::MakeObjectData> mod1( new MakefileParser::MakeObjectData );
+	makeData1.swObjects.append( mod1 );
+	mod1->fileName = "array.c";
+	mod1->compiler = "gcc";
+	mod1->flags = "-sw -hw";
+
+	data.append(MakefileParser::MakeFileData());
+	MakefileParser::MakeFileData& makeData2 = data.last();
+
+	makeData2.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData2.hwBuildCmd->setCommand("j33");
+	makeData2.name = "crapware_0";
+	makeData2.hwBuildCmd->setFlags("-yks");
+	makeData2.softViewFlags.append("-kaks");
+
+	QSharedPointer<MakefileParser::MakeObjectData> mod2( new MakefileParser::MakeObjectData );
+	makeData2.swObjects.append( mod2 );
+	mod2->fileName = "support.c";
+	mod2->compiler = "super-asm";
+	mod2->flags = "-a -b";
+
+	MakefileGenerator generator( parser, &utilityMock_ );
+	generator.generate(outputDir_,outputDir_,"tsydemi");
+
+	verifyOutputContains("software_0", "_OBJ= array.c.o");
+	verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -joku -jotain");
+	verifyOutputContains("software_0", "ENAME= software_0");
+	verifyOutputContains("software_0", "EBUILDER= gcc");
+	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+
+	verifyOutputContains("crapware_0", "_OBJ= support.c.o");
+	verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -yks -kaks");
+	verifyOutputContains("crapware_0", "ENAME= crapware_0");
+	verifyOutputContains("crapware_0", "EBUILDER= j33");
+	verifyOutputContains("crapware_0", "super-asm -c -o $(ODIR)/support.c.o /support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -a -b");
+}
+
+// Include files should not yield object files, but should appear on the list of dependencies.
+void tst_MakefileGenerator::includeFile()
+{
+	MakefileParser parser;
+	QList<MakefileParser::MakeFileData>& data = parser.getParsedData();
+	data.append(MakefileParser::MakeFileData());
+	MakefileParser::MakeFileData& makeData = data.last();
+
+	makeData.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData.hwBuildCmd->setCommand("gcc");
+	makeData.name = "software_0";
+
+	QSharedPointer<MakefileParser::MakeObjectData> mod1( new MakefileParser::MakeObjectData );
+	makeData.swObjects.append( mod1 );
+	mod1->fileName = "array.h";
+	mod1->compiler = "gcc";
+	mod1->flags = "-sw -hw";
+	mod1->file = QSharedPointer<File>( new File() );
+	mod1->file->setIncludeFile( true );
+	makeData.includeFiles.append(mod1);
+
+	QSharedPointer<MakefileParser::MakeObjectData> mod2( new MakefileParser::MakeObjectData );
+	makeData.swObjects.append( mod2 );
+	mod2->fileName = "array.c";
+	mod2->compiler = "gcc";
+	mod2->flags = "-sw -hw";
+
+	MakefileGenerator generator( parser, &utilityMock_ );
+	generator.generate(outputDir_,outputDir_,"tsydemi");
+
+	verifyOutputContains("software_0", "DEPS= /array.h");
+	verifyOutputContains("software_0", "_OBJ= array.c.o");
+}
+
+// File with no compiler must not be in makefile!
+void tst_MakefileGenerator::noCompiler()
+{
+	MakefileParser parser;
+	QList<MakefileParser::MakeFileData>& data = parser.getParsedData();
+	data.append(MakefileParser::MakeFileData());
+	MakefileParser::MakeFileData& makeData = data.last();
+
+	makeData.hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData.hwBuildCmd->setCommand("gcc");
+	makeData.name = "software_0";
+
+	QSharedPointer<MakefileParser::MakeObjectData> mod1( new MakefileParser::MakeObjectData );
+	makeData.swObjects.append( mod1 );
+	mod1->fileName = "joku.c";
+	mod1->compiler = "";
+	mod1->flags = "-sw -hw";
+
+	QSharedPointer<MakefileParser::MakeObjectData> mod2( new MakefileParser::MakeObjectData );
+	makeData.swObjects.append( mod2 );
+	mod2->fileName = "array.c";
+	mod2->compiler = "gcc";
+	mod2->flags = "-sw -hw";
+
+	MakefileGenerator generator( parser, &utilityMock_ );
+	generator.generate(outputDir_,outputDir_,"tsydemi");
+
+	verifyOutputContains("software_0", "_OBJ= array.c.o");
+}
+
+// A case used to test if correct makefile comes from original parsing results.
+void tst_MakefileGenerator::allTheWay()
+{
+	QSharedPointer<Design> design;
+	QSharedPointer<DesignConfiguration> desgconf;
+	QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	QSharedPointer<SWView> hardView;
+	QSharedPointer<SWView> softView;
+
+	createHW("hardware_0", design, "firmware", desgconf, hardView);
+	addCmd2View(hardView, "gcc", "cSource", "-hw", false);
+
+	QSharedPointer<Component> sw = createSW("software", "hardware_0", design, "default", desgconf, softView, "software_0");
+
+	QString fileSetName = "someFileSet";
+	QSharedPointer<FileSet> fileSet = addFileSet(sw, fileSetName, softView);
+
+	addFileToSet(fileSet, "array.c");
+	addCmd2View(softView, "gcc", "cSource", "-sw", false);
+
+	MakefileParser parser;
+	parser.parse( &library_, topComponent, desgconf, design, outputDir_ );
+
+	MakefileGenerator generator( parser, &utilityMock_ );
+	generator.generate(outputDir_,outputDir_,"tsydemi");
+
+	verifyOutputContains("software_0", "_OBJ= array.c.o");
+	verifyOutputContains("software_0", "OBJ= $(patsubst %,$(ODIR)/%,$(_OBJ))");
+	verifyOutputContains("software_0", "ODIR= obj");
+	verifyOutputContains("software_0", "ENAME= software_0");
+	verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS)");
+	verifyOutputContains("software_0", "EBUILDER= gcc");
+	verifyOutputContains("software_0", "$(ENAME): $(OBJ)\n\t$(EBUILDER) -o $(ENAME) $(OBJ) $(EFLAGS)");
+	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+}
+
+QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design>& design,
+    QSharedPointer<DesignConfiguration>& desgconf)
+{
+    VLNV designVLNV("", "vendor", "lib", "design", "1.0");
+    design = QSharedPointer<Design>(new Design(designVLNV));
+
+    VLNV configurationVLNV("", "vendor", "lib", "design-conf", "1.0");
+    desgconf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(configurationVLNV));
+    desgconf->setDesignRef(designVLNV);
+
+    VLNV topVLNV("","vendor","lib","master-plan","1.0");
+    QSharedPointer<Component> topComponent = QSharedPointer<Component>(new Component(topVLNV));
+    topComponent->setImplementation(KactusAttribute::SYSTEM);
+    
+    library_.addComponent(topComponent);
+    library_.writeModelToFile("polku/master-plan",topComponent);
+
+    outputDir_ = QFileInfo(library_.getPath(topVLNV)).absolutePath();
+
+    QSharedPointer<SystemView> systemView( new SystemView("sysview") );
+    systemView->setHierarchyRef(configurationVLNV);
+	
+    QList<QSharedPointer<SystemView> > systemViews;
+	systemViews.append(systemView);
+	topComponent->setSystemViews(systemViews);
+
+    return topComponent;
+}
+
+QSharedPointer<File> tst_MakefileGenerator::addFileToSet(QSharedPointer<FileSet> fileSet, QString fileName,
+    QString fileType/*="cSource"*/, bool isInclude/*=false*/)
 {
     QSettings settings;
 
-    QSharedPointer<File> file;
-    QStringList types;
-    types.append(fileType);
+    QSharedPointer<File> file = fileSet->addFile(fileName, settings);
+    file->addFileType(fileType);
+    file->setIncludeFile(isInclude);
 
-    file = fileSet->addFile(fileName, settings);
-    file->setAllFileTypes( types );
-    file->setIncludeFile( isInclude );
+	return file;
 }
 
-QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design, QString softViewName, QMap<QString,QString>& activeViews, SWView*& softView, QString swInstanceName)
+QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QString hwInstanceName, QSharedPointer<Design> design,
+	QString softViewName,  QSharedPointer<DesignConfiguration> desgconf, QSharedPointer<SWView>& softView, QString swInstanceName)
 {
     VLNV swvlvnv("","vendor","lib",swName,"1.0");
+	QSharedPointer<ConfigurableVLNVReference> swvlvnv2( new ConfigurableVLNVReference( swvlvnv ) );
     QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
-    SWInstance softInstance;
-    softInstance.setInstanceName(swInstanceName);
-    softInstance.setComponentRef(swvlvnv);
-    softInstance.setMapping(hwInstanceName);
+    QSharedPointer<SWInstance> softInstance( new SWInstance );
+    softInstance->setInstanceName(swInstanceName);
+    softInstance->setComponentRef(swvlvnv2);
+    softInstance->setMapping(hwInstanceName);
 
-    QList<SWInstance> swInstances = design->getSWInstances();
+    QList<QSharedPointer<SWInstance> > swInstances = design->getSWInstances();
     swInstances.append(softInstance);
     design->setSWInstances(swInstances);
     library_.addComponent(sw);
     library_.writeModelToFile("polku/" + swName,sw);
 
-    softView = new SWView();
-    softView->setName(softViewName);
-    sw->addSWView(softView);
+    softView = QSharedPointer<SWView>( new SWView() );
+	softView->setName(softViewName);
+	QList<QSharedPointer<SWView> > views;
+	views.append(softView);
+	sw->setSWViews(views);
 
-    activeViews.insert(swInstanceName,softViewName);
+	desgconf->addViewConfiguration(swInstanceName,softViewName);
 
     return sw;
 }
 
-QSharedPointer<Component> tst_MakefileGenerator::createHW(QString hwInstanceName, QSharedPointer<Design> design, QString hardViewName, QMap<QString,QString>& activeViews, SWView*& hardView, QString hwName/*="hardware"*/)
+QSharedPointer<Component> tst_MakefileGenerator::createHW(QString const& hwInstanceName,
+    QSharedPointer<Design> design, QString const& hardViewName, QSharedPointer<DesignConfiguration> designConfig, 
+    QSharedPointer<SWView>& softwareView, QString const& hwName)
 {
-    VLNV hwvlvnv("","vendor","lib",hwName,"1.0");
-    QSharedPointer<Component> hw = QSharedPointer<Component>(new Component(hwvlvnv));
-    ComponentInstance hwInstance(hwInstanceName,"","esim",hwvlvnv,QPointF(),hwInstanceName);
+	VLNV hwVLNV("", "vendor", "lib", hwName, "1.0");	
+    QSharedPointer<Component> hwComponent = QSharedPointer<Component>(new Component(hwVLNV));
+   
+    QSharedPointer<ConfigurableVLNVReference> vlnvRef(new ConfigurableVLNVReference(hwVLNV));
+    QSharedPointer<ComponentInstance> hwInstance(new ComponentInstance(hwInstanceName, vlnvRef));
+    hwInstance->setDescription("esim");
+    hwInstance->setUuid(hwInstanceName);
 
-    QList<ComponentInstance> instances = design->getComponentInstances();
-    instances.append(hwInstance);
-    design->setComponentInstances(instances);
-    library_.addComponent(hw);
-    library_.writeModelToFile("polku/" + hwName,hw);
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances = design->getComponentInstances();
+    instances->append(hwInstance);
+    library_.addComponent(hwComponent);
+    library_.writeModelToFile("polku/" + hwName, hwComponent);
 
-    hardView = new SWView;
-    hardView->setName(hardViewName);
-    hw->addSWView(hardView);
+    softwareView = QSharedPointer<SWView>( new SWView );
+    softwareView->setName(hardViewName);
+	QList<QSharedPointer<SWView> > views;
+	views.append(softwareView);
+    hwComponent->setSWViews(views);
 
-    activeViews.insert(hwInstanceName,hardViewName);
+	designConfig->addViewConfiguration(hwInstanceName,hardViewName);
 
-    return hw;
+    return hwComponent;
 }
 
 //-----------------------------------------------------------------------------
@@ -1608,11 +1879,11 @@ void tst_MakefileGenerator::verifyOutputContains(QString instanceName, QString c
 
 void tst_MakefileGenerator::getFile(QSharedPointer<File>& file, QSharedPointer<Component> component, QString fileName)
 {
-    foreach( QSharedPointer<FileSet> fset, component->getFileSets())
+    foreach( QSharedPointer<FileSet> fset, *component->getFileSets())
     {
-        foreach( QSharedPointer<File> possibleFile, fset->getFiles())
+        foreach( QSharedPointer<File> possibleFile, *fset->getFiles())
         {
-            if ( possibleFile->getName() == fileName )
+            if ( possibleFile->name() == fileName )
             {
                 file = possibleFile;
                 return;
@@ -1621,49 +1892,95 @@ void tst_MakefileGenerator::getFile(QSharedPointer<File>& file, QSharedPointer<C
     }
 }
 
-void tst_MakefileGenerator::addCmd2View(SWView* view, QString command, QString fileType,
+void tst_MakefileGenerator::addCmd2View(QSharedPointer<SWView> view, QString command, QString fileType,
     QString flags, bool replace)
 {
-    QList<QSharedPointer<SWBuildCommand> >& coms = view->getSWBuildCommands();
-    QSharedPointer<SWBuildCommand> cmd = QSharedPointer<SWBuildCommand>(new SWBuildCommand());
+    QSharedPointer<QList<QSharedPointer<SWFileBuilder> > > coms = view->getSWBuildCommands();
+    QSharedPointer<SWFileBuilder> cmd = QSharedPointer<SWFileBuilder>(new SWFileBuilder());
     cmd->setCommand(command);
     cmd->setFileType(fileType);
     cmd->setFlags(flags);
-    cmd->setReplaceDefaultFlags(replace);
-    coms.append(cmd);
+    if (replace)
+    {
+        cmd->setReplaceDefaultFlags("true");
+    }
+    else
+    {
+        cmd->setReplaceDefaultFlags("false");
+    }
+	coms->append(cmd);
 }
 
-QSharedPointer<FileSet> tst_MakefileGenerator::addFileSet(QSharedPointer<Component> component, QString fileSetName, SWView*& view)
+QSharedPointer<FileSet> tst_MakefileGenerator::addFileSet(QSharedPointer<Component> component, QString fileSetName,
+    QSharedPointer<SWView> view)
 {
-    QSharedPointer<FileSet> fileSet = component->getFileSet(fileSetName);
-    fileSet->setGroups("sourceFiles");
-    QStringList fileSets = view->getFileSetRefs();
-    fileSets.append(fileSetName);
-    view->setFileSetRefs(fileSets);
+    QSharedPointer<FileSet> fileSet(new FileSet(fileSetName, "sourceFiles"));
+
+	if ( view )
+	{
+		QStringList fileSets = view->getFileSetRefs();
+		fileSets.append(fileSetName);
+		view->setFileSetRefs(fileSets);
+	}
+	
+	component->getFileSets()->append(fileSet);
 
     return fileSet;
 }
 
 void tst_MakefileGenerator::addFileSetBuilder(QSharedPointer<FileSet> fileSet, QString command, QString fileType, QString flags, bool replace)
 {
-    QList<QSharedPointer<FileBuilder> > fblist = fileSet->getDefaultFileBuilders();
-    QSharedPointer<FileBuilder> fb = QSharedPointer<FileBuilder>(new FileBuilder);
-    fb->setCommand( command);
-    fb->setFileType(fileType);
-    fb->setFlags(flags);
-    fb->setReplaceDefaultFlags(replace);
-    fblist.append(fb);
-    fileSet->setDefaultFileBuilders(fblist);
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > filebuilderList = fileSet->getDefaultFileBuilders();
+    QSharedPointer<FileBuilder> fileBuilder = QSharedPointer<FileBuilder>(new FileBuilder);
+    fileBuilder->setCommand(command);
+    fileBuilder->setFileType(fileType);
+    fileBuilder->setFlags(flags);
+    fileBuilder->setReplaceDefaultFlags("false");
+
+	if (replace)
+	{
+		fileBuilder->setReplaceDefaultFlags("true");
+	}
+
+	filebuilderList->append(fileBuilder);
 }
 
 void tst_MakefileGenerator::setFileBuilder(QSharedPointer<File> file, QString command, QString flags, bool replace)
 {
-    BuildCommand* buildCmd = new BuildCommand();
+    QSharedPointer<BuildCommand> buildCmd( new BuildCommand() );
     buildCmd->setCommand(command);
     buildCmd->setFlags(flags);
-    buildCmd->setReplaceDefaultFlags(replace);
+    buildCmd->setReplaceDefaultFlags("false");
+
+	if ( replace )
+	{
+		buildCmd->setReplaceDefaultFlags("true");
+	}
 
     file->setBuildcommand( buildCmd );
+}
+
+void tst_MakefileGenerator::addAPI(QSharedPointer<Component> asw, QString name, DependencyDirection dir)
+{
+	QSharedPointer<ApiInterface> apina = QSharedPointer<ApiInterface>(new ApiInterface );
+	QList<QSharedPointer<ApiInterface> > apit = asw->getApiInterfaces();
+	apina->setDependencyDirection(dir);
+	apina->setName(name);
+	apit.append(apina);
+	asw->setApiInterfaces( apit );
+}
+
+void tst_MakefileGenerator::addAPIConnection(QSharedPointer<Design> design, QString com1,
+	QString bus1, QString com2, QString bus2)
+{
+	QList<QSharedPointer<ApiInterconnection> > deps = design->getApiConnections();
+	QSharedPointer<ApiInterconnection> dependency1( new ApiInterconnection );
+	QSharedPointer<ActiveInterface> air1( new ActiveInterface(com1, bus1));
+	QSharedPointer<ActiveInterface> air2( new ActiveInterface(com2, bus2));
+	dependency1->setStartInterface(air1);
+	dependency1->getActiveInterfaces()->append(air2);
+	deps.append(dependency1);
+	design->setApiConnections(deps);
 }
 
 QTEST_APPLESS_MAIN(tst_MakefileGenerator)

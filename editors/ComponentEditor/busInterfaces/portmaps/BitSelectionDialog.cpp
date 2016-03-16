@@ -23,9 +23,9 @@
 //-----------------------------------------------------------------------------
 // Function: BitSelectionDialog::BitSelectionDialog()
 //-----------------------------------------------------------------------------
-BitSelectionDialog::BitSelectionDialog(QString logicalPort, int logicalBeginIndex, QString physicalPort, 
-    int portSize, int portMaxSize, QWidget *parent)
-    : QDialog(parent),
+BitSelectionDialog::BitSelectionDialog(QString const& logicalPort, int logicalBeginIndex,
+    QString const& physicalPort, int portSize, int maxBitsToMap, QWidget *parent) :
+QDialog(parent),
     logicalNameLabel_(new QLabel(logicalPort, this)),
     physicalNameLabel_(new QLabel(physicalPort, this)),
     higherLogicalBox_(new QSpinBox(this)),
@@ -34,21 +34,21 @@ BitSelectionDialog::BitSelectionDialog(QString logicalPort, int logicalBeginInde
     lowerPhysicalBox_(new QSpinBox(this)),
     buttonBox_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
     physPortSize_(portSize),
-    maxPhysPortSize_(portMaxSize)
+    maxPhysPortSize_(maxBitsToMap)
 {
-    setupLayout();
-
     // Set initial values for physical bits and set ranges.
     higherPhysicalBox_->setRange(0, portSize - 1);
-    higherPhysicalBox_->setValue(portMaxSize - 1);
+    higherPhysicalBox_->setValue(maxBitsToMap - 1);
     lowerPhysicalBox_->setRange(0, portSize - 1);
     lowerPhysicalBox_->setValue(0);
 
     // Set initial values for logical bits and disable editing.
-    higherLogicalBox_->setValue(logicalBeginIndex + portMaxSize - 1);
+    higherLogicalBox_->setValue(logicalBeginIndex + maxBitsToMap - 1);
     higherLogicalBox_->setEnabled(false);
     lowerLogicalBox_->setValue(logicalBeginIndex);
     lowerLogicalBox_->setEnabled(false);
+
+    setupLayout();
 
     connect(buttonBox_->button(QDialogButtonBox::Ok), SIGNAL(clicked()), 
         this, SLOT(accept()), Qt::UniqueConnection);
@@ -142,9 +142,6 @@ void BitSelectionDialog::setupLayout()
     lowerPhysicalLayout->addStretch();
     selectionLayout->addLayout(lowerPhysicalLayout, 2, 2, 1, 1, Qt::AlignTop | Qt::AlignLeft);
 
-    //selectionLayout->setColumnStretch(3, 1);
-    //selectionLayout->setRowStretch(2, 1);
-    
     topLayout->addWidget(group);
     topLayout->addWidget(buttonBox_);
 }

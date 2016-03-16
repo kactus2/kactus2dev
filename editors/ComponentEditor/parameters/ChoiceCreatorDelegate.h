@@ -14,9 +14,9 @@
 
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
-#include <IPXACTmodels/choice.h>
-
 #include <QCompleter>
+
+class Choice;
 
 //-----------------------------------------------------------------------------
 //! Delegate for providing functionality for choices inside parameters.

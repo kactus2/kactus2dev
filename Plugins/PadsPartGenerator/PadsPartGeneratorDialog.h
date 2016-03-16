@@ -12,8 +12,6 @@
 #ifndef PADSPARTGENERATORDIALOG_H
 #define PADSPARTGENERATORDIALOG_H
 
-#include <IPXACTmodels/component.h>
-
 #include <QComboBox>
 #include <QDialog>
 #include <QLabel>
@@ -23,6 +21,8 @@
 #include <QPushButton>
 #include <QRadioButton>
 
+class Component;
+class BusInterface;
 class LibraryInterface;
 class PadsPartGenerator;
 //-----------------------------------------------------------------------------
@@ -177,7 +177,7 @@ private:
      *      @param [in] cursor          Cursor to the correct position in preview.
      *      @param [in] validatingExp   RegExp for checking the line correctness.
      */
-    void insertLine(QString const& line,  QTextCursor cursor, QRegExp const validatingExp = QRegExp() );
+    void insertLine(QString const& line,  QTextCursor cursor, QRegExp const& validatingExp = QRegExp() );
 
     /*!
      *  Inserts part attributes to the preview.

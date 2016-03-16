@@ -43,10 +43,9 @@ PortsView::~PortsView()
 void PortsView::onCreateNewBus()
 {
     QStringList selectedPorts;
-    foreach(QModelIndex portIndex, selectedIndexes())
+    foreach(QModelIndex const& portIndex, selectedIndexes())
     {   
-
-        QString portName =  portIndex.sibling(portIndex.row(), PortColumns::NAME).data().toString();
+        QString portName = portIndex.sibling(portIndex.row(), PortColumns::NAME).data().toString();
         if (!selectedPorts.contains(portName))
         {
             selectedPorts.append(portName);
@@ -62,10 +61,10 @@ void PortsView::onCreateNewBus()
 void PortsView::onCreateExistingBus()
 {
     QStringList selectedPorts;
-    foreach(QModelIndex portIndex, selectedIndexes())
+    foreach(QModelIndex const& portIndex, selectedIndexes())
     {   
 
-        QString portName =  portIndex.sibling(portIndex.row(), PortColumns::NAME).data().toString();
+        QString portName = portIndex.sibling(portIndex.row(), PortColumns::NAME).data().toString();
         if (!selectedPorts.contains(portName))
         {
             selectedPorts.append(portName);
@@ -115,6 +114,3 @@ void PortsView::contextMenuEvent(QContextMenuEvent* event)
 
     event->accept();
 }
-
-
-

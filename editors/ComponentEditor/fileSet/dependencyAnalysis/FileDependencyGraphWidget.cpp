@@ -19,12 +19,12 @@
 //-----------------------------------------------------------------------------
 FileDependencyGraphWidget::FileDependencyGraphWidget(QWidget* parent)
     : QWidget(parent),
-      view_(this),
+      view_(new FileDependencyGraphView(this)),
       scrollBar_(Qt::Horizontal, parent),
       barLayout_(0),
       infoLabel_(this)
 {
-    view_.setContentsMargins(0, 0, 0, 0);
+    view_->setContentsMargins(0, 0, 0, 0);
     scrollBar_.setContentsMargins(0, 0, 0, 0);
 
     barLayout_ = new QHBoxLayout();
@@ -33,19 +33,19 @@ FileDependencyGraphWidget::FileDependencyGraphWidget(QWidget* parent)
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->setSpacing(0);
-    layout->addWidget(&view_, 1);
+    layout->addWidget(view_, 1);
     layout->addLayout(barLayout_);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    connect(&view_, SIGNAL(graphColumnScollMaximumChanged(int)),
+    connect(view_, SIGNAL(graphColumnScollMaximumChanged(int)),
             this, SLOT(onGraphColumnScrollMaximumChanged(int)), Qt::UniqueConnection);
-    connect(&view_, SIGNAL(dependencyColumnPositionChanged(int)),
+    connect(view_, SIGNAL(dependencyColumnPositionChanged(int)),
             this, SLOT(onDependencyColumnPositionChanged(int)), Qt::UniqueConnection);
-    connect(&view_, SIGNAL(warningMessage(const QString&)),
+    connect(view_, SIGNAL(warningMessage(const QString&)),
             this, SLOT(showWarningMessage(const QString&)), Qt::UniqueConnection);
 
     connect(&scrollBar_, SIGNAL(valueChanged(int)),
-            &view_, SLOT(setGraphColumnScrollIndex(int)), Qt::UniqueConnection);
+            view_, SLOT(setGraphColumnScrollIndex(int)), Qt::UniqueConnection);
 
     infoLabel_.setTextFormat(Qt::RichText);
 }
@@ -61,7 +61,7 @@ FileDependencyGraphWidget::~FileDependencyGraphWidget()
 //-----------------------------------------------------------------------------
 // Function: FileDependencyGraphWidget::getView()
 //-----------------------------------------------------------------------------
-FileDependencyGraphView& FileDependencyGraphWidget::getView()
+FileDependencyGraphView* FileDependencyGraphWidget::getView()
 {
     return view_;
 }
@@ -88,12 +88,5 @@ void FileDependencyGraphWidget::onDependencyColumnPositionChanged(int pos)
 //-----------------------------------------------------------------------------
 void FileDependencyGraphWidget::showWarningMessage(QString const& message)
 {
-//     QString prefix = "";
-// 
-//     if (message != "")
-//     {
-//         prefix += "<img src=\":/icons/common/graphics/exclamation.png\">";
-//     }
-    
     infoLabel_.setText("<font color=\"red\">" + message + "</font>");
 }

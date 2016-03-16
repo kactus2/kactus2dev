@@ -1,52 +1,58 @@
-/* 
- *
- *  Created on: 1.4.2011
- *      Author: Antti Kamppi
- * 		filename: booleancombobox.h
- */
+//-----------------------------------------------------------------------------
+// File: booleancombobox.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 01.04.2011
+//
+// Description:
+// Combo box that has "true", "false" or "unspecified" choices for user to select.
+//-----------------------------------------------------------------------------
 
 #ifndef BOOLEANCOMBOBOX_H
 #define BOOLEANCOMBOBOX_H
 
 #include <QComboBox>
 
-/*! \brief Combo box that has "true" or "false" choices for user to select.
- *
- */
-class BooleanComboBox : public QComboBox {
+//-----------------------------------------------------------------------------
+//! Combo box that has "true", "false" or "unspecified" choices for user to select.
+//-----------------------------------------------------------------------------
+class BooleanComboBox : public QComboBox
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param parent Pointer to the owner of this widget.
-	 *
-	*/
+	 *      @param [in] parent  Pointer to the owner of this widget.
+	 */
 	BooleanComboBox(QWidget *parent);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~BooleanComboBox();
 
-	/*! \brief Get the value currently selected in the combo box
+	/*!
+     *  Get the value currently selected in the combo box.
 	 *
-	 * \return Boolean value that matches the currently selected item.
-	*/
-	bool getCurrentValue() const;
+	 *      @return Boolean value that matches the currently selected item.
+	 */
+    QString getCurrentValue() const;
 
-	/*! \brief Set the current value to be selected.
+	/*!
+     *  Set the current value to be selected.
 	 *
-	 * \param value The value to be selected.
-	 *
-	*/
-	void setCurrentValue(bool value);
+	 *      @param [in] value   The value to be selected.
+	 */
+    void setCurrentValue(QString const& value);
 
 private:
 
-	//! \brief No copying
+	//! No copying.
 	BooleanComboBox(const BooleanComboBox& other);
 
-	//! No assignment
+	//! No assignment.
 	BooleanComboBox& operator=(const BooleanComboBox& other);
 };
 

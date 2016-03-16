@@ -14,7 +14,7 @@
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 //! Interface for constructing design widgets.

@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: MakefilParser.h
+// File: MakefileParser.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Janne Virtanen
 // Date: 22.09.2014
 //
 // Description:
-// Makefile parser.
+// Parses design and its configuration for make file generation data.
 //-----------------------------------------------------------------------------
 
 #ifndef MakefileParser_H
@@ -14,36 +14,46 @@
 
 #include <QString>
 
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/SWView.h>
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BuildCommand.h>
+
+#include <IPXACTmodels/kactusExtensions/SWView.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
 class MakefileParser
 {
 public:
-
     // A struct containing needed data of a single file parsed to be used in a makefile.
+	// Provided that it is not a header file, it likely yields an object file.
     struct MakeObjectData
     {
         // The file which data is parsed here.
         QSharedPointer<File> file;
         // The build command directly associated with the file.
-        BuildCommand* fileBuildCmd;
-        // The build command of the file set where file belong to.
+        QSharedPointer<BuildCommand> fileBuildCmd;
+        // The build command of the file set where file belongs to.
         QSharedPointer<FileBuilder> fileSetBuildCmd;
         // The build command of the active software view of the software instance.
-        QSharedPointer<SWBuildCommand> swBuildCmd;
+        QSharedPointer<SWFileBuilder> swBuildCmd;
 		// The resolved compiler for the object file.
 		QString compiler;
+		// The resolved flags for the object file.
+		QString flags;
         // The absolute path of the file.
         QString path;
         // The name of the file.
         QString fileName;
+		// The software instance where the file is included.
+		QString instanceName;
+		// File set where the file is included.
+		QSharedPointer<FileSet> fileSet;
     };
 
     // A struct containing needed data of a single make file.
@@ -51,10 +61,8 @@ public:
     {
         // Parsed files found in software views of software components.
         QList<QSharedPointer<MakeObjectData> > swObjects;
-        // Parsed files found in software views of hardware components.
-        QList<QSharedPointer<MakeObjectData> > hwObjects;
         // The build command of the active software view of the hardware instance.
-        QSharedPointer<SWBuildCommand> hwBuildCmd;
+        QSharedPointer<SWFileBuilder> hwBuildCmd;
         // Flags passed down from software views.
         QStringList softViewFlags;
         // The name of the instance.
@@ -74,7 +82,7 @@ public:
     ~MakefileParser();
 
     // Returns reference to all parsed MakeFileData.
-    const QList<MakeFileData>& getParsedData();
+    QList<MakeFileData>& getParsedData();
 
     // Return the general file set.
     const QSharedPointer<FileSet>& getGeneralFileSet();
@@ -82,7 +90,9 @@ public:
     // Returns list of all files to be replaced.
     const QStringList& getReplacedFiles();
 
-    // Returns a list of all file names which may be generated but does exist
+	// List of conflicts: Each set contains the parsed metadata of files
+	// that are included multiple times.
+	QVector<QSet<QSharedPointer<MakeObjectData> > > findConflicts() const;
 
     /*!
      *  Parses all software components from the design for the data needed in makefiles.
@@ -109,7 +119,7 @@ private:
      *
      *      @return True, if the softInstance is the topmost instance in its stack. Otherwise false.
      */
-     bool isTopOfStack(QSharedPointer<const Design> design, SWInstance &softInstance,
+     bool isTopOfStack(QSharedPointer<const Design> design, QSharedPointer<SWInstance> softInstance,
          QSharedPointer<Component> softComponent);
 
     /*!
@@ -123,7 +133,7 @@ private:
      *      @param [in] makeData   The make data associated with the makefile as whole.
      */
      void findInstanceHeaders(LibraryInterface* library, QSharedPointer<Component> topComponent,
-         QSharedPointer<DesignConfiguration const> desgConf, QString sysViewName, SWInstance &softInstance,
+         QSharedPointer<DesignConfiguration const> desgConf, QString sysViewName, QSharedPointer<SWInstance> softInstance,
          MakeFileData &makeData);
 
     /*!
@@ -152,7 +162,7 @@ private:
      *      @param [in] makeData   The make data associated with the makefile as whole.
      */
      void parseStackObjects(QSharedPointer<Component> softComponent, QSharedPointer<SWView> softView,
-         SWInstance &softInstance, QSharedPointer<const Design> design, LibraryInterface* library,
+         QSharedPointer<SWInstance> softInstance, QSharedPointer<const Design> design, LibraryInterface* library,
          QSharedPointer<DesignConfiguration const> desgConf, MakeFileData& makeData);
 
     /*!
@@ -165,9 +175,25 @@ private:
      *      @param [in] objects   The collection of the parsed data of the files.
      *      @param [in] pickSWView   True, if flags corresponding file type are culled from the software view.
      */
-      void parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view,
+      void parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view, QString instanceName,
           QSharedPointer<Component> component, MakeFileData &makeData, QList<QSharedPointer<MakeObjectData> >& objects,
           bool pickSWView);
+
+	/*!
+	*  Parses all files of parameters fset, adding the to parameters objects.
+	*  Parsing involves defining the file as header, and determining its relevant build commands and path.
+	*
+	*      @param [in] fset				The inspected file set
+	*      @param [in] objects			The list of parsed objects, where the file data will be appended.
+	*      @param [in] library			The library containing all components in the design.
+	*      @param [in] component		The component of softInstance.
+	*      @param [in] makeData			The make data associated with the makefile as whole.
+	*      @param [in] pickSWView		True, if flags corresponding file type are culled from the software view.
+	*      @param [in] view				The software view which filesets are parsed.
+	*/
+	  void parseFileSet(QSharedPointer<FileSet> fset, QString instanceName, QList<QSharedPointer<MakeObjectData> > &objects,
+		  LibraryInterface* library, QSharedPointer<Component> component, MakeFileData &makeData, bool pickSWView,
+		  QSharedPointer<SWView> view);
 
     /*!
      *  Tries to find a software instance by name and the component associated with it.
@@ -180,7 +206,7 @@ private:
      *      @return The component of the found instance.
      */
      QSharedPointer<Component> searchSWComponent(LibraryInterface* library, QSharedPointer<const Design> design,
-         QString instanceName, SWInstance& targetInstance);
+         QString instanceName, QSharedPointer<SWInstance>& targetInstance);
 
     /*!
      *  Tries to find build commands corresponding parsed files in the makeData.
@@ -195,12 +221,24 @@ private:
      *  Gets the compiler used for the file.
      *
      *      @param [in] mod   The make data associated with the object file.
-     *      @param [in] mfd   The make data associated with the makefile as whole.
+	 *      @param [in] hardView   Software view of the associated hardware component.
+	 *
+	 *      @return The resolved compiler for the file.
+	 */
+	 QString getFileCompiler(QSharedPointer<MakeObjectData> mod, QSharedPointer<SWView> hardView) const;
+
+    /*!
+     *  Gets concatenated the build flags of the file with those fileSet and software views.
+     *
+     *      @param [in] mod   The make data associated with the object file.
+	 *      @param [in] mfd   The make data associated with the makefile as whole.
+	 *
+	 *      @return The resolved flags for the file.
      */
-     QString getFileCompiler(QSharedPointer<MakeObjectData> mod, MakeFileData &mfd) const;
+     QString getFileFlags(QSharedPointer<Component> component, QSharedPointer<MakeObjectData> &mod, MakeFileData &mfd) const;
 
      //! Collection of data sets, one for each make file.
-     QList<MakeFileData> parsedData_;
+	 QList<MakeFileData> parsedData_;
      //! The fileSet for the main makefile and the launcher.
      QSharedPointer<FileSet> generalFileSet_;
      //! List of files that may be replaced

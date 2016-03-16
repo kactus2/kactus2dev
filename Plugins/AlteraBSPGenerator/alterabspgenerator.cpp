@@ -1,23 +1,17 @@
 /* 
  *	Created on: 15.2.2013
  *	Author:		Antti Kamppi
- * 	File name:	memorymapheadergenerator.cpp
+ * 	File name:	alterabspgenerator.cpp
  * 	Project:	Kactus 2
 */
 
 #include "alterabspgenerator.h"
 #include <library/LibraryManager/libraryinterface.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+#include <IPXACTmodels/Component/Component.h>
 #include "alterabspgeneratordialog.h"
-#include <IPXACTmodels/SWView.h>
-#include <IPXACTmodels/generaldeclarations.h>
 
-#include <QtPlugin>
 #include <QDir>
-
-#include <QDebug>
 
 AlteraBSPGenerator::AlteraBSPGenerator():
 utility_(NULL) {
@@ -73,9 +67,9 @@ QIcon AlteraBSPGenerator::getIcon() const
     return QIcon(":icons/BSPicon24.png");
 }
 
-bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
-	QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/,
-	QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/ ) const {
+bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<Document const> libComp,
+	QSharedPointer<Document const> libDesConf /*= QSharedPointer<Document const>()*/,
+	QSharedPointer<Document const> libDes /*= QSharedPointer<Document const>()*/ ) const {
 	
 	// BSP package can only be run on component editor 
 	if (libDesConf || libDes) {
@@ -89,7 +83,7 @@ bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent 
         return false;
     }
 	
-	switch (comp->getComponentImplementation()) {
+	switch (comp->getImplementation()) {
 	
 		// HW component must be CPU and contain at least one SW view which specifies the BSP command
 	case KactusAttribute::HW: {
@@ -106,9 +100,9 @@ bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent 
 }
 
 void AlteraBSPGenerator::runGenerator(IPluginUtility* utility,
-	QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> /*libDesConf*/,
-    QSharedPointer<LibraryComponent> /*libDes*/) {
+	QSharedPointer<Document> libComp,
+    QSharedPointer<Document> /*libDesConf*/,
+    QSharedPointer<Document> /*libDes*/) {
 
 	utility_ = utility;
 	Q_ASSERT(utility_);
@@ -128,7 +122,7 @@ void AlteraBSPGenerator::runGenerator(IPluginUtility* utility,
 	}
 
 	// the path to the component's xml file for creating the relative paths.
-	QString xmlPath = utility_->getLibraryInterface()->getPath(*comp->getVlnv());
+	QString xmlPath = utility_->getLibraryInterface()->getPath(comp->getVlnv());
 
 	// contains the file type settings for adding files
 	QSettings settings;
@@ -158,7 +152,16 @@ void AlteraBSPGenerator::runGenerator(IPluginUtility* utility,
 			addEntry(entry, xmlPath, fileSet, settings);
 		}
 
-		QSharedPointer<SWView> swView = comp->findSWView(opt.swViewName_);
+		QSharedPointer<SWView> swView;
+		foreach( QSharedPointer<SWView> pview, comp->getSWViews() )
+		{
+			if ( pview->name() == opt.swViewName_ )
+			{
+				swView = pview;
+				break;
+			}
+		}
+
 		Q_ASSERT(swView);
 		swView->addFileSetRef(fileSetName);
 	}

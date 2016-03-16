@@ -1,75 +1,74 @@
-/* 
- *  	Created on: 14.6.2012
- *      Author: Antti Kamppi
- * 		filename: channelseditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: channelseditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.06.2012
+//
+// Description:
+// The editor to add/remove/edit the channels of a component.
+//-----------------------------------------------------------------------------
 
 #ifndef CHANNELSEDITOR_H
 #define CHANNELSEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <IPXACTmodels/component.h>
-#include <common/views/EditableTableView/editabletableview.h>
+
 #include "channelsmodel.h"
+
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
+class ChannelValidator;
+class Component;
 class LibraryInterface;
 
-/*! \brief The editor to add/remove/edit the channels of a component.
- *
- */
-class ChannelsEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+//! The editor to add/remove/edit the channels of a component.
+//-----------------------------------------------------------------------------
+class ChannelsEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
 	
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the parent of this editor.
-	 *
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] handler     The instance managing the library.
+     *      @param [in] validator   The validator for channel elements.
+	 *      @param [in] parent      The parent of this editor.
 	*/
-	ChannelsEditor(QSharedPointer<Component> component,
-		LibraryInterface* handler,
-				QWidget* parent = 0);
+	ChannelsEditor(QSharedPointer<Component> component,	LibraryInterface* handler, 
+        QSharedPointer<ChannelValidator> validator, QWidget* parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ChannelsEditor();
 
-	/*! \brief Check for the validity of the editor
-	* 
-	* \return True if the editor is in valid state.
-	*/
-	virtual bool isValid() const;
-
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	ChannelsEditor(const ChannelsEditor& other);
-
-	//! \brief No assignment
 	ChannelsEditor& operator=(const ChannelsEditor& other);
 
-	//! \brief The view that displays the channels.
+	//! The view that displays the channels.
 	EditableTableView view_;
 
-	//! \brief The proxy that does the editing.
+	//! The proxy that does the editing.
 	QSortFilterProxyModel proxy_;
 
-	//! \brief The model that manages the channels being edited.
+	//! The model that manages the channels being edited.
 	ChannelsModel model_;
 };
 

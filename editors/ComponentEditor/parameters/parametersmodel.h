@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Antti Kamppi
-// Date: 4.4.2011
+// Date: 04.04.2011
 //
 // Description:
 // Table model that can be used to display parameters to be edited.
@@ -12,7 +12,7 @@
 #ifndef PARAMETERSMODEL_H
 #define PARAMETERSMODEL_H
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <editors/ComponentEditor/common/AbstractParameterModel.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -39,6 +39,7 @@ public:
 	 *
 	 *      @param [in]  parameters             The parameters to edit in the model.
      *      @param [in]  choices                The choices available for the parameter values.
+     *      @param [in]  validator              The validator to use for checking parameter validity.
      *      @param [in]  expressionParser       Expression parser for configurable elements.
      *      @param [in]  parameterFinder        The parameter finder.
      *      @param [in]  expressionFormatter    The expression formatter.
@@ -47,6 +48,7 @@ public:
 	*/
 	ParametersModel(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, 
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QSharedPointer<ParameterValidator2014> validator,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
@@ -72,13 +74,6 @@ public:
 	 *      @return  Number of columns currently in the model.
 	*/
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
-
-    /*!
-     *  Sets the parameters for the model.
-     *
-     *      @param [in] parameters   The parameters to set for the model.
-     */
-    void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters);
 
 public slots:
 
@@ -219,7 +214,6 @@ private:
 
 	//! No assignment
 	ParametersModel& operator=(const ParametersModel& other);
-   
 
 	//! The parameters to be edited.
 	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;

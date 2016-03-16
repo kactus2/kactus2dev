@@ -5,8 +5,8 @@
  */
 
 #include "generaldeclarations.h"
-#include "PortMap.h"
-#include "vector.h"
+//#include "PortMap.h"
+#include <IPXACTmodels/common/Vector.h>
 #include "XmlUtils.h"
 
 #include <QDomNode>
@@ -24,32 +24,6 @@
 #include <qmath.h>
 
 #include <QDebug>
-
-General::BitSteering General::str2BitSteering(const QString& str) {
-	if (str == QString("on")) {
-		return General::ON;
-	}
-	else if (str == QString("off")) {
-		return General::OFF;
-	}
-	else {
-		return General::BITSTEERING_UNSPECIFIED;
-	}
-}
-
-QString General::bitSteering2Str(const General::BitSteering bitSteering) {
-	switch (bitSteering) {
-	case General::ON: {
-		return QString("on");
-	}
-	case General::OFF: {
-		return QString("off");
-	}
-	default: {
-		return QString();
-	}
-	}
-}
 
 General::PortBounds::PortBounds():
 portName_(),
@@ -122,8 +96,8 @@ General::PortAlignment& General::PortAlignment::operator=( const PortAlignment& 
 	}
 	return *this;
 }
-
-General::PortAlignment General::calculatePortAlignment( 
+/*
+/*General::PortAlignment General::calculatePortAlignment( 
 	const PortMap* portMap1, 
 	int phys1LeftBound, 
 	int phys1RightBound, 
@@ -141,13 +115,13 @@ General::PortAlignment General::calculatePortAlignment(
 	// if port 1 is vectored on the port map
 	if (portMap1->physicalVector()) {
 		phys1LeftBound = portMap1->getPhysicalLeft();
-		phys1RightBound = portMap1->physicalVector()->getRight();
+		phys1RightBound = portMap1->physicalVector()->getRight().toInt();
 	}
 
 	// if port 2 is vectored on the port map
 	if (portMap2->physicalVector()) {
 		phys2LeftBound = portMap2->getPhysicalLeft();
-		phys2RightBound = portMap2->physicalVector()->getRight();
+		phys2RightBound = portMap2->physicalVector()->getRight().toInt();
 	}
 
 	// if both have vectored logical signals
@@ -225,7 +199,7 @@ General::PortAlignment General::calculatePortAlignment(
 		alignment.invalidAlignment_ = false;
 	}
 	return alignment;
-}
+}*/
 
 QString General::port2String(const QString& portName, int leftBound, int rightBound) {
 	QString str(portName);
@@ -239,216 +213,6 @@ QString General::bool2Str(bool value) {
 	}
 	else {
 		return QString("false");
-	}
-}
-
-General::Endianness General::str2Endianness(QString str,
-		General::Endianness defaultValue) {
-
-	if (str == QString("big")) {
-		return General::BIG;
-	}
-	else if (str == QString("little")) {
-		return General::LITTLE;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::endianness2Str(const General::Endianness endianness) {
-	switch (endianness) {
-	case General::BIG: {
-		return QString("big");
-	}
-	case General::LITTLE: {
-		return QString("little");
-	}
-	default: { // this should never happen
-		return QString();
-	}
-	}
-}
-
-General::Initiative General::str2Initiative(QString str,
-		General::Initiative defaultValue) {
-
-	// select the correct enum value that matches the string
-	if (str == QString("requires")) {
-		return General::REQUIRES;
-	}
-	else if (str == QString("provides")) {
-		return General::PROVIDES;
-	}
-	else if (str == QString("both")) {
-		return General::BOTH;
-	}
-	else if (str == QString("phantom")) {
-		return General::INITIATIVE_PHANTOM;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::Initiative2Str(const General::Initiative initiative) {
-	switch (initiative) {
-	case General::REQUIRES: {
-		return QString("requires");
-	}
-	case General::PROVIDES: {
-		return QString("provides");
-	}
-	case General::BOTH: {
-		return QString("both");
-	}
-	case General::INITIATIVE_PHANTOM: {
-		return QString("phantom");
-	}
-	// if initiative = NONE
-	default: {
-		return QString();
-	}
-	}
-}
-
-General::Presence General::str2Presence(QString str,
-		General::Presence defaultValue) {
-
-	// identify the correct enum value
-	if (str == QString("illegal")) {
-		return General::ILLEGAL;
-	}
-
-	else if (str == QString("required")) {
-		return General::REQUIRED;
-	}
-
-	else if (str == QString("optional")) {
-		return General::OPTIONAL;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::presence2Str(General::Presence presence) {
-	switch (presence) {
-	case General::ILLEGAL: {
-		return QString("illegal");
-	}
-	case General::REQUIRED: {
-		return QString("required");
-	}
-	case General::OPTIONAL: {
-		return QString("optional");
-	}
-	default: {
-		return QString();
-	}
-	}
-}
-
-General::Direction General::str2Direction(QString str,
-		General::Direction defaultValue) {
-
-	// convert QString into Direction
-	if (str == QString("in")) {
-		return General::IN;
-	}
-	else if (str == QString("out")) {
-		return General::OUT;
-	}
-	else if (str == QString("inout")) {
-		return General::INOUT;
-	}
-	else if (str == QString("phantom")) {
-		return General::DIRECTION_PHANTOM;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::direction2Str(const General::Direction direction) {
-	switch (direction) {
-	case General::IN: {
-		return QString("in");
-	}
-	case General::OUT: {
-		return QString("out");
-	}
-	case General::INOUT: {
-		return QString("inout");
-	}
-	case General::DIRECTION_PHANTOM: {
-		return QString("phantom");
-	}
-	// if DIRECTION_INVALID
-	default: {
-		return QString();
-	}
-	}
-}
-
-General::Direction General::convert2Mirrored(const Direction originalDirection ) {
-	switch (originalDirection) {
-		case General::IN: 
-			return General::OUT;
-		case General::OUT:
-			return General::IN;
-		case General::INOUT:
-			return General::INOUT;
-		case General::DIRECTION_PHANTOM:
-			return General::DIRECTION_PHANTOM;
-		default:
-			return General::DIRECTION_INVALID;
-	}
-}
-
-General::Access General::str2Access(QString str,
-		General::Access defaultValue) {
-	if (str == QString("read-write")) {
-		return General::READ_WRITE;
-	}
-	else if (str == QString("read-only")) {
-		return General::READ_ONLY;
-	}
-	else if (str ==	QString("write-only")) {
-		return General::WRITE_ONLY;
-	}
-	else if (str ==	QString("read-writeOnce")) {
-		return General::READ_WRITEONCE;
-	}
-	else if (str == QString("writeOnce")) {
-		return General::WRITEONCE;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::access2Str(const General::Access access) {
-	switch (access) {
-	case General::READ_WRITE: {
-		return QString("read-write");
-	}
-	case General::READ_ONLY: {
-		return QString("read-only");
-	}
-	case General::WRITE_ONLY: {
-		return QString("write-only");
-	}
-	case General::READ_WRITEONCE: {
-		return QString("read-writeOnce");
-	}
-	case General::WRITEONCE: {
-		return QString("writeOnce");
-	}
-	// if UNSPECIFIED_ACCESS
-	default: {
-		return QString();
-	}
 	}
 }
 
@@ -486,77 +250,48 @@ QString General::usage2Str(const General::Usage usage) {
 	}
 }
 
-General::GroupSelectorOperator General::str2GroupSelector(QString str,
-		General::GroupSelectorOperator defaultValue) {
-	if (str == QString("and")) {
-		return General::AND;
-	}
-	else if (str == QString("or")) {
-		return General::OR;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-General::TimeUnit General::str2TimeUnit(QString str,
-		General::TimeUnit defaultValue) {
-
-	if (str.compare(QString("ps"), Qt::CaseInsensitive) == 0) {
-		return General::PS;
-	}
-	else if (str.compare(QString("ns"), Qt::CaseInsensitive) == 0) {
-		return General::NS;
-	}
-	else {
-		return defaultValue;
-	}
-}
-
-QString General::timeUnit2Str(General::TimeUnit& timeUnit) {
-	switch (timeUnit) {
-	case General::PS: {
-		return QString("ps");
-	}
-	default: {
-		return QString("ns");
-	}
-	}
-}
-
-General::DriverType General::str2DriverType(QString str,
-                General::DriverType defaultValue) {
-
-	if (str == QString("any")) {
+General::DriverType General::str2DriverType(QString str, General::DriverType defaultValue)
+{
+	if (str == "any")
+    {
 		return General::ANY;
 	}
-	else if (str == QString("clock")) {
+	else if (str == "clock")
+    {
 		return General::CLOCK;
 	}
-	else if (str == QString("singleshot")) {
+	else if (str == "singleShot")
+    {
 		return General::SINGLESHOT;
 	}
-	else {
+    else if (str == "none")
+    {
+        return General::NO_DRIVER;
+    }
+	else
+    {
 		return defaultValue;
 	}
 }
 
-QString General::driverType2Str(General::DriverType type) {
-
-	switch (type) {
-	case General::ANY: {
-		return QString("any");
-	}
-	case General::CLOCK: {
-		return QString("clock");
-	}
-	case General::SINGLESHOT: {
-		return QString("singleshot");
-	}
-	default: {
-		return QString();
-	}
-	}
+QString General::driverType2Str(General::DriverType type)
+{
+    if (type == General::ANY)
+    {
+        return QString("any");
+    }
+    else if (type == General::CLOCK)
+    {
+        return QString("clock");
+    }
+    else if (type == General::SINGLESHOT)
+    {
+        return QString("singleShot");
+    }
+    else 
+    {
+        return QString();
+    }
 }
 
 bool General::str2Bool(const QString str, bool defaultValue) {
@@ -569,137 +304,6 @@ bool General::str2Bool(const QString str, bool defaultValue) {
 	else {
 		return defaultValue;
 	}
-}
-
-bool General::BooleanValue2Bool(const General::BooleanValue value,
-		const bool defaultValue) {
-	switch (value) {
-	case General::BOOL_TRUE: {
-		return true;
-	}
-	case General::BOOL_FALSE: {
-		return false;
-	}
-	default: {
-		return defaultValue;
-	}
-	}
-}
-
-General::BooleanValue General::bool2BooleanValue(const bool value) {
-	if (value)
-		return General::BOOL_TRUE;
-	else
-		return General::BOOL_FALSE;
-}
-
-General::BooleanValue General::str2BooleanValue(const QString& str) {
-	if (str == QString("true")) {
-		return General::BOOL_TRUE;
-	}
-	else if (str == QString("false")) {
-		return General::BOOL_FALSE;
-	}
-	else {
-		return General::BOOL_UNSPECIFIED;
-	}
-}
-
-QString General::booleanValue2Str(const General::BooleanValue value) {
-	switch (value) {
-	case General::BOOL_TRUE: {
-		return QString("true");
-	}
-	case General::BOOL_FALSE: {
-		return QString("false");
-	}
-	default: {
-		return QString();
-	}
-	}
-}
-
-General::ClockStruct::ClockStruct(QDomNode &clockNode):
-value_(0),
-timeUnit_(General::NS),
-attributes_() {
-
-	QString value = clockNode.childNodes().at(0).nodeValue();
-	value = XmlUtils::removeWhiteSpace(value);
-	bool ok = false;
-	value_ = value.toDouble(&ok);
-
-
-	// get the attributes
-	QDomNamedNodeMap attributeMap = clockNode.attributes();
-	for (int i = 0; i < attributeMap.size(); ++i) {
-		QDomNode tempNode = attributeMap.item(i);
-
-		// get spirit:units attribute value
-		if (tempNode.nodeName() == QString("spirit:units")) {
-			timeUnit_ = General::str2TimeUnit(tempNode.childNodes().at(i).
-					nodeValue(),General::NS);
-		}
-
-		// other attributes go to QMap
-		else {
-			QString name = tempNode.nodeName();
-			QString value = tempNode.nodeValue();
-			attributes_[name] = value;
-		}
-	}
-}
-
-General::ClockStruct::ClockStruct( double value ):
-value_(value),
-timeUnit_(General::NS),
-attributes_() {
-}
-
-General::ClockStruct::ClockStruct( const ClockStruct& other ):
-value_(other.value_),
-timeUnit_(other.timeUnit_),
-attributes_(other.attributes_) {
-}
-
-General::ClockStruct& General::ClockStruct::operator=( const ClockStruct& other ) {
-	if (this != &other) {
-		value_ = other.value_;
-		timeUnit_ = other.timeUnit_;
-		attributes_ = other.attributes_;
-	}
-	return *this;
-}
-
-General::ClockPulseValue::ClockPulseValue(QDomNode &clockNode): 
-value_(2),
-attributes_() {
-
-	QString value = clockNode.childNodes().at(0).nodeValue();
-	bool ok = false;
-	value_ = value.toInt(&ok);
-
-	// get the attributes
-	//XmlUtils::parseAttributes(clockNode, attributes_);
-}
-
-General::ClockPulseValue::ClockPulseValue( unsigned int value ):
-value_(value), 
-attributes_() {
-
-}
-
-General::ClockPulseValue::ClockPulseValue( const ClockPulseValue& other ):
-value_(other.value_),
-attributes_(other.attributes_) {
-}
-
-General::ClockPulseValue& General::ClockPulseValue::operator=( const ClockPulseValue& other ) {
-	if (this != &other) {
-		value_ = other.value_;
-		attributes_ = other.attributes_;
-	}
-	return *this;
 }
 
 
@@ -755,58 +359,6 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
             return MASTER;
         }
     }
-}
-
-General::Qualifier::Qualifier(QDomNode& qualifierNode): isAddress_(false),
-		isData_(false), isClock_(false), isReset_(false) {
-	for (int i = 0; i < qualifierNode.childNodes().count(); ++i) {
-		QDomNode tempNode = qualifierNode.childNodes().at(i);
-
-		if (tempNode.nodeName() == QString("spirit:isAddress")) {
-			QString isAddress = tempNode.childNodes().at(0).nodeValue();
-			isAddress_ = General::str2Bool(isAddress, false);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:isData")) {
-			QString isData = tempNode.childNodes().at(0).nodeValue();
-			isData_ = General::str2Bool(isData, false);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:isClock")) {
-			QString isClock = tempNode.childNodes().at(0).nodeValue();
-			isClock_ = General::str2Bool(isClock, false);
-		}
-
-		else if (tempNode.nodeName() == QString("spirit:isReset")) {
-			QString isReset = tempNode.childNodes().at(0).nodeValue();
-			isReset_ = General::str2Bool(isReset, false);
-		}
-	}
-	return;
-}
-
-General::Qualifier::Qualifier( const Qualifier& other ):
-isAddress_(other.isAddress_),
-isData_(other.isData_),
-isClock_(other.isClock_),
-isReset_(other.isReset_) {
-}
-
-General::Qualifier::Qualifier():
-isAddress_(false),
-isData_(false),
-isClock_(false),
-isReset_(false) {
-}
-
-General::Qualifier& General::Qualifier::operator=( const Qualifier& other ) {
-	if (this != &other) {
-		isAddress_ = other.isAddress_;
-		isData_ = other.isData_;
-		isClock_ = other.isClock_;
-		isReset_ = other.isReset_;
-	}
-	return *this;
 }
 
 General::LibraryFilePair::LibraryFilePair(const QString filePath,
@@ -928,53 +480,6 @@ QString General::getAbsolutePath(const QString& originalPath,
 
 	// make sure the path exists
 	return originalDir.absoluteFilePath(relativePath);
-}
-
-bool General::isIpXactFileType( const QString& fileType ) {
-
-	// check all the pre-specified file types
-	for (unsigned int i = 0; i < General::FILE_TYPE_COUNT; ++i) {
-		
-		// if the file type is one of the specified ones
-		if (QString(General::FILE_TYPES[i]) == fileType) {
-			return true;
-		}
-	}
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: generaldeclarations::getFileTypes()
-//-----------------------------------------------------------------------------
-QStringList General::getFileTypes( QSettings& settings, const QString& fileSuffix )
-{	
-    QStringList types;
-
-	settings.beginGroup("FileTypes");
-	foreach (QString const& type, settings.childGroups())
-    {
-		// Get the extensions associated with the file type.
-		QString extensions = settings.value(type + "/Extensions").toString();
-
-		foreach (QString extension, extensions.split(";", QString::SkipEmptyParts))
-        {
-			if (extension.compare(fileSuffix, Qt::CaseInsensitive) == 0)
-            {
-				types.append(type);
-			}
-		}
-	}
-    settings.endGroup();
-
-	return types;
-}
-
-//-----------------------------------------------------------------------------
-// Function: generaldeclarations::getFileTypes()
-//-----------------------------------------------------------------------------
-QStringList General::getFileTypes( QSettings& settings, const QFileInfo& file )
-{
-	return General::getFileTypes(settings, file.suffix());
 }
 
 General::ModifiedWrite General::str2ModifiedWrite( const QString& str ) {

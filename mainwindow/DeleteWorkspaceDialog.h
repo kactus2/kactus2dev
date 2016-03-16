@@ -46,7 +46,7 @@ public:
     /*!
      *  Returns the name of the workspace to delete.
      */
-    QString getName() const;
+    QString name() const;
 
 private:
     // Disable copying.

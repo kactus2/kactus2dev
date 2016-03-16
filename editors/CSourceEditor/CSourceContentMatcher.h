@@ -19,12 +19,11 @@
 
 #include "MCAPIDesignerTypes.h"
 #include <common/widgets/assistedTextEdit/ITextContentMatcher.h>
-#include <IPXACTmodels/component.h>
 
 class ApiDefinition;
 class ApiFunction;
 class ComDefinition;
-
+class Component;
 //-----------------------------------------------------------------------------
 //! CSourceContentMatcher class.
 //-----------------------------------------------------------------------------

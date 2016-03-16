@@ -12,24 +12,15 @@
 #include "MCAPICodeGenerator.h"
 
 #include <QMessageBox>
-#include <QFileInfo>
-#include <QSettings>
 #include <QCoreApplication>
-#include <QDir>
-#include <QObject>
 
-#include <CSourceWriter.h>
+#include <Plugins/common/CSourceWriter.h>
 #include <editors/CSourceEditor/CSourceTextEdit.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
-#include <library/LibraryManager/libraryinterface.h>
-
-#include "IPXACTmodels/SWView.h"
+#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include "common/dialogs/comboSelector/comboselector.h"
-#include "IPXACTmodels/SystemView.h"
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGenerator::MCAPICodeGenerator()
@@ -109,14 +100,14 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
     QSharedPointer<FileSet> fileSet = component->getFileSet("generatedMCAPI");
     fileSet->setGroups("sourceFiles");
 
-    QList<QSharedPointer<FileBuilder> > fblist = fileSet->getDefaultFileBuilders();
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > fblist = fileSet->getDefaultFileBuilders();
 
     bool hasCBuild = false;
 
     // Check if there is already a builder for c sources specified.
-    foreach ( QSharedPointer<FileBuilder> builder, fblist )
+    foreach ( QSharedPointer<FileBuilder> builder, *fblist )
     {
-        if ( builder->getFileTypes().contains("cSource") )
+        if ( builder->getFileType() == "cSource" )
         {
             hasCBuild = true;
             break;
@@ -129,35 +120,31 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
         QSharedPointer<FileBuilder> newBuilder = QSharedPointer<FileBuilder>(new FileBuilder);
         newBuilder->setCommand( "gcc -c -o" );
         newBuilder->setFileType("cSource");
-        newBuilder->setReplaceDefaultFlags( true);
-        fblist.append(newBuilder);
-        fileSet->setDefaultFileBuilders(fblist);
+        fblist->append(newBuilder);
     }
 
     QSettings settings;
 
     QSharedPointer<File> file;
-    QStringList types;
-    types.append("cSource");
 
     if (!fileSet->contains("ktsmcapicode.h"))
     {
         file = fileSet->addFile("ktsmcapicode.h", settings);
-        file->setAllFileTypes( types );
+        file->addFileType( "cSource" );
         file->setIncludeFile( true );
     }
     if (!fileSet->contains("ktsmcapicode.c"))
     {
-        file = fileSet->addFile("ktsmcapicode.c", settings);
-        file->setAllFileTypes( types );
+		file = fileSet->addFile("ktsmcapicode.c", settings);
+		file->addFileType( "cSource" );
 
         //The build flags of this file must contain tool integration to avoid redefinition.
         file->setBuildFlags( "-DTOOL_INTEGRATION", false );
     }
     if (!fileSet->contains("main.c"))
     {
-        file = fileSet->addFile("main.c", settings);
-        file->setAllFileTypes( types );
+		file = fileSet->addFile("main.c", settings);
+		file->addFileType( "cSource" );
     }
 
     int viewCount = component->getSWViews().size();
@@ -173,14 +160,21 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
 
         if ( !viewName.isEmpty() )
         {
-            QSharedPointer<SWView> view = component->getSWView( viewName );
-            view->addFileSetRef( fileSet->getName() );
+            QSharedPointer<SWView> view;
+			
+			foreach( QSharedPointer<SWView> pview, component->getSWViews() )
+			{
+				view = pview;
+				break;
+			}
+
+            view->addFileSetRef( fileSet->name() );
         }
     }
     else if ( viewCount > 0 )
     {
         // Add fileSet to the existing software view
-        component->getSWViews().first()->addFileSetRef( fileSet->getName() );
+        component->getSWViews().first()->addFileSetRef( fileSet->name() );
     }
 }
 
@@ -395,7 +389,7 @@ void MCAPICodeGenerator::writeLocalEndpoints(CSourceWriter &writer, bool isExter
 
         if (epd.transferType == "packet")
         {
-            if (epd.direction == General::OUT)
+            if (epd.direction == DirectionTypes::OUT)
             {
                 writer.writeLine(externString + "mcapi_pktchan_send_hndl_t " + handleName + ";");
             }
@@ -406,7 +400,7 @@ void MCAPICodeGenerator::writeLocalEndpoints(CSourceWriter &writer, bool isExter
         }
         else if (epd.transferType == "scalar")
         {
-            if (epd.direction == General::OUT)
+            if (epd.direction == DirectionTypes::OUT)
             {
                 writer.writeLine(externString + "mcapi_sclchan_send_hndl_t " + handleName + ";");
             }
@@ -626,7 +620,7 @@ void MCAPICodeGenerator::generateConnectChannelsFunc(CSourceWriter& writer)
     foreach (MCAPIParser::EndPointData epd, componentEndpoints_ )
     {
         // Sender is responsible of calling the connect function.
-        if ( epd.direction == General::OUT )
+        if ( epd.direction == DirectionTypes::OUT )
         {
             if (epd.transferType == "packet")
             {
@@ -765,12 +759,12 @@ void MCAPICodeGenerator::writeCon(MCAPIParser::EndPointData epd, CSourceWriter &
 //-----------------------------------------------------------------------------
 void MCAPICodeGenerator::writeOpen(MCAPIParser::EndPointData epd, CSourceWriter &writer, QString name)
 {
-    if (epd.direction == General::OUT)
+    if (epd.direction == DirectionTypes::OUT)
     {
         writer.writeLine("mcapi_" + name + "chan_send_open_i(&" + epd.handleName +
             ", " + epd.name + ", &request, &status);");
     }
-    else if (epd.direction == General::IN)
+    else if (epd.direction == DirectionTypes::IN)
     {
         writer.writeLine("mcapi_" + name + "chan_recv_open_i(&" + epd.handleName +
             ", " + epd.name + ", &request, &status);");
@@ -785,11 +779,11 @@ void MCAPICodeGenerator::writeOpen(MCAPIParser::EndPointData epd, CSourceWriter 
 //-----------------------------------------------------------------------------
 void MCAPICodeGenerator::writeClose(MCAPIParser::EndPointData epd, CSourceWriter &writer, QString name)
 {
-    if (epd.direction == General::OUT)
+    if (epd.direction == DirectionTypes::OUT)
     {
         writer.writeLine("mcapi_" + name + "chan_send_close_i(" + epd.handleName + ", &request, &status);");
     }
-    else if (epd.direction == General::IN)
+    else if (epd.direction == DirectionTypes::IN)
     {
         writer.writeLine("mcapi_" + name + "chan_recv_close_i(" + epd.handleName + ", &request, &status);");
     }

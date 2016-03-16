@@ -18,8 +18,6 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <IPXACTmodels/register.h>
-
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 #include <QLineEdit>
@@ -31,6 +29,8 @@ class AccessComboBox;
 class BooleanComboBox;
 class ExpressionEditor;
 class ExpressionParser;
+class Register;
+class RegisterValidator;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
 //-----------------------------------------------------------------------------
@@ -49,27 +49,22 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
      *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
+     *      @param [in] registerValidator       Validator used for registers.
 	 *      @param [in] parent                  The parent of this editor.
 	 */
-    SingleRegisterEditor(QSharedPointer<Register> singleRegister,
+    SingleRegisterEditor(QSharedPointer<Register> selectedRegister,
         QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<RegisterValidator> registerValidator,
         QWidget* parent = 0);
 
     /*!
      *  The destructor.
      */
     virtual ~SingleRegisterEditor();
-
-	/*!
-	 *  Check for the validity of the editor.
-	 *
-     *      @return True, if the editor is in a valid state, false otherwise.
-	 */
-	virtual bool isValid() const;
 
     /*!
 	 *  Reload the information from the model to the editor.
@@ -120,20 +115,6 @@ private slots:
      *      @param [in] newAccessValue  The new access value.
      */
     void onAccessSelected(QString const& newAccessValue);
-
-    /*!
-     *  Save the edited reset value to the register.
-     *
-     *      @param [in] newResetValue   The new value for the reset.
-     */
-    void onResetValueChanged();
-
-    /*!
-     *  Save the edited reset mask to the register.
-     *
-     *      @param [in] newResetMask    The new value for the reset mask.
-     */
-    void onResetMaskChanged();
 
 private:
 
@@ -200,14 +181,11 @@ private:
     //! The access selector.
     AccessComboBox* accessEditor_;
 
-    //! The reset value editor.
-    QLineEdit* resetValueEditor_;
-
-    //! The reset mask editor.
-    QLineEdit* resetMaskEditor_;
-
     //! The expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The used register validator.
+    QSharedPointer<RegisterValidator> registerValidator_;
 };
 
 #endif // SINGLEREGISTEREDITOR_H

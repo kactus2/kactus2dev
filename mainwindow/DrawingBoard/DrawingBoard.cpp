@@ -13,7 +13,7 @@
 
 #include <common/widgets/tabDocument/TabDocument.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QCoreApplication>
 #include <QKeyEvent>
@@ -68,7 +68,7 @@ void DrawingBoard::addAndOpenDocument(TabDocument* doc, bool forceUnlocked)
 
     if (doc->getEditProvider() != 0)
     {
-        connect(doc->getEditProvider(), SIGNAL(editStateChanged()), this, SIGNAL(documentEditStateChanged()));
+        connect(doc->getEditProvider().data(), SIGNAL(editStateChanged()), this, SIGNAL(documentEditStateChanged()));
     }
 
     addTab(doc, doc->getTitle());
@@ -281,8 +281,8 @@ void DrawingBoard::onDocumentSaved(TabDocument* doc)
 bool DrawingBoard::shouldSave(TabDocument* doc)
 {
     bool save = true;
+    QVector<QString> errorList;
 
-    QStringList errorList;
     if (!doc->validate(errorList))
     {
         // If the document contained errors, inform the user and give options to save or cancel.
@@ -291,8 +291,8 @@ bool DrawingBoard::shouldSave(TabDocument* doc)
             "may not be opened with other IP-XACT tools. Continue save?").arg(doc->getDocumentName(), 
             QString::number(errorList.size())), QMessageBox::Yes | QMessageBox::No, this);
 
-        msgBox.setDetailedText("The document contained the following error(s):\n* " + 
-            errorList.join("\n* "));
+        msgBox.setDetailedText("The document contained the following error(s):\n* " +
+            QStringList(errorList.toList()).join("\n* "));
 
         save = (msgBox.exec() == QMessageBox::Yes);
     }

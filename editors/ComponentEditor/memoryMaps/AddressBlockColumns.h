@@ -22,8 +22,6 @@ namespace AddressBlockColumns
         REGISTER_DIMENSION,        
         VOLATILE,
         REGISTER_ACCESS,
-        RESET_VALUE,
-        RESET_MASK,
         IS_PRESENT,
         DESCRIPTION,
         COLUMN_COUNT

@@ -13,21 +13,19 @@
 
 #include "ParameterColumns.h"
 
-#include <IPXACTmodels/choice.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <QColor>
-#include <QUuid>
 
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::ParametersModel()
 //-----------------------------------------------------------------------------
 ParametersModel::ParametersModel(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    QSharedPointer<ParameterValidator2014> validator, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
-AbstractParameterModel(choices, expressionParser, parameterFinder, expressionFormatter, parent), 
+AbstractParameterModel(choices, validator, expressionParser, parameterFinder, expressionFormatter, parent), 
 parameters_(parameters)
 {
 
@@ -65,16 +63,6 @@ int ParametersModel::columnCount(QModelIndex const& parent) const
 	}
 
 	return ParameterColumns::COLUMN_COUNT;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersModel::setParameters()
-//-----------------------------------------------------------------------------
-void ParametersModel::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters)
-{
-    beginResetModel();
-    parameters_ = parameters;
-    endResetModel();
 }
 
 //-----------------------------------------------------------------------------

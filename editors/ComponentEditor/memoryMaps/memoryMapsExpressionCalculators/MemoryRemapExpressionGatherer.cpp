@@ -12,8 +12,9 @@
 #include "MemoryRemapExpressionGatherer.h"
 #include "AddressBlockExpressionsGatherer.h"
 
-#include <IPXACTmodels/memorymapitem.h>
-#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+#include <IPXACTmodels/Component/MemoryBlockBase.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryRemapExpressionGatherer::MemoryRemapExpressionGatherer()
@@ -34,15 +35,15 @@ MemoryRemapExpressionGatherer::~MemoryRemapExpressionGatherer()
 //-----------------------------------------------------------------------------
 // Function: MemoryRemapExpressionsGatherer::getExpressions()
 //-----------------------------------------------------------------------------
-QStringList MemoryRemapExpressionGatherer::getExpressions(QSharedPointer<AbstractMemoryMap> memoryMap) const
+QStringList MemoryRemapExpressionGatherer::getExpressions(QSharedPointer<MemoryMapBase> memoryMap) const
 {
     QStringList expressionList;
 
     AddressBlockExpressionGatherer addressBlockGatherer;
 
-    foreach(QSharedPointer<MemoryMapItem> memoryMapItem, memoryMap->getItems())
+    foreach(QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
     {
-        QSharedPointer<AddressBlock> addressBlock = memoryMapItem.dynamicCast<AddressBlock>();
+        QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
         if (addressBlock)
         {
             expressionList.append(addressBlockGatherer.getExpressions(addressBlock));

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 4.1.2013
- *      Author: Antti Kamppi
- * 		filename: addressspacegapitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacegapitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 04.01.2013
+//
+// Description:
+// The graphical item that represents a gap in between address space objects.
+//-----------------------------------------------------------------------------
 
 #ifndef ADDRESSSPACEGAPITEM_H
 #define ADDRESSSPACEGAPITEM_H
@@ -12,98 +16,109 @@
 
 class ExpressionParser;
 
-class AddressSpaceGapItem : public AddressSpaceVisualizationItem {
+//-----------------------------------------------------------------------------
+//! The graphical item that represents a gap in between address space objects.
+//-----------------------------------------------------------------------------
+class AddressSpaceGapItem : public AddressSpaceVisualizationItem
+{
 	Q_OBJECT
 
 public:
 
-	//! \brief Define where the address limits of the gap are being drawn.
-	enum AddressPosition {
+	//! Define where the address limits of the gap are being drawn.
+	enum AddressPosition
+    {
 		ALIGN_LEFT = 0,		// Align the address on the left side
 		ALIGN_RIGHT			// Align the address on the right side
 	};
 
-	/*! \brief The constructor
+	/*!
+	 *  The constructor.
 	 *
-	 * \param addrSpace Pointer to the address space containing the gaps.
-	 * \param parent Pointer to the parent graph item.
-	 *
-	*/
+	 *      @param [in] addrPos             Position of the address space.
+	 *      @param [in] addressSpaceWidth   Width of the address space.
+	 *      @param [in] expressionParser    The used expression parser.
+	 *      @param [in] parent              Pointer to the parent graph item.
+	 */
 	AddressSpaceGapItem(AddressPosition addrPos,
         QString const& addressSpaceWidth,
         QSharedPointer<ExpressionParser> expressionParser,
 		QGraphicsItem* parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~AddressSpaceGapItem();
 
-	//! \brief Refresh the item.
+	//! Refresh the item.
 	virtual void refresh();
 
-	/*! \brief Get the offset of the item. 
+	/*!
+     *  Get the offset of the item. 
 	 *
-	 * \return int The offset of the item.
-	*/
+	 *      @return int The offset of the item.
+	 */
 	virtual quint64 getOffset() const;
 
-	/*! \brief Get the last address contained in the item.
+	/*!
+     *  Get the last address contained in the item.
 	 *
-	 * \return The last address.
-	*/
+	 *      @return The last address.
+	 */
 	virtual quint64 getLastAddress() const;
 
-	/*! \brief Set start address for the gap.
+	/*!
+     *  Set start address for the gap.
 	 *
-	 * \param address The address that limits the gap start.
-	 * \param contains If true then the address is contained in the gap, 
-	 * otherwise the gap starts from next address.
-	 *
-	*/
+	 *      @param [in] address     The address that limits the gap start.
+	 *      @param [in] contains    If true then the address is contained in the gap, otherwise the gap starts
+     *                              from next address.
+	 */
 	void setStartAddress(quint64 address, bool contains = true);
 
-	/*! \brief Set end address for the gap.
+	/*!
+     *  Set end address for the gap.
 	 *
-	 * \param address The address that limits the gap end.
-	 * \param contains If true then the address is contained in the gap,
-	 * otherwise the gap ends before the specified address.
-	 *
-	*/
+	 *      @param [in] address     The address that limits the gap end.
+	 *      @param [in] contains    If true then the address is contained in the gap, otherwise the gap ends
+     *                              before the specified address.
+	 */
 	void setEndAddress(quint64 address, bool contains = true);
 
-	/*! \brief Specify if the address limits are displayed on right or left side.
+	/*!
+     *  Specify if the address limits are displayed on right or left side.
 	 *
-	 * \param pos The position where limits are drawn.
-	 *
-	*/
+	 *      @param [in] pos     The position where limits are drawn.
+	 */
 	void setAddressAlign(AddressPosition pos);
 
-    /*! \brief Sets the first non-overlapping address to display.
+    /*!
+     *  Sets the first non-overlapping address to display.
 	 *
-	 * \param The first address to set.
+	 *      @param [in] address     The first address to set.
 	 */
     virtual void setOverlappingTop(quint64 const& address);
 
-	/*! \brief Sets the last non-overlapping address to display.
+	/*!
+     *  Sets the last non-overlapping address to display.
 	 *
-	 * \param The last address to set.
+	 *      @param [in] address     The last address to set.
 	 */
     virtual void setOverlappingBottom(quint64 const& address);
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	AddressSpaceGapItem(const AddressSpaceGapItem& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	AddressSpaceGapItem& operator=(const AddressSpaceGapItem& other);
 
-	//! \brief The start address of the gap.
+	//! The start address of the gap.
 	quint64 start_;
 
-	//! \brief The end address of the gap.
+	//! The end address of the gap.
 	quint64 end_;
 
-	//! \brief Defines where the address limits are aligned.
+	//! Defines where the address limits are aligned.
 	AddressPosition addrPosition_;
 };
 

@@ -75,7 +75,7 @@ bool MultipleParameterFinder::hasId(QString const& id) const
 //-----------------------------------------------------------------------------
 QString MultipleParameterFinder::nameForId(QString const& id) const
 {
-    return getParameterWithID(id)->getName();
+    return getParameterWithID(id)->name();
 }
 
 //-----------------------------------------------------------------------------

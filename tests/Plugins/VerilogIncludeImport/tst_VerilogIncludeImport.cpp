@@ -18,9 +18,9 @@
 
 #include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 class tst_VerilogIncludeImport : public QObject
 {
@@ -70,7 +70,7 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-// Function: tst_VerilogIncludeImport::()
+// Function: tst_VerilogIncludeImport::tst_VerilogIncludeImport()
 //-----------------------------------------------------------------------------
 tst_VerilogIncludeImport::tst_VerilogIncludeImport(): importComponent_(0), displayEditor_(), 
     highlighter_(new ImportHighlighter(&displayEditor_, this))
@@ -110,7 +110,7 @@ void tst_VerilogIncludeImport::testNothingIsParsedFromMalformedInput()
 
     runParser(input);
 
-    QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), 0);
+    QCOMPARE(importComponent_->getParameters()->count(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -136,12 +136,12 @@ void tst_VerilogIncludeImport::testDefineIsParsed()
 
     runParser(input);
 
-    QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), 1);
+    QCOMPARE(importComponent_->getParameters()->count(), 1);
 
-    QSharedPointer<ModelParameter> createdParameter = importComponent_->getModel()->getModelParameters()->first();
-    QCOMPARE(createdParameter->getName(), expectedName);
+    QSharedPointer<Parameter> createdParameter = importComponent_->getParameters()->first();
+    QCOMPARE(createdParameter->name(), expectedName);
     QCOMPARE(createdParameter->getValue(), expectedValue);
-    QCOMPARE(createdParameter->getDescription(), expectedDescription);
+    QCOMPARE(createdParameter->description(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------
@@ -177,7 +177,7 @@ void tst_VerilogIncludeImport::testMultipleDefinitions()
 
     runParser(input);
 
-    QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), defineCount);
+    QCOMPARE(importComponent_->getParameters()->count(), defineCount);
 }
 
 //-----------------------------------------------------------------------------
@@ -220,7 +220,7 @@ void tst_VerilogIncludeImport::testDefinitionWithArgumentsIsNotParsed()
 
     runParser(input);
 
-    QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), 0);
+    QCOMPARE(importComponent_->getParameters()->count(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -245,8 +245,7 @@ void tst_VerilogIncludeImport::testDefineIsHighlighted()
 
     runParser(input);
 
-    QVERIFY2(importComponent_->getModel()->getModelParameters()->count() != 0, 
-        "No model parameters parsed from input.");
+    QVERIFY2(importComponent_->getParameters()->count() != 0, "No model parameters parsed from input.");
 
     int begin = input.indexOf(defineDeclaration);
 
@@ -286,16 +285,16 @@ void tst_VerilogIncludeImport::testWithoutHighlighter()
 //-----------------------------------------------------------------------------
 void tst_VerilogIncludeImport::testExistingParameterIsUpdated()
 {
-    QSharedPointer<ModelParameter> existingParameter(new ModelParameter());
+    QSharedPointer<Parameter> existingParameter(new Parameter());
     existingParameter->setName("EXISTING");
     existingParameter->setValue("1");
     existingParameter->setDescription("This parameter has already been defined");
-    importComponent_->getModel()->getModelParameters()->append(existingParameter);
+    importComponent_->getParameters()->append(existingParameter);
 
     runParser("`define EXISTING 2 // This parameter has been updated.\n\n");
 
-    QCOMPARE(importComponent_->getModel()->getModelParameters()->count(), 1);
-    QCOMPARE(importComponent_->getModel()->getModelParameters()->first()->getDescription(), 
+    QCOMPARE(importComponent_->getParameters()->count(), 1);
+    QCOMPARE(importComponent_->getParameters()->first()->description(), 
         QString("This parameter has been updated."));
 }
 

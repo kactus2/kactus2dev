@@ -14,9 +14,9 @@
 #include <library/LibraryManager/libraryitem.h>
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/component.h>
-
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -63,7 +63,7 @@ mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected t
     for (int i = 0; i < libInterface->getTreeRoot()->getNumberOfChildren(); ++i)
     {
         QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(0, libInterface->getTreeRoot()->child(i)->getName());
+        item->setText(0, libInterface->getTreeRoot()->child(i)->name());
 
         // Add child items.
         addChildItems(libInterface->getTreeRoot()->child(i), item);
@@ -232,7 +232,7 @@ void NewSystemPage::onTreeItemChanged(QTreeWidgetItem* cur, QTreeWidgetItem*)
                 sysVLNV.getName(), sysVLNV.getVersion()));
 
             // Add all available hierarchical views to the view combo box.
-            QSharedPointer<LibraryComponent> libComp = libInterface_->getModel(compVLNV);
+            QSharedPointer<Document> libComp = libInterface_->getModel(compVLNV);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             viewComboBox_->clear();
@@ -263,7 +263,7 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
 
         // Create a child tree widget item.
         QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(0, libItem->child(i)->getName());
+        item->setText(0, libItem->child(i)->name());
 
         // Recursively add its children if this is not the leaf level.
         if (!vlnv.isValid())
@@ -283,14 +283,14 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
         else
         {
             // Only hierarchical HW components are added.
-            QSharedPointer<LibraryComponent> libComp = libInterface_->getModel(vlnv);
+            QSharedPointer<Document> libComp = libInterface_->getModel(vlnv);
             QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
             QStringList views = comp->getHierViews();
             views.removeAll("kts_sw_ref");
             views.removeAll("kts_sys_ref");
 
-            if (comp->getComponentImplementation() != KactusAttribute::HW || views.empty())
+            if (comp->getImplementation() != KactusAttribute::HW || views.isEmpty())
             {
                 delete item;
                 continue;

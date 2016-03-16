@@ -14,11 +14,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/vlnv.h>
-
-#include <QObject>
+#include <IPXACTmodels/Design/Design.h>
 
 class LibraryMock : public QObject, public LibraryInterface
 {
@@ -38,7 +34,7 @@ public:
      *
      *      @return Description.
      */
-    void addComponent(QSharedPointer<LibraryComponent> component);
+    void addComponent(QSharedPointer<Document> component);
 
     /*!
      *  Method description.
@@ -56,7 +52,7 @@ public:
     *
     *      @return Description.
     */
-    virtual QSharedPointer<LibraryComponent> getModel(const VLNV& vlnv);
+    virtual QSharedPointer<Document> getModel(const VLNV& vlnv);
 
     /*!
     *  Method description.
@@ -65,7 +61,7 @@ public:
     *
     *      @return Description.
     */
-    virtual QSharedPointer<LibraryComponent const> getModelReadOnly(const VLNV& vlnv);
+    virtual QSharedPointer<Document const> getModelReadOnly(const VLNV& vlnv);
 
     /*!
     *  Method description.
@@ -101,7 +97,7 @@ public:
     *
     *      @return Description.
     */
-    virtual bool writeModelToFile(const QString path, QSharedPointer<LibraryComponent> model, bool printErrors = true);
+    virtual bool writeModelToFile(const QString& path, QSharedPointer<Document> model, bool printErrors = true);
 
     /*!
     *  Method description.
@@ -110,7 +106,7 @@ public:
     *
     *      @return Description.
     */
-    virtual bool writeModelToFile(QSharedPointer<LibraryComponent> model, bool printErrors = true);
+    virtual bool writeModelToFile(QSharedPointer<Document> model, bool printErrors = true);
 
     /*!
     *  Method description.
@@ -328,7 +324,7 @@ private:
     LibraryMock& operator=(LibraryMock const& rhs);
 
     //! The components in the library.
-    QMap<VLNV, QSharedPointer<LibraryComponent> > components_;
+    QMap<VLNV, QSharedPointer<Document> > components_;
 
     //! The paths to components in the library.
     QMap<VLNV, QString > paths_;

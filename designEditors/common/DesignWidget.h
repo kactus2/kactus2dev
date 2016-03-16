@@ -123,7 +123,7 @@ public:
     /*!
      *  Returns the VLNV of the currently open system.
      */
-    VLNV const* getOpenDocument() const;
+    VLNV getOpenDocument() const;
 
     /*! 
      *  Returns the vlnv of the edited component.
@@ -152,12 +152,7 @@ public:
      *
      *      @remarks Edit support should be queried with getFlags().
      */
-    IEditProvider* getEditProvider();
-
-    /*!
-     *  Returns the generic edit provider that manages the undo stack.
-     */
-    QSharedPointer<GenericEditProvider> getGenericEditProvider() const;
+    QSharedPointer<IEditProvider> getEditProvider() const;
 
     /*!
      *  Returns the design diagram.
@@ -256,7 +251,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The library interface.
-    LibraryInterface* lh_;
+    LibraryInterface* library_;
 
     //! The graphics view for showing the diagram.
     QGraphicsView* view_;

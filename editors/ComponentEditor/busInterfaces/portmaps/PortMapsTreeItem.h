@@ -6,7 +6,7 @@
 // Date: 7.10.2013
 //
 // Description:
-// <Short description of the class/file contents>
+// Base class for port maps items.
 //-----------------------------------------------------------------------------
 
 #ifndef PORTMAPSTREEITEM_H
@@ -17,13 +17,7 @@
 #include <QList>
 #include <QSharedPointer>
 
-#include <IPXACTmodels/generaldeclarations.h>
-
-class AbstractionDefinition;
-class BusInterface;
 class Component;
-
-
 
 //-----------------------------------------------------------------------------
 //! Base class for port maps items.
@@ -63,7 +57,6 @@ public:
 
     /*!
      *  Updates the item. The default implementation does nothing.
-     *
      */
     virtual void refresh();
 
@@ -86,12 +79,11 @@ public:
     /*!
      *  Checks the validity of the item. Default implementation checks all child items.
      *
-     *      @param [inout] errorList   The list to add the possible error messages to.
+     *      @param [in] errorList   List of found errors.
      *
-     *      @return True, if all childs are valid, otherwise false.
+     *      @return True, if all children are valid, otherwise false.
      */
     virtual bool isValid(QStringList& errorList) const;
-
 
     /*!
      *  Inserts an item.
@@ -146,7 +138,7 @@ public:
      *
      *      @return The name of the item.
      */
-    QString getName() const;
+    QString name() const;
 
 protected:
 

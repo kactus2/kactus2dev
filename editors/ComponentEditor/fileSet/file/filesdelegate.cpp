@@ -11,6 +11,7 @@
 
 #include "filesdelegate.h"
 #include "filetypeeditordelegate.h"
+#include "FileColumns.h"
 
 #include <common/widgets/listManager/listeditor.h>
 
@@ -18,23 +19,13 @@
 #include <QLineEdit>
 #include <QTextEdit>
 
-namespace
-{
-    enum FilesColumns
-    {
-        NAME_COLUMN = 0,
-        PATH_COLUMN,
-        TYPES_COLUMN,
-        DESCRIPTION
-    };
-}
-
 //-----------------------------------------------------------------------------
 // Function: FilesDelegate::FilesDelegate()
 //-----------------------------------------------------------------------------
 FilesDelegate::FilesDelegate(QObject *parent):
 MultilineDescriptionDelegate(parent)
 {
+
 }
 
 
@@ -43,6 +34,7 @@ MultilineDescriptionDelegate(parent)
 //-----------------------------------------------------------------------------
 FilesDelegate::~FilesDelegate()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -50,11 +42,11 @@ FilesDelegate::~FilesDelegate()
 //-----------------------------------------------------------------------------
 QWidget* FilesDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, QModelIndex const& index) const
 {
-	if (index.column() == NAME_COLUMN || index.column() == PATH_COLUMN)
+	if (index.column() == FileColumns::NAME_COLUMN || index.column() == FileColumns::PATH_COLUMN)
 	{
         return 0;
 	}
-    else if (index.column() == TYPES_COLUMN)
+    else if (index.column() == FileColumns::TYPES_COLUMN)
     {
         // create the editor
         ListEditor* listEditor = new ListEditor(parent);
@@ -77,12 +69,12 @@ QWidget* FilesDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem
 //-----------------------------------------------------------------------------
 void FilesDelegate::setEditorData(QWidget* editor, QModelIndex const& index ) const
 {
-    if (index.column() == NAME_COLUMN || index.column() == PATH_COLUMN)
+    if (index.column() == FileColumns::NAME_COLUMN || index.column() == FileColumns::PATH_COLUMN)
     {
         return;
     }
 
-    if (index.column() == TYPES_COLUMN)
+    if (index.column() == FileColumns::TYPES_COLUMN)
     {
         ListEditor* listEditor = qobject_cast<ListEditor*>(editor);
         Q_ASSERT(listEditor);
@@ -100,11 +92,11 @@ void FilesDelegate::setEditorData(QWidget* editor, QModelIndex const& index ) co
 //-----------------------------------------------------------------------------
 void FilesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
-	if (index.column() == NAME_COLUMN || index.column() == PATH_COLUMN)
+	if (index.column() == FileColumns::NAME_COLUMN || index.column() == FileColumns::PATH_COLUMN)
     {
         return;
     }
-    else if (index.column() == TYPES_COLUMN)
+    else if (index.column() == FileColumns::TYPES_COLUMN)
     {
         ListEditor* listEditor = qobject_cast<ListEditor*>(editor);
         Q_ASSERT(listEditor);
@@ -123,7 +115,7 @@ void FilesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QMo
 //-----------------------------------------------------------------------------
 int FilesDelegate::descriptionColumn() const
 {
-    return DESCRIPTION;
+    return FileColumns::DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------

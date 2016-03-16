@@ -17,9 +17,9 @@
 #include <wizards/ComponentWizard/ComponentWizardConclusionPage.h>
 
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/component.h>
-
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: ImportWizard::ImportWizard()
@@ -38,7 +38,7 @@ ImportWizard::ImportWizard(QSharedPointer<const Component> component,
     multiFinder->addFinder(notImportedFinder);
     multiFinder->addFinder(updatingFinder_);
 
-	setWindowTitle(tr("Import Wizard for %1").arg(component->getVlnv()->toString()));
+	setWindowTitle(tr("Import Wizard for %1").arg(component->getVlnv().toString()));
     setWizardStyle(ModernStyle);
     resize(800, 1000);
 

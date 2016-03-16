@@ -11,22 +11,20 @@
 
 #include "SWOffPageConnectorItem.h"
 
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
-#include <designEditors/common/diagramgrid.h>
 
-#include <QBrush>
 #include <QPen>
 
 //-----------------------------------------------------------------------------
 // Function: SWOffPageConnectorItem()
 //-----------------------------------------------------------------------------
-SWOffPageConnectorItem::SWOffPageConnectorItem(SWConnectionEndpoint* parent)
-    : SWConnectionEndpoint(parent),
-      parent_(parent)        
+SWOffPageConnectorItem::SWOffPageConnectorItem(SWConnectionEndpoint* parent):
+SWConnectionEndpoint(parent),
+parent_(parent)        
 {
     Q_ASSERT(parent != 0);
 
@@ -83,6 +81,9 @@ void SWOffPageConnectorItem::setName(QString const& name)
 	parent_->setName(name);
 }
 
+//-----------------------------------------------------------------------------
+// Function: SWOffPageConnectorItem::isHierarchical()
+//-----------------------------------------------------------------------------
 bool SWOffPageConnectorItem::isHierarchical() const
 {
     return parent_->isHierarchical();
@@ -131,29 +132,14 @@ QSharedPointer<Component> SWOffPageConnectorItem::getOwnerComponent() const
 //-----------------------------------------------------------------------------
 // Function: itemChange()
 //-----------------------------------------------------------------------------
-QVariant SWOffPageConnectorItem::itemChange(GraphicsItemChange change,
-                                             const QVariant &value)
+QVariant SWOffPageConnectorItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
-    switch (change)
+    if (change == ItemScenePositionHasChanged)
     {
-    case ItemScenePositionHasChanged:
+        // Update the connections.
+        foreach (GraphicsConnection* interconnection, getConnections())
         {
-            // Check if the updates are not disabled.
-            if (encompassingComp() == 0 || !encompassingComp()->isConnectionUpdateDisabled())
-            {
-                // Update the connections.
-                foreach (GraphicsConnection* interconnection, getConnections())
-                {
-                    interconnection->updatePosition();
-                }
-            }
-
-            break;
-        }
-
-    default:
-        {
-            break;
+            interconnection->updatePosition();
         }
     }
 
@@ -199,6 +185,9 @@ QString SWOffPageConnectorItem::description() const
 	return parent_->description();
 }
 
+//-----------------------------------------------------------------------------
+// Function: SWOffPageConnectorItem::setDescription()
+//-----------------------------------------------------------------------------
 void SWOffPageConnectorItem::setDescription(QString const& description)
 {
 	parent_->setDescription(description);
@@ -248,7 +237,7 @@ void SWOffPageConnectorItem::setDirection(QVector2D const& dir)
 //-----------------------------------------------------------------------------
 // Function: getDirection()
 //-----------------------------------------------------------------------------
-QVector2D const& SWOffPageConnectorItem::getDirection() const
+QVector2D SWOffPageConnectorItem::getDirection() const
 {
     return parent_->getDirection();
 }

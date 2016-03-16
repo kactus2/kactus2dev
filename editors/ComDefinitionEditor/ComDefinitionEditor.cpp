@@ -13,7 +13,8 @@
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
-#include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/validators/ComDefinitionValidator.h>
 
 #include <QVBoxLayout>
 #include <QGridLayout>
@@ -33,7 +34,7 @@ ComDefinitionEditor::ComDefinitionEditor(QWidget *parent,
       propertyEditor_(this)
 {
     // Initialize the editors.
-    dataTypeList_.initialize(comDef_->getTransferTypes());
+    dataTypeList_.initialize(*comDef_->getTransferTypes());
     propertyEditor_.setProperties(comDef_->getProperties());
 
     connect(&dataTypeList_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -47,12 +48,12 @@ ComDefinitionEditor::ComDefinitionEditor(QWidget *parent,
     setModified(false);
 
     // Set the document name and type.
-    VLNV const* vlnv = comDef_->getVlnv();
-    setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
+    VLNV const vlnv = comDef_->getVlnv();
+    setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     setDocumentType(tr("COM Definition"));
 
     // Open in unlocked mode by default only if the version is draft.
-    setProtection(vlnv->getVersion() != "draft");
+    setProtection(vlnv.getVersion() != "draft");
 }
 
 //-----------------------------------------------------------------------------
@@ -60,6 +61,14 @@ ComDefinitionEditor::ComDefinitionEditor(QWidget *parent,
 //-----------------------------------------------------------------------------
 ComDefinitionEditor::~ComDefinitionEditor()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComDefinitionEditor::getIdentifyingVLNV()
+//-----------------------------------------------------------------------------
+VLNV ComDefinitionEditor::getIdentifyingVLNV() const
+{
+    return getDocumentVLNV();
 }
 
 //-----------------------------------------------------------------------------
@@ -76,11 +85,11 @@ void ComDefinitionEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void ComDefinitionEditor::refresh()
 {
-    QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(*comDef_->getVlnv());
+    QSharedPointer<Document> libComp = libHandler_->getModel(comDef_->getVlnv());
     comDef_ = libComp.staticCast<ComDefinition>();
 
     // Initialize the editors.
-    dataTypeList_.initialize(comDef_->getTransferTypes());
+    dataTypeList_.initialize(*comDef_->getTransferTypes());
     propertyEditor_.setProperties(comDef_->getProperties());
 
     setModified(false);
@@ -92,16 +101,20 @@ void ComDefinitionEditor::refresh()
 //-----------------------------------------------------------------------------
 VLNV ComDefinitionEditor::getDocumentVLNV() const
 {
-    return *comDef_->getVlnv();
+    return comDef_->getVlnv();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComDefinitionEditor::validate()
 //-----------------------------------------------------------------------------
-bool ComDefinitionEditor::validate(QStringList& errorList)
+bool ComDefinitionEditor::validate(QVector<QString>& errorList)
 {
     applyChanges();
-    return comDef_->isValid(errorList);
+
+	ComDefinitionValidator validator;
+	validator.findErrorsIn(errorList, comDef_);
+
+    return errorList.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +137,7 @@ bool ComDefinitionEditor::saveAs()
     VLNV vlnv;
     QString directory;
 
-    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *comDef_->getVlnv(), vlnv, directory))
+    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, comDef_->getVlnv(), vlnv, directory))
     {
         return false;
     }
@@ -172,9 +185,5 @@ void ComDefinitionEditor::showEvent(QShowEvent* event)
 {
     TabDocument::showEvent(event);
     emit helpUrlRequested("definitions/comdefinition.html");
-}
-
-VLNV ComDefinitionEditor::getIdentifyingVLNV() const {
-	return getDocumentVLNV();
 }
 

@@ -47,6 +47,7 @@ public:
     FileDependency* getEditedDependency() const;
 
 signals:
+
     /*!
      *  Emitted when the dependency has been changed.
      */
@@ -65,9 +66,28 @@ public slots:
 
 private slots:
 
+    /*!
+     *  Handles a change in the direction..
+     *
+     *      @param [in] state   The new state for the direction.
+     */
     void directionCheckBoxChanged(int state);
+
+    /*!
+     *  Handles the change in the locked check.
+     *
+     *      @param [in] state   The new state.
+     */
     void lockedCheckChanged(int state);
+    
+    /*!
+     *  Handles the change in the description change.
+     */
     void descEditTextChanged();
+
+    /*!
+     *  Handles the reversing of the direction.
+     */
     void directionReversed();
 
 private:
@@ -75,7 +95,16 @@ private:
     FileDependencyInfoWidget(FileDependencyInfoWidget const& rhs);
     FileDependencyInfoWidget& operator=(FileDependencyInfoWidget const& rhs);
 
+    /*!
+     *  Update the file label.
+     */
     void updateFileLabel();
+
+    /*!
+     *  Locks / unlocks everything.
+     *
+     *      @param [in] isLocked    The lock status.
+     */
     void lockEverything(bool isLocked);
 
     //-----------------------------------------------------------------------------
@@ -96,7 +125,6 @@ private:
 
     //! The currently edited dependency.
     FileDependency* dependency_;
-
 };
 
 //-----------------------------------------------------------------------------

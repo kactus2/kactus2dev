@@ -12,7 +12,7 @@
 #include "ParameterArrayModel.h"
 #include "ArrayColumns.h"
 
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
 #include <QColor>
 
@@ -22,18 +22,23 @@
 ParameterArrayModel::ParameterArrayModel(int sizeOfArray, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<Choice> selectedChoice, QColor valueBackGroundColor, int arrayStartIndex,
-    QObject* parent /* = 0 */):
+    QObject* parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 sizeOfArray_(sizeOfArray),
 expressionformatter_(expressionFormatter),
 arrayValues_(),
 selectedChoice_(selectedChoice),
-validator_(new ParameterValidator2014(expressionParser, parameterFinder)),
+validator_(),
 parameterType_(),
 valueBackGroundColor_(valueBackGroundColor),
 arrayStartIndex_(arrayStartIndex)
 {
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices(new QList<QSharedPointer<Choice> >());
+    choices->append(selectedChoice);
+
+    validator_ = new ParameterValidator2014(expressionParser, choices);
+
     QString repeater = ",";
     QString newArray = repeater.repeated(sizeOfArray_ - 1);
     arrayValues_ = newArray.split(repeater);
@@ -139,7 +144,7 @@ QVariant ParameterArrayModel::data(const QModelIndex &index, int role) const
     {
         if (index.column() == ArrayColumns::VALUE)
         {
-            if (!selectedChoice_->getName().isEmpty())
+            if (!selectedChoice_->name().isEmpty())
             {
                 return expressionOrValueForIndex(index);
             }
@@ -308,7 +313,7 @@ QVariant ParameterArrayModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QString ParameterArrayModel::evaluateValueWithChoice(const int& row) const
 {
-    if (!selectedChoice_->getName().isEmpty())
+    if (!selectedChoice_->name().isEmpty())
     {
         foreach (QSharedPointer<Enumeration> enumeration, *selectedChoice_->enumerations())
         {

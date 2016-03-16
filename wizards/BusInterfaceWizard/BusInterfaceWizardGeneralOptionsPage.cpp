@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: BusInterfaceWizardVLNVSelectionPage.cpp
+// File: BusInterfaceWizardGeneralOptionsPage.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -12,7 +12,9 @@
 #include "BusInterfaceWizardGeneralOptionsPage.h"
 #include "BusInterfaceWizard.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
@@ -25,22 +27,26 @@
 BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, LibraryInterface* lh,  bool absDefEditable,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> ExpressionParser, BusInterfaceWizard* parent) : 
+    QSharedPointer<ExpressionParser> ExpressionParser, 
+    QSharedPointer<BusInterfaceValidator> validator,
+    BusInterfaceWizard* parent): 
 QWizardPage(parent),
-component_(component),
-busIf_(busIf),
-handler_(lh),
-newBus_(true),
-generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, ExpressionParser,
-                                this, parent))
+    component_(component),
+    busIf_(busIf),
+    handler_(lh),
+    validator_(validator),
+    newBus_(true),
+    generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, ExpressionParser,
+    this, parent))
 {
     setTitle(tr("Bus interface general options"));
-    setSubTitle(tr("Setup the general options for bus interface."));
+    setSubTitle(tr("Setup the general options for the bus interface."));
     setFinalPage(false);
 
     generalTab_->setAbsTypeMandatory(true);
     generalTab_->setBusTypesLock(!absDefEditable);
 
+    connect(generalTab_, SIGNAL(contentChanged()), this, SIGNAL(completeChanged()), Qt::UniqueConnection);
     connect(generalTab_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(generalTab_, SIGNAL(decreaseReferences(QString)),
@@ -54,6 +60,7 @@ generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressio
 //-----------------------------------------------------------------------------
 BusInterfaceWizardGeneralOptionsPage::~BusInterfaceWizardGeneralOptionsPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -73,41 +80,16 @@ void BusInterfaceWizardGeneralOptionsPage::initializePage()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardVLNVSelectionPage::validatePage()
-//-----------------------------------------------------------------------------
-bool BusInterfaceWizardGeneralOptionsPage::validatePage()
-{
-    QStringList errors;
-    bool valid = true;
- 
-   if (component_->hasInterface(busIf_->getName()) && 
-        component_->getBusInterface(busIf_->getName()) != busIf_)
-    {
-        errors.append(tr("Component %1 already has interface named %2.").arg(component_->getVlnv()->toString(), 
-            busIf_->getName()));
-        valid = false;
-    }    
-    
-    valid = generalTab_->isValid(errors) && valid;
-    if (!valid)
-    {
-        QMessageBox warningDialog(QMessageBox::Warning,
-            tr("Warning"),
-            tr("Interface definition has the following error(s):\n") + errors.join("\n"),
-            QMessageBox::Ok,
-            this);        
-        warningDialog.exec();
-    }
-
-    return valid;
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardVLNVSelectionPage::isComplete()
 //-----------------------------------------------------------------------------
-bool BusInterfaceWizardGeneralOptionsPage::isComplete()
+bool BusInterfaceWizardGeneralOptionsPage::isComplete() const
 {
-    return generalTab_->isValid();
+    if (component_->hasInterface(busIf_->name()) && component_->getBusInterface(busIf_->name()) != busIf_)
+    {
+        return false;
+    }        
+
+    return validator_->validate(busIf_);
 }
 
 //-----------------------------------------------------------------------------

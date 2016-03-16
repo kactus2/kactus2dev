@@ -17,12 +17,16 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/SWView.h>
-#include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/kactusExtensions/SWView.h>
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+
+#include <QFileInfo>
 
 //-----------------------------------------------------------------------------
 // Function: HierarchicalSaveBuildStrategy::HierarchicalSaveBuildStrategy()
@@ -70,7 +74,7 @@ void HierarchicalSaveBuildStrategy::saveItem(QTreeWidgetItem* item) const
 
         if (library_->contains(oldVLNV))
         {
-            QSharedPointer<LibraryComponent> newModel = library_->getModel(oldVLNV);
+            QSharedPointer<Document> newModel = library_->getModel(oldVLNV);
             newModel->setVlnv(newVLNV);
 
             int childCount = item->childCount();
@@ -270,7 +274,7 @@ bool HierarchicalSaveBuildStrategy::shouldSaveItem(QTreeWidgetItem* item) const
 //-----------------------------------------------------------------------------
 // Function: HierarchicalSaveBuildStrategy::updateReferencesTo()
 //-----------------------------------------------------------------------------
-void HierarchicalSaveBuildStrategy::updateReferencesFromTo(QSharedPointer<LibraryComponent> model, 
+void HierarchicalSaveBuildStrategy::updateReferencesFromTo(QSharedPointer<Document> model, 
     QTreeWidgetItem* childItem) const
 {
     VLNV childVLNV = VLNV(VLNV::COMPONENT, childItem->text(HierarchicalSaveColumns::VLNV));
@@ -278,11 +282,11 @@ void HierarchicalSaveBuildStrategy::updateReferencesFromTo(QSharedPointer<Librar
 
     VLNV newChildVLNV = VLNV(childVLNV.getType(), childItem->text(HierarchicalSaveColumns::SAVE_AS_VLNV));
 
-    if (model->getVlnv()->getType() == VLNV::COMPONENT)
+    if (model->getVlnv().getType() == VLNV::COMPONENT)
     {
         updateComponentReferences(model.dynamicCast<Component>(), childVLNV, newChildVLNV);
     }
-    else if (model->getVlnv()->getType() == VLNV::DESIGN)
+    else if (model->getVlnv().getType() == VLNV::DESIGN)
     {
         updateDesignReferences(model.dynamicCast<Design>(), childVLNV, newChildVLNV);
     }
@@ -294,40 +298,58 @@ void HierarchicalSaveBuildStrategy::updateReferencesFromTo(QSharedPointer<Librar
 void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Component> component, 
     VLNV const& reference, VLNV const& updatedReference) const
 {
-    foreach (QString viewName, component->getViewNames())
+    foreach (QSharedPointer<View> view, *component->getViews())
     {
-        View* view = component->findView(viewName);
-
         if (view->isHierarchical())
         {
-            VLNV hierarchyReference = view->getHierarchyRef();
+            VLNV hierarchyReference;
 
-            QSharedPointer<LibraryComponent> configModel = library_->getModel(hierarchyReference);
-            QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
-
-            if (hierarchyReference == reference)
+            QString designConfigurationName = view->getDesignConfigurationInstantiationRef();
+            foreach(QSharedPointer<DesignConfigurationInstantiation> instantiation, 
+                *component->getDesignConfigurationInstantiations())
             {
-                view->setHierarchyRef(updatedReference);
+                if (instantiation->name() == designConfigurationName)
+                {
+                    hierarchyReference = *instantiation->getDesignConfigurationReference();
+
+                    QSharedPointer<Document> configModel = library_->getModel(hierarchyReference);
+                    QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
+
+                    VLNV configVLNV(VLNV::DESIGNCONFIGURATION, updatedReference.toString());
+                    configVLNV.setName(configVLNV.getName() + "cfg");
+
+                    config->setVlnv(configVLNV);
+                    config->setDesignRef(updatedReference);
+
+                    instantiation->getDesignConfigurationReference()->setVendor(configVLNV.getVendor());
+                    instantiation->getDesignConfigurationReference()->setLibrary(configVLNV.getLibrary());
+                    instantiation->getDesignConfigurationReference()->setName(configVLNV.getName());
+                    instantiation->getDesignConfigurationReference()->setVersion(configVLNV.getVersion());
+
+                    saveToLibrary(hierarchyReference, config);
+
+                    break;
+                }
             }
-            else if (config && config->getDesignRef() == reference)
+
+            QString designName = view->getDesignInstantiationRef();
+            foreach(QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
             {
-                VLNV configVLNV(VLNV::DESIGNCONFIGURATION, updatedReference.toString());
-                configVLNV.setName(configVLNV.getName() + "cfg");
-
-                config->setVlnv(configVLNV);
-                config->setDesignRef(updatedReference);
-
-                view->setHierarchyRef(configVLNV);
-
-                saveToLibrary(hierarchyReference, config);
+                if (instantiation->name() == designName)
+                {
+                    instantiation->getDesignReference()->setVendor(updatedReference.getVendor());
+                    instantiation->getDesignReference()->setLibrary(updatedReference.getLibrary());
+                    instantiation->getDesignReference()->setName(updatedReference.getName());
+                    instantiation->getDesignReference()->setVersion(updatedReference.getVersion());
+                    break;
+                }
             }
         }
     }
 
-    foreach (QString viewName, component->getSWViewNames())
+    foreach (QSharedPointer<SWView> view, component->getSWViews())
     {
-        QSharedPointer<SWView> view = component->findSWView(viewName);
-        QSharedPointer<LibraryComponent> configModel = library_->getModel(view->getHierarchyRef());
+        QSharedPointer<Document> configModel = library_->getModel(view->getHierarchyRef());
         QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
 
         if (view->getHierarchyRef() == reference)
@@ -348,10 +370,9 @@ void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Com
         }
     }
 
-    foreach (QString viewName, component->getSystemViewNames())
+    foreach (QSharedPointer<SystemView> view, component->getSystemViews())
     {
-        SystemView* view = component->findSystemView(viewName);
-        QSharedPointer<LibraryComponent> configModel = library_->getModel(view->getHierarchyRef());
+        QSharedPointer<Document> configModel = library_->getModel(view->getHierarchyRef());
         QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
 
         if (view->getHierarchyRef() == reference)
@@ -379,39 +400,31 @@ void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Com
 void HierarchicalSaveBuildStrategy::updateDesignReferences(QSharedPointer<Design> design,
     VLNV childVLNV, VLNV newChildVLNV) const
 {
-    QList<ComponentInstance> updatedInstances;
-    foreach (ComponentInstance instance, design->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
-        if (instance.getComponentRef() == childVLNV)
+        if (*instance->getComponentRef() == childVLNV)
         {
-            instance.setComponentRef(newChildVLNV);
+            instance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(newChildVLNV)));
         }
-
-        updatedInstances.append(instance);
     }
 
-    QList<SWInstance> updatedSWInstances;
-    foreach (SWInstance instance, design->getSWInstances())
+    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
     {
-        if (instance.getComponentRef() == childVLNV)
+        if (*instance->getComponentRef() == childVLNV)
         {
-            instance.setComponentRef(newChildVLNV);
+            instance->setComponentRef(
+                QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(newChildVLNV)));
         }
-
-        updatedSWInstances.append(instance);
     }
-
-    design->setComponentInstances(updatedInstances);
-    design->setSWInstances(updatedSWInstances);
 }
 
 //-----------------------------------------------------------------------------
 // Function: SaveHierarchyDialog::saveToLibrary()
 //-----------------------------------------------------------------------------
 void HierarchicalSaveBuildStrategy::saveToLibrary(VLNV const& previousReference,
-    QSharedPointer<LibraryComponent> model) const
+    QSharedPointer<Document> model) const
 {
-    if (!library_->contains(*model->getVlnv()))
+    if (!library_->contains(model->getVlnv()))
     {
         QString path;
         if (saveMode_ == CURRENT_DIRECTORY)
@@ -425,7 +438,7 @@ void HierarchicalSaveBuildStrategy::saveToLibrary(VLNV const& previousReference,
         }
         else //if (saveMode_ == COMMON_ROOT_DIRECTORY)
         {
-            path = savePath_ + "/" + model->getVlnv()->toString("/");
+            path = savePath_ + "/" + model->getVlnv().toString("/");
         }
 
         library_->writeModelToFile(path, model);

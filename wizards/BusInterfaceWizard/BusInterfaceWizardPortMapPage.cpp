@@ -13,8 +13,12 @@
 
 #include "BusInterfaceWizard.h"
 
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/FileSet.h>
+
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
@@ -24,23 +28,26 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage()
 //-----------------------------------------------------------------------------
-BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage(QSharedPointer<Component> component, 
-    QSharedPointer<BusInterface> busIf, LibraryInterface* lh, 
-    QStringList physicalPorts,
-    BusInterfaceWizard* parent)
-    : QWizardPage(parent),      
-    component_(component),
-    busIf_(busIf),
-    handler_(lh),
-    portMapTab_(lh, component, busIf.data(), this)
+BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage(QSharedPointer<Component> component,
+    QSharedPointer<BusInterface> busIf, LibraryInterface* lh, QStringList physicalPorts,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<BusInterfaceValidator> validator,
+    BusInterfaceWizard* parent):
+QWizardPage(parent),
+component_(component),
+busIf_(busIf),
+handler_(lh),
+portMapTab_(lh, component, busIf, expressionParser, this),
+validator_(validator)
 {
     setTitle(tr("Port Maps"));
-    setSubTitle(tr("Create port maps for interface %1.").arg(busIf->getName()));
+    setSubTitle(tr("Create port maps for interface %1.").arg(busIf->name()));
     setFinalPage(false);
     
     portMapTab_.setPhysicalPorts(physicalPorts);
-    connect(&portMapTab_, SIGNAL(errorMessage(const QString&)),
-        this, SLOT(showErrorMessage(const QString&)), Qt::UniqueConnection);
+
+    connect(&portMapTab_, SIGNAL(errorMessage(QString const&)),
+        this, SLOT(showErrorMessage(QString const&)), Qt::UniqueConnection);    
+    connect(&portMapTab_, SIGNAL(contentChanged()), this, SIGNAL(completeChanged()), Qt::UniqueConnection);
 
     setupLayout();
 }
@@ -50,6 +57,7 @@ BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage(QSharedPointer<Comp
 //-----------------------------------------------------------------------------
 BusInterfaceWizardPortMapPage::~BusInterfaceWizardPortMapPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -65,42 +73,25 @@ int BusInterfaceWizardPortMapPage::nextId() const
 //-----------------------------------------------------------------------------
 void BusInterfaceWizardPortMapPage::initializePage()
 {
-    portMapTab_.setAbsType(busIf_->getAbstractionType(), busIf_->getInterfaceMode());
+    portMapTab_.setAbsType(*busIf_->getAbstractionTypes()->first()->getAbstractionRef(), busIf_->getInterfaceMode());
     
     portMapTab_.refresh();    
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardPortMapPage::validatePage()
+// Function: BusInterfaceWizardPortMapPage::isComplete()
 //-----------------------------------------------------------------------------
-bool BusInterfaceWizardPortMapPage::validatePage()
+bool BusInterfaceWizardPortMapPage::isComplete() const
 {
-    QStringList errors;
-    bool valid = portMapTab_.isValid(errors);
-
-    if (!valid)
-    {
-        QMessageBox warningDialog(QMessageBox::Warning,
-            tr("Warning"),
-            tr("Port maps has the following error(s):\n") + errors.join("\n"),
-            QMessageBox::Ok,
-            this);        
-        warningDialog.exec();
-    }
-
-    return valid;
+    return validator_->validate(busIf_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardPortMapPage::showErrorMessage()
 //-----------------------------------------------------------------------------
-void BusInterfaceWizardPortMapPage::showErrorMessage(const QString& msg)
+void BusInterfaceWizardPortMapPage::showErrorMessage(QString const& msg)
 {
-    QMessageBox warningDialog(QMessageBox::Warning,
-        tr("Warning"),
-        msg,
-        QMessageBox::Ok,
-        this);        
+    QMessageBox warningDialog(QMessageBox::Warning, tr("Warning"), msg, QMessageBox::Ok, this);
     warningDialog.exec();
 }
 

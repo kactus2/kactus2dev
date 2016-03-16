@@ -11,6 +11,7 @@
       Ports editor provides a table containing all the <i>ports</i> of
       a component. This editor is used to add, remove and edit the
       ports.
+      <br />In the elements, f(x) means that the value can be given as an expression.  
     </p>
     <p>
       <b>Port name</b> is a unique identifier and must match
@@ -23,15 +24,14 @@
     <ul>
       <li><strong>in</strong> for input ports.</li>
       <li><strong>out</strong> for output ports.</li>
-      <li><strong>inout</strong> for bidirectional and tri-state
-      ports.</li>
-      <li><strong>phantom</strong> for ports that exist on the IP-XACT
-      component but not on the implementation.</li>
+      <li><strong>inout</strong> for bidirectional and tri-state ports.</li>
+      <li><strong>phantom</strong> for ports that exist on the IP-XACT component but not on the implementation.
+        </li>
     </ul>
     <p>
       <b>Left</b> and <b>right bounds</b> define the indices of a
-      vectored port. The <b>width</b> of the port is <i>left bound -
-      right bound + 1</i>, e.g. 3 downto 0 requires 4 bits. For
+      vectored port. The <b>width</b> of the port is higher bound -
+      lower bound + 1, e.g. 3 downto 0 requires 4 bits. For
       scalar ports <i>left bound = right bound</i>. If either left
       bound or right bound is an expression, width cannot be set
       manually.
@@ -67,9 +67,9 @@
       <img src="../images/appicon.png" alt="Kactus-extension">
     </p>
     <p>
-      <b>Ad-hoc</b> column is a Kactus2-specific extension which is used
-      in the graphical user interface of a hierarchical design.<br>
-      <img src="../images/appicon.png" alt="Kactus-extension">
+      <b>Ad-hoc</b> column is a Kactus2-specific extension which is used in the graphical user interface of a 
+      hierarchical design. Ad-hoc determines wether the port is an ad-hoc port or not.
+      <br><img src="../images/appicon.png" alt="Kactus-extension">
       <br><br> <img src="../images/adHocPorts.PNG" alt="Component
       instance with ad-Hoc ports"><br> The component instances are
       drawn as rectangles and their external interfaces are drawn to

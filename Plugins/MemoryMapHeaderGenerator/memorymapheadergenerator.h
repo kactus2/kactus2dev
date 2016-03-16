@@ -16,10 +16,11 @@
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QObject>
 #include <QSharedPointer>
@@ -116,9 +117,9 @@ public:
       *
       *     @return True, if the generator supports the given component, false otherwise.
 	  */
-	 virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-		 QSharedPointer<LibraryComponent const> libDesConf = QSharedPointer<LibraryComponent const>(),
-		 QSharedPointer<LibraryComponent const> libDes = QSharedPointer<LibraryComponent const>()) const;
+	 virtual bool checkGeneratorSupport(QSharedPointer<Document const> libComp,
+		 QSharedPointer<Document const> libDesConf = QSharedPointer<Document const>(),
+		 QSharedPointer<Document const> libDes = QSharedPointer<Document const>()) const;
 
 	 /*!
 	  *  Runs the generator.
@@ -128,9 +129,9 @@ public:
 	  *      @param [in] libDesConf     The design configuration of a hierarchical component.
 	  *      @param [in] libDes         The design of a hierarchical component.
 	  */
-	 virtual void runGenerator(IPluginUtility* utility, QSharedPointer<LibraryComponent> libComp,
-         QSharedPointer<LibraryComponent> libDesConf = QSharedPointer<LibraryComponent>(),
-         QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent>());
+	 virtual void runGenerator(IPluginUtility* utility, QSharedPointer<Document> libComp,
+         QSharedPointer<Document> libDesConf = QSharedPointer<Document>(),
+         QSharedPointer<Document> libDes = QSharedPointer<Document>());
 
 	 /*!
 	  *  Get the external program requirements of the plugin.

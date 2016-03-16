@@ -1,18 +1,18 @@
-/* 
- *
- *  Created on: 7.2.2011
- *      Author: Antti Kamppi
- * 		filename: filebuildcommand.h
- */
+//-----------------------------------------------------------------------------
+// File: filebuildcommand.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 7.2.2011
+//
+// Description:
+// FileBuildCommand is a group box for editing buildCommand of a file.
+//-----------------------------------------------------------------------------
 
 #ifndef FILEBUILDCOMMAND_H
 #define FILEBUILDCOMMAND_H
 
 #include "targetnameedit.h"
-
-#include <IPXACTmodels/buildcommand.h>
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/component.h>
 
 #include <QGroupBox>
 #include <QLineEdit>
@@ -22,87 +22,99 @@
 #include <QSharedPointer>
 
 class LibraryInterface;
+class BuildCommand;
+class File;
+class Component;
 
-/*! \brief FileBuildCommand is a group box for editing buildCommand of a file.
- * 
- */
+//-----------------------------------------------------------------------------
+//! FileBuildCommand is a group box for editing buildCommand of a file.
+//-----------------------------------------------------------------------------
 class FileBuildCommand : public QGroupBox
 {
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param parent Pointer to the owner of this widget.
-	 * \param handler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param file Pointer to the file that is being edited.
-	 *
-	*/
-	FileBuildCommand(QWidget *parent, 
-		LibraryInterface* handler,
-		QSharedPointer<Component> component,
-		QSharedPointer<File> file);
+	 *      @param [in] parent      Pointer to the owner of this widget.
+	 *      @param [in] handler     Pointer to the instance that manages the library.
+	 *      @param [in] component   Pointer to the component being edited.
+	 *      @param [in] file        Pointer to the file that is being edited.
+	 */
+	FileBuildCommand(QWidget *parent, LibraryInterface* handler, QSharedPointer<Component> component,
+        QSharedPointer<File> file);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~FileBuildCommand();
 
-	/*! \brief Restore the changes from the model to the editor.
-	 *
-	*/
+	/*!
+     *  Restore the changes from the model to the editor.
+	 */
 	void refresh();
 
 signals:
 
-	//! \brief Emitted when contents of the widget change
+	//! Emitted when contents of the widget change.
 	void contentChanged();
 
 private slots:
 
-	//! \brief Handler for command changes.
+	//! Handler for command changes.
 	void onCommandChanged();
+    void updateFileBuildCommand();
 
-	//! \brief Handler for flag changes.
+	//! Handler for flag changes.
 	void onFlagsChanged();
 
-	//! \brief Handler for target changes.
+	//! Handler for target changes.
 	void onTargetChanged();
+
+    void onReplaceDefaultChanged();
 
 private:
 
-	//! \brief No copying
+	//! No copying. No assignment.
 	FileBuildCommand(const FileBuildCommand& other);
+    void setupLayout();
 
-	//! No assignment
-	FileBuildCommand& operator=(const FileBuildCommand& other);
+    FileBuildCommand& operator=(const FileBuildCommand& other);
 
-	//! \brief set up the command editor
-	void setupCommand();
-
-	//! \brief Set up the flags editor
-	void setupFlags();
-
-	//! \brief Set up the target editor
+	/*!
+	 *  Set up the target editor.
+	 */
 	void setupTarget();
 
-	//! \brief Pointer to the file's buildCommand
-	BuildCommand* buildCommand_;
+	/*!
+	 *  Set up the command editor.
+	 */
+	void setupCommand();
 
-	//! \brief Editor to set file's build command
-	QLineEdit command_;
+	/*!
+	 *  Set up the flags editor.
+	 */
+	void setupFlags();
 
-	//! \brief Editor to set build command's flags
-	QLineEdit flags_;
+    void setupReplaceDefaultFlags();
 
-	//! \brief Editor to set build command's replaceDefaultFlags setting
-	QCheckBox replaceDefault_;
+    //! The file whose build command to edit.
+    QSharedPointer<File> file_;
 
-	//! \brief Editor to set build command's target file.
-	TargetNameEdit target_;
+	//! The file's buildCommand.
+    QSharedPointer<BuildCommand> buildCommand_; 
 
-	//! \brief the layout for the widget
-	QGridLayout layout_;
+	//! Editor to set file's build command.
+	QLineEdit commandEditor_;
+
+	//! Editor to set build command's flags.
+	QLineEdit flagsEditor_;
+
+	//! Editor to set build command's replaceDefaultFlags setting.
+    QLineEdit replaceDefaultEditor_;
+
+	//! Editor to set build command's target file.
+	TargetNameEdit targetEditor_;
 };
 
 #endif // FILEBUILDCOMMAND_H

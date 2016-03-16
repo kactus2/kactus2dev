@@ -14,8 +14,6 @@
 
 #include <common/widgets/tabDocument/TabDocument.h>
 
-#include <IPXACTmodels/component.h>
-
 #include <editors/ComponentEditor/treeStructure/componenttreeview.h>
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorgroupslot.h>
@@ -24,13 +22,17 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
+#include <IPXACTmodels/Component/validators/ComponentValidator.h>
+
 #include <QSharedPointer>
 #include <QSplitter>
 #include <QSettings>
 
 class LibraryInterface;
 class PluginManager;
+class Component;
 
+class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The editor to edit/packet IP-Xact components.
 //-----------------------------------------------------------------------------
@@ -100,13 +102,14 @@ public:
 
 public slots:
 
-    /*! Validates the document against the IP-XACT standard.
+    /*!
+     *  Validates the document against the IP-XACT standard.
      *
-     *      @param [in] errorList Error message list for reporting standard violations.
+     *      @param [in] errorList   Error message list for reporting standard violations.
      *
      *      @return True if the document is valid. False if there were any violations.
-    */
-    virtual bool validate(QStringList& errorList);
+     */
+    virtual bool validate(QVector<QString>& errorList);
 
 	//! Saves the document and resets the modified state.
 	virtual bool save();
@@ -226,6 +229,35 @@ private:
     //! Setups the editor layout.
     void setupLayout();
 
+    /*!
+     *  Update component files of a target component.
+     *
+     *      @param [in] targetComponent     The component whose files are being updated.
+     *      @param [in] otherComponent      The other component.
+     *      @param [in] sourcePath          Source path.
+     *      @param [in] targetPath          Target path.
+     */
+    void updateComponentFiles(QSharedPointer<Component> targetComponent, QSharedPointer<Component> otherComponent,
+        QString const& sourcePath, QString const& targetPath);
+
+    /*!
+     *  Get a list of the file names of a component.
+     *
+     *      @param [in] component   The component whose file names are being looked.
+     *
+     *      @return A list of file names contained within a component.
+     */
+    QStringList getComponentFileNames(QSharedPointer<Component> component) const;
+
+    /*!
+     *  Change the name of a single file.
+     *
+     *      @param [in] from        The original file name.
+     *      @param [in] to          The new file name.
+     *      @param [in] component   The component containing the file.
+     */
+    void changeFileName(QString const& from, QString const& to, QSharedPointer<Component> component) const;
+
 	//-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -268,6 +300,12 @@ private:
 
     //! The expression formatter used to change ids to names in expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The used component validator.
+    ComponentValidator validator_;
 };
 
 #endif // COMPONENTEDITOR_H

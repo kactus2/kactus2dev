@@ -11,8 +11,8 @@
 
 #include "CSourceHighlighter.h"
 
-#include <IPXACTmodels/ApiDefinition.h>
-#include <IPXACTmodels/ApiFunction.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunction.h>
 
 //-----------------------------------------------------------------------------
 // Static member initializations.
@@ -198,7 +198,7 @@ void CSourceHighlighter::registerAPI(QSharedPointer<ApiDefinition const> apiDef)
     rule.format = &m_styleFormats[STYLE_API_DATA_TYPES];
 
     // Register data type rules.
-    foreach (QString const& dataType, apiDef->getDataTypes())
+    foreach (QString const& dataType, *apiDef->getDataTypes())
     {
         rule.pattern = QRegExp("\\b" + dataType + "\\b");
         highlightRules_.append(rule);
@@ -207,10 +207,9 @@ void CSourceHighlighter::registerAPI(QSharedPointer<ApiDefinition const> apiDef)
     // Register function rules.
     rule.format = &m_styleFormats[STYLE_API_FUNCTIONS];
 
-    for (int i = 0; i < apiDef->getFunctionCount(); ++i)
+	foreach ( QSharedPointer<ApiFunction> apiFunc, *apiDef->getFunctions() )
     {
-        QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
-        rule.pattern = QRegExp("\\b" + apiFunc->getName() + "\\b");
+        rule.pattern = QRegExp("\\b" + apiFunc->name() + "\\b");
         highlightRules_.append(rule);
     }
 }

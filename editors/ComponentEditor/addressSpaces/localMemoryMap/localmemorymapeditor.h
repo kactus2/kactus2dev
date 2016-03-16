@@ -1,15 +1,16 @@
-/* 
- *  	Created on: 13.10.2012
- *      Author: Antti Kamppi
- * 		filename: localmemorymapeditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: localmemorymapeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 13.10.2012
+//
+// Description:
+// LocalMemoryMapEditor is used to edit a local memory map of an address space.
+//-----------------------------------------------------------------------------
 
 #ifndef LOCALMEMORYMAPEDITOR_H
 #define LOCALMEMORYMAPEDITOR_H
-
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/component.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -18,15 +19,20 @@
 #include <QSharedPointer>
 #include <QCheckBox>
 
-class NameGroupEditor;
+class AddressSpace;
+class Component;
 class EditableTableView;
-class MemoryMapModel;
 class LibraryInterface;
+class MemoryMapBase;
+class MemoryMapModel;
+class NameGroupEditor;
 
-/*! \brief LocalMemoryMapEditor is used to edit a local memory map of an address space.
- *
- */
-class LocalMemoryMapEditor : public QGroupBox {
+class MemoryMapBaseValidator;
+//-----------------------------------------------------------------------------
+//! LocalMemoryMapEditor is used to edit a local memory map of an address space.
+//-----------------------------------------------------------------------------
+class LocalMemoryMapEditor : public QGroupBox
+{
 	Q_OBJECT
 
 public:
@@ -34,47 +40,43 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] memoryMap               Pointer to the local memory map being edited.
+	 *      @param [in] addressSpace            Pointer to the local memory map being edited.
 	 *      @param [in] component               Pointer to the component being edited.
 	 *      @param [in] handler                 Pointer to the instance managing the library.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] memoryMapBaseValidator  Validator used for the memory map base.
 	 *      @param [in] parent                  Pointer to the owner of the editor.
 	 */
-	LocalMemoryMapEditor(QSharedPointer<MemoryMap> memoryMap,
+	LocalMemoryMapEditor(QSharedPointer<AddressSpace> addressSpace,
 		QSharedPointer<Component> component,
 		LibraryInterface* handler,
         QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer <ExpressionFormatter> expressionFormatter,
+        QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
 		QWidget *parent);
 	
-	//! \brief The destructor.
+	//! The destructor.
 	virtual ~LocalMemoryMapEditor();
 
-	/*! \brief Check for the validity of the editor.
-	* 
-	* \return True if local memory map is valid.
-	*/
-	bool isValid() const;
-
-	//! \brief Reload the information from the model to the editor.
+	//! Reload the information from the model to the editor.
 	void refresh();
 
 signals:
 
-	//! \brief Emitted when the contents of the model change.
+	//! Emitted when the contents of the model change.
 	void contentChanged();
 
     //! Emitted when the changes should be reflected in visualization.
     void graphicsChanged();
 
-	//! \brief Emitted when a new memory map item is added to the given index.
+	//! Emitted when a new memory map item is added to the given index.
 	void itemAdded(int index);
 
-	//! \brief Emitted when a memory map item is removed from the given index.
+	//! Emitted when a memory map item is removed from the given index.
 	void itemRemoved(int index);
 
-    //! \brief Prints an error message to the user.
+    //! Prints an error message to the user.
     void errorMessage(const QString& msg) const;
 
     /*!
@@ -91,35 +93,45 @@ signals:
      */
     void decreaseReferences(QString id);
 
+    /*!
+     *  Assign the new address unit bits for address blocks.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
+    void assignNewAddressUnitBits(QString const& newAddressUnitBits);
+
 public slots:
 
-    
+    /*!
+     *  The check state has been changed.
+     */
     void onCheckStateChanged();
 
 private:
 	
-	//! \brief No copying
+	//! No copying. No assignment.
 	LocalMemoryMapEditor(const LocalMemoryMapEditor& other);
-
-	//! \brief No assignment
 	LocalMemoryMapEditor& operator=(const LocalMemoryMapEditor& other);
 
-	//! \brief Pointer to the local memory map being edited.
-	QSharedPointer<MemoryMap> localMemoryMap_;
+    //! The address space being edited.
+    QSharedPointer<AddressSpace> addressSpace_;
 
-	//! \brief Used to edit the name, display name and description.
+	//! Pointer to the local memory map being edited.
+	QSharedPointer<MemoryMapBase> localMemoryMap_;
+
+	//! Used to edit the name, display name and description.
 	NameGroupEditor* nameEditor_;
 
-	//! \brief The view to display the table of local memory address blocks
+	//! The view to display the table of local memory address blocks
 	EditableTableView* view_;
 
-	//! \brief The model that manages the items.
+	//! The model that manages the items.
 	MemoryMapModel* model_;
 
-	//! \brief Pointer to the component being edited.
+	//! Pointer to the component being edited.
 	QSharedPointer<Component> component_;
 
-	//! \brief Pointer to the instance managing the library.
+	//! Pointer to the instance managing the library.
 	LibraryInterface* handler_;
 };
 

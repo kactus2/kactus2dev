@@ -11,7 +11,7 @@
 
 #include "VLNVComparator.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 //-----------------------------------------------------------------------------
 // Function: VLNVComparator::VLNVComparator()

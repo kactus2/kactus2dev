@@ -12,9 +12,9 @@
 #include "ComponentWizardGeneralInfoPage.h"
 #include "ComponentWizardPages.h"
 
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QFormLayout>
-#include <QLineEdit>
-#include <QWizardPage>
 #include <QSettings>
 
 #include <common/utils.h>
@@ -22,12 +22,12 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardGeneralInfoPage::ComponentWizardGeneralInfoPage()
 //-----------------------------------------------------------------------------
-ComponentWizardGeneralInfoPage::ComponentWizardGeneralInfoPage(QSharedPointer<Component> component, 
-	QWidget* parent)
-    : QWizardPage(parent),
-      component_(component),
-      authorEditor_(this),
-      descriptionEditor_(this)
+ComponentWizardGeneralInfoPage::ComponentWizardGeneralInfoPage(QSharedPointer<Component> component,
+    QWidget* parent):
+QWizardPage(parent),
+component_(component),
+authorEditor_(this),
+descriptionEditor_(this)
 {
     setTitle(tr("General information"));
     setSubTitle(tr("Fill in the general information of the component to create."));
@@ -47,6 +47,7 @@ ComponentWizardGeneralInfoPage::ComponentWizardGeneralInfoPage(QSharedPointer<Co
 //-----------------------------------------------------------------------------
 ComponentWizardGeneralInfoPage::~ComponentWizardGeneralInfoPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------

@@ -6,39 +6,39 @@
 // Date: 7.10.2013
 //
 // Description:
-// <Short description of the class/file contents>
+// Base class for port maps items.
 //-----------------------------------------------------------------------------
 
 #include "PortMapsTreeItem.h"
 
 
-#include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::PortMapsTreeItem()
 //-----------------------------------------------------------------------------
-PortMapsTreeItem::PortMapsTreeItem() : 
-    component_(0),
-    parent_(0),    
-    type_(ITEM_TYPE_ROOT),
-    name_("root"),
-    children_()
+PortMapsTreeItem::PortMapsTreeItem() :
+component_(0),
+parent_(0),
+type_(ITEM_TYPE_ROOT),
+name_("root"),
+children_()
 {
+
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortMapsTreeItem::PortMapsTreeItem()
 //-----------------------------------------------------------------------------
-PortMapsTreeItem::PortMapsTreeItem(PortMapsTreeItem* parent, 
-    QSharedPointer<Component> component, QString const& name, ItemType type): 
+PortMapsTreeItem::PortMapsTreeItem(PortMapsTreeItem* parent, QSharedPointer<Component> component,
+    QString const& name, ItemType type): 
 component_(component),
-    parent_(parent),
-    type_(type),
-    name_(name),
-    children_()
+parent_(parent),
+type_(type),
+name_(name),
+children_()
 {
+
 }
 
 
@@ -58,6 +58,7 @@ PortMapsTreeItem::~PortMapsTreeItem()
 //-----------------------------------------------------------------------------
 void PortMapsTreeItem::refresh()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -73,7 +74,7 @@ QVariant PortMapsTreeItem::data(int) const
 //-----------------------------------------------------------------------------
 bool PortMapsTreeItem::isValid() const
 {    
-    // Item is valid, if all childs are valid.
+    // Item is valid, if all children are valid.
     for(int i = 0; i < getChildCount(); i++)
     {
         if (!getChild(i)->isValid())
@@ -95,6 +96,7 @@ bool PortMapsTreeItem::isValid(QStringList& errorList) const
     {
         if (!getChild(i)->isValid(errorList))
         {
+            errorList.append(name_ + " is not valid.");
             valid = false;
         }
     }
@@ -170,9 +172,9 @@ PortMapsTreeItem::ItemType PortMapsTreeItem::getType() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortMapsTreeItem::getName()
+// Function: PortMapsTreeItem::name()
 //-----------------------------------------------------------------------------
-QString PortMapsTreeItem::getName() const
+QString PortMapsTreeItem::name() const
 {
     return name_;
 }

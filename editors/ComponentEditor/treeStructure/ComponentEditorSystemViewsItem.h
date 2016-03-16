@@ -14,72 +14,68 @@
 
 #include "componenteditoritem.h"
 
-/*! \brief The System Views-item in the component editor's navigation tree.
- *
- */
-class ComponentEditorSystemViewsItem : public ComponentEditorItem {
+class SystemView;
+//-----------------------------------------------------------------------------
+//! The System Views-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorSystemViewsItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
-	 *
+	 *      @param [in] model       The model that owns the items.
+	 *      @param [in] libHandler  The instance that manages the library.
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] parent      The parent item.
 	*/
-	ComponentEditorSystemViewsItem(ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
-		ComponentEditorItem* parent);
+	ComponentEditorSystemViewsItem(ComponentEditorTreeModel* model,	LibraryInterface* libHandler,
+		QSharedPointer<Component> component, ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ComponentEditorSystemViewsItem();
 
-	/*! \brief Get the font to be used for text of this item.
+	/*! Get the font to be used for text of this item.
 	*
 	* The font is bold, if system views exist, otherwise not bold.
 	*
-	* \return QFont instance that defines the font to be used.
+	*      @return QFont instance that defines the font to be used.
 	*/
 	virtual QFont getFont() const;
 
-	/*! \brief Get the tool tip for the item.
+	/*! Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
+	 *      @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
+	 *      @return QString Contains the text to display.
 	*/
 	virtual QString text() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*! Get pointer to the editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Add a new child to the item.
+	/*! Add a new child to the item.
 	 * 
-	 * \param index The index to add the child into.
+	 *      @param [in] index The index to add the child into.
 	 *
 	*/
 	virtual void createChild(int index);
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentEditorSystemViewsItem(const ComponentEditorSystemViewsItem& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComponentEditorSystemViewsItem& operator=(const ComponentEditorSystemViewsItem& other);
-
-	//! \brief Contains the system views being edited.
-	QList<QSharedPointer<SystemView> >& systemViews_;
 };
 
 #endif // COMPONENTEDITORSYSTEMVIEWSITEM_H

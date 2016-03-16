@@ -8,8 +8,8 @@
 #ifndef SYSTEMHEADERSAVEMODEL_H
 #define SYSTEMHEADERSAVEMODEL_H
 
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QAbstractTableModel>
 #include <QString>

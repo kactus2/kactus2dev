@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.8.2011
- *      Author: Antti Kamppi
- * 		filename: componentinstanceeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componentinstanceeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.08.2011
+//
+// Description:
+// Editor to edit the details of a component instance within a design.
+//-----------------------------------------------------------------------------
 
 #include "componentinstanceeditor.h"
 
@@ -13,17 +17,15 @@
 
 #include <designEditors/common/DesignCompletionModel.h>
 #include <designEditors/common/TopComponentParameterFinder.h>
-#include <designEditors/HWDesign/HWComponentItem.h>
-#include <designEditors/HWDesign/HWDesignWidget.h>
+
 #include <designEditors/HWDesign/HWChangeCommands.h>
-#include <designEditors/SystemDesign/SystemChangeCommands.h>
+
 #include <designEditors/SystemDesign/SystemComponentItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemChangeCommands.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/designconfiguration.h>
-
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QVBoxLayout>
 #include <QDockWidget>
@@ -31,19 +33,19 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::ComponentInstanceEditor()
 //-----------------------------------------------------------------------------
-ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
-    : QWidget(parent),
-      component_(0),
-      vlnvDisplayer_(new VLNVDisplayer(this)),
-      nameGroup_(new NameGroupBox(this, tr("Instance name"))),
-      configurableElements_(0),
-      swGroup_(new QGroupBox(tr("SW"), this)),
-      fileSetRefCombo_(new QComboBox(this)),
-      propertyValueEditor_(new PropertyValueEditor(this)),
-      editProvider_(0),
-      instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
-      listFinder_(new ListParameterFinder()),
-      topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0)))
+ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent):
+QWidget(parent),
+component_(0),
+vlnvDisplayer_(new VLNVDisplayer(this)),
+nameGroup_(new NameGroupBox(this, tr("Instance name"))),
+configurableElements_(0),
+swGroup_(new QGroupBox(tr("SW"), this)),
+fileSetRefCombo_(new QComboBox(this)),
+propertyValueEditor_(new PropertyValueEditor(this)),
+editProvider_(0),
+instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
+listFinder_(new ListParameterFinder()),
+topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0)))
 {
     QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
     multiFinder->addFinder(listFinder_);
@@ -85,12 +87,9 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
     layout->addWidget(propertyValueEditor_);
 	layout->addStretch();
 
-	connect(nameGroup_, SIGNAL(nameChanged(QString const&)),
-		    this, SLOT(onNameChanged(QString const&)), Qt::UniqueConnection);
-	connect(nameGroup_, SIGNAL(displayNameChanged(const QString)),
-		    this, SLOT(onDisplayNameChanged(const QString)), Qt::UniqueConnection);
-	connect(nameGroup_, SIGNAL(descriptionChanged(const QString)),
-		    this, SLOT(onDescriptionChanged(QString const&)), Qt::UniqueConnection);
+    connect(nameGroup_, SIGNAL(nameChanged()), this, SLOT(onNameChanged()), Qt::UniqueConnection);
+    connect(nameGroup_, SIGNAL(displayNameChanged()), this, SLOT(onDisplayNameChanged()), Qt::UniqueConnection);
+    connect(nameGroup_, SIGNAL(descriptionChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
     connect(propertyValueEditor_, SIGNAL(contentChanged()),
             this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);            
 
@@ -102,12 +101,13 @@ ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent)
 //-----------------------------------------------------------------------------
 ComponentInstanceEditor::~ComponentInstanceEditor()
 {
+
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::setComponentInstance()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
+void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider)
 {
 	Q_ASSERT(component);
 
@@ -129,7 +129,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
     instanceFinder_->setComponent(component->componentModel());
 
 	// set the vlnv of the component to be displayed
-	vlnvDisplayer_->setVLNV(*component->componentModel()->getVlnv(), true);
+	vlnvDisplayer_->setVLNV(component->componentModel()->getVlnv(), true);
 	vlnvDisplayer_->show();
 
 	nameGroup_->setName(component->name());
@@ -170,7 +170,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
         SystemComponentItem* swComponent = static_cast<SystemComponentItem*>(component);
 
         propertyValueEditor_->setData(swComponent->getPropertyValues());
-        propertyValueEditor_->setAllowedProperties(&swComponent->componentModel()->getSWProperties());
+        propertyValueEditor_->setAllowedProperties(*swComponent->componentModel()->getSWProperties());
 
         propertyValueEditor_->show();
         configurableElements_->hide();
@@ -183,7 +183,8 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
         propertyValueEditor_->hide();
 
         // Show the component's configurable elements in case of HW.
-	    configurableElements_->setComponent(component);
+        configurableElements_->setComponent(component->componentModel(), component->getComponentInstance(),
+            editProvider);
 	    configurableElements_->show();
     }
 
@@ -207,7 +208,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component)
 // Function: ComponentInstanceEditor::setContext()
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::setContext(QSharedPointer<Component> topComponent,
-    QSharedPointer<DesignConfiguration> designConfiguration, GenericEditProvider* editProvider)
+    QSharedPointer<DesignConfiguration> designConfiguration, QSharedPointer<IEditProvider> editProvider)
 {
     configurableElements_->setDesignConfigurationToModel(designConfiguration);
     topFinder_->setComponent(topComponent);
@@ -232,6 +233,14 @@ void ComponentInstanceEditor::setProtection(bool locked)
 void ComponentInstanceEditor::setTopComponentActiveView(QString const& activeView)
 {
     topFinder_->setActiveView(activeView);
+}
+
+//-----------------------------------------------------------------------------
+// Function: componentinstanceeditor::changeDesignConfiguration()
+//-----------------------------------------------------------------------------
+void ComponentInstanceEditor::changeDesignConfiguration(QSharedPointer<DesignConfiguration> newDesignConfiguration)
+{
+    configurableElements_->setDesignConfigurationToModel(newDesignConfiguration);
 }
 
 //-----------------------------------------------------------------------------
@@ -266,8 +275,10 @@ void ComponentInstanceEditor::clear()
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::onNameChanged()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::onNameChanged( QString const& newName )
+void ComponentInstanceEditor::onNameChanged()
 {
+    QString newName = nameGroup_->name();
+
 	// create command to the undo/redo stack
 	QSharedPointer<ComponentChangeNameCommand> cmd(new ComponentChangeNameCommand(component_, newName));
 
@@ -284,8 +295,10 @@ void ComponentInstanceEditor::onNameChanged( QString const& newName )
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::onDisplayNameChanged()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::onDisplayNameChanged( QString const& newDisplayName )
+void ComponentInstanceEditor::onDisplayNameChanged()
 {
+    QString newDisplayName = nameGroup_->displayName();
+
 	// create command to the undo/redo stack
 	QSharedPointer<ComponentChangeDisplayNameCommand> cmd(new ComponentChangeDisplayNameCommand(component_, 
         newDisplayName));
@@ -303,9 +316,12 @@ void ComponentInstanceEditor::onDisplayNameChanged( QString const& newDisplayNam
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::onDescriptionChanged()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::onDescriptionChanged( QString const& newDescription ) {
+void ComponentInstanceEditor::onDescriptionChanged()
+{
+    QString newDescription = nameGroup_->description();
 	// create command to the undo/redo stack
-	QSharedPointer<ComponentChangeDescriptionNameCommand> cmd(new ComponentChangeDescriptionNameCommand(component_, newDescription));
+	QSharedPointer<ComponentChangeDescriptionNameCommand> cmd(new ComponentChangeDescriptionNameCommand(component_,
+        newDescription));
 
 	disconnect(component_, SIGNAL(descriptionChanged(QString const&)),
 		nameGroup_, SLOT(setDescription(QString const&)));

@@ -14,11 +14,10 @@
 
 #include "BusInterfaceWizard.h"
 
-#include <IPXACTmodels/businterface.h>
-
 #include <QLabel>
 #include <QWizardPage>
 
+class BusInteface;
 //-----------------------------------------------------------------------------
 //! Summary page for the interface wizard.
 //-----------------------------------------------------------------------------

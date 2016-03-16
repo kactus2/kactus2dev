@@ -15,10 +15,9 @@
 #include <wizards/common/IPXactDiff.h>
 #include <wizards/common/IPXactElementComparator.h>
 
-#include <IPXACTmodels/vlnv.h>
-
 #include <QList>
 
+class VLNV;
 //-----------------------------------------------------------------------------
 //! Comparator for finding differences in VLVN elements.
 //-----------------------------------------------------------------------------

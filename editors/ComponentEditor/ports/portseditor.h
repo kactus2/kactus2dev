@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 31.3.2011
- *      Author: Antti Kamppi
- * 		filename: portseditor.h
- */
+//-----------------------------------------------------------------------------
+// File: portseditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 31.03.2011
+//
+// Description:
+// Editor to edit the ports of a component.
+//-----------------------------------------------------------------------------
 
 #ifndef PORTSEDITOR_H
 #define PORTSEDITOR_H
@@ -11,23 +15,24 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/itemeditor.h>
+
 #include <common/views/EditableTableView/editabletableview.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/port.h>
-
-
-#include "PortsView.h"
 
 #include <QPushButton>
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
+class Component;
 class LibraryInterface;
+class Port;
 class PortsModel;
-/*! \brief Editor to edit the ports of a component.
- *
- */
-class PortsEditor : public ItemEditor {
+class PortsView;
+class PortValidator;
+//-----------------------------------------------------------------------------
+//! Editor to edit the ports of a component.
+//-----------------------------------------------------------------------------
+class PortsEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
@@ -35,40 +40,39 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] handler                 Pointer to the instance that manages the library.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] parent                  Pointer to the owner of this widget.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] handler                 The instance that manages the library.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] portValidator           Validator used for ports.
+	 *      @param [in] parent                  The owner of this widget.
 	 */
 	PortsEditor(QSharedPointer<Component> component,
                 LibraryInterface* handler,
                 QSharedPointer<ParameterFinder> parameterFinder,
                 QSharedPointer<ExpressionFormatter> expressionFormatter,
+                QSharedPointer<PortValidator> portValidator,
                 QWidget *parent = 0);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~PortsEditor();
 
-	/*! \brief Check for the validity of the edited ports.
+	/*! Check for the validity of the edited ports.
 	*
-	* \return True if all ports are in valid state.
+	*      @return True if all ports are in valid state.
 	*/
 	virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
-	/*! \brief Enable/disable the import/export csv functionality for the view.
+	/*!
+     *  Enable/disable the import/export csv functionality for the view.
 	 *
-	 * Method: 		setAllowImportExport
-	 * Full name:	ModelParameterEditor::setAllowImportExport
-	 * Access:		public 
-	 *
-	 * \param allow If true then import/export is enabled.
-	 *
-	*/
+	 *      @param [in] allow If true then import/export is enabled.
+	 */
 	void setAllowImportExport(bool allow);
 
     /*!
@@ -84,19 +88,6 @@ signals:
      *  Emitted when a new interface should be added to the component editor tree view.
      */
     void createInterface();
-
-public slots:
-
-	/*! \brief Add a new port to the editor.
-	 *
-	 * Method: 		addPort
-	 * Full name:	PortsEditor::addPort
-	 * Access:		public 
-	 *
-	 * \param port The port to be added.
-	 *
-	*/
-	void addPort(QSharedPointer<Port> port);
 
 protected:
 
@@ -121,24 +112,23 @@ private slots:
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	PortsEditor(const PortsEditor& other);
-
-	//! No assignment
 	PortsEditor& operator=(const PortsEditor& other);
 
-	//! \brief The view that displays the parameters.
-	PortsView view_;
+	//! The view that displays the parameters.
+	PortsView* view_;
 
-	//! \brief The model that holds the data to be displayed to the user
+	//! The model that holds the data to be displayed to the user
 	PortsModel* model_;
 
-	//! \brief Pointer to the proxy that is used to sort the view
+	//! The proxy that is used to sort the view
 	QSortFilterProxyModel proxy_;
 
+    //! The component whose ports are being edited.
     QSharedPointer<Component> component_; 
 
-	//! \brief Pointer to the instance that manages the library.
+	//! The instance that manages the library.
 	LibraryInterface* handler_;
 };
 

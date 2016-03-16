@@ -13,9 +13,6 @@
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/fileset.h>
-
 #include <QCryptographicHash>
 #include <QDir>
 
@@ -199,7 +196,7 @@ QString VerilogSourceAnalyzer::findAbsolutePathFor(QString const& filename, QStr
 // Function: VerilogSourceAnalyzer::getIncludeDependencies()
 //-----------------------------------------------------------------------------
 QList<FileDependencyDesc> VerilogSourceAnalyzer::getIncludeDependencies(QString const& fileContent, 
-    QString const& fileAbsolutePath, QString const& xmlPath, QList<QSharedPointer<FileSet> > const& fileSets) const
+    QString const& fileAbsolutePath, QString const& xmlPath, QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) const
 {
     QList<FileDependencyDesc> includes;
 
@@ -232,16 +229,16 @@ QList<FileDependencyDesc> VerilogSourceAnalyzer::getIncludeDependencies(QString 
 // Function: VerilogSourceAnalyzer::findAbsolutePathInFileSets()
 //-----------------------------------------------------------------------------
 QString VerilogSourceAnalyzer::findAbsolutePathInFileSets(QString fileName,
-    QString const& xmlPath, QList<QSharedPointer<FileSet> > const& fileSets) const
+    QString const& xmlPath, QSharedPointer< QList<QSharedPointer<FileSet> > > fileSets) const
 {
     QRegularExpression namePattern("(?:^|[/\\\\])" + fileName + "$");
-    foreach (QSharedPointer<FileSet> fileSet, fileSets)
+    foreach (QSharedPointer<FileSet> fileSet, *fileSets)
     {
-        foreach (QSharedPointer<File> file, fileSet->getFiles())
+        foreach (QSharedPointer<File> file, *fileSet->getFiles())
         {
-            if (namePattern.match(file->getName()).hasMatch())
+            if (namePattern.match(file->name()).hasMatch())
             {
-                return QFileInfo(xmlPath + "/" + file->getName()).absoluteFilePath();
+                return QFileInfo(xmlPath + "/" + file->name()).absoluteFilePath();
             }
         } 
     }	

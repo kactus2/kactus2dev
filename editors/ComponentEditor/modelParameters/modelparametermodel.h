@@ -21,7 +21,7 @@
 
 class Component;
 class ExpressionParser;
-class ModelParameter;
+class ModuleParameter;
 class ModelParameterFactory;
 
 //-----------------------------------------------------------------------------
@@ -33,7 +33,8 @@ class ModelParameterModel : public AbstractParameterModel
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
 	 *      @param [in]  modelParameters        The model parameters being edited.
      *      @param [in]  choices                The choices available for the model parameter values.
@@ -42,69 +43,73 @@ public:
      *      @param [in]  expressionFormatter    Expression formatter.
 	 *      @param [in]  parent                 The owner of this model.
 	*/
-    ModelParameterModel(QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters,
+    ModelParameterModel(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters,
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject *parent);
 
-	//! The destructor
+	//! The destructor.
 	virtual ~ModelParameterModel();
 
-	/*! Get the number of rows in the model.
+	/*!
+     *  Get the number of rows in the model.
 	 *
-	 *      @param [in]  parent Model index of the parent of the item. Must be invalid
-     *                          because this is not hierarchical model.
+	 *      @param [in]  parent Model index of the parent of the item.
 	 *
 	 *      @return  Number of rows currently in the model.
-	*/
+	 */
 	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! Get the number of columns in the model
+	/*!
+     *  Get the number of columns in the model
 	 *
-	 *      @param [in]  parent Model index of the parent of the item. Must be invalid
-	 *                          because this is not hierarchical model.
+	 *      @param [in]  parent Model index of the parent of the item.
 	 *
 	 *      @return  Number of columns currently in the model.
-	*/
+	 */
 	virtual int columnCount(const QModelIndex& parent = QModelIndex() ) const;
 
-	/*! Get the data for the specified item for specified role.
+	/*!
+     *  Get the data for the specified item for specified role.
 	 *
 	 *      @param [in]  index  Identifies the item that's data is wanted.
 	 *      @param [in]  role   Specifies what kind of data is wanted.
 	 *
 	 *      @return  The data for the given index.
-	*/
+	 */
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
-	/*! Get the data for the headers
+	/*!
+     *  Get the data for the headers.
 	 *
 	 *      @param [in]  section        The column that's header is wanted.
 	 *      @param [in]  orientation    The orientation of the header data.
 	 *      @param [in]  role           Specified the type of data that is wanted.
 	 *
 	 *      @return  The header data for the given section.
-	*/
+	 */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
-	/*! Get information on how specified item can be handled.
+	/*!
+     *  Get information on how specified item can be handled.
 	 *
 	 *      @param [in]  index Specifies the item that's flags are wanted.
 	 *
 	 *      @return  Qt::ItemFlags that define how object can be handled.
-	*/
+	 */
 	virtual Qt::ItemFlags flags(QModelIndex const& index) const;
 
-	/*! Set the data for specified item.
+	/*!
+     *  Set the data for specified item.
 	 *
 	 *      @param [in]  index  Specifies the item that's data is modified
 	 *      @param [in]  value  The value to be set.
 	 *      @param [in]  role   The role that is trying to modify the data. Only Qt::EditRole is supported.
 	 *
 	 *      @return  True, if data was successfully set, otherwise false.
-	*/
+	 */
 	virtual bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
 
     /*!
@@ -114,14 +119,14 @@ public:
      *
      *      @return The model parameter whose data is in the given index.
      */
-    virtual QSharedPointer<ModelParameter> getParameter(QModelIndex const& index) const;    
+    virtual QSharedPointer<ModuleParameter> getParameter(QModelIndex const& index) const;    
        
     /*!
      *  Sets the model parameters to edit and locks them.
      *
      *      @param [in] modelParameters   The model parameters to edit.
      */
-    void setAndLockModelParameters(QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters);
+    void setAndLockModelParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
 
     /*!
      *  Sets the model parameter factory to use when creating new model parameters.
@@ -132,18 +137,18 @@ public:
 
 public slots:
 
-	/*! A new item should be added to given index.
+	/*!
+     *  A new item should be added to given index.
 	 *
 	 *      @param [in]  index The position where new item should be added at.
-	 *
-	*/
+	 */
 	virtual void onAddItem(const QModelIndex& index);
 
-	/*! An item should be removed from the model.
+	/*!
+     *  An item should be removed from the model.
 	 * 
 	 *      @param [in]  index Identifies the item that should be removed.
-	 *
-	*/
+	 */
 	virtual void onRemoveItem(const QModelIndex& index);
 
 protected:
@@ -179,17 +184,17 @@ protected:
     virtual int typeColumn() const;
 
     /*!
-    *  Gets the column for the left value of bit width vector.
-    *
-    *      @return The column for editing the left value of the bit width vector.
-    */
+     *  Gets the column for the left value of bit width vector.
+     *
+     *      @return The column for editing the left value of the bit width vector.
+     */
     virtual int bitWidthLeftColumn() const;
 
     /*!
-    *  Gets the column for the right value of bit width vector.
-    *
-    *      @return The column for editing the right value of the bit width vector.
-    */
+     *  Gets the column for the right value of bit width vector.
+     *
+     *      @return The column for editing the right value of the bit width vector.
+     */
     virtual int bitWidthRightColumn() const;
 
     /*!
@@ -274,10 +279,10 @@ protected:
 
 private:
 
-	//! No copying
+	//! No copying.
 	ModelParameterModel(const ModelParameterModel& other);
 
-	//! No assignment
+	//! No assignment.
 	ModelParameterModel& operator=(const ModelParameterModel& other);
 
     /*!
@@ -285,7 +290,7 @@ private:
      *
      *      @param [in] modelParam The parameter model to lock.
      */
-    void lockModelParameter(QSharedPointer<ModelParameter> modelParam);
+    void lockModuleParameter(QSharedPointer<ModuleParameter> moduleParameter);
     
 	/*! Get the index of the given model parameter.
 	 *
@@ -293,7 +298,7 @@ private:
 	 *
 	 *      @return The index of the first column of the model parameter.
 	*/
-	virtual QModelIndex indexFor(QSharedPointer<ModelParameter> modelParam) const;
+    virtual QModelIndex indexFor(QSharedPointer<ModuleParameter> moduleParameter) const;
 
     /*!
      *   Locks the given index disabling editing.
@@ -316,7 +321,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The model parameters to edit.
-    QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters_;
+    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters_;
 
     //! The factory to use for creating new model parameters.
     QSharedPointer<ModelParameterFactory> parameterFactory_;

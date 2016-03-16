@@ -16,35 +16,34 @@
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/IncludeImportPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/HighlightSource.h>
-#include <Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h>
 #include <Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h>
 
 #include <wizards/ComponentWizard/ImportEditor/ImportHighlighter.h>
 
 #include <editors/ComponentEditor/common/NullParser.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/File.h>
 
 #include <QApplication>
 #include <QRegularExpression>
 #include <QScrollBar>
 #include <QTextStream>
 #include <QTextBlock>
+#include <QFileInfo>
 
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::ImportRunner()
 //-----------------------------------------------------------------------------
 ImportRunner::ImportRunner(QSharedPointer<ComponentParameterFinder> parameterFinder, QTabWidget* displayTabs,
-    QObject* parent)
-    : QObject(parent), 
-    expressionParser_(new NullParser()),
-    modelParameterVisualizer_(0),
-    ImportPlugins_(),
-    analyzerPlugins_(),
-    parameterFinder_(parameterFinder),
-    displayTabs_(displayTabs)
+    QObject* parent):
+QObject(parent),
+expressionParser_(new NullParser()),
+ImportPlugins_(),
+analyzerPlugins_(),
+parameterFinder_(parameterFinder),
+displayTabs_(displayTabs)
 {
     
 }
@@ -71,7 +70,7 @@ QSharedPointer<Component> ImportRunner::run(QString const& filePath, QString con
 
     importIncludes(filePath, componentXmlPath, importComponent);
 
-    QStringList filetypes = filetypesOf(filePath, importComponent->getFileSets());
+    QStringList filetypes = filetypesOf(filePath, *importComponent->getFileSets().data());
     importFile(filePath, componentXmlPath, importPluginsForFileTypes(filetypes), importComponent);
 
     QApplication::restoreOverrideCursor();
@@ -108,7 +107,6 @@ void ImportRunner::loadPlugins(PluginManager const& pluginManager)
         {            
             ImportPlugins_.append(importPlugin);
 
-            addModelParameterVisualizationIfPossible(importPlugin);
             addExpressionParserIfPossible(importPlugin);
         }
 
@@ -125,29 +123,6 @@ void ImportRunner::loadPlugins(PluginManager const& pluginManager)
 void ImportRunner::setVerilogExpressionParser(QSharedPointer<ExpressionParser> parser)
 {
     expressionParser_ = parser;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ImportRunner::setPortVisualizer()
-//-----------------------------------------------------------------------------
-void ImportRunner::setModelParameterVisualizer(ModelParameterVisualizer* visualizer)
-{
-    modelParameterVisualizer_ = visualizer;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ImportRunner::addModelParameterVisualizationIfPossible()
-//-----------------------------------------------------------------------------
-void ImportRunner::addModelParameterVisualizationIfPossible(ImportPlugin* importPlugin) const
-{
-    if (modelParameterVisualizer_)
-    {
-        ModelParameterSource* modelParameterSource = dynamic_cast<ModelParameterSource*>(importPlugin);
-        if (modelParameterSource)
-        {
-            modelParameterSource->setModelParameterVisualizer(modelParameterVisualizer_);        
-        }        
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -195,7 +170,7 @@ void ImportRunner::importIncludes(QString const& filePath, QString const& compon
 
     QList<FileDependencyDesc> dependencies;
     QString componentPath = QFileInfo(componentXmlPath).absolutePath() + "/";
-    QStringList filetypes = filetypesOf(filePath, importComponent->getFileSets());
+    QStringList filetypes = filetypesOf(filePath, *importComponent->getFileSets().data());
 
     foreach(ISourceAnalyzerPlugin* analyzer, analyzerPluginsForFileTypes(filetypes))
     {
@@ -216,8 +191,8 @@ void ImportRunner::importIncludes(QString const& filePath, QString const& compon
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::filetypesOf()
 //-----------------------------------------------------------------------------
-QStringList ImportRunner::filetypesOf(QString const& fileName, 
-    QList<QSharedPointer<FileSet> > const& fileSets) const
+QStringList ImportRunner::filetypesOf(QString const& fileName, QList<QSharedPointer<FileSet> > const& fileSets)
+    const
 {
     QStringList fileTypes;
 
@@ -225,11 +200,11 @@ QStringList ImportRunner::filetypesOf(QString const& fileName,
 
     foreach (QSharedPointer<FileSet> fileSet, fileSets)
     {
-        foreach(QSharedPointer<File> file, fileSet->getFiles())
+        foreach(QSharedPointer<File> file, *fileSet->getFiles())
         {
-            if (filePattern.match(file->getName()).hasMatch())
+            if (filePattern.match(file->name()).hasMatch())
             {
-                fileTypes.append(file->getAllFileTypes());
+                fileTypes.append(*file->getFileTypes().data());
             }
         }
     }

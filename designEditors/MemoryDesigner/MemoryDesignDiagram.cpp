@@ -39,25 +39,26 @@
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/addressspace.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/masterinterface.h>
-#include <IPXACTmodels/slaveinterface.h>
-#include <IPXACTmodels/channel.h>
-#include <IPXACTmodels/mirroredslaveinterface.h>
-#include <IPXACTmodels/Interconnection.h>
-#include <IPXACTmodels/Interface.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Design/Interconnection.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/Channel.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignDiagram()
 //-----------------------------------------------------------------------------
 MemoryDesignDiagram::MemoryDesignDiagram(LibraryInterface* lh, 
-                                         GenericEditProvider& editProvider,
+                                         QSharedPointer<IEditProvider> editProvider,
                                          MemoryDesignWidget* parent)
     : DesignDiagram(lh, editProvider, parent),
       parent_(parent),
@@ -67,7 +68,7 @@ MemoryDesignDiagram::MemoryDesignDiagram(LibraryInterface* lh,
       subsectionResizeBottom_(0.0)
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
-    connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
+    connect(editProvider.data(), SIGNAL(modified()), this, SIGNAL(contentChanged()));
 }
 
 //-----------------------------------------------------------------------------
@@ -87,45 +88,43 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
     if (!design->getColumns().isEmpty())
     {
-        QList<ColumnDesc> columns;
-        columns.append(ColumnDesc("Available Memory", COLUMN_CONTENT_BUSES, 0, COLUMN_WIDTH));
-        columns.append(ColumnDesc("Required Address Spaces", COLUMN_CONTENT_COMPONENTS, 0, COLUMN_WIDTH));
-        design->setColumns(columns);
+        design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Available Memory", ColumnTypes::BUSES, 0, COLUMN_WIDTH)));
+        design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Required Address Spaces", ColumnTypes::COMPONENTS, 0, COLUMN_WIDTH)));
     }
 
-    foreach(ColumnDesc const& desc, design->getColumns())
+    foreach(QSharedPointer<ColumnDesc> desc, design->getColumns())
     {
         GraphicsColumn* column = new MemoryColumn(desc, getLayout().data());
         getLayout()->addColumn(column, true);
     }
 
     // Create (HW) component instances.
-    foreach (ComponentInstance const& instance, design->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
-        QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(instance.getComponentRef());
+        QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(*instance->getComponentRef());
         QSharedPointer<Component> component = libComponent.staticCast<Component>();
 
         if (!component)
         {
             emit errorMessage(tr("The component '%1' instantiated in the design '%2' "
                 "was not found in the library").arg(
-                instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+                instance->getComponentRef()->getName()).arg(design->getVlnv().getName()));
 
-            // Create an unpackaged component so that we can still visualize the component instance.
-            component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
-            component->setComponentImplementation(KactusAttribute::HW);
+            // Create an unpackaged component so that we can still visualize the component instance->
+            component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
+            component->setImplementation(KactusAttribute::HW);
         }
 
-        foreach (QSharedPointer<MemoryMap> map, component->getMemoryMaps())
+        foreach (QSharedPointer<MemoryMap> map, *component->getMemoryMaps())
         {
-            MemoryItem* item = new MemoryItem(getLibraryInterface(), instance.getInstanceName(),
+            MemoryItem* item = new MemoryItem(getLibraryInterface(), instance->getInstanceName(),
                                               component, map, 0);
             getLayout()->addItem(item);
         }
 
-        foreach (QSharedPointer<AddressSpace> addressSpace, component->getAddressSpaces())
+        foreach (QSharedPointer<AddressSpace> addressSpace, *component->getAddressSpaces())
         {
-            AddressSpaceItem* item = new AddressSpaceItem(getLibraryInterface(), instance.getInstanceName(),
+            AddressSpaceItem* item = new AddressSpaceItem(getLibraryInterface(), instance->getInstanceName(),
                                                           component, addressSpace, 0);
             getLayout()->getColumns().at(1)->addItem(item);
         }
@@ -216,12 +215,12 @@ QSharedPointer<Design> MemoryDesignDiagram::createDesign(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 // Function: addColumn()
 //-----------------------------------------------------------------------------
-void MemoryDesignDiagram::addColumn(ColumnDesc const& desc)
+void MemoryDesignDiagram::addColumn(QSharedPointer<ColumnDesc> desc)
 {
     GraphicsColumn* column = new MemoryColumn(desc, getLayout().data());
 
-    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column));
-    getEditProvider().addCommand(cmd);
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column, getDesign()));
+    getEditProvider()->addCommand(cmd);
     cmd->redo();
 }
 
@@ -261,11 +260,11 @@ void MemoryDesignDiagram::addColumn(ColumnDesc const& desc)
 //             
 //             if (dialog.exec() == QDialog::Accepted)
 //             {
-//                 ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(),
+//                 ColumnDesc desc(dialog.name(), dialog.getContentType(), dialog.getAllowedItems(),
 //                                 column->getColumnDesc().getWidth());
 // 
 //                 QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
-//                 getEditProvider().addCommand(cmd);
+//                 getEditProvider()->addCommand(cmd);
 //             }
 //         }
 //     }
@@ -364,7 +363,8 @@ void MemoryDesignDiagram::drawForeground(QPainter* painter, const QRectF& rect)
 //-----------------------------------------------------------------------------
 GraphicsColumn* MemoryDesignDiagram::createDefaultColumn(GraphicsColumnLayout* layout)
 {
-    ColumnDesc desc("Required Address Spaces", COLUMN_CONTENT_COMPONENTS, 0, COLUMN_WIDTH);
+    QSharedPointer<ColumnDesc> desc(new ColumnDesc("Required Address Spaces",
+        ColumnTypes::COMPONENTS, 0, COLUMN_WIDTH));
     return new MemoryColumn(desc, layout);
 }
 
@@ -380,7 +380,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
     {
         MemoryColumn* memColumn = static_cast<MemoryColumn*>(column);
 
-        if (memColumn->getContentType() == COLUMN_CONTENT_BUSES)
+        if (memColumn->getContentType() == ColumnTypes::BUSES)
         {
             memoryColumn = memColumn;
             break;
@@ -429,7 +429,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
     foreach (GraphicsColumn* column, getLayout()->getColumns())
     {
         // Check if this is an address space column.
-        if (column->getContentType() == COLUMN_CONTENT_COMPONENTS)
+        if (column->getContentType() == ColumnTypes::COMPONENTS)
         {
             MemoryColumn* memColumn = static_cast<MemoryColumn*>(column);
 
@@ -477,11 +477,11 @@ bool MemoryDesignDiagram::isConnected(AddressSpaceItem const* addrSpaceItem, Mem
 {
     // Find the route from the component containing the given address space to a component
     // containing the given memory map.
-    foreach (QSharedPointer<BusInterface> busIf, addrSpaceItem->getComponent()->getBusInterfaces())
+    foreach (QSharedPointer<BusInterface> busIf, *addrSpaceItem->getComponent()->getBusInterfaces())
     {
         // Check if the bus interface has the correct address space as a reference.
         if (busIf->getInterfaceMode() == General::MASTER &&
-            busIf->getMaster()->getAddressSpaceRef() == addrSpaceItem->getAddressSpace()->getName())
+            busIf->getMaster()->getAddressSpaceRef() == addrSpaceItem->getAddressSpace()->name())
         {
             quint64 addressOffsetTemp = 0;
 
@@ -503,32 +503,34 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                                     MemoryItem const* memoryItem, quint64& addressOffset) const
 {
     // Check all connections that start from the bus interface.
-    foreach (Interconnection const& conn, design_->getInterconnections())
+    foreach (QSharedPointer<Interconnection> conn, *design_->getInterconnections())
     {
-        Interface const* interface = 0;
+        ActiveInterface const* interface = 0;
 
-        QPair<Interface, Interface> interfaces = conn.getInterfaces();
-        if (interfaces.first.references(instanceName, busIf->getName()) )
+        QSharedPointer<ActiveInterface> startInterface = conn->getStartInterface();
+        QSharedPointer<ActiveInterface> endInterface = conn->getActiveInterfaces()->first();
+
+        if (startInterface->references(instanceName, busIf->name()) )
         {
-            interface = &interfaces.second;
+            interface = endInterface.data();
         }
 
-        if (interfaces.second.references(instanceName, busIf->getName()))
+        if (endInterface->references(instanceName, busIf->name()))
         {
-            interface = &interfaces.first;
+            interface = startInterface.data();
         }
 
         // Check if we found a matching connection.
         if (interface != 0)
         {
             // Retrieve the component referenced by the connection.
-            QString connectionComponentInstance = interface->getComponentRef();
+            QString connectionComponentInstance = interface->getComponentReference();
             QSharedPointer<Component const> component = getComponentByInstanceName(connectionComponentInstance);
             
             if (component != 0)
             {
                 // Retrieve the correct bus interface.
-                QString connectionInterface = interface->getBusRef();
+                QString connectionInterface = interface->getBusReference();
                 QSharedPointer<BusInterface const> otherBusIf = component->getBusInterface(connectionInterface);
 
                 if (otherBusIf != 0)
@@ -547,7 +549,7 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                         // With mirrored master, the route continues through a channel.
                         else if (otherBusIf->getInterfaceMode() == General::MIRROREDMASTER)
                         {
-                            foreach (QSharedPointer<Channel> channel, component->getChannels())
+                            foreach (QSharedPointer<Channel> channel, *component->getChannels())
                             {
                                 // Check if the channel contains the bus interface in question.
                                 if (channel->getInterfaces().contains(connectionInterface))
@@ -585,12 +587,13 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                         // Check if we ended up in the correct component.
                         if (connectionComponentInstance == memoryItem->getInstanceName())
                         {
-                            addressOffset = Utils::str2Uint(busIf->getMirroredSlave()->getRemapAddress());
+                            addressOffset = Utils::str2Uint(busIf->getMirroredSlave()->getRemapAddresses()->first()->remapAddress_);
                             return true;
                         }
 
                         // Otherwise check if the route continues through bridges.
-                        foreach (QSharedPointer<SlaveInterface::Bridge const> bridge, otherBusIf->getSlave()->getBridges())
+                        foreach (QSharedPointer<SlaveInterface::Bridge const> bridge, 
+                            *otherBusIf->getSlave()->getBridges())
                         {
                             QSharedPointer<BusInterface const> nextBusIf = component->getBusInterface(bridge->masterRef_);
 
@@ -622,12 +625,12 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
 //-----------------------------------------------------------------------------
 QSharedPointer<Component const> MemoryDesignDiagram::getComponentByInstanceName(QString const& componentRef) const
 {
-    foreach (ComponentInstance const& instance, design_->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
     {
-        if (instance.getInstanceName() == componentRef)
+        if (instance->getInstanceName() == componentRef)
         {
-            QSharedPointer<LibraryComponent const> libComp =
-                getLibraryInterface()->getModelReadOnly(instance.getComponentRef());
+            QSharedPointer<Document const> libComp =
+                getLibraryInterface()->getModelReadOnly(*instance->getComponentRef());
             return libComp.dynamicCast<Component const>();
         }
     }

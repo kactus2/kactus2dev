@@ -15,8 +15,9 @@
 #include <designEditors/HWDesign/AdHocEnabled.h>
 #include <designEditors/common/DrawMode.h>
 
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/ColumnDesc.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
+#include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
 #include <QAction>
 #include <QGraphicsScene>
@@ -39,7 +40,10 @@ class DesignWidget;
 class Associable;
 class StickyNote;
 class Kactus2Group;
+class Kactus2Position;
 class StickyNoteAddCommand;
+class IEditProvider;
+
 //-----------------------------------------------------------------------------
 //! Base class for all design diagrams.
 //-----------------------------------------------------------------------------
@@ -55,7 +59,7 @@ public:
      *      @param [in] editProvider  The edit provider.
      *      @param [in] parent        The parent widget.
      */
-    DesignDiagram(LibraryInterface* lh, GenericEditProvider& editProvider, DesignWidget* parent = 0);
+    DesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, DesignWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -77,15 +81,6 @@ public:
     bool setDesign(QSharedPointer<Component> component, QSharedPointer<Design> design,
                    QSharedPointer<DesignConfiguration> designConf = QSharedPointer<DesignConfiguration>());
 
-    /*! 
-     *  Creates a design based on the contents in the diagram.
-     *
-     *      @param [in] vlnv The vlnv for the design.
-     *
-     *      @return The created design.
-     */
-    virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const;
-
     /*!
      *  Reflects the changes in the design to the top-level component.
      */
@@ -100,6 +95,9 @@ public:
      *  Detaches the data source from the ad-hoc editor.
      */
     virtual void detach(AdHocEditor* editor);
+
+        
+    virtual QString adHocIdentifier() const;
 
     /*!
      *  Adds an instance name to the list of used instance names.
@@ -154,7 +152,7 @@ public:
      *
      *      @param [in] desc The column description.
      */
-    virtual void addColumn(ColumnDesc const& desc) = 0;
+    virtual void addColumn(QSharedPointer<ColumnDesc> desc) = 0;
 
     /*!
      *  Returns the current draw mode.
@@ -184,12 +182,17 @@ public:
     /*!
      *  Returns the edit provider.
      */
-    GenericEditProvider& getEditProvider();
+    virtual QSharedPointer<IEditProvider> getEditProvider() const;
 
     /*!
      *  Returns the component whose design is being edited.
      */
     QSharedPointer<Component> getEditedComponent() const;
+    
+    /*!
+     *  Returns the design being edited.
+     */ 
+    QSharedPointer<Design> getDesign() const;
 
     /*!
      *  Returns the design configuration.
@@ -226,6 +229,13 @@ public:
       *      @return The column layout of the design.
       */
      QSharedPointer<GraphicsColumnLayout> getLayout() const;
+     
+    /*!
+     *  Creates a unique instance name with the given base name.
+     *
+     *      @param [in] baseName The base name for the instance.
+     */
+    QString createInstanceName(QString const& baseName);
 
 public slots:
     //! Called when the diagram is shown.
@@ -317,22 +327,6 @@ signals:
 protected:
 
     virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
-
-    /*!
-     *  Creates a unique instance name for the given component.
-     *
-     *      @param [in] component The component whose instance is being created.
-     *
-     *      @return The name for the component instance.
-     */
-    QString createInstanceName(QSharedPointer<Component> component);
-
-    /*!
-     *  Creates a unique instance name with the given base name.
-     *
-     *      @param [in] baseName The base name for the instance.
-     */
-    QString createInstanceName(QString const& baseName);
 
     /*!
      *  Draws the diagram background.
@@ -524,6 +518,13 @@ private:
     //! Enables/disables the sticky notes according to design protection state.
     void setProtectionForStickyNotes();
 
+    /*!
+     *  Get the names of the contained component instances.
+     *
+     *      @return A list of instance names of the contained component instances.
+     */
+    virtual QStringList getUsedInstanceNames() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -535,10 +536,13 @@ private:
     LibraryInterface* lh_;
 
     //! The edit provider for undo/redo.
-    GenericEditProvider& editProvider_;
+    QSharedPointer<IEditProvider> editProvider_;
 
     //! The component whose design is being edited.
     QSharedPointer<Component> component_;
+
+    //! The design being edited.
+    QSharedPointer<Design> design_;
 
     //! The design configuration.
     QSharedPointer<DesignConfiguration> designConf_;
@@ -549,21 +553,12 @@ private:
     //! The current draw mode.
     DrawMode mode_;
 
-    //! The list of used instance names.
-    QStringList instanceNames_;
-
     //! If true, the diagram is being loaded.
     bool loading_;
 
     //! If true, the diagram is locked and cannot be modified.
     bool locked_;
 
-	//! Contains the XML header comments of the design.
-	QStringList XMLComments_;
-
-    //! The design vendor extensions.
-    QList<QSharedPointer<VendorExtension> > vendorExtensions_;
-    
     interactionMode interactionMode_;
 
     QGraphicsLineItem* associationLine_;

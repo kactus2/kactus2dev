@@ -12,7 +12,7 @@
 #ifndef PARAMETERGROUPBOX_H
 #define PARAMETERGROUPBOX_H
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <QGroupBox>
 #include <QList>
@@ -38,35 +38,20 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in]  parameters              The list containing the parameters.
-	 *      @param [in]  component               The containing component whose parameters are being edited.
-	 *      @param [in]  parameterFinder         The parameter finder used to search the components parameters.
-	 *      @param [in]  expressionFormatter     The expression formatter.
-	 *      @param [in]  parent                  Pointer to the owner of this editor.
+	 *      @param [in]  parameters             The list containing the parameters.
+	 *      @param [in]  choices                The available choices for the parameters.
+	 *      @param [in]  parameterFinder        The parameter finder used to search the components parameters.
+	 *      @param [in]  expressionFormatter    The expression formatter.
+	 *      @param [in]  parent                 The owner of this editor.
 	 */
 	ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, 
-        QSharedPointer<Component> component,
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QSharedPointer<ParameterFinder> parameterFinder, 
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget *parent);
 	
 	//! The destructor
 	virtual ~ParameterGroupBox();
-
-	/*! Check for the validity of the edited parameters
-	*
-	* \return True if all parameters are in valid state.
-	*/
-	virtual bool isValid() const;
-
-	/*! Check for the validity of the edited parameters.
-	*
-	*       @param [inout] errorList          The list to add the possible error messages to.
-	*       @param [in]    parentIdentifier   String from parent to help to identify the location of the error.
-	*
-	*       @return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
 
 	//! Restore the changes made in the editor back to ones in parameter models.
 	virtual void refresh();

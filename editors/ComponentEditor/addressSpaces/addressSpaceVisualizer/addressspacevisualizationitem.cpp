@@ -13,9 +13,8 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
-#include "common/KactusColors.h"
+#include <common/KactusColors.h>
 
-#include <QRectF>
 #include <QBrush>
 
 //-----------------------------------------------------------------------------
@@ -37,6 +36,7 @@ overlapped_(false)
 //-----------------------------------------------------------------------------
 AddressSpaceVisualizationItem::~AddressSpaceVisualizationItem()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -86,7 +86,8 @@ void AddressSpaceVisualizationItem::setRightBottomCorner(quint64 address)
 //-----------------------------------------------------------------------------
 // Function: setBottomCoordinate()
 //-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setBottomCoordinate(qreal yCoordinate) {
+void AddressSpaceVisualizationItem::setBottomCoordinate(qreal yCoordinate)
+{
 	qreal width = rect().width();
 	qreal height = yCoordinate - y();
 	setRect(0, 0, width, height);
@@ -113,7 +114,8 @@ void AddressSpaceVisualizationItem::setOverlappingTop(quint64 const& address)
     firstFreeAddress_ = address;
     setLeftTopCorner(firstFreeAddress_);
 
-    if (firstFreeAddress_ == lastFreeAddress_){        
+    if (firstFreeAddress_ == lastFreeAddress_)
+    {        
         VisualizerItem::setLeftBottomCorner("");
     }
 }

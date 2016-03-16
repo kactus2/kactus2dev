@@ -1,14 +1,18 @@
-/* 
- *  	Created on: 17.4.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapscene.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapscene.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 17.04.2012
+//
+// Description:
+// The graphics scene that contains the memory map graphics items.
+//-----------------------------------------------------------------------------
 
 #ifndef MEMORYMAPSCENE_H
 #define MEMORYMAPSCENE_H
 
-#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
 
 #include <QGraphicsScene>
 #include <QList>
@@ -16,73 +20,75 @@
 
 class VisualizerItem;
 
-/*! \brief The graphics scene that contains the memory map graphics items.
- *
- */
-class MemoryMapScene : public QGraphicsScene {
+//-----------------------------------------------------------------------------
+//! The graphics scene that contains the memory map graphics items.
+//-----------------------------------------------------------------------------
+class MemoryMapScene : public QGraphicsScene
+{
 	Q_OBJECT
 
 public:
 
-    //! \brief Scrolling sensitivity. Bigger value results in smaller steps.
+    //! Scrolling sensitivity. Bigger value results in smaller steps.
     static const int WHEEL_SENSITIVITY = 6;
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param parent Pointer to the owner of the graphics scene.
-	 *
-	*/
+	 *      @param [in] parent  Pointer to the owner of the graphics scene.
+	 */
 	MemoryMapScene(QObject *parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~MemoryMapScene();
 
-	/*! \brief Add a new memory map graph item to the scene.
+	/*!
+     *  Add a new memory map graph item to the scene.
 	 *
-	 * \param memGraphItem Pointer to the item.
-	 *
-	*/
+	 *      @param [in] memGraphItem    Pointer to the item.
+	 */
 	void addMemGraphItem(VisualizerItem* memGraphItem);
 
-	/*! \brief Remove a memory map graph item from the scene.
+	/*!
+     *  Remove a memory map graph item from the scene.
 	 *
-	 * \param memGraphItem Pointer to the item to remove.
-	 *
-	*/
+	 *      @param [in] memGraphItem    Pointer to the item to remove.
+	 */
 	void removeMemGraphItem(VisualizerItem* memGraphItem);
 
 
 
-	/*! \brief Set the scene width.
+	/*!
+     *  Set the scene width.
 	 *
-     * \param width Width to set.
-     *
+     *      @param [in] width   Width to set.
 	 */
     void setWidth(int width);
 
     public slots:
-        	/*! \brief Reposition the memory map graphs items in the scene.
-	 *
-	*/
+
+    /*!
+     *  Reposition the memory map graphs items in the scene.
+	 */
 	void rePosition();
 
 protected:
     
-    //! \brief Resizes memory map when user turns the mouse wheel.
+    //! Resizes memory map when user turns the mouse wheel.
     void wheelEvent(QGraphicsSceneWheelEvent * wheelEvent);
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	MemoryMapScene(const MemoryMapScene& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	MemoryMapScene& operator=(const MemoryMapScene& other);
 
-	//! \brief Contains the graph items for memory maps.
+	//! Contains the graph items for memory maps.
 	QList<VisualizerItem*> memGraphItems_;
 
-    //! \brief Width of top (memory map) items.
+    //! Width of top (memory map) items.
     int width_;
 };
 

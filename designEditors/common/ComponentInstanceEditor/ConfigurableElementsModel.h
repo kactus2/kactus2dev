@@ -1,25 +1,26 @@
-/* 
- *  	Created on: 12.8.2011
- *      Author: Antti Kamppi
- * 		filename: componentinstancemodel.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: ConfigurableElementsModel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.08.2011
+//
+// Description:
+// Model class to manage the configurable element values being edited.
+//-----------------------------------------------------------------------------
 
 #ifndef CONFIGURABLEELEMENTSMODEL_H
 #define CONFIGURABLEELEMENTSMODEL_H
 
 #include <common/GenericEditProvider.h>
-#include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
-#include <IPXACTmodels/parameter.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/choice.h>
-#include <IPXACTmodels/validators/ParameterValidator2014.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QAbstractTableModel>
 #include <QMap>
@@ -27,7 +28,13 @@
 #include <QString>
 #include <QSharedPointer>
 
-class ComponentItem;
+class Parameter;
+class ModuleParameter;
+class Choice;
+
+class ComponentInstance;
+class Component;
+
 //-----------------------------------------------------------------------------
 //! Model class to manage the configurable element values being edited.
 //-----------------------------------------------------------------------------
@@ -64,9 +71,12 @@ public:
 	/*!
 	 *  Set the component being edited.
 	 *
-	 *      @param [in] component   Pointer to the component being edited.
+	 *      @param [in] component       Pointer to the component referenced by the component instance.
+     *      @param [in] instance        Pointer to the component instance being edited.
+     *      @param [in] editProvider    Pointer to the edit provider.
 	 */
-	void setComponent(ComponentItem* component);
+    void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance,
+        QSharedPointer<IEditProvider> editProvider);
 
 	/*!
 	 *  Get the number of rows to be displayed.
@@ -316,6 +326,11 @@ private:
     void readComponentConfigurableElements();
 
     /*!
+     *  Read the configurable elements from the active view.
+     */
+    void readActiveViewParameters();
+
+    /*!
      *  Set the parameter into the configurable elements.
      *
      *      @param [in] parameterPointer    The pointer to the parameter to be set to configurable elements.
@@ -359,7 +374,10 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Pointer to the component instance being edited.
-	ComponentItem* component_;
+    QSharedPointer<ComponentInstance> componentInstance_;
+
+    //! Pointer to the component referenced by the component instance.
+    QSharedPointer<Component> component_;
 
 	//! Reference to the map containing the actual configurable elements.
 	QMap<QString, QString> currentElementValues_;
@@ -367,8 +385,8 @@ private:
     //! The list that is used to display the elements in a table form.
     QSharedPointer<QList<QSharedPointer<Parameter> > > configurableElements_;
 
-	//! Pointer to the generic edit provider that manages the undo/redo stack.
-	GenericEditProvider* editProvider_;
+	//! The edit provider that manages the undo/redo stack.
+	QSharedPointer<IEditProvider> editProvider_;
 
     //! The formatter for referencing expressions in values.
     QSharedPointer<ExpressionFormatter> configurableElementExpressionFormatter_;
@@ -380,7 +398,7 @@ private:
     QSharedPointer<ExpressionParser> componentInstanceExpressionParser_;
 
     //! Validator for parameters.
-    ParameterValidator2014* validator_;
+    QSharedPointer<ParameterValidator2014> validator_;
 
     //! The design configuration model used to find the currently active view of the component instance.
     QSharedPointer<DesignConfiguration> designConfiguration_;

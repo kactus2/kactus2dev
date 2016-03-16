@@ -36,7 +36,8 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::ComponentDesignDiagram()
 //-----------------------------------------------------------------------------
-ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, GenericEditProvider& editProvider, DesignWidget* parent)
+ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, 
+    DesignWidget* parent)
     : DesignDiagram(lh, editProvider, parent),
       tempConnection_(0),
       connectionStartPoint_(0), 
@@ -53,7 +54,7 @@ ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, GenericEdit
       clickedPosition_()
 {
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
-    connect(&editProvider, SIGNAL(modified()), this, SIGNAL(contentChanged()));
+    connect(editProvider.data(), SIGNAL(modified()), this, SIGNAL(contentChanged()));
 
 	setupActions();
 }
@@ -478,7 +479,7 @@ bool ComponentDesignDiagram::draftSelected() const
 {
     return !selectedItems().empty() && 
         selectedItems().first()->type() == componentType() &&
-        !dynamic_cast<ComponentItem*>(selectedItems().first())->componentModel()->getVlnv()->isValid();
+        !dynamic_cast<ComponentItem*>(selectedItems().first())->componentModel()->getVlnv().isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -520,7 +521,7 @@ void ComponentDesignDiagram::openComponentItem(ComponentItem* comp)
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::openInComponentEditor(ComponentItem* comp)
 {
-    emit openComponent(*comp->componentModel()->getVlnv());
+    emit openComponent(comp->componentModel()->getVlnv());
 }
 
 //-----------------------------------------------------------------------------
@@ -540,11 +541,19 @@ QString ComponentDesignDiagram::getActiveViewOf(ComponentItem* compItem) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentDesignDiagram::activeCursorPosition()
+// Function: ComponentDesignDiagram::contextMenuPosition()
 //-----------------------------------------------------------------------------
 QPoint ComponentDesignDiagram::contextMenuPosition() const
 {
     return getParent()->mapFromGlobal(clickedPosition_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::findSceneMappedCursorPosition()
+//-----------------------------------------------------------------------------
+QPointF ComponentDesignDiagram::findCursorPositionMappedToScene()
+{
+    return views().first()->mapToScene(contextMenuPosition());
 }
 
 //-----------------------------------------------------------------------------
@@ -600,7 +609,7 @@ void ComponentDesignDiagram::connectAt(QPointF const& cursorPosition)
 
     if (!creatingConnection())
     {
-        setConnectionStaringPoint(cursorPosition);
+        setConnectionStartingPoint(cursorPosition);
 
         if (hasConnectionStartingPoint())
         {
@@ -628,9 +637,9 @@ bool ComponentDesignDiagram::creatingConnection() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentDesignDiagram::setConnectionStaringPoint()
+// Function: ComponentDesignDiagram::setConnectionStartingPoint()
 //-----------------------------------------------------------------------------
-void ComponentDesignDiagram::setConnectionStaringPoint(QPointF const& cursorPosition)
+void ComponentDesignDiagram::setConnectionStartingPoint(QPointF const& cursorPosition)
 {
     // No need to change the starting point in off page mode.
     if (inOffPageMode() && connectionStartPoint_ != 0)
@@ -752,13 +761,23 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
             tempConnection_ = newTempConnection;
         }
 
-        if (tempConnection_->connectEnds())
+        if (//tempConnection_->connectEnds())
+            tempConnection_->endpoint1()->canConnect(tempConnection_->endpoint2()) &&
+            tempConnection_->endpoint2()->canConnect(tempConnection_->endpoint1()))
         {
-            tempConnection_->fixOverlap();
-
             QSharedPointer<QUndoCommand> cmd = createAddCommandForConnection(tempConnection_);
-            getEditProvider().addCommand(cmd);
+            cmd->redo();
 
+            tempConnection_->fixOverlap();
+            if (tempConnection_->endpoint1() && tempConnection_->endpoint2())
+            {
+                getEditProvider()->addCommand(cmd); 
+            }
+            else
+            {
+                discardConnection();
+                connectionStartPoint_ = 0;
+            }
             tempConnection_ = 0;
         }
         else
@@ -850,7 +869,7 @@ void ComponentDesignDiagram::addInterfaceAt(QPointF const& position)
     GraphicsColumn* column = getLayout()->findColumnAt(position);
 
     // Add a new diagram interface to the column it it is allowed.
-    if (column != 0 && column->getColumnDesc().getAllowedItems() & CIT_INTERFACE)
+    if (column != 0 && column->getColumnDesc()->getAllowedItems() & ColumnTypes::INTERFACE)
     {
         addTopLevelInterface(column, position);
     }
@@ -892,7 +911,7 @@ void ComponentDesignDiagram::toggleOffPageAt(QPointF const& position)
 
     if (cmd->childCount() > 0)
     {
-        getEditProvider().addCommand(cmd);
+        getEditProvider()->addCommand(cmd);
     }
 }
 
@@ -915,11 +934,11 @@ void ComponentDesignDiagram::hideOffPageConnections()
 {
     foreach (QGraphicsItem* item, items())
     {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+        GraphicsConnection* connection = dynamic_cast<GraphicsConnection*>(item);
 
-        if (conn != 0 && conn->endpoint1()->type() == offpageConnectorType())
+        if (connection != 0 && connection->endpoint1()->type() == offpageConnectorType())
         {
-            conn->hide();
+            connection->hide();
         }
     }
 }
@@ -929,7 +948,7 @@ void ComponentDesignDiagram::hideOffPageConnections()
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::beginComponentReplaceDrag(QPointF const& startpoint)
 {
-    ComponentItem* sourceComp =  getTopmostComponent(startpoint);
+    ComponentItem* sourceComp = getTopmostComponent(startpoint);
 
     if (sourceComp)
     {
@@ -978,9 +997,8 @@ void ComponentDesignDiagram::endComponentReplaceDrag(QPointF const& endpoint)
     }
 
     QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-        tr("Component instance '%1' is about to be switched in place "
-        "with '%2'. Continue and replace?").arg(destComp->name(), sourceComp_->name()),
-        QMessageBox::Yes | QMessageBox::No, getParent());
+        tr("Component instance '%1' is about to be switched in place with '%2'. Continue and replace?").arg(
+        destComp->name(), sourceComp_->name()), QMessageBox::Yes | QMessageBox::No, getParent());
 
     if (msgBox.exec() == QMessageBox::Yes)
     {

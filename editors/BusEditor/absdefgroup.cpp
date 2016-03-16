@@ -1,22 +1,21 @@
-/* 
- *  	Created on: 15.8.2011
- *      Author: Antti Kamppi
- * 		filename: absdefgroup.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: absdefgroup.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 15.8.2011
+//
+// Description:
+// Editor for the logical ports of an abstraction definition.
+//-----------------------------------------------------------------------------
 
 #include "absdefgroup.h"
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include "busportsdelegate.h"
 
 #include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QFileDialog>
-#include <QSettings>
-#include <QModelIndexList>
-#include <QCoreApplication>
-#include <QFile>
 
 //-----------------------------------------------------------------------------
 // Function: AbsDefGroup::AbsDefGroup()
@@ -25,8 +24,7 @@ AbsDefGroup::AbsDefGroup(LibraryInterface* handler, QWidget *parent):
 QGroupBox(tr("Signals (Abstraction Definition)"), parent),
 portView_(this),
 portModel_(this),
-handler_(handler),
-absDef_()
+handler_(handler)
 {
 	portView_.setModel(&portModel_);
 	portView_.setItemDelegate(new BusPortsDelegate(this));
@@ -61,70 +59,7 @@ absDef_()
 //-----------------------------------------------------------------------------
 AbsDefGroup::~AbsDefGroup()
 {
-}
 
-//-----------------------------------------------------------------------------
-// Function: AbsDefGroup::onImport()
-//-----------------------------------------------------------------------------
-void AbsDefGroup::onImport()
-{
-	QString homePath;
-
-	// if abs def is set then use its location in library
-	if (absDef_)
-    {
-		const QString busPath = handler_->getDirectoryPath(*absDef_->getVlnv());
-		homePath = QString("%1/logicalSignals.csv").arg(busPath);
-	}
-	// if there is no abs def then use default library location
-	else
-    {
-		QSettings settings;
-		homePath = settings.value(QString("Library/DefaultLocation"), 
-			QCoreApplication::applicationDirPath()).toString();
-	}
-
-	QString path = QFileDialog::getOpenFileName(this,  tr("csv-files (*.csv)"), homePath);
-
-	// if user clicked cancel
-	if (path.isEmpty())
-    {
-		return;
-	}
-
-	portModel_.importCSV(path);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbsDefGroup::onExport()
-//-----------------------------------------------------------------------------
-void AbsDefGroup::onExport()
-{
-	QString homePath;
-
-	// if abs def is set then use its location in library
-	if (absDef_)
-    {
-		const QString busPath = handler_->getDirectoryPath(*absDef_->getVlnv());
-		homePath = QString("%1/logicalSignals.csv").arg(busPath);
-	}
-	// if there is no abs def then use default library location
-	else
-    {
-		QSettings settings;
-		homePath = settings.value(QString("Library/DefaultLocation"), 
-			QCoreApplication::applicationDirPath()).toString();
-	}
-
-	QString path = QFileDialog::getSaveFileName(this, tr("Save a csv-file"), homePath, tr("csv-files (*.csv)"));
-
-	// if user clicked cancel
-	if (path.isEmpty())
-    {
-		return;
-    }
-
-	portModel_.exportCSV(path);
 }
 
 //-----------------------------------------------------------------------------
@@ -140,7 +75,6 @@ void AbsDefGroup::onAddSignalOptions()
 //-----------------------------------------------------------------------------
 void AbsDefGroup::save()
 {
-	// tell port model to transfer the ports to the abstraction definition
 	portModel_.save();
 }
 
@@ -158,6 +92,5 @@ void AbsDefGroup::setupLayout()
 //-----------------------------------------------------------------------------
 void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 {
-	absDef_ = absDef;
 	portModel_.setAbsDef(absDef);
 }

@@ -1,32 +1,46 @@
-/* 
- *  	Created on: 7.7.2011
- *      Author: Antti Kamppi
- * 		filename: logicallistview.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: logicallistview.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 07.07.2011
+//
+// Description:
+// List view for logical ports.
+//-----------------------------------------------------------------------------
 
 #include "logicallistview.h"
 
 #include <QMimeData>
 #include <QDrag>
 
+//-----------------------------------------------------------------------------
+// Function: LogicalListView::LogicalListView()
+//-----------------------------------------------------------------------------
 LogicalListView::LogicalListView(QWidget *parent):
 PortListView(parent),
-selectedIndex_(QModelIndex()) 
+    selectedIndex_(QModelIndex()) 
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: LogicalListView::~LogicalListView()
+//-----------------------------------------------------------------------------
 LogicalListView::~LogicalListView() 
 {
 }
 
-void LogicalListView::dropEvent( QDropEvent* event )
+//-----------------------------------------------------------------------------
+// Function: LogicalListView::dropEvent()
+//-----------------------------------------------------------------------------
+void LogicalListView::dropEvent(QDropEvent* event)
 {
 	// make sure the source is not this view
 	PortListView* source = qobject_cast<PortListView*>(event->source());
 
 	// if source is neither of the supported
-	if (!source) {
+	if (!source)
+    {
 		return;
 	}
 
@@ -37,7 +51,8 @@ void LogicalListView::dropEvent( QDropEvent* event )
 
 	// if no port name has been specified or drop index is invalid
 	QString mimeText = event->mimeData()->text();
-	if (mimeText.isEmpty()) {
+	if (mimeText.isEmpty())
+    {
 		event->accept();
 		return;
 	}
@@ -46,7 +61,8 @@ void LogicalListView::dropEvent( QDropEvent* event )
 	QStringList dropped = mimeText.split(QString(";"), QString::SkipEmptyParts);
 
 	// if the item to drop is from this port list view
-	if (source == this) {
+	if (source == this)
+    {
 		emit moveItems(dropped, index);
 		event->accept();
 		return;
@@ -56,11 +72,13 @@ void LogicalListView::dropEvent( QDropEvent* event )
 	QModelIndexList indexes = selectedIndexes();
 	QStringList logicals;
 
-	// add the physical port that matches each selected index
-	foreach (QModelIndex index, indexes) {
-		if (index.isValid()) {
+	// add the logical port that matches each selected index
+	foreach (QModelIndex const& index, indexes)
+    {
+		if (index.isValid())
+        {
 			// append each port with valid model index
-			logicals.append(index.model()->data(index, Qt::DisplayRole).toString());
+			logicals.append(index.data(Qt::DisplayRole).toString());
 		}
 	}
 
@@ -78,11 +96,13 @@ void LogicalListView::onPortRestored(QString const& portName)
 {    
     QModelIndex index = QModelIndex();
     bool found = false;
-    for (int row = 0; row < model()->rowCount(); row++)
+
+    int rowCount = model()->rowCount();
+    for (int row = 0; row < rowCount; row++)
     {
         index = model()->index(row, 0);
 
-        if (index.isValid() && model()->data(index).toString() == portName)
+        if (index.isValid() && index.data().toString() == portName)
         {
             found = true;
             break;            
@@ -136,5 +156,3 @@ void LogicalListView::mousePressEvent(QMouseEvent* event)
         selectedIndex_ = selectedIndexes().last();
     }       
 }
-
-

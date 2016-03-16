@@ -1,16 +1,18 @@
-/* 
- *  	Created on: 28.8.2012
- *      Author: Antti Kamppi
- * 		filename: fieldeditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: WriteValueConstraintComboBox.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 28.08.2012
+//
+// Description:
+// Editor for editing the enumerated values of a field.
+//-----------------------------------------------------------------------------
 
 #ifndef FIELDEDITOR_H
 #define FIELDEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <IPXACTmodels/field.h>
-#include <IPXACTmodels/component.h>
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
@@ -19,7 +21,9 @@
 class EditableTableView;
 class EnumeratedValueModel;
 class LibraryInterface;
-
+class EnumeratedValue;
+class EnumeratedValueValidator;
+class Component;
 //-----------------------------------------------------------------------------
 //! Editor for editing the enumerated values of a field.
 //-----------------------------------------------------------------------------
@@ -32,25 +36,20 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] field       Pointer to the field being edited.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] handler     Pointer to the instance managing the library.
-	 *      @param [in] parent      Pointer to the parent of this editor.
+	 *      @param [in] enumeratedValues            List of enumerated values being edited.
+     *      @param [in] enumeratedValueValidator    The validator for enumerated values.
+	 *      @param [in] component                   Pointer to the component being edited.
+	 *      @param [in] handler                     Pointer to the instance managing the library.
+	 *      @param [in] parent                      Pointer to the parent of this editor.
 	 */
-	FieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component, LibraryInterface* handler,
-        QWidget* parent = 0);
+	FieldEditor(QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumeratedValues,
+        QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator, QSharedPointer<Component> component,
+        LibraryInterface* handler, QWidget* parent = 0);
 
 	/*!
 	 *  The destructor.
 	 */
 	virtual ~FieldEditor();
-
-	/*!
-	 *  Check for the validity of the editor.
-	 *
-     *      @return True, if the editor is in a valid state, false otherwise.
-	 */
-	virtual bool isValid() const;
 
 	/*!
 	 *  Reload the information from the model to the editor.

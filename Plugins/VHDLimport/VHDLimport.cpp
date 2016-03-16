@@ -17,16 +17,17 @@
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/View.h>
 
 #include <Plugins/PluginSystem/ImportPlugin/Highlighter.h>
 #include <Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h>
 
 #include "VHDLPortParser.h"
 #include "VHDLGenericParser.h"
+#include "../common/NameGenerationPolicy.h"
 
 namespace
 {
@@ -47,8 +48,6 @@ VHDLimport::VHDLimport() : QObject(0),
     dependedGenerics_(),
     parsedPortDeclarations_()
 {
-    connect(portParser_, SIGNAL(add(QSharedPointer<Port>, QString const&)), 
-        this, SLOT(onPortParsed(QSharedPointer<Port>, QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,12 +155,13 @@ void VHDLimport::import(QString const& input, QSharedPointer<Component> targetCo
     {        
         highlightEntity(input);
 
-        parseModelName(input);
-        setLanguageAndEnvironmentalIdentifiers();
+		QSharedPointer<ComponentInstantiation> targetComponentInstantiation =
+		setLanguageAndEnvironmentalIdentifiers();
+        parseModelName(input, targetComponentInstantiation);
 
-        genericParser_->import(input, targetComponent);
+        genericParser_->import(input, targetComponent, targetComponentInstantiation);
 
-        portParser_->import(input, targetComponent);
+        portParser_->import(input, targetComponent, targetComponentInstantiation);
     }
 }
 
@@ -194,22 +194,6 @@ void VHDLimport::setModelParameterVisualizer(ModelParameterVisualizer* visualize
 }
 
 //-----------------------------------------------------------------------------
-// Function: VHDLimport::onPortParsed()
-//-----------------------------------------------------------------------------
-void VHDLimport::onPortParsed(QSharedPointer<Port> parsedPort, QString const& declaration)
-{
-    parsedPortDeclarations_.insert(parsedPort, declaration);  
-
-    foreach(QSharedPointer<ModelParameter> modelParameter, *targetComponent_->getModelParameters())
-    {
-        if (declaration.contains(modelParameter->getName()))
-        {
-            addDependencyOfGenericToPort(modelParameter, parsedPort);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: VHDLimport::highlight()
 //-----------------------------------------------------------------------------
 void VHDLimport::highlight(QString const& text, QColor const& highlightColor) const
@@ -217,21 +201,6 @@ void VHDLimport::highlight(QString const& text, QColor const& highlightColor) co
     if (highlighter_)
     {
         highlighter_->applyHighlight(text, highlightColor);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: VHDLimport::editorChangedModelParameter()
-//-----------------------------------------------------------------------------
-void VHDLimport::onModelParameterChanged(QSharedPointer<ModelParameter> changedParameter) const
-{
-    foreach(QSharedPointer<Port> affectedPort, dependedGenerics_.value(changedParameter))
-    {
-        QString portDeclaration = parsedPortDeclarations_.value(affectedPort);
-
-        affectedPort->setLeftBound(portParser_->parseLeftBound(portDeclaration, targetComponent_));
-        affectedPort->setRightBound(portParser_->parseRightBound(portDeclaration, targetComponent_));
-        affectedPort->setDefaultValue(portParser_->parseDefaultValue(portDeclaration));
     }
 }
 
@@ -278,7 +247,7 @@ void VHDLimport::highlightEntity(QString const& fileContent) const
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::parseModelName()
 //-----------------------------------------------------------------------------
-void VHDLimport::parseModelName(QString const& input) const
+void VHDLimport::parseModelName(QString const& input, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
     ENTITY_EXP.indexIn(input);
     QString entityName = ENTITY_EXP.cap(1);
@@ -301,9 +270,8 @@ void VHDLimport::parseModelName(QString const& input) const
         modelName = createModelNameFromConfiguration(configurationExp);
         highlightConfiguration(configurationExp);
     }
-    
-    View* rtlView = findOrCreateFlatView();
-    rtlView->setModelName(modelName);    
+
+	targetComponentInstantiation->setModuleName(modelName); 
 }
 
 //-----------------------------------------------------------------------------
@@ -369,25 +337,29 @@ void VHDLimport::highlightConfiguration(QRegExp const& configurationExp) const
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::findOrCreateFlatView()
 //-----------------------------------------------------------------------------
-View* VHDLimport::findOrCreateFlatView() const
+QSharedPointer<View> VHDLimport::findOrCreateFlatView() const
 {
     QStringList flatViews = targetComponent_->getFlatViews();
     if (flatViews.isEmpty())
     {
-        targetComponent_->createEmptyFlatView();
-        flatViews = targetComponent_->getFlatViews();
+		// create new view
+		QSharedPointer<View> newView( new View() );
+		newView->setName("flat");
+		newView->addEnvIdentifier(QString("::"));
+		targetComponent_->getViews()->append(newView);
+
+		flatViews = targetComponent_->getFlatViews();
     }
 
-    return targetComponent_->findView(flatViews.first());
+    return targetComponent_->getModel()->findView(flatViews.first());
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::setLanguageAndEnvironmentalIdentifiers()
 //-----------------------------------------------------------------------------
-void VHDLimport::setLanguageAndEnvironmentalIdentifiers() const
+QSharedPointer<ComponentInstantiation> VHDLimport::setLanguageAndEnvironmentalIdentifiers() const
 {
-    View* rtlView = findOrCreateFlatView();
-    rtlView->setLanguage("vhdl");
+    QSharedPointer<View> rtlView = findOrCreateFlatView();
 
     QString createdEnvIdentifier = "VHDL:Kactus2:";
 
@@ -402,13 +374,31 @@ void VHDLimport::setLanguageAndEnvironmentalIdentifiers() const
         envIdentifiers.append(createdEnvIdentifier);
     }
 
-    rtlView->setEnvIdentifiers(envIdentifiers);    
+	rtlView->setEnvIdentifiers(envIdentifiers);    
+
+	// Must have a component instantiation for module parameters.
+	QString instaName = NameGenerationPolicy::vhdlComponentInstantiationName( rtlView->name() );
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation =
+		targetComponent_->getModel()->findComponentInstantiation(instaName);
+
+	// Create and add to the component if does not exist.
+	if ( !targetComponentInstantiation )
+	{
+		targetComponentInstantiation = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
+		targetComponentInstantiation->setName(instaName);
+		targetComponentInstantiation->setLanguage("vhdl");
+		targetComponent_->getComponentInstantiations()->append(targetComponentInstantiation);
+	}
+
+	rtlView->setComponentInstantiationRef( instaName );
+
+	return targetComponentInstantiation;
 }
 
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::addDependencyOfGenericToPort()
 //-----------------------------------------------------------------------------
-void VHDLimport::addDependencyOfGenericToPort(QSharedPointer<ModelParameter> modelParameter, 
+void VHDLimport::addDependencyOfGenericToPort(QSharedPointer<ModuleParameter> modelParameter, 
     QSharedPointer<Port> parsedPort)
 {
     QList<QSharedPointer<Port> > portList = dependedGenerics_.value(modelParameter);

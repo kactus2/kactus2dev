@@ -10,20 +10,16 @@
 //-----------------------------------------------------------------------------
 
 #include "ChoicesDelegate.h"
+#include "ChoiceColumns.h"
 
 #include "EnumerationModel.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <IPXACTmodels/choice.h>
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <QScrollArea>
 #include <QSortFilterProxyModel>
-
-namespace
-{
-    const int ENUMERATION_COLUMN = 1;
-}
 
 //-----------------------------------------------------------------------------
 // Function: ChoicesDelegate::ChoicesDelegate()
@@ -48,7 +44,7 @@ ChoicesDelegate::~ChoicesDelegate()
 QWidget* ChoicesDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
     QModelIndex const& index) const
 {
-    if (index.column() == ENUMERATION_COLUMN)
+    if (index.column() == ChoiceColumns::CHOICE_ENUMERATIONS)
     {
         EditableTableView* editor = new EditableTableView(parent);
         editor->setAlternatingRowColors(false);
@@ -70,7 +66,7 @@ QWidget* ChoicesDelegate::createEditor(QWidget* parent, QStyleOptionViewItem con
 //-----------------------------------------------------------------------------
 void ChoicesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == ENUMERATION_COLUMN)
+    if (index.column() == ChoiceColumns::CHOICE_ENUMERATIONS)
     {
         EditableTableView* view = dynamic_cast<EditableTableView*>(dynamic_cast<QScrollArea*>(editor)->widget());
         QSortFilterProxyModel* proxy = new QSortFilterProxyModel(view);
@@ -103,7 +99,7 @@ void ChoicesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) c
 //-----------------------------------------------------------------------------
 void ChoicesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
-    if (index.column() == ENUMERATION_COLUMN)
+    if (index.column() == ChoiceColumns::CHOICE_ENUMERATIONS)
     {
         return;
     }
@@ -119,7 +115,7 @@ void ChoicesDelegate::updateEditorGeometry(QWidget * editor, const QStyleOptionV
 {
     QStyledItemDelegate::updateEditorGeometry(editor, option, index);
 
-    if (index.column() == ENUMERATION_COLUMN)
+    if (index.column() == ChoiceColumns::CHOICE_ENUMERATIONS)
     {
         repositionAndResizeEditor(editor, option);
     }

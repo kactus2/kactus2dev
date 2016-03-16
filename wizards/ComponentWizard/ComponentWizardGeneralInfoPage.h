@@ -12,17 +12,13 @@
 #ifndef COMPONENTWIZARDGENERALINFOPAGE_H
 #define COMPONENTWIZARDGENERALINFOPAGE_H
 
-#include <IPXACTmodels/component.h>
-
 #include <QWizardPage>
 #include <QSharedPointer>
 #include <QLineEdit>
 #include <QTextEdit>
 
-class ComponentWizard;
 class LibraryInterface;
-class FileSelector;
-class FileViewer;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Intro page for the component wizard.
@@ -51,22 +47,18 @@ public:
      */
     virtual int nextId() const;
 
-	 /*! \brief Check if the settings on the page are valid and user can move to next page.
-	  *
-	  * Method: 		isComplete
-	  * Full name:	ComponentWizardGeneralInfoPage::isComplete
-	  * Access:		virtual public 
-	  *
-	  *
-	  * \return True if all settings are valid, otherwise false.
-	 */
-     virtual bool isComplete() const;
+    /*!
+     *  Check if the settings on the page are valid and user can move to next page.
+     *
+     *      @return True if all settings are valid, otherwise false.
+     */
+    virtual bool isComplete() const;
 
 
     /*!
-     *   Assigns the input values to the component when next is clicked.
+     *  Assigns the input values to the component when next is clicked.
      */
-     virtual bool validatePage();
+    virtual bool validatePage();
 
 private:
 	// Disable copying.

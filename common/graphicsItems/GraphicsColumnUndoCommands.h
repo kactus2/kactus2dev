@@ -12,14 +12,15 @@
 #ifndef GRAPHICSCOLUMNUNDOCOMMANDS_H
 #define GRAPHICSCOLUMNUNDOCOMMANDS_H
 
-#include <IPXACTmodels/ColumnDesc.h>
+#include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
+#include <QSharedPointer>
 #include <QUndoCommand>
 #include <QPointF>
 
 class GraphicsColumnLayout;
 class GraphicsColumn;
-
+class Design;
 //-----------------------------------------------------------------------------
 //! GraphicsColumnMoveCommand class.
 //-----------------------------------------------------------------------------
@@ -87,8 +88,8 @@ public:
      *      @param [in] desc    The column to add.
      *      @param [in] parent  The parent command.
      */
-    GraphicsColumnAddCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
-                             QUndoCommand* parent = 0);
+    GraphicsColumnAddCommand(GraphicsColumnLayout* layout, GraphicsColumn* column, QSharedPointer<Design> design,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -120,6 +121,9 @@ private:
     //! The column.
     GraphicsColumn* column_;
 
+    //! The column layout.
+    QSharedPointer<Design> design_;
+
     //! Boolean flag for indicating if the component should be deleted in the destructor.
     bool del_;
 };
@@ -136,8 +140,8 @@ public:
      *      @param [in] column   The column.
      *      @param [in] newDesc  The column's new description.
      */
-    GraphicsColumnChangeCommand(GraphicsColumn* column, ColumnDesc const& newDesc,
-                                QUndoCommand* parent = 0);
+    GraphicsColumnChangeCommand(GraphicsColumn* column, QSharedPointer<ColumnDesc> newDesc,
+        QSharedPointer<Design> containingDesign, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -159,18 +163,26 @@ private:
     GraphicsColumnChangeCommand(GraphicsColumnChangeCommand const& rhs);
     GraphicsColumnChangeCommand& operator=(GraphicsColumnChangeCommand const& rhs);
 
+    void changeModifiedColumnInDesign(QSharedPointer<ColumnDesc> newColumn);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The diagram column.
-    GraphicsColumn* column_;
+    GraphicsColumn* columnItem_;
+    
+    //! The column description.
+    QSharedPointer<ColumnDesc> columnDesc_;
 
     //! The column's old description.
-    ColumnDesc oldDesc_;
+    QSharedPointer<ColumnDesc> oldDesc_;
 
     //! The column's new description.
-    ColumnDesc newDesc_;
+    QSharedPointer<ColumnDesc> newDesc_;
+
+    //! The design containing the modified column.
+    QSharedPointer<Design> containingDesign_;
 };
 
 //-----------------------------------------------------------------------------

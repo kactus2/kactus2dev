@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 12.8.2011
- *      Author: Antti Kamppi
- * 		filename: configurableelementdelegate.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: configurableelementdelegate.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.08.2011
+//
+// Description:
+// Delegate that provides editors to edit the configurable element values.
+//-----------------------------------------------------------------------------
 
 #ifndef CONFIGURABLEELEMENTDELEGATE_H
 #define CONFIGURABLEELEMENTDELEGATE_H
@@ -12,10 +16,10 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/choice.h>
-
 #include <QWidget>
 #include <QSize>
+
+class Choice;
 
 //-----------------------------------------------------------------------------
 //! Delegate that provides editors to edit the configurable element values.
@@ -39,7 +43,7 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject *parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~ConfigurableElementDelegate();
 
     /*!
@@ -138,10 +142,10 @@ protected:
     virtual int descriptionColumn() const;
 
 private:
-	//! \brief No copying
+	//! No copying.
 	ConfigurableElementDelegate(const ConfigurableElementDelegate& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	ConfigurableElementDelegate& operator=(const ConfigurableElementDelegate& other);
 
     /*!

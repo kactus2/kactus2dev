@@ -1,13 +1,21 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorbusinterfacesitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorbusinterfacesitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The Bus interfaces-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorbusinterfacesitem.h"
 #include "componenteditorbusinterfaceitem.h"
+
 #include <editors/ComponentEditor/busInterfaces/businterfaceseditor.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorbusinterfacesitem::ComponentEditorBusInterfacesItem()
@@ -20,19 +28,22 @@ ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEdit
     QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
-busifs_(component->getBusInterfaces()),
-parentWnd_(parentWnd),
-expressionParser_(expressionParser)
+    busifs_(component->getBusInterfaces()),
+    parentWnd_(parentWnd),
+    expressionParser_(expressionParser),
+    validator_(new BusInterfaceValidator(expressionParser, component->getChoices(), component->getViews(),
+    component->getPorts(), component->getAddressSpaces(), component->getMemoryMaps(), component->getBusInterfaces(),
+    component->getFileSets(), component->getRemapStates(), libHandler))
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
     setReferenceCounter(referenceCounter);
 
-	foreach (QSharedPointer<BusInterface> busif, busifs_)
+	foreach (QSharedPointer<BusInterface> busif, *busifs_)
     {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
             new ComponentEditorBusInterfaceItem(busif, model, libHandler, component, referenceCounter_,
-            parameterFinder_, expressionFormatter_, expressionParser_, this, parentWnd));
+            parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd));
 
         connect(busifItem.data(), SIGNAL(openReferenceTree(QString)),
             this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
@@ -41,22 +52,39 @@ expressionParser_(expressionParser)
 	}
 }
 
-ComponentEditorBusInterfacesItem::~ComponentEditorBusInterfacesItem() {
+//-----------------------------------------------------------------------------
+// Function: componenteditorbusinterfacesitem::~ComponentEditorBusInterfacesItem()
+//-----------------------------------------------------------------------------
+ComponentEditorBusInterfacesItem::~ComponentEditorBusInterfacesItem() 
+{
 }
 
-QFont ComponentEditorBusInterfacesItem::getFont() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditorbusinterfacesitem::getFont()
+//-----------------------------------------------------------------------------
+QFont ComponentEditorBusInterfacesItem::getFont() const
+{
     QFont font(ComponentEditorItem::getFont());
     font.setBold(component_->hasInterfaces());
     return font;
 }
 
-QString ComponentEditorBusInterfacesItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditorbusinterfacesitem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorBusInterfacesItem::text() const
+{
 	return tr("Bus interfaces");
 }
 
-ItemEditor* ComponentEditorBusInterfacesItem::editor() {
-	if (!editor_) {
-		editor_ = new BusInterfacesEditor(libHandler_, component_, parameterFinder_);
+//-----------------------------------------------------------------------------
+// Function: componenteditorbusinterfacesitem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorBusInterfacesItem::editor()
+{
+	if (!editor_)
+    {
+		editor_ = new BusInterfacesEditor(libHandler_, component_, validator_, parameterFinder_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -69,14 +97,22 @@ ItemEditor* ComponentEditorBusInterfacesItem::editor() {
 	return editor_;
 }
 
-QString ComponentEditorBusInterfacesItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditorbusinterfacesitem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorBusInterfacesItem::getTooltip() const
+{
 	return tr("Contains the bus interfaces specified for a component");
 }
 
-void ComponentEditorBusInterfacesItem::createChild( int index ) {
+//-----------------------------------------------------------------------------
+// Function: componenteditorbusinterfacesitem::createChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorBusInterfacesItem::createChild(int index)
+{
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(
-		new ComponentEditorBusInterfaceItem(busifs_.at(index), model_, libHandler_, component_, referenceCounter_,
-        parameterFinder_, expressionFormatter_, expressionParser_, this, parentWnd_));
+		new ComponentEditorBusInterfaceItem(busifs_->at(index), model_, libHandler_, component_, referenceCounter_,
+        parameterFinder_, expressionFormatter_, expressionParser_, validator_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
     connect(busifItem.data(), SIGNAL(openReferenceTree(QString)),
@@ -85,11 +121,17 @@ void ComponentEditorBusInterfacesItem::createChild( int index ) {
 	childItems_.insert(index, busifItem);
 }
 
-QSharedPointer<ComponentEditorItem> ComponentEditorBusInterfacesItem::getBusInterfaceItem( const QString& interfaceName ) const {
-	foreach (const QSharedPointer<ComponentEditorItem> child, childItems_) {
-		
+//-----------------------------------------------------------------------------
+// Function: componenteditorbusinterfacesitem::createChild()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentEditorItem> ComponentEditorBusInterfacesItem::getBusInterfaceItem(
+    QString const& interfaceName) const
+{
+	foreach (const QSharedPointer<ComponentEditorItem> child, childItems_)
+    {		
 		// if the bus interface name matches the searched interface name
-		if (child->text() == interfaceName) {
+		if (child->text() == interfaceName)
+        {
 			return child;
 		}
 	}

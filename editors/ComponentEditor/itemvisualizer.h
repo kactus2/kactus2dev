@@ -12,8 +12,6 @@
 #ifndef ITEMVISUALIZER_H
 #define ITEMVISUALIZER_H
 
-#include <IPXACTmodels/component.h>
-
 #include <QWidget>
 #include <QSharedPointer>
 
@@ -41,10 +39,8 @@ signals:
     void displayed();
 
 private:
-	//! No copying
+	//! No copying. No assignment. No regret.
 	ItemVisualizer(const ItemVisualizer& other);
-
-	//! No assignment
 	ItemVisualizer& operator=(const ItemVisualizer& other);
 };
 

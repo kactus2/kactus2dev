@@ -14,17 +14,16 @@
 #include <QPen>
 
 //-----------------------------------------------------------------------------
-// Function: HWConnectionEndpoint()
+// Function: HWConnectionEndpont::HWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-HWConnectionEndpoint::HWConnectionEndpoint(QGraphicsItem* parent, bool temporary,
-                                           QVector2D const& dir)
-    : ConnectionEndpoint(parent, temporary)
+HWConnectionEndpoint::HWConnectionEndpoint(QGraphicsItem* parent, QVector2D const& dir)
+    : ConnectionEndpoint(parent)
 {
     setDirection(dir);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~HWConnectionEndpoint()
+// Function: HWConnectionEndpont::~HWConnectionEndpoint()
 //-----------------------------------------------------------------------------
 HWConnectionEndpoint::~HWConnectionEndpoint()
 {

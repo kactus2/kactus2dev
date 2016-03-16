@@ -1,15 +1,21 @@
-/* 
- *
- *  Created on: 20.12.2010
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: librarytreemodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.12.2010
+//
+// Description:
+// The model that contains the LibraryItems to display library hierarchically.
+//-----------------------------------------------------------------------------
 
 #ifndef LIBRARYTREEMODEL_H
 #define LIBRARYTREEMODEL_H
 
-#include <IPXACTmodels/vlnv.h>
 #include "libraryitem.h"
 #include "librarydata.h"
+
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -19,271 +25,251 @@
 
 class LibraryInterface;
 
-/*! \brief The model that contains the LibraryItems to display library hierarhically.
- *
- */
-class LibraryTreeModel : public QAbstractItemModel {
+//-----------------------------------------------------------------------------
+//! The model that contains the LibraryItems to display library hierarchically.
+//-----------------------------------------------------------------------------
+class LibraryTreeModel : public QAbstractItemModel
+{
 
     Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	*
-	* \param handler Pointer to the instance that manages the library.
-	* \param sourceModel Pointer to the data model to use as base model.
-	* \param parent Pointer to the owner of this class
+	*      @param [in] handler          The instance that manages the library.
+	*      @param [in] sourceModel      The data model to use as base model.
+	*      @param [in] parent           The owner of this class
 	*
 	*/
-	LibraryTreeModel(LibraryInterface* handler,
-		LibraryData* sourceModel, 
-		QObject *parent = 0);
+	LibraryTreeModel(LibraryInterface* handler,	LibraryData* sourceModel, QObject* parent = 0);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~LibraryTreeModel();
 
-	/*! \brief Get the data for the headers of this model.
+	/*! Get the data for the headers of this model.
 	*
-	* \param section Specifies the column of the header.
-	* \param orientation The orientation of the header, only Qt::Horizontal supported.
-	* \param role Specifies the role of the data.
+	*      @param [in] section          Specifies the column of the header.
+	*      @param [in] orientation      The orientation of the header, only Qt::Horizontal supported.
+	*      @param [in] role             Specifies the role of the data.
 	*
-	* \return QVariant containing the data.
+	*      @return QVariant containing the data.
 	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation,
-		int role = Qt::DisplayRole ) const;
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
-	/*! \brief Get the number of columns in this model
+	/*! Get the number of columns in this model
 	*
-	* \param parent Model index identifying the item that's column count is 
-	* wanted.
+	*      @param [in] parent Model index identifying the item that's column count is  wanted.
 	*
-	* \return Number of columns (always 1)
+	*      @return Number of columns.
 	*/
-	virtual int columnCount(const QModelIndex & parent = QModelIndex() ) const;
+	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the number of rows an item has.
+	/*! Get the number of rows an item has.
 	*
-	* \param parent Model index identifying the item that's row count is wanted
+	*      @param [in] parent Model index identifying the item that's row count is wanted
 	*
-	* \return Number of rows the item has.
+	*      @return Number of rows the item has.
 	*/
-	virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
+	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the model index of the specified object.
+	/*! Get the model index of the specified object.
 	*
-	* \param row Row number of the object.
-	* \param column Column number of the object.
-	* \param parent Model index of the parent of the object.
+	*      @param [in] row      Row number of the object.
+	*      @param [in] column   Column number of the object.
+	*      @param [in] parent   Model index of the parent of the object.
 	*
-	* \return QModelIndex that identifies the object.
+	*      @return QModelIndex that identifies the object.
 	*/
-	virtual QModelIndex index(int row, int column,
-		const QModelIndex &parent = QModelIndex()) const;
+	virtual QModelIndex index(int row, int column, QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the model index of the parent of the object
+	/*! Get the model index of the parent of the object
 	*
-	* \param child Model index that identifies the child of the object.
+	*      @param [in] child Model index that identifies the child of the object.
 	*
-	* \return QModelIndex that identifies the parent of the given object.
+	*      @return QModelIndex that identifies the parent of the given object.
 	*/
-	virtual QModelIndex parent(const QModelIndex &child) const;
+	virtual QModelIndex parent(QModelIndex const& child) const;
 
-	/*! \brief Get the data associated with given object.
+	/*! Get the data associated with given object.
 	*
-	* \param index Model index that identifies the object that's data is wanted.
-	* \param role Specifies the type of data wanted.
+	*      @param [in] index    Model index that identifies the object that's data is wanted.
+	*      @param [in] role     Specifies the type of data wanted.
 	*
-	* \return QVariant Containing the requested data.
+	*      @return QVariant Containing the requested data.
 	*/
-	virtual QVariant data(const QModelIndex& index,
-		int role = Qt::DisplayRole) const;
+	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Does the specified item have child items or not.
+	/*! Does the specified item have child items or not.
 	*
-	* \param parent Model index identifying the object that's children are asked.
+	*      @param [in] parent Model index identifying the object that's children are asked.
 	*
-	* \return True if object has child objects.
+	*      @return True if object has child objects.
 	*/
-	virtual bool hasChildren(const QModelIndex& parent = QModelIndex()) const;
+	virtual bool hasChildren(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the flags that identify possible methods for given object.
+	/*! Get the flags that identify possible methods for given object.
 	*
-	* \param index Model index identifying the object that's flags are requested.
+	*      @param [in] index Model index identifying the object that's flags are requested.
 	*
-	* \return Qt::ItemFlags that specify how the object can be handled.
+	*      @return Qt::ItemFlags that specify how the object can be handled.
 	*/
-	Qt::ItemFlags flags(const QModelIndex& index) const;
+	Qt::ItemFlags flags(QModelIndex const& index) const;
 
-	/*! \brief Get the root item of the tree.
+	/*! Get the root item of the tree.
 	*
-	* \return Pointer to the root item
+	*      @return The root item
 	*/
 	LibraryItem* getRoot() const;
 
-	/*! \brief Create a model index for a library item
+	/*! Create a model index for a library item
 	*
-	* \param item Pointer to the LibraryItem that's model index is wanted
+	*      @param [in] item The LibraryItem that's model index is wanted
 	*
-	* \return QModelIndex that identifies the libraryItem.
+	*      @return QModelIndex that identifies the libraryItem.
 	*/
 	QModelIndex index(LibraryItem* item);
 
 signals:
 
-	//! \brief Emit an error message to be printed to user.
+	//! Emit an error message to be printed to user.
 	void errorMessage(const QString& message);
 
-	//! \brief Emit a notice message to be printed to user.
+	//! Emit a notice message to be printed to user.
 	void noticeMessage(const QString& message);
 
-	//! \brief Open the design of a component.
-	void openDesign(const VLNV& vlnv);
+	//! Open the design of a component.
+	void openDesign(VLNV const& vlnv);
 
-	//! \brief Open the SW design of a component.
-	void openSWDesign(const VLNV& vlnv);
+	//! Open the SW design of a component.
+	void openSWDesign(VLNV const& vlnv);
 
-	//! \brief Open the system design of a component.
-	void openSystemDesign(const VLNV& vlnv);
+	//! Open the system design of a component.
+	void openSystemDesign(VLNV const& vlnv);
 
-	//! \brief Open the component in a component editor.
-	void editItem(const VLNV& vlnv);
+	//! Open the component in a component editor.
+	void editItem(VLNV const& vlnv);
 
-	//! \brief Create a new bus definition.
-	void createBus(const VLNV& vlnv);
+	//! Create a new bus definition.
+	void createBus(VLNV const& vlnv);
 
-	//! \brief Create a new abstraction definition for given bus definition.
-	void createAbsDef(const VLNV& vlnv);
+	//! Create a new abstraction definition for given bus definition.
+	void createAbsDef(VLNV const& vlnv);
 
-	//! \brief Create a new component with given vlnv.
-	void createComponent(const VLNV& vlnv);
+	//! Create a new component with given vlnv.
+	void createComponent(VLNV const& vlnv);
 
-	//! \brief Create new design with given vlnv.
-	void createDesign(const VLNV& vlnv);
+	//! Create new design with given vlnv.
+	void createDesign(VLNV const& vlnv);
 
-	//! \brief Create new SW design with given vlnv.
-	void createSWDesign(const VLNV& vlnv);
+	//! Create new SW design with given vlnv.
+	void createSWDesign(VLNV const& vlnv);
 
-	//! \brief Create new system design with given vlnv.
-	void createSystemDesign(const VLNV& vlnv);
+	//! Create new system design with given vlnv.
+	void createSystemDesign(VLNV const& vlnv);
 
-	//! \brief Create a new COM definition.
-	void createComDef(const VLNV& vlnv);
+	//! Create a new COM definition.
+	void createComDef(VLNV const& vlnv);
 
-	//! \brief Create a new API definition.
-	void createApiDef(const VLNV& vlnv);
+	//! Create a new API definition.
+	void createApiDef(VLNV const& vlnv);
 
-	//! \brief Remove the specified VLNV from the library
+	//! Remove the specified VLNV from the library
 	void removeVLNV(QList<VLNV> vlnvs);
 
-	//! \brief Export a list of vlnv items to a new location.
+	//! Export a list of vlnv items to a new location.
 	void exportItems(const QList<VLNV> list);
 
 	//! Shows errors about the item at the given index.
 	void showErrors(VLNV const& vlnv);
 
-	//! \brief Refresh the item filtering because changes have been made
+	//! Refresh the item filtering because changes have been made
 	void invalidateFilter();
 
-	//! \brief Items have changed so th VLNVDialer should refresh itself.
+	//! Items have changed so th VLNVDialer should refresh itself.
 	void refreshDialer();
 
 public slots:
 
-	//! \brief Open the selected hierarchical design
-	void onOpenDesign(const QModelIndex& index);
+	//! Open the selected hierarchical design
+	void onOpenDesign(QModelIndex const& index);
 
-	//! \brief Open the selected hierarchical SW design
-	void onOpenSWDesign(const QModelIndex& index);
+	//! Open the selected hierarchical SW design
+	void onOpenSWDesign(QModelIndex const& index);
 
-	//! \brief Open the selected hierarchical system design
-	void onOpenSystemDesign(const QModelIndex& index);
+	//! Open the selected hierarchical system design
+	void onOpenSystemDesign(QModelIndex const& index);
 
-	//! \brief When open is selected in search view
-	void onOpenComponent(const QModelIndex& index);
+	//! Open the selected document e.g. component or bus definition.
+	void onOpenDocument(QModelIndex const& index);
 
-	//! \brief Create new component
-	void onCreateNewComponent(const QModelIndex& index);
+	//! Create new component
+	void onCreateNewComponent(QModelIndex const& index);
 
-	//! \brief Create new design
-	void onCreateNewDesign(const QModelIndex& index);
+	//! Create new design
+	void onCreateNewDesign(QModelIndex const& index);
 
-	//! \brief Create new SW design
-	void onCreateNewSWDesign(const QModelIndex& index);
+	//! Create new SW design
+	void onCreateNewSWDesign(QModelIndex const& index);
 
-	//! \brief Create new system design
-	void onCreateNewSystemDesign(const QModelIndex& index);
+	//! Create new system design
+	void onCreateNewSystemDesign(QModelIndex const& index);
 
-	//! \brief When delete is selected in search view
-	void onDeleteItem(const QModelIndex& index);
+	//! When delete is selected in search view
+	void onDeleteItem(QModelIndex const& index);
 
-	//! \brief When export is selected in search view
-	void onExportItem(const QModelIndex& index);
+	//! When export is selected in search view
+	void onExportItem(QModelIndex const& index);
 
 	//! Shows errors about the item at the given index.
 	void onShowErrors(QModelIndex const& index);
 
-	//! \brief Open bus definition in an editor
-	void onOpenBus(const QModelIndex& index);
+	//! Create a new bus definition
+	void onCreateBus(QModelIndex const& index);
 
-	//! \brief Open COM definition in an editor
-	void onOpenComDef(const QModelIndex& index);
+	//! Create a new abstraction definition for given bus definition.
+	void onCreateAbsDef(QModelIndex const& index);
 
-	//! \brief Open API definition in an editor
-	void onOpenApiDef(const QModelIndex& index);
+	//! Create a new COM definition
+	void onCreateComDef(QModelIndex const& index);
 
-	//! \brief Create a new bus definition
-	void onCreateBus(const QModelIndex& index);
+	//! Create a new API definition
+	void onCreateApiDef(QModelIndex const& index);
 
-	//! \brief Create a new abstraction definition for given bus definition.
-	void onCreateAbsDef(const QModelIndex& index);
+	//! Remove the specified vlnv branch from the tree.
+	void onRemoveVLNV(VLNV const& vlnv);
 
-	//! \brief Create a new COM definition
-	void onCreateComDef(const QModelIndex& index);
+	//! Add the specified vlnv branch to the tree.
+	void onAddVLNV(VLNV const& vlnv);
 
-	//! \brief Create a new API definition
-	void onCreateApiDef(const QModelIndex& index);
-
-	//! \brief Remove the specified vlnv branch from the tree.
-	void onRemoveVLNV(const VLNV& vlnv);
-
-	//! \brief Add the specified vlnv branch to the tree.
-	void onAddVLNV(const VLNV& vlnv);
-
-	//! \brief Reset the model.
+	//! Reset the model.
 	void onResetModel();
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	LibraryTreeModel(const LibraryTreeModel& other);
 
-	//! \brief No assignment
+	//! No assignment
 	LibraryTreeModel& operator=(const LibraryTreeModel& other);
 
-	/*! \brief Removes an item from the treeModel
+	/*! Removes an item from the treeModel
 	*
-	* \param toRemove Pointer to LibraryItem that is the highest-level item to 
-	* remove.
-	* \param emitSignals Specifies if the RemoveVLNV signal should be emitted
-	* or not.
-	*
+	*      @param [in] toRemove     The LibraryItem that is the highest-level item to remove.
 	*/
-	void removeLibraryItem(LibraryItem* toRemove, bool emitSignals);
+	void removeLibraryItem(LibraryItem* toRemove);
 
-	//! \brief Pointer to the data model that holds the library
+	//! The data model that holds the library
 	LibraryData* dataSource_;
 
-	/*! \brief Pointer to the root of the tree.
+	/*! The root of the tree.
 	*
-	* The LibraryTreeFilter owns the root item and the root item owns it's
-	* child items.
+	* The LibraryTreeFilter owns the root item and the root item owns it's child items.
 	*/
 	QSharedPointer<LibraryItem> rootItem_;
 
-	//! \brief Pointer to the instance that manages the library.
+	//! The instance that manages the library.
 	LibraryInterface* handler_;
-
 };
 
 #endif // LIBRARYTREEMODEL_H

@@ -1,80 +1,90 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorchannelsitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorchannelsitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The channels-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITORCHANNELSITEM_H
 #define COMPONENTEDITORCHANNELSITEM_H
 
 #include "componenteditoritem.h"
 
-/*! \brief The channels-item in the component editor's navigation tree.
- *
- */
-class ComponentEditorChannelsItem : public ComponentEditorItem {
+class Channel;
+class ChannelValidator;
+class ExpressionParser;
+//-----------------------------------------------------------------------------
+//! The channels-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorChannelsItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
-	 *
+	 *      @param [in] model               The model that owns the items.
+	 *      @param [in] libHandler          The instance that manages the library.
+	 *      @param [in] component           The component being edited.
+     *      @param [in] expressionParser    The expression parser to use.
+	 *      @param [in] parent              The parent item.
 	*/
-	ComponentEditorChannelsItem(ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
+	ComponentEditorChannelsItem(ComponentEditorTreeModel* model, 
+        LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
-		ComponentEditorItem* parent);
+        QSharedPointer<ExpressionParser> expressionParser,
+        ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ComponentEditorChannelsItem();
 
-	/*! \brief Get the font to be used for text of this item.
+	/*! Get the font to be used for text of this item.
 	*
 	* The font is bold, if channels exist, otherwise not bold.
 	*
-	* \return QFont instance that defines the font to be used.
+	*      @return QFont instance that defines the font to be used.
 	*/
 	virtual QFont getFont() const;
 
-	/*! \brief Get the tool tip for the item.
+	/*! Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
+	 *      @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
+	 *      @return QString Contains the text to display.
 	*/
 	virtual QString text() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*! Get The editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Check the validity of this item.
+	/*! Check the validity of this item.
 	 *
-	 * \return bool True if item is in valid state.
+	 *      @return bool True if item is in valid state.
 	*/
 	virtual bool isValid() const;
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentEditorChannelsItem(const ComponentEditorChannelsItem& other);
-
-	//! \brief No assignment
 	ComponentEditorChannelsItem& operator=(const ComponentEditorChannelsItem& other);
 
-	//! \brief The channels being edited.
-	QList<QSharedPointer<Channel> >& channels_;
+	//! The channels being edited.
+	QSharedPointer<QList<QSharedPointer<Channel> > > channels_;
+
+    //! Validator for channels.
+    QSharedPointer<ChannelValidator> validator_;
 };
 
 #endif // COMPONENTEDITORCHANNELSITEM_H

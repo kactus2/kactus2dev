@@ -1,149 +1,144 @@
-/* 
- *  	Created on: 14.6.2012
- *      Author: Antti Kamppi
- * 		filename: channelsmodel.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: channelsmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.06.2012
+//
+// Description:
+// The model class to manage the objects for channels editor.
+//-----------------------------------------------------------------------------
 
 #ifndef CHANNELSMODEL_H
 #define CHANNELSMODEL_H
-
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/channel.h>
 
 #include <QAbstractTableModel>
 #include <QList>
 #include <QSharedPointer>
 
-/*! \brief The model class to manage the objects for channels editor.
- *
- */
-class ChannelsModel : public QAbstractTableModel {
+class Channel;
+class ChannelValidator;
+//-----------------------------------------------------------------------------
+//! The model class to manage the objects for channels editor.
+//-----------------------------------------------------------------------------
+class ChannelsModel : public QAbstractTableModel
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the owner of this model.
-	 *
+	 *      @param [in] channels    The channels being edited.
+     *      @param [in] validator   The validator for channel elements.
+	 *      @param [in] parent      The owner of this model.
 	*/
-	ChannelsModel(QSharedPointer<Component> component,
-		QObject *parent);
+	ChannelsModel(QSharedPointer<QList<QSharedPointer<Channel> > > channels, 
+        QSharedPointer<ChannelValidator> validator, QObject *parent);
 	
-	//! \brief The destructor.
+	//! The destructor.
 	virtual ~ChannelsModel();
 
-	/*! \brief Get the number of rows an item contains.
+	/*! Get the number of rows an item contains.
 	 *
-	 * \param parent Identifies the parent that's row count is requested.
+	 *      @param [in] parent Identifies the parent that's row count is requested.
 	 *
-	 * \return Number of rows the item has.
+	 *      @return Number of rows the item has.
 	*/
-	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the number of columns the item has to be displayed.
+	/*! Get the number of columns the item has to be displayed.
 	 *
-	 * \param parent Identifies the parent that's column count is requested.
+	 *      @param [in] parent Identifies the parent that's column count is requested.
 	 *
-	 * \return The number of columns to be displayed.
+	 *      @return The number of columns to be displayed.
 	*/
-	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the item flags that defines the possible operations for the item.
+	/*! Get the item flags that defines the possible operations for the item.
 	 *
-	 * \param index Model index that identifies the item.
+	 *      @param [in] index Model index that identifies the item.
 	 *
-	 * \return Qt::ItemFlags specify the possible operations for the item.
+	 *      @return Qt::ItemFlags specify the possible operations for the item.
 	*/
-	Qt::ItemFlags flags(const QModelIndex& index) const;
+	Qt::ItemFlags flags(QModelIndex const& index) const;
 
-	/*! \brief Get the header data for specified header.
+	/*! Get the header data for specified header.
 	 *
-	 * \param section The section specifies the row/column number for the header.
-	 * \param orientation Specified if horizontal or vertical header is wanted.
-	 * \param role Specifies the type of the requested data.
+	 *      @param [in] section         The section specifies the row/column number for the header.
+	 *      @param [in] orientation     Specified if horizontal or vertical header is wanted.
+	 *      @param [in] role            Specifies the type of the requested data.
 	 *
-	 * \return QVariant Contains the requested data.
+	 *      @return QVariant Contains the requested data.
 	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation, 
-		int role = Qt::DisplayRole) const;
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	/*! \brief Get the data for specified item.
+	/*! Get the data for specified item.
 	 *
-	 * \param index Specifies the item that's data is requested.
-	 * \param role The role that defines what kind of data is requested.
+	 *      @param [in] index   Specifies the item that's data is requested.
+	 *      @param [in] role    The role that defines what kind of data is requested.
 	 *
-	 * \return QVariant Contains the data for the item.
+	 *      @return QVariant Contains the data for the item.
 	*/
-	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Save the data to the model for specified item
+	/*! Save the data to the model for specified item
 	 *
-	 * \param index The model index of the item that's data is to be saved.
-	 * \param value The data that is to be saved.
-	 * \param role The role specifies what kind of data should be saved.
+	 *      @param [in] index   The model index of the item that's data is to be saved.
+	 *      @param [in] value   The data that is to be saved.
+	 *      @param [in] role    The role specifies what kind of data should be saved.
 	 *
-	 * \return True if saving happened successfully.
+	 *      @return True if saving happened successfully.
 	*/
-	bool setData(const QModelIndex& index, const QVariant& value, 
-		int role = Qt::EditRole);
+	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
 
-	/*! \brief Check if the channels model is in a valid state.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid() const;
 
 public slots:
 
-	/*! \brief Add a new item to the given index.
+	/*! Add a new item to the given index.
 	 *
-	 * \param index The index identifying the position for new item.
+	 *      @param [in] index The index identifying the position for new item.
 	 *
 	*/
-	virtual void onAddItem(const QModelIndex& index);
+	virtual void onAddItem(QModelIndex const& index);
 
-	/*! \brief Remove the item in the given index.
+	/*! Remove the item in the given index.
 	 *
-	 * \param index The index identifying the item to remove.
+	 *      @param [in] index The index identifying the item to remove.
 	 *
 	*/
-	virtual void onRemoveItem(const QModelIndex& index);
+	virtual void onRemoveItem(QModelIndex const& index);
 
 signals:
 
-	//! \brief Emitted when the contents of the model change.
+	//! Emitted when the contents of the model change.
 	void contentChanged();
 
-	/*! \brief Emitted when a new channel is added to the model.
+	/*! Emitted when a new channel is added to the model.
 	 *
-	 * \param index The index of the added channel.
+	 *      @param [in] index The index of the added channel.
 	 *
 	*/
 	void channelAdded(int index);
 
-	/*! \brief Emitted when a channel is removed from the model.
+	/*! Emitted when a channel is removed from the model.
 	 *
-	 * \param index The index of the channel to remove.
+	 *      @param [in] index The index of the channel to remove.
 	 *
 	*/
 	void channelRemoved(int index);
 
 private:
 	
-	//! \brief No copying
+	//! No copying
 	ChannelsModel(const ChannelsModel& other);
-
-	//! \brief No assignment
 	ChannelsModel& operator=(const ChannelsModel& other);
 
-	//! \brief Pointer to the component being edited.
-	QSharedPointer<Component> component_;
+	//! The channels being edited.
+	QSharedPointer<QList<QSharedPointer<Channel> > > channels_;
 
-	//! \brief The channels being edited.
-	QList<QSharedPointer<Channel> >& channels_;
+    //! The validator for the channels.
+    QSharedPointer<ChannelValidator> validator_;
 };
 
 #endif // CHANNELSMODEL_H

@@ -13,7 +13,6 @@
 #define IMPORTWIZARD_H
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 
 #include <QWizard>
@@ -32,20 +31,21 @@ class ImportWizard : public QWizard
 
 public:
  
-	 /*!
-	 *  Constructor.
-	 *
-	 *      @param [in] component  The component for which the wizard is run.
-	 *      @param [in] pluginMgr  The plugin manager.
-	 *      @param [in] handler	   The library handle.
-	 *      @param [in] parent     The parent widget.
-	 */
-	 ImportWizard(QSharedPointer<const Component> component, 
-		             PluginManager const& pluginMgr, LibraryInterface* handler, 
-		             QWidget* parent);
+    /*!
+     *  Constructor.
+     *
+     *      @param [in] component  The component for which the wizard is run.
+     *      @param [in] pluginMgr  The plugin manager.
+     *      @param [in] handler	   The library handle.
+     *      @param [in] parent     The parent widget.
+     */
+    ImportWizard(QSharedPointer<const Component> component,
+                 PluginManager const& pluginMgr,
+                 LibraryInterface* handler,
+                 QWidget* parent);
 
-	 //! The destructor.
-	 ~ImportWizard();
+    //! The destructor.
+    ~ImportWizard();
 
     /*!
      *  Returns the component after import modifications.

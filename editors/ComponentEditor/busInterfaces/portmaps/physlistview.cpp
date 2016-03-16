@@ -42,19 +42,20 @@ void PhysListView::onFilterNameChanged(QString const& portName)
         return;
     }
 
-    int match =  QString::compare(model()->data(matchingIndex).toString(), portName, Qt::CaseInsensitive);
+    int bestMatch =  QString::compare(matchingIndex.data().toString(), portName, Qt::CaseInsensitive);
 
     // Search for better matching port names.
-    for (int row = 1; row < model()->rowCount(); row++)
+    int rowCount = model()->rowCount();
+    for (int row = 1; row < rowCount; row++)
     {
         QModelIndex index = model()->index(row, 0);
         if (index.isValid())
         {
-            int diff = QString::compare(model()->data(index).toString(), portName, Qt::CaseInsensitive);
-            if (match > diff)
+            int diff = QString::compare(index.data().toString(), portName, Qt::CaseInsensitive);
+            if (bestMatch > diff)
             {
                 matchingIndex = index;
-                match = diff;
+                bestMatch = diff;
             }
         }
     }
@@ -71,13 +72,14 @@ void PhysListView::onFilterNameChanged(QString const& portName)
 //-----------------------------------------------------------------------------
 // Function: physlistview::dropEvent()
 //-----------------------------------------------------------------------------
-void PhysListView::dropEvent( QDropEvent* event ) 
+void PhysListView::dropEvent(QDropEvent* event) 
 {
 	// make sure the source is not this view
 	PortListView* source = qobject_cast<PortListView*>(event->source());
 	
 	// if source is neither of the supported
-	if (!source) {
+	if (!source)
+    {
 		return;
 	}
 
@@ -88,7 +90,8 @@ void PhysListView::dropEvent( QDropEvent* event )
 
 	// if no port name has been specified or drop index is invalid
 	QString mimeText = event->mimeData()->text();
-	if (mimeText.isEmpty()) {
+	if (mimeText.isEmpty())
+    {
 		event->accept();
 		return;
 	}
@@ -97,7 +100,8 @@ void PhysListView::dropEvent( QDropEvent* event )
 	QStringList dropped = mimeText.split(QString(";"), QString::SkipEmptyParts);
 
 	// if the item to drop is from this port list view
-	if (source == this) {
+	if (source == this)
+    {
 		emit moveItems(dropped, index);
 		event->accept();
 		return;
@@ -108,9 +112,10 @@ void PhysListView::dropEvent( QDropEvent* event )
 	QStringList physicals;
 
 	// add the physical port that matches each selected index
-	foreach (QModelIndex index, indexes) {
-		if (index.isValid()) {
-			// append each port with valid model index
+	foreach (QModelIndex const& index, indexes)
+    {
+		if (index.isValid())
+        {
 			physicals.append(index.model()->data(index, Qt::DisplayRole).toString());
 		}
 	}
@@ -125,26 +130,31 @@ void PhysListView::dropEvent( QDropEvent* event )
 //-----------------------------------------------------------------------------
 // Function: physlistview::mouseMoveEvent()
 //-----------------------------------------------------------------------------
-void PhysListView::mouseMoveEvent( QMouseEvent* event ) {
-
+void PhysListView::mouseMoveEvent(QMouseEvent* event)
+{
     // if either mouse button is pressed
-    if (event->buttons() == Qt::LeftButton || event->buttons() == Qt::RightButton) {
-
+    if (event->buttons() == Qt::LeftButton || event->buttons() == Qt::RightButton)
+    {
         // calculate how much mouse was moved
         int distance = (event->pos() - startPos_).manhattanLength();
 
         // if the move distance is enough to start the drag
         if (distance >= QApplication::startDragDistance())
+        {
             performDrag();
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: physlistview::mousePressEvent()
 //-----------------------------------------------------------------------------
-void PhysListView::mousePressEvent( QMouseEvent* event ) {
-
+void PhysListView::mousePressEvent(QMouseEvent* event)
+{
     if (event->button() == Qt::LeftButton || event->buttons() == Qt::RightButton)
+    {
         startPos_ = event->pos();
+    }
+
     QListView::mousePressEvent(event);
 }

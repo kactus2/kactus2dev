@@ -1,21 +1,28 @@
-/* 
- *  	Created on: 11.7.2011
- *      Author: Antti Kamppi
- * 		filename: filterwidget.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: filterwidget.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.07.2011
+//
+// Description:
+// Contains the widgets to set the filter options for VLNVDialer.
+//-----------------------------------------------------------------------------
 
 #include "filterwidget.h"
 
 #include <QVBoxLayout>
 
+//-----------------------------------------------------------------------------
+// Function: FilterWidget::FilterWidget()
+//-----------------------------------------------------------------------------
 FilterWidget::FilterWidget(QWidget *parent):
 QWidget(parent),
-firmness_(this),
-implementation_(this),
-type_(this),
-hierarchy_(this) {
-
+    firmness_(this),
+    implementation_(this),
+    type_(this),
+    hierarchy_(this)
+{
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&type_);
 	layout->addWidget(&implementation_);
@@ -35,7 +42,11 @@ hierarchy_(this) {
 		this, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
 }
 
-FilterWidget::~FilterWidget() {
+//-----------------------------------------------------------------------------
+// Function: FilterWidget::~FilterWidget()
+//-----------------------------------------------------------------------------
+FilterWidget::~FilterWidget()
+{
 }
 
 //-----------------------------------------------------------------------------

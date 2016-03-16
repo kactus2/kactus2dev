@@ -5,7 +5,7 @@
 #ifndef HWDESIGNWIDGET_H
 #define HWDESIGNWIDGET_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include "HWDesignDiagram.h"
 
@@ -21,6 +21,7 @@ class Component;
 class HWComponentItem;
 class BusPortItem;
 class DesignConfiguration;
+class ExpressionParser;
 
 /*! \brief HWDesignWidget is used to edit and view one design
  *
@@ -54,14 +55,6 @@ public:
      */
     virtual unsigned int getSupportedDrawModes() const;
 
-    /*! \brief Create a design that represents the current drawn design.
-	 *
-	 * \param vlnv The vlnv to set for the design.
-	 *
-	 * \return QSharedPointer<Design> Pointer to the created design.
-	*/
-	QSharedPointer<Design> createDesign(const VLNV& vlnv);
-
     /*!
      *  Returns the implementation attribute.
      */
@@ -81,6 +74,7 @@ public slots:
 
 	//! \brief Called when user clicks the generate top-vhdl icon
 	void onVhdlGenerate();
+    QString findEntityName() const;
 
 	//! \brief Called when user clicks the generate modelsim icon
 	void onModelsimGenerate();
@@ -108,7 +102,14 @@ private:
 	 *
 	*/
 	void createDesignForComponent(QSharedPointer<Component> component, const QString& dirPath);
+    void updateFiles(QSharedPointer<Component> topComponent, QString const& sourcePath, QString const& targetDirectory) const;
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The expression parser for the top component.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // HWDESIGNWIDGET_H

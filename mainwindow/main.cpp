@@ -13,7 +13,6 @@
 #include "SplashScreen.h"
 
 #include <QApplication>
-#include <QDebug>
 #include <QPalette>
 #include <QTimer>
 

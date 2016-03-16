@@ -1,31 +1,34 @@
-/* 
- *
- *  Created on: 5.4.2011
- *      Author: Antti Kamppi
- * 		filename: businterfaceeditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: businterfaceeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 05.04.2011
+//
+// Description:
+// Container for editors to edit a bus interface.
+//-----------------------------------------------------------------------------
 
 #include "businterfaceeditor.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 #include <QHBoxLayout>
 
-BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler,
-									   QSharedPointer<Component> component, 
-									   QSharedPointer<BusInterface> busif,
-                                       QSharedPointer<ParameterFinder> parameterFinder,
-                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                       QSharedPointer<ExpressionParser> expressionParser,
-									   QWidget* parent,
-                                       QWidget* parentWnd): 
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEditor::BusInterfaceEditor()
+//-----------------------------------------------------------------------------
+BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<BusInterface> busif, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+    QWidget* parent, QWidget* parentWnd): 
 ItemEditor(component, libHandler, parent),
 busif_(busif),
 tabs_(this), 
-general_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, &tabs_, parentWnd), 
-portmaps_(libHandler, component, busif.data(), &tabs_) {
-
+generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, &tabs_, parentWnd),
+portmapsEditor_(libHandler, component, busif, expressionParser, &tabs_)
+{
 	Q_ASSERT(component);
 	Q_ASSERT(libHandler);
 	Q_ASSERT(busif_);
@@ -34,67 +37,65 @@ portmaps_(libHandler, component, busif.data(), &tabs_) {
 	layout->addWidget(&tabs_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
-	tabs_.addTab(&general_, tr("General"));
-	tabs_.addTab(&portmaps_, tr("Port maps"));
+	tabs_.addTab(&generalEditor_, tr("General"));
+	tabs_.addTab(&portmapsEditor_, tr("Port maps"));
 
-	connect(&portmaps_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&portmaps_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&portmaps_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-    connect(&portmaps_, SIGNAL(helpUrlRequested(QString const&)),
+	connect(&portmapsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&portmapsEditor_, SIGNAL(errorMessage(QString const&)),
+        this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
+	connect(&portmapsEditor_, SIGNAL(noticeMessage(QString const&)),
+        this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+    connect(&portmapsEditor_, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
-	connect(&general_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&general_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-	connect(&general_, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(&general_, SIGNAL(helpUrlRequested(QString const&)),
+	connect(&generalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&generalEditor_, SIGNAL(errorMessage(QString const&)),
+		this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
+	connect(&generalEditor_, SIGNAL(noticeMessage(QString const&)),
+		this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
+	connect(&generalEditor_, SIGNAL(helpUrlRequested(QString const&)),
 		this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
-    connect(&general_, SIGNAL(increaseReferences(QString)), this,
+    connect(&generalEditor_, SIGNAL(increaseReferences(QString)), this,
         SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(&general_, SIGNAL(decreaseReferences(QString)),
+    connect(&generalEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-    connect(&general_, SIGNAL(openReferenceTree(QString)),
+    connect(&generalEditor_, SIGNAL(openReferenceTree(QString)),
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
-	connect(&tabs_, SIGNAL(currentChanged(int)),
-		this, SLOT(onTabChange(int)), Qt::UniqueConnection);
+	connect(&tabs_, SIGNAL(currentChanged(int)), this, SLOT(onTabChange(int)), Qt::UniqueConnection);
 
 	refresh();
 }
 
-BusInterfaceEditor::~BusInterfaceEditor() {
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEditor::~BusInterfaceEditor()
+//-----------------------------------------------------------------------------
+BusInterfaceEditor::~BusInterfaceEditor()
+{
 	tabs_.disconnect();
 }
 
-bool BusInterfaceEditor::isValid() const {
-	
-	if (!general_.isValid())
-		return false;
-	else if (!portmaps_.isValid())
-		return false;
-
-	// all was fine
-	return true;
-}
-
-void BusInterfaceEditor::onTabChange( int index ) {
-
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEditor::onTabChange()
+//-----------------------------------------------------------------------------
+void BusInterfaceEditor::onTabChange(int index)
+{
 	// if port maps tab is selected
-	if (index == 1) {
+	if (index == 1)
+    {
 		// update the abstraction type
-		portmaps_.setAbsType(general_.getAbsType(), busif_->getInterfaceMode());
+		portmapsEditor_.setAbsType(generalEditor_.getAbsType(), busif_->getInterfaceMode());
 	}
 }
 
-void BusInterfaceEditor::refresh() {
-	general_.refresh();
-	portmaps_.refresh();
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEditor::refresh()
+//-----------------------------------------------------------------------------
+void BusInterfaceEditor::refresh()
+{
+	generalEditor_.refresh();
+	portmapsEditor_.refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -102,6 +103,6 @@ void BusInterfaceEditor::refresh() {
 //-----------------------------------------------------------------------------
 void BusInterfaceEditor::setProtection(bool locked)
 {
-    general_.setDisabled(locked);
-    portmaps_.setDisabled(locked);
+    generalEditor_.setDisabled(locked);
+    portmapsEditor_.setDisabled(locked);
 }

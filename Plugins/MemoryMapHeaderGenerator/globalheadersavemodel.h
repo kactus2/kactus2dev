@@ -8,9 +8,10 @@
 #ifndef GLOBALHEADERSAVEMODEL_H
 #define GLOBALHEADERSAVEMODEL_H
 
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Design/Design.h>
 
 #include <QAbstractTableModel>
 #include <QString>

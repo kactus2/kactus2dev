@@ -17,7 +17,6 @@
 #include <QSharedPointer>
 #include <QString>
 
-class Parameter;
 class ParameterFinder;
 
 //-----------------------------------------------------------------------------
@@ -79,36 +78,14 @@ private:
      *
      *      @return The expression where the references have been replaced with the evaluated values.
      */
-    QString evaluateReferencesIn(QString const& expression, QStringList const& availableIds,
-        int recursionStep) const;
-
-    /*!
-     *  Checks if the recursion for solving references should terminate.
-     *
-     *      @param [in] recursionStep   The current recursion step (depth).
-     *
-     *      @return True, if the recursion should be terminated, otherwise false.
-     */
-    bool shouldTerminateRecursion(int recursionStep) const;
-
-    /*!
-     *  Replaces the references parameter in the given expression with their values recursively.
-     *
-     *      @param [in] expression              The expression to evaluate.
-     *      @param [in] availableIds            The ids available in the expressions.
-     *      @param [in] recursionStep           The current depth in recursion.
-     *
-     *      @return The expression where the references have been replaced with their values.
-     */
-    QString replaceReferencesIn(QString const& expression, QStringList const& availableIds,
-        int recursionStep) const;
+    QString evaluateReferencesIn(QString const& expression) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Maximum number of recursion steps in finding value for a parameter.
-    static const int MAX_RECURSION_STEPS = 24;
+    //! Maximum number of steps in evaluating a value for a parameter.
+    static const int MAX_EVALUATION_STEPS = 16;
     
     //! The finder for parameters available in the SystemVerilog expressions.
     QSharedPointer<ParameterFinder> finder_;

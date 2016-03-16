@@ -39,9 +39,6 @@
     <ClCompile Include="MCAPICodeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CSourceWriter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="MCAPICodeGeneratorPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,6 +60,12 @@
     <ClCompile Include="GeneratedFiles\qrc_MCAPICodeGenerator.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\NameGenerationPolicy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CSourceWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MCAPICodeGenerator.h">
@@ -82,13 +85,16 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CSourceWriter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="MCAPIParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MCAPIHeaderGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\NameGenerationPolicy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CSourceWriter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

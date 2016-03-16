@@ -16,11 +16,7 @@
 #include "segmenteditor.h"
 #include "localMemoryMap/localmemorymapeditor.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/addressspace.h>
-
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
-#include <common/widgets/ParameterGroupBox/parametergroupbox.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -30,7 +26,10 @@
 #include <QSharedPointer>
 
 class LibraryInterface;
+class Component;
+class AddressSpace;
 
+class AddressSpaceValidator;
 //-----------------------------------------------------------------------------
 //! Editor to edit and save settings of an address space within component editor.
 //-----------------------------------------------------------------------------
@@ -49,6 +48,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser to use.
+     *      @param [in] addressSpaceValidator   Validator used for address spaces.
 	 *      @param [in] parent                  The owner of this editor.
 	 */
 	AddressSpaceEditor(QSharedPointer<Component> component,
@@ -57,35 +57,43 @@ public:
         QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer <ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
 		QWidget* parent = 0);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~AddressSpaceEditor();
 
-	/*! Check for the validity of the address space.
-	* 
-	*       @return True if address space is valid and can be saved.
-	*/
-	virtual bool isValid() const;
-
-	/*! Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
+signals:
+
+    /*!
+     *  Assign new address unit bits for address blocks.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
+    void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
 protected:
 
-	//! Handler for widget's show event
+	//! Handler for widget's show event.
 	virtual void showEvent(QShowEvent* event);
 
 private:
 
-	//! No copying
+	//! No copying. No assignment.
 	AddressSpaceEditor(const AddressSpaceEditor& other);
 	AddressSpaceEditor& operator=(const AddressSpaceEditor& other);
 
     //! Sets the widget layout.
     void setupLayout();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! The address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;

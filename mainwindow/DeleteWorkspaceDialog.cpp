@@ -66,9 +66,9 @@ DeleteWorkspaceDialog::~DeleteWorkspaceDialog()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getName()
+// Function: name()
 //----------------------------------------------------------------------------- 
-QString DeleteWorkspaceDialog::getName() const
+QString DeleteWorkspaceDialog::name() const
 {
     return workspaceCombo_->currentText();
 }

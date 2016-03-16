@@ -11,18 +11,21 @@
 
 #include "busifinterfacemaster.h"
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MasterInterface.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/masterinterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ValueFormatter.h>
+
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <QLabel>
 #include <QGridLayout>

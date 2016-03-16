@@ -15,7 +15,6 @@
 #include "SystemComponentItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
-#include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>
 #include <common/layouts/IVGraphicsLayout.h>
 
@@ -30,15 +29,18 @@ public:
     enum { Type = GFX_TYPE_HW_MAPPING_ITEM };
 
     /*!
-     *  Constructor.
+     *  The constructor.
+     *
+     *      @param [in] libInterface                The library interface.
+     *      @param [in] component                   The contained component.
+     *      @param [in] instanceName                The instance name.
+     *      @param [in] displayName                 The instance display name.
+     *      @param [in] description                 The instance description.
+     *      @param [in] uuid                        The instance id.
+     *      @param [in] configurableElementValues   The configurable element values.
      */
-    HWMappingItem(LibraryInterface* libInterface,
-                  QSharedPointer<Component> component,
-                  QString const& instanceName,
-                  QString const& displayName = QString(),
-                  QString const& description = QString(),
-						QString const& uuid = QString(),
-                  QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>());
+	HWMappingItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
+		QSharedPointer<ComponentInstance> instance);
 
     /*!
      *  Destructor.
@@ -113,7 +115,7 @@ public:
     /*!
      *  Returns the content type.
      */
-    ColumnContentType getContentType() const;
+    ColumnTypes::ColumnContentType getContentType() const;
 
     virtual void updateComponent();
 
@@ -161,7 +163,7 @@ private:
     };
 
 	// Width of the HWMappingItem.
-    static const int WIDTH = COMPONENTWIDTH + 30;
+    static const int WIDTH = COMPONENTWIDTH + 20;
 
     //! The old column from where the mouse drag event began.
     IGraphicsItemStack* oldStack_;

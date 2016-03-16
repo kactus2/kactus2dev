@@ -12,14 +12,12 @@
 #ifndef SWPORTITEM_H
 #define SWPORTITEM_H
 
+#include "SWConnectionEndpoint.h"
+
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <QSharedPointer>
-#include <QVector2D>
-#include <QPolygonF>
 #include <QPen>
-
-#include "SWConnectionEndpoint.h"
 
 class SWOffPageConnectorItem;
 
@@ -112,8 +110,8 @@ public:
      */
     virtual bool isDirectionFixed() const;
 
-    /*! \brief Returns the name of this port
-     *
+    /*!
+     *  Returns the name of this port.
      */
     virtual QString name() const;
 
@@ -227,9 +225,34 @@ public:
 	void shortenNameLabel( qreal width );
 
 protected:
+    
+    /*!
+     *  Item changes.
+     *
+     *      @param [in] change  The changed graphics item.
+     *      @param [in] value   The new value.
+     */
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
+    
+    /*!
+     *  Handler for mouse press events.
+     *
+     *      @param [in] event   The caught mouse press event.
+     */
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    
+    /*!
+     *  Handler for mouse move events.
+     *
+     *      @param [in] event   The mouse movement event.
+     */
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+
+    /*!
+     *  Handler for mouse release event.
+     *
+     *      @param [in] event   The mouse release event.
+     */
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:

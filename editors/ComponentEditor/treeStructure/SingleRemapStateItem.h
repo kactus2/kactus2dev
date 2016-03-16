@@ -14,9 +14,9 @@
 
 #include "componenteditoritem.h"
 
-#include <IPXACTmodels/remapstate.h>
-#include <IPXACTmodels/remapport.h>
-
+class RemapState;
+class RemapStateValidator;
+class RemapPort;
 //-----------------------------------------------------------------------------
 //! The single remap state item used in the component editor navigation tree.
 //-----------------------------------------------------------------------------
@@ -45,6 +45,7 @@ public:
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<RemapStateValidator> validator,
         ComponentEditorItem* parent);
 
     /*!
@@ -89,6 +90,8 @@ private:
 
     //! Pointer to the currently selected remap state.
     QSharedPointer<RemapState> remapState_;
+
+    QSharedPointer<RemapStateValidator> validator_;
 };
 
 #endif // SINGLEREMAPSTATEITEM_H

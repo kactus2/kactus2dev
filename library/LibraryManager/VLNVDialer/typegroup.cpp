@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.7.2011
- *      Author: Antti Kamppi
- * 		filename: typegroup.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: typegroup.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.07.2011
+//
+// Description:
+// Contains the check boxes to set the type options for VLNVDialer.
+//-----------------------------------------------------------------------------
 
 #include "typegroup.h"
 
@@ -17,8 +21,8 @@ QGroupBox(tr("Item Type"), parent),
 componentBox_(tr("Component"), this),
 busApiComBox_(tr("Bus/API/COM"), this),
 advancedBox_(tr("Advanced"), this),
-options_() {
-
+options_()
+{
 	QGridLayout* layout = new QGridLayout(this);
 	layout->addWidget(&componentBox_, 0, 0, 1, 1);
 	layout->addWidget(&busApiComBox_, 0, 1, 1, 1);
@@ -30,18 +34,16 @@ options_() {
 	busApiComBox_.setChecked(true);
 	advancedBox_.setChecked(false);
 
-	connect(&componentBox_, SIGNAL(clicked(bool)),
-		this, SLOT(onComponentChange(bool)), Qt::UniqueConnection);
-	connect(&busApiComBox_, SIGNAL(clicked(bool)),
-		this, SLOT(onBusChange(bool)), Qt::UniqueConnection);
-	connect(&advancedBox_, SIGNAL(clicked(bool)),
-		this, SLOT(onAdvancedChange(bool)), Qt::UniqueConnection);
+	connect(&componentBox_, SIGNAL(clicked(bool)), this, SLOT(onComponentChange(bool)), Qt::UniqueConnection);
+	connect(&busApiComBox_, SIGNAL(clicked(bool)), this, SLOT(onBusChange(bool)), Qt::UniqueConnection);
+	connect(&advancedBox_, SIGNAL(clicked(bool)), this, SLOT(onAdvancedChange(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
 // Function: TypeGroup::~TypeGroup()
 //-----------------------------------------------------------------------------
-TypeGroup::~TypeGroup() {
+TypeGroup::~TypeGroup()
+{
 }
 
 //-----------------------------------------------------------------------------

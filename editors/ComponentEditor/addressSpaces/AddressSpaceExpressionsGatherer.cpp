@@ -13,7 +13,9 @@
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryMapExpressionsGatherer.h>
 
-#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceExpressionsGatherer::AddressSpaceExpressionGatherer()
@@ -39,13 +41,21 @@ QStringList AddressSpaceExpressionGatherer::getExpressions(QSharedPointer<Addres
     QStringList expressionList;
 
     expressionList.append(addressSpace->getRange());
-    expressionList.append(addressSpace->getWidthExpression());
+    expressionList.append(addressSpace->getWidth());
 
     if (addressSpace->hasLocalMemoryMap())
     {
         MemoryMapExpressionGatherer memoryMapGatherer;
 
-        expressionList.append(memoryMapGatherer.getExpressions(addressSpace->getLocalMemoryMap()));
+        QSharedPointer<MemoryMap> transformedMemoryMap (new MemoryMap(addressSpace->getLocalMemoryMap()->name()));
+        transformedMemoryMap->setAddressUnitBits(addressSpace->getAddressUnitBits());
+
+        foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *addressSpace->getLocalMemoryMap()->getMemoryBlocks())
+        {
+            transformedMemoryMap->getMemoryBlocks()->append(memoryBlock);
+        }
+
+        expressionList.append(memoryMapGatherer.getExpressions(transformedMemoryMap));
     }
 
     return expressionList;

@@ -15,8 +15,8 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
-class HWConnection;
-
+class AdHocConnectionItem;
+class IEditProvider;
 //-----------------------------------------------------------------------------
 //! Table model for visualizing ad-hoc visibility for component ports.
 //-----------------------------------------------------------------------------
@@ -43,15 +43,15 @@ public:
     /*!
      *  Sets the ad-hoc connection being edited.
      *
-     *      @param [in] connection The connection.
+     *      @param [in] connection      The connection.
+     *      @param [in] editProvider    The edit provider for undo/redo.
      */
-    void setConnection(HWConnection* connection);
+    void setConnection(AdHocConnectionItem* connection, QSharedPointer<IEditProvider> editProvider);
 
 	/*!
      *  Returns the number of rows in the model.
 	 *
-	 *      @param [in] parent Model index of the parent of the item. Must be invalid
-	 *                         because this is not hierarchical model.
+	 *      @param [in] parent Model index of the parent of the item.
 	 *
 	 *      @return Number of rows currently in the model.
 	 */
@@ -60,10 +60,9 @@ public:
 	/*!
      *  Returns the number of columns in the model.
 	 *
-	 *      @param [in] parent Model index of the parent of the item. Must be invalid
-     *                         because this is not hierarchical model.
+	 *      @param [in] parent Model index of the parent of the item.
 	 *
-	 *      @return Always returns 3.
+	 *      @return Number of columns currently in the model.
 	 */
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
@@ -73,7 +72,7 @@ public:
 	 *      @param [in] index  Identifies the item that's data is wanted.
 	 *      @param [in] role   Specifies what kind of data is wanted
 	 *
-	 *      @return QVariant containing the data.
+	 *      @return The data in the requested index.
 	 */
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
@@ -84,7 +83,7 @@ public:
 	 *      @param [in] orientation  Only Qt::Horizontal is supported
 	 *      @param [in] role         Specified the type of data that is wanted.
 	 *
-	 *      @return QVariant containing the data to be displayed.
+	 *      @return The data to be displayed.
 	 */
 	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
@@ -93,10 +92,9 @@ public:
 	 *
 	 *      @param [in] index  Specifies the item that's data is modified
 	 *      @param [in] value  The value to be set.
-	 *      @param [in] role   The role that is trying to modify the data. Only Qt::EditRole
-	 *                         is supported.
+	 *      @param [in] role   The role that is trying to modify the data.
 	 *
-	 *      @return True if data was successfully set.
+	 *      @return True if data was successfully set, otherwise false.
 	 */
 	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
@@ -110,7 +108,7 @@ public:
 	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
 
 signals:
-	//! \brief Emitted when contents of the model change
+	//! Emitted when contents of the model change
 	void contentChanged();
 
 private:
@@ -122,8 +120,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The ad-hoc connection.
-    HWConnection* connection_;
+    //! The edit provider for undo/redo to use.
+    QSharedPointer<IEditProvider> editProvider_;
+
+    //! The ad-hoc connection currently being edited.
+    AdHocConnectionItem* connection_;
 };
 
 //-----------------------------------------------------------------------------

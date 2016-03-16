@@ -13,12 +13,13 @@
 #define COMPONENTEDITORADDRSPACESITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXACTmodels/addressspace.h>
 
 #include <QList>
 
 class ExpressionParser;
-
+class Component;
+class AddressSpace;
+class AddressSpaceValidator;
 //-----------------------------------------------------------------------------
 //! The Address spaces-item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
@@ -49,51 +50,72 @@ public:
         QSharedPointer<ExpressionParser> expressionParser,
 		ComponentEditorItem* parent);
 
-	//! The destructor
+	//! The destructor.
 	virtual ~ComponentEditorAddrSpacesItem();
 
-	/*! Get the font to be used for text of this item.
-	*
-	* The font is bold, if address spaces exist, otherwise not bold.
-	*
-	*      @return QFont instance that defines the font to be used.
-	*/
+	/*!
+     *  Get the font to be used for text of this item.
+	 *
+	 *      @return QFont instance that defines the font to be used.
+	 */
 	virtual QFont getFont() const;
 
-	/*! Get the tool tip for the item.
+	/*!
+     *  Get the tool tip for the item.
 	 * 
 	 *      @return The text for the tool tip to print to user.
-	*/
+	 */
 	virtual QString getTooltip() const;
 
-	/*! Get the text to be displayed to user in the tree for this item.
+	/*!
+     *  Get the text to be displayed to user in the tree for this item.
 	 *
 	 *      @return QString Contains the text to display.
-	*/
+	 */
 	virtual QString text() const;
 
-	/*! Get pointer to the editor of this item.
+	/*!
+     *  Get pointer to the editor of this item.
 	 *
 	 *      @return The editor to use for this item.
-	*/
+	 */
 	virtual ItemEditor* editor();
 
-	/*! Add a new child to the item.
+	/*!
+     *  Add a new child to the item.
 	 * 
 	 *      @param [in] index The index to add the child into.
-	*/
+	 */
 	virtual void createChild(int index);
 
+private slots:
+
+    /*!
+     *  Emitted when address unit bits change on an address space.
+     *
+     *      @param [in] spaceIndex  Index of the address space being changed.
+     */
+    void addressUnitBitsChangedInRow(int spaceIndex);
+
 private:
-	//! No copying
+
+	//! No copying.
 	ComponentEditorAddrSpacesItem(const ComponentEditorAddrSpacesItem& other);
 	ComponentEditorAddrSpacesItem& operator=(const ComponentEditorAddrSpacesItem& other);
 
+    /*!
+     *  Create the necessary validators for address spaces.
+     */
+    void createAddressSpaceValidator();
+
 	//! The address spaces being edited.
-	QList<QSharedPointer<AddressSpace> >& addrSpaces_;
+    QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces_;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The current address space validator.
+    QSharedPointer<AddressSpaceValidator> spaceValidator_;
 };
 
 #endif // COMPONENTEDITORADDRSPACESITEM_H

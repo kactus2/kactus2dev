@@ -15,12 +15,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/view.h>
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/register.h>
-#include <IPXACTmodels/field.h>
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QObject>
 #include <QTextStream>
@@ -28,6 +24,11 @@
 #include <QSharedPointer>
 #include <QStringList>
 #include <QWidget>
+
+class View;
+class AddressBlock;
+class Register;
+class Field;
 
 class DocumentGenerator : public QObject {
 	Q_OBJECT
@@ -107,7 +108,7 @@ public:
 	 *      @param [in] stream              The text stream to write the documentation into.
 	 *      @param [in] subHeaderNumber     The number that defines the number for the sub-header.
 	 */
-	void writeModelParameters(QTextStream& stream, int& subHeaderNumber);
+// 	void writeModelParameters(QTextStream& stream, int& subHeaderNumber);
 
     /*!
 	 *  Write the parameters and kactus2 parameters of the component.
@@ -189,12 +190,12 @@ public:
 	 */
 	void writeViews(QTextStream& stream, int& subHeaderNumber, QStringList& pictureList);
 
-	/*! \brief Write the documentation for the given view.
+	/*! Write the documentation for the given view.
 	 *
-	 * \param view Pointer to the view the document.
-	 * \param stream Text stream to write into.
-	 * \param subheaderNumber The number of the subheader.
-	 * \param viewNumber The number of the view.
+	 *      @param [in] view                Pointer to the view the document.
+	 *      @param [in] stream              Text stream to write into.
+	 *      @param [in] subheaderNumber     The number of the subheader.
+	 *      @param [in] viewNumber          The number of the view.
 	 *
 	*/
 	void writeView(QSharedPointer<View> view, QTextStream& stream, const int subheaderNumber, const int viewNumber);

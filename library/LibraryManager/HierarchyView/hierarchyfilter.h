@@ -16,10 +16,10 @@
 
 #include <common/utils.h>
 
-#include <IPXACTmodels/component.h>
-
 #include <QSharedPointer>
 #include <QString>
+
+class Component;
 
 //-----------------------------------------------------------------------------
 //! The class that does the filtering and sorting of items for the library hierarchy view.

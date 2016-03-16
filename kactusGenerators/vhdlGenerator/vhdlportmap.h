@@ -50,8 +50,8 @@ public:
 	 *
 	*/
 	VhdlPortMap(const QString& name, 
-		int leftBound, 
-		int rightBound,
+		const QString& leftBound, 
+		const QString& rightBound,
 		const QString& type = QString());
 
 	//! \brief Copy constructor
@@ -104,10 +104,10 @@ private:
 	QString name_;
 
 	//! \brief The left bound of the port for the port map
-	int left_;
+	QString left_;
 
 	//! \brief The right bound of the port for the port map
-	int right_;
+	QString right_;
 
 	//! \brief The type of the mapped port or signal.
 	QString type_;

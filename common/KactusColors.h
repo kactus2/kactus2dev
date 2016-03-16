@@ -35,6 +35,15 @@ namespace KactusColors
     QColor const HW_COMPONENT = QColor(0xa5,0xc3,0xef);
     QColor const SW_COMPONENT = QColor(0xc5,0xff, 0xab);
 
+    //! Colors used for interfaces in design.
+    QColor const MASTER_INTERFACE(0x32,0xcb,0xcb);
+    QColor const SLAVE_INTERFACE(0x32,0x99,0x64);
+    QColor const MIRROREDMASTER_INTERFACE(0xcb,0xfd,0xfd);
+    QColor const MIRROREDSLAVE_INTERFACE(0x00,0xfd,00);
+    QColor const SYSTEM_INTERFACE(0xf9,0x11,0x11);
+    QColor const MIRROREDSYSTEM_INTERFACE(0xf9,0x9d,0xcb);
+    QColor const MONITOR_INTERFACE(0xfd,0xfd,0xfd);
+
     //! Colors used for memory/address sections in the memory designer.
     QColor const MEMORY_BLOCK = QColor(0xd6, 0xba, 0xff);
     QColor const ADDRESS_SEGMENT = QColor(0xc6,0xef,0xd7);
@@ -44,6 +53,7 @@ namespace KactusColors
     QColor const ADDR_BLOCK_COLOR = QColor(194, 214, 244);
     QColor const REGISTER_COLOR = QColor(216, 229, 248);
     QColor const FIELD_COLOR = QColor(235, 241, 251);
+
 }
 
 //-----------------------------------------------------------------------------

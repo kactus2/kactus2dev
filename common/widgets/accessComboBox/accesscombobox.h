@@ -1,54 +1,60 @@
-/* 
- *  	Created on: 23.8.2012
- *      Author: Antti Kamppi
- * 		filename: accesscombobox.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: accesscombobox.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 23.08.2012
+//
+// Description:
+// The combo box to select one of the defined access types.
+//-----------------------------------------------------------------------------
 
 #ifndef ACCESSCOMBOBOX_H
 #define ACCESSCOMBOBOX_H
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/AccessTypes.h>
 
 #include <QComboBox>
 
-/*! \brief The combo box to select one of the defined access types.
- *
- */
-class AccessComboBox : public QComboBox {
+//-----------------------------------------------------------------------------
+//! The combo box to select one of the defined access types.
+//-----------------------------------------------------------------------------
+class AccessComboBox : public QComboBox
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor
 	 *
-	 * \param parent Pointer to the owner of the combo box.
-	 *
-	*/
+     *      param [in] parent   Pointer to the owner of the combo box.
+	 */
 	AccessComboBox(QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~AccessComboBox();
 
-	/*! \brief Get the currently selected access value.
+	/*!
+     *  Get the currently selected access value.
 	 *
-	 * \return The selected value.
-	*/
-	General::Access getCurrentValue() const;
+	 *      @return The selected value.
+	 */
+	AccessTypes::Access getCurrentValue() const;
 
-	/*! \brief Set the value to be currently selected.
+	/*!
+     *  Set the value to be currently selected.
 	 *
-	 * \param access The value to select.
-	 *
-	*/
-	void setCurrentValue(General::Access access);
+	 *      @param [in] access  The value to select.
+	 */
+	void setCurrentValue(AccessTypes::Access access);
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	AccessComboBox(const AccessComboBox& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	AccessComboBox& operator=(const AccessComboBox& other);
 };
 

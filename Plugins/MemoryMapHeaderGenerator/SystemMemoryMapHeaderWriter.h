@@ -16,10 +16,14 @@
 
 #include "systemheadersavemodel.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 
 #include <QObject>
 #include <QSharedPointer>

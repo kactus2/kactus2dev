@@ -8,29 +8,33 @@
 #include "busifinterfacesystem.h"
 
 #include "busifgeneraltab.h"
+
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/busdefinition.h>
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/businterface.h>
+
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QFormLayout>
 #include <QStringList>
 
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceSystem::BusIfInterfaceSystem()
+//-----------------------------------------------------------------------------
 BusIfInterfaceSystem::BusIfInterfaceSystem(General::InterfaceMode mode, 
-										   BusIfGeneralTab* generalTab,
-										   LibraryInterface* libHandler,
-										   QSharedPointer<BusInterface> busif,
-										   QSharedPointer<Component> component,
-										   QWidget *parent):
+    LibraryInterface* libHandler,
+    QSharedPointer<BusInterface> busif,
+    QSharedPointer<Component> component,
+    QWidget *parent):
 BusIfInterfaceModeEditor(busif, component, tr("System"), parent),
-mode_(mode),
-monitor_(busif->getMonitor()),
-generalTab_(generalTab), 
-libHandler_(libHandler), 
-group_(this)
+    mode_(mode),
+    monitor_(busif->getMonitor()),
+    libHandler_(libHandler), 
+    groupEditor_(this)
 {
-	Q_ASSERT(mode == General::SYSTEM || mode == General::MIRROREDSYSTEM);
+    Q_ASSERT(mode == General::SYSTEM || mode == General::MIRROREDSYSTEM);
 
     if (mode == General::SYSTEM)
     {
@@ -41,41 +45,49 @@ group_(this)
         setTitle(tr("Mirrored system"));
     }
 
-	group_.setProperty("mandatoryField", true);
+	groupEditor_.setProperty("mandatoryField", true);
 
-	connect(&group_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onGroupChange(const QString&)), Qt::UniqueConnection);
+	connect(&groupEditor_, SIGNAL(currentIndexChanged(QString const&)),
+		this, SLOT(onGroupChange(QString const&)), Qt::UniqueConnection);
 
     QFormLayout* groupLayout = new QFormLayout(this);
-    groupLayout->addRow(tr("System group"), &group_);
+    groupLayout->addRow(tr("System group"), &groupEditor_);
     groupLayout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceSystem::~BusIfInterfaceSystem()
+//-----------------------------------------------------------------------------
 BusIfInterfaceSystem::~BusIfInterfaceSystem()
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceSystem::isValid()
+//-----------------------------------------------------------------------------
 bool BusIfInterfaceSystem::isValid() const
 {
-	return !group_.currentText().isEmpty();
+	return !groupEditor_.currentText().isEmpty();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceSystem::refresh()
+//-----------------------------------------------------------------------------
 void BusIfInterfaceSystem::refresh()
 {
 	// when the combo box changes it must be disconnected to avoid emitting signals
-	disconnect(&group_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onGroupChange(const QString&)));
+	disconnect(&groupEditor_, SIGNAL(currentIndexChanged(QString const&)), this, SLOT(onGroupChange(QString const&)));
 	
 	// update the combobox to display only the possible values
 
 	// the text that was selected
-	QString oldText = group_.currentText();
+	QString oldText = groupEditor_.currentText();
 
 	// remove previous items in the combo box
-	group_.clear();
+	groupEditor_.clear();
 
 	// the selected bus definition defines the groups that can be used
-	VLNV busDefVLNV = generalTab_->getBusType();
+	VLNV busDefVLNV = busif_->getBusType();
 	
 	// if there is no bus definition specified there is nothing to select
 	if (!busDefVLNV.isValid()) {
@@ -88,7 +100,7 @@ void BusIfInterfaceSystem::refresh()
 		return;
 	}
 
-	QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(busDefVLNV);
+	QSharedPointer<Document> libComp = libHandler_->getModel(busDefVLNV);
 	Q_ASSERT(libComp);
 
 	// if the library component with given vlnv was not a bus definition
@@ -101,29 +113,38 @@ void BusIfInterfaceSystem::refresh()
 	QStringList groupList = busDef->getSystemGroupNames();
 
 	// add the system names to the list
-	group_.addItems(groupList);
+	groupEditor_.addItems(groupList);
 
 	// select the same text that was previously selected if it still can be found
-	int index = group_.findText(oldText);
-	group_.setCurrentIndex(index);
+	int index = groupEditor_.findText(oldText);
+	groupEditor_.setCurrentIndex(index);
 
 	// reconnect the combo box
-	connect(&group_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onGroupChange(const QString&)), Qt::UniqueConnection);
+	connect(&groupEditor_, SIGNAL(currentIndexChanged(QString const&)),
+        this, SLOT(onGroupChange(QString const&)), Qt::UniqueConnection);
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceSystem::getInterfaceMode()
+//-----------------------------------------------------------------------------
 General::InterfaceMode BusIfInterfaceSystem::getInterfaceMode() const
 {
 	return mode_;
 }
 
-void BusIfInterfaceSystem::onGroupChange( const QString& /*newGroup*/ )
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceSystem::onGroupChange()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceSystem::onGroupChange(QString const&)
 {
-	busif_->setSystem(group_.currentText());
+	busif_->setSystem(groupEditor_.currentText());
 	emit contentChanged();
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceSystem::saveModeSpecific()
+//-----------------------------------------------------------------------------
 void BusIfInterfaceSystem::saveModeSpecific()
 {
-	busif_->setSystem(group_.currentText());
+	busif_->setSystem(groupEditor_.currentText());
 }

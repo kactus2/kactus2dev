@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "SegmentDelegate.h"
+#include "SegmentColumns.h"
 
 //-----------------------------------------------------------------------------
 // Function: SegmentDelegate::SegmentDelegate()
@@ -34,7 +35,7 @@ SegmentDelegate::~SegmentDelegate()
 //-----------------------------------------------------------------------------
 bool SegmentDelegate::columnAcceptsExpression(int column) const
 {
-    return column == 1 || column == 2;
+    return column == SegmentColumns::OFFSET || column == SegmentColumns::RANGE;
 }
 
 //-----------------------------------------------------------------------------
@@ -42,6 +43,6 @@ bool SegmentDelegate::columnAcceptsExpression(int column) const
 //-----------------------------------------------------------------------------
 int SegmentDelegate::descriptionColumn() const
 {
-    return 3;
+    return SegmentColumns::DESCRIPTION;
 }
 

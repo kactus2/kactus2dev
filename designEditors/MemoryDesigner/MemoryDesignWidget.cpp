@@ -22,9 +22,10 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QScrollBar>
 #include <QKeyEvent>
@@ -38,7 +39,7 @@
 MemoryDesignWidget::MemoryDesignWidget(LibraryInterface* lh, QWidget* parent)
     : DesignWidget(lh, parent)
 {
-    setDiagram(new MemoryDesignDiagram(lh, *getGenericEditProvider(), this));
+    setDiagram(new MemoryDesignDiagram(lh, getEditProvider(), this));
 }
 
 //-----------------------------------------------------------------------------
@@ -96,7 +97,15 @@ bool MemoryDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 {
     VLNV designVLNV;
     
-    View* view = comp->findView(viewName);
+    QSharedPointer<View> view;
+    foreach (QSharedPointer<View> singleView, *comp->getViews())
+    {
+        if (singleView->name() == viewName)
+        {
+            view = singleView;
+            break;
+        }
+    }
 
     if (!view)
     {
@@ -110,7 +119,7 @@ bool MemoryDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 
     if (!designVLNV.isValid())
     {
-        emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv()->getName()));
+        emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv().getName()));
         return false;
     }
 
@@ -120,20 +129,20 @@ bool MemoryDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     // if the component contains a direct reference to a design
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
         design = libComp.staticCast<Design>();
     }
     // if component had reference to a design configuration
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);
         designConf = libComp.staticCast<DesignConfiguration>();
 
         designVLNV = designConf->getDesignRef();
 
         if (designVLNV.isValid())
         {
-            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
+            QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
             design = libComp.staticCast<Design>();
         }
 
@@ -141,7 +150,7 @@ bool MemoryDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
         if (!design)
         {
             emit errorMessage(tr("Component %1 did not contain a view").arg(
-                comp->getVlnv()->getName()));
+                comp->getVlnv().getName()));
             return false;
         }
     }
@@ -213,8 +222,8 @@ void MemoryDesignWidget::addColumn()
 
     if (dialog.exec() == QDialog::Accepted)
     {
-        getDiagram()->addColumn(ColumnDesc(dialog.getName(), COLUMN_CONTENT_COMPONENTS, 0,
-                                           MemoryDesignDiagram::COLUMN_WIDTH));
+        getDiagram()->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(dialog.name(), 
+            ColumnTypes::COMPONENTS, 0, MemoryDesignDiagram::COLUMN_WIDTH)));
     }
 }
 

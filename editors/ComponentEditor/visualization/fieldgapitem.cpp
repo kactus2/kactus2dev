@@ -1,18 +1,22 @@
-/* 
- *  	Created on: 30.11.2012
- *      Author: Antti Kamppi
- * 		filename: fieldgapitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: fieldgapitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 30.11.2012
+//
+// Description:
+// The graphical item that represents a gap between fields.
+//-----------------------------------------------------------------------------
 
 #include "fieldgapitem.h"
 
 //-----------------------------------------------------------------------------
 // Function: FieldGapItem()
 //-----------------------------------------------------------------------------
-FieldGapItem::FieldGapItem( QGraphicsItem* parent ):
-MemoryGapItem(parent) {
-
+FieldGapItem::FieldGapItem(QSharedPointer<ExpressionParser> parser, QGraphicsItem* parent):
+MemoryGapItem(parser, parent)
+{
 	// fields show name in the middle
 	setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_BOTTOM);
 
@@ -23,8 +27,9 @@ MemoryGapItem(parent) {
 //-----------------------------------------------------------------------------
 // Function: FieldGapItem()
 //-----------------------------------------------------------------------------
-FieldGapItem::FieldGapItem( QString name, QGraphicsItem* parent ):
-MemoryGapItem(parent)
+FieldGapItem::FieldGapItem(QString const& name, QSharedPointer<ExpressionParser> expressionParser,
+    QGraphicsItem* parent):
+MemoryGapItem(expressionParser, parent)
 {
     // fields show name in the middle
     setNamePosition(VisualizerItem::NAME_CENTERED, VisualizerItem::NAME_BOTTOM);
@@ -39,6 +44,7 @@ MemoryGapItem(parent)
 //-----------------------------------------------------------------------------
 FieldGapItem::~FieldGapItem()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -51,7 +57,7 @@ void FieldGapItem::refresh()
 
 	QString endStr = QString::number(end_);
 	setLeftTopCorner(endStr);
-    setToolTip("<b>" + getName() + "</b> [" + endStr + ".." + startStr + "]");
+    setToolTip("<b>" + name() + "</b> [" + endStr + ".." + startStr + "]");
 
 	VisualizerItem::reorganizeChildren();
 }

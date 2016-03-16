@@ -19,13 +19,18 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/Component/FileSet.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QDateTime>
 #include <QFileDialog>
 #include <QMessageBox>
+#include "IPXACTmodels/Component/View.h"
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
+#include "../common/NameGenerationPolicy.h"
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::VerilogGeneratorPlugin()
@@ -124,22 +129,22 @@ QIcon VerilogGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool VerilogGeneratorPlugin::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-    QSharedPointer<LibraryComponent const> /*libDesConf*/,
-    QSharedPointer<LibraryComponent const> /*libDes*/) const
+bool VerilogGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Document const> libComp,
+    QSharedPointer<Document const> /*libDesConf*/,
+    QSharedPointer<Document const> /*libDes*/) const
 {
     QSharedPointer<const Component> targetComponent = libComp.dynamicCast<const Component>();
     
-    return targetComponent && targetComponent->getComponentImplementation() == KactusAttribute::HW;    
+    return targetComponent && targetComponent->getImplementation() == KactusAttribute::HW;    
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility, 
-    QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> libDesConf,
-    QSharedPointer<LibraryComponent> libDes)
+    QSharedPointer<Document> libComp,
+    QSharedPointer<Document> libDesConf,
+    QSharedPointer<Document> libDes)
 {
     utility_ = utility;
     topComponent_ = libComp.dynamicCast<Component>();
@@ -179,20 +184,20 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::findPossibleViewNames()
 //-----------------------------------------------------------------------------
-QStringList VerilogGeneratorPlugin::findPossibleViewNames(QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> libDes, QSharedPointer<LibraryComponent> libDesConf) const
+QStringList VerilogGeneratorPlugin::findPossibleViewNames(QSharedPointer<Document> libComp,
+    QSharedPointer<Document> libDes, QSharedPointer<Document> libDesConf) const
 {
     QSharedPointer<Component> topComponent = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration> designConfig = libDesConf.dynamicCast<DesignConfiguration>();
 
     QStringList viewNames;
-    if (designConfig && libDes && designConfig->getDesignRef() == *libDes->getVlnv())
-    {        
-        viewNames = findReferencingViews(topComponent, *designConfig->getVlnv());
+    if (designConfig && libDes && designConfig->getDesignRef() == libDes->getVlnv())
+    {
+        viewNames = findReferencingViews(topComponent, designConfig->getVlnv());
     }
     else if (libDes)
     {
-        viewNames = findReferencingViews(topComponent, *libDes->getVlnv());
+        viewNames = findReferencingViews(topComponent, libDes->getVlnv());
     }
     else
     {
@@ -235,9 +240,9 @@ QString VerilogGeneratorPlugin::defaultOutputPath() const
 {
     QString suggestedFile = "";
 
-    QString topComponentPath = utility_->getLibraryInterface()->getPath(*topComponent_->getVlnv());
+    QString topComponentPath = utility_->getLibraryInterface()->getPath(topComponent_->getVlnv());
     QString xmlDir =  QFileInfo(topComponentPath).canonicalPath();
-    suggestedFile = xmlDir + "/" + topComponent_->getVlnv()->getName() + ".v";
+    suggestedFile = xmlDir + "/" + topComponent_->getVlnv().getName() + ".v";
 
     return suggestedFile;
 }
@@ -256,7 +261,7 @@ bool VerilogGeneratorPlugin::outputFileAndViewShouldBeAddedToTopComponent() cons
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::relativePathFromXmlToFile(QString const& filePath) const
 {
-    QString xmlPath = utility_->getLibraryInterface()->getPath(*topComponent_->getVlnv());
+    QString xmlPath = utility_->getLibraryInterface()->getPath(topComponent_->getVlnv());
     return General::getRelativePath(xmlPath, filePath);
 }
 
@@ -268,7 +273,28 @@ void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QString const& activeView
     QString filePath = relativePathFromXmlToFile(outputFile_);
 
     QSettings settings;
-    QSharedPointer<FileSet> fileSet = topComponent_->getFileSet(fileSetNameForActiveView(activeViewName));
+	QString fileSetName = fileSetNameForActiveView(activeViewName);
+    QSharedPointer<FileSet> fileSet = topComponent_->getFileSet(fileSetName);
+
+	if ( !fileSet )
+	{
+		fileSet = QSharedPointer<FileSet>( new FileSet );
+		fileSet->setName(fileSetName);
+		topComponent_->getFileSets()->append(fileSet);
+
+		QSharedPointer<ComponentInstantiation> cimp( new ComponentInstantiation );
+		cimp->setName( fileSetName + "_instantiation" );
+		topComponent_->getComponentInstantiations()->append(cimp);
+		cimp->getFileSetReferences()->append(fileSet->name());
+
+		QSharedPointer<View> activeView = topComponent_->getModel()->findView( activeViewName );
+
+		if ( activeView )
+		{
+			activeView->setComponentInstantiationRef( cimp->name() );
+		}
+	}
+
     fileSet->addFile(filePath, settings);
 }
 
@@ -277,8 +303,8 @@ void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QString const& activeView
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::fileSetNameForActiveView(QString const& activeViewName) const
 {
-    View* activeView = topComponent_->findView(activeViewName);
-    if (topComponent_->hasView(activeViewName) && activeView->isHierarchical())
+    QSharedPointer<View> activeView = topComponent_->getModel()->findView(activeViewName);
+    if (activeView && activeView->isHierarchical())
     {
         return activeViewName + "_verilogSource";
     }
@@ -293,19 +319,19 @@ QString VerilogGeneratorPlugin::fileSetNameForActiveView(QString const& activeVi
 //-----------------------------------------------------------------------------
 void VerilogGeneratorPlugin::addRTLViewToTopComponent(QString const& activeViewName) const
 {    
-    View* rtlView = 0;
+    QSharedPointer<View> rtlView;
 
-    View* activeView = topComponent_->findView(activeViewName);
-    if (topComponent_->hasView(activeViewName))
+    QSharedPointer<View> activeView = topComponent_->getModel()->findView(activeViewName);
+
+    if (activeView)
     {    
         if (activeView->isHierarchical())
-        {
-            QString structuralViewName = activeViewName + "_verilog";    
-            rtlView = new View();    
-            rtlView->setName(structuralViewName);   
-            topComponent_->addView(rtlView);
+		{
+			rtlView = QSharedPointer<View>( new View() );    
+			QString structuralViewName = NameGenerationPolicy::verilogStructuralViewName( activeViewName );
+            rtlView->setName(structuralViewName);
 
-            activeView->setTopLevelView(structuralViewName);
+            topComponent_->getViews()->append(rtlView);
         }
         else
         {
@@ -314,19 +340,31 @@ void VerilogGeneratorPlugin::addRTLViewToTopComponent(QString const& activeViewN
     }
     else
     {
-        rtlView = new View();
+        rtlView = QSharedPointer<View>( new View() );
         rtlView->setName("rtl");
-        topComponent_->addView(rtlView);
-    }
+        topComponent_->getViews()->append(rtlView);
+	}
 
+	QSharedPointer<ComponentInstantiation> cimp;
+
+	if ( rtlView->getComponentInstantiationRef().isEmpty() )
+	{
+		cimp = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
+		cimp->setName(rtlView->name() + "_instantiation");
+		rtlView->setComponentInstantiationRef( cimp->name() );
+		topComponent_->getComponentInstantiations()->append(cimp);
+	}
+	else
+	{
+		cimp = topComponent_->getModel()->findComponentInstantiation( rtlView->getComponentInstantiationRef() );
+	}
+
+	cimp->setLanguage("verilog");
+	cimp->getFileSetReferences()->append( fileSetNameForActiveView(activeViewName) );
  
-    rtlView->setLanguage("verilog");
-    rtlView->setEnvIdentifiers(QStringList("verilog:Kactus2:"));
-    rtlView->setModelName(topComponent_->getVlnv()->getName());    
-
-    QStringList fileSetRefs;
-    fileSetRefs << fileSetNameForActiveView(activeViewName);        
-    rtlView->setFileSetRefs(fileSetRefs);
+	QStringList envIds = rtlView->getEnvIdentifiers();
+	envIds.append("verilog:Kactus2:");
+    rtlView->setEnvIdentifiers(envIds);
 }
 
 //-----------------------------------------------------------------------------
@@ -334,7 +372,7 @@ void VerilogGeneratorPlugin::addRTLViewToTopComponent(QString const& activeViewN
 //-----------------------------------------------------------------------------
 void VerilogGeneratorPlugin::saveChanges() const
 {
-    QString component = topComponent_->getVlnv()->toString();
+    QString component = topComponent_->getVlnv().toString();
 
     bool saveSucceeded = utility_->getLibraryInterface()->writeModelToFile(topComponent_);            
     if (saveSucceeded)
@@ -343,7 +381,7 @@ void VerilogGeneratorPlugin::saveChanges() const
     }    
     else
     {
-        QString savePath = utility_->getLibraryInterface()->getPath(*topComponent_->getVlnv());
+        QString savePath = utility_->getLibraryInterface()->getPath(topComponent_->getVlnv());
         utility_->printError(tr("Could not write component %1 to file %2.").arg(component, savePath));
     }
 }
@@ -355,18 +393,17 @@ QStringList VerilogGeneratorPlugin::findReferencingViews(QSharedPointer<Componen
     VLNV targetReference) const
 {
     QStringList hierViews;
-    foreach(QSharedPointer<View> view, containingComponent->getViews())
+    foreach(QSharedPointer<View> view, *containingComponent->getViews())
     {
-        if (view->getHierarchyRef() == targetReference)
+		QSharedPointer<DesignConfigurationInstantiation> disg = containingComponent->getModel()->
+			findDesignConfigurationInstantiation( view->getDesignConfigurationInstantiationRef() );
+		QSharedPointer<DesignInstantiation> dis = containingComponent->getModel()->
+			findDesignInstantiation( view->getDesignInstantiationRef() );
+
+        if (disg && *disg->getDesignConfigurationReference() == targetReference
+			|| dis && *dis->getDesignReference() == targetReference )
         {
-            if (!view->getTopLevelView().isEmpty())
-            {
-                hierViews.append(view->getTopLevelView());
-            }
-            else
-            {
-                hierViews.append(view->getName());
-            }
+             hierViews.append(view->name());
         }
     }
 

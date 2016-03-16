@@ -16,16 +16,11 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 
-#include <IPXACTmodels/ColumnDesc.h>
+#include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
-#include <QGraphicsRectItem>
-#include <QSet>
-#include <QCursor>
 
 class GraphicsConnection;
-class HWConnectionEndpoint;
 class Component;
-class GenericEditProvider;
 
 //-----------------------------------------------------------------------------
 //! HWColumn class.
@@ -43,7 +38,7 @@ public:
      *      @param [in] desc    The column description.
      *      @param [in] layout  The parent column layout.
      */
-    HWColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout);
+    HWColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout);
 
     /*!
      *  Destructor.

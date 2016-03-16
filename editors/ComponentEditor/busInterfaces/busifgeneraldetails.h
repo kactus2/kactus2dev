@@ -1,37 +1,40 @@
-/* 
- *
- *  Created on: 5.4.2011
- *      Author: Antti Kamppi
- * 		filename: busifgeneraldetails.h
- */
+//-----------------------------------------------------------------------------
+// File: busifgeneraldetails.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 05.04.2011
+//
+// Description:
+// Editor to edit the bus interface details.
+//-----------------------------------------------------------------------------
 
 #ifndef BUSIFGENERALDETAILS_H
 #define BUSIFGENERALDETAILS_H
 
 #include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 
-#include <IPXACTmodels/businterface.h>
-
 #include <QGroupBox>
 #include <QCheckBox>
-#include <QSpinBox>
+#include <QLineEdit>
 #include <QComboBox>
 #include <QSharedPointer>
 
 class BusInterface;
 
-/*! Editor to edit the bus interface details.
- *
- */
-class BusIfGeneralDetails : public QGroupBox {
+//-----------------------------------------------------------------------------
+//! Editor to edit the bus interface details.
+//-----------------------------------------------------------------------------
+class BusIfGeneralDetails : public QGroupBox
+{
 	Q_OBJECT
 
 public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] busif   Pointer to the bus interface being edited.
-	 *      @param [in] parent  Pointer to the owner of this editor.
+	 *      @param [in] busif   The bus interface being edited.
+	 *      @param [in] parent  The owner of this editor.
 	 *
 	*/
 	BusIfGeneralDetails(QSharedPointer<BusInterface> busif, QWidget* parent);
@@ -67,7 +70,7 @@ signals:
 private slots:
 
 	//! Handler for changes in least addressable unit (bits in lau)
-	void onAddressableUnitChanged(int newValue);
+	void onAddressableUnitChanged();
 
 	//! Handler for changes in the endianness.
 	void onEndiannessChanged();
@@ -82,12 +85,14 @@ private:
 	
 	//! No copying
 	BusIfGeneralDetails(const BusIfGeneralDetails& other);
-    void setupLayout();
 
 	//! No assignment
 	BusIfGeneralDetails& operator=(const BusIfGeneralDetails& other);
 
-	//! Pointer to the bus interface being edited.
+    //! Sets the editor layout.
+    void setupLayout();
+
+	//! The bus interface being edited.
 	QSharedPointer<BusInterface> busif_;
 
     //! The selector to select the interface mode.
@@ -97,16 +102,13 @@ private:
 	QCheckBox connRequired_;
 
 	//! Sets the value for bits in lau.
-	QSpinBox bitsInLau_;
+	QLineEdit bitsInLauEditor_;
 
 	//! Set the endianness of interface
-	QComboBox endianness_;
+	QComboBox endiannessSelector_;
 
 	//! Set bit steering on/off
-	QComboBox bitSteering_;
-
-	//! Enable/disable the bit steering element.
-	QCheckBox bitSteeringEnabled_;
+	QComboBox bitSteeringSelector_;
 };
 
 #endif // BUSIFGENERALDETAILS_H

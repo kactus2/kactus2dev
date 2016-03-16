@@ -11,7 +11,7 @@
 
 #include <QtTest>
 
-#include <editors/ComponentEditor/common/ValueFormatter.h>
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 class tst_ValueFormatter : public QObject
 {

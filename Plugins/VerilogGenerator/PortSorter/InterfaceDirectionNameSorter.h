@@ -16,7 +16,8 @@
 
 #include "../veriloggeneratorplugin_global.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 //-----------------------------------------------------------------------------
 //! Class for sorting component port names by interface, direction and name.
@@ -38,7 +39,7 @@ public:
      *
      *      @return The sorted port names of a given component.
      */
-    virtual QStringList sortedPortNames(QSharedPointer<const Component> component) const;
+    virtual QStringList sortedPortNames(QSharedPointer<Component> component) const;
 
 private:
 
@@ -50,11 +51,11 @@ private:
     struct SortKey 
     {
         QString interfaceName;              //<! The name of the port's interface.
-        General::Direction portDirection;   //<! The direction of the port.
+        DirectionTypes::Direction portDirection;   //<! The direction of the port.
         QString portName;                   //<! The name of the port.
 
         //! Convenience constructor for SortKey.
-        SortKey(QString interfaceName, General::Direction direction, QString portName) : 
+        SortKey(QString interfaceName, DirectionTypes::Direction direction, QString portName) : 
             interfaceName(interfaceName), portDirection(direction), portName(portName)  {}
 
         //! Comparison operator for sorting.

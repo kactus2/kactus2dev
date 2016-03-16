@@ -17,8 +17,9 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/validators/ParameterValidator2014.h>
-#include <IPXACTmodels/choice.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <QSharedPointer>
 #include <QList>

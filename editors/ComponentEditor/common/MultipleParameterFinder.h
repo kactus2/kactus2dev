@@ -14,8 +14,7 @@
 
 #include "ParameterFinder.h"
 
-#include <IPXACTmodels/parameter.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 //-----------------------------------------------------------------------------
 //! Parameter finder of multiple components.

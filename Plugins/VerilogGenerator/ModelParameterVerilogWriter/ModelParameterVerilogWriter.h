@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: ModelParameterVerilogWriter.h
+// File: ModuleParameterVerilogWriter.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
@@ -9,8 +9,8 @@
 // Class for writing model parameter declarations in Verilog.
 //-----------------------------------------------------------------------------
 
-#ifndef ModelParameterVerilogWriter_H
-#define ModelParameterVerilogWriter_H
+#ifndef ModuleParameterVerilogWriter_H
+#define ModuleParameterVerilogWriter_H
 
 #include "../veriloggeneratorplugin_global.h"
 #include "../common/Writer.h"
@@ -21,12 +21,12 @@
 #include <QSharedPointer>
 #include <QTextStream>
 
-class ModelParameter;
+class ModuleParameter;
 
 //-----------------------------------------------------------------------------
 //! Class for writing model parameter declarations in Verilog.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT ModelParameterVerilogWriter : public Writer
+class VERILOGGENERATORPLUGIN_EXPORT ModuleParameterVerilogWriter : public Writer
 {
 
 public:
@@ -34,14 +34,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] modelParameter  The model parameter represented by this object.
+	 *      @param [in] ModuleParameter  The model parameter represented by this object.
 	 *      @param [in] formatter       The expression formatter.
 	 */
-	ModelParameterVerilogWriter(QSharedPointer<ModelParameter> modelParameter,
+	ModuleParameterVerilogWriter(QSharedPointer<ModuleParameter> ModuleParameter,
         QSharedPointer<ExpressionFormatter> formatter);
 	
 	//! The destructor
-	~ModelParameterVerilogWriter();
+	~ModuleParameterVerilogWriter();
 
 	/*! Write the contents of the model parameter into text stream.
 	 *
@@ -52,10 +52,10 @@ public:
 private:
 	
 	//! No copying.
-	ModelParameterVerilogWriter(const ModelParameterVerilogWriter& other);
+	ModuleParameterVerilogWriter(const ModuleParameterVerilogWriter& other);
 
 	//! No assignment.
-	ModelParameterVerilogWriter& operator=(const ModelParameterVerilogWriter& other);
+	ModuleParameterVerilogWriter& operator=(const ModuleParameterVerilogWriter& other);
 
     /*!
      *  Checks if the writer should write nothing.
@@ -90,10 +90,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The model parameter to write to Verilog.
-    QSharedPointer<ModelParameter> modelParameter_;
+    QSharedPointer<ModuleParameter> moduleParameter_;
 
     //! The expresion formatter, used to change ids from expressions to names of references.
     QSharedPointer<ExpressionFormatter> formatter_;
 };
 
-#endif // ModelParameterVerilogWriter_H
+#endif // ModuleParameterVerilogWriter_H

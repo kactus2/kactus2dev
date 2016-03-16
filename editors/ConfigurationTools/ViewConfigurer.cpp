@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: ViewConfigurer.h
+// File: ViewConfigurer.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
@@ -15,10 +15,10 @@
 
 #include <library/LibraryManager/libraryhandler.h>
 
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
@@ -69,14 +69,14 @@ clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("C
     }
     else
     {
-        usedHierarchicalComponentVLNVS_.append(selectedComponent->getVlnv()->toString(":"));
+        usedHierarchicalComponentVLNVS_.append(selectedComponent->getVlnv().toString(":"));
 
         topComponentItem->setIcon(ViewConfigurerColumns::ITEM_VLNV,
             QIcon(":/icons/common/graphics/hier-hw-component.png"));
     }
 
-    topComponentItem->setText(ViewConfigurerColumns::ITEM_VLNV, selectedComponent->getVlnv()->toString(":"));
-    topComponentItem->setText(ViewConfigurerColumns::INSTANCE_NAME, selectedComponent->getVlnv()->getName());
+    topComponentItem->setText(ViewConfigurerColumns::ITEM_VLNV, selectedComponent->getVlnv().toString(":"));
+    topComponentItem->setText(ViewConfigurerColumns::INSTANCE_NAME, selectedComponent->getVlnv().getName());
 
     if (openViewName.isEmpty())
     {
@@ -151,16 +151,16 @@ void ViewConfigurer::setupLayout()
 void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDesign,
     QSharedPointer<DesignConfiguration> currentDesignConfiguration, QTreeWidgetItem* parentItem)
 {
-    foreach (ComponentInstance currentInstance, currentDesign->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> currentInstance, *currentDesign->getComponentInstances())
     {
-        VLNV componentReference = currentInstance.getComponentRef();
+        VLNV componentReference = *currentInstance->getComponentRef();
         QSharedPointer<Component> component = libraryHandler_->getModel(componentReference).dynamicCast<Component>();
 
-        QString instanceViewName = currentDesignConfiguration->getActiveView(currentInstance.getInstanceName());
+        QString instanceViewName = currentDesignConfiguration->getActiveView(currentInstance->getInstanceName());
 
         QTreeWidgetItem* instanceItem (new QTreeWidgetItem(parentItem));
         instanceItem->setText(ViewConfigurerColumns::ITEM_VLNV, componentReference.toString(":"));
-        instanceItem->setText(ViewConfigurerColumns::INSTANCE_NAME, currentInstance.getInstanceName());
+        instanceItem->setText(ViewConfigurerColumns::INSTANCE_NAME, currentInstance->getInstanceName());
 
         if (instanceViewName.isEmpty())
         {
@@ -171,7 +171,7 @@ void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDe
         }
 
         instanceItem->setText(ViewConfigurerColumns::INSTANCE_VIEW, instanceViewName);
-        instanceItem->setText(ViewConfigurerColumns::INSTANCE_ID, currentInstance.getUuid());
+        instanceItem->setText(ViewConfigurerColumns::INSTANCE_ID, currentInstance->getUuid());
 
         instanceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
 
@@ -368,7 +368,7 @@ void ViewConfigurer::changedTopItemChangesDesignConfiguration(QSharedPointer<Com
         {
             selectedDesignConfiguration_ = viewDesignConfiguration;
 
-            usedHierarchicalComponentVLNVS_.append(component->getVlnv()->toString(":"));
+            usedHierarchicalComponentVLNVS_.append(component->getVlnv().toString(":"));
         }
     }
 }

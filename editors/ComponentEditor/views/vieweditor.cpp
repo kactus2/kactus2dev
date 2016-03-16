@@ -11,87 +11,67 @@
 
 #include "vieweditor.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/view.h>
+#include "envidentifiereditor.h"
+
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/filebuilder.h>
+
+#include <Plugins/common/NameGenerationPolicy.h>
+
+#include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
+#include <editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.h>
+#include <editors/ComponentEditor/instantiations/ModuleParameterEditor.h>
+
+#include <common/widgets/nameGroupEditor/namegroupeditor.h>
+#include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/common/FileBuilder.h>
 
 #include <QVBoxLayout>
 #include <QFormLayout>
 #include <QHBoxLayout>
-#include <QLabel>
 #include <QSizePolicy>
-#include <QGroupBox>
 #include <QScrollArea>
-
-namespace
-{
-    //! Enumeration of view types.
-    enum ViewType
-    {
-        HIERARCHICAL = 0,
-        FLAT
-    };
-}
 
 //-----------------------------------------------------------------------------
 // Function: ViewEditor::ViewEditor()
 //-----------------------------------------------------------------------------
-ViewEditor::ViewEditor( QSharedPointer<Component> component, QSharedPointer<View> view, 
-    LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder, 
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent ): 
-ItemEditor(component, libHandler, parent), 
-view_(view),
-nameEditor_(view->getNameGroup(), this, tr("View name and description")),
-viewTypeSelector_(),
-envIdentifier_(view, this),
-typeDependentEditors_(this),
-flatViewEditor_(component, view, parameterFinder, expressionFormatter, &typeDependentEditors_),
-hierarchyReferenceEditor_(view, libHandler, component->getChoices(),
-    parameterFinder, expressionFormatter, &typeDependentEditors_)
+ViewEditor::ViewEditor(QSharedPointer<Component> component, QSharedPointer<View> view,
+    LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
+ItemEditor(component, libHandler, parent),
+    view_(view),
+    nameEditor_(new NameGroupEditor(view, this, tr("View name and description"))),
+    envIdentifier_(new EnvIdentifierEditor(view, this)),
+    componentInstantiationSelector_(new ReferenceSelector(this)),
+    designConfigurationInstantiationSelector_(new ReferenceSelector(this)),
+    designInstantiationSelector_(new ReferenceSelector(this)),
+    componentInstantiationDisplay_(new ComponentInstantiationDisplayer(this)),
+    hierarchyGroup_(new QGroupBox(tr("Design and configuration"), this)),
+    designConfigurationDisplay_(new VLNVDisplayer(this)),
+    designDisplay_(new VLNVDisplayer(this)),
+    moduleParameterEditor_(new ModuleParameterEditor(QSharedPointer<QList<QSharedPointer<ModuleParameter> > >(
+    new QList<QSharedPointer<ModuleParameter> >()), component->getChoices(), parameterFinder, expressionFormatter,
+    this))
 {
-	// set the possible options to the view type selector.
-	viewTypeSelector_.insertItem(HIERARCHICAL, tr("hierarchical"));
-	viewTypeSelector_.insertItem(FLAT, tr("non-hierarchical"));
+    moduleParameterEditor_->disableEditing();
 
-	// Add the widget to edit hierarchy reference to index 0 in the stackWidget.
-	typeDependentEditors_.insertWidget(HIERARCHICAL, &hierarchyReferenceEditor_);
-	// Add tab widget that contains widgets to edit flat views to index 1.
-	typeDependentEditors_.insertWidget(FLAT, &flatViewEditor_);
+    setupLayout();
 
-	setupLayout();
+    refresh();
 
-	connect(&nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	
-    connect(&envIdentifier_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-    connect(&hierarchyReferenceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&hierarchyReferenceEditor_, SIGNAL(helpUrlRequested(const QString&)),
-        this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
-    connect(&hierarchyReferenceEditor_, SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(&hierarchyReferenceEditor_, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-    connect(&hierarchyReferenceEditor_, SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+    connect(envIdentifier_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-    connect(&flatViewEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&flatViewEditor_, SIGNAL(helpUrlRequested(const QString&)),
-		this, SIGNAL(helpUrlRequested(const QString&)), Qt::UniqueConnection);
-    connect(&flatViewEditor_, SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(&flatViewEditor_, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-    connect(&flatViewEditor_, SIGNAL(openReferenceTree(QString)),
-        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
-
-	// when user changes the view type the correct editor is displayed
-    connect(&viewTypeSelector_, SIGNAL(currentIndexChanged(int)),
-        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&viewTypeSelector_, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onViewTypeChanged(int)), Qt::UniqueConnection);
-
-	refresh();
+    connect(componentInstantiationSelector_, SIGNAL(itemSelected(QString const&)),
+        this, SLOT(onComponentInstanceChanged(QString const&)), Qt::UniqueConnection);
+    connect(designConfigurationInstantiationSelector_, SIGNAL(itemSelected(QString const&)),
+        this, SLOT(onDesignConfigurationInstanceChanged(QString const&)), Qt::UniqueConnection);
+    connect(designInstantiationSelector_, SIGNAL(itemSelected(QString const&)),
+        this, SLOT(onDesignInstanceChanged(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,69 +83,157 @@ ViewEditor::~ViewEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewEditor::isValid()
-//-----------------------------------------------------------------------------
-bool ViewEditor::isValid() const
-{
-	if (!nameEditor_.isValid() || !envIdentifier_.isValid())
-    {
-		return false;
-    }
-
-	// if view is hierarchical make sure the vlnv ref is valid
-	if (viewTypeSelector_.currentIndex() == HIERARCHICAL)
-    {
-		return hierarchyReferenceEditor_.isValid();
-    }
-	// if view is not hierarchical make sure all it's elements are valid
-	else
-    {
-		return flatViewEditor_.isValid();
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewEditor::onStackChange()
-//-----------------------------------------------------------------------------
-void ViewEditor::onViewTypeChanged(int index)
-{
-	typeDependentEditors_.setCurrentIndex(index);
-
-	// if the new index is for hierarchical view then refresh the hierarchical editor
-	if (index == HIERARCHICAL) 
-    {
-		hierarchyReferenceEditor_.refresh(component()->getViewNames());
-	}
-	// if the flat view is selected then clear the hierarchy ref
-	else 
-    {
-		hierarchyReferenceEditor_.clear();
-        flatViewEditor_.refresh();
-
-        // Update order in tree view.
-        emit contentChanged();
-	}
-}
-
-//-----------------------------------------------------------------------------
 // Function: ViewEditor::refresh()
 //-----------------------------------------------------------------------------
 void ViewEditor::refresh()
 {
-	nameEditor_.refresh();
-	envIdentifier_.refresh();
+	nameEditor_->refresh();
+	envIdentifier_->refresh();
 
-	// if view is hierarchical then set it to be selected
-	if (view_->isHierarchical())
+    QStringList componentInstantiationNames;
+    foreach(QSharedPointer<ComponentInstantiation> componentInstantiation, 
+        *component()->getComponentInstantiations())
     {
-		viewTypeSelector_.setCurrentIndex(HIERARCHICAL);
-		hierarchyReferenceEditor_.refresh(component()->getViewNames());
-	}
-	else
+        componentInstantiationNames.append(componentInstantiation->name());
+    }
+    componentInstantiationSelector_->refresh(componentInstantiationNames);
+    componentInstantiationSelector_->selectItem(view_->getComponentInstantiationRef());
+    onComponentInstanceChanged(view_->getComponentInstantiationRef());
+
+    QStringList designConfigurationInstantiationNames;
+    foreach(QSharedPointer<DesignConfigurationInstantiation> designConfigurationInstantiation, 
+        *component()->getDesignConfigurationInstantiations())
     {
-		viewTypeSelector_.setCurrentIndex(FLAT);
-		flatViewEditor_.refresh();
-	}
+        designConfigurationInstantiationNames.append(designConfigurationInstantiation->name());
+        if (designConfigurationInstantiation->name() == view_->getDesignConfigurationInstantiationRef())
+        {
+            designConfigurationDisplay_->setVLNV(
+                *designConfigurationInstantiation->getDesignConfigurationReference());
+        }
+    }
+    designConfigurationInstantiationSelector_->refresh(designConfigurationInstantiationNames);
+    designConfigurationInstantiationSelector_->selectItem(view_->getDesignConfigurationInstantiationRef());
+    onDesignConfigurationInstanceChanged(view_->getDesignConfigurationInstantiationRef());
+
+    QStringList designInstantiationNames;
+    foreach(QSharedPointer<DesignInstantiation> designInstantiation, *component()->getDesignInstantiations())
+    {
+        designInstantiationNames.append(designInstantiation->name());
+        if (designInstantiation->name() == view_->getDesignInstantiationRef())
+        {
+            designDisplay_->setVLNV(*designInstantiation->getDesignReference());
+        }
+    }
+    designInstantiationSelector_->refresh(designInstantiationNames);
+    designInstantiationSelector_->selectItem(view_->getDesignInstantiationRef());
+    onDesignInstanceChanged(view_->getDesignInstantiationRef()); 
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::showEvent()
+//-----------------------------------------------------------------------------
+void ViewEditor::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+    emit helpUrlRequested("componenteditor/view.html");
+    refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::onComponentInstanceChanged()
+//-----------------------------------------------------------------------------
+void ViewEditor::onComponentInstanceChanged(QString const& instanceName)
+{
+    QString previousInstance = view_->getComponentInstantiationRef();
+
+    view_->setComponentInstantiationRef(instanceName);
+
+    QSharedPointer<ComponentInstantiation> instantiation = 
+        component()->getModel()->findComponentInstantiation(instanceName);
+    componentInstantiationDisplay_->setInstantiation(instantiation);
+
+    if (instantiation)
+    {
+        moduleParameterEditor_->setModuleParameters(instantiation->getModuleParameters());
+    }
+    moduleParameterEditor_->setVisible(instantiation);
+
+    if (previousInstance != instanceName)
+    {
+        emit contentChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::onDesignConfigurationInstanceChanged()
+//-----------------------------------------------------------------------------
+void ViewEditor::onDesignConfigurationInstanceChanged(QString const& instanceName)
+{    
+    QString previousInstance = view_->getDesignConfigurationInstantiationRef();
+
+    view_->setDesignConfigurationInstantiationRef(instanceName);
+
+    QSharedPointer<DesignConfigurationInstantiation> selectedInstantiation;
+
+    foreach(QSharedPointer<DesignConfigurationInstantiation> configurationInstantiation, 
+        *component()->getDesignConfigurationInstantiations())
+    {
+        if (configurationInstantiation->name() == instanceName)
+        {
+            selectedInstantiation = configurationInstantiation;
+        }
+    }
+
+    VLNV selectedVLNV;
+    if (selectedInstantiation)
+    {
+        selectedVLNV = *selectedInstantiation->getDesignConfigurationReference();
+    }
+
+    hierarchyGroup_->setVisible(!instanceName.isEmpty() || !designInstantiationSelector_->currentText().isEmpty());
+    designConfigurationDisplay_->setVisible(selectedInstantiation);
+    designConfigurationDisplay_->setVLNV(selectedVLNV);
+
+    if (previousInstance != instanceName)
+    {
+        emit contentChanged();
+    }    
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewEditor::onDesignInstanceChanged()
+//-----------------------------------------------------------------------------
+void ViewEditor::onDesignInstanceChanged(QString const& instanceName)
+{    
+    QString previousInstance = view_->getDesignInstantiationRef();
+
+    view_->setDesignInstantiationRef(instanceName);
+
+    QSharedPointer<DesignInstantiation> selectedInstantiation;
+
+    foreach(QSharedPointer<DesignInstantiation> designInstantiation, *component()->getDesignInstantiations())
+    {
+        if (designInstantiation->name() == instanceName)
+        {
+            selectedInstantiation = designInstantiation;
+        }
+    }
+
+    VLNV selectedVLNV;
+    if (selectedInstantiation)
+    {
+        selectedVLNV = *selectedInstantiation->getDesignReference();
+    }
+
+    hierarchyGroup_->setVisible(!instanceName.isEmpty() || 
+        !designConfigurationInstantiationSelector_->currentText().isEmpty());
+    designDisplay_->setVisible(selectedInstantiation);
+    designDisplay_->setVLNV(selectedVLNV);
+
+    if (previousInstance != instanceName)
+    {
+        emit contentChanged();
+    }    
 }
 
 //-----------------------------------------------------------------------------
@@ -173,8 +241,6 @@ void ViewEditor::refresh()
 //-----------------------------------------------------------------------------
 void ViewEditor::setupLayout()
 {
-    envIdentifier_.setMaximumHeight(175);
-
     // create the scroll area
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
@@ -184,16 +250,19 @@ void ViewEditor::setupLayout()
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-    QFormLayout* viewTypeLayout = new QFormLayout();
-    viewTypeLayout->addRow(tr("View type"), &viewTypeSelector_);
+    QGroupBox* instantiationsGroup = new QGroupBox(tr("Instantiations"), this);
+    QFormLayout* instancesLayout = new QFormLayout(instantiationsGroup);
+    instancesLayout->addRow(tr("Component instantiation:"), componentInstantiationSelector_);
+    instancesLayout->addRow(tr("Design configuration instantiation:"), designConfigurationInstantiationSelector_);
+    instancesLayout->addRow(tr("Design instantiation:"), designInstantiationSelector_);
 
-    QVBoxLayout* nameAndTypeLayout = new QVBoxLayout();
-    nameAndTypeLayout->addWidget(&nameEditor_, 0);
-    nameAndTypeLayout->addLayout(viewTypeLayout);
+    QVBoxLayout* componentLayout = new QVBoxLayout();
+    componentLayout->addWidget(componentInstantiationDisplay_, Qt::AlignTop);
 
-    QHBoxLayout* nameAndEnvIdentifiersLayout = new QHBoxLayout();
-    nameAndEnvIdentifiersLayout->addLayout(nameAndTypeLayout);
-    nameAndEnvIdentifiersLayout->addWidget(&envIdentifier_, 0, Qt::AlignTop);
+    QVBoxLayout* editorsLayout = new QVBoxLayout(hierarchyGroup_);
+    editorsLayout->addWidget(designConfigurationDisplay_, 0, Qt::AlignTop);
+    editorsLayout->addWidget(designDisplay_, 0, Qt::AlignTop);
+    editorsLayout->addStretch();
 
     // create the top widget and set it under the scroll area
     QWidget* topWidget = new QWidget(scrollArea);
@@ -201,9 +270,13 @@ void ViewEditor::setupLayout()
     scrollArea->setWidget(topWidget);
 
     // create the layout for the top widget
-    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-    topLayout->addLayout(nameAndEnvIdentifiersLayout);
-    topLayout->addWidget(&typeDependentEditors_);
-    topLayout->addStretch(1);
+    QGridLayout* topLayout = new QGridLayout(topWidget);
+    topLayout->addWidget(nameEditor_, 0, 0, 1, 1, Qt::AlignTop);
+    topLayout->addWidget(envIdentifier_, 0, 1, 2, 1, Qt::AlignTop);
+    topLayout->addWidget(instantiationsGroup, 1, 0, 1, 1, Qt::AlignTop);
+    topLayout->addLayout(componentLayout, 2, 0, 1, 1);
+    topLayout->addWidget(hierarchyGroup_, 2, 1, 1, 1);
+    topLayout->addWidget(moduleParameterEditor_, 3, 0, 1, 2);
+    topLayout->setRowStretch(3, 1);
     topLayout->setContentsMargins(0, 0, 0, 0);
 }

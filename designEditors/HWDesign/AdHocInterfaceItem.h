@@ -19,10 +19,11 @@
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-class HWComponentItem;
 class GraphicsColumn;
-class OffPageConnectorItem;
+class HWComponentItem;
+class Kactus2Placeholder;
 class LibraryInterface;
+class OffPageConnectorItem;
 class Port;
 
 //-----------------------------------------------------------------------------
@@ -38,8 +39,8 @@ public:
     /*!
      *  Constructor.
      */
-    AdHocInterfaceItem(QSharedPointer<Component> component, Port* port,
-                          LibraryInterface* lh, QGraphicsItem* parent = 0);
+    AdHocInterfaceItem(QSharedPointer<Component> component, QSharedPointer<Port> port,
+        QSharedPointer<Kactus2Placeholder> dataGroup, QGraphicsItem* parent = 0);
 
 	/*!
      *  Destructor.
@@ -65,11 +66,6 @@ public:
     //-----------------------------------------------------------------------------
     // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
-
-    /*!
-     *  Returns true if the draw direction is fixed and thus, cannot be changed.
-     */
-    virtual bool isDirectionFixed() const;
 
     /*!
      *  Returns the name of the ad-hoc port.
@@ -103,7 +99,6 @@ public:
      *      @return False if there was an error in the connection. Otherwise true.
      */
     virtual bool onConnect(ConnectionEndpoint const* other);
-
 
     /*!
      *  Called when a connection has been removed from between this and another end point.
@@ -150,7 +145,7 @@ public:
      *      @remarks The function returns a null pointer if the end point is a bus interface.
      *               Use isBus() function to check for ad-hoc support (isBus() == false).
      */
-    virtual Port* getPort() const;
+    virtual QSharedPointer<Port> getPort() const;
 
     /*! 
      *  Returns true if the port represents a hierarchical connection.
@@ -163,6 +158,11 @@ public:
     virtual bool isBus() const;
 
     void setDirection(QVector2D const& dir);
+
+    /*!
+     *  Returns true if the draw direction is fixed and thus, cannot be changed.
+     */
+    virtual bool isDirectionFixed() const;
 
 	/*!
      *  Sets the interface mode for the port.
@@ -182,25 +182,28 @@ public:
 	void setLabelPosition();
 
 protected:
-    virtual QVariant itemChange(GraphicsItemChange change,
-                                const QVariant &value);
+
+    virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-    //! The library interface.
-    LibraryInterface* lh_;
 
     //! The name label.
 	QGraphicsTextItem nameLabel_;
 
-    //! The port.
-    Port* port_;
-
     //! The top-level component.
     QSharedPointer<Component> component_;
+
+    //! The port.
+    QSharedPointer<Port> port_;
+
+
+    QSharedPointer<Kactus2Placeholder> dataGroup_;
 
     //! The old column from where the mouse drag event began.
     GraphicsColumn* oldColumn_;

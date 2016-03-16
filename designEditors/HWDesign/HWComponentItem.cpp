@@ -1,532 +1,114 @@
-/* 
- *
- * 		filename: diagramcomponent.cpp
- */
+//-----------------------------------------------------------------------------
+// File: HWComponentItem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date:
+//
+// Description:
+// HWComponentItem represents graphically an IP-XACT component instance.
+//-----------------------------------------------------------------------------
 
 #include "HWComponentItem.h"
 #include "BusPortItem.h"
 #include "AdHocPortItem.h"
-#include "HWConnection.h"
-#include "HWDesignDiagram.h"
 #include "HWMoveCommands.h"
 
 #include "columnview/HWColumn.h"
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <common/GenericEditProvider.h>
+#include <common/IEditProvider.h>
 #include <common/KactusColors.h>
 #include <common/layouts/VCollisionLayout.h>
+
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
+#include <common/graphicsItems/GraphicsConnection.h>
 
 #include <designEditors/common/diagramgrid.h>
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
+#include <designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/view.h>
-#include <IPXACTmodels/VendorExtension.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
+
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+
+#include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
 #include <QGraphicsDropShadowEffect>
 #include <QFont>
 #include <QTextDocument>
 
-#include <QDebug>
-
-HWComponentItem::HWComponentItem(LibraryInterface* lh_, 
-								 QSharedPointer<Component> component,
-                                 const QString &instanceName,
-								 const QString &displayName,
-                                 const QString &description,
-                                 const QString& uuid,
-                                 const QMap<QString, QString> &configurableElementValues,
-                                 QMap<QString, bool> const& portAdHocVisibilities,
-                                 QGraphicsItem *parent)
-    : ComponentItem(QRectF(-COMPONENTWIDTH/ 2, 0, COMPONENTWIDTH, 40),
-                    lh_,
-                    component,
-                    instanceName,
-                    displayName,
-                    description,
-						  uuid,
-                    configurableElementValues, parent),
-      AdHocEnabled(),
-      hierIcon_(0),
-      oldColumn_(0),
-      portLayout_(new VCollisionLayout<HWConnectionEndpoint>(SPACING)),
-      leftPorts_(),
-      rightPorts_(),
-      connUpdateDisabled_(false),
-      vendorExtensions_()
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::HWComponentItem()
+//-----------------------------------------------------------------------------
+HWComponentItem::HWComponentItem(LibraryInterface* libInterface,
+QSharedPointer<ComponentInstance> instance, QSharedPointer<Component> component,
+QGraphicsItem* parent) : 
+ComponentItem(QRectF(), libInterface, instance, component, parent),
+hierIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/hierarchy.png"), this)),
+oldColumn_(0),
+portLayout_(new VCollisionLayout<HWConnectionEndpoint>(SPACING)),
+leftPorts_(),
+rightPorts_(),
+oldPos_()
 {
     setFlag(ItemIsMovable);
-    setAdHocData(component, portAdHocVisibilities);
-    
-	QList<QSharedPointer<BusInterface> > busInterfaces = component->getBusInterfaces();
+    setAdHocData(component, instance->getPortAdHocVisibilities());
+
+    hierIcon_->setToolTip(tr("Hierarchical"));
+    hierIcon_->setPos(COMPONENTWIDTH/2 - hierIcon_->pixmap().width() - SPACING, SPACING);
 
     int portSpacing = 3*GridSize;
-    int portCountLeft = busInterfaces.size() / 2.0 + .5;
-    setRect(-COMPONENTWIDTH/ 2, 0, COMPONENTWIDTH, 
-            6 * GridSize + portSpacing * qMax(portCountLeft - 1, 0));
+    int portCountOnLeft = component->getBusInterfaces()->size() / 2.0 + .5;
+    setRect(-COMPONENTWIDTH/ 2, 0, COMPONENTWIDTH, 6 * GridSize + portSpacing * qMax(portCountOnLeft - 1, 0));
 
-    bool right = false;
-    int leftY = 4 * GridSize;
-    int rightY = 4 * GridSize;
-	
-    foreach (QSharedPointer<BusInterface> busif, busInterfaces)
-    {
-        BusPortItem *port = new BusPortItem(busif, getLibraryInterface(), true, this);
+    positionBusInterfaceTerminals();
 
-        // Check if the default position has been specified.
-        if (!busif->getDefaultPos().isNull())
-        {
-            port->setPos(busif->getDefaultPos());
-            onAddPort(port, port->pos().x() >= 0);
-        }
-        else
-        {
-            if (right)
-            {
-                port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
-                rightY += portSpacing;
-            }
-            else
-            {
-                port->setPos(QPointF(0, leftY) + rect().topLeft());
-                leftY += portSpacing;
-            }
-
-            onAddPort(port, right);
-            right = !right;
-        }
-    }
-
-    // Parse port ad-hoc visibilities.
-    foreach (QSharedPointer<Port> adhocPort, componentModel()->getPorts())
-    {
-        if (!isPortAdHocVisible(adhocPort->getName()))
-        {
-            continue;
-        }
-
-        AdHocPortItem* port = new AdHocPortItem(adhocPort.data(), getLibraryInterface(), this);
-
-        // Check if the default position has been specified.
-        if (!adhocPort->getDefaultPos().isNull())
-        {
-            port->setPos(adhocPort->getDefaultPos());
-            onAddPort(port, port->pos().x() >= 0);
-        }
-        else
-        {
-            if (right)
-            {
-                port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
-                rightY += portSpacing;
-            }
-            else
-            {
-                port->setPos(QPointF(0, leftY) + rect().topLeft());
-                leftY += portSpacing;
-            }
-
-            onAddPort(port, right);
-            right = !right;
-        }
-    }
+    positionAdHocPortTerminals();
 
     updateSize();
     updateComponent();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~HWComponentItem()
+// Function: HWComponentItem::~HWComponentItem()
 //-----------------------------------------------------------------------------
 HWComponentItem::~HWComponentItem()
 {
     // Remove all interconnections.
-    foreach (QGraphicsItem *item, childItems()) {
-        if (item->type() != BusPortItem::Type)
-            continue;
-
-        BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
-        foreach (GraphicsConnection *interconn, diagramPort->getConnections()) {
-            delete interconn;
-        }
-    }
-
-    // Remove this item from the column where it resides.
-    HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
-
-    if (column != 0)
-    {
-        column->removeItem(this);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: getBusPort()
-//-----------------------------------------------------------------------------
-BusPortItem *HWComponentItem::getBusPort(const QString &name)
-{
-    foreach (QGraphicsItem* item, QGraphicsRectItem::childItems()) {
-        if (item->type() == BusPortItem::Type)
-        {
-            BusPortItem* busPort = qgraphicsitem_cast<BusPortItem*>(item);
-
-            if (busPort->name() == name)
-            {
-                return busPort;
-            }
-        }
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: getBusPort()
-//-----------------------------------------------------------------------------
-BusPortItem const* HWComponentItem::getBusPort(const QString &name) const
-{
-    foreach (QGraphicsItem const* item, QGraphicsRectItem::childItems())
-    {
-        if (item->type() == BusPortItem::Type)
-        {
-            BusPortItem const* busPort = qgraphicsitem_cast<BusPortItem const*>(item);
-
-            if (busPort->name() == name)
-            {
-                return busPort;
-            }
-        }
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: mouseMoveEvent()
-//-----------------------------------------------------------------------------
-void HWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
-{
-    // Discard movement if the diagram is protected.
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-
-    if (diagram == 0 || diagram->isProtected())
-    {
-        return;
-    }
-
-    // Disable connection updates so that Qt does not update the connections
-    // before the possible column change has been done.
-    connUpdateDisabled_ = true;
-
-    ComponentItem::mouseMoveEvent(event);
-    
-    if (oldColumn_ != 0)
-    {
-        setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
-
-        HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
-        Q_ASSERT(column != 0);
-        column->onMoveItem(this);
-    }
-
-    connUpdateDisabled_ = false;
-
-    // Update the port connections manually.
     foreach (QGraphicsItem *item, childItems())
     {
-        if (item->type() != BusPortItem::Type)
-            continue;
-
-        BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
-
-        foreach (GraphicsConnection *interconn, diagramPort->getConnections())
+        if (item->type() == BusPortItem::Type)
         {
-            interconn->updatePosition();
-        }
-
-        foreach (GraphicsConnection *interconn, diagramPort->getOffPageConnector()->getConnections())
-        {
-            interconn->updatePosition();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mouseReleaseEvent()
-//-----------------------------------------------------------------------------
-void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
-{
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-
-    if (diagram == 0)
-    {
-        return;
-    }
-
-    ComponentItem::mouseReleaseEvent(event);
-    setZValue(0.0);
-
-    if (oldColumn_ != 0)
-    {
-        HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
-        Q_ASSERT(column != 0);
-        column->onReleaseItem(this);
-
-        QSharedPointer<QUndoCommand> cmd;
-
-        if (scenePos() != oldPos_)
-        {
-            cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldColumn_));
-        }
-        else
-        {
-            cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
-        }
-
-        // End the position update for all connections.
-        foreach (QGraphicsItem *item, scene()->items())
-        {
-            GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-            if (conn != 0)
+            BusPortItem *diagramPort = qgraphicsitem_cast<BusPortItem *>(item);
+            foreach (GraphicsConnection *interconnection, diagramPort->getConnections())
             {
-                conn->endUpdatePosition(cmd.data());
+                delete interconnection;
             }
         }
-
-        // Add the undo command to the edit stack only if it has at least some real changes.
-        if (cmd->childCount() > 0 || scenePos() != oldPos_)
-        {
-            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
-        }
-
-        oldColumn_ = 0;
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: mousePressEvent()
-//-----------------------------------------------------------------------------
-void HWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-
-    if (diagram == 0)
-    {
-        return;
-    }
-
-    ComponentItem::mousePressEvent(event);
-    setZValue(1001.0);
-
-    oldPos_ = scenePos();
-    oldColumn_ = dynamic_cast<HWColumn*>(parentItem());
-
-    // Begin the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
-    {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-        if (conn != 0)
-        {
-            conn->beginUpdatePosition();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: onAddPort()
-//-----------------------------------------------------------------------------
-void HWComponentItem::onAddPort(HWConnectionEndpoint* port, bool right)
-{
-    connect(port, SIGNAL(moved(ConnectionEndpoint*)), this, SIGNAL(endpointMoved(ConnectionEndpoint*)));
-
-    if (right)
-    {
-        rightPorts_.append(port);
-        portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
-        portLayout_->setItemPos(rightPorts_, port, rect().right(), MIN_Y_PLACEMENT);
-		checkPortLabelSize(port, leftPorts_);
-    }
-    else
-    {
-        leftPorts_.append(port);
-        portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);		
-		portLayout_->setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT);
-		checkPortLabelSize(port, rightPorts_);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: onMovePort()
-//-----------------------------------------------------------------------------
-void HWComponentItem::onMovePort(HWConnectionEndpoint* port)
-{
-    // Remove the port from the stacks (this simplifies code).
-    leftPorts_.removeAll(port);
-    rightPorts_.removeAll(port);
-
-    // Restrict the position so that the port cannot be placed too high.
-    port->setPos(snapPointToGrid(port->x(), qMax(MIN_Y_PLACEMENT - port->boundingRect().top(), port->y())));
-    
-    // Check on which side the port is to determine the stack to which it should be placed.
-    if (port->x() < 0.0)
-    {
-        portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
-		checkPortLabelSize(port, rightPorts_);
-    }
-    else
-    {
-        portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
-		checkPortLabelSize(port, leftPorts_);
-    }
-
-    updateSize();
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWComponentItem::checkPortLabelSize()
-//-----------------------------------------------------------------------------
-void HWComponentItem::checkPortLabelSize( HWConnectionEndpoint* port, QList<HWConnectionEndpoint*> otherSide )
-{
-	for ( int i = 0; i < otherSide.size(); ++i)
-	{ 
-		if (port->y() == otherSide.at(i)->y())
-		{
-			qreal portLabelWidth = port->getNameLength();
-			qreal otherLabelWidth = otherSide.at(i)->getNameLength();
-
-			// Check if both of the labels exceed the mid section of the component.
-		    if (portLabelWidth + SPACING * 2 > (ComponentItem::COMPONENTWIDTH / 2 ) &&
-				otherLabelWidth + SPACING * 2 > (ComponentItem::COMPONENTWIDTH) / 2)
-		    {
-				port->shortenNameLabel( ComponentItem::COMPONENTWIDTH / 2 );
-				otherSide.at(i)->shortenNameLabel( ComponentItem::COMPONENTWIDTH / 2 );
-		    }
-				
-			// Check if the other port is wider than the other.
-		    else if (portLabelWidth > otherLabelWidth )
-		    {
-				port->shortenNameLabel( ComponentItem::COMPONENTWIDTH - otherLabelWidth - SPACING * 2 );
-		    }
-
-		    else
-		    {
-				otherSide.at(i)->shortenNameLabel( ComponentItem::COMPONENTWIDTH - portLabelWidth - SPACING * 2 );
-		    }				
-			
-			return;
-		} 
-	}
-
-	// If the port gets here, there is no ports with the same y() value, and so the port name is restored.
-	port->shortenNameLabel( ComponentItem::COMPONENTWIDTH );
-}
-
-//-----------------------------------------------------------------------------
-// Function: addPort()
-//-----------------------------------------------------------------------------
-BusPortItem* HWComponentItem::addPort(QPointF const& pos)
-{
-    // Determine a unique name for the bus interface.
-    QString name = "bus";
-    unsigned int count = 0;
-
-    while (componentModel()->getBusInterface(name) != 0)
-    {
-        ++count;
-        name = "bus_" + QString::number(count);
-    }
-
-    // Create an empty bus interface and add it to the component model.
-    QSharedPointer<BusInterface> busIf(new BusInterface());
-    busIf->setName(name);
-    busIf->setInterfaceMode(General::INTERFACE_MODE_COUNT);
-    componentModel()->addBusInterface(busIf);
-
-    // Create the visualization for the bus interface.
-    BusPortItem* port = new BusPortItem(busIf, getLibraryInterface(), false, this);
-
-    port->setPos(mapFromScene(pos));
-    onAddPort(port, mapFromScene(pos).x() >= 0);
-
-    // Update the component size.
-    updateSize();
-    return port;
-}
-
-//-----------------------------------------------------------------------------
-// Function: addPort()
-//-----------------------------------------------------------------------------
-void HWComponentItem::addPort(HWConnectionEndpoint* port)
-{
-    port->setParentItem(this);
-
-    if (port->type() == BusPortItem::Type)
-    {
-        // Add the bus interface to the component.
-        componentModel()->addBusInterface(port->getBusInterface());
-    }
-
-    // Make preparations.
-    onAddPort(port, port->x() >= 0);
-
-    // Update the component size.
-    updateSize();
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWComponentItem::getHeight()
-//-----------------------------------------------------------------------------
-qreal HWComponentItem::getHeight()
-{
-	// Update the component's size based on the port that is positioned at
-	// the lowest level of them all.
-	qreal maxY = 4 * GridSize;
-
-	if (!leftPorts_.empty())
-	{
-		maxY = leftPorts_.back()->y();
-	}
-
-	if (!rightPorts_.empty())
-	{
-		maxY = qMax(maxY, rightPorts_.back()->y());
-	}
-
-	return (maxY + BOTTOM_MARGIN);
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWComponentItem::getWidth()
-//-----------------------------------------------------------------------------
-qreal HWComponentItem::getWidth()
-{
-	return COMPONENTWIDTH;
-}
-
-//-----------------------------------------------------------------------------
-// Function: updateComponent()
+// Function: HWComponentItem::updateComponent()
 //-----------------------------------------------------------------------------
 void HWComponentItem::updateComponent()
 {
     ComponentItem::updateComponent();
 
-    VLNV* vlnv = componentModel()->getVlnv();
+    VLNV vlnv = componentModel()->getVlnv();
 
     // Check whether the component is packaged (valid vlnv) or not.
     if (isDraft())
     {
         setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
     }
-    else if (getLibraryInterface()->contains(*vlnv))
+    else if (getLibraryInterface()->contains(vlnv))
     {
         if (componentModel()->isBus())
         {
@@ -542,45 +124,29 @@ void HWComponentItem::updateComponent()
         setBrush(QBrush(KactusColors::MISSING_COMPONENT));
     }
 
-    // Create a hierarchy icon if the component is a hierarchical one.
-    if (componentModel()->getModel()->hasHierView())
-    {
-        if (hierIcon_ == 0)
-        {
-            hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/hierarchy.png"), this);
-            hierIcon_->setToolTip(tr("Hierarchical"));
-            hierIcon_->setPos(COMPONENTWIDTH/2 - hierIcon_->pixmap().width() - SPACING, SPACING);
-        }
-    }
-    else if (hierIcon_ != 0)
-    {
-        delete hierIcon_;
-    }
+    // Show a hierarchy icon if the component is a hierarchical one.
+    hierIcon_->setVisible(componentModel()->isHierarchical());
 }
 
 //-----------------------------------------------------------------------------
-// Function: removePort()
+// Function: HWComponentItem::getHeight()
 //-----------------------------------------------------------------------------
-void HWComponentItem::removePort(HWConnectionEndpoint* port)
+qreal HWComponentItem::getHeight()
 {
-    disconnect(port, SIGNAL(moved(ConnectionEndpoint*)), this, SIGNAL(endpointMoved(ConnectionEndpoint*)));
+    // Update the component's size based on the port that is positioned at the lowest level of them all.
+    qreal maxY = 4 * GridSize;
 
-    leftPorts_.removeAll(port);
-    rightPorts_.removeAll(port);
-    updateSize();
-    
-    if (port->type() == BusPortItem::Type)
+    if (!leftPorts_.empty())
     {
-        componentModel()->removeBusInterface(port->getBusInterface().data());
+        maxY = leftPorts_.back()->y();
     }
-}
 
-//-----------------------------------------------------------------------------
-// Function: isConnectionUpdateDisabled()
-//-----------------------------------------------------------------------------
-bool HWComponentItem::isConnectionUpdateDisabled() const
-{
-    return connUpdateDisabled_;
+    if (!rightPorts_.empty())
+    {
+        maxY = qMax(maxY, rightPorts_.back()->y());
+    }
+
+    return (maxY + BOTTOM_MARGIN);
 }
 
 //-----------------------------------------------------------------------------
@@ -594,35 +160,14 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
         QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
         Q_ASSERT(adhocPort != 0);
 
-        AdHocPortItem* port = new AdHocPortItem(adhocPort.data(), getLibraryInterface(), this);
-
-        // Place the port at the bottom of the side that contains fewer ports.
-        if (leftPorts_.size() < rightPorts_.size())
+        AdHocPortItem* port = getAdHocPort(portName);
+        if (!port)
         {
-            if (!leftPorts_.empty())
-            {
-                port->setPos(QPointF(0, leftPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
-            }
-            else
-            {
-                port->setPos(QPointF(0, GridSize * 4) + rect().topLeft());
-            }
-
-            onAddPort(port, false);
+            port = new AdHocPortItem(adhocPort, this);
+            addPortToSideWithLessPorts(port);
         }
-        else
-        {
-            if (!rightPorts_.empty())
-            {
-                port->setPos(QPointF(rect().width(), rightPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
-            }
-            else
-            {
-                port->setPos(QPointF(rect().width(), GridSize * 4) + rect().topLeft());
-            }
-
-            onAddPort(port, true);
-        }
+        
+        getComponentInstance()->updateAdHocPortPosition(portName, port->pos());
 
         // Update the component's size after addition.
         updateSize();
@@ -637,58 +182,13 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
         removePort(found);
         delete found;
         found = 0;
+
+        getComponentInstance()->hideAdHocPort(portName);
     }
 
     emit adHocVisibilitiesChanged();
 }
 
-//-----------------------------------------------------------------------------
-// Function: HWComponentItem::getAdHocPort()
-//-----------------------------------------------------------------------------
-AdHocPortItem* HWComponentItem::getAdHocPort(QString const& portName)
-{
-    foreach (HWConnectionEndpoint* endpoint, leftPorts_)
-    {
-        if (dynamic_cast<AdHocPortItem*>(endpoint) != 0 && endpoint->name() == portName)
-        {
-            return static_cast<AdHocPortItem*>(endpoint);
-        }
-    }
-    
-    foreach (HWConnectionEndpoint* endpoint, rightPorts_)
-    {
-        if (dynamic_cast<AdHocPortItem*>(endpoint) != 0 && endpoint->name() == portName)
-        {
-            return static_cast<AdHocPortItem*>(endpoint);
-        }
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWComponentItem::getAdHocPort()
-//-----------------------------------------------------------------------------
-AdHocPortItem const* HWComponentItem::getAdHocPort(QString const& portName) const
-{
-    foreach (HWConnectionEndpoint const* endpoint, leftPorts_)
-    {
-        if (dynamic_cast<AdHocPortItem const*>(endpoint) != 0 && endpoint->name() == portName)
-        {
-            return static_cast<AdHocPortItem const*>(endpoint);
-        }
-    }
-
-    foreach (HWConnectionEndpoint const* endpoint, rightPorts_)
-    {
-        if (dynamic_cast<AdHocPortItem const*>(endpoint) != 0 && endpoint->name() == portName)
-        {
-            return static_cast<AdHocPortItem const*>(endpoint);
-        }
-    }
-
-    return 0;
-}
 
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::attach()
@@ -708,19 +208,11 @@ void HWComponentItem::detach(AdHocEditor* editor)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWComponentItem::isProtected()
+// Function: HWComponentItem::adHocIdentifier()
 //-----------------------------------------------------------------------------
-bool HWComponentItem::isProtected() const
+QString HWComponentItem::adHocIdentifier() const
 {
-    return static_cast<HWDesignDiagram*>(scene())->isProtected();
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWComponentItem::getGenericEditProvider()
-//-----------------------------------------------------------------------------
-GenericEditProvider& HWComponentItem::getEditProvider()
-{
-    return static_cast<HWDesignDiagram*>(scene())->getEditProvider();
+    return name();
 }
 
 //-----------------------------------------------------------------------------
@@ -732,59 +224,150 @@ HWConnectionEndpoint* HWComponentItem::getDiagramAdHocPort(QString const& portNa
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWComponentItem::setBusInterfacePositions()
+// Function: HWComponentItem::addPort()
 //-----------------------------------------------------------------------------
-void HWComponentItem::setBusInterfacePositions(QMap<QString, QPointF> const& positions, bool createMissing)
+BusPortItem* HWComponentItem::addPort(QPointF const& pos)
 {
-    QMapIterator<QString, QPointF> itrPortPos(positions);
+    // Determine a unique name for the bus interface.
+    QString name = "bus";
+    unsigned int count = 0;
 
-    while (itrPortPos.hasNext())
+    QStringList knownNames = componentModel()->getBusInterfaceNames();
+
+    while (knownNames.contains(name))
     {
-        itrPortPos.next();
-        BusPortItem* port = getBusPort(itrPortPos.key());
+        count++;
+        name = "bus_" + QString::number(count);
+    }
 
-        if (port == 0)
+    // Create an empty bus interface and add it to the component model.
+    QSharedPointer<BusInterface> busIf(new BusInterface());
+    busIf->setName(name);
+    busIf->setInterfaceMode(General::INTERFACE_MODE_COUNT);
+    componentModel()->getBusInterfaces()->append(busIf);
+
+    // Create the visualization for the bus interface.
+    BusPortItem* draftPort = new BusPortItem(busIf, getLibraryInterface(), this);
+    draftPort->setTemporary(true);
+    draftPort->setPos(mapFromScene(pos));
+    
+    addPortToSideByPosition(draftPort);
+
+    onMovePort(draftPort);
+
+    return draftPort;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::addPort()
+//-----------------------------------------------------------------------------
+void HWComponentItem::addPort(HWConnectionEndpoint* port)
+{
+    port->setParentItem(this);
+
+    if (port->type() == BusPortItem::Type)
+    {
+        // Add the bus interface to the component.
+        componentModel()->getBusInterfaces()->append(port->getBusInterface());
+    }
+
+    addPortToSideByPosition(port);
+
+    onMovePort(port);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::removePort()
+//-----------------------------------------------------------------------------
+void HWComponentItem::removePort(HWConnectionEndpoint* port)
+{
+    disconnect(port, SIGNAL(moved(ConnectionEndpoint*)), this, SIGNAL(endpointMoved(ConnectionEndpoint*)));
+
+    leftPorts_.removeAll(port);
+    rightPorts_.removeAll(port);
+    updateSize();
+
+    if (port->type() == BusPortItem::Type)
+    {
+        componentModel()->getBusInterfaces()->removeOne(port->getBusInterface());
+        getComponentInstance()->removeBusInterfacePosition(port->name());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::getBusPort()
+//-----------------------------------------------------------------------------
+BusPortItem* HWComponentItem::getBusPort(QString const& name) const
+{
+    foreach (QGraphicsItem* item, QGraphicsRectItem::childItems())
+    {
+        if (item->type() == BusPortItem::Type)
         {
-            if (!createMissing || componentModel()->getVlnv()->isValid())
+            BusPortItem* busPort = qgraphicsitem_cast<BusPortItem*>(item);
+            if (busPort->name() == name)
             {
-                continue;
+                return busPort;
             }
-
-            port = addPort(itrPortPos.value());
-            port->setName(itrPortPos.key());
         }
-
-        port->setPos(itrPortPos.value());
-        onMovePort(port);
     }
+
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWComponentItem::setAdHocPortPositions()
+// Function: HWComponentItem::getAdHocPort()
 //-----------------------------------------------------------------------------
-void HWComponentItem::setAdHocPortPositions(QMap<QString, QPointF> const& positions)
+AdHocPortItem* HWComponentItem::getAdHocPort(QString const& portName) const
 {
-    QMapIterator<QString, QPointF> itrPortPos(positions);
+    QList<HWConnectionEndpoint*> allInterfaces;
+    allInterfaces.append(leftPorts_);
+    allInterfaces.append(rightPorts_);
 
-    while (itrPortPos.hasNext())
+    foreach (HWConnectionEndpoint* endpoint, allInterfaces)
     {
-        itrPortPos.next();
-        AdHocPortItem* port = getAdHocPort(itrPortPos.key());
-
-        if (port != 0)
+        if (dynamic_cast<AdHocPortItem*>(endpoint) != 0 && endpoint->name() == portName)
         {
-            port->setPos(itrPortPos.value());
-            onMovePort(port);
+            return static_cast<AdHocPortItem*>(endpoint);
         }
     }
+
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWComponentItem::setVendorExtensions()
+// Function: HWComponentItem::onMovePort()
 //-----------------------------------------------------------------------------
-void HWComponentItem::setVendorExtensions(QList<QSharedPointer<VendorExtension> > const& vendorExtensions)
+void HWComponentItem::onMovePort(HWConnectionEndpoint* port)
 {
-    vendorExtensions_ = vendorExtensions;
+    // Remove the port from the stacks (this simplifies code).
+    leftPorts_.removeAll(port);
+    rightPorts_.removeAll(port);
+
+    // Restrict the position so that the port cannot be placed too high.
+    port->setPos(snapPointToGrid(port->x(), qMax(MIN_Y_PLACEMENT - port->boundingRect().top(), port->y())));
+
+    // Check on which side the port is to determine the stack to which it should be placed.
+    if (port->x() < 0)
+    {
+        portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
+        checkPortLabelSize(port, rightPorts_);
+    }
+    else
+    {
+        portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
+        checkPortLabelSize(port, leftPorts_);
+    }
+
+    if (port->isBus())
+    {
+        getComponentInstance()->updateBusInterfacePosition(port->name(), port->pos());
+    }
+    else
+    {
+        getComponentInstance()->updateAdHocPortPosition(port->name(), port->pos());
+    }
+
+    updateSize();
 }
 
 //-----------------------------------------------------------------------------
@@ -792,16 +375,7 @@ void HWComponentItem::setVendorExtensions(QList<QSharedPointer<VendorExtension> 
 //-----------------------------------------------------------------------------
 QMap<QString, QPointF> HWComponentItem::getBusInterfacePositions() const
 {
-    QMap<QString, QPointF> positions;
-    QListIterator<QSharedPointer<BusInterface> > itrBusIf(componentModel()->getBusInterfaces());
-
-    while (itrBusIf.hasNext())
-    {
-        QSharedPointer<BusInterface> busif = itrBusIf.next();
-        positions[busif->getName()] = getBusPort(busif->getName())->pos();
-    }
-
-    return positions;
+    return getComponentInstance()->getBusInterfacePositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -809,42 +383,22 @@ QMap<QString, QPointF> HWComponentItem::getBusInterfacePositions() const
 //-----------------------------------------------------------------------------
 QMap<QString, QPointF> HWComponentItem::getAdHocPortPositions() const
 {
-    QMap<QString, QPointF> positions;
-    QMapIterator<QString, bool> itrAdHoc(getPortAdHocVisibilities());
-
-    while (itrAdHoc.hasNext())
-    {
-        itrAdHoc.next();
-
-        if (itrAdHoc.value())
-        {
-            positions[itrAdHoc.key()] = getAdHocPort(itrAdHoc.key())->pos();
-        }
-    }
-
-    return positions;
+    return getComponentInstance()->getAdHocPortPositions();
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWComponentItem::getVendorExtensions()
+// Function: HWComponentItem::setPackaged()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<VendorExtension> > HWComponentItem::getVendorExtensions() const
+void HWComponentItem::setPackaged()
 {
-    return vendorExtensions_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWComponentItem::setPacketized()
-//-----------------------------------------------------------------------------
-void HWComponentItem::setPacketized()
-{
-    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    foreach (QSharedPointer<VendorExtension> extension, *getComponentInstance()->getVendorExtensions())
     {
         if (extension->type() == "kactus2:draft")
         {
-            vendorExtensions_.removeAll(extension);
+            getComponentInstance()->getVendorExtensions()->removeAll(extension);
         }
     }
+
     updateComponent();
 }
 
@@ -855,8 +409,10 @@ void HWComponentItem::setDraft()
 {
     if (!isDraft())
     {
-        vendorExtensions_.append(QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:draft")));
+        getComponentInstance()->getVendorExtensions()->append(
+            QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:draft")));
     }
+
     updateComponent();
 }
 
@@ -865,12 +421,285 @@ void HWComponentItem::setDraft()
 //-----------------------------------------------------------------------------
 bool HWComponentItem::isDraft()
 {
-    foreach(QSharedPointer<VendorExtension> extension, vendorExtensions_)
+    foreach(QSharedPointer<VendorExtension> extension, *getComponentInstance()->getVendorExtensions())
     {
         if (extension->type() == "kactus2:draft")
         {
             return true;
         }
     }
+
     return false;
 }
+
+//-----------------------------------------------------------------------------
+// Function: mousePressEvent()
+//-----------------------------------------------------------------------------
+void HWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    ComponentItem::mousePressEvent(event);
+    setZValue(1001.0);
+
+    oldPos_ = scenePos();
+    oldColumn_ = dynamic_cast<HWColumn*>(parentItem());
+
+    // Begin the position update for all connections.
+    foreach (QGraphicsItem *item, scene()->items())
+    {
+        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+
+        if (conn != 0)
+        {
+            conn->beginUpdatePosition();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::mouseMoveEvent()
+//-----------------------------------------------------------------------------
+void HWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+{
+    // Discard movement if the diagram is protected.
+    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram == 0 || diagram->isProtected())
+    {
+        return;
+    }
+    
+    ComponentItem::mouseMoveEvent(event);
+    
+    if (oldColumn_ != 0)
+    {
+        setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
+
+        HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
+        Q_ASSERT(column != 0);
+        column->onMoveItem(this);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::mouseReleaseEvent()
+//-----------------------------------------------------------------------------
+void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
+{
+    ComponentItem::mouseReleaseEvent(event);
+    setZValue(0.0);
+
+    if (oldColumn_ != 0 && scenePos() != oldPos_)
+    {
+        HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
+        Q_ASSERT(column != 0);
+        column->onReleaseItem(this);
+
+        QSharedPointer<QUndoCommand> cmd(new ComponentItemMoveCommand(this, oldPos_, oldColumn_));
+        
+        // End the position update for all connections.
+        foreach (QGraphicsItem *item, scene()->items())
+        {
+            GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+
+            if (conn != 0)
+            {
+                conn->endUpdatePosition(cmd.data());
+            }
+        }
+
+        static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
+
+        oldColumn_ = 0;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::addPortToSideByPosition()
+//-----------------------------------------------------------------------------
+void HWComponentItem::addPortToSideByPosition(HWConnectionEndpoint* port)
+{
+    if (port->pos().x() >= 0)
+    {
+        addPortToRight(port);
+    }
+    else
+    {
+        addPortToLeft(port);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::addPortToSideWithLessPorts()
+//-----------------------------------------------------------------------------
+void HWComponentItem::addPortToSideWithLessPorts(HWConnectionEndpoint* port)
+{
+    // Place the port at the bottom of the side that contains fewer ports.
+    if (leftPorts_.size() < rightPorts_.size())
+    {
+        if (!leftPorts_.empty())
+        {
+            port->setPos(QPointF(0, leftPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
+        }
+        else
+        {
+            port->setPos(QPointF(0, GridSize * 4) + rect().topLeft());
+        }
+
+        addPortToLeft(port);
+    }
+    else
+    {
+        if (!rightPorts_.empty())
+        {
+            port->setPos(QPointF(rect().width(), rightPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
+        }
+        else
+        {
+            port->setPos(QPointF(rect().width(), GridSize * 4) + rect().topLeft());
+        }
+
+        addPortToRight(port);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: addPortToLeft()
+//-----------------------------------------------------------------------------
+void HWComponentItem::addPortToLeft(HWConnectionEndpoint* port)
+{
+    connect(port, SIGNAL(moved(ConnectionEndpoint*)), this, SIGNAL(endpointMoved(ConnectionEndpoint*)));
+
+    leftPorts_.append(port);
+    portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);		
+    portLayout_->setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT);
+    checkPortLabelSize(port, rightPorts_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: addPortToRight()
+//-----------------------------------------------------------------------------
+void HWComponentItem::addPortToRight(HWConnectionEndpoint* port)
+{
+    connect(port, SIGNAL(moved(ConnectionEndpoint*)), this, SIGNAL(endpointMoved(ConnectionEndpoint*)));
+
+    rightPorts_.append(port);
+    portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
+    portLayout_->setItemPos(rightPorts_, port, rect().right(), MIN_Y_PLACEMENT);
+    checkPortLabelSize(port, leftPorts_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::checkPortLabelSize()
+//-----------------------------------------------------------------------------
+void HWComponentItem::checkPortLabelSize(HWConnectionEndpoint* port, QList<HWConnectionEndpoint*> otherSide)
+{
+	foreach (HWConnectionEndpoint* otherSidePort, otherSide)
+	{ 
+		if (port->y() == otherSidePort->y())
+		{
+			qreal portLabelWidth = port->getNameLength();
+			qreal otherLabelWidth = otherSidePort->getNameLength();
+
+			// Check if both of the labels exceed the mid section of the component.
+		    if (portLabelWidth + 2*SPACING > (ComponentItem::COMPONENTWIDTH/2) &&
+				otherLabelWidth + 2*SPACING > (ComponentItem::COMPONENTWIDTH)/2)
+		    {
+				port->shortenNameLabel( ComponentItem::COMPONENTWIDTH / 2 );
+				otherSidePort->shortenNameLabel( ComponentItem::COMPONENTWIDTH / 2 );
+		    }				
+			// Check if the other port is wider than the other.
+		    else if (portLabelWidth > otherLabelWidth )
+		    {
+				port->shortenNameLabel(ComponentItem::COMPONENTWIDTH - otherLabelWidth - SPACING * 2);
+		    }
+
+		    else
+		    {
+				otherSidePort->shortenNameLabel(ComponentItem::COMPONENTWIDTH - portLabelWidth - SPACING * 2);
+		    }				
+			
+			return;
+		} 
+	}
+
+	// If the port gets here, there is no ports with the same y() value, and so the port name is restored.
+	port->shortenNameLabel(ComponentItem::COMPONENTWIDTH);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::positionBusInterfaceTerminals()
+//-----------------------------------------------------------------------------
+void HWComponentItem::positionBusInterfaceTerminals()
+{
+    QMap<QString, QPointF> instancePositions = getComponentInstance()->getBusInterfacePositions();
+
+    foreach (QSharedPointer<BusInterface> busInterface, *componentModel()->getBusInterfaces())
+    {
+        BusPortItem *port = new BusPortItem(busInterface, getLibraryInterface(), this);
+
+        // Check if instance specific position has been specified.
+        if (instancePositions.contains(busInterface->name()))
+        {
+            port->setPos(instancePositions.value(busInterface->name()));
+            addPortToSideByPosition(port);
+        }
+        // Check if the default position has been specified.
+        else if (!busInterface->getDefaultPos().isNull())
+        {
+            port->setPos(busInterface->getDefaultPos());
+            addPortToSideByPosition(port);
+        }
+        else
+        {
+            addPortToSideWithLessPorts(port);
+        }
+    }
+
+    if (isDraft())
+    {
+        foreach (QString const& interfaceName, instancePositions.keys())
+        {
+            QSharedPointer<BusInterface> busInterface(new BusInterface());
+            busInterface->setName(interfaceName);
+
+            BusPortItem *port = new BusPortItem(busInterface, getLibraryInterface(), this);
+
+            port->setPos(instancePositions.value(busInterface->name()));
+            port->setTemporary(true);
+            addPortToSideByPosition(port);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::positionAdHocPortTerminals()
+//-----------------------------------------------------------------------------
+void HWComponentItem::positionAdHocPortTerminals()
+{
+    QMap<QString, QPointF> instancePositions = getComponentInstance()->getAdHocPortPositions();
+
+    // Parse port ad-hoc visibilities.
+    foreach (QSharedPointer<Port> adhocPort, *componentModel()->getPorts())
+    {
+        if (isPortAdHocVisible(adhocPort->name()))
+        {
+            AdHocPortItem* port = new AdHocPortItem(adhocPort, this);
+
+            // Check if the default position has been specified.
+            if (instancePositions.contains(adhocPort->name()))
+            {
+                port->setPos(instancePositions.value(adhocPort->name()));
+                addPortToSideByPosition(port);
+            }
+            else if (!adhocPort->getDefaultPos().isNull())
+            {
+                port->setPos(adhocPort->getDefaultPos());
+                addPortToSideByPosition(port);
+            }
+            else
+            {
+                addPortToSideWithLessPorts(port);
+            }
+        }
+    }
+}
+

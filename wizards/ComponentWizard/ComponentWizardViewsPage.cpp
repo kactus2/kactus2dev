@@ -15,31 +15,41 @@
 #include "ViewListModel.h"
 
 #include <editors/ComponentEditor/views/vieweditor.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/Component/DesignInstantiation.h>
+#include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 
+#include <QPushButton>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QDialogButtonBox>
+
 
 //-----------------------------------------------------------------------------
 // Function: ComponentWizardViewsPage::ComponentWizardViewsPage()
 //-----------------------------------------------------------------------------
 ComponentWizardViewsPage::ComponentWizardViewsPage(LibraryInterface* lh,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    ComponentWizard* parent)
-    : QWizardPage(parent), 
-    library_(lh), 
-    parent_(parent),
-    editorTabs_(new QTabWidget(this)),
-    addButton_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
-    removeButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
-    viewList_(new QListView(this)),
-    viewModel_(new ViewListModel(this)),
-    parameterFinder_(parameterFinder),
-    expressionFormatter_(expressionFormatter)
+                                                   QSharedPointer<ParameterFinder> parameterFinder,
+                                                   QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                                   ComponentWizard* parent):
+QWizardPage(parent),
+library_(lh),
+parent_(parent),
+editorTabs_(new QTabWidget(this)),
+addButton_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
+removeButton_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),
+viewList_(new QListView(this)),
+viewModel_(new ViewListModel(this)),
+parameterFinder_(parameterFinder),
+expressionFormatter_(expressionFormatter),
+validator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parameterFinder)),
+           parent_->getComponent()->getModel())
 {
     setTitle(tr("Views"));
     setSubTitle(tr("Setup the views for the component."));
@@ -82,12 +92,14 @@ void ComponentWizardViewsPage::initializePage()
    QSharedPointer<Component> component = parent_->getComponent();
    viewModel_->setComponent(component);
    
-   foreach(QSharedPointer<View> view, component->getViews())
+   validator_.componentChange(component->getModel());
+
+   foreach(QSharedPointer<View> view, *component->getViews())
    {
        createEditorForView(component, view);
    }
 
-   removeButton_->setEnabled(parent_->getComponent()->viewCount() > 1);
+   removeButton_->setEnabled(parent_->getComponent()->getViews()->count() > 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,14 +107,14 @@ void ComponentWizardViewsPage::initializePage()
 //-----------------------------------------------------------------------------
 bool ComponentWizardViewsPage::isComplete() const
 {
-    for(int i = 0; i < editorTabs_->count(); i++)
+    /*for(int i = 0; i < editorTabs_->count(); i++)
     {
         ViewEditor* editor = dynamic_cast<ViewEditor*>(editorTabs_->widget(i));
         if (!editor->isValid())
         {         
             return false;
         }
-    }
+    }*/
 
     return true;
 }
@@ -126,7 +138,7 @@ void ComponentWizardViewsPage::onViewAdded()
     viewModel_->addView();
 
     QSharedPointer<Component> component = parent_->getComponent(); 
-    QSharedPointer<View> createdView = component->getViews().last();
+    QSharedPointer<View> createdView = component->getViews()->last();
 
     createEditorForView(component, createdView);
 
@@ -153,7 +165,7 @@ void ComponentWizardViewsPage::onViewRemoved()
 
     viewModel_->removeView(selectedIndex);
 
-    removeButton_->setEnabled(parent_->getComponent()->viewCount() > 1);
+    removeButton_->setEnabled(parent_->getComponent()->getViews()->count() > 1);
 
     emit completeChanged();
 }
@@ -174,8 +186,9 @@ void ComponentWizardViewsPage::onViewSelected(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void ComponentWizardViewsPage::createEditorForView(QSharedPointer<Component> component, QSharedPointer<View> view)
 {
-    ViewEditor* editor = new ViewEditor(component, view, library_, parameterFinder_, expressionFormatter_, this);       
-    int editorIndex = editorTabs_->addTab(editor, view->getName());
+    ViewEditor* editor = new ViewEditor(component, view, library_, parameterFinder_, expressionFormatter_, this);
+
+    int editorIndex = editorTabs_->addTab(editor, view->name());
 
     updateIconForTab(editorIndex);
 
@@ -188,10 +201,10 @@ void ComponentWizardViewsPage::createEditorForView(QSharedPointer<Component> com
 //-----------------------------------------------------------------------------
 void ComponentWizardViewsPage::updateIconForTab(int tabIndex) const
 {
-    ViewEditor* editor = dynamic_cast<ViewEditor*>(editorTabs_->widget(tabIndex));
-    if (editor->isValid())
+    QSharedPointer<View> viewInTab = parent_->getComponent()->getViews()->at(tabIndex);
+    if (validator_.validate(viewInTab))
     {
-        editorTabs_->setTabIcon(tabIndex, QIcon());        
+        editorTabs_->setTabIcon(tabIndex, QIcon());
     }
     else
     {

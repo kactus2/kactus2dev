@@ -17,15 +17,20 @@
 #include <editors/ComponentEditor/choices/ChoicesModel.h>
 #include <editors/ComponentEditor/choices/ChoicesDelegate.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QSortFilterProxyModel>
+
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: ChoicesEditor::ChoicesEditor()
 //-----------------------------------------------------------------------------
-ChoicesEditor::ChoicesEditor( QSharedPointer<Component> component, QWidget* parent ):
-ItemEditor(component, 0, parent), 
-    view_(new EditableTableView(this)),
-    model_(new ChoicesModel(component->getChoices(), this))
+ChoicesEditor::ChoicesEditor(QSharedPointer<Component> component, QSharedPointer<ChoiceValidator> validator,
+    QWidget* parent /* = 0 */):
+ItemEditor(component, 0, parent),
+view_(new EditableTableView(this)),
+model_(new ChoicesModel(component->getChoices(), validator, this))
 {
     QSortFilterProxyModel* proxy = new QSortFilterProxyModel(this);
     proxy->setSourceModel(model_);

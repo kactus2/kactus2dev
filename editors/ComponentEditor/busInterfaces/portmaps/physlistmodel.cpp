@@ -1,66 +1,80 @@
-/* 
- *
- *  Created on: 11.5.2011
- *      Author: Antti Kamppi
- * 		filename: physlistmodel.cpp
- */
+//-----------------------------------------------------------------------------
+// File: physlistmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.05.2011
+//
+// Description:
+// Model to display the physical ports of a component.
+//-----------------------------------------------------------------------------
 
 #include "physlistmodel.h"
-#include "PortMapsTreeModel.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
+
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <QIcon>
 
-PhysListModel::PhysListModel(QSharedPointer<Component> component, 
-							 PortMapsTreeModel* portMapsModel,
-							 QObject *parent ):
-PortListModel(portMapsModel, parent), component_(component)
+//-----------------------------------------------------------------------------
+// Function: PhysListModel::PhysListModel()
+//-----------------------------------------------------------------------------
+PhysListModel::PhysListModel(QSharedPointer<Component> component, QObject* parent):
+PortListModel(parent), 
+    component_(component)
 {
 	refresh();
 }
 
-PhysListModel::~PhysListModel() {
+//-----------------------------------------------------------------------------
+// Function: PhysListModel::~PhysListModel()
+//-----------------------------------------------------------------------------
+PhysListModel::~PhysListModel()
+{
 }
 
-void PhysListModel::refresh() {
-	
+//-----------------------------------------------------------------------------
+// Function: PhysListModel::refresh()
+//-----------------------------------------------------------------------------
+void PhysListModel::refresh()
+{
 	beginResetModel();
 
-	list_.clear();
-
-    QStringList portNames = component_->getPortNames();
-    foreach (QString portName, portNames) {
-
-        // if the port is not yet in the list
-        if (!PortListModel::list_.contains(portName))
-        {
-            PortListModel::list_.append(portName);
-        }
-    }
+	list_ = component_->getPortNames();
+    list_.removeDuplicates();
 
 	endResetModel();
 }
 
-QVariant PhysListModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const 
+//-----------------------------------------------------------------------------
+// Function: PhysListModel::data()
+//-----------------------------------------------------------------------------
+QVariant PhysListModel::data(QModelIndex const& index, int role) const 
 {
-    if (Qt::DecorationRole == role)
+    if (role == Qt::DecorationRole)
     {
-        General::Direction direction = component_->getPortDirection(data(index).toString());
-        switch( direction )
+        QSharedPointer<Port> selectedPort = component_->getPort(data(index).toString());
+        if (selectedPort && selectedPort->getWire())
         {
-        case General::IN :
-            return QIcon(":icons/common/graphics/control-180.png");
-
-        case General::OUT :
-            return QIcon(":icons/common/graphics/control.png");
-
-        case General::INOUT :
-            return QIcon(":icons/common/graphics/control-dual.png");
-
-        default:
-            return QIcon(":icons/common/graphics/cross.png");
+            DirectionTypes::Direction direction = selectedPort->getDirection();
+            if(direction == DirectionTypes::IN)
+            {
+                return QIcon(":icons/common/graphics/control-180.png");
+            }
+            else if (direction == DirectionTypes::OUT)
+            {
+                return QIcon(":icons/common/graphics/control.png");
+            }
+            else if (direction == DirectionTypes::INOUT)
+            {
+                return QIcon(":icons/common/graphics/control-dual.png");
+            }
+            else
+            {
+                return QIcon(":icons/common/graphics/cross.png");
+            }
         }
     }
 

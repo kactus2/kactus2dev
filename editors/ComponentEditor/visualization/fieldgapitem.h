@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 30.11.2012
- *      Author: Antti Kamppi
- * 		filename: fieldgapitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: fieldgapitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 30.11.2012
+//
+// Description:
+// The graphical item that represents a gap between fields.
+//-----------------------------------------------------------------------------
 
 #ifndef FIELDGAPITEM_H
 #define FIELDGAPITEM_H
@@ -12,76 +16,88 @@
 
 #include <QGraphicsItem>
 
-class FieldGapItem : public MemoryGapItem {
+class ExpressionParser;
+
+//-----------------------------------------------------------------------------
+//! The graphical item that represents a gap between fields.
+//-----------------------------------------------------------------------------
+class FieldGapItem : public MemoryGapItem
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor.
+	/*!
+     *  The constructor.
 	 *
-	 * \param parent Pointer to the parent graphics item.
+     *      @param [in] parser  Pointer to the used expression parser.
+	 *      @param [in] parent  Pointer to the parent graphics item.
 	 *
 	*/
-	FieldGapItem(QGraphicsItem* parent);
+	FieldGapItem(QSharedPointer<ExpressionParser> parser, QGraphicsItem* parent);
 	
-	/*! \brief The constructor.
+	/*!
+     *  The constructor.
 	 *
-     * \param name   Name to display for the gap item.
-	 * \param parent Pointer to the parent graphics item.
-	 *
-	*/
-	FieldGapItem(QString name, QGraphicsItem* parent);
+     *      @param [in] name    Name to display for the gap item.
+	 *      @param [in] parent  Pointer to the parent graphics item.
+	 */
+	FieldGapItem(QString const& name, QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~FieldGapItem();
 
-	//! \brief Refresh the gap item.
+	//! Refresh the gap item.
 	virtual void refresh();
 
-	/*! \brief Get the bit width of the item.
+	/*!
+     *  Get the bit width of the item.
 	 * 
-	 * \return The bit width of the item.
-	*/
+	 *      @return The bit width of the item.
+	 */
 	virtual int getBitWidth() const;
 
-	/*! \brief Get the width of the item.
+	/*!
+     *  Get the width of the item.
 	 *
-	 * \return The width of the gap item.
-	*/
+	 *      @return The width of the gap item.
+	 */
 	virtual qreal itemTotalWidth() const;
 
-    /*! \brief Set lowest bit for the gap.
+    /*!
+     *  Set lowest bit for the gap.
 	 *
-	 * \param address The lowest bit that limits the gap.
-	 *
-	*/
+	 *      @param [in] address     The lowest bit that limits the gap.
+	 */
 	void setStartAddress(quint64 address);
 
-	/*! \brief Set highest bit for the gap.
+	/*!
+     *  Set highest bit for the gap.
 	 *
-	 * \param address The highest bit that limits the gap end.
-	 *
-	*/
+	 *      @param [in] address     The highest bit that limits the gap end.
+	 */
 	void setEndAddress(quint64 address);
 
-	/*! \brief Sets the first non-overlapping address to display.
+	/*!
+     *  Sets the first non-overlapping address to display.
 	 *
-	 * \param The first address to set.
-	*/
+	 *      @param [in] address     The first address to set.
+	 */
     virtual void setDisplayOffset(quint64 const& address);
 
-
-	/*! \brief Sets the last non-overlapping address to display.
+	/*!
+     *  Sets the last non-overlapping address to display.
 	 *
-	 * \param The last address to set.
-	*/
+	 *      @param [in] The last address to set.
+	 */
     virtual void setDisplayLastAddress(quint64 const& address);
 
 private:
-	//! \brief No copying
+
+	//! No copying.
 	FieldGapItem(const FieldGapItem& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	FieldGapItem& operator=(const FieldGapItem& other);
 };
 

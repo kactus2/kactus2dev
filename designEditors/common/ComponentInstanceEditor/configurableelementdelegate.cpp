@@ -1,19 +1,24 @@
-/* 
- *  	Created on: 12.8.2011
- *      Author: Antti Kamppi
- * 		filename: configurableelementdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: configurableelementdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.08.2011
+//
+// Description:
+// Delegate that provides editors to edit the configurable element values.
+//-----------------------------------------------------------------------------
 
 #include "configurableelementdelegate.h"
 #include "ConfigurableElementsColumns.h"
-
-#include <IPXACTmodels/Enumeration.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayView.h>
 #include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>
+
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
 #include <QScrollArea>
 #include <QComboBox>

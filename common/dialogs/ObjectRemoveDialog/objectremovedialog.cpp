@@ -12,8 +12,6 @@
 #include <QIcon>
 #include <QHeaderView>
 
-#include <QDebug>
-
 ObjectRemoveDialog::ObjectRemoveDialog(QWidget *parent, Qt::WindowFlags f):
 QDialog(parent, f),
 okButton_(tr("OK"), this),

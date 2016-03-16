@@ -107,6 +107,12 @@
     <Filter Include="Header Files\editors\ComponentEditor\common">
       <UniqueIdentifier>{4ecb9ded-e8e7-4d23-b0ea-cd658ee15fbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\DesignEditor">
+      <UniqueIdentifier>{756646b9-d92e-42e8-b485-c714186e668f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\DesignEditor">
+      <UniqueIdentifier>{2ece6617-9617-4da5-bbef-c3a1fed77fdf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VerilogGenerator\VerilogGenerator.cpp">
@@ -169,6 +175,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_VerilogGeneratorPlugin.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\NameGenerationPolicy.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\designEditors\common\TopComponentParameterFinder.cpp">
+      <Filter>Source Files\editors\DesignEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="veriloggeneratorplugin_global.h">
@@ -221,6 +239,18 @@
     </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\NameGenerationPolicy.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\designEditors\common\TopComponentParameterFinder.h">
+      <Filter>Header Files\editors\DesignEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

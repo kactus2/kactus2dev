@@ -11,9 +11,9 @@
 
 #include "FileDependencyItem.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <QFileInfo>
 
@@ -24,6 +24,7 @@ FileDependencyItem::FileDependencyItem()
     : parent_(0),
       status_(FILE_DEPENDENCY_STATUS_UNKNOWN),
       type_(ITEM_TYPE_ROOT),
+      component_(),
       path_(),
       references_(),
       fileRefs_(),
@@ -35,7 +36,7 @@ FileDependencyItem::FileDependencyItem()
 // Function: FileDependencyItem::FileDependencyItem()
 //-----------------------------------------------------------------------------
 FileDependencyItem::FileDependencyItem(FileDependencyItem* parent,
-                                       Component* component, QString const& path,
+                                       QSharedPointer<Component> component, QString const& path,
                                        ItemType type)
     : parent_(parent),
       status_(FILE_DEPENDENCY_STATUS_UNKNOWN),
@@ -55,9 +56,9 @@ FileDependencyItem::FileDependencyItem(FileDependencyItem* parent,
 // Function: FileDependencyItem::FileDependencyItem()
 //-----------------------------------------------------------------------------
 FileDependencyItem::FileDependencyItem(FileDependencyItem* parent,
-                                       Component* component, QString const& path,
+                                       QSharedPointer<Component> component, QString const& path,
                                        QString const& fileType,
-                                       QList<File*> const& fileRefs)
+                                       QList<QSharedPointer<File> > const& fileRefs)
     : parent_(parent),
       status_(FILE_DEPENDENCY_STATUS_UNKNOWN),
       type_(ITEM_TYPE_FILE),
@@ -139,7 +140,7 @@ int FileDependencyItem::getIndex()
 //-----------------------------------------------------------------------------
 // Function: FileDependencyItem::getStatus()
 //-----------------------------------------------------------------------------
-FileDependencyStatus FileDependencyItem::getStatus() const
+FileDependencyItem::FileDependencyStatus FileDependencyItem::getStatus() const
 {
     return status_;
 }
@@ -157,53 +158,53 @@ FileDependencyItem::ItemType FileDependencyItem::getType() const
 //-----------------------------------------------------------------------------
 QString FileDependencyItem::getDisplayPath() const
 {
-    switch (type_)
+    if (type_ == ITEM_TYPE_FILE)
     {
-    case ITEM_TYPE_FILE:
+        if (isExternal())
         {
-            if (isExternal())
-            {
-                QString filename = path_.mid(path_.indexOf('$', 1) + 2);
-                return filename;
-            }
-            else
-            {
-                QFileInfo info(path_);
-                return info.fileName();
-            }
+            QString filename = path_.mid(path_.indexOf('$', 1) + 2);
+            return filename;
         }
+        else
+        {
+            QFileInfo info(path_);
+            return info.fileName();
+        }
+    }
 
-    case ITEM_TYPE_EXTERNAL_LOCATION:
-        {
-            return tr("External: ") + path_.mid(1, path_.length() - 2) + "/";
-        }
+    else if (type_ == ITEM_TYPE_EXTERNAL_LOCATION)
+    {
+        return tr("External: ") + path_.mid(1, path_.length() - 2) + "/";
+    }
 
-    case ITEM_TYPE_UNKNOWN_LOCATION:
-        {
-            return tr("Unspecified");
-        }
+    else if (type_ == ITEM_TYPE_UNKNOWN_LOCATION)
+    {
+        return tr("Unspecified");
+    }
 
-    default:
-        {
-            return path_ + "/";
-        }
+    else
+    {
+        return path_ + "/";
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyItem::getFileSets()
 //-----------------------------------------------------------------------------
-QList<FileSet*> FileDependencyItem::getFileSets() const
+QList<QSharedPointer<FileSet> > FileDependencyItem::getFileSets() const
 {
-    QList<FileSet*> fileSets;
+    QList<QSharedPointer<FileSet> > fileSets;
 
     if (type_ == ITEM_TYPE_FILE)
     {
-        foreach (File* file, fileRefs_)
+        foreach (QSharedPointer<File> file, fileRefs_)
         {
-            if (!fileSets.contains(file->getParent()))
+            foreach (QSharedPointer<FileSet> singleFileSet, *component_->getFileSets())
             {
-                fileSets.append(file->getParent());
+                if (!fileSets.contains(singleFileSet) && singleFileSet->getFiles()->contains(file))
+                {
+                    fileSets.append(singleFileSet);
+                }
             }
         }
     }
@@ -211,13 +212,13 @@ QList<FileSet*> FileDependencyItem::getFileSets() const
     {
         // For folders/locations, we must check in what file sets the files belong to.
         // Otherwise determine the folder filesets.
-        QMap<FileSet*, int> fileSetBuckets;
+        QMap<QSharedPointer<FileSet>, int> fileSetBuckets;
 
         for (int i = 0; i < getChildCount(); ++i)
         {
-            QList<FileSet*> sets = getChild(i)->getFileSets();
+            QList<QSharedPointer<FileSet> > childFileSets = getChild(i)->getFileSets();
 
-            foreach (FileSet* fileSet, sets)
+            foreach (QSharedPointer<FileSet> fileSet, childFileSets)
             {
                 int count = 1;
 
@@ -247,8 +248,8 @@ QList<FileSet*> FileDependencyItem::getFileSets() const
 //-----------------------------------------------------------------------------
 // Function: FileDependencyItem::addFile()
 //-----------------------------------------------------------------------------
-FileDependencyItem* FileDependencyItem::addFile(Component* component, QString const& path,
-                                                QString const& fileType, QList<File*> const& fileRefs)
+FileDependencyItem* FileDependencyItem::addFile(QSharedPointer<Component> component, QString const& path,
+    QString const& fileType, QList<QSharedPointer<File> > const& fileRefs)
 {
     FileDependencyItem* item = new FileDependencyItem(this, component, path, fileType, fileRefs);
     
@@ -274,7 +275,7 @@ FileDependencyItem* FileDependencyItem::addFile(Component* component, QString co
 //-----------------------------------------------------------------------------
 // Function: FileDependencyItem::addFolder()
 //-----------------------------------------------------------------------------
-FileDependencyItem* FileDependencyItem::addFolder(Component* component, QString const& path, ItemType type,
+FileDependencyItem* FileDependencyItem::addFolder(QSharedPointer<Component> component, QString const& path, ItemType type,
                                                   int index)
 {
     FileDependencyItem* item = new FileDependencyItem(this, component, path, type);
@@ -300,25 +301,17 @@ void FileDependencyItem::updateStatus()
 
     foreach (FileDependencyItem* item, children_)
     {
-        switch (item->getStatus())
+        if (item->getStatus() == FILE_DEPENDENCY_STATUS_CHANGED2)
         {
-        case FILE_DEPENDENCY_STATUS_CHANGED2:
-            {
-                status_ = FILE_DEPENDENCY_STATUS_CHANGED2;
-                break;
-            }
+            status_ = FILE_DEPENDENCY_STATUS_CHANGED2;
+        }
 
-        case FILE_DEPENDENCY_STATUS_CHANGED:
+        else if (item->getStatus() == FILE_DEPENDENCY_STATUS_CHANGED)
+        {
+            if (status_ == FILE_DEPENDENCY_STATUS_OK)
             {
-                if (status_ == FILE_DEPENDENCY_STATUS_OK)
-                {
-                    status_ = FILE_DEPENDENCY_STATUS_CHANGED;
-                }
-                break;
+                status_ = FILE_DEPENDENCY_STATUS_CHANGED;
             }
-
-        default:
-            break;
         }
     }
 }
@@ -330,9 +323,9 @@ QStringList FileDependencyItem::getFileTypes() const
 {
     QStringList list;
 
-    foreach (File* file, fileRefs_)
+    foreach (QSharedPointer<File> file, fileRefs_)
     {
-        foreach (QString const& type, file->getFileTypes())
+        foreach (QString const& type, *file->getFileTypes())
         {
             if (!list.contains(type))
             {
@@ -352,7 +345,7 @@ QStringList FileDependencyItem::getFileTypes() const
 //-----------------------------------------------------------------------------
 // Function: FileDependencyItem::getName()
 //-----------------------------------------------------------------------------
-QString const& FileDependencyItem::getPath() const
+QString FileDependencyItem::getPath() const
 {
     return path_;
 }
@@ -375,7 +368,7 @@ QString FileDependencyItem::getLastHash() const
         return QString();
     }
 
-    return fileRefs_[0]->getLastHash();
+    return fileRefs_.first()->getLastHash();
 }
 
 //-----------------------------------------------------------------------------
@@ -383,7 +376,7 @@ QString FileDependencyItem::getLastHash() const
 //-----------------------------------------------------------------------------
 void FileDependencyItem::setLastHash(QString const& hash)
 {
-    foreach (File* file, fileRefs_)
+    foreach (QSharedPointer<File> file, fileRefs_)
     {
         file->setPendingHash(hash);
     }
@@ -439,14 +432,14 @@ bool FileDependencyItem::hasMultipleFileSets() const
     }
 
     // For folders/locations, we must check in what file sets the files belong to.
-    QMap<FileSet*, int> fileSetBuckets;
-    QList<FileSet*> fileSets;
+    QMap<QSharedPointer<FileSet>, int> fileSetBuckets;
+    QList<QSharedPointer<FileSet> > fileSets;
 
     for (int i = 0; i < getChildCount(); ++i)
     {
-        QList<FileSet*> sets = getChild(i)->getFileSets();
+        QList<QSharedPointer<FileSet> > childFileSets = getChild(i)->getFileSets();
 
-        foreach (FileSet* fileSet, sets)
+        foreach (QSharedPointer<FileSet> fileSet, childFileSets)
         {
             int count = 1;
 
@@ -475,29 +468,36 @@ bool FileDependencyItem::hasMultipleFileSets() const
 //-----------------------------------------------------------------------------
 // Function: FileDependencyItem::setFileSets()
 //-----------------------------------------------------------------------------
-void FileDependencyItem::setFileSets(QList<FileSet*> const& fileSets, bool preserveMultiple)
+void FileDependencyItem::setFileSets(QList<QSharedPointer<FileSet> > fileSets, bool preserveMultiple)
 {
     Q_ASSERT(type_ != ITEM_TYPE_ROOT);
 
     if (type_ == ITEM_TYPE_FILE)
     {
-        QList<File*> newFileRefs;
+        QList<QSharedPointer<File> > newFileRefs;
 
-        foreach (FileSet* fileSet, fileSets)
+        foreach (QSharedPointer<FileSet> fileSet, fileSets)
         {
             // Check if the file already belongs to the file set --> no changes required.
             bool found = false;
 
             for (int i = 0; i < fileRefs_.size(); ++i)
             {
-                if (fileRefs_[i]->getParent() == fileSet)
+                foreach (QSharedPointer<File> containedFile, *fileSet->getFiles())
                 {
-                    // Add the existing file ref to the new file ref list.
-                    newFileRefs.append(fileRefs_[i]);
-                
-                    fileRefs_.removeAt(i);
-                    --i;
-                    found = true;
+                    if (containedFile == fileRefs_.at(i))
+                    {
+                        // Add the existing file ref to the new file ref list.
+                        newFileRefs.append(fileRefs_[i]);
+
+                        fileRefs_.removeAt(i);
+                        --i;
+                        found = true;
+                        break;
+                    }
+                }
+                if (found == true)
+                {
                     break;
                 }
             }
@@ -505,8 +505,7 @@ void FileDependencyItem::setFileSets(QList<FileSet*> const& fileSets, bool prese
             if (!found)
             {
                 // Otherwise create a new file reference.
-                QSharedPointer<File> file(new File(path_, fileSet));
-
+                QSharedPointer<File> file(new File(path_));
                 if (!fileType_.isEmpty())
                 {
                     file->addFileType(fileType_);
@@ -514,40 +513,48 @@ void FileDependencyItem::setFileSets(QList<FileSet*> const& fileSets, bool prese
 
                 fileSet->addFile(file);
 
-                newFileRefs.append(file.data());
+                newFileRefs.append(file);
             }
         }
 
         // Go through remaining old file refs and remove them.
-        foreach (File* file, fileRefs_)
+        foreach (QSharedPointer<File> fileToBeRemoved, fileRefs_)
         {
-            FileSet* fileSet = file->getParent();
-            fileSet->removeFile(file);
+            foreach (QSharedPointer<FileSet> singleFileSet, *component_->getFileSets())
+            {
+                foreach (QSharedPointer<File> containedFile, *singleFileSet->getFiles())
+                {
+                    if (fileToBeRemoved == containedFile)
+                    {
+                        singleFileSet->removeFile(fileToBeRemoved->name());
+                    }
+                }
+            }
         }
 
         fileRefs_ = newFileRefs;
 
         if (fileRefs_.empty())
         {
-            component_->addIgnoredFile(path_);
+            //component_->addIgnoredFile(path_);
         }
         else
         {
-            component_->removeIgnoredFile(path_);
+           // component_->removeIgnoredFile(path_);
         }
     }
     else
     {
-        QList<FileSet*> oldFolderFileSets = getFileSets();
+        QList<QSharedPointer<FileSet > > oldFolderFileSets = getFileSets();
 
         for (int i = 0; i < getChildCount(); ++i)
         {
-            QList<FileSet*> oldFileSets = getChild(i)->getFileSets();
-            QList<FileSet*> newFileSets = fileSets;
+            QList<QSharedPointer<FileSet> > oldFileSets = getChild(i)->getFileSets();
+            QList<QSharedPointer<FileSet> > newFileSets = fileSets;
 
             if (preserveMultiple)
             {
-                foreach (FileSet* fileSet, oldFileSets)
+                foreach (QSharedPointer<FileSet> fileSet, oldFileSets)
                 {
                     if (!newFileSets.contains(fileSet) &&
                         !oldFolderFileSets.contains(fileSet))
@@ -568,5 +575,14 @@ void FileDependencyItem::setFileSets(QList<FileSet*> const& fileSets, bool prese
 void FileDependencyItem::refreshFileRefs()
 {
     fileRefs_.clear();
-    component_->getFiles(path_, fileRefs_);
+    foreach (QSharedPointer<FileSet> containingFileSet, *component_->getFileSets())
+    {
+        foreach (QSharedPointer<File> containedFile, *containingFileSet->getFiles())
+        {
+            if (containedFile->name() == path_)
+            {
+                fileRefs_.append(containedFile);
+            }
+        }
+    }
 }

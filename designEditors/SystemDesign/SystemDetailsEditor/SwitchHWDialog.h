@@ -16,8 +16,6 @@
 #include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
 
 #include <QComboBox>
-#include <QPushButton>
-#include <QLineEdit>
 #include <QRadioButton>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -44,8 +42,8 @@ public:
      *      @param [in] lh         The library interface.
      *      @param [in] parent     The parent widget.
      */
-    SwitchHWDialog(QSharedPointer<Component> component, QString const& viewName,
-                   LibraryInterface* lh, QWidget* parent);
+    SwitchHWDialog(QSharedPointer<Component> component, QString const& viewName, LibraryInterface* lh,
+                   QWidget* parent);
 
     /*!
      *  Destructor.
@@ -166,7 +164,7 @@ private:
     //! VLNV editor for design/designcfg VLNV (shown in case of copy action).
     VLNVEditor* vlnvEdit_;
 
-	//! \brief The editor to select the directory to save to. 
+	//! The editor to select the directory to save to. 
     LibrarySelectorWidget* directoryEditor_;
 
     //! Button box for OK and Cancel buttons.

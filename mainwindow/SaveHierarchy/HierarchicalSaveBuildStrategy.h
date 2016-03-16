@@ -20,7 +20,7 @@ class LibraryInterface;
 
 class Component;
 class Design;
-class LibraryComponent;
+class Document;
 class LibraryInterface;
 class LibrarySelectorWidget;
 class VLNV;
@@ -166,7 +166,7 @@ private:
      *      @param [in] model       The document model to update.
      *      @param [in] childItem   The child item to update the references to.
      */
-    void updateReferencesFromTo(QSharedPointer<LibraryComponent> model, QTreeWidgetItem* childItem) const;
+    void updateReferencesFromTo(QSharedPointer<Document> model, QTreeWidgetItem* childItem) const;
 
     /*!
      *  Updates all references in a component to another.
@@ -192,7 +192,7 @@ private:
      *      @param [in] previousReference   The earlier VLNV of the document model.
      *      @param [in] model               The document model to save.
      */
-    void saveToLibrary(VLNV const& previousReference, QSharedPointer<LibraryComponent> model) const;
+    void saveToLibrary(VLNV const& previousReference, QSharedPointer<Document> model) const;
  
     //-----------------------------------------------------------------------------
     // Data.

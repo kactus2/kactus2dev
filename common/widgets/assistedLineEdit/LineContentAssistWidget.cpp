@@ -31,19 +31,15 @@ LineContentAssistWidget::LineContentAssistWidget(QLineEdit* target, QWidget* par
       lastAssistStartPos_(-1),
       contentFound_(false)
 {
+    Q_ASSERT(parentWnd != 0);
     Q_ASSERT(target != 0);
 
     // Set widget settings.
-//      setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
     setFrameShadow(QFrame::Raised);
     setFocusPolicy(Qt::NoFocus);
     setFont(QFont("Tahoma", 10));
 
     // We want the widget to look active even though it is inactive.
-//     QPalette pal = palette();
-    //     pal.setColor(QPalette::Highlight, Qt::darkBlue);
-//     pal.setColor(QPalette::HighlightedText, Qt::black);
-//     setPalette(pal);
     setStyleSheet("selection-color: black; selection-background-color: "
                   "QLinearGradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #d6e7ff, stop: 1 #84aede);");
 

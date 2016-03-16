@@ -1,47 +1,52 @@
-/* 
- *  	Created on: 17.4.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapview.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapview.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 17.04.2012
+//
+// Description:
+// The graphics view that displays the memory map graphics items.
+//-----------------------------------------------------------------------------
 
 #ifndef MEMORYMAPVIEW_H
 #define MEMORYMAPVIEW_H
 
 #include <QGraphicsView>
 
-/*! \brief The graphics view that displays the memory map graphics items.
- *
- */
-class MemoryMapView : public QGraphicsView {
+//-----------------------------------------------------------------------------
+//! The graphics view that displays the memory map graphics items.
+//-----------------------------------------------------------------------------
+class MemoryMapView : public QGraphicsView
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param parent The pointer to the owner of the graphics view.
-	 *
-	*/
+	 *      @param [in] parent  The pointer to the owner of the graphics view.
+	 */
 	MemoryMapView(QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~MemoryMapView();
 
 protected:
 
-    //! \brief Event handler for resizing.
+    //! Event handler for resizing.
     virtual void resizeEvent(QResizeEvent* event);
 
-    //! \brief Handler for mouse press events.
+    //! Handler for mouse press events.
     void mousePressEvent(QMouseEvent* mouseEvent);
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	MemoryMapView(const MemoryMapView& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	MemoryMapView& operator=(const MemoryMapView& other);
 };
 

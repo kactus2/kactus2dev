@@ -13,14 +13,14 @@
 
 #include <QSharedPointer>
 
-#include <IPXACTmodels/port.h>
+#include <IPXACTmodels/Component/Port.h>
 
 #include <wizards/common/PortComparator/PortComparator.h>
 #include <wizards/common/IPXactDiff.h>
 
 #include <tests/wizards/common/ComparatorTest.h>
 
-Q_DECLARE_METATYPE(General::Direction)
+Q_DECLARE_METATYPE(DirectionTypes::Direction)
 
 class tst_PortComparator : public QObject, public ComparatorTest
 {
@@ -183,8 +183,8 @@ void tst_PortComparator::testElementComparison_data()
 //-----------------------------------------------------------------------------
 void tst_PortComparator::testDirectionComparison()
 {
-    QFETCH(General::Direction, referenceDirection);
-    QFETCH(General::Direction, subjectDirection);
+    QFETCH(DirectionTypes::Direction, referenceDirection);
+    QFETCH(DirectionTypes::Direction, subjectDirection);
     QFETCH(bool, expectedComparison);
 
     QSharedPointer<Port> reference(new Port());
@@ -194,8 +194,8 @@ void tst_PortComparator::testDirectionComparison()
     subject->setDirection(subjectDirection);
 
     QVERIFY2(comparator_->compare(reference, subject) == expectedComparison,
-        QString("Comparing direction '%1' to '%2' yields unexpected result").arg(General::direction2Str(referenceDirection),
-        General::direction2Str(subjectDirection)).toLocal8Bit());
+        QString("Comparing direction '%1' to '%2' yields unexpected result").arg(DirectionTypes::direction2Str(referenceDirection),
+        DirectionTypes::direction2Str(subjectDirection)).toLocal8Bit());
 }
 
 //-----------------------------------------------------------------------------
@@ -203,17 +203,17 @@ void tst_PortComparator::testDirectionComparison()
 //-----------------------------------------------------------------------------
 void tst_PortComparator::testDirectionComparison_data()
 {
-    QTest::addColumn<General::Direction>("referenceDirection");
-    QTest::addColumn<General::Direction>("subjectDirection");
+    QTest::addColumn<DirectionTypes::Direction>("referenceDirection");
+    QTest::addColumn<DirectionTypes::Direction>("subjectDirection");
     QTest::addColumn<bool>("expectedComparison");
 
-    QTest::newRow("Both in") << General::IN << General::IN << true;
-    QTest::newRow("Both out") << General::OUT << General::OUT << true;
-    QTest::newRow("Both inout") << General::INOUT << General::INOUT << true;
-    QTest::newRow("In and out") << General::IN << General::OUT << false;
-    QTest::newRow("In and inout") << General::IN << General::INOUT << false;
-    QTest::newRow("out and phantom") << General::OUT << General::DIRECTION_PHANTOM << false;
-    QTest::newRow("out and inout") << General::OUT << General::INOUT << false;
+    QTest::newRow("Both in") << DirectionTypes::IN << DirectionTypes::IN << true;
+    QTest::newRow("Both out") << DirectionTypes::OUT << DirectionTypes::OUT << true;
+    QTest::newRow("Both inout") << DirectionTypes::INOUT << DirectionTypes::INOUT << true;
+    QTest::newRow("In and out") << DirectionTypes::IN << DirectionTypes::OUT << false;
+    QTest::newRow("In and inout") << DirectionTypes::IN << DirectionTypes::INOUT << false;
+    QTest::newRow("out and phantom") << DirectionTypes::OUT << DirectionTypes::DIRECTION_PHANTOM << false;
+    QTest::newRow("out and inout") << DirectionTypes::OUT << DirectionTypes::INOUT << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -221,8 +221,8 @@ void tst_PortComparator::testDirectionComparison_data()
 //-----------------------------------------------------------------------------
 void tst_PortComparator::testLeftBoundComparison()
 {
-    QFETCH(int, referenceValue);
-    QFETCH(int, subjectValue);
+    QFETCH(QString, referenceValue);
+    QFETCH(QString, subjectValue);
     QFETCH(bool, expectedComparison);
 
     QSharedPointer<Port> reference(new Port());
@@ -241,15 +241,15 @@ void tst_PortComparator::testLeftBoundComparison()
 //-----------------------------------------------------------------------------
 void tst_PortComparator::testLeftBoundComparison_data()
 {
-    QTest::addColumn<int>("referenceValue");
-    QTest::addColumn<int>("subjectValue");
+    QTest::addColumn<QString>("referenceValue");
+    QTest::addColumn<QString>("subjectValue");
     QTest::addColumn<bool>("expectedComparison");
 
-    QTest::newRow("Both zero") << 0 << 0 << true;
-    QTest::newRow("Both negative") << -1 << -1 << true;
-    QTest::newRow("Zero and one") << 0 << 1 << false;
-    QTest::newRow("One and one") << 1 << 1 << true;
-    QTest::newRow("One and negative one") << 1 << -1 << false;
+    QTest::newRow("Both zero") << "0" << "0" << true;
+    QTest::newRow("Both negative") << "-1" << "-1" << true;
+    QTest::newRow("Zero and one") << "0" << "1" << false;
+    QTest::newRow("One and one") << "1" << "1" << true;
+    QTest::newRow("One and negative one") << "1" << "-1" << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -257,8 +257,8 @@ void tst_PortComparator::testLeftBoundComparison_data()
 //-----------------------------------------------------------------------------
 void tst_PortComparator::testRightBoundComparison()
 {
-    QFETCH(int, referenceValue);
-    QFETCH(int, subjectValue);
+    QFETCH(QString, referenceValue);
+    QFETCH(QString, subjectValue);
     QFETCH(bool, expectedComparison);
 
     QSharedPointer<Port> reference(new Port());
@@ -339,8 +339,7 @@ void tst_PortComparator::testDifferentPortsIsNotEqual()
     QList<QSharedPointer<Port> > subject;    
     addPort(subject, "bridge count");
 
-    QVERIFY2(!comparator_->compare(reference, subject), 
-        "Lists with different ports should not be equal.");
+    QVERIFY2(!comparator_->compare(reference, subject), "Lists with different ports should not be equal.");
 }
 
 //-----------------------------------------------------------------------------
@@ -525,10 +524,6 @@ void tst_PortComparator::setElementInPort(QString const& element, QString const&
     {
         port->setName(value);
     }    
-    else if (element == "port access type")
-    {
-        port->setPortAccessType(value);
-    }  
     else if (element == "port access handle")
     {
         QFAIL(QString("No setter for element %1").arg(element).toLocal8Bit());
@@ -557,7 +552,7 @@ void tst_PortComparator::setElementInPort(QString const& element, QString const&
 QStringList tst_PortComparator::getElements() const
 {
     QStringList elements;
-    elements << "port access type" << "type name" << "type definitions" << "default value";
+    elements << "type name" << "type definitions" << "default value";
     return elements;
 }
 

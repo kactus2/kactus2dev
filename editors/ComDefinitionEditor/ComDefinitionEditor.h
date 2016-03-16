@@ -17,7 +17,7 @@
 #include <common/widgets/tabDocument/TabDocument.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/listManager/listmanager.h>
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -46,17 +46,16 @@ public:
      *      @param [in] libHandler  The library interface.
      *      @param [in] comDef      The COM definition.
 	 */
-	ComDefinitionEditor(QWidget* parent, LibraryInterface* libHandler,
-                        QSharedPointer<ComDefinition> comDef);
+	ComDefinitionEditor(QWidget* parent, LibraryInterface* libHandler, QSharedPointer<ComDefinition> comDef);
 	
 	/*!
      *  Destructor.
      */
 	virtual ~ComDefinitionEditor();
 
-	/*! \brief Get the VLNV that can be used to identify the COM definition.
+	/*! Get the VLNV that can be used to identify the COM definition.
 	 *
-	 * \return The VLNV of the COM definition
+	 *      @return The VLNV of the COM definition
 	*/
 	virtual VLNV getIdentifyingVLNV() const;
 
@@ -85,12 +84,12 @@ public slots:
      *
      *      @return True if the document is valid. False if there were any violations.
      */
-    virtual bool validate(QStringList& errorList);
+    virtual bool validate(QVector<QString>& errorList);
 
 	//! Saves the document and resets the modified state.
 	virtual bool save();
 
-	//! \brief Saves the document as new object and resets modifies state
+	//! Saves the document as new object and resets modifies state
 	virtual bool saveAs();
 
 protected:
@@ -111,7 +110,7 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the instance that handles the library.
+	//! The instance that handles the library.
 	LibraryInterface* libHandler_;
 
 	//! The COM definition being edited.

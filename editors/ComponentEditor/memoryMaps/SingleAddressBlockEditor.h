@@ -18,8 +18,8 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <QSharedPointer>
 
@@ -32,6 +32,7 @@ class UsageComboBox;
 class AccessComboBox;
 class BooleanComboBox;
 
+class AddressBlockValidator;
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single address block.
 //-----------------------------------------------------------------------------
@@ -50,6 +51,7 @@ public:
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
      *      @param [in] expressionFormatter     The expression parser.
+     *      @param [in] addressBlockValidator   Validator used for address blocks.
 	 *      @param [in] parent                  Pointer to the parent of this editor.
 	 */
     SingleAddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
@@ -58,18 +60,12 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<AddressBlockValidator> addressBlockValidator,
         QWidget* parent = 0);
 
 
 	//! The destructor
     virtual ~SingleAddressBlockEditor();
-
-    /*!
-	 *  Check for the validity of the editor.
-	 *
-     *      @return True if the editor is in valid state.
-	 */
-	virtual bool isValid() const;
 
 	/*!
 	 *  Reload all the contained editors.

@@ -8,7 +8,7 @@
 #include "globalheadersavemodel.h"
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/ComponentInstance.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <QDir>
 #include <QStringList>
@@ -107,7 +107,7 @@ QVariant GlobalHeaderSaveModel::data( const QModelIndex& index, int role /*= Qt:
 			VLNV identifier = table_.at(index.row())->comp_;
 
 			// display the relative path from xml directory to the header to be generated
-			QDir xmlDir(handler_->getDirectoryPath(*comp_->getVlnv()));
+			QDir xmlDir(handler_->getDirectoryPath(comp_->getVlnv()));
 			QString headerPath = table_.at(index.row())->fileInfo_.absoluteFilePath();
 			QString relPath = xmlDir.relativeFilePath(headerPath);
 
@@ -133,7 +133,7 @@ QVariant GlobalHeaderSaveModel::data( const QModelIndex& index, int role /*= Qt:
 
 		// if not then at least the xml directory exists
 		else {
-			return handler_->getDirectoryPath(*comp_->getVlnv());
+			return handler_->getDirectoryPath(comp_->getVlnv());
 		}		
 	}
 	else {
@@ -212,45 +212,45 @@ void GlobalHeaderSaveModel::setDesign( QSharedPointer<Component> topComp, QShare
 	qDeleteAll(table_);
 	table_.clear();
 
-	foreach (ComponentInstance instance, design_->getComponentInstances()) {
-
+	foreach (QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
+    {
 		// parse the component model for the instance
-		VLNV compVLNV = instance.getComponentRef();
-		QSharedPointer<const LibraryComponent> libComp = handler_->getModelReadOnly(compVLNV);
+		VLNV compVLNV = *instance->getComponentRef();
+		QSharedPointer<const Document> libComp = handler_->getModelReadOnly(compVLNV);
 		QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
-		if (!comp) {
+		
+        // headers are only generated for CPUs and their master interfaces
+        if (!comp || !comp->isCpu())
+        {
 			continue;
 		}
-		// headers are only generated for CPUs and their master interfaces
-		else if (!comp->isCpu()) {
-			continue;
-		}
-
+		
 		// create header for each master interface
 		QStringList masterInterfaces = comp->getMasterInterfaces();
-		foreach (QString interfaceName, masterInterfaces) {
-
+		foreach (QString interfaceName, masterInterfaces)
+        {
 			// if the operated interface is not connected to any other instance within the design
-			if (!design_->hasInterconnection(instance.getInstanceName(), interfaceName)) {
+			if (!design_->hasInterconnection(instance->getInstanceName(), interfaceName))
+            {
 				continue;
 			}
 			
 			GlobalHeaderSaveModel::SaveFileOptions* options = new SaveFileOptions();
 
-			options->instance_ = instance.getInstanceName();
+			options->instance_ = instance->getInstanceName();
 			options->interface_ = interfaceName;
 			options->comp_ = compVLNV;
-			options->instanceId_ = instance.getUuid();
+			options->instanceId_ = instance->getUuid();
 
 			// the path to the directory containing the xml metadata
-			QString compPath(handler_->getDirectoryPath(*topComp->getVlnv()));
+			QString compPath(handler_->getDirectoryPath(topComp->getVlnv()));
 
 			// the relative path from the xml dir to the header to generate
-			QString headerPath = QString("%1/%2/%3.h").arg( tr("headers")).arg(instance.getInstanceName()).arg(
-                interfaceName);
+			QString headerPath = QString("%1/%2/%3.h").arg(
+                tr("headers"), instance->getInstanceName(), interfaceName);
 
 			// the absolute path to the header file
-			const QString fullPath = QString("%1/%2").arg(compPath).arg(headerPath);
+			const QString fullPath = QString("%1/%2").arg(compPath, headerPath);
 
 			// create the file info instance
 			options->fileInfo_ = QFileInfo(fullPath);

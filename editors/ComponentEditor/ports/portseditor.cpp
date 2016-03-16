@@ -1,14 +1,19 @@
-/* 
- *
- *  Created on: 31.3.2011
- *      Author: Antti Kamppi
- * 		filename: portseditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: portseditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 31.03.2011
+//
+// Description:
+// Editor to edit the ports of a component.
+//-----------------------------------------------------------------------------
 
 #include "portseditor.h"
 
-#include "portsmodel.h"
 #include "portsdelegate.h"
+#include "portsmodel.h"
+#include "PortsView.h"
 
 #include <common/dialogs/NewBusDialog/NewBusDialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
@@ -22,9 +27,9 @@
 
 #include <wizards/BusInterfaceWizard/BusInterfaceWizard.h>
 
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -40,10 +45,11 @@
 // Function: PortsEditor::PortsEditor()
 //-----------------------------------------------------------------------------
 PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QWidget *parent):
+                         QSharedPointer<ParameterFinder> parameterFinder,
+                         QSharedPointer<ExpressionFormatter> expressionFormatter,
+                         QSharedPointer<PortValidator> portValidator, QWidget *parent /* = 0 */):
 ItemEditor(component, handler, parent),
-view_(this), 
+view_(new PortsView(this)), 
 model_(0),
 proxy_(this),
 component_(component),
@@ -51,7 +57,8 @@ handler_(handler)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new PortsModel(component->getModel(), expressionParser, parameterFinder, expressionFormatter, this);
+    model_ = new PortsModel(component->getModel(), expressionParser, parameterFinder, expressionFormatter,
+        portValidator, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -59,11 +66,19 @@ handler_(handler)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParametersModel);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
-	QString defPath = QString("%1/portListing.csv").arg(compPath);
-	view_.setDefaultImportExportPath(defPath);
-	view_.setAllowImportExport(true);
-    view_.setAlternatingRowColors(false);
+	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
+	QString defaultPath = QString("%1/portListing.csv").arg(componentPath);
+	view_->setDefaultImportExportPath(defaultPath);
+	view_->setAllowImportExport(true);
+    view_->setAlternatingRowColors(false);
+    view_->setSortingEnabled(true);
+    view_->setItemsDraggable(false);
+    view_->setDelegate(new PortsDelegate(parameterCompleter, parameterFinder, this));
+
+    proxy_.setSourceModel(model_);
+    view_->setModel(&proxy_);
+
+    proxy_.setSortCaseSensitivity(Qt::CaseInsensitive);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -73,39 +88,22 @@ handler_(handler)
 	connect(model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+	connect(view_, SIGNAL(addItem(const QModelIndex&)),
         model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
-	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
+	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
   
-    connect(&view_, SIGNAL(createBus(QStringList const& )), this, SLOT(onCreateNewInteface(QStringList const& )));
-    connect(&view_, SIGNAL(createExistingBus(QStringList const& )), 
+    connect(view_, SIGNAL(createBus(QStringList const& )), this, SLOT(onCreateNewInteface(QStringList const& )));
+    connect(view_, SIGNAL(createExistingBus(QStringList const& )), 
         this, SLOT(onCreateInterface(QStringList const& )));
 
-	// set view to be sortable
-	view_.setSortingEnabled(true);
-
-	// items can not be dragged
-	view_.setItemsDraggable(false);
-
-	view_.setDelegate(new PortsDelegate(parameterCompleter, parameterFinder, this));
-
-    connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)), 
+    connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)), 
+    connect(view_->itemDelegate(), SIGNAL(decreaseReferences(QString)), 
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-
-	// set source model for proxy
-	proxy_.setSourceModel(model_);
-
-	// set proxy to be the source for the view
-	view_.setModel(&proxy_);
-
-    // Set case-insensitive sorting.
-    proxy_.setSortCaseSensitivity(Qt::CaseInsensitive);
 
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Ports"), this);
@@ -113,7 +111,7 @@ handler_(handler)
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-	layout->addWidget(&view_, 1);
+	layout->addWidget(view_, 1);
 	layout->setContentsMargins(0, 0, 0, 0);
 }
 
@@ -138,7 +136,7 @@ bool PortsEditor::isValid() const
 //-----------------------------------------------------------------------------
 void PortsEditor::refresh()
 {
-	view_.update();
+	view_->update();
 }
 
 //-----------------------------------------------------------------------------
@@ -153,9 +151,9 @@ void PortsEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 // Function: portseditor::setAllowImportExport()
 //-----------------------------------------------------------------------------
-void PortsEditor::setAllowImportExport( bool allow )
+void PortsEditor::setAllowImportExport(bool allow)
 {
-	view_.setAllowImportExport(allow);
+	view_->setAllowImportExport(allow);
 }
 
 //-----------------------------------------------------------------------------
@@ -165,14 +163,6 @@ void PortsEditor::setComponent(QSharedPointer<Component> component)
 {
     component_ = component;
     model_->setModelAndLockCurrentPorts(component_->getModel());
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsEditor::addPort()
-//-----------------------------------------------------------------------------
-void PortsEditor::addPort( QSharedPointer<Port> port )
-{
-	model_->addPort(port);
 }
 
 //-----------------------------------------------------------------------------
@@ -201,13 +191,14 @@ void PortsEditor::onCreateNewInteface(QStringList const& selectedPorts)
     // by default the abs def and bus def are saved to same directory
     QString absDirectory = dialog.getPath();
 
-    if (handler_->contains(absVLNV)) {
+    if (handler_->contains(absVLNV))
+    {
         VLNV newAbsDefVLNV;
 
         if (!NewObjectDialog::saveAsDialog(this, handler_, absVLNV, newAbsDefVLNV, absDirectory,
-            "Set VLNV for abstraction definition")) {
-                // if user canceled
-                return;
+            QStringLiteral("Set VLNV for abstraction definition")))
+        {
+                return; // if user canceled
         }
         // save the created abstraction definition vlnv
         absVLNV = newAbsDefVLNV;
@@ -249,13 +240,16 @@ void PortsEditor::onCreateNewInteface(QStringList const& selectedPorts)
     }
 
     busIf->setName(ifName);
-    busIf->setAbstractionType(absVLNV);
+    QSharedPointer<AbstractionType> abstractionVLNV(new AbstractionType());
+    abstractionVLNV->setAbstractionRef(QSharedPointer<ConfigurableVLNVReference>(
+        new ConfigurableVLNVReference(absVLNV)));
+    busIf->getAbstractionTypes()->append(abstractionVLNV);
     busIf->setBusType(busVLNV);
 
     // Open the bus interface wizard.
     BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this, absVLNV, 
         dialog.getSignalSelection() == NewBusDialog::USE_DESCRIPTION);
-    component_->addBusInterface(busIf);   
+    component_->getBusInterfaces()->append(busIf);   
 
     connect(&wizard, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -269,7 +263,7 @@ void PortsEditor::onCreateNewInteface(QStringList const& selectedPorts)
     }
     else
     {
-        component_->removeBusInterface(busIf->getName());
+        component_->getBusInterfaces()->removeAll(busIf);
     }
 }
 
@@ -280,9 +274,16 @@ void PortsEditor::onCreateInterface(QStringList const& selectedPorts)
 {
     QSharedPointer<BusInterface> busIf(new BusInterface());
     
+    QSharedPointer<AbstractionType> abstraction(new AbstractionType());
+    QSharedPointer<ConfigurableVLNVReference> abstractionReference(new ConfigurableVLNVReference());
+    abstractionReference->setType(VLNV::ABSTRACTIONDEFINITION);
+    abstraction->setAbstractionRef(abstractionReference);
+    
+    busIf->getAbstractionTypes()->append(abstraction);
+
     // Open the bus interface wizard.
     BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this);
-    component_->addBusInterface(busIf);   
+    component_->getBusInterfaces()->append(busIf);   
 
     connect(&wizard, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -296,6 +297,6 @@ void PortsEditor::onCreateInterface(QStringList const& selectedPorts)
     }
     else
     {
-        component_->removeBusInterface(busIf->getName());
+        component_->getBusInterfaces()->removeAll(busIf);
     }
 }

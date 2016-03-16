@@ -18,9 +18,9 @@
 #include <editors/ComponentEditor/common/NullParser.h>
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/register.h>
-#include <IPXACTmodels/registermodel.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/RegisterBase.h>
 
 class tst_AddressBlockGraphItem : public QObject
 {
@@ -69,7 +69,7 @@ void tst_AddressBlockGraphItem::testConstructor()
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->refresh();
 
-    QCOMPARE(addressBlockItem->getName(), QString("testBlock"));
+    QCOMPARE(addressBlockItem->name(), QString("testBlock"));
     QCOMPARE(addressBlockItem->getOffset(), quint64(0));
     QCOMPARE(addressBlockItem->getLastAddress(), quint64(0));
     QCOMPARE(addressBlockItem->getDisplayOffset(), quint64(0));
@@ -94,12 +94,12 @@ void tst_AddressBlockGraphItem::testAddressBlockWithRegister()
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
-    QList<QSharedPointer<RegisterModel> > registers;
+    QList<QSharedPointer<RegisterBase> > registers;
     QSharedPointer<Register> reg(new Register());
     reg->setAddressOffset("0");
-    reg->setSize(8);
+    reg->setSize("8");
     registers.append(reg);
-    addressBlock->getRegisterData().append(registers);
+    addressBlock->getRegisterData()->append(registers);
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
@@ -140,12 +140,12 @@ void tst_AddressBlockGraphItem::testRegisterInSecondAddress()
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
-    QList<QSharedPointer<RegisterModel> > registers;
+    QList<QSharedPointer<RegisterBase> > registers;
     QSharedPointer<Register> reg(new Register());
     reg->setAddressOffset("1");
-    reg->setSize(8);
+    reg->setSize("8");
     registers.append(reg);
-    addressBlock->getRegisterData().append(registers);
+    addressBlock->getRegisterData()->append(registers);
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
     addressBlockItem->addChild(registerItem);
@@ -158,7 +158,7 @@ void tst_AddressBlockGraphItem::testRegisterInSecondAddress()
 
     MemoryGapItem* initialGap = gaps.first();
     QVERIFY(!initialGap->isConflicted());
-    QCOMPARE(initialGap->getName(), QString("Reserved"));
+    QCOMPARE(initialGap->name(), QString("Reserved"));
     QCOMPARE(initialGap->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
     QCOMPARE(initialGap->pos().y(), qreal(VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(initialGap->getDisplayOffset(), quint64(0));
@@ -189,12 +189,12 @@ void tst_AddressBlockGraphItem::testEmptyAfterLastRegister()
     AddressBlockGraphItem* addressBlockItem = new AddressBlockGraphItem(addressBlock, noParser, 0);
     addressBlockItem->setAddressableUnitBits(8);
 
-    QList<QSharedPointer<RegisterModel> > registers;
+    QList<QSharedPointer<RegisterBase> > registers;
     QSharedPointer<Register> reg(new Register());
     reg->setAddressOffset("0");
-    reg->setSize(8);
+    reg->setSize("8");
     registers.append(reg);
-    addressBlock->getRegisterData().append(registers);
+    addressBlock->getRegisterData()->append(registers);
 
 
     RegisterGraphItem* registerItem = new RegisterGraphItem(reg, noParser, addressBlockItem);
@@ -216,7 +216,7 @@ void tst_AddressBlockGraphItem::testEmptyAfterLastRegister()
 
     MemoryGapItem* firstGap = gaps.first();
     QVERIFY(!firstGap->isConflicted());
-    QCOMPARE(firstGap->getName(), QString("Reserved"));
+    QCOMPARE(firstGap->name(), QString("Reserved"));
     QCOMPARE(firstGap->pos().x(), qreal(MemoryVisualizationItem::CHILD_INDENTATION));
     QCOMPARE(firstGap->pos().y(), qreal(2*VisualizerItem::DEFAULT_HEIGHT));
     QCOMPARE(firstGap->getDisplayOffset(), quint64(1));
@@ -232,7 +232,7 @@ void tst_AddressBlockGraphItem::testExpressions()
     QSharedPointer<AddressBlock> addressBlock(new AddressBlock());
     addressBlock->setBaseAddress("1+1");
     addressBlock->setRange("4*2");
-    addressBlock->setWidthExpression("16+16");
+    addressBlock->setWidth("16+16");
 
     QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
 

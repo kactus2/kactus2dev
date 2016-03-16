@@ -1,30 +1,49 @@
-/* 
- *  	Created on: 10.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorfilesetitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: fileseteditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 10.05.2012
+//
+// Description:
+// The item for a single file set in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorfilesetitem.h"
 #include "componenteditorfileitem.h"
 #include "componenteditortreemodel.h"
+
 #include <editors/ComponentEditor/fileSet/fileseteditor.h>
+
+#include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/File.h>
+
+#include <IPXACTmodels/Component/validators/FileSetValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileSetItem::ComponentEditorFileSetItem()
 //-----------------------------------------------------------------------------
 ComponentEditorFileSetItem::ComponentEditorFileSetItem(QSharedPointer<FileSet> fileSet,
-													   ComponentEditorTreeModel* model,
-													   LibraryInterface* libHandler,
-													   QSharedPointer<Component> component,
-													   ComponentEditorItem* parent ):
+        ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<FileSetValidator> validator, QSharedPointer<FileValidator> fileValidator,
+        ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 fileSet_(fileSet),
-files_(fileSet->getFiles()) 
+files_(fileSet->getFiles()),
+filesetValidator_(validator),
+fileValidator_(fileValidator),
+expressionParser_(expressionParser)
 {
-	Q_ASSERT(fileSet);
+    setReferenceCounter(referenceCounter);
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
 
-    int childCount = files_.size();
+    int childCount = files_->size();
     for (int i = 0; i < childCount; i++)
     {
         createChild(i);
@@ -34,71 +53,66 @@ files_(fileSet->getFiles())
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileSetItem::~ComponentEditorFileSetItem()
 //-----------------------------------------------------------------------------
-ComponentEditorFileSetItem::~ComponentEditorFileSetItem() {
+ComponentEditorFileSetItem::~ComponentEditorFileSetItem()
+{
+
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileSetItem::text()
 //-----------------------------------------------------------------------------
-QString ComponentEditorFileSetItem::text() const {
-	return fileSet_->getName();
+QString ComponentEditorFileSetItem::text() const
+{
+	return fileSet_->name();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileSetItem::isValid()
 //-----------------------------------------------------------------------------
-bool ComponentEditorFileSetItem::isValid() const {
-	// check that the file set is valid
-	if (!fileSet_->isValid(true)) {
-		return false;
-	}
+bool ComponentEditorFileSetItem::isValid() const
+{
+ 	if (!filesetValidator_->validate(fileSet_))
+    {
+ 		return false;
+ 	}
 
 	// check that the dependent directories exist
-	QString xmlPath = libHandler_->getPath(*component_->getVlnv());
-	QStringList dependentDirs = fileSet_->getDependencies();
+	QString xmlPath = libHandler_->getPath(component_->getVlnv());
 
-	// check each directory
-	foreach (QString relDirPath, dependentDirs) {
+	foreach (QString const& relDirPath, *fileSet_->getDependencies())
+    {
 		QString absPath = General::getAbsolutePath(xmlPath, relDirPath);
-		QFileInfo dirInfo(absPath);
 
-		// if the directory does not exist
-		if (!dirInfo.exists()) {
+		if (!QFileInfo(absPath).exists())
+        {
 			return false;
 		}
 	}
 
-	// check that all files are valid
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_) {
-		if (!childItem->isValid()) {
-			return false;
-		}
-	}
-
-	return true;
+	return ComponentEditorItem::isValid();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorFileSetItem::editor()
 //-----------------------------------------------------------------------------
-ItemEditor* ComponentEditorFileSetItem::editor() {
-	if (!editor_) {
-		 editor_ = new FileSetEditor(libHandler_, component_, fileSet_, NULL);
-		 editor_->setProtection(locked_);
-		 connect(editor_, SIGNAL(contentChanged()),
-			 this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		 connect(editor_, SIGNAL(childAdded(int)),
-			 this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-		 connect(editor_, SIGNAL(childRemoved(int)),
-			 this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-		 connect(editor_, SIGNAL(childMoved(int, int)),
-			 this, SLOT(onMoveChild(int, int)), Qt::UniqueConnection);
-		 connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			 this, SIGNAL(helpUrlRequested(QString const&)));
+ItemEditor* ComponentEditorFileSetItem::editor()
+{
+	if (!editor_)
+    {
+        editor_ = new FileSetEditor(
+            libHandler_, component_, fileSet_, parameterFinder_, expressionParser_, expressionFormatter_, NULL);
+        editor_->setProtection(locked_);
+        connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childMoved(int, int)), this, SLOT(onMoveChild(int, int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
-         connect(editor_, SIGNAL(childRemoved(int)),
-             this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+
+        connectItemEditorToReferenceCounter();
 	}
+
 	return editor_;
 }
 
@@ -115,8 +129,8 @@ QString ComponentEditorFileSetItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorFileSetItem::createChild(int index)
 {
-	QSharedPointer<ComponentEditorFileItem> fileItem(new ComponentEditorFileItem(
-		files_.at(index), model_, libHandler_, component_, this));
+	QSharedPointer<ComponentEditorFileItem> fileItem
+        (new ComponentEditorFileItem(files_->at(index), model_, libHandler_, component_, fileValidator_, this));
 
     connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             model_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
@@ -130,12 +144,12 @@ void ComponentEditorFileSetItem::createChild(int index)
 //-----------------------------------------------------------------------------
 void ComponentEditorFileSetItem::onFileAdded(File* file)
 {
-    if (files_.at(files_.size() - 1) != file)
+    if (files_->at(files_->size() - 1) != file)
     {
         Q_ASSERT(false);
     }
 
-    onAddChild(files_.size() - 1);
+    onAddChild(files_->size() - 1);
     emit contentChanged();
 }
 

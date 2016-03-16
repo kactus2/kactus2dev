@@ -8,40 +8,35 @@
 	<body>
 		<h2>Field editor</h2>
 		<p>
-			The field editor is used to edit the details of a field. For example user may define enumerated	values
-            that define the legal bit patterns of a field.<br />
-            The <b>name</b>, <b>display name</b> and the <b>description</b> contain identification
-            information of a register.<br />
-            <b>Offset</b> describes the starting bit of the field within the containing register
-             (mandatory, can be given as an expression). <br />
-            <b>Width</b> speficies how many bits are included in the field (mandatory, can be given
-             as an expression).
+			The field editor is used to edit the details of a field. For example user may define enumerated	
+            values that define the legal bit patterns of a field.
+            <br />In the elements, f(x) means that the value can be given as an expression.
         </p>
         <p>
-          <img src="../images/appicon.png" alt="kactus logo"/> Kactus2 extensions in fields
+            The <b>name</b>, <b>display name</b> and the <b>description</b> contain identification
+            information of a register.
         </p>
-        <table border="1">
-          <tr>
-	        <th>Extension</th>
-	        <th>Description</th>
-          </tr>
-	      <tr>
-            <td>Is present</td>
-    	    <td>Enables/disables a field's presence in a register. Value 1 indicates that the field is
-                present in the register whereas value 0 marks the field to be treated as if it did not
-                exist. Is present can be given as a SystemVerilog expression, but it must evaluate to
-                1 or 0.</td>
-          </tr>
-	      <tr>
-	        <td>Reset value</td>
-    	    <td>Defines the actual reset value on reset.</td>
-	      </tr>
-    	  <tr>
-	        <td>Reset mask</td>
-	        <td>Defines the bits that have a known reset value. Bit value of 1 means that the corresponding
-                bit has a known reset value whereas 0 means that the value is unknown.</td>
-    	  </tr>
-        </table>
+        <p>
+            <b>Offset</b> describes the starting bit of the field within the containing register (mandatory).
+        </p>
+        <p>
+            <b>Width</b> speficies how many bits are included in the field (mandatory).
+        </p>
+        <p>
+            <b>Is present</b> enables/disables a field's presence in a register. Value 1 indicates that the 
+            field is present in the register whereas value 0 marks the field to be treated as if it did not
+            exist. Is present can be given as a SystemVerilog expression, but it must evaluate to 1 or 0.
+        </p>
+        <p>
+	        <b>Reset value</b> defines the actual reset value on reset. <i>Reset value</i> uses SystemVerilog 
+            syntax for binary values. The number of bits must be equal to the register <i>size</i>.
+        </p>
+        <p>
+            <b>Reset mask</b> defines the bits that have a known reset value. Bit value of 1 means that the 
+            corresponding bit has a known reset value whereas 0 means that the value is unknown. 
+            <i>Reset mask</i> uses SystemVerilog syntax for binary values e.g. 'b1011, 4'b1011, and 4'b10_11 
+            are all valid values. The number of bits must be equal to the register <i>size</i>.
+        </p>
         <p>
             <b>Volatile</b>=true indicates that the register may change its value without write operations.
         </p>
@@ -124,15 +119,20 @@
         </p>
         <h3>Enumerations table</h3>
 		<p>
-			The enumerated values table enables user the define bit patterns that can be identified by a name. 
+			The enumerated values table enables the defining of  bit patterns that can be identified by a name. 
 			This can be used to define the legal bit patterns for a field or to define some default settings 
 			to help configuration of the field.
 		</p>
         <p>
-            Each enumeration contains a unique <b>name</b> of the enumeration (mandatory).
-            <br /><b>Value</b> defines the value to assign to the specified name (mandatory).
-            <br /><b>Usage</b> defines the software access condition under which this name value pair is valid.
-            Possible values are <i>read</i>, <i>write</i> and <i>read-write</i>.
+            Each enumeration contains a unique <b>name</b> of the enumeration (mandatory), an optional 
+            <b>display name</b> and <b>description</b>.
+        </p>
+        <p>
+            <b>Value</b> defines the value to assign to the specified name (mandatory).
+        </p>
+        <p>
+            <b>Usage</b> defines the software access condition under which this name value pair is valid.
+            Possible values are: <i>read</i>, <i>write</i> and <i>read-write</i>.
         </p>
 	</body>
 </html>

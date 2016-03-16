@@ -14,15 +14,22 @@
 
 #include <editors/ComponentEditor/remapStates/RemapStatesEditor.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/RemapState.h>
+#include <IPXACTmodels/Component/validators/RemapStateValidator.h>
 //-----------------------------------------------------------------------------
 // Function: RemapStatesItem::RemapStatesItem()
 //-----------------------------------------------------------------------------
 RemapStatesItem::RemapStatesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-    QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<Component> component, 
+    QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder, 
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-remapStates_(component->getRemapStates())
+remapStates_(component->getRemapStates()),
+validator_(new RemapStateValidator(expressionParser, component->getPorts()))
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -31,7 +38,7 @@ remapStates_(component->getRemapStates())
     foreach(QSharedPointer<RemapState> remapState, *remapStates_)
     {
         QSharedPointer<SingleRemapStateItem> singleRemapItem(new SingleRemapStateItem(remapState, model,
-            libHandler, component, referenceCounter, parameterFinder, expressionFormatter, this));
+            libHandler, component, referenceCounter, parameterFinder, expressionFormatter, validator_, this));
 
         childItems_.append(singleRemapItem);
     }
@@ -97,7 +104,7 @@ QString RemapStatesItem::getTooltip() const
 void RemapStatesItem::createChild(int index)
 {
     QSharedPointer<SingleRemapStateItem> remapItem(new SingleRemapStateItem(remapStates_->at(index), model_,
-        libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, this));
+        libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_, validator_, this));
 
     remapItem->setLocked(locked_);
 

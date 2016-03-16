@@ -1,21 +1,28 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorbusinterfacesitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorbusinterfacesitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The Bus interfaces-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITORBUSINTERFACESITEM_H
 #define COMPONENTEDITORBUSINTERFACESITEM_H
 
 #include "componenteditoritem.h"
 
+class BusInterface;
+class BusInterfaceValidator;
 class ExpressionParser;
 
-/*! \brief The Bus interfaces-item in the component editor's navigation tree.
- *
- */
-class ComponentEditorBusInterfacesItem : public ComponentEditorItem {
+//-----------------------------------------------------------------------------
+//! The Bus interfaces-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorBusInterfacesItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
@@ -23,15 +30,15 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                   Pointer to the model that owns the items.
-	 *      @param [in] libHandler              Pointer to the instance that manages the library.
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] referenceCounter        Pointer to the reference counter.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] expressionParser        Pointer to the expression parser.
-	 *      @param [in] parent                  Pointer to the owner of this item.
-	 *      @param [in] parentWnd               Pointer to the parent window.
+	 *      @param [in] model                   The model that owns the items.
+	 *      @param [in] libHandler              The instance that manages the library.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] referenceCounter        The reference counter.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] expressionParser        The expression parser.
+	 *      @param [in] parent                  The owner of this item.
+	 *      @param [in] parentWnd               The parent window.
 	 */
 	ComponentEditorBusInterfacesItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
@@ -43,65 +50,67 @@ public:
 		ComponentEditorItem* parent,
         QWidget* parentWnd);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ComponentEditorBusInterfacesItem();
 
-	/*! \brief Get the font to be used for text of this item.
+	/*! Get the font to be used for text of this item.
 	*
 	* The font is bold, if bus interfaces exist, otherwise not bold.
 	*
-	* \return QFont instance that defines the font to be used.
+	*      @return QFont instance that defines the font to be used.
 	*/
 	virtual QFont getFont() const;
 
-	/*! \brief Get the tool tip for the item.
+	/*! Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
+	 *      @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*! Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
+	 *      @return The text to display.
 	*/
 	virtual QString text() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*! Get The editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
+	 *      @return The editor to use for this item.
 	*/
 	virtual ItemEditor* editor();
 
-	/*! \brief Add a new child to the item.
+	/*! Add a new child to the item.
 	 *
-	 * \param index The index to add the child into.
-	 *
+	 *      @param [in] index The index to add the child into.
 	*/
 	virtual void createChild(int index);
 
-	/*! \brief Get the tree item that holds the editor for given bus interface.
+	/*! Get the tree item that holds the editor for given bus interface.
 	 *
-	 * \param interfaceName The name of the bus interface to get the item for.
+	 *      @param [in] interfaceName The name of the bus interface to get the item for.
 	 *
-	 * \return Pointer to the tree item.
+	 *      @return The tree item.
 	*/
 	QSharedPointer<ComponentEditorItem> getBusInterfaceItem(const QString& interfaceName) const;
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentEditorBusInterfacesItem(const ComponentEditorBusInterfacesItem& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComponentEditorBusInterfacesItem& operator=(const ComponentEditorBusInterfacesItem& other);
 
-	//! \brief Contains the bus interfaces to edit.
-	QList<QSharedPointer<BusInterface> >& busifs_;
+	//! Contains the bus interfaces to edit.
+	QSharedPointer<QList<QSharedPointer<BusInterface> > > busifs_;
 
     //! The parent window.
     QWidget* parentWnd_;
 
     //! The expression parser used to define the results of expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Validator for bus interfaces.
+    QSharedPointer<BusInterfaceValidator> validator_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACESITEM_H

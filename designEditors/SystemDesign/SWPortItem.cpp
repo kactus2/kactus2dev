@@ -15,29 +15,21 @@
 #include "HWMappingItem.h"
 #include "SWOffPageConnectorItem.h"
 
-#include "SystemMoveCommands.h"
-
+#include <common/KactusColors.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/GenericEditProvider.h>
+
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/NamelabelWidth.h>
-#include <common/KactusColors.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
 
-#include <IPXACTmodels/ApiInterface.h>
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ApiDefinition.h>
-#include <IPXACTmodels/ApiFunction.h>
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+#include <IPXACTmodels/Component/Component.h>
 
-#include <QBrush>
-#include <QPainter>
-#include <QStyleOptionGraphicsItem>
-#include <QColor>
 #include <QFont>
 #include <QGraphicsDropShadowEffect>
-#include <QDebug>
 #include <QVector2D>
 #include <QGraphicsScene>
 
@@ -45,7 +37,7 @@
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, true),
+    : SWConnectionEndpoint(parent),
       nameLabel_(name, this),
       comInterface_(),
       apiInterface_(),
@@ -57,6 +49,7 @@ SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
     setTypeLocked(false);
+    setTemporary(true);
     initialize();
 }
 
@@ -64,7 +57,7 @@ SWPortItem::SWPortItem(QString const& name, QGraphicsItem *parent)
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, false),
+    : SWConnectionEndpoint(parent),
       nameLabel_(this),
       comInterface_(),
       apiInterface_(apiIf),
@@ -84,7 +77,7 @@ SWPortItem::SWPortItem(QSharedPointer<ApiInterface> apiIf, QGraphicsItem *parent
 // Function: SWPortItem::SWPortItem()
 //-----------------------------------------------------------------------------
 SWPortItem::SWPortItem(QSharedPointer<ComInterface> comIf, QGraphicsItem *parent)
-    : SWConnectionEndpoint(parent, false),
+    : SWConnectionEndpoint(parent),
       nameLabel_(this),
       comInterface_(comIf),
       apiInterface_(),
@@ -114,11 +107,11 @@ QString SWPortItem::name() const
 {
     if (isCom())
     {
-        return comInterface_->getName();
+        return comInterface_->name();
     }
     else if (isApi())
     {
-        return apiInterface_->getName();
+        return apiInterface_->name();
     }
     else
     {
@@ -222,49 +215,40 @@ void SWPortItem::updateInterface()
     }
     else if (isCom())
     {
-        switch (comInterface_->getDirection())
+        if (comInterface_->getDirection() == DirectionTypes::IN)
         {
-        case General::IN:
-            {
-                /*  ||
-                 *  \/
-                 */
-                shape << QPointF(-squareSize/2, 0)
-                      << QPointF(-squareSize/2, -squareSize/2)
-                      << QPointF(squareSize/2, -squareSize/2)
-                      << QPointF(squareSize/2, 0)
-                      << QPointF(0, squareSize/2);
-                break;
-            }
-
-        case General::OUT:
-            {
-                /*  /\
-                 *  ||
-                 */
-                shape << QPointF(-squareSize/2, squareSize/2)
-                      << QPointF(-squareSize/2, 0)
-                      << QPointF(0, -squareSize/2)
-                      << QPointF(squareSize/2, 0)
-                      << QPointF(squareSize/2, squareSize/2);
-                break;
-            }
-
-        case General::INOUT:
-        default:
-            {
-                /*  /\
-                 *  ||
-                 *  \/
-                 */
-                shape << QPointF(-squareSize/2, squareSize/2)
-                      << QPointF(-squareSize/2, 0)
-                      << QPointF(0, -squareSize/2)
-                      << QPointF(squareSize/2, 0)
-                      << QPointF(squareSize/2, squareSize/2)
-                      << QPointF(0, squareSize);
-                break;
-            }
+            /*  ||
+             *  \/
+             */
+            shape << QPointF(-squareSize/2, 0)
+                << QPointF(-squareSize/2, -squareSize/2)
+                << QPointF(squareSize/2, -squareSize/2)
+                << QPointF(squareSize/2, 0)
+                << QPointF(0, squareSize/2);
+        }
+        else if (comInterface_->getDirection() == DirectionTypes::OUT)
+        {
+            /*  /\
+             *  ||
+             */
+            shape << QPointF(-squareSize/2, squareSize/2)
+                << QPointF(-squareSize/2, 0)
+                << QPointF(0, -squareSize/2)
+                << QPointF(squareSize/2, 0)
+                << QPointF(squareSize/2, squareSize/2);
+        }
+        else
+        {
+            /*  /\
+             *  ||
+             *  \/
+             */
+            shape << QPointF(-squareSize/2, squareSize/2)
+                << QPointF(-squareSize/2, 0)
+                << QPointF(0, -squareSize/2)
+                << QPointF(squareSize/2, 0)
+                << QPointF(squareSize/2, squareSize/2)
+                << QPointF(0, squareSize);
         }
     }
     else
@@ -327,7 +311,7 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
 
             if (!isInvalid())
             {
-                getOwnerComponent()->addApiInterface(apiInterface_);
+                getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
             }
         }
         else if (other->getType() == ENDPOINT_TYPE_COM)
@@ -343,37 +327,28 @@ bool SWPortItem::onConnect(ConnectionEndpoint const* other)
             }
             else
             {
-                switch (other->getComInterface()->getDirection())
+                DirectionTypes::Direction direction = other->getComInterface()->getDirection();
+                if (direction == DirectionTypes::IN)
                 {
-                case General::IN:
-                    {
-                        comInterface_->setDirection(General::OUT);
-                        break;
-                    }
-                    
-                case General::OUT:
-                    {
-                        comInterface_->setDirection(General::IN);
-                        break;
-                    }
-
-                case General::INOUT:
-                    {
-                        comInterface_->setDirection(General::INOUT);
-                        break;
-                    }
-
-                default:
-                    {
-                        Q_ASSERT(false);
-                        break;
-                    }
+                    comInterface_->setDirection(DirectionTypes::OUT);
+                }
+                else if (direction == DirectionTypes::OUT)
+                {
+                    comInterface_->setDirection(DirectionTypes::IN);
+                }
+                else if (direction == DirectionTypes::INOUT)
+                {
+                    comInterface_->setDirection(DirectionTypes::INOUT);
+                }
+                else
+                {
+                    Q_ASSERT(false);
                 }
             }
 
             if (!isInvalid())
             {
-                getOwnerComponent()->addComInterface(comInterface_);
+                getOwnerComponent()->getVendorExtensions()->append(comInterface_);
             }
         }
 
@@ -460,8 +435,8 @@ bool SWPortItem::isConnectionValid(ConnectionEndpoint const* other) const
             // If the other one is a hierarchical, then the direction must be the same.
             // Otherwise they must be just compatible (in <-> out or any <-> inout).
             return ((other->isHierarchical() && comIf1->getDirection() == comIf2->getDirection()) ||
-                    (!other->isHierarchical() && (comIf1->getDirection() == General::INOUT ||
-                                                  comIf2->getDirection() == General::INOUT ||
+                    (!other->isHierarchical() && (comIf1->getDirection() == DirectionTypes::INOUT ||
+                                                  comIf2->getDirection() == DirectionTypes::INOUT ||
                                                   comIf1->getDirection() != comIf2->getDirection())));
         }
         else
@@ -546,85 +521,73 @@ void SWPortItem::removeConnection(GraphicsConnection* connection)
 //-----------------------------------------------------------------------------
 QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value)
 {
-    switch (change)
+    if (change == ItemPositionChange)
     {
-    case ItemPositionChange:
+        if (!parentItem())
         {
-            if (!parentItem())
-            {
-                return snapPointToGrid(value.toPointF());
-            }
+            return snapPointToGrid(value.toPointF());
+        }
 
-            QPointF pos = value.toPointF();
-            QRectF parentRect = static_cast<SystemComponentItem*>(parentItem())->rect();
+        QPointF pos = value.toPointF();
+        QRectF parentRect = static_cast<SystemComponentItem*>(parentItem())->rect();
 
-            /*if (pos.y() - parentRect.bottom() >= -35.0 && qAbs(pos.x()) < 50.0)
+        /*if (pos.y() - parentRect.bottom() >= -35.0 && qAbs(pos.x()) < 50.0)
+        {
+        pos.setY(parentRect.bottom());
+        }
+        else*/ if (pos.x() < 0)
+        {
+            pos.setX(parentRect.left());
+        }
+        else
+        {
+            pos.setX(parentRect.right());
+        }
+
+        return snapPointToGrid(pos);
+    }
+    else if (change == ItemPositionHasChanged)
+    {
+        if (parentItem())
+        {
+            checkDirection();
+            setLabelPosition();
+        }
+    }
+    else if (change == ItemRotationHasChanged)
+    {
+        nameLabel_.setRotation(-rotation());
+    }
+    else if (change == ItemScenePositionHasChanged)
+    {
+        // Check if the updates are not disabled.
+        if (!static_cast<SystemComponentItem*>(parentItem())->isConnectionUpdateDisabled())
+        {
+            // Update the connections.
+            foreach (GraphicsConnection* connection, getConnections())
             {
-                pos.setY(parentRect.bottom());
+                connection->updatePosition();
             }
-            else*/ if (pos.x() < 0)
+        }
+
+        // Update the stub length if the parent's parent is a HW mapping item.
+        HWMappingItem* mappingItem = dynamic_cast<HWMappingItem*>(parentItem()->parentItem());
+
+        if (mappingItem != 0)
+        {
+            if (pos().x() < 0)
             {
-                pos.setX(parentRect.left());
+                stubLine_.setLine(0, 0, 0, qMin(0.0, mappingItem->sceneBoundingRect().left() - scenePos().x()));
             }
             else
             {
-                pos.setX(parentRect.right());
+                stubLine_.setLine(0, 0, 0, qMin(0.0, scenePos().x() - mappingItem->sceneBoundingRect().right()));
             }
-
-            return snapPointToGrid(pos);
         }
-
-    case ItemPositionHasChanged:
+        else
         {
-            if (!parentItem())
-                break;
-
-			checkDirection();
-			setLabelPosition();
-
-            break;
+            stubLine_.setLine(0, 0, 0, -GridSize);
         }
-    case ItemRotationHasChanged:
-        {
-            nameLabel_.setRotation(-rotation());
-            break;
-        }
-    case ItemScenePositionHasChanged:
-        {
-            // Check if the updates are not disabled.
-            if (!static_cast<SystemComponentItem*>(parentItem())->isConnectionUpdateDisabled())
-            {
-                // Update the connections.
-                foreach (GraphicsConnection* connection, getConnections())
-                {
-                    connection->updatePosition();
-                }
-            }
-
-            // Update the stub length if the parent's parent is a HW mapping item.
-            HWMappingItem* mappingItem = dynamic_cast<HWMappingItem*>(parentItem()->parentItem());
-
-            if (mappingItem != 0)
-            {
-                if (pos().x() < 0)
-                {
-                    stubLine_.setLine(0, 0, 0, qMin(0.0, mappingItem->sceneBoundingRect().left() - scenePos().x()));
-                }
-                else
-                {
-                    stubLine_.setLine(0, 0, 0, qMin(0.0, scenePos().x() - mappingItem->sceneBoundingRect().right()));
-                }
-            }
-            else
-            {
-                stubLine_.setLine(0, 0, 0, -GridSize);
-            }
-
-            break;
-        }
-
-    default:
-        break;
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -755,7 +718,7 @@ void SWPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     // Add the undo command to the edit stack only if it has changes.
     if (cmd->childCount() > 0 || oldPos_ != pos())
     {
-        static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
+        static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
     }
 }
 
@@ -766,11 +729,11 @@ QString SWPortItem::description() const
 {
 	if (isCom())
     {
-	    return comInterface_->getDescription();
+	    return comInterface_->description();
     }
     else if (isApi())
     {
-        return apiInterface_->getDescription();
+        return apiInterface_->description();
     }
     else
     {
@@ -903,7 +866,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
             apiInterface_->setName(nameLabel_.toPlainText());
             apiInterface_->setApiType(type);
 
-            getOwnerComponent()->addApiInterface(apiInterface_);
+            getOwnerComponent()->getVendorExtensions()->append(apiInterface_);
 
             setType(ENDPOINT_TYPE_API);
             setTypeLocked(true);
@@ -913,7 +876,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
             comInterface_ = QSharedPointer<ComInterface>(new ComInterface());
             comInterface_->setName(nameLabel_.toPlainText());
             comInterface_->setComType(type);
-            getOwnerComponent()->addComInterface(comInterface_);
+            getOwnerComponent()->getVendorExtensions()->append(comInterface_);
 
             setType(ENDPOINT_TYPE_COM);
             setTypeLocked(true);
@@ -925,7 +888,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         {
             if (!isInvalid())
             {
-                getOwnerComponent()->removeApiInterface(apiInterface_.data());
+                getOwnerComponent()->getVendorExtensions()->removeOne(apiInterface_);
             }
 
             apiInterface_.clear();
@@ -935,7 +898,7 @@ void SWPortItem::setTypeDefinition(VLNV const& type)
         {
             if (!isInvalid())
             {
-                getOwnerComponent()->removeComInterface(comInterface_.data());
+                getOwnerComponent()->getVendorExtensions()->removeOne(comInterface_);
             }
 
             comInterface_.clear();

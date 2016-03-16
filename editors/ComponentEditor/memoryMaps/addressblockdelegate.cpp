@@ -1,26 +1,23 @@
-/* 
- *  	Created on: 24.8.2012
- *      Author: Antti Kamppi
- * 		filename: addressblockdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressblockdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.08.2012
+//
+// Description:
+// The delegate that provides editors to add/remove/edit the details of address block.
+//-----------------------------------------------------------------------------
 
 #include "addressblockdelegate.h"
 
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 #include <common/widgets/accessComboBox/accesscombobox.h>
 
-#include <IPXACTmodels/validators/BinaryValidator.h>
-
-#include <QIntValidator>
-#include <QKeyEvent>
-#include <QLineEdit>
-#include <QTextEdit>
-
 //-----------------------------------------------------------------------------
 // Function: AddressBlockDelegate::AddressBlockDelegate()
 //-----------------------------------------------------------------------------
-AddressBlockDelegate::AddressBlockDelegate(QCompleter* parameterNameCompleter, 
+AddressBlockDelegate::AddressBlockDelegate(QCompleter* parameterNameCompleter,
     QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
 ExpressionDelegate(parameterNameCompleter, parameterFinder, parent) 
 {
@@ -65,7 +62,7 @@ void AddressBlockDelegate::setEditorData(QWidget* editor, QModelIndex const& ind
         BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
         Q_ASSERT(boolBox);
 
-        bool value = index.model()->data(index, Qt::DisplayRole).toBool();
+        QString value = index.model()->data(index, Qt::DisplayRole).toString();
         boolBox->setCurrentValue(value);
     }
     else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
@@ -73,8 +70,8 @@ void AddressBlockDelegate::setEditorData(QWidget* editor, QModelIndex const& ind
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
 
-        General::Access access = General::str2Access(index.model()->data(
-            index, Qt::DisplayRole).toString(), General::ACCESS_COUNT);
+        AccessTypes::Access access = AccessTypes::str2Access(
+            index.model()->data(index, Qt::DisplayRole).toString(), AccessTypes::ACCESS_COUNT);
         accessBox->setCurrentValue(access);
     }
     else
@@ -93,7 +90,7 @@ void AddressBlockDelegate::setModelData(QWidget* editor, QAbstractItemModel* mod
         BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
         Q_ASSERT(boolBox);
 
-        bool value = boolBox->getCurrentValue();
+        QString value = boolBox->getCurrentValue();
         model->setData(index, value, Qt::EditRole);
     }
     else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
@@ -101,8 +98,8 @@ void AddressBlockDelegate::setModelData(QWidget* editor, QAbstractItemModel* mod
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
 
-        General::Access access = accessBox->getCurrentValue();
-        model->setData(index, General::access2Str(access), Qt::EditRole);
+        AccessTypes::Access access = accessBox->getCurrentValue();
+        model->setData(index, AccessTypes::access2Str(access), Qt::EditRole);
     }
     else 
     {

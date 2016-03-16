@@ -12,7 +12,7 @@
       parameters of a component.  Parameters are name-value pairs to
       configure or hold information related to the containing
       component. Note that these are not VHDL generics.
-	  In the columns, f(x) means that the value can be given as an equation.
+	  In the columns, f(x) means that the value can be given as an expression.
     </p>
     <p>
       Each parameter contains a mandatory <b>name</b> and an optional
@@ -55,7 +55,7 @@
     <p>
       <b>Value</b> contains the mandatory default value of the parameter. This 
 	  value can be overridden in a design that instantiates this component.
-	  The value is given in SystemVerilog format and may be given as an equation.
+	  The value is given in SystemVerilog format and may be given as an expression.
       Any other text must be enclosed within quotes e.g. "Any text".
     </p>
 	<p>
@@ -76,31 +76,30 @@
         <li><b>immediate</b> indicates that the the value is defined
         within the containing component. The value cannot be overridden
         by the user or a generator in design configuration. This is the 
-		default value</li>
+		default value, when no resolve has been set.</li>
 
         <li><b>user</b> indicates that the user can override the
         default value in design configuration. Generators are not 
         allowed to change the value.</li>
 
-        <li><b>generated</b> indicates that the a generator can
-        override the default value in design configuration.
-        </li>
+        <li><b>generated</b> indicates that a generator can
+        override the default value in a design configuration.</li>
     </ul>
     <p>
-      <b>Bit width</b> defines the length of the bit string that stores the value.
-	  f(x) means that the value can be given as an equation.
+      <b>Bit vector left</b> and <b>bit vector right</b> define the boundaries of a bit vector.
+      These values can only be set to bit type parameters.
     </p>
     <p>
       <b>Array left</b> and <b>Array right</b> specify the left and right sides of array
       dimension for the parameter in an output language e.g. Verilog. Both of these are
-      vendor attributes. The values can be given as an equation, but must resolve to
-      a decimal number. In order to get a valid array, both <b>Array left</b> and
-      <b>Array right</b> must be given.
+      vendor attributes. The values can be given as an expression, but must resolve to
+      a decimal number. In order to get a valid array, both <i>Array left</i> and
+      <i>Array right</i> must be given.
     </p>
 	<p>
-	  <b>Usage count</b> displays the number of references made to this
-	  parameter. Selecting the usage count opens a reference analysis of the
-	  parameter. The usage count can not be changed manually.
+	  <b>Usage count</b> displays the number of references made to this parameter. Selecting 
+      the usage count opens a reference analysis of the parameter. The usage count is automatically 
+      updated to display the number of references made to the parameter.
     </p>
     <p>
       Parameters editor contains a context menu (right mouse button)

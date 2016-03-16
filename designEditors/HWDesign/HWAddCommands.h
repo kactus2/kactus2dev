@@ -14,22 +14,28 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/common/DirectionTypes.h>
+
+#include <IPXACTmodels/Component/PortMap.h>
+
 #include <QUndoCommand>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QString>
 #include <QObject>
 
-class HWConnection;
 class BusPortItem;
-class HWComponentItem;
 class BusInterfaceItem;
 class BusInterface;
+class Component;
+class ComponentItem;
+class Design;
+class DesignDiagram;
 class GraphicsColumn;
 class GraphicsColumnLayout;
-class ComponentItem;
+class HWConnection;
+class HWComponentItem;
 class IGraphicsItemStack;
-class Component;
 class Port;
 //-----------------------------------------------------------------------------
 //! PortAddCommand class.
@@ -99,7 +105,7 @@ public:
      *      @param [in] conn   The interconnection to add.
      *      @param [in] parent The parent command.
      */
-    ConnectionAddCommand(QGraphicsScene* scene, HWConnection* conn,
+    ConnectionAddCommand(QGraphicsScene* scene, HWConnection* conn, QSharedPointer<Design> design,
                          QUndoCommand* parent = 0);
 
     /*!
@@ -127,7 +133,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The interconnection.
-    HWConnection* conn_;
+    HWConnection* connection_;
 
     //! The interface modes for the endpoints.
     General::InterfaceMode mode1_;
@@ -139,71 +145,13 @@ private:
     //! The graphics scene.
     QGraphicsScene* scene_;
 
+    QSharedPointer<Design> design_;
+
     //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
 
     //! If true, port copy operation is a part of this undo command.
     bool portsCopied_;
-};
-
-//-----------------------------------------------------------------------------
-//! PortPasteCommand class.
-//-----------------------------------------------------------------------------
-class PortPasteCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-	 *      Creates the child commands for adding physical ports to the component model. 
-	 *
-     *      @param [in] destComponent  The component to which to copy a port.
-     *      @param [in] srcComponent   The component from which the port is copied.
-     *      @param [in] pos            The position where to copy the port.
-	 *      @param [in] port           The port to paste.
-     *      @param [in] parent         The parent command.
-     */
-    PortPasteCommand(HWComponentItem* destComponent,  QSharedPointer<Component> srcComponent, 
-		QPointF const& pos, BusPortItem* port, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~PortPasteCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    PortPasteCommand(PortAddCommand const& rhs);
-    PortPasteCommand& operator=(PortAddCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The target item.
-    HWComponentItem* component_;
-
-    //! The port position.
-    QPointF pos_;
-
-    //! The diagram port.
-    BusPortItem* port_;
-
-    //! The graphics scene.
-    QGraphicsScene* scene_;
-
-	//! Boolean flag for indicating if the port should be deleted in the destructor.
-    bool del_;
 };
 
 //-----------------------------------------------------------------------------
@@ -221,12 +169,13 @@ public:
      *      @param [in] srcComponent   The component from which the interface is copied.
 	 *      @param [in] interface      The interface item to paste.
 	 *      @param [in] column         The target column.
+     *      @param [in] diagram        The target design diagram.
      *      @param [in] parent         The parent command.
      */
     BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
         QSharedPointer<Component> destComponent,
         BusInterfaceItem* interfaceItem,
-        GraphicsColumn* column, QUndoCommand* parent = 0);
+        GraphicsColumn* column, DesignDiagram* diagram, QUndoCommand* parent = 0);
 
     /*!
      *  Constructor.
@@ -237,13 +186,14 @@ public:
      *      @param [in] srcComponent   The component from which the interface is copied.
 	 *      @param [in] interface      The interface item to paste.
 	 *      @param [in] column         The target column.
+     *      @param [in] diagram        The target design diagram.
 	 *      @param [in] ports          The ports for the interface.
      *      @param [in] parent         The parent command.
      */
     BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
         QSharedPointer<Component> destComponent,
         BusInterfaceItem* interfaceItem,
-        GraphicsColumn* column, QList<QSharedPointer<Port> > ports,
+        GraphicsColumn* column, DesignDiagram* diagram, QList<QSharedPointer<Port> > ports,
         QUndoCommand* parent = 0);
 
     /*!
@@ -287,6 +237,9 @@ private:
 
     //! The target column.
     GraphicsColumn* column_;
+
+    //! The target design diagram.
+    DesignDiagram* diagram_;
 
     //! If true, the bus interface item is deleted in the destructor.
     bool del_;

@@ -20,6 +20,8 @@
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
+#include <IPXACTmodels/common/DirectionTypes.h>
+
 class Port;
 class BusInterface;
 class OffPageConnectorItem;
@@ -27,6 +29,7 @@ class HWComponentItem;
 class HWColumn;
 class Component;
 class LibraryInterface;
+class InterfaceGraphicsData;
 
 //-----------------------------------------------------------------------------
 //! BusInterfaceItem class.
@@ -38,10 +41,21 @@ class BusInterfaceItem : public HWConnectionEndpoint
 public:
     enum { Type = GFX_TYPE_DIAGRAM_INTERFACE };
 
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] lh          The library in use.
+     *      @param [in] component   The component containing the bus interface this item represents.
+     *      @param [in] busIf       The bus interface this item represents.
+     *      @param [in] dataGroup   The container for the item data.
+     *      @param [in] parent      The parent object.
+     */
     BusInterfaceItem(LibraryInterface* lh, QSharedPointer<Component> component,
-                     QSharedPointer<BusInterface> busIf, QGraphicsItem *parent = 0);
+                     QSharedPointer<BusInterface> busIf,
+                     QSharedPointer<InterfaceGraphicsData> dataGroup,
+                     QGraphicsItem *parent = 0);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~BusInterfaceItem();
 
     /*!
@@ -53,7 +67,7 @@ public:
      */
     void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
 
-    /*! \brief Update the graphics to match the IP-XACT bus interface
+    /*! Update the graphics to match the IP-XACT bus interface
      *
      */
     void updateInterface();
@@ -92,28 +106,28 @@ public:
     // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
-    /*! \brief Returns the name of this port
+    /*! Returns the name of this port
      *
      */
     virtual QString name() const;
 
-	/*! \brief Set the name for the interface.
+	/*! Set the name for the interface.
 	 *
-	 * \param name The name to set for the interface.
+	 *      @param [in] name The name to set for the interface.
 	 *
 	*/
 	virtual void setName(const QString& name);
 
-	/*! \brief Get the description of the interface.
+	/*! Get the description of the interface.
 	 *
 	 *
-	 * \return QString contains the description.
+	 *      @return QString contains the description.
 	*/
 	virtual QString description() const;
 
-	/*! \brief Set the description for the interface.
+	/*! Set the description for the interface.
 	 *
-	 * \param description Contains the description to set.
+	 *      @param [in] description Contains the description to set.
 	 *
 	*/
 	virtual void setDescription(const QString& description);
@@ -151,16 +165,14 @@ public:
     virtual bool isExclusive() const;
 
     /*! 
-     *  Returns the encompassing component. if this port represents
-     *  a bus interface on a component.
+     *  Returns the encompassing component. if this port represents a bus interface on a component.
      */
     virtual ComponentItem* encompassingComp() const;
 
-	/*! \brief Returns pointer to the top component that owns this interface.
+	/*! Returns pointer to the top component that owns this interface.
 	 *
 	 *
-	 * \return QSharedPointer<Component> Pointer to the component to which this 
-	 * interface belongs to.
+	 *      @return The component to which this interface belongs to.
 	*/
 	virtual QSharedPointer<Component> getOwnerComponent() const;
 
@@ -175,9 +187,9 @@ public:
      *      @remarks The function returns a null pointer if the end point is a bus interface.
      *               Use isBus() function to check for ad-hoc support (isBus() == false).
      */
-    virtual Port* getPort() const;
+    virtual QSharedPointer<Port> getPort() const;
 
-    /*! \brief Returns true if the port represents a hierarchical connection
+    /*! Returns true if the port represents a hierarchical connection
      *
      */
     virtual bool isHierarchical() const;
@@ -189,9 +201,9 @@ public:
 
     void setDirection(QVector2D const& dir);
 
-	/*! \brief Set the interface mode for the end point.
+	/*! Set the interface mode for the end point.
 	 *
-	 * \param mode The interface mode to set.
+	 *      @param [in] mode The interface mode to set.
 	 *
 	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode);
@@ -206,19 +218,29 @@ public:
 	 */
 	void setLabelPosition();
 
+    /*!
+     *  Gets the data extension for the bus interface.
+     *
+     *      @return The data vendor extension.
+     */
+    QSharedPointer<VendorExtension> getDataExtension() const;
+
 signals:
-    //! \brief Send an error message to the user.
+    //! Send an error message to the user.
     void errorMessage(const QString& errorMessage);
 
 protected:
-    virtual QVariant itemChange(GraphicsItemChange change,
-                                const QVariant &value);
+    virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
 
-    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
+
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+
 
 private:
+
     /*!
      *  Clones the port maps and required ports from the source end point.
      *
@@ -227,12 +249,40 @@ private:
      */
     bool clonePortMaps(QSharedPointer<BusInterface> busIf, ConnectionEndpoint const* source);
 
+    /*!
+     *  Creates the shape of a up-pointing arrow for the item.
+     *
+     *      @return The shape for the item.
+     */
+    QPolygonF arrowUp() const;
+    
+    /*!
+     *  Creates the shape of a down-pointing arrow for the item.
+     *
+     *      @return The shape for the item.
+     */
+    QPolygonF arrowDown() const;
+    
+    /*!
+     *  Creates the shape of a double-headed arrow for the item.
+     *
+     *      @return The shape for the item.
+     */
+    QPolygonF doubleArrow() const;
+
+    /*!
+     *  Gets the direction for the bus interface.
+     *
+     *      @return The direction of the bus interface.
+     */
+    DirectionTypes::Direction getInterfaceDirection() const;
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The library interface.
-    LibraryInterface* lh_;
+    LibraryInterface* library_;
 
     //! The name label.
 	QGraphicsTextItem nameLabel_;
@@ -242,6 +292,9 @@ private:
 
     //! The top-level component.
     QSharedPointer<Component> component_;
+
+    //! The data extension for the item.
+    QSharedPointer<InterfaceGraphicsData> dataGroup_;
 
     //! The old column from where the mouse drag event began.
     HWColumn* oldColumn_;

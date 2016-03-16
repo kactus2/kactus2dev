@@ -11,7 +11,8 @@
 
 #include "ChoiceCreatorDelegate.h"
 
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
 #include <QComboBox>
 
@@ -87,7 +88,7 @@ QSharedPointer<Choice> ChoiceCreatorDelegate::findChoice(QModelIndex const& inde
     QString choiceName = choiceNameOnRow(index);
     foreach (QSharedPointer<Choice> currentChoice, *choices_)
     {
-        if (currentChoice->getName() == choiceName)
+        if (currentChoice->name() == choiceName)
         {
             return currentChoice;
         }

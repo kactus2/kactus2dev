@@ -14,7 +14,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/libraryitem.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
 // Function: VLNVDataNode()
@@ -34,9 +34,9 @@ VLNVDataNode::~VLNVDataNode()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getName()
+// Function: name()
 //-----------------------------------------------------------------------------
-QString const& VLNVDataNode::getName() const
+QString const& VLNVDataNode::name() const
 {
     return name_;
 }
@@ -64,7 +64,7 @@ VLNVDataNode* VLNVDataNode::findChild(QString const& name)
 {
     foreach (QSharedPointer<VLNVDataNode> node, children_)
     {
-        if (node->getName() == name)
+        if (node->name() == name)
         {
             return node.data();
         }
@@ -80,7 +80,7 @@ VLNVDataNode const* VLNVDataNode::findChild(QString const& name) const
 {
     foreach (QSharedPointer<VLNVDataNode> node, children_)
     {
-        if (node->getName() == name)
+        if (node->name() == name)
         {
             return node.data();
         }
@@ -114,7 +114,7 @@ void VLNVDataNode::removeChild(QString const& name)
 {
     foreach (QSharedPointer<VLNVDataNode> node, children_)
     {
-        if (node->getName() == name)
+        if (node->name() == name)
         {
             children_.removeOne(node);
             return;
@@ -219,7 +219,7 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
             VLNV const vlnv = item->getVLNV();
 
             // Check if the tree already contains an node with the same name.
-            if (node.findChild(item->getName()))
+            if (node.findChild(item->name()))
             {
                 continue;
             }
@@ -233,28 +233,28 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
             // If filtering is off, just accept the item.
             if (!firmnessFilterEnabled_ && !hierarchyFilterEnabled_ && !implementationFilterEnabled_)
             {
-                VLNVDataNode* childNode = node.addChild(item->getName());
+                VLNVDataNode* childNode = node.addChild(item->name());
                 childNode->setVLNV(vlnv);
                 continue;
             }
 
             // Retrieve the library component for filtering. Filtering is possible only if the
             // library component is an IP-XACT component.
-            QSharedPointer<LibraryComponent const> libComp = lh->getModelReadOnly(vlnv);
+            QSharedPointer<Document const> libComp = lh->getModelReadOnly(vlnv);
             QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
 
             if (component == 0 ||
-                ((!firmnessFilterEnabled_ || firmnessFilter_ == component->getComponentFirmness()) &&
-                (!hierarchyFilterEnabled_ || hierarchyFilter_ == component->getComponentHierarchy()) &&
-                (!implementationFilterEnabled_ || implementationFilter_ == component->getComponentImplementation())))
+                ((!firmnessFilterEnabled_ || firmnessFilter_ == component->getFirmness()) &&
+                (!hierarchyFilterEnabled_ || hierarchyFilter_ == component->getHierarchy()) &&
+                (!implementationFilterEnabled_ || implementationFilter_ == component->getImplementation())))
             {
-                VLNVDataNode* childNode = node.addChild(item->getName());
+                VLNVDataNode* childNode = node.addChild(item->name());
                 childNode->setVLNV(vlnv);
             }
         }
         else
         {
-            QString name = item->getName();
+            QString name = item->name();
 
             if (item->getLevel() == LibraryItem::NAME)
             {

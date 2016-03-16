@@ -1,88 +1,108 @@
-/* 
- *  	Created on: 27.6.2012
- *      Author: Antti Kamppi
- * 		filename: swviewsdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: SystemViewsDelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Joni-Matti M‰‰tt‰
+// Date: 13.7.2012
+//
+// Description:
+// The delegate class that provides editors for editing system views.
+//-----------------------------------------------------------------------------
 
 #include "SystemViewsDelegate.h"
 
 #include <QLineEdit>
 
+//-----------------------------------------------------------------------------
+// Function: SystemViewsDelegate::SystemViewsDelegate()
+//-----------------------------------------------------------------------------
 SystemViewsDelegate::SystemViewsDelegate(QObject *parent):
-QStyledItemDelegate(parent) {
+QStyledItemDelegate(parent) 
+{
 }
 
-SystemViewsDelegate::~SystemViewsDelegate() {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsDelegate::~SystemViewsDelegate()
+//-----------------------------------------------------------------------------
+SystemViewsDelegate::~SystemViewsDelegate()
+{
 }
 
-QWidget* SystemViewsDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case NAME_COLUMN:
-		case DISPLAY_NAME_COLUMN:
-		case DESCRIPTION_COLUMN: {
-			QLineEdit* edit = new QLineEdit(parent);
-			connect(edit, SIGNAL(editingFinished()),
-				this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-			return edit;
-								 }
-		case HIER_REF_COLUMN: {
-			Q_ASSERT(false);
-			return NULL;
-							  }
-		default: {
-			return QStyledItemDelegate::createEditor(parent, option, index);
-				 }
-	}
+//-----------------------------------------------------------------------------
+// Function: SystemViewsDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* SystemViewsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+    QModelIndex const& index) const
+{
+    if (index.column() == NAME_COLUMN || index.column() == DISPLAY_NAME_COLUMN ||
+        index.column() == DESCRIPTION_COLUMN)
+    {
+        QLineEdit* edit = new QLineEdit(parent);
+        connect(edit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return edit;
+    }
+    else if (index.column() == HIER_REF_COLUMN)
+    {
+        Q_ASSERT(false);
+        return 0;
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
 }
 
-void SystemViewsDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case NAME_COLUMN:
-		case DISPLAY_NAME_COLUMN:
-		case DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: SystemViewsDelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void SystemViewsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+{
+    if (index.column() == NAME_COLUMN || index.column() == DISPLAY_NAME_COLUMN ||
+        index.column() == DESCRIPTION_COLUMN)
+    {
+        QLineEdit* lineEditor = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(lineEditor);
 
-			const QString text = index.model()->data(index, Qt::DisplayRole).toString();
-			edit->setText(text);
-			break;
-								 }
-		case HIER_REF_COLUMN: {
-			Q_ASSERT(false);
-			break;
-							  }
-		default: {
-			QStyledItemDelegate::setEditorData(editor, index);
-			break;
-				 }
-	}
+        lineEditor->setText(index.data(Qt::DisplayRole).toString());
+    }
+    else if (index.column() == HIER_REF_COLUMN)
+    {
+        Q_ASSERT(false);
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
 }
 
-void SystemViewsDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
-	switch (index.column()) {
-		case NAME_COLUMN:
-		case DISPLAY_NAME_COLUMN:
-		case DESCRIPTION_COLUMN: {
-			QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-			Q_ASSERT(edit);
+//-----------------------------------------------------------------------------
+// Function: SystemViewsDelegate::setModelData()
+//-----------------------------------------------------------------------------
+void SystemViewsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
+{
+    if (index.column() == NAME_COLUMN || index.column() == DISPLAY_NAME_COLUMN ||
+        index.column() == DESCRIPTION_COLUMN)
+    {
+        QLineEdit* lineEditor = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT(lineEditor);
 
-			QString text = edit->text();
-			model->setData(index, text, Qt::EditRole);
-			break;
-								 }
-		case HIER_REF_COLUMN: {
-			Q_ASSERT(false);
-			break;
-							  }
-		default: {
-			QStyledItemDelegate::setModelData(editor, model, index);
-			break;
-				 }
-	}
+        model->setData(index, lineEditor->text(), Qt::EditRole);
+    }
+    else if (index.column() == HIER_REF_COLUMN)
+    {
+        Q_ASSERT(false);
+    }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }
 
-void SystemViewsDelegate::commitAndCloseEditor() {
+//-----------------------------------------------------------------------------
+// Function: SystemViewsDelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void SystemViewsDelegate::commitAndCloseEditor()
+{
 	QWidget* edit = qobject_cast<QWidget*>(sender());
 	Q_ASSERT(edit);
 

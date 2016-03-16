@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.7.2011
- *      Author: Antti Kamppi
- * 		filename: vlnvdialer.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: vlnvdialer.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.07.2011
+//
+// Description:
+// VLNVDialer is used to set options that specify what objects to display in library.
+//-----------------------------------------------------------------------------
 
 #include "vlnvdialer.h"
 
@@ -11,13 +15,16 @@
 #include <QIcon>
 #include <QSettings>
 
+//-----------------------------------------------------------------------------
+// Function: VLNVDialer::VLNVDialer()
+//-----------------------------------------------------------------------------
 VLNVDialer::VLNVDialer(QWidget *parent):
 QWidget(parent),
-filters_(this),
-dialer_(this),
-hideButton_(QIcon(":/icons/common/graphics/triangle_arrow_up.png"), QString(), this),
-hidden_(false) {
-
+    filters_(this),
+    dialer_(this),
+    hideButton_(QIcon(":/icons/common/graphics/triangle_arrow_up.png"), QString(), this),
+    hidden_(false)
+{
 	// set visual options for the hide/show button
 	hideButton_.setFlat(true);
 	hideButton_.setMaximumHeight(10);
@@ -34,8 +41,7 @@ hidden_(false) {
 	layout->setSpacing(0);
 	layout->setContentsMargins(4, 4, 4, 4);
 
-	connect(&hideButton_, SIGNAL(clicked(bool)),
-		this, SLOT(onHideShowClick()), Qt::UniqueConnection);
+	connect(&hideButton_, SIGNAL(clicked(bool)), this, SLOT(onHideShowClick()), Qt::UniqueConnection);
 
 	connect(&dialer_, SIGNAL(vendorChanged(const QString&)),
 		this, SIGNAL(vendorChanged(const QString&)), Qt::UniqueConnection);
@@ -56,7 +62,11 @@ hidden_(false) {
 		this, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
 }
 
-VLNVDialer::~VLNVDialer() {
+//-----------------------------------------------------------------------------
+// Function: VLNVDialer::~VLNVDialer()
+//-----------------------------------------------------------------------------
+VLNVDialer::~VLNVDialer()
+{
 	// save the visibility of the filter widget
 	QSettings settings;
 	settings.setValue("FilterWidget/Hidden", hidden_);
@@ -78,27 +88,39 @@ FilterWidget::FilterOptions VLNVDialer::getFilters() const
     return filters_.getFilters();
 }
 
-void VLNVDialer::onHideShowClick() {
+//-----------------------------------------------------------------------------
+// Function: VLNVDialer::onHideShowClick()
+//-----------------------------------------------------------------------------
+void VLNVDialer::onHideShowClick()
+{
 	// if filters were hidden
-	if (hidden_) {
-		filters_.show();
+	if (hidden_)
+    {
 		hideButton_.setIcon(QIcon(":/icons/common/graphics/triangle_arrow_up.png"));
 	}
 	// if filters were visible
-	else {
-		filters_.hide();
+	else
+    {
 		hideButton_.setIcon(QIcon(":/icons/common/graphics/triangle_arrow_down.png"));
 	}
 
 	// change the hidden value
 	hidden_ = !hidden_;
+    filters_.setVisible(!hidden_);
 }
 
-void VLNVDialer::setRootItem(const LibraryItem* rootItem ) {
+//-----------------------------------------------------------------------------
+// Function: VLNVDialer::setRootItem()
+//-----------------------------------------------------------------------------
+void VLNVDialer::setRootItem(const LibraryItem* rootItem )
+{
 	dialer_.setRootItem(rootItem);
 }
 
-void VLNVDialer::refreshLibrary() {
+//-----------------------------------------------------------------------------
+// Function: VLNVDialer::refreshLibrary()
+//-----------------------------------------------------------------------------
+void VLNVDialer::refreshLibrary()
+{
 	dialer_.refreshVendors();
 }
-

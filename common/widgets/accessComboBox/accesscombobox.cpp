@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 23.8.2012
- *      Author: Antti Kamppi
- * 		filename: accesscombobox.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: accesscombobox.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 23.08.2012
+//
+// Description:
+// The combo box to select one of the defined access types.
+//-----------------------------------------------------------------------------
 
 #include "accesscombobox.h"
 
@@ -17,9 +21,9 @@ QComboBox(parent)
 	setEditable(false);
 
     // add items for all available access-values
-    for (int i = 0; i < General::ACCESS_COUNT; ++i)
+    for (int i = 0; i < AccessTypes::ACCESS_COUNT; ++i)
     {
-        QString text = General::access2Str(static_cast<General::Access>(i));
+        QString text = AccessTypes::access2Str(static_cast<AccessTypes::Access>(i));
         addItem(text);
     }
 }
@@ -35,15 +39,15 @@ AccessComboBox::~AccessComboBox()
 //-----------------------------------------------------------------------------
 // Function: AccessComboBox::getCurrentValue()
 //-----------------------------------------------------------------------------
-General::Access AccessComboBox::getCurrentValue() const
+AccessTypes::Access AccessComboBox::getCurrentValue() const
 {
-	return static_cast<General::Access>(currentIndex());
+	return static_cast<AccessTypes::Access>(currentIndex());
 }
 
 //-----------------------------------------------------------------------------
 // Function: AccessComboBox::setCurrentValue()
 //-----------------------------------------------------------------------------
-void AccessComboBox::setCurrentValue(General::Access access)
+void AccessComboBox::setCurrentValue(AccessTypes::Access access)
 {
 	setCurrentIndex(access);
 }	

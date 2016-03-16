@@ -10,8 +10,6 @@
 #include <QFontMetrics>
 #include <QFont>
 
-#include <QDebug>
-
 //-----------------------------------------------------------------------------
 // Function: VisualizerItem()
 //-----------------------------------------------------------------------------
@@ -269,9 +267,9 @@ void VisualizerItem::setWidth(qreal width)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getName()
+// Function: name()
 //-----------------------------------------------------------------------------
-QString VisualizerItem::getName() const {
+QString VisualizerItem::name() const {
 	return name_;
 }
 

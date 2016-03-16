@@ -13,11 +13,12 @@
 
 #include "FileDependencyModel.h"
 #include "FileDependencyItem.h"
-
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/fileset.h>
+#include "FileDependencyColumns.h"
 
 #include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <QPainter>
 #include <QApplication>
@@ -26,9 +27,9 @@
 //-----------------------------------------------------------------------------
 // Function: FileDependencyDelegate::FileDependencyDelegate()
 //-----------------------------------------------------------------------------
-FileDependencyDelegate::FileDependencyDelegate(QSharedPointer<Component> component, QObject* parent /*= 0*/)
-    : QStyledItemDelegate(parent),
-      component_(component)
+FileDependencyDelegate::FileDependencyDelegate(QSharedPointer<Component> component, QObject* parent):
+QStyledItemDelegate(parent),
+component_(component)
 {
 
 }
@@ -44,8 +45,7 @@ FileDependencyDelegate::~FileDependencyDelegate()
 //-----------------------------------------------------------------------------
 // Function: FileDependencyDelegate::sizeHint()
 //-----------------------------------------------------------------------------
-QSize FileDependencyDelegate::sizeHint(QStyleOptionViewItem const& option,
-                                       QModelIndex const& index) const
+QSize FileDependencyDelegate::sizeHint(QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
     return QStyledItemDelegate::sizeHint(option, index) + QSize(0, 4);
 }
@@ -56,7 +56,7 @@ QSize FileDependencyDelegate::sizeHint(QStyleOptionViewItem const& option,
 QWidget* FileDependencyDelegate::createEditor(QWidget *parent, QStyleOptionViewItem const& option,
                                               QModelIndex const& index) const
 {
-    if (index.column() == FILE_DEPENDENCY_COLUMN_FILESETS)
+    if (index.column() == FileDependencyColumns::FILESETS)
     {
         EnumCollectionEditor* editor = new EnumCollectionEditor(parent);
         return editor;
@@ -68,15 +68,15 @@ QWidget* FileDependencyDelegate::createEditor(QWidget *parent, QStyleOptionViewI
 //-----------------------------------------------------------------------------
 // Function: FileDependencyDelegate::setEditorData()
 //-----------------------------------------------------------------------------
-void FileDependencyDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+void FileDependencyDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == FILE_DEPENDENCY_COLUMN_FILESETS)
+    if (index.column() == FileDependencyColumns::FILESETS)
     {
         EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
         Q_ASSERT(collectionEditor != 0);
 
         // Retrieve the file sets used by the item.
-        QStringList fileSetNames = index.model()->data(index, Qt::UserRole).toStringList();
+        QStringList fileSetNames = index.data(Qt::UserRole).toStringList();
 
         // Update the contents of the editor accordingly.
         if (fileSetNames.contains("[multiple]"))
@@ -84,9 +84,9 @@ void FileDependencyDelegate::setEditorData(QWidget *editor, const QModelIndex &i
             collectionEditor->addItem("[multiple]", true);
         }
 
-        foreach (QSharedPointer<FileSet> fileSet, component_->getFileSets())
+        foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
         {
-            collectionEditor->addItem(fileSet->getName(), fileSetNames.contains(fileSet->getName()));
+            collectionEditor->addItem(fileSet->name(), fileSetNames.contains(fileSet->name()));
         }
     }
     else
@@ -102,7 +102,7 @@ void FileDependencyDelegate::setEditorData(QWidget *editor, const QModelIndex &i
 void FileDependencyDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
                                           QModelIndex const& index) const
 {
-    if (index.column() == FILE_DEPENDENCY_COLUMN_FILESETS)
+    if (index.column() == FileDependencyColumns::FILESETS)
     {
         EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
         Q_ASSERT(collectionEditor != 0);

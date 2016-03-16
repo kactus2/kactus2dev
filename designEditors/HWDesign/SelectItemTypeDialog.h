@@ -40,7 +40,7 @@ public:
     ~SelectItemTypeDialog();
 
     //!  Returns the selected item type.
-    ColumnItemType getSelectedItemType() const;
+    ColumnTypes::ColumnItemType getSelectedItemType() const;
 
 private:
     // Disable copying.

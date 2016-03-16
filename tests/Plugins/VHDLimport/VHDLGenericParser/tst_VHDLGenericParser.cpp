@@ -14,7 +14,7 @@
 
 #include <Plugins/VHDLimport/VHDLGenericParser.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 class tst_VHDLGenericParser : public QObject
 {
@@ -44,8 +44,11 @@ private:
     //! The parser to test.
     VHDLGenericParser parser_;
 
-    //! The component to add parsed model parameters to.
-    QSharedPointer<Component> importComponent_;
+    //! The component to add parsed component instantiation to.
+	QSharedPointer<Component> importComponent_;
+
+	//! The component instantiation to add parsed module parameters to.
+	QSharedPointer<ComponentInstantiation> importComponentInstantiation_;
 };
 
 //-----------------------------------------------------------------------------
@@ -61,7 +64,11 @@ tst_VHDLGenericParser::tst_VHDLGenericParser(): parser_(this), importComponent_(
 //-----------------------------------------------------------------------------
 void tst_VHDLGenericParser::init()
 {
-    importComponent_ = QSharedPointer<Component>(new Component());
+	importComponent_ = QSharedPointer<Component>(new Component());
+
+	importComponentInstantiation_ = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
+	importComponentInstantiation_->setName("module_parameter_instantiation");
+	importComponent_->getComponentInstantiations()->append(importComponentInstantiation_);
 }
 
 //-----------------------------------------------------------------------------
@@ -77,13 +84,14 @@ void tst_VHDLGenericParser::testGenericIsParsed()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getModelParameters()->count(), 1);
+    QCOMPARE(importComponentInstantiation_->getModuleParameters()->count(), 1);
 
-    QSharedPointer<ModelParameter> createdModelParamter = importComponent_->getModelParameters()->first();
-    QCOMPARE(createdModelParamter->getName(), expectedName);
+    QSharedPointer<ModuleParameter> createdModelParamter =
+		importComponentInstantiation_->getModuleParameters()->first();
+    QCOMPARE(createdModelParamter->name(), expectedName);
     QCOMPARE(createdModelParamter->getDataType(), expectedType);
     QCOMPARE(createdModelParamter->getValue(), expectedDefaultValue);
-    QCOMPARE(createdModelParamter->getDescription(), expectedDescription);
+    QCOMPARE(createdModelParamter->description(), expectedDescription);
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +144,7 @@ void tst_VHDLGenericParser::testGenericIsParsed_data()
 //-----------------------------------------------------------------------------
 void tst_VHDLGenericParser::runParser(QString const& fileContent)
 {
-    parser_.import(fileContent, importComponent_);
+    parser_.import(fileContent, importComponent_, importComponentInstantiation_);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,7 +157,7 @@ void tst_VHDLGenericParser::testMultipleGenericsAreParsed()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getModelParameters()->count(), expectedNumberOfGenerics);
+    QCOMPARE(importComponentInstantiation_->getModuleParameters()->count(), expectedNumberOfGenerics);
 }
 
 //-----------------------------------------------------------------------------
@@ -236,7 +244,7 @@ void tst_VHDLGenericParser::testCommentedGenericIsNotParsed()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getModelParameters()->count(), 0);
+    QCOMPARE(importComponentInstantiation_->getModuleParameters()->count(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -261,7 +269,7 @@ void tst_VHDLGenericParser::testModelParametersAreNotParsedOutsideEntity()
 
     runParser(fileContent);
 
-    QCOMPARE(importComponent_->getModelParameters()->count(), 0);
+    QCOMPARE(importComponentInstantiation_->getModuleParameters()->count(), 0);
 }
 
 QTEST_APPLESS_MAIN(tst_VHDLGenericParser)

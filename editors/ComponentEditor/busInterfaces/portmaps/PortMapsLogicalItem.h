@@ -14,16 +14,19 @@
 
 #include "PortMapsTreeItem.h"
 
+#include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <QObject>
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
 
-#include <IPXACTmodels/generaldeclarations.h>
-
 class AbstractionDefinition;
 class BusInterface;
 class Component;
+class PortMap;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Port maps tree item representing a logical port.
@@ -35,14 +38,21 @@ class PortMapsLogicalItem : public PortMapsTreeItem
 public:
 
     /*!
-     *  Constructor for a logical port item.
+     *  The constructor.
+     *
+     *      @param [in] parent              Parent item.
+     *      @param [in] logicalName         The logical name.
+     *      @param [in] component           Containing component.
+     *      @param [in] busif               Used bus interface.
+     *      @param [in] absDef              Used abstraction definition.
+     *      @param [in] expressionParser    The used expression parser.
      */
     PortMapsLogicalItem(PortMapsTreeItem* parent,
         QString const& logicalName,
         QSharedPointer<Component> component,
-        BusInterface* busif,
-        QSharedPointer<AbstractionDefinition> absDef
-    );
+        QSharedPointer<BusInterface> busif,
+        QSharedPointer<AbstractionDefinition> absDef,
+        QSharedPointer<ExpressionParser> expressionParser);
 
     /*!
      *  Destructor.
@@ -72,24 +82,9 @@ public:
     virtual bool isValid() const;
 
     /*!
-     *  Checks the validity of the item.
+     *  Gets the width for the logical port represented by the item.
      *
-     *      @param [inout] errorList   The list to add the possible error messages to.
-     *
-     *      @return True, if item is valid, otherwise false.
-     */
-    virtual bool isValid(QStringList& errorList) const;
-
-    /*!
-     *  Clears the mappings for all children.
-     */
-    void clearMappings();
-
-    /*!
-     *  Gets the width of the logical signal.
-     *
-     *
-     *      @return width of the logical signal.
+     *      @return The logical width.
      */
     int getWidth() const;
 
@@ -98,7 +93,7 @@ public:
      *
      *      @return The logical direction.
      */
-    General::Direction getDirection() const;
+    DirectionTypes::Direction getDirection() const;
 
 private:
     // Disable copying.
@@ -106,12 +101,41 @@ private:
     PortMapsLogicalItem& operator=(PortMapsLogicalItem const& rhs);
     
     /*!
-     *  Gets a string of the connected ports and their bits.
-     *     
-     *      @return Names and bits of connected physical ports.
+     *  Clears the mappings for all children.
      */
-    QString getPhysPorts() const;
+    void clearMappings();
 
+    /*!
+     *  Gets the width of the logical signal.
+     *
+     *      @return width of the logical signal.
+     */
+    void updateWidth();
+    
+    /*!
+     *  Updates the port width to given value by adding/removing children.
+     *
+     *      @param [in] width   The new width.
+     */
+    void updateLogicalBoundaries();    
+
+    /*!
+     *  Finds the logical bounds for a port map.
+     *
+     *      @param [in] portMap   The port map whose logical bounds to find.
+     *
+     *      @return The bounds for the logical port in the port map.
+     */
+    QPair<int, int> findLogicalBounds(QSharedPointer<PortMap> portMap) const;
+    
+    /*!
+     *  Finds the physical bounds for a port map.
+     *
+     *      @param [in] portMap   The port map whose physical bounds to find.
+     *
+     *      @return The bounds for the physical port in the port map.
+     */
+    QPair<int, int> findPhysicalBounds(QSharedPointer<PortMap> portMap) const;
 
     /*!
      *  Gets the width of the logical signal.
@@ -121,26 +145,25 @@ private:
      */
     int getConnectionCount() const;
 
-
     /*!
-     *  Updates the port width to given value by adding/removing children.
-     *
-     *      @param [in] width   The new width.
+     *  Gets a string of the connected ports and their bits.
+     *     
+     *      @return Names and bits of connected physical ports.
      */
-    void updateWidthTo(int width);    
+    QString getPhysPorts() const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------  
 
-    //! Pointer to the logical port bus interface.
-    BusInterface* busIf_;
+    //! The logical port bus interface.
+    QSharedPointer<BusInterface> busIf_;
 
-    //! Pointer to the abstraction definition that is used.
+    //! The abstraction definition that is used.
     QSharedPointer<AbstractionDefinition> absDef_;
 
     //! The port maps of the logical port item.
-	QList<QSharedPointer<PortMap> >& portMaps_;
+	QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
 
     //! The left bound of the logical port.
     int right_;
@@ -148,9 +171,8 @@ private:
     //! The right bound of the logical port.
     int left_;
     
-    //! Flag for indicating beginning of mapping when bounds are not yet set.
-    bool beginMapping_;
-    
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // PORTMAPSLOGICALITEM_H

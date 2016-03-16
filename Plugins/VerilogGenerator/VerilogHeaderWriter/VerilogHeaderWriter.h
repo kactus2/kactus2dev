@@ -18,7 +18,7 @@
 #include <QString>
 #include <QTextStream>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 //-----------------------------------------------------------------------------
 // Class for generating a header for a Verilog file.

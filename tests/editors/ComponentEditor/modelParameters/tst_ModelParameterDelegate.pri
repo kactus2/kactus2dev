@@ -27,9 +27,10 @@ HEADERS += ../../../../editors/ComponentEditor/parameters/Array/ArrayColumns.h \
     ../../../../editors/ComponentEditor/modelParameters/ModelParameterDelegate.h \
     ../../../../editors/ComponentEditor/parameters/Array/ParameterArrayModel.h \
     ../../../../editors/ComponentEditor/parameters/ParameterDelegate.h \
+    ../../../../editors/ComponentEditor/common/ReferencingTableModel.h \
     ../../../../editors/ComponentEditor/modelParameters/modelparametermodel.h \
     ../../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../../editors/ComponentEditor/common/ReferencingTableModel.h
+    ../../../../editors/ComponentEditor/common/MultilineDescriptionDelegate.h
 SOURCES += ../../../../editors/ComponentEditor/common/AbstractParameterModel.cpp \
     ../../../../editors/ComponentEditor/parameters/Array/ArrayDelegate.cpp \
     ../../../../editors/ComponentEditor/parameters/Array/ArrayView.cpp \
@@ -44,9 +45,10 @@ SOURCES += ../../../../editors/ComponentEditor/common/AbstractParameterModel.cpp
     ../../../../editors/ComponentEditor/parameters/Array/ParameterArrayModel.cpp \
     ../../../../editors/ComponentEditor/parameters/ParameterDelegate.cpp \
     ../../../../editors/ComponentEditor/common/ParameterizableTable.cpp \
+    ../../../../editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../editors/ComponentEditor/common/ValueFormatter.cpp \
     ../../../../editors/ComponentEditor/modelParameters/modelparametermodel.cpp \
     ../../../../IPXACTmodels/validators/namevalidator.cpp \
     ./tst_ModelParameterDelegate.cpp \
-    ../../../../editors/ComponentEditor/common/ReferencingTableModel.cpp
+    ../../../../editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp

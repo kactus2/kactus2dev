@@ -15,9 +15,9 @@
 
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 #include <QRegularExpression>
 
@@ -55,27 +55,28 @@ VHDLGenericParser::~VHDLGenericParser()
 //-----------------------------------------------------------------------------
 // Function: VHDLGenericParser::import()
 //-----------------------------------------------------------------------------
-void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> targetComponent)
+void VHDLGenericParser::import(QString const& input, QSharedPointer<Component> targetComponent,
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-    foreach (QSharedPointer<ModelParameter> modelParameter, *targetComponent->getModelParameters())
+    foreach (QSharedPointer<ModuleParameter> modelParameter, *targetComponentInstantiation->getModuleParameters())
     {
         modelParameter->setAttribute("kactus2:import", "no");
     }
 
     foreach(QString declaration, findGenericDeclarations(input))
     {
-        createModelParameterFromDeclaration(declaration, targetComponent);
+        createModelParameterFromDeclaration(declaration, targetComponent, targetComponentInstantiation);
         if (highlighter_)
         {
             highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);
         }        
     }
 
-    foreach (QSharedPointer<ModelParameter> modelParameter, *targetComponent->getModelParameters())
+    foreach (QSharedPointer<ModuleParameter> modelParameter, *targetComponentInstantiation->getModuleParameters())
     {
         if (modelParameter->getAttribute("kactus2:import") == "no")
         {
-            targetComponent->getModelParameters()->removeAll(modelParameter);
+            targetComponentInstantiation->getModuleParameters()->removeAll(modelParameter);
         }
     }
 }
@@ -92,7 +93,8 @@ void VHDLGenericParser::setHighlighter(Highlighter* highlighter)
 // Function: VHDLGenericParser::createModelParameterFromDeclaration()
 //-----------------------------------------------------------------------------
 void VHDLGenericParser::createModelParameterFromDeclaration(QString const& declaration, 
-    QSharedPointer<Component> targetComponent)
+    QSharedPointer<Component> targetComponent, 
+    QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
     QRegularExpressionMatch matchedDeclaration = GENERIC_EXP.match(declaration);
 
@@ -110,11 +112,21 @@ void VHDLGenericParser::createModelParameterFromDeclaration(QString const& decla
 
     foreach(QString name, genericNames)
     {   
-        QSharedPointer<ModelParameter> parameter = targetComponent->getModel()->getModelParameter(name.trimmed());
+        QSharedPointer<ModuleParameter> parameter;
+		
+		foreach ( QSharedPointer<ModuleParameter> currentPara, *targetComponentInstantiation->getModuleParameters() )
+		{
+			if ( currentPara->name() == name.trimmed() )
+			{
+				parameter = currentPara;
+				break;
+			}
+		}
+
         if (parameter.isNull())
         {
-            parameter = QSharedPointer<ModelParameter>(new ModelParameter());
-            targetComponent->getModel()->addModelParameter(parameter);
+            parameter = QSharedPointer<ModuleParameter>(new ModuleParameter());
+            targetComponentInstantiation->getModuleParameters()->append(parameter);
         }
 
         parameter->setName(name.trimmed());

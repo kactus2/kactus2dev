@@ -12,6 +12,8 @@
 #include "ComponentInstanceVerilogWriter.h"
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/BusInterface.h>
 
 namespace
 {
@@ -21,8 +23,8 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter()
 //-----------------------------------------------------------------------------
-ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(ComponentInstance const& instance,
-    QSharedPointer<const Component> referencedComponent, QSharedPointer<const PortSorter> sorter,
+ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(QSharedPointer<const ComponentInstance> instance,
+    QSharedPointer<Component> referencedComponent, QSharedPointer<const PortSorter> sorter,
     QSharedPointer<ExpressionFormatter> expressionFormatter) :
 componentInstance_(instance), 
 referencedComponent_(referencedComponent), 
@@ -51,7 +53,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
-    instanceString.replace("<component>", componentInstance_.getComponentRef().getName());
+    instanceString.replace("<component>", componentInstance_->getComponentRef()->getName());
     instanceString.replace("<parameters>", parameterAssignments());
     instanceString.replace("<instanceName>", formattedInstanceName());
     instanceString.replace("<portConnections>", portConnections());
@@ -90,9 +92,9 @@ bool ComponentInstanceVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::formattedInstanceName() const
 {
-    QString instanceName = componentInstance_.getInstanceName();
+    QString instanceName = componentInstance_->getInstanceName();
 
-    if (!componentInstance_.getConfigurableElementValues().isEmpty())
+    if (!componentInstance_->getConfigurableElementValues()->isEmpty())
     {
         instanceName.prepend(indentation());
     }
@@ -113,7 +115,7 @@ QString ComponentInstanceVerilogWriter::indentation() const
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::parameterAssignments() const
 {
-    if (componentInstance_.getConfigurableElementValues().isEmpty())
+    if (componentInstance_->getConfigurableElementValues()->isEmpty())
     {
         return "";
     }
@@ -121,13 +123,13 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
     QString instanceParameters("#(\n<namesAndValues>)\n");
 
     QStringList assignments;
-    foreach(QString parameterID, componentInstance_.getConfigurableElementValues().keys())
+    foreach(QSharedPointer<ConfigurableElementValue> parameter, *componentInstance_->getConfigurableElementValues())
     {
         QString assignment(indentation().repeated(2) + ".<parameter>(<value>)");
-        assignment.replace("<parameter>", expressionFormatter_->formatReferringExpression(parameterID).
-            leftJustified(20));
-        assignment.replace("<value>", expressionFormatter_->formatReferringExpression(
-            componentInstance_.getConfElementValue(parameterID)));
+        assignment.replace("<parameter>", 
+            expressionFormatter_->formatReferringExpression(parameter->getReferenceId()).leftJustified(20));
+        assignment.replace("<value>", 
+            expressionFormatter_->formatReferringExpression(parameter->getConfigurableValue()));
         assignments.append(assignment);
     }
 
@@ -146,8 +148,24 @@ QString ComponentInstanceVerilogWriter::portConnections() const
         QString previousInterfaceName = "";
 
         foreach(QString portName, sorter_->sortedPortNames(referencedComponent_))
-        {
-            QString interfaceName = referencedComponent_->getInterfaceNameForPort(portName);
+		{
+            QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
+                referencedComponent_->getInterfacesUsedByPort(portName);
+            QString interfaceName;
+			
+            if (busInterfaces->size() == 1)
+			{
+                interfaceName = busInterfaces->first()->name();
+			}
+            else if (!busInterfaces->isEmpty())
+            {
+                interfaceName = QLatin1String("several");
+            }
+			else
+			{
+				interfaceName = QLatin1String("none");
+			}
+
             QString interfaceSeparatorLine = createInterfaceSeparator(interfaceName, previousInterfaceName);
             previousInterfaceName = interfaceName;
 
@@ -246,7 +264,7 @@ QString ComponentInstanceVerilogWriter::portDefaultValue(QString const& portName
     QString defaultValue = " ";
 
     QSharedPointer<Port> port =  referencedComponent_->getPort(portName);
-    if (port->getDirection() == General::IN && !port->getDefaultValue().isEmpty())
+    if (port->getDirection() == DirectionTypes::IN && !port->getDefaultValue().isEmpty())
     {
         defaultValue = expressionFormatter_->formatReferringExpression(port->getDefaultValue());
     }

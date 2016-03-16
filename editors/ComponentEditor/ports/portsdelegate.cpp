@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "portsdelegate.h"
+
 #include "PortColumns.h"
 #include "PortTagEditorDelegate.h"
 

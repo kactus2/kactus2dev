@@ -11,15 +11,16 @@
 
 #include "CSourceContentMatcher.h"
 
-#include <algorithm>
 #include <QTextCursor>
 
-#include <IPXACTmodels/ApiDefinition.h>
-#include <IPXACTmodels/ApiFunction.h>
-#include <IPXACTmodels/ApiFunctionParameter.h>
-#include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunction.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunctionParameter.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 #include <common/widgets/assistedTextEdit/TextContentAssistWidget.h>
 
@@ -133,15 +134,13 @@ int CSourceContentMatcher::enumerateNames(QString const &text, MatchExecFunc fun
 
         foreach (QSharedPointer<ApiDefinition const> apiDef, sourceApiDefinitions_)
         {
-            // Search for functions that start with the retrieved word.
-            for (int i = 0; i < apiDef->getFunctionCount(); ++i)
+			// Search for functions that start with the retrieved word.
+			foreach ( QSharedPointer<ApiFunction> apiFunc, *apiDef->getFunctions() )
             {
-                QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
-
-                if (tryMatchIdentifier(apiFunc->getName(), MCAPI_CONTENT_FUNC, matchExp, func, count))
+                if (tryMatchIdentifier(apiFunc->name(), MCAPI_CONTENT_FUNC, matchExp, func, count))
                 {
                     // Check if this was an exact match.
-                    if (!exactMatch && apiFunc->getName() == word)
+                    if (!exactMatch && apiFunc->name() == word)
                     {
                         exactMatch = true;
                     }
@@ -149,7 +148,7 @@ int CSourceContentMatcher::enumerateNames(QString const &text, MatchExecFunc fun
             }
 
             // Search for types that start with the retrieved word.
-            foreach (QString const& dataType, apiDef->getDataTypes())
+            foreach (QString const& dataType, *apiDef->getDataTypes())
             {
                 if (tryMatchIdentifier(dataType, MCAPI_CONTENT_TYPENAME, matchExp, func, count))
                 {
@@ -215,12 +214,10 @@ int CSourceContentMatcher::enumerateFunctionParams(QString const &text, MatchExe
         ApiFunction const* matchingApiFunc = 0;
 
         foreach (QSharedPointer<ApiDefinition const> apiDef, sourceApiDefinitions_)
-        {
-            for (int i = 0; i < apiDef->getFunctionCount(); ++i)
+		{
+			foreach ( QSharedPointer<ApiFunction> apiFunc, *apiDef->getFunctions() )
             {
-                QSharedPointer<ApiFunction const> apiFunc = apiDef->getFunction(i);
-
-                if (apiFunc->getName() == funcName)
+                if (apiFunc->name() == funcName)
                 {
                     matchingApiFunc = apiFunc.data();
                     break;
@@ -283,7 +280,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
             // Find the matching COM interface.
             foreach (QSharedPointer<ComInterface> comIf, ownerComponent_->getComInterfaces())
             {
-                QString value = comIf->getName();
+                QString value = comIf->name();
 
                 if (dependentParam->getContentSource() != "Name")
                 {
@@ -292,7 +289,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
 
                 if (value == params.at(index) &&
                     (comIf->getDirection() == dependentParam->getComDirection() ||
-                     dependentParam->getComDirection() == General::DIRECTION_INVALID) &&
+                     dependentParam->getComDirection() == DirectionTypes::DIRECTION_INVALID) &&
                     (comIf->getTransferType() == dependentParam->getComTransferType() ||
                      dependentParam->getComTransferType() == "" ||
                      dependentParam->getComTransferType() == "any"))
@@ -301,7 +298,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
 
                     if (apiParam->getContentSource() == "Name")
                     {
-                        identifier = comIf->getName();
+                        identifier = comIf->name();
                     }
                     else
                     {
@@ -325,7 +322,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
         foreach (QSharedPointer<ComInterface> comIf, ownerComponent_->getComInterfaces())
         {
             if ((comIf->getDirection() == apiParam->getComDirection() ||
-                apiParam->getComDirection() == General::DIRECTION_INVALID) &&
+                apiParam->getComDirection() == DirectionTypes::DIRECTION_INVALID) &&
                 (comIf->getTransferType() == apiParam->getComTransferType() ||
                  apiParam->getComTransferType() == "" ||
                  apiParam->getComTransferType() == "any"))
@@ -334,7 +331,7 @@ void CSourceContentMatcher::tryMatchParam(ApiFunction const* apiFuncDesc, QStrin
 
                 if (apiParam->getContentSource() == "Name")
                 {
-                    identifier = comIf->getName();
+                    identifier = comIf->name();
                 }
                 else
                 {

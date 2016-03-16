@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.8.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.08.2012
+//
+// Description:
+// The delegate that provides editors to add/remove/edit details of a single memory map.
+//-----------------------------------------------------------------------------
 
 #include "memorymapdelegate.h"
 
@@ -16,11 +20,6 @@
 #include <IPXACTmodels/validators/namevalidator.h>
 
 #include <QLineEdit>
-#include <QKeyEvent>
-#include <QRegularExpression>
-#include <QRegularExpressionValidator>
-#include <QSpinBox>
-#include <QTextEdit>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapDelegate::MemoryMapDelegate()
@@ -89,7 +88,8 @@ void MemoryMapDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
 
-        General::Access access = General::str2Access(index.model()->data(index).toString(), General::ACCESS_COUNT);
+        AccessTypes::Access access =
+            AccessTypes::str2Access(index.model()->data(index).toString(), AccessTypes::ACCESS_COUNT);
         accessBox->setCurrentValue(access);
     }
     else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
@@ -97,7 +97,7 @@ void MemoryMapDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
         Q_ASSERT(boolBox);
 
-        bool value = index.model()->data(index).toBool();
+        QString value = index.model()->data(index).toString();
         boolBox->setCurrentValue(value);
     }
     else
@@ -124,15 +124,15 @@ void MemoryMapDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
 
-        General::Access access = accessBox->getCurrentValue();
-        model->setData(index, General::access2Str(access), Qt::EditRole);
+        AccessTypes::Access access = accessBox->getCurrentValue();
+        model->setData(index, AccessTypes::access2Str(access), Qt::EditRole);
     }
     else if (index.column() ==  MemoryMapColumns::VOLATILE_COLUMN)
     {
         BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
         Q_ASSERT(boolBox);
 
-        bool value = boolBox->getCurrentValue();
+        QString value = boolBox->getCurrentValue();
         model->setData(index, value, Qt::EditRole);
     }
     else 

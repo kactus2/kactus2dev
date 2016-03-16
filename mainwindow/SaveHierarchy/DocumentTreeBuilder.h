@@ -12,7 +12,7 @@
 #ifndef DOCUMNENTREEBUILDER_H
 #define DOCUMNENTREEBUILDER_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QList>
 

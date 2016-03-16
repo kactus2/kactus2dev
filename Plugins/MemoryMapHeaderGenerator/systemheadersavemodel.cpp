@@ -41,7 +41,7 @@ void SystemHeaderSaveModel::setObjects(QSharedPointer<Component> topComponent,
 		SystemHeaderSaveModel::SysHeaderOptions& opt = table_[i];
 
 		// path to the directory containing the xml metadata for the system component
-		QString compPath = handler_->getDirectoryPath(*topComp_->getVlnv());
+		QString compPath = handler_->getDirectoryPath(topComp_->getVlnv());
 
 		// the relative path for the header
 		QString headerPath = QString("%1/systemHeaders.h").arg(opt.instanceName_);
@@ -123,7 +123,7 @@ QVariant SystemHeaderSaveModel::data( const QModelIndex& index, int role /*= Qt:
 		case SystemHeaderSaveModel::FILEPATH_COLUMN: {
 
 			// display the relative path from xml directory to the header to be generated
-			QDir xmlDir(handler_->getDirectoryPath(*topComp_->getVlnv()));
+			QDir xmlDir(handler_->getDirectoryPath(topComp_->getVlnv()));
 			QString headerPath = table_.at(index.row()).sysHeaderInfo_.absoluteFilePath();
 			QString relPath = xmlDir.relativeFilePath(headerPath);
 
@@ -146,7 +146,7 @@ QVariant SystemHeaderSaveModel::data( const QModelIndex& index, int role /*= Qt:
 
 		// if not then at least the xml directory exists
 		else {
-			return handler_->getDirectoryPath(*topComp_->getVlnv());
+			return handler_->getDirectoryPath(topComp_->getVlnv());
 		}		
 	}
 	else {

@@ -8,7 +8,7 @@
 #ifndef LOCALHEADERSAVEMODEL_H
 #define LOCALHEADERSAVEMODEL_H
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QSharedPointer>
 #include <QAbstractTableModel>

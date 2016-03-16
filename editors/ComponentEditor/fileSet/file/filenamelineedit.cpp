@@ -23,7 +23,7 @@ file_(file) {
 
 	setToolTip(tr("Click here to select a file to add"));
 
-	setText(file_->getName());
+	setText(file_->name());
 }
 
 FileNameLineEdit::~FileNameLineEdit() {
@@ -69,5 +69,5 @@ bool FileNameLineEdit::isValid() const {
 }
 
 void FileNameLineEdit::refresh() {
-	setText(file_->getName());
+	setText(file_->name());
 }

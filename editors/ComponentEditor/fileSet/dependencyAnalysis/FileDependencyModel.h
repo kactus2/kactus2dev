@@ -24,20 +24,6 @@ class Component;
 class PluginManager;
 
 //-----------------------------------------------------------------------------
-//! Dependency headers.
-//-----------------------------------------------------------------------------
-enum FileDependencyColumn
-{
-    FILE_DEPENDENCY_COLUMN_TREE = 0,
-    FILE_DEPENDENCY_COLUMN_STATUS,
-    FILE_DEPENDENCY_COLUMN_PATH,
-    FILE_DEPENDENCY_COLUMN_FILESETS,
-    FILE_DEPENDENCY_COLUMN_CREATE,
-    FILE_DEPENDENCY_COLUMN_DEPENDENCIES,
-    FILE_DEPENDENCY_COLUMN_COUNT
-};
-
-//-----------------------------------------------------------------------------
 //! The data model for the file dependencies.
 //-----------------------------------------------------------------------------
 class FileDependencyModel : public QAbstractItemModel
@@ -219,7 +205,7 @@ public:
      *
      * \return QVariant Containing the requested data.
     */
-    virtual QVariant data(const QModelIndex& index,
+    virtual QVariant data(QModelIndex const& index,
     		              int role = Qt::DisplayRole) const;
 
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role /* = Qt::EditRole */);
@@ -230,7 +216,7 @@ public:
      *
      * \return True if object has child objects.
     */
-    virtual bool hasChildren(const QModelIndex& parent = QModelIndex()) const;
+    virtual bool hasChildren(QModelIndex const& parent = QModelIndex()) const;
 
     /*! \brief Get the flags that identify possible methods for given object.
      *
@@ -238,7 +224,7 @@ public:
      *
      * \return Qt::ItemFlags that specify how the object can be handled.
     */
-    Qt::ItemFlags flags(const QModelIndex& index) const;
+    Qt::ItemFlags flags(QModelIndex const& index) const;
 
     /*!
      *  Returns the number of files in the model.
@@ -326,7 +312,7 @@ private:
      *      @param [in]  file          File path of the file.
      *      @param [out] dependencies  The found dependencies.
      */
-    void findDependencies(QString const& file, QList<FileDependency*>& dependencies) const;
+    QList<FileDependency*> findDependencies(QString const& file) const;
 
     /*!
      *  Moves the item to the new parent.
@@ -379,7 +365,7 @@ private:
     QMap<QString, ISourceAnalyzerPlugin*> analyzerPluginMap_;
 
     //! Dependency list.
-    QList< QSharedPointer<FileDependency> >& dependencies_;
+    QList< QSharedPointer<FileDependency> > dependencies_;
 };
 
 //-----------------------------------------------------------------------------

@@ -11,21 +11,18 @@
 
 #include "SystemColumn.h"
 
-#include "SWComponentItem.h"
-#include "HWMappingItem.h"
-#include "SWInterfaceItem.h"
+#include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
-#include <IPXACTmodels/component.h>
-
 //-----------------------------------------------------------------------------
 // Function: SystemColumn()
 //-----------------------------------------------------------------------------
-SystemColumn::SystemColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout)
-    : GraphicsColumn(desc, layout)
+SystemColumn::SystemColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout):
+GraphicsColumn(desc, layout)
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -40,20 +37,16 @@ SystemColumn::~SystemColumn()
 //-----------------------------------------------------------------------------
 bool SystemColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) const
 {
-    switch (item->type())
+    if (item->type() == GFX_TYPE_HW_MAPPING_ITEM || item->type() == GFX_TYPE_SW_COMPONENT_ITEM)
     {
-    case HWMappingItem::Type:
-    case SWComponentItem::Type:
-        {
-            return (allowedItems & CIT_COMPONENT);
-        }
-
-    case SWInterfaceItem::Type:
-        {
-            return (allowedItems & CIT_INTERFACE);
-        }
-
-    default:
+        return (allowedItems & ColumnTypes::COMPONENT);
+    }
+    else if (item->type() == GFX_TYPE_SW_INTERFACE_ITEM)
+    {
+        return (allowedItems & ColumnTypes::INTERFACE);
+    }
+    else
+    {
         return false;
     }
 }
@@ -67,7 +60,6 @@ void SystemColumn::prepareColumnMove()
     foreach (QGraphicsItem *item, scene()->items())
     {
         GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
         if (conn != 0)
         {
             conn->beginUpdatePosition();
@@ -86,7 +78,6 @@ QSharedPointer<QUndoCommand> SystemColumn::createMoveUndoCommand()
     foreach (QGraphicsItem *item, scene()->items())
     {
         GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
         if (conn != 0)
         {
             conn->endUpdatePosition(cmd.data());

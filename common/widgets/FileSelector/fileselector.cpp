@@ -1,27 +1,42 @@
-/* 
- *	Created on:	11.6.2013
- *	Author:		Antti Kamppi
- *	File name:	fileselector.cpp
- *	Project:		Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: fileselector.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.6.2013
+//
+// Description:
+// Used to select one file from the component's file sets.
+//-----------------------------------------------------------------------------
 
 #include "fileselector.h"
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
+
 #include <QFileInfo>
 
+//-----------------------------------------------------------------------------
+// Function: fileselector::FileSelector()
+//-----------------------------------------------------------------------------
 FileSelector::FileSelector( QSharedPointer<Component> component, QWidget *parent ):
 QComboBox(parent),
 component_(component),
-filters_() {
+filters_()
+{
 	Q_ASSERT(component_);
 
 	setEditable(false);
 
-	connect(this, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
+	connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
 }
 
-FileSelector::~FileSelector() {
+//-----------------------------------------------------------------------------
+// Function: fileselector::~FileSelector()
+//-----------------------------------------------------------------------------
+FileSelector::~FileSelector()
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -29,7 +44,8 @@ FileSelector::~FileSelector() {
 //-----------------------------------------------------------------------------
 void FileSelector::addFilter( const QString& suffix )
 {
-    if (suffix.isEmpty()) {
+    if (suffix.isEmpty())
+    {
         return;
     }
 
@@ -49,9 +65,12 @@ void FileSelector::clearFilters()
     refresh();
 }
 
-void FileSelector::refresh() {
-	disconnect(this, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChange(int)));
+//-----------------------------------------------------------------------------
+// Function: fileselector::refresh()
+//-----------------------------------------------------------------------------
+void FileSelector::refresh()
+{
+	disconnect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)));
 
 	// the file which is currently selected
 	QString previouslySelected = currentText();
@@ -60,13 +79,16 @@ void FileSelector::refresh() {
 	clear();
 
 	// ask component for it's files
-	QStringList allFiles = component_->getFiles();
+    QStringList allFiles = getFileNames(component_);
+
 	// all files that matched filters
 	QStringList results;
 
 	// filter the files according to given filters
-	foreach (QString filePath, allFiles) {
-		if (filePath.isEmpty()) {
+	foreach (QString filePath, allFiles)
+    {
+		if (filePath.isEmpty())
+        {
 			continue;
         }
 
@@ -78,7 +100,8 @@ void FileSelector::refresh() {
         {
             // if the file suffix is found in the filters
             QFileInfo fileInfo(filePath);
-            if (filters_.contains(fileInfo.suffix())) {
+            if (filters_.contains(fileInfo.suffix()))
+            {
                 results.append(filePath);
             }
         }
@@ -90,38 +113,59 @@ void FileSelector::refresh() {
 	int index = findText(previouslySelected);
 
 	// if the item is not found
-	if (index < 0) {
+	if (index < 0)
+    {
 		// select the empty file
 		index = 0;
 	}
 
 	setCurrentIndex(index);
 
-	connect(this, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
+	connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
 }
 
-void FileSelector::selectFile( const QString& filePath ) {
-	disconnect(this, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChange(int)));
+//-----------------------------------------------------------------------------
+// Function: fileselector::selectFile()
+//-----------------------------------------------------------------------------
+void FileSelector::selectFile( const QString& filePath )
+{
+	disconnect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)));
 
 	int index = findText(filePath);
 
 	// if the item is not found
-	if (index < 0) {
+	if (index < 0)
+    {
 		// select the empty file
 		index = 0;
 	}
 
 	setCurrentIndex(index);
 
-	connect(this, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
+	connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChange(int)), Qt::UniqueConnection);
 }
 
-void FileSelector::onIndexChange( int newIndex ) {
+//-----------------------------------------------------------------------------
+// Function: fileselector::onIndexChange()
+//-----------------------------------------------------------------------------
+void FileSelector::onIndexChange( int newIndex )
+{
 	// find the text for the index
 	QString filePath = itemText(newIndex);
 	emit fileSelected(filePath);
 }
 
+//-----------------------------------------------------------------------------
+// Function: fileselector::getFileNames()
+//-----------------------------------------------------------------------------
+QStringList FileSelector::getFileNames(QSharedPointer<Component> component) const
+{
+    QStringList fileNames;
+
+    foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+    {
+        fileNames.append(fileSet->getFileNames());
+    }
+
+    return fileNames;
+}

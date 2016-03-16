@@ -11,12 +11,11 @@
 
 #include "ApiFunctionModel.h"
 
-#include <IPXACTmodels/ApiFunction.h>
-#include <IPXACTmodels/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiFunction.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 
 #include <QVariant>
 #include <QColor>
-#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionModel::ApiFunctionModel()
@@ -45,9 +44,9 @@ void ApiFunctionModel::restore(ApiDefinition const& apiDef)
 
     apiFunctions_.clear();
 
-    for (int i = 0; i < apiDef.getFunctionCount(); ++i)
+    foreach ( QSharedPointer<ApiFunction> apiFunction, *apiDef.getFunctions() )
     {
-        apiFunctions_.append(QSharedPointer<ApiFunction>(new ApiFunction(*apiDef.getFunction(i).data())));
+        apiFunctions_.append(QSharedPointer<ApiFunction>(new ApiFunction(*apiFunction)));
     }
 
     endResetModel();
@@ -62,7 +61,7 @@ void ApiFunctionModel::save(ApiDefinition& apiDef)
 
     foreach (QSharedPointer<ApiFunction> func, apiFunctions_)
     {
-        apiDef.addFunction(QSharedPointer<ApiFunction>(new ApiFunction(*func.data())));
+        apiDef.getFunctions()->append(QSharedPointer<ApiFunction>(new ApiFunction(*func.data())));
     }
 }
 
@@ -111,7 +110,7 @@ QVariant ApiFunctionModel::data( const QModelIndex& index, int role) const {
 
     // return data for display role
     if (role == Qt::DisplayRole) {
-        return apiFunctions_.at(index.row())->getName();
+        return apiFunctions_.at(index.row())->name();
     }
     // if unsupported role
     else {

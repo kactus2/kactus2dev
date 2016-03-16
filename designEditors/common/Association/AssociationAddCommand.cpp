@@ -14,11 +14,12 @@
 #include <designEditors/common/Association/Association.h>
 
 //-----------------------------------------------------------------------------
-// Function: AssociationAddCommand()
+// Function: AssociationAddCommand::AssociationAddCommand()
 //-----------------------------------------------------------------------------
 AssociationAddCommand::AssociationAddCommand(Association* association, QGraphicsScene* scene, 
-    QUndoCommand* parent) : 
-    QUndoCommand(parent), association_(association),
+    QUndoCommand* parent): 
+QUndoCommand(parent),
+    association_(association),
     scene_(scene), 
     del_(false)
 {
@@ -26,7 +27,7 @@ AssociationAddCommand::AssociationAddCommand(Association* association, QGraphics
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~AssociationAddCommand()
+// Function: AssociationAddCommand::~AssociationAddCommand()
 //-----------------------------------------------------------------------------
 AssociationAddCommand::~AssociationAddCommand()
 {
@@ -37,7 +38,7 @@ AssociationAddCommand::~AssociationAddCommand()
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: AssociationAddCommand::undo()
 //-----------------------------------------------------------------------------
 void AssociationAddCommand::undo()
 {
@@ -51,7 +52,7 @@ void AssociationAddCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: AssociationAddCommandredo()
 //-----------------------------------------------------------------------------
 void AssociationAddCommand::redo()
 {

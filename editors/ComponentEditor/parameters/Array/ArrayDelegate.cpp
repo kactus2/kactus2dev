@@ -12,7 +12,7 @@
 #include "ArrayDelegate.h"
 #include "ArrayColumns.h"
 
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <QComboBox>
 
@@ -117,7 +117,7 @@ int ArrayDelegate::valueColumn() const
 //-----------------------------------------------------------------------------
 QString ArrayDelegate::choiceNameOnRow(QModelIndex const& /*index*/) const
 {
-    return selectedChoice_->getName();
+    return selectedChoice_->name();
 }
 
 //-----------------------------------------------------------------------------

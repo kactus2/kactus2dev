@@ -19,24 +19,26 @@
     
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
+
 //-----------------------------------------------------------------------------
 // Function: componenteditorfielditem::ComponentEditorFieldItem()
 //-----------------------------------------------------------------------------
-ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg,
-												   QSharedPointer<Field> field,
-												   ComponentEditorTreeModel* model,
-												   LibraryInterface* libHandler,
-												   QSharedPointer<Component> component,
-                                                   QSharedPointer<ParameterFinder> parameterFinder,
-                                                   QSharedPointer<ReferenceCounter> referenceCounter,
-                                                   QSharedPointer<ExpressionParser> expressionParser,
-                                                   ComponentEditorItem* parent):
+ComponentEditorFieldItem::ComponentEditorFieldItem(QSharedPointer<Register> reg, QSharedPointer<Field> field,
+    ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<FieldValidator> fieldValidator,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 reg_(reg),
 field_(field),
 visualizer_(NULL),
 graphItem_(NULL),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+fieldValidator_(fieldValidator)
 {
 	Q_ASSERT(field_);
 
@@ -67,7 +69,7 @@ QString ComponentEditorFieldItem::getTooltip() const
 //-----------------------------------------------------------------------------
 QString ComponentEditorFieldItem::text() const
 {
-	return field_->getName();
+	return field_->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +77,7 @@ QString ComponentEditorFieldItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorFieldItem::isValid() const 
 {
-	return field_->isValid(reg_->getSize(), component_->getChoices());
+    return fieldValidator_->validate(field_);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,7 +87,8 @@ ItemEditor* ComponentEditorFieldItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new SingleFieldEditor(field_, component_, libHandler_, parameterFinder_, expressionParser_);
+        editor_ = new SingleFieldEditor(field_, component_, libHandler_, parameterFinder_, expressionParser_,
+            fieldValidator_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

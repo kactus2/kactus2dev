@@ -14,15 +14,6 @@
 
 #include "MakefileParser.h"
 
-#include <QString>
-
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/SWView.h>
-
-#include <library/LibraryManager/libraryinterface.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
 class MakefileGenerator
@@ -100,15 +91,8 @@ private:
      *      @param [in] objects   The list of the objects written.
      *      @param [in] instancePath   Path of the makefile and thus the path where it is called from.
      */
-     void writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<QSharedPointer<MakefileParser::MakeObjectData> >& objects, QString instancePath) const;
-
-    /*!
-     *  Gets concatenates the build flags of the file with those fileSet and software views.
-     *
-     *      @param [in] mod   The make data associated with the object file.
-     *      @param [in] mfd   The make data associated with the makefile as whole.
-     */
-     QString getFileFlags(QSharedPointer<MakefileParser::MakeObjectData> &mod, MakefileParser::MakeFileData &mfd) const;
+     void writeMakeObjects(QTextStream& outStream,
+		 QList<QSharedPointer<MakefileParser::MakeObjectData> >& objects, QString instancePath) const;
 
      /*!
       *  Writes list of launched executables.

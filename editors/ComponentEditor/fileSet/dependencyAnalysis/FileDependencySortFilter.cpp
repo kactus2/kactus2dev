@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileDependencySortFilter::FileDependencySortFilter()
 //-----------------------------------------------------------------------------
-FileDependencySortFilter::FileDependencySortFilter(QObject* parent /*= 0*/)
+FileDependencySortFilter::FileDependencySortFilter(QObject* parent)
     : QSortFilterProxyModel(parent),
       filters_(FileDependencyGraphView::FILTER_DEFAULT)
 {
@@ -45,12 +45,15 @@ bool FileDependencySortFilter::filterAcceptsRow(int sourceRow, QModelIndex const
     FileDependencyItem* item = static_cast<FileDependencyItem*>(index.internalPointer());
     Q_ASSERT(item != 0);
 
-    FileDependencyStatus status = item->getStatus();
+    FileDependencyItem::FileDependencyStatus status = item->getStatus();
 
-    return (status == FILE_DEPENDENCY_STATUS_UNKNOWN) ||
-           ((filters_ & FileDependencyGraphView::FILTER_GREEN) && status == FILE_DEPENDENCY_STATUS_OK) ||
-           ((filters_ & FileDependencyGraphView::FILTER_YELLOW) && status == FILE_DEPENDENCY_STATUS_CHANGED) ||
-           ((filters_ & FileDependencyGraphView::FILTER_RED) && status == FILE_DEPENDENCY_STATUS_CHANGED2);
+    return (status == FileDependencyItem::FILE_DEPENDENCY_STATUS_UNKNOWN) ||
+           ((filters_ & FileDependencyGraphView::FILTER_GREEN) && 
+           status == FileDependencyItem::FILE_DEPENDENCY_STATUS_OK) ||
+           ((filters_ & FileDependencyGraphView::FILTER_YELLOW) && status == 
+           FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED) ||
+           ((filters_ & FileDependencyGraphView::FILTER_RED) && status == 
+           FileDependencyItem::FILE_DEPENDENCY_STATUS_CHANGED2);
 }
 
 //-----------------------------------------------------------------------------

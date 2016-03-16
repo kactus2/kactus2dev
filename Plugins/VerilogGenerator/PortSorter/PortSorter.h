@@ -35,7 +35,7 @@ public:
      *
      *      @return The sorted port names of a given component.
      */
-    virtual QStringList sortedPortNames(QSharedPointer<const Component> component) const = 0;
+    virtual QStringList sortedPortNames(QSharedPointer<Component> component) const = 0;
 
 };
 

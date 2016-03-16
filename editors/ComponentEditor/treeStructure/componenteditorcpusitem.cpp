@@ -1,63 +1,106 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorcpusitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorcpusitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author:Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The Cpus-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorcpusitem.h"
+
 #include <editors/ComponentEditor/cpus/cpuseditor.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Cpu.h>
+#include <IPXACTmodels/Component/validators/CPUValidator.h>
+
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorCpusItem::ComponentEditorCpusItem()
+//-----------------------------------------------------------------------------
 ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model, 
-												 LibraryInterface* libHandler,
-												 QSharedPointer<Component> component,
-												 ComponentEditorItem* parent ):
+    LibraryInterface* libHandler,
+    QSharedPointer<Component> component,
+    QSharedPointer<ExpressionParser> expressionParser,
+    ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-cpus_(component->getCpus()) {
-	
+    cpus_(component->getCpus()),
+    validator_(new CPUValidator(
+        QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(expressionParser, component->getChoices())),
+        expressionParser, component->getAddressSpaces()))
+{
+
 }
 
-ComponentEditorCpusItem::~ComponentEditorCpusItem() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorCpusItem::~ComponentEditorCpusItem()
+//-----------------------------------------------------------------------------
+ComponentEditorCpusItem::~ComponentEditorCpusItem()
+{
 }
 
-QFont ComponentEditorCpusItem::getFont() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorCpusItem::getFont()
+//-----------------------------------------------------------------------------
+QFont ComponentEditorCpusItem::getFont() const
+{
     QFont font(ComponentEditorItem::getFont());
-    font.setBold(!cpus_.isEmpty());
+    font.setBold(!cpus_->isEmpty());
     return font;
 }
 
-QString ComponentEditorCpusItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorCpusItem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorCpusItem::text() const
+{
 	return tr("Cpus");
 }
 
-ItemEditor* ComponentEditorCpusItem::editor() {
-	if (!editor_) {
-		editor_ = new CpusEditor(component_, libHandler_);
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorCpusItem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorCpusItem::editor()
+{
+	if (!editor_)
+    {
+		editor_ = new CpusEditor(component_, libHandler_, validator_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()), 
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 	}
+
 	return editor_;
 }
 
-QString ComponentEditorCpusItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorCpusItem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorCpusItem::getTooltip() const
+{
 	return tr("Contains the programmable cores of the component");
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorCpusItem::isValid()
+//-----------------------------------------------------------------------------
 bool ComponentEditorCpusItem::isValid() const
 {
-	QStringList addrSpaceNames = component_->getAddressSpaceNames();
+    QVector<QString> cpuNames;
 
-	foreach (QSharedPointer<Cpu> cpu, cpus_) 
+    foreach (QSharedPointer<Cpu> cpu, *cpus_) 
     {
-		if (!cpu->isValid(addrSpaceNames, component_->getChoices()))
+        if (cpuNames.contains(cpu->name()) || !validator_->validate(cpu))
         {
-			return false;
-		}
-	}
+            return false;
+        }
 
-	// all cpus were valid
+        cpuNames.append(cpu->name());
+    }
+
 	return true;
 }

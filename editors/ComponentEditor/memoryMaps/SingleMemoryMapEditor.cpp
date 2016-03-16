@@ -14,8 +14,13 @@
 #include <QScrollArea>
 #include <QLabel>
 
-#include <IPXACTmodels/remapstate.h>
-#include <IPXACTmodels/MemoryRemap.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/MemoryRemap.h>
+#include <IPXACTmodels/Component/RemapState.h>
+
+#include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
 
 #include <QFormLayout>
 #include <QSplitter>
@@ -24,23 +29,27 @@
 // Function: SingleMemoryMapEditor::SingleMemoryMapEditor()
 //-----------------------------------------------------------------------------
 SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component,
-    QSharedPointer<AbstractMemoryMap> memoryRemap, QSharedPointer<MemoryMap> parentMemoryMap,
-    LibraryInterface* libHandler, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, 
-    QSharedPointer<ExpressionParser> expressionParser,
-    QWidget* parent):
+                                             QSharedPointer<MemoryMapBase> memoryRemap,
+                                             QSharedPointer<MemoryMap> parentMemoryMap,
+                                             LibraryInterface* libHandler,
+                                             QSharedPointer<ParameterFinder> parameterFinder,
+                                             QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                             QSharedPointer<ExpressionParser> expressionParser,
+                                             QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
+                                             QWidget* parent /* = 0 */):
 ItemEditor(component, libHandler, parent),
-nameEditor_(memoryRemap->getNameGroup(), this, tr("Memory remap name and description")),
+nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
 memoryMapEditor_(new MemoryMapEditor(component, libHandler, memoryRemap, parameterFinder, expressionFormatter,
-    expressionParser, this)),
+    expressionParser, memoryMapBaseValidator->getAddressBlockValidator(), parentMemoryMap->getAddressUnitBits(),
+    this)),
 addressUnitBitsEditor_(new QLineEdit(parent)),
 slaveInterfaceLabel_(new QLabel(this)),
 remapStateSelector_(),
 memoryRemap_(memoryRemap),
 parentMemoryMap_(parentMemoryMap)
 {
-    addressUnitBitsEditor_->setValidator(
-        new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));
+    addressUnitBitsEditor_->setValidator
+        (new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));
 
     if (!isMemoryMap())
     {
@@ -64,6 +73,9 @@ parentMemoryMap_(parentMemoryMap)
     connect(addressUnitBitsEditor_, SIGNAL(editingFinished()),
         this, SLOT(updateAddressUnitBits()), Qt::UniqueConnection);
 
+    connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
+        memoryMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
+
     setupLayout();
 
     remapStateSelector_->setProperty("mandatoryField", true);
@@ -78,34 +90,6 @@ SingleMemoryMapEditor::~SingleMemoryMapEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleMemoryMapEditor::isValid()
-//-----------------------------------------------------------------------------
-bool SingleMemoryMapEditor::isValid() const
-{
-    bool nameIsValid = nameEditor_.isValid();
-    bool memoryMapEditorIsValid = memoryMapEditor_->isValid();
-
-    bool memoryRemapIsValid = false;
-
-    if (isMemoryMap())
-    {
-        memoryRemapIsValid =
-            parentMemoryMap_->isValid(component()->getChoices(), component()->getRemapStateNames());
-    }
-    else
-    {
-        QSharedPointer<MemoryRemap> transformedMemoryRemap = memoryRemap_.dynamicCast<MemoryRemap>();
-        if (transformedMemoryRemap)
-        {
-            memoryRemapIsValid =
-                transformedMemoryRemap->isValid(component()->getChoices(), component()->getRemapStateNames());
-        }
-    }
-
-    return nameIsValid && memoryMapEditorIsValid && memoryRemapIsValid;
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleMemoryMapEditor::refresh()
 //-----------------------------------------------------------------------------
 void SingleMemoryMapEditor::refresh()
@@ -113,7 +97,7 @@ void SingleMemoryMapEditor::refresh()
     nameEditor_.refresh();
     memoryMapEditor_->refresh();
     refreshSlaveBinding();
-    addressUnitBitsEditor_->setText(QString::number(parentMemoryMap_->getAddressUnitBits()));
+    addressUnitBitsEditor_->setText(parentMemoryMap_->getAddressUnitBits());
 
     if (isMemoryMap())
     {
@@ -205,7 +189,7 @@ void SingleMemoryMapEditor::refreshSlaveBinding()
 {
     QString slaveInterfaceText ("No binding");
 
-    QStringList interfaceNames = component()->getSlaveInterfaces(parentMemoryMap_->getName());
+    QStringList interfaceNames = component()->getSlaveInterfaces(parentMemoryMap_->name());
     if (!interfaceNames.isEmpty())
     {
         slaveInterfaceText = interfaceNames.join(", ");
@@ -218,9 +202,11 @@ void SingleMemoryMapEditor::refreshSlaveBinding()
 //-----------------------------------------------------------------------------
 void SingleMemoryMapEditor::updateAddressUnitBits()
 {
-    parentMemoryMap_->setAddressUnitBits(addressUnitBitsEditor_->text().toUInt());
+    parentMemoryMap_->setAddressUnitBits(addressUnitBitsEditor_->text());
     emit addressUnitBitsChanged();
     emit contentChanged();
+
+    emit assignNewAddressUnitBits(addressUnitBitsEditor_->text());
 }
 
 //-----------------------------------------------------------------------------
@@ -232,7 +218,7 @@ void SingleMemoryMapEditor::refreshRemapStateSelector()
 
     foreach (QSharedPointer<RemapState> remapState, *component()->getRemapStates())
     {
-        remapStateNames.append(remapState->getName());
+        remapStateNames.append(remapState->name());
     }
 
     remapStateSelector_->refresh(remapStateNames);

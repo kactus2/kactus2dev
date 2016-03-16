@@ -16,15 +16,21 @@
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/vlnv.h>
+
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QtPlugin>
 #include <QDebug>
 #include <QFileDialog>
+#include <IPXACTmodels/Component/View.h>
+#include "IPXACTmodels/Component/DesignConfigurationInstantiation.h"
+#include "IPXACTmodels/Component/DesignInstantiation.h"
 
 //-----------------------------------------------------------------------------
 // Function: QuartusProjectGenerator::QuartusProjectGenerator()
@@ -117,13 +123,13 @@ QIcon QuartusProjectGenerator::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: QuartusProjectGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool QuartusProjectGenerator::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
-    QSharedPointer<LibraryComponent const> libDesConf /*= QSharedPointer<LibraryComponent const>()*/,
-    QSharedPointer<LibraryComponent const> libDes /*= QSharedPointer<LibraryComponent const>()*/ ) const
+bool QuartusProjectGenerator::checkGeneratorSupport( QSharedPointer<Document const> libComp,
+    QSharedPointer<Document const> libDesConf /*= QSharedPointer<Document const>()*/,
+    QSharedPointer<Document const> libDes /*= QSharedPointer<Document const>()*/ ) const
 {
     QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
-    if (component && component->getComponentImplementation() == KactusAttribute::HW)
+    if (component && component->getImplementation() == KactusAttribute::HW)
     {
         QSharedPointer<DesignConfiguration const> desConf = libDesConf.staticCast<DesignConfiguration const>();
         QSharedPointer<Design const> design = libDes.staticCast<Design const>();
@@ -142,9 +148,9 @@ bool QuartusProjectGenerator::checkGeneratorSupport( QSharedPointer<LibraryCompo
 // Function: QuartusProjectGenerator::runGenerator()
 //-----------------------------------------------------------------------------
 void QuartusProjectGenerator::runGenerator(IPluginUtility* utility,
-    QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> libDesConf,
-    QSharedPointer<LibraryComponent> libDes)
+    QSharedPointer<Document> libComp,
+    QSharedPointer<Document> libDesConf,
+    QSharedPointer<Document> libDes)
 {
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
@@ -154,7 +160,7 @@ void QuartusProjectGenerator::runGenerator(IPluginUtility* utility,
 
     QString path = QFileDialog::getExistingDirectory(utility->getParentWidget(),
         tr("Set the directory where the Quartus project is created to"),
-        utility->getLibraryInterface()->getPath(*component->getVlnv()));
+        utility->getLibraryInterface()->getPath(component->getVlnv()));
 
     if (!path.isEmpty())
     {
@@ -171,7 +177,7 @@ void QuartusProjectGenerator::runGenerator(IPluginUtility* utility,
 
         quartusGenerator.readExistingPinMap(component);
         quartusGenerator.parseFiles(component, openViewName);
-        quartusGenerator.generateProject(path, component->getVlnv()->getName(), generatorInformation);
+        quartusGenerator.generateProject(path, component->getVlnv().getName(), generatorInformation);
 
         utility->printInfo(tr("Quartus project generation complete."));
     }
@@ -208,19 +214,36 @@ void QuartusProjectGenerator::onNoticeMessage(QString const& message)
 //-----------------------------------------------------------------------------
 // Function: QuartusProjectGenerator::getOpenViewName()
 //-----------------------------------------------------------------------------
-QString QuartusProjectGenerator::getOpenViewName(QSharedPointer<LibraryComponent> libDesConf,
-    QSharedPointer<LibraryComponent> libDes, QSharedPointer<Component> component)
+QString QuartusProjectGenerator::getOpenViewName(QSharedPointer<Document> libDesConf,
+    QSharedPointer<Document> libDes, QSharedPointer<Component> component)
 {
     QSharedPointer<DesignConfiguration> desConf = libDesConf.staticCast<DesignConfiguration>();
     QSharedPointer<Design> design = libDes.staticCast<Design>();
 
-    foreach (QSharedPointer<View> currentView, component->getViews())
+    foreach (QSharedPointer<View> currentView, *component->getViews())
     {
-        if ((desConf && currentView->getHierarchyRef() == *desConf->getVlnv()) ||
-            (design && currentView->getHierarchyRef() == *design->getVlnv()))
-        {
-            return currentView->getName();
-        }
+		if ( desConf )
+		{
+			foreach ( QSharedPointer<DesignConfigurationInstantiation> insta,
+				*component->getDesignConfigurationInstantiations() )
+			{
+				if ( (*insta->getDesignConfigurationReference()) == desConf->getVlnv() )
+				{
+					return currentView->name();
+				}
+			}
+		}
+
+		if ( design )
+		{
+			foreach (QSharedPointer<DesignInstantiation> insta, *component->getDesignInstantiations() )
+			{
+				if ( (*insta->getDesignReference()) == design->getVlnv() )
+				{
+					return currentView->name();
+				}
+			}
+		}
     }
 
     return QString("");

@@ -14,9 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::LibraryErrorModel()
 //-----------------------------------------------------------------------------
-LibraryErrorModel::LibraryErrorModel(QObject* parent)
-    : QAbstractTableModel(parent),
-      errors_()
+LibraryErrorModel::LibraryErrorModel(QObject* parent): QAbstractTableModel(parent), errors_()
 {
 
 }
@@ -31,7 +29,7 @@ LibraryErrorModel::~LibraryErrorModel()
 //-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::addErrors()
 //-----------------------------------------------------------------------------
-void LibraryErrorModel::addErrors(QStringList const& errorList)
+void LibraryErrorModel::addErrors(QVector<QString> const& errorList)
 {
     beginResetModel();
     errors_ = errorList;
@@ -41,7 +39,7 @@ void LibraryErrorModel::addErrors(QStringList const& errorList)
 //-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::rowCount()
 //-----------------------------------------------------------------------------
-int LibraryErrorModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/) const
+int LibraryErrorModel::rowCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
@@ -54,7 +52,7 @@ int LibraryErrorModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/) c
 //-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::columnCount()
 //-----------------------------------------------------------------------------
-int LibraryErrorModel::columnCount(const QModelIndex& parent /*= QModelIndex()*/) const
+int LibraryErrorModel::columnCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
@@ -67,53 +65,41 @@ int LibraryErrorModel::columnCount(const QModelIndex& parent /*= QModelIndex()*/
 //-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::data()
 //-----------------------------------------------------------------------------
-QVariant LibraryErrorModel::data(const QModelIndex& index,
-                                 int role /*= Qt::DisplayRole*/) const
+QVariant LibraryErrorModel::data(QModelIndex const& index, int role) const
 {
     // Check for invalid index.
-    if (!index.isValid() || index.row() < 0 || index.row() >= errors_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= errors_.size() || role != Qt::DisplayRole)
     {
         return QVariant();
     }
 
-    if (role == Qt::DisplayRole)
+    if (index.column() == COLUMN_NUMBER)
     {
-        switch (index.column())
-        {
-        case COLUMN_NUMBER:
-            return index.row();
-
-        case COLUMN_DESCRIPTION:
-            return errors_.at(index.row());
-        }
+        return index.row();
     }
-
-    return QVariant();
+    else //if (index.column() == COLUMN_DESCRIPTION)
+    {
+        return errors_.at(index.row());
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant LibraryErrorModel::headerData(int section, Qt::Orientation orientation,
-                                       int role /*= Qt::DisplayRole */) const
+QVariant LibraryErrorModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role == Qt::DisplayRole)
+    if (role != Qt::DisplayRole && orientation != Qt::Vertical)
     {
-        if (orientation == Qt::Horizontal)
-        {
-            switch (section)
-            {
-            case COLUMN_NUMBER:
-                {
-                    return "#";
-                }
+        return QVariant();
+    }
 
-            case COLUMN_DESCRIPTION:
-                {
-                    return tr("Description");
-                }
-            }
-        }
+    if (section == COLUMN_NUMBER)
+    {
+        return "#";
+    }
+    else if (section == COLUMN_DESCRIPTION)
+    {
+        return tr("Description");
     }
 
     return QVariant();
@@ -122,7 +108,7 @@ QVariant LibraryErrorModel::headerData(int section, Qt::Orientation orientation,
 //-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags LibraryErrorModel::flags(const QModelIndex& index) const
+Qt::ItemFlags LibraryErrorModel::flags(QModelIndex const& index) const
 {
     if (!index.isValid())
     {

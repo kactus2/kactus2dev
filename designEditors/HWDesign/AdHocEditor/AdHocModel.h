@@ -15,9 +15,10 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
-class Port;
-class GenericEditProvider;
 class AdHocEnabled;
+class GenericEditProvider;
+class IEditProvider;
+class Port;
 
 //-----------------------------------------------------------------------------
 //! Table model for visualizing ad-hoc visibility for component ports.
@@ -33,7 +34,6 @@ public:
 	 *
      *      @param [in] editProvider  The edit provider managing the undo/redo stack.
 	 *      @param [in] parent        Pointer to the owner of this model.
-	 *
 	 */
 	AdHocModel(QObject *parent);
 	
@@ -47,13 +47,13 @@ public:
      *
      *      @param [in] dataSource The data source.
      */
-    void setDataSource(AdHocEnabled* dataSource);
+    void setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider);
 
 	/*!
      *  Returns the number of rows in the model.
 	 *
-	 *      @param [in] parent Model index of the parent of the item. Must be invalid
-	 *                         because this is not hierarchical model.
+	 *      @param [in] parent Model index of the parent of the item. Must be invalid because this is not a
+     *                  hierarchical model.
 	 *
 	 *      @return Number of rows currently in the model.
 	 */
@@ -62,8 +62,8 @@ public:
 	/*!
      *  Returns the number of columns in the model.
 	 *
-	 *      @param [in] parent Model index of the parent of the item. Must be invalid
-     *                         because this is not hierarchical model.
+	 *      @param [in] parent Model index of the parent of the item. Must be invalid because this is not a
+     *                  hierarchical model.
 	 *
 	 *      @return Always returns 3.
 	 */
@@ -129,8 +129,10 @@ private:
     //! The component whose ad-hoc port visibility is being edited.
     AdHocEnabled* dataSource_;
 
+     QSharedPointer<IEditProvider> editProvider_;
+
 	//! The table that is displayed to the user.
-	QList< QSharedPointer<Port> > table_;
+    QSharedPointer<QList<QSharedPointer<Port> > > table_;
 };
 
 //-----------------------------------------------------------------------------

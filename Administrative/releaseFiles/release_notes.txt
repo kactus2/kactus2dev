@@ -1,6 +1,6 @@
 	===============================================================================
                             RELEASE NOTES : Kactus2
-           Copyright (c) 2012-2015 Tampere University of Technology
+           Copyright (c) 2012-2016 Tampere University of Technology
                             http://funbase.cs.tut.fi
 ===============================================================================
               + Improvement or feature added
@@ -8,14 +8,11 @@
               * Changed or Information
 ===============================================================================
 
-13/08/2015 2.8.49
+29/02/2016 3.0.0 RC1
 ----------------------------------------------------
 
-+ Improved editing e.g. copy-paste within tables 
-+ Added 'tags' column for ports for easy grouping
-+ Added 'isPresent' for registers
-+ Added reset for fields
-+ Added support for expression in bus interface base addresses
++ Updated all IP-XACT elements to 2014 standard
++ Improved validation for many IP-XACT elements
 
 KNOWN UNRESOLVED ISSUES:
 * Memory map header generation from a system design does not work properly.
@@ -27,6 +24,7 @@ KNOWN UNRESOLVED ISSUES:
 	* Port maps will not automatically adjust to changes in port size.
 * VHDL import does not preserve references to model parameters.
 * In ports editor, creating a bus interface through ports is not possible for name column.
+* VHDL generator crashes unexpectedly during run
 
 15/06/2015 2.8.0
 ----------------------------------------------------

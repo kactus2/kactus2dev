@@ -12,7 +12,7 @@
 #ifndef ADDRESSBLOCKEXPRESSIONSGATHERER_H
 #define ADDRESSBLOCKEXPRESSIONSGATHERER_H
 
-#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <QSharedPointer>
 #include <QStringList>
@@ -46,10 +46,10 @@ public:
 
 private:
 	
-	//! No copying
+	//! No copying.
     AddressBlockExpressionGatherer(const AddressBlockExpressionGatherer& other);
 
-	//! No assignment
+	//! No assignment.
     AddressBlockExpressionGatherer& operator=(const AddressBlockExpressionGatherer& other);
 
 };

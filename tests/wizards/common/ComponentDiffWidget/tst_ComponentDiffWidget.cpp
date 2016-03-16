@@ -17,9 +17,8 @@
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
 
 class tst_ComponentDiffWidget : public QObject
 {

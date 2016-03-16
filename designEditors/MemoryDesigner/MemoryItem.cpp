@@ -17,16 +17,16 @@
 #include "MemoryColumn.h"
 #include "MemoryDesignDiagram.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <common/utils.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <common/KactusColors.h>
 #include <common/layouts/VStackedLayout.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/addressblock.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <QFont>
 #include <QTextDocument>
@@ -70,7 +70,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
     setRect(QRectF(-WIDTH / 2, 0, NAME_COLUMN_WIDTH, 80));
 
     // Create the name label.
-    nameLabel_ = new QGraphicsTextItem(memoryMap->getName(), this);
+    nameLabel_ = new QGraphicsTextItem(memoryMap->name(), this);
     QFont font = nameLabel_->font();
     font.setStyleStrategy(QFont::NoAntialias);
     font.setWeight(QFont::Bold);
@@ -85,8 +85,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
     aubLabel_->setFont(font);
     aubLabel_->setTextWidth(NAME_COLUMN_WIDTH + 2);
     aubLabel_->setPos(-WIDTH / 2, 0.0);
-    aubLabel_->setHtml(QString("<center>AUB<br>") + QString::number(memoryMap->getAddressUnitBits()) +
-                       QString("</center>"));
+    aubLabel_->setHtml("<center>AUB<br>" + memoryMap->getAddressUnitBits() + "</center>");
     
     // Parse address blocks and add a section for each of them.
     // "Holes" are visualized as 'no memory'.
@@ -94,7 +93,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
     // First sort address blocks based on their base address.
     QList< QSharedPointer<AddressBlock> > blocks;
     
-    foreach (QSharedPointer<MemoryMapItem> item, memoryMap->getItems())
+    foreach (QSharedPointer<MemoryBlockBase> item, *memoryMap->getMemoryBlocks())
     {
         QSharedPointer<AddressBlock> block = item.dynamicCast<AddressBlock>();
 
@@ -126,7 +125,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
             }
 
             AddressSectionItem* section = new AddressBlockItem(component_, memoryMap_,
-                                                               block->getName(), startAddress, range, this);
+                                                               block->name(), startAddress, range, this);
             section->setColor(KactusColors::MEMORY_BLOCK);
             section->setPos(0.0, getHeight());
 
@@ -134,19 +133,19 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
             {
                 switch (block->getAccess())
                 {
-                case General::READ_ONLY:
+                case AccessTypes::READ_ONLY:
                     {
                         section->setUsageType(AddressSectionItem::USAGE_READ_ONLY);
                         break;
                     }
 
-                case General::READ_WRITE:
+                case AccessTypes::READ_WRITE:
                     {
                         section->setUsageType(AddressSectionItem::USAGE_READ_WRITE);
                         break;
                     }
 
-                case General::READ_WRITEONCE:
+                case AccessTypes::READ_WRITEONCE:
                     {
                         section->setUsageType(AddressSectionItem::USAGE_READ_WRITE_ONCE);
                         break;
@@ -170,7 +169,7 @@ MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceNa
         }
     }
 
-    updateNameLabel(component->getVlnv()->getName() + "<br>" + memoryMap->getName());
+    updateNameLabel(component->getVlnv().getName() + "<br>" + memoryMap->name());
     updateVisuals();
     updateSize();
 }
@@ -418,9 +417,9 @@ qreal MemoryItem::getHeight() const
 //-----------------------------------------------------------------------------
 // Function: MemoryItem::getContentType()
 //-----------------------------------------------------------------------------
-ColumnContentType MemoryItem::getContentType() const
+ColumnTypes::ColumnContentType MemoryItem::getContentType() const
 {
-    return COLUMN_CONTENT_COMPONENTS;
+    return ColumnTypes::COMPONENTS;
 }
 
 //-----------------------------------------------------------------------------

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 29.5.2012
- *      Author: Antti Kamppi
- * 		filename: filesetsdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: filesetsdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 29.5.2012
+//
+// Description:
+// The delegate class to provide editors for file sets editor.
+//-----------------------------------------------------------------------------
 
 #include "filesetsdelegate.h"
 
@@ -20,6 +24,7 @@
 FileSetsDelegate::FileSetsDelegate(QObject *parent):
 MultilineDescriptionDelegate(parent)
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -27,6 +32,7 @@ MultilineDescriptionDelegate(parent)
 //-----------------------------------------------------------------------------
 FileSetsDelegate::~FileSetsDelegate()
 {
+
 }
 
 //-----------------------------------------------------------------------------

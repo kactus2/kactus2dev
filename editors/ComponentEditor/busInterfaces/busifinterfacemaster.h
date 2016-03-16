@@ -17,15 +17,16 @@
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
 
 #include <QString>
 #include <QSharedPointer>
 #include <QLineEdit>
 
+class BusInterface;
+class Component;
 class ExpressionEditor;
 class ExpressionParser;
+class MasterInterface;
 class ParameterFinder;
 
 //-----------------------------------------------------------------------------
@@ -40,11 +41,11 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] mode                The mode of the bus interface (master / mirrored master).
-	 *      @param [in] busif               Pointer to the bus interface being edited.
-	 *      @param [in] component           Pointer to the component being edited.
-	 *      @param [in] parameterFinder     Pointer to the parameter finder.
-	 *      @param [in] expressionParser    Pointer to the expression parser.
-	 *      @param [in] parent              Pointer to the owner of this editor.
+	 *      @param [in] busif               The bus interface being edited.
+	 *      @param [in] component           The component being edited.
+	 *      @param [in] parameterFinder     The parameter finder.
+	 *      @param [in] expressionParser    The expression parser.
+	 *      @param [in] parent              The owner of this editor.
 	 */
 	BusIfInterfaceMaster(General::InterfaceMode mode, 
 		QSharedPointer<BusInterface> busif,
@@ -104,7 +105,7 @@ private slots:
 	 *
 	 *      @param [in] addrSpaceName   The name of the referenced address space.
 	 */
-	void onAddressSpaceChange(const QString& addrSpaceName);
+	void onAddressSpaceChange(QString const& addrSpaceName);
 
     /*!
      *  Handler for changes in base address.
@@ -126,7 +127,7 @@ private:
      */
     QString formattedValueFor(QString const& expression) const;
 
-	//! Pointer to the master element being edited.
+	//! The master element being edited.
 	QSharedPointer<MasterInterface> master_;
 	
 	//! Specifies if the edited mode is master or mirrored master

@@ -76,9 +76,9 @@ private:
     /*!
      *  Returns the currently selected directories in absolute paths.
      *
-     *      @param [out] dirs The absolute paths for the directories.
+     *      @return The absolute paths for the directories.
      */
-    void getAbsoluteDirectories(QStringList& dirs);
+    QStringList getAbsoluteDirectories();
 
     //-----------------------------------------------------------------------------
     // Data.

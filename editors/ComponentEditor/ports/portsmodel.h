@@ -12,12 +12,9 @@
 #ifndef PORTSMODEL_H
 #define PORTSMODEL_H
 
-#include <QAbstractTableModel>
-#include <QMap>
 #include <QSharedPointer>
 #include <QString>
 #include <QList>
-#include <QFile>
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
@@ -26,6 +23,8 @@
 
 class Model;
 class Port;
+
+class PortValidator;
 
 //-----------------------------------------------------------------------------
 //! Table model that can be used to display ports to be edited.
@@ -42,13 +41,14 @@ public:
      *      @param [in] expressionParser        Pointer to the expression parser.
      *      @param [in] parameterFinder         Pointer to the parameter finder.
      *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] portValidator           Validator used for ports.
 	 *      @param [in] parent                  Pointer to the owner of this model.
-	 *
 	*/
 	PortsModel(QSharedPointer<Model> model,
         QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer <ExpressionFormatter> expressionFormatter,
+        QSharedPointer<PortValidator> portValidator,
         QObject *parent);
 	
 	//! The destructor
@@ -301,15 +301,6 @@ private:
      */
     bool hasExpressionInLeftOrRightBound(QSharedPointer<Port> port) const;
 
-    /*!
-     *  Checks if the given data for array is valid.
-     *
-     *      @param [in] port    The port whose array is being examined.
-     *
-     *      @return True, if the data in both left and right is valid, false otherwise.
-     */
-    bool isArrayValid(QSharedPointer<Port> port) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -325,6 +316,9 @@ private:
 
     //! Expression formatter, formats the referencing expressions to show parameter names.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! The validator used for ports.
+    QSharedPointer<PortValidator> portValidator_;
 };
 
 #endif // PORTSMODEL_H

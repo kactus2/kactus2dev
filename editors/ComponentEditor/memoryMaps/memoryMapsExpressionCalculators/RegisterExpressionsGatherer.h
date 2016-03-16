@@ -12,10 +12,10 @@
 #ifndef REGISTEREXPRESSIONSGATHERER_H
 #define REGISTEREXPRESSIONSGATHERER_H
 
-#include <IPXACTmodels/register.h>
-
 #include <QSharedPointer>
 #include <QStringList>
+
+class Register;
 
 //-----------------------------------------------------------------------------
 //! Gathers expressions from a register and its fields.

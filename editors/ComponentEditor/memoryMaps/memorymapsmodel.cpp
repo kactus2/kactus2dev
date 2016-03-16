@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 21.8.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapsmodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapsmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 21.08.2012
+//
+// Description:
+// The model to manage the memory maps summary.
+//-----------------------------------------------------------------------------
 
 #include "memorymapsmodel.h"
 
@@ -13,21 +17,27 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/MemoryRemapExpressionGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
-#include <IPXACTmodels/memorymapitem.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/MemoryRemap.h>
+#include <IPXACTmodels/Component/MemoryBlockBase.h>
 
-#include <QColor>
-#include <QMap>
+#include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
+
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: memorymapsmodel::MemoryMapsModel()
 //-----------------------------------------------------------------------------
-MemoryMapsModel::MemoryMapsModel( QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder, QObject *parent ):
+MemoryMapsModel::MemoryMapsModel(QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<MemoryMapValidator> memoryMapValidator,
+    QObject *parent):
 QAbstractItemModel(parent),
 component_(component),
 parameterFinder_(parameterFinder),
-rootMemoryMaps_(component->getMemoryMaps())
+rootMemoryMaps_(component->getMemoryMaps()),
+memoryMapValidator_(memoryMapValidator)
 {
 	Q_ASSERT(component_);
 }
@@ -47,12 +57,12 @@ int MemoryMapsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) c
 {
     if (!parent.isValid())
     {
-        return rootMemoryMaps_.size();
+        return rootMemoryMaps_->size();
     }
 
     else if (!parent.parent().isValid())
     {
-        return rootMemoryMaps_.at(parent.row())->getMemoryRemaps()->size();
+        return rootMemoryMaps_->at(parent.row())->getMemoryRemaps()->size();
     }
 
     else
@@ -167,10 +177,10 @@ QVariant MemoryMapsModel::data( const QModelIndex& index, int role /*= Qt::Displ
 
         if (!index.parent().isValid())
         {
-            parentMemoryMap = rootMemoryMaps_.at(index.row());
+            parentMemoryMap = rootMemoryMaps_->at(index.row());
         }
 
-        return component_->getSlaveInterfaces(parentMemoryMap->getName());
+        return component_->getSlaveInterfaces(parentMemoryMap->name());
 	}
 	else if (role == Qt::ForegroundRole)
     {
@@ -208,7 +218,7 @@ bool MemoryMapsModel::setData( const QModelIndex& index, const QVariant& value, 
         {
             if (!index.parent().isValid())
             {
-                rootMemoryMaps_[index.row()]->setName(value.toString());
+                rootMemoryMaps_->at(index.row())->setName(value.toString());
             }
             else
             {
@@ -222,7 +232,7 @@ bool MemoryMapsModel::setData( const QModelIndex& index, const QVariant& value, 
         {
             if (!index.parent().isValid())
             {
-                rootMemoryMaps_[index.row()]->setAddressUnitBits(value.toUInt());
+                rootMemoryMaps_->at(index.row())->setAddressUnitBits(value.toString());
                 emit aubChangedOnRow(index.row());
             }
         }
@@ -230,7 +240,7 @@ bool MemoryMapsModel::setData( const QModelIndex& index, const QVariant& value, 
         {
             if (!index.parent().isValid())
             {
-                rootMemoryMaps_[index.row()]->setDescription(value.toString());
+                rootMemoryMaps_->at(index.row())->setDescription(value.toString());
             }
             else
             {
@@ -257,34 +267,11 @@ bool MemoryMapsModel::setData( const QModelIndex& index, const QVariant& value, 
 }
 
 //-----------------------------------------------------------------------------
-// Function: memorymapsmodel::isValid()
-//-----------------------------------------------------------------------------
-bool MemoryMapsModel::isValid() const 
-{
-	foreach (QSharedPointer<MemoryMap> memMap, rootMemoryMaps_)
-    {
-		if (!memMap->isValid(component_->getChoices(), component_->getRemapStateNames()))
-        {
-			return false;
-		}
-
-        foreach (QSharedPointer<MemoryRemap> memoryRemap, *memMap->getMemoryRemaps())
-        {
-            if (memoryRemap->isValid(component_->getChoices(), component_->getRemapStateNames()))
-            {
-                return false;
-            }
-        }
-	}
-	return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: memorymapsmodel::onAddItem()
 //-----------------------------------------------------------------------------
 void MemoryMapsModel::onAddItem( const QModelIndex& index )
 {
-	int row = rootMemoryMaps_.size();
+	int row = rootMemoryMaps_->size();
 
 	if (index.isValid())
     {
@@ -292,7 +279,7 @@ void MemoryMapsModel::onAddItem( const QModelIndex& index )
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	rootMemoryMaps_.insert(row, QSharedPointer<MemoryMap>(new MemoryMap()));
+	rootMemoryMaps_->insert(row, QSharedPointer<MemoryMap>(new MemoryMap()));
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -314,10 +301,10 @@ void MemoryMapsModel::onRemoveItem( const QModelIndex& index )
 
     if (!index.parent().isValid())
     {
-        decreaseReferencesWithRemovedMemoryMap(rootMemoryMaps_.at(index.row()));
+        decreaseReferencesWithRemovedMemoryMap(rootMemoryMaps_->at(index.row()));
 
         beginRemoveRows(QModelIndex(), index.row(), index.row());
-        rootMemoryMaps_.removeAt(index.row());
+        rootMemoryMaps_->removeAt(index.row());
         endRemoveRows();
 
         // inform navigation tree that file set has been removed
@@ -389,19 +376,17 @@ void MemoryMapsModel::onAddMemoryRemap(const QModelIndex& index)
         return;
     }
 
-    QSharedPointer<MemoryMap> parentMemoryMap = rootMemoryMaps_.at(index.row());
+    QSharedPointer<MemoryMap> parentMemoryMap = rootMemoryMaps_->at(index.row());
     int rowOfNewItem = parentMemoryMap->getMemoryRemaps()->count();
 
     increaseReferencesWithNewRemap(parentMemoryMap);
 
     QSharedPointer<MemoryRemap> newMemoryRemap (new MemoryRemap);
-    QList<QSharedPointer<MemoryMapItem> > newRemapItems;
-    foreach (QSharedPointer<MemoryMapItem> memoryMapItem, parentMemoryMap->getItems())
+    foreach (QSharedPointer<MemoryBlockBase> mapBlock, *parentMemoryMap->getMemoryBlocks())
     {
-        QSharedPointer<MemoryMapItem> memoryRemapItem = memoryMapItem->clone();
-        newRemapItems.append(memoryRemapItem);
+        QSharedPointer<MemoryBlockBase> remapBlock = mapBlock->clone();
+        newMemoryRemap->getMemoryBlocks()->append(remapBlock);
     }
-    newMemoryRemap->setItems(newRemapItems);
 
     beginInsertRows(index, rowOfNewItem, rowOfNewItem);
     parentMemoryMap->getMemoryRemaps()->insert(rowOfNewItem, newMemoryRemap);
@@ -431,7 +416,7 @@ void MemoryMapsModel::increaseReferencesWithNewRemap(QSharedPointer<MemoryMap> p
 //-----------------------------------------------------------------------------
 // Function: memorymapsmodel::getReferencedParameters()
 //-----------------------------------------------------------------------------
-QMap<QString, int> MemoryMapsModel::getReferencedParameters(QSharedPointer<AbstractMemoryMap> memoryMap) const
+QMap<QString, int> MemoryMapsModel::getReferencedParameters(QSharedPointer<MemoryMapBase> memoryMap) const
 {
     MemoryRemapExpressionGatherer* memoryRemapGatherer = new MemoryRemapExpressionGatherer();
 
@@ -446,9 +431,9 @@ QMap<QString, int> MemoryMapsModel::getReferencedParameters(QSharedPointer<Abstr
 //-----------------------------------------------------------------------------
 QModelIndex MemoryMapsModel::index(int row, int column, const QModelIndex &parent /* = QModelIndex() */ ) const
 {
-    if (!parent.isValid() && 0 <= row && row < rootMemoryMaps_.size())
+    if (!parent.isValid() && 0 <= row && row < rootMemoryMaps_->size())
     {
-        return createIndex(row, column, rootMemoryMaps_.at(row).data());
+        return createIndex(row, column, rootMemoryMaps_->at(row).data());
     }
     else
     {
@@ -468,7 +453,7 @@ QModelIndex MemoryMapsModel::parent(const QModelIndex &child) const
         return QModelIndex();
     }
 
-    foreach (QSharedPointer<MemoryMap> rootItem, rootMemoryMaps_)
+    foreach (QSharedPointer<MemoryMap> rootItem, *rootMemoryMaps_)
     {
         if (rootItem.data() == child.internalPointer())
         {
@@ -485,13 +470,13 @@ QModelIndex MemoryMapsModel::parent(const QModelIndex &child) const
 //-----------------------------------------------------------------------------
 QModelIndex MemoryMapsModel::createParentIndexForMemoryRemap(MemoryRemap* childItem) const
 {
-    for (int i = 0; i < rootMemoryMaps_.size(); ++i)
+    for (int i = 0; i < rootMemoryMaps_->size(); ++i)
     {
-        foreach (QSharedPointer<MemoryRemap> memoryRemap, *rootMemoryMaps_.at(i)->getMemoryRemaps()) 
+        foreach (QSharedPointer<MemoryRemap> memoryRemap, *rootMemoryMaps_->at(i)->getMemoryRemaps()) 
         {
             if (memoryRemap.data() == childItem)
             {
-                return createIndex(i, 0, rootMemoryMaps_.at(i).data());
+                return createIndex(i, 0, rootMemoryMaps_->at(i).data());
             }
         }
     }
@@ -505,7 +490,7 @@ QModelIndex MemoryMapsModel::createParentIndexForMemoryRemap(MemoryRemap* childI
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryRemap> MemoryMapsModel::getIndexedMemoryRemap(QModelIndex const& parentIndex, int row) const
 {
-    foreach (QSharedPointer<MemoryMap> rootItem, rootMemoryMaps_)
+    foreach (QSharedPointer<MemoryMap> rootItem, *rootMemoryMaps_)
     {
         if (rootItem.data() == parentIndex.internalPointer())
         {
@@ -527,7 +512,7 @@ QSharedPointer<MemoryRemap> MemoryMapsModel::getIndexedMemoryRemap(QModelIndex c
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryMap> MemoryMapsModel::getParentMemoryMap(QSharedPointer<MemoryRemap> memoryRemap) const
 {
-    foreach (QSharedPointer<MemoryMap> memoryMap, rootMemoryMaps_)
+    foreach (QSharedPointer<MemoryMap> memoryMap, *rootMemoryMaps_)
     {
         if (memoryMap->getMemoryRemaps()->contains(memoryRemap))
         {
@@ -545,7 +530,7 @@ bool MemoryMapsModel::isIndexValid(QModelIndex const& index) const
 {
     if (!index.parent().isValid())
     {
-        if (index.row() < 0 || index.row() >= rootMemoryMaps_.size())
+        if (index.row() < 0 || index.row() >= rootMemoryMaps_->size())
         {
             return false;
         }
@@ -579,12 +564,12 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
     {
         if (!index.parent().isValid())
         {
-            return rootMemoryMaps_.at(index.row())->getName();
+            return rootMemoryMaps_->at(index.row())->name();
         }
         else
         {
             QSharedPointer<MemoryRemap> childItem = getIndexedMemoryRemap(index.parent(), index.row());
-            return childItem->getName();
+            return childItem->name();
         }
     }
     else if (index.column() == MemoryMapsColumns::AUB_COLUMN)
@@ -593,7 +578,7 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
 
         if (!index.parent().isValid())
         {
-            parentMemoryMap = rootMemoryMaps_.at(index.row());
+            parentMemoryMap = rootMemoryMaps_->at(index.row());
         }
         else
         {
@@ -608,15 +593,15 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
         QSharedPointer<MemoryMap> parentMemoryMap;
         if (!index.parent().isValid())
         {
-            parentMemoryMap = rootMemoryMaps_.at(index.row());
+            parentMemoryMap = rootMemoryMaps_->at(index.row());
         }
         else
         {
             parentMemoryMap = getParentMemoryMap(getIndexedMemoryRemap(index.parent(), index.row()));
         }
 
-        QStringList interfaceNames = component_->getSlaveInterfaces(parentMemoryMap->getName());
-        if (interfaceNames.isEmpty() || parentMemoryMap->isEmpty())
+        QStringList interfaceNames = component_->getSlaveInterfaces(parentMemoryMap->name());
+        if (interfaceNames.isEmpty() || !parentMemoryMap) //parentMemoryMap->isEmpty())
         {
             return tr("No binding");
         }
@@ -648,12 +633,12 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
     {
         if (!index.parent().isValid())
         {
-            return rootMemoryMaps_.at(index.row())->getDescription();
+            return rootMemoryMaps_->at(index.row())->description();
         }
         else
         {
             QSharedPointer<MemoryRemap> childItem = getIndexedMemoryRemap(index.parent(), index.row());
-            return childItem->getDescription();
+            return childItem->description();
         }
     }
 
@@ -665,18 +650,33 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QColor MemoryMapsModel::getForegroundColor(QModelIndex const& index) const
 {
-    if (index.column() == MemoryMapsColumns::INTERFACE_COLUMN ||
+    int columnIndex = index.column();
+
+    if (columnIndex == MemoryMapsColumns::INTERFACE_COLUMN ||
         (!index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN) ||
         (index.parent().isValid() && index.column() == MemoryMapsColumns::AUB_COLUMN))
     {
         return QColor("gray");
     }
 
-    else if (index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
+    else if (index.parent().isValid() && columnIndex == MemoryMapsColumns::REMAPSTATE_COLUMN)
     {
         QSharedPointer<MemoryRemap> memoryRemap = getIndexedMemoryRemap(index.parent(), index.row());
-        
-        if (!memoryRemap->isValid(component_->getChoices(), component_->getRemapStateNames()))
+
+        if ((columnIndex == MemoryMapsColumns::NAME_COLUMN && !memoryMapValidator_->hasValidName(memoryRemap)) ||
+            (columnIndex == MemoryMapsColumns::REMAPSTATE_COLUMN &&
+            memoryMapValidator_->remapStateIsNotValid(memoryRemap)))
+        {
+            return QColor("red");
+        }
+    }
+
+    else if (!index.parent().isValid())
+    {
+        QSharedPointer<MemoryMap> currentMap = rootMemoryMaps_->at(index.row());
+        if ((columnIndex == MemoryMapsColumns::NAME_COLUMN && !memoryMapValidator_->hasValidName(currentMap)) ||
+            (columnIndex == MemoryMapsColumns::AUB_COLUMN &&
+            !memoryMapValidator_->hasValidAddressUnitBits(currentMap)))
         {
             return QColor("red");
         }

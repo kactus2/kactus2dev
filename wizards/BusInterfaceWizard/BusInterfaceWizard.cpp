@@ -24,17 +24,16 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizard::BusInterfaceWizard()
 //-----------------------------------------------------------------------------
-BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,  
-    QSharedPointer<BusInterface> busIf,
-    LibraryInterface* handler, 
-    QStringList portNames,         
-    QWidget* parent, 
-    VLNV absDefVLNV, 
-    bool descriptionAsLogicalName)
-    : QWizard(parent)
+BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
+    LibraryInterface* handler, QStringList portNames, QWidget* parent, VLNV absDefVLNV,
+    bool descriptionAsLogicalName):
+ QWizard(parent)
 {
     setWindowTitle(tr("Bus Interface Wizard"));
     setWizardStyle(ModernStyle);
@@ -52,9 +51,14 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,
     {
         namingPolicy = BusInterfaceWizardBusEditorPage::DESCRIPTION;
     }
+    
+    QSharedPointer<BusInterfaceValidator> validator = QSharedPointer<BusInterfaceValidator>(
+        new BusInterfaceValidator(expressionParser, component->getChoices(), component->getViews(),
+        component->getPorts(), component->getAddressSpaces(), component->getMemoryMaps(), 
+        component->getBusInterfaces(), component->getFileSets(), component->getRemapStates(), handler));
 
     BusInterfaceWizardGeneralOptionsPage* optionsPage = new BusInterfaceWizardGeneralOptionsPage(component, busIf,
-        handler, !absDefVLNV.isValid(), parameterFinder, expressionFormatter, expressionParser, this);
+        handler, !absDefVLNV.isValid(), parameterFinder, expressionFormatter, expressionParser, validator, this);
 
     connect(optionsPage, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -64,8 +68,9 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,
     setPage(PAGE_INTRO, new BusInterfaceWizardIntroPage(this));
     setPage(PAGE_GENERALOPTIONS, optionsPage);
     setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusEditorPage(component, busIf, handler, portNames, 
-        this, absDefVLNV, namingPolicy));
-    setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames, this));
+        this, absDefVLNV, expressionParser, namingPolicy));
+    setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
+        expressionParser, validator, this));
     setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
 }
 
@@ -74,4 +79,5 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component,
 //-----------------------------------------------------------------------------
 BusInterfaceWizard::~BusInterfaceWizard()
 {
+
 }

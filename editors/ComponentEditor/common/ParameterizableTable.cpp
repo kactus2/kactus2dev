@@ -11,7 +11,7 @@
 
 #include "ParameterizableTable.h"
 
-#include "ValueFormatter.h"
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 

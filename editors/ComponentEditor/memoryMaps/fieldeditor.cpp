@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 28.8.2012
- *      Author: Antti Kamppi
- * 		filename: fieldeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: WriteValueConstraintComboBox.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 28.08.2012
+//
+// Description:
+// Editor for editing the enumerated values of a field.
+//-----------------------------------------------------------------------------
 
 #include "fieldeditor.h"
 #include "enumeratedvaluemodel.h"
@@ -13,15 +17,20 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
+#include <QVBoxLayout>
+
 //-----------------------------------------------------------------------------
 // Function: fieldeditor::FieldEditor()
 //-----------------------------------------------------------------------------
-FieldEditor::FieldEditor(QSharedPointer<Field> field, QSharedPointer<Component> component, 
-                         LibraryInterface* handler, QWidget* parent /*= 0*/ ):
+FieldEditor::FieldEditor(QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumeratedValues,
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator, QSharedPointer<Component> component,
+    LibraryInterface* handler, QWidget* parent /* = 0 */):
 QGroupBox(tr("Enumerated values"), parent),
 enumView_(new EditableTableView(this)),
 enumProxy_(new QSortFilterProxyModel(this)),
-enumModel_(new EnumeratedValueModel(field, this))
+enumModel_(new EnumeratedValueModel(enumeratedValues, enumeratedValueValidator, this))
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(enumView_, 0);
@@ -29,7 +38,7 @@ enumModel_(new EnumeratedValueModel(field, this))
 	enumProxy_->setSourceModel(enumModel_);
 	enumView_->setModel(enumProxy_);
 
-    const QString compPath = handler->getDirectoryPath(*component->getVlnv());
+    const QString compPath = handler->getDirectoryPath(component->getVlnv());
 	QString defPath = QString("%1/enumListing.csv").arg(compPath);
 	enumView_->setDefaultImportExportPath(defPath);
 	enumView_->setAllowImportExport(true);
@@ -52,14 +61,6 @@ enumModel_(new EnumeratedValueModel(field, this))
 FieldEditor::~FieldEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: fieldeditor::isValid()
-//-----------------------------------------------------------------------------
-bool FieldEditor::isValid() const
-{
-	return enumModel_->isValid();
 }
 
 //-----------------------------------------------------------------------------

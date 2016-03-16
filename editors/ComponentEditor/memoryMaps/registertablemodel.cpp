@@ -1,12 +1,18 @@
-/* 
- *  	Created on: 25.8.2012
- *      Author: Antti Kamppi
- * 		filename: registertablemodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: registertablemodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 25.08.2012
+//
+// Description:
+// The model to manage the details of a single register.
+//-----------------------------------------------------------------------------
 
 #include "registertablemodel.h"
 #include "RegisterColumns.h"
+
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
 
 #include <QColor>
 #include <QRegularExpression>
@@ -14,18 +20,16 @@
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::RegisterTableModel()
 //-----------------------------------------------------------------------------
-RegisterTableModel::RegisterTableModel(QSharedPointer<Register> reg, 
-        QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer <ParameterFinder> parameterFinder,
-        QSharedPointer <ExpressionFormatter> expressionFormatter,
-        QObject *parent):
+RegisterTableModel::RegisterTableModel(QSharedPointer<Register> reg,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
+    QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 reg_(reg),
-componentChoices_(componentChoices),
 fields_(reg->getFields()),
-expressionFormatter_(expressionFormatter)
+expressionFormatter_(expressionFormatter),
+fieldValidator_(fieldValidator)
 {
     setExpressionParser(expressionParser);
 }
@@ -47,7 +51,7 @@ int RegisterTableModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ 
     {
 		return 0;
 	}
-	return fields_.size();
+	return fields_->size();
 }
 
 //-----------------------------------------------------------------------------
@@ -72,9 +76,9 @@ Qt::ItemFlags RegisterTableModel::flags( const QModelIndex& index ) const
 		return Qt::NoItemFlags;
 	}
 	// if the field is not testable then the test constraint can not be set
-    if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN && !fields_.at(index.row())->getTestable())
+    if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN && !fields_->at(index.row())->getTestable().toBool())
     {
-			return Qt::NoItemFlags;
+        return Qt::NoItemFlags;
 	}
 	return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
 }
@@ -138,14 +142,6 @@ QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientatio
             QString isPresent = tr("Is Present") + getExpressionSymbol();
             return isPresent;
         }
-        else if (section == RegisterColumns::RESET_VALUE_COLUMN)
-        {
-            return tr("Reset value");
-        }
-        else if (section == RegisterColumns::RESET_MASK_COLUMN)
-        {
-            return tr("Reset mask");
-        }
         else
         {
             return QVariant();
@@ -166,7 +162,7 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
     {
 		return QVariant();
 	}
-	else if (index.row() < 0 || index.row() >= fields_.size()) 
+	else if (index.row() < 0 || index.row() >= fields_->size()) 
     {
 		return QVariant();
 	}
@@ -214,8 +210,9 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
     {
         if (validateIndex(index))
         {
+            QString isPresentValue = fields_->at(index.row())->getIsPresent();
             if (index.column() != RegisterColumns::IS_PRESENT_COLUMN && 
-                parseExpressionToDecimal(fields_.at(index.row())->getIsPresentExpression()).toInt() != 1)
+                (!isPresentValue.isEmpty() && parseExpressionToDecimal(isPresentValue).toInt() != 1))
             {
                 return QColor("gray");
             }
@@ -254,57 +251,49 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
 {
     if (index.column() == RegisterColumns::NAME_COLUMN)
     {
-        return fields_.at(index.row())->getName();
+        return fields_->at(index.row())->name();
     }
     else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
     {
-        return fields_.at(index.row())->getDescription();
+        return fields_->at(index.row())->description();
     }
     else if (index.column() == RegisterColumns::OFFSET_COLUMN)
     {
-        QString bitOffset = fields_.at(index.row())->getBitOffsetExpression();
+        QString bitOffset = fields_->at(index.row())->getBitOffset();
         return bitOffset;
     }
     else if (index.column() == RegisterColumns::WIDTH_COLUMN)
     {
-        QString bitWidth = fields_.at(index.row())->getBitWidthExpression();
+        QString bitWidth = fields_->at(index.row())->getBitWidth();
         return bitWidth;
     }
     else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
     {
-        return fields_.at(index.row())->getVolatile();
+        return fields_->at(index.row())->getVolatile().toString();
     }
     else if (index.column() == RegisterColumns::ACCESS_COLUMN)
     {
-        return General::access2Str(fields_.at(index.row())->getAccess());
+        return AccessTypes::access2Str(fields_->at(index.row())->getAccess());
     }
     else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
     {
-        return General::modifiedWrite2Str(fields_.at(index.row())->getModifiedWrite());
+        return General::modifiedWrite2Str(fields_->at(index.row())->getModifiedWrite());
     }
     else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
     {
-        return General::readAction2Str(fields_.at(index.row())->getReadAction());
+        return General::readAction2Str(fields_->at(index.row())->getReadAction());
     }
     else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
     {
-        return fields_.at(index.row())->getTestable();
+        return fields_->at(index.row())->getTestable().toString();
     }
     else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
     {
-        return General::testConstraint2Str(fields_.at(index.row())->getTestConstraint());
+        return General::testConstraint2Str(fields_->at(index.row())->getTestConstraint());
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
-        return fields_.at(index.row())->getIsPresentExpression();
-    }
-    else if (index.column() == RegisterColumns::RESET_VALUE_COLUMN)
-    {
-        return fields_.at(index.row())->getResetValue();
-    }
-    else if (index.column() == RegisterColumns::RESET_MASK_COLUMN)
-    {
-        return fields_.at(index.row())->getResetMask();
+        return fields_->at(index.row())->getIsPresent();
     }
     else
     {
@@ -315,43 +304,33 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::setData()
 //-----------------------------------------------------------------------------
-bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) 
+bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value, int role) 
 {
-	if (!index.isValid()) 
-    {
-		return false;
-	}
-	else if (index.row() < 0 || index.row() >= fields_.size()) 
+	if (!index.isValid() || index.row() < 0 || index.row() >= fields_->size()) 
     {
 		return false;
 	}
 
-	if (Qt::EditRole == role) 
+	if (role == Qt::EditRole) 
     {
         if (index.column() == RegisterColumns::NAME_COLUMN)
         {
-            fields_.at(index.row())->setName(value.toString());
+            fields_->at(index.row())->setName(value.toString());
 
             emit graphicsChanged();
         }
         else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
         {
-            fields_.at(index.row())->setDescription(value.toString());
+            fields_->at(index.row())->setDescription(value.toString());
         }
         else if (index.column() == RegisterColumns::OFFSET_COLUMN)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(fields_.at(index.row())->getBitOffsetExpression());
+                removeReferencesFromSingleExpression(fields_->at(index.row())->getBitOffset());
             }
 
-            QString calculatedExpression = parseExpressionToDecimal(value.toString());
-            fields_.at(index.row())->removeBitOffsetExpression();
-            if (calculatedExpression != value.toString())
-            {
-                fields_.at(index.row())->setBitOffsetExpression(value.toString());
-            }
-            fields_.at(index.row())->setBitOffset(calculatedExpression.toInt());
+            fields_->at(index.row())->setBitOffset(value.toString());
 
             emit graphicsChanged();
         }
@@ -359,87 +338,80 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(fields_.at(index.row())->getBitWidthExpression());
+                removeReferencesFromSingleExpression(fields_->at(index.row())->getBitWidth());
             }
 
-            QString calculatedExpression = parseExpressionToDecimal(value.toString());
-            fields_.at(index.row())->removeBitWidthExpression();
-            if (calculatedExpression != value.toString())
-            {
-                fields_.at(index.row())->setBitWidthExpression(value.toString());
-            }
-            fields_.at(index.row())->setBitWidth(calculatedExpression.toInt());
+            fields_->at(index.row())->setBitWidth(value.toString());
 
             emit graphicsChanged();
         }
         else if (index.column() == RegisterColumns::VOLATILE_COLUMN)
         {
-            fields_.at(index.row())->setVolatile(value.toBool());
+            if (value.toString() == QLatin1String("true"))
+            {
+                fields_->at(index.row())->setVolatile(true);
+            }
+            else if (value.toString() == QLatin1String("false"))
+            {
+                fields_->at(index.row())->setVolatile(false);
+            }
+            else
+            {
+                fields_->at(index.row())->clearVolatile();
+            }
         }
         else if (index.column() == RegisterColumns::ACCESS_COLUMN)
         {
-            fields_.at(index.row())->setAccess(General::str2Access(value.toString(), General::ACCESS_COUNT));
+            fields_->at(index.row())->setAccess(
+                AccessTypes::str2Access(value.toString(), AccessTypes::ACCESS_COUNT));
         }
         else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
         {
-            fields_.at(index.row())->setModifiedWrite(General::str2ModifiedWrite(value.toString()));
+            fields_->at(index.row())->setModifiedWrite(General::str2ModifiedWrite(value.toString()));
         }
         else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
         {
-            fields_.at(index.row())->setReadAction(General::str2ReadAction(value.toString()));
+            fields_->at(index.row())->setReadAction(General::str2ReadAction(value.toString()));
         }
         else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
         {
-            bool testable = value.toBool();
-            fields_.at(index.row())->setTestable(testable);
-
-            if (!testable) 
+            if (value.toString() == QLatin1String("true"))
             {
-                fields_.at(index.row())->setTestConstraint(General::TESTCONSTRAINT_COUNT);
+                fields_->at(index.row())->setTestable(true);
+            }
+            else if (value.toString() == QLatin1String("false"))
+            {
+                fields_->at(index.row())->setTestable(false);
+                fields_->at(index.row())->setTestConstraint(General::TESTCONSTRAINT_COUNT);
                 QModelIndex constrIndex = createIndex(index.row(), index.column() + 1, index.internalPointer());
                 emit dataChanged(constrIndex, constrIndex);
+            }
+            else
+            {
+                fields_->at(index.row())->clearTestable();
             }
         }
         else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
         {
-            fields_.at(index.row())->setTestConstraint(General::str2TestConstraint(value.toString()));
+            fields_->at(index.row())->setTestConstraint(General::str2TestConstraint(value.toString()));
         }
         else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(fields_.at(index.row())->getIsPresentExpression());
-
-                fields_.at(index.row())->removeIsPresentExpression();
+                removeReferencesFromSingleExpression(fields_->at(index.row())->getIsPresent());
             }
 
-            fields_.at(index.row())->setIsPresentExpression(value.toString());
+            fields_->at(index.row())->setIsPresent(value.toString());
 
             emit graphicsChanged();
-        }
-        else if (index.column() == RegisterColumns::RESET_VALUE_COLUMN)
-        {
-            QString newResetValue = value.toString();
-            fields_.at(index.row())->setResetValue(newResetValue);
-
-            if (newResetValue.isEmpty())
-            {
-                fields_.at(index.row())->setResetMask(newResetValue);
-
-                QModelIndex maskIndex = QAbstractTableModel::index(index.row(), RegisterColumns::RESET_MASK_COLUMN);
-                emit dataChanged(maskIndex, maskIndex);
-            }
-        }
-        else if (index.column() == RegisterColumns::RESET_MASK_COLUMN)
-        {
-            fields_.at(index.row())->setResetMask(value.toString());
         }
         else
         {
             return false;
 		}
 
-		emit dataChanged(index, index);
+        emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
 	}
@@ -447,22 +419,6 @@ bool RegisterTableModel::setData( const QModelIndex& index, const QVariant& valu
     {
 		return false;
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: registertablemodel::isValid()
-//-----------------------------------------------------------------------------
-bool RegisterTableModel::isValid() const 
-{
-	unsigned int regSize = reg_->getSize();
-	foreach (QSharedPointer<Field> field, fields_) 
-    {
-		if (!field->isValid(regSize, componentChoices_))
-        {
-			return false;
-		}
-	}
-	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -488,15 +444,15 @@ QVariant RegisterTableModel::expressionOrValueForIndex(QModelIndex const& index)
 {
     if (index.column() == RegisterColumns::OFFSET_COLUMN)
     {
-        return fields_.at(index.row())->getBitOffsetExpression();
+        return fields_->at(index.row())->getBitOffset();
     }
     else if (index.column() == RegisterColumns::WIDTH_COLUMN)
     {
-        return fields_.at(index.row())->getBitWidthExpression();
+        return fields_->at(index.row())->getBitWidth();
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
-        return fields_.at(index.row())->getIsPresentExpression();
+        return fields_->at(index.row())->getIsPresent();
     }
 
     return data(index, Qt::DisplayRole);
@@ -507,31 +463,27 @@ QVariant RegisterTableModel::expressionOrValueForIndex(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 bool RegisterTableModel:: validateIndex(QModelIndex const& index) const
 {
-    if (index.column() == RegisterColumns::OFFSET_COLUMN)
+    QSharedPointer<Field> field = fields_->at(index.row());
+
+    if (index.column() == RegisterColumns::NAME_COLUMN)
     {
-        QString offset = fields_.at(index.row())->getBitOffsetExpression();
-        return isValuePlainOrExpression(offset);
+        return fieldValidator_->hasValidName(field);
+    }
+    else if (index.column() == RegisterColumns::OFFSET_COLUMN)
+    {
+        return fieldValidator_->hasValidBitOffset(field);
     }
     else if (index.column() == RegisterColumns::WIDTH_COLUMN)
     {
-        QString width = fields_.at(index.row())->getBitWidthExpression();
-        return isValuePlainOrExpression(width);
+        return fieldValidator_->hasValidBitWidth(field);
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
-        QString isPresent = formattedValueFor(fields_.at(index.row())->getIsPresentExpression());
-
-        bool conversionToIntOk = true;
-        int presenceValue = isPresent.toInt(&conversionToIntOk);
-
-        if (conversionToIntOk && (presenceValue == 1 || presenceValue == 0))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return fieldValidator_->hasValidIsPresent(field);
+    }
+    else if (index.column() == RegisterColumns::ACCESS_COLUMN)
+    {
+        return fieldValidator_->hasValidAccess(field);
     }
 
     return true;
@@ -542,9 +494,9 @@ bool RegisterTableModel:: validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 int RegisterTableModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    int referencesInBitOffset = fields_.at(row)->getBitOffsetExpression().count(valueID);
-    int referencesInBitWidth = fields_.at(row)->getBitWidthExpression().count(valueID);
-    int referencesInIsPresent = fields_.at(row)->getIsPresentExpression().count(valueID);
+    int referencesInBitOffset = fields_->at(row)->getBitOffset().count(valueID);
+    int referencesInBitWidth = fields_->at(row)->getBitWidth().count(valueID);
+    int referencesInIsPresent = fields_->at(row)->getIsPresent().count(valueID);
 
     int totalReferences = referencesInBitOffset + referencesInBitWidth + referencesInIsPresent;
 
@@ -554,18 +506,19 @@ int RegisterTableModel::getAllReferencesToIdInItemOnRow(const int& row, QString 
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::onAddItem()
 //-----------------------------------------------------------------------------
-void RegisterTableModel::onAddItem( const QModelIndex& index ) {
-	int row = fields_.size();
+void RegisterTableModel::onAddItem( const QModelIndex& index )
+{
+	int row = fields_->size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	QSharedPointer<Field> field(new Field(reg_->getVolatile(), reg_->getAccess()));
-	field->setBitWidth(1);
-	fields_.insert(row, field);
+    QSharedPointer<Field> field(new Field());
+	fields_->insert(row, field);
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -578,13 +531,16 @@ void RegisterTableModel::onAddItem( const QModelIndex& index ) {
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::onRemoveItem()
 //-----------------------------------------------------------------------------
-void RegisterTableModel::onRemoveItem( const QModelIndex& index ) {
+void RegisterTableModel::onRemoveItem( const QModelIndex& index )
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
+	if (!index.isValid())
+    {
 		return;
 	}
 	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= fields_.size()) {
+	else if (index.row() < 0 || index.row() >= fields_->size())
+    {
 		return;
 	}
 
@@ -592,9 +548,9 @@ void RegisterTableModel::onRemoveItem( const QModelIndex& index ) {
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 
     removeReferencesInItemOnRow(index.row());
+	fields_->removeAt(index.row());
 
-	fields_.removeAt(index.row());
-	endRemoveRows();
+    endRemoveRows();
 
 	// inform navigation tree that file set has been removed
 	emit fieldRemoved(index.row());

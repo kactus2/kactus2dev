@@ -13,7 +13,12 @@
 #define HWCHANGECOMMANDS_H
 
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/ApiInterface.h>
+
+#include <IPXACTmodels/common/DirectionTypes.h>
+
+#include <IPXACTmodels/Component/PortMap.h>
+
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
 #include <QUndoCommand>
 #include <QGraphicsItem>
@@ -21,19 +26,23 @@
 #include <QString>
 #include <QMap>
 
-class HWConnection;
-class BusPortItem;
-class HWComponentItem;
-class ComponentItem;
+class ActiveViewModel;
+class AdHocEnabled;
+class AdHocConnectionItem;
+class AdHocPortItem;
 class BusInterfaceItem;
+class BusPortItem;
+class ComponentItem;
+class ConnectionEndpoint;
+class DesignDiagram;
 class GraphicsColumn;
 class GraphicsColumnLayout;
-class HWConnectionEndpoint;
-class ActiveViewModel;
-class AdHocPortItem;
-class AdHocEnabled;
-class ConnectionEndpoint;
 class GraphicsConnection;
+class HWComponentItem;
+class HWConnection;
+class HWConnectionEndpoint;
+
+class ComponentInstance;
 
 //-----------------------------------------------------------------------------
 //! ComponentChangeNameCommand class.
@@ -183,40 +192,43 @@ class ComponentConfElementChangeCommand: public QUndoCommand {
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param component Pointer to the component instance that is being edited.
-	 * \param newConfElements The new configurable elements for the instance.
-	 * \param parent Pointer to the owner of this command.
-	 *
-	*/
-	ComponentConfElementChangeCommand(ComponentItem* component,
-		const QMap<QString, QString>& newConfElements, 
-		QUndoCommand* parent = 0);
+	 *      @param [in] componentInstance   Pointer to the component instance that is being edited.
+	 *      @param [in] newConfElements     The new configurable elements for the instance.
+	 *      @param [in] parent              Pointer to the owner of this command.
+	 */
+    ComponentConfElementChangeCommand(QSharedPointer<ComponentInstance> componentInstance,
+        const QMap<QString, QString>& newConfElements, QUndoCommand* parent = 0);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~ComponentConfElementChangeCommand();
 
-	//! \brief Undoes the command.
+	/*!
+     *  Undoes the command.
+     */
 	virtual void undo();
 
-	//! \brief Redoes the command.
+	/*!
+     *  Redoes the command.
+     */
 	virtual void redo();
 
 private:
-	//! \brief No copying
+	//! No copying
 	ComponentConfElementChangeCommand(const ComponentConfElementChangeCommand& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ComponentConfElementChangeCommand& operator=(const ComponentConfElementChangeCommand& other);
 
-	//! \brief Pointer to the component instance that's configurable elements are changed.
-	ComponentItem* component_;
+	//! Pointer to the component instance that's configurable elements are changed.
+    QSharedPointer<ComponentInstance> componentInstance_;
 
-	//! \brief The old configurable element values.
+	//! The old configurable element values.
 	QMap<QString, QString> oldConfElements_;
 
-	//! \brief The new configurable element values.
+	//! The new configurable element values.
 	QMap<QString, QString> newConfElements_;
 };
 
@@ -224,20 +236,17 @@ class ComponentActiveViewChangeCommand : public QUndoCommand
 {
 public:
 
-    /*! \brief The constructor
+    /*!
+     *  The constructor
      *
-     * \param instanceName The name of the component instance
-     * \param oldActiveView The name of the previous active view.
-     * \param newActiveView The name of the new active view.
-     * \param activeViewModel Pointer to the model that manages the active views.
-     * \param parent Pointer to the parent command.
-     *
-    */
-    ComponentActiveViewChangeCommand(const QString& instanceName,
-		QString const& oldActiveView, 
-		QString const& newActiveView,
-		ActiveViewModel* activeViewModel,
-		QUndoCommand* parent = 0);
+     *      @param [in] instanceName        The name of the component instance
+     *      @param [in] oldActiveView       The name of the previous active view.
+     *      @param [in] newActiveView       The name of the new active view.
+     *      @param [in] activeViewModel     Pointer to the model that manages the active views.
+     *      @param [in] parent              Pointer to the parent command.
+     */
+    ComponentActiveViewChangeCommand(const QString& instanceName, QString const& oldActiveView,
+        QString const& newActiveView, ActiveViewModel* activeViewModel, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -263,16 +272,16 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! \brief The component's old active view.
+    //! The component's old active view.
     QString instanceName_;
 
-    //! \brief The component's new name.
+    //! The component's new name.
     QString newViewName_;
 
-    //! \brief The component's new active view.
+    //! The component's new active view.
     QString oldViewName_;
 
-	//! \brief Pointer to the model that manages the active views.
+	//! Pointer to the model that manages the active views.
 	ActiveViewModel* activeViewModel_;
 };
 
@@ -559,7 +568,7 @@ public:
      *      @param [in] newDir    The endpoint's new COM direction.
      *      @param [in] parent    The parent command.
      */
-    EndpointComDirectionChangeCommand(ConnectionEndpoint* endpoint, General::Direction newDir,
+    EndpointComDirectionChangeCommand(ConnectionEndpoint* endpoint, DirectionTypes::Direction newDir,
                                       QUndoCommand* parent = 0);
 
     /*!
@@ -590,10 +599,10 @@ private:
     ConnectionEndpoint* endpoint_;
 
     //! The endpoint's old COM direction.
-    General::Direction oldDir_;
+    DirectionTypes::Direction oldDir_;
 
     //! The endpoint's new COM direction.
-    General::Direction newDir_;
+    DirectionTypes::Direction newDir_;
 };
 
 //-----------------------------------------------------------------------------
@@ -824,60 +833,6 @@ private:
 };
 
 //-----------------------------------------------------------------------------
-//! Undo command for changing the ad-hoc port visibility.
-//-----------------------------------------------------------------------------
-class AdHocVisibilityChangeCommand : public QUndoCommand
-{
-public:
-    /*!
-     *  Constructor.
-     *
-     *      @param [in] component     The ad-hoc enabled data source.
-     *      @param [in] portName      The name of the port.
-     *      @param [in] newVisiblity  The new ad-hoc visibility of the port.
-     *      @param [in] parent        The parent undo command.
-     */
-    AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName,
-                                 bool newVisibility, QUndoCommand* parent = 0);
-
-    /*!
-     *  Destructor.
-     */
-    ~AdHocVisibilityChangeCommand();
-
-    /*!
-     *  Undoes the command.
-     */
-    virtual void undo();
-
-    /*!
-     *  Redoes the command.
-     */
-    virtual void redo();
-
-private:
-    // Disable copying.
-    AdHocVisibilityChangeCommand(AdHocVisibilityChangeCommand const& rhs);
-    AdHocVisibilityChangeCommand& operator=(AdHocVisibilityChangeCommand const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The component containing the port.
-    AdHocEnabled* dataSource_;
-
-    //! The name of the port.
-    QString portName_;
-
-    //! The saved port position.
-    QPointF pos_;
-
-    //! The new ad-hoc visibility for the port.
-    bool newVisibility_;
-};
-
-//-----------------------------------------------------------------------------
 //! Undo command for changing the ad-hoc bounds of an ad-hoc connection.
 //-----------------------------------------------------------------------------
 class AdHocBoundsChangeCommand : public QUndoCommand
@@ -887,8 +842,8 @@ public:
 	/*!
      *  Constructor.
 	 */
-	AdHocBoundsChangeCommand(HWConnection* connection, bool right, int endpointIndex,
-                             int oldValue, int newValue, QUndoCommand* parent = 0);
+	AdHocBoundsChangeCommand(AdHocConnectionItem* connection, bool right, int endpointIndex,
+                             QString const& oldValue, QString const& newValue, QUndoCommand* parent = 0);
 
 	/*!
      *  Destructor.
@@ -915,7 +870,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Pointer to the connection to change.
-	HWConnection* connection_;
+	AdHocConnectionItem* connection_;
 
     //! If true, the change concerns the right bound. Otherwise it concerns the left bound.
     bool right_;
@@ -924,10 +879,10 @@ private:
     int endpointIndex_;
 
     //! The old bound value.
-    int oldValue_;
+    QString oldValue_;
 
     //! The new bound value.
-    int newValue_;
+    QString newValue_;
 };
 
 //-----------------------------------------------------------------------------
@@ -942,7 +897,7 @@ public:
 	/*!
      *  Constructor.
 	 */
-	ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp,
+	ReplaceComponentCommand(DesignDiagram* diagram, HWComponentItem* oldComp, HWComponentItem* newComp,
                             bool existing, bool keepOld, QUndoCommand* parent = 0);
 
 	/*!

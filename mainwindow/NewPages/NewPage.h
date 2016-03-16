@@ -13,15 +13,12 @@
 #define NEWPAGE_H
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QLabel>
-#include <QPushButton>
 
 class LibraryInterface;
 class VLNVEditor;
-class KactusAttributeEditor;
 class LibrarySelectorWidget;
 
 //-----------------------------------------------------------------------------
@@ -103,6 +100,8 @@ protected:
      *      @param [in] vlnv    The reserved VLNV.     
      */
     void showErrorForReservedVLVN(VLNV const& vlnv);
+
+    QString type2Show(VLNV::IPXactType const& type);
 
     //! VLNV editor.
     VLNVEditor* vlnvEditor_;

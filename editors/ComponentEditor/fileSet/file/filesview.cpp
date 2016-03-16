@@ -1,45 +1,64 @@
-/* 
- *  	Created on: 4.6.2012
- *      Author: Antti Kamppi
- * 		filename: filesview.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: filesview.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 4.6.2012
+//
+// Description:
+// The view to display the files contained in a file set.
+//-----------------------------------------------------------------------------
 
 #include "filesview.h"
+
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QSortFilterProxyModel>
 #include <QStringList>
 #include <QFileDialog>
 
-FilesView::FilesView(LibraryInterface* handler,
-					 QSharedPointer<Component> component,
-					 QWidget *parent):
+//-----------------------------------------------------------------------------
+// Function: filesview::FilesView()
+//-----------------------------------------------------------------------------
+FilesView::FilesView(LibraryInterface* handler, QSharedPointer<Component> component, QWidget *parent):
 EditableTableView(parent),
 handler_(handler),
-component_(component) {
+component_(component)
+{
+
 }
 
-FilesView::~FilesView() {
+//-----------------------------------------------------------------------------
+// Function: filesview::~FilesView()
+//-----------------------------------------------------------------------------
+FilesView::~FilesView()
+{
+
 }
 
-void FilesView::mouseDoubleClickEvent( QMouseEvent* event ) {
+//-----------------------------------------------------------------------------
+// Function: filesview::mouseDoubleClickEvent()
+//-----------------------------------------------------------------------------
+void FilesView::mouseDoubleClickEvent( QMouseEvent* event )
+{
 	// if there is no item on the clicked position then a new item should be added
 	QModelIndex index = indexAt(event->pos());
-	if (!index.isValid()) {
-
+	if (!index.isValid())
+    {
 		// ask user to select the files to add
 		QStringList files = QFileDialog::getOpenFileNames(this, tr("Select files to add."),
-			handler_->getPath(*component_->getVlnv()));
+            handler_->getPath(component_->getVlnv()));
 		
-		// if user clicked cancel
-		if (files.isEmpty()) {
+		if (files.isEmpty())
+        {
 			event->accept();
 			return;
 		}
 
-		// add each file
-		foreach (QString file, files) {
+		foreach (QString file, files)
+        {
 			emit addItem(index, file);
 		}
 
@@ -50,36 +69,38 @@ void FilesView::mouseDoubleClickEvent( QMouseEvent* event ) {
 	QTableView::mouseDoubleClickEvent(event);
 }
 
-void FilesView::onAddAction() {
+//-----------------------------------------------------------------------------
+// Function: filesview::onAddAction()
+//-----------------------------------------------------------------------------
+void FilesView::onAddAction()
+{
 	QModelIndexList indexes = selectedIndexes();
 	QModelIndex posToAdd;
 
 	QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
 
-	// if there were indexes selected
-	if (!indexes.isEmpty()) {
+	if (!indexes.isEmpty())
+    {
 		qSort(indexes);
-
-		// the position to add the files to
 		posToAdd = indexes.first();
 	}
 
 	// if proxy is used then map the index to source indexes
-	if (sortProxy) {
+	if (sortProxy)
+    {
 		posToAdd = sortProxy->mapToSource(posToAdd);
 	}
 
-	// ask user to select the files to add
 	QStringList files = QFileDialog::getOpenFileNames(this, tr("Select files to add."),
-		handler_->getPath(*component_->getVlnv()));
+        handler_->getPath(component_->getVlnv()));
 
-	// if user clicked cancel
-	if (files.isEmpty()) {
+	if (files.isEmpty())
+    {
 		return;
 	}
 
-	// add each file
-	foreach (QString file, files) {
+	foreach (QString file, files)
+    {
 		emit addItem(posToAdd, file);
 	}
 }

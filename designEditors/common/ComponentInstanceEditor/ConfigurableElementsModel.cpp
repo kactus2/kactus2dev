@@ -1,18 +1,32 @@
-/* 
- *  	Created on: 12.8.2011
- *      Author: Antti Kamppi
- * 		filename: componentinstancemodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: ConfigurableElementsModel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.08.2011
+//
+// Description:
+// Model class to manage the configurable element values being edited.
+//-----------------------------------------------------------------------------
 
 #include "ConfigurableElementsModel.h"
 #include "ConfigurableElementsColumns.h"
 
+#include <common/graphicsItems/ComponentItem.h>
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
-#include <editors/ComponentEditor/common/ValueFormatter.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
+#include <IPXACTmodels/common/Enumeration.h>
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
+
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::ConfigurableElementsModel()
@@ -27,13 +41,14 @@ ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ParameterFin
 QAbstractItemModel(parent),
 ParameterizableTable(parameterFinder),
 component_(0),
+componentInstance_(0),
 currentElementValues_(),
 configurableElements_(new QList<QSharedPointer<Parameter> > ()),
 editProvider_(0),
 configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
 componentInstanceExpressionFormatter_(componentInstanceExpressionFormatter),
 componentInstanceExpressionParser_(componentInstanceExpressionParser),
-validator_(new ParameterValidator2014(configurableElementExpressionParser, parameterFinder)),
+validator_(0),
 designConfiguration_(new DesignConfiguration()),
 rootItems_()
 {
@@ -51,6 +66,10 @@ rootItems_()
 
     listParameterFinder->setParameterList(configurableElements_);
     setExpressionParser(configurableElementExpressionParser);
+
+    QSharedPointer<QList<QSharedPointer<Choice> > > noChoices(new QList<QSharedPointer<Choice> >());
+    validator_ = QSharedPointer<ParameterValidator2014>(
+        new ParameterValidator2014(configurableElementExpressionParser, noChoices));
 }
 
 //-----------------------------------------------------------------------------
@@ -64,31 +83,25 @@ ConfigurableElementsModel::~ConfigurableElementsModel()
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::setComponent()
 //-----------------------------------------------------------------------------
-void ConfigurableElementsModel::setComponent( ComponentItem* component ) 
+void ConfigurableElementsModel::setComponent(QSharedPointer<Component> component,
+    QSharedPointer<ComponentInstance> instance, QSharedPointer<IEditProvider> editProvider)
 {
-	Q_ASSERT(component);
+    Q_ASSERT(instance);
+    Q_ASSERT(component);
 
-	// if there is previously selected component
-	if (component_) 
-    {
-		component_->disconnect(this);
-	}
-
-	component_ = component;
+    component_ = component;
+    componentInstance_ = instance;
 
     // get the edit provider that manages the undo/redo stack
-    DesignDiagram* diagram = static_cast<DesignDiagram*>(component->scene());
-    editProvider_ = &diagram->getEditProvider();
+    editProvider_ = editProvider;
     	
-	currentElementValues_ = component->getConfigurableElements();
+    currentElementValues_.clear();
+    foreach (QSharedPointer<ConfigurableElementValue> element, *instance->getConfigurableElementValues())
+    {
+        currentElementValues_.insert(element->getReferenceId(), element->getConfigurableValue());
+    }
+
 	setupConfigurableElements();
-
-	connect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
-		this, SLOT(changeElements(const QMap<QString, QString>&)), Qt::UniqueConnection);
-
-	// if the connected component is destroyed then clear this editor
-	connect(component_, SIGNAL(destroyed(ComponentItem*)),
-		    this, SLOT(clear()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -96,13 +109,8 @@ void ConfigurableElementsModel::setComponent( ComponentItem* component )
 //-----------------------------------------------------------------------------
 void ConfigurableElementsModel::clear() 
 {
-	// if previous component has been specified
-	if (component_) 
-    {
-		component_->disconnect(this);
-	}
-
-	component_ = 0;
+    component_.clear();
+    componentInstance_.clear();
 	currentElementValues_.clear();
 
 	beginResetModel();
@@ -294,7 +302,8 @@ bool ConfigurableElementsModel::setData( const QModelIndex& index, const QVarian
 
             if (index.column() == ConfigurableElementsColumns::VALUE)
             {
-                if (!value.isValid() || value.toString().isEmpty())
+                if (!value.isValid() || value.toString().isEmpty() ||
+                    value.toString() == element->getValueAttribute("kactus2:defaultValue"))
                 {
                     element->setValue(element->getValueAttribute("kactus2:defaultValue"));
                     element->setAttribute("kactus2:editedInConfigurableElements", "");
@@ -399,7 +408,7 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
 
         if (index.column() == ConfigurableElementsColumns::NAME)
         {
-            return targetElement->getName();
+            return targetElement->name();
         }
         else if (index.column() == ConfigurableElementsColumns::VALUE)
         {
@@ -424,7 +433,7 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
         }
         else if (index.column() == ConfigurableElementsColumns::TYPE)
         {
-            return targetElement->getValueFormat();
+            return targetElement->getType();
         }
     }
 
@@ -523,9 +532,9 @@ QString ConfigurableElementsModel::formattedValueFor(QString const& expression) 
 //-----------------------------------------------------------------------------
 QSharedPointer<Choice> ConfigurableElementsModel::findChoice(QString const& choiceName) const
 {
-    foreach (QSharedPointer<Choice> choice, *component_->componentModel()->getChoices())
+    foreach (QSharedPointer<Choice> choice, *component_->getChoices())
     {
-        if (choice->getName() == choiceName)
+        if (choice->name() == choiceName)
         {
             return choice;
         }
@@ -586,7 +595,7 @@ QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const&
 
         if (index.column() == ConfigurableElementsColumns::NAME)
         {
-            return element->getName();
+            return element->name();
         }
         else if (index.column() == ConfigurableElementsColumns::VALUE)
         {
@@ -612,20 +621,19 @@ QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) con
 
         if (element->getValueAttribute("kactus2:defaultValue").isEmpty())
         {
-            return QString("This parameter was not found in " + component_->name() + ".");
+            return QString("This parameter was not found in " + componentInstance_->getInstanceName() + ".");
         }
 
         else if (index.column() == ConfigurableElementsColumns::VALUE)
         {
-            QString context = component_->name();
+            QString context = componentInstance_->getInstanceName();
 
-            QStringList errorList = validator_->findErrorsIn(
-                element.data(), context, component_->componentModel()->getChoices());
+            QVector<QString> errorList;
+            validator_->findErrorsIn(errorList, element, context);
 
             if (!errorList.isEmpty())
             {
-                QString errors = errorList.join("\n");
-                return errors;
+                return QStringList(errorList.toList()).join("\n");
             }
         }
         else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
@@ -650,11 +658,11 @@ bool ConfigurableElementsModel::validateIndex(QModelIndex const& index) const
 
         if (index.column() == ConfigurableElementsColumns::NAME)
         {
-            return validator_->hasValidName(element.data());
+            return validator_->hasValidName(element);
         }
         else if (index.column() == ConfigurableElementsColumns::VALUE)
         {
-            return validator_->hasValidValue(element.data(), component_->componentModel()->getChoices());
+            return validator_->hasValidValue(element);
         }
     }
 
@@ -675,17 +683,10 @@ void ConfigurableElementsModel::save()
         }
 	}
 
-	QSharedPointer<ComponentConfElementChangeCommand> cmd(new ComponentConfElementChangeCommand(component_,
+	QSharedPointer<ComponentConfElementChangeCommand> cmd(new ComponentConfElementChangeCommand(componentInstance_,
 		newValues));
-
-	// disconnect the signal to avoid infinite loops of changes.
-	disconnect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
-		this, SLOT(changeElements(const QMap<QString, QString>&)));
 	editProvider_->addCommand(cmd);
     cmd->redo();
-
-	connect(component_, SIGNAL(confElementsChanged(const QMap<QString, QString>&)),
-		this, SLOT(changeElements(const QMap<QString, QString>&)), Qt::UniqueConnection);
 
 	currentElementValues_ = newValues;
 }
@@ -747,46 +748,54 @@ void ConfigurableElementsModel::setupConfigurableElements()
 //-----------------------------------------------------------------------------
 void ConfigurableElementsModel::readComponentConfigurableElements()
 {
-    QSharedPointer<Component> componentModel = component_->componentModel();
-
-    if (!componentModel->getParameters()->isEmpty())
+    if (!component_->getParameters()->isEmpty())
     {
-        foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getParameters())
+        foreach (QSharedPointer<Parameter> parameterPointer, *component_->getParameters())
         {
             addParameterToConfigurableElements(parameterPointer, "Parameters");
         }
     }
 
-    if (!componentModel->getModelParameters()->isEmpty())
-    {
-        foreach (QSharedPointer<Parameter> parameterPointer, *componentModel->getModelParameters())
-        {
-            addParameterToConfigurableElements(parameterPointer, "Model parameters");
-        }
-    }
-
     if (designConfiguration_)
     {
-        QString componentInstanceName = component_->name();
+        readActiveViewParameters();
+    }
+}
 
-        if (designConfiguration_->hasActiveView(componentInstanceName))
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementsModel::readActiveViewParameters()
+//-----------------------------------------------------------------------------
+void ConfigurableElementsModel::readActiveViewParameters()
+{
+    QString componentInstanceName = componentInstance_->getInstanceName();
+
+    if (designConfiguration_->hasActiveView(componentInstanceName))
+    {
+        QString activeViewName = designConfiguration_->getActiveView(componentInstanceName);
+
+        foreach (QSharedPointer<View> view, *component_->getViews())
         {
-            QString activeViewName = designConfiguration_->getActiveView(componentInstanceName);
-            View* activeView = component_->componentModel()->findView(activeViewName);
-
-            if (activeView && !activeView->getParameters()->isEmpty())
+            if (view->name() == activeViewName)
             {
-                foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getParameters())
+                if (!view->getComponentInstantiationRef().isEmpty())
                 {
-                    addParameterToConfigurableElements(parameterPointer, "View parameters");
-                }
-            }
-
-            if (activeView && !activeView->getModuleParameters()->isEmpty())
-            {
-                foreach (QSharedPointer<Parameter> parameterPointer, *activeView->getModuleParameters())
-                {
-                    addParameterToConfigurableElements(parameterPointer, "Module parameters");
+                    foreach (QSharedPointer<ComponentInstantiation> instantiation,
+                        *component_->getComponentInstantiations())
+                    {
+                        if (instantiation->name() == view->getComponentInstantiationRef())
+                        {
+                            foreach (QSharedPointer<Parameter> parameter, *instantiation->getParameters())
+                            {
+                                addParameterToConfigurableElements(parameter, "View parameters");
+                            }
+                            foreach (QSharedPointer<ModuleParameter> parameter,
+                                *instantiation->getModuleParameters())
+                            {
+                                addParameterToConfigurableElements(parameter, "Module parameters");
+                            }
+                            break;
+                        }
+                    }
                 }
             }
         }

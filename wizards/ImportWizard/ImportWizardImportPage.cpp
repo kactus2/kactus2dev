@@ -9,8 +9,6 @@
 // Import wizard page for importing elements from a file.
 //-----------------------------------------------------------------------------
 
-#include <wizards/ComponentWizard/ComponentWizardImportPage.h>
-
 #include "ImportWizardImportPage.h"
 #include "ImportWizardPages.h"
 

@@ -11,23 +11,21 @@
 
 #include "TLMWParser.h"
 
-#include <QMessageBox>
 #include <QCoreApplication>
+#include <QFileInfo>
+#include <QMessageBox>
 
 #include <editors/CSourceEditor/CSourceTextEdit.h>
 
-#include <IPXACTmodels/component.h>
-
 #include <library/LibraryManager/libraryinterface.h>
 
-#include "IPXACTmodels/SWView.h"
-#include "common/dialogs/comboSelector/comboselector.h"
-#include "IPXACTmodels/SystemView.h"
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 //-----------------------------------------------------------------------------
 // Function: TLMWParser::TLMWParser()
 //-----------------------------------------------------------------------------
-TLMWParser::TLMWParser( IPluginUtility* utility ) : utility_( utility )
+TLMWParser::TLMWParser(IPluginUtility* utility) : utility_(utility)
 {
 }
 
@@ -41,7 +39,7 @@ TLMWParser::~TLMWParser()
 //-----------------------------------------------------------------------------
 // Function: TLMWParser::getComponentEndpoints()
 //-----------------------------------------------------------------------------
-const QList<TLMWParser::EndPointData>& TLMWParser::getComponentEndpoints()
+QList<TLMWParser::EndPointData> TLMWParser::getComponentEndpoints() const
 {
     return componentEndpoints_;
 }
@@ -49,7 +47,7 @@ const QList<TLMWParser::EndPointData>& TLMWParser::getComponentEndpoints()
 //-----------------------------------------------------------------------------
 // Function: TLMWParser::getDesignNodes()
 //-----------------------------------------------------------------------------
-const QList<TLMWParser::NodeData>& TLMWParser::getDesignNodes()
+QList<TLMWParser::NodeData> TLMWParser::getDesignNodes() const
 {
     return designNodes_;
 }
@@ -57,7 +55,7 @@ const QList<TLMWParser::NodeData>& TLMWParser::getDesignNodes()
 //-----------------------------------------------------------------------------
 // Function: TLMWParser::getReplacedFiles()
 //-----------------------------------------------------------------------------
-const QStringList& TLMWParser::getReplacedFiles()
+QStringList TLMWParser::getReplacedFiles() const
 {
     return replacedFiles_;
 }
@@ -69,15 +67,13 @@ void TLMWParser::parseTLMWForComponent(QSharedPointer<Component> component)
 {
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
-        if (comIf->getComType().getName().toLower() != "tlmw" )
+        if (comIf->getComType().getName().toLower() == "tlmw")
         {
-            continue;
+            componentEndpoints_.append(EndPointData());
+            EndPointData& epd = componentEndpoints_.last();
+
+            parseEndpoint(epd, comIf);
         }
-
-        componentEndpoints_.append(EndPointData());
-        EndPointData& epd = componentEndpoints_.last();
-
-        parseEndpoint(epd, comIf);
     }
 }
 
@@ -87,50 +83,48 @@ void TLMWParser::parseTLMWForComponent(QSharedPointer<Component> component)
 void TLMWParser::parseTopLevel(QSharedPointer<Design> design, QSharedPointer<Component> topComponent,
     QSharedPointer<DesignConfiguration const> desgConf)
 {
-    QList<SWInstance>& instances = design->getSWInstances();
-
-    for ( int i = 0; i < instances.size(); ++i )
+    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
     {
-        SWInstance& instance = instances[i];
-        VLNV instanceVLNV = instance.getComponentRef();
-        VLNV* designVLNV = design->getVlnv();
+        VLNV instanceVLNV = *instance->getComponentRef();
+        VLNV designVLNV = design->getVlnv();
 
-        QSharedPointer<LibraryComponent> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
+        QSharedPointer<Document> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
         QSharedPointer<Component> instanceComp = instanceLibComp.dynamicCast<Component>();
 
         // Check if can generate the component, return if cannot
-        if ( canGenerateTLMWComponent(instanceComp) )
+        if (canGenerateTLMWComponent(instanceComp))
         {
-            designNodes_.append(NodeData());
-            NodeData& nd = designNodes_.last();
+            NodeData nd;
             nd.instance = instance;
 
 			// Find the name of the system view pointing to the design configuration.
 			QString sysViewName;
 
-			foreach ( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
+			foreach (QSharedPointer<SystemView> view, topComponent->getSystemViews())
 			{
-				if ( view->getHierarchyRef() == *desgConf->getVlnv() )
+				if (view->getHierarchyRef() == desgConf->getVlnv())
 				{
-					sysViewName = view->getName();
+					sysViewName = view->name();
 					break;
 				}
 			}
 
             // Parse its directory as well.
-            QString subDir = "/sw_" + sysViewName + "/" + instance.getInstanceName();
-            QString dir = QFileInfo(utility_->getLibraryInterface()->getPath(*designVLNV)).absolutePath() + subDir;
+            QString subDir = "/sw_" + sysViewName + "/" + instance->getInstanceName();
+            QString dir = QFileInfo(utility_->getLibraryInterface()->getPath(designVLNV)).absolutePath() + subDir;
             nd.directory = dir;
 
             QFile file(dir + "/TLMWheader.h");
 
             // If does, put in the list.
-            if ( file.exists() )
+            if (file.exists())
             {
                 replacedFiles_.append(dir + "/TLMWheader.h");
             }
 
-            findEndpointDefinitions(design, instance, instanceComp, nd);
+			findEndpointDefinitions(design, instance, instanceComp, nd);
+
+			designNodes_.append(nd);
         }
     }
 }
@@ -141,7 +135,7 @@ void TLMWParser::parseTopLevel(QSharedPointer<Design> design, QSharedPointer<Com
 bool TLMWParser::canGenerateTLMWComponent(QSharedPointer<Component> component)
 {
     // Will not generate a null component.
-    if ( component == 0 )
+    if (component == 0)
     {
         return false;
     }
@@ -155,28 +149,28 @@ bool TLMWParser::canGenerateTLMWComponent(QSharedPointer<Component> component)
     foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
     {
         // Check API support for generated interface
-        if (comIf->getComType().getName().toLower() == "tlmw" )
+        if (comIf->getComType().getName().toLower() == "tlmw")
         {
             hasTLMW = true;
         }
 
-        QSharedPointer<LibraryComponent> libCom = utility_->getLibraryInterface()->getModel(comIf->getComType());
+        QSharedPointer<Document> libCom = utility_->getLibraryInterface()->getModel(comIf->getComType());
         QSharedPointer<ComDefinition> comDef = libCom.dynamicCast<ComDefinition>();
 
 		// Also check that required properties are set.
-		if ( comDef != NULL )
+		if (comDef != NULL)
 		{
-			checkRequiredPropertiesSet(component->getVlnv()->toString(), comDef, comIf, errorList);
+			checkRequiredPropertiesSet(component->getVlnv().toString(), comDef, comIf, errorList);
 		}
 		else
 		{
-			errorList.append(QObject::tr("Component '%3' had a null com definition.").
-				arg(component->getVlnv()->toString()));
+			errorList.append(QObject::tr("Component '%3' had a null com definition.").arg(
+                component->getVlnv().toString()));
 		}
     }
 
     // If errors exist, print about it and return false.
-    if ( hasTLMW && !errorList.isEmpty())
+    if (hasTLMW && !errorList.isEmpty())
     {
         foreach (QString const& msg, errorList)
         {
@@ -198,16 +192,15 @@ bool TLMWParser::canGenerateTLMWComponent(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 // Function: TLMWParser::checkRequiredPropertiesSet()
 //-----------------------------------------------------------------------------
-void TLMWParser::checkRequiredPropertiesSet(QString componentVLNV, QSharedPointer<ComDefinition> comDef,
-    QSharedPointer<ComInterface> comIf, QStringList &errorList)
+void TLMWParser::checkRequiredPropertiesSet(QString const& componentVLNV, QSharedPointer<ComDefinition> comDef,
+    QSharedPointer<ComInterface> comIf, QStringList& errorList)
 {
-    foreach ( QSharedPointer<ComProperty> property, comDef->getProperties() )
+    foreach (QSharedPointer<ComProperty> property, *comDef->getProperties())
     {
-        if ( property->isRequired() && comIf->getPropertyValues().value(property->getName()).isEmpty() )
+        if (property->isRequired() && comIf->getPropertyValues().value(property->name()).isEmpty())
         {
-            errorList.append(QObject::tr("Property %1 of COM interface '%2' is not set in component '%3'").
-                arg(property->getName(),
-                comIf->getName(),componentVLNV));
+            errorList.append(QObject::tr("Property %1 of COM interface '%2' is not set in component '%3'").arg(
+                property->name(), comIf->name(), componentVLNV));
         }
     }
 }
@@ -215,56 +208,62 @@ void TLMWParser::checkRequiredPropertiesSet(QString componentVLNV, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: TLMWParser::findEndpointDefinitions()
 //-----------------------------------------------------------------------------
-void TLMWParser::findEndpointDefinitions(QSharedPointer<const Design> design, SWInstance &ourInstance, 
+void TLMWParser::findEndpointDefinitions(QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance, 
     QSharedPointer<Component> ourComponent, NodeData& nodeData)
 {
 	// Go through the list of connections in the design to retrieve remote endpoint identifiers.
-	foreach ( ComConnection connection, design->getComConnections() )
+	foreach (QSharedPointer<ComInterconnection> connection, design->getComConnections())
 	{
 		QSharedPointer<ComInterface> ourInterface;
-		ComInterfaceRef theirInterfaceRef;
+		QSharedPointer<ActiveInterface> theirInterfaceRef;
 
-		// See which end on the connection is NOT ours.
-		if ( ourInstance.getInstanceName() == connection.getInterface1().componentRef )
-		{
-			ourInterface = ourComponent->getComInterface( connection.getInterface1().comRef );
-			theirInterfaceRef = connection.getInterface2();
-		}
+        if (ourInstance->getInstanceName() == connection->getStartInterface()->getComponentReference())
+        {
+            ourInterface = ourComponent->getComInterface(connection->getStartInterface()->getBusReference());
+        }
+        else
+        {
+            theirInterfaceRef = connection->getStartInterface();
+        }
 
-		if ( ourInstance.getInstanceName() == connection.getInterface2().componentRef )
-		{
-			ourInterface = ourComponent->getComInterface( connection.getInterface2().comRef );
-			theirInterfaceRef = connection.getInterface1();
-		}
+        foreach(QSharedPointer<ActiveInterface> activeInterface, *connection->getActiveInterfaces())
+        {
+            if (ourInstance->getInstanceName() == activeInterface->getComponentReference())
+            {
+                ourInterface = ourComponent->getComInterface(activeInterface->getBusReference());
+            }
+            else
+            {
+                theirInterfaceRef = activeInterface;
+            }
+        }
 
 		// Search for software instance corresponding theirs.
-		SWInstance targetInstance = searchInstance(design, theirInterfaceRef.componentRef);
+		QSharedPointer<SWInstance> targetInstance = searchInstance(design, theirInterfaceRef->getComponentReference());
 
         // Obtain the component object corresponding the software instance.
-        VLNV instanceVLNV = targetInstance.getComponentRef();
-        QSharedPointer<LibraryComponent> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
+        VLNV instanceVLNV = *targetInstance->getComponentRef();
+        QSharedPointer<Document> instanceLibComp = utility_->getLibraryInterface()->getModel(instanceVLNV);
         QSharedPointer<Component> theirComponent = instanceLibComp.dynamicCast<Component>();
 
-        if ( theirComponent == 0 )
+        if (theirComponent)
         {
-            continue;
-		}
+            QSharedPointer<ComInterface> theirInterface = theirComponent->getComInterface(theirInterfaceRef->getBusReference());
 
-		QSharedPointer<ComInterface> theirInterface = theirComponent->getComInterface( theirInterfaceRef.comRef );
+            // Must exist to generate.
+            if (ourInterface != 0 && theirInterface != 0)
+            {
+                // Check for sanity.
+                checkTransferSize(ourInterface, theirInterface, ourInstance, targetInstance);
 
-        // Must exit to generate.
-        if ( ourInterface != 0 && theirInterface != 0 )
-		{
-			// Check for sanity.
-			checkTransferSize(ourInterface, theirInterface, ourInstance, targetInstance);
+                // The data needed for "our" endpoint.
+                EndPointData ourEnd;
+                parseEndpoint(ourEnd, ourInterface);
 
-            // The data needed for "our" endpoint.
-            EndPointData ourEnd;
-            parseEndpoint(ourEnd, ourInterface);
-
-            // Create pair: our endpoint and connection name and add it to the list.
-            QPair<EndPointData,QString> pair(ourEnd,connection.getName());
-            nodeData.connections.append(pair);
+                // Create pair: our endpoint and connection name and add it to the list.
+                QPair<EndPointData,QString> pair(ourEnd,connection->name());
+                nodeData.connections.append(pair);
+            }
         }
     }
 }
@@ -274,43 +273,42 @@ void TLMWParser::findEndpointDefinitions(QSharedPointer<const Design> design, SW
 //-----------------------------------------------------------------------------
 void TLMWParser::parseEndpoint(EndPointData &epd, QSharedPointer<ComInterface> comIf)
 {
-    epd.name = comIf->getName();
+    epd.name = comIf->name();
 	epd.transferSize = comIf->getPropertyValues().value("max_transfer_size");
 }
 
 //-----------------------------------------------------------------------------
 // Function: TLMWParser::searchInstance()
 //-----------------------------------------------------------------------------
-SWInstance TLMWParser::searchInstance(QSharedPointer<const Design> design, QString instanceName)
+QSharedPointer<SWInstance> TLMWParser::searchInstance(QSharedPointer<const Design> design, QString instanceName)
 {
-    SWInstance targetInstance;
-
-    foreach ( SWInstance instance, design->getSWInstances() )
+    foreach (QSharedPointer<SWInstance> instance, design->getSWInstances())
     {
         // If the found instance name is same as target, will generate for it.
-        if ( instance.getInstanceName() == instanceName )
+        if (instance->getInstanceName() == instanceName)
         {
             return instance;
         }
     }
 
-    return targetInstance;
+    return QSharedPointer<SWInstance>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: TLMWParser::checkTransferSize()
 //-----------------------------------------------------------------------------
-void TLMWParser::checkTransferSize(QSharedPointer<ComInterface> ourInterface, QSharedPointer<ComInterface>
-    targetInterface, SWInstance &ourInstance, SWInstance &targetInstance)
+void TLMWParser::checkTransferSize(QSharedPointer<ComInterface> ourInterface, 
+    QSharedPointer<ComInterface> targetInterface, QSharedPointer<SWInstance> ourInstance, 
+    QSharedPointer<SWInstance> targetInstance)
 {
     QString ourTransferSize = ourInterface->getPropertyValues().value("max_transfer_size");
     QString theirTransferSize = targetInterface->getPropertyValues().value("max_transfer_size");
 
-    if ( ourTransferSize != theirTransferSize )
+    if (ourTransferSize != theirTransferSize)
     {
         utility_->printError("Maximum transfer sizes of connected ports did not match! "
-            "First instance: " + ourInstance.getInstanceName() + " first interface: "
-            + ourInterface->getName() + " Second instance: " + targetInstance.getInstanceName() + 
-            " second interface " + targetInterface->getName());
+            "First instance: " + ourInstance->getInstanceName() + " first interface: " +
+            ourInterface->name() + " Second instance: " + targetInstance->getInstanceName() + 
+            " second interface " + targetInterface->name());
     }
 }

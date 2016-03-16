@@ -9,13 +9,19 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ValueFormatter.h>
+
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
 
 #include <QLabel>
 #include <QGridLayout>
@@ -119,8 +125,16 @@ void BusIfInterfaceMSlave::refresh()
 
     remapEditor_->blockSignals(true);
 
-    remapEditor_->setExpression(mirroredSlave_->getRemapAddress());
-    remapEditor_->setToolTip(formattedValueFor(mirroredSlave_->getRemapAddress()));
+    if (mirroredSlave_->getRemapAddresses() && !mirroredSlave_->getRemapAddresses()->isEmpty())
+    {
+        remapEditor_->setExpression(mirroredSlave_->getRemapAddresses()->first()->remapAddress_);
+        remapEditor_->setToolTip(formattedValueFor(mirroredSlave_->getRemapAddresses()->first()->remapAddress_));
+    }
+    else
+    {
+        remapEditor_->setExpression("");
+        remapEditor_->setToolTip("");
+    }
 
     remapEditor_->blockSignals(false);
 }
@@ -147,7 +161,7 @@ void BusIfInterfaceMSlave::saveModeSpecific()
 void BusIfInterfaceMSlave::onRemapChange()
 {
     remapEditor_->finishEditingCurrentWord();
-    mirroredSlave_->setRemapAddress(remapEditor_->getExpression());
+    mirroredSlave_->getRemapAddresses()->first()->remapAddress_ = remapEditor_->getExpression();
     remapEditor_->setToolTip(formattedValueFor(remapEditor_->getExpression()));
 
     emit contentChanged();
@@ -207,7 +221,10 @@ void BusIfInterfaceMSlave::removeReferencesFromExpressions()
     }
 
     remapEditor_->clear();
-    mirroredSlave_->setRemapAddress("");
+    if (!mirroredSlave_->getRemapAddresses()->isEmpty())
+    {
+        mirroredSlave_->getRemapAddresses()->first()->remapAddress_.clear();
+    }
 
     rangeEditor_->clear();
     mirroredSlave_->setRange("");

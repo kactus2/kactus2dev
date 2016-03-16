@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 20.6.2011
- *      Author: Antti Kamppi
- * 		filename: newbuspage.cpp
- */
+//-----------------------------------------------------------------------------
+// File: newbuspage.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.06.2011
+//
+// Description:
+// New bus page.
+//-----------------------------------------------------------------------------
 
 #include "newbuspage.h"
 
@@ -19,9 +23,7 @@
 NewBusPage::NewBusPage(LibraryInterface* libHandler, QWidget *parentDlg):
 NewPage(libHandler, VLNV::BUSDEFINITION, tr("New Bus"), tr("Creates a new bus"), parentDlg)
 {
-
-	Q_ASSERT_X(libHandler, "NewBusPage constructor",
-		"Null LibraryInterface pointer given as parameter");	
+	Q_ASSERT_X(libHandler, "NewBusPage constructor", "Null LibraryInterface pointer given as parameter");	
 }
 
 //-----------------------------------------------------------------------------

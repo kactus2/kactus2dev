@@ -84,8 +84,8 @@ public:
 	 *
 	*/
 	ConnectionChangeCommand(GraphicsConnection* connection,
-		                    const QString& newName,
-		                    const QString& newDescription,
+		                    QString const& newName,
+		                    QString const& newDescription,
 		                    QUndoCommand* parent = 0);
 
 	//! \brief The destructor
@@ -167,7 +167,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The connection.
-    GraphicsConnection* conn_;
+    GraphicsConnection* connectionItem_;
 
     //! The old endpoint.
     ConnectionEndpoint* oldEndpoint_;

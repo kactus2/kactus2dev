@@ -13,10 +13,10 @@
 
 #include <Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 class tst_InterfaceDirectionNameSorter : public QObject
 {
@@ -35,7 +35,7 @@ private slots:
     void testPortsOrderedByInterfaceThenDirection();
 
 private:    
-    void addPort(QString portName, General::Direction direction = General::IN);
+    void addPort(QString portName, DirectionTypes::Direction direction = DirectionTypes::IN);
     void addInterface( QString const& interfaceName );
     void mapPortToInterface( QString const& portName, QString const& interfaceName );
    
@@ -111,9 +111,11 @@ void tst_InterfaceDirectionNameSorter::testPortsOrderedByName()
 //-----------------------------------------------------------------------------
 // Function: tst_InterfaceDirectionNameSorter::addPort()
 //-----------------------------------------------------------------------------
-void tst_InterfaceDirectionNameSorter::addPort(QString portName, General::Direction direction)
+void tst_InterfaceDirectionNameSorter::addPort(QString portName, DirectionTypes::Direction direction)
 {
-    component_->addPort(QSharedPointer<Port>(new Port(portName, direction, 0, 0, "", true)));
+    QSharedPointer<Port> newPort (new Port(portName, direction));
+    newPort->setAllLogicalDirectionsAllowed(true);
+    component_->getPorts()->append(newPort);
 }
 
 //-----------------------------------------------------------------------------
@@ -121,14 +123,14 @@ void tst_InterfaceDirectionNameSorter::addPort(QString portName, General::Direct
 //-----------------------------------------------------------------------------
 void tst_InterfaceDirectionNameSorter::testPortsOrderedByDirectionThenName()
 {
-    addPort("a_inout", General::INOUT);
-    addPort("k_out", General::OUT);    
-    addPort("j_out", General::OUT);    
-    addPort("i_out", General::OUT);    
-    addPort("x_in", General::IN);    
+    addPort("a_inout", DirectionTypes::INOUT);
+    addPort("k_out", DirectionTypes::OUT);
+    addPort("j_out", DirectionTypes::OUT);
+    addPort("i_out", DirectionTypes::OUT);
+    addPort("x_in", DirectionTypes::IN);
     
-    addPort("phantom", General::DIRECTION_PHANTOM);
-    addPort("invalid", General::DIRECTION_INVALID);
+    addPort("phantom", DirectionTypes::DIRECTION_PHANTOM);
+    addPort("invalid", DirectionTypes::DIRECTION_INVALID);
 
     InterfaceDirectionNameSorter sorter;
 
@@ -152,17 +154,17 @@ void tst_InterfaceDirectionNameSorter::testPortsOrderedByInterfaceThenDirection(
     mapPortToInterface("z_several", "firstInterface");
     mapPortToInterface("z_several", "thirdInterface");    
 
-    addPort("x_1st", General::INOUT);    
+    addPort("x_1st", DirectionTypes::INOUT);
     mapPortToInterface("x_1st", "firstInterface");
-    addPort("y_1st", General::OUT);
+    addPort("y_1st", DirectionTypes::OUT);
     mapPortToInterface("y_1st", "firstInterface");
-    addPort("z_1st", General::IN);
+    addPort("z_1st", DirectionTypes::IN);
     mapPortToInterface("z_1st", "firstInterface");
 
-    addPort("a_2nd", General::OUT);
+    addPort("a_2nd", DirectionTypes::OUT);
     mapPortToInterface("a_2nd", "secondInterface");
    
-    addPort("i_3rd", General::OUT);
+    addPort("i_3rd", DirectionTypes::OUT);
     mapPortToInterface("i_3rd", "thirdInterface");
 
     InterfaceDirectionNameSorter sorter;
@@ -179,7 +181,8 @@ void tst_InterfaceDirectionNameSorter::addInterface( QString const& interfaceNam
 {
     QSharedPointer<BusInterface> busIf = QSharedPointer<BusInterface>(new BusInterface());
     busIf->setName(interfaceName);
-    component_->addBusInterface(busIf);
+
+    component_->getBusInterfaces()->append(busIf);
 }
 
 //-----------------------------------------------------------------------------
@@ -188,11 +191,33 @@ void tst_InterfaceDirectionNameSorter::addInterface( QString const& interfaceNam
 void tst_InterfaceDirectionNameSorter::mapPortToInterface( QString const& portName, QString const& interfaceName )
 {
     QSharedPointer<PortMap> portMap = QSharedPointer<PortMap>(new PortMap());
-    portMap->setLogicalPort(portName.toUpper());
-    portMap->setPhysicalPort(portName);
 
-    QList<QSharedPointer<PortMap> >& portMapList = component_->getBusInterface(interfaceName)->getPortMaps();
-    portMapList.append(portMap);
+    QSharedPointer<PortMap::LogicalPort> theLogical (new PortMap::LogicalPort());
+    theLogical->name_ = portName.toUpper();
+    portMap->setLogicalPort(theLogical);
+
+    QSharedPointer<PortMap::PhysicalPort> thePhysical (new PortMap::PhysicalPort());
+    thePhysical->name_ = portName;
+    portMap->setPhysicalPort(thePhysical);
+
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMapList =
+        component_->getBusInterface(interfaceName)->getPortMaps();
+
+    if (!portMapList)
+    {
+        QSharedPointer<QList<QSharedPointer<PortMap> > > newPortMapList (new QList<QSharedPointer<PortMap> > ());
+
+        if (component_->getBusInterface(interfaceName)->getAbstractionTypes()->isEmpty())
+        {
+            QSharedPointer<AbstractionType> testAbstraction (new AbstractionType());
+            component_->getBusInterface(interfaceName)->getAbstractionTypes()->append(testAbstraction);
+        }
+
+        component_->getBusInterface(interfaceName)->setPortMaps(newPortMapList);
+        portMapList = component_->getBusInterface(interfaceName)->getPortMaps();
+    }
+
+    portMapList->append(portMap);
 }
 
 QTEST_APPLESS_MAIN(tst_InterfaceDirectionNameSorter)

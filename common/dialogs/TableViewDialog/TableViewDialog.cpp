@@ -19,11 +19,11 @@
 //-----------------------------------------------------------------------------
 // Function: TableViewDialog::TableViewDialog()
 //-----------------------------------------------------------------------------
-TableViewDialog::TableViewDialog(QWidget* parent)
-    : QDialog(parent),
-      label_(new QLabel("", this)),
-      view_(new QTableView(this)),
-      sortProxy_(new QSortFilterProxyModel(this))
+TableViewDialog::TableViewDialog(QWidget* parent):
+QDialog(parent),
+label_(new QLabel("", this)),
+view_(new QTableView(this)),
+sortProxy_(new QSortFilterProxyModel(this))
 {
     view_->setSortingEnabled(true);
     view_->setModel(sortProxy_);
@@ -62,6 +62,7 @@ void TableViewDialog::setDescription(QString const& desc)
 void TableViewDialog::setModel(QAbstractTableModel* model)
 {
     sortProxy_->setSourceModel(model);
+
     view_->resizeRowsToContents();
     view_->resizeColumnsToContents();
 }

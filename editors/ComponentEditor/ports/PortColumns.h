@@ -9,6 +9,9 @@
 // Common declarations for editing ports.
 //-----------------------------------------------------------------------------
 
+#ifndef PORT_COLUMNS_H
+#define PORT_COLUMNS_H
+
 namespace PortColumns
 {
     //-----------------------------------------------------------------------------
@@ -29,7 +32,9 @@ namespace PortColumns
         ARRAY_RIGHT,        //!< Column for setting the right side of the array.
         TAG_GROUP,          //!< Column for tagging a port.
         ADHOC_VISIBILITY,   //!< Column for toggling ad-hoc visibility on/off.
-        DESCRIPTION,      //!< Column for adding a description for the port.
+        DESCRIPTION,        //!< Column for adding a description for the port.
         COLUMN_COUNT
     };
 }
+
+#endif // PORT_COLUMNS_H

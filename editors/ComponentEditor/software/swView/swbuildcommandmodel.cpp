@@ -1,205 +1,277 @@
-/* 
- *	Created on:	2.4.2013
- *	Author:		Antti Kamppi
- *	File name:	swbuildcommandmodel.cpp
- *	Project:		Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: swbuildcommandmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 02.04.2013
+//
+// Description:
+// The model class to manage SW build commands in SW Build Command editor.
+//-----------------------------------------------------------------------------
 
 #include "swbuildcommandmodel.h"
-#include "swbuilddelegate.h"
 
+#include <editors/ComponentEditor/fileBuilders/FileBuilderColumns.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/kactusExtensions/SWView.h>
+
+#include <QColor>
+
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::SWBuildCommandModel()
+//-----------------------------------------------------------------------------
 SWBuildCommandModel::SWBuildCommandModel(QSharedPointer<Component> component,
-	QList<QSharedPointer<SWBuildCommand> >& swBuildCommands, 
+	QSharedPointer<QList<QSharedPointer<SWFileBuilder> > > swBuildCommands, 
 	QObject *parent):
 QAbstractTableModel(parent),
 component_(component),
-swBuildComs_(swBuildCommands) {
+swBuildCommands_(swBuildCommands)
+{
 
 }
 
-SWBuildCommandModel::~SWBuildCommandModel() {
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::~SWBuildCommandModel()
+//-----------------------------------------------------------------------------
+SWBuildCommandModel::~SWBuildCommandModel()
+{
 }
 
-int SWBuildCommandModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::rowCount()
+//-----------------------------------------------------------------------------
+int SWBuildCommandModel::rowCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
 
-	return swBuildComs_.count();
+	return swBuildCommands_->count();
 }
 
-int SWBuildCommandModel::columnCount( const QModelIndex& parent /*= QModelIndex()*/ ) const {
-	if (parent.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::columnCount()
+//-----------------------------------------------------------------------------
+int SWBuildCommandModel::columnCount(QModelIndex const& parent) const
+{
+	if (parent.isValid())
+    {
 		return 0;
 	}
 
-	return SWBuildDelegate::COLUMN_COUNT;
+	return FileBuilderColumns::COLUMN_COUNT;
 }
 
-Qt::ItemFlags SWBuildCommandModel::flags( const QModelIndex& index ) const {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags SWBuildCommandModel::flags(QModelIndex const& index) const
+{
+	if (!index.isValid())
+    {
 		return Qt::NoItemFlags;
 	}
 
 	Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
 	// the replace default column is boolean and uses check box
-	if (index.column() == SWBuildDelegate::REPLACE_DEF_COLUMN) {
+	if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+    {
 		flags |= Qt::ItemIsUserCheckable;
 	}
 	// others can be freely edited by user
-	else {
+	else
+    {
 		flags |= Qt::ItemIsEditable;
 	}
 
 	return flags;
 }
 
-QVariant SWBuildCommandModel::headerData( int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/ ) const {
-	if (orientation != Qt::Horizontal) {
-		return QVariant();
-	}
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::headerData()
+//-----------------------------------------------------------------------------
+QVariant SWBuildCommandModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
+    {
+        return QVariant();
+    }
 
-	if (Qt::DisplayRole == role) {
-
-		switch (section) {
-		case SWBuildDelegate::FILETYPE_COLUMN:
-			return tr("File type");
-		case SWBuildDelegate::COMMAND_COLUMN:
-			return tr("Command");
-		case SWBuildDelegate::FLAGS_COLUMN:
-			return tr("Flags");
-		case SWBuildDelegate::REPLACE_DEF_COLUMN:
-			return tr("Replace default flags");
-		default:
-			return QVariant();
-		}
-	}
-	// if unsupported role
-	else {
-		return QVariant();
-	}
+    if (section == FileBuilderColumns::FILETYPE_COLUMN)
+    {
+        return tr("File type");
+    }
+    else if (section == FileBuilderColumns::COMMAND_COLUMN)
+    {
+        return tr("Command");
+    }
+    else if (section == FileBuilderColumns::FLAGS_COLUMN)
+    {
+        return tr("Flags");
+    }
+    else if (section == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+    {
+        return tr("Replace default flags");
+    }
+    else
+    {
+        return QVariant();
+    }
 }
 
-QVariant SWBuildCommandModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const {
-	if (!index.isValid()) {
-		return QVariant();
-	}
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::data()
+//-----------------------------------------------------------------------------
+QVariant SWBuildCommandModel::data(QModelIndex const& index, int role) const
+{
+    if (!index.isValid() || index.row() < 0 || index.row() >= swBuildCommands_->size())
+    {
+        return QVariant();
+    }
 
-	// if row is invalid
-	else if (index.row() < 0 || index.row() >= swBuildComs_.size()) {
-		return QVariant();
-	}
-
-	if (Qt::DisplayRole == role) {
-
-		switch (index.column()) {
-		case SWBuildDelegate::FILETYPE_COLUMN: {
-			return swBuildComs_.at(index.row())->getFileType();
-															}
-		case SWBuildDelegate::COMMAND_COLUMN: {
-			return swBuildComs_.at(index.row())->getCommand();
-														  }
-		case SWBuildDelegate::FLAGS_COLUMN: {
-			return swBuildComs_.at(index.row())->getFlags();
-														}
-		case SWBuildDelegate::REPLACE_DEF_COLUMN: {
-			return swBuildComs_.at(index.row())->getReplaceDefaultFlags();
-																}
-		default: {
-			return QVariant();
-					}
-		}
-	}
-	else if (Qt::CheckStateRole == role) {
-		if (index.column() == SWBuildDelegate::REPLACE_DEF_COLUMN) {
-			if (swBuildComs_.at(index.row())->getReplaceDefaultFlags()) {
-				return Qt::Checked;
-			}
-			else {
-				return Qt::Unchecked;
-			}
-		}
-		else {
-			return QVariant();
-		}
-	}
-	else if (Qt::BackgroundRole == role) {
-		if (index.column() == SWBuildDelegate::FILETYPE_COLUMN) {
-			return QColor("LemonChiffon");
-		}
-		else {
-			return QColor("white");
-		}
-	}
-	else if (Qt::ForegroundRole == role) {
-		if (swBuildComs_.at(index.row())->isValid()) {
-			return QColor("black");
-		}
-		else {
-			return QColor("red");
-		}
-	}
-	// if unsupported role
-	else {
-		return QVariant();
-	}
+    if (role == Qt::DisplayRole )
+    {
+        if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+        {
+            return swBuildCommands_->at(index.row())->getFileType();
+        }
+        else if (index.column() == FileBuilderColumns::COMMAND_COLUMN)
+        {
+            return swBuildCommands_->at(index.row())->getCommand();
+        }
+        else if (index.column() == FileBuilderColumns::FLAGS_COLUMN)
+        {
+            return swBuildCommands_->at(index.row())->getFlags();
+        }
+        else if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+        {
+            return swBuildCommands_->at(index.row())->getReplaceDefaultFlags();
+        }
+        else
+        {
+            return QVariant();					
+        }
+    }
+    else if (role == Qt::CheckStateRole)
+    {
+        if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+        {
+            if (swBuildCommands_->at(index.row())->getReplaceDefaultFlags() == QLatin1String("true"))
+            {
+                return Qt::Checked;
+            }
+            else 
+            {
+                return Qt::Unchecked;
+            }
+        }
+        else 
+        {
+            return QVariant();
+        }
+    }
+    else if (role == Qt::BackgroundRole)
+    {
+        if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+        {
+            return QColor("LemonChiffon");
+        }
+        else
+        {
+            return QColor("white");
+        }
+    }
+    else if (role == Qt::ForegroundRole)
+    {
+        if (swBuildCommands_->at(index.row())->isValid())
+        {
+            return QColor("black");
+        }
+        else
+        {
+            return QColor("red");
+        }
+    }
+    // if unsupported role
+    else
+    {
+        return QVariant();
+    }
 }
 
-bool SWBuildCommandModel::setData( const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/ ) {
-	if (!index.isValid()) {
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::setData()
+//-----------------------------------------------------------------------------
+bool SWBuildCommandModel::setData(QModelIndex const& index, const QVariant& value, int role)
+{
+	if (!index.isValid() || index.row() < 0 || index.row() >= swBuildCommands_->size())
+    {
 		return false;
 	}
 
-	// if row is invalid
-	else if (index.row() < 0 || index.row() >= swBuildComs_.size()) {
-		return false;
-	}
+    if (role == Qt::EditRole)
+    {
+        if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+        {
+            swBuildCommands_->at(index.row())->setFileType(value.toString());
+        }
+        else if (index.column() == FileBuilderColumns::COMMAND_COLUMN)
+        {
+            swBuildCommands_->at(index.row())->setCommand(value.toString());
+        }
+        else if (index.column() == FileBuilderColumns::FLAGS_COLUMN)
+        {
+            swBuildCommands_->at(index.row())->setFlags(value.toString());
+        }
+        else if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+        {
+            swBuildCommands_->at(index.row())->setReplaceDefaultFlags(value.toString());
+        }
+        else
+        {
+            return false;
+        }
 
-	if (Qt::EditRole == role) {
-
-		switch (index.column()) {
-		case SWBuildDelegate::FILETYPE_COLUMN: {
-			swBuildComs_[index.row()]->setFileType(value.toString());
-			break;
-															}
-		case SWBuildDelegate::COMMAND_COLUMN: {
-			swBuildComs_[index.row()]->setCommand(value.toString());
-			break;
-														  }
-		case SWBuildDelegate::FLAGS_COLUMN: {
-			swBuildComs_[index.row()]->setFlags(value.toString());
-			break;
-														}
-		case SWBuildDelegate::REPLACE_DEF_COLUMN: {
-			swBuildComs_[index.row()]->setReplaceDefaultFlags(value.toBool());
-			break;
-																}
-		default: {
-			return false;
-					}
-		}
-
-		emit contentChanged();
+        emit contentChanged();
 		emit dataChanged(index, index);
 		return true;
 	}
-	else if (role == Qt::CheckStateRole) {
-		swBuildComs_.at(index.row())->setReplaceDefaultFlags(value == Qt::Checked);
+
+	else if (role == Qt::CheckStateRole) 
+    {
+        if (value == Qt::Checked)
+        {
+            swBuildCommands_->at(index.row())->setReplaceDefaultFlags(QStringLiteral("true"));
+        }
+        else
+        {
+            swBuildCommands_->at(index.row())->setReplaceDefaultFlags(QStringLiteral("false"));
+        }
+
 		emit dataChanged(index, index);
 		emit contentChanged();
 		return true;
 	}
-	else {
+
+	else
+    {
 		return false;
 	}
 }
 
-bool SWBuildCommandModel::isValid() const {
-
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::isValid()
+//-----------------------------------------------------------------------------
+bool SWBuildCommandModel::isValid() const
+{
 	// if at least one SW build command is invalid
-	foreach (QSharedPointer<SWBuildCommand> buildCom, swBuildComs_) {
-		if (!buildCom->isValid()) {
+	foreach (QSharedPointer<SWFileBuilder> buildCom, *swBuildCommands_)
+    {
+		if (!buildCom->isValid())
+        {
 			return false;
 		}
 	}
@@ -208,37 +280,41 @@ bool SWBuildCommandModel::isValid() const {
 	return true;
 }
 
-void SWBuildCommandModel::onAddItem( const QModelIndex& index ) {
-	int row = swBuildComs_.size();
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::onAddItem()
+//-----------------------------------------------------------------------------
+void SWBuildCommandModel::onAddItem(QModelIndex const& index)
+{
+	int row = swBuildCommands_->size();
 
 	// if the index is valid then add the item to the correct position
-	if (index.isValid()) {
+	if (index.isValid())
+    {
 		row = index.row();
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	swBuildComs_.insert(row, QSharedPointer<SWBuildCommand>(new SWBuildCommand()));
+	swBuildCommands_->insert(row, QSharedPointer<SWFileBuilder>(new SWFileBuilder()));
 	endInsertRows();
 
-	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
 
-void SWBuildCommandModel::onRemoveItem( const QModelIndex& index ) {
+//-----------------------------------------------------------------------------
+// Function: SWBuildCommandModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void SWBuildCommandModel::onRemoveItem(QModelIndex const& index)
+{
 	// don't remove anything if index is invalid
-	if (!index.isValid()) {
-		return;
-	}
-	// make sure the row number if valid
-	else if (index.row() < 0 || index.row() >= swBuildComs_.size()) {
+	if (!index.isValid() || index.row() < 0 || index.row() >= swBuildCommands_->size())
+    {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	swBuildComs_.removeAt(index.row());
+	swBuildCommands_->removeAt(index.row());
 	endRemoveRows();
 
-	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }

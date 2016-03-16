@@ -11,11 +11,9 @@
 
 #include "ExportSWDialog.h"
 
-#include <IPXACTmodels/component.h>
-
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <common/widgets/LineEditEx/LineEditEx.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QMessageBox>
 #include <QCoreApplication>
@@ -23,14 +21,14 @@
 //-----------------------------------------------------------------------------
 // Function: ExportSWDialog::ExportSWDialog()
 //-----------------------------------------------------------------------------
-ExportSWDialog::ExportSWDialog(LibraryInterface* lh, QWidget* parent)
-    : QDialog(parent),
-      lh_(lh),
-      infoLabel_(new QLabel(tr("Exporting SW requires a new system component to be created."), this)),
-      vlnvEdit_(new VLNVEditor(VLNV::COMPONENT, lh, this, this)),
-      directoryEditor_(new LibrarySelectorWidget(this)),
-      buttonBox_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
-      layout_(new QVBoxLayout(this))
+ExportSWDialog::ExportSWDialog(LibraryInterface* lh, QWidget* parent):
+QDialog(parent),
+lh_(lh),
+infoLabel_(new QLabel(tr("Exporting SW requires a new system component to be created."), this)),
+vlnvEdit_(new VLNVEditor(VLNV::COMPONENT, lh, this, this)),
+directoryEditor_(new LibrarySelectorWidget(this)),
+buttonBox_(new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this)),
+layout_(new QVBoxLayout(this))
 {
     setWindowTitle(tr("Export SW"));
 

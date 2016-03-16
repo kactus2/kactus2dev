@@ -16,16 +16,19 @@
 #include <QSharedPointer>
 #include <QTabWidget>
 #include <QListView>
-#include <QMap>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+
+#include <IPXACTmodels/Component/validators/ViewValidator.h>
 
 class Component;
 class ComponentWizard;
 class LibraryInterface;
 class View;
-class ViewEditor;
+class ComponentInstantiation;
+class DesignInstantiation;
+class DesignConfigurationInstantiation;
 class ViewListModel;
 
 //-----------------------------------------------------------------------------
@@ -116,6 +119,28 @@ private:
     //! Sets the page layout.
     void setupLayout();
 
+    /*!
+     *  Finds a design instantiation referenced by a view.
+     *
+     *      @param [in] component   The component containing the view.
+     *      @param [in] targetView  The selected view.
+     *
+     *      @return A design instantiation referenced by a view.
+     */
+    QSharedPointer<DesignInstantiation> getReferencedDesignInstantiation(QSharedPointer<Component> component,
+        QSharedPointer<View> targetView) const;
+
+    /*!
+     *  Finds a design configuration instantiation referenced by a view.
+     *
+     *      @param [in] component   The component containing the view.
+     *      @param [in] targetView  The selected view.
+     *
+     *      @return A component design configuration referenced by a view.
+     */
+    QSharedPointer<DesignConfigurationInstantiation> getReferencedDesignConfigurationInstantiation(
+        QSharedPointer<Component> component, QSharedPointer<View> targetView) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -146,6 +171,9 @@ private:
 
     //! Expression formatter, formats referencing expressions to show names.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! Validator for views.
+    ViewValidator validator_;
 };
 
 #endif // COMPONENTWIZARDVIEWSPAGE_H

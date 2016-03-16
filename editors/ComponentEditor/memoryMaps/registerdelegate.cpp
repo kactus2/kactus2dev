@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 25.8.2012
- *      Author: Antti Kamppi
- * 		filename: registerdelegate.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: registerdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 25.08.2012
+//
+// Description:
+// The delegate to provide editors to add/remove/edit the fields of register.
+//-----------------------------------------------------------------------------
 
 #include "registerdelegate.h"
 #include "RegisterColumns.h"
@@ -23,7 +27,7 @@
 // Function: RegisterDelegate::RegisterDelegate()
 //-----------------------------------------------------------------------------
 RegisterDelegate::RegisterDelegate(QCompleter* parameterNameCompleter,
-    QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
+                                   QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
 ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
 {
 
@@ -84,7 +88,7 @@ void RegisterDelegate::setEditorData( QWidget* editor, const QModelIndex& index 
         BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
         Q_ASSERT(boolBox);
 
-        bool value = index.model()->data(index, Qt::DisplayRole).toBool();
+        QString value = index.model()->data(index, Qt::DisplayRole).toString();
         boolBox->setCurrentValue(value);
     }
     else if (index.column() == RegisterColumns::ACCESS_COLUMN)
@@ -92,8 +96,8 @@ void RegisterDelegate::setEditorData( QWidget* editor, const QModelIndex& index 
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
 
-        General::Access access = General::str2Access(index.model()->data(
-            index, Qt::DisplayRole).toString(), General::ACCESS_COUNT);
+        AccessTypes::Access access = AccessTypes::str2Access(index.model()->data(
+            index, Qt::DisplayRole).toString(), AccessTypes::ACCESS_COUNT);
         accessBox->setCurrentValue(access);
     }
     else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
@@ -139,7 +143,7 @@ void RegisterDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
         BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
         Q_ASSERT(boolBox);
 
-        bool value = boolBox->getCurrentValue();
+        QString value = boolBox->getCurrentValue();
         model->setData(index, value, Qt::EditRole);
     }
     else if (index.column() == RegisterColumns::ACCESS_COLUMN)
@@ -147,8 +151,8 @@ void RegisterDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
         AccessComboBox* accessBox = qobject_cast<AccessComboBox*>(editor);
         Q_ASSERT(accessBox);
 
-        General::Access access = accessBox->getCurrentValue();
-        model->setData(index, General::access2Str(access), Qt::EditRole);
+        AccessTypes::Access access = accessBox->getCurrentValue();
+        model->setData(index, AccessTypes::access2Str(access), Qt::EditRole);
     }
     else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
     {

@@ -13,7 +13,7 @@
 #define VLNVDATATREE_H
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QString>
 #include <QSharedPointer>
@@ -50,7 +50,7 @@ public:
     /*!
      *  Returns the name of the node.
      */
-    QString const& getName() const;
+    QString const& name() const;
 
     /*!
      *  Returns the VLNV of the node (valid only if the node level is LEVEL_VERSION).

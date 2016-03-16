@@ -12,21 +12,25 @@
 #ifndef BUSINTERFACEWIZARDBUSDEFINITIONPAGE_H
 #define BUSINTERFACEWIZARDBUSDEFINITIONPAGE_H
 
-#include <QWizardPage>
+#include <editors/BusEditor/buseditor.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
+#include <QWizardPage>
 #include <QMap>
 #include <QPushButton>
 
-#include <editors/BusEditor/buseditor.h>
-#include <IPXACTmodels/businterface.h>
-
-class BusInterfaceWizard;
-class LibraryInterface;
-class BusDefinition;
 class AbstractionDefinition;
-class PortAbstraction;
+class BusDefinition;
+class BusInterface;
+class BusInterfaceWizard;
 class Component;
+class ExpressionParser;
+class LibraryInterface;
+class Port;
+class PortAbstraction;
 class VLNV;
+
 //-----------------------------------------------------------------------------
 //! Bus editor page for the interface wizard.
 //-----------------------------------------------------------------------------
@@ -45,14 +49,6 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component   The component whose bus interface is being edited.
-     *      @param [in] busIf       The bus interface being edited.
-     *      @param [in] lh          The component library handler.
-     *      @param [in] parent      The parent wizard.
-     */
-    /*!
-     *  The constructor.
-     *
      *      @param [in] component       The component whose bus interface is being edited.
      *      @param [in] busIf           The bus interface being edited.
      *      @param [in] lh              The component library handler.
@@ -64,26 +60,29 @@ public:
     BusInterfaceWizardBusEditorPage(QSharedPointer<Component> component,
         QSharedPointer<BusInterface> busIf, LibraryInterface* lh, 
         QStringList physicalPorts,
-        BusInterfaceWizard* parent, VLNV& absDefVLNV, SignalNamingPolicy namingPolicy = NAME);
+        BusInterfaceWizard* parent,
+        VLNV& absDefVLNV,
+        QSharedPointer<ExpressionParser> expressionParser,
+        SignalNamingPolicy namingPolicy = NAME);
 
     /*!
-    *  Destructor.
-    */
+     *  Destructor.
+     */
     ~BusInterfaceWizardBusEditorPage();
 
     /*!
-    *  Returns the ID of the next page.
-    */
+     *  Returns the ID of the next page.
+     */
     virtual int nextId() const;
 
     /*!
-    *  Initializes the page.
-    */
+     *  Initializes the page.
+     */
     virtual void initializePage();
 
     /*!
-    *  Validates the page.
-    */
+     *  Validates the page.
+     */
     virtual bool validatePage();
 
 public slots:
@@ -105,12 +104,11 @@ private:
     void setupLayout();
 
     /*!
-     *  Creates the logical ports to the abstraction definition and initial mapping of physical ports
-     *  to the created logical ports. 
+     *  Creates the logical ports to the abstraction definition and initial mapping of physical ports to the
+     *  created logical ports. 
      *
      *      @param [in] physPorts   The physical ports from which the logical ports are generated. 
-     *      @param [in] absDef      The abstraction definition to create the ports to. 
-     *                              Previous ports will be overwritten.
+     *      @param [in] absDef      The abstraction definition to create the ports to.
      */
     void createLogicalPortsAndMappings(QStringList const& physPorts, QSharedPointer<AbstractionDefinition> absDef);
 
@@ -122,7 +120,7 @@ private:
      *      @param [in] logicalPort     The direction of the logical port.
      */
     void createLogicalMappings(QStringList const& physPorts, QString const& logicalPort, 
-        General::Direction logicalDirection);
+        DirectionTypes::Direction logicalDirection);
 
     /*!
      *  Creates port maps to the bus interface based on the initial mapping.     
@@ -138,7 +136,7 @@ private:
      *      @return The searched port or 0 if port was not found in the group.
      */
     QSharedPointer<PortAbstraction> findPortByName(QString const& portName, 
-        const QList<QSharedPointer<PortAbstraction> >& ports);
+        QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports);
 
 
     /*!
@@ -150,7 +148,17 @@ private:
      *
      *      @return The created port.
      */
-    QSharedPointer<PortAbstraction> createAbsPort(QString const& portName, General::Direction portDirection, int portWidth );
+    QSharedPointer<PortAbstraction> createAbsPort(QString const& portName, DirectionTypes::Direction portDirection,
+        int portWidth );
+
+    /*!
+     *  Get the size of a port.
+     *
+     *      @param [in] targetPort  The port whose size is being searched for.
+     *
+     *      @return The size of the port.
+     */
+    int getPortSize(QSharedPointer<Port> targetPort) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -193,6 +201,10 @@ private:
 
     //! The active mode for generation.
     PortMapGenerationMode mappingMode_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
 };
 
 #endif // BUSINTERFACEWIZARDBUSDEFINITIONPAGE_H

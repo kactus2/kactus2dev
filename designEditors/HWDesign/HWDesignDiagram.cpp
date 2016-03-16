@@ -1,23 +1,30 @@
-/* 
- *
- * 		filename: blockdiagram.cpp
- */
+//-----------------------------------------------------------------------------
+// File: HWDesignDiagram.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// HWDesignDiagram is a graphical view to a design.
+//-----------------------------------------------------------------------------
 
 #include "HWDesignDiagram.h"
-#include "HWComponentItem.h"
-#include "HWConnection.h"
-#include "BusPortItem.h"
+
 #include "AdHocPortItem.h"
 #include "AdHocInterfaceItem.h"
+#include "BusInterfaceDialog.h"
 #include "BusInterfaceItem.h"
-#include "OffPageConnectorItem.h"
-#include "SelectItemTypeDialog.h"
+#include "BusPortItem.h"
+#include "HWComponentItem.h"
+#include "HWConnection.h"
+#include "AdHocConnectionItem.h"
 #include "HWDesignWidget.h"
 #include "HWAddCommands.h"
-#include "HWDeleteCommands.h"
 #include "HWMoveCommands.h"
 #include "HWChangeCommands.h"
-#include "BusInterfaceDialog.h"
+#include "OffPageConnectorItem.h"
+#include "SelectItemTypeDialog.h"
 
 #include "columnview/HWColumn.h"
 #include "columnview/ColumnEditDialog.h"
@@ -27,26 +34,40 @@
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
+
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/diagramgrid.h>
 
+#include <designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h>
+#include <designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h>
+#include <designEditors/HWDesign/undoCommands/PortPasteCommand.h>
+
 #include <library/LibraryManager/libraryhandler.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/portabstraction.h>
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/busdefinition.h>
-#include <IPXACTmodels/PortRef.h>
-#include <IPXACTmodels/Interconnection.h>
-#include <IPXACTmodels/Interface.h>
-#include <IPXACTmodels/HierConnection.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/common/PartSelect.h>
+
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Design/ActiveInterface.h>
+#include <IPXACTmodels/Design/Interconnection.h>
+#include <IPXACTmodels/Design/PortReference.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
+#include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
+#include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
 #include <QPair>
 #include <QGraphicsSceneMouseEvent>
@@ -64,11 +85,11 @@ Q_DECLARE_METATYPE(HWDesignDiagram::ComponentCollectionCopyData)
 Q_DECLARE_METATYPE(HWDesignDiagram::ColumnCollectionCopyData)
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram()
+// Function: HWDesignDiagram::HWDesignDiagram()
 //-----------------------------------------------------------------------------
-HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& editProvider, DesignWidget* parent)
+HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider, DesignWidget* parent)
     : ComponentDesignDiagram(lh, editProvider, parent),
-      dragCompType_(CIT_NONE),
+      dragCompType_(ColumnTypes::NONE),
       dragBus_(false),
       dragEndPoint_(0)
 {
@@ -76,7 +97,7 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, GenericEditProvider& edit
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~HWDesignDiagram()
+// Function: HWDesignDiagram::~HWDesignDiagram()
 //-----------------------------------------------------------------------------
 HWDesignDiagram::~HWDesignDiagram()
 {
@@ -88,47 +109,59 @@ HWDesignDiagram::~HWDesignDiagram()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
-    if (design->getColumns().isEmpty())
+    QList<QSharedPointer<ColumnDesc> > designColumns = design->getColumns();
+    if (designColumns.isEmpty())
     {
-        addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, IO_COLUMN_WIDTH));
-        addColumn(ColumnDesc("Buses", COLUMN_CONTENT_BUSES, 0, COMPONENT_COLUMN_WIDTH));
-        addColumn(ColumnDesc("Components", COLUMN_CONTENT_COMPONENTS, 0, COMPONENT_COLUMN_WIDTH));
-        addColumn(ColumnDesc("IO", COLUMN_CONTENT_IO, 0, IO_COLUMN_WIDTH));
+        addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
+        addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Buses", ColumnTypes::BUSES, 0, COMPONENT_COLUMN_WIDTH)));
+        addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Components", ColumnTypes::COMPONENTS, 0, COMPONENT_COLUMN_WIDTH)));
+        addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, IO_COLUMN_WIDTH)));
     }
     else
     {
-        foreach (ColumnDesc const& desc, design->getColumns())
+        QMap<unsigned int, QSharedPointer<ColumnDesc> > orderedColumns;
+        foreach (QSharedPointer<ColumnDesc> desc, designColumns)
         {
-            HWColumn* column = new HWColumn(desc, getLayout().data());
-            getLayout()->addColumn(column, true);
+            orderedColumns.insertMulti(desc->getPosition(), desc);
+        }
+
+        foreach (QSharedPointer<ColumnDesc> desc, orderedColumns)
+        {
+            addColumn(desc);
         }
     }
 
-    // Create diagram interfaces for the top-level bus interfaces.
-    foreach (QSharedPointer<BusInterface> busIf, getEditedComponent()->getBusInterfaces())
-    {
-        BusInterfaceItem* diagIf = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busIf, 0);
+    // Clear undo/redo stack to prevent undoing the column adds.
+    getEditProvider()->clear();
 
-        // Add the diagram interface to the first column where it is allowed to be placed.
-        getLayout()->addItem(diagIf);
+    // Create diagram interfaces for the top-level bus interfaces.
+    foreach (QSharedPointer<BusInterface> busIf, *getEditedComponent()->getBusInterfaces())
+    {
+        QSharedPointer<InterfaceGraphicsData> dataGroup =
+            findOrCreateInterfaceExtensionGroup(design, busIf->name());
+
+        BusInterfaceItem* topInterface = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
+            busIf, dataGroup);
+
+        GraphicsColumn* targetColumn = getLayout()->findColumnAt(topInterface->scenePos());
+        if (targetColumn && targetColumn->isItemAllowed(topInterface))
+        {
+            targetColumn->addItem(topInterface);
+        }
+        else
+        {
+            getLayout()->addItem(topInterface);
+        }        
     }
 
-    /* component instances */
-    foreach (ComponentInstance const& instance, design->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
         createComponentItem(instance, design);
     }
 
-    /* interconnections */
-    foreach(Interconnection interconnection, design->getInterconnections())
+    foreach(QSharedPointer<Interconnection> interconnection, *design->getInterconnections())
     {
         createInterconnection(interconnection, design);
-    }
-
-	// Create hierarchical connections.
-    foreach (HierConnection hierConn, design->getHierarchicalConnections())
-    {
-        createHierarchicalConnection(hierConn, design);
     }
 
     // Set the ad-hoc data for the diagram.
@@ -138,7 +171,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
     createHierachicalAdHocPorts(design);
 
     // Create ad-hoc connections based on the design data.
-    foreach (AdHocConnection const& adHocConn, design->getAdHocConnections())
+    foreach (QSharedPointer<AdHocConnection> adHocConn, *design->getAdHocConnections())
     {
         createAdHocConnection(adHocConn);
     }
@@ -151,21 +184,21 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getComponent()
+// Function: HWDesignDiagram::getComponentItem()
 //-----------------------------------------------------------------------------
-HWComponentItem *HWDesignDiagram::getComponent(const QString &instanceName)
+HWComponentItem* HWDesignDiagram::getComponentItem(QString const& instanceName)
 {
-	// search all graphicsitems in the scene
+	// Search all items in the scene.
 	foreach (QGraphicsItem *item, items())
     {
 		// if the item is a component
         if (item->type() == HWComponentItem::Type)
         {
             HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
-
-			// if component's name matches
             if (comp->name() == instanceName)
+            {
                 return comp;
+            }
         }
     }
 
@@ -184,7 +217,6 @@ void HWDesignDiagram::setVisibilityControlState(QString const& name, bool state)
         foreach (QGraphicsItem* item, items())
         {
             HWConnection* conn = dynamic_cast<HWConnection*>(item);
-
             if (conn != 0)
             {
                 conn->setBusWidthVisible(state);
@@ -193,175 +225,6 @@ void HWDesignDiagram::setVisibilityControlState(QString const& name, bool state)
     }
 
     DesignDiagram::setVisibilityControlState(name, state);
-}
-
-//-----------------------------------------------------------------------------
-// Function: createDesign()
-//-----------------------------------------------------------------------------
-QSharedPointer<Design> HWDesignDiagram::createDesign(const VLNV &vlnv) const
-{
-	QSharedPointer<Design> design = DesignDiagram::createDesign(vlnv);
-
-	QList<ComponentInstance> instances;
-	QList<Interconnection> interconnections;
-	QList<HierConnection> hierConnections;
-    QList<AdHocConnection> adHocConnections;
-    QList<ColumnDesc> columns;
-
-    QList<QString> unpackagedNames;
-    QMap<QString, QPointF> adHocPortPositions;
-
-	foreach (QGraphicsItem *item, items())
-    {
-		if (item->type() == HWComponentItem::Type)
-        {
-            HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
-
-            ComponentInstance instance(comp->name(), comp->displayName(),
-				                       comp->description(), *comp->componentModel()->getVlnv(),
-                                       comp->scenePos(), comp->getUuid());
-
-			// save the configurable element values to the design
-            if (getDesignConfiguration().isNull())
-            {
-                 instance.setConfigurableElementValues(comp->getConfigurableElements());
-            }
-            else
-            {
-			   getDesignConfiguration()->setConfigurableElementValues(instance.getUuid(),
-                   comp->getConfigurableElements());
-            }
-            instance.setPortAdHocVisibilities(comp->getPortAdHocVisibilities());
-            instance.setVendorExtensions(comp->getVendorExtensions());
-
-            // Save the port positions.
-            QListIterator<QSharedPointer<BusInterface> > itrBusIf(comp->componentModel()->getBusInterfaces());
-            while (itrBusIf.hasNext())
-            {
-                QSharedPointer<BusInterface> busif = itrBusIf.next();
-                instance.updateBusInterfacePosition(busif->getName(), comp->getBusPort(busif->getName())->pos());
-            }
-
-            QMapIterator<QString, bool> itrAdHoc(comp->getPortAdHocVisibilities());
-            while (itrAdHoc.hasNext())
-            {
-                itrAdHoc.next();
-
-                if (itrAdHoc.value())
-                {
-                    instance.updateAdHocPortPosition(itrAdHoc.key(), comp->getAdHocPort(itrAdHoc.key())->pos());
-                }
-            }
-
-			instances.append(instance);
-		}
-        else if (item->type() == HWConnection::Type)
-        {
-            HWConnection *conn = qgraphicsitem_cast<HWConnection *>(item);
-
-            // Save data based on the connection type.
-            if (conn->isBus())
-            {
-			    if (conn->endpoint1()->encompassingComp() && conn->endpoint2()->encompassingComp())
-                {
-				    Interface iface1(conn->endpoint1()->encompassingComp()->name(),
-					    conn->endpoint1()->name());
-				    Interface iface2(conn->endpoint2()->encompassingComp()->name(),
-					    conn->endpoint2()->name());
-				    interconnections.append(Interconnection(conn->name(), iface1, iface2,
-                                                                    conn->route(),
-                                                                    conn->endpoint1()->type() == OffPageConnectorItem::Type,
-                                                                    QString(),
-																    conn->description()));
-			    }
-                else
-                {
-				    ConnectionEndpoint *compPort;
-				    ConnectionEndpoint *hierPort;
-
-                    if (conn->endpoint1()->encompassingComp()) {
-					    compPort = conn->endpoint1();
-					    hierPort = conn->endpoint2();
-				    } else {
-					    compPort = conn->endpoint2();
-					    hierPort = conn->endpoint1();
-				    }
-
-                    if (hierPort->getBusInterface() != 0)
-                    {
-                       HierConnection hierConnection = HierConnection(hierPort->name(),
-                            Interface(compPort->encompassingComp()->name(),
-                            compPort->name()),
-                            hierPort->scenePos(), hierPort->getDirection(),
-                            conn->route(),
-                            conn->endpoint1()->type() == OffPageConnectorItem::Type);
-                        hierConnection.setVendorExtensions(conn->getVendorExtensions());
-                        hierConnections.append(hierConnection);
-                    }
-			    }
-            }
-            else
-            {
-                // Otherwise the connection is ad-hoc.
-                QList<PortRef> internalPortRefs;
-                QList<PortRef> externalPortRefs;
-
-                if (conn->endpoint1()->isHierarchical())
-                {
-                    externalPortRefs.append(PortRef(conn->endpoint1()->name(), QString(),
-                                                            conn->getAdHocLeftBound(0),
-                                                            conn->getAdHocRightBound(0)));
-                }
-                else
-                {
-                    internalPortRefs.append(PortRef(conn->endpoint1()->name(),
-                                                            conn->endpoint1()->encompassingComp()->name(),
-                                                            conn->getAdHocLeftBound(0),
-                                                            conn->getAdHocRightBound(0)));
-                }
-
-                if (conn->endpoint2()->isHierarchical())
-                {
-                    externalPortRefs.append(PortRef(conn->endpoint2()->name(), QString(),
-                                                            conn->getAdHocLeftBound(1),
-                                                            conn->getAdHocRightBound(1)));
-                }
-                else
-                {
-                    internalPortRefs.append(PortRef(conn->endpoint2()->name(),
-                                                            conn->endpoint2()->encompassingComp()->name(),
-                                                            conn->getAdHocLeftBound(1),
-                                                            conn->getAdHocRightBound(1)));
-                }
-
-                adHocConnections.append(AdHocConnection(conn->name(), QString(),
-                                                                conn->description(), 0 /*TODO*/,
-                                                                internalPortRefs, externalPortRefs,
-                                                                conn->route(),
-                                                                conn->endpoint1()->type() == OffPageConnectorItem::Type));
-            }
-		}
-        else if (item->type() == AdHocInterfaceItem::Type)
-        {
-            AdHocInterfaceItem* adHocIf = static_cast<AdHocInterfaceItem*>(item);
-            adHocPortPositions[adHocIf->name()] = adHocIf->scenePos();
-        }
-	}
-
-    foreach(GraphicsColumn* column, getLayout()->getColumns())
-    {
-        columns.append(column->getColumnDesc());
-    }
-
-	design->setComponentInstances(instances);
-	design->setInterconnections(interconnections);
-    design->setHierarchicalConnections(hierConnections);
-    design->setAdHocConnections(adHocConnections);
-    design->setColumns(columns);   
-    design->setPortAdHocVisibilities(getPortAdHocVisibilities());
-    design->setAdHocPortPositions(adHocPortPositions);
-
-	return design;
 }
 
 //-----------------------------------------------------------------------------
@@ -377,25 +240,25 @@ void HWDesignDiagram::updateHierComponent()
     {
         // Check if the item is a diagram interface and its bus interface is defined.
         BusInterfaceItem* diagIf = dynamic_cast<BusInterfaceItem*>(item);
-
         if (diagIf != 0 && diagIf->getBusInterface() != 0 && !diagIf->isInvalid())
         {
 			busIfs.append(diagIf->getBusInterface());
         }
     }
 
-    getEditedComponent()->setBusInterfaces(busIfs);
+    getEditedComponent()->getBusInterfaces()->clear();
+    getEditedComponent()->getBusInterfaces()->append(busIfs);
 }
 
 //-----------------------------------------------------------------------------
-// Function: addColumn()
+// Function: HWDesignDiagram::addColumn()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::addColumn(ColumnDesc const& desc)
+void HWDesignDiagram::addColumn(QSharedPointer<ColumnDesc> desc)
 {
     HWColumn* column = new HWColumn(desc, getLayout().data());
 
-    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column));
-    getEditProvider().addCommand(cmd);
+    QSharedPointer<QUndoCommand> cmd(new GraphicsColumnAddCommand(getLayout().data(), column, getDesign()));
+    getEditProvider()->addCommand(cmd);
     cmd->redo();
 }
 
@@ -404,11 +267,22 @@ void HWDesignDiagram::addColumn(ColumnDesc const& desc)
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool visible)
 {
+    QSharedPointer<VendorExtension> adhocExtension = getDesign()->getAdHocPortPositions();
+    QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
+
+    if (!adhocGroup)
+    {
+        adhocGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:adHocVisibilities"));
+        getDesign()->getVendorExtensions()->append(adhocGroup);
+    }
+
     if (visible)
     {
+        QSharedPointer<Kactus2Placeholder> adhocData(new Kactus2Placeholder("kactus2:adHocVisible"));
+        adhocGroup->addToGroup(adhocData);
+
         AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
-            getEditedComponent()->getPort(portName).data(),
-            getLibraryInterface(), 0);
+            getEditedComponent()->getPort(portName), adhocData, 0);
 
         // Add the ad-hoc interface to the first column where it is allowed to be placed.
         getLayout()->addItem(adHocIf);
@@ -416,12 +290,26 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
     else
     {
         // Search for the ad-hoc interface and delete it.
-        ConnectionEndpoint* found = getDiagramAdHocPort(portName);
+        HWConnectionEndpoint* found = getDiagramAdHocPort(portName);
         Q_ASSERT(found != 0);
 
         static_cast<GraphicsColumn*>(found->parentItem())->removeItem(found);
         delete found;
         found = 0;
+
+        foreach(QSharedPointer<VendorExtension> extension, adhocGroup->getByType("kactus2:adHocVisible"))
+        {
+            QSharedPointer<Kactus2Placeholder> portExtension = extension.dynamicCast<Kactus2Placeholder>();
+            if (portExtension->getAttributeValue("portName") == portName)
+            {
+                adhocGroup->removeFromGroup(portExtension);
+            }
+        }
+
+        if (adhocGroup->getByType("kactus2:adHocVisible").isEmpty())
+        {
+            getDesign()->getVendorExtensions()->removeAll(adhocExtension);
+        }
     }
 }
 
@@ -432,8 +320,7 @@ HWConnectionEndpoint* HWDesignDiagram::getDiagramAdHocPort(QString const& portNa
 {
     foreach (QGraphicsItem* item, items())
     {
-        if (item->type() == AdHocInterfaceItem::Type &&
-            static_cast<AdHocInterfaceItem*>(item)->name() == portName)
+        if (item->type() == AdHocInterfaceItem::Type && static_cast<AdHocInterfaceItem*>(item)->name() == portName)
         {
             return static_cast<HWConnectionEndpoint*>(item);
         }
@@ -500,141 +387,173 @@ void HWDesignDiagram::onCopyAction()
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::onPasteAction()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::onPasteAction(){
-
-    if (!isProtected())
+void HWDesignDiagram::onPasteAction()
+{
+    if (isProtected())
     {
-        QList<QGraphicsItem*> items = selectedItems();
-        int type = getCommonItemType(items);
+        return;
+    }
 
-        if (type == HWComponentItem::Type)
-        {
-            HWComponentItem* targetComp = static_cast<HWComponentItem*>(items[0]);
+    QList<QGraphicsItem*> selection = selectedItems();
+    int selectionType = getCommonItemType(selection);
 
-            // Paste interfaces only to draft components.
-            if ( !targetComp->componentModel()->getVlnv()->isValid() )
-            {
-                QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+    QMimeData const* mimeData = QApplication::clipboard()->mimeData();
 
-                if ( mimedata->hasImage() && mimedata->imageData().canConvert<BusInterfaceCollectionCopyData>())
-                {				
-                    BusInterfaceCollectionCopyData collection = mimedata->imageData().value<BusInterfaceCollectionCopyData>();
+    if (selectionType == HWComponentItem::Type)
+    {
+        pasteInterfacesToDraftComponent(static_cast<HWComponentItem*>(selection.first()));
+    }
+    else if (mimeData->imageData().canConvert<ComponentCollectionCopyData>() && selection.empty())
+    {
+        pasteComponentsToColumn();
+    }
+    else if (mimeData->imageData().canConvert<ColumnCollectionCopyData>() &&
+        (selection.empty() || selectionType == HWColumn::Type))
+    {
+        pasteColumns();
+    }
+    else if (mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>() && selection.empty()) 
+    {
+        pasteHierarchicalInterfaces(mimeData);
+    }
+}
 
-                    QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-                    pasteInterfaces(collection, targetComp, cmd.data());
-                    getEditProvider().addCommand(cmd);
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::pasteInterfacesToDraftComponent()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::pasteInterfacesToDraftComponent(HWComponentItem* targetItem)
+{
+    // Paste interfaces only to draft components.
+    if (targetItem->isDraft())
+    {
+        QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+        if (mimedata->hasImage() && mimedata->imageData().canConvert<BusInterfaceCollectionCopyData>())
+        {				
+            BusInterfaceCollectionCopyData collection = mimedata->imageData().value<BusInterfaceCollectionCopyData>();
 
-                    // Update sidebar view.
-                    emit componentSelected(targetComp);
-                    emit helpUrlRequested("hwdesign/hwinstance.html");
-                }
-            }	
-        }
-        else
-        {
-            // Check the mime data.
-            QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+            QSharedPointer<QUndoCommand> pasteUndoCommand(new QUndoCommand());
+            pasteInterfaces(collection, targetItem, pasteUndoCommand.data());
+            getEditProvider()->addCommand(pasteUndoCommand);
 
-            if (mimeData->hasImage())
-            {
-                // Paste components.
-                if (mimeData->imageData().canConvert<ComponentCollectionCopyData>() && items.empty())
-                {
-                    GraphicsColumn* column = getLayout()->findColumnAt(contextMenuPosition());
-
-                    if (column != 0)
-                    {
-                        ComponentCollectionCopyData collection = mimeData->imageData().value<ComponentCollectionCopyData>();
-
-                        QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-                        pasteInstances(collection, column, cmd.data(), true);
-                        getEditProvider().addCommand(cmd);
-                    }
-                }
-                // Paste columns.
-                else if (mimeData->imageData().canConvert<ColumnCollectionCopyData>() &&
-                    (items.empty() || type == HWColumn::Type))
-                {
-                    ColumnCollectionCopyData collection = mimeData->imageData().value<ColumnCollectionCopyData>();
-                    QSharedPointer<QUndoCommand> parentCmd(new QUndoCommand());
-
-                    foreach (ColumnCopyData const& columnData, collection.columns)
-                    {
-                        HWColumn* column = new HWColumn(columnData.desc, getLayout().data());
-
-                        QUndoCommand* columnCmd = new GraphicsColumnAddCommand(getLayout().data(), column, parentCmd.data());
-                        columnCmd->redo();
-
-                        pasteInstances(columnData.components, column, parentCmd.data(), false);
-                        pasteInterfaces(columnData.interfaces, column, parentCmd.data(), false);
-                    }
-
-                    getEditProvider().addCommand(parentCmd);
-                    // Update sidebar view.
-                    emit clearItemSelection();            
-                }
-                // Paste top-level interfaces.
-                else if (mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>() &&
-                    items.empty()) 
-                {
-                    GraphicsColumn* column = getLayout()->findColumnAt(contextMenuPosition());
-
-                    if (column != 0 )
-                    {
-                        BusInterfaceCollectionCopyData collection = mimeData->imageData().value<BusInterfaceCollectionCopyData>();
-
-                        QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
-                        pasteInterfaces(collection, column, cmd.data(), true);
-                        if (cmd->childCount() > 0)
-                        {
-                            getEditProvider().addCommand(cmd); 
-                        }
-                        // Update sidebar view .
-                        emit clearItemSelection();       
-                    }
-                }                
-            }
+            // Update sidebar view.
+            emit componentSelected(targetItem);
+            emit helpUrlRequested("hwdesign/hwinstance.html");
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::onAddAction()
+// Function: HWDesignDiagram::pasteComponentsToColumn()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::pasteComponentsToColumn()
+{
+    GraphicsColumn* column = getLayout()->findColumnAt(contextMenuPosition());
+    if (column != 0)
+    {
+        QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+        ComponentCollectionCopyData collection = mimeData->imageData().value<ComponentCollectionCopyData>();
+
+        QSharedPointer<QUndoCommand> pasteUndoCommand(new QUndoCommand());
+        createComponentPasteCommand(collection, column, pasteUndoCommand.data(), true);
+        
+        getEditProvider()->addCommand(pasteUndoCommand);
+        pasteUndoCommand->redo();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::pasteColumns()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::pasteColumns()
+{
+    QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+    ColumnCollectionCopyData collection = mimeData->imageData().value<ColumnCollectionCopyData>();
+
+    QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
+
+    QPointF columnPosition = findCursorPositionMappedToScene();
+
+    foreach (ColumnCopyData const& columnData, collection.columns)
+    {
+        QSharedPointer<ColumnDesc> columnCopy(new ColumnDesc(*columnData.desc));
+        HWColumn* columnItem = new HWColumn(columnCopy, getLayout().data());
+        columnItem->setPos(columnPosition);
+
+        new GraphicsColumnAddCommand(getLayout().data(), columnItem, getDesign(), parentCommand.data());
+
+        createComponentPasteCommand(columnData.components, columnItem, parentCommand.data(), false);
+        
+        pasteTopLevelInterfaces(columnData.interfaces, columnItem, parentCommand.data(), false);
+
+        columnPosition += QPointF(columnCopy->getWidth(), 0);
+    }
+
+    getEditProvider()->addCommand(parentCommand);
+    parentCommand->redo();
+
+    emit clearItemSelection();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::pasteHierarchicalInterfaces()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::pasteHierarchicalInterfaces(QMimeData const* mimeData)
+{
+    GraphicsColumn* column = getLayout()->findColumnAt(contextMenuPosition());
+    if (column != 0 )
+    {
+        BusInterfaceCollectionCopyData collection = mimeData->imageData().value<BusInterfaceCollectionCopyData>();
+
+        QSharedPointer<QUndoCommand> pasteUndoCommand(new QUndoCommand());
+        pasteTopLevelInterfaces(collection, column, pasteUndoCommand.data(), true);
+
+        if (pasteUndoCommand->childCount() > 0)
+        {
+            getEditProvider()->addCommand(pasteUndoCommand); 
+        }
+
+        emit clearItemSelection();       
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::onAddToLibraryAction()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::onAddToLibraryAction()
 {
-    if (singleSelection())
+    if (!singleSelection())
     {
-        QGraphicsItem *item = selectedItems().first();
-        if (item != 0 && item->type() == HWComponentItem::Type)
+        return;
+    }
+
+    QGraphicsItem* selection = selectedItems().first();
+    if (selection != 0 && selection->type() == HWComponentItem::Type)
+    {
+        selection->setSelected(true);
+        HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(selection);
+
+        // Set the instance name as default name suggestion.
+        comp->componentModel()->getVlnv().setName(comp->name());
+
+        NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, getParent());
+        dialog.setVLNV(comp->componentModel()->getVlnv());
+        dialog.setWindowTitle(tr("Add Component to Library"));
+
+        if (dialog.exec() == QDialog::Accepted)
         {
-            item->setSelected(true);
-            HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
-
-            // Set the instance name as default name suggestion.
-            comp->componentModel()->getVlnv()->setName(comp->name());
-
-            NewObjectDialog dialog(getLibraryInterface(), VLNV::COMPONENT, true, getParent());
-            dialog.setVLNV(*comp->componentModel()->getVlnv());
-            dialog.setWindowTitle(tr("Add Component to Library"));
-
-            if (dialog.exec() == QDialog::Rejected)
-            {
-                return;
-            }
-
             VLNV vlnv = dialog.getVLNV();
             comp->componentModel()->setVlnv(vlnv);
-            comp->componentModel()->setComponentHierarchy(dialog.getProductHierarchy());
-            comp->componentModel()->setComponentFirmness(dialog.getFirmness());
-            comp->componentModel()->createEmptyFlatView();
+            comp->componentModel()->setHierarchy(dialog.getProductHierarchy());
+            comp->componentModel()->setFirmness(dialog.getFirmness());
+
+            comp->componentModel()->getViews()->append(QSharedPointer<View>(new View("flat")));
 
             // Write the model to file.
             getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
 
             // Create an undo command.
             QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
-            getEditProvider().addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
             cmd->redo();
 
             // Ask the user if he wants to complete the component.
@@ -642,6 +561,7 @@ void HWDesignDiagram::onAddToLibraryAction()
                 "Do you want to continue packaging the component completely?",
                 QMessageBox::NoButton, getParent());
             msgBox.setInformativeText("Pressing Continue opens up the component editor.");
+
             QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
             msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
 
@@ -649,7 +569,6 @@ void HWDesignDiagram::onAddToLibraryAction()
 
             if (msgBox.clickedButton() == btnContinue)
             {
-                // Open up the component editor.
                 openInComponentEditor(comp);
             }
         }
@@ -661,8 +580,9 @@ void HWDesignDiagram::onAddToLibraryAction()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::openDesignForComponent(ComponentItem* component, QString const& viewName)
 {
-    if (component->componentModel()->hasView(viewName)) {
-        emit openDesign(*component->componentModel()->getVlnv(), viewName);
+    if (component->componentModel()->hasView(viewName))
+    {
+        emit openDesign(component->componentModel()->getVlnv(), viewName);
     }
 }
 
@@ -692,7 +612,7 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
         item->setSelected(true);
         HWComponentItem *comp = qgraphicsitem_cast<HWComponentItem *>(item);
 
-        if (getLibraryInterface()->contains(*comp->componentModel()->getVlnv()))
+        if (getLibraryInterface()->contains(comp->componentModel()->getVlnv()))
         {
             openComponentItem(comp);
         }
@@ -715,21 +635,22 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
             {
                 int columnWidth = COMPONENT_COLUMN_WIDTH;
 
-                if (dialog.getContentType() == COLUMN_CONTENT_IO)
+                if (dialog.getContentType() == ColumnTypes::IO)
                 {
                     columnWidth = IO_COLUMN_WIDTH;
                 }
 
-                ColumnDesc desc(dialog.getName(), dialog.getContentType(), dialog.getAllowedItems(), columnWidth);
+                QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(),
+                    dialog.getAllowedItems(), columnWidth));
 
                 // Keep the previous width if the content type did not change.
-                if (dialog.getContentType() == column->getColumnDesc().getContentType())
+                if (dialog.getContentType() == column->getColumnDesc()->getContentType())
                 {
-                    desc.setWidth(column->getColumnDesc().getWidth());
+                    desc->setWidth(column->getColumnDesc()->getWidth());
                 }
 
-                QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc));
-                getEditProvider().addCommand(cmd);
+                QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc, getDesign()));
+                getEditProvider()->addCommand(cmd);
                 cmd->redo();
             }
         }
@@ -767,46 +688,32 @@ void HWDesignDiagram::addBusToLibrary(HWConnectionEndpoint* endpoint)
         // Make sure that both VLNVs are not yet used.
         if (getLibraryInterface()->contains(busVLNV))
         {
-            emit errorMessage(tr("Bus definition %1:%2:%3:%4 was already found in the library").arg(
-                busVLNV.getVendor()).arg(
-                busVLNV.getLibrary()).arg(
-                busVLNV.getName()).arg(
-                busVLNV.getVersion()));
+            emit errorMessage(tr("Bus definition %1 was already found in the library").arg(busVLNV.toString()));
             return;
         }
         else if (getLibraryInterface()->contains(absVLNV)) {
-            emit errorMessage(tr("Abstraction definition %1:%2:%3:%4 was already found in the library").arg(
-                absVLNV.getVendor()).arg(
-                absVLNV.getLibrary()).arg(
-                absVLNV.getName()).arg(
-                absVLNV.getVersion()));
+            emit errorMessage(tr("Abstraction definition %1 was already found in the library").arg(
+                absVLNV.toString()));
             return;
         }
 
         // Create a bus definition.
         QSharedPointer<BusDefinition> busDef = QSharedPointer<BusDefinition>(new BusDefinition());
         busDef->setVlnv(busVLNV);
-
-        // Create the file for the bus definition.
         getLibraryInterface()->writeModelToFile(dialog.getPath(), busDef);
 
         // Create an abstraction definition.
         QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
         absDef->setVlnv(absVLNV);
-
-        // Set the reference from abstraction definition to bus definition.
         absDef->setBusType(busVLNV);
-
-        // Create the file for the abstraction definition.
         getLibraryInterface()->writeModelToFile(dialog.getPath(), absDef);
 
         // Ask the user for the interface mode.
         endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
 
-        bool editName = endpoint->type() == BusInterfaceItem::Type &&
-            endpoint->getConnections().empty();
+        bool nameIsEditable = endpoint->type() == BusInterfaceItem::Type && endpoint->getConnections().empty();
 
-        BusInterfaceDialog modeDialog(editName, getParent());
+        BusInterfaceDialog modeDialog(nameIsEditable, getParent());
         modeDialog.addMode(General::MIRROREDMASTER);
         modeDialog.addMode(General::SLAVE);
         modeDialog.addMode(General::MIRROREDSLAVE);
@@ -831,24 +738,24 @@ void HWDesignDiagram::addBusToLibrary(HWConnectionEndpoint* endpoint)
         if (endpoint->getBusInterface() != 0)
         {
             oldBusType = endpoint->getBusInterface()->getBusType();
-            oldAbsType = endpoint->getBusInterface()->getAbstractionType();
+            oldAbsType = *endpoint->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef();
             oldMode = endpoint->getBusInterface()->getInterfaceMode();
-            oldName = endpoint->getBusInterface()->getName();
+            oldName = endpoint->getBusInterface()->name();
         }
 
         // Set the types for the end point.
         endpoint->setTypes(busVLNV, absVLNV, modeDialog.getSelectedMode());
 
-        if (editName)
+        if (nameIsEditable)
         {
-            endpoint->getBusInterface()->setName(modeDialog.getName());
+            endpoint->getBusInterface()->setName(modeDialog.name());
         }
 
         endpoint->updateInterface();
 
         QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(endpoint, oldBusType,
             oldAbsType, oldMode, oldName));
-        getEditProvider().addCommand(cmd);
+        getEditProvider()->addCommand(cmd);
 
         emit interfaceSelected(endpoint);
         emit openBus(busVLNV, absVLNV, true);
@@ -856,75 +763,67 @@ void HWDesignDiagram::addBusToLibrary(HWConnectionEndpoint* endpoint)
 }
 
 //-----------------------------------------------------------------------------
-// Function: dragEnterEvent()
+// Function: HWDesignDiagram::dragEnterEvent()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
 {
-    dragCompType_ = CIT_NONE;
+    dragCompType_ = ColumnTypes::NONE;
     dragBus_ = false;
 
     // Allow drag only if the diagram is not locked and the dragged object is a vlnv.
-    if (!isProtected() && event->mimeData()->hasImage())
+    if (isProtected() || !event->mimeData()->hasImage() || !event->mimeData()->imageData().canConvert<VLNV>())
     {
-        event->acceptProposedAction();
+        return;
+    }
 
-		QVariant data = event->mimeData()->imageData();
-		if (!data.canConvert<VLNV>()) {
-			return;
-		}
+    event->acceptProposedAction();
+    VLNV draggedVLNV = event->mimeData()->imageData().value<VLNV>();
 
-        VLNV vlnv = data.value<VLNV>();
+    if (draggedVLNV.getType() == VLNV::BUSDEFINITION || draggedVLNV.getType() == VLNV::ABSTRACTIONDEFINITION)
+    {
+        dragBus_ = true;
+    }
+    else if (draggedVLNV.getType() == VLNV::COMPONENT)
+    {
+        // Determine the component type.
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(draggedVLNV);
+        QSharedPointer<Component> component = libComp.dynamicCast<Component>();
 
-        if (vlnv.getType() == VLNV::COMPONENT)
+        // component with given vlnv was not found
+        if (!component) 
         {
-            // Determine the component type.
-			QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
-            QSharedPointer<Component> comp = libComp.staticCast<Component>();
-
-            // component with given vlnv was not found
-            if (!comp) {
-				emit errorMessage(tr("Component with the VLNV %1:%2:%3:%4 was not found in the library.").arg(
-					vlnv.getVendor()).arg(
-					vlnv.getLibrary()).arg(
-					vlnv.getName()).arg(
-					vlnv.getVersion()));
-                return;
-            }
-
-            // Check if the implementation does not match with the edited component.
-            if (comp->getComponentImplementation() != getEditedComponent()->getComponentImplementation())
-            {
-                return;
-            }
-
-            if (comp->isBridge())
-            {
-                dragCompType_ = CIT_BRIDGE;
-            }
-            else if (comp->isChannel())
-            {
-                dragCompType_ = CIT_CHANNEL;
-            }
-            else
-            {
-                dragCompType_ = CIT_COMPONENT;
-            }
-            comp.clear();
+            emit errorMessage(tr("Component with the VLNV %1 was not found in the library.").arg(
+                draggedVLNV.toString()));
+            return;
         }
-        else if (vlnv.getType() == VLNV::BUSDEFINITION || 
-			     vlnv.getType() == VLNV::ABSTRACTIONDEFINITION)
+
+        // Check if the implementation does not match with the edited component.
+        if (component->getImplementation() != getEditedComponent()->getImplementation())
         {
-            dragBus_ = true;
+            return;
+        }
+
+        if (component->isBridge())
+        {
+            dragCompType_ = ColumnTypes::BRIDGE;
+        }
+        else if (component->isChannel())
+        {
+            dragCompType_ = ColumnTypes::CHANNEL;
+        }
+        else
+        {
+            dragCompType_ = ColumnTypes::COMPONENT;
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: dragLeaveEvent()
+// Function: HWDesignDiagram::dragLeaveEvent()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
 {
-    dragCompType_ = CIT_NONE;
+    dragCompType_ = ColumnTypes::NONE;
     dragBus_ = false;
     
     if (dragEndPoint_)
@@ -935,13 +834,14 @@ void HWDesignDiagram::dragLeaveEvent(QGraphicsSceneDragDropEvent*)
 }
 
 //-----------------------------------------------------------------------------
-// Function: dropEvent()
+// Function: HWDesignDiagram::dropEvent()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 {
     // Retrieve the vlnv.
     QVariant data = event->mimeData()->imageData();
-    if (!data.canConvert<VLNV>()) {
+    if (!data.canConvert<VLNV>())
+    {
         return;
     }
 
@@ -949,10 +849,10 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
     updateDropAction(event);
 
     // Check if the dragged item was a valid one.
-    if (dragCompType_ != CIT_NONE)
+    if (dragCompType_ != ColumnTypes::NONE)
     {
-        // Disallow self-instantiation.
-        if (droppedVLNV == *getEditedComponent()->getVlnv())
+        // Do not allow self-instantiation.
+        if (droppedVLNV == getEditedComponent()->getVlnv())
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("Component cannot be instantiated to its own design."), QMessageBox::Ok, getParent());
@@ -961,154 +861,146 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         }
 
         // Create the component model.
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
-        QSharedPointer<Component> comp = libComp.staticCast<Component>();
+        QSharedPointer<Component> droppedComponent = getLibraryInterface()->getModel(droppedVLNV).staticCast<Component>();
 
         // Disallow instantiation of components marked as template.
-        if (comp->getComponentFirmness() == KactusAttribute::TEMPLATE)
+        if (droppedComponent->getFirmness() == KactusAttribute::TEMPLATE)
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                               tr("Template component cannot be directly instantiated in a design. "
-                                  "Save the template component as a new non-template component to enable instantiation."),
-                               QMessageBox::Ok, getParent());
+                tr("Template component cannot be directly instantiated in a design. "
+                "Save the template component as a new non-template component to enable instantiation."),
+                QMessageBox::Ok, getParent());
             msgBox.exec();
             return;
         }
 
-        // Set the instance name for the new component instance.
-        QString instanceName = createInstanceName(comp);
-
         // Act based on the selected drop action.
         if (event->dropAction() == Qt::CopyAction)
         {
-            // Create the diagram component.
-            HWComponentItem *newItem = new HWComponentItem(getLibraryInterface(), comp, instanceName);
-            newItem->setPos(snapPointToGrid(event->scenePos()));
-
-            GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
-
-            if (column != 0)
-            {
-                QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, newItem));
-
-			    connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-				    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-			    connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-				    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-                getEditProvider().addCommand(cmd);
-                cmd->redo();
-            }
+            createComponentItem(droppedComponent, event->scenePos());
         }
         else if (event->dropAction() == Qt::MoveAction)
         {
-            // Replace the underlying component with the new one.
-            HWComponentItem* oldCompItem = static_cast<HWComponentItem*>(getTopmostComponent(event->scenePos()));
-            Q_ASSERT(oldCompItem != 0);
-
-            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-                               tr("Component instance '%1' is about to be replaced "
-                                  "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), droppedVLNV.toString()),
-                               QMessageBox::Yes | QMessageBox::No, getParent());
-            
-            if (msgBox.exec() == QMessageBox::Yes)
-            {
-                // Create the component item.
-                HWComponentItem *newCompItem = new HWComponentItem(getLibraryInterface(), comp, instanceName);
-
-                // Perform the replacement.
-                QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(oldCompItem, newCompItem, 
-                    false, false));
-                connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
-                    this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-                connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                    this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-                getEditProvider().addCommand(cmd);
-                cmd->redo();
-            }
+            replaceComponentItemAtPositionWith(event->scenePos(), droppedComponent);
         }
     }
-    else if (dragBus_)
+    else if (dragBus_ && dragEndPoint_ != 0)
     {
-        if (dragEndPoint_ != 0)
+        setInterfaceVLNVatEndpoint(droppedVLNV);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::setInterfaceVLNVatEndpoint()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::setInterfaceVLNVatEndpoint(VLNV &droppedVLNV)
+{
+    Q_ASSERT(getLibraryInterface()->contains(droppedVLNV));
+    droppedVLNV.setType(getLibraryInterface()->getDocumentType(droppedVLNV));
+
+    VLNV absdefVLNV;
+
+    // if the dropped was an abstraction definition
+    if (droppedVLNV.getType() == VLNV::ABSTRACTIONDEFINITION)
+    {
+        absdefVLNV = droppedVLNV;
+
+        // parse the abstraction definition
+        QSharedPointer<AbstractionDefinition> absDef = 
+            getLibraryInterface()->getModel(droppedVLNV).staticCast<AbstractionDefinition>();
+
+        // set the bus definition used
+        droppedVLNV = absDef->getBusType();
+    }
+    Q_ASSERT(droppedVLNV.getType() == VLNV::BUSDEFINITION);
+
+    bool editName = dragEndPoint_->type() == BusInterfaceItem::Type &&
+        !dragEndPoint_->getBusInterface()->getBusType().isValid() &&
+        dragEndPoint_->getConnections().empty();
+
+    // Ask the user for the interface mode.
+    BusInterfaceDialog dialog(editName, getParent());
+    dialog.addMode(General::MIRROREDMASTER);
+    dialog.addMode(General::SLAVE);
+    dialog.addMode(General::MIRROREDSLAVE);
+    dialog.addMode(General::SYSTEM);
+    dialog.addMode(General::MIRROREDSYSTEM);
+    dialog.addMode(General::MASTER);
+
+    int result = dialog.exec();
+    dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
+
+    if (result == QDialog::Accepted)
+    {
+        // Save old settings.
+        VLNV oldBusType;
+        VLNV oldAbsType;
+        General::InterfaceMode oldMode = General::MASTER;
+        QString oldName = "";
+
+        if (dragEndPoint_->getBusInterface() != 0)
         {
-            Q_ASSERT(getLibraryInterface()->contains(droppedVLNV));
-			droppedVLNV.setType(getLibraryInterface()->getDocumentType(droppedVLNV));
-
-			VLNV absdefVLNV;
-
-			// if the dropped was an abstraction definition
-			if (droppedVLNV.getType() == VLNV::ABSTRACTIONDEFINITION) {
-				absdefVLNV = droppedVLNV;
-
-				// parse the abstraction definition
-				QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(droppedVLNV);
-				QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
-
-				// get the bus definition referenced by the abstraction definition
-				VLNV busdefVLNV = absDef->getBusType();
-
-				// set the bus definition used
-				droppedVLNV = busdefVLNV;
-
-				Q_ASSERT(absdefVLNV.getType() == VLNV::ABSTRACTIONDEFINITION);
-			}
-			Q_ASSERT(droppedVLNV.getType() == VLNV::BUSDEFINITION);
-
-            bool editName = dragEndPoint_->type() == BusInterfaceItem::Type &&
-                            !dragEndPoint_->getBusInterface()->getBusType().isValid() &&
-                            dragEndPoint_->getConnections().empty();
-
-            // Ask the user for the interface mode.
-            BusInterfaceDialog dialog(editName, getParent());
-            dialog.addMode(General::MIRROREDMASTER);
-            dialog.addMode(General::SLAVE);
-            dialog.addMode(General::MIRROREDSLAVE);
-            dialog.addMode(General::SYSTEM);
-            dialog.addMode(General::MIRROREDSYSTEM);
-            dialog.addMode(General::MASTER);
-
-            if (dialog.exec() == QDialog::Rejected)
-            {
-                dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-                return;
-            }
-
-            dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-
-            // Save old settings.
-            VLNV oldBusType;
-            VLNV oldAbsType;
-            General::InterfaceMode oldMode = General::MASTER;
-            QString oldName = "";
-
-            if (dragEndPoint_->getBusInterface() != 0)
-            {
-                oldBusType = dragEndPoint_->getBusInterface()->getBusType();
-                oldAbsType = dragEndPoint_->getBusInterface()->getAbstractionType();
-                oldMode = dragEndPoint_->getBusInterface()->getInterfaceMode();
-                oldName = dragEndPoint_->getBusInterface()->getName();
-            }
-
-            // Define the bus for the end point.
-            dragEndPoint_->setTypes(droppedVLNV, absdefVLNV, dialog.getSelectedMode());
-            
-            if (editName)
-            {
-                dragEndPoint_->getBusInterface()->setName(dialog.getName());
-            }
-
-            dragEndPoint_->updateInterface();
-
-            // Create an undo command.
-            QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(dragEndPoint_,
-                                                                      oldBusType, oldAbsType,
-                                                                      oldMode, oldName));
-            getEditProvider().addCommand(cmd);
-
-            dragEndPoint_ = 0;
+            oldBusType = dragEndPoint_->getBusInterface()->getBusType();
+            oldAbsType = *dragEndPoint_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef();
+            oldMode = dragEndPoint_->getBusInterface()->getInterfaceMode();
+            oldName = dragEndPoint_->getBusInterface()->name();
         }
+
+        // Define the bus for the end point.
+        dragEndPoint_->setTypes(droppedVLNV, absdefVLNV, dialog.getSelectedMode());
+
+        if (editName)
+        {
+            dragEndPoint_->getBusInterface()->setName(dialog.name());
+        }
+
+        dragEndPoint_->updateInterface();
+
+        // Create an undo command.
+        QSharedPointer<QUndoCommand> cmd(new EndPointTypesCommand(dragEndPoint_, oldBusType, oldAbsType, oldMode, 
+            oldName));
+        getEditProvider()->addCommand(cmd);
+
+        dragEndPoint_ = 0;
+    }    
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::replaceComponentItemAt()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::replaceComponentItemAtPositionWith(QPointF position, QSharedPointer<Component> comp)
+{
+    // Replace the underlying component with the new one.
+    HWComponentItem* oldCompItem = static_cast<HWComponentItem*>(getTopmostComponent(position));
+    Q_ASSERT(oldCompItem != 0);
+
+    QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+        tr("Component instance '%1' is about to be replaced with an instance of %2. Continue and replace?").arg(
+        oldCompItem->name(), comp->getVlnv().toString()), QMessageBox::Yes | QMessageBox::No, getParent());
+
+    if (msgBox.exec() == QMessageBox::Yes)
+    {
+        
+
+        // Create the component item.
+        QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
+        componentInstance->setInstanceName(createInstanceName(comp->getVlnv().getName()));
+        getDesign()->getComponentInstances()->append(componentInstance);
+
+        GraphicsColumn* column = getLayout()->findColumnAt(oldCompItem->scenePos());
+        HWComponentItem* newCompItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp, column);
+
+        // Perform the replacement.
+        QSharedPointer<ReplaceComponentCommand> replaceCommand(new ReplaceComponentCommand(this, oldCompItem,
+            newCompItem, false, false));
+
+        connect(replaceCommand.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(replaceCommand.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+        getEditProvider()->addCommand(replaceCommand);
+        replaceCommand->redo();
     }
 }
 
@@ -1117,7 +1009,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
 {
-    if (dragCompType_ != CIT_NONE)
+    if (dragCompType_ != ColumnTypes::NONE)
     {
         // Find the topmost component under the cursor.
         ComponentItem* item = getTopmostComponent(event->scenePos());
@@ -1132,7 +1024,7 @@ void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
             // Otherwise check whether the component can be placed to the underlying column.
             GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
 
-            if (column != 0 && column->getColumnDesc().getAllowedItems() & dragCompType_)
+            if (column != 0 && column->getColumnDesc()->getAllowedItems() & dragCompType_)
             {
                 event->setDropAction(Qt::CopyAction);
             }
@@ -1157,7 +1049,8 @@ void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
         // and the encompassing component is unpackaged.
         if (dragEndPoint_ != 0 && dragEndPoint_->isBus() &&
             (dragEndPoint_->getBusInterface() == 0 || !dragEndPoint_->getBusInterface()->getBusType().isValid() || 
-                (!dragEndPoint_->isConnected() && dragEndPoint_->encompassingComp() != 0 && !dragEndPoint_->encompassingComp()->componentModel()->getVlnv()->isValid())))
+                (!dragEndPoint_->isConnected() && dragEndPoint_->encompassingComp() != 0 && 
+                !dragEndPoint_->encompassingComp()->componentModel()->getVlnv().isValid())))
         {
             event->setDropAction(Qt::CopyAction);
             dragEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
@@ -1226,10 +1119,12 @@ bool HWDesignDiagram::pasteActionEnabled() const
         return false;
     }
 
-    bool pasteEnabled = false;
+    bool pasteEnabled = false;        
 
-    QList<QGraphicsItem*> items = selectedItems();
-    if (items.empty())
+    QList<QGraphicsItem*> selection = selectedItems();
+    int commonType = getCommonItemType(selection);
+
+    if (selection.empty())
     {
         GraphicsColumn* column = getLayout()->findColumnAt(contextMenuPosition());
 
@@ -1237,19 +1132,14 @@ bool HWDesignDiagram::pasteActionEnabled() const
             (column != 0 && mimeData->imageData().canConvert<ComponentCollectionCopyData>()) ||                                    
             (column != 0 && mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>()));
     }
+    else if (commonType == HWColumn::Type)
+    {
+        pasteEnabled = mimeData->imageData().canConvert<ColumnCollectionCopyData>();
+    }
     else
     {
-        int type = getCommonItemType(items);
-
-        if (type == HWColumn::Type)
-        {
-            pasteEnabled = mimeData->imageData().canConvert<ColumnCollectionCopyData>();
-        }
-        else
-        {
-            pasteEnabled = singleSelection() && draftSelected() &&
-                mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>();
-        }
+        pasteEnabled = singleSelection() && draftSelected() && 
+            mimeData->imageData().canConvert<BusInterfaceCollectionCopyData>();
     }
 
     return pasteEnabled;
@@ -1306,7 +1196,27 @@ int HWDesignDiagram::connectionType() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: onSelected()
+// Function: HWDesignDiagram::findOrCreateInterfaceExtensionGroup()
+//-----------------------------------------------------------------------------
+QSharedPointer<InterfaceGraphicsData> HWDesignDiagram::findOrCreateInterfaceExtensionGroup(
+    QSharedPointer<Design> design, QString const& busInterfaceName)
+{
+    foreach (QSharedPointer<InterfaceGraphicsData> graphicsData, design->getInterfaceGraphicsData())
+    {
+        if (busInterfaceName == graphicsData->getName())
+        {
+            return graphicsData;
+        }
+    }
+
+    QSharedPointer<InterfaceGraphicsData> dataGroup (new InterfaceGraphicsData(busInterfaceName));
+    design->getVendorExtensions()->append(dataGroup);
+
+    return dataGroup;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::onSelected()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
 {
@@ -1349,11 +1259,18 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
             emit helpUrlRequested("hwdesign/adhocinterface.html");
         }
 		// check if the selected item was a connection
-		else if (newSelection->type() == HWConnection::Type) {
+		else if (newSelection->type() == HWConnection::Type)
+        {
 			HWConnection* connection = qgraphicsitem_cast<HWConnection*>(newSelection);
 			emit connectionSelected(connection);
             emit helpUrlRequested("hwdesign/connection.html");
 		}
+        else if (newSelection->type() == AdHocConnectionItem::Type)
+        {
+            AdHocConnectionItem* connection = qgraphicsitem_cast<AdHocConnectionItem*>(newSelection);
+            emit connectionSelected(connection);
+            emit helpUrlRequested("hwdesign/connection.html");
+        }
         else
         {
             // inform others that nothing is currently selected
@@ -1373,15 +1290,88 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
 // Function: HWDesignDiagram::createConnection()
 //-----------------------------------------------------------------------------
 GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint)
-{
-    HWConnection* connection = new HWConnection(startPoint, endPoint, false, QString(), QString(), QString(), this);
+{    
+    QSharedPointer<ConnectionRoute> route(new ConnectionRoute(""));
+    
+    GraphicsConnection* connection;
 
     if (startPoint->isAdHoc())
     {
+        QSharedPointer<AdHocConnection> adHocConnection(new AdHocConnection(""));
+        
+        if (startPoint->isHierarchical())
+        {
+            QSharedPointer<PortReference> startReference(new PortReference(startPoint->getPort()->name()));
+            adHocConnection->getExternalPortReferences()->append(startReference);
+        }
+        else
+        {
+            QSharedPointer<PortReference> startReference(new PortReference(startPoint->getPort()->name(),
+                startPoint->encompassingComp()->name()));
+            adHocConnection->getInternalPortReferences()->append(startReference);
+        }
+        
+        if (endPoint->isHierarchical())
+        {
+            QSharedPointer<PortReference> endReference(new PortReference(endPoint->name()));
+            adHocConnection->getExternalPortReferences()->append(endReference);
+        }
+        else
+        {
+            QSharedPointer<PortReference> endReference(new PortReference(endPoint->name(),
+                endPoint->encompassingComp()->name()));
+            adHocConnection->getInternalPortReferences()->append(endReference);
+        }
+
+        connection = new AdHocConnectionItem(startPoint, endPoint, adHocConnection, route, this);   
+        QString connectionName = connection->createDefaultName();
+        adHocConnection->setName(connectionName);
+        route->setName(connectionName);
         connection->setLineWidth(1);
     }
-    connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+    else
+    {
+        QSharedPointer<Interconnection> interconnection(new Interconnection());
 
+        if (startPoint->isHierarchical())
+        {
+            QSharedPointer<HierInterface> startInterface(new HierInterface(startPoint->name()));
+            interconnection->getHierInterfaces()->append(startInterface);
+        }
+        else
+        {
+            QSharedPointer<ActiveInterface> startInterface(
+                new ActiveInterface(startPoint->encompassingComp()->name(), startPoint->name()));
+            interconnection->setStartInterface(startInterface);
+        }
+
+        if (endPoint->isHierarchical())
+        {
+            QSharedPointer<HierInterface> endInterface(new HierInterface(endPoint->name()));
+            interconnection->getHierInterfaces()->append(endInterface);
+        }
+        else
+        {
+            QSharedPointer<ActiveInterface> endInterface(
+                new ActiveInterface(endPoint->encompassingComp()->name(), endPoint->name()));
+            if (startPoint->isHierarchical())
+            {
+                interconnection->setStartInterface(endInterface);
+            }
+            else
+            {
+                interconnection->getActiveInterfaces()->append(endInterface);
+            }            
+        }
+
+        HWConnection* hwConnection = new HWConnection(startPoint, endPoint, interconnection, route, this);    
+        QString connectionName = hwConnection->createDefaultName();
+        interconnection->setName(connectionName);
+        route->setName(connectionName);
+        hwConnection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+        connection = hwConnection;
+    }
+    
     return connection;
 }
 
@@ -1390,17 +1380,18 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
 //-----------------------------------------------------------------------------
 GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startPoint, QPointF const& endPoint)
 {
-    HWConnection* connection = new HWConnection(startPoint->scenePos(),
-        startPoint->getDirection(), endPoint,
-        QVector2D(0.0f, 0.0f), QString(), QString(), this);
-
     if (startPoint->isAdHoc())
     {
-        connection->setLineWidth(1);
+        return new AdHocConnectionItem(startPoint->scenePos(), startPoint->getDirection(), endPoint,
+            QVector2D(0.0f, 0.0f), QString(), QString(), this);
     }
-    connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
-
-    return connection;
+    else
+    {
+        HWConnection* connection = new HWConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
+            QVector2D(0.0f, 0.0f), QString(), QString(), this);
+        connection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+        return connection;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1408,15 +1399,19 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
 //-----------------------------------------------------------------------------
 QSharedPointer<QUndoCommand> HWDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection)
 {
-    QSharedPointer<QUndoCommand> command;
+    AdHocConnectionItem* adhocConnection = dynamic_cast<AdHocConnectionItem*>(connection);
+    if (adhocConnection)
+    {
+        return QSharedPointer<QUndoCommand>(new AdHocConnectionAddCommand(this, adhocConnection, getDesign()));
+    }
 
     HWConnection* hwConnection = dynamic_cast<HWConnection*>(connection);
     if (hwConnection)
     {
-        command = QSharedPointer<QUndoCommand>(new ConnectionAddCommand(this, hwConnection));
+        return QSharedPointer<QUndoCommand>(new ConnectionAddCommand(this, hwConnection, getDesign()));
     }
 
-    return command;
+    return QSharedPointer<QUndoCommand>();
 }
 
 //-----------------------------------------------------------------------------
@@ -1425,7 +1420,11 @@ QSharedPointer<QUndoCommand> HWDesignDiagram::createAddCommandForConnection(Grap
 void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const& pos)
 {
     QSharedPointer<BusInterface> busif(new BusInterface());
-    BusInterfaceItem *newItem = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busif, 0);
+    
+    QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(busif->name()));
+    getDesign()->getVendorExtensions()->append(dataGroup);
+
+    BusInterfaceItem* newItem = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busif, dataGroup);
     newItem->setPos(snapPointToGrid(pos));
 
     connect(newItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
@@ -1433,7 +1432,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     // Save the positions of the other diagram interfaces.
     QMap<BusInterfaceItem*, QPointF> oldPositions;
 
-    if (column->getContentType() == COLUMN_CONTENT_IO)
+    if (column->getContentType() == ColumnTypes::IO)
     {
         foreach (QGraphicsItem* item, column->childItems())
         {
@@ -1449,7 +1448,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     cmd->redo();
 
     // Determine if the other interfaces changed their position and create undo commands for them.
-    if (column->getContentType() == COLUMN_CONTENT_IO)
+    if (column->getContentType() == ColumnTypes::IO)
     {
         for (QMap<BusInterfaceItem*, QPointF>::iterator cur = oldPositions.begin(); cur != oldPositions.end(); 
             cur++)
@@ -1461,7 +1460,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
         }
     }
 
-    getEditProvider().addCommand(cmd);
+    getEditProvider()->addCommand(cmd);
 }
 
 //-----------------------------------------------------------------------------
@@ -1490,11 +1489,11 @@ void HWDesignDiagram::draftAt(QPointF const& clickedPosition)
             unsigned int itemType = findColumnItemType(column);
 
             // Create the item based on the selected/determined type.
-            if (itemType == CIT_INTERFACE)
+            if (itemType == ColumnTypes::INTERFACE)
             {
                 addTopLevelInterface(column, clickedPosition);
             }
-            else if (itemType != CIT_NONE)
+            else if (itemType != ColumnTypes::NONE)
             {
                 addDraftComponentInstance(column, clickedPosition);
             }
@@ -1509,19 +1508,18 @@ void HWDesignDiagram::draftAt(QPointF const& clickedPosition)
     }
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::findItemTypeForColumn()
 //-----------------------------------------------------------------------------
 unsigned int HWDesignDiagram::findColumnItemType(GraphicsColumn* column) const
 {
-    unsigned int itemType = column->getColumnDesc().getAllowedItems();
+    unsigned int itemType = column->getColumnDesc()->getAllowedItems();
 
     // Check if the item type is ambiguous (interface vs. the rest of the types).
-    if (itemType != CIT_INTERFACE && itemType & CIT_INTERFACE)
+    if (itemType != ColumnTypes::INTERFACE && itemType & ColumnTypes::INTERFACE)
     {
         // Open a dialog to determine which type of item to create.
-        SelectItemTypeDialog dialog(column->getColumnDesc().getAllowedItems(), getParent());
+        SelectItemTypeDialog dialog(column->getColumnDesc()->getAllowedItems(), getParent());
 
         if (dialog.exec() == QDialog::Accepted)
         {
@@ -1529,7 +1527,7 @@ unsigned int HWDesignDiagram::findColumnItemType(GraphicsColumn* column) const
         }
         else
         {
-            itemType = CIT_NONE;
+            itemType = ColumnTypes::NONE;
         }
     }
 
@@ -1547,10 +1545,14 @@ void HWDesignDiagram::addDraftComponentInstance(GraphicsColumn* column, QPointF 
     // Create a component model without a valid vlnv.
     QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
     comp->setVlnv(VLNV());
-    comp->setComponentImplementation(getEditedComponent()->getComponentImplementation());
+    comp->setImplementation(getEditedComponent()->getImplementation());
 
     // Create the corresponding diagram component.
-    HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), comp, name);
+    QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
+    componentInstance->setInstanceName(name);
+    getDesign()->getComponentInstances()->append(componentInstance);
+
+    HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), componentInstance, comp, column);
     diagComp->setDraft();
     diagComp->setPos(snapPointToGrid(position));
 
@@ -1561,7 +1563,7 @@ void HWDesignDiagram::addDraftComponentInstance(GraphicsColumn* column, QPointF 
     connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
         this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-    getEditProvider().addCommand(cmd);
+    getEditProvider()->addCommand(cmd);
     cmd->redo();
 }
 
@@ -1571,7 +1573,7 @@ void HWDesignDiagram::addDraftComponentInstance(GraphicsColumn* column, QPointF 
 void HWDesignDiagram::addDraftComponentInterface(HWComponentItem* targetComponent, QPointF const& position)
 {
     // The component is unpackaged if it has an invalid vlnv.
-    if (!targetComponent->componentModel()->getVlnv()->isValid())
+    if (!targetComponent->componentModel()->getVlnv().isValid())
     {
         QMap<BusPortItem*, QPointF> oldPositions;
 
@@ -1599,7 +1601,7 @@ void HWDesignDiagram::addDraftComponentInterface(HWComponentItem* targetComponen
         }
 
         // Add the command to the edit stack.
-        getEditProvider().addCommand(cmd);
+        getEditProvider()->addCommand(cmd);
     }
 }
 
@@ -1613,16 +1615,15 @@ void HWDesignDiagram::replace(ComponentItem* destComp, ComponentItem* sourceComp
 
     if (destHWComponent && sourceHWComponent)
     {
-        // Perform the replacement.
-        QSharedPointer<ReplaceComponentCommand> 
-            cmd(new ReplaceComponentCommand(destHWComponent, sourceHWComponent, true, true));
+        QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(this,
+            destHWComponent, sourceHWComponent, true, true));
 
         connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
         connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-        getEditProvider().addCommand(cmd);
+        getEditProvider()->addCommand(cmd);
         cmd->redo();
     }
 }
@@ -1630,71 +1631,41 @@ void HWDesignDiagram::replace(ComponentItem* destComp, ComponentItem* sourceComp
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createComponentItem()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::createComponentItem(ComponentInstance const &instance, QSharedPointer<Design> design)
+void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> instance, QSharedPointer<Design> design)
 {
     QSharedPointer<Component> component;
 
-    if (!instance.getComponentRef().isEmpty())
+    if (!instance->isDraft())
     {
-        component = getLibraryInterface()->getModel(instance.getComponentRef()).dynamicCast<Component>();
+        component = getLibraryInterface()->getModel(*instance->getComponentRef()).dynamicCast<Component>();
 
-        if (!component && instance.getComponentRef().isValid())
+        if (!component && instance->getComponentRef()->isValid())
         {
             emit errorMessage(tr("Component %1 instantiated within design %2 was not found in the library").arg(
-                instance.getComponentRef().getName()).arg(design->getVlnv()->getName()));
+                instance->getComponentRef()->getName()).arg(design->getVlnv().getName()));
         }           
     }
 
     if(!component)
     {
         // Create an unpackaged component so that we can still visualize the component instance.
-        component = QSharedPointer<Component>(new Component(instance.getComponentRef()));
-        component->setComponentImplementation(KactusAttribute::HW);         
+        component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
+        component->setImplementation(KactusAttribute::HW);
     }
-
-    HWComponentItem* item = new HWComponentItem(getLibraryInterface(), component,
-        instance.getInstanceName(),
-        instance.getDisplayName(),
-        instance.getDescription(),
-        instance.getUuid(),
-        instance.getConfigurableElementValues(),
-        instance.getPortAdHocVisibilities());
-
-    if (!getDesignConfiguration().isNull())
-    {
-        QMap<QString, QString> mergedCEVs = instance.getConfigurableElementValues();
-        QMap<QString, QString> overrideCEVs = getDesignConfiguration()->getConfigurableElementValues(
-            instance.getUuid());
-
-        foreach(QString id, overrideCEVs.keys())
-        {
-            mergedCEVs.insert(id, overrideCEVs.value(id));
-        }
-        item->setConfigurableElements(mergedCEVs);
-    }
-
-    item->setBusInterfacePositions(instance.getBusInterfacePositions(), true);
-    item->setAdHocPortPositions(instance.getAdHocPortPositions());
-    item->setVendorExtensions(instance.getVendorExtensions());
-
-    if (instance.isDraft())
-    {
-        item->setDraft();
-    }
+    
+    HWComponentItem* item = new HWComponentItem(getLibraryInterface(), instance, component);
 
     // Check if the position is not found.
     // Migrate from the old layout to the column based layout.
-    if (instance.getPosition().isNull())
+    QPointF instancePosition = instance->getPosition();
+    if (instancePosition.isNull())
     {
         getLayout()->addItem(item);
     }
     else
     {
-        item->setPos(instance.getPosition());
-
-        GraphicsColumn* column = getLayout()->findColumnAt(instance.getPosition());
-
-        if (column != 0)
+        GraphicsColumn* column = getLayout()->findColumnAt(instancePosition);
+        if (column != 0 && column->isItemAllowed(item))
         {
             column->addItem(item, true);
         }
@@ -1708,196 +1679,302 @@ void HWDesignDiagram::createComponentItem(ComponentInstance const &instance, QSh
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createComponentItem()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::createComponentItem(QSharedPointer<Component> comp, QPointF position)
+{
+    // Create the diagram component.                            
+    QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
+    componentInstance->setComponentRef(
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(comp->getVlnv())));
+
+    QString instanceName = createInstanceName(comp->getVlnv().getName());
+    componentInstance->setInstanceName(instanceName);
+
+    getDesign()->getComponentInstances()->append(componentInstance);
+
+    HWComponentItem *newItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
+    newItem->setPos(snapPointToGrid(position));
+
+    GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(position));
+
+    if (column != 0)
+    {
+        // Create the diagram component.                            
+        QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance("",
+            QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(comp->getVlnv()))));
+        QString instanceName = createInstanceName(comp->getVlnv().getName());
+        componentInstance->setInstanceName(instanceName);
+
+        getDesign()->getComponentInstances()->append(componentInstance);
+
+        HWComponentItem *newItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
+        newItem->setPos(snapPointToGrid(position));
+
+        QSharedPointer<ItemAddCommand> addCommand(new ItemAddCommand(column, newItem));
+
+        connect(addCommand.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(addCommand.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+        getEditProvider()->addCommand(addCommand);
+        addCommand->redo();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createInterconnection()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::createInterconnection(Interconnection const& interconnection, QSharedPointer<Design> design)
+void HWDesignDiagram::createInterconnection(QSharedPointer<Interconnection> interconnection,
+    QSharedPointer<Design> design)
 {
-    QPair<Interface, Interface> connInterfaces = interconnection.getInterfaces();
-
-    // find the first referenced component
-    QString firstComponentRef = connInterfaces.first.getComponentRef();
-    HWComponentItem* comp1 = getComponent(firstComponentRef);
-    if (!comp1)
+    if (!interconnection->getHierInterfaces()->isEmpty())
     {
-        emit errorMessage(tr("Component %1 was not found in the design").arg(firstComponentRef));
+        createHierarchicalConnection(interconnection, design);
+    }
+    
+    if (!interconnection->getActiveInterfaces()->isEmpty())
+    {
+        createInterconnectionBetweenComponents(interconnection, design);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createInterconnectionBetweenComponents()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::createInterconnectionBetweenComponents(QSharedPointer<Interconnection> interconnection,
+    QSharedPointer<Design> design)
+{
+    QSharedPointer<ActiveInterface> startInterface = interconnection->getStartInterface();
+    QString startComponentRef = startInterface->getComponentReference();
+    HWComponentItem* startComponent = getComponentItem(startComponentRef);
+    if (!startComponent)
+    {
+        emit errorMessage(tr("Component %1 was not found in the design").arg(startComponentRef));
         return;
     }
 
-    // find the second referenced component
-    QString secondComponent = connInterfaces.second.getComponentRef();
-    HWComponentItem* comp2 = getComponent(secondComponent);
-    if (!comp2)
+    QSharedPointer<ActiveInterface> endInterface = interconnection->getActiveInterfaces()->first();
+    QString endComponentRef = endInterface->getComponentReference();
+    HWComponentItem* endComponent = getComponentItem(endComponentRef);
+    if (!endComponent)
     {
-        emit errorMessage(tr("Component %1 was not found in the design").arg(secondComponent));
+        emit errorMessage(tr("Component %1 was not found in the design").arg(endComponentRef));
         return;
     }
 
     // Find the referenced ports.
-    ConnectionEndpoint* port1 = findOrCreateMissingPort(comp1, firstComponentRef, connInterfaces.first.getBusRef(), 
-        design);
-    ConnectionEndpoint* port2 = findOrCreateMissingPort(comp2, secondComponent, connInterfaces.second.getBusRef(), 
-        design);
+    ConnectionEndpoint* startPort = findOrCreateMissingInterface(startComponent, 
+        startInterface->getComponentReference(), startInterface->getBusReference(), design);
+    ConnectionEndpoint* endPort = findOrCreateMissingInterface(endComponent, 
+        endComponentRef, endInterface->getBusReference(), design);
 
-    if (interconnection.isOffPage())
+    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(interconnection->name());
+
+    if (route->isOffpage())
     {
-        port1 = port1->getOffPageConnector();
-        port2 = port2->getOffPageConnector();
+        startPort = startPort->getOffPageConnector();
+        endPort = endPort->getOffPageConnector();
     }
 
-    // if both components and their ports are found an interconnection can be created.
-    if (comp1 && comp2 && port1 && port2)
+    HWConnection* connectionItem = new HWConnection(startPort, endPort, interconnection, route, this);
+    addItem(connectionItem);
+
+    startPort->onConnect(endPort);
+    endPort->onConnect(startPort);
+
+    connectionItem->validate();
+
+    startPort->addConnection(connectionItem);
+    endPort->addConnection(connectionItem);
+
+    if (route->isOffpage())
     {
-        HWConnection *diagramInterconnection = new HWConnection(port1, port2, true, 
-            interconnection.name(), interconnection.displayName(), interconnection.description(), this);
-        diagramInterconnection->setRoute(interconnection.getRoute());
-
-        if (interconnection.isOffPage())
-        {
-            diagramInterconnection->hide();
-        }
-        diagramInterconnection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
-
-        connect(diagramInterconnection, SIGNAL(errorMessage(QString const&)), 
-            this, SIGNAL(errorMessage(QString const&)));
-
-        addItem(diagramInterconnection);
-        diagramInterconnection->updatePosition();
+        connectionItem->hide();
     }
+
+    connectionItem->updatePosition();
+
+    connect(connectionItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+    connectionItem->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::findOrCreatePort()
+// Function: HWDesignDiagram::findOrCreateRouteForInterconnection()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint* HWDesignDiagram::findOrCreateMissingPort(HWComponentItem* componentItem, 
+QSharedPointer<ConnectionRoute> HWDesignDiagram::findOrCreateRouteForInterconnection(QString const& interconnectionName)
+{
+    foreach (QSharedPointer<ConnectionRoute> knownRoute, getDesign()->getRoutes())
+    {
+        if (knownRoute->name() == interconnectionName)
+        {
+            return knownRoute;
+        }
+    }
+
+    QSharedPointer<ConnectionRoute> route(new ConnectionRoute(interconnectionName));
+    getDesign()->addRoute(route);
+    return route;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::findOrCreateMissingInterface()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* HWDesignDiagram::findOrCreateMissingInterface(HWComponentItem* componentItem, 
     QString const& componentRef, QString const& busRef, QSharedPointer<Design> design)
 {
-    ConnectionEndpoint* portItem = componentItem->getBusPort(busRef);
+    ConnectionEndpoint* interfaceItem = componentItem->getBusPort(busRef);
 
-    if (!portItem)
+    if (!interfaceItem)
     {
-        emit errorMessage(tr("Port %1 was not found in the component %2").arg(busRef).arg(componentRef));
-        portItem = createMissingPort(busRef, componentItem, design);
+        emit errorMessage(tr("Bus interface %1 was not found in the component %2").arg(busRef).arg(componentRef));
+        interfaceItem = createMissingBusInterface(busRef, componentItem, design);
     }	
 
-    return portItem;
+    return interfaceItem;
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::createMissingPort()
+// Function: HWDesignDiagram::createMissingBusInterface()
 //-----------------------------------------------------------------------------
-BusPortItem* HWDesignDiagram::createMissingPort(QString const& portName, HWComponentItem* component,
-    QSharedPointer<Design> design)
+BusPortItem* HWDesignDiagram::createMissingBusInterface(QString const& interfaceName,
+    HWComponentItem* containingComponent, QSharedPointer<Design> design)
 {
     QSharedPointer<BusInterface> busIf(new BusInterface());
-    busIf->setName(portName);
+    busIf->setName(interfaceName);
 
-    BusPortItem* port = new BusPortItem(busIf, getLibraryInterface(), false, component);
-    component->addPort(port);
+    BusPortItem* missingInterface = new BusPortItem(busIf, getLibraryInterface(), containingComponent);
+    missingInterface->setTemporary(true);
+    containingComponent->addPort(missingInterface);
 
-    foreach (ComponentInstance const& instance, design->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
     {
-        if (instance.getInstanceName() == component->name())
+        if (instance->getInstanceName() == containingComponent->name())
         {
-            port->setPos(instance.getBusInterfacePositions().value(portName));
-            component->onMovePort(port);
-            return port;
+            missingInterface->setPos(instance->getBusInterfacePositions().value(interfaceName));
+            containingComponent->onMovePort(missingInterface);
+            return missingInterface;
         }
     }
 
-    return port;
+    return missingInterface;
 }
 
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createHierarchicalConnection()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::createHierarchicalConnection(HierConnection const& hierConn, QSharedPointer<Design> design)
+void HWDesignDiagram::createHierarchicalConnection(QSharedPointer<Interconnection> connection,
+    QSharedPointer<Design> design)
 {
-    ConnectionEndpoint* hierarchicalInterface = 0;
-    QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(hierConn.getInterfaceRef());
+    QSharedPointer<ActiveInterface> startInterface = connection->getStartInterface();
 
-    // if the bus interface was not found
-    if (busIf == 0)
+    QString startComponentRef = startInterface->getComponentReference();
+    HWComponentItem* startComponent = getComponentItem(startComponentRef);
+    if (!startComponent)
     {
-        emit errorMessage(tr("Bus interface %1 was not found in the top-component").arg(hierConn.getInterfaceRef()));
-
-        // Create a dummy interface which is marked as invalid.
-        busIf = QSharedPointer<BusInterface>(new BusInterface());
-        busIf->setName(hierConn.getInterfaceRef());
-
-        hierarchicalInterface = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busIf, 0);
-        hierarchicalInterface->setTemporary(true);
-        hierarchicalInterface->updateInterface();
-    }
-    else
-    {			
-        // Find the corresponding diagram interface.
-        foreach (QGraphicsItem* item, items())
-        {
-            if (item->type() == BusInterfaceItem::Type &&
-                static_cast<BusInterfaceItem*>(item)->getBusInterface() == busIf)
-            {
-                hierarchicalInterface = static_cast<BusInterfaceItem*>(item);
-                break;
-            }
-        }
+        emit errorMessage(tr("Component %1 was not found in the design").arg(startComponentRef));
+        return;
     }
 
+    QSharedPointer<HierInterface> hierInterface = connection->getHierInterfaces()->first();
+    ConnectionEndpoint* hierarchicalInterface = findOrCreateHierarchicalInterface(hierInterface->getBusReference());
     Q_ASSERT(hierarchicalInterface != 0);
 
-    // Check if the position is found.
-    if (!hierConn.getPosition().isNull())
+    // Check if the interface item is already assigned to a column.
+    GraphicsColumn* column = getLayout()->findColumnAt(hierarchicalInterface->scenePos());
+    if (column != 0)
     {
-        hierarchicalInterface->setPos(hierConn.getPosition());
-        hierarchicalInterface->setDirection(hierConn.getDirection());
-
-        GraphicsColumn* column = getLayout()->findColumnAt(hierConn.getPosition());
-
-        if (column != 0)
-        {
-            column->addItem(hierarchicalInterface);
-        }
-        else
-        {
-            getLayout()->addItem(hierarchicalInterface);
-        }
+        column->addItem(hierarchicalInterface);
+    }
+    else
+    {
+        getLayout()->addItem(hierarchicalInterface);
     }
 
     // Find the component where the hierarchical connection is connected.
-    HWComponentItem *comp = getComponent(hierConn.getInterface().getComponentRef());
+    HWComponentItem *comp = getComponentItem(startInterface->getComponentReference());
     if (!comp)
     {
         emit errorMessage(tr("Component %1 was not found in the top-design").arg(
-            hierConn.getInterface().getComponentRef()));
+            startInterface->getComponentReference()));
         return;
     }
 
     // Find the port of the component.
-    ConnectionEndpoint* componentPort = findOrCreateMissingPort(comp, hierConn.getInterface().getComponentRef(), 
-        hierConn.getInterface().getBusRef(), design);
+    ConnectionEndpoint* componentPort = findOrCreateMissingInterface(comp, startInterface->getComponentReference(), 
+        startInterface->getBusReference(), design);
+    
+    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(connection->name());
 
-    if (hierConn.isOffPage())
+    if (route->isOffpage())
     {
         componentPort = componentPort->getOffPageConnector();
         hierarchicalInterface = hierarchicalInterface->getOffPageConnector();
     }
-
-    HWConnection* hierarchicalConnection = new HWConnection(componentPort, hierarchicalInterface, true, 
-        QString(), QString(), QString(), this);
-    hierarchicalConnection->setRoute(hierConn.getRoute());
-
-    if (hierConn.isOffPage())
+  
+    HWConnection* connectionItem = new HWConnection(componentPort, hierarchicalInterface, connection, route, this);
+    if (route->isOffpage())
     {
-        hierarchicalConnection->hide();
+        connectionItem->hide();
     }
 
-    hierarchicalConnection->setVendorExtensions(hierConn.getVendorExtensions());
-    hierarchicalConnection->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+    componentPort->onConnect(hierarchicalInterface);
+    hierarchicalInterface->onConnect(componentPort);
 
-    connect(hierarchicalConnection, SIGNAL(errorMessage(QString const&)), this,
-        SIGNAL(errorMessage(QString const&)));
+    connectionItem->validate();
 
-    addItem(hierarchicalConnection);
-    hierarchicalConnection->updatePosition();
+    componentPort->addConnection(connectionItem);
+    hierarchicalInterface->addConnection(connectionItem);
+
+    connectionItem->setBusWidthVisible(getParent()->getVisibilityControls().value("Bus Widths"));
+
+    connect(connectionItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
+
+    addItem(connectionItem);
+    connectionItem->updatePosition();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::findOrCreateHierarchicalInterface()
+//-----------------------------------------------------------------------------
+ConnectionEndpoint* HWDesignDiagram::findOrCreateHierarchicalInterface(QString const& busRef)
+{
+    QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(busRef);
+
+    // if the bus interface was not found
+    if (busIf != 0)
+    {
+        // Find the corresponding diagram interface.
+        foreach (QGraphicsItem* item, items())
+        {
+            if (item->type() == BusInterfaceItem::Type &&
+                qgraphicsitem_cast<BusInterfaceItem*>(item)->getBusInterface() == busIf)
+            {
+                return qgraphicsitem_cast<BusInterfaceItem*>(item);
+            }
+        }
+    }
+    else
+    {			
+        emit errorMessage(tr("Bus interface %1 was not found in the top-component").arg(busRef));
+
+        // Create a dummy interface which is marked as invalid.
+        busIf = QSharedPointer<BusInterface>(new BusInterface());
+        busIf->setName(busRef);
+
+        QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(busIf->name()));
+        getDesign()->getVendorExtensions()->append(dataGroup);
+
+        ConnectionEndpoint* hierarchicalInterface = new BusInterfaceItem(getLibraryInterface(), 
+            getEditedComponent(), busIf, dataGroup, 0);
+        hierarchicalInterface->setTemporary(true);
+        hierarchicalInterface->updateInterface();
+
+        return hierarchicalInterface;
+    }
+
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -1905,29 +1982,22 @@ void HWDesignDiagram::createHierarchicalConnection(HierConnection const& hierCon
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
 {
-    QMapIterator<QString, bool> itrCurPort(getPortAdHocVisibilities());
-    QMap<QString, QPointF> const& adHocPortPositions = design->getAdHocPortPositions();
+    QSharedPointer<VendorExtension> adHocPortPositions = design->getAdHocPortPositions();
+    QSharedPointer<Kactus2Group> adhocGroup = adHocPortPositions.dynamicCast<Kactus2Group>();
 
-    while (itrCurPort.hasNext())
+    if (!adhocGroup.isNull())
     {
-        itrCurPort.next();
-
-        if (itrCurPort.value())
+        foreach (QSharedPointer<VendorExtension> positionExtension, adhocGroup->getByType("kactus2:adHocVisible"))
         {
-            QString const& name = itrCurPort.key();
-            AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
-                getEditedComponent()->getPort(name).data(),
-                getLibraryInterface(), 0);
-            if (adHocPortPositions.contains(name))
-            {
-                QPointF pos = adHocPortPositions[name];
-                adHocIf->setPos(pos);
-            }
+            QSharedPointer<Kactus2Placeholder> adHocExtension = positionExtension.dynamicCast<Kactus2Placeholder>();
+            QString portName = adHocExtension->getAttributeValue("portName");
+
+            AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(), 
+                getEditedComponent()->getPort(portName), adHocExtension, 0);
 
             // Add the ad-hoc interface to the first column where it is allowed to be placed.
             GraphicsColumn* column = getLayout()->findColumnAt(adHocIf->scenePos());
-
-            if (column != 0 && adHocPortPositions.contains(name))
+            if (column != 0 && column->isItemAllowed(adHocIf))
             {
                 column->addItem(adHocIf, true);
             }
@@ -1936,111 +2006,136 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
                 getLayout()->addItem(adHocIf);
             }
         }
-    }
+    }  
 }
 
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createAdHocConnection()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::createAdHocConnection(AdHocConnection const& adHocConn)
+void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection)
 {
     // Convert one-to-many internal connections to one-to-one connections.
-    if (adHocConn.externalPortReferences().empty() && !adHocConn.internalPortReferences().empty())
+    if (adHocConnection->getExternalPortReferences()->empty() && !adHocConnection->getInternalPortReferences()->empty())
     {
-        PortRef primaryPort = adHocConn.internalPortReferences().at(0);
+        QSharedPointer<PortReference> primaryPort = adHocConnection->getInternalPortReferences()->at(0);
 
         // Find the first referenced component.
-        HWComponentItem* comp1 = getComponent(primaryPort.getComponentRef());
+        HWComponentItem* comp1 = getComponentItem(primaryPort->getComponentRef());
 
         if (comp1 == 0)
         {
-            emit errorMessage(tr("Component %1 was not found in the design").arg(primaryPort.getComponentRef()));
+            emit errorMessage(tr("Component %1 was not found in the design").arg(primaryPort->getComponentRef()));
             return;
         }
 
         // Find the corresponding port.
-        ConnectionEndpoint* port1 = comp1->getAdHocPort(primaryPort.getPortRef());
+        HWConnectionEndpoint* port1 = comp1->getAdHocPort(primaryPort->getPortRef());
         if (port1 == 0)
         {
-            emit errorMessage(tr("Port %1 was not found in the component %2").arg(primaryPort.getPortRef(), 
-                primaryPort.getComponentRef()));
-            return;
+            port1 = new AdHocPortItem(comp1->componentModel()->getPort(primaryPort->getPortRef()), comp1);
+            comp1->addPort(port1);
+
+            emit errorMessage(tr("Port %1 was not found in the component %2").arg(primaryPort->getPortRef(), 
+                primaryPort->getComponentRef()));
+            
+            comp1->setPortAdHocVisible(primaryPort->getPortRef(), true);
+        }
+        
+        if (adHocConnection->isOffPage())
+        {
+            port1 = static_cast<HWConnectionEndpoint*>(port1->getOffPageConnector());
         }
 
-        if (adHocConn.isOffPage())
+        for (int i = 1; i < adHocConnection->getInternalPortReferences()->size(); ++i)
         {
-            port1 = port1->getOffPageConnector();
-        }
-
-        for (int i = 1; i < adHocConn.internalPortReferences().size(); ++i)
-        {
-            PortRef secondaryPort = adHocConn.internalPortReferences().at(i);
-            creatConnectionForAdHocPorts(adHocConn, secondaryPort, primaryPort, port1);
+            QSharedPointer<PortReference> secondaryPort = adHocConnection->getInternalPortReferences()->at(i);
+            createConnectionForAdHocPorts(adHocConnection, secondaryPort, primaryPort, port1);
         }         
     }
 
-    foreach (PortRef externalPort, adHocConn.externalPortReferences())
+    foreach (QSharedPointer<PortReference> externalPort, *adHocConnection->getExternalPortReferences())
     {
-        ConnectionEndpoint* topAdHocPort = getDiagramAdHocPort(externalPort.getPortRef());
+        ConnectionEndpoint* topAdHocPort = getDiagramAdHocPort(externalPort->getPortRef());
         if (topAdHocPort == 0)
         {
-            emit errorMessage(tr("Port %1 was not found in the top-level component").arg(externalPort.getPortRef()));
-            return;
+            if (!getEditedComponent()->hasPort(externalPort->getPortRef()))
+            {
+                emit errorMessage(tr("Port %1 was not found in the top-level component").arg(
+                    externalPort->getPortRef()));
+                return;
+            }
+            else
+            {
+                setPortAdHocVisible(externalPort->getPortRef(), true);
+                topAdHocPort = getDiagramAdHocPort(externalPort->getPortRef());
+            }
         }
 
-        if (adHocConn.isOffPage())
+        if (adHocConnection->isOffPage())
         {
             topAdHocPort = topAdHocPort->getOffPageConnector();
         }
 
-        foreach (PortRef internalPort, adHocConn.internalPortReferences())
+        foreach (QSharedPointer<PortReference> internalPort, *adHocConnection->getInternalPortReferences())
         {
-            creatConnectionForAdHocPorts(adHocConn, internalPort, externalPort, topAdHocPort);
+            createConnectionForAdHocPorts(adHocConnection, internalPort, externalPort, topAdHocPort);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::creatConnectionForAdHocPorts()
+// Function: HWDesignDiagram::createConnectionForAdHocPorts()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::creatConnectionForAdHocPorts(AdHocConnection const& adHocConnection, 
-    PortRef const& internalPort, PortRef const& primaryPort, ConnectionEndpoint* primaryPortItem)
+void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnection> adHocConnection, 
+    QSharedPointer<PortReference> internalPort, QSharedPointer<PortReference> primaryPort, 
+    ConnectionEndpoint* primaryPortItem)
 {
     // Find the referenced component.
-    HWComponentItem* comp = getComponent(internalPort.getComponentRef());
-    if (comp == 0)
+    HWComponentItem* componentItem = getComponentItem(internalPort->getComponentRef());
+    if (componentItem == 0)
     {
-        emit errorMessage(tr("Component %1 was not found in the design").arg(internalPort.getComponentRef()));
+        emit errorMessage(tr("Component %1 was not found in the design").arg(internalPort->getComponentRef()));
         return;
     }
 
-    ConnectionEndpoint* componentAdHocPort = comp->getAdHocPort(internalPort.getPortRef());
+    HWConnectionEndpoint* adHocPort = componentItem->getAdHocPort(internalPort->getPortRef());
 
-    if (componentAdHocPort == 0)
+    if (adHocPort == 0)
     {
-        emit errorMessage(tr("Port %1 was not found in the component %2").arg(internalPort.getPortRef(), 
-            internalPort.getComponentRef()));
-        return;
+        adHocPort = new AdHocPortItem(componentItem->componentModel()->getPort(internalPort->getPortRef()), 
+            componentItem);
+        componentItem->addPort(adHocPort);
+        componentItem->setPortAdHocVisible(internalPort->getPortRef(), true);
     }
 
-    if (adHocConnection.isOffPage())
+    QSharedPointer<ConnectionRoute> route = findOrCreateRouteForInterconnection(adHocConnection->name());
+
+    if (route->isOffpage())
     {
-        componentAdHocPort = componentAdHocPort->getOffPageConnector();
+        adHocPort = static_cast<HWConnectionEndpoint*>(adHocPort->getOffPageConnector());
     }
 
     // Create the ad-hoc connection graphics item.
-    HWConnection* connection = new HWConnection(componentAdHocPort, primaryPortItem, true,
-        adHocConnection.name(), adHocConnection.displayName(), adHocConnection.description(), this);
+    AdHocConnectionItem* connection = new AdHocConnectionItem(adHocPort, primaryPortItem, adHocConnection,
+        route, this);
 
-    connection->setRoute(adHocConnection.getRoute());
+    connection->setRoute(adHocConnection->getRoute());
 
-    connection->setAdHocLeftBound(0, internalPort.getLeft());
-    connection->setAdHocRightBound(0, internalPort.getRight());
+    QSharedPointer<PartSelect> internalPart = internalPort->getPartSelect();
+    if (!internalPart.isNull())
+    {
+        connection->setAdHocLeftBound(0, internalPart->getLeftRange());
+        connection->setAdHocRightBound(0, internalPart->getRightRange());
+    }
 
-    connection->setAdHocLeftBound(1, primaryPort.getLeft());
-    connection->setAdHocRightBound(1, primaryPort.getRight());
+    QSharedPointer<PartSelect> primaryPart = primaryPort->getPartSelect();
+    if (!primaryPart.isNull())
+    {
+        connection->setAdHocLeftBound(1, primaryPart->getLeftRange());
+        connection->setAdHocRightBound(1, primaryPart->getRightRange());
+    }
 
-    if (adHocConnection.isOffPage())
+    if (route->isOffpage())
     {
         connection->hide();
     }
@@ -2053,7 +2148,7 @@ void HWDesignDiagram::creatConnectionForAdHocPorts(AdHocConnection const& adHocC
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::copyInstances()
+// Function: HWDesignDiagram::copyInterfaces()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::copyInterfaces(QList<QGraphicsItem*> const& items, BusInterfaceCollectionCopyData &collection)
 {
@@ -2069,10 +2164,7 @@ void HWDesignDiagram::copyInterfaces(QList<QGraphicsItem*> const& items, BusInte
 
             instance.srcComponent = busPort->getOwnerComponent();
             instance.busInterface = busPort->getBusInterface();
-            instance.mode = busPort->getBusInterface()->getInterfaceMode();
-            instance.instanceName = busPort->name();
-            instance.description = busPort->description();
-            instance.pos = busPort->pos();
+            instance.position = busPort->pos();
             instance.topLevelIf = item->type() == BusInterfaceItem::Type;
         }
     }
@@ -2094,15 +2186,7 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, Componen
             ComponentInstanceCopyData& instance = collection.instances.back();
 
             instance.component = comp->componentModel(); 
-            instance.instanceName = comp->name();
-            instance.displayName = comp->displayName();
-            instance.description = comp->description();
-            instance.pos = comp->pos();
-            instance.configurableElements = comp->getConfigurableElements();
-            instance.busInterfacePositions = comp->getBusInterfacePositions();
-            instance.adHocPortPositions = comp->getAdHocPortPositions();
-            instance.adHocVisibilities = comp->getPortAdHocVisibilities();
-            instance.isDraft = comp->isDraft();
+            instance.instance = comp->getComponentInstance();
         }
     }
 }
@@ -2111,28 +2195,27 @@ void HWDesignDiagram::copyInstances(QList<QGraphicsItem*> const& items, Componen
 // Function: HWDesignDiagram::pasteInterfaces()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& collection,
-                                      HWComponentItem* component, QUndoCommand* cmd)
+    HWComponentItem* component, QUndoCommand* cmd)
 {
     foreach(BusInterfaceCopyData const& instance, collection.instances)
     {        
         // Bus interface must have a unique name within the component.
-        QString uniqueBusName = instance.busInterface->getName();        	
+        QString uniqueBusName = instance.busInterface->name();        	
         unsigned int count =  0;	
-        while( component->getBusPort( uniqueBusName ) != 0 )
+        while (component->getBusPort(uniqueBusName) != 0)
         {
             count++;
-            uniqueBusName = instance.busInterface->getName() + "_" + QString::number(count);			
+            uniqueBusName = instance.busInterface->name() + "_" + QString::number(count);			
         }
 
         // Create a copy of the busInterface and rename it.
         QSharedPointer<BusInterface> copyBusIf(new BusInterface(*instance.busInterface));
         copyBusIf->setName(uniqueBusName);
-        copyBusIf->setDescription(instance.description);
-        copyBusIf->setInterfaceMode(instance.mode);
-        copyBusIf->setDefaultPos(instance.busInterface->getDefaultPos());
 
         // Create a bus port with the copied bus interface.
-        BusPortItem* port = new BusPortItem(copyBusIf, getLibraryInterface(), false, component);        			
+        BusPortItem* port = new BusPortItem(copyBusIf, getLibraryInterface(), component);     
+        port->setTemporary(true);
+
         port->setPos(snapPointToGrid(component->mapFromScene(contextMenuPosition())));
         
         // Lock the interface type for non-draft interfaces.
@@ -2143,7 +2226,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 
         QMap<QString, QPointF> oldLocations = component->getBusInterfacePositions();
 
-        PortPasteCommand* pasteCmd = new PortPasteCommand(component, instance.srcComponent, instance.pos, port, cmd);
+        PortPasteCommand* pasteCmd = new PortPasteCommand(component, instance.srcComponent, port, cmd);
         pasteCmd->redo();
 
         QMap<QString, QPointF>::iterator cur = oldLocations.begin();
@@ -2154,63 +2237,68 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
             {
                 new PortMoveCommand(component->getBusPort(cur.key()), cur.value(), pasteCmd);
             }
-            ++cur;
+            cur++;
         }  
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::pasteInterfaces()
+// Function: HWDesignDiagram::pasteTopLevelInterfaces()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& collection,
-                                      GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos)
+void HWDesignDiagram::pasteTopLevelInterfaces(BusInterfaceCollectionCopyData const& collection,
+    GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos)
 {
-    foreach(BusInterfaceCopyData const& instance, collection.instances)
+    if (collection.instances.isEmpty())
     {
-        QList<QString> existingNames;
+        return;
+    }
 
-        foreach (QGraphicsItem* item, items())
+    QStringList existingNames;
+    foreach (QGraphicsItem* item, items())
+    {
+        if (item->type() == BusInterfaceItem::Type)
         {
-            if (item->type() == BusInterfaceItem::Type)
-            {
-                BusInterfaceItem* interface = static_cast<BusInterfaceItem*>(item);
-                existingNames.append(interface->name());
-            }
+            BusInterfaceItem* interface = static_cast<BusInterfaceItem*>(item);
+            existingNames.append(interface->name());
         }
+    }
 
+    foreach (BusInterfaceCopyData const& instance, collection.instances)
+    {
         // Bus interface must have a unique name within the component.
-        QString uniqueBusName = instance.busInterface->getName();
-        unsigned int count =  0;
+        QString uniqueBusName = instance.busInterface->name();
+        unsigned int count = 0;
 
         while (existingNames.contains(uniqueBusName))
         {
             count++;
-            uniqueBusName = instance.busInterface->getName() + "_" + QString::number(count);			
+            uniqueBusName = instance.busInterface->name() + "_" + QString::number(count);			
         }
 
-        GraphicsColumn* ioColumn = column;
+        existingNames.append(uniqueBusName);
+
+        GraphicsColumn* targetColumn = column;
         // Check if the column is not for IO.
-        if (!ioColumn->getContentType() == COLUMN_CONTENT_IO)
+        if (!targetColumn->getContentType() == ColumnTypes::IO)
         {
-            ioColumn = 0;
+            targetColumn = 0;
 
             // Find the first column that is.
             foreach (GraphicsColumn* otherColumn, getLayout()->getColumns())
             {
-                if (otherColumn->getContentType() == COLUMN_CONTENT_IO)
+                if (otherColumn->getContentType() == ColumnTypes::IO)
                 {
-                    ioColumn = otherColumn;
+                    targetColumn = otherColumn;
                     break;
                 }
             }
         }
 
-        if(ioColumn != 0)
+        if (targetColumn != 0)
         {          
             // Create a copy of the busInterface and rename it.
             QSharedPointer<BusInterface> copyBusIf(new BusInterface(*instance.busInterface));
             copyBusIf->setName(uniqueBusName);
-            copyBusIf->setDescription(instance.description);
 
             BusInterfaceItem* port = 0;
 
@@ -2223,40 +2311,48 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
                 dialog.addMode(instance.busInterface->getInterfaceMode());
                 dialog.setBusInterfaces(instance.srcComponent, instance.busInterface, getEditedComponent(), 
                     getLibraryInterface());
-                if (dialog.exec() == QDialog::Rejected)
-                {                   
-                    continue;
+                if (dialog.exec() == QDialog::Accepted)
+                {                 
+                    QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(copyBusIf->name()));
+
+                    copyBusIf->getPortMaps()->append(dialog.getPortMaps());
+
+                    // Create a busPort with the copied bus interface.
+                    port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), copyBusIf, 
+                        dataGroup, targetColumn);
+                    pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, getEditedComponent(), port, 
+                        targetColumn, this, dialog.getPorts(), cmd);
                 }
-                copyBusIf->setPortMaps(dialog.getPortMaps());
-                // Create a busPort with the copied bus interface.
-                port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
-                    copyBusIf, ioColumn);
-                pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
-                    getEditedComponent(), port, ioColumn, dialog.getPorts(), cmd);
+                else
+                {
+                    return;
+                }
             }
             else
             {
+                QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(copyBusIf->name()));
+
                 // Create a busPort with the copied bus interface.
-                port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), 
-                    copyBusIf, ioColumn);
-                pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, 
-                    getEditedComponent(), port, ioColumn, cmd); 
+                port = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), copyBusIf, 
+                    dataGroup, targetColumn);
+                pasteCmd = new BusInterfacePasteCommand(instance.srcComponent, getEditedComponent(), port,
+                    targetColumn, this, cmd); 
             }
 
             if (useCursorPos)
             {
-                port->setPos(contextMenuPosition());
+                port->setPos(findCursorPositionMappedToScene());
             }
             else
             {
-                port->setPos(instance.pos);
+                port->setPos(instance.position);
             }
 
             connect(port, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
             // Store the positions of other interfaces.
             QMap<BusInterfaceItem*, QPointF> oldPositions;
-            foreach (QGraphicsItem* item, ioColumn->childItems())
+            foreach (QGraphicsItem* item, targetColumn->childItems())
             {
                 if (item->type() == BusInterfaceItem::Type)
                 {
@@ -2275,7 +2371,7 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
             {
                 if (cur.key()->scenePos() != cur.value())
                 {
-                    new ItemMoveCommand(cur.key(), cur.value(), ioColumn, pasteCmd);
+                    new ItemMoveCommand(cur.key(), cur.value(), targetColumn, pasteCmd);
                 }
                 ++cur;
             }  
@@ -2284,78 +2380,24 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::pasteInstances()
+// Function: HWDesignDiagram::createComponentPasteCommand()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::pasteInstances(ComponentCollectionCopyData const& collection,
-                                     GraphicsColumn* column, QUndoCommand* cmd, bool useCursorPos)
+void HWDesignDiagram::createComponentPasteCommand(ComponentCollectionCopyData const& collection, GraphicsColumn* column,
+    QUndoCommand* parentCommand, bool useCursorPos)
 {
     foreach (ComponentInstanceCopyData const& instance, collection.instances)
     {
-        // Create unique name for the component instance.
-        QString instanceName = createInstanceName(instance.instanceName);
-
-        // Take a copy of the component in case of a draft.
-        QSharedPointer<Component> component = instance.component;
-
-        if (!component->getVlnv()->isValid())
-        {
-            component = QSharedPointer<Component>(new Component(*instance.component));
-        }
-
-        HWComponentItem* comp = new HWComponentItem(getLibraryInterface(),
-                                                    component,
-                                                    instanceName,
-                                                    instance.displayName,
-                                                    instance.description,
-                                                    QString(),
-                                                    instance.configurableElements,
-                                                    instance.adHocVisibilities);
-
+        QPointF position;
         if (useCursorPos)
         {
-            comp->setPos(contextMenuPosition());
+            position = findCursorPositionMappedToScene();
         }
         else
         {
-            comp->setPos(instance.pos);
+            position = instance.instance->getPosition();
         }
 
-        comp->setBusInterfacePositions(instance.busInterfacePositions, false);
-        comp->setAdHocPortPositions(instance.adHocPortPositions);
-
-        if (instance.isDraft)
-        {
-            comp->setDraft();
-        }
-
-        GraphicsColumn* compColumn = column;
-
-        // Check if the column does not accept the given component.
-        if (!column->isItemAllowed(comp))
-        {
-            compColumn = 0;
-
-            // Find the first column that accepts it.
-            foreach (GraphicsColumn* otherColumn, getLayout()->getColumns())
-            {
-                if (otherColumn->isItemAllowed(comp))
-                {
-                    compColumn = otherColumn;
-                    break;
-                }
-            }
-        }
-
-        if (compColumn != 0)
-        {
-            ItemAddCommand* childCmd = new ItemAddCommand(compColumn, comp, cmd);
-
-            connect(childCmd, SIGNAL(componentInstantiated(ComponentItem*)),
-                this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-            connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-                this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-            childCmd->redo();
-        }
+        new ComponentInstancePasteCommand(instance.component, instance.instance, position, column, this,
+            parentCommand);
     }
 }

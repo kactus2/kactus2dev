@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 4.4.2011
- *      Author: Antti Kamppi
- * 		filename: parameterseditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: parameterseditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 04.04.2011
+//
+// Description:
+// The editor to add/remove/edit parameters.
+//-----------------------------------------------------------------------------
 
 #include "parameterseditor.h"
 
@@ -18,7 +22,7 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -28,7 +32,10 @@
 // Function: ParametersEditor::ParametersEditor()
 //-----------------------------------------------------------------------------
 ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ParameterValidator2014> validator,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget* parent): 
 ItemEditor(component, handler, parent),
 view_(0),
@@ -40,9 +47,7 @@ model_(0)
 
     view_ = new ColumnFreezableTable(1, parametersView, this);
 
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-
-    model_ = new ParametersModel(component->getParameters(), component->getChoices(), expressionParser,
+    model_ = new ParametersModel(component->getParameters(), component->getChoices(), validator, expressionParser,
         parameterFinder, expressionFormatter, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
@@ -51,12 +56,11 @@ model_(0)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(componentParametersModel);
 
-	connect(model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+        this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
@@ -65,7 +69,7 @@ model_(0)
     connect(view_, SIGNAL(removeItem(const QModelIndex&)),
         model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/parameterList.csv").arg(compPath);
 
     ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
@@ -128,27 +132,11 @@ ParametersEditor::~ParametersEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParametersEditor::isValid()
-//-----------------------------------------------------------------------------
-bool ParametersEditor::isValid() const
-{
-	return model_->isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParametersEditor::refresh()
 //-----------------------------------------------------------------------------
 void ParametersEditor::refresh()
 {
     view_->update();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParametersEditor::setComponent()
-//-----------------------------------------------------------------------------
-void ParametersEditor::setComponent(QSharedPointer<Component> component)
-{
-    model_->setParameters(component->getParameters());
 }
 
 //-----------------------------------------------------------------------------

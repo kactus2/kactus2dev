@@ -15,11 +15,11 @@
 #include "SystemComponentItem.h"
 
 #include <common/graphicsItems/ComponentItem.h>
-#include <common/graphicsItems/GraphicsItemTypes.h>
 
-class SystemColumn;
 class IGraphicsItemStack;
 class HWMappingItem;
+class SWInstance;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing SW components.
@@ -32,15 +32,18 @@ public:
     enum { Type = GFX_TYPE_SW_COMPONENT_ITEM };
 
     /*!
-     *  Constructor.
+     *  The constructor.
+     *
+     *      @param [in] libInterface                Library interface.
+     *      @param [in] component                   The instantiated component.
+     *      @param [in] instanceName                The instance name.
+     *      @param [in] displayName                 The instance display name.
+     *      @param [in] description                 The instance description.
+     *      @param [in] uuid                        The instance id.
+     *      @param [in] configurableElementValues   The configurable element values.
      */
-    SWComponentItem(LibraryInterface* libInterface,
-               QSharedPointer<Component> component,
-               QString const& instanceName,
-               QString const& displayName = QString(),
-               QString const& description = QString(),
-					QString const& uuid = QString(),
-               QMap<QString, QString> const& configurableElementValues = QMap<QString, QString>());
+	SWComponentItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
+		QSharedPointer<SWInstance> instance);
 
     /*!
      *  Destructor.
@@ -74,7 +77,7 @@ public:
     /*!
      *  Marks the component as a packetized component.
      */
-    virtual void setPacketized();
+    virtual void setPackaged();
 
     /*!
      *  Marks the component as a draft component.

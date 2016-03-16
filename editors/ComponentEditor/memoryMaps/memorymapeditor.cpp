@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.8.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: Component.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.08.2012
+//
+// Description:
+// The editor to edit the address blocks of a single memory map.
+//-----------------------------------------------------------------------------
 
 #include "memorymapeditor.h"
 
@@ -20,21 +24,24 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapEditor::MemoryMapEditor()
 //-----------------------------------------------------------------------------
 MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<AbstractMemoryMap> memoryRemap,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, 
-    QSharedPointer<ExpressionParser> expressionParser,
-    QWidget* parent):
+                                 QSharedPointer<MemoryMapBase> memoryRemap,
+                                 QSharedPointer<ParameterFinder> parameterFinder,
+                                 QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                 QSharedPointer<ExpressionParser> expressionParser,
+                                 QSharedPointer<AddressBlockValidator> addressBlockValidator,
+                                 QString const& addressUnitBits, QWidget* parent /* = 0 */):
 QGroupBox(tr("Address blocks summary"), parent),
 view_(new EditableTableView(this)),
-model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser, parameterFinder,
-    expressionFormatter, this))
+model_(new MemoryMapModel(memoryRemap, expressionParser, parameterFinder, expressionFormatter,
+       addressBlockValidator, addressUnitBits, this))
 {
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
@@ -54,7 +61,7 @@ model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser
 	view_->setModel(proxy);
 
 	//! \brief Enable import/export csv file
-    const QString compPath = handler->getDirectoryPath(*component->getVlnv());
+    const QString compPath = handler->getDirectoryPath(component->getVlnv());
 	QString defPath = QString("%1/addrBlockList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
@@ -82,6 +89,9 @@ model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
+        model_, SLOT(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,14 +99,6 @@ model_(new MemoryMapModel(memoryRemap, component->getChoices(), expressionParser
 //-----------------------------------------------------------------------------
 MemoryMapEditor::~MemoryMapEditor()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapEditor::isValid()
-//-----------------------------------------------------------------------------
-bool MemoryMapEditor::isValid() const
-{
-	return model_->isValid();
 }
 
 //-----------------------------------------------------------------------------

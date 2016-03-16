@@ -10,9 +10,10 @@
 //-----------------------------------------------------------------------------
 
 #include "ApiFunctionParameterDelegate.h"
+#include "ApiFunctionColumns.h"
 
-#include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -61,89 +62,84 @@ void ApiFunctionParameterDelegate::updateDataTypes(QStringList const& dataTypes)
 QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
                                                     QModelIndex const& index) const
 {
-    switch (index.column())
+    if (index.column() == ApiFunctionColumns::API_FUNC_PARAM_COL_NAME ||
+        index.column() == ApiFunctionColumns::API_FUNC_PARAM_COL_DESC)
     {
-    case API_FUNC_PARAM_COL_NAME:
-    case API_FUNC_PARAM_COL_DESC:
+        QLineEdit* lineEditor = new QLineEdit(parent);
+        connect(lineEditor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return lineEditor;
+    }
+
+    else if (index.column() == ApiFunctionColumns::API_FUNC_PARAM_COL_TYPE)
+    {
+        QComboBox* box = new QComboBox(parent);
+        box->setEditable(true);
+        box->setInsertPolicy(QComboBox::InsertAlphabetically);
+
+        box->addItems(getDataTypesList());
+        return box;
+    }
+
+    else if (index.column() == ApiFunctionColumns::API_FUNC_PARAM_COM_DIRECTION)
+    {
+        QComboBox* box = new QComboBox(parent);
+        box->addItem(tr("any"));
+        box->addItem(tr("in"));
+        box->addItem(tr("out"));
+        box->addItem(tr("inout"));
+
+        return box;
+    }
+
+    else if (index.column() == ApiFunctionColumns::API_FUNC_PARAM_COM_TRANSFER_TYPE)
+    {
+        QComboBox* box = new QComboBox(parent);
+        box->addItem("any");
+
+        // Fetch allowed transfer types from the linked COM definition.
+        if (comDefinition_ != 0)
         {
-            QLineEdit* line = new QLineEdit(parent);
-            connect(line, SIGNAL(editingFinished()),
-                this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-            return line;
+            box->addItems(*comDefinition_->getTransferTypes());
         }
 
-    case API_FUNC_PARAM_COL_TYPE:
+        return box;
+    }
+
+    else if (index.column() == ApiFunctionColumns::API_FUNC_PARAM_CONTENT_SOURCE)
+    {
+        QComboBox* box = new QComboBox(parent);
+
+        // Fetch content sources from a COM definition properties.
+        box->addItem("");
+        box->addItem("Name");
+
+        if (comDefinition_ != 0)
         {
-            QComboBox* box = new QComboBox(parent);
-            box->setEditable(true);
-            box->setInsertPolicy(QComboBox::InsertAlphabetically);
-
-            box->addItems(getDataTypesList());
-            return box;
-        }
-
-    case API_FUNC_PARAM_COM_DIRECTION:
-        {
-            QComboBox* box = new QComboBox(parent);
-            box->addItem(tr("any"));
-            box->addItem(tr("in"));
-            box->addItem(tr("out"));
-            box->addItem(tr("inout"));
-
-            return box;
-        }
-
-    case API_FUNC_PARAM_COM_TRANSFER_TYPE:
-        {
-            QComboBox* box = new QComboBox(parent);
-
-            box->addItem("any");
-
-            // Fetch allowed transfer types from the linked COM definition.
-            if (comDefinition_ != 0)
+            foreach (QSharedPointer<ComProperty const> property, *comDefinition_->getProperties())
             {
-                box->addItems(comDefinition_->getTransferTypes());
+                box->addItem(property->name());
             }
-
-            return box;
         }
 
-    case API_FUNC_PARAM_CONTENT_SOURCE:
+        return box;
+    }
+
+    else if (index.column() == ApiFunctionColumns::API_FUNC_PARAM_DEPENDENT_PARAM)
+    {
+        QComboBox* box = new QComboBox(parent);
+        box->addItem("no");
+
+        for (int i = 0; i < index.row(); ++i)
         {
-            QComboBox* box = new QComboBox(parent);
-
-            // Fetch content sources from a COM definition properties.
-            box->addItem("");
-            box->addItem("Name");
-
-            if (comDefinition_ != 0)
-            {
-                foreach (QSharedPointer<ComProperty const> property, comDefinition_->getProperties())
-                {
-                    box->addItem(property->getName());
-                }
-            }
-
-            return box;
+            box->addItem(QString::number(i + 1));
         }
 
-    case API_FUNC_PARAM_DEPENDENT_PARAM:
-        {
-            QComboBox* box = new QComboBox(parent);
-            box->addItem("no");
-            
-            for (int i = 0; i < index.row(); ++i)
-            {
-                box->addItem(QString::number(i + 1));
-            }
+        return box;
+    }
 
-            return box;
-        }
-
-    default:
-        {
-            return QStyledItemDelegate::createEditor(parent, option, index);
-        }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -152,38 +148,32 @@ QWidget* ApiFunctionParameterDelegate::createEditor(QWidget* parent, QStyleOptio
 //-----------------------------------------------------------------------------
 void ApiFunctionParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    switch (index.column())
+    if (index.column() == ApiFunctionColumns::API_FUNC_PARAM_COL_TYPE ||
+        index.column() == ApiFunctionColumns::API_FUNC_PARAM_COM_DIRECTION ||
+        index.column() == ApiFunctionColumns::API_FUNC_PARAM_COM_TRANSFER_TYPE ||
+        index.column() == ApiFunctionColumns::API_FUNC_PARAM_CONTENT_SOURCE ||
+        index.column() == ApiFunctionColumns::API_FUNC_PARAM_DEPENDENT_PARAM)  
     {
-    case API_FUNC_PARAM_COL_TYPE:
-    case API_FUNC_PARAM_COM_DIRECTION:
-    case API_FUNC_PARAM_COM_TRANSFER_TYPE:
-    case API_FUNC_PARAM_CONTENT_SOURCE:
-    case API_FUNC_PARAM_DEPENDENT_PARAM:   
-        {
-            QComboBox* box = qobject_cast<QComboBox*>(editor);
-            Q_ASSERT_X(box, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QComboBox");
+        QComboBox* box = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT_X(box, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QComboBox");
 
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            box->setCurrentIndex(box->findText(text));
-            return;
-        }
+        QString text = index.model()->data(index, Qt::DisplayRole).toString();
+        box->setCurrentIndex(box->findText(text));
+    }
 
-    case API_FUNC_PARAM_COL_NAME:
-    case API_FUNC_PARAM_COL_DESC:
-        {
-            QLineEdit* line = qobject_cast<QLineEdit*>(editor);
-            Q_ASSERT_X(line, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QLineEdit");
+    else if (index.column() == ApiFunctionColumns::API_FUNC_PARAM_COL_NAME ||
+        index.column() ==  ApiFunctionColumns::API_FUNC_PARAM_COL_DESC)
+    {
+        QLineEdit* line = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT_X(line, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QLineEdit");
 
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            line->setText(text);
-            return;
-        }
+        QString text = index.model()->data(index, Qt::DisplayRole).toString();
+        line->setText(text);
+    }
 
-    default:
-        {
-            QStyledItemDelegate::setEditorData(editor, index);
-            return;
-        }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
     }
 }
 
@@ -192,38 +182,32 @@ void ApiFunctionParameterDelegate::setEditorData(QWidget* editor, QModelIndex co
 //-----------------------------------------------------------------------------
 void ApiFunctionParameterDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
-    switch (index.column())
+    if (index.column() == ApiFunctionColumns::API_FUNC_PARAM_COL_TYPE ||
+        index.column() == ApiFunctionColumns::API_FUNC_PARAM_COM_DIRECTION ||
+        index.column() == ApiFunctionColumns::API_FUNC_PARAM_COM_TRANSFER_TYPE ||
+        index.column() == ApiFunctionColumns::API_FUNC_PARAM_CONTENT_SOURCE ||
+        index.column() == ApiFunctionColumns::API_FUNC_PARAM_DEPENDENT_PARAM)  
     {
-    case API_FUNC_PARAM_COL_TYPE:
-    case API_FUNC_PARAM_COM_DIRECTION:
-    case API_FUNC_PARAM_COM_TRANSFER_TYPE:
-    case API_FUNC_PARAM_CONTENT_SOURCE:
-    case API_FUNC_PARAM_DEPENDENT_PARAM:
-        {
-            QComboBox* box = qobject_cast<QComboBox*>(editor);
-            Q_ASSERT_X(box, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QComboBox");
+        QComboBox* box = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT_X(box, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QComboBox");
 
-            QString text = box->currentText();
-            model->setData(index, text, Qt::EditRole);
-            return;
-        }
+        QString text = box->currentText();
+        model->setData(index, text, Qt::EditRole);
+    }
 
-    case API_FUNC_PARAM_COL_NAME:
-    case API_FUNC_PARAM_COL_DESC:
-        {
-            QLineEdit* line = qobject_cast<QLineEdit*>(editor);
-            Q_ASSERT_X(line, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QLineEdit");
+    else if (index.column() == ApiFunctionColumns::API_FUNC_PARAM_COL_NAME ||
+        index.column() ==  ApiFunctionColumns::API_FUNC_PARAM_COL_DESC)
+    {
+        QLineEdit* line = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT_X(line, "ApiFunctionParameterDelegate::setEditorData", "Type conversion failed for QLineEdit");
 
-            QString text = line->text();
-            model->setData(index, text, Qt::EditRole);
-            return;
-        }
+        QString text = line->text();
+        model->setData(index, text, Qt::EditRole);
+    }
 
-    default:
-        {
-            QStyledItemDelegate::setModelData(editor, model, index);
-            return;
-        }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
     }
 }
 

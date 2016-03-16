@@ -18,12 +18,13 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/Component/View.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QFileInfo>
 
@@ -37,7 +38,7 @@ HWDesignWidgetMock::HWDesignWidgetMock(LibraryInterface *lh, QWidget* parent)
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
 		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW | ADDRESS_WINDOW | NOTES_WINDOW);
 
-    setDiagram(new HWDesignDiagram(lh, *getGenericEditProvider(), this));
+    setDiagram(new HWDesignDiagram(lh, getEditProvider(), this));
     getDiagram()->setProtection(false);
     getDiagram()->setMode(MODE_SELECT);
     
@@ -66,8 +67,7 @@ bool HWDesignWidgetMock::setDesign(VLNV const& vlnv, QString const& viewName)
 		if (vlnv.isValid() && vlnv.getType() == VLNV::COMPONENT) {
 
 			// create model 
-			QSharedPointer<LibraryComponent> libComponent = getLibraryInterface()->getModel(vlnv);
-            QSharedPointer<Component> comp = libComponent.staticCast<Component>();
+            QSharedPointer<Component> comp = getLibraryInterface()->getModel(vlnv).staticCast<Component>();
 
 			if (comp == 0)
             {
@@ -86,8 +86,7 @@ bool HWDesignWidgetMock::setDesign(VLNV const& vlnv, QString const& viewName)
 		Q_ASSERT(getLibraryInterface()->contains(vlnv));
 		Q_ASSERT(getLibraryInterface()->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-		QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(vlnv);
-		QSharedPointer<Component> comp = libComp.staticCast<Component>();
+		QSharedPointer<Component> comp = getLibraryInterface()->getModel(vlnv).staticCast<Component>();
 
 		// get the directory path where the component's xml file is located
 		const QString xmlPath = getLibraryInterface()->getPath(vlnv);
@@ -125,9 +124,18 @@ bool HWDesignWidgetMock::setDesign(VLNV const& vlnv, QString const& viewName)
 //-----------------------------------------------------------------------------
 bool HWDesignWidgetMock::setDesign(QSharedPointer<Component> comp, const QString& viewName)
 {
-    View* view = comp->findView(viewName);
+    QSharedPointer<View> targetView;    
+    foreach (QSharedPointer<View> view, *comp->getViews())
+    {
+        if (view->name() == viewName)
+        {
+            targetView = view;
+        }
+    }
 
-    if (!view || !view->isHierarchical()) {
+
+    if (!targetView || !targetView->isHierarchical())
+    {
         return false;
     }
 
@@ -138,7 +146,7 @@ bool HWDesignWidgetMock::setDesign(QSharedPointer<Component> comp, const QString
 
     if (!designVLNV.isValid())
     {
-        emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(comp->getVlnv()->getName()));
+        emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(comp->getVlnv().getName()));
         return false;
     }
 
@@ -148,28 +156,25 @@ bool HWDesignWidgetMock::setDesign(QSharedPointer<Component> comp, const QString
     // if the component contains a direct reference to a design
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
-        design = libComp.staticCast<Design>();
+        design = getLibraryInterface()->getModel(designVLNV).staticCast<Design>();
     }
     // if component had reference to a design configuration
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);
-        designConf = libComp.staticCast<DesignConfiguration>();
+        designConf = getLibraryInterface()->getModel(designVLNV).staticCast<DesignConfiguration>();
 
         designVLNV = designConf->getDesignRef();
 
         if (designVLNV.isValid())
         {
-            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
-            design = libComp.staticCast<Design>();
+            design = getLibraryInterface()->getModel(designVLNV).staticCast<Design>();
         }
 
         // if design configuration did not contain a reference to a design.
         if (!design)
         {
             emit errorMessage(tr("Component %1 did not contain a hierarchical view").arg(
-                comp->getVlnv()->getName()));
+                comp->getVlnv().getName()));
             return false;;
         }
     }
@@ -211,10 +216,10 @@ QSharedPointer<Component> HWDesignWidgetMock::createEmptyDesign(VLNV const& prev
 
 	QSharedPointer<Component> newComponent;
 	
-	if (getLibraryInterface()->contains(prevlnv)) {
+	if (getLibraryInterface()->contains(prevlnv))
+    {
 		// find the component
-		QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(prevlnv);
-		newComponent = libComp.staticCast<Component>();
+		newComponent = getLibraryInterface()->getModel(prevlnv).staticCast<Component>();
 
 		Q_ASSERT_X(newComponent, "HWDesignWidgetMock::createEmptyDesign",
 			"The selected library item has to be component");
@@ -231,10 +236,9 @@ QSharedPointer<Component> HWDesignWidgetMock::createEmptyDesign(VLNV const& prev
     return newComponent;
 }
 
-void HWDesignWidgetMock::createDesignForComponent(QSharedPointer<Component> component,
-											const QString& dirPath)
+void HWDesignWidgetMock::createDesignForComponent(QSharedPointer<Component> component, const QString& dirPath)
 {
-	VLNV vlnv = *component->getVlnv();
+	VLNV vlnv = component->getVlnv();
 
 	// create a unique vlnv for the design
 	VLNV designVLNV(VLNV::DESIGN, vlnv.getVendor(), vlnv.getLibrary(),
@@ -262,12 +266,15 @@ void HWDesignWidgetMock::createDesignForComponent(QSharedPointer<Component> comp
 	QString viewName = tr("structural");
 
 	// and a hierarchical view for it
-	QSharedPointer<Model> model = component->getModel();
-	Q_ASSERT(model);
-	View *hierView = new View(viewName);
-	hierView->setHierarchyRef(desConfVLNV);
+	QSharedPointer<View> hierView(new View(viewName));
+    hierView->setDesignConfigurationInstantiationRef("config");
 	hierView->addEnvIdentifier("");
-	model->addView(hierView);
+	component->getViews()->append(hierView);
+
+    QSharedPointer<DesignConfigurationInstantiation> configurationInstantiation(new 
+        DesignConfigurationInstantiation("config"));
+    configurationInstantiation->setDesignConfigurationReference(
+        QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(desConfVLNV)));
 
 	// create the design configuration
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
@@ -319,14 +326,6 @@ unsigned int HWDesignWidgetMock::getSupportedDrawModes() const
     {
         return (MODE_SELECT | MODE_CONNECT | MODE_INTERFACE | MODE_DRAFT | MODE_TOGGLE_OFFPAGE | MODE_LABEL);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignWidgetMock::createDesign()
-//-----------------------------------------------------------------------------
-QSharedPointer<Design> HWDesignWidgetMock::createDesign( const VLNV& vlnv )
-{
-	return getDiagram()->createDesign(vlnv);
 }
 
 //-----------------------------------------------------------------------------

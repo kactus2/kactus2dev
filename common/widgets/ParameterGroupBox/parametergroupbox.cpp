@@ -25,7 +25,7 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
@@ -34,7 +34,7 @@
 // Function: ParameterGroupBox::ParameterGroupBox()
 //-----------------------------------------------------------------------------
 ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
-                                     QSharedPointer<Component> component,
+                                     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
                                      QSharedPointer<ParameterFinder> parameterFinder,
                                      QSharedPointer<ExpressionFormatter> expressionFormatter,
 									 QWidget *parent):
@@ -50,7 +50,11 @@ model_(0)
     view_ = new ColumnFreezableTable(1, parametersView, this);
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-    model_ = new ParametersModel(parameters, component->getChoices(), expressionParser, parameterFinder, 
+
+    QSharedPointer<ParameterValidator2014> validator(new ParameterValidator2014(expressionParser, 
+        choices));
+
+    model_ = new ParametersModel(parameters, choices, validator, expressionParser, parameterFinder, 
         expressionFormatter, this);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -83,7 +87,7 @@ model_(0)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-    view_->setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+    view_->setDelegate(new ParameterDelegate(choices, parameterCompleter, parameterFinder,
         expressionFormatter, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), 
@@ -117,22 +121,6 @@ model_(0)
 ParameterGroupBox::~ParameterGroupBox()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterGroupBox::isValid()
-//-----------------------------------------------------------------------------
-bool ParameterGroupBox::isValid() const
-{
-	return model_->isValid();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterGroupBox::isValid()
-//-----------------------------------------------------------------------------
-bool ParameterGroupBox::isValid(QStringList& errorList, const QString& parentIdentifier) const
-{
-    return model_->isValid(errorList, parentIdentifier);
 }
 
 //-----------------------------------------------------------------------------

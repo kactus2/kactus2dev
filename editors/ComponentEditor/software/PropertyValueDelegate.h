@@ -43,7 +43,7 @@ public:
      *
      *      @param [in] properties The list of allowed properties.
      */
-    void setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties);
+    void setAllowedProperties(QList< QSharedPointer<ComProperty> > properties);
 
 	/*!
      *  Creates a new editor for the given item.
@@ -90,9 +90,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The list of allowed properties.
     //! The allowed properties.
-    QList< QSharedPointer<ComProperty> > const* m_allowedProperties;
+    QList< QSharedPointer<ComProperty> > allowedProperties_;
 };
 
 //-----------------------------------------------------------------------------

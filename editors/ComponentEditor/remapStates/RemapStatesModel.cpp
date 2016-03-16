@@ -11,14 +11,17 @@
 
 #include "RemapStatesModel.h"
 
+#include <IPXACTmodels/Component/RemapState.h>
+
 #include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: RemapStatesModel::RemapStatesModel()
 //-----------------------------------------------------------------------------
-RemapStatesModel::RemapStatesModel(QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,QObject* parent):
+RemapStatesModel::RemapStatesModel(QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
+    QObject* parent):
 QAbstractTableModel(parent),
-remapStates_(remapStates)
+    remapStates_(remapStates)
 {
 
 }
@@ -112,23 +115,23 @@ QVariant RemapStatesModel::data(const QModelIndex& index, int role /* = Qt::Disp
         return QVariant();
     }
 
-    if (Qt::DisplayRole == role)
+    if (role == Qt::DisplayRole)
     {
         if (index.column() == RemapStatesModel::NAME_COLUMN)
         {
-            return remapStates_->at(index.row())->getName();
+            return remapStates_->at(index.row())->name();
         }
         else if (index.column() == RemapStatesModel::DISPLAY_NAME_COLUMN)
         {
-            return remapStates_->at(index.row())->getDisplayName();
+            return remapStates_->at(index.row())->displayName();
         }
         else if (index.column() == RemapStatesModel::DESCRIPTION_COLUMN)
         {
-            return remapStates_->at(index.row())->getDescription();
+            return remapStates_->at(index.row())->description();
         }
     }
 
-    else if (Qt::BackgroundRole == role)
+    else if (role == Qt::BackgroundRole)
     {
         if (index.column() == RemapStatesModel::NAME_COLUMN)
         {
@@ -146,48 +149,32 @@ QVariant RemapStatesModel::data(const QModelIndex& index, int role /* = Qt::Disp
 //-----------------------------------------------------------------------------
 // Function: RemapStatesModel::setData()
 //-----------------------------------------------------------------------------
-bool RemapStatesModel::setData(const QModelIndex& index, const QVariant& value, int role /* = Qt::EditRole */)
+bool RemapStatesModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= remapStates_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= remapStates_->size() || role != Qt::EditRole)
     {
         return false;
     }
 
-    if (Qt::EditRole == role)
+    if (index.column() == RemapStatesModel::NAME_COLUMN)
     {
-        if (index.column() == RemapStatesModel::NAME_COLUMN)
-        {
-            remapStates_->at(index.row())->setName(value.toString());
-        }
-        else if (index.column() == RemapStatesModel::DISPLAY_NAME_COLUMN)
-        {
-            remapStates_->at(index.row())->setDisplayName(value.toString());
-        }
-        else if (index.column() == RemapStatesModel::DESCRIPTION_COLUMN)
-        {
-            remapStates_->at(index.row())->setDescription(value.toString());
-        }
-        else
-        {
-            return false;
-        }
-
-        emit dataChanged(index, index);
-        emit contentChanged();
-        return true;
+        remapStates_->at(index.row())->setName(value.toString());
     }
-
+    else if (index.column() == RemapStatesModel::DISPLAY_NAME_COLUMN)
+    {
+        remapStates_->at(index.row())->setDisplayName(value.toString());
+    }
+    else if (index.column() == RemapStatesModel::DESCRIPTION_COLUMN)
+    {
+        remapStates_->at(index.row())->setDescription(value.toString());
+    }
     else
     {
         return false;
     }
-}
 
-//-----------------------------------------------------------------------------
-// Function: RemapStatesModel::isValid()
-//-----------------------------------------------------------------------------
-bool RemapStatesModel::isValid() const
-{
+    emit dataChanged(index, index);
+    emit contentChanged();
     return true;
 }
 

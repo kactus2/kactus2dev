@@ -23,6 +23,8 @@
 
 class PluginManager;
 class LibraryInterface;
+class Component;
+class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! The editor to add/remove/edit file sets of a component.
@@ -43,18 +45,14 @@ public:
 	 *
 	 *      @param [in] component           The component being edited.
      *      @param [in] libraryInterface    The library interface.
+     *      @param [in] parameterFinder     Finder used to identify parameters.
      *      @param [in] pluginMgr           The plugin manager.    
 	 */
-	FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface, PluginManager& pluginMgr);
+    FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface, PluginManager& pluginMgr,
+        QSharedPointer<ParameterFinder> parameterFinder);
 	
 	//! The destructor
 	~FileSetsEditor();
-
-	/*! Check for the validity of the editor
-	* 
-	*       @return True if the editor is in valid state.
-	*/
-	virtual bool isValid() const;
 
 	//! Reload the information from the model to the editor.
 	virtual void refresh();

@@ -14,8 +14,6 @@
 
 #include "AddressModel.h"
 
-#include <IPXACTmodels/component.h>
-
 #include <QWidget>
 #include <QPushButton>
 #include <QComboBox>
@@ -99,9 +97,6 @@ private:
 
     //! The component being edited.
     ComponentItem* component_;
-
-    //! The edit provider.
-    GenericEditProvider* editProvider_;
 
     //! Button for address auto-assignment.
     QPushButton* autoAssignButton_;

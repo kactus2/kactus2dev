@@ -11,7 +11,7 @@
 
 #include "ComponentDiffWidget.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <wizards/common/ComponentComparator/ComponentComparator.h>
 

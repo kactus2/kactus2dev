@@ -18,10 +18,14 @@
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ValueFormatter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
+
+#include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
+
+#include <IPXACTmodels/Component/Register.h>
 
 #include <QFormLayout>
 #include <QScrollArea>
@@ -32,23 +36,22 @@
 //-----------------------------------------------------------------------------
 SingleRegisterEditor::SingleRegisterEditor(QSharedPointer<Register> selectedRegister,
     QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, 
-    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<RegisterValidator> registerValidator,
     QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 selectedRegister_(selectedRegister),
-nameEditor_(selectedRegister->getNameGroup(), this, tr("Register name and description")),
-fieldsEditor_(new RegisterEditor(selectedRegister, component, handler, parameterFinder, expressionFormatter, this)),
+nameEditor_(selectedRegister, this, tr("Register name and description")),
+fieldsEditor_(new RegisterEditor(selectedRegister, component, handler, parameterFinder, expressionFormatter,
+              registerValidator->getFieldValidator(), this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 sizeEditor_(new ExpressionEditor(parameterFinder, this)),
 dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 volatileEditor_(),
 accessEditor_(),
-resetValueEditor_(new QLineEdit(this)),
-resetMaskEditor_(new QLineEdit(this)),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+registerValidator_(registerValidator)
 {
     offsetEditor_->setFixedHeight(20);
     sizeEditor_->setFixedHeight(20);
@@ -92,17 +95,6 @@ SingleRegisterEditor::~SingleRegisterEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleRegisterEditor::isValid()
-//-----------------------------------------------------------------------------
-bool SingleRegisterEditor::isValid() const
-{
-    bool isNameEditorValid = nameEditor_.isValid();
-    bool isRegisterValid = selectedRegister_->isValid(component()->getChoices());
-
-    return isNameEditorValid && isRegisterValid;
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleRegisterEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void SingleRegisterEditor::setupLayout()
@@ -139,9 +131,6 @@ void SingleRegisterEditor::setupLayout()
 
     connect(accessEditor_, SIGNAL(activated(QString const&)),
         this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
-
-    registerDefinitionLayout->addRow(tr("Reset value:"), resetValueEditor_);
-    registerDefinitionLayout->addRow(tr("Reset mask:"), resetMaskEditor_);
 
     QHBoxLayout* topOfPageLayout = new QHBoxLayout();
     topOfPageLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
@@ -188,22 +177,19 @@ void SingleRegisterEditor::refresh()
     offsetEditor_->setExpression(selectedRegister_->getAddressOffset());
     offsetEditor_->setToolTip(formattedValueFor(selectedRegister_->getAddressOffset()));
 
-    sizeEditor_->setExpression(selectedRegister_->getSizeExpression());
-    sizeEditor_->setToolTip(formattedValueFor(selectedRegister_->getSizeExpression()));
+    sizeEditor_->setExpression(selectedRegister_->getSize());
+    sizeEditor_->setToolTip(formattedValueFor(selectedRegister_->getSize()));
 
-    dimensionEditor_->setExpression(selectedRegister_->getDimensionExpression());
-    dimensionEditor_->setToolTip(formattedValueFor(selectedRegister_->getDimensionExpression()));
+    dimensionEditor_->setExpression(selectedRegister_->getDimension());
+    dimensionEditor_->setToolTip(formattedValueFor(selectedRegister_->getDimension()));
 
-    isPresentEditor_->setExpression(selectedRegister_->getIsPresentExpression());
-    isPresentEditor_->setToolTip(formattedValueFor(selectedRegister_->getIsPresentExpression()));
+    isPresentEditor_->setExpression(selectedRegister_->getIsPresent());
+    isPresentEditor_->setToolTip(formattedValueFor(selectedRegister_->getIsPresent()));
 
     changeExpressionEditorsSignalBlockStatus(false);
 
     accessEditor_->setCurrentValue(selectedRegister_->getAccess());
-    volatileEditor_->setCurrentValue(General::BooleanValue2Bool(selectedRegister_->getVolatile(), true));
-
-    resetValueEditor_->setText(selectedRegister_->getRegisterValue());
-    resetMaskEditor_->setText(selectedRegister_->getRegisterMask());
+    volatileEditor_->setCurrentValue(selectedRegister_->getVolatile());
 }
 
 //-----------------------------------------------------------------------------
@@ -239,9 +225,6 @@ void SingleRegisterEditor::connectSignals()
     connect(sizeEditor_, SIGNAL(editingFinished()), this, SLOT(onSizeEdited()), Qt::UniqueConnection);
     connect(dimensionEditor_, SIGNAL(editingFinished()), this, SLOT(onDimensionEdited()), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
-
-    connect(resetValueEditor_, SIGNAL(editingFinished()), this, SLOT(onResetValueChanged()), Qt::UniqueConnection);
-    connect(resetMaskEditor_, SIGNAL(editingFinished()), this, SLOT(onResetMaskChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(offsetEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -308,12 +291,10 @@ void SingleRegisterEditor::onOffsetEdited()
 void SingleRegisterEditor::onSizeEdited()
 {
     sizeEditor_->finishEditingCurrentWord();
-    selectedRegister_->setSizeExpression(sizeEditor_->getExpression());
+    QString newSize = sizeEditor_->getExpression();
 
-    QString formattedSize = formattedValueFor(selectedRegister_->getSizeExpression());
-    selectedRegister_->setSize(formattedSize.toInt());
-
-    sizeEditor_->setToolTip(formattedSize);
+    selectedRegister_->setSize(newSize);
+    sizeEditor_->setToolTip(formattedValueFor(newSize));
 }
 
 //-----------------------------------------------------------------------------
@@ -322,12 +303,11 @@ void SingleRegisterEditor::onSizeEdited()
 void SingleRegisterEditor::onDimensionEdited()
 {
     dimensionEditor_->finishEditingCurrentWord();
-    selectedRegister_->setDimensionExpression(dimensionEditor_->getExpression());
 
-    QString formattedDimension = formattedValueFor(selectedRegister_->getDimensionExpression());
-    selectedRegister_->setDim(formattedDimension.toInt());
+    QString newDimension = dimensionEditor_->getExpression();
+    selectedRegister_->setDimension(newDimension);
 
-    dimensionEditor_->setToolTip(formattedDimension);
+    dimensionEditor_->setToolTip(formattedValueFor(newDimension));
 }
 
 //-----------------------------------------------------------------------------
@@ -336,10 +316,11 @@ void SingleRegisterEditor::onDimensionEdited()
 void SingleRegisterEditor::onIsPresentEdited()
 {
     isPresentEditor_->finishEditingCurrentWord();
-    selectedRegister_->setIsPresentExpression(isPresentEditor_->getExpression());
 
-    QString formattedPresence = formattedValueFor(selectedRegister_->getIsPresentExpression());
-    isPresentEditor_->setToolTip(formattedPresence);
+    QString newIsPresent = isPresentEditor_->getExpression();
+    selectedRegister_->setIsPresent(newIsPresent);
+
+    isPresentEditor_->setToolTip(formattedValueFor(newIsPresent));
 }
 
 //-----------------------------------------------------------------------------
@@ -347,13 +328,18 @@ void SingleRegisterEditor::onIsPresentEdited()
 //-----------------------------------------------------------------------------
 void SingleRegisterEditor::onVolatileSelected(QString const& newVolatileValue)
 {
-    bool registerIsVolatile = false;
-    if (newVolatileValue == "true")
+    if (newVolatileValue == QLatin1String("true"))
     {
-        registerIsVolatile = true;
+        selectedRegister_->setVolatile(true);
     }
-
-    selectedRegister_->setVolatile(General::bool2BooleanValue(registerIsVolatile));
+    else if (newVolatileValue == QLatin1String("false"))
+    {
+        selectedRegister_->setVolatile(false);
+    }
+    else
+    {
+        selectedRegister_->clearVolatile();
+    }
 
     emit contentChanged();
 }
@@ -363,34 +349,7 @@ void SingleRegisterEditor::onVolatileSelected(QString const& newVolatileValue)
 //-----------------------------------------------------------------------------
 void SingleRegisterEditor::onAccessSelected(QString const& newAccessValue)
 {
-    selectedRegister_->setAccess(General::str2Access(newAccessValue, General::ACCESS_COUNT));
-
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleRegisterEditor::onResetValueChanged()
-//-----------------------------------------------------------------------------
-void SingleRegisterEditor::onResetValueChanged()
-{
-    QString newResetValue = resetValueEditor_->text();
-    selectedRegister_->setRegisterValue(newResetValue);
-
-    if (newResetValue.isEmpty())
-    {
-        selectedRegister_->setRegisterMask("");
-        resetMaskEditor_->clear();
-    }
-
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleRegisterEditor::onResetMaskChanged()
-//-----------------------------------------------------------------------------
-void SingleRegisterEditor::onResetMaskChanged()
-{
-    selectedRegister_->setRegisterMask(resetMaskEditor_->text());
+    selectedRegister_->setAccess(AccessTypes::str2Access(newAccessValue, AccessTypes::ACCESS_COUNT));
 
     emit contentChanged();
 }

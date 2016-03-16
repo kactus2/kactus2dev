@@ -1,24 +1,23 @@
-/* 
- *  	Created on: 12.8.2011
- *      Author: Antti Kamppi
- * 		filename: configurableelementeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: configurableelementeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.08.2011
+//
+// Description:
+// Editor for configurable elements of a component instance.
+//-----------------------------------------------------------------------------
 
 #include "configurableelementeditor.h"
-#include "configurableelementdelegate.h"
 #include "ConfigurableElementsColumns.h"
 #include "ConfigurableElementsFilter.h"
 
-#include <IPXACTmodels/component.h>
-
 #include <designEditors/HWDesign/HWComponentItem.h>
 
-#include <QIcon>
-#include <QHBoxLayout>
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QVBoxLayout>
-#include <QSharedPointer>
-#include <QAbstractItemDelegate>
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementEditor::ConfigurableElementEditor()
@@ -64,12 +63,9 @@ delegate_()
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addWidget(&view_);
 
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
         filter, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-    
     connect(filter, SIGNAL(removeItem(const QModelIndex&)),
         &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 }
@@ -85,10 +81,11 @@ ConfigurableElementEditor::~ConfigurableElementEditor()
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementEditor::setComponent()
 //-----------------------------------------------------------------------------
-void ConfigurableElementEditor::setComponent(ComponentItem* component) 
+void ConfigurableElementEditor::setComponent(QSharedPointer<Component> component,
+    QSharedPointer<ComponentInstance> instance, QSharedPointer<IEditProvider> editProvider)
 {
-	model_.setComponent(component);
-    delegate_->setChoices(component->componentModel()->getChoices());
+    model_.setComponent(component, instance, editProvider);
+    delegate_->setChoices(component->getChoices());
 
     view_.expandAll();
 }

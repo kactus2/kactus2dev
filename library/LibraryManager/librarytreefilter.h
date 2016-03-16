@@ -27,8 +27,8 @@ public:
 
     /*! The constructor
      *
-     *      @param [in]  handler    Pointer to the instance that manages the library.
-     *      @param [in]  parent     Pointer to the owner of this widget.
+     *      @param [in]  handler    The instance that manages the library.
+     *      @param [in]  parent     The owner of this widget.
      *
     */
     LibraryTreeFilter(LibraryInterface* handler, QObject *parent = 0);
@@ -40,10 +40,10 @@ protected:
 
 	/*! Checks if the row should be shown in the view or not.
 	 *
-	 *      @param [in]  sourceRow Specifies the row number of the item
-	 *      @param [in]  sourceParent Specifies the parent of the item.
+	 *      @param [in]  sourceRow      Specifies the row number of the item
+	 *      @param [in]  sourceParent   Specifies the parent of the item.
 	 *
-	 * \return True if item is shown.
+	 *      @return True if item is shown, otherwise false.
 	*/
 	virtual bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const;
 
@@ -55,9 +55,8 @@ private:
 	//! No assignment
 	LibraryTreeFilter& operator=(const LibraryTreeFilter& other);
 
-	//! Pointer to the instance that manages the library.
+	//! The instance that manages the library.
 	LibraryInterface* handler_;
-
 };
 
 #endif // LIBRARYTREEFILTER_H

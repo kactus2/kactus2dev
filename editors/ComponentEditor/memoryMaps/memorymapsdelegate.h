@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.8.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapsdelegate.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapsdelegate.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.08.2012
+//
+// Description:
+// The delegate to provide editor for adding/removing/editing the memory maps of a component.
+//-----------------------------------------------------------------------------
 
 #ifndef MEMORYMAPSDELEGATE_H
 #define MEMORYMAPSDELEGATE_H
@@ -27,7 +31,7 @@ public:
 	 */
 	MemoryMapsDelegate(QStringList remapStateNames, QObject *parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~MemoryMapsDelegate();
 
     /*!
@@ -39,8 +43,8 @@ public:
      *
      *      @return Pointer to the editor to be used to edit the item.
 	 */
-	virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option,
-        const QModelIndex& index) const;
+	virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index)
+        const;
 
     /*!
 	 *  Set the data for the editor.
@@ -66,6 +70,13 @@ public:
      */
     void updateRemapStateNames(QStringList newRemapStateNames);
 
+    /*!
+     *  Paint the memory maps.
+     *
+     *      @param [in] painter     The used painter.
+     *      @param [in] option      Available style options.
+     *      @param [in] index       The current index.
+     */
     virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
 
 protected:
@@ -82,10 +93,10 @@ private slots:
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	MemoryMapsDelegate(const MemoryMapsDelegate& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	MemoryMapsDelegate& operator=(const MemoryMapsDelegate& other);
 
 

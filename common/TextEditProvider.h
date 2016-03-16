@@ -35,6 +35,18 @@ public:
     ~TextEditProvider();
 
     /*!
+     *  Stores a new command to the edit stack.
+     *
+     *      @param [in] command   The command to add.
+     */   
+    virtual void addCommand(QSharedPointer<QUndoCommand> command);
+
+    /*!
+     *  Clears the undo & redo stacks.
+     */
+    virtual void clear();
+
+    /*!
      *  Performs an undo.
      */
     virtual void undo();
@@ -58,7 +70,9 @@ private:
     // Disable copying.
     TextEditProvider(TextEditProvider const& rhs);
     TextEditProvider& operator=(TextEditProvider const& rhs);
-    
+
+
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

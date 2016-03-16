@@ -11,6 +11,8 @@
 
 #include "PortComparator.h"
 
+#include <IPXACTmodels/Component/Port.h>
+
 //-----------------------------------------------------------------------------
 // Function: PortComparator::PortComparator()
 //-----------------------------------------------------------------------------
@@ -40,8 +42,7 @@ bool PortComparator::compare(QSharedPointer<const Port> first, QSharedPointer<co
 //-----------------------------------------------------------------------------
 bool PortComparator::compareFields(QSharedPointer<const Port> first, QSharedPointer<const Port> second) const
 {
-    return first->getName() == second->getName() &&
-        first->getPortAccessType() == second->getPortAccessType() &&
+    return first->name() == second->name() &&       
         first->getTypeName() == second->getTypeName() &&
         first->getTypeDefinitions() == second->getTypeDefinitions() &&
         first->getDefaultValue() == second->getDefaultValue() &&
@@ -74,10 +75,8 @@ QList<QSharedPointer<IPXactDiff> > PortComparator::diff(QSharedPointer<const Por
 QList<QSharedPointer<IPXactDiff> > PortComparator::diffFields(QSharedPointer<const Port> reference, 
     QSharedPointer<const Port> subject) const
 {
-    QSharedPointer<IPXactDiff> portDiff(new IPXactDiff(elementType(), reference->getName()));
+    QSharedPointer<IPXactDiff> portDiff(new IPXactDiff(elementType(), reference->name()));
     portDiff->setChangeType(IPXactDiff::MODIFICATION);
-
-    portDiff->checkForChange("port access type", reference->getPortAccessType(), subject->getPortAccessType());
 
     portDiff->checkForChange("type name", reference->getTypeName(), subject->getTypeName());
     portDiff->checkForChange("type definitions", reference->getTypeDefinitions().join(", "), 
@@ -85,12 +84,11 @@ QList<QSharedPointer<IPXactDiff> > PortComparator::diffFields(QSharedPointer<con
 
     portDiff->checkForChange("default value", reference->getDefaultValue(), subject->getDefaultValue());
 
-    portDiff->checkForChange("direction", General::direction2Str(reference->getDirection()), 
-        General::direction2Str(subject->getDirection()));
+    portDiff->checkForChange("direction", DirectionTypes::direction2Str(reference->getDirection()), 
+        DirectionTypes::direction2Str(subject->getDirection()));
 
-    portDiff->checkForChange("left bound", reference->getLeftBoundExpression(), subject->getLeftBoundExpression());
-    portDiff->checkForChange("right bound", reference->getRightBoundExpression(),
-        subject->getRightBoundExpression());
+    portDiff->checkForChange("left bound", reference->getLeftBound(), subject->getLeftBound());
+    portDiff->checkForChange("right bound", reference->getRightBound(), subject->getRightBound());
 
     QList<QSharedPointer<IPXactDiff> > list;
     list.append(portDiff);

@@ -16,11 +16,13 @@
 
 #include "globalheadersavemodel.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/Interface.h>
-#include <IPXACTmodels/parameter.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/common/Parameter.h>
+
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QObject>
 #include <QSharedPointer>
@@ -89,7 +91,7 @@ private:
 	 *      @param [in] stream      The text stream to write into.
 	 *      @param [in] interface   Identifies the current interface to parse.
 	 */
-	void parseInterface(qint64 offset, QTextStream& stream, const Interface& interface);
+	void parseInterface(qint64 offset, QTextStream& stream, QSharedPointer<ActiveInterface> interface);
 
     /*!
      *  Parse the master interface.
@@ -100,7 +102,7 @@ private:
      *      @param [in] interFace   Identifies the current interface to parse.
      */
     void parseMasterInterface(qint64 offset, QSharedPointer<Component> component, QTextStream& stream,
-        const Interface& interFace);
+        QSharedPointer<ActiveInterface> interface);
 
     /*!
      *  Parse the slave interface.
@@ -111,7 +113,7 @@ private:
      *      @param [in] interFace   Identifies the current interface to parse.
      */
     void parseSlaveInterface(qint64 offset, QSharedPointer<Component> component, QTextStream& stream,
-        const Interface& interFace);
+        QSharedPointer<ActiveInterface> interface);
 
     /*!
      *  Parse the mirrored slave interface.
@@ -122,7 +124,7 @@ private:
      *      @param [in] interFace   Identifies the current interface to parse.
      */
     void parseMirroredSlaveInterface(qint64 offset, QSharedPointer<Component> component, QTextStream& stream,
-        const Interface& interFace);
+        QSharedPointer<ActiveInterface> interface);
 
     /*!
      *  Parse the mirrored master interface.
@@ -133,7 +135,7 @@ private:
      *      @param [in] interFace   Identifies the current interface to parse.
      */
     void parseMirroredMasterInterface(qint64 offset, QSharedPointer<Component> component, QTextStream& stream,
-        const Interface& interFace);
+        QSharedPointer<ActiveInterface> interface);
 
     /*!
      *  Creates the parameter finder using configurable element values of the instance.
@@ -154,7 +156,7 @@ private:
      *      @return Uuid of the instance.
      */
     QString getInstanceID(QString const& interfaceReference) const;
-
+    QList<QSharedPointer<ActiveInterface> > getConnectedInterfaces(QSharedPointer<ActiveInterface> interface);
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -169,7 +171,7 @@ private:
     QSharedPointer<DesignConfiguration> componentDesignConfig_;
 
     //! A list of interfaces that have been checked.
-    QList<Interface> operatedInterfaces_;
+    QList<QSharedPointer<ActiveInterface> > operatedInterfaces_;
 
     //! A list of save options for the writer.
     QList<GlobalHeaderSaveModel::SaveFileOptions*> saveOptions_;

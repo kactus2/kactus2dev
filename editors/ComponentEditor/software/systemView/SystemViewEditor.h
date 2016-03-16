@@ -13,7 +13,7 @@
 #define SYSTEMVIEWEDITOR_H
 
 #include <editors/ComponentEditor/itemeditor.h>
-#include <editors/ComponentEditor/views/filesetrefeditor.h>
+#include <editors/ComponentEditor/instantiations/filesetrefeditor.h>
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
@@ -33,18 +33,14 @@ public:
      *  Constructor.
      *
      *      @param [in] component    The component being edited.
-     *      @param [in] systemView		 The system view being edited.
+     *      @param [in] systemView	 The system view being edited.
      *      @param [in] libHandler   The library handler.
      *      @param [in] parent       The parent widget.
      */
-	SystemViewEditor(QSharedPointer<Component> component,
-		QSharedPointer<SystemView> systemView,
-		LibraryInterface* libHandler, 
-		QWidget *parent);
+	SystemViewEditor(QSharedPointer<Component> component, QSharedPointer<SystemView> systemView,
+		LibraryInterface* libHandler, QWidget* parent);
 
-    /*!
-     *  Destructor.
-     */
+    //! The destructor.
     virtual ~SystemViewEditor();
 
     /*!
@@ -54,24 +50,24 @@ public:
 	 */
 	bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
+	/*! Reload the information from the model to the editor.
 	*/
 	virtual void refresh();
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
 
-	//! \brief Handler for changes in hierarchy reference.
+	//! Handler for changes in hierarchy reference.
 	void onHierRefChange();
 
-	//! \brief Handler for changes in file set references.
+	//! Handler for changes in file set references.
 	void onFileSetRefChange();
 
-	//! \brief Handler for changes in HW view.
+	//! Handler for changes in HW view.
 	void onHWViewChange(const QString& viewName);
 
 private:
@@ -88,22 +84,22 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! \brief Pointer to the instance that manages the library.
+    //! Pointer to the instance that manages the library.
     LibraryInterface* libHandler_;
 
-    //! \brief Pointer to the view being edited.
+    //! Pointer to the view being edited.
     SystemView* view_;
 
-    //! \brief Editor to set the name, display name and description of the view.
+    //! Editor to set the name, display name and description of the view.
     NameGroupEditor nameEditor_;
 
     //! VLNV editor for the hierarchy reference.
     VLNVEditor* hierRefEditor_;
 
-	//! \brief Editor to select the HW view.
+	//! Editor to select the HW view.
 	 ViewSelector* HWViewRefEditor_;
 
-	 //! \brief Editor to set the file set references of the system view.
+	 //! Editor to set the file set references of the system view.
 	 FileSetRefEditor* fileSetRefEditor_;
 };
 

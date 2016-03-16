@@ -13,12 +13,11 @@
 
 #include "VHDLSyntax.h"
 
-#include <Plugins/common/HDLEquationParser.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 #include <QRegularExpression>
 
@@ -68,16 +67,17 @@ VHDLPortParser::~VHDLPortParser()
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parse()
 //-----------------------------------------------------------------------------
-void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targetComponent)
+void VHDLPortParser::import(QString const& input, QSharedPointer<Component> targetComponent,
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
-    foreach (QSharedPointer<Port> existingPort, targetComponent->getPorts())
+    foreach (QSharedPointer<Port> existingPort, *targetComponent->getPorts())
     {
-        existingPort->setDirection(General::DIRECTION_PHANTOM);
+        existingPort->setDirection(DirectionTypes::DIRECTION_PHANTOM);
     }
 
     foreach (QString portDeclaration, findPortDeclarations(input))
     {
-        createPortFromDeclaration(portDeclaration, targetComponent);
+        createPortFromDeclaration(portDeclaration, targetComponent, targetComponentInstantiation);
         if (highlighter_)
         {
             highlighter_->applyHighlight(portDeclaration, ImportColors::PORT);
@@ -96,11 +96,12 @@ void VHDLPortParser::setHighlighter(Highlighter* highlighter)
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parseLeftBound()
 //-----------------------------------------------------------------------------
-int VHDLPortParser::parseLeftBound(QString const& input, QSharedPointer<Component> ownerComponent) const
+QString VHDLPortParser::parseLeftBound(QString const& input,
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
     QString vectorBounds = parseVectorBounds(input);
 
-    int leftValue = parseLeftValue(vectorBounds, ownerComponent);
+    QString leftValue = parseLeftValue(vectorBounds, targetComponentInstantiation);
 
     return leftValue;
 }
@@ -108,11 +109,12 @@ int VHDLPortParser::parseLeftBound(QString const& input, QSharedPointer<Componen
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parseRightBound()
 //-----------------------------------------------------------------------------
-int VHDLPortParser::parseRightBound(QString const& input, QSharedPointer<Component> ownerComponent) const
+QString VHDLPortParser::parseRightBound(QString const& input,
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
     QString vectorBounds = parseVectorBounds(input);
 
-    int rightValue = parseRightValue(vectorBounds, ownerComponent);
+    QString rightValue = parseRightValue(vectorBounds, targetComponentInstantiation);
 
     return rightValue;
 }    
@@ -189,17 +191,18 @@ QStringList VHDLPortParser::portDeclarationsIn(QString const& portSectionWithout
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::createPort()
 //-----------------------------------------------------------------------------
-void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QSharedPointer<Component> targetComponent)
+void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QSharedPointer<Component> targetComponent,
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
     QStringList portNames = parsePortNames(declaration);
-    General::Direction direction =  parsePortDirection(declaration); 
+    DirectionTypes::Direction direction =  parsePortDirection(declaration); 
     QString type = parsePortType(declaration);
     QString typeDefinition;
     QString defaultValue = parseDefaultValue(declaration);
     QString description = parseDescription(declaration);
 
-    int leftBound = parseLeftBound(declaration, targetComponent);
-    int rightBound = parseRightBound(declaration, targetComponent);;
+    QString leftBound = parseLeftBound(declaration, targetComponentInstantiation);
+    QString rightBound = parseRightBound(declaration, targetComponentInstantiation);
 
     foreach(QString name, portNames)
     {   
@@ -214,7 +217,7 @@ void VHDLPortParser::createPortFromDeclaration(QString const& declaration, QShar
         {
             port = QSharedPointer<Port>(new Port());           
             port->setName(name);
-            targetComponent->addPort(port);
+            targetComponent->getPorts()->append(port);
         }
 
         port->setDirection(direction);
@@ -241,11 +244,11 @@ QStringList VHDLPortParser::parsePortNames(QString const& declaration) const
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parsePortDirection()
 //-----------------------------------------------------------------------------
-General::Direction VHDLPortParser::parsePortDirection(QString const& declaration) const
+DirectionTypes::Direction VHDLPortParser::parsePortDirection(QString const& declaration) const
 {
     QString direction = PORT_EXP.match(declaration).captured(2).toLower();
     
-    return General::str2Direction(direction, General::DIRECTION_INVALID);
+    return DirectionTypes::str2Direction(direction, DirectionTypes::DIRECTION_INVALID);
 }
 
 //-----------------------------------------------------------------------------
@@ -282,16 +285,16 @@ QString VHDLPortParser::parseDescription(QString const& declaration)
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parseLeftValue()
 //-----------------------------------------------------------------------------
-int VHDLPortParser::parseLeftValue(QString const& vectorBounds, QSharedPointer<Component> ownerComponent) const
+QString VHDLPortParser::parseLeftValue(QString const& vectorBounds,
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
-    int value = 0;
+    QString value = "";
 
     if(!vectorBounds.isEmpty() && vectorBounds.indexOf(VECTOR_BOUNDS) != -1 )
     {
         QString leftEquation = VECTOR_BOUNDS.match(vectorBounds).captured(1);
 
-        HDLEquationParser equationParser(*ownerComponent->getModelParameters());
-        value = equationParser.parse(leftEquation);
+        value = leftEquation;
     }	
 
     return value;
@@ -300,16 +303,16 @@ int VHDLPortParser::parseLeftValue(QString const& vectorBounds, QSharedPointer<C
 //-----------------------------------------------------------------------------
 // Function: VHDLPortParser::parseRightValue()
 //-----------------------------------------------------------------------------
-int VHDLPortParser::parseRightValue(QString const& vectorBounds, QSharedPointer<Component> ownerComponent) const
+QString VHDLPortParser::parseRightValue(QString const& vectorBounds,
+	QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
-    int value = 0;
+    QString value = "";
 
     if(!vectorBounds.isEmpty() && vectorBounds.indexOf(VECTOR_BOUNDS) != -1 )
     {
         QString rightEquation = VECTOR_BOUNDS.match(vectorBounds).captured(2);
 
-        HDLEquationParser equationParser(*ownerComponent->getModelParameters());
-        value = equationParser.parse(rightEquation);
+        value = rightEquation;
     }	
 
     return value;

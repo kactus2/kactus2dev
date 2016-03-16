@@ -12,17 +12,21 @@
 #include "ComponentPreviewBox.h"
 
 #include <designEditors/SystemDesign/SWComponentItem.h>
-
 #include <designEditors/HWDesign/HWComponentItem.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/librarycomponent.h>
 #include <designEditors/common/diagramgrid.h>
+
 #include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+
+#include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <QPainter>
 #include <QRectF>
+#include "IPXACTmodels/kactusExtensions/SWInstance.h"
 
-//! \brief The minimum size for the preview box
+//! The minimum size for the preview box.
 static const int MIN_BOX_HEIGHT = 120;
 
 //-----------------------------------------------------------------------------
@@ -61,15 +65,18 @@ namespace
         qreal left = int(rect.left()) - (int(rect.left()) % GridSize );
         qreal top = int(rect.top()) - (int(rect.top()) % GridSize );
 
-        for (qreal x = left; x < rect.right(); x += GridSize ) {
+        for (qreal x = left; x < rect.right(); x += GridSize )
+        {
             for (qreal y = top; y < rect.bottom(); y += GridSize )
+            {
                 painter->drawPoint(x, y);
+            }
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentPreviewBox()
+// Function: ComponentPreviewBox::ComponentPreviewBox()
 //-----------------------------------------------------------------------------
 ComponentPreviewBox::ComponentPreviewBox(LibraryInterface* lh) : lh_(lh), component_(), scene_(0)
 {
@@ -85,14 +92,14 @@ ComponentPreviewBox::ComponentPreviewBox(LibraryInterface* lh) : lh_(lh), compon
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ComponentPreviewBox()
+// Function: ComponentPreviewBox::~ComponentPreviewBox()
 //-----------------------------------------------------------------------------
 ComponentPreviewBox::~ComponentPreviewBox()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: updatePreview()
+// Function: ComponentPreviewBox::updatePreview()
 //-----------------------------------------------------------------------------
 void ComponentPreviewBox::updatePreview()
 {
@@ -100,30 +107,31 @@ void ComponentPreviewBox::updatePreview()
     delete scene_;
     scene_ = new GridScene(this);
     setScene(scene_);
-    //centerOn(0, 0);
 
     if (component_ != 0)
     {
         ComponentItem* item = 0;
 
-        switch (component_->getComponentImplementation())
+        if (component_->getImplementation() == KactusAttribute::HW)
         {
-        case KactusAttribute::HW:
-            {
-                item = new HWComponentItem(lh_, component_, component_->getVlnv()->getName());
-                break;
-            }
 
-        case KactusAttribute::SW:
-            {
-                item = new SWComponentItem(lh_, component_, component_->getVlnv()->getName());
-                break;
-            }
+            QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
+            componentInstance->setInstanceName(component_->getVlnv().getName());
+            componentInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
+                new ConfigurableVLNVReference(component_->getVlnv())));
 
-        default:
-            break;
+            item = new HWComponentItem(lh_, componentInstance, component_);
         }
-        
+        else if (component_->getImplementation() == KactusAttribute::SW)
+		{
+			QSharedPointer<SWInstance> swInstance(new SWInstance());
+			swInstance->setInstanceName(component_->getVlnv().getName());
+			swInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
+				new ConfigurableVLNVReference(component_->getVlnv())));
+
+            item = new SWComponentItem(lh_, component_, swInstance);
+        }
+
         if (item != 0)
         {
             connect(item, SIGNAL(endpointMoved(ConnectionEndpoint*)), this, SIGNAL(endpointsRearranged()));
@@ -133,7 +141,7 @@ void ComponentPreviewBox::updatePreview()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setComponent()
+// Function: ComponentPreviewBox::setComponent()
 //-----------------------------------------------------------------------------
 void ComponentPreviewBox::setComponent(QSharedPointer<Component> component)
 {
@@ -141,17 +149,25 @@ void ComponentPreviewBox::setComponent(QSharedPointer<Component> component)
     updatePreview();
 }
 
-void ComponentPreviewBox::setComponent( const VLNV& vlnv ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentPreviewBox::setComponent()
+//-----------------------------------------------------------------------------
+void ComponentPreviewBox::setComponent( const VLNV& vlnv )
+{
 	QSharedPointer<Component> component;
 	
 	// if the vlnv belongs to a component
-	if (lh_->getDocumentType(vlnv) == VLNV::COMPONENT) {
-		QSharedPointer<LibraryComponent> libComp = lh_->getModel(vlnv);
-		component = libComp.staticCast<Component>();
+	if (lh_->getDocumentType(vlnv) == VLNV::COMPONENT)
+    {
+		component = lh_->getModel(vlnv).staticCast<Component>();
 	}
 	setComponent(component);
 }
 
-QRectF ComponentPreviewBox::itemsBoundingRect() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentPreviewBox::itemsBoundingRect()
+//-----------------------------------------------------------------------------
+QRectF ComponentPreviewBox::itemsBoundingRect() const
+{
 	return scene_->itemsBoundingRect();
 }

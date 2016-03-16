@@ -11,9 +11,11 @@
 
 #include "TopComponentParameterFinder.h"
 
-#include <IPXACTmodels/component.h>
-
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 //-----------------------------------------------------------------------------
 // Function: TopComponentParameterFinder::TopComponentParameterFinder()
@@ -47,14 +49,6 @@ QSharedPointer<Parameter> TopComponentParameterFinder::getParameterWithID(QStrin
             }
         }
 
-        foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
-        {
-            if (modelParameter->getValueId() == parameterId)
-            {
-                return modelParameter;
-            }
-        }
-
         foreach (QSharedPointer<Parameter> viewParameter, activeViewParameters())
         {
             if (viewParameter->getValueId() == parameterId)
@@ -82,14 +76,6 @@ bool TopComponentParameterFinder::hasId(QString const& id) const
             }
         }
 
-        foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
-        {
-            if (modelParameter->getValueId() == id)
-            {
-                return true;
-            }
-        }
-
         foreach (QSharedPointer<Parameter> viewParameter, activeViewParameters())
         {
             if (viewParameter->getValueId() == id)
@@ -108,7 +94,7 @@ bool TopComponentParameterFinder::hasId(QString const& id) const
 QString TopComponentParameterFinder::nameForId(QString const& id) const
 {
     QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
-    return targetParameter->getName();
+    return targetParameter->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -132,11 +118,6 @@ QStringList TopComponentParameterFinder::getAllParameterIds() const
         foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
         {
             allParameterIds.append(parameter->getValueId());
-        }
-
-        foreach (QSharedPointer<ModelParameter> modelParameter, *component_->getModelParameters())
-        {
-            allParameterIds.append(modelParameter->getValueId());
         }
 
         foreach (QSharedPointer<Parameter> parameter, activeViewParameters())
@@ -180,32 +161,33 @@ QList<QSharedPointer<Parameter> > TopComponentParameterFinder::activeViewParamet
 {
     QList<QSharedPointer<Parameter> > viewParameters;
 
-    View* activeView = component_->findView(activeView_);
-    if (activeView)
+    foreach (QSharedPointer<View> view, *component_->getViews())
     {
-        QString implementationView = activeView_;
-        if (activeView->isHierarchical())
+        if (view->name() == activeView_)
         {
-            foreach (QSharedPointer<ModelParameter> moduleParameter, *activeView->getModuleParameters())
+            if (!view->getComponentInstantiationRef().isEmpty())
             {
-                viewParameters.append(moduleParameter);
-            }
-
-            implementationView = activeView->getTopLevelView();
-        }
-
-        foreach (QSharedPointer<View> view, component_->getViews())
-        {
-            if (view->getName() == implementationView)
-            {
-                viewParameters.append(*view->getParameters());
-                foreach(QSharedPointer<ModelParameter> moduleParameter, *view->getModuleParameters())
+                foreach (QSharedPointer<ComponentInstantiation> instantiation,
+                    *component_->getComponentInstantiations())
                 {
-                    viewParameters.append(moduleParameter);
+                    if (instantiation->name() == view->getComponentInstantiationRef())
+                    {
+                        foreach (QSharedPointer<Parameter> parameter, *instantiation->getParameters())
+                        {
+                            viewParameters.append(parameter);
+                        }
+                        foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
+                        {
+                            viewParameters.append(parameter);
+                        }
+
+                        break;
+                    }
                 }
             }
+            break;
         }
     }
-    
+
     return viewParameters;
 }

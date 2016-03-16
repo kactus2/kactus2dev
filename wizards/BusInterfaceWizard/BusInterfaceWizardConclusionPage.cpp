@@ -12,27 +12,25 @@
 #include "BusInterfaceWizardConclusionPage.h"
 #include "BusInterfaceWizard.h"
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 #include <QFormLayout>
-#include <QLabel>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardConclusionPage::BusInterfaceWizardConclusionPage()
 //-----------------------------------------------------------------------------
 BusInterfaceWizardConclusionPage::BusInterfaceWizardConclusionPage(QSharedPointer<BusInterface> busIf,
-    QStringList portNames, 
-    BusInterfaceWizard *parent)
-    : QWizardPage(parent),
-    busIf_(busIf),
-    ports_(portNames),
-    nameLabel_(this),
-    modeLabel_(this),
-    busDefLabel_(this),
-    absDefLabel_(this),
-    portMapLabel_(this)
+    QStringList portNames, BusInterfaceWizard *parent):
+QWizardPage(parent),
+busIf_(busIf),
+ports_(portNames),
+nameLabel_(this),
+modeLabel_(this),
+busDefLabel_(this),
+absDefLabel_(this),
+portMapLabel_(this)
 {
     setTitle(tr("Summary"));
     setSubTitle(tr("You have successfully completed the interface wizard. Verify the choices by clicking Finish."));
@@ -46,6 +44,7 @@ BusInterfaceWizardConclusionPage::BusInterfaceWizardConclusionPage(QSharedPointe
 //-----------------------------------------------------------------------------
 BusInterfaceWizardConclusionPage::~BusInterfaceWizardConclusionPage()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -63,25 +62,26 @@ int BusInterfaceWizardConclusionPage::nextId() const
 void BusInterfaceWizardConclusionPage::initializePage()
 {
     // Set label texts.
-    nameLabel_.setText(busIf_->getName());
+    nameLabel_.setText(busIf_->name());
     modeLabel_.setText(General::interfaceMode2Str(busIf_->getInterfaceMode()));
     busDefLabel_.setText(busIf_->getBusType().toString());
-    absDefLabel_.setText(busIf_->getAbstractionType().toString());
+    absDefLabel_.setText(busIf_->getAbstractionTypes()->first()->getAbstractionRef()->toString());
 
     // Search through all ports to see which ones are mapped in port maps.
     QStringList mappedPorts;
 
     foreach(QString portName, ports_)
     {
-        foreach(QSharedPointer<PortMap> portMap, busIf_->getPortMaps())
+        foreach(QSharedPointer<PortMap> portMap, *busIf_->getPortMaps())
         {
-            if (QString::compare(portName, portMap->physicalPort()) == 0 &&
-                !mappedPorts.contains(portName))
+            if (QString::compare(portName, portMap->getPhysicalPort()->name_) == 0)
             {
                 mappedPorts.append(portName);                
             }
         }
     }
+
+    mappedPorts.removeDuplicates();
     portMapLabel_.setText(QString::number(mappedPorts.size()) + "/" + QString::number(ports_.size()));
 }
 

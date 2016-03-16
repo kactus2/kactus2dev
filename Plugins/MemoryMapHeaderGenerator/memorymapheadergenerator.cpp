@@ -103,8 +103,8 @@ QIcon MemoryMapHeaderGenerator::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-    QSharedPointer<LibraryComponent const> libDesConf, QSharedPointer<LibraryComponent const> /*libDes*/) const
+bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<Document const> libComp,
+    QSharedPointer<Document const> libDesConf, QSharedPointer<Document const> /*libDes*/) const
 {
 	QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
 	if (!comp)
@@ -123,7 +123,7 @@ bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<LibraryCompo
 	// the design configuration must be for HW or system
 	if (designConf)
     {
-		return comp->getComponentImplementation() == KactusAttribute::HW;
+		return comp->getImplementation() == KactusAttribute::HW;
 	}
 	else
     {
@@ -134,9 +134,10 @@ bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<LibraryCompo
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::runGenerator()
 //-----------------------------------------------------------------------------
-void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> libDesConf /*= QSharedPointer<LibraryComponent>()*/,
-    QSharedPointer<LibraryComponent> libDes /*= QSharedPointer<LibraryComponent>()*/ )
+void MemoryMapHeaderGenerator::runGenerator(IPluginUtility* utility, 
+    QSharedPointer<Document> libComp,
+    QSharedPointer<Document> libDesConf,
+    QSharedPointer<Document> libDes)
 {
 	utility_ = utility;
 
@@ -159,7 +160,7 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPoi
 		Q_ASSERT(design);
 
 		// the component knows the implementation of the view
-		KactusAttribute::Implementation implementation = comp->getViewType(*libDesConf->getVlnv());
+		KactusAttribute::Implementation implementation = libDesConf->getImplementation();
 
 		QSharedPointer<DesignConfiguration> desConf = libDesConf.dynamicCast<DesignConfiguration>();
 		Q_ASSERT(desConf);
@@ -174,7 +175,7 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPoi
 		// the generator is run on a system component
 		else
         {
-            SystemMemoryMapHeaderWriter systemWriter(utility, this);
+            SystemMemoryMapHeaderWriter systemWriter(utility_, this);
             systemWriter.writeMemoryMapHeader(comp, desConf, design);
 		}
 	}
@@ -184,7 +185,7 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPoi
     {
 		Q_ASSERT(design);
 
-		KactusAttribute::Implementation implementation = comp->getViewType(*design->getVlnv());
+		KactusAttribute::Implementation implementation = design->getImplementation();
 
 		// if the generator is run on a hierarchical HW component
 		if (implementation == KactusAttribute::HW)
@@ -197,9 +198,9 @@ void MemoryMapHeaderGenerator::runGenerator( IPluginUtility* utility, QSharedPoi
 		// the generator is run on a system component without the configuration
 		else
         {
-			QMessageBox::warning(utility->getParentWidget(), QCoreApplication::applicationName(),
-				tr("A system design opened without configuration.\nSystem design must always have a configuration."));
-			return;
+			QMessageBox::warning(utility_->getParentWidget(), QCoreApplication::applicationName(),
+				tr("A system design opened without configuration.\n"
+                "System design must always have a configuration."));
 		}
 	}
 }
@@ -234,7 +235,7 @@ void MemoryMapHeaderGenerator::setGlobalSaveFileOptions(QSharedPointer<Component
     QString const& instanceName, QString const& instanceId, QString const& masterInterfaceName, QFileInfo fileInfo)
 {
     GlobalHeaderSaveModel::SaveFileOptions* newSaveOptions (new GlobalHeaderSaveModel::SaveFileOptions);
-    newSaveOptions->comp_ = *component->getVlnv();
+    newSaveOptions->comp_ = component->getVlnv();
     newSaveOptions->instance_ = instanceName;
     newSaveOptions->instanceId_ = instanceId;
     newSaveOptions->interface_ = masterInterfaceName;

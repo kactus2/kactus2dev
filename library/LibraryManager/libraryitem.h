@@ -1,10 +1,16 @@
-/* 
- *  Created on: 24.6.2010
- *  Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: libraryitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.06.2010
+//
+// Description:
+// LibraryItem class is used to create the hierarchical structure of IP library.
+//-----------------------------------------------------------------------------
 
-#ifndef LIBRARYITEM_H_
-#define LIBRARYITEM_H_
+#ifndef LIBRARYITEM_H
+#define LIBRARYITEM_H
 
 #include "librarydata.h"
 
@@ -16,255 +22,246 @@
 class VLNV;
 class LibraryTreeModel;
 
-/*! \brief LibraryItem class is used to create the hierarchical structure of
- * component library
- *
- * component library is a hierarchical structure consisting of vendors,
- * libraries, names and versions. One instance knows its children and
- * can provide access to them.
- */
-class LibraryItem : public QObject {
-
+//-----------------------------------------------------------------------------
+//! LibraryItem class is used to create the hierarchical structure of IP library.
+//-----------------------------------------------------------------------------
+class LibraryItem : public QObject
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief enum Level is used in constructing new items in library
+	/*! enum Level is used in constructing new items in library.
 	 *
-	 * Level is used to give tell what information to use from VLNV tag in
-	 * creating new component in hierarchy
+	 * Level is used to tell what information to use from VLNV tag in creating new component in hierarchy.
 	 */
-	enum Level {ROOT = 0, 
+	enum Level
+    {
+        ROOT = 0, 
 		VENDOR, 
 		LIBRARY,
 		NAME,
-		VERSION};
+		VERSION
+    };
 
-	/*! \brief The default constructor
+	/*! The default constructor.
 	*
-	* Constructs LibraryItem as empty item. Only used when creating
-	* a root item for a tree structure
+	*       @remark Only used when creating a root item for a tree structure.
 	*/
-	LibraryItem(const QString& name, QObject* parent);
+	LibraryItem(QString const& name, QObject* parent);
 
-	/*! \brief The constructor
+	/*! The constructor
 	*
-	* \exception runtime_error Occurs if an invalid level is specified.
-	* \param vlnv A VLNV tag that is to be added to database
-	* \param level The level of the item in the hierarchy
-	* \param parent A pointer to the parent of this item
+	*      @param [in] vlnv     A VLNV tag that is to be added to database.
+	*      @param [in] level    The level of the item in the hierarchy.
+	*      @param [in] parent   The parent of this item.
 	*/
-	LibraryItem(const VLNV& vlnv, Level level, LibraryItem *parent);
+	LibraryItem(VLNV const& vlnv, Level level, LibraryItem *parent);
 
-	/*! \brief The destructor of the class LibraryItem
-	*
-	*/
+	//! The destructor of the class LibraryItem.
 	virtual ~LibraryItem();
 
-	/*! \brief Create a new child for an existing item
+	/*! Create a new child for an existing item.
 	*
-	* \param vlnv A VLNV tag that is to be added to database
-	* \param level The level of the item in the hierarchy
-	* 
+	*      @param [in] vlnv A VLNV tag that is to be added to database.
+	*      @param [in] level The level of the item in the hierarchy.
 	*/
-	void createChild(const VLNV& vlnv, Level level);
+	void createChild(VLNV const& vlnv, Level level);
 
-	/*! \brief Get the parent of the current node
+	/*! Get the parent of the current node.
 	 *
-	 * \return The pointer to the parent of the item
+	 *      @return The parent of the item.
 	 */
-	LibraryItem *parent() const;
+	LibraryItem* parent() const;
 
-	/*! \brief Get the name of the item
+	/*! Get the name of the item.
 	 *
-	 * \return The name of the item
+	 *      @return The name of the item.
 	 */
-	QString getName() const;
+	QString name() const;
 
-	/*! \brief Get the level of the item in the hierarchy
+	/*! Get the level of the item in the hierarchy.
 	 *
-	 * \return the level the item is in
+	 *      @return The level the item is in.
 	 */
 	Level getLevel() const;
 
-	/*! \brief Get a pointer to the child item
+	/*! Get the child item.
 	 *
-	 * \param index index of the child item
-	 * \return pointer to the child
+	 *      @param [in] index   index of the child item.
+     *
+	 *      @return The child.
 	 */
-	LibraryItem *child(int index) const;
+	LibraryItem* child(int index) const;
 
-	/*! \brief get the row number of the child item
+	/*! Get the row number of the child item.
 	 *
-	 * \return the row number where the item is located in its parents list.
+	 *      @return The row number where the item is located in its parents list.
 	 */
 	int row();
 
-	/*! \brief Get the number of child items the item has
+	/*! Get the number of child items the item has.
 	 *
-	 * \return How many children item owns.
+	 *      @return How many children item owns.
 	 */
 	int getNumberOfChildren() const;
 
-	/*! \brief get the VLNV tag of this item.
+	/*! Get the VLNV tag of this item.
 	 *
-	 * Valid VLNV pointer can only be returned if this item is low level
-	 * item that can identify a single VLNV tag. If level is other than
-	 * VERSION then a non valid vlnv is returned.
-	 * 
-	 * \return A VLNV instance that is represented by this item.
+     *      @return A VLNV instance that is represented by this item.
+     *
+	 *      @remark Valid VLNV pointer can only be returned if this item is level VERSION.
 	 */
 	VLNV getVLNV() const;
 
-	/*! \brief Get the index of the specified item
+	/*! Get the index of the specified item.
 	 *
-	 * \param item Pointer to the library item that's row number is searched.
+	 *      @param [in] item    The library item that's row number is searched.
 	 *
-	 * \return The row number of the specified item
-	*/
+	 *      @return The row number of the specified item.
+	 */
 	int getIndexOf(LibraryItem* item);
 
-	/*! \brief Get the row number of this item in item's parent.
+	/*! Get the row number of this item in item's parent.
 	 *
-	 * \return The row number of this item.
-	*/
+	 *      @return The row number of this item.
+	 */
 	int getRow();
 
-	/*! \brief Check if this item has children or not
+	/*! Check if this item has children or not.
 	 *
-	 * \return True if item has child-items.
-	*/
+	 *      @return True if item has child-items, otherwise false.
+	 */
 	bool hasChildren() const;
 
-	/*! \brief Get list of all VLNV tags that exist under this item
+	/*! Get list of all VLNV tags that exist under this item.
 	 *
-	 * \param vlnvList QList where all VLNVs are to be saved
-	 *
-	*/
+	 *      @param [in/out] vlnvList List to save all VLNVs.
+	 */
 	void getVLNVs(QList<VLNV>& vlnvList);
 
-	/*! \brief Remove a child of this item
+	/*! Remove a child of this item.
 	 *
-	 * \param childItem Pointer to the child item that should be removed.
-	 *
-	*/
+	 *      @param [in] childItem The child item that should be removed.
+	 */
 	void removeChild(LibraryItem* childItem);
 
-	/*! \brief Find the highest level LibraryItem that still identifies a single item
+	/*! Find the highest level LibraryItem that still identifies a single item.
 	 * 
 	 * This function checks if there are other children. If no other children
 	 * are found then this function calls parent item to check if it can be
 	 * used to identify a single item.
 	 * 
-	 * \param childItem Pointer to item that is currently the highest possible
-	 * item.
+	 *      @param [in] childItem   The item that is currently the highest possible item.
 	 *
-	 * \return LibraryItem* Pointer to the item that is to be removed
-	*/
+	 *      @return LibraryItem* The item that is to be removed.
+	 */
 	LibraryItem* findHighestUnique(LibraryItem* childItem = 0);
 
-	/*! \brief Find the highest level LibraryItem that still identifies a single item
+	/*! Find the highest level LibraryItem that still identifies a single item.
 	 * 
 	 * This function finds the highest level possible to identify a single item.
 	 *
-	 * \param vlnv The vlnv element that must be matched.
+	 *      @param [in] vlnv The vlnv element that must be matched.
 	 *
-	 * \return LibraryItem* pointer to the item that is the highest level item.
-	*/
-	LibraryItem* findHighestUnique(const VLNV& vlnv);
+	 *      @return The item that is the highest level item.
+	 */
+	LibraryItem* findHighestUnique(VLNV const& vlnv);
 
-	/*! \brief Find the library item that uniquely represents the specified vlnv.
+	/*! Find the library item that uniquely represents the specified vlnv.
 	 *
-	 * \param vlnv The vlnv that identifies the item to find.
+	 *      @param [in] vlnv The vlnv that identifies the item to find.
 	 *
-	 * \return Pointer to the LibraryItem that represents the vlnv in the tree.
-	*/
-	LibraryItem* findItem(const VLNV& vlnv);
+	 *      @return The LibraryItem that represents the vlnv in the tree.
+	 */
+	LibraryItem* findItem(VLNV const& vlnv);
 
-	/*! \brief Set the vlnv to match the tree structure of this item
+	/*! Set the vlnv to match the tree structure of this item
 	 *
-	 * \param vlnv The vlnv instance to set.
-	 *
-	*/
+	 *      @param [out] vlnv The vlnv instance to set.
+	 */
 	void setVlnv(VLNV& vlnv);
 
-	/*! \brief Remove the children of this item.
-	 *
-	*/
+	//! Remove the children of this item.
 	void clear();
 
-	/*! \brief Get the vendor items that's name passes the validator.
+	/*! Get the vendor items that's name passes the validator.
 	 *
-	 * \param validator Reference to the validator to use.
+	 *      @param [in] validator   The validator to use to filter the vendors.
 	 *
-	 * \return QList<LibraryItem*> List of items that passed the validator.
+	 *      @return The items that passed the validator.
 	*/
-	QList<LibraryItem*> getVendors(const QRegExpValidator& validator) const;
+	QList<LibraryItem*> getVendors(QRegExpValidator const& validator) const;
 
-	/*! \brief Get all vendor items
+	/*! Get all vendor items.
 	 *
-	 * \return QList<LibraryItem*> contains pointers to all vendor items under this item.
+	 *      @return All vendor items under this item.
 	*/
 	QList<LibraryItem*> getVendors() const;
 
-	/*! \brief Get the library items that's name passes the validator.
+	/*! Get the library items that's name passes the validator.
 	 *
-	 * \param validator Reference to the validator to use.
+	 *      @param [in] validator   The validator to use to filter the libraries.
 	 *
-	 * \return QList<LibraryItem*> List of items that passed the validator.
+	 *      @return The items that passed the validator.
 	*/
 	QList<LibraryItem*> getLibraries(const QRegExpValidator& validator) const;
 
-	/*! \brief Get all library items.
+	/*! Get all library items.
 	 *
-	 * \return QList<LibraryItem*> contains pointers to all library items under this item.
+	 *      @return All library items under this item.
 	*/
 	QList<LibraryItem*> getLibraries() const;
 
-	/*! \brief Get all name items.
+	/*! Get all name items.
 	 *
-	 * \return QList<LibraryItem*> contains pointers to all name items under this item.
+	 *      @return All name items under this item.
 	*/
 	QList<LibraryItem*> getNames() const;
 
-	/*! \brief Get all version items.
+	/*! Get all version items.
 	 *
-	 * \return QList<LibraryItem*> contains pointers to all version items under this item.
+	 *      @return All version items under this item.
 	*/
 	QList<LibraryItem*> getVersions() const;
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	LibraryItem(const LibraryItem &other);
 
-	//! \brief No assignment
+	//! No assignment
 	LibraryItem &operator=(const LibraryItem &other);
 
-	/*! \brief The name of the item on the level (i.e. TUT in vendor-level)
-	 *
-	 */
+
+    /*!
+     *  Finds the child item on the given level from the given VLNV.
+     *
+     *      @param [in] level   The level to get the item for.
+     *      @param [in] vlnv    The VLNV to get the item from.
+     *
+     *      @return The child item on the given level.
+     */
+    LibraryItem* findChildForLevel(Level level, VLNV const& vlnv);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The name of the item on the level (i.e. TUT in vendor-level).
 	QString name_;
 
-	/*! \brief The level of the item
-	 *
-	 */
+	//! The level of the item.
 	Level level_;
 
-	/*! \brief QList contains child items of current item in the hierarchy
-	 *
-	 */
+	//! The child items of current item in the hierarchy.
 	QList<LibraryItem*> childItems_;
 
-	/*! \brief Pointer to the parent of the item
-	 *
-	 */
+	//! The parent of the item.
 	LibraryItem *parentItem_;
 
-	/*! \brief A VLNV tag that matches the version
-	 *
-	 */
+	//! A VLNV tag that matches the version.
 	VLNV vlnv_;
 };
 
-#endif /* LIBRARYITEM_H_ */
+#endif // LIBRARYITEM_H

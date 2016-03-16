@@ -11,13 +11,17 @@
 
 #include "HWChangeCommands.h"
 
-#include "HWDeleteCommands.h"
 #include "HWMoveCommands.h"
 #include "HWAddCommands.h"
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ComInterface.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+#include <IPXACTmodels/common/ConfigurableElementValue.h>
+
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/common/DesignWidget.h>
@@ -26,8 +30,14 @@
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/ConnectionUndoCommands.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
+#include <common/graphicsItems/GraphicsColumnLayout.h>
 
 #include <designEditors/common/ConfigurationEditor/activeviewmodel.h>
+
+#include <designEditors/HWDesign/AdHocConnectionItem.h>
+
+#include <designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
+#include <designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h>
 
 #include "HWConnection.h"
 #include "BusPortItem.h"
@@ -41,11 +51,11 @@
 // Function: ComponentChangeNameCommand()
 //-----------------------------------------------------------------------------
 ComponentChangeNameCommand::ComponentChangeNameCommand(ComponentItem* component,
-                                               QString const& newName,
-                                               QUndoCommand* parent) : QUndoCommand(parent),
-                                                                       component_(component),
-                                                                       oldName_(component->name()),
-                                                                       newName_(newName)
+    QString const& newName,
+    QUndoCommand* parent) : QUndoCommand(parent),
+    component_(component),
+    oldName_(component->name()),
+    newName_(newName)
 {
 }
 
@@ -57,7 +67,7 @@ ComponentChangeNameCommand::~ComponentChangeNameCommand()
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: ComponentChangeNameCommand::undo()
 //-----------------------------------------------------------------------------
 void ComponentChangeNameCommand::undo()
 {
@@ -65,80 +75,126 @@ void ComponentChangeNameCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: ComponentChangeNameCommand::redo()
 //-----------------------------------------------------------------------------
 void ComponentChangeNameCommand::redo()
 {
     component_->setName(newName_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentChangeDisplayNameCommand::ComponentChangeDisplayNameCommand()
+//-----------------------------------------------------------------------------
 ComponentChangeDisplayNameCommand::ComponentChangeDisplayNameCommand(ComponentItem* component,
-													   QString const& newDisplayName,
-													   QUndoCommand* parent):
+    QString const& newDisplayName,
+    QUndoCommand* parent):
 QUndoCommand(parent),
-component_(component),
-oldDisplayName_(component->displayName()),
-newDisplayName_(newDisplayName) {
+    component_(component),
+    oldDisplayName_(component->displayName()),
+    newDisplayName_(newDisplayName)
+{
 }
 
-ComponentChangeDisplayNameCommand::~ComponentChangeDisplayNameCommand() {
+//-----------------------------------------------------------------------------
+// Function: ComponentChangeDisplayNameCommand::~ComponentChangeDisplayNameCommand()
+//-----------------------------------------------------------------------------
+ComponentChangeDisplayNameCommand::~ComponentChangeDisplayNameCommand()
+{
 }
 
-void ComponentChangeDisplayNameCommand::undo() {
+//-----------------------------------------------------------------------------
+// Function: ComponentChangeDisplayNameCommand::undo()
+//-----------------------------------------------------------------------------
+void ComponentChangeDisplayNameCommand::undo()
+{
 	component_->setDisplayName(oldDisplayName_);
 }
 
-void ComponentChangeDisplayNameCommand::redo() {
+//-----------------------------------------------------------------------------
+// Function: ComponentChangeDisplayNameCommand::redo()
+//-----------------------------------------------------------------------------
+void ComponentChangeDisplayNameCommand::redo()
+{
 	component_->setDisplayName(newDisplayName_);
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentChangeDescriptionNameCommand::ComponentChangeDescriptionNameCommand()
+//-----------------------------------------------------------------------------
 ComponentChangeDescriptionNameCommand::ComponentChangeDescriptionNameCommand(ComponentItem* component,
-																			 QString const& newDescription, 
-																			 QUndoCommand* parent /*= 0*/ ):
+    QString const& newDescription, 
+    QUndoCommand* parent):
 QUndoCommand(parent),
-component_(component),
-oldDescription_(component->description()),
-newDescription_(newDescription) {
+    component_(component),
+    oldDescription_(component->description()),
+    newDescription_(newDescription)
+{
 }
 
-ComponentChangeDescriptionNameCommand::~ComponentChangeDescriptionNameCommand() {
+//-----------------------------------------------------------------------------
+// Function: ComponentChangeDescriptionNameCommand::~ComponentChangeDescriptionNameCommand()
+//-----------------------------------------------------------------------------
+ComponentChangeDescriptionNameCommand::~ComponentChangeDescriptionNameCommand()
+{
 }
 
-void ComponentChangeDescriptionNameCommand::undo() {
+//-----------------------------------------------------------------------------
+// Function: ComponentChangeDescriptionNameCommand::undo()
+//-----------------------------------------------------------------------------
+void ComponentChangeDescriptionNameCommand::undo()
+{
 	component_->setDescription(oldDescription_);
 }
 
-void ComponentChangeDescriptionNameCommand::redo() {
+//-----------------------------------------------------------------------------
+// Function: ComponentChangeDescriptionNameCommand::redo()
+//-----------------------------------------------------------------------------
+void ComponentChangeDescriptionNameCommand::redo()
+{
 	component_->setDescription(newDescription_);
 }
 
-ComponentActiveViewChangeCommand::ComponentActiveViewChangeCommand( 
-	const QString& instanceName, 
-	QString const& oldActiveView, 
-	QString const& newActiveView,
-	ActiveViewModel* activeViewModel,
-	QUndoCommand* parent /*= 0*/ ):
+//-----------------------------------------------------------------------------
+// Function: ComponentActiveViewChangeCommand::ComponentActiveViewChangeCommand()
+//-----------------------------------------------------------------------------
+ComponentActiveViewChangeCommand::ComponentActiveViewChangeCommand(QString const& instanceName, 
+    QString const& oldActiveView, QString const& newActiveView, ActiveViewModel* activeViewModel,
+    QUndoCommand* parent):
 QUndoCommand(parent),
 instanceName_(instanceName),
 newViewName_(newActiveView),
 oldViewName_(oldActiveView),
-activeViewModel_(activeViewModel) {
-}
-
-ComponentActiveViewChangeCommand::~ComponentActiveViewChangeCommand() {
+activeViewModel_(activeViewModel)
+{
 
 }
 
-void ComponentActiveViewChangeCommand::undo() {
+//-----------------------------------------------------------------------------
+// Function: ComponentActiveViewChangeCommand::~ComponentActiveViewChangeCommand()
+//-----------------------------------------------------------------------------
+ComponentActiveViewChangeCommand::~ComponentActiveViewChangeCommand()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentActiveViewChangeCommand::undo()
+//-----------------------------------------------------------------------------
+void ComponentActiveViewChangeCommand::undo()
+{
 	activeViewModel_->setActiveView(instanceName_, oldViewName_);
 }
 
-void ComponentActiveViewChangeCommand::redo() {
+//-----------------------------------------------------------------------------
+// Function: ComponentActiveViewChangeCommand::redo()
+//-----------------------------------------------------------------------------
+void ComponentActiveViewChangeCommand::redo()
+{
 	activeViewModel_->setActiveView(instanceName_, newViewName_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentPacketizeCommand()
+// Function: ComponentPacketizeCommand::ComponentPacketizeCommand()
 //-----------------------------------------------------------------------------
 ComponentPacketizeCommand::ComponentPacketizeCommand(ComponentItem* component,
                                                      VLNV const& vlnv,
@@ -160,14 +216,14 @@ ComponentPacketizeCommand::ComponentPacketizeCommand(ComponentItem* component,
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ComponentPacketizeCommand()
+// Function: ComponentPacketizeCommand::~ComponentPacketizeCommand()
 //-----------------------------------------------------------------------------
 ComponentPacketizeCommand::~ComponentPacketizeCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: ComponentPacketizeCommand::undo()
 //-----------------------------------------------------------------------------
 void ComponentPacketizeCommand::undo()
 {
@@ -194,12 +250,12 @@ void ComponentPacketizeCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: ComponentPacketizeCommand::redo()
 //-----------------------------------------------------------------------------
 void ComponentPacketizeCommand::redo()
 {
     component_->componentModel()->setVlnv(vlnv_);
-    component_->setPacketized();
+    component_->setPackaged();
 
     // Register the VLNV.
     static_cast<DesignDiagram*>(component_->scene())->getParent()->addRelatedVLNV(vlnv_);
@@ -220,7 +276,7 @@ void ComponentPacketizeCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndpointChangeCommand()
+// Function: EndpointChangeCommand::EndpointChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointChangeCommand::EndpointChangeCommand(HWConnectionEndpoint* endpoint, 
 											 QString const& newName,
@@ -234,19 +290,22 @@ oldMode_(endpoint->getBusInterface()->getInterfaceMode()),
 oldDescription_(endpoint->description()),
 newName_(newName),
 newMode_(newMode),
-newDescription_(newDescription) {
+newDescription_(newDescription)
+{
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndpointChangeCommand()
+// Function: EndpointChangeCommand::~EndpointChangeCommand()
 //-----------------------------------------------------------------------------
-EndpointChangeCommand::~EndpointChangeCommand() {
+EndpointChangeCommand::~EndpointChangeCommand()
+{
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: EndpointChangeCommand::undo()
 //-----------------------------------------------------------------------------
-void EndpointChangeCommand::undo() {
+void EndpointChangeCommand::undo()
+{
     endpoint_->getBusInterface()->setInterfaceMode(oldMode_);
     endpoint_->setDescription(oldDescription_);
     endpoint_->setName(oldName_);
@@ -255,9 +314,10 @@ void EndpointChangeCommand::undo() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: EndpointChangeCommand::redo()
 //-----------------------------------------------------------------------------
-void EndpointChangeCommand::redo() {
+void EndpointChangeCommand::redo()
+{
     endpoint_->getBusInterface()->setInterfaceMode(newMode_);
     endpoint_->setDescription(newDescription_);
     endpoint_->setName(newName_);
@@ -266,7 +326,7 @@ void EndpointChangeCommand::redo() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndpointChangeCommand()
+// Function: EndpointNameChangeCommand::EndpointNameChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointNameChangeCommand::EndpointNameChangeCommand(ConnectionEndpoint* endpoint, 
                                                      QString const& newName,
@@ -279,13 +339,13 @@ EndpointNameChangeCommand::EndpointNameChangeCommand(ConnectionEndpoint* endpoin
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndpointChangeCommand()
+// Function: EndpointNameChangeCommand::~EndpointNameChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointNameChangeCommand::~EndpointNameChangeCommand() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: EndpointNameChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void EndpointNameChangeCommand::undo()
 {
@@ -293,7 +353,7 @@ void EndpointNameChangeCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: EndpointNameChangeCommand::redo()
 //-----------------------------------------------------------------------------
 void EndpointNameChangeCommand::redo()
 {
@@ -301,7 +361,7 @@ void EndpointNameChangeCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndpointDescChangeCommand()
+// Function: EndpointDescChangeCommand::EndpointDescChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointDescChangeCommand::EndpointDescChangeCommand(ConnectionEndpoint* endpoint, 
                                                      QString const& newDescription,
@@ -314,13 +374,13 @@ EndpointDescChangeCommand::EndpointDescChangeCommand(ConnectionEndpoint* endpoin
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndpointDescChangeCommand()
+// Function: EndpointDescChangeCommand::~EndpointDescChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointDescChangeCommand::~EndpointDescChangeCommand() {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: EndpointDescChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void EndpointDescChangeCommand::undo()
 {
@@ -328,16 +388,15 @@ void EndpointDescChangeCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: EndpointDescChangeCommand::redo()
 //-----------------------------------------------------------------------------
 void EndpointDescChangeCommand::redo()
 {
     endpoint_->setDescription(newDescription_);
 }
 
-
 //-----------------------------------------------------------------------------
-// Function: EndpointDependencyDirectionChangeCommand()
+// Function: EndpointDependencyDirectionChangeCommand::EndpointDependencyDirectionChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointDependencyDirectionChangeCommand::EndpointDependencyDirectionChangeCommand(ConnectionEndpoint* endpoint, 
                                                                                    DependencyDirection newDir,
@@ -350,14 +409,14 @@ EndpointDependencyDirectionChangeCommand::EndpointDependencyDirectionChangeComma
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndpointDependencyDirectionChangeCommand()
+// Function: EndpointDependencyDirectionChangeCommand::~EndpointDependencyDirectionChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointDependencyDirectionChangeCommand::~EndpointDependencyDirectionChangeCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: EndpointDependencyDirectionChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void EndpointDependencyDirectionChangeCommand::undo()
 {
@@ -367,7 +426,7 @@ void EndpointDependencyDirectionChangeCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: EndpointDependencyDirectionChangeCommand::redo()
 //-----------------------------------------------------------------------------
 void EndpointDependencyDirectionChangeCommand::redo()
 {
@@ -377,10 +436,10 @@ void EndpointDependencyDirectionChangeCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndpointComDirectionChangeCommand()
+// Function: EndpointComDirectionChangeCommand::EndpointComDirectionChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointComDirectionChangeCommand::EndpointComDirectionChangeCommand(ConnectionEndpoint* endpoint, 
-                                                                     General::Direction newDir,
+                                                                     DirectionTypes::Direction newDir,
                                                                      QUndoCommand* parent)
     : QUndoCommand(parent), 
       endpoint_(endpoint),
@@ -390,14 +449,14 @@ EndpointComDirectionChangeCommand::EndpointComDirectionChangeCommand(ConnectionE
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndpointComDirectionChangeCommand()
+// Function: EndpointComDirectionChangeCommand::~EndpointComDirectionChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointComDirectionChangeCommand::~EndpointComDirectionChangeCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: EndpointComDirectionChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void EndpointComDirectionChangeCommand::undo()
 {
@@ -407,7 +466,7 @@ void EndpointComDirectionChangeCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: EndpointComDirectionChangeCommand::redo()
 //-----------------------------------------------------------------------------
 void EndpointComDirectionChangeCommand::redo()
 {
@@ -417,27 +476,27 @@ void EndpointComDirectionChangeCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndpointTransferTypeChangeCommand()
+// Function: EndpointTransferTypeChangeCommand::EndpointTransferTypeChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointTransferTypeChangeCommand::EndpointTransferTypeChangeCommand(ConnectionEndpoint* endpoint,
-                                                                     QString const& newTransferType,
-                                                                     QUndoCommand* parent)
-    : QUndoCommand(parent), 
-      endpoint_(endpoint),
-      oldTransferType_(endpoint->getComInterface()->getTransferType()),
-      newTransferType_(newTransferType)
+    QString const& newTransferType,
+    QUndoCommand* parent):
+QUndoCommand(parent), 
+    endpoint_(endpoint),
+    oldTransferType_(endpoint->getComInterface()->getTransferType()),
+    newTransferType_(newTransferType)
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndpointTransferTypeChangeCommand()
+// Function: EndpointTransferTypeChangeCommand::~EndpointTransferTypeChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointTransferTypeChangeCommand::~EndpointTransferTypeChangeCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: EndpointTransferTypeChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void EndpointTransferTypeChangeCommand::undo()
 {
@@ -447,7 +506,7 @@ void EndpointTransferTypeChangeCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: EndpointTransferTypeChangeCommand::redo()
 //-----------------------------------------------------------------------------
 void EndpointTransferTypeChangeCommand::redo()
 {
@@ -457,7 +516,7 @@ void EndpointTransferTypeChangeCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndpointPropertyValuesChangeCommand()
+// Function: EndpointPropertyValuesChangeCommand::EndpointPropertyValuesChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointPropertyValuesChangeCommand::EndpointPropertyValuesChangeCommand(ConnectionEndpoint* endpoint,
                                                                          QMap<QString, QString> const & newValues,
@@ -470,14 +529,14 @@ EndpointPropertyValuesChangeCommand::EndpointPropertyValuesChangeCommand(Connect
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndpointPropertyValuesChangeCommand()
+// Function: EndpointPropertyValuesChangeCommand::~EndpointPropertyValuesChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointPropertyValuesChangeCommand::~EndpointPropertyValuesChangeCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: EndpointPropertyValuesChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void EndpointPropertyValuesChangeCommand::undo()
 {
@@ -486,7 +545,7 @@ void EndpointPropertyValuesChangeCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: EndpointPropertyValuesChangeCommand::redo()
 //-----------------------------------------------------------------------------
 void EndpointPropertyValuesChangeCommand::redo()
 {
@@ -495,7 +554,7 @@ void EndpointPropertyValuesChangeCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndPointTypesCommand()
+// Function: EndPointTypesCommand::EndPointTypesCommand()
 //-----------------------------------------------------------------------------
 EndPointTypesCommand::EndPointTypesCommand(HWConnectionEndpoint* endpoint,
                                            VLNV const& oldBusType, VLNV const& oldAbsType,
@@ -508,9 +567,9 @@ EndPointTypesCommand::EndPointTypesCommand(HWConnectionEndpoint* endpoint,
     if (endpoint_->getBusInterface() != 0)
     {
         newBusType_ = endpoint_->getBusInterface()->getBusType();
-        newAbsType_ = endpoint_->getBusInterface()->getAbstractionType();
+        newAbsType_ = *endpoint_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef();
         newMode_ = endpoint_->getBusInterface()->getInterfaceMode();
-        newName_ = endpoint_->getBusInterface()->getName();
+        newName_ = endpoint_->getBusInterface()->name();
     }
 
     // Save the interface modes for each connection.
@@ -533,14 +592,14 @@ EndPointTypesCommand::EndPointTypesCommand(HWConnectionEndpoint* endpoint,
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndPointTypesCommand()
+// Function: EndPointTypesCommand::~EndPointTypesCommand()
 //-----------------------------------------------------------------------------
 EndPointTypesCommand::~EndPointTypesCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: EndPointTypesCommand::undo()
 //-----------------------------------------------------------------------------
 void EndPointTypesCommand::undo()
 {
@@ -554,7 +613,7 @@ void EndPointTypesCommand::undo()
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: EndPointTypesCommand::redo()
 //-----------------------------------------------------------------------------
 void EndPointTypesCommand::redo()
 {
@@ -573,165 +632,166 @@ void EndPointTypesCommand::redo()
     {
         cur.key()->getBusInterface()->setInterfaceMode(cur.value());
         cur.key()->updateInterface();
-        ++cur;
+        cur++;
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: EndPointPortMapCommand()
+// Function: EndPointPortMapCommand::EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
 EndPointPortMapCommand::EndPointPortMapCommand(HWConnectionEndpoint* endpoint,
                                                QList< QSharedPointer<PortMap> > newPortMaps,
                                                QUndoCommand* parent)
     : QUndoCommand(parent), endpoint_(endpoint),
-      oldPortMaps_(endpoint->getBusInterface()->getPortMaps()),
+      oldPortMaps_(*endpoint->getBusInterface()->getPortMaps()),
       newPortMaps_(newPortMaps)
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~EndPointPortMapCommand()
+// Function: EndPointPortMapCommand::~EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
 EndPointPortMapCommand::~EndPointPortMapCommand()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: undo()
+// Function: EndPointPortMapCommand::undo()
 //-----------------------------------------------------------------------------
 void EndPointPortMapCommand::undo()
 {
     if (endpoint_->isHierarchical())
     {
-        endpoint_->getBusInterface()->setPortMaps(oldPortMaps_);
+        endpoint_->getBusInterface()->getPortMaps()->clear();
+        endpoint_->getBusInterface()->getPortMaps()->append(oldPortMaps_);
         endpoint_->updateInterface();
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: redo()
+// Function: EndPointPortMapCommand::redo()
 //-----------------------------------------------------------------------------
 void EndPointPortMapCommand::redo()
 {
     if (endpoint_->isHierarchical())
     {
-        endpoint_->getBusInterface()->setPortMaps(newPortMaps_);
+        endpoint_->getBusInterface()->getPortMaps()->clear();
+        endpoint_->getBusInterface()->getPortMaps()->append(newPortMaps_);
         endpoint_->updateInterface();
     }
 }
 
-ComponentConfElementChangeCommand::ComponentConfElementChangeCommand( 
-	ComponentItem* component, 
-	const QMap<QString, QString>& newConfElements, 
-	QUndoCommand* parent /*= 0*/ ):
+//-----------------------------------------------------------------------------
+// Function: ComponentConfElementChangeCommand::ComponentConfElementChangeCommand()
+//-----------------------------------------------------------------------------
+ComponentConfElementChangeCommand::ComponentConfElementChangeCommand(
+    QSharedPointer<ComponentInstance> componentInstance, const QMap<QString, QString>& newConfElements,
+    QUndoCommand* parent /* = 0 */):
 QUndoCommand(parent),
-component_(component),
-oldConfElements_(component->getConfigurableElements()),
-newConfElements_(newConfElements) {
-}
-
-ComponentConfElementChangeCommand::~ComponentConfElementChangeCommand() {
-}
-
-void ComponentConfElementChangeCommand::undo() {
-	component_->setConfigurableElements(oldConfElements_);
-}
-
-void ComponentConfElementChangeCommand::redo() {
-	component_->setConfigurableElements(newConfElements_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand()
-//-----------------------------------------------------------------------------
-AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName,
-                                                           bool newVisibility, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      dataSource_(dataSource),
-      portName_(portName),
-      pos_(),
-      newVisibility_(newVisibility)
+componentInstance_(componentInstance),
+oldConfElements_(),
+newConfElements_(newConfElements)
 {
-    if (!newVisibility_)
+    foreach (QSharedPointer<ConfigurableElementValue> element, *componentInstance_->getConfigurableElementValues())
     {
-        // Create child commands for removing interconnections.
-        HWConnectionEndpoint* port = dataSource->getDiagramAdHocPort(portName);
-        Q_ASSERT(port != 0);
+        oldConfElements_.insert(element->getReferenceId(), element->getConfigurableValue());
+    }
+}
 
-        pos_ = port->scenePos();
+//-----------------------------------------------------------------------------
+// Function: ComponentConfElementChangeCommand::~ComponentConfElementChangeCommand()
+//-----------------------------------------------------------------------------
+ComponentConfElementChangeCommand::~ComponentConfElementChangeCommand()
+{
+}
 
-        foreach (GraphicsConnection* conn, port->getConnections())
+//-----------------------------------------------------------------------------
+// Function: ComponentConfElementChangeCommand::undo()
+//-----------------------------------------------------------------------------
+void ComponentConfElementChangeCommand::undo()
+{
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables =
+        componentInstance_->getConfigurableElementValues();
+    QStringList configurableIDs;
+    foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurables)
+    {
+        if (oldConfElements_.contains(element->getReferenceId()))
         {
-            new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+            element->setConfigurableValue(oldConfElements_.value(element->getReferenceId()));
+            configurableIDs.append(element->getReferenceId());
         }
-
-        foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
+        else
         {
-            new ConnectionDeleteCommand(static_cast<HWConnection*>(conn), this);
+            currentConfigurables->removeAll(element);
+        }
+    }
+
+    if (oldConfElements_.size() > currentConfigurables->size())
+    {
+        QMapIterator<QString, QString> elementIterator(oldConfElements_);
+        while (elementIterator.hasNext())
+        {
+            elementIterator.next();
+
+            if (!configurableIDs.contains(elementIterator.key()))
+            {
+                QSharedPointer<ConfigurableElementValue> newElement (
+                    new ConfigurableElementValue(elementIterator.value(), elementIterator.key()));
+                componentInstance_->getConfigurableElementValues()->append(newElement);
+            }
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocVisibilityChangeCommand::~AdHocVisibilityChangeCommand()
+// Function: ComponentConfElementChangeCommand::redo()
 //-----------------------------------------------------------------------------
-AdHocVisibilityChangeCommand::~AdHocVisibilityChangeCommand()
+void ComponentConfElementChangeCommand::redo()
 {
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocVisibilityChangeCommand::undo()
-//-----------------------------------------------------------------------------
-void AdHocVisibilityChangeCommand::undo()
-{
-    dataSource_->setPortAdHocVisible(portName_, !newVisibility_);
-
-    if (!newVisibility_)
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurableElements =
+        componentInstance_->getConfigurableElementValues();
+    if (newConfElements_.size() < currentConfigurableElements->size())
     {
-        HWConnectionEndpoint* port = dataSource_->getDiagramAdHocPort(portName_);
-        port->setPos(port->parentItem()->mapFromScene(pos_));
-
-        // 
-        AdHocInterfaceItem* adHocIf = dynamic_cast<AdHocInterfaceItem*>(port);
-
-        if (adHocIf != 0)
+        foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurableElements)
         {
-            GraphicsColumn* column = static_cast<GraphicsColumn*>(adHocIf->parentItem());
-            column->onMoveItem(adHocIf);
-        }
-
-        AdHocPortItem* adHocPort = dynamic_cast<AdHocPortItem*>(port);
-
-        if (adHocPort != 0)
-        {
-            HWComponentItem* comp = static_cast<HWComponentItem*>(adHocPort->parentItem());
-            comp->onMovePort(adHocPort);
+            if (!newConfElements_.contains(element->getReferenceId()))
+            {
+                componentInstance_->getConfigurableElementValues()->removeAll(element);
+            }
         }
     }
 
-    // Execute child commands.
-    QUndoCommand::undo();
-}
+    QMapIterator<QString, QString> elementIterator(newConfElements_);
+    while (elementIterator.hasNext())
+    {
+        elementIterator.next();
+        bool elementExists = false;
+        foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurableElements)
+        {
+            if (elementIterator.key() == element->getReferenceId())
+            {
+                element->setConfigurableValue(elementIterator.value());
+                elementExists = true;
+                break;
+            }
+        }
 
-//-----------------------------------------------------------------------------
-// Function: AdHocVisibilityChangeCommand::redo()
-//-----------------------------------------------------------------------------
-void AdHocVisibilityChangeCommand::redo()
-{
-    // Execute child commands.
-    QUndoCommand::redo();
-
-    dataSource_->setPortAdHocVisible(portName_, newVisibility_);
+        if (!elementExists)
+        {
+            QSharedPointer<ConfigurableElementValue> newElement (
+                new ConfigurableElementValue(elementIterator.value(), elementIterator.key()));
+            componentInstance_->getConfigurableElementValues()->append(newElement);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsChangeCommand::AdHocBoundsChangeCommand()
 //-----------------------------------------------------------------------------
-AdHocBoundsChangeCommand::AdHocBoundsChangeCommand(HWConnection* connection,
+AdHocBoundsChangeCommand::AdHocBoundsChangeCommand(AdHocConnectionItem* connection,
                                                    bool right, int endpointIndex,
-                                                   int oldValue, int newValue, QUndoCommand* parent)
-    : QUndoCommand(parent),
+                                                   QString const& oldValue, QString const& newValue, 
+                                                   QUndoCommand* parent) : QUndoCommand(parent),
       connection_(connection),
       right_(right),
       endpointIndex_(endpointIndex),
@@ -781,11 +841,11 @@ void AdHocBoundsChangeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ReplaceComponentCommand::ReplaceComponentCommand()
 //-----------------------------------------------------------------------------
-ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp,
-                                                 bool existing, bool keepOld, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      oldComp_(oldComp),
-      newComp_(newComp)
+ReplaceComponentCommand::ReplaceComponentCommand(DesignDiagram* diagram, HWComponentItem* oldComp,
+    HWComponentItem* newComp, bool existing, bool keepOld, QUndoCommand* parent):
+QUndoCommand(parent),
+    oldComp_(oldComp),
+    newComp_(newComp)
 {
     foreach (ConnectionEndpoint* oldEndpoint, oldComp_->getEndpoints())
     {
@@ -806,15 +866,20 @@ ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWCom
             new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
 
             // Exchange connections between the endpoints.
-            foreach (GraphicsConnection* conn, oldEndpoint->getConnections())
+            foreach (GraphicsConnection* connection, oldEndpoint->getConnections())
             {
-                new ConnectionExchangeCommand(conn, oldEndpoint, newEndpoint, this);
+                new ConnectionExchangeCommand(connection, oldEndpoint, newEndpoint, this);
             }
 
-            foreach (GraphicsConnection* conn, oldEndpoint->getOffPageConnector()->getConnections())
+            foreach (GraphicsConnection* connection, oldEndpoint->getOffPageConnector()->getConnections())
             {
-                new ConnectionExchangeCommand(conn, oldEndpoint->getOffPageConnector(),
-                                              newEndpoint->getOffPageConnector(), this);
+//                 if (!newEndpoint->getOffPageConnector()->isVisible())
+//                 {
+//                     newEndpoint->getOffPageConnector()->setVisible(true);
+//                 }
+
+                new ConnectionExchangeCommand(connection, oldEndpoint->getOffPageConnector(),
+                    newEndpoint->getOffPageConnector(), this);
             }
         }
     }
@@ -822,7 +887,8 @@ ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWCom
     // Create a delete command for the old component if it should not be kept.
     if (!keepOld)
     {
-        ComponentDeleteCommand* deleteCmd = new ComponentDeleteCommand(oldComp_, this);
+        GraphicsColumn* column = diagram->getLayout()->findColumnAt(oldComp_->scenePos());
+        ComponentDeleteCommand* deleteCmd = new ComponentDeleteCommand(diagram, column, oldComp_, this);
 
         connect(deleteCmd, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -838,8 +904,8 @@ ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWCom
     // Create a move/add command for the new component.
     if (existing)
     {
-        new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(),
-                            oldComp_->scenePos(), oldComp_->getParentStack(), this);
+        new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(), oldComp_->scenePos(),
+            oldComp_->getParentStack(), this);
     }
     else
     {

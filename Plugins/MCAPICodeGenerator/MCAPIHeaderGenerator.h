@@ -12,16 +12,7 @@
 #ifndef MCAPIHeaderGenerator_H
 #define MCAPIHeaderGenerator_H
 
-#include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
-
 #include <MCAPIParser.h>
-
-class Component;
-class CSourceWriter;
 
 //-----------------------------------------------------------------------------
 //! MCAPI code generator.
@@ -62,7 +53,7 @@ private:
      *      @param [in] filename   The name of the source file to write.
      *      @param [in] nodeData   MCAPI node data associated with the instance.
      */
-    void generateInstanceHeader(QString& directory, MCAPIParser::NodeData& nodeData);
+    void generateInstanceHeader(QString const& directory, MCAPIParser::NodeData const& nodeData);
 
     /*!
      *  Add generated MCAPI code files to the fileSet of the associated component.
@@ -73,7 +64,7 @@ private:
      *      @param [in] desgConf   The design configuration associated with the design.
      */
      void addGeneratedMCAPIToFileset(QString directory, QSharedPointer<Component> topComponent,
-        SWInstance& instance, QSharedPointer<DesignConfiguration const> desgConf);
+        QSharedPointer<SWInstance> instance, QSharedPointer<DesignConfiguration const> desgConf);
 
     /*!
      *  Find connections of given software instance and returns a list of pairs, where the first is from the
@@ -84,8 +75,9 @@ private:
      *      @param [in] component   The software component of ourInstance.
      *      @return List of "our" interfaces paired with their connected interfaces.
      */
-     QList<QPair<QSharedPointer<ComInterface>, ComInterfaceRef> > findConnectedComInterfaces(
-        QSharedPointer<const Design> design, SWInstance &ourInstance, QSharedPointer<Component> component );
+     QList<QPair<QSharedPointer<ComInterface>, PortReference> > findConnectedComInterfaces(
+        QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance,
+        QSharedPointer<Component> component );
 
      /*!
      *  Writes remote endpoint of 'ourInterface' and endpoint definitions of both given interfaces.
@@ -113,7 +105,7 @@ private:
      *      @param [in] direction   Direction string to be converted.
      *      @return The created enum.
      */
-     QString transferDirectionToEString(General::Direction direction);
+     QString transferDirectionToEString(DirectionTypes::Direction direction);
 
     /*!
      *  Converts transfer type string of Kactus2 to enum used by PMQ-MCAPI.

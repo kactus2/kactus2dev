@@ -1,12 +1,19 @@
-/* 
- *	Created on:	2.4.2013
- *	Author:		Antti Kamppi
- *	File name:	swbuilddelegate.cpp
- *	Project:		Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: swbuilddelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 02.04.2013
+//
+// Description:
+// The delegate class to edit SW build commands.
+//-----------------------------------------------------------------------------
 
 #include "swbuilddelegate.h"
+
 #include <common/widgets/fileTypeSelector/filetypeselector.h>
+
+#include <editors/ComponentEditor/fileBuilders/FileBuilderColumns.h>
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -15,98 +22,120 @@
 #include <QMouseEvent>
 #include <QEvent>
 
-SWBuildDelegate::SWBuildDelegate(QObject *parent):
-QStyledItemDelegate(parent) {
+//-----------------------------------------------------------------------------
+// Function: SWBuildDelegate::SWBuildDelegate()
+//-----------------------------------------------------------------------------
+SWBuildDelegate::SWBuildDelegate(QObject *parent): QStyledItemDelegate(parent)
+{
 }
 
-SWBuildDelegate::~SWBuildDelegate() {
+//-----------------------------------------------------------------------------
+// Function: SWBuildDelegate::~SWBuildDelegate()
+//-----------------------------------------------------------------------------
+SWBuildDelegate::~SWBuildDelegate()
+{
 }
 
-QWidget* SWBuildDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index ) const {
-	switch (index.column()) {
-	case SWBuildDelegate::FILETYPE_COLUMN: {
-		
-		FileTypeSelector* typeEditor = new FileTypeSelector(parent);
-		typeEditor->refresh();
-		typeEditor->setMaxVisibleItems(25);
-		typeEditor->setMinimumContentsLength(30);
+//-----------------------------------------------------------------------------
+// Function: SWBuildDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* SWBuildDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+    QModelIndex const& index ) const
+{
+	if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+    {
+        FileTypeSelector* typeEditor = new FileTypeSelector(parent);
+        typeEditor->refresh();
+        typeEditor->setMaxVisibleItems(25);
+        typeEditor->setMinimumContentsLength(30);
 
-		return typeEditor;
-														}
-	case SWBuildDelegate::COMMAND_COLUMN:
-	case SWBuildDelegate::FLAGS_COLUMN: {
-		QLineEdit* lineEditor = new QLineEdit(parent);
-		connect(lineEditor, SIGNAL(editingFinished()),
-			this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-		return lineEditor;
-													}
-	case SWBuildDelegate::REPLACE_DEF_COLUMN:
-	default: {
-		return QStyledItemDelegate::createEditor(parent, option, index);
-				}
-	}
+        return typeEditor;
+    }
+    else if (index.column() == FileBuilderColumns::COMMAND_COLUMN ||
+        index.column() == FileBuilderColumns::FLAGS_COLUMN)
+    {
+        QLineEdit* lineEditor = new QLineEdit(parent);
+        connect(lineEditor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return lineEditor;
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
 }
 
-void SWBuildDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const {
-	switch (index.column()) {
-	case SWBuildDelegate::FILETYPE_COLUMN: {
+//-----------------------------------------------------------------------------
+// Function: SWBuildDelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void SWBuildDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+{
+	if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+    {
 		QString text = index.model()->data(index, Qt::DisplayRole).toString();
-		FileTypeSelector* combo = qobject_cast<FileTypeSelector*>(editor);
+        FileTypeSelector* combo = qobject_cast<FileTypeSelector*>(editor);
 
-		combo->selectFileType(text);
-		break;
-														}
-	case SWBuildDelegate::COMMAND_COLUMN:
-	case SWBuildDelegate::FLAGS_COLUMN: {
-		QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
-		QString value = index.model()->data(index, Qt::DisplayRole).toString();
-		defaultEdit->setText(value);
-		break;
-													}
-	case SWBuildDelegate::REPLACE_DEF_COLUMN: 
-	default: {
-		QStyledItemDelegate::setEditorData(editor, index);
-		break;
-				}
-	}
+        combo->selectFileType(text);
+    }
+    else if (index.column() == FileBuilderColumns::COMMAND_COLUMN ||
+        index.column() == FileBuilderColumns::FLAGS_COLUMN)
+    {
+        QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
+        QString value = index.model()->data(index, Qt::DisplayRole).toString();
+        defaultEdit->setText(value);
+    }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
+    }
 }
 
-void SWBuildDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index ) const {
-	switch (index.column()) {
-	case SWBuildDelegate::FILETYPE_COLUMN: {
+//-----------------------------------------------------------------------------
+// Function: SWBuildDelegate::setModelData()
+//-----------------------------------------------------------------------------
+void SWBuildDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
+{
+	if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+    {
 		FileTypeSelector* combo = qobject_cast<FileTypeSelector*>(editor);
 		QString text = combo->currentText();
 		model->setData(index, text, Qt::EditRole);
-		break;
-														}
-	case SWBuildDelegate::COMMAND_COLUMN:
-	case SWBuildDelegate::FLAGS_COLUMN: {
-		QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
-		QString value = defaultEdit->text();
-		model->setData(index, value, Qt::EditRole);
-		break;
-													}
-	case SWBuildDelegate::REPLACE_DEF_COLUMN:
-	default: {
-		QStyledItemDelegate::setModelData(editor, model, index);
-		break;
-				}
-	}
+    }
+    else if (index.column() == FileBuilderColumns::COMMAND_COLUMN ||
+        index.column() == FileBuilderColumns::FLAGS_COLUMN)
+    {
+        QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
+        QString value = defaultEdit->text();
+        model->setData(index, value, Qt::EditRole);
+    }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
+    }
 }
 
-void SWBuildDelegate::commitAndCloseEditor() {
+//-----------------------------------------------------------------------------
+// Function: SWBuildDelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void SWBuildDelegate::commitAndCloseEditor()
+{
 	QWidget* editor = qobject_cast<QWidget*>(sender());
 
-	if (editor) {
+	if (editor)
+    {
 		emit commitData(editor);
 		emit closeEditor(editor);
 	}
 }
 
-void SWBuildDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const {
+//-----------------------------------------------------------------------------
+// Function: SWBuildDelegate::paint()
+//-----------------------------------------------------------------------------
+void SWBuildDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option, QModelIndex const& index) const
+{
 	QStyleOptionViewItemV4 viewItemOption(option);
 	
-	if (index.column() == SWBuildDelegate::REPLACE_DEF_COLUMN) {
+	if (index.column() == FileBuilderColumns::REPLACE_DEFAULT_COLUMN)
+    {
 		painter->fillRect(option.rect, Qt::white);
 
 		const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
@@ -121,7 +150,12 @@ void SWBuildDelegate::paint( QPainter *painter, const QStyleOptionViewItem &opti
 	QStyledItemDelegate::paint(painter, viewItemOption, index);
 }
 
-bool SWBuildDelegate::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index ) {
+//-----------------------------------------------------------------------------
+// Function: SWBuildDelegate::editorEvent()
+//-----------------------------------------------------------------------------
+bool SWBuildDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, QStyleOptionViewItem const& option, 
+    QModelIndex const& index)
+{
 	Q_ASSERT(event);
 	Q_ASSERT(model);
 
@@ -161,7 +195,8 @@ bool SWBuildDelegate::editorEvent( QEvent *event, QAbstractItemModel *model, con
 
 		newState = (static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked ? Qt::Unchecked : Qt::Checked);
 	}
-	else {
+	else
+    {
 		return false;
 	}
 

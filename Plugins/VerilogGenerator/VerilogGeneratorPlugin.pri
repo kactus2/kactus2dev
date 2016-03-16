@@ -7,8 +7,12 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./veriloggeneratorplugin_global.h \
+HEADERS += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
+    ./veriloggeneratorplugin_global.h \
+    ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
+    ./VerilogGeneratorPlugin.h \
     ./VerilogGenerator/VerilogGenerator.h \
+    ../common/NameGenerationPolicy.h \
     ./common/Writer.h \
     ./common/WriterGroup.h \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
@@ -22,11 +26,14 @@ HEADERS += ./veriloggeneratorplugin_global.h \
     ./CommentWriter/CommentWriter.h \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../editors/ComponentEditor/common/ParameterFinder.h \
-    ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
-    ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
-    ./VerilogGeneratorPlugin.h
-SOURCES += ./VerilogGenerator/VerilogGenerator.cpp \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../designEditors/common/TopComponentParameterFinder.h
+SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
+    ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
+    ./VerilogGeneratorPlugin.cpp \
+    ./VerilogGenerator/VerilogGenerator.cpp \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ./ComponentVerilogWriter/ComponentVerilogWriter.cpp \
     ./ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
@@ -35,10 +42,11 @@ SOURCES += ./VerilogGenerator/VerilogGenerator.cpp \
     ./VerilogHeaderWriter/VerilogHeaderWriter.cpp \
     ./VerilogWireWriter/VerilogWireWriter.cpp \
     ./CommentWriter/CommentWriter.cpp \
+    ../common/NameGenerationPolicy.cpp \
     ./common/WriterGroup.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
-    ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
-    ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
-    ./VerilogGeneratorPlugin.cpp
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../designEditors/common/TopComponentParameterFinder.cpp
 RESOURCES += VerilogGenerator.qrc

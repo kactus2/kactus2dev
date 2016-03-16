@@ -150,19 +150,20 @@ private:
      *
      *      @param [in] input   The input text to parse the model name from.
      */
-    void importModelName(QString const& input, QSharedPointer<Component> targetComponent);
+    void importModelName(QString const& input, QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation);
    
     /*!
      *  Finds a flat (rtl) view from the target component or creates one, if none are found.
      *
      *      @return Flat view to set up with model name and environmental identifiers.
      */
-    View* findOrCreateFlatView(QSharedPointer<Component> targetComponent) const;
+    QSharedPointer<View> findOrCreateFlatView(QSharedPointer<Component> targetComponent) const;
     
     /*!
      *  Sets the language and environmental identifiers in the rtl view.
      */
-    void setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent) const;    
+    void setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent,
+		QSharedPointer<ComponentInstantiation>& targetComponentInstantiation) const;    
 
     //-----------------------------------------------------------------------------
     // Data.

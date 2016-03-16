@@ -1,39 +1,54 @@
-/* 
- * 		filename: newobjectdialog.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: newobjetdialog.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// NewObjectDialog is used to query the VLNV and path of a newly created design
+//-----------------------------------------------------------------------------
 
 #ifndef NEWOBJECTDIALOG_H
 #define NEWOBJECTDIALOG_H
 
+#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
+
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
+
 #include <QDialog>
 #include <QPushButton>
-
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-#include <IPXACTmodels/vlnv.h>
-#include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
 class LibraryInterface;
 class VLNVEditor;
 class KactusAttributeEditor;
 
-/*! \brief NewObjectDialog is used to query the VLNV and path
- * of a newly created design
- *
- */
+//-----------------------------------------------------------------------------
+//! NewObjectDialog is used to query the VLNV and path of a newly created design
+//-----------------------------------------------------------------------------
 class NewObjectDialog: public QDialog
 {
     Q_OBJECT
 
 public:
-    NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactType type,
-                    bool showAttributes, QWidget *parent = 0);
 
-	/*! \brief Set the vlnv for the editor
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] libInterface    The library interface.
+     *      @param [in] type            New object type.
+     *      @param [in] showAttributes  Flag for visible attributes.
+     *      @param [in] parent          Owner of this dialog.
+     */
+    NewObjectDialog(LibraryInterface* libInterface, VLNV::IPXactType type, bool showAttributes,
+        QWidget *parent = 0);
+
+	/*!
+     *  Set the vlnv for the editor.
 	 *
-	 * \param vlnv Reference to the vlnv to set
-	 *
-	*/
+     *      @param [in] vlnv    Reference to the vlnv to set.
+	 */
 	void setVLNV(const VLNV& vlnv);
 
     /*!
@@ -42,11 +57,10 @@ public:
      *      @param [in] prodHier    Product hierarchy.
      *      @param [in] firmness	firmness.
      */
-    void setKactusAttributes(KactusAttribute::ProductHierarchy prodHier,
-                             KactusAttribute::Firmness firmness);
+    void setKactusAttributes(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness);
 
-    /*! \brief Get the user inputted VLNV
-     *
+    /*!
+     *  Get the user inputted VLNV.
      */
     VLNV getVLNV();
 
@@ -60,8 +74,8 @@ public:
      */
     KactusAttribute::Firmness getFirmness() const;
 
-    /*! \brief Get the user inputted path
-     *
+    /*!
+     *  Get the user inputted path.
      */
     QString getPath();
 
@@ -71,8 +85,7 @@ public:
      *      @return True, if the user pressed OK. False if the user pressed Cancel.
      */
     static bool saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV,
-                             KactusAttribute::ProductHierarchy& prodHier,
-                             KactusAttribute::Firmness& firmness,
+                             KactusAttribute::ProductHierarchy& prodHier, KactusAttribute::Firmness& firmness,
                              VLNV& vlnv, QString& directory);
 
     /*!
@@ -80,9 +93,8 @@ public:
      *
      *      @return True, if the user pressed OK. False if the user pressed Cancel.
      */
-    static bool saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV,
-                             VLNV& vlnv, QString& directory,
-							 const QString& windowTitle = QString("Save As"));
+    static bool saveAsDialog(QWidget* parent, LibraryInterface* lh, VLNV const& oldVLNV, VLNV& vlnv,
+                             QString& directory, const QString& windowTitle = QString("Save As"));
 
 private slots:
     /*!
@@ -90,6 +102,9 @@ private slots:
      */
     void updateDirectory();
 
+    /*!
+     *  [Description].
+     */
     void onContentChanged();
 
     /*!

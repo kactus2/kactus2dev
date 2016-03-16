@@ -1,17 +1,29 @@
-/* 
- *  	Created on: 22.5.2012
- *      Author: Antti Kamppi
- * 		filename: itemvisualizer.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: itemvisualizer.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.05.2012
+//
+// Description:
+// The base class for all IP-Xact visualizer classes.
+//-----------------------------------------------------------------------------
 
 #include "itemvisualizer.h"
 
+//-----------------------------------------------------------------------------
+// Function: itemvisualizer::ItemVisualizer()
+//-----------------------------------------------------------------------------
 ItemVisualizer::ItemVisualizer(QWidget *parent):
 QWidget(parent) 
 {
 
 }
 
-ItemVisualizer::~ItemVisualizer() {
+//-----------------------------------------------------------------------------
+// Function: itemvisualizer::~ItemVisualizer()
+//-----------------------------------------------------------------------------
+ItemVisualizer::~ItemVisualizer()
+{
+
 }

@@ -12,13 +12,15 @@
 #ifndef MCAPIParser_H
 #define MCAPIParser_H
 
-#include <IPXACTmodels/ComDefinition.h>
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Design/Design.h>
+
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
-class Component;
 class CSourceWriter;
 
 //-----------------------------------------------------------------------------
@@ -37,12 +39,12 @@ public:
         QString handleName;
         QString scalarSize;
         QString transferType;
-        General::Direction direction;
+        DirectionTypes::Direction direction;
     };
 
     struct NodeData
     {
-        SWInstance instance;
+        QSharedPointer<SWInstance> instance;
         QString name;
         QString nodeID;
         QString domainID;
@@ -56,17 +58,17 @@ public:
     /*!
      *  Returns list MCAPI endpoints within a single software component.
      */
-     const QList<EndPointData>& getComponentEndpoints();
+     QList<EndPointData> getComponentEndpoints();
 
     /*!
      *  Returns list nodes within a single system design, along with their connections to other nodes.
      */
-     const QList<NodeData>& getDesignNodes();
+     QList<NodeData> getDesignNodes();
 
     /*!
      *  Returns list of files replaced on the instance header generation.
      */
-     const QStringList& getReplacedFiles();
+     QStringList getReplacedFiles();
 
     /*!
      *  Generates MCAPI code for the given component.
@@ -114,7 +116,7 @@ private:
      *      @param [in] component   The software component of ourInstance.
      *      @param [in] nodeData    Node associated with the instance.
      */
-     void findEndpointDefinitions(QSharedPointer<const Design> design, SWInstance &ourInstance,
+     void findEndpointDefinitions(QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance,
          QSharedPointer<Component> component, NodeData& nodeData);
 
     /*!
@@ -124,18 +126,21 @@ private:
      *      @param [in] design   The design where the software instance belongs to.
      *      @param [in] ourInstance   The software instance, which connections are listed.
      *      @param [in] component   The software component of ourInstance.
+     *
      *      @return List of "our" interfaces paired with their connected interfaces.
      */
-     QList<QPair<QSharedPointer<ComInterface>, ComInterfaceRef> > findConnectedComInterfaces(
-        QSharedPointer<const Design> design, SWInstance &ourInstance, QSharedPointer<Component> component );
+     QList<QPair<QSharedPointer<ComInterface>, PortReference> > findConnectedComInterfaces(
+        QSharedPointer<const Design> design, QSharedPointer<SWInstance> ourInstance, 
+        QSharedPointer<Component> component );
 
      /*!
       *  Parses data associated with an endpoint from given ComInterface and assigns it to the given endpoint.
       *
-      *      @param [in] epd   Struct that will contain the parsed data.
       *      @param [in] comIf   Source of the parsed data.
+      *
+      *      @return The parsed data.
       */
-      void parseEndpoint(EndPointData &epd, QSharedPointer<ComInterface> comIf);
+      EndPointData parseEndpoint(QSharedPointer<ComInterface> comIf);
 
     /*!
      *  Search for a software instance by name within a design.
@@ -144,7 +149,7 @@ private:
      *      @param [in] instanceName   The name of the searched software instance.
      *      @return The found software instance.
      */
-     SWInstance searchInstance(QSharedPointer<const Design> design, QString instanceName);
+     QSharedPointer<SWInstance> searchInstance(QSharedPointer<const Design> design, QString const& instanceName);
 
     /*!
      *  Warns if all fields of endpoint identifier may be not found in given interface and its instance.
@@ -152,7 +157,8 @@ private:
      *      @param [in] targetInterface   Interface, which port ID is to be checked.
      *      @param [in] targetInstance   Instance, which node ID and domain ID are to be checked.
      */
-     void checkEndpointIdentifier(QSharedPointer<ComInterface> targetInterface, SWInstance &targetInstance);
+     void checkEndpointIdentifier(QSharedPointer<ComInterface> targetInterface,
+         QSharedPointer<SWInstance> targetInstance);
 
     /*!
      *  Warns if the transfer types of given interfaces are not compatible.
@@ -162,8 +168,8 @@ private:
      *      @param [in] ourInstance  Instance of connection in "our" end.
      *      @param [in] targetInstance   Instance of connection in "their" end.
      */
-     void checkTransferType(QSharedPointer<ComInterface> ourInterface, QSharedPointer<ComInterface>
-         targetInterface, SWInstance &ourInstance, SWInstance &targetInstance);
+     void checkTransferType(QSharedPointer<SWInstance> ourInstance, QSharedPointer<ComInterface> ourInterface, 
+         QSharedPointer<SWInstance> targetInstance, QSharedPointer<ComInterface> targetInterface);
 
     /*!
      *   Warns if the scalar sizes of given interfaces are not compatible.
@@ -173,8 +179,8 @@ private:
      *      @param [in] ourInstance   Instance of connection in "our" end.
      *      @param [in] targetInstance   Instance of connection in "their" end.
      */
-     void checkScalarSize(QSharedPointer<ComInterface> ourInterface, QSharedPointer<ComInterface> targetInterface,
-        SWInstance &ourInstance, SWInstance &targetInstance);
+     void checkScalarSize(QSharedPointer<SWInstance> ourInstance, QSharedPointer<ComInterface> ourInterface, 
+         QSharedPointer<SWInstance> targetInstance, QSharedPointer<ComInterface> targetInterface);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -182,10 +188,13 @@ private:
 
     //! Endpoints parsed from component.
     QList<EndPointData> componentEndpoints_;
+
     //! Nodes parsed from design.
     QList<NodeData> designNodes_;
+
     //! List of files that may be replaced
     QStringList replacedFiles_;
+
     //! The plugin utility.
     IPluginUtility* utility_;
 };

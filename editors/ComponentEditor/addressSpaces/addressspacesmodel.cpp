@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.6.2012
- *      Author: Antti Kamppi
- * 		filename: addressspacesmodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacesmodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.06.2012
+//
+// Description:
+// The model class to manage the objects for address spaces editor.
+//-----------------------------------------------------------------------------
 
 #include "addressspacesmodel.h"
 
@@ -14,21 +18,28 @@
 #include <editors/ComponentEditor/addressSpaces/AddressSpaceExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+
+#include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
+
 #include <QColor>
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpacesModel::AddressSpacesModel()
 //-----------------------------------------------------------------------------
-AddressSpacesModel::AddressSpacesModel(QSharedPointer<Component> component, 
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QObject *parent):
+AddressSpacesModel::AddressSpacesModel(QSharedPointer<Component> component,
+                                       QSharedPointer<ParameterFinder> parameterFinder,
+                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                       QSharedPointer<AddressSpaceValidator> addressSpaceValidator,
+                                       QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
-    ParameterizableTable(parameterFinder),
-    component_(component),
-    addrSpaces_(component->getAddressSpaces()),
-    expressionFormatter_(expressionFormatter)
+ParameterizableTable(parameterFinder),
+component_(component),
+addressSpaces_(component->getAddressSpaces()),
+expressionFormatter_(expressionFormatter),
+addressSpaceValidator_(addressSpaceValidator)
 {
 
 }
@@ -38,6 +49,7 @@ ReferencingTableModel(parameterFinder, parent),
 //-----------------------------------------------------------------------------
 AddressSpacesModel::~AddressSpacesModel()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -49,7 +61,7 @@ int AddressSpacesModel::rowCount(QModelIndex const& parent) const
     {
 		return 0;
 	}
-	return addrSpaces_.size();
+	return addressSpaces_->size();
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +146,7 @@ QVariant AddressSpacesModel::headerData( int section, Qt::Orientation orientatio
 //-----------------------------------------------------------------------------
 QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= addrSpaces_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= addressSpaces_->size())
     {
 		return QVariant();
 	}
@@ -163,7 +175,7 @@ QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
     }
 	else if (Qt::UserRole == role)
     {
-		return component_->getMasterInterfaces(addrSpaces_.at(index.row())->getName());
+		return component_->getMasterInterfaces(addressSpaces_->at(index.row())->name());
 	}
 	else if (Qt::ForegroundRole == role)
     {
@@ -206,7 +218,7 @@ QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 bool AddressSpacesModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= addrSpaces_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= addressSpaces_->size())
     {
 		return false;
 	}
@@ -215,24 +227,24 @@ bool AddressSpacesModel::setData(QModelIndex const& index, QVariant const& value
     {
         if (index.column() == AddressSpaceColumns::NAME)
         {
-            addrSpaces_[index.row()]->setName(value.toString());
+            addressSpaces_->at(index.row())->setName(value.toString());
         }
         else if (index.column() == AddressSpaceColumns::AUB)
         {
-            addrSpaces_[index.row()]->setAddressUnitBits(value.toUInt());
+            addressSpaces_->at(index.row())->setAddressUnitBits(value.toString());
+            emit aubChangedOnRow(index.row());
         }
         else if (index.column() == AddressSpaceColumns::WIDTH)
         {
-            addrSpaces_[index.row()]->setWidth(parseExpressionToDecimal(value.toString()).toUInt());
-            addrSpaces_[index.row()]->setWidthExpression(value.toString());
+            addressSpaces_->at(index.row())->setWidth(value.toString());
         }
         else if (index.column() == AddressSpaceColumns::RANGE)
         {
-            addrSpaces_[index.row()]->setRange(value.toString());
+            addressSpaces_->at(index.row())->setRange(value.toString());
         }
         else if (index.column() == AddressSpaceColumns::DESCRIPTION)
         {
-            addrSpaces_[index.row()]->setDescription(value.toString());
+            addressSpaces_->at(index.row())->setDescription(value.toString());
         }
         else
         {
@@ -254,7 +266,7 @@ bool AddressSpacesModel::setData(QModelIndex const& index, QVariant const& value
 //-----------------------------------------------------------------------------
 void AddressSpacesModel::onAddItem(QModelIndex const& index )
 {
-	int row = addrSpaces_.size();
+	int row = addressSpaces_->size();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -263,7 +275,7 @@ void AddressSpacesModel::onAddItem(QModelIndex const& index )
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	addrSpaces_.insert(row, QSharedPointer<AddressSpace>(new AddressSpace()));
+	addressSpaces_->insert(row, QSharedPointer<AddressSpace>(new AddressSpace()));
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -279,16 +291,16 @@ void AddressSpacesModel::onAddItem(QModelIndex const& index )
 void AddressSpacesModel::onRemoveItem(QModelIndex const& index )
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= addrSpaces_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= addressSpaces_->size())
     {
 		return;
 	}
 
-    decreaseReferencesWithRemovedAddressSpace(addrSpaces_.at(index.row()));
+    decreaseReferencesWithRemovedAddressSpace(addressSpaces_->at(index.row()));
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	addrSpaces_.removeAt(index.row());
+	addressSpaces_->removeAt(index.row());
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed
@@ -296,23 +308,6 @@ void AddressSpacesModel::onRemoveItem(QModelIndex const& index )
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpacesModel::isValid()
-//-----------------------------------------------------------------------------
-bool AddressSpacesModel::isValid() const
-{
-	// if at least one address space is invalid
-	foreach (QSharedPointer<AddressSpace> addrSpace, addrSpaces_) 
-    {
-		if (!addrSpace->isValid(component_->getChoices(), component_->getRemapStateNames()))
-        {
-			return false;
-		}
-	}
-	// all address spaces were valid
-	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -330,23 +325,23 @@ QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index)
 {
     if (index.column() == AddressSpaceColumns::NAME)
     {
-        return addrSpaces_.at(index.row())->getName();
+        return addressSpaces_->at(index.row())->name();
     }
     else if (index.column() == AddressSpaceColumns::AUB)
     {
-        return addrSpaces_.at(index.row())->getAddressUnitBits();
+        return addressSpaces_->at(index.row())->getAddressUnitBits();
     }
     else if (index.column() == AddressSpaceColumns::WIDTH)
     {
-        return addrSpaces_.at(index.row())->getWidthExpression();
+        return addressSpaces_->at(index.row())->getWidth();
     }
     else if (index.column() == AddressSpaceColumns::RANGE)
     {
-        return addrSpaces_.at(index.row())->getRange();
+        return addressSpaces_->at(index.row())->getRange();
     }
     else if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
     {
-        QStringList interfaceNames = component_->getMasterInterfaces(addrSpaces_.at(index.row())->getName());
+        QStringList interfaceNames = component_->getMasterInterfaces(addressSpaces_->at(index.row())->name());
 
         // if no interface refers to the memory map
         if (interfaceNames.isEmpty())
@@ -361,7 +356,7 @@ QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index)
     }
     else if (index.column() == AddressSpaceColumns::DESCRIPTION)
     {
-        return addrSpaces_.at(index.row())->getDescription();
+        return addressSpaces_->at(index.row())->description();
     }
     else
     {
@@ -374,9 +369,23 @@ QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 bool AddressSpacesModel::validateIndex(QModelIndex const& index) const
 {
-    if (isValidExpressionColumn(index))
+    QSharedPointer<AddressSpace> currentSpace = addressSpaces_->at(index.row());
+
+    if (index.column() == AddressSpaceColumns::NAME)
     {
-        return isValuePlainOrExpression(expressionOrValueForIndex(index).toString());
+        return addressSpaceValidator_->hasValidName(currentSpace->name());
+    }
+    else if (index.column() == AddressSpaceColumns::AUB)
+    {
+        return addressSpaceValidator_->hasValidAddressUnitBits(currentSpace);
+    }
+    else if (index.column() == AddressSpaceColumns::RANGE)
+    {
+        return addressSpaceValidator_->hasValidRange(currentSpace);
+    }
+    else if (index.column() == AddressSpaceColumns::WIDTH)
+    {
+        return addressSpaceValidator_->hasValidWidth(currentSpace);
     }
     else
     {
@@ -389,8 +398,8 @@ bool AddressSpacesModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 int AddressSpacesModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    int referencesInRange = addrSpaces_.at(row)->getRange().count(valueID);
-    int referencesInWidth = addrSpaces_.at(row)->getWidthExpression().count(valueID);
+    int referencesInRange = addressSpaces_->at(row)->getRange().count(valueID);
+    int referencesInWidth = addressSpaces_->at(row)->getWidth().count(valueID);
 
     return referencesInRange + referencesInWidth;
 }

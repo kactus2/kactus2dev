@@ -38,10 +38,11 @@ public:
     /*!
      *  Creates an editor for the given model index.
      */
-    virtual QWidget* createEditor(QWidget *parent, QStyleOptionViewItem const& option,
+    virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option,
                                   QModelIndex const& index) const;
 
-    virtual void setEditorData(QWidget *editor, const QModelIndex &index) const;
+    virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
+
     virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
     /*!

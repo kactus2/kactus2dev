@@ -53,7 +53,7 @@ void PortTagEditorDelegate::setEditorData(QWidget* editor, const QModelIndex& in
 
     QComboBox* tagCombo = qobject_cast<QComboBox*>(editor);
 
-    if (QString::compare(text, "Double click to add new item.") != 0)
+    if (text != QLatin1String("Double click to add new item."))
     {
         tagCombo->setCurrentText(text);
     }

@@ -10,20 +10,19 @@
 //-----------------------------------------------------------------------------
 
 #include "ImportEditor.h"
-#include "ModelParameterEditorAdapter.h"
 
 #include <common/widgets/FileSelector/fileselector.h>
 
 #include <library/LibraryManager/libraryhandler.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/modelParameters/modelparametereditor.h>
-#include <editors/ComponentEditor/parameters/parameterseditor.h>
 #include <editors/ComponentEditor/ports/portseditor.h>
 
 #include <wizards/ComponentWizard/ImportRunner.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Component/validators/PortValidator.h>
 
 #include <QApplication>
 #include <QHBoxLayout>
@@ -37,32 +36,33 @@
 ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface* handler,
     PluginManager const& pluginMgr, QSharedPointer <ComponentParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
-    QWidget(parent),
-    splitter_(Qt::Vertical, this),
-	componentXmlPath_(handler->getPath(*component->getVlnv())),
-    component_(component),
-    importComponent_(new Component(*component_)),
-    selectedSourceFile_(),
-    modelParameterEditor_(new ModelParameterEditor(importComponent_, handler, parameterFinder, expressionFormatter,
-        &splitter_)),
-    portEditor_(new PortsEditor(importComponent_, handler, parameterFinder, expressionFormatter, &splitter_)),
-    fileSelector_(new FileSelector(component, this)),
-    editButton_(new QPushButton(tr("Open editor"), this)),
-    refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
-    modelParameterAdapter_(modelParameterEditor_),
-    sourceDisplayTabs_(new QTabWidget(this)),
-    runner_(new ImportRunner(parameterFinder, sourceDisplayTabs_, this)),
-    messageBox_(new QLabel(this))
+QWidget(parent),
+splitter_(Qt::Vertical, this),
+componentXmlPath_(handler->getPath(component->getVlnv())),
+component_(component),
+importComponent_(new Component(*component_)),
+selectedSourceFile_(),
+portEditor_(0),
+fileSelector_(new FileSelector(component, this)),
+editButton_(new QPushButton(tr("Open editor"), this)),
+refreshButton_(new QPushButton(QIcon(":/icons/common/graphics/refresh.png"), "", this)),
+sourceDisplayTabs_(new QTabWidget(this)),
+runner_(new ImportRunner(parameterFinder, sourceDisplayTabs_, this)),
+messageBox_(new QLabel(this)),
+componentViews_(component->getViews())
 {
-	// CSV import/export is disabled in the wizard.
-	modelParameterEditor_->setAllowImportExport(false);
+    QSharedPointer<ExpressionParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
+
+    QSharedPointer<PortValidator> portValidator (new PortValidator(expressionParser, componentViews_));
+
+    portEditor_ = new PortsEditor(
+        importComponent_, handler, parameterFinder, expressionFormatter, portValidator, &splitter_);
+
+    // CSV import/export is disabled in the wizard.
 	portEditor_->setAllowImportExport(false);
 
-    runner_->setVerilogExpressionParser(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parameterFinder)));
-    runner_->setModelParameterVisualizer(&modelParameterAdapter_);
+    runner_->setVerilogExpressionParser(expressionParser);
     runner_->loadPlugins(pluginMgr);
-
-    connect(modelParameterEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(portEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -74,11 +74,6 @@ ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface
 
     connect(runner_, SIGNAL(noticeMessage(QString const&)), 
         messageBox_, SLOT(setText(QString const&)), Qt::UniqueConnection);
-
-    connect(modelParameterEditor_, SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(modelParameterEditor_, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(portEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
@@ -119,7 +114,7 @@ void ImportEditor::initializeFileSelection()
 //-----------------------------------------------------------------------------
 bool ImportEditor::checkEditorValidity() const
 {
-    return modelParameterEditor_->isValid() && portEditor_->isValid();
+    return portEditor_->isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -151,7 +146,8 @@ void ImportEditor::onRefresh()
     importComponent_ = runner_->run(selectedSourceFile_, componentXmlPath_, component_);
 
     portEditor_->setComponent(importComponent_);
-    modelParameterEditor_->setComponent(importComponent_);
+
+    componentViews_ = importComponent_->getViews();
 
     emit componentChanged(importComponent_);
     emit contentChanged();
@@ -223,7 +219,6 @@ void ImportEditor::setupLayout()
     sourceLayout->addWidget(sourceDisplayTabs_);
 
     splitter_.addWidget(sourceWidget);
-    splitter_.addWidget(modelParameterEditor_);
     splitter_.addWidget(portEditor_);
     splitter_.setStretchFactor(0, 40);
     splitter_.setStretchFactor(1, 10);

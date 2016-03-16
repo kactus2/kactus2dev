@@ -23,7 +23,7 @@
 #include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayView.h>
 
-#include <IPXACTmodels/choice.h>
+#include <IPXACTmodels/Component/Choice.h>
 
 #include <QScrollArea>
 #include <QColor>

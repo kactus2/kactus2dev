@@ -11,20 +11,22 @@
 
 #include "PropertyValueModel.h"
 
-#include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
-#include <QRegExp>
-#include <QFont>
 #include <QColor>
+#include <QFont>
+#include <QRegularExpression>
 
-QString const PropertyValueModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
+QString const PropertyValueModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
+    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
+    "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$");
 
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::PropertyValueModel()
 //-----------------------------------------------------------------------------
 PropertyValueModel::PropertyValueModel(QObject *parent)
     : QAbstractTableModel(parent),
-      allowedProperties_(0)
+      allowedProperties_()
 {
 }
 
@@ -38,37 +40,35 @@ PropertyValueModel::~PropertyValueModel()
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::setAllowedProperties()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::setAllowedProperties(QList< QSharedPointer<ComProperty> > const* properties)
+void PropertyValueModel::setAllowedProperties(QList< QSharedPointer<ComProperty> > properties)
 {
     beginResetModel();
 
     allowedProperties_ = properties;
 
-    if (allowedProperties_ != 0)
+    // Check that at least all required properties are found in the values.
+    foreach (QSharedPointer<ComProperty const> comProperty, properties)
     {
-        // Check that at least all required properties are found in the values.
-        foreach (QSharedPointer<ComProperty const> prop, *properties)
+        if (comProperty->isRequired())
         {
-            if (prop->isRequired())
+            int i = 0;
+
+            for (; i < table_.size(); ++i)
             {
-                int i = 0;
-
-                for (; i < table_.size(); ++i)
+                if (table_.at(i).first == comProperty->name())
                 {
-                    if (table_.at(i).first == prop->getName())
-                    {
-                        break;
-                    }
+                    break;
                 }
+            }
 
-                // If the value was not found, add it.
-                if (i == table_.size())
-                {
-                    table_.append(NameValuePair(prop->getName(), prop->getDefaultValue()));
-                }
+            // If the value was not found, add it.
+            if (i == table_.size())
+            {
+                table_.append(NameValuePair(comProperty->name(), comProperty->getDefaultValue()));
             }
         }
     }
+
 
     endResetModel();
 }
@@ -111,7 +111,7 @@ QMap<QString, QString> PropertyValueModel::getData() const
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::rowCount()
 //-----------------------------------------------------------------------------
-int PropertyValueModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int PropertyValueModel::rowCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
@@ -124,7 +124,7 @@ int PropertyValueModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) 
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::columnCount()
 //-----------------------------------------------------------------------------
-int PropertyValueModel::columnCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int PropertyValueModel::columnCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
@@ -137,44 +137,37 @@ int PropertyValueModel::columnCount(QModelIndex const& parent /*= QModelIndex()*
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::data()
 //-----------------------------------------------------------------------------
-QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
+QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
 {
-    if (!index.isValid())
-    {
-        return QVariant();
-    }
-    else if (index.row() < 0 || index.row() >= table_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
     {
         return QVariant();
     }
 
     if (role == Qt::DisplayRole)
     {
-        switch (index.column())
+        if (index.column() ==  0)
         {
-        case 0:
             return table_.at(index.row()).first;
-        
-        case 1:
+        }
+        else if (index.column() == 1)
+        {
             return table_.at(index.row()).second;
-        
-        default:
+        }
+        else
+        {
             return QVariant();
         }
     }
-    else if (role == Qt::FontRole)
+    else if (role == Qt::FontRole && index.column() == 0)
     {
-        if (index.column() == 0 && allowedProperties_ != 0)
+        foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
         {
-            foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
+            if (comProperty->name() == table_.at(index.row()).first && comProperty->isRequired())
             {
-                if (prop->getName() == table_.at(index.row()).first &&
-                    prop->isRequired())
-                {
-                    QFont font;
-                    font.setBold(true);
-                    return font;
-                }
+                QFont font;
+                font.setBold(true);
+                return font;
             }
         }
 
@@ -182,69 +175,61 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
     }
     else if (role == Qt::TextColorRole)
     {
-        switch (index.column())
+        if (index.column() == 0)
         {
-        case 0:
+            // Check if the property value is found from the list of allowed properties.
+            foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
             {
-                // Check if the property value is found from the list of allowed properties.
-                if (allowedProperties_ != 0)
+                if (comProperty->name() == table_.at(index.row()).first)
                 {
-                    foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
-                    {
-                        if (prop->getName() == table_.at(index.row()).first)
-                        {
-                            return QColor(Qt::black);
-                        }
-                    }
+                    return QColor(Qt::black);
                 }
 
-                // Use red to indicate property values that are not found in the allowed properties.
-                return QColor(Qt::red);
             }
-            
-        case 1:
+
+            // Use red to indicate property values that are not found in the allowed properties.
+            return QColor(Qt::red);
+        }
+
+        else if (index.column() == 1)
+        {
+            // Validate the property value against the data type defined in the property definition.
+            foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
             {
-                // Validate the property value against the data type defined in the property definition.
-                if (allowedProperties_ != 0)
+                // Check if we found a match.
+                if (comProperty->name() == table_.at(index.row()).first)
                 {
-                    foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
+                    QString const& value = table_.at(index.row()).second;
+                    bool ok = true;
+
+                    if (comProperty->getType() == QLatin1String("integer"))
                     {
-                        // Check if we found a match.
-                        if (prop->getName() == table_.at(index.row()).first)
-                        {
-                            QString const& value = table_.at(index.row()).second;
-                            bool ok = true;
+                        value.toInt(&ok);
+                    }
+                    else if (comProperty->getType() == QLatin1String("ip_address"))
+                    {
+                        ok = value.contains(QRegularExpression(IP_ADDRESS_REGEX));
+                    }
 
-                            if (prop->getType() == "integer")
-                            {
-                                value.toInt(&ok);
-                            }
-                            else if (prop->getType() == "ip_address")
-                            {
-                                ok = value.contains(QRegExp(IP_ADDRESS_REGEX));
-                            }
-
-                            if (ok)
-                            {
-                                return QColor(Qt::black);
-                            }
-                            else
-                            {
-                                return QColor(Qt::red);
-                            }
-                        }
+                    if (ok)
+                    {
+                        return QColor(Qt::black);
+                    }
+                    else
+                    {
+                        return QColor(Qt::red);
                     }
                 }
-
-                return QColor(Qt::black);
             }
 
-        default:
-            {
-                return QColor(Qt::black);
-            }
+            return QColor(Qt::black);
+        }
+        else
+        {
+            return QColor(Qt::black);
         }
     }
+
     else
     {
         return QVariant();
@@ -256,24 +241,18 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role /*= Qt::Dis
 //-----------------------------------------------------------------------------
 QVariant PropertyValueModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation != Qt::Horizontal)
+    if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
     {
         return QVariant();
     }
 
-    if (role == Qt::DisplayRole)
+    if (section == 0)
     {
-        switch (section)
-        {
-        case 0:
-            return tr("Name");
-
-        case 1:
-            return tr("Value");
-
-        default:
-            return QVariant();
-        }
+        return tr("Name");
+    }
+    else if (section == 1)
+    {
+        return tr("Value");
     }
     else
     {
@@ -293,17 +272,14 @@ Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
 
     if (index.column() == 0)
     {
-        if (allowedProperties_ != 0)
+        foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
         {
-            foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
+            if (comProperty->name() == table_.at(index.row()).first && comProperty->isRequired())
             {
-                // Check if we found a match.
-                if (prop->getName() == table_.at(index.row()).first && prop->isRequired())
-                {
-                    return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-                }
+                return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
             }
         }
+
     }
 
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
@@ -312,45 +288,29 @@ Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::setData()
 //-----------------------------------------------------------------------------
-bool PropertyValueModel::setData(QModelIndex const& index, QVariant const& value, int role /*= Qt::EditRole*/)
+bool PropertyValueModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
-    if (!index.isValid())
-    {
-        return false;
-    }
-    else if (index.row() < 0 || index.row() >= table_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= table_.size() || role != Qt::EditRole)
     {
         return false;
     }
 
-    if (role == Qt::EditRole)
+    if (index.column() == 0)
     {
-        switch (index.column())
-        {
-        case 0:
-            {
-                table_[index.row()].first = value.toString();
-                break;
-            }
-
-        case 1:
-            {
-                table_[index.row()].second = value.toString();
-                break;
-            }
-
-        default:
-            return false;
-        }
-
-        emit dataChanged(index, index);
-        emit contentChanged();
-        return true;
+        table_[index.row()].first = value.toString();
     }
-    else
+    else if (index.column() == 1)
+    {
+        table_[index.row()].second = value.toString();
+    }
+    else 
     {
         return false;
     }
+
+    emit dataChanged(index, index);
+    emit contentChanged();
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -396,15 +356,11 @@ void PropertyValueModel::onRemoveItem(QModelIndex const& index)
     }
 
     // Required property values cannot be deleted.
-    if (allowedProperties_ != 0)
+    foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
     {
-        foreach (QSharedPointer<ComProperty const> prop, *allowedProperties_)
+        if (comProperty->name() == table_.at(index.row()).first && comProperty->isRequired())
         {
-            // Check if we found a match.
-            if (prop->getName() == table_.at(index.row()).first && prop->isRequired())
-            {
-                return;
-            }
+            return;
         }
     }
 
@@ -422,25 +378,21 @@ void PropertyValueModel::onRemoveItem(QModelIndex const& index)
 bool PropertyValueModel::isValid() const
 {
     // Validate the property values against the allowed properties.
-    if (allowedProperties_ != 0)
+    foreach (NameValuePair const& pair, table_)
     {
-        foreach (NameValuePair const& pair, table_)
+        int i = 0;
+        for (; i < allowedProperties_.size(); ++i)
         {
-            int i = 0;
-
-            for (; i < allowedProperties_->size(); ++i)
+            if (allowedProperties_.at(i)->name() == pair.first)
             {
-                if (allowedProperties_->at(i)->getName() == pair.first)
-                {
-                    break;
-                }
+                break;
             }
+        }
 
-            // Check if the property was not found.
-            if (i == allowedProperties_->size())
-            {
-                emit noticeMessage(tr("Property value '%1' not found in the COM definition").arg(pair.first));                                                                                             
-            }
+        // Check if the property was not found.
+        if (i == allowedProperties_.size())
+        {
+            emit noticeMessage(tr("Property value '%1' not found in the COM definition").arg(pair.first));                                                                                             
         }
     }
 

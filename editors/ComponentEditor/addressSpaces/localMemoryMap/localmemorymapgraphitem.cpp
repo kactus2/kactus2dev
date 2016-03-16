@@ -11,15 +11,19 @@
 
 #include "localmemorymapgraphitem.h"
 
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+
 //-----------------------------------------------------------------------------
 // Function: LocalMemoryMapGraphItem::LocalMemoryMapGraphItem()
 //-----------------------------------------------------------------------------
-LocalMemoryMapGraphItem::LocalMemoryMapGraphItem(QSharedPointer<AddressSpace> addrSpace, 
-												 QSharedPointer<MemoryMap> localMemoryMap,
-												 QGraphicsItem* parent /*= 0*/ ):
-MemoryMapGraphItem(localMemoryMap, localMemoryMap, parent),
+LocalMemoryMapGraphItem::LocalMemoryMapGraphItem(QSharedPointer<AddressSpace> addrSpace,
+    QSharedPointer<MemoryMapBase> localMemoryMap, QSharedPointer<ExpressionParser> expressionParser,
+    QGraphicsItem* parent):
+MemoryMapGraphItem(QSharedPointer<MemoryMap> (new MemoryMap()), localMemoryMap, expressionParser, parent),
 addrSpace_(addrSpace)
-{   
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -27,6 +31,7 @@ addrSpace_(addrSpace)
 //-----------------------------------------------------------------------------
 LocalMemoryMapGraphItem::~LocalMemoryMapGraphItem()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -34,7 +39,7 @@ LocalMemoryMapGraphItem::~LocalMemoryMapGraphItem()
 //-----------------------------------------------------------------------------
 unsigned int LocalMemoryMapGraphItem::getAddressUnitSize() const
 {
-	return addrSpace_->getAddressUnitBits();
+    return parseExpression(addrSpace_->getAddressUnitBits());
 }
 
 //-----------------------------------------------------------------------------
@@ -42,7 +47,7 @@ unsigned int LocalMemoryMapGraphItem::getAddressUnitSize() const
 //-----------------------------------------------------------------------------
 void LocalMemoryMapGraphItem::refresh()
 {
-    QString name = memoryMap_->getName();
+    QString name = memoryMap_->name();
     if (name.isEmpty())
     {
         name = "Local memory map";

@@ -11,8 +11,8 @@
 
 #include "LibraryMock.h"
 
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/Document.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::LibraryMock()
@@ -36,9 +36,9 @@ LibraryMock::~LibraryMock()
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::addComponent()
 //-----------------------------------------------------------------------------
-void LibraryMock::addComponent(QSharedPointer<LibraryComponent> component)
+void LibraryMock::addComponent(QSharedPointer<Document> component)
 {
-    components_.insert(*component->getVlnv(), component);
+    components_.insert(component->getVlnv(), component);
 }
 
 //-----------------------------------------------------------------------------
@@ -52,17 +52,17 @@ void LibraryMock::clear()
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getModel()
 //-----------------------------------------------------------------------------
-QSharedPointer<LibraryComponent> LibraryMock::getModel(const VLNV& vlnv)
+QSharedPointer<Document> LibraryMock::getModel(const VLNV& vlnv)
 {
-    return components_.value(vlnv, QSharedPointer<LibraryComponent>(0));
+    return components_.value(vlnv, QSharedPointer<Document>(0));
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::getModelReadOnly()
 //-----------------------------------------------------------------------------
-QSharedPointer<LibraryComponent const> LibraryMock::getModelReadOnly(const VLNV& vlnv)
+QSharedPointer<Document const> LibraryMock::getModelReadOnly(const VLNV& vlnv)
 {
-    return components_.value(vlnv, QSharedPointer<LibraryComponent>(0));
+    return components_.value(vlnv, QSharedPointer<Document>(0));
 }
 
 //-----------------------------------------------------------------------------
@@ -92,16 +92,16 @@ QString LibraryMock::getDirectoryPath(const VLNV& /*vlnv*/) const
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::writeModelToFile()
 //-----------------------------------------------------------------------------
-bool LibraryMock::writeModelToFile(const QString path, QSharedPointer<LibraryComponent> model, bool /*printErrors*/)
+bool LibraryMock::writeModelToFile(const QString& path, QSharedPointer<Document> model, bool /*printErrors*/)
 {
-    paths_.insert(*model->getVlnv(), path);
+    paths_.insert(model->getVlnv(), path);
     return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::writeModelToFile()
 //-----------------------------------------------------------------------------
-bool LibraryMock::writeModelToFile(QSharedPointer<LibraryComponent> /*model*/, bool /*printErrors*/)
+bool LibraryMock::writeModelToFile(QSharedPointer<Document> /*model*/, bool /*printErrors*/)
 {
     return false;
 }
@@ -198,7 +198,7 @@ VLNV LibraryMock::getDesignVLNV(const VLNV& /*hierarchyRef*/)
 //-----------------------------------------------------------------------------
 QSharedPointer<Design> LibraryMock::getDesign(const VLNV& hierarchyRef)
 {
-    return components_.value(hierarchyRef, QSharedPointer<LibraryComponent>(0)).dynamicCast<Design>();
+    return components_.value(hierarchyRef, QSharedPointer<Document>(0)).dynamicCast<Design>();
 }
 
 //-----------------------------------------------------------------------------

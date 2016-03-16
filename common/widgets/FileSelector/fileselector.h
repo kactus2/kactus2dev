@@ -1,91 +1,99 @@
-/* 
- *	Created on:	11.6.2013
- *	Author:		Antti Kamppi
- *	File name:	fileselector.h
- *	Project:		Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: fileselector.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.6.2013
+//
+// Description:
+// Used to select one file from the component's file sets.
+//-----------------------------------------------------------------------------
 
 #ifndef FILESELECTOR_H
 #define FILESELECTOR_H
-
-#include <IPXACTmodels/component.h>
 
 #include <QComboBox>
 #include <QSharedPointer>
 #include <QStringList>
 
-/*! \brief Used to select one file from the component's file sets.
- *
- */
+class Component;
+//-----------------------------------------------------------------------------
+//! Used to select one file from the component's file sets.
+//-----------------------------------------------------------------------------
 class FileSelector : public QComboBox
 {
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * Method: 		FileSelector
-	 * Full name:	FileSelector::FileSelector
-	 * Access:		private 
-	 *
-	 * \param component Pointer to the component which's files are selected.
-	 * \param parent Pointer to the owner of the combo box.
-	 *
-	*/
-	FileSelector(QSharedPointer<Component> component,
-		QWidget *parent);
+	 *      @param [in] component   Pointer to the component whose files are selected.
+	 *      @param [in] parent      Pointer to the owner of the combo box.
+	 */
+	FileSelector(QSharedPointer<Component> component, QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~FileSelector();
 
-	/*! \brief Add a file suffix to be used as filter when selecting files to display.
+	/*!
+     *  Add a file suffix to be used as filter when selecting files to display.
 	 *
-	 * Method: 		addFilter
-	 * Full name:	FileSelector::addFilter
-	 * Access:		public 
-	 *
-	 * \param suffix The file suffix to use as filter.
-	 *
-	*/
+	 *      @param [in] suffix  The file suffix to use as filter.
+	 */
 	void addFilter(const QString& suffix);
 
+    /*!
+     *  Clear the filters.
+     */
     void clearFilters();
 
 public slots:
 
-	//! \brief Refresh the items to be selected in the combo box.
+	//! Refresh the items to be selected in the combo box.
 	void refresh();
 
-	/*! \brief Set the specified file as selected.
+	/*!
+     *  Set the specified file as selected.
 	 *
-	 * \param filePath The file path of the file to select.
-	 *
-	*/
+	 *      @param [in] filePath    The file path of the file to select.
+	 */
 	void selectFile(const QString& filePath);
 
 signals:
 
-	//! \brief Emitted when a file is selected.
+	//! Emitted when a file is selected.
 	void fileSelected(const QString& filePath);
 
 private slots:
 
-	//! \brief Handler for selected index changes.
+	//! Handler for selected index changes.
 	void onIndexChange(int newIndex);
 
 private:
 	
-	//! \brief No copying
+    /*!
+     *  Get the file names.
+     *
+     *      @param [in] component   The component to search the files from.
+     */
+    QStringList getFileNames(QSharedPointer<Component> component) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! No copying.
 	FileSelector(const FileSelector& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	FileSelector& operator=(const FileSelector& other);
 
-	//! \brief Pointer to the component containing the files.
+	//! Pointer to the component containing the files.
 	QSharedPointer<Component> component_;
 
-	//! \brief Contains the file suffixes used to filter file types.
+	//! Contains the file suffixes used to filter file types.
 	QStringList filters_;
 };
 

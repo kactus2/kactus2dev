@@ -17,10 +17,10 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ApiDefinition.h>
-#include <IPXACTmodels/ApiInterface.h>
-#include <IPXACTmodels/ComDefinition.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
 #include <common/TextEditProvider.h>
 
@@ -54,7 +54,7 @@ CSourceWidget::CSourceWidget(QString const& sourceFile,
 
     foreach (QSharedPointer<ApiInterface const> apiIf, ownerComponent->getApiInterfaces())
     {
-        QSharedPointer<LibraryComponent const> libComp = libInterface->getModelReadOnly(apiIf->getApiType());
+        QSharedPointer<Document const> libComp = libInterface->getModelReadOnly(apiIf->getApiType());
         QSharedPointer<ApiDefinition const> apiDef = libComp.dynamicCast<ApiDefinition const>();
 
         if (apiDef != 0)

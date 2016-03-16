@@ -16,9 +16,12 @@
 
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
+#include <designEditors/SystemDesign/SWConnectionEndpoint.h>
+
 #include <QSharedPointer>
 
 class Component;
+class SWInstance;
 class Design;
 class LibraryInterface;
 class IGraphicsItemStack;
@@ -29,7 +32,10 @@ class SystemComponentItem;
 class GraphicsConnection;
 class SWComponentItem;
 class SWPortItem;
-class SWConnectionEndpoint;
+class ConnectionRoute;
+class InterfaceGraphicsData;
+class SWInterfaceItem;
+class HierInterface;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignDiagram class.
@@ -97,26 +103,12 @@ public:
     //-----------------------------------------------------------------------------
     struct ComponentInstanceCopyData
     {
-        QSharedPointer<Component> component;            //!< The referenced component.
-        QString instanceName;                           //!< The instance name.
-        QString displayName;                            //!< The display name.
-        QString description;                            //!< The description of the instance.
-        QPointF pos;                                    //!< Original position of the instance.
-        QMap<QString, QString> propertyValues;          //!< Property values.
-        QString fileSetRef;                             //!< File set reference.
-        QMap<QString, QPointF> apiInterfacePositions;   //!< API interface positions.
-        QMap<QString, QPointF> comInterfacePositions;   //!< COM interface positions.
-        bool isDraft;                                   //!< Identifier for draft component instances.
+		QSharedPointer<Component> component;    //! The referenced component.
+		QSharedPointer<SWInstance> swInstance;  //! The instance.
 
-        ComponentInstanceCopyData()
-            : component(),
-              instanceName(),
-              displayName(),
-              description(),
-              propertyValues(),
-              fileSetRef(),
-              apiInterfacePositions(),
-              comInterfacePositions()
+        ComponentInstanceCopyData():
+        component(),
+        swInstance()
         {
         }
     };
@@ -142,7 +134,7 @@ public:
     //-----------------------------------------------------------------------------
     struct ColumnCopyData
     {
-        ColumnDesc desc;                            //!< Column description.
+        QSharedPointer<ColumnDesc> desc;            //!< Column description.
         ComponentCollectionCopyData components;     //!< Components.
         PortCollectionCopyData interfaces;          //!< COM/API interfaces.
 
@@ -181,21 +173,12 @@ public:
      *      @param [in] parent        The parent widget.
      */
     SystemDesignDiagram(bool onlySW, LibraryInterface* lh,
-                        GenericEditProvider& editProvider, SystemDesignWidget* parent = 0);
+                        QSharedPointer<IEditProvider> editProvider, SystemDesignWidget* parent = 0);
 
     /*!
      *  Destructor.
      */
     ~SystemDesignDiagram();
-
-    /*! 
-     *  Creates a design based on the contents in the diagram.
-     *
-     *      @param [in] vlnv The vlnv for the design.
-     *
-     *      @return The created design.
-     */
-    virtual QSharedPointer<Design> createDesign(VLNV const& vlnv) const;
 
     /*!
      *  Reflects the changes in the design to the top-level component.
@@ -207,7 +190,7 @@ public:
      *
      *      @param [in] desc The column description.
      */
-    void addColumn(ColumnDesc const& desc);
+    void addColumn(QSharedPointer<ColumnDesc> desc);
 
 public slots:
 
@@ -247,6 +230,8 @@ protected:
 
     //! Called when an object is dropped to the diagram.
     void dropEvent(QGraphicsSceneDragDropEvent* event);
+
+	QSharedPointer<SWInstance> createSWInstance(QSharedPointer<Component> comp);
 
     //! Updates the dropAction and highlight according to underlying element.
     virtual void updateDropAction(QGraphicsSceneDragDropEvent* event);
@@ -336,14 +321,95 @@ private:
     void loadDesign(QSharedPointer<Design> design);
 
     /*!
+     *  Load interfaces from the component containing the design.
+     *
+     *      @param [in] design  The selected design.
+     */
+    void loadInterfaces(QSharedPointer<Design> design);
+
+    /*!
+     *  Get the interface graphics data.
+     *
+     *      @param [in] design          Design containing the interface.
+     *      @param [in] interfaceName   The name of the interface.
+     *
+     *      @return Graphics data of the interface.
+     */
+    QSharedPointer<InterfaceGraphicsData> findOrCreateInterfaceGraphicsData(QSharedPointer<Design> design,
+        QString const& interfaceName);
+
+    /*!
+     *  Add the interface item to the layout.
+     *
+     *      @param [in] item    The selected interface item.
+     */
+    void addInterfaceItemToLayout(SWInterfaceItem* item);
+
+    /*!
      *  Loads the COM connections from the given design.
      */
     void loadComConnections(QSharedPointer<Design> design);
 
     /*!
+     *  Find or create an endpoint item for the interface.
+     *
+     *      @param [in] endpointInterface   The selected end point interface.
+     *      @param [in] type                The type of the selected end point.
+     *      @param [in] connectionName      Name of the connection containing the end point.
+     *      @param [in] containingDesign    The containing design.
+     *
+     *      @return The endpoint item corresponding to the selected interface.
+     */
+    ConnectionEndpoint* findOrCreateEndpointItem(QSharedPointer<HierInterface> endpointInterface,
+        SWConnectionEndpoint::EndpointType type, QString const& connectionName,
+        QSharedPointer<Design> containingDesign);
+
+    /*!
+     *  Get the SW interface item.
+     *
+     *      @param [in] interfaceName   The name of the SW interface item.
+     *
+     *      @return The SW interface item matching the selected interface name.
+     */
+    SWInterfaceItem* getSWInterfaceItem(QString const& interfaceName) const;
+
+    /*!
+     *  Create a dummy interface.
+     *
+     *      @param [in] itemType            Type of the interface in string format.
+     *      @param [in] interfaceReference  The name of the interface.
+     *
+     *      @return The created dummy interface.
+     */
+    ConnectionEndpoint* createDummyInterface(QString const& itemType, QString const& interfaceReference);
+
+    /*!
+     *  Find or create a SW port item.
+     *
+     *      @param [in] containingItem      The item containing the port item.
+     *      @param [in] interfaceReference  The name of the port.
+     *      @param [in] type                The type of the port.
+     *      @param [in] containingDesign    The design containing the port item.
+     *
+     *      @return The found SW port item.
+     */
+    ConnectionEndpoint* findOrCreateSWPortItem(SystemComponentItem* containingItem,
+        QString const& interfaceReference, SWConnectionEndpoint::EndpointType type,
+        QSharedPointer<Design> containingDesign);
+
+    /*!
      *  Loads the API dependencies from the given design.
      */
     void loadApiDependencies(QSharedPointer<Design> design);
+
+    /*!
+     *  Get the route used by the interconnection.
+     *
+     *      @param [in] interconnectionName     Name of the selected interconnection.
+     *
+     *      @return The route used by the selected interconnection.
+     */
+    QSharedPointer<ConnectionRoute> getInterconnectionRoute(QString const& interconnectionName) const;
 
     /*!
      *  Returns the HW component instance with the given name.
@@ -395,6 +461,15 @@ private:
     virtual  GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint);
 
     /*!
+     *  Create an interface for an end point.
+     *
+     *      @param [in] connectionPoint     The selected connection end point.
+     *
+     *      @return Interface created for the selected end point.
+     */
+    QSharedPointer<HierInterface> createEndpointInterface(ConnectionEndpoint* connectionPoint);
+
+    /*!
      *  Creates a connection between the given endpoint and a coordinate point.
      *
      *      @param [in] startPoint  The starting connection end point.
@@ -420,6 +495,15 @@ private:
      *      @param [in] pos    The interface position.
      */
     virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos);
+
+    /*!
+     *  Create a unique name for the interface.
+     *
+     *      @param [in] baseName    The name from which to create the unique name.
+     *
+     *      @return A unique name for the interface.
+     */
+    QString createDraftInterfaceName(QString const& baseName) const;
 
     /*!
      *  Handler for draft tool clicks. Creates a draft component instance or a draft interface according to the
@@ -462,7 +546,7 @@ private:
      *      @param [in] userCursorPos  If true, the instances are placed close to the cursor position.
      *                                 Otherwise the original positions are used.
      */
-    void pasteSWInstances(ComponentCollectionCopyData const& collection,
+    void pasteSWInstances(ComponentCollectionCopyData const collection,
                           IGraphicsItemStack* stack, QUndoCommand* cmd, bool useCursorPos);
 
     /*!
@@ -486,6 +570,22 @@ private:
     void pasteInterfaces(PortCollectionCopyData const& collection, IGraphicsItemStack* stack, QUndoCommand* cmd,
                          bool useCursorPos);
 
+    /*!
+     *  Pastes columns from a copy data collection.
+     *
+     *      @param [in] collection  The collection of column copy data.
+     */
+    void pasteColumns(ColumnCollectionCopyData const collection);
+
+    /*!
+     *  Create a unique name for a column with the given base name.
+     *
+     *      @param [in] baseName    The base name of the column.
+     *
+     *      @return A unique column name.
+     */
+    QString createColumnName(QString const& baseName);
+
     //-----------------------------------------------------------------------------
     //! Drag type enumeration.
     //-----------------------------------------------------------------------------
@@ -497,6 +597,13 @@ private:
         DRAG_TYPE_DEFINITION,
         DRAG_TYPE_DESIGN
     };
+
+    /*!
+     *  Get the names of the contained component instances.
+     *
+     *      @return A list of the contained component instance names.
+     */
+    virtual QStringList getUsedInstanceNames() const;
 
     //-----------------------------------------------------------------------------
     // Data.

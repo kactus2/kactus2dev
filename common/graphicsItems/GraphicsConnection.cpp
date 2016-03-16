@@ -6,7 +6,7 @@
 // Date: 5.6.2012
 //
 // Description:
-// 
+// Base class for graphical connections.
 //-----------------------------------------------------------------------------
 
 #include "GraphicsConnection.h"
@@ -27,11 +27,14 @@
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
 
-float const GraphicsConnection::MIN_LENGTH = 10.0f;
-float const GraphicsConnection::MIN_START_LENGTH = 20.0f;
+namespace
+{
+    float const MIN_LENGTH = 10.0f;
+    float const MIN_START_LENGTH = 20.0f;
+};
 
 //-----------------------------------------------------------------------------
-// Function: GraphicsConnection()
+// Function: GraphicsConnection::GraphicsConnection()
 //-----------------------------------------------------------------------------
 GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2,
                                        bool autoConnect, QString const& name, QString const& /*displayName*/,
@@ -40,8 +43,8 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
       parent_(parent),
       name_(name), 
       description_(description),
-      endpoint1_(0),
-      endpoint2_(0), 
+      endpoint1_(endpoint1),
+      endpoint2_(endpoint2), 
       pathPoints_(), 
       selected_(-1), 
       selectionType_(NONE),
@@ -50,25 +53,22 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
       invalid_(false)
 {
     setItemSettings();
-    createRoute(endpoint1, endpoint2);
+    createRoute(endpoint1_, endpoint2_);
 
-    if (endpoint1->isAdHoc())
+    if (endpoint1_->isAdHoc())
     {
         setLineWidth(1);
     }
 
     if (autoConnect)
     {
-        endpoint1_ = endpoint1;
-        endpoint2_ = endpoint2;
-
-        endpoint1->onConnect(endpoint2);
-        endpoint2->onConnect(endpoint1);
+        endpoint1_->onConnect(endpoint2_);
+        endpoint2_->onConnect(endpoint1_);
 
         validate();
 
-        endpoint1->addConnection(this);
-        endpoint2->addConnection(this);
+        endpoint1_->addConnection(this);
+        endpoint2_->addConnection(this);
 
         if (name_.isEmpty())
         {
@@ -80,7 +80,7 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
 }
 
 //-----------------------------------------------------------------------------
-// Function: GraphicsConnection()
+// Function: GraphicsConnection::GraphicsConnection()
 //-----------------------------------------------------------------------------
 GraphicsConnection::GraphicsConnection(QPointF const& p1, QVector2D const& dir1,
                                        QPointF const& p2, QVector2D const& dir2,
@@ -105,7 +105,7 @@ GraphicsConnection::GraphicsConnection(QPointF const& p1, QVector2D const& dir1,
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~GraphicsConnection()
+// Function: GraphicsConnection::~GraphicsConnection()
 //-----------------------------------------------------------------------------
 GraphicsConnection::~GraphicsConnection()
 {
@@ -114,12 +114,14 @@ GraphicsConnection::~GraphicsConnection()
 }
 
 //-----------------------------------------------------------------------------
-// Function: connectEnds()
+// Function: GraphicsConnection::connectEnds()
 //-----------------------------------------------------------------------------
 bool GraphicsConnection::connectEnds()
 {
     if (!scene())
+    {
         return false;
+    }
 
     prepareGeometryChange();
 
@@ -174,7 +176,7 @@ bool GraphicsConnection::connectEnds()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setRoute()
+// Function: GraphicsConnection::setRoute()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::setRoute(QList<QPointF> path)
 {
@@ -193,15 +195,15 @@ void GraphicsConnection::setRoute(QList<QPointF> path)
 }
 
 //-----------------------------------------------------------------------------
-// Function: name()
+// Function: GraphicsConnection::name()
 //-----------------------------------------------------------------------------
-QString const& GraphicsConnection::name() const
+QString GraphicsConnection::name() const
 {
     return name_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: setName()
+// Function: GraphicsConnection::setName()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::setName(QString const& name)
 {
@@ -210,15 +212,15 @@ void GraphicsConnection::setName(QString const& name)
 }
 
 //-----------------------------------------------------------------------------
-// Function: description()
+// Function: GraphicsConnection::description()
 //-----------------------------------------------------------------------------
-QString const& GraphicsConnection::description() const
+QString GraphicsConnection::description() const
 {
     return description_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: setDescription()
+// Function: GraphicsConnection::setDescription()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::setDescription(QString const& description)
 {
@@ -227,7 +229,7 @@ void GraphicsConnection::setDescription(QString const& description)
 }
 
 //-----------------------------------------------------------------------------
-// Function: endpoint1()
+// Function: GraphicsConnection::endpoint1()
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* GraphicsConnection::endpoint1() const
 {
@@ -235,7 +237,7 @@ ConnectionEndpoint* GraphicsConnection::endpoint1() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: endpoint2()
+// Function: GraphicsConnection::endpoint2()
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* GraphicsConnection::endpoint2() const
 {
@@ -243,7 +245,7 @@ ConnectionEndpoint* GraphicsConnection::endpoint2() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: updatePosition()
+// Function: GraphicsConnection::updatePosition()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::updatePosition()
 {
@@ -367,15 +369,15 @@ void GraphicsConnection::updatePosition()
 }
 
 //-----------------------------------------------------------------------------
-// Function: route()
+// Function: GraphicsConnection::route()
 //-----------------------------------------------------------------------------
-QList<QPointF> const& GraphicsConnection::route() const
+QList<QPointF> GraphicsConnection::route() const
 {
     return pathPoints_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: simplifyPath()
+// Function: GraphicsConnection::simplifyPath()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::simplifyPath()
 {
@@ -406,7 +408,7 @@ void GraphicsConnection::simplifyPath()
 }
 
 //-----------------------------------------------------------------------------
-// Function: mousePressEvent()
+// Function: GraphicsConnection::mousePressEvent()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
@@ -449,6 +451,9 @@ void GraphicsConnection::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     QGraphicsPathItem::mousePressEvent(mouseEvent);
 }
 
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::mouseMoveEvent()
+//-----------------------------------------------------------------------------
 void GraphicsConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     // Discard mouse move if the diagram is protected.
@@ -544,6 +549,9 @@ void GraphicsConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     QGraphicsPathItem::mouseMoveEvent(mouseEvent);
 }
 
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::mouseReleaseEvent()
+//-----------------------------------------------------------------------------
 void GraphicsConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (selectionType_ == END)
@@ -569,7 +577,7 @@ void GraphicsConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (route() != oldRoute_)
     {
         QSharedPointer<QUndoCommand> cmd(new ConnectionMoveCommand(this, oldRoute_));
-        parent_->getEditProvider().addCommand(cmd);
+        parent_->getEditProvider()->addCommand(cmd);
         cmd->redo();
     }
 
@@ -577,10 +585,9 @@ void GraphicsConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: paint()
+// Function: GraphicsConnection::paint()
 //-----------------------------------------------------------------------------
-void GraphicsConnection::paint(QPainter* painter, QStyleOptionGraphicsItem const* option,
-                         QWidget* widget)
+void GraphicsConnection::paint(QPainter* painter, QStyleOptionGraphicsItem const* option, QWidget* widget)
 {
     bool selected = option->state & QStyle::State_Selected;
 
@@ -596,21 +603,19 @@ void GraphicsConnection::paint(QPainter* painter, QStyleOptionGraphicsItem const
 
     if (!endpoint1_)
     {
-        painter->fillRect(QRectF(pathPoints_.first()-QPointF(2,2),
-            pathPoints_.first()+QPointF(2,2)),
+        painter->fillRect(QRectF(pathPoints_.first()-QPointF(2,2), pathPoints_.first()+QPointF(2,2)),
             QBrush(Qt::red));
     }
 
     if (!endpoint2_)
     {
-        painter->fillRect(QRectF(pathPoints_.last()-QPointF(2,2),
-            pathPoints_.last()+QPointF(2,2)),
+        painter->fillRect(QRectF(pathPoints_.last()-QPointF(2,2), pathPoints_.last()+QPointF(2,2)),
             QBrush(Qt::red));
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: setItemSettings()
+// Function: GraphicsConnection::setItemSettings()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::setItemSettings()
 {
@@ -620,7 +625,7 @@ void GraphicsConnection::setItemSettings()
 }
 
 //-----------------------------------------------------------------------------
-// Function: createRoute()
+// Function: GraphicsConnection::createRoute()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::createRoute(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2)
 {
@@ -658,7 +663,7 @@ void GraphicsConnection::createRoute(ConnectionEndpoint* endpoint1, ConnectionEn
 }
 
 //-----------------------------------------------------------------------------
-// Function: createRoute()
+// Function: GraphicsConnection::createRoute()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::createRoute(QPointF p1, QPointF p2, QVector2D const& dir1, QVector2D const& dir2)
 {
@@ -787,7 +792,8 @@ void GraphicsConnection::paintConnectionPath()
 
     QPainterPath path(i.next());
 
-    while (i.hasNext()) {
+    while (i.hasNext())
+    {
         path.lineTo(i.next());
     }
 
@@ -796,7 +802,7 @@ void GraphicsConnection::paintConnectionPath()
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateName()
+// Function: GraphicsConnection::updateName()
 //-----------------------------------------------------------------------------
 QString GraphicsConnection::createDefaultName() const
 {
@@ -826,7 +832,7 @@ QString GraphicsConnection::createDefaultName() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: disconnectEnds()
+// Function: GraphicsConnection::disconnectEnds()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::disconnectEnds()
 {
@@ -850,7 +856,7 @@ void GraphicsConnection::disconnectEnds()
 }
 
 //-----------------------------------------------------------------------------
-// Function: itemChange()
+// Function: GraphicsConnection::itemChange()
 //-----------------------------------------------------------------------------
 QVariant GraphicsConnection::itemChange(GraphicsItemChange change, const QVariant &value)
 {
@@ -874,7 +880,7 @@ QVariant GraphicsConnection::itemChange(GraphicsItemChange change, const QVarian
 }
 
 //-----------------------------------------------------------------------------
-// Function: beginUpdatePosition()
+// Function: GraphicsConnection::beginUpdatePosition()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::beginUpdatePosition()
 {
@@ -882,7 +888,7 @@ void GraphicsConnection::beginUpdatePosition()
 }
 
 //-----------------------------------------------------------------------------
-// Function: endUpdatePosition()
+// Function: GraphicsConnection::endUpdatePosition()
 //-----------------------------------------------------------------------------
 QUndoCommand* GraphicsConnection::endUpdatePosition(QUndoCommand* parent)
 {
@@ -890,9 +896,10 @@ QUndoCommand* GraphicsConnection::endUpdatePosition(QUndoCommand* parent)
     fixOverlap();
 
     if (route() != oldRoute_)
-    {
-        return new ConnectionMoveCommand(this, oldRoute_, parent);
+    {        
+        QUndoCommand* undoCommand = new ConnectionMoveCommand(this, oldRoute_, parent);
         oldRoute_.clear();
+        return undoCommand;
     }
     else
     {
@@ -901,7 +908,7 @@ QUndoCommand* GraphicsConnection::endUpdatePosition(QUndoCommand* parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setRoutingMode()
+// Function: GraphicsConnection::setRoutingMode()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::setRoutingMode(RoutingMode style)
 {
@@ -919,7 +926,7 @@ void GraphicsConnection::setRoutingMode(RoutingMode style)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setDefaultColor()
+// Function: GraphicsConnection::setDefaultColor()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::setDefaultColor()
 {
@@ -953,7 +960,7 @@ void GraphicsConnection::setDefaultColor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: drawLineGap()
+// Function: GraphicsConnection::drawLineGap()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::drawLineGap(QPainter* painter, QLineF const& line1, QPointF const& pt)
 {
@@ -969,7 +976,7 @@ void GraphicsConnection::drawLineGap(QPainter* painter, QLineF const& line1, QPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: drawOverlapGraphics()
+// Function: GraphicsConnection::drawOverlapGraphics()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::drawOverlapGraphics(QPainter* painter)
 {
@@ -1209,7 +1216,7 @@ void GraphicsConnection::setEndpoint1(ConnectionEndpoint* endpoint1)
     endpoint1->addConnection(this);
 
     updatePosition();
-    name_ = createDefaultName();
+    setName(createDefaultName());
 }
 
 //-----------------------------------------------------------------------------
@@ -1233,7 +1240,7 @@ void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
     endpoint2->addConnection(this);
 
     updatePosition();
-    name_ = createDefaultName();
+    setName(createDefaultName());
 }
 
 //-----------------------------------------------------------------------------
@@ -1287,7 +1294,7 @@ void GraphicsConnection::toggleOffPage()
 }
 
 //-----------------------------------------------------------------------------
-// Function: GraphicsConnection::applyClearance()
+// Function: GraphicsConnection::fixOverlap()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::fixOverlap()
 {

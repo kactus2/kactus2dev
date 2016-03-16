@@ -45,12 +45,12 @@ public:
      *
      *      @param [in] properties The list of properties.
      */
-    void setProperties(QList< QSharedPointer<ComProperty> > const& properties);
+    void setProperties(QSharedPointer< QList< QSharedPointer<ComProperty> > >  properties);
 
     /*!
      *  Returns the properties.
      */
-    QList< QSharedPointer<ComProperty> > const& getProperties() const;
+    QList< QSharedPointer<ComProperty> >getProperties() const;
 
     /*!
      *  Returns the number of rows in the model.

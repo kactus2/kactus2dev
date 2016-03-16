@@ -11,7 +11,7 @@
 
 #include "ParameterComparator.h"
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterComparator::ParameterComparator()
@@ -32,8 +32,7 @@ ParameterComparator::~ParameterComparator()
 //-----------------------------------------------------------------------------
 // Function: ParameterComparator::compare()
 //-----------------------------------------------------------------------------
-bool ParameterComparator::compare(QSharedPointer<Parameter> first, 
-    QSharedPointer<Parameter> second) const
+bool ParameterComparator::compare(QSharedPointer<Parameter> first, QSharedPointer<Parameter> second) const
 {
     return IPXactElementComparator::compare(first, second);
 }
@@ -64,10 +63,10 @@ QList<QSharedPointer<IPXactDiff> > ParameterComparator::diffFields(QSharedPointe
 {
     QList<QSharedPointer<IPXactDiff> > diffResult;
 
-    QSharedPointer<IPXactDiff> modification(new IPXactDiff(elementType(), reference->getName()));
+    QSharedPointer<IPXactDiff> modification(new IPXactDiff(elementType(), reference->name()));
     modification->setChangeType(IPXactDiff::MODIFICATION);
 
-    modification->checkForChange("description", reference->getDescription(), subject->getDescription());
+    modification->checkForChange("description", reference->description(), subject->description());
     modification->checkForChange("type", reference->getType(), subject->getType());
     modification->checkForChange("value", reference->getValue(), subject->getValue());
     modification->checkForChange("minimum value", reference->getMinimumValue(), subject->getMinimumValue());

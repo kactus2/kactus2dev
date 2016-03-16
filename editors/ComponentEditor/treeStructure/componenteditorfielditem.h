@@ -13,17 +13,17 @@
 #define COMPONENTEDITORFIELDITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXACTmodels/field.h>
-#include <IPXACTmodels/register.h>
 
 #include <QFont>
 #include <QSharedPointer>
 
-class FieldEditor;
 class MemoryMapsVisualizer;
 class FieldGraphItem;
 class ExpressionParser;
-
+class Field;
+class Register;
+class Component;
+class FieldValidator;
 //-----------------------------------------------------------------------------
 //! The item for single field in component editor's navigation tree.
 //-----------------------------------------------------------------------------
@@ -44,6 +44,7 @@ public:
 	 *      @param [in] parameterFinder     The parameter finder.
 	 *      @param [in] referenceCounter    The instance for counting references made to the parameters.
      *      @param [in] expressionParser    Expression parser to use.
+     *      @param [in] fieldValidator      Validator used for fields.
      *      @param [in] parent              The parent item.
 	 */
 	ComponentEditorFieldItem(QSharedPointer<Register> reg,
@@ -54,61 +55,69 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ReferenceCounter> referenceCounter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<FieldValidator> fieldValidator,
 		ComponentEditorItem* parent);
 
 	//! The destructor
 	virtual ~ComponentEditorFieldItem();
 
-	/*! Get the tool tip for the item.
+	/*!
+     *  Get the tool tip for the item.
 	 * 
 	 *       @return The text for the tool tip to print to user.
-	*/
+	 */
 	virtual QString getTooltip() const;
 
-	/*! Get the text to be displayed to user in the tree for this item.
+	/*!
+     *  Get the text to be displayed to user in the tree for this item.
 	 *
 	 *       @return QString Contains the text to display.
-	*/
+	 */
 	virtual QString text() const;
 
-	/*! Check the validity of this item and sub items.
+	/*!
+     *  Check the validity of this item and sub items.
 	 *
 	 *       @return bool True if item is in valid state.
-	*/
+	 */
 	virtual bool isValid() const;
 
-	/*! Get the editor of this item.
+	/*!
+     *  Get the editor of this item.
 	 *
 	 *       @return The editor to use for this item.
-	*/
+	 */
 	virtual ItemEditor* editor();
 
-	/*! Get the visualizer of this item.
+	/*!
+     *  Get the visualizer of this item.
 	 * 
 	 *       @return The visualizer to use for this item.
-	*/
+	 */
 	virtual ItemVisualizer* visualizer();
 
-	/*! Set the visualizer for this item.
+	/*!
+     *  Set the visualizer for this item.
 	 *
 	 *      @param [in] visualizer The visualizer to set.
-	*/
+	 */
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
-	/*! Get the visualizer graphics item for the field.
+	/*!
+     *  Get the visualizer graphics item for the field.
 	 *
 	 *       @return The graphics item.
-	*/
+	 */
 	virtual QGraphicsItem* getGraphicsItem();
 
-	/*! Update the graphics item of the field.
-	 *
-	*/
+	/*!
+     *  Update the graphics item of the field.
+	 */
 	virtual void updateGraphics();
 
-	/*! Remove the graphics item of the field.
-	 *
-	*/
+	/*!
+     *  Remove the graphics item of the field.
+	 */
 	virtual void removeGraphicsItem();
 
 signals:
@@ -120,17 +129,17 @@ signals:
 
 protected slots:
 
-	/*! Handler for editor's contentChanged signal.
-	 *
-	*/
+	/*!
+     *  Handler for editor's contentChanged signal.
+	 */
 	virtual void onEditorChanged();
 
 private:
 	
-	//! No copying
+	//! No copying.
 	ComponentEditorFieldItem(const ComponentEditorFieldItem& other);
 
-	//! No assignment
+	//! No assignment.
 	ComponentEditorFieldItem& operator=(const ComponentEditorFieldItem& other);
 
 	//! The register which contains this field.
@@ -147,6 +156,9 @@ private:
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! The used field validator.
+    QSharedPointer<FieldValidator> fieldValidator_;
 };
 
 #endif // COMPONENTEDITORFIELDITEM_H

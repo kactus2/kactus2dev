@@ -76,7 +76,7 @@ public:
      *
 	 * \return QString containing the name
 	*/
-	virtual QString getName() const;
+	virtual QString name() const;
 
 	/*! \brief Set the width for the item.
 	 *

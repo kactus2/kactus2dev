@@ -1,27 +1,28 @@
-/* 
- *
- *  Created on: 13.4.2011
- *      Author: Antti Kamppi
- * 		filename: portmapsdelegate.cpp
- */
+//-----------------------------------------------------------------------------
+// File: portmapsdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 13.04.2011
+//
+// Description:
+//  Delegate to provide editors to edit port maps.
+//-----------------------------------------------------------------------------
 
 #include "portmapsdelegate.h"
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/port.h>
-
-#include <QLineEdit>
-#include <QRegExpValidator>
-#include <QRegExp>
-
-static const int LOGICAL_COLUMN = 2;
-static const int PHYSICAL_COLUMN = 3;
-
-PortMapsDelegate::PortMapsDelegate(QObject *parent): 
-QStyledItemDelegate(parent) {
+//-----------------------------------------------------------------------------
+// Function: PortMapsDelegate::PortMapsDelegate()
+//-----------------------------------------------------------------------------
+PortMapsDelegate::PortMapsDelegate(QObject *parent): QStyledItemDelegate(parent)
+{
 }
 
-PortMapsDelegate::~PortMapsDelegate() {
+//-----------------------------------------------------------------------------
+// Function: PortMapsDelegate::~PortMapsDelegate()
+//-----------------------------------------------------------------------------
+PortMapsDelegate::~PortMapsDelegate()
+{
 }
 
 //-----------------------------------------------------------------------------
@@ -31,4 +32,3 @@ QSize PortMapsDelegate::sizeHint(QStyleOptionViewItem const& option, QModelIndex
 {
     return QStyledItemDelegate::sizeHint(option, index) + QSize(0, 4);
 }
-

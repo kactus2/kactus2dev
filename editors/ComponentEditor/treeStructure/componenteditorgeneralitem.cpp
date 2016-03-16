@@ -1,25 +1,43 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorgeneralitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditortreemodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The general-item in the component editor navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorgeneralitem.h"
+
 #include <editors/ComponentEditor/general/generaleditor.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorgeneralitem::ComponentEditorGeneralItem()
+//-----------------------------------------------------------------------------
 ComponentEditorGeneralItem::ComponentEditorGeneralItem( ComponentEditorTreeModel* model,
-													   LibraryInterface* libHandler,
-													   QSharedPointer<Component> component,
-													   ComponentEditorItem* parent ):
-ComponentEditorItem(model, libHandler, component, parent) {
+    LibraryInterface* libHandler, QSharedPointer<Component> component, ComponentEditorItem* parent ):
+ComponentEditorItem(model, libHandler, component, parent)
+{
 
 }
 
-ComponentEditorGeneralItem::~ComponentEditorGeneralItem() {
+//-----------------------------------------------------------------------------
+// Function: componenteditorgeneralitem::~ComponentEditorGeneralItem()
+//-----------------------------------------------------------------------------
+ComponentEditorGeneralItem::~ComponentEditorGeneralItem()
+{
+
 }
 
-QString ComponentEditorGeneralItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditorgeneralitem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorGeneralItem::text() const
+{
 	return tr("General");
 }
 
@@ -33,23 +51,34 @@ QFont ComponentEditorGeneralItem::getFont() const
     return font;
 }
 
-bool ComponentEditorGeneralItem::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditorgeneralitem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorGeneralItem::isValid() const
+{
 	// general editor is always valid because it contains no mandatory elements
 	return true;
 }
 
-ItemEditor* ComponentEditorGeneralItem::editor() {
-	if (!editor_) {
+//-----------------------------------------------------------------------------
+// Function: componenteditorgeneralitem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorGeneralItem::editor()
+{
+	if (!editor_)
+    {
 		editor_ = new GeneralEditor(libHandler_, component_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()),
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 	}
 	return editor_;
 }
 
-QString ComponentEditorGeneralItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: componenteditorgeneralitem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorGeneralItem::getTooltip() const
+{
 	return tr("Contains the general settings of a component");
 }

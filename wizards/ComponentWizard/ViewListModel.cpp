@@ -12,8 +12,8 @@
 #include "ViewListModel.h"
 
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/view.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
 
 #include <QIcon>
 
@@ -51,7 +51,7 @@ int ViewListModel::rowCount(QModelIndex const& parent) const {
 		return 0;
     }
 
-	return component_->viewCount();
+	return component_->getViews()->count();
 }
 
 //-----------------------------------------------------------------------------
@@ -59,12 +59,7 @@ int ViewListModel::rowCount(QModelIndex const& parent) const {
 //-----------------------------------------------------------------------------
 QVariant ViewListModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || component_.isNull())
-    {
-		return QVariant();
-    }
-
-	if (index.row() < 0 || index.row() >= component_->viewCount())
+	if (!index.isValid() || component_.isNull() || index.row() < 0 || index.row() >= component_->getViews()->count())
     {
 		return QVariant();
     }
@@ -119,11 +114,11 @@ void ViewListModel::addView()
         return;
     }
 
-    int endOfList = component_->viewCount();
+    int endOfList = component_->getViews()->count();
 
 	beginInsertRows(QModelIndex(), endOfList, endOfList);
-	View* view = component_->createView();
-    view->addEnvIdentifier("::");
+    QSharedPointer<View> newView(new View());
+	component_->getViews()->append(newView);    
 	endInsertRows();
 }
 
@@ -137,9 +132,7 @@ void ViewListModel::removeView(QModelIndex const& index)
 		return;
     }
     
-    QString view = component_->getViewNames().at(index.row());
-
     beginResetModel();
-    component_->removeView(view);
+    component_->getViews()->removeAt(index.row());
 	endResetModel();
 }

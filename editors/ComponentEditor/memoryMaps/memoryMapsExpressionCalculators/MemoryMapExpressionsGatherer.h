@@ -12,10 +12,10 @@
 #ifndef MEMORYMAPEXPRESSIONGATHERER_H
 #define MEMORYMAPEXPRESSIONGATHERER_H
 
-#include <IPXACTmodels/memorymap.h>
-
 #include <QSharedPointer>
 #include <QStringList>
+
+class MemoryMap;
 
 //-----------------------------------------------------------------------------
 //! Gathers expressions from a memory map and its memory remaps.
@@ -46,12 +46,11 @@ public:
 
 private:
 	
-	//! No copying
+	//! No copying.
     MemoryMapExpressionGatherer(const MemoryMapExpressionGatherer& other);
 
-	//! No assignment
+	//! No assignment.
     MemoryMapExpressionGatherer& operator=(const MemoryMapExpressionGatherer& other);
-
 };
 
 #endif // MEMORYMAPEXPRESSIONGATHERER_H

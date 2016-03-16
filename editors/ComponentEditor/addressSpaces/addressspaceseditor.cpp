@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.6.2012
- *      Author: Antti Kamppi
- * 		filename: addressspaceseditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspaceseditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.06.2012
+//
+// Description:
+// The editor to add/remove/edit address spaces of component.
+//-----------------------------------------------------------------------------
 
 #include "addressspaceseditor.h"
 #include "addressspacesdelegate.h"
@@ -18,19 +22,21 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpacesEditor::AddressSpacesEditor()
 //-----------------------------------------------------------------------------
-AddressSpacesEditor::AddressSpacesEditor(QSharedPointer<Component> component,
-    LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser):
+AddressSpacesEditor::AddressSpacesEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+                                         QSharedPointer<ParameterFinder> parameterFinder,
+                                         QSharedPointer<ExpressionFormatter> expressionFormatter,
+                                         QSharedPointer<ExpressionParser> expressionParser,
+                                         QSharedPointer<AddressSpaceValidator> addressSpaceValidator):
 ItemEditor(component, handler),
-    view_(this),
-    model_(component, parameterFinder, expressionFormatter, this)
+view_(this),
+model_(component, parameterFinder, expressionFormatter, addressSpaceValidator, this)
 {
     model_.setExpressionParser(expressionParser);
 
@@ -42,7 +48,7 @@ ItemEditor(component, handler),
 
 	view_.setModel(proxy);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/addrSpaceList.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
@@ -87,6 +93,8 @@ ItemEditor(component, handler),
 
     connect(&model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(aubChangedOnRow(int)), this, SIGNAL(aubChangedOnRow(int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -94,14 +102,6 @@ ItemEditor(component, handler),
 //-----------------------------------------------------------------------------
 AddressSpacesEditor::~AddressSpacesEditor()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpacesEditor::isValid()
-//-----------------------------------------------------------------------------
-bool AddressSpacesEditor::isValid() const
-{
-	return model_.isValid();
 }
 
 //-----------------------------------------------------------------------------

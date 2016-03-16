@@ -12,8 +12,8 @@
 #ifndef HWCONNECTIONENDPOINT_H
 #define HWCONNECTIONENDPOINT_H
 
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
@@ -40,11 +40,9 @@ public:
      *  Constructor.
      *
      *      @param [in] parent     The parent graphics item.
-     *      @param [in] temporary  If true, the endpoint is set as temporary.
      *      @param [in] dir        The initial direction for the endpoint.
      */
-    HWConnectionEndpoint(QGraphicsItem* parent = 0, bool temporary = false,
-                         QVector2D const& dir = QVector2D(0.0f, -1.0f));
+    HWConnectionEndpoint(QGraphicsItem* parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
     /*!
      *  Destructor.
@@ -61,9 +59,9 @@ public:
     virtual void setTypes(VLNV const& busType, VLNV const& absType,
                           General::InterfaceMode mode) = 0;
 
-    /*! \brief Set the interface mode for the endpoint.
+    /*! Set the interface mode for the endpoint.
 	 *
-	 * \param mode The interface mode to set.
+	 *      @param [in] mode The interface mode to set.
 	 *
 	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode) = 0;
@@ -84,6 +82,7 @@ private:
     // Disable copying.
     HWConnectionEndpoint(HWConnectionEndpoint const& rhs);
     HWConnectionEndpoint& operator=(HWConnectionEndpoint const& rhs);
+
 };
 
 //-----------------------------------------------------------------------------

@@ -12,16 +12,12 @@
 #include "MCAPICodeGeneratorPlugin.h"
 #include "MCAPICodeGenerator.h"
 #include "MCAPIHeaderGenerator.h"
-#include "MCAPIParser.h"
 
-#include <QMessageBox>
 #include <QCoreApplication>
-
-#include <IPXACTmodels/component.h>
+#include <QFileInfo>
+#include <QMessageBox>
 
 #include <library/LibraryManager/libraryinterface.h>
-
-#include <Plugins/PluginSystem/IPluginUtility.h>
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::MCAPICodeGeneratorPlugin()
@@ -104,39 +100,39 @@ QIcon MCAPICodeGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MCAPICodeGeneratorPlugin::checkGeneratorSupport( QSharedPointer<LibraryComponent const> libComp,
-    QSharedPointer<LibraryComponent const> libDesConf,
-    QSharedPointer<LibraryComponent const> libDes ) const
+bool MCAPICodeGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> libComp,
+    QSharedPointer<Document const> libDesConf,
+    QSharedPointer<Document const> libDes ) const
 {
     QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    return (comp != 0 && comp->getComponentImplementation() == KactusAttribute::SW) ||
-        ( libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM );
+    return (comp != 0 && comp->getImplementation() == KactusAttribute::SW) ||
+        ( libDes != 0 && desgConf != 0 && desgConf->getImplementation() == KactusAttribute::SYSTEM );
 }
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility, 
-    QSharedPointer<LibraryComponent> libComp,
-    QSharedPointer<LibraryComponent> libDesConf,
-    QSharedPointer<LibraryComponent> libDes)
+    QSharedPointer<Document> libComp,
+    QSharedPointer<Document> libDesConf,
+    QSharedPointer<Document> libDes)
 {
     QSharedPointer<Design> design = libDes.dynamicCast<Design>();
     QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    if ( comp != 0 && comp->getComponentImplementation() == KactusAttribute::SW )
+    if ( comp != 0 && comp->getImplementation() == KactusAttribute::SW )
     {
         MCAPIParser parser( utility );
         parser.parseMCAPIForComponent(comp);
         MCAPICodeGenerator generator( parser, utility );
-        QString dir = QFileInfo(utility->getLibraryInterface()->getPath(*libComp->getVlnv())).absolutePath(); 
+        QString dir = QFileInfo(utility->getLibraryInterface()->getPath(libComp->getVlnv())).absolutePath(); 
         generator.generateMCAPIForComponent(dir, comp);
     }
     else if ( libDes != 0 && desgConf != 0 &&
-        desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM )
+        desgConf->getImplementation() == KactusAttribute::SYSTEM )
     {
         MCAPIParser parser( utility );
         parser.parseTopLevel(design, comp, desgConf);
@@ -166,8 +162,8 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
         }
 
         MCAPIHeaderGenerator generator( parser, utility );
-        VLNV* topVLNV = comp->getVlnv();
-        QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(*topVLNV)).absolutePath();
+        VLNV topVLNV = comp->getVlnv();
+        QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(topVLNV)).absolutePath();
         generator.generateTopLevel(design, comp, desgConf, topDir);
         utility->getLibraryInterface()->writeModelToFile(design);
     }

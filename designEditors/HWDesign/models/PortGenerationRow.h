@@ -11,7 +11,8 @@
 
 #include <QObject>
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 //-----------------------------------------------------------------------------
 //! PortGenerationRow class.
@@ -32,7 +33,7 @@ public:
     * @param description The port description in opposing interface.
     * @param size The size of the port. Size must be the same in both interfaces.
     */
-    PortGenerationRow(QString name = QString(), General::Direction direction = General::DIRECTION_INVALID,
+    PortGenerationRow(QString name = QString(), DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID,
         QString description = QString(), int size = 0);
 
     //! \brief The destructor.
@@ -48,7 +49,7 @@ public:
     *
     * @return The port direction.
     */
-    General::Direction getSourceDirection() const;
+    DirectionTypes::Direction getSourceDirection() const;
 
   /*! \brief Get the port name in opposing interface.
     *
@@ -84,13 +85,13 @@ public:
     *
     * @return The port direction in draft component.
     */
-    General::Direction getDraftDirection() const;
+    DirectionTypes::Direction getDraftDirection() const;
 
     /*! \brief Set the port direction in draft component.
     *
     * @param [in] direction The direction to set.
     */
-    void setDraftDirection(General::Direction const direction);
+    void setDraftDirection(DirectionTypes::Direction const direction);
 
     /*! \brief Get the port description in draft component.
     *
@@ -125,7 +126,7 @@ private:
     QString sourceName_;
 
     //! Port direction in opposing interface.
-    General::Direction sourceDirection_;
+    DirectionTypes::Direction sourceDirection_;
 
     //! Port description in opposing interface.
     QString sourceDescription_;
@@ -137,7 +138,7 @@ private:
     QString draftName_;
 
     //! Port direction in draft component.
-    General::Direction draftDirection_;
+    DirectionTypes::Direction draftDirection_;
 
     //! Port description in draft component.
     QString draftDescription_;

@@ -16,9 +16,6 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <IPXACTmodels/field.h>
-#include <IPXACTmodels/component.h>
-
 #include <QSharedPointer>
 
 class FieldEditor;
@@ -29,8 +26,13 @@ class ModWriteComboBox;
 class ReadActionComboBox;
 class TestConstraintComboBox;
 class ParameterFinder;
-class WriteValueConstraintComboBox;
 class ExpressionParser;
+class Field;
+class Component;
+class FieldValidator;
+
+#include <QComboBox>
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
 //-----------------------------------------------------------------------------
@@ -48,6 +50,7 @@ public:
 	 *      @param [in] handler             The instance managing the library.
      *      @param [in] parameterFinder     The instance for finding parameter references.
      *      @param [in] expressionParser    The expression parser to use.
+     *      @param [in] fieldValidator      The used field validator.
 	 *      @param [in] parent              The parent of this editor.
 	 */
 	SingleFieldEditor(QSharedPointer<Field> field,
@@ -55,19 +58,13 @@ public:
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<FieldValidator> fieldValidator,
         QWidget* parent = 0);
 
     /*!
      *  The destructor.
      */
     virtual ~SingleFieldEditor();
-
-	/*!
-	 *  Check for the validity of the editor.
-	 *
-     *      @return True, if the editor is in a valid state, false otherwise.
-	 */
-	virtual bool isValid() const;
 
     /*!
 	 *  Reload the information from the model to the editor.
@@ -91,9 +88,9 @@ private slots:
     void onOffsetEdited();
 
     /*!
-     *  Sets the edited width value for the field].
+     *  Sets the edited width value for the field.
      */
-    void onWdithEdited();
+    void onWidthEdited();
 
     /*!
      *  Sets the selected volatile value for the field.
@@ -154,14 +151,14 @@ private slots:
      *
      *      @param [in] newWriteConstraintMin   The edited write constraint minimum value.
      */
-    void onWriteConstraintMinimumEdited(QString const& newWriteConstraintMin);
+    void onWriteConstraintMinimumEdited();
 
     /*!
      *  Sets the edited write constraint maximum value for the field.
      *
      *      @param [in] newWriteConstraintMax   The edited write constraint maximum value.
      */
-    void onWriteConstraintMaximumEdited(QString const& newWriteConstraintMax);
+    void onWriteConstraintMaximumEdited();
 
     /*!
      *  Sets the edited reset value for the field.
@@ -259,22 +256,25 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! The write constraint selector.
-    WriteValueConstraintComboBox* writeConstraintEditor_;
+    QComboBox* writeConstraintEditor_;
 
     //! The write constraint minimum value editor.
-    QLineEdit* writeConstraintMinLimit_;
+    ExpressionEditor* writeConstraintMinLimit_;
 
     //! The write constraint maximum value editor.
-    QLineEdit* writeConstraintMaxLimit_;
+    ExpressionEditor* writeConstraintMaxLimit_;
 
     //! Editor for the reset value of a field.
-    QLineEdit* resetValueEditor_;
+    ExpressionEditor* resetValueEditor_;
 
     //! Editor for the reset mask of a field.
-    QLineEdit* resetMaskEditor_;
+    ExpressionEditor* resetMaskEditor_;
 
     //! The field being edited.
     QSharedPointer<Field> field_;
+
+    //! The used field validator.
+    QSharedPointer<FieldValidator> fieldValidator_;
 };
 
 #endif // SINGLEFIELDEDITOR_H

@@ -15,7 +15,7 @@
 #include <QDir>
 #include <QTextStream>
 #include <QIODevice> 
-#include <IPXACTmodels/fileset.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::MakefileGenerator()
@@ -119,8 +119,7 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
 		"-fno-inline-functions-called-once -fno-optimize-sibling-calls" << endl;
 	outStream << "profile: $(ENAME)" << endl;
 
-    writeMakeObjects(mfd, outStream, mfd.swObjects, instancePath);
-    writeMakeObjects(mfd, outStream, mfd.hwObjects, instancePath);
+    writeMakeObjects(outStream, mfd.swObjects, instancePath);
 
     // Close after it is done.
     makeFile.close();
@@ -131,14 +130,12 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     QString relDir = General::getRelativePath(topPath,makePath);
 
     // Add the file to instance fileSet
-    if ( !fileSet->contains(relDir) )
+    if ( fileSet && !fileSet->contains(relDir) )
     {
         QSharedPointer<File> file;
-        QStringList types;
-        types.append("makefile");
         QSettings settings;
         file = fileSet->addFile(relDir, settings);
-        file->setAllFileTypes( types );
+        file->addFileType("makefile");
     }
 }
 
@@ -192,14 +189,12 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, 
     QString relDir = General::getRelativePath(topPath,dir);
 
     // Add the file to instance fileSet
-    if ( !generalFileSet_->contains(relDir) )
+    if ( generalFileSet_ && !generalFileSet_->contains(relDir) )
     {
         QSharedPointer<File> file;
-        QStringList types;
-        types.append("makefile");
         QSettings settings;
         file = generalFileSet_->addFile(relDir, settings);
-        file->setAllFileTypes( types );
+        file->addFileType("makefile");
     }
 }
 
@@ -228,14 +223,12 @@ void MakefileGenerator::generateLauncher(QString basePath, QString topPath, QStr
     QString relDir = General::getRelativePath(topPath,dir);
 
     // Add the file to instance fileSet
-    if ( !generalFileSet_->contains(relDir) )
+    if ( generalFileSet_ && !generalFileSet_->contains(relDir) )
     {
         QSharedPointer<File> file;
-        QStringList types;
-        types.append("shellScript");
         QSettings settings;
         file = generalFileSet_->addFile(relDir, settings);
-        file->setAllFileTypes( types );
+        file->addFileType( "shellScript" );
     }
 }
 
@@ -272,23 +265,14 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(MakefileParser::MakeFileData &
 //-----------------------------------------------------------------------------
 void MakefileGenerator::writeObjectList(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const
 {
-    // Since hardware and software fileSets are different entities, both have to be looped through.
     // Include files are skipped and the object file is simply original filename + ".o".
     outStream << "_OBJ=";
 
     foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, mfd.swObjects)
     {
-        if ( !mod->file->getIncludeFile() && !mod->compiler.isEmpty() )
+        if ( ( !mod->file || !mod->file->isIncludeFile() ) && !mod->compiler.isEmpty() )
         {
             outStream << " " << mod->fileName << ".o";
-        }
-    }
-
-    foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, mfd.hwObjects)
-    {
-        if ( !mod->file->getIncludeFile() && !mod->compiler.isEmpty() )
-        {
-            outStream << " " << mod->file->getName() << ".o";
         }
     }
 
@@ -321,22 +305,22 @@ void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::writeMakeObjects()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTextStream& outStream, QList<QSharedPointer<MakefileParser::MakeObjectData> >& objects, QString instancePath) const
+void MakefileGenerator::writeMakeObjects(QTextStream& outStream, 
+    QList<QSharedPointer<MakefileParser::MakeObjectData> >& objects, QString instancePath) const
 {
     foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, objects)
     {
-        // Skip the include files. Those do not need their own object files.
-        if ( mod->file->getIncludeFile() || mod->compiler.isEmpty() )
+        // Skip the include files, as they do not get object files. Also compilerless files are skipped.
+        if ( ( mod->file && mod->file->isIncludeFile() ) || mod->compiler.isEmpty() )
         {
             continue;
         }
 
-        // Flags will always include at least the includes.
+        // Flags will always include at least the includes, and possibility for debug and profiling flags.
         QString cFlags = "$(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) ";
 
-        // The other flags are not hard coded.
-        cFlags += mod->fileBuildCmd->getFlags();
-        cFlags += getFileFlags(mod, mfd);
+        // More flags may come from the parsed data.
+        cFlags += mod->flags;
 
         // The relative path is needed by the make and the builder to access the source file.
         QString relPath = General::getRelativePath(instancePath,mod->path);
@@ -348,41 +332,6 @@ void MakefileGenerator::writeMakeObjects(MakefileParser::MakeFileData &mfd, QTex
         outStream << "\t" << mod->compiler << " -c -o $(ODIR)/" << fileName << ".o " <<
             relPath << "/" << fileName << " " << cFlags << endl;
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakefileGenerator::getFileFlags()
-//-----------------------------------------------------------------------------
-QString MakefileGenerator::getFileFlags(QSharedPointer<MakefileParser::MakeObjectData> &mod, MakefileParser::MakeFileData &mfd) const
-{
-    QString cFlags;
-
-    // This mesh does following:
-    // 1. If file does not override flags, may use fileSet flags
-    // 2. If fileSet does not override flags, may use software flags
-    // 2. If software does not override flags, may use hardware flags
-    if ( !mod->fileBuildCmd->getReplaceDefaultFlags() )
-    {
-        if ( mod->fileSetBuildCmd != 0 )
-        {
-            cFlags += " " + mod->fileSetBuildCmd->getFlags();
-        }
-
-        if ( mod->fileSetBuildCmd == 0 || !mod->fileSetBuildCmd->getReplaceDefaultFlags() )
-        {
-            if ( mod->swBuildCmd != 0 )
-            {
-                cFlags += " " + mod->swBuildCmd->getFlags();
-            }   
-
-            if ( ( mod->swBuildCmd == 0 || !mod->swBuildCmd->getReplaceDefaultFlags() ) && mfd.hwBuildCmd != 0 )
-            {
-                cFlags += " " + mfd.hwBuildCmd->getFlags();
-            }
-        }
-    }
-
-    return cFlags;
 }
 
 //-----------------------------------------------------------------------------

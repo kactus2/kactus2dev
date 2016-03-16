@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 20.6.2011
- *      Author: Antti Kamppi
- * 		filename: newbuspage.h
- */
+//-----------------------------------------------------------------------------
+// File: newbuspage.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.06.2011
+//
+// Description:
+// New bus page.
+//-----------------------------------------------------------------------------
 
 #ifndef NEWBUSPAGE_H
 #define NEWBUSPAGE_H
@@ -12,6 +16,9 @@
 
 class LibraryInterface;
 
+//-----------------------------------------------------------------------------
+//! New bus page.
+//-----------------------------------------------------------------------------
 class NewBusPage : public NewPage 
 {
 	Q_OBJECT
@@ -20,7 +27,7 @@ public:
 
 	NewBusPage(LibraryInterface* libHandler, QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~NewBusPage();
 	
     /*!
@@ -40,14 +47,14 @@ public:
 
 signals:
 
-	//! \brief Signaled when new bus should be created.
+	//! Signaled when new bus should be created.
 	void createBus(VLNV const& vlnv, QString const& directory);
 
 private:
-	//! \brief No copying
+	//! No copying.
 	NewBusPage(const NewBusPage& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	NewBusPage& operator=(const NewBusPage& other);	    
 
 };

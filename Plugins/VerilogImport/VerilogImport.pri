@@ -12,6 +12,7 @@ HEADERS += ../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../editors/ComponentEditor/common/NullParser.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../common/HDLmath.h \
+    ../common/NameGenerationPolicy.h \
     ./VerilogParameterParser.h \
     ./VerilogPortParser.h \
     ./VerilogSyntax.h \
@@ -20,6 +21,7 @@ HEADERS += ../../editors/ComponentEditor/common/ExpressionParser.h \
 SOURCES += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/NullParser.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../common/NameGenerationPolicy.cpp \
     ./VerilogImporter.cpp \
     ./VerilogParameterParser.cpp \
     ./VerilogPortParser.cpp

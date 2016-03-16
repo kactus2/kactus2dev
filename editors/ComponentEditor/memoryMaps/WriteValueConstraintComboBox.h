@@ -12,10 +12,10 @@
 #ifndef WRITEVALUECONSTRAINTCOMBOBOX_H
 #define WRITEVALUECONSTRAINTCOMBOBOX_H
 
-#include <IPXACTmodels/writevalueconstraint.h>
-
 #include <QSharedPointer>
 #include <QComboBox>
+
+class WriteValueConstraint;
 
 //-----------------------------------------------------------------------------
 //! Combo box for the write value constraint of a field.
@@ -39,7 +39,9 @@ public:
      */
     virtual ~WriteValueConstraintComboBox();
 
-private slots:
+    void setWriteValueConstraint(QSharedPointer<WriteValueConstraint> constraint);
+   
+    private slots:
 
     /*!
      *  Sets the type for the write constraint.
@@ -50,10 +52,10 @@ private slots:
 
 private:
 	
-	//! No copying
+	//! No copying.
     WriteValueConstraintComboBox(const WriteValueConstraintComboBox& other);
 
-	//! No assignment
+	//! No assignment.
     WriteValueConstraintComboBox& operator=(const WriteValueConstraintComboBox& other);
 
 	//! Pointer to the write constraint being edited.

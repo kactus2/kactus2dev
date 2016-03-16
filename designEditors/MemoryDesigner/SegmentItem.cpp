@@ -15,9 +15,9 @@
 
 #include <common/utils.h>
 
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/addressspace.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
 
 #include <QPainter>
 
@@ -49,7 +49,7 @@ SegmentItem::SegmentItem(QSharedPointer<Component> component,
     // First sort address blocks based on their base address.
     QList< QSharedPointer<AddressBlock> > blocks;
 
-    foreach (QSharedPointer<MemoryMapItem> item, addressSpace_->getLocalMemoryMap()->getItems())
+    foreach (QSharedPointer<MemoryBlockBase> item, *addressSpace_->getLocalMemoryMap()->getMemoryBlocks())
     {
         QSharedPointer<AddressBlock> block = item.dynamicCast<AddressBlock>();
 
@@ -99,7 +99,7 @@ SegmentItem::SegmentItem(QSharedPointer<Component> component,
                 bottom = top + SUBSECTION_HEIGHT;
             }
 
-            AddressSubsection* subsection = new AddressSubsection(this, block->getName(),
+            AddressSubsection* subsection = new AddressSubsection(this, block->name(),
                                                                   WIDTH / 2 - ADDR_COLUMN_WIDTH,
                                                                   top, bottom,
                                                                   qMax(blockStartAddress, getStartAddress()),
@@ -180,11 +180,11 @@ void SegmentItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *optio
         painter->setFont(font);
 
         QFontMetrics metrics(font);
-        painter->fillRect(metrics.boundingRect(drawAreaRect, Qt::AlignCenter, subsection->getName()),
+        painter->fillRect(metrics.boundingRect(drawAreaRect, Qt::AlignCenter, subsection->name()),
                           brush().color());
 
         painter->setPen(QPen(Qt::black, 0));
-        painter->drawText(drawAreaRect, Qt::AlignCenter, subsection->getName());
+        painter->drawText(drawAreaRect, Qt::AlignCenter, subsection->name());
     }
 }
 

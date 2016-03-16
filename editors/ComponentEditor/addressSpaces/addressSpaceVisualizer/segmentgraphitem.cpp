@@ -1,26 +1,29 @@
-/* 
- *  	Created on: 20.12.2012
- *      Author: Antti Kamppi
- * 		filename: segmentgraphitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: segmentgraphitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.12.2012
+//
+// Description:
+// The graph item to visualize segments in address space editor.
+//-----------------------------------------------------------------------------
 
 #include "segmentgraphitem.h"
 
-#include <common/utils.h>
 #include <common/KactusColors.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
+
+#include <IPXACTmodels/Component/Segment.h>
 
 #include <QBrush>
 
 //-----------------------------------------------------------------------------
 // Function: SegmentGraphItem::SegmentGraphItem()
 //-----------------------------------------------------------------------------
-SegmentGraphItem::SegmentGraphItem(QSharedPointer<Segment> segment,
-                                   QString const& addressSpaceWidth,
-                                   QSharedPointer<ExpressionParser> expressionParser,
-								   QGraphicsItem* parent):
+SegmentGraphItem::SegmentGraphItem(QSharedPointer<Segment> segment, QString const& addressSpaceWidth,
+                                   QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
 AddressSpaceVisualizationItem(addressSpaceWidth, expressionParser, parent),
 segment_(segment)
 {
@@ -36,6 +39,7 @@ segment_(segment)
 //-----------------------------------------------------------------------------
 SegmentGraphItem::~SegmentGraphItem()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -43,14 +47,14 @@ SegmentGraphItem::~SegmentGraphItem()
 //-----------------------------------------------------------------------------
 void SegmentGraphItem::refresh()
 {
-    setName(segment_->getName());
+    setName(segment_->name());
 
     quint64 offset = getOffset();
     quint64 lastAddr = getLastAddress();
     setOverlappingTop(offset);
     setOverlappingBottom(lastAddr);
 
-    setToolTip("<b>Name: </b>" + segment_->getName() + "<br>" +
+    setToolTip("<b>Name: </b>" + segment_->name() + "<br>" +
         "<b>Offset: </b>" + addr2Str(offset, getBitWidth()) + "<br>" +
         "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth())  + "<br>" +
         "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(segment_->getRange()));
@@ -101,7 +105,8 @@ void SegmentGraphItem::setOverlappingTop(quint64 const& address)
     firstFreeAddress_ = address;
     setRightTopCorner(firstFreeAddress_);
 
-    if (firstFreeAddress_ == lastFreeAddress_){        
+    if (firstFreeAddress_ == lastFreeAddress_)
+    {
         VisualizerItem::setRightBottomCorner("");
     }
     else

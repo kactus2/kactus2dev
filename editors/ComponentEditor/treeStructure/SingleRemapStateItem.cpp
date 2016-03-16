@@ -13,15 +13,22 @@
 
 #include <editors/ComponentEditor/remapStates/SingleRemapStateEditor.h>
 
+#include <IPXACTmodels/Component/RemapState.h>
+#include <IPXACTmodels/Component/RemapPort.h>
+#include <IPXACTmodels/Component/validators/RemapStateValidator.h>
+
 //-----------------------------------------------------------------------------
 // Function: SingleRemapStateItem::SingleRemapStateItem()
 //-----------------------------------------------------------------------------
 SingleRemapStateItem::SingleRemapStateItem(QSharedPointer<RemapState> remapState, ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentEditorItem* parent):
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<RemapStateValidator> validator,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-remapState_(remapState)
+remapState_(remapState),
+validator_(validator)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
@@ -49,7 +56,7 @@ QString SingleRemapStateItem::getTooltip() const
 //-----------------------------------------------------------------------------
 QString SingleRemapStateItem::text() const
 {
-    return remapState_->getName();
+    return remapState_->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -57,7 +64,7 @@ QString SingleRemapStateItem::text() const
 //-----------------------------------------------------------------------------
 bool SingleRemapStateItem::isValid() const
 {
-    return remapState_->isValid(component_->getPortNames());
+    return validator_->validate(remapState_);
 }
 
 //-----------------------------------------------------------------------------

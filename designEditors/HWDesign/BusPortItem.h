@@ -1,8 +1,13 @@
-/* 
- *
- * 		filename: BusPortItem.h
- */
-
+//-----------------------------------------------------------------------------
+// File: BusPortItem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// HWConnection represents graphically an IP-XACT bus interface in a component instance.
+//-----------------------------------------------------------------------------
 #ifndef BUSPORTITEM_H
 #define BUSPORTITEM_H
 
@@ -13,15 +18,16 @@
 #include "HWConnectionEndpoint.h"
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 class BusInterface;
 class HWComponentItem;
 class OffPageConnectorItem;
 class LibraryInterface;
 
-/*! \brief HWConnection represents graphically an IP-XACT port
- *
- */
+//-----------------------------------------------------------------------------
+//! HWConnection represents graphically an IP-XACT bus interface in a component instance
+//-----------------------------------------------------------------------------
 class BusPortItem : public HWConnectionEndpoint
 {
     Q_OBJECT
@@ -29,10 +35,17 @@ class BusPortItem : public HWConnectionEndpoint
 public:
     enum { Type = GFX_TYPE_DIAGRAM_PORT };
 
-    BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* lh,
-                bool packetized, QGraphicsItem *parent = 0);
+    
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] busIf       The bus interface represented by the item.
+     *      @param [in] library     The IP-XACT library in use.
+     *      @param [in] parent      The parent object.
+     */
+    BusPortItem(QSharedPointer<BusInterface> busIf, LibraryInterface* library, HWComponentItem* parent);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~BusPortItem();
 
     /*!
@@ -44,7 +57,7 @@ public:
      */
     void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
 
-    /*! \brief Update the graphics to match the IP-XACT bus interface
+    /*! Update the graphics to match the IP-XACT bus interface
      *
      */
     void updateInterface();
@@ -55,36 +68,31 @@ public:
     // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
-    /*!
-     *  Returns true if the draw direction is fixed and thus, cannot be changed.
-     */
-    virtual bool isDirectionFixed() const;
-
-    /*! \brief Returns the name of this port
+    /*! Returns the name of this port
      *
      */
     virtual QString name() const;
 
-	/*! \brief Set the name for the port.
+	/*! Set the name for the port.
 	 *
-	 * \param name The name to set for the port.
+	 *      @param [in] name The name to set for the port.
 	 *
 	*/
-	virtual void setName(const QString& name);
+	virtual void setName(QString const& name);
 
-	/*! \brief Get the description of the port.
+	/*! Get the description of the port.
 	 *
 	 *
-	 * \return QString contains the description.
+	 *      @return QString contains the description.
 	*/
 	virtual QString description() const;
 
-	/*! \brief Set the description for the port.
+	/*! Set the description for the port.
 	 *
-	 * \param description Contains the description to set.
+	 *      @param [in] description Contains the description to set.
 	 *
 	*/
-	virtual void setDescription(const QString& description);
+	virtual void setDescription(QString const& description);
 
     /*!
      *  Called when a connection between this and another end point is done.
@@ -134,16 +142,13 @@ public:
     virtual bool isExclusive() const;
 
     /*! 
-     *  Returns the encompassing component. if this port represents
-     *  a bus interface on a component.
+     *  Returns the encompassing component.
      */
     virtual ComponentItem* encompassingComp() const;
 
-	/*! \brief Returns pointer to the top component that owns this interface.
-	 *
-	 *
-	 * \return QSharedPointer<Component> Pointer to the component to which this 
-	 * interface belongs to.
+	/*! Returns pointer to the top component that owns this interface.
+	 *	 
+	 *      @return     The component to which this interface belongs to.
 	*/
 	virtual QSharedPointer<Component> getOwnerComponent() const;
 
@@ -158,9 +163,9 @@ public:
      *      @remarks The function returns a null pointer if the end point is a bus interface.
      *               Use isBus() function to check for ad-hoc support (isBus() == false).
      */
-    virtual Port* getPort() const;
+    virtual QSharedPointer<Port> getPort() const;
 
-    /*! \brief Returns true if the port represents a hierarchical connection
+    /*! Returns true if the port represents a hierarchical connection
      *
      */
     virtual bool isHierarchical() const;
@@ -170,10 +175,9 @@ public:
      */
     virtual bool isBus() const;
 
-	/*! \brief Set the interface mode for the end point.
+	/*! Set the interface mode for the end point.
 	 *
-	 * \param mode The interface mode to set.
-	 *
+	 *      @param mode [in]    The interface mode to set.
 	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode);
 
@@ -181,7 +185,19 @@ public:
      *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
      */
     virtual ConnectionEndpoint* getOffPageConnector();
-	
+    
+    /*!
+     *  Sets the endpoint temporary or not temporary. Temporary endpoints can be deleted.
+     *
+     *      @param [in] temp True if temporary; false if not temporary.
+     */
+    virtual void setTemporary(bool temp);
+
+    /*!
+     *  Returns true if the draw direction is fixed and thus, cannot be changed.
+     */
+    virtual bool isDirectionFixed() const;
+
 	/*!
 	 *  Set the position of the name label.
 	 */
@@ -205,8 +221,7 @@ public:
 	void shortenNameLabel( qreal width );
 
 protected:
-    virtual QVariant itemChange(GraphicsItemChange change,
-                                const QVariant &value);
+    virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
@@ -221,13 +236,22 @@ private:
      *    
      *      @return The possible opposing modes.
      */
-    QList<General::InterfaceMode> getOpposingModes(QSharedPointer<BusInterface> busIf);
+    QList<General::InterfaceMode> getOpposingModes(QSharedPointer<BusInterface> busIf) const;
+
+    QPolygonF arrowUp() const;
+
+    QPolygonF arrowDown() const;
+
+    QPolygonF doubleArrow() const;
 
 	//! The bus interface.
 	QSharedPointer<BusInterface> busInterface_;
 
+    //! The component item containing the bus port item.
+    HWComponentItem* parentComponentItem_;
+
 	//! The library interface.
-    LibraryInterface* lh_;
+    LibraryInterface* library_;
 
     //! The name label.
     QGraphicsTextItem nameLabel_;

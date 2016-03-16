@@ -20,13 +20,15 @@
 #include <QTextStream>
 
 #include <common/widgets/FileSelector/fileselector.h>
-#include <IPXACTmodels/component.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 //-----------------------------------------------------------------------------
-// Function: FileViewer()
+// Function: FileViewer::FileViewer()
 //-----------------------------------------------------------------------------
 FileViewer::FileViewer(QSharedPointer<Component> component, QString const& basePath, QWidget* parent):
-    QWidget(parent), basePath_(basePath), fileSelector_(new FileSelector(component, this)), editor_(new QTextEdit(this))
+    QWidget(parent), basePath_(basePath), fileSelector_(new FileSelector(component, this)), 
+        editor_(new QTextEdit(this))
 {
     editor_->setReadOnly(true);
 
@@ -37,32 +39,35 @@ FileViewer::FileViewer(QSharedPointer<Component> component, QString const& baseP
 }
   
 //-----------------------------------------------------------------------------
-// Function: ~FileViewer()
+// Function: FileViewer::~FileViewer()
 //-----------------------------------------------------------------------------
 FileViewer::~FileViewer()
 {
 }
 
+//-----------------------------------------------------------------------------
+// Function: FileViewer::refresh()
+//-----------------------------------------------------------------------------
 void FileViewer::refresh()
 {
     fileSelector_->refresh();
 }
 
-
 //-----------------------------------------------------------------------------
-// Function: onFileSelected()
+// Function: FileViewer::onFileSelected()
 //-----------------------------------------------------------------------------
 void FileViewer::onFileSelected(const QString& filePath)
 {
-	if (filePath.isEmpty()) {
+	if (filePath.isEmpty())
+    {
 		editor_->setText(QString());
 	}
 
     QString absPath = basePath_+"/"+filePath;
     QFile file(absPath);
-    if ( !file.open(QIODevice::ReadOnly) )
+    if (!file.open(QIODevice::ReadOnly))
     {
-        QMessageBox::information(this, "Error", file.errorString()+": "+absPath);
+        QMessageBox::information(this, "Error", file.errorString() + ": " + absPath);
         return;
     }
 
@@ -72,7 +77,7 @@ void FileViewer::onFileSelected(const QString& filePath)
 }
 
 //-----------------------------------------------------------------------------
-// Function: setupLayout()
+// Function: FileViewer::setupLayout()
 //-----------------------------------------------------------------------------
 void FileViewer::setupLayout()
 {
@@ -81,5 +86,4 @@ void FileViewer::setupLayout()
     fileLayout->addWidget(fileSelector_,0,1,1,1);
     fileLayout->addWidget(editor_,1,0,1,2);
     fileLayout->setColumnStretch(1,1);
-    
 }

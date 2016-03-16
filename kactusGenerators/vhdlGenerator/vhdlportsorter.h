@@ -8,7 +8,7 @@
 #ifndef VHDLPORTSORTER_H
 #define VHDLPORTSORTER_H
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <QString>
 
@@ -28,7 +28,7 @@ public:
 	*/
 	VhdlPortSorter(const QString& interface,
 		const QString& name, 
-		General::Direction direction);
+		DirectionTypes::Direction direction);
 	
 	//! \brief Copy constructor
 	VhdlPortSorter(const VhdlPortSorter& other);
@@ -94,7 +94,7 @@ private:
 	QString name_;
 
 	//! \brief The direction of the port.
-	General::Direction direction_;
+	DirectionTypes::Direction direction_;
 };
 
 #endif // VHDLPORTSORTER_H

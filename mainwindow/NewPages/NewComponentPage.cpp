@@ -14,7 +14,7 @@
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <QVBoxLayout>
@@ -23,7 +23,8 @@
 // Function: NewComponentPage()
 //-----------------------------------------------------------------------------
 NewComponentPage::NewComponentPage(LibraryInterface* libInterface, QWidget* parentDlg):
-    NewPage(libInterface, VLNV::COMPONENT, tr("New HW Component"), tr("Creates a flat (non-hierarchical) HW component"), parentDlg) 
+NewPage(libInterface, VLNV::COMPONENT, tr("New HW Component"),
+    tr("Creates a flat (non-hierarchical) HW component"), parentDlg) 
 {
 
     // Create the attribute editor.
@@ -70,8 +71,7 @@ bool NewComponentPage::validate()
 //-----------------------------------------------------------------------------
 void NewComponentPage::apply()
 {
-    emit createComponent(attributeEditor_->getProductHierarchy(),
-                         attributeEditor_->getFirmness(),
+    emit createComponent(attributeEditor_->getProductHierarchy(), attributeEditor_->getFirmness(),
                          vlnvEditor_->getVLNV(), selectedPath());
 }
 
@@ -96,16 +96,17 @@ void NewComponentPage::onProductHierarchyChanged()
     
     if (vlnv.getLibrary().isEmpty())
     {
-        vlnv.setLibrary(KactusAttribute::valueToString(attributeEditor_->getProductHierarchy()).toLower());
+        vlnv.setLibrary(KactusAttribute::hierarchyToString(attributeEditor_->getProductHierarchy()).toLower());
     }
     else
     {
+        QString previousLibrary = vlnv.getLibrary().toLower();
         for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
         {
-            if (vlnv.getLibrary().toLower() ==
-                KactusAttribute::valueToString(static_cast<KactusAttribute::ProductHierarchy>(i)).toLower())
+            if (previousLibrary ==
+                KactusAttribute::hierarchyToString(static_cast<KactusAttribute::ProductHierarchy>(i)).toLower())
             {
-                vlnv.setLibrary(KactusAttribute::valueToString(attributeEditor_->getProductHierarchy()).toLower());
+                vlnv.setLibrary(KactusAttribute::hierarchyToString(attributeEditor_->getProductHierarchy()).toLower());
                 break;
             }
         }

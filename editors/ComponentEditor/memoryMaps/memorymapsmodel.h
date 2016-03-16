@@ -1,24 +1,30 @@
-/* 
- *  	Created on: 21.8.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapsmodel.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapsmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 21.08.2012
+//
+// Description:
+// The model to manage the memory maps summary.
+//-----------------------------------------------------------------------------
 
 #ifndef MEMORYMAPSMODEL_H
 #define MEMORYMAPSMODEL_H
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/MemoryRemap.h>
-
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
-#include <QAbstractTableModel>
 #include <QAbstractItemModel>
 #include <QSharedPointer>
 #include <QColor>
+#include <QMap>
 
+class Component;
+class MemoryMapBase;
+class MemoryMap;
+class MemoryRemap;
+
+class MemoryMapValidator;
 //-----------------------------------------------------------------------------
 //! The model to manage the memory maps summary.
 //-----------------------------------------------------------------------------
@@ -33,10 +39,11 @@ public:
 	 *
 	 *      @param [in] component           Pointer to the component that contains the memory maps to edit.
      *      @param [in] parameterFinder     Pointer to the instance used to find parameters.
+     *      @param [in] memoryMapValidator  Validator used for memory maps.
 	 *      @param [in] parent              Pointer to the owner of the model.
 	 */
 	MemoryMapsModel(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
-        QObject *parent);
+        QSharedPointer<MemoryMapValidator> memoryMapValidator, QObject *parent);
 	
 	/*!
 	 *  The destructor.
@@ -101,11 +108,6 @@ public:
      *      @return True, if saving was successful, false otherwise.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-
-    /*!
-	 *  Check if the Memory maps model is in a valid state.
-	 */
-	bool isValid() const;
 
     /*!
      *  Get the model index of the specified object.
@@ -216,7 +218,7 @@ private:
      *
      *      @param [in] memoryMap   The given memory map.
      */
-    QMap<QString, int> getReferencedParameters(QSharedPointer<AbstractMemoryMap> memoryMap) const;
+    QMap<QString, int> getReferencedParameters(QSharedPointer<MemoryMapBase> memoryMap) const;
 
     /*!
      *  Decrease the number of references when removing a memory map.
@@ -291,7 +293,10 @@ private:
     QSharedPointer<ParameterFinder> parameterFinder_;
 
 	//! Contains the memory maps to show in the summary.
-	QList<QSharedPointer<MemoryMap> >& rootMemoryMaps_;
+    QSharedPointer<QList<QSharedPointer<MemoryMap> > > rootMemoryMaps_;
+
+    //! The used memory map validator.
+    QSharedPointer<MemoryMapValidator> memoryMapValidator_;
 };
 
 #endif // MEMORYMAPSMODEL_H

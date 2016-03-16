@@ -54,8 +54,8 @@ void ConnectionMoveCommand::redo()
 // Function: ConnectionChangeCommand()
 //-----------------------------------------------------------------------------
 ConnectionChangeCommand::ConnectionChangeCommand(GraphicsConnection* connection, 
-                                                 const QString& newName, 
-                                                 const QString& newDescription,
+                                                 QString const& newName, 
+                                                 QString const& newDescription,
                                                  QUndoCommand* parent /*= 0*/ )
     : QUndoCommand(parent),
       connection_(connection),
@@ -95,13 +95,13 @@ void ConnectionChangeCommand::redo()
 // Function: ConnectionExchangeCommand::ConnectionExchangeCommand()
 //-----------------------------------------------------------------------------
 ConnectionExchangeCommand::ConnectionExchangeCommand(GraphicsConnection* connection,
-                                                     ConnectionEndpoint* oldEndpoint,
-                                                     ConnectionEndpoint* newEndpoint,
-                                                     QUndoCommand* parent)
-    : QUndoCommand(parent),
-      conn_(connection),
-      oldEndpoint_(oldEndpoint),
-      newEndpoint_(newEndpoint)
+    ConnectionEndpoint* oldEndpoint,
+    ConnectionEndpoint* newEndpoint,
+    QUndoCommand* parent):
+QUndoCommand(parent),
+    connectionItem_(connection),
+    oldEndpoint_(oldEndpoint),
+    newEndpoint_(newEndpoint)
 {
 }
 
@@ -117,14 +117,14 @@ ConnectionExchangeCommand::~ConnectionExchangeCommand()
 // Function: ConnectionExchangeCommand::undo()
 //-----------------------------------------------------------------------------
 void ConnectionExchangeCommand::undo()
-{
-    if (conn_->endpoint1() == newEndpoint_)
+{        
+    if (connectionItem_->endpoint1() == newEndpoint_)
     {
-        conn_->setEndpoint1(oldEndpoint_);
+        connectionItem_->setEndpoint1(oldEndpoint_);
     }
     else
     {
-        conn_->setEndpoint2(oldEndpoint_);
+        connectionItem_->setEndpoint2(oldEndpoint_);
     }
 }
 
@@ -133,13 +133,13 @@ void ConnectionExchangeCommand::undo()
 //-----------------------------------------------------------------------------
 void ConnectionExchangeCommand::redo()
 {
-    if (conn_->endpoint1() == oldEndpoint_)
+    if (connectionItem_->endpoint1() == oldEndpoint_)
     {
-        conn_->setEndpoint1(newEndpoint_);
+        connectionItem_->setEndpoint1(newEndpoint_);
     }
     else
     {
-        conn_->setEndpoint2(newEndpoint_);
+        connectionItem_->setEndpoint2(newEndpoint_);
     }
 }
 

@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.8.2011
- *      Author: Antti Kamppi
- * 		filename: componentinstanceeditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componentinstanceeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.08.2011
+//
+// Description:
+// Editor to edit the details of a component instance within a design.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTINSTANCEEDITOR_H
 #define COMPONENTINSTANCEEDITOR_H
@@ -13,12 +17,12 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
+#include <common/IEditProvider.h>
+
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
-#include <common/GenericEditProvider.h>
-#include "configurableelementeditor.h"
 
-#include <IPXACTmodels/designconfiguration.h>
+#include "configurableelementeditor.h"
 
 #include <QWidget>
 #include <QComboBox>
@@ -28,29 +32,31 @@
 class ComponentItem;
 class ParameterFinder;
 class TopComponentParameterFinder;
-/*! Editor to edit the details of a component instance within a design.
- *
- */
-class ComponentInstanceEditor : public QWidget {
+//-----------------------------------------------------------------------------
+//! Editor to edit the details of a component instance within a design.
+//-----------------------------------------------------------------------------
+class ComponentInstanceEditor : public QWidget
+{
 	Q_OBJECT
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor
 	 *
 	 *      @param [in] parent Pointer to the owner of this widget.
-	 *
-	*/
+	 */
 	ComponentInstanceEditor(QWidget *parent);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~ComponentInstanceEditor();
 
-	/*! Set the component to be edited.
+	/*!
+     *  Set the component to be edited.
 	 *
 	 *      @param [in] component Pointer to the component instance being edited.
-	*/
-    void setComponentInstance(ComponentItem* component);
+	 */
+    void setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider);
 
     /*!
      *  Sets the top component for the instances.
@@ -60,7 +66,7 @@ public:
      *      @param [in] editProvider            The generic edit provider.
      */
     void setContext(QSharedPointer<Component> topComponent,
-        QSharedPointer<DesignConfiguration> designConfiguration, GenericEditProvider* editProvider);
+        QSharedPointer<DesignConfiguration> designConfiguration, QSharedPointer<IEditProvider> editProvider);
 
     /*!
      *  Sets the protection state for the instance editor.
@@ -78,9 +84,16 @@ public slots:
      */
     void setTopComponentActiveView(QString const& activeView);
 
-	/*! Clear the editor so no instance details are shown
-	 *
-	*/
+    /*!
+     *  Change the used design configuration.
+     *
+     *      @param [in] newDesignConfiguration  The new design configuration.
+     */
+    void changeDesignConfiguration(QSharedPointer<DesignConfiguration> newDesignConfiguration);
+
+	/*!
+     *  Clear the editor so no instance details are shown
+	 */
 	void clear();
 
 signals:
@@ -91,13 +104,13 @@ signals:
 private slots:
 
 	//! Handler when user changes the name of the component instance.
-	void onNameChanged(QString const& newName);
+    void onNameChanged();
 
 	//! Handler when user changes the display name of the component instance.
-	void onDisplayNameChanged(QString const& newDisplayName);
+    void onDisplayNameChanged();
 
 	//! Handler when user changes the description of the component instance.
-	void onDescriptionChanged(QString const& newDescription);
+    void onDescriptionChanged();
 
     //! Handler when the user changes any property values.
     void onPropertyValuesChanged();
@@ -109,10 +122,10 @@ private slots:
     void updateFileSetRef(QString const& fileSetRef);
 
 private:
-	//! No copying
+	//! No copying.
 	ComponentInstanceEditor(const ComponentInstanceEditor& other);
 
-	//! No assignment
+	//! No assignment.
 	ComponentInstanceEditor& operator=(const ComponentInstanceEditor& other);
     
 	//! Pointer to the component instance being edited.
@@ -137,7 +150,7 @@ private:
     PropertyValueEditor* propertyValueEditor_;
 
 	//! Pointer to the generic edit provider that manages the undo/redo stack.
-	GenericEditProvider* editProvider_;
+	QSharedPointer<IEditProvider> editProvider_;
 
     //! The parameter finder for component instances.
     QSharedPointer<ComponentParameterFinder> instanceFinder_;

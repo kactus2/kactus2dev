@@ -1,61 +1,88 @@
-/* 
- *
- *  Created on: 7.2.2011
- *      Author: Antti Kamppi
- * 		filename: filetypeeditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: filetypeeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 7.2.2011
+//
+// Description:
+// FileTypeEditor is used to specify a file type for a file.
+//-----------------------------------------------------------------------------
 
 #include "filetypeeditor.h"
+#include "filetypeeditordelegate.h"
 
 #include <common/dialogs/comboSelector/comboselector.h>
 
-#include "filetypeeditordelegate.h"
+#include <IPXACTmodels/Component/File.h>
 
-FileTypeEditor::FileTypeEditor(QWidget *parent,
-							  QSharedPointer<File> file):
+//-----------------------------------------------------------------------------
+// Function: filetypeeditor::FileTypeEditor()
+//-----------------------------------------------------------------------------
+FileTypeEditor::FileTypeEditor(QWidget *parent, QSharedPointer<File> file):
 ListManager(tr("Specified file types"), parent), 
-file_(file) {
-
-	Q_ASSERT_X(file_, "FileTypeEditor constructor",
-		"Null File-pointer given as parameter");
+file_(file)
+{
+	Q_ASSERT_X(file_, "FileTypeEditor constructor", "Null File-pointer given as parameter");
 }
 
-FileTypeEditor::~FileTypeEditor() {
+//-----------------------------------------------------------------------------
+// Function: filetypeeditor::~FileTypeEditor()
+//-----------------------------------------------------------------------------
+FileTypeEditor::~FileTypeEditor()
+{
+
 }
 
-void FileTypeEditor::apply() {
+//-----------------------------------------------------------------------------
+// Function: filetypeeditor::apply()
+//-----------------------------------------------------------------------------
+void FileTypeEditor::apply()
+{
 	// get all items from the model
 	QStringList items = model_->items();
 
 	// remove all previous file types and userFileTypes from the model
 	file_->clearFileTypes();
-	file_->setAllFileTypes(items);
+    foreach (QString fileType, items)
+    {
+        file_->getFileTypes()->append(fileType);
+    }
 }
 
-void FileTypeEditor::restore() {
-	QStringList fileTypes = file_->getAllFileTypes();
+//-----------------------------------------------------------------------------
+// Function: filetypeeditor::()
+//-----------------------------------------------------------------------------
+void FileTypeEditor::restore()
+{
+    QStringList fileTypes;
+    foreach (QString item, *file_->getFileTypes())
+    {
+        fileTypes.append(item);
+    }
+
 	model_->setItems(fileTypes);
 }
 
-bool FileTypeEditor::isValid() const {
-	
+//-----------------------------------------------------------------------------
+// Function: filetypeeditor::isValid()
+//-----------------------------------------------------------------------------
+bool FileTypeEditor::isValid() const
+{
 	// at least one file type has to be specified
-	if (model_->rowCount() <= 0) {
+	if (model_->rowCount() <= 0)
+    {
 		return false;
 	}
 
-	// get all items from the model
-	QStringList items = model_->items();
-	foreach (QString item, items) {
-		if (item.isEmpty()) {
-			return false;
-		}
-	}
-
-	return true;
+	return !model_->items().contains("");
 }
 
-void FileTypeEditor::initialize( const QStringList& items /*= QStringList()*/ ) {
+//-----------------------------------------------------------------------------
+// Function: filetypeeditor::initialize()
+//-----------------------------------------------------------------------------
+void FileTypeEditor::initialize( const QStringList& items /*= QStringList()*/ )
+{
 	ListManager::initialize(items);
 
 	view_->setProperty("mandatoryField", true);

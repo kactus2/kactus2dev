@@ -11,13 +11,9 @@
 
 #include "HWMappingItem.h"
 
-#include "SystemMoveCommands.h"
-
 #include "SystemDesignDiagram.h"
 #include "SWComponentItem.h"
 #include "SWPortItem.h"
-
-#include <designEditors/HWDesign/HWMoveCommands.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -26,7 +22,9 @@
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 #include <QBrush>
 #include <QUndoCommand>
@@ -34,19 +32,13 @@
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::HWMappingItem()
 //-----------------------------------------------------------------------------
-HWMappingItem::HWMappingItem(LibraryInterface* libInterface,
-                             QSharedPointer<Component> component,
-                             QString const& instanceName,
-                             QString const& displayName,
-                             QString const& description,
-									  QString const& uuid,
-                             QMap<QString, QString> const& configurableElementValues)
-    : SystemComponentItem(QRectF(-WIDTH/ 2, 0, WIDTH, 0), libInterface, component, instanceName,
-                      displayName, description, uuid, configurableElementValues, 0),
-      oldStack_(0),
-      layout_(new VStackedLayout<ComponentItem>(SPACING)),
-      swComponents_(),
-      oldPos_()
+HWMappingItem::HWMappingItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
+                             QSharedPointer<ComponentInstance> instance):
+SystemComponentItem(QRectF(-WIDTH/ 2, 0, WIDTH, 0), libInterface, instance, component, 0),
+oldStack_(0),
+layout_(new VStackedLayout<ComponentItem>(SPACING)),
+swComponents_(),
+oldPos_()
 {
     setFlag(ItemIsMovable);
     
@@ -178,7 +170,8 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit stack only if it has at least some real changes.
         if (cmd->childCount() > 0 || scenePos() != oldPos_)
         {
-            static_cast<SystemDesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
+            static_cast<SystemDesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
+            cmd->redo();
         }
 
         oldStack_ = 0;
@@ -278,9 +271,15 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
     // Check if the item is not overlapping the HW mapping item enough.
     QRectF intersection = sceneBoundingRect().intersected(item->sceneBoundingRect());
 
+    QSharedPointer<SWInstance> swInstance = compItem->getComponentInstance().dynamicCast<SWInstance>();
+    if (swInstance)
+    {
+        swInstance->setMapping(getComponentInstance()->getUuid());
+    }
+
+    SWComponentItem* swItem = static_cast<SWComponentItem*>(compItem);
     // Only non-imported SW components can be moved out of the HW mapping item.
-    if (!static_cast<SystemComponentItem*>(compItem)->isImported() &&
-        compItem->rect().height() - intersection.height() >= 3 * GridSize)
+    if (!swItem->isImported() && swItem->rect().height() - intersection.height() >= swItem->rect().height())
     {
         swComponents_.removeAll(compItem);
 
@@ -295,6 +294,8 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
 
         updateItemPositions();
         setZValue(0.0);
+
+        swInstance->setMapping("");
 
         parentStack->onMoveItem(compItem);
         return;
@@ -375,12 +376,12 @@ void HWMappingItem::updateComponent()
 {
     ComponentItem::updateComponent();
 
-    VLNV* vlnv = componentModel()->getVlnv();
+    VLNV vlnv = componentModel()->getVlnv();
 
     // Check whether the component is packaged (valid vlnv) or not.
-    if (vlnv->isValid())
+    if (vlnv.isValid())
     {
-        if (!getLibraryInterface()->contains(*vlnv))
+        if (!getLibraryInterface()->contains(vlnv))
         {
             setBrush(QBrush(QColor(0xe8, 0xc5, 0xc5)));
         }
@@ -398,9 +399,9 @@ void HWMappingItem::updateComponent()
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::getContentType()
 //-----------------------------------------------------------------------------
-ColumnContentType HWMappingItem::getContentType() const
+ColumnTypes::ColumnContentType HWMappingItem::getContentType() const
 {
-    return COLUMN_CONTENT_COMPONENTS;
+    return ColumnTypes::COMPONENTS;
 }
 
 //-----------------------------------------------------------------------------

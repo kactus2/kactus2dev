@@ -47,9 +47,8 @@ public:
      *      @param [in] pluginMgr     The plugin manager for accessing plugins.
      *      @param [in] parent        The parent widget.
      */
-    FileDependencyEditor(QSharedPointer<Component> component,
-                         QString const& basePath,
-                         PluginManager const& pluginMgr, QWidget* parent);
+    FileDependencyEditor(QSharedPointer<Component> component, QString const& basePath,
+        PluginManager const& pluginMgr, QWidget* parent);
 
     /*!
      *  Destructor.
@@ -164,13 +163,22 @@ private:
      *      @param [in] iconText    The text displayed for the icon.
      *      @param [in] filter      The filter value for the button.
      */
-    void addFilterButton(QIcon icon, QString iconText, FileDependencyGraphView::DependencyFilter filter);
+    void addFilterButton(QIcon icon, QString const& iconText, FileDependencyGraphView::DependencyFilter filter);
 
     /*!
      *  Finishes the scan.
      */
     void finishScan();
     
+    /*!
+     *  Get the files matching the file path.
+     *
+     *      @param [in] filePath    The file path.
+     *
+     *      @return Files located within the given file path.
+     */
+    QList<QSharedPointer<File> > getFiles(QString const& filePath) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

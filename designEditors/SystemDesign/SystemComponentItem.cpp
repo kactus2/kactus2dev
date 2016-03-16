@@ -13,110 +13,34 @@
 
 #include "SWPortItem.h"
 
-#include <common/graphicsItems/IGraphicsItemStack.h>
-#include <common/graphicsItems/GraphicsConnection.h>
 #include <common/layouts/VCollisionLayout.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ComInterface.h>
-#include <IPXACTmodels/ApiInterface.h>
-#include <IPXACTmodels/ComProperty.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Design/ComponentInstance.h>
+
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+#include <IPXACTmodels/kactusExtensions/ApiInterface.h>
+#include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemComponentItem()
 //-----------------------------------------------------------------------------
-SystemComponentItem::SystemComponentItem(QRectF const& size,
-                                 LibraryInterface* libInterface,
-                                 QSharedPointer<Component> component,
-                                 QString const& instanceName, QString const& displayName,
-                                 QString const& description,
-											QString const& uuid,
-                                 QMap<QString, QString> const& configurableElementValues,
-                                 QGraphicsItem *parent)
-    : ComponentItem(size, libInterface, component, instanceName, displayName, description, uuid, configurableElementValues, parent),
-      imported_(false),
-      importRef_(),
-      portLayout_(new VCollisionLayout<SWPortItem>(SPACING)),
-      connUpdateDisabled_(false)
+SystemComponentItem::SystemComponentItem(QRectF const& size, LibraryInterface* libInterface,
+                                         QSharedPointer<ComponentInstance> instance,
+										 QSharedPointer<Component> component,
+										 QGraphicsItem *parent):
+ComponentItem(QRectF(), libInterface, instance, component, parent),
+imported_(false),
+importRef_(),
+portLayout_(new VCollisionLayout<SWPortItem>(SPACING)),
+connUpdateDisabled_(false)
 {
-    int portSpacing = 3 * GridSize;
-    int leftY = 4 * GridSize;
-    int rightY = 4 * GridSize;
-    bool right = false;
+    setRect(size);
 
-    // Create graphics items for API interfaces.
-    foreach (QSharedPointer<ApiInterface> apiIf, component->getApiInterfaces())
-    {
-        SWPortItem* port = new SWPortItem(apiIf, this);
+    positionAPIInterfaceTerminals();
 
-        // Check if the default position has been specified.
-        if (!apiIf->getDefaultPos().isNull())
-        {
-            port->setPos(apiIf->getDefaultPos());
-            onAddPort(port, (port->pos().x() >= 0) ? PORT_RIGHT : PORT_LEFT);
-        }
-        else
-        {
-            if (right)
-            {
-                port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
-                rightY += portSpacing;
-            }
-            else
-            {
-                port->setPos(QPointF(0, leftY) + rect().topLeft());
-                leftY += portSpacing;
-            }
-
-            if (right)
-            {
-                onAddPort(port, PORT_RIGHT);
-            }
-            else
-            {
-                onAddPort(port, PORT_LEFT);
-            }
-
-            right = !right;
-        }
-    }
-
-    // Create graphics items for COM interfaces.
-    foreach (QSharedPointer<ComInterface> comIf, component->getComInterfaces())
-    {
-        SWPortItem* port = new SWPortItem(comIf, this);
-
-        // Check if the default position has been specified.
-        if (!comIf->getDefaultPos().isNull())
-        {
-            port->setPos(comIf->getDefaultPos());
-            onAddPort(port, (port->pos().x() >= 0) ? PORT_RIGHT : PORT_LEFT);
-        }
-        else
-        {
-            if (right)
-            {
-                port->setPos(QPointF(rect().width(), rightY) + rect().topLeft());
-                rightY += portSpacing;
-            }
-            else
-            {
-                port->setPos(QPointF(0, leftY) + rect().topLeft());
-                leftY += portSpacing;
-            }
-
-            if (right)
-            {
-                onAddPort(port, PORT_RIGHT);
-            }
-            else
-            {
-                onAddPort(port, PORT_LEFT);
-            }
-
-            right = !right;
-        }
-    }
+    positionCOMInterfaceTerminals();
 }
 
 //-----------------------------------------------------------------------------
@@ -125,6 +49,150 @@ SystemComponentItem::SystemComponentItem(QRectF const& size,
 SystemComponentItem::~SystemComponentItem()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::positionAPIInterfaceTerminals()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::positionAPIInterfaceTerminals()
+{
+    QMap<QString, QPointF> apiInterfacePositions = getComponentInstance()->getApiInterfacePositions();
+
+    if (!getComponentInstance()->isDraft())
+    {
+        // Create graphics items for API interfaces.
+        foreach (QSharedPointer<ApiInterface> apiIf, componentModel()->getApiInterfaces())
+        {
+            SWPortItem* port = new SWPortItem(apiIf, this);
+
+            // Check if the default position has been specified.
+            if (!apiIf->getDefaultPos().isNull())
+            {
+                port->setPos(apiIf->getDefaultPos());
+
+                addPortToSideByPosition(port);
+            }
+            else if (apiInterfacePositions.contains(apiIf->name()))
+            {
+                port->setPos(apiInterfacePositions.value(apiIf->name()));
+                addPortToSideByPosition(port);
+            }
+            else
+            {
+                addPortToSideWithLessPorts(port);
+            }
+        }
+    }
+    else
+    {
+        foreach (QString const& interfaceName, apiInterfacePositions.keys())
+        {
+            QSharedPointer<ApiInterface> apiInterface(new ApiInterface());
+            apiInterface->setName(interfaceName);
+
+            SWPortItem* port = new SWPortItem(apiInterface->name(), this);
+
+            port->setPos(apiInterfacePositions.value(interfaceName));
+            addPortToSideByPosition(port);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::positionCOMInterfaceTerminals()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::positionCOMInterfaceTerminals()
+{
+    QMap<QString, QPointF> comInterfacePositions = getComponentInstance()->getComInterfacePositions();
+
+    if (!getComponentInstance()->isDraft())
+    {
+        // Create graphics items for COM interfaces.
+        foreach (QSharedPointer<ComInterface> comIf, componentModel()->getComInterfaces())
+        {
+            SWPortItem* port = new SWPortItem(comIf, this);
+
+            // Check if the default position has been specified.
+            if (!comIf->getDefaultPos().isNull())
+            {
+                port->setPos(comIf->getDefaultPos());
+                addPortToSideByPosition(port);
+            }
+            else if (comInterfacePositions.contains(comIf->name()))
+            {
+                port->setPos(comInterfacePositions.value(comIf->name()));
+                addPortToSideByPosition(port);
+            }
+            else
+            {
+                addPortToSideWithLessPorts(port);
+            }
+        }
+    }
+    else
+    {
+        foreach (QString const& interfaceName, comInterfacePositions.keys())
+        {
+            QSharedPointer<ComInterface> comInterface(new ComInterface());
+            comInterface->setName(interfaceName);
+
+            SWPortItem* port = new SWPortItem(comInterface->name(), this);
+
+            port->setPos(comInterfacePositions.value(interfaceName));
+            addPortToSideByPosition(port);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::addPortToSideByPosition()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::addPortToSideByPosition(SWPortItem* port)
+{
+    if (port->pos().x() >= 0)
+    {
+        onAddPort(port, PORT_RIGHT);
+    }
+    else
+    {
+        onAddPort(port, PORT_LEFT);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::addPortToSideWithLessPorts()
+//-----------------------------------------------------------------------------
+void SystemComponentItem::addPortToSideWithLessPorts(SWPortItem* port)
+{
+    int portSpacing = GridSize * 3;
+    int firstPortY = GridSize * 4;
+
+    if (leftPorts_.size() <= rightPorts_.size())
+    {
+        if (!leftPorts_.isEmpty())
+        {
+            port->setPos(QPointF(0, leftPorts_.last()->pos().y() + portSpacing) + rect().topLeft());
+        }
+        else
+        {
+            port->setPos(QPointF(0, firstPortY) + rect().topLeft());
+        }
+
+        onAddPort(port, PORT_LEFT);
+    }
+    else
+    {
+        if (!rightPorts_.isEmpty())
+        {
+            port->setPos(QPointF(rect().width(), rightPorts_.last()->pos().y() + portSpacing) + rect().topLeft());
+        }
+        else
+        {
+            port->setPos(QPointF(rect().width(), firstPortY) + rect().topLeft());
+        }
+
+        onAddPort(port, PORT_RIGHT);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -149,14 +217,9 @@ SWPortItem* SystemComponentItem::addPort(QPointF const& pos)
     port->setName(name);
     port->setPos(mapFromScene(pos));
 
-    if (mapFromScene(pos).x() >= 0)
-    {
-        onAddPort(port, PORT_RIGHT);
-    }
-    else
-    {
-        onAddPort(port, PORT_LEFT);
-    }
+    addPortToSideByPosition(port);
+
+    getComponentInstance()->updateApiInterfacePosition(name, port->pos());
 
     // Update the component size.
     updateSize();
@@ -172,11 +235,25 @@ void SystemComponentItem::addPort(SWPortItem* port)
 
     if (port->getType() == SWPortItem::ENDPOINT_TYPE_API)
     {
-        componentModel()->addApiInterface(port->getApiInterface());
+        if (!getComponentInstance()->isDraft())
+        {
+            QList<QSharedPointer<ApiInterface> > apiInterfaces = componentModel()->getApiInterfaces();
+            apiInterfaces.append(port->getApiInterface());
+            componentModel()->setApiInterfaces(apiInterfaces);
+        }
+
+        getComponentInstance()->updateApiInterfacePosition(port->name(), port->pos());
     }
     else if (port->getType() == SWPortItem::ENDPOINT_TYPE_COM)
     {
-        componentModel()->addComInterface(port->getComInterface());
+        if (!getComponentInstance()->isDraft())
+        {
+            QList<QSharedPointer<ComInterface> > comInterfaces = componentModel()->getComInterfaces();
+            comInterfaces.append(port->getComInterface());
+            componentModel()->setComInterfaces(comInterfaces);
+        }
+
+        getComponentInstance()->updateComInterfacePosition(port->name(), port->pos());
     }
 
     // Make preparations.
@@ -205,11 +282,11 @@ void SystemComponentItem::removePort(SWPortItem* port)
 
     if (port->getType() == SWPortItem::ENDPOINT_TYPE_API)
     {
-        componentModel()->removeApiInterface(port->getApiInterface().data());
+        componentModel()->getVendorExtensions()->removeOne(port->getApiInterface());
     }
     else if (port->getType() == SWPortItem::ENDPOINT_TYPE_COM)
     {
-        componentModel()->removeComInterface(port->getComInterface().data());
+        componentModel()->getVendorExtensions()->removeOne(port->getComInterface());
     }
 }
 
@@ -284,6 +361,19 @@ void SystemComponentItem::onMovePort(SWPortItem* port)
         portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
 
 		checkPortLabelSize( port, leftPorts_ );
+    }
+
+    QMap<QString, QPointF> comPositions = getComponentInstance()->getComInterfacePositions();
+    QMap<QString, QPointF> apiPositions = getComponentInstance()->getApiInterfacePositions();
+    if (port->getComInterface() ||
+        (port->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED && comPositions.contains(port->name())))
+    {
+        getComponentInstance()->updateComInterfacePosition(port->name(), port->pos());
+    }
+    else if (port->getApiInterface() ||
+            (port->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED && apiPositions.contains(port->name())))
+    {
+        getComponentInstance()->updateApiInterfacePosition(port->name(), port->pos());
     }
 
     updateSize();
@@ -390,6 +480,38 @@ SWPortItem* SystemComponentItem::getSWPort(QString const& name, SWConnectionEndp
 }
 
 //-----------------------------------------------------------------------------
+// Function: SystemComponentItem::getSWPortWithTypeAndDirection()
+//-----------------------------------------------------------------------------
+SWPortItem* SystemComponentItem::getSWPortMatchingOtherEndPoint(ConnectionEndpoint* otherEndPoint) const
+{
+    foreach (QGraphicsItem* item, QGraphicsRectItem::childItems())
+    {
+        if (item->type() == SWPortItem::Type)
+        {
+            SWPortItem* port = dynamic_cast<SWPortItem*>(item);
+            if (port && port->getType() == otherEndPoint->getType())
+            {
+                if ((port->getType() == ConnectionEndpoint::ENDPOINT_TYPE_COM &&
+                    port->getComInterface() && otherEndPoint->getComInterface() &&
+                    port->getComInterface()->getComType() == otherEndPoint->getComInterface()->getComType() &&
+                    port->getComInterface()->getDirection() == otherEndPoint->getComInterface()->getDirection()) ||
+                    (port->getType() == ConnectionEndpoint::ENDPOINT_TYPE_API &&
+                    port->getApiInterface() && otherEndPoint->getApiInterface() &&
+                    port->getApiInterface()->getApiType() == otherEndPoint->getApiInterface()->getApiType() &&
+                    port->getApiInterface()->getDependencyDirection() ==
+                    otherEndPoint->getApiInterface()->getDependencyDirection()) ||
+                    (port->getType() == ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED))
+                {
+                    return port;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SystemComponentItem::offsetPortPositions()
 //-----------------------------------------------------------------------------
 void SystemComponentItem::offsetPortPositions(qreal minY)
@@ -410,12 +532,18 @@ void SystemComponentItem::offsetPortPositions(qreal minY)
 
     foreach (SWPortItem* port, leftPorts_)
     {
-        port->setPos(port->x(), port->y() + offset);
+        if (port->y() < minY)
+        {
+            port->setPos(port->x(), port->y() + offset);
+        }
     }
 
     foreach (SWPortItem* port, rightPorts_)
     {
-        port->setPos(port->x(), port->y() + offset);
+        if (port->y() < minY)
+        {
+            port->setPos(port->x(), port->y() + offset);
+        }
     }
 }
 
@@ -427,11 +555,11 @@ void SystemComponentItem::setPropertyValues(QMap<QString, QString> const& values
     propertyValues_ = values;
 
     // Check that at least all required properties are found in the values.
-    foreach (QSharedPointer<ComProperty const> prop, componentModel()->getSWProperties())
+    foreach (QSharedPointer<ComProperty const> prop, *componentModel()->getSWProperties())
     {
-        if (prop->isRequired() && !propertyValues_.contains(prop->getName()))
+        if (prop->isRequired() && !propertyValues_.contains(prop->name()))
         {
-            propertyValues_.insert(prop->getName(), prop->getDefaultValue());
+            propertyValues_.insert(prop->name(), prop->getDefaultValue());
         }
     }
 
@@ -501,7 +629,7 @@ void SystemComponentItem::setApiInterfacePositions(QMap<QString, QPointF> const&
         // If the port was not found, create it.
         if (port == 0)
         {
-            if (!createMissing || componentModel()->getVlnv()->isValid())
+            if (!createMissing || componentModel()->getVlnv().isValid())
             {
                 continue;
             }
@@ -530,7 +658,7 @@ void SystemComponentItem::setComInterfacePositions(QMap<QString, QPointF> const&
         // If the port was not found, create it.
         if (port == 0)
         {
-            if (!createMissing || componentModel()->getVlnv()->isValid())
+            if (!createMissing || componentModel()->getVlnv().isValid())
             {
                 continue;
             }
@@ -555,7 +683,7 @@ QMap<QString, QPointF> SystemComponentItem::getApiInterfacePositions() const
     while (itrApiIf.hasNext())
     {
         QSharedPointer<ApiInterface> apiIf = itrApiIf.next();
-        positions[apiIf->getName()] = getSWPort(apiIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos();
+        positions[apiIf->name()] = getSWPort(apiIf->name(), SWConnectionEndpoint::ENDPOINT_TYPE_API)->pos();
     }
 
     return positions;
@@ -572,7 +700,7 @@ QMap<QString, QPointF> SystemComponentItem::getComInterfacePositions() const
     while (itrComIf.hasNext())
     {
         QSharedPointer<ComInterface> comIf = itrComIf.next();
-        positions[comIf->getName()] = getSWPort(comIf->getName(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos();
+        positions[comIf->name()] = getSWPort(comIf->name(), SWConnectionEndpoint::ENDPOINT_TYPE_COM)->pos();
     }
 
     return positions;
@@ -581,7 +709,7 @@ QMap<QString, QPointF> SystemComponentItem::getComInterfacePositions() const
 //-----------------------------------------------------------------------------
 // Function: SystemComponentItem::setPacketized()
 //-----------------------------------------------------------------------------
-void SystemComponentItem::setPacketized()
+void SystemComponentItem::setPackaged()
 {
     // Nothing to do here.
 }

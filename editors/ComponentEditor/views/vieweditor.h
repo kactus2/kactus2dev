@@ -14,24 +14,23 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 
-#include "envidentifiereditor.h"
-#include "flatviewgeneraltab.h"
-#include "hierarchyrefwidget.h"
-
-#include <common/widgets/nameGroupEditor/namegroupeditor.h>
-
-#include <IPXACTmodels/view.h>
-
-#include <QComboBox>
-#include <QStackedWidget>
-#include <QTabWidget>
 #include <QSharedPointer>
+#include <QGroupBox>
 
 class Component;
+class ComponentInstantiation;
+class ComponentInstantiationDisplayer;
+class DesignInstantiation;
+class DesignConfigurationInstantiation;
+class EnvIdentifierEditor;
 class ExpressionFormatter;
 class LibraryInterface;
+class NameGroupEditor;
+class ModuleParameterEditor;
 class ParameterFinder;
-
+class ReferenceSelector;
+class View;
+class VLNVDisplayer;
 //-----------------------------------------------------------------------------
 //! Editor to edit a view within a component.
 //-----------------------------------------------------------------------------
@@ -44,12 +43,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component               Pointer to the component that contains the view.
-	 *      @param [in] view                    Pointer to the view being edited.
-	 *      @param [in] libHandler              Pointer to the instance that manages the library.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-	 *      @param [in] parent                  Pointer to the owner of this editor.
+	 *      @param [in] component               The component that contains the view.
+	 *      @param [in] view                    The view being edited.
+	 *      @param [in] libHandler              The instance that manages the library.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+	 *      @param [in] parent                  The owner of this editor.
 	 */
 	ViewEditor(QSharedPointer<Component> component,
         QSharedPointer<View> view,
@@ -58,58 +57,80 @@ public:
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QWidget *parent = 0);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~ViewEditor();
 
-	/*! Check for the validity of the edited view.
-	*
-	* \return True if all model parameters are in valid state.
-	*/
-	virtual bool isValid() const;
-
-	/*! Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
+
+protected:
+
+    //! Called when the widget is shown.
+    void showEvent(QShowEvent* event);
 
 private slots:
 
-	//! Handler for changes on the hierarchical/flat selector.
-	void onViewTypeChanged(int index);
+    //! Called when a component instance is selected.
+    void onComponentInstanceChanged(QString const& instanceName);
+
+    //! Called when a design configuration instance is selected.
+    void onDesignConfigurationInstanceChanged(QString const& instanceName);
+
+    //! Called when a design instance is selected.
+    void onDesignInstanceChanged(QString const& instanceName);
 
 private:
 
-	//! No copying
+	//! No copying.
 	ViewEditor(const ViewEditor& other);
 
-	//! No assignment
+	//! No assignment.
 	ViewEditor& operator=(const ViewEditor& other);
 
 	//! Set up the layout for the editor.
 	void setupLayout();
 
-	//! Pointer to the instance that manages the library.
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! The instance that manages the library.
 	LibraryInterface* libHandler_;
 
-	//! Pointer to the view being edited.
+	//! The view being edited.
 	QSharedPointer<View> view_;
 	
 	//! Editor to set the name, display name and description of the view.
-	NameGroupEditor nameEditor_;
-
-	//! Combo box to select between hierarchical/flat views.
-	QComboBox viewTypeSelector_;
+	NameGroupEditor* nameEditor_;
 
 	//! The editor to edit the envIdentifier element.
-	EnvIdentifierEditor envIdentifier_;
+	EnvIdentifierEditor* envIdentifier_;
 
-	//! Widget that contains the flat and hierarchical editors.
-	QStackedWidget typeDependentEditors_;
+    //! Selector for component instantiation reference.
+    ReferenceSelector* componentInstantiationSelector_;
+    
+    //! Selector for design configuration instantiation reference.
+    ReferenceSelector* designConfigurationInstantiationSelector_;
+    
+    //! Selector for design instantiation reference.
+    ReferenceSelector* designInstantiationSelector_;
 
-	//! Editor to set general settings of flat view.
-	FlatViewGeneralTab flatViewEditor_;
+    //! Display widget for component instantiation details.
+    ComponentInstantiationDisplayer* componentInstantiationDisplay_;
 
-	//! The widget to edit the hierarchical reference
-	HierarchyRefWidget hierarchyReferenceEditor_;
+    //! Group box for design and design configuration VLNV references.
+    QGroupBox* hierarchyGroup_;
+
+    //! Display widget for design configuration instantiation VLNV.
+    VLNVDisplayer* designConfigurationDisplay_;
+
+    //! Display widget for design instantiation VLNV.
+    VLNVDisplayer* designDisplay_;
+
+    //! The display for module parameters of the component instance.
+    ModuleParameterEditor* moduleParameterEditor_;
 };
 
 #endif // VIEWEDITOR_H

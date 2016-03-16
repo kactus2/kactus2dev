@@ -13,23 +13,28 @@
 #include "filesetsdelegate.h"
 
 #include <common/widgets/summaryLabel/summarylabel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <Plugins/PluginSystem/PluginManager.h>
+
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QVBoxLayout>
+#include <QFileInfo>
 
 //-----------------------------------------------------------------------------
 // Function: FileSetsEditor::FileSetsEditor()
 //-----------------------------------------------------------------------------
-FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface, 
-    PluginManager& pluginMgr):
+FileSetsEditor::FileSetsEditor(QSharedPointer<Component> component, LibraryInterface* libInterface,
+                               PluginManager& pluginMgr, QSharedPointer<ParameterFinder> parameterFinder):
 ItemEditor(component, libInterface),
-    splitter_(Qt::Vertical, this),
-    view_(&splitter_),
-    model_(component, this),
-    proxy_(this),
-    dependencyEditor_(component, QFileInfo(libInterface->getPath(*component->getVlnv())).path(), pluginMgr, 
-        &splitter_),
-    firstShow_(true)
+splitter_(Qt::Vertical, this),
+view_(&splitter_),
+model_(component, parameterFinder, this),
+proxy_(this),
+dependencyEditor_(component, QFileInfo(libInterface->getPath(component->getVlnv())).path(), pluginMgr, &splitter_),
+firstShow_(true)
 {
     splitter_.addWidget(&view_);
     splitter_.addWidget(&dependencyEditor_);
@@ -49,7 +54,7 @@ ItemEditor(component, libInterface),
     view_.setItemsDraggable(false);
 	view_.setAllowImportExport(true);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/fileSetList.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
 
@@ -59,21 +64,21 @@ ItemEditor(component, libInterface),
 
     connect(&model_, SIGNAL(contentChanged()), &dependencyEditor_, SLOT(refresh()), Qt::UniqueConnection);
 
-    connect(&dependencyEditor_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&dependencyEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&dependencyEditor_, SIGNAL(dependenciesChanged()),
-            this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
+        this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
     connect(&dependencyEditor_, SIGNAL(fileSetAdded(FileSet*)),
-            &model_, SLOT(onFileSetAdded(FileSet*)), Qt::UniqueConnection);
-    connect(&dependencyEditor_, SIGNAL(fileAdded(File*)),
-            this, SIGNAL(fileAdded(File*)), Qt::UniqueConnection);
-    connect(&dependencyEditor_, SIGNAL(filesUpdated()),
-            this, SIGNAL(filesUpdated()), Qt::UniqueConnection);
+        &model_, SLOT(onFileSetAdded(FileSet*)), Qt::UniqueConnection);
+    connect(&dependencyEditor_, SIGNAL(fileAdded(File*)), this, SIGNAL(fileAdded(File*)), Qt::UniqueConnection);
+    connect(&dependencyEditor_, SIGNAL(filesUpdated()), this, SIGNAL(filesUpdated()), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
-		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+        &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(decreaseReferences(QString)), this,
+        SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -82,14 +87,6 @@ ItemEditor(component, libInterface),
 FileSetsEditor::~FileSetsEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileSetsEditor::isValid()
-//-----------------------------------------------------------------------------
-bool FileSetsEditor::isValid() const
-{
-	return model_.isValid();
 }
 
 //-----------------------------------------------------------------------------

@@ -11,8 +11,6 @@
 
 #include "SystemDesignWidget.h"
 
-#include "SystemDeleteCommands.h"
-
 #include "SystemColumn.h"
 #include "SystemDesignDiagram.h"
 #include "SWComponentItem.h"
@@ -27,29 +25,39 @@
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
+#include <designEditors/SystemDesign/ComGraphicsConnection.h>
+#include <designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/SWPortDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/SWInterfaceDeleteCommand.h>
+#include <designEditors/SystemDesign/ApiGraphicsConnection.h>
+#include <designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemDeleteCommands.h>
+#include <designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 #include <library/LibraryManager/LibraryUtils.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/SystemView.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+#include <IPXACTmodels/kactusExtensions/SWView.h>
 
-#include <QScrollBar>
 #include <QKeyEvent>
-#include <QVBoxLayout>
 #include <QMessageBox>
 #include <QFileInfo>
 #include <QCoreApplication>
+#include <QDir>
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignWidget()
 //-----------------------------------------------------------------------------
-SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, QWidget* parent)
-    : DesignWidget(lh, parent),
-      onlySW_(onlySW)
+SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, QWidget* parent):
+DesignWidget(lh, parent),
+onlySW_(onlySW)
 {
     supportedWindows_ |= INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW | CONFIGURATIONWINDOW | NOTES_WINDOW;
 
@@ -58,7 +66,7 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, QWidge
         supportedWindows_ |= SYSTEM_DETAILS_WINDOW;
     }
 
-    setDiagram(new SystemDesignDiagram(onlySW, lh, *getGenericEditProvider(), this));
+    setDiagram(new SystemDesignDiagram(onlySW, lh, getEditProvider(), this));
 }
 
 //-----------------------------------------------------------------------------
@@ -100,7 +108,7 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
     connect(getDiagram(), SIGNAL(modeChanged(DrawMode)),
         this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
 
-/*    setDocumentName(system->getVlnv()->getName() + " (" + system->getVlnv()->getVersion() + ")");*/
+/*    setDocumentName(system->getVlnv().getName() + " (" + system->getVlnv().getVersion() + ")");*/
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
     if (onlySW_)
     {
@@ -127,7 +135,16 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 
     if (onlySW_)
     {
-        QSharedPointer<SWView> view = comp->findSWView(viewName);
+        QSharedPointer<SWView> view;
+		
+		foreach ( QSharedPointer<SWView> currentView, comp->getSWViews() )
+		{
+			if ( currentView->name() == viewName )
+			{
+				view = currentView;
+				break;
+			}
+		}
 
         if (!view)
         {
@@ -138,7 +155,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     }
     else
     {
-        SystemView* view = comp->findSystemView(viewName);
+		QSharedPointer<SystemView> view = comp->findSystemView(viewName);
 
         if (!view)
         {
@@ -154,7 +171,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 
     if (!designVLNV.isValid())
     {
-        emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv()->getName()));
+        emit errorMessage(tr("Component %1 did not contain a view").arg(comp->getVlnv().getName()));
         return false;
     }
 
@@ -164,20 +181,20 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
     // if the component contains a direct reference to a design
     if (designVLNV.getType() == VLNV::DESIGN)
     {
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
         design = libComp.staticCast<Design>();
     }
     // if component had reference to a design configuration
     else if (designVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);
+        QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);
         designConf = libComp.staticCast<DesignConfiguration>();
 
         designVLNV = designConf->getDesignRef();
 
         if (designVLNV.isValid())
         {
-            QSharedPointer<LibraryComponent> libComp = getLibraryInterface()->getModel(designVLNV);	
+            QSharedPointer<Document> libComp = getLibraryInterface()->getModel(designVLNV);	
             design = libComp.staticCast<Design>();
         }
 
@@ -185,7 +202,7 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
         if (!design)
         {
             emit errorMessage(tr("Component %1 did not contain a view").arg(
-                comp->getVlnv()->getName()));
+                comp->getVlnv().getName()));
             return false;
         }
     }
@@ -284,11 +301,12 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             foreach (QGraphicsItem* selected, selectedItems)
             {
                 SystemColumn* column = static_cast<SystemColumn*>(selected);
-                QUndoCommand* childCmd = new SystemColumnDeleteCommand(getDiagram()->getLayout().data(), column, cmd.data());
+                QUndoCommand* childCmd = new SystemColumnDeleteCommand(
+                    getDiagram()->getLayout().data(), column, getDiagram()->getDesign(), cmd.data());
                 childCmd->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == SWComponentItem::Type)
         {
@@ -302,7 +320,10 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 // Only non-imported SW component instances can be deleted.
                 if (!component->isImported())
                 {
-                    SystemComponentDeleteCommand* childCmd = new SystemComponentDeleteCommand(component, cmd.data());
+                    QSharedPointer<Design> containingDesign = getDiagram()->getDesign();
+
+                    SystemComponentDeleteCommand* childCmd = new SystemComponentDeleteCommand(component,
+                        getDiagram()->getDesign(), cmd.data());
 
                     connect(childCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
                             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
@@ -313,13 +334,14 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
 
                     foreach(Association* association, component->getAssociations())
                     {
-                        QUndoCommand* associationRemoveCmd = new AssociationRemoveCommand(association, getDiagram(), childCmd);
+                        QUndoCommand* associationRemoveCmd =
+                            new AssociationRemoveCommand(association, getDiagram(), childCmd);
                         associationRemoveCmd->redo();
                     }
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == SWPortItem::Type)
         {
@@ -334,12 +356,12 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
                 if (port->isTemporary())
                 {
                     // Delete the port.
-                    QUndoCommand* childCmd = new SWPortDeleteCommand(port, cmd.data());
+                    QUndoCommand* childCmd = new SWPortDeleteCommand(port, getDiagram()->getDesign(), cmd.data());
                     childCmd->redo();
                 }
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
         }
         else if (type == SWInterfaceItem::Type)
         {
@@ -350,62 +372,74 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
             {
                 SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(selected);
 
-                QUndoCommand* childCmd = new SWInterfaceDeleteCommand(interface, cmd.data());
+                QUndoCommand* childCmd = new SWInterfaceDeleteCommand(
+                    interface, getDiagram()->getDesign(), getDiagram()->getEditedComponent(), cmd.data());
                 childCmd->redo();
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(cmd);
+        }
+        else if (type == ComGraphicsConnection::Type)
+        {
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                ComGraphicsConnection* comConnection = static_cast<ComGraphicsConnection*>(selected);
+                SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint1());
+                SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint2());
+
+                QUndoCommand* childCommand =
+                    new ComConnectionDeleteCommand(comConnection, getDiagram()->getDesign(), undoCommand.data());
+                childCommand->redo();
+
+                deleteConnectedEndPoint(endPoint1, undoCommand);
+                deleteConnectedEndPoint(endPoint2, undoCommand);
+            }
+
+            getEditProvider()->addCommand(undoCommand);
+        }
+        else if (type == ApiGraphicsConnection::Type)
+        {
+            getDiagram()->clearSelection();
+            QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
+
+            foreach (QGraphicsItem* selected, selectedItems)
+            {
+                ApiGraphicsConnection* apiConnection = static_cast<ApiGraphicsConnection*>(selected);
+                SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint1());
+                SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint2());
+
+                QUndoCommand* childCommand =
+                    new ApiConnectionDeleteCommand(apiConnection, getDiagram()->getDesign(), undoCommand.data());
+                childCommand->redo();
+
+                deleteConnectedEndPoint(endPoint1, undoCommand);
+                deleteConnectedEndPoint(endPoint2, undoCommand);
+            }
+
+            getEditProvider()->addCommand(undoCommand);
         }
         else if (type == GraphicsConnection::Type)
         {
             getDiagram()->clearSelection();
-            QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
+            QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
 
             foreach (QGraphicsItem* selected, selectedItems)
             {
-                // Delete the connection.
-                GraphicsConnection* conn = static_cast<GraphicsConnection*>(selected);
-                SWConnectionEndpoint* endpoint1 = static_cast<SWConnectionEndpoint*>(conn->endpoint1());
-                SWConnectionEndpoint* endpoint2 = static_cast<SWConnectionEndpoint*>(conn->endpoint2());
+                GraphicsConnection* connection = static_cast<GraphicsConnection*>(selected);
+                SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(connection->endpoint1());
+                SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(connection->endpoint2());
 
-                QUndoCommand* childCmd = new SWConnectionDeleteCommand(conn, cmd.data());
-                childCmd->redo();
-                
-                // If the bus ports are invalid, delete them too.
-                if (endpoint1->isInvalid())
-                {
-                    QUndoCommand* childCmd = 0;
+                QUndoCommand* childCommand = new QUndoCommand(undoCommand.data());
+                childCommand->redo();
 
-                    if (endpoint1->type() == SWPortItem::Type)
-                    {
-                        childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint1), cmd.data());
-                    }
-                    else
-                    {
-                        childCmd = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endpoint1), cmd.data());
-                    }
-
-                    childCmd->redo();
-                }
-
-                if (endpoint2->isInvalid())
-                {
-                    QUndoCommand* childCmd = 0;
-
-                    if (endpoint2->type() == SWPortItem::Type)
-                    {
-                        childCmd = new SWPortDeleteCommand(static_cast<SWPortItem*>(endpoint2), cmd.data());
-                    }
-                    else
-                    {
-                        childCmd = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endpoint2), cmd.data());
-                    }
-
-                    childCmd->redo();
-                }
+                deleteConnectedEndPoint(endPoint1, undoCommand);
+                deleteConnectedEndPoint(endPoint2, undoCommand);
             }
 
-            getGenericEditProvider()->addCommand(cmd);
+            getEditProvider()->addCommand(undoCommand);
         }
         else if (type == StickyNote::Type)
         {
@@ -415,6 +449,30 @@ void SystemDesignWidget::keyPressEvent(QKeyEvent* event)
         {
             removeSelectedAssociations();
         }   
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemDesignWidget::deleteConnectedEndPoint()
+//-----------------------------------------------------------------------------
+void SystemDesignWidget::deleteConnectedEndPoint(SWConnectionEndpoint* endPoint,
+    QSharedPointer<QUndoCommand> parentCommand)
+{
+    if (endPoint->isInvalid())
+    {
+        QUndoCommand* endPointCommand = 0;
+        if (endPoint->type() == SWPortItem::Type)
+        {
+            endPointCommand = new SWPortDeleteCommand(
+                static_cast<SWPortItem*>(endPoint), getDiagram()->getDesign(), parentCommand.data());
+        }
+        else
+        {
+            endPointCommand = new SWInterfaceDeleteCommand(static_cast<SWInterfaceItem*>(endPoint),
+                getDiagram()->getDesign(), getDiagram()->getEditedComponent(), parentCommand.data());
+        }
+
+        endPointCommand->redo();
     }
 }
 
@@ -429,14 +487,14 @@ void SystemDesignWidget::addColumn()
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            if (dialog.getContentType() == COLUMN_CONTENT_IO)
+            if (dialog.getContentType() == ColumnTypes::IO)
             {
-                ColumnDesc desc(dialog.getName(), dialog.getContentType(), 0, SystemDesignDiagram::IO_COLUMN_WIDTH);
+                QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), 0, SystemDesignDiagram::IO_COLUMN_WIDTH));
                 getDiagram()->addColumn(desc);
             }
             else
             {
-                ColumnDesc desc(dialog.getName(), dialog.getContentType(), 0, SystemDesignDiagram::SW_COLUMN_WIDTH);
+                QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(), 0, SystemDesignDiagram::SW_COLUMN_WIDTH));
                 getDiagram()->addColumn(desc);
             }
         }
@@ -448,8 +506,8 @@ void SystemDesignWidget::addColumn()
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            getDiagram()->addColumn(ColumnDesc(dialog.getName(), COLUMN_CONTENT_COMPONENTS, 0,
-                                               SystemDesignDiagram::SYSTEM_COLUMN_WIDTH));
+            getDiagram()->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(dialog.name(),
+                ColumnTypes::COMPONENTS, 0, SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
         }
     }
 }
@@ -474,7 +532,7 @@ KactusAttribute::Implementation SystemDesignWidget::getImplementation() const
 //-----------------------------------------------------------------------------
 bool SystemDesignWidget::saveAs()
 {
-    VLNV oldVLNV = *getEditedComponent()->getVlnv();
+    VLNV oldVLNV = getEditedComponent()->getVlnv();
 
     // Ask the user for a new VLNV and directory.
 
@@ -501,6 +559,18 @@ bool SystemDesignWidget::saveAs()
     QSharedPointer<Design> design;
     QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
 
+	// Find the open view.
+	QSharedPointer<SystemView> openView;
+
+	foreach ( QSharedPointer<SystemView> currentView, getEditedComponent()->getSystemViews() )
+	{
+		if ( getOpenViewName() == currentView->name() )
+		{
+			openView = currentView;
+			break;
+		}
+	}
+
     // If design configuration is used.
     if (designConf)
     {
@@ -509,17 +579,19 @@ bool SystemDesignWidget::saveAs()
         designConf->setVlnv(desConfVLNV);
         designConf->setDesignRef(designVLNV);
 
-        getEditedComponent()->setHierRef(desConfVLNV, getOpenViewName());
+		openView->setHierarchyRef( desConfVLNV );
 
         // Create design with new design vlnv.
-        design = getDiagram()->createDesign(designVLNV);
+        design = getDiagram()->getDesign();
+        design->setVlnv(designVLNV);
     }
     // If component does not use design configuration then it references directly to design.
     else
     {
-        // Set component to reference new design.
-        getEditedComponent()->setHierRef(designVLNV, getOpenViewName());
-        design = getDiagram()->createDesign(designVLNV);
+		// Set component to reference new design.
+		openView->setHierarchyRef( designVLNV );
+        design = getDiagram()->getDesign();
+        design->setVlnv(designVLNV);
     }
 
     if (design == 0)
@@ -530,11 +602,39 @@ bool SystemDesignWidget::saveAs()
     getDiagram()->updateHierComponent();
 
     // get the paths to the original xml file
-    QFileInfo sourceInfo(getLibraryInterface()->getPath(*oldComponent->getVlnv()));
+    QFileInfo sourceInfo(getLibraryInterface()->getPath(oldComponent->getVlnv()));
     QString sourcePath = sourceInfo.absolutePath();
 
-    // update the file paths and copy necessary files
-    getEditedComponent()->updateFiles(*oldComponent, sourcePath, directory);
+	// Update the file paths and copy necessary files.
+	foreach (QSharedPointer<FileSet> fileSet, *oldComponent->getFileSets())
+	{
+		foreach (QSharedPointer<File> file, *fileSet->getFiles())
+		{
+			// Get the absolute path to the file.
+			QDir source(sourcePath);
+			QString absoluteSource = source.absoluteFilePath(file->name());
+
+			// If file is located under the source directory.
+			if (!file->name().contains(QString("../")))
+			{
+				QDir target(directory);
+				QString absoluteTarget = target.absoluteFilePath(file->name());
+
+				QFileInfo targetInfo(absoluteTarget);
+
+				target.mkpath(targetInfo.absolutePath());
+				QFile::copy(absoluteSource, absoluteTarget);
+
+			}
+			// If file is higher in directory hierarchy than the source directory.
+			else
+			{
+				// Update the file name.
+				fileSet->changeFileName(file->name(), absoluteSource);
+			}
+		}
+	}
+
 
     // create the files for the documents
 
@@ -560,8 +660,8 @@ bool SystemDesignWidget::saveAs()
 
     if (writeSucceeded)
     {
-        setDocumentName(getEditedComponent()->getVlnv()->getName() + " (" + 
-            getEditedComponent()->getVlnv()->getVersion() + ")");
+        setDocumentName(getEditedComponent()->getVlnv().getName() + " (" + 
+            getEditedComponent()->getVlnv().getVersion() + ")");
         return TabDocument::saveAs();
     }
     else

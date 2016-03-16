@@ -15,8 +15,7 @@
 #include <wizards/common/ListComparator.h>
 #include <wizards/common/IPXactDiff.h>
 
-#include <IPXACTmodels/view.h>
-
+class View;
 //-----------------------------------------------------------------------------
 //! Comparator for finding differences in views.
 //-----------------------------------------------------------------------------
@@ -30,7 +29,14 @@ public:
     //! The destructor.
     virtual ~ViewComparator();
     
-
+    /*!
+     *  Compares the two views.
+     *
+     *      @param [in] first    The first view.
+     *      @param [in] second   The second view.
+     *
+     *      @return True, if the ports are similar, otherwise false.
+     */
     virtual bool compare(QSharedPointer<const View> first, QSharedPointer<const View> second) const;
 
     /*!
@@ -53,6 +59,14 @@ public:
      */
     virtual bool compare(QList<QSharedPointer<View> > const first, QList<QSharedPointer<View> > const second) const;
 
+    /*!
+     *  Finds the differences between two views.
+     *
+     *      @param [in] reference   The view to compare to.
+     *      @param [in] subject     The view to compare against the reference.
+     *
+     *      @return Set of differences between the reference and subject.
+     */
     virtual QList<QSharedPointer<IPXactDiff> > diff(QSharedPointer<const View> reference, 
         QSharedPointer<const View> subject) const;
 
@@ -105,8 +119,6 @@ private:
      *      @return The type (hierarchical/non-hierarchical) of the view.
      */
     QString viewHierarchyType(QSharedPointer<const View> view) const;
-
-
 };
 
 #endif // VIEWCOMPARATOR_H

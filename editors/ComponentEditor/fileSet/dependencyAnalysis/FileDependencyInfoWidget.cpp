@@ -11,7 +11,7 @@
 
 #include "FileDependencyInfoWidget.h"
 
-#include <IPXACTmodels/FileDependency.h>
+#include <IPXACTmodels/kactusExtensions/FileDependency.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -21,13 +21,13 @@
 //-----------------------------------------------------------------------------
 // Function: FileDependencyInfoWidget::FileDependencyInfoWidget()
 //-----------------------------------------------------------------------------
-FileDependencyInfoWidget::FileDependencyInfoWidget(QWidget* parent) 
-    : QGroupBox(tr("Dependency Information"), parent),
-    descEdit_(this),
-    directionCheck_(tr("Bidirectional"), this),
-    lockedCheck_(tr("Locked"), this),
-    directionButton_(tr("Reverse Direction"), this),
-    dependency_(0)
+FileDependencyInfoWidget::FileDependencyInfoWidget(QWidget* parent):
+QGroupBox(tr("Dependency Information"), parent),
+descEdit_(this),
+directionCheck_(tr("Bidirectional"), this),
+lockedCheck_(tr("Locked"), this),
+directionButton_(tr("Reverse Direction"), this),
+dependency_(0)
 {
     directionCheck_.setFixedWidth(150);
     descEdit_.setMaximumHeight(80);
@@ -222,6 +222,9 @@ void FileDependencyInfoWidget::updateFileLabel()
     this->setTitle(fileLabelText);
 }
 
+//-----------------------------------------------------------------------------
+// Function: FileDependencyInfoWidget::lockEverything()
+//-----------------------------------------------------------------------------
 void FileDependencyInfoWidget::lockEverything(bool isLocked)
 {
     if (isLocked)

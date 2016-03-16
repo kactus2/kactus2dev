@@ -1,22 +1,24 @@
-/* 
- *
- *  Created on: 15.4.2011
- *      Author: Antti Kamppi
- * 		filename: envidentifiereditor.cpp
- */
+//-----------------------------------------------------------------------------
+// File: envidentifiereditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 15.04.2011
+//
+// Description:
+// Widget to edit the ipxact:envIdentifiers element within view.
+//-----------------------------------------------------------------------------
 
 #include "envidentifiereditor.h"
 
-#include "envidentifiersdelegate.h"
+#include <IPXACTmodels/Component/View.h>
 
-#include <QStringList>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: EnvIdentifierEditor::EnvIdentifierEditor()
 //-----------------------------------------------------------------------------
-EnvIdentifierEditor::EnvIdentifierEditor(QSharedPointer<View> view, 
-										 QWidget *parent): 
+EnvIdentifierEditor::EnvIdentifierEditor(QSharedPointer<View> view, QWidget *parent): 
 QGroupBox(tr("Environment identifiers"), parent),
 view_(this),
 model_(view, this), 
@@ -24,8 +26,6 @@ proxy_(this)
 {
 	// set view to be sortable
 	view_.setSortingEnabled(true);
-
-	view_.setItemDelegate(new EnvIdentifiersDelegate(this));
 
 	// items can not be dragged
 	view_.setItemsDraggable(false);
@@ -44,8 +44,7 @@ proxy_(this)
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(errorMessage(const QString&)),

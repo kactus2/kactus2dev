@@ -17,7 +17,7 @@
 #include <common/layouts/HStackedLayout.h>
 
 //-----------------------------------------------------------------------------
-// Function: GraphicsColumnLayout()
+// Function: GraphicsColumnLayout::GraphicsColumnLayout()
 //-----------------------------------------------------------------------------
 GraphicsColumnLayout::GraphicsColumnLayout(QGraphicsScene* scene)
     : scene_(scene),
@@ -31,7 +31,7 @@ GraphicsColumnLayout::GraphicsColumnLayout(QGraphicsScene* scene)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~GraphicsColumnLayout()
+// Function: GraphicsColumnLayout::~GraphicsColumnLayout()
 //-----------------------------------------------------------------------------
 GraphicsColumnLayout::~GraphicsColumnLayout()
 {
@@ -45,7 +45,7 @@ GraphicsColumnLayout::~GraphicsColumnLayout()
 }
 
 //-----------------------------------------------------------------------------
-// Function: addItem()
+// Function: GraphicsColumnLayout::addItem()
 //-----------------------------------------------------------------------------
 void GraphicsColumnLayout::addItem(QGraphicsItem* item)
 {
@@ -60,7 +60,7 @@ void GraphicsColumnLayout::addItem(QGraphicsItem* item)
 }
 
 //-----------------------------------------------------------------------------
-//  Function: addColumn()
+//  Function: GraphicsColumnLayout::addColumn()
 //-----------------------------------------------------------------------------
 void GraphicsColumnLayout::addColumn(GraphicsColumn* column, bool append)
 {
@@ -86,7 +86,7 @@ void GraphicsColumnLayout::addColumn(GraphicsColumn* column, bool append)
 }
 
 //-----------------------------------------------------------------------------
-// Function: removeColumn()
+// Function: GraphicsColumnLayout::removeColumn()
 //-----------------------------------------------------------------------------
 void GraphicsColumnLayout::removeColumn(GraphicsColumn* column)
 {
@@ -99,17 +99,18 @@ void GraphicsColumnLayout::removeColumn(GraphicsColumn* column)
 }
 
 //-----------------------------------------------------------------------------
-// Function: findColumnAt()
+// Function: GraphicsColumnLayout::findColumnAt()
 //-----------------------------------------------------------------------------
 GraphicsColumn* GraphicsColumnLayout::findColumnAt(QPointF pt)
 {
-    for (int i = 0; i < columns_.size(); ++i)
+    foreach (GraphicsColumn* column, columns_)
     {
+        QRectF columnRect = column->sceneBoundingRect();
+
         // The point is inside the column if the x coordinate is within it (y can be anything).
-        if (pt.x() >= columns_.at(i)->sceneBoundingRect().left() &&
-            pt.x() < columns_.at(i)->sceneBoundingRect().right())
+        if (columnRect.left() <= pt.x() && pt.x() < columnRect.right())
         {
-            return columns_.at(i);
+            return column;
         }
     }
 
@@ -117,7 +118,7 @@ GraphicsColumn* GraphicsColumnLayout::findColumnAt(QPointF pt)
 }
 
 //-----------------------------------------------------------------------------
-// Function: onMoveColumn()
+// Function: GraphicsColumnLayout::onMoveColumn()
 //-----------------------------------------------------------------------------
 void GraphicsColumnLayout::onMoveColumn(GraphicsColumn* column)
 {
@@ -132,7 +133,7 @@ void GraphicsColumnLayout::onMoveColumn(GraphicsColumn* column)
 }
 
 //-----------------------------------------------------------------------------
-// Function: onReleaseColumn()
+// Function: GraphicsColumnLayout::onReleaseColumn()
 //-----------------------------------------------------------------------------
 void GraphicsColumnLayout::onReleaseColumn(GraphicsColumn* column)
 {
@@ -155,7 +156,7 @@ void GraphicsColumnLayout::updateColumnPositions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: setOffsetY()
+// Function: GraphicsColumnLayout::setOffsetY()
 //-----------------------------------------------------------------------------
 void GraphicsColumnLayout::setOffsetY(qreal y)
 {
@@ -168,7 +169,7 @@ void GraphicsColumnLayout::setOffsetY(qreal y)
 }
 
 //-----------------------------------------------------------------------------
-// Function: getColumns()
+// Function: GraphicsColumnLayout::getColumns()
 //-----------------------------------------------------------------------------
 QList<GraphicsColumn*> const& GraphicsColumnLayout::getColumns() const
 {
@@ -176,7 +177,7 @@ QList<GraphicsColumn*> const& GraphicsColumnLayout::getColumns() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: updatePositions()
+// Function: GraphicsColumnLayout::updatePositions()
 //-----------------------------------------------------------------------------
 void GraphicsColumnLayout::updatePositions()
 {

@@ -44,12 +44,12 @@ public:
      *
      *      @param [in] properties The properties.
      */
-    void setProperties(QList< QSharedPointer<ComProperty> > const& properties);
+    void setProperties(QSharedPointer<QList< QSharedPointer<ComProperty> > > const& properties);
 
     /*!
      *  Returns the edited properties.
      */
-    QList< QSharedPointer<ComProperty> > const& getProperties() const;
+    QList< QSharedPointer<ComProperty> > getProperties() const;
 
 signals:
     //! Emitted when contents of the editor changes.

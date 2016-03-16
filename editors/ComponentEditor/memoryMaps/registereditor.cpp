@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 24.8.2012
- *      Author: Antti Kamppi
- * 		filename: registereditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: registereditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.08.2012
+//
+// Description:
+// Editor for editing the details of fields in a register.
+//-----------------------------------------------------------------------------
 
 #include "registereditor.h"
 
@@ -25,20 +29,18 @@
 //-----------------------------------------------------------------------------
 // Function: registereditor::RegisterEditor()
 //-----------------------------------------------------------------------------
-RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, 
-							   QSharedPointer<Component> component,
-							   LibraryInterface* handler,
-                               QSharedPointer<ParameterFinder> parameterFinder,
-                               QSharedPointer<ExpressionFormatter> expressionFormatter,
-							   QWidget* parent /*= 0*/ ):
+RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, QSharedPointer<Component> component,
+    LibraryInterface* handler, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
+    QWidget* parent /* = 0 */):
 QGroupBox(tr("Fields summary"), parent),
 view_(new EditableTableView(this)),
 model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new RegisterTableModel(reg, component->getChoices(), expressionParser, parameterFinder,
-        expressionFormatter, this);
+    model_ = new RegisterTableModel(reg, expressionParser, parameterFinder, expressionFormatter, fieldValidator,
+        this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -58,7 +60,7 @@ model_(0)
 	view_->setModel(proxy);
 
 	//! \brief Enable import/export csv file
-    const QString compPath = handler->getDirectoryPath(*component->getVlnv());
+    const QString compPath = handler->getDirectoryPath(component->getVlnv());
 	QString defPath = QString("%1/fieldListing.csv").arg(compPath);
     view_->setDefaultImportExportPath(defPath);
 	
@@ -81,7 +83,7 @@ model_(0)
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
-		model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
@@ -95,14 +97,6 @@ model_(0)
 RegisterEditor::~RegisterEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: registereditor::isValid()
-//-----------------------------------------------------------------------------
-bool RegisterEditor::isValid() const
-{
-	return model_->isValid();
 }
 
 //-----------------------------------------------------------------------------

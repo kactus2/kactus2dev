@@ -14,15 +14,15 @@
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
-#include <IPXACTmodels/modelparameter.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <QRegularExpression>
 
 namespace
 {
-    QRegularExpression const DEFINE("`define (\\w+(?!\\s?[(].*?[)])) ((?:(?:\\\\\\\n)|(.*?))*)?[ \\t]*(" + VerilogSyntax::COMMENT + ")?\\n");
+    QRegularExpression const DEFINE("`define (\\w+(?!\\s?[(].*?[)])) ((?:(?:\\\\\\\n)|(.*?))*)?[ \\t]*(" +
+        VerilogSyntax::COMMENT + ")?\\n");
 }
 
 //-----------------------------------------------------------------------------
@@ -134,13 +134,12 @@ void VerilogIncludeImport::import(QString const& input, QSharedPointer<Component
 
     int position = 0;
     QRegularExpressionMatch match = DEFINE.match(nonCommentedInput, position);
-
     while (match.hasMatch())
     {
         QString definition = match.captured();
 
         highlightDefinition(definition);
-        createModelParameterFromDefinition(definition, targetComponent);
+        createParameterFromDefinition(definition, targetComponent);
 
         position = match.capturedStart() + match.capturedLength();
         match = DEFINE.match(nonCommentedInput, position);
@@ -168,9 +167,9 @@ void VerilogIncludeImport::highlightDefinition(QString const& definition)
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogIncludeImport::createModelParameterFromDefinition()
+// Function: VerilogIncludeImport::createParameterFromDefinition()
 //-----------------------------------------------------------------------------
-void VerilogIncludeImport::createModelParameterFromDefinition(QString const& definition, 
+void VerilogIncludeImport::createParameterFromDefinition(QString const& definition, 
     QSharedPointer<Component> targetComponent)
 {
     QRegularExpressionMatch match = DEFINE.match(definition);
@@ -179,12 +178,12 @@ void VerilogIncludeImport::createModelParameterFromDefinition(QString const& def
     QString value = match.captured(2).remove(QRegularExpression("\\\\\\\n"));
     QString description = match.captured(5).simplified();
 
-    QSharedPointer<ModelParameter> parameter = findModelParameterByName(targetComponent, name);
+    QSharedPointer<Parameter> parameter = findParameterByName(targetComponent, name);
     if (parameter.isNull())
     {
-        parameter = QSharedPointer<ModelParameter>(new ModelParameter());                    
+        parameter = QSharedPointer<Parameter>(new Parameter());                    
         parameter->setName(name);        
-        targetComponent->getModel()->getModelParameters()->append(parameter);
+        targetComponent->getParameters()->append(parameter);
     }
 
     if (value.isEmpty())
@@ -198,19 +197,18 @@ void VerilogIncludeImport::createModelParameterFromDefinition(QString const& def
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogIncludeImport::findModelParameterByName()
+// Function: VerilogIncludeImport::findParameterByName()
 //-----------------------------------------------------------------------------
-QSharedPointer<ModelParameter> VerilogIncludeImport::findModelParameterByName(QSharedPointer<Component> targetComponent, 
-    QString const& name) const
+QSharedPointer<Parameter> VerilogIncludeImport::findParameterByName(
+    QSharedPointer<Component> targetComponent, QString const& name) const
 {
-    QSharedPointer<ModelParameter> parameter;
-    foreach (QSharedPointer<ModelParameter> existingParameter, *targetComponent->getModelParameters())
+    foreach (QSharedPointer<Parameter> existingParameter, *targetComponent->getParameters())
     {
-        if (existingParameter->getName() == name)
+        if (existingParameter->name() == name)
         {
             return existingParameter;            
         }
     }	
 
-    return parameter;
+    return QSharedPointer<Parameter>();
 }

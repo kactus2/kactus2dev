@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.8.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapmodel.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.08.2012
+//
+// Description:
+// The model to manage the address blocks of a single memory map.
+//-----------------------------------------------------------------------------
 
 #ifndef MEMORYMAPMODEL_H
 #define MEMORYMAPMODEL_H
@@ -13,8 +17,8 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/AbstractMemoryMap.h>
-#include <IPXACTmodels/memorymapitem.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
+#include <IPXACTmodels/Component/MemoryBlockBase.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
@@ -23,9 +27,10 @@
 class Choice;
 class AddressBlock;
 
-/*! \brief The model to manage the details of a single memory map.
- *
- */
+class AddressBlockValidator;
+//-----------------------------------------------------------------------------
+//! The model to manage the details of a single memory map.
+//-----------------------------------------------------------------------------
 class MemoryMapModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
@@ -36,97 +41,105 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] memoryRemap             Pointer to the memory remap being edited.
-	 *      @param [in] componentChoices        Choices in the containing component.
 	 *      @param [in] expressionParser        Pointer to the expression parser.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder.
 	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
+     *      @param [in] addressBlockValidator   Validator used for address blocks.
+     *      @param [in] addressUnitBits         The current address unit bits.
 	 *      @param [in] parent                  Pointer to the owner of this model.
 	 */
-	MemoryMapModel(QSharedPointer<AbstractMemoryMap> memoryRemap,
-        QSharedPointer <QList<QSharedPointer<Choice> > > componentChoices,
+	MemoryMapModel(QSharedPointer<MemoryMapBase> memoryRemap,
         QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer <ExpressionFormatter> expressionFormatter,
+        QSharedPointer<AddressBlockValidator> addressBlockValidator,
+        QString const& addressUnitBits,
 		QObject *parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~MemoryMapModel();
 
-	/*! \brief Get the number of rows an item contains.
+	/*!
+     *  Get the number of rows an item contains.
 	 *
-	 * \param parent Identifies the parent that's row count is requested.
+	 *      @param [in] parent  Identifies the parent that's row count is requested.
 	 *
-	 * \return Number of rows the item has.
-	*/
+	 *      @return Number of rows the item has.
+	 */
 	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the number of columns the item has to be displayed.
+	/*!
+     *  Get the number of columns the item has to be displayed.
 	 *
-	 * \param parent Identifies the parent that's column count is requested.
+	 *      @param [in] parent  Identifies the parent that's column count is requested.
 	 *
-	 * \return The number of columns to be displayed.
-	*/
+	 *      @return The number of columns to be displayed.
+	 */
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the item flags that defines the possible operations for the item.
+	/*!
+     *  Get the item flags that defines the possible operations for the item.
 	 *
-	 * \param index Model index that identifies the item.
+	 *      @param [in] index   Model index that identifies the item.
 	 *
-	 * \return Qt::ItemFlags specify the possible operations for the item.
-	*/
+	 *      @return Qt::ItemFlags specify the possible operations for the item.
+	 */
 	Qt::ItemFlags flags(QModelIndex const& index) const;
 
-	/*! \brief Get the header data for specified header.
+	/*!
+     *  Get the header data for specified header.
 	 *
-	 * \param section The section specifies the row/column number for the header.
-	 * \param orientation Specified if horizontal or vertical header is wanted.
-	 * \param role Specifies the type of the requested data.
+	 *      @param [in] section         The section specifies the row/column number for the header.
+	 *      @param [in] orientation     Specified if horizontal or vertical header is wanted.
+	 *      @param [in] role            Specifies the type of the requested data.
 	 *
-	 * \return QVariant Contains the requested data.
-	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation, 
-		int role = Qt::DisplayRole) const;
+	 *      @return QVariant Contains the requested data.
+	 */
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	/*! \brief Get the data for specified item.
+	/*!
+     *  Get the data for specified item.
 	 *
-	 * \param index Specifies the item that's data is requested.
-	 * \param role The role that defines what kind of data is requested.
+	 *      @param [in] index   Specifies the item that's data is requested.
+	 *      @param [in] role    The role that defines what kind of data is requested.
 	 *
-	 * \return QVariant Contains the data for the item.
-	*/
+	 *      @return QVariant Contains the data for the item.
+	 */
 	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Save the data to the model for specified item
+	/*!
+     *  Save the data to the model for specified item.
 	 *
-	 * \param index The model index of the item that's data is to be saved.
-	 * \param value The data that is to be saved.
-	 * \param role The role specifies what kind of data should be saved.
+	 *      @param [in] index   The model index of the item that's data is to be saved.
+	 *      @param [in] value   The data that is to be saved.
+	 *      @param [in] role    The role specifies what kind of data should be saved.
 	 *
-	 * \return True if saving happened successfully.
-	*/
+	 *      @return True if saving happened successfully.
+	 */
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
-
-	/*! \brief Check if the memory map model is in a valid state.
-	 *
-	 * \return bool True if the state is valid and writing is possible.
-	*/
-	bool isValid() const;
 
 public slots:
 
-	/*! \brief Add a new item to the given index.
+	/*!
+     *  Add a new item to the given index.
 	 *
-	 * \param index The index identifying the position for new item.
-	 *
-	*/
+	 *      @param [in] index   The index identifying the position for new item.
+	 */
 	virtual void onAddItem(QModelIndex const& index);
 
-	/*! \brief Remove the item in the given index.
+	/*!
+     *  Remove the item in the given index.
 	 *
-	 * \param index The index identifying the item to remove.
-	 *
-	*/
+	 *      @param [in] index   The index identifying the item to remove.
+	 */
 	virtual void onRemoveItem(QModelIndex const& index);
+
+    /*!
+     *  Change the current address unit bits.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
+    void addressUnitBitsUpdated(QString const& newAddressUnitBits);
 
 protected:
 
@@ -169,7 +182,7 @@ protected:
 
 signals:
 
-	//! \brief Emitted when the contents of the model change.
+	//! Emitted when the contents of the model change.
 	void contentChanged();
 
     /*!
@@ -177,18 +190,18 @@ signals:
      */
     void graphicsChanged();
 
-	//! \brief Emitted when a new memory map item is added to the given index.
+	//! Emitted when a new memory map item is added to the given index.
 	void itemAdded(int index);
 
-	//! \brief Emitted when a memory map item is removed from the given index.
+	//! Emitted when a memory map item is removed from the given index.
 	void itemRemoved(int index);
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	MemoryMapModel(const MemoryMapModel& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	MemoryMapModel& operator=(const MemoryMapModel& other);
 
     /*!
@@ -207,21 +220,31 @@ private:
      */
     void decreaseReferencesWithRemovedAddressBlock(QSharedPointer<AddressBlock> removedAddressBlock);
 
+    /*!
+     *  Get the last used address.
+     *
+     *      @return The last used address.
+     */
+    quint64 getLastAddress() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
 	//! Pointer to the memory remap being edited.
-    QSharedPointer<AbstractMemoryMap> memoryRemap_;
+    QSharedPointer<MemoryMapBase> memoryRemap_;
 
-    //! The choices available in the containing component;
-    QSharedPointer<QList<QSharedPointer<Choice> > > componentChoices_;
-
-	//! \brief Contains the memory map items being edited.
-	QList<QSharedPointer<MemoryMapItem> >& items_;
+	//! Contains the memory map items being edited.
+    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks;
 
     //! The expression formatter, changes referenced ids to parameter names.
     QSharedPointer <ExpressionFormatter> expressionFormatter_;
+
+    //! The used address block validator.
+    QSharedPointer<AddressBlockValidator> addressBlockValidator_;
+
+    //! The current address unit bits.
+    QString addressUnitBits_;
 };
 
 #endif // MEMORYMAPMODEL_H

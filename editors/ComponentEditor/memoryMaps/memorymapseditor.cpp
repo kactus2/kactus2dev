@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.4.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapseditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapseditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.04.2012
+//
+// Description:
+// Editor for editing the memory maps of a component.
+//-----------------------------------------------------------------------------
 
 #include "memorymapseditor.h"
 #include "memorymapsmodel.h"
@@ -14,19 +18,23 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/remapstate.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/RemapState.h>
 
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: memorymapseditor::MemoryMapsEditor()
 //-----------------------------------------------------------------------------
-MemoryMapsEditor::MemoryMapsEditor( QSharedPointer<Component> component,
-    QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler, QWidget *parent ):
+MemoryMapsEditor::MemoryMapsEditor(QSharedPointer<Component> component,
+                                   QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler,
+                                   QSharedPointer<MemoryMapValidator> memoryMapValidator,
+                                   QWidget *parent /* = 0 */):
 ItemEditor(component, handler, parent),
 view_(new MemoryMapsView(this)),
 proxy_(new QSortFilterProxyModel(this)),
-model_(new MemoryMapsModel(component, parameterFinder, this)),
+model_(new MemoryMapsModel(component, parameterFinder, memoryMapValidator, this)),
 delegate_()
 {
 	// display a label on top the table
@@ -43,7 +51,7 @@ delegate_()
     // Set case-insensitive sorting.
     proxy_->setSortCaseSensitivity(Qt::CaseInsensitive);
 
-	const QString compPath = ItemEditor::handler()->getDirectoryPath(*ItemEditor::component()->getVlnv());
+	const QString compPath = ItemEditor::handler()->getDirectoryPath(ItemEditor::component()->getVlnv());
 	QString defPath = QString("%1/memMapsList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
@@ -91,14 +99,6 @@ MemoryMapsEditor::~MemoryMapsEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: memorymapseditor::isValid()
-//-----------------------------------------------------------------------------
-bool MemoryMapsEditor::isValid() const
-{
-	return model_->isValid();
-}
-
-//-----------------------------------------------------------------------------
 // Function: memorymapseditor::refresh()
 //-----------------------------------------------------------------------------
 void MemoryMapsEditor::refresh()
@@ -116,7 +116,7 @@ QStringList MemoryMapsEditor::getRemapStateNames() const
     QStringList remapStateNames;
     foreach (QSharedPointer<RemapState> remapState, *component()->getRemapStates())
     {
-        remapStateNames.append(remapState->getName());
+        remapStateNames.append(remapState->name());
     }
 
     return remapStateNames;

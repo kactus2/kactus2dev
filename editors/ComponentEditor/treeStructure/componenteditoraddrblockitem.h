@@ -14,8 +14,7 @@
 
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
 
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/registermodel.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <QFont>
 #include <QSharedPointer>
@@ -23,11 +22,12 @@
 class MemoryMapsVisualizer;
 class AddressBlockGraphItem;
 class ExpressionParser;
-
+class AddressBlockValidator;
 //-----------------------------------------------------------------------------
 //! The item for a single address block in component editor's navigation tree.
 //-----------------------------------------------------------------------------
-class ComponentEditorAddrBlockItem : public ComponentEditorItem {
+class ComponentEditorAddrBlockItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
@@ -43,6 +43,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression formatter.
+     *      @param [in] addressBlockValidator   Validator used for address blocks.
 	 *      @param [in] parent                  The parent item.
 	 */
 	ComponentEditorAddrBlockItem(QSharedPointer<AddressBlock> addrBlock,
@@ -53,69 +54,76 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<AddressBlockValidator> addressBlockValidator,
 		ComponentEditorItem* parent);
 
-	//! The destructor
+	//! The destructor.
 	virtual ~ComponentEditorAddrBlockItem();
 
-	/*! Get the tool tip for the item.
+	/*!
+     *  Get the tool tip for the item.
 	 * 
 	 *      @return The text for the tool tip to print to user.
-	*/
+	 */
 	virtual QString getTooltip() const;
 
-	/*! Get the text to be displayed to user in the tree for this item.
+	/*!
+     *  Get the text to be displayed to user in the tree for this item.
 	 *
 	 *      @return QString Contains the text to display.
-	*/
+	 */
 	virtual QString text() const;
 
-	/*! Check the validity of this item and sub items.
+	/*!
+     *  Check the validity of this item and sub items.
 	 *
 	 *      @return bool True if item is in valid state.
-	*/
+	 */
 	virtual bool isValid() const;
 
-	/*! Get pointer to the editor of this item.
+	/*!
+     *  Get pointer to the editor of this item.
 	 *
 	 *      @return The editor to use for this item.
-	*/
+	 */
 	virtual ItemEditor* editor();
 
-	/*! Add a new child to the item.
+	/*!
+     *  Add a new child to the item.
 	 * 
 	 *      @param [in] index The index to add the child into.
-	 *
-	*/
+	 */
 	virtual void createChild(int index);
 
-	/*! Get pointer to the visualizer of this item.
-	 * 
+	/*!
+     *  Get pointer to the visualizer of this item.
 	 * 
 	 *      @return The visualizer to use for this item.
-	*/
+	 */
 	virtual ItemVisualizer* visualizer();
 
-	/*! Set the visualizer for this item.
+	/*!
+     *  Set the visualizer for this item.
 	 *
 	 *      @param [in] visualizer The visualizer.
-	*/
+	 */
 	virtual void setVisualizer(MemoryMapsVisualizer* visualizer);
 
-	/*! Get the visualizer graphics item for the address block.
+	/*!
+     *  Get the visualizer graphics item for the address block.
 	 *
 	 *      @return QGraphicsItem* The graphics item.
-	*/
+	 */
 	virtual QGraphicsItem* getGraphicsItem();
 
-	/*! Update the graphics item of the address block.
-	 *
-	*/
+	/*!
+     *  Update the graphics item of the address block.
+	 */
 	virtual void updateGraphics();
 
-	/*! Remove the graphics item of the address block.
-	 *
-	*/
+	/*!
+     *  Remove the graphics item of the address block.
+	 */
 	virtual void removeGraphicsItem();
 
     /*!
@@ -127,9 +135,9 @@ public:
 
 protected slots:
 
-	/*! Handler for editor's contentChanged signal.
-	 *
-	*/
+	/*!
+     *  Handler for editor's contentChanged signal.
+	 */
 	virtual void onEditorChanged();
     
     /*!
@@ -138,11 +146,17 @@ protected slots:
     virtual void onGraphicsChanged();
 
 signals:
+    
+    /*!
+     *  Signals a change in the address unit bits.
+     *
+     *      @param [in] newAddressUnitBits  The new address unit bits.
+     */
     void changeInAddressUnitBits(int newAddressUnitBits);
 
 private:
 	
-	//! No copying
+	//! No copying. No assignment.
 	ComponentEditorAddrBlockItem(const ComponentEditorAddrBlockItem& other);
 	ComponentEditorAddrBlockItem& operator=(const ComponentEditorAddrBlockItem& other);
 
@@ -160,6 +174,9 @@ private:
 
     //! The number of addressable unit bits in the address block.
     unsigned int addressUnitBits_;
+
+    //! The used address block validator.
+    QSharedPointer<AddressBlockValidator> addressBlockValidator_;
 };
 
 #endif // COMPONENTEDITORADDRBLOCKITEM_H

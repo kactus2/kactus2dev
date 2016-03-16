@@ -11,13 +11,12 @@
 
 #include "AbstractParameterModel.h"
 
-#include "ValueFormatter.h"
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/Enumeration.h>
 
-#include <IPXACTmodels/choice.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/Enumeration.h>
-
-#include <IPXACTmodels/validators/ParameterValidator2014.h>
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
+#include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
 #include <QApplication>
 #include <QColor>
@@ -29,12 +28,13 @@
 // Function: AbstractParameterModel::AbstractParameterModel()
 //-----------------------------------------------------------------------------
 AbstractParameterModel::AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    QSharedPointer<ParameterValidator2014> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent): 
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 choices_(choices), 
-validator_(new ParameterValidator2014(expressionParser, parameterFinder)),
+validator_(validator),
 expressionFormatter_(expressionFormatter)
 {
     setExpressionParser(expressionParser);
@@ -45,7 +45,7 @@ expressionFormatter_(expressionFormatter)
 //-----------------------------------------------------------------------------
 AbstractParameterModel::~AbstractParameterModel()
 {
-    delete validator_;
+
 }
 
 //-----------------------------------------------------------------------------
@@ -235,34 +235,34 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getBitWidthLeft());
+                removeReferencesFromSingleExpression(parameter->getVectorLeft());
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setBitWidthLeft(value.toString());
+            parameter->setVectorLeft(value.toString());
 
-            if (value.isValid() && parameter->getBitWidthRight().isEmpty() && !value.toString().isEmpty())
+            if (value.isValid() && parameter->getVectorRight().isEmpty() && !value.toString().isEmpty())
             {
-                parameter->setBitWidthRight(QString::number(0));
+                parameter->setVectorRight("0");
             }
         }
         else if (index.column() == bitWidthRightColumn())
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(parameter->getBitWidthRight());
+                removeReferencesFromSingleExpression(parameter->getVectorRight());
 
                 emit dataChanged(QAbstractTableModel::index(0, usageCountColumn()),
                     QAbstractTableModel::index(rowCount() - 1, usageCountColumn()));
             }
 
-            parameter->setBitWidthRight(value.toString());
+            parameter->setVectorRight(value.toString());
 
-            if (value.isValid() && parameter->getBitWidthLeft().isEmpty() && !value.toString().isEmpty())
+            if (value.isValid() && parameter->getVectorLeft().isEmpty() && !value.toString().isEmpty())
             {
-                parameter->setBitWidthLeft(QString::number(0));
+                parameter->setVectorLeft("0");
             }
         }
         else if (index.column() == minimumColumn())
@@ -366,48 +366,6 @@ Qt::ItemFlags AbstractParameterModel::flags(QModelIndex const& index ) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::isValid()
-//-----------------------------------------------------------------------------
-bool AbstractParameterModel::isValid() const
-{
-	// check all parameters
-	for (int i = 0; i < rowCount(); i++)
-	{
-        QSharedPointer<Parameter> parameter = getParameterOnRow(i);
-
-        if (!validator_->validate(parameter.data(), choices_)) 
-        {
-            return false;
-        }
-	}
-	
-	// all parameters are valid
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterModel::isValid()
-//-----------------------------------------------------------------------------
-bool AbstractParameterModel::isValid(QStringList& errorList, QString const& parentIdentifier) const
-{
-    bool valid = true;
-    for (int i = 0; i < rowCount(); i++)
-    {
-        QSharedPointer<Parameter> parameter = getParameterOnRow(i);
-
-        errorList.append(validator_->findErrorsIn(parameter.data(), parentIdentifier, choices_));
-
-        // if one parameter is invalid, model is invalid.
-        if (!validator_->validate(parameter.data(), choices_))
-        {
-            valid = false;
-        }
-    }
-
-    return valid;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractParameterModel::isMandatoryColumn()
 //-----------------------------------------------------------------------------
 bool AbstractParameterModel::isMandatoryColumn(int column) const
@@ -447,7 +405,7 @@ QSharedPointer<Choice> AbstractParameterModel::findChoice(QString const& choiceN
 {
     foreach (QSharedPointer<Choice> choice, *choices_)
     {
-        if (choice->getName() == choiceName)
+        if (choice->name() == choiceName)
         {
             return choice;
         }
@@ -505,7 +463,7 @@ bool AbstractParameterModel::validateIndex(QModelIndex const& index) const
 
     if (index.column() == nameColumn())
     {
-        return validator_->hasValidName(parameter.data());
+        return validator_->hasValidName(parameter);
     }
     else if (index.column() == typeColumn())
     {
@@ -513,34 +471,34 @@ bool AbstractParameterModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == bitWidthLeftColumn())
     {
-        return validator_->validateArrayValues(parameter->getBitWidthLeft(), parameter->getBitWidthRight());
+        return validator_->hasValidVector(parameter);
     }
     else if (index.column() == bitWidthRightColumn())
     {
-        return validator_->validateArrayValues(parameter->getBitWidthLeft(), parameter->getBitWidthRight());
+        return validator_->hasValidVector(parameter);
     }
     else if (index.column() == minimumColumn())
     {
-        return validator_->hasValidMinimumValue(parameter.data()) && 
-            !validator_->valueIsLessThanMinimum(parameter.data());
+        return validator_->hasValidMinimumValue(parameter) && 
+            !validator_->valueIsLessThanMinimum(parameter);
     }
     else if (index.column() == maximumColumn())
     {
-        return validator_->hasValidMaximumValue(parameter.data()) && 
-            !validator_->valueIsGreaterThanMaximum(parameter.data());
+        return validator_->hasValidMaximumValue(parameter) && 
+            !validator_->valueIsGreaterThanMaximum(parameter);
     }
     else if (index.column() == choiceColumn())
     {
-        return validator_->hasValidChoice(parameter.data(), choices_) &&
-            validator_->hasValidValueForChoice(parameter.data(), choices_);
+        return validator_->hasValidChoice(parameter) &&
+            validator_->hasValidValueForChoice(parameter);
     }
     else if (index.column() == valueColumn())
     {
-        return validator_->hasValidValue(parameter.data(), choices_);
+        return validator_->hasValidValue(parameter);
     }
     else if (index.column() == resolveColumn())
     {
-        return validator_->hasValidResolve(parameter.data());
+        return validator_->hasValidResolve(parameter);
     }
     else if (index.column() == arrayLeftColumn())
     {
@@ -584,11 +542,11 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
 
     if (index.column() == nameColumn())
     {
-        return parameter->getName();
+        return parameter->name();
     }
     else if (index.column() == displayNameColumn())
     {
-        return parameter->getDisplayName();
+        return parameter->displayName();
     }
     else if (index.column() == typeColumn())
     {
@@ -596,11 +554,11 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == bitWidthLeftColumn())
     {
-        return parameter->getBitWidthLeft();
+        return parameter->getVectorLeft();
     }
     else if (index.column() == bitWidthRightColumn())
     {
-        return parameter->getBitWidthRight();
+        return parameter->getVectorRight();
     }
     else if (index.column() == minimumColumn())
     {
@@ -632,7 +590,7 @@ QVariant AbstractParameterModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == descriptionColumn())
     {
-        return parameter->getDescription();
+        return parameter->description();
     }
     else if (index.column() == idColumn())
     {
@@ -677,15 +635,15 @@ QVariant AbstractParameterModel::expressionOrValueForIndex(QModelIndex const& in
     }
     else if (index.column() == bitWidthLeftColumn())
     {
-        return parameter->getBitWidthLeft();
+        return parameter->getVectorLeft();
     }
     else if (index.column() == bitWidthRightColumn())
     {
-        return parameter->getBitWidthRight();
+        return parameter->getVectorRight();
     }
     else if (index.column() == descriptionColumn())
     {
-        return parameter->getDescription();
+        return parameter->description();
     }
     else
     {
@@ -703,9 +661,9 @@ bool AbstractParameterModel::canRemoveRow(int const& row) const
     if (parameter->getUsageCount() > 0)
     {
         QMessageBox removeWarning;
-        removeWarning.setText("Are you sure you want to remove " + parameter->getName()
+        removeWarning.setText("Are you sure you want to remove " + parameter->name()
             + "? There are " + QString::number(parameter->getUsageCount()) + " references to it." +
-            " \n\nTo see where " + parameter->getName() + 
+            " \n\nTo see where " + parameter->name() + 
             " has been referenced, double click its usage count.");
         removeWarning.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         removeWarning.setDefaultButton(QMessageBox::No);
@@ -760,8 +718,8 @@ int AbstractParameterModel::getAllReferencesToIdInItemOnRow(const int& row, QStr
     QSharedPointer<Parameter> parameter = getParameterOnRow(row);
 
     int referencesInValue = parameter->getValue().count(valueID);
-    int referencesInBitWidthLeft = parameter->getBitWidthLeft().count(valueID);
-    int referencesInBitWidthRight = parameter->getBitWidthRight().count(valueID);
+    int referencesInBitWidthLeft = parameter->getVectorLeft().count(valueID);
+    int referencesInBitWidthRight = parameter->getVectorRight().count(valueID);
     int referencesInArrayLeft = parameter->getAttribute("kactus2:arrayLeft").count(valueID);
     int referencesinArrayRight = parameter->getAttribute("kactus2:arrayRight").count(valueID);
 

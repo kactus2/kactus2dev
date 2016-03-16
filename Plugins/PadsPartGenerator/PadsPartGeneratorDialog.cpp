@@ -13,14 +13,20 @@
 #include "PadsPartGenerator.h"
 #include "PadsAsciiSyntax.h"
 
-#include <IPXACTmodels/vlnv.h>
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/PortMap.h>
-#include <IPXACTmodels/vector.h>
+
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+
+#include <IPXACTmodels/common/Vector.h>
+#include <IPXACTmodels/common/VLNV.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/PortMap.h>
 
 #include <QApplication>
 #include <QTextCharFormat>
@@ -96,7 +102,7 @@ PadsPartGeneratorDialog::PadsPartGeneratorDialog(LibraryInterface* libIf,
     // Part name editor.
     QRegExpValidator* nameValidator = new QRegExpValidator(QRegExp("\\w{1,40}", Qt::CaseInsensitive), this); 
     nameEditor_->setValidator(nameValidator);    
-    nameEditor_->setText(component_->getVlnv()->getName());    
+    nameEditor_->setText(component_->getVlnv().getName());    
     connect(nameEditor_, SIGNAL(textChanged(const QString&)),
         this, SLOT(onNameChanged()), Qt::UniqueConnection);
 
@@ -480,7 +486,7 @@ void PadsPartGeneratorDialog::generateHeader()
         int gateCount = 1;
         if (gateGenerationType_ == MULTIPLEGATES)
         {
-            gateCount = component_->getBusInterfaces().size();
+            gateCount = component_->getBusInterfaces()->size();
         } 
         headerLine1.replace(PadsAsciiSyntax::NUM_GATES, QString::number(gateCount));
         headerLine1.replace(PadsAsciiSyntax::NUM_SIGNPINS, "0");
@@ -533,31 +539,34 @@ void PadsPartGeneratorDialog::generateGates()
     int gateCount = 0;
 
     if (gateGenerationType_ == MULTIPLEGATES)
-    {
-        QList<QSharedPointer<BusInterface> > busInterfaces = component_->getBusInterfaces();
-        foreach(QSharedPointer<BusInterface> busInterface, busInterfaces)
+    {        
+        foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
         {
             int pinCount = 0;
-            foreach(QSharedPointer<PortMap> portMap, busInterface->getPortMaps())
+            foreach(QSharedPointer<PortMap> portMap, *busInterface->getAbstractionTypes()->first()->getPortMaps())
             {
-                pinCount += portMap->logicalVector()->getSize();
+                pinCount += abs(portMap->getLogicalPort()->range_->getLeft().toInt() - 
+                    portMap->getLogicalPort()->range_->getRight().toInt()) + 1; 
+                //portMap->logicalVector()->getSize();
             }
-            insertGate(busInterface->getName(), 1, pinCount, 0, cursor);
+            insertGate(busInterface->name(), 1, pinCount, 0, cursor);
             insertPins(busInterface, cursor);
             cursor.insertBlock();
 
-            gateCount = busInterfaces.size();
         }
+        
+        gateCount = component_->getBusInterfaces()->size();
     } 
 
     else //if (gateGenerationType_ == SINGLEGATE)
     {
         int pinCount = 0;
-        foreach(QSharedPointer<BusInterface> busInterface, component_->getBusInterfaces())
+        foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
         {
-            foreach(QSharedPointer<PortMap> portMap, busInterface->getPortMaps())
+            foreach(QSharedPointer<PortMap> portMap, *busInterface->getAbstractionTypes()->first()->getPortMaps())
             {
-                pinCount += portMap->logicalVector()->getSize();
+                pinCount += abs(portMap->getLogicalPort()->range_->getLeft().toInt() - 
+                    portMap->getLogicalPort()->range_->getRight().toInt()) + 1; 
             }
         }
 
@@ -568,7 +577,7 @@ void PadsPartGeneratorDialog::generateGates()
         }
         insertGate(gateName, 1, pinCount, 0, cursor);
 
-        foreach(QSharedPointer<BusInterface> busInterface, component_->getBusInterfaces())
+        foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
         {
             insertPins(busInterface, cursor);
         }        
@@ -614,22 +623,37 @@ void PadsPartGeneratorDialog::insertGate(QString const& name, int decals, int pi
 void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterface, QTextCursor& cursor)
 {
     // Get the abstract definition of the bus interface for resolving the logical signal size.
-    QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(busInterface->getAbstractionType());
+    QSharedPointer<Document> libComp = 
+        libHandler_->getModel(*busInterface->getAbstractionTypes()->first()->getAbstractionRef());
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
     bool showLogicalIndex = false;     
 
-    foreach(QSharedPointer<PortMap> portMap, busInterface->getPortMaps())
+    foreach(QSharedPointer<PortMap> portMap, *busInterface->getAbstractionTypes()->first()->getPortMaps())
     {
-        if (absDef)
-        {
-            showLogicalIndex = (absDef->getPortSize(portMap->logicalPort(), busInterface->getInterfaceMode()) > 1); 
-        }
-
-        QString pin = portMap->physicalPort();
+        QString pin = portMap->getPhysicalPort()->name_;
         QStringList line = PadsAsciiSyntax::PART_GATE_PIN.split(PadsAsciiSyntax::SEPARATOR);        
         
-        int logLower = qMin(portMap->getLogicalLeft(), portMap->getLogicalRight());
-        int logHigher = qMax(portMap->getLogicalLeft(), portMap->getLogicalRight());            
+        int logLower = 0;
+        int logHigher = 0;
+
+        QSharedPointer<PortMap::LogicalPort> logicalPort = portMap->getLogicalPort();
+        if (logicalPort && logicalPort->range_)
+        {
+            int rangeLeft = logicalPort->range_->getLeft().toInt();
+            int rangeRight = logicalPort->range_->getRight().toInt();
+            logLower = qMin(rangeLeft, rangeRight);
+            logHigher = qMax(rangeLeft, rangeRight);       
+
+            if (absDef)
+            {
+                QSharedPointer<PortAbstraction> absPort = absDef->getPort(portMap->getLogicalPort()->name_);
+                if (absPort && absPort->hasWire())
+                {
+                    showLogicalIndex = absPort->getWire()->getWidth(busInterface->getInterfaceMode()).toInt() > 1; 
+                }                
+            }
+        }
+     
         for (int logIndex = logLower; logIndex <= logHigher; logIndex++)
         {                    
             line.replace(PadsAsciiSyntax::PINNUMBER, pin);
@@ -637,11 +661,12 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
             line.replace(PadsAsciiSyntax::PINTYPE, "U");
             if (showLogicalIndex)
             {
-                line.replace(PadsAsciiSyntax::PINNAME, portMap->logicalPort()  + "_" + QString::number(logIndex));
+                line.replace(PadsAsciiSyntax::PINNAME, portMap->getLogicalPort()->name_  + 
+                    "_" + QString::number(logIndex));
             } 
             else
             {
-                line.replace(PadsAsciiSyntax::PINNAME, portMap->logicalPort() );
+                line.replace(PadsAsciiSyntax::PINNAME, portMap->getLogicalPort()->name_);
             }  
 
             insertLine(line.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::PART_GATE_PIN_EXP);                                        
@@ -652,8 +677,7 @@ void PadsPartGeneratorDialog::insertPins(QSharedPointer<BusInterface> busInterfa
 //-----------------------------------------------------------------------------
 // Function: PadsPartGeneratorDialog::insertLine()
 //-----------------------------------------------------------------------------
-void PadsPartGeneratorDialog::insertLine(QString const& line, QTextCursor cursor, 
-    QRegExp const validatingExp /*= QRegExp() */)
+void PadsPartGeneratorDialog::insertLine(QString const& line, QTextCursor cursor, QRegExp const& validatingExp)
 {    
     if (validatingExp.pattern().isEmpty() || validatingExp.exactMatch(line))
     {
@@ -684,25 +708,25 @@ void PadsPartGeneratorDialog::insertAttributes(QTextCursor& cursor)
     insertLine(attr.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::ATTRIBUTE_EXP);
 
     attr.replace(PadsAsciiSyntax::ATTRNAME, tr("\"Vendor\""));
-    attr.replace(PadsAsciiSyntax::VALUE, component_->getVlnv()->getVendor());
+    attr.replace(PadsAsciiSyntax::VALUE, component_->getVlnv().getVendor());
     insertLine(attr.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::ATTRIBUTE_EXP);
 
     attr.replace(PadsAsciiSyntax::ATTRNAME, tr("\"Library\""));
-    attr.replace(PadsAsciiSyntax::VALUE, component_->getVlnv()->getLibrary());
+    attr.replace(PadsAsciiSyntax::VALUE, component_->getVlnv().getLibrary());
     insertLine(attr.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::ATTRIBUTE_EXP);
 
     attr.replace(PadsAsciiSyntax::ATTRNAME, tr("\"Name\""));
-    attr.replace(PadsAsciiSyntax::VALUE, component_->getVlnv()->getName());
+    attr.replace(PadsAsciiSyntax::VALUE, component_->getVlnv().getName());
     insertLine(attr.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::ATTRIBUTE_EXP);
 
     attr.replace(PadsAsciiSyntax::ATTRNAME, tr("\"Version\""));
-    attr.replace(PadsAsciiSyntax::VALUE, component_->getVlnv()->getVersion());
+    attr.replace(PadsAsciiSyntax::VALUE, component_->getVlnv().getVersion());
     insertLine(attr.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::ATTRIBUTE_EXP);
 
     // Insert all parameters as attributes.
     foreach(QSharedPointer<Parameter> parameter, *component_->getParameters())
     {
-        attr.replace(PadsAsciiSyntax::ATTRNAME, "\"" + parameter->getName() + "\"");
+        attr.replace(PadsAsciiSyntax::ATTRNAME, "\"" + parameter->name() + "\"");
         attr.replace(PadsAsciiSyntax::VALUE, parameter->getValue());
         insertLine(attr.join(PadsAsciiSyntax::SEPARATOR), cursor, PadsAsciiSyntax::ATTRIBUTE_EXP);
     }

@@ -1,79 +1,103 @@
-/* 
- *  	Created on: 9.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorfilesetsitem.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorfilesetsitem.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 09.05.2012
+//
+// Description:
+// The file sets-item in the component editor navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTEDITORFILESETSITEM_H
 #define COMPONENTEDITORFILESETSITEM_H
 
 #include "componenteditoritem.h"
-#include <IPXACTmodels/fileset.h>
 
 #include <QSharedPointer>
 
+class Component;
+class ExpressionParser;
+class FileSet;
+class File;
+class FileValidator;
+class FileSetValidator;
+class ParameterFinder;
 class PluginManager;
+class ReferenceCounter;
+class ExpressionParser;
+class ParameterFinder;
+class ExpressionFormatter;
 
-/*! \brief The file sets-item in the component editor navigation tree.
- *
- */
-class ComponentEditorFileSetsItem : public ComponentEditorItem {
+//-----------------------------------------------------------------------------
+//! The file sets-item in the component editor navigation tree.
+//-----------------------------------------------------------------------------
+class ComponentEditorFileSetsItem : public ComponentEditorItem
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param model Pointer to the model that owns the items.
-	 * \param libHandler Pointer to the instance that manages the library.
-	 * \param component Pointer to the component being edited.
-	 * \param parent Pointer to the parent item.
-	 *
-	*/
-	ComponentEditorFileSetsItem(ComponentEditorTreeModel* model,
-		LibraryInterface* libHandler,
-        PluginManager& pluginMgr,
-		QSharedPointer<Component> component,
-		ComponentEditorItem* parent);
+	 *      @param [in] model                   The model that owns the items.
+	 *      @param [in] libHandler              The instance that manages the library.
+  	 *      @param [in] pluginMgr               The plugin manager.
+	 *      @param [in] component               The component being edited.
+     *      @param [in] referenceCounter        The counter for parameter references.
+     *      @param [in] parameterFinder         Finder used to identify parameters.
+     *      @param [in] expressionParser        Parser used to calculate expressions.
+     *      @param [in] expressionFormatter     Formatter used to format expressions.
+     *      @param [in] parameterFinder         The finder for component parameters.
+	 *      @param [in] parent                  The parent item.
+	 */
+    ComponentEditorFileSetsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+        PluginManager& pluginMgr, QSharedPointer<Component> component,
+        QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        ComponentEditorItem* parent);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~ComponentEditorFileSetsItem();
 
-    /*! \brief Get the font to be used for text of this item.
-	*
-	* Returns a bolded font, if filesets exist, otherwise false.
-	*
-	* \return QFont instance that defines the font to be used.
-	*/
+    /*!
+     *  Get the font to be used for text of this item.
+	 *
+	 *      @return QFont instance that defines the font to be used.
+	 */
 	virtual QFont getFont() const;
 
-	/*! \brief Get the tool tip for the item.
+	/*!
+     *  Get the tool tip for the item.
 	 * 
-	 * \return The text for the tool tip to print to user.
-	*/
+	 *      @return The text for the tool tip to print to user.
+	 */
 	virtual QString getTooltip() const;
 
-	/*! \brief Get the text to be displayed to user in the tree for this item.
+	/*!
+     *  Get the text to be displayed to user in the tree for this item.
 	 *
-	 * \return QString Contains the text to display.
-	*/
+	 *      @return QString Contains the text to display.
+	 */
 	virtual QString text() const;
 
-	/*! \brief Get pointer to the editor of this item.
+	/*!
+     *  Get The editor of this item.
 	 *
-	 * \return Pointer to the editor to use for this item.
-	*/
+	 *      @return The editor to use for this item.
+	 */
 	virtual ItemEditor* editor();
 
-	/*! \brief Add a new child to the item.
+	/*!
+     *  Add a new child to the item.
 	 *
-	 * \param index The index to add the child into.
-	 *
-	*/
+	 *      @param [in] index   The index to add the child into.
+	 */
 	virtual void createChild(int index);
 
 signals:
+
     //! Emitted when the dependency model should be refreshed.
     void refreshDependencyModel();
 
@@ -84,16 +108,26 @@ private slots:
     void onFileAdded(File* file);
 
 private:
-	//! \brief No copying
-	ComponentEditorFileSetsItem(const ComponentEditorFileSetsItem& other);
 
-	//! \brief No assignment
+    bool isParentFileSet(File* file, const FileSet* fileset) const;
+
+	//! No copying. No assignment.
+	ComponentEditorFileSetsItem(const ComponentEditorFileSetsItem& other);
 	ComponentEditorFileSetsItem& operator=(const ComponentEditorFileSetsItem& other);
 
-	//! \brief The file sets to edit.
-	QList<QSharedPointer<FileSet> >& fileSets_;
+	//! The file sets to edit.
+    QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_;
 
-	//! \brief The plugin manager
+    //! Expression parser for filesets and files.
+    QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Validator for file items.
+    QSharedPointer<FileValidator> fileValidator_;
+
+    //! Validator for file set items.
+    QSharedPointer<FileSetValidator> fileSetValidator_;
+
+	//! The plugin manager.
 	PluginManager& pluginMgr_;
 };
 

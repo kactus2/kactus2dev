@@ -12,28 +12,26 @@
 #include "modelparametermodel.h"
 
 #include "ModelParameterColumns.h"
-#include "ModelParameterFactoryImplementation.h"
 
-#include <IPXACTmodels/modelparameter.h>
+#include <editors/ComponentEditor/views/ModuleParameterFactoryImplementation.h>
 
-#include <IPXACTmodels/validators/ModelParameterValidator.h>
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 #include <QColor>
 #include <QPersistentModelIndex>
-#include <QUuid>
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterModel::ModelParameterModel()
 //-----------------------------------------------------------------------------
-ModelParameterModel::ModelParameterModel(QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters,
+ModelParameterModel::ModelParameterModel(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters,
     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
     QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QObject *parent): 
+    QObject *parent):
 AbstractParameterModel(choices, expressionParser, parameterFinder, expressionFormatter, parent),
-modelParameters_(modelParameters), 
-parameterFactory_(new ModelParameterFactoryImplementation()), 
+moduleParameters_(moduleParameters), 
+parameterFactory_(new ModuleParameterFactoryImplementation()),
 lockedIndexes_()
 {
 
@@ -58,7 +56,7 @@ int ModelParameterModel::rowCount(QModelIndex const& parent /*= QModelIndex() */
 		return 0;
     }
 
-	return modelParameters_->count();
+	return moduleParameters_->count();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,17 +83,17 @@ QVariant ModelParameterModel::data(QModelIndex const& index, int role) const
 		return QVariant();
     }
 
-    QSharedPointer<ModelParameter> modelParameter = getParameterOnRow(index.row()).dynamicCast<ModelParameter>();
+    QSharedPointer<ModuleParameter> moduleParameter = getParameterOnRow(index.row()).dynamicCast<ModuleParameter>();
 
     if (role == Qt::DisplayRole)
     {
         if (index.column() == ModelParameterColumns::DATA_TYPE)
         {
-            return modelParameter->getDataType();
+            return moduleParameter->getDataType();
         }
         else if (index.column() ==  ModelParameterColumns::USAGE_TYPE)
         {
-            return modelParameter->getUsageType();
+            return moduleParameter->getUsageType();
         }
         else
         {
@@ -168,18 +166,18 @@ bool ModelParameterModel::setData(QModelIndex const& index, QVariant const& valu
 
 	if (role == Qt::EditRole)
     {
-        QSharedPointer<ModelParameter> modelParameter = 
-            getParameterOnRow(index.row()).dynamicCast<ModelParameter>();
+        QSharedPointer<ModuleParameter> moduleParameter = 
+            getParameterOnRow(index.row()).dynamicCast<ModuleParameter>();
 
         if (index.column() == ModelParameterColumns::DATA_TYPE)
         {
-            modelParameter->setDataType(value.toString());
+            moduleParameter->setDataType(value.toString());
             emit dataChanged(index, index);
             return true;
         }
         else if (index.column() == ModelParameterColumns::USAGE_TYPE)
         {
-            modelParameter->setUsageType(value.toString());
+            moduleParameter->setUsageType(value.toString());
             emit dataChanged(index, index);
             return true;
         }
@@ -226,7 +224,7 @@ void ModelParameterModel::onAddItem(QModelIndex const& index)
     }
 
     beginInsertRows(QModelIndex(), row, row);
-    modelParameters_->insert(row, QSharedPointer<ModelParameter>(parameterFactory_->make()));
+    moduleParameters_->insert(row, QSharedPointer<ModuleParameter>(parameterFactory_->make()));
     endInsertRows();
 
     // tell also parent widget that contents have been changed
@@ -253,7 +251,7 @@ void ModelParameterModel::onRemoveItem(QModelIndex const& index)
     {
         // remove the specified item
         beginRemoveRows(QModelIndex(), index.row(), index.row());
-        modelParameters_->removeAt(index.row());
+        moduleParameters_->removeAt(index.row());
         endRemoveRows();
         
         // tell also parent widget that contents have been changed
@@ -266,7 +264,7 @@ void ModelParameterModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ModelParameterModel::getParameterOnRow(int row) const
 {
-    return modelParameters_->at(row);
+    return moduleParameters_->at(row);
 }
 
 //-----------------------------------------------------------------------------
@@ -392,26 +390,26 @@ int ModelParameterModel::usageCountColumn() const
 //-----------------------------------------------------------------------------
 // Function: ModelParameterModel::getParameter()
 //-----------------------------------------------------------------------------
-QSharedPointer<ModelParameter> ModelParameterModel::getParameter(QModelIndex const& index) const
+QSharedPointer<ModuleParameter> ModelParameterModel::getParameter(QModelIndex const& index) const
 {
 	Q_ASSERT(index.isValid());
-    return  modelParameters_->at(index.row());
+    return  moduleParameters_->at(index.row());
 }   
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterModel::setAndLockModelParameters()
 //-----------------------------------------------------------------------------
 void ModelParameterModel::setAndLockModelParameters(
-    QSharedPointer<QList<QSharedPointer<ModelParameter> > > modelParameters)
+    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters)
 {
     beginResetModel();
     lockedIndexes_.clear();
-    modelParameters_ = modelParameters;
+    moduleParameters_ = moduleParameters;
     endResetModel();
 
-    foreach(QSharedPointer<ModelParameter> modelParameter, *modelParameters_)
+    foreach(QSharedPointer<ModuleParameter> moduleParameter, *moduleParameters_)
     {
-        lockModelParameter(modelParameter);
+        lockModuleParameter(moduleParameter);
     }
 
     emit contentChanged();
@@ -432,23 +430,24 @@ bool ModelParameterModel::validateIndex(QModelIndex const& index) const
 {
     QSharedPointer <Parameter> parameter = getParameterOnRow(index.row());
 
-    if (index.column() == ModelParameterColumns::USAGE_TYPE)
+    /*if (index.column() == ModelParameterColumns::USAGE_TYPE)
     {
         ModelParameterValidator validator;
-        return validator.hasValidUsageType(parameter.dynamicCast<ModelParameter>().data());
+        return validator.hasValidUsageType(parameter.dynamicCast<ModuleParameter>().data());
     }
     else
-    {
-        return AbstractParameterModel::validateIndex(index);
-    }
+    {*/
+
+    return AbstractParameterModel::validateIndex(index);
+//     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: lockModelParameter()
 //-----------------------------------------------------------------------------
-void ModelParameterModel::lockModelParameter(QSharedPointer<ModelParameter> modelParam)
+void ModelParameterModel::lockModuleParameter(QSharedPointer<ModuleParameter> moduleParameter)
 {
-    QModelIndex nameIndex = indexFor(modelParam);
+    QModelIndex nameIndex = indexFor(moduleParameter);
     QModelIndex typeIndex = nameIndex.sibling(nameIndex.row(), ModelParameterColumns::DATA_TYPE);
     QModelIndex usageIndex = nameIndex.sibling(nameIndex.row(), ModelParameterColumns::USAGE_TYPE);
     if (nameIndex.isValid() && typeIndex.isValid() && usageIndex.isValid())
@@ -462,10 +461,10 @@ void ModelParameterModel::lockModelParameter(QSharedPointer<ModelParameter> mode
 //-----------------------------------------------------------------------------
 // Function: ModelParameterModel::indexFor()
 //-----------------------------------------------------------------------------
-QModelIndex ModelParameterModel::indexFor(QSharedPointer<ModelParameter> modelParam) const
+QModelIndex ModelParameterModel::indexFor(QSharedPointer<ModuleParameter> moduleParameter) const
 {
     // find the correct row
-    int row =  modelParameters_->indexOf(modelParam);
+    int row =  moduleParameters_->indexOf(moduleParameter);
 
     if (row < 0)
     {

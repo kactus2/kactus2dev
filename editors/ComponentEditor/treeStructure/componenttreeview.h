@@ -7,7 +7,7 @@
 #ifndef COMPONENTTREEVIEW_H
 #define COMPONENTTREEVIEW_H
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QTreeView>
 #include <QModelIndex>

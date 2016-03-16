@@ -18,14 +18,19 @@
 #include <QHeaderView>
 #include <QTableView>
 
-#include <common/graphicsItems/ComponentItem.h>
-#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/PortMap.h>
 #include <common/graphicsItems/ConnectionEndpoint.h>
+
+#include <common/delegates/LineEditDelegate/lineeditdelegate.h>
+
+#include <IPXACTmodels/common/DirectionTypes.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/Port.h>
+
 #include <designEditors/HWDesign/views/CellEditTableView.h>
 #include <designEditors/HWDesign/models/PortGenerationTableModel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 namespace
@@ -46,8 +51,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceDialog::BusInterfaceDialog()
 //-----------------------------------------------------------------------------
-BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
-                                       QWidget* parent) 
+BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit, QWidget* parent) 
     : QDialog(parent),
       layout_(0),
       nameLabel_(0),
@@ -78,7 +82,7 @@ BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
         // Create the name edit and its label.
         nameLabel_ = new QLabel(tr("Name:"), this);
         nameEdit_ = new QLineEdit(this);
-      }
+    }
 
     // Create the radio button group.
     modeGroup_ = new QGroupBox(tr("Select Interface Mode"), this);
@@ -102,8 +106,7 @@ BusInterfaceDialog::BusInterfaceDialog(bool enableNameEdit,
         btnOK_->setEnabled(!nameEdit_->text().isEmpty());
     }
 
-    tableGroup_ = new QGroupBox(tr("Define Port Names and Descriptions in Target Component"), 
-                                    this);
+    tableGroup_ = new QGroupBox(tr("Define Port Names and Descriptions in Target Component"), this);
 
     setupLayout();
 }
@@ -157,11 +160,11 @@ void BusInterfaceDialog::setBusInterfaces(QSharedPointer<Component> srcComponent
     busIf_ = busInterface;
     lh_ = handler;
 
-    if ( !tableEnable_ )
+    if (!tableEnable_)
     {
         setupPortTable();      
 
-        if ( modes_ == 1 )
+        if (modes_ == 1)
         {
             btnOK_->setEnabled(portsModel_->isValid());
             portsView_->setEnabled(true);
@@ -183,12 +186,12 @@ void BusInterfaceDialog::setBusInterfaces(QSharedPointer<Component> srcComponent
         }
     }
    
-    QString sourceName = srcComponent->getVlnv()->getName();
+    QString sourceName = srcComponent->getVlnv().getName();
     if (sourceName.isEmpty())
     {
         sourceName = "Draft Component";
     }
-    QString destName = targetComponent->getVlnv()->getName();
+    QString destName = targetComponent->getVlnv().getName();
     if (destName.isEmpty())
     {
         destName = "Draft Component";
@@ -201,33 +204,35 @@ void BusInterfaceDialog::setBusInterfaces(QSharedPointer<Component> srcComponent
     portsModel_->setHeaderData(PortGenerationTableModel::TARGET_NAME, Qt::Horizontal, draftHeader);
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceDialog::getPortMaps()
 //-----------------------------------------------------------------------------
 QList< QSharedPointer<PortMap> > BusInterfaceDialog::getPortMaps() 
 {   
     // Create port maps
-    if ( tableEnable_ && portMaps_.empty())
+    if (tableEnable_ && portMaps_.empty())
     {
-        foreach ( QSharedPointer<PortMap> portMap, busIf_->getPortMaps() )
+        foreach (QSharedPointer<PortMap> portMap, *busIf_->getPortMaps())
         {
             int row = 0;
             QModelIndex index;
             for(row = 0; row < portsModel_->rowCount(); row++)
             {
-                index = portsModel_->index(row,PortGenerationTableModel::SRC_NAME);
-                QString name = portsModel_->data(index,Qt::DisplayRole).toString();
-                if ( name == portMap->physicalPort())
+                index = portsModel_->index(row, PortGenerationTableModel::SRC_NAME);
+                QString name = portsModel_->data(index, Qt::DisplayRole).toString();
+                if (name == portMap->getPhysicalPort()->name_)
                 {
                     break;
                 }
             }
             index = portsModel_->index(row,PortGenerationTableModel::TARGET_NAME);
-            QString physDraft = portsModel_->data(index,Qt::DisplayRole).toString();
+            QString physicalName = portsModel_->data(index,Qt::DisplayRole).toString();
 
             QSharedPointer<PortMap> generated(new PortMap(*portMap));
-            generated->setPhysicalPort(physDraft);
+            QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort());
+            physicalPort->name_ = physicalName;
+
+            generated->setPhysicalPort(physicalPort);
             portMaps_.append(generated);
         }
     }
@@ -241,21 +246,25 @@ QList< QSharedPointer<PortMap> > BusInterfaceDialog::getPortMaps()
 QList< QSharedPointer<Port> > BusInterfaceDialog::getPorts() 
 {
     // Create ports
-    if ( tableEnable_ && ports_.empty())
+    if (tableEnable_ && ports_.empty())
     {
         for(int row = 0; row < portsModel_->rowCount(); row++)
         {
             QModelIndex index = portsModel_->index(row, PortGenerationTableModel::SRC_NAME);
-            QString name = portsModel_->data(index, Qt::DisplayRole).toString();
-            index = portsModel_->index(row, PortGenerationTableModel::TARGET_NAME);
-            QString generatedName = portsModel_->data(index, Qt::DisplayRole).toString();
-            QSharedPointer<Port> port = sourceComp_->getPort(name);
-            QSharedPointer<Port> draftPort(new Port(generatedName, *port));
-            index = portsModel_->index(row, PortGenerationTableModel::TARGET_DIRECTION);
-            QString draftDir = portsModel_->data(index, Qt::DisplayRole).toString();
-            draftPort->setDirection(General::str2Direction(draftDir, General::DIRECTION_INVALID));
+            QString name = index.data(Qt::DisplayRole).toString();
 
-            if (draftPort->getDirection() == General::OUT)
+            index = portsModel_->index(row, PortGenerationTableModel::TARGET_NAME);
+            QString generatedName = index.data(Qt::DisplayRole).toString();
+
+            QSharedPointer<Port> port = sourceComp_->getPort(name);
+            QSharedPointer<Port> draftPort(new Port(*port));
+            draftPort->setName(generatedName);
+
+            index = portsModel_->index(row, PortGenerationTableModel::TARGET_DIRECTION);
+            QString draftDir = index.data(Qt::DisplayRole).toString();
+            draftPort->setDirection(DirectionTypes::str2Direction(draftDir, DirectionTypes::DIRECTION_INVALID));
+
+            if (draftPort->getDirection() == DirectionTypes::OUT)
             {
                 draftPort->setDefaultValue("");
             }
@@ -277,9 +286,9 @@ void BusInterfaceDialog::setName(QString const& name)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceDialog::getName()
+// Function: BusInterfaceDialog::name()
 //-----------------------------------------------------------------------------
-QString BusInterfaceDialog::getName() const
+QString BusInterfaceDialog::name() const
 {
     Q_ASSERT(nameEdit_ != 0);
     return nameEdit_->text();
@@ -306,7 +315,7 @@ void BusInterfaceDialog::onTableDataChanged()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::onModeSelected(bool const radioButtonChecked)
 {
-    if ( radioButtonChecked && tableEnable_ )
+    if (radioButtonChecked && tableEnable_)
     {
         btnOK_->setDefault(false);
         portsView_->setEnabled(true);
@@ -392,7 +401,7 @@ void BusInterfaceDialog::setupPortTable()
 //-----------------------------------------------------------------------------
 void BusInterfaceDialog::updatePortsView()
 {
-    if ( tableEnable_ && modes_ != 0 )
+    if (tableEnable_ && modes_ != 0)
     {
         portsModel_->initialize(sourceComp_, busIf_, destComp_, lh_, getSelectedMode());        
         onTableDataChanged();

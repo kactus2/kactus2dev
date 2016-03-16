@@ -18,7 +18,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
@@ -40,12 +40,14 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] choices                 The choices available for the parameter values.
+	 *      @param [in] validator               The validator to use for checking parameter validity.
 	 *      @param [in] expressionParser        Expression parser for configurable elements.
 	 *      @param [in] parameterFinder         Pointer to the instance for finding parameters.
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] parent                  The parent object.
 	 */
 	AbstractParameterModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QSharedPointer<ParameterValidator2014> validator,
 	    QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
@@ -90,22 +92,6 @@ public:
 	 *      @return  Qt::ItemFlags that define how object can be handled.
 	*/
 	virtual Qt::ItemFlags flags(QModelIndex const& index) const;
-    
-	/*! Check if the model is in valid state or not.
-	 *
-	 *      @return  True, if all items in model are valid, otherwise false.
-	*/
-	virtual bool isValid() const;
-    
-    /*!
-     *  Check if the model is in valid state or not.
-     *
-     *           @param [in]  [inout] errorList           The list to add the possible error messages to.
-     *           @param [in]  [in]    parentIdentifier    String to identify the location of the error.
-     *
-     *           @return  True if all items in model are valid.
-     */
-    virtual bool isValid(QStringList& errorList, const QString& parentIdentifier) const;
 
 public slots:
 
@@ -334,10 +320,10 @@ protected:
 
 private:
 
-	//! No copying
+	//! No copying.
 	AbstractParameterModel(const AbstractParameterModel& other);
 
-	//! No assignment
+	//! No assignment.
 	AbstractParameterModel& operator=(const AbstractParameterModel& other);
 
     /*!
@@ -376,7 +362,7 @@ private:
     QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
 
     //! Validator for parameters.
-    ParameterValidator2014* validator_;
+    QSharedPointer<ParameterValidator2014> validator_;
 
     //! Formatter for parameter expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

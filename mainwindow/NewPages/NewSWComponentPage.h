@@ -13,11 +13,8 @@
 #define NEWSWCOMPONENTPAGE_H
 
 #include "NewPage.h"
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 class LibraryInterface;
-class VLNVEditor;
-class KactusAttributeEditor;
 class VLNV;
 
 //-----------------------------------------------------------------------------

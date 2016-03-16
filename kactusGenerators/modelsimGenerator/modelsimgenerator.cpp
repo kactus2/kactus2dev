@@ -6,17 +6,20 @@
 
 #include "modelsimgenerator.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <library/LibraryManager/libraryhandler.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/DesignInstantiation.h>
+#include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
+
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/file.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/view.h>
 
 #include <common/dialogs/comboSelector/comboselector.h>
 
@@ -26,6 +29,7 @@
 #include <QList>
 #include <QTextStream>
 #include <QSharedPointer>
+#include "IPXACTmodels/Component/ComponentInstantiation.h"
 
 ModelsimGenerator::FileOptions::FileOptions():
 absFilePath_(),
@@ -152,7 +156,7 @@ bool ModelsimGenerator::addMakefile2IPXact(QSharedPointer<Component> component,
 	// if the top vhdl file set was not found. Create one
 	if (!modelsimFileSet) {
 		modelsimFileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, QString("simulation")));
-		component->addFileSet(modelsimFileSet);
+		component->getFileSets()->append(modelsimFileSet);
 	}
 
 	QSettings settings;
@@ -235,22 +239,31 @@ void ModelsimGenerator::parseFiles( QSharedPointer<Component> component, const Q
 	// inform user that component is being processed
 	emit noticeMessage(tr("Processing view %1 of component %2:%3:%4:%5").arg(
 		viewName).arg(
-		component->getVlnv()->getVendor()).arg(
-		component->getVlnv()->getLibrary()).arg(
-		component->getVlnv()->getName()).arg(
-		component->getVlnv()->getVersion()));
+		component->getVlnv().getVendor()).arg(
+		component->getVlnv().getLibrary()).arg(
+		component->getVlnv().getName()).arg(
+		component->getVlnv().getVersion()));
 
 	// pointer to the named view under given component
-	View* view = component->findView(viewName);
+	QSharedPointer<View> view;
+	
+	foreach ( QSharedPointer<View> currentView, *component->getViews() )
+	{
+		if ( currentView->name() == viewName_ )
+		{
+			view = currentView;
+			break;
+		}
+	}
 
 	// if view was not found
 	if (!view) {
 
 		// if component does not contain any views
-		if (component->viewCount() == 0) {
+		if (component->getViews()->size() == 0) {
 			emit noticeMessage(tr("Component %1 didn't contain any views, "
 				"adding all found RTL-files from component file sets.").arg(
-				component->getVlnv()->getName()));
+				component->getVlnv().getName()));
 
 			parseBlindFileSet(component);
 			viewName_ = viewName;
@@ -260,148 +273,166 @@ void ModelsimGenerator::parseFiles( QSharedPointer<Component> component, const Q
 		// component did contain views but not the specified view
 		else {
 			emit errorMessage(tr("View %1 not found within component %2").arg(
-				viewName).arg(component->getVlnv()->getName()));
+				viewName).arg(component->getVlnv().getName()));
 			return;
 		}
 	}
 
 	// if the view was found but was not hierarchical
-	if (view && !view->isHierarchical()) {
+	if (view && !view->isHierarchical())
+	{
+		// Find if referred component instantiation exists.
+		QSharedPointer<ComponentInstantiation> cimp;
 
-		// ask which file sets are included in the view
-		QStringList fileSets = view->getFileSetRefs();
+		foreach ( QSharedPointer<ComponentInstantiation> currentInsta,
+			*component->getComponentInstantiations() )
+		{
+			if ( currentInsta->name() == view->getComponentInstantiationRef() )
+			{
+				cimp = currentInsta;
+				break;
+			}
+		}
 
-		// parse the file sets from the component and add them to the list of files
-		parseFileSets(component, fileSets);
+		if ( cimp )
+		{
+			// Parse the file sets from the component and add them to the list of files
+			parseFileSets(component, cimp->getFileSetReferences());
+		}
 	}
 
 	// view was found and was hierarchical
-	else if (view && view->isHierarchical()) {
-
+	else if (view && view->isHierarchical())
+	{
 		VLNV designVLNV;
 		QSharedPointer<Design> design;
+		QSharedPointer<DesignInstantiation> DI;
 
-		VLNV desConfVLNV;
+		QSharedPointer<VLNV> desConfVLNV;
 		QSharedPointer<DesignConfiguration> designConf;
+		QSharedPointer<DesignConfigurationInstantiation> DCI;
 
-		VLNV vlnv = view->getHierarchyRef();
+		// Try to find design VLNV.
+		foreach ( QSharedPointer<DesignInstantiation> candidate,
+			*component->getDesignInstantiations() )
+		{
+			if ( candidate->name() == view->getDesignInstantiationRef() )
+			{
+				DI = candidate;
 
-		// if the specified vlnv is not found within library
-		if (!handler_->contains(vlnv)) {
-			emit errorMessage(tr("Hierarchy reference %1:%2:%3:%4 referenced "
-				"within view %5 in component %6 was not found in the library."
-				" Stopping generation.").arg(
-				vlnv.getVendor()).arg(
-				vlnv.getLibrary()).arg(
-				vlnv.getName()).arg(
-				vlnv.getVersion()).arg(
-				viewName).arg(
-				component->getVlnv()->getName()));
-			return;
+				if ( DI->getDesignReference() )
+				{
+					designVLNV = *DI->getDesignReference();
+				}
+				break;
+			}
 		}
 
-		// get the real type of the referenced document
-		vlnv.setType(handler_->getDocumentType(vlnv));
+		// Try to find design configuration VLNV.
+		foreach ( QSharedPointer<DesignConfigurationInstantiation> candidate,
+			*component->getDesignConfigurationInstantiations() )
+		{
+			if ( candidate->name() == view->getDesignConfigurationInstantiationRef() )
+			{
+				DCI = candidate;
+				desConfVLNV = DCI->getDesignConfigurationReference();
+				break;
+			}
+		}
 
-		// if component contained reference to a design configuration
-		if (vlnv.getType() == VLNV::DESIGNCONFIGURATION) {
-			
-			// parse the design configuration
-			desConfVLNV = vlnv;
-			QSharedPointer<LibraryComponent> libComp = handler_->getModel(desConfVLNV);
+		// If no valid design VLNV, but component contained reference to a design configuration.
+		if (!designVLNV.isValid() && desConfVLNV)
+		{
+			// Parse the design configuration.
+			QSharedPointer<Document> libComp = handler_->getModel(*desConfVLNV);
 			designConf = libComp.staticCast<DesignConfiguration>();
 			
-			// find the referenced design
-			designVLNV = designConf->getDesignRef();
+			// If exist, get the design reference of the configuration.
+			if ( designConf )
+			{
+				designVLNV = designConf->getDesignRef();
+			}
 		}
 
-		// if component contained direct reference to a design 
-		else if (vlnv.getType() == VLNV::DESIGN) {
-			designVLNV = vlnv;
-		}
-		// if item was some other type
-		else {
-			emit errorMessage(tr("Item %1:%2:%3:%4 was not neither design or "
-				"design configuration, stopping generation.").arg(
-				vlnv.getVendor()).arg(
-				vlnv.getLibrary()).arg(
-				vlnv.getName()).arg(
-				vlnv.getVersion()));
-			return;
-		}
-
-		// if design does not exist
-		if (!handler_->contains(designVLNV)) {
-			emit errorMessage(tr("Design %1:%2:%3:%4 referenced within "
-				"design configuration %5 was not found within library. "
-				"Stopping generation.").arg(
-				designVLNV.getVendor()).arg(
-				designVLNV.getLibrary()).arg(
-				designVLNV.getName()).arg(
-				designVLNV.getVersion()).arg(
-				desConfVLNV.getName()));
-			return;
-		}
-
-		// parse the design
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(designVLNV);
+		// Obtain the design.
+		QSharedPointer<Document> libComp = handler_->getModel(designVLNV);
 		design = libComp.staticCast<Design>();
 
-		// read the design and it's component instances
+		// If design does not exist, return.
+		if (!design)
+		{
+			emit errorMessage(tr("Design %1 referenced within was not found within library."
+				"Stopping generation.").arg(designVLNV.toString()));
+			return;
+		}
+
+		// Read the design and its component instances.
 		readDesign(design, designConf);
 
-		// if this view contains a reference to a view that contains component's
-		// top level implementation
-		QString topLevelView = view->getTopLevelView();
-		if (!topLevelView.isEmpty()) {
-			parseFiles(component, topLevelView);
+		// Find if referred component instantiation exists.
+		QSharedPointer<ComponentInstantiation> cimp;
+
+		foreach ( QSharedPointer<ComponentInstantiation> currentInsta,
+			*component->getComponentInstantiations() )
+		{
+			if ( currentInsta->name() == view->getComponentInstantiationRef() )
+			{
+				cimp = currentInsta;
+				break;
+			}
+		}
+		
+		// If it does exit, parse its file sets as they are used in the design.
+		if (cimp)
+		{
+			parseFileSets(component, cimp->getFileSetReferences());
 		}
 	}
 	viewName_ = viewName;
-	sourceXml_ = handler_->getPath(*component->getVlnv());
+	sourceXml_ = handler_->getPath(component->getVlnv());
 }
 
 void ModelsimGenerator::parseFileSets( QSharedPointer<Component> component, 
-									  const QStringList& fileSetNames ) {
+									  QSharedPointer<QStringList> fileSetNames ) {
 
 	Q_ASSERT_X(component, "ModelsimGenerator::parseFileSets",
 		"Null component-pointer given as parameter");
 
-	QString basePath = handler_->getPath(*component->getVlnv());
+	QString basePath = handler_->getPath(component->getVlnv());
 	if (basePath.isEmpty()) {
 		emit errorMessage(tr("Component %1:%2:%3:%4 was not found within "
 			"library, stopping generation").arg(
-			component->getVlnv()->getVendor()).arg(
-			component->getVlnv()->getLibrary()).arg(
-			component->getVlnv()->getName()).arg(
-			component->getVlnv()->getVersion()));
+			component->getVlnv().getVendor()).arg(
+			component->getVlnv().getLibrary()).arg(
+			component->getVlnv().getName()).arg(
+			component->getVlnv().getVersion()));
 		return;
 	}
 
 	// check each file set
-	foreach (QString fileSetName, fileSetNames) {
+	foreach (QString fileSetName, *fileSetNames) {
 
 		// if the specified file set was not found within component
 		if (!component->hasFileSet(fileSetName)) {
 			emit errorMessage(tr("Fileset %1 was not found within component "
 				"%2:%3:%4:%5").arg(fileSetName).arg(
-				component->getVlnv()->getVendor()).arg(
-				component->getVlnv()->getLibrary()).arg(
-				component->getVlnv()->getName()).arg(
-				component->getVlnv()->getVersion()));
+				component->getVlnv().getVendor()).arg(
+				component->getVlnv().getLibrary()).arg(
+				component->getVlnv().getName()).arg(
+				component->getVlnv().getVersion()));
 			continue;
 		}
 
 		// get the files in the file set
 		QSharedPointer<FileSet> fileSet = component->getFileSet(fileSetName);
-		QList<QSharedPointer<File> > fileList = fileSet->getFiles();
+		QSharedPointer<QList<QSharedPointer<File> > > fileList = fileSet->getFiles();
 
 		// handle each file
-		foreach (QSharedPointer<File> file, fileList) {
+		foreach (QSharedPointer<File> file, *fileList) {
 			
 			// get the absolute path to the file
 			QString absolutePath = General::getAbsolutePath(basePath,
-				file->getName());
+				file->name());
 
 			// make sure the file exists in the file system
 			QFileInfo fileInfo(absolutePath);
@@ -410,10 +441,10 @@ void ModelsimGenerator::parseFileSets( QSharedPointer<Component> component,
 				emit errorMessage(tr("The file %1 needed by component %2:%3:%4:%5"
 					" was not found in the file system.").arg(
 					absolutePath).arg(
-					component->getVlnv()->getVendor()).arg(
-					component->getVlnv()->getLibrary()).arg(
-					component->getVlnv()->getName()).arg(
-					component->getVlnv()->getVersion()));
+					component->getVlnv().getVendor()).arg(
+					component->getVlnv().getLibrary()).arg(
+					component->getVlnv().getName()).arg(
+					component->getVlnv().getVersion()));
 				
 				// move on to next file
 				continue;
@@ -426,8 +457,8 @@ void ModelsimGenerator::parseFileSets( QSharedPointer<Component> component,
 			fileOpt.libraryName_ = file->getLogicalName();
 			fileOpt.buildCommand_ = file->getCommand();
 			fileOpt.flags_ = file->getFlags();
-			fileOpt.sourceComponent_ = component->getVlnv()->toString();
-			fileOpt.sourceFileSet_ = file->fileSetName();
+			fileOpt.sourceComponent_ = component->getVlnv().toString();
+			fileOpt.sourceFileSet_ = fileSet->name();
 
 			// if the file with options is not yet on the list, add it
 			if (!sourceFiles_.contains(fileOpt))
@@ -441,66 +472,57 @@ void ModelsimGenerator::readDesign( const QSharedPointer<Design> design,
 	Q_ASSERT_X(design, "ModelsimGenerator::readDesign",
 		"Null Design-pointer given as parameter");
 
-	// read each component
-	QList<ComponentInstance> instances = design->getComponentInstances();
-	foreach (ComponentInstance const& instance, instances) {
+	foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
+    {
 
-		VLNV vlnv = instance.getComponentRef();
+		VLNV vlnv = *instance->getComponentRef();
 
 		// if component can't be found within library
-		if (!handler_->contains(vlnv)) {
-			emit errorMessage(tr("Component %1:%2:%3:%4 was not found within "
-				"library, stopping generation").arg(
-				vlnv.getVendor()).arg(
-				vlnv.getLibrary()).arg(
-				vlnv.getName()).arg(
-				vlnv.getVersion()));
+		if (!handler_->contains(vlnv))
+        {
+			emit errorMessage(tr("Component %1 was not found within library, stopping generation").arg(
+                vlnv.toString()));
 			continue;
 		}
 
 		QSharedPointer<Component> component;
-		QSharedPointer<LibraryComponent> libComp = handler_->getModel(vlnv);
+		QSharedPointer<Document> libComp = handler_->getModel(vlnv);
 		
 		// if library item is component
-		if (libComp->getVlnv()->getType() == VLNV::COMPONENT)
+		if (libComp->getVlnv().getType() == VLNV::COMPONENT)
+        {
 			component = libComp.staticCast<Component>();
-		
-		// if item was not component
-		else {
-			emit errorMessage(tr("Referenced item %1:%2:%3:%4 was not a component").arg(
-				vlnv.getVendor()).arg(
-				vlnv.getLibrary()).arg(
-				vlnv.getName()).arg(
-				vlnv.getVersion()));
+        }
+		else
+        {
+			emit errorMessage(tr("Referenced item %1 was not a component").arg(vlnv.toString()));
 			continue;
 		}
 
 		QString viewName;
 		
 		// if design configuration is used
-		if (desConf && desConf->hasActiveView(instance.getInstanceName())) {
-			viewName = desConf->getActiveView(instance.getInstanceName());
+		if (desConf && desConf->hasActiveView(instance->getInstanceName()))
+        {
+			viewName = desConf->getActiveView(instance->getInstanceName());
 		}
 		// if design configuration is not used or view was not found
-		else {
-
+		else
+        {
 			// if component only has one view
-			if (component->viewCount() == 1)
-				viewName = component->getViews().first()->getName();
-
+			if (component->getViews()->size() == 1)
+            {
+				viewName = component->getViews()->first()->name();
+            }
 			// if component has multiple views
-			else if (component->viewCount() > 1) {
-				
+			else if (component->getViews()->size() > 1)
+            {				
 				// ask user to select the view
 				viewName = ComboSelector::selectView(component, parent_);
 
-				if (viewName.isEmpty()) {
-					emit noticeMessage(tr("No view selected for component "
-						"%1:%2:%3:%4, skipping").arg(
-						vlnv.getVendor()).arg(
-						vlnv.getLibrary()).arg(
-						vlnv.getName()).arg(
-						vlnv.getVersion()));
+				if (viewName.isEmpty())
+                {
+					emit noticeMessage(tr("No view selected for component %1, skipping").arg(vlnv.toString()));
 					continue;
 				}
 			}
@@ -517,49 +539,56 @@ void ModelsimGenerator::parseBlindFileSet( QSharedPointer<Component> component )
 	Q_ASSERT_X(component, "ModelsimGenerator::parseBlindFileSet",
 		"Null component pointer given as parameter");
 
-	QString basePath = handler_->getPath(*component->getVlnv());
+	QString basePath = handler_->getPath(component->getVlnv());
 	if (basePath.isEmpty()) {
 		emit errorMessage(tr("Component %1:%2:%3:%4 was not found in library."));
 		return;
 	}
 
-	// get all rtl files of the component
-	QList<QSharedPointer<File> > fileList = component->getRTLFiles();
-	foreach (QSharedPointer<File> file, fileList) {
+	// Go through all RTL files of the component.
+	foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+	{
+		foreach (QSharedPointer<File> file, *fileSet->getFiles())
+		{
+			if ( !file->isRTLFile() )
+			{
+				continue;
+			}
 
-		// get the absolute path to the file
-		QString absolutePath = General::getAbsolutePath(basePath,
-			file->getName());
+			// get the absolute path to the file
+			QString absolutePath = General::getAbsolutePath(basePath,
+				file->name());
 
-		// make sure the file exists in the file system
-		QFileInfo fileInfo(absolutePath);
+			// make sure the file exists in the file system
+			QFileInfo fileInfo(absolutePath);
 
-		if (!fileInfo.exists()) {
-			emit errorMessage(tr("The file %1 needed by component %2:%3:%4:%5"
-				" was not found in the file system.").arg(
-				absolutePath).arg(
-				component->getVlnv()->getVendor()).arg(
-				component->getVlnv()->getLibrary()).arg(
-				component->getVlnv()->getName()).arg(
-				component->getVlnv()->getVersion()));
+			if (!fileInfo.exists()) {
+				emit errorMessage(tr("The file %1 needed by component %2:%3:%4:%5"
+					" was not found in the file system.").arg(
+					absolutePath).arg(
+					component->getVlnv().getVendor()).arg(
+					component->getVlnv().getLibrary()).arg(
+					component->getVlnv().getName()).arg(
+					component->getVlnv().getVersion()));
 
-			// move on to next file
-			continue;
+				// move on to next file
+				continue;
+			}
+
+			// create the file settings
+			ModelsimGenerator::FileOptions fileOpt(absolutePath);
+
+			// set the options for the file
+			fileOpt.libraryName_ = file->getLogicalName();
+			fileOpt.buildCommand_ = file->getCommand();
+			fileOpt.flags_ = file->getFlags();
+			fileOpt.sourceComponent_ = component->getVlnv().toString();
+			fileOpt.sourceFileSet_ = fileSet->name();
+
+			// if the file with options is not yet on the list, add it
+			if (!sourceFiles_.contains(fileOpt))
+				sourceFiles_.append(fileOpt);
 		}
-
-		// create the file settings
-		ModelsimGenerator::FileOptions fileOpt(absolutePath);
-
-		// set the options for the file
-		fileOpt.libraryName_ = file->getLogicalName();
-		fileOpt.buildCommand_ = file->getCommand();
-		fileOpt.flags_ = file->getFlags();
-		fileOpt.sourceComponent_ = component->getVlnv()->toString();
-		fileOpt.sourceFileSet_ = file->fileSetName();
-
-		// if the file with options is not yet on the list, add it
-		if (!sourceFiles_.contains(fileOpt))
-			sourceFiles_.append(fileOpt);
 	}
 }
 

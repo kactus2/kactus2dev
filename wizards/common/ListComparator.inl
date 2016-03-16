@@ -34,12 +34,12 @@ bool ListComparator<T>::compare(QList<QSharedPointer<T> > const first,
 
     foreach(QSharedPointer<const T> reference, first)
     {    
-        if (!sortedSubjects.contains(reference->getName()))
+        if (!sortedSubjects.contains(reference->name()))
         {
             return false;
         }
 
-        if (!IPXactElementComparator<T>::compare(reference, sortedSubjects.value(reference->getName())))
+        if (!IPXactElementComparator<T>::compare(reference, sortedSubjects.value(reference->name())))
         {
             return false;
         }
@@ -61,9 +61,9 @@ QList<QSharedPointer<IPXactDiff> > ListComparator<T>::diff(QList<QSharedPointer<
 
     foreach(QSharedPointer<const T> reference, references)
     {    
-        if (subjectMap.contains(reference->getName()))
+        if (subjectMap.contains(reference->name()))
         {
-            QSharedPointer<const T> subject = subjectMap.value(reference->getName());
+            QSharedPointer<const T> subject = subjectMap.value(reference->name());
             if (!IPXactElementComparator<T>::compare(reference, subject))
             {
                 diffResult.append(IPXactElementComparator<T>::diff(reference, subject));
@@ -71,8 +71,7 @@ QList<QSharedPointer<IPXactDiff> > ListComparator<T>::diff(QList<QSharedPointer<
         }
         else
         {
-            QSharedPointer<IPXactDiff> remove(new IPXactDiff(elementType(), 
-                reference->getName()));
+            QSharedPointer<IPXactDiff> remove(new IPXactDiff(elementType(), reference->name()));
             remove->setChangeType(IPXactDiff::REMOVE);
             diffResult.append(remove);
         }
@@ -82,9 +81,9 @@ QList<QSharedPointer<IPXactDiff> > ListComparator<T>::diff(QList<QSharedPointer<
 
     foreach(QSharedPointer<const T> subject, subjects)
     {    
-        if (!referenceMap.contains(subject->getName()))
+        if (!referenceMap.contains(subject->name()))
         {
-            QSharedPointer<IPXactDiff> add(new IPXactDiff(elementType(), subject->getName()));
+            QSharedPointer<IPXactDiff> add(new IPXactDiff(elementType(), subject->name()));
             add->setChangeType(IPXactDiff::ADD);
             diffResult.append(add);
         }
@@ -110,7 +109,7 @@ QMap<QString, QSharedPointer<const T> > ListComparator<T>::mapByName(QList<QShar
 
     foreach(QSharedPointer<const T> element, list)
     {
-        mappedResult.insert(element->getName(), element);
+        mappedResult.insert(element->name(), element);
     }
 
     return mappedResult;

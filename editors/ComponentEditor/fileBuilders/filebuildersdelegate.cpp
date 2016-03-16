@@ -1,11 +1,16 @@
-/* 
- *
- *  Created on: 18.4.2011
- *      Author: Antti Kamppi
- * 		filename: filebuildersdelegate.cpp
- */
+//-----------------------------------------------------------------------------
+// File: filebuildersdelegate.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 18.04.2011
+//
+// Description:
+// Delegate to provide editors to edit file builders.
+//-----------------------------------------------------------------------------
 
 #include "filebuildersdelegate.h"
+#include "FileBuilderColumns.h"
 
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 #include <common/widgets/fileTypeSelector/filetypeselector.h>
@@ -18,19 +23,33 @@
 #include <QMouseEvent>
 #include <QEvent>
 
-FileBuildersDelegate::FileBuildersDelegate(QObject *parent): 
-QStyledItemDelegate(parent) {
+//-----------------------------------------------------------------------------
+// Function: filebuildersdelegate::FileBuildersDelegate()
+//-----------------------------------------------------------------------------
+FileBuildersDelegate::FileBuildersDelegate(QCompleter* parameterNameCompleter,
+                                           QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
+ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
+{
+
 }
 
-FileBuildersDelegate::~FileBuildersDelegate() {
+//-----------------------------------------------------------------------------
+// Function: filebuildersdelegate::~FileBuildersDelegate()
+//-----------------------------------------------------------------------------
+FileBuildersDelegate::~FileBuildersDelegate()
+{
+
 }
 
-QWidget* FileBuildersDelegate::createEditor( QWidget* parent, 
-											const QStyleOptionViewItem& option, 
-											const QModelIndex& index ) const {
-
+//-----------------------------------------------------------------------------
+// Function: filebuildersdelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* FileBuildersDelegate::createEditor( QWidget* parent, const QStyleOptionViewItem& option,
+                                             const QModelIndex& index ) const
+{
 	// if editor for file type or replace default flags
-	if (index.column() == FILETYPE_COLUMN) {
+	if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+    {
 		FileTypeSelector* typeEditor = new FileTypeSelector(parent);
 		typeEditor->refresh();
 		typeEditor->setMaxVisibleItems(25);
@@ -39,132 +58,117 @@ QWidget* FileBuildersDelegate::createEditor( QWidget* parent,
 		return typeEditor;
 	}
 	// if editor for command or flags
-	else if (index.column() == COMMAND_COLUMN || index.column() == FLAGS_COLUMN) {
+    else if (index.column() == FileBuilderColumns::COMMAND_COLUMN ||
+        index.column() == FileBuilderColumns::FLAGS_COLUMN)
+    {
 		QLineEdit* lineEditor = new QLineEdit(parent);
-		connect(lineEditor, SIGNAL(editingFinished()),
-			this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+		connect(lineEditor, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
 		return lineEditor;
 	}
-	// if editor for replace default flags
-	else if (index.column() == REPLACE_DEFAULT_COLUMN) {
-		BooleanComboBox* boolBox = new BooleanComboBox(parent);
-		connect(boolBox, SIGNAL(currentIndexChanged(int)),
-			this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-		return boolBox;
-	}
-	// use the default delegate
-	else {
-		return QStyledItemDelegate::createEditor(parent, option, index);
+	else
+    {
+        return ExpressionDelegate::createEditor(parent, option, index);
 	}
 }
 
-void FileBuildersDelegate::setEditorData( QWidget* editor, 
-										 const QModelIndex& index ) const {
-
+//-----------------------------------------------------------------------------
+// Function: filebuildersdelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void FileBuildersDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
+{
 	// if editor for file type
-	if (index.column() == FILETYPE_COLUMN) {
-
+	if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+    {
 		QString text = index.model()->data(index, Qt::DisplayRole).toString();
 		FileTypeSelector* combo = qobject_cast<FileTypeSelector*>(editor);
 
 		combo->selectFileType(text);
 	}
 	// if editor for command or flags
-	else if (index.column() == COMMAND_COLUMN || index.column() == FLAGS_COLUMN) {
-
+    else if (index.column() == FileBuilderColumns::COMMAND_COLUMN ||
+        index.column() == FileBuilderColumns::FLAGS_COLUMN)
+    {
 		QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
 		QString value = index.model()->data(index, Qt::DisplayRole).toString();
 		defaultEdit->setText(value);
 	}
-	// if editor for replace default flags
-	else if (index.column() == REPLACE_DEFAULT_COLUMN) {
-
-		BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
-		bool value = index.model()->data(index, Qt::DisplayRole).toBool();
-		boolBox->setCurrentValue(value);
-	}
 	// use the default delegate
-	else {
-	 QStyledItemDelegate::setEditorData(editor, index);
+	else
+    {
+        ExpressionDelegate::setEditorData(editor, index);
 	}
 }
 
-void FileBuildersDelegate::setModelData( QWidget* editor, 
-										QAbstractItemModel* model, 
-										const QModelIndex& index ) const {
-
+//-----------------------------------------------------------------------------
+// Function: filebuildersdelegate::setModelData()
+//-----------------------------------------------------------------------------
+void FileBuildersDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, const QModelIndex& index )
+    const
+{
 	// if editor for file type
-	if (index.column() == FILETYPE_COLUMN) {
-
+	if (index.column() == FileBuilderColumns::FILETYPE_COLUMN)
+    {
 		FileTypeSelector* combo = qobject_cast<FileTypeSelector*>(editor);
 		QString text = combo->currentText();
 		model->setData(index, text, Qt::EditRole);
 	}
 	// if editor for command or flags
-	else if (index.column() == COMMAND_COLUMN || index.column() == FLAGS_COLUMN) {
-
+    else if (index.column() == FileBuilderColumns::COMMAND_COLUMN ||
+        index.column() == FileBuilderColumns::FLAGS_COLUMN)
+    {
 		QLineEdit* defaultEdit = qobject_cast<QLineEdit*>(editor);
 		QString value = defaultEdit->text();
 		model->setData(index, value, Qt::EditRole);
 	}
-	// if editor for replace default flags
-	else if (index.column() == REPLACE_DEFAULT_COLUMN) {
-
-		BooleanComboBox* boolBox = qobject_cast<BooleanComboBox*>(editor);
-		bool value = boolBox->getCurrentValue();
-		model->setData(index, value, Qt::EditRole);
-	}
 	// use the default delegate
-	else {
-		QStyledItemDelegate::setModelData(editor, model, index);
+	else
+    {
+        ExpressionDelegate::setModelData(editor, model, index);
 	}
 }
 
-void FileBuildersDelegate::commitAndCloseEditor() {
-
+//-----------------------------------------------------------------------------
+// Function: filebuildersdelegate::commitAndCloseEditor()
+//-----------------------------------------------------------------------------
+void FileBuildersDelegate::commitAndCloseEditor()
+{
 	QComboBox* comboEditor = qobject_cast<QComboBox*>(sender());
 	QLineEdit* lineEditor = qobject_cast<QLineEdit*>(sender());
 	QWidget* editor = qobject_cast<QWidget*>(sender());
 
-	if (comboEditor) {
+	if (comboEditor)
+    {
 		emit commitData(comboEditor);
 		emit closeEditor(comboEditor);
 	}
-	else if (lineEditor) {
+	else if (lineEditor)
+    {
 		emit commitData(lineEditor);
 		emit closeEditor(lineEditor);
 	}
-	else {
+	else
+    {
 		emit commitData(editor);
 		emit closeEditor(editor);
 	}
 }
 
-void FileBuildersDelegate::paint( QPainter *painter, 
-	const QStyleOptionViewItem &option,
-	const QModelIndex &index ) const {
-
+//-----------------------------------------------------------------------------
+// Function: filebuildersdelegate::paint()
+//-----------------------------------------------------------------------------
+void FileBuildersDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index )
+    const
+{
 	QStyleOptionViewItemV4 viewItemOption(option);
-
-	if (index.column() == FileBuildersDelegate::REPLACE_DEFAULT_COLUMN) {
-		painter->fillRect(option.rect, Qt::white);
-
-		const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
-
-		QRect newRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
-			QSize(option.decorationSize.width() + 5, option.decorationSize.height()),
-			QRect(option.rect.x() + textMargin, option.rect.y(),
-			option.rect.width() - (2 * textMargin), option.rect.height()));
-		viewItemOption.rect = newRect;
-	}
-
 	QStyledItemDelegate::paint(painter, viewItemOption, index);
 }
 
-bool FileBuildersDelegate::editorEvent( QEvent *event,
-	QAbstractItemModel *model, 
-	const QStyleOptionViewItem &option, const QModelIndex &index ) {
-
+//-----------------------------------------------------------------------------
+// Function: filebuildersdelegate::editorEvent()
+//-----------------------------------------------------------------------------
+bool FileBuildersDelegate::editorEvent( QEvent *event, QAbstractItemModel *model,
+                                        const QStyleOptionViewItem &option, const QModelIndex &index )
+{
 	Q_ASSERT(event);
 	Q_ASSERT(model);
 
@@ -209,4 +213,20 @@ bool FileBuildersDelegate::editorEvent( QEvent *event,
 	}
 
 	return model->setData(index, newState, Qt::CheckStateRole);
+}
+
+//-----------------------------------------------------------------------------
+// Function: filebuildersdelegate::columnAcceptsExpression()
+//-----------------------------------------------------------------------------
+bool FileBuildersDelegate::columnAcceptsExpression(int column) const
+{
+    return column == FileBuilderColumns::REPLACE_DEFAULT_COLUMN;
+}
+
+//-----------------------------------------------------------------------------
+// Function: filebuildersdelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int FileBuildersDelegate::descriptionColumn() const
+{
+    return FileBuilderColumns::COLUMN_COUNT;
 }

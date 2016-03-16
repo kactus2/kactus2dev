@@ -13,19 +13,19 @@
 
 #include <QString>
 
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortGenerationRow()
 //-----------------------------------------------------------------------------
-PortGenerationRow::PortGenerationRow(QString name, General::Direction direction,
+PortGenerationRow::PortGenerationRow(QString name, DirectionTypes::Direction direction,
                                      QString description, int size)
     : sourceName_(name),
       sourceDirection_(direction),
       sourceDescription_(description),
       size_(size),
       draftName_(),
-      draftDirection_(General::DIRECTION_INVALID),
+      draftDirection_(DirectionTypes::DIRECTION_INVALID),
       draftDescription_()
 {
 }
@@ -48,7 +48,7 @@ QString PortGenerationRow::getSourceDescription() const
 //-----------------------------------------------------------------------------
 // Function: getSourceDirection()
 //-----------------------------------------------------------------------------
-General::Direction PortGenerationRow::getSourceDirection() const
+DirectionTypes::Direction PortGenerationRow::getSourceDirection() const
 {
     return sourceDirection_;
 }
@@ -96,7 +96,7 @@ void PortGenerationRow::setDraftName(QString const name)
 //-----------------------------------------------------------------------------
 // Function: getDraftDirection()
 //-----------------------------------------------------------------------------
-General::Direction PortGenerationRow::getDraftDirection() const
+DirectionTypes::Direction PortGenerationRow::getDraftDirection() const
 {
     return draftDirection_;
 }
@@ -104,7 +104,7 @@ General::Direction PortGenerationRow::getDraftDirection() const
 //-----------------------------------------------------------------------------
 // Function: setDraftDirection()
 //-----------------------------------------------------------------------------
-void PortGenerationRow::setDraftDirection(General::Direction const direction)
+void PortGenerationRow::setDraftDirection(DirectionTypes::Direction const direction)
 {
     draftDirection_ = direction;
 }
@@ -135,7 +135,7 @@ bool PortGenerationRow::isValid() const
         return false;
     }
 
-    if ( sourceDirection_ == General::DIRECTION_PHANTOM || sourceDirection_ == General::DIRECTION_INVALID )
+    if (sourceDirection_ == DirectionTypes::DIRECTION_INVALID )
     {
         return false;
     }
@@ -150,7 +150,7 @@ bool PortGenerationRow::isValid() const
         return false;
     }
 
-    if ( draftDirection_ == General::DIRECTION_PHANTOM || draftDirection_ == General::DIRECTION_INVALID )
+    if (draftDirection_ == DirectionTypes::DIRECTION_INVALID )
     {
         return false;
     }

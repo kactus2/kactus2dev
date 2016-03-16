@@ -12,7 +12,7 @@
 #ifndef PARAMETERIZABLETABLE_H
 #define PARAMETERIZABLETABLE_H
 
-#include <IPXACTmodels/parameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 //#include <editors/ComponentEditor/common/ExpressionParser.h>

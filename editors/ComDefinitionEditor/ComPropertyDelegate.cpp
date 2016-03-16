@@ -11,14 +11,15 @@
 
 #include "ComPropertyDelegate.h"
 
+#include "ComPropertyColumns.h"
+
 #include <QComboBox>
 #include <QLineEdit>
 
 //-----------------------------------------------------------------------------
 // Function: ComPropertyDelegate::ComPropertyDelegate()
 //-----------------------------------------------------------------------------
-ComPropertyDelegate::ComPropertyDelegate(QObject* parent)
-    : QStyledItemDelegate(parent)
+ComPropertyDelegate::ComPropertyDelegate(QObject* parent): QStyledItemDelegate(parent)
 {
 }
 
@@ -33,65 +34,40 @@ ComPropertyDelegate::~ComPropertyDelegate()
 // Function: ComPropertyDelegate::createEditor()
 //-----------------------------------------------------------------------------
 QWidget* ComPropertyDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
-                                             QModelIndex const& index) const
+    QModelIndex const& index) const
 {
-    switch (index.column())
+    if (index.column() == ComPropertyColumns::NAME || 
+        index.column() == ComPropertyColumns::DEFAULT_VALUE ||
+        index.column() == ComPropertyColumns::DESCRIPTION)
     {
-    case PROPERTY_COL_NAME:
-    case PROPERTY_COL_DEFAULT:
-    case PROPERTY_COL_DESC:
-        {
-			if ( index.column() == PROPERTY_COL_DEFAULT &&
-				index.sibling( index.row(), PROPERTY_COL_TYPE ).data( Qt::DisplayRole ) ==
-				"time unit" )
-			{
-				QComboBox* box = new QComboBox(parent);
-				box->setEditable(true);
-				box->setInsertPolicy(QComboBox::InsertAlphabetically);
+        QLineEdit* line = new QLineEdit(parent);
+        connect(line, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return line;
+    }
 
-				box->addItem("fs");
-				box->addItem("ps");
-				box->addItem("ns");
-				box->addItem("us");
-				box->addItem("ms");
-				box->addItem("sec");
+    else if (index.column() == ComPropertyColumns::TYPE)
+    {
+        QComboBox* box = new QComboBox(parent);
+        box->setEditable(true);
+        box->setInsertPolicy(QComboBox::InsertAlphabetically);
 
-				return box;
-			}
-			else
-			{
-				QLineEdit* line = new QLineEdit(parent);
-				connect(line, SIGNAL(editingFinished()),
-						this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-				return line;
-			}
-        }
+        box->addItem("integer");
+        box->addItem("ip_address");
+        box->addItem("string");
+        return box;
+    }
 
-    case PROPERTY_COL_TYPE:
-        {
-            QComboBox* box = new QComboBox(parent);
-            box->setEditable(true);
-            box->setInsertPolicy(QComboBox::InsertAlphabetically);
+    else if (index.column() == ComPropertyColumns::REQUIRED)
+    {
+        QComboBox* box = new QComboBox(parent);
+        box->addItem("false");
+        box->addItem("true");
+        return box;
+    }
 
-            box->addItem("integer");
-            box->addItem("ip_address");
-			box->addItem("string");
-			box->addItem("time unit");
-            return box;
-        }
-
-    case PROPERTY_COL_REQUIRED:
-        {
-            QComboBox* box = new QComboBox(parent);
-            box->addItem("false");
-            box->addItem("true");
-            return box;
-        }
-
-    default:
-        {
-            return QStyledItemDelegate::createEditor(parent, option, index);
-        }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -100,50 +76,30 @@ QWidget* ComPropertyDelegate::createEditor(QWidget* parent, QStyleOptionViewItem
 //-----------------------------------------------------------------------------
 void ComPropertyDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    switch (index.column())
+    if (index.column() == ComPropertyColumns::TYPE || 
+        index.column() == ComPropertyColumns::REQUIRED)
     {
-    case PROPERTY_COL_TYPE:
-    case PROPERTY_COL_REQUIRED:
-        {
-            QComboBox* box = qobject_cast<QComboBox*>(editor);
-            Q_ASSERT_X(box, "ComPropertyDelegate::setEditorData", "Type conversion failed for QComboBox");
+        QComboBox* box = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT_X(box, "ComPropertyDelegate::setEditorData", "Type conversion failed for QComboBox");
 
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            box->setCurrentIndex(box->findText(text));
-            return;
-        }
+        QString text = index.data(Qt::DisplayRole).toString();
+        box->setCurrentIndex(box->findText(text));
+    }
 
-    case PROPERTY_COL_NAME:
-    case PROPERTY_COL_DEFAULT:
-    case PROPERTY_COL_DESC:
-		{
-			if ( index.column() == PROPERTY_COL_DEFAULT &&
-				index.sibling( index.row(), PROPERTY_COL_TYPE ).data( Qt::DisplayRole ) ==
-				"time unit" )
-			{
-				QComboBox* box = qobject_cast<QComboBox*>(editor);
-				Q_ASSERT_X(box, "ComPropertyDelegate::setEditorData", "Type conversion failed for QComboBox");
+    else if (index.column() == ComPropertyColumns::NAME || 
+        index.column() == ComPropertyColumns::DEFAULT_VALUE ||
+        index.column() == ComPropertyColumns::DESCRIPTION)
+    {
+        QLineEdit* line = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT_X(line, "ComPropertyDelegate::setEditorData", "Type conversion failed for QLineEdit");
 
-				QString text = index.model()->data(index, Qt::DisplayRole).toString();
-				box->setCurrentIndex(box->findText(text));
-				return;
-			}
-			else
-			{
-				QLineEdit* line = qobject_cast<QLineEdit*>(editor);
-				Q_ASSERT_X(line, "ComPropertyDelegate::setEditorData", "Type conversion failed for QLineEdit");
+        QString text = index.data(Qt::DisplayRole).toString();
+        line->setText(text);
+    }
 
-				QString text = index.model()->data(index, Qt::DisplayRole).toString();
-				line->setText(text);
-				return;
-			}
-        }
-
-    default:
-        {
-            QStyledItemDelegate::setEditorData(editor, index);
-            return;
-        }
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
     }
 }
 
@@ -152,49 +108,29 @@ void ComPropertyDelegate::setEditorData(QWidget* editor, QModelIndex const& inde
 //-----------------------------------------------------------------------------
 void ComPropertyDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
-    switch (index.column())
+    if (index.column() == ComPropertyColumns::TYPE ||
+        index.column() == ComPropertyColumns::REQUIRED)
     {
-    case PROPERTY_COL_TYPE:
-    case PROPERTY_COL_REQUIRED:
-        {
-            QComboBox* box = qobject_cast<QComboBox*>(editor);
-            Q_ASSERT_X(box, "ComPropertyDelegate::setEditorData", "Type conversion failed for QComboBox");
+        QComboBox* box = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT_X(box, "ComPropertyDelegate::setEditorData", "Type conversion failed for QComboBox");
 
-            QString text = box->currentText();
-            model->setData(index, text, Qt::EditRole);
-            return;
-        }
+        QString text = box->currentText();
+        model->setData(index, text, Qt::EditRole);
+    }
 
-    case PROPERTY_COL_NAME:
-    case PROPERTY_COL_DEFAULT:
-    case PROPERTY_COL_DESC:
-		{
-			if ( index.column() == PROPERTY_COL_DEFAULT &&
-				index.sibling( index.row(), PROPERTY_COL_TYPE ).data( Qt::DisplayRole ) ==
-				"time unit" )
-			{
-				QComboBox* box = qobject_cast<QComboBox*>(editor);
-				Q_ASSERT_X(box, "ComPropertyDelegate::setEditorData", "Type conversion failed for QComboBox");
+    else if (index.column() == ComPropertyColumns::NAME || 
+        index.column() == ComPropertyColumns::DEFAULT_VALUE ||
+        index.column() == ComPropertyColumns::DESCRIPTION)
+    {
+        QLineEdit* line = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT_X(line, "ComPropertyDelegate::setEditorData", "Type conversion failed for QLineEdit");
 
-				QString text = box->currentText();
-				model->setData(index, text, Qt::EditRole);
-				return;
-			}
-			else
-			{
-				QLineEdit* line = qobject_cast<QLineEdit*>(editor);
-				Q_ASSERT_X(line, "ComPropertyDelegate::setEditorData", "Type conversion failed for QLineEdit");
-
-				QString text = line->text();
-				model->setData(index, text, Qt::EditRole);
-				return;
-			}
-        }
-    default:
-        {
-            QStyledItemDelegate::setModelData(editor, model, index);
-            return;
-        }
+        QString text = line->text();
+        model->setData(index, text, Qt::EditRole);
+    }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
     }
 }
 

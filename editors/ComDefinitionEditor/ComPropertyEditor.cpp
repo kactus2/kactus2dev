@@ -53,7 +53,7 @@ ComPropertyEditor::~ComPropertyEditor()
 //-----------------------------------------------------------------------------
 // Function: ComPropertyEditor::setData()
 //-----------------------------------------------------------------------------
-void ComPropertyEditor::setProperties(QList< QSharedPointer<ComProperty> > const& properties)
+void ComPropertyEditor::setProperties(QSharedPointer<QList< QSharedPointer<ComProperty> > > const& properties)
 {
     model_.setProperties(properties);
 }
@@ -61,7 +61,7 @@ void ComPropertyEditor::setProperties(QList< QSharedPointer<ComProperty> > const
 //-----------------------------------------------------------------------------
 // Function: ComPropertyEditor::getData()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<ComProperty> > const& ComPropertyEditor::getProperties() const
+QList< QSharedPointer<ComProperty> > ComPropertyEditor::getProperties() const
 {
     return model_.getProperties();
 }

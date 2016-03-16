@@ -10,27 +10,21 @@
 //-----------------------------------------------------------------------------
 
 #include "ChoicesModel.h"
+#include "ChoiceColumns.h"
 
-#include <IPXACTmodels/choice.h>
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 
 #include <QColor>
-
-namespace
-{
-    enum COLUMNS 
-    {
-        CHOICE_NAME = 0,
-        CHOICE_ENUMERATIONS,
-        COLUMN_COUNT
-    };
-}
 
 //-----------------------------------------------------------------------------
 // Function: ChoicesModel::ChoicesModel()
 //-----------------------------------------------------------------------------
-ChoicesModel::ChoicesModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices, QObject* parent ):
+ChoicesModel::ChoicesModel(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    QSharedPointer<ChoiceValidator> validator,QObject* parent):
 QAbstractTableModel(parent),
-choices_(choices)
+choices_(choices),
+validator_(validator)
 {
 
 }
@@ -66,7 +60,7 @@ int ChoicesModel::columnCount(const QModelIndex& parent) const
 		return 0;
 	}
 
-	return COLUMN_COUNT;
+	return ChoiceColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -89,11 +83,11 @@ QVariant ChoicesModel::headerData(int section, Qt::Orientation orientation, int 
 {
     if (Qt::DisplayRole == role && orientation == Qt::Horizontal)
     {
-        if (section == CHOICE_NAME)
+        if (section == ChoiceColumns::CHOICE_NAME)
         {
             return tr("Name");
         }
-        else if (section == CHOICE_ENUMERATIONS)
+        else if (section == ChoiceColumns::CHOICE_ENUMERATIONS)
         {
             return tr("Enumeration(s)");
         }
@@ -122,11 +116,11 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
 
     if (role == Qt::DisplayRole)
     {
-        if (index.column() == CHOICE_NAME)
+        if (index.column() == ChoiceColumns::CHOICE_NAME)
         {
-            return choice->getName();
+            return choice->name();
         }
-        else if (index.column() == CHOICE_ENUMERATIONS) 
+        else if (index.column() == ChoiceColumns::CHOICE_ENUMERATIONS) 
         {
             return choice->getEnumerationValues().join(", ");
         }
@@ -137,9 +131,9 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
 	}
     else if (role == Qt::EditRole)
     {
-        if (index.column() == CHOICE_NAME) 
+        if (index.column() == ChoiceColumns::CHOICE_NAME) 
         {
-            return choice->getName();
+            return choice->name();
         }
         else
         {
@@ -148,7 +142,7 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
     }
 	else if (role == Qt::ForegroundRole)
     {
-        if (choice->isValid())
+        if (validator_->validate(choice))
         {
             return QColor(Qt::black);
         }
@@ -177,7 +171,7 @@ bool ChoicesModel::setData( const QModelIndex& index, const QVariant& value, int
 		return false;
 	}
 
-    if (role == Qt::EditRole && index.column() == CHOICE_NAME)
+    if (role == Qt::EditRole && index.column() == ChoiceColumns::CHOICE_NAME)
     {
         choices_->at(index.row())->setName(value.toString());
         emit dataChanged(index, index);
@@ -195,11 +189,17 @@ bool ChoicesModel::setData( const QModelIndex& index, const QVariant& value, int
 //-----------------------------------------------------------------------------
 bool ChoicesModel::isValid() const
 {
+    QStringList choiceNames;
+
 	foreach (QSharedPointer<Choice> choice, *choices_)
     {
-        if (!choice->isValid())
+        if (choiceNames.contains(choice->name()) || !validator_->validate(choice))
         {
             return false;
+        }
+        else
+        {
+            choiceNames.append(choice->name());
         }
     }
  

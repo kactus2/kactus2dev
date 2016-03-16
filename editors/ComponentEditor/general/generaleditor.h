@@ -12,17 +12,19 @@
 #ifndef GENERALEDITOR_H
 #define GENERALEDITOR_H
 
-#include "../itemeditor.h"
 #include "desceditor.h"
+
+#include <editors/ComponentEditor/itemeditor.h>
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
 #include <QSharedPointer>
 #include <QLineEdit>
+#include <QSettings>
 
 class Component;
 class LibraryInterface;
-class LibraryComponent;
+class Document;
 class KactusAttributeEditor;
 class ComponentPreviewBox;
 
@@ -41,25 +43,23 @@ public:
      *      @param [in] component  The component model to edit.
      *      @param [in] parent     The parent widget.
 	 */
-	GeneralEditor(LibraryInterface* libHandler,
-		QSharedPointer<Component> component,
-		QWidget *parent = 0);
+	GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget *parent = 0);
 
     /*!
      *  Destructor.
      */
     virtual ~GeneralEditor();
 
-    /*! \brief Check for the validity of the edited item.
+    /*!
+     *  Check for the validity of the edited item.
      *
-     * Base class implementation always returns true.
-     * 
-     * \return True is item is valid.
+     *      @return True is item is valid.
      */
     virtual bool isValid() const;
 
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
 signals:
@@ -71,24 +71,25 @@ signals:
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event.
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
 
-	//! \brief Handler for changes in attribute editor.
+	//! Handler for changes in attribute editor.
 	void onAttributesChange();
 
-	//! \brief Handler for changes in description.
+	//! Handler for changes in description.
 	void onDescriptionChange();
 
-	//! \brief Handler for changes in XML header.
+	//! Handler for changes in XML header.
 	void onHeaderChange();
 
-    //! \brief Handler for changes in author field.
+    //! Handler for changes in author field.
     void onAuthorChange();
 
 private:
+
     // Disable copying.
     GeneralEditor(const GeneralEditor& other);
     GeneralEditor& operator=(const GeneralEditor& other);
@@ -103,12 +104,13 @@ private:
     //! Kactus attribute editor.
     KactusAttributeEditor* attributeEditor_;
 
+    //! The author editor.
     QLineEdit* authorEditor_;
 
     //! The description editor.
     DescEditor* descEditor_;
 
-	//! \brief The editor to view/edit the header of the XML-file.
+	//! The editor to view/edit the header of the XML-file.
 	DescEditor* headerEditor_;
 
     //! The preview box.

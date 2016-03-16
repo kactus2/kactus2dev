@@ -11,23 +11,23 @@
 
 #include "PortListSortProxyModel.h"
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/PortMap.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/Port.h>
 
 #include <QModelIndex>
 
 //-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel()
 //-----------------------------------------------------------------------------
-PortListSortProxyModel::PortListSortProxyModel(QSharedPointer<Component> component,
-    QObject *parent) :
+PortListSortProxyModel::PortListSortProxyModel(QSharedPointer<Component> component, QObject *parent) :
 QSortFilterProxyModel(parent),
-component_(component),
-filterDirection_(ANY),
-hideConnected_(true),
-connectedPorts_(),
-filterPorts_()
+    component_(component),
+    filterDirection_(ANY),
+    hideConnected_(true),
+    connectedPorts_(),
+    filterPorts_()
 {
     onConnectionsReset();
 }
@@ -133,7 +133,7 @@ QStringList PortListSortProxyModel::filterPortNames() const
 //-----------------------------------------------------------------------------
 // Function: PortListSortProxyModel::setFilterHideConnected()
 //-----------------------------------------------------------------------------
-void PortListSortProxyModel::setFilterHideConnected(bool hide /*= true*/)
+void PortListSortProxyModel::setFilterHideConnected(bool hide)
 {
     hideConnected_ = hide;
     invalidateFilter();
@@ -145,15 +145,18 @@ void PortListSortProxyModel::setFilterHideConnected(bool hide /*= true*/)
 void PortListSortProxyModel::onConnectionsReset()
 {
     connectedPorts_.clear();
-    foreach (QSharedPointer<BusInterface> busIf, component_->getBusInterfaces())
+    foreach (QSharedPointer<BusInterface> busIf, *component_->getBusInterfaces())
     {
-        foreach (QSharedPointer<PortMap> portMap, busIf->getPortMaps())
+        if (!busIf->getAbstractionTypes()->isEmpty())
         {
-            if (!connectedPorts_.contains(portMap->physicalPort()))
+            foreach (QSharedPointer<PortMap> portMap, *busIf->getPortMaps())
             {
-                connectedPorts_.append(portMap->physicalPort());
+                if (!connectedPorts_.contains(portMap->getPhysicalPort()->name_))
+                {
+                    connectedPorts_.append(portMap->getPhysicalPort()->name_);
+                }
             }
-        }
+        }        
     }
     invalidateFilter(); 
 }
@@ -167,7 +170,8 @@ bool PortListSortProxyModel::filterAcceptsRow(int source_row, const QModelIndex&
     QString portName = sourceModel()->data(index).toString();
 
     // Check filter for direction.
-    if (filterDirection_ != ANY && component_->getPortDirection(portName) != filterDirection_)
+    QSharedPointer<Port> currentPort = component_->getPort(portName);
+    if (filterDirection_ != ANY && currentPort->getDirection() != filterDirection_)
     {
         return false;
     }
@@ -211,5 +215,3 @@ void PortListSortProxyModel::onPortDisconnected(QString const& portName)
         invalidateFilter();
     }
 }
-
-

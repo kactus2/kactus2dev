@@ -13,14 +13,15 @@
 
 #include "ParameterColumns.h"
 
-#include <IPXACTmodels/choice.h>
-#include <IPXACTmodels/Enumeration.h>
+#include <IPXACTmodels/Component/Choice.h>
+
 #include <IPXACTmodels/validators/namevalidator.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
 #include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayView.h>
@@ -436,7 +437,7 @@ QWidget* ParameterDelegate::createChoiceSelector(QWidget* parent) const
     combo->addItem(QString("<none>"));
     foreach (QSharedPointer<Choice> choice, *getChoices())
     {
-        combo->addItem(choice->getName());
+        combo->addItem(choice->name());
     }
 
     return combo;

@@ -14,13 +14,12 @@
 #define GRAPHICSCOLUMN_H
 
 #include "IGraphicsItemStack.h"
-#include "../layouts/IVGraphicsLayout.h"
 
-#include <designEditors/common/ColumnTypes.h>
+#include <common/layouts/IVGraphicsLayout.h>
+
+#include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
 #include <QGraphicsRectItem>
-#include <QSet>
-#include <QCursor>
 #include <QUndoCommand>
 
 class GraphicsColumnLayout;
@@ -44,7 +43,7 @@ public:
      *      @param [in] desc    The column description.
      *      @param [in] layout  The parent column layout.
      */
-    GraphicsColumn(ColumnDesc const& desc, GraphicsColumnLayout* layout);
+    GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout);
 
     /*!
      *  Destructor.
@@ -57,11 +56,21 @@ public:
      *      @param [in] name The name of the column.
      */
     void setName(QString const& name);
+    
+    /*!
+     *  Returns the name of the system column.
+     */
+    QString name() const;
 
     /*!
      *  Sets the column description.
      */
-    void setColumnDesc(ColumnDesc const& desc);
+    void setColumnDesc(QSharedPointer<ColumnDesc> desc);
+    
+    /*!
+     *  Returns the column description.
+     */
+    QSharedPointer<ColumnDesc> getColumnDesc() const;
 
     /*!
      *  Sets the column width.
@@ -78,29 +87,9 @@ public:
     void setOffsetY(qreal y);
 
     /*!
-     *  Returns the name of the system column.
-     */
-    QString const& getName() const;
-
-    /*!
-     *  Returns the content type.
-     */
-    ColumnContentType getContentType() const;
-
-    /*!
-     *  Returns the column description.
-     */
-    ColumnDesc const& getColumnDesc() const;
-
-    /*!
-     *  Returns the parent layout.
-     */
-    GraphicsColumnLayout& getLayout();
-
-    /*!
      *  Returns the items that are added to the column.
      */
-    QList<QGraphicsItem*> const& getItems() const;
+    QList<QGraphicsItem*> getItems() const;
 
     /*!
      *  Returns true if the contents of the column conforms to the given allowed items configuration.
@@ -122,50 +111,55 @@ public:
      *      @param [in] item  The item to add.
      *      @param [in] load  If true, the item is being loaded from a design.
      */
-    void addItem(QGraphicsItem* item, bool load = false);
+    virtual void addItem(QGraphicsItem* item, bool load = false);
 
     /*!
      *  Removes an item from the system column.
      *
      *      @param [in] item the item to remove.
      */
-    void removeItem(QGraphicsItem* item);
+    virtual void removeItem(QGraphicsItem* item);
 
     /*!
      *  Called when an item is moved within the column.
      *
      *      @param [in] item       The item that has been moved.
      */
-    void onMoveItem(QGraphicsItem* item);
+    virtual void onMoveItem(QGraphicsItem* item);
     
     /*!
      *  Called when an item is released from being moved by mouse.
      *
      *      @param [in] item The item that has been released.
      */
-    void onReleaseItem(QGraphicsItem* item);
+    virtual void onReleaseItem(QGraphicsItem* item);
 
     /*!
      *  Updates the item positions so that there are no violations of the stacking rule.
      */
-    void updateItemPositions();
+    virtual void updateItemPositions();
 
     /*!
      *  Maps the given local position to scene coordinates.
      */
-    QPointF mapStackToScene(QPointF const& pos) const;
+    virtual QPointF mapStackToScene(QPointF const& pos) const;
 
     /*!
      *  Maps the given scene position to local coordinates.
      */
-    QPointF mapStackFromScene(QPointF const& pos) const;
+    virtual QPointF mapStackFromScene(QPointF const& pos) const;
 
     /*!
      *  Returns true if the stack is allowed to contain the given item.
      *
      *      @param [in] item The item to test for.
      */
-    bool isItemAllowed(QGraphicsItem* item) const;
+    virtual bool isItemAllowed(QGraphicsItem* item) const;
+    
+    /*!
+     *  Returns the content type.
+     */
+    virtual ColumnTypes::ColumnContentType getContentType() const;
 
 protected:
     //! Called when the user presses the mouse over the column.
@@ -194,7 +188,7 @@ protected:
      *      @param [in] item          The item.
      *      @param [in] allowedItems  The allowed items flags.
      */
-    virtual bool isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) const;
+    virtual bool isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) const = 0;
 
     /*!
      *  Prepares for column move.
@@ -208,7 +202,6 @@ protected:
      */
     virtual QSharedPointer<QUndoCommand> createMoveUndoCommand();
 
-protected:
     /*!
      *  Changes the item layout.
      *
@@ -220,26 +213,19 @@ private:
     // Disable copying.
     GraphicsColumn(GraphicsColumn const& rhs);
     GraphicsColumn& operator=(GraphicsColumn const& rhs);
-
-    /*!
-     *  Updates the mouse cursor based on the hover position.
-     *
-     *      @param [in] event The hover event information.
-     */
-    void updateCursor(QGraphicsSceneHoverEvent* event);
-
-    /*!
-     *  Updates the name label.
-     */
-    void updateNameLabel();
-
+    
     /*!
      *  Switches the given item to another column.
      *
      *      @param [in] item    The item to move.
      *      @param [in] column  The destination column.
      */
-    void switchColumn(QGraphicsItem* item, GraphicsColumn* column);
+    void switchItemToColumn(QGraphicsItem* item, GraphicsColumn* column);
+
+    /*!
+     *  Updates the name label.
+     */
+    void updateNameLabel();
     
     //-----------------------------------------------------------------------------
     // Data.
@@ -256,7 +242,7 @@ private:
     GraphicsColumnLayout* layout_;
 
     //! The column description.
-    ColumnDesc desc_;
+    QSharedPointer<ColumnDesc> columnData_;
 
     //! The column name label.
     QGraphicsTextItem* nameLabel_;

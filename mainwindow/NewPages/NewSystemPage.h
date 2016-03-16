@@ -23,7 +23,6 @@
 
 class LibraryInterface;
 class LibraryItem;
-class VLNVEditor;
 class VLNV;
 
 //-----------------------------------------------------------------------------

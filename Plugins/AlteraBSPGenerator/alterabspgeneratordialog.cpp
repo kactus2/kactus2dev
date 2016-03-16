@@ -7,18 +7,12 @@
 
 #include "alterabspgeneratordialog.h"
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/bspbuildcommand.h>
-#include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 #include <QFormLayout>
 #include <QFileDialog>
 #include <QGuiApplication>
 #include <QCursor>
-
-#include <QDebug>
 
 const QString AlteraBSPGeneratorDialog::VARIABLE_NAMES[AlteraBSPGeneratorDialog::VARIABLE_COUNT] = {
 	"NIOS_COMMAND_SHELL_WIN",
@@ -82,7 +76,7 @@ generatedPaths_() {
 	connectProcessToOutput();
 
 	// by default the target directory is on the root of the component
-	targetDir_ = handler_->getDirectoryPath(*component_->getVlnv());
+	targetDir_ = handler_->getDirectoryPath(component_->getVlnv());
 	targetDir_.append("/BSP");
 
 	onViewChange(viewSelector_->currentText());
@@ -92,7 +86,15 @@ AlteraBSPGeneratorDialog::~AlteraBSPGeneratorDialog() {
 }
 
 void AlteraBSPGeneratorDialog::onViewChange( const QString& viewName ) {
-	currentView_ = component_->findSWView(viewName);
+	foreach( QSharedPointer<SWView> swView, component_->getSWViews() )
+	{
+		if ( swView->name() == viewName )
+		{
+			currentView_ = swView;
+			break;
+		}
+	}
+
 	Q_ASSERT(currentView_);
 
 	updateCommand();
@@ -132,7 +134,7 @@ void AlteraBSPGeneratorDialog::updateCommand() {
 		
 		// if theres exactly one file that matches
 		if (sourceFiles.size() == 1) {
-			QString xmlPath = handler_->getPath(*component_->getVlnv());
+			QString xmlPath = handler_->getPath(component_->getVlnv());
 			sourceFile = General::getAbsolutePath(xmlPath, sourceFiles.first());
 		}
 		// if there are several source files.
@@ -182,7 +184,7 @@ void AlteraBSPGeneratorDialog::onRunClicked() {
 	// add the target dir to the list to remember where the generator is run.
 	Q_ASSERT(currentView_);
 
-	generatedPaths_.append(AlteraBSPGeneratorDialog::GenerationOptions(targetDir_ + "/", currentView_->getName()));
+	generatedPaths_.append(AlteraBSPGeneratorDialog::GenerationOptions(targetDir_ + "/", currentView_->name()));
 
 	QGuiApplication::restoreOverrideCursor();
 }

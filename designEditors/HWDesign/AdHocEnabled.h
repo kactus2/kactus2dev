@@ -12,7 +12,7 @@
 #ifndef ADHOCENABLED_H
 #define ADHOCENABLED_H
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QString>
 #include <QSharedPointer>
@@ -61,12 +61,12 @@ public:
     /*!
      *  Returns the ad-hoc visibility map.
      */
-    QMap<QString, bool> const& getPortAdHocVisibilities() const;
+    QMap<QString, bool> getPortAdHocVisibilities() const;
 
     /*!
      *  Returns the list of ports.
      */
-    QList< QSharedPointer<Port> > getPorts() const;
+    QSharedPointer<QList<QSharedPointer<Port> > > getPorts() const;
 
     /*!
      *  Called when a port's ad-hoc visibility has been changed.
@@ -86,15 +86,13 @@ public:
      */
     virtual void detach(AdHocEditor* editor) = 0;
 
+
+    virtual QString adHocIdentifier() const = 0;
+
     /*!
      *  Returns true if the ad-hoc visibilities are protected.
      */
-    virtual bool isProtected() const = 0;
-
-    /*!
-     *  Returns the edit provider for the data.
-     */
-    virtual GenericEditProvider& getEditProvider() = 0;
+    //virtual bool isProtected() const = 0;
 
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.

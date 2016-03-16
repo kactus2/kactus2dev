@@ -1,40 +1,35 @@
-/* 
- *  	Created on: 22.2.2012
- *      Author: Antti Kamppi
- * 		filename: segmentsmodel.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: segmentsmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.02.2012
+//
+// Description:
+// The model that can be used to display the segments to be edited.
+//-----------------------------------------------------------------------------
 
 #include "segmentsmodel.h"
+#include "SegmentColumns.h"
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <QColor>
+#include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/Segment.h>
 
-namespace
-{
-    enum columns
-    {
-        NAME = 0,
-        OFFSET,
-        RANGE,
-        DESCRIPTION,
-        COLUMN_COUNT
-    };
-}
+#include <QColor>
 
 //-----------------------------------------------------------------------------
 // Function: SegmentsModel::SegmentsModel()
 //-----------------------------------------------------------------------------
-SegmentsModel::SegmentsModel(QSharedPointer<AddressSpace> addrSpace, 
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
+SegmentsModel::SegmentsModel(QSharedPointer<AddressSpace> addrSpace,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
-    ParameterizableTable(parameterFinder),
-    addrSpace_(addrSpace),
-    segments_(addrSpace->getSegments()),
-    expressionFormatter_(expressionFormatter)
+ParameterizableTable(parameterFinder),
+addrSpace_(addrSpace),
+segments_(addrSpace->getSegments()),
+expressionFormatter_(expressionFormatter)
 {
 	Q_ASSERT(addrSpace);
 }
@@ -44,6 +39,7 @@ ReferencingTableModel(parameterFinder, parent),
 //-----------------------------------------------------------------------------
 SegmentsModel::~SegmentsModel()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -55,7 +51,7 @@ int SegmentsModel::rowCount(QModelIndex const& parent) const
     {
 		return 0;
 	}
-	return segments_.count();
+	return segments_->count();
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +63,7 @@ int SegmentsModel::columnCount(QModelIndex const& parent) const
     {
 		return 0;
 	}
-	return COLUMN_COUNT;
+	return SegmentColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -82,19 +78,19 @@ QVariant SegmentsModel::headerData(int section, Qt::Orientation orientation, int
 
     if (role == Qt::DisplayRole)
     {
-        if (section == NAME)
+        if (section == SegmentColumns::NAME)
         {
             return tr("Name");
         }
-        else if (section == OFFSET)
+        else if (section == SegmentColumns::OFFSET)
         {
             return tr("Offset [AUB]") + getExpressionSymbol();
         }
-        else if (section == RANGE)
+        else if (section == SegmentColumns::RANGE)
         {
             return tr("Range [AUB]") + getExpressionSymbol();
         }
-        else if (section == DESCRIPTION)
+        else if (section == SegmentColumns::DESCRIPTION)
         {
             return tr("Description");
         }
@@ -114,7 +110,7 @@ QVariant SegmentsModel::headerData(int section, Qt::Orientation orientation, int
 //-----------------------------------------------------------------------------
 QVariant SegmentsModel::data( QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= segments_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= segments_->size())
     {
 		return QVariant();
     }
@@ -134,7 +130,8 @@ QVariant SegmentsModel::data( QModelIndex const& index, int role) const
     }
 	else if (role == Qt::BackgroundRole)
     {
-        if (index.column() == NAME || index.column() ==  OFFSET || index.column() == RANGE)
+        if (index.column() == SegmentColumns::NAME || index.column() ==  SegmentColumns::OFFSET ||
+            index.column() == SegmentColumns::RANGE)
         {            
             return QColor("LemonChiffon");
         }
@@ -167,33 +164,34 @@ QVariant SegmentsModel::data( QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 bool SegmentsModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= segments_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= segments_->size())
     {
 		return false;
     }
 
     if (role == Qt::EditRole) 
     {
-        if (index.column() ==  NAME)
+        QSharedPointer<Segment> targetSegment = segments_->at(index.row());
+        if (index.column() ==  SegmentColumns::NAME)
         {
-            const QString oldName = segments_.at(index.row())->getName();
+            QString oldName = targetSegment->name();
+            targetSegment->setName(value.toString());
 
-            segments_.at(index.row())->setName(value.toString());
             emit segmentRenamed(oldName, value.toString());
         }
-        else if (index.column() == OFFSET)
+        else if (index.column() == SegmentColumns::OFFSET)
         {
-            segments_.at(index.row())->setOffset(value.toString());
-            emit segmentChanged(segments_.at(index.row()));
+            targetSegment->setOffset(value.toString());
+            emit segmentChanged(targetSegment);
         }
-        else if (index.column() == RANGE)
+        else if (index.column() == SegmentColumns::RANGE)
         {
-            segments_.at(index.row())->setRange(value.toString());
-            emit segmentChanged(segments_.at(index.row()));
+            targetSegment->setRange(value.toString());
+            emit segmentChanged(targetSegment);
         }
-        else if (index.column() == DESCRIPTION)
+        else if (index.column() == SegmentColumns::DESCRIPTION)
         {
-            segments_.at(index.row())->setDescription(value.toString());
+            targetSegment->setDescription(value.toString());
         }
         else
         {
@@ -228,12 +226,12 @@ Qt::ItemFlags SegmentsModel::flags( QModelIndex const& index ) const
 bool SegmentsModel::isValid() const
 {	
 	// check all segments
-	foreach (QSharedPointer<Segment> segment, segments_)
+	foreach (QSharedPointer<Segment> segment, *segments_)
     {
-		if (!segment->isValid())
+		/*if (!segment->isValid())
         {
 			return false;
-		}
+		}*/
 	}
 	return true;
 }
@@ -243,7 +241,7 @@ bool SegmentsModel::isValid() const
 //-----------------------------------------------------------------------------
 void SegmentsModel::onAddItem(QModelIndex const& index)
 {
-	int row = segments_.size();
+	int row = segments_->size();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -255,7 +253,7 @@ void SegmentsModel::onAddItem(QModelIndex const& index)
 	quint64 previousEnd = 0;
     
 	// if this is the first item to add then do not increase address
-	if (!segments_.isEmpty())
+	if (!segments_->isEmpty())
     {
 		previousEnd = getLastSegmentedAddress() + 1;
 	}
@@ -269,7 +267,7 @@ void SegmentsModel::onAddItem(QModelIndex const& index)
 	segment->setOffset(newBase);
 
 	beginInsertRows(QModelIndex(), row, row);
-	segments_.insert(row, segment);
+	segments_->insert(row, segment);
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed
@@ -284,18 +282,18 @@ void SegmentsModel::onAddItem(QModelIndex const& index)
 void SegmentsModel::onRemoveItem(QModelIndex const& index)
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= segments_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= segments_->size())
     {
 		return;
 	}
 
     removeReferencesInItemOnRow(index.row());
 
-	emit segmentRemoved(segments_.at(index.row())->getName());
+	emit segmentRemoved(segments_->at(index.row())->name());
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	segments_.removeAt(index.row());
+	segments_->removeAt(index.row());
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
@@ -307,7 +305,7 @@ void SegmentsModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 bool SegmentsModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    return index.column() == OFFSET || index.column() == RANGE;
+    return index.column() == SegmentColumns::OFFSET || index.column() == SegmentColumns::RANGE;
 }
 
 //-----------------------------------------------------------------------------
@@ -315,21 +313,21 @@ bool SegmentsModel::isValidExpressionColumn(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant SegmentsModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    if (index.column() == NAME)
+    if (index.column() == SegmentColumns::NAME)
     {
-        return segments_.at(index.row())->getName();
+        return segments_->at(index.row())->name();
     }
-    else if (index.column() == OFFSET)
+    else if (index.column() == SegmentColumns::OFFSET)
     {
-        return segments_.at(index.row())->getAddressOffset();
+        return segments_->at(index.row())->getAddressOffset();
     }
-    else if (index.column() ==  RANGE)
+    else if (index.column() ==  SegmentColumns::RANGE)
     {
-        return segments_.at(index.row())->getRange();
+        return segments_->at(index.row())->getRange();
     }
-    else if (index.column() ==  DESCRIPTION)
+    else if (index.column() ==  SegmentColumns::DESCRIPTION)
     {
-        return segments_.at(index.row())->getDescription();
+        return segments_->at(index.row())->description();
     }
     else 
     {
@@ -342,27 +340,27 @@ QVariant SegmentsModel::expressionOrValueForIndex(QModelIndex const& index) cons
 //-----------------------------------------------------------------------------
 bool SegmentsModel::validateIndex(QModelIndex const& index) const
 {
-    if (index.column() == NAME)
+    if (index.column() == SegmentColumns::NAME)
     {
         QStringList segmentNames;
-        foreach (QSharedPointer<Segment> segment, segments_)
+        foreach (QSharedPointer<Segment> segment, *segments_)
         {
-            segmentNames.append(segment->getName());
+            segmentNames.append(segment->name());
         }
 
-        return segmentNames.count(segments_.at(index.row())->getName()) == 1;
+        return segmentNames.count(segments_->at(index.row())->name()) == 1;
     }
-    else if (index.column() == OFFSET)
+    else if (index.column() == SegmentColumns::OFFSET)
     {
-        QString offset = segments_.at(index.row())->getAddressOffset();
+        QString offset = segments_->at(index.row())->getAddressOffset();
         return isValuePlainOrExpression(offset);
     }
-    else if (index.column() ==  RANGE)
+    else if (index.column() ==  SegmentColumns::RANGE)
     {
-        QString range = segments_.at(index.row())->getRange();
+        QString range = segments_->at(index.row())->getRange();
         return isValuePlainOrExpression(range);
     }
-    else if (index.column() ==  DESCRIPTION)
+    else if (index.column() ==  SegmentColumns::DESCRIPTION)
     {
         return true;
     }
@@ -377,8 +375,8 @@ bool SegmentsModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 int SegmentsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    int referencesInOffset = segments_.at(row)->getAddressOffset().count(valueID);
-    int referencesInRange = segments_.at(row)->getRange().count(valueID);
+    int referencesInOffset = segments_->at(row)->getAddressOffset().count(valueID);
+    int referencesInRange = segments_->at(row)->getRange().count(valueID);
 
     return referencesInOffset + referencesInRange;
 }
@@ -389,7 +387,7 @@ int SegmentsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const
 quint64 SegmentsModel::getLastSegmentedAddress() const
 {
     quint64 lastAddress = 0;
-    foreach (QSharedPointer<Segment> segment, segments_)
+    foreach (QSharedPointer<Segment> segment, *segments_)
     {
         quint64 segmentOffset = parseExpressionToDecimal(segment->getAddressOffset()).toUInt();
         quint64 segmentSize = qMax(parseExpressionToDecimal(segment->getRange()).toUInt(), uint(1));

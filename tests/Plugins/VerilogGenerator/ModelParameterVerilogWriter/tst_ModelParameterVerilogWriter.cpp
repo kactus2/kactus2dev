@@ -16,9 +16,10 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+
+#include <IPXACTmodels/common/ModuleParameter.h>
 
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
 
@@ -57,7 +58,7 @@ private:
 
     QSharedPointer<ExpressionFormatter> createTestFormatterUsingComponent(QSharedPointer<Component> component);
    
-    QSharedPointer<ModelParameter> modelParam_;
+    QSharedPointer<ModuleParameter> moduleParam_;
 
     QString outputString_;
 
@@ -67,7 +68,7 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_ModelParameterVerilogWriter::tst_ModelParameterVerilogWriter()
 //-----------------------------------------------------------------------------
-tst_ModelParameterVerilogWriter::tst_ModelParameterVerilogWriter(): modelParam_(0), outputString_(), outputStream_()
+tst_ModelParameterVerilogWriter::tst_ModelParameterVerilogWriter(): moduleParam_(0), outputString_(), outputStream_()
 {
 }
 
@@ -92,9 +93,9 @@ void tst_ModelParameterVerilogWriter::cleanupTestCase()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::init()
 {
-    modelParam_.clear();
-    modelParam_ = QSharedPointer<ModelParameter>(new ModelParameter());
-    
+    moduleParam_.clear();
+    moduleParam_ = QSharedPointer<ModuleParameter>(new ModuleParameter());
+
 	outputString_.clear();
 	outputStream_.setString(&outputString_);
 }
@@ -104,7 +105,7 @@ void tst_ModelParameterVerilogWriter::init()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::cleanup()
 {
-    modelParam_.clear();
+    moduleParam_.clear();
 
     outputString_.clear();
 }
@@ -116,7 +117,7 @@ void tst_ModelParameterVerilogWriter::testNullPointerAsConstructorParameter()
 {
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter parameter(QSharedPointer<ModelParameter>(0), formatter);
+    ModuleParameterVerilogWriter parameter(QSharedPointer<ModuleParameter>(0), formatter);
     parameter.write(outputStream_);
 
     QCOMPARE(outputString_, QString());
@@ -129,7 +130,7 @@ void tst_ModelParameterVerilogWriter::testWriteEmptyModelParameter()
 {
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter parameter(modelParam_, formatter);
+    ModuleParameterVerilogWriter parameter(moduleParam_, formatter);
     parameter.write(outputStream_);
 
     QCOMPARE(outputString_, QString());
@@ -140,11 +141,11 @@ void tst_ModelParameterVerilogWriter::testWriteEmptyModelParameter()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testNameButNoValue()
 {
-    modelParam_->setName("testParameter");
+    moduleParam_->setName("testParameter");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter parameter(modelParam_, formatter);
+    ModuleParameterVerilogWriter parameter(moduleParam_, formatter);
     parameter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter                              testParameter   "));
@@ -155,13 +156,13 @@ void tst_ModelParameterVerilogWriter::testNameButNoValue()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testWriteTypedModelParameter()
 {
-    modelParam_->setName("WIDTH");
-    modelParam_->setDataType("integer");
-    modelParam_->setValue("1");
+    moduleParam_->setName("WIDTH");
+    moduleParam_->setDataType("integer");
+    moduleParam_->setValue("1");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter parameter(modelParam_, formatter);
+    ModuleParameterVerilogWriter parameter(moduleParam_, formatter);
     parameter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter integer                      WIDTH            = 1"));
@@ -172,13 +173,13 @@ void tst_ModelParameterVerilogWriter::testWriteTypedModelParameter()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testWriteASCIIString()
 {
-    modelParam_->setName("ASCII");
-    modelParam_->setDataType("string");
-    modelParam_->setValue("\"Hello world!\"");
+    moduleParam_->setName("ASCII");
+    moduleParam_->setDataType("string");
+    moduleParam_->setValue("\"Hello world!\"");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter parameter(modelParam_, formatter);
+    ModuleParameterVerilogWriter parameter(moduleParam_, formatter);
     parameter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter string                       ASCII            = \"Hello world!\""));
@@ -189,13 +190,13 @@ void tst_ModelParameterVerilogWriter::testWriteASCIIString()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testWriteASCIIStringWithoutQuotation()
 {
-    modelParam_->setName("ASCII");
-    modelParam_->setDataType("string");
-    modelParam_->setValue("Hello world!");
+    moduleParam_->setName("ASCII");
+    moduleParam_->setDataType("string");
+    moduleParam_->setValue("Hello world!");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter parameter(modelParam_, formatter);
+    ModuleParameterVerilogWriter parameter(moduleParam_, formatter);
     parameter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter string                       ASCII            = \"Hello world!\""));
@@ -206,12 +207,12 @@ void tst_ModelParameterVerilogWriter::testWriteASCIIStringWithoutQuotation()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testNonTypedModelParameter()
 {
-    modelParam_->setName("BITS");
-    modelParam_->setValue("8");
+    moduleParam_->setName("BITS");
+    moduleParam_->setValue("8");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter parameter(modelParam_, formatter);
+    ModuleParameterVerilogWriter parameter(moduleParam_, formatter);
     parameter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter                              BITS             = 8"));
@@ -222,20 +223,27 @@ void tst_ModelParameterVerilogWriter::testNonTypedModelParameter()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testReferencingModelParameter()
 {
-    QSharedPointer<ModelParameter> targetParameter(new ModelParameter);
+    QSharedPointer<ModuleParameter> targetParameter(new ModuleParameter());
     targetParameter->setName("target");
     targetParameter->setValueId("TARGET-ID");
     targetParameter->setValue("4");
 
     QSharedPointer<Component> topComponent (new Component);
-    topComponent->getModel()->addModelParameter(targetParameter);
+
+    QSharedPointer<ComponentInstantiation> testInstantiation (new ComponentInstantiation("testInstantiation"));
+    testInstantiation->getModuleParameters()->append(targetParameter);
+    topComponent->getComponentInstantiations()->append(testInstantiation);
+
+    QSharedPointer<View> testView (new View("testView"));
+    testView->setComponentInstantiationRef(testInstantiation->name());
+    topComponent->getViews()->append(testView);
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(topComponent);
 
-    modelParam_->setName("Referer");
-    modelParam_->setValue("TARGET-ID");
+    moduleParam_->setName("Referer");
+    moduleParam_->setValue("TARGET-ID");
 
-    ModelParameterVerilogWriter parameter(modelParam_, formatter);
+    ModuleParameterVerilogWriter parameter(moduleParam_, formatter);
     parameter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter                              Referer          = target"));
@@ -246,12 +254,12 @@ void tst_ModelParameterVerilogWriter::testReferencingModelParameter()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testModelParameterWithSpaces()
 {
-    modelParam_->setName("spaces");
-    modelParam_->setValue("  4     -   12");
+    moduleParam_->setName("spaces");
+    moduleParam_->setValue("  4     -   12");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter modelParameterWriter(modelParam_, formatter);
+    ModuleParameterVerilogWriter modelParameterWriter(moduleParam_, formatter);
     modelParameterWriter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter                              spaces           = 4-12"));
@@ -262,13 +270,13 @@ void tst_ModelParameterVerilogWriter::testModelParameterWithSpaces()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testModelParameterStringWithSpaces()
 {
-    modelParam_->setName("stringSpaces");
-    modelParam_->setValue("   \"No   mutants   allowed.\"    ");
-    modelParam_->setDataType("string");
+    moduleParam_->setName("stringSpaces");
+    moduleParam_->setValue("   \"No   mutants   allowed.\"    ");
+    moduleParam_->setDataType("string");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter modelParameterWriter(modelParam_, formatter);
+    ModuleParameterVerilogWriter modelParameterWriter(moduleParam_, formatter);
     modelParameterWriter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter string                       stringSpaces     = \"No   mutants   allowed.\""));
@@ -279,13 +287,13 @@ void tst_ModelParameterVerilogWriter::testModelParameterStringWithSpaces()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testModelParameterStringWithoutEndingQuote()
 {
-    modelParam_->setName("noEndingQuote");
-    modelParam_->setValue("\"Need quote");
-    modelParam_->setDataType("string");
+    moduleParam_->setName("noEndingQuote");
+    moduleParam_->setValue("\"Need quote");
+    moduleParam_->setDataType("string");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter modelParameterWriter(modelParam_, formatter);
+    ModuleParameterVerilogWriter modelParameterWriter(moduleParam_, formatter);
     modelParameterWriter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter string                       noEndingQuote    = \"Need quote\""));
@@ -296,15 +304,15 @@ void tst_ModelParameterVerilogWriter::testModelParameterStringWithoutEndingQuote
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testModelParameterWithVectorBounds()
 {
-    modelParam_->setName("mask");
-    modelParam_->setDataType("bit");
-    modelParam_->setValue("'hFF");
-    modelParam_->setBitWidthLeft("7");
-    modelParam_->setBitWidthRight("0");
+    moduleParam_->setName("mask");
+    moduleParam_->setDataType("bit");
+    moduleParam_->setValue("'hFF");
+    moduleParam_->setVectorLeft("7");
+    moduleParam_->setVectorRight("0");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter modelParameterWriter(modelParam_, formatter);
+    ModuleParameterVerilogWriter modelParameterWriter(moduleParam_, formatter);
     modelParameterWriter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter bit     [7:0]                mask             = 'hFF"));
@@ -315,17 +323,17 @@ void tst_ModelParameterVerilogWriter::testModelParameterWithVectorBounds()
 //-----------------------------------------------------------------------------
 void tst_ModelParameterVerilogWriter::testModelParameterWithVectorAndArrayBounds()
 {
-    modelParam_->setName("mask");
-    modelParam_->setDataType("bit");
-    modelParam_->setValue("'hFF");
-    modelParam_->setBitWidthLeft("7");
-    modelParam_->setBitWidthRight("0");
-    modelParam_->setAttribute("kactus2:arrayLeft", "2");
-    modelParam_->setAttribute("kactus2:arrayRight", "1");
+    moduleParam_->setName("mask");
+    moduleParam_->setDataType("bit");
+    moduleParam_->setValue("'hFF");
+    moduleParam_->setVectorLeft("7");
+    moduleParam_->setVectorRight("0");
+    moduleParam_->setAttribute("kactus2:arrayLeft", "2");
+    moduleParam_->setAttribute("kactus2:arrayRight", "1");
 
     QSharedPointer<ExpressionFormatter> formatter = createTestFormatterUsingComponent(QSharedPointer<Component>(0));
 
-    ModelParameterVerilogWriter modelParameterWriter(modelParam_, formatter);
+    ModuleParameterVerilogWriter modelParameterWriter(moduleParam_, formatter);
     modelParameterWriter.write(outputStream_);
 
     QCOMPARE(outputString_, QString("parameter bit     [2:1][7:0]           mask             = 'hFF"));

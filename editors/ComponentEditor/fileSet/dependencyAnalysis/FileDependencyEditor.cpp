@@ -11,6 +11,7 @@
 
 #include "FileDependencyEditor.h"
 
+#include "FileDependencyColumns.h"
 #include "FileDependencySourceDialog.h"
 #include "FileDependencyItem.h"
 #include "FileDependencyDelegate.h"
@@ -18,15 +19,16 @@
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>
 #include <common/utils.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/File.h>
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
 
+#include <QApplication>
 #include <QVBoxLayout>
 #include <QIcon>
 #include <QFileInfoList>
@@ -67,16 +69,16 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
     progressBar_.setValue(0);
 
     graphWidget_.setContentsMargins(0, 0, 0, 0);
-    graphWidget_.getView().setModel(&model_);
-    graphWidget_.getView().setItemDelegate(new FileDependencyDelegate(component, this));
+    graphWidget_.getView()->setModel(&model_);
+    graphWidget_.getView()->setItemDelegate(new FileDependencyDelegate(component, this));
 
-    graphWidget_.getView().resizeColumnToContents(FILE_DEPENDENCY_COLUMN_TREE);
-    graphWidget_.getView().resizeColumnToContents(FILE_DEPENDENCY_COLUMN_STATUS);
-    graphWidget_.getView().resizeColumnToContents(FILE_DEPENDENCY_COLUMN_CREATE);
-    graphWidget_.getView().setColumnWidth(FILE_DEPENDENCY_COLUMN_PATH, 250);
-    graphWidget_.getView().header()->setSectionResizeMode(FILE_DEPENDENCY_COLUMN_TREE, QHeaderView::Fixed);
-    graphWidget_.getView().header()->setSectionResizeMode(FILE_DEPENDENCY_COLUMN_STATUS, QHeaderView::Fixed);
-    graphWidget_.getView().header()->setSectionResizeMode(FILE_DEPENDENCY_COLUMN_CREATE, QHeaderView::Fixed);
+    graphWidget_.getView()->resizeColumnToContents(FileDependencyColumns::TREE_EXPAND);
+    graphWidget_.getView()->resizeColumnToContents(FileDependencyColumns::STATUS);
+    graphWidget_.getView()->resizeColumnToContents(FileDependencyColumns::CREATE_DEPENDENCY);
+    graphWidget_.getView()->setColumnWidth(FileDependencyColumns::PATH, 250);
+    graphWidget_.getView()->header()->setSectionResizeMode(FileDependencyColumns::TREE_EXPAND, QHeaderView::Fixed);
+    graphWidget_.getView()->header()->setSectionResizeMode(FileDependencyColumns::STATUS, QHeaderView::Fixed);
+    graphWidget_.getView()->header()->setSectionResizeMode(FileDependencyColumns::CREATE_DEPENDENCY, QHeaderView::Fixed);
 
     filterActions_.setExclusive(false);
 
@@ -85,7 +87,7 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
     toolbar_.setMovable(false);
     toolbar_.setStyleSheet(QString("QToolBar { border: none; }"));
 
-    // Create the filter buttons in the toolbar. The button actions are also added to the separate actiongroup
+    // Create the filter buttons in the toolbar.
     addFilterButton(QIcon(":/icons/common/graphics/traffic-light_green.png"), "Show Unchanged Files",
                     FileDependencyGraphView::FILTER_GREEN);
     addFilterButton(QIcon(":/icons/common/graphics/traffic-light_yellow.png"), "Show Changed Files (Only Contents Changed)",
@@ -106,7 +108,6 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
                     FileDependencyGraphView::FILTER_DIFFERENCE);
     connect(&filterActions_, SIGNAL(triggered(QAction*)), this, SLOT(filterToggle(QAction*)));
 
-
     toolbar_.addSeparator();
     toolbar_.addAction(QIcon(":/icons/common/graphics/import_folders.png"), "Import Source Directories",
                        this, SLOT(openSourceDialog()));
@@ -125,7 +126,7 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
     connect(&model_, SIGNAL(dependenciesChanged()), this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
     connect(&model_, SIGNAL(analysisProgressChanged(int)),
             this, SLOT(updateProgressBar(int)), Qt::UniqueConnection);
-    connect(&graphWidget_.getView(), SIGNAL(selectionChanged(FileDependency*)),
+    connect(graphWidget_.getView(), SIGNAL(selectionChanged(FileDependency*)),
             &infoWidget_, SLOT(setEditedDependency(FileDependency*)), Qt::UniqueConnection);
 
     connect(&infoWidget_, SIGNAL(dependencyChanged(FileDependency*)),
@@ -167,6 +168,8 @@ void FileDependencyEditor::scan()
     }
 
     emit scanStarted();
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
 
     runAnalysisAction_->setIcon(QIcon(":/icons/common/graphics/control-stop.png"));
     scanning_ = true;
@@ -237,9 +240,8 @@ void FileDependencyEditor::scanFiles(QString const& path)
 {
     FileDependencyItem* folderItem = model_.addFolder(path);
 
-    QFileInfoList list =
-        QDir(General::getAbsolutePath(basePath_ + "/", path)).entryInfoList(QDir::Files | QDir::Dirs |
-                                                                           QDir::NoDotAndDotDot);
+    QFileInfoList list = QDir(General::getAbsolutePath(basePath_ + "/", path)).entryInfoList(
+        QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
 
     foreach (QFileInfo const& info, list)
     {
@@ -248,10 +250,8 @@ void FileDependencyEditor::scanFiles(QString const& path)
         {
             scanFiles(General::getRelativePath(basePath_, info.absoluteFilePath()));
         }
-        // Otherwise add the file if it does not belong to ignored extensions or
-        // is not an IP-XACT file.
-        else if (!ignoreExtList_.contains(info.completeSuffix()) &&
-                 !isFileIPXact(info.absoluteFilePath()))
+        // Otherwise add the file if it does not belong to ignored extensions or is not an IP-XACT file.
+        else if (!ignoreExtList_.contains(info.completeSuffix()) && !isFileIPXact(info.absoluteFilePath()))
         {
             // Otherwise the entry is a file.
             // Check which file type corresponds to the extension.
@@ -260,8 +260,17 @@ void FileDependencyEditor::scanFiles(QString const& path)
             // Check if the file is already packaged into the metadata.
             QString relativePath = General::getRelativePath(basePath_, info.absoluteFilePath());
 
-            QList<File*> fileRefs;
-            component_->getFiles(relativePath, fileRefs);
+            QList<QSharedPointer<File> > fileRefs;
+            foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
+            {
+                foreach (QSharedPointer<File> file, *fileSet->getFiles())
+                {
+                    if (file->name() == relativePath)
+                    {
+                        fileRefs.append(file);
+                    }
+                }
+            }
 
             // Add the file to the component file sets if not already found and is not yet ignored.
             if (fileRefs.empty() && !component_->getIgnoredFiles().contains(relativePath))
@@ -282,19 +291,19 @@ void FileDependencyEditor::scanFiles(QString const& path)
                 else
                 {
                     fileSet.reset(new FileSet(fileSetName, ""));
-                    component_->addFileSet(fileSet);
+                    component_->getFileSets()->append(fileSet);
                     emit fileSetAdded(fileSet.data());
                 }
 
-                QSharedPointer<File> file(new File(relativePath, fileSet.data()));
+                QSharedPointer<File> file(new File(relativePath));
                 file->addFileType(fileType);
                 fileSet->addFile(file);
                 emit fileAdded(file.data());
 
-                fileRefs.append(file.data());
+                fileRefs.append(file);
             }
 
-            folderItem->addFile(component_.data(), relativePath, fileType, fileRefs);
+            folderItem->addFile(component_, relativePath, fileType, fileRefs);
         }
     }
 }
@@ -307,7 +316,6 @@ bool FileDependencyEditor::isFileIPXact(QString const& filename) const
 {
     // Try to open the file for reading.
     QFile file(filename);
-
     if (!file.open(QFile::ReadOnly))
     {
         return false;
@@ -351,22 +359,22 @@ void FileDependencyEditor::updateProgressBar(int value)
 void FileDependencyEditor::filterToggle(QAction* action)
 {
     // Get current filters from the graph.
-    FileDependencyGraphView::DependencyFilters filters = graphWidget_.getView().getFilters();
+    FileDependencyGraphView::DependencyFilters filters = graphWidget_.getView()->getFilters();
 
     // Toggle the appropriate filter based on the button that was clicked.
     filters ^= action->data().toUInt();
 
     // Apply the new filter setup to the view.
-    graphWidget_.getView().setFilters(filters);
+    graphWidget_.getView()->setFilters(filters);
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyEditor::addFilterButton()
 //-----------------------------------------------------------------------------
-void FileDependencyEditor::addFilterButton(QIcon icon, QString iconText,
-                                           FileDependencyGraphView::DependencyFilter filter)
+void FileDependencyEditor::addFilterButton(QIcon icon, QString const& iconText,
+    FileDependencyGraphView::DependencyFilter filter)
 {
-    FileDependencyGraphView::DependencyFilters filters = graphWidget_.getView().getFilters();
+    FileDependencyGraphView::DependencyFilters filters = graphWidget_.getView()->getFilters();
 
     QAction* tmp = toolbar_.addAction(icon, iconText);
     tmp->setData(filter);
@@ -383,9 +391,9 @@ void FileDependencyEditor::scanDirectories()
 {
     model_.beginReset();
 
+    // First scan the source directories.
     if (isEnabled())
     {
-        // First scan the source directories.
         foreach (QString const& sourcePath, component_->getSourceDirectories())
         {
             scanFiles(sourcePath);
@@ -393,15 +401,15 @@ void FileDependencyEditor::scanDirectories()
     }
 
     // Then add files that are part of the file sets but were not added in the file scan.
-    foreach (QSharedPointer<FileSet> fileSet, component_->getFileSets())
+    foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
     {
-        foreach (QSharedPointer<File> file, fileSet->getFiles())
+        foreach (QSharedPointer<File> file, *fileSet->getFiles())
         {
             // For non-url files, check if the model does not contain a corresponding file item.
-            if (!QRegExp(Utils::URL_VALIDITY_REG_EXP).exactMatch(file->getName()) &&
-                model_.findFileItem(file->getName()) == 0)
+            if (!QRegExp(Utils::URL_VALIDITY_REG_EXP).exactMatch(file->name()) &&
+                model_.findFileItem(file->name()) == 0)
             {
-                QFileInfo info(file->getName());
+                QFileInfo info(file->name());
                 QString folderPath = info.path();
 
                 // Create a folder item for the file if not already created.
@@ -413,17 +421,25 @@ void FileDependencyEditor::scanDirectories()
                 }
 
                 // Create a file item.
-                QList<File*> fileRefs;
-                component_->getFiles(file->getName(), fileRefs);
-
-                QString fileType = "";
-
-                if (!file->getFileTypes().empty())
+                QList<QSharedPointer<File> > fileRefs;
+                foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
                 {
-                    fileType = file->getFileTypes().first();
+                    foreach (QSharedPointer<File> filesetFile, *fileSet->getFiles())
+                    {
+                        if (filesetFile->name() == file->name())
+                        {
+                            fileRefs.append(filesetFile);
+                        }
+                    }
                 }
 
-                folderItem->addFile(component_.data(), file->getName(), fileType, fileRefs);
+                QString fileType = "";
+                if (!file->getFileTypes()->empty())
+                {
+                    fileType = file->getFileTypes()->first();
+                }
+
+                folderItem->addFile(component_, file->name(), fileType, fileRefs);
             }
         }
     }
@@ -432,7 +448,9 @@ void FileDependencyEditor::scanDirectories()
 
     timer_->stop();
     delete timer_;
+    timer_ = 0;
     delete progWidget_;
+    progWidget_ = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -457,7 +475,7 @@ void FileDependencyEditor::refresh()
 //-----------------------------------------------------------------------------
 void FileDependencyEditor::setDependenciesEditable(bool editable)
 {
-    graphWidget_.getView().setDependenciesEditable(editable);
+    graphWidget_.getView()->setDependenciesEditable(editable);
 }
 
 //-----------------------------------------------------------------------------
@@ -475,7 +493,9 @@ void FileDependencyEditor::finishScan()
 {
     scanning_ = false;
     runAnalysisAction_->setIcon(QIcon(":/icons/common/graphics/control-play.png"));
+
+    QApplication::restoreOverrideCursor();
+
     emit filesUpdated();
     emit scanCompleted();
 }
-

@@ -21,8 +21,9 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Design/Design.h>
 
 #include <QScrollBar>
 #include <QVBoxLayout>
@@ -38,7 +39,7 @@
 DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent)
     : TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT |
                           DOC_PROTECTION_SUPPORT | DOC_EDIT_SUPPORT | DOC_VISIBILITY_CONTROL_SUPPORT, 30, 300),
-      lh_(lh),
+      library_(lh),
       view_(new QGraphicsView(this)),
       editedComponent_(),
       viewName_(),
@@ -181,7 +182,7 @@ void DesignWidget::refresh()
 {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    QSharedPointer<LibraryComponent> libComp = lh_->getModel(*editedComponent_->getVlnv());
+    QSharedPointer<Document> libComp = library_->getModel(editedComponent_->getVlnv());
     QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
     setDesign(comp, viewName_);
@@ -195,14 +196,14 @@ void DesignWidget::refresh()
 //-----------------------------------------------------------------------------
 // Function: DesignWidget::getOpenDocument()
 //-----------------------------------------------------------------------------
-VLNV const* DesignWidget::getOpenDocument() const
+VLNV DesignWidget::getOpenDocument() const
 {
     if (editedComponent_ != 0)
     {
         return editedComponent_->getVlnv();
     }
 
-    return 0;
+    return VLNV();
 }
 
 //-----------------------------------------------------------------------------
@@ -210,21 +211,13 @@ VLNV const* DesignWidget::getOpenDocument() const
 //-----------------------------------------------------------------------------
 VLNV DesignWidget::getDocumentVLNV() const
 {
-    return *editedComponent_->getVlnv();
+    return editedComponent_->getVlnv();
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignWidget::getEditProvider()
 //-----------------------------------------------------------------------------
-IEditProvider* DesignWidget::getEditProvider()
-{
-    return editProvider_.data();
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignWidget::getGenericEditProvider()
-//-----------------------------------------------------------------------------
-QSharedPointer<GenericEditProvider> DesignWidget::getGenericEditProvider() const
+QSharedPointer<IEditProvider> DesignWidget::getEditProvider() const
 {
     return editProvider_;
 }
@@ -237,47 +230,44 @@ bool DesignWidget::save()
     getDiagram()->updateHierComponent();
 
     // Create the design.
-    QSharedPointer<Design> design;
-    QSharedPointer<DesignConfiguration> designConf = diagram_->getDesignConfiguration();
+    QSharedPointer<Design> design = getDiagram()->getDesign();
+    QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
 
-    if (designConf)
+    /*if (designConf)
     {
         design = diagram_->createDesign(designConf->getDesignRef());
     }
     else
     {
         design = diagram_->createDesign(editedComponent_->getHierRef(viewName_));
-    }
+    }*/
 
     if (design == 0)
     {
         return false;
     }
 
-    lh_->beginSave();
+    library_->beginSave();
 
     bool writeSucceeded = true;
 
     // Write the files.
-    if (designConf)
-    {
-        if (!lh_->writeModelToFile(designConf))
-        {
-            writeSucceeded = false;
-        }
-    }
-
-    if (!lh_->writeModelToFile(design))
+    if (designConf && !library_->writeModelToFile(designConf))
     {
         writeSucceeded = false;
     }
 
-    if (!lh_->writeModelToFile(editedComponent_))
+    if (!library_->writeModelToFile(design))
     {
         writeSucceeded = false;
     }
 
-    lh_->endSave();
+    if (!library_->writeModelToFile(editedComponent_))
+    {
+        writeSucceeded = false;
+    }
+
+    library_->endSave();
 
     if (writeSucceeded)
     {
@@ -334,7 +324,7 @@ void DesignWidget::removeSelectedNotes()
         noteRemoveCommand->redo();
     }
 
-    getGenericEditProvider()->addCommand(parentCommand);
+    getEditProvider()->addCommand(parentCommand);
 }
 
 //-----------------------------------------------------------------------------
@@ -354,7 +344,7 @@ void DesignWidget::removeSelectedAssociations()
         associationRemoveCmd->redo();
     }
 
-    getGenericEditProvider()->addCommand(parentCommand);
+    getEditProvider()->addCommand(parentCommand);
 }
 
 //-----------------------------------------------------------------------------
@@ -378,7 +368,7 @@ void DesignWidget::centerViewTo(QPointF const& centerPoint)
 //-----------------------------------------------------------------------------
 LibraryInterface* DesignWidget::getLibraryInterface()
 {
-    return lh_;
+    return library_;
 }
 
 //-----------------------------------------------------------------------------

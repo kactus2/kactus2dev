@@ -166,7 +166,7 @@ public:
     /*!
      *  Returns the content type.
      */
-    ColumnContentType getContentType() const;
+    ColumnTypes::ColumnContentType getContentType() const;
 
 signals:
     //! Sends an error message to the user.

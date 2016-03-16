@@ -15,6 +15,8 @@
 #include <QList>
 #include <QAbstractTableModel>
 
+#include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 
 class BusInterface;
@@ -174,8 +176,8 @@ private:
 
 	 * @return Unique name for a port in the draft component.
 	*/
-    QString generateName(QString name, General::Direction opposingDirection, 
-        General::Direction draftDirection, QString delimiter = "_");
+    QString generateName(QString name, DirectionTypes::Direction opposingDirection, 
+        DirectionTypes::Direction draftDirection, QString delimiter = "_");
 
     //-----------------------------------------------------------------------------
     // Data.

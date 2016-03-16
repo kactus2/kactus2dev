@@ -12,12 +12,13 @@
 #ifndef FILESETSMODEL_H
 #define FILESETSMODEL_H
 
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/component.h>
-
 #include <QAbstractTableModel>
 #include <QList>
 #include <QSharedPointer>
+
+class FileSet;
+class Component;
+class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! The model class to manage the objects for FileSetsEditor.
@@ -28,12 +29,15 @@ class FileSetsModel : public QAbstractTableModel
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor
 	 *
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] parent      The owner of this model.
-	*/
-	FileSetsModel(QSharedPointer<Component> component, QObject *parent);
+	 *      @param [in] component           The component being edited.
+     *      @param [in] parameterFinder     Finder used to identify parameters.
+	 *      @param [in] parent              The owner of this model.
+	 */
+    FileSetsModel(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+        QObject *parent);
 	
 	//! The destructor
 	~FileSetsModel();
@@ -94,12 +98,6 @@ public:
 	*/
 	Qt::ItemFlags flags(const QModelIndex& index) const;
 
-	/*! Check the validity of the items in the model.
-	 *
-	 *      @return True if all items are in valid state.
-	*/
-	virtual bool isValid() const;
-
 public slots:
 
 	/*! Add a new item to the given index.
@@ -141,17 +139,38 @@ signals:
 	 *
 	*/
 	void fileSetRemoved(int index);
+    
+    /*!
+     *  Decrease the amount of references to the selected parameter.
+     *
+     *      @param [in] valueId   The id of the referenced parameter.
+     */
+    void decreaseReferences(QString valueId) const;
 
 private:
 	//! No copying
 	FileSetsModel(const FileSetsModel& other);
 	FileSetsModel& operator=(const FileSetsModel& other);
 
+    /*!
+     *  Remove the references from the selected file set.
+     *
+     *      @param [in] currentFileSet  The selected file set.
+     */
+    void decreaseReferencesWithRemovedFileSet(QSharedPointer<FileSet> currentFileSet);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! The component being edited.
 	QSharedPointer<Component> component_;
 
 	//! The file sets to edit.
-	QList<QSharedPointer<FileSet> >& fileSets_;
+    QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_;
+
+    //! Finder used to locate parameter ids.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // FILESETSMODEL_H

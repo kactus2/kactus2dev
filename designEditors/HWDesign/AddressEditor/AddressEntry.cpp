@@ -11,17 +11,18 @@
 
 #include "AddressEntry.h"
 
-#include <designEditors/common/DesignDiagram.h>
-#include <common/GenericEditProvider.h>
+#include <common/IEditProvider.h>
+
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
 
 #include <designEditors/HWDesign/BusPortItem.h>
+#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
-#include <IPXACTmodels/businterface.h>
-#include <IPXACTmodels/slaveinterface.h>
-#include <IPXACTmodels/memorymap.h>
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
 
 //-----------------------------------------------------------------------------
 // Function: AddressEntry::AddressEntry()
@@ -54,6 +55,8 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
         {
             ComponentItem* connectedComp = connectedPort_->encompassingComp();
             QString mapName = connectedPort_->getBusInterface()->getMemoryMapRef();
+            
+            /* TODO: Fix initialization.
             QSharedPointer<MemoryMap> map = connectedComp->componentModel()->getMemoryMap(mapName);
 
             if (map)
@@ -61,23 +64,24 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
                 range_ = map->getLastAddress() + 1;
                 aub_ = map->getAddressUnitBits();
                 baseEndAddress_ = range_ - 1;
-            }
+            }*/
         }
     }
 }
-
 //-----------------------------------------------------------------------------
 // Function: AddressEntry::setStartAddress()
 //-----------------------------------------------------------------------------
 void AddressEntry::setStartAddress(unsigned int startAddress)
-{
-    QMap<QString, QString> elements = component_->getConfigurableElements();
+{   
+    /* TODO: Fix addressing
+
+    /*QMap<QString, QString> elements = component_->getConfigurableElements();
     elements.insert(port_->name() + "_addr_start", QString::number(startAddress));
     elements.insert(port_->name() + "_addr_end", QString::number(startAddress + baseEndAddress_));
 
     QSharedPointer<QUndoCommand> cmd(new ComponentConfElementChangeCommand(component_, elements));
     editProvider_.addCommand(cmd);
-    cmd->redo();
+    cmd->redo();*/
 }
 
 //-----------------------------------------------------------------------------
@@ -85,6 +89,7 @@ void AddressEntry::setStartAddress(unsigned int startAddress)
 //-----------------------------------------------------------------------------
 void AddressEntry::setLocked(bool locked)
 {
+    /* TODO: Fix locking.
     QMap<QString, QString> elements = component_->getConfigurableElements();
 
     if (locked)
@@ -98,7 +103,7 @@ void AddressEntry::setLocked(bool locked)
 
     QSharedPointer<QUndoCommand> cmd(new ComponentConfElementChangeCommand(component_, elements));
     editProvider_.addCommand(cmd);
-    cmd->redo();
+    cmd->redo();*/
 }
 
 //-----------------------------------------------------------------------------
@@ -106,8 +111,10 @@ void AddressEntry::setLocked(bool locked)
 //-----------------------------------------------------------------------------
 unsigned int AddressEntry::getStartAddress() const
 {
+    /* TODO: Fix addressing
     QMap<QString, QString> const& elements = component_->getConfigurableElements();
-    return elements.value(port_->name() + "_addr_start", "0").toUInt();
+    return elements.value(port_->name() + "_addr_start", "0").toUInt();*/
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -115,7 +122,9 @@ unsigned int AddressEntry::getStartAddress() const
 //-----------------------------------------------------------------------------
 unsigned int AddressEntry::getEndAddress() const
 {
-    return getStartAddress() + baseEndAddress_;
+    //! TODO: Fix addressing.
+    //return getStartAddress() + baseEndAddress_;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -123,8 +132,11 @@ unsigned int AddressEntry::getEndAddress() const
 //-----------------------------------------------------------------------------
 bool AddressEntry::isLocked() const
 {
-    QMap<QString, QString> const& elements = component_->getConfigurableElements();
-    return elements.value(port_->name() + "_addr_locked", "false") == "true";
+    /* TODO: Fix locking.
+
+    /*QMap<QString, QString> const& elements = component_->getConfigurableElements();
+    return elements.value(port_->name() + "_addr_locked", "false") == "true";*/
+    return false;
 }
 
 //-----------------------------------------------------------------------------

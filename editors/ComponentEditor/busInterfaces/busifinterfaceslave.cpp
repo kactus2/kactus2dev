@@ -13,6 +13,9 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+
 #include <QFormLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -32,13 +35,13 @@ bridges_(slave_, component, this)
 	Q_ASSERT(slave_);
 
 	QHBoxLayout* memRefLayout = new QHBoxLayout();
-    memRefLayout->addWidget(new QLabel(tr("Memory map")));
-    memRefLayout->addWidget(&memoryMapReferenceSelector_);
-    memRefLayout->addStretch();
-	
+    memRefLayout->addWidget(new QLabel(tr("Memory map:")));
+    memRefLayout->addWidget(&memoryMapReferenceSelector_, 1);
+
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addLayout(memRefLayout);
 	topLayout->addWidget(&bridges_);
+    topLayout->addStretch();
 
 	connect(&memoryMapReferenceSelector_, SIGNAL(itemSelected(QString const&)),
 		this, SLOT(onMemoryMapChange(QString const&)), Qt::UniqueConnection);
@@ -66,7 +69,7 @@ bool BusIfInterfaceSlave::isValid() const
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::refresh()
 {
-	// if the model contains master-element
+	// if the model contains slave-element
 	if (busif_->getSlave())
     {
 		slave_ = busif_->getSlave();

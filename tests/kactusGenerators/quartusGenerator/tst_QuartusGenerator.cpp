@@ -13,13 +13,16 @@
 
 #include <tests/MockObjects/LibraryMock.h>
 
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/ComponentInstance.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/file.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/Design/design.h>
+#include <IPXACTmodels/Component/fileset.h>
+#include <IPXACTmodels/Component/file.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/Model.h>
 
 #include <QtTest>
 #include <QDateTime>
@@ -73,9 +76,9 @@ private:
     QSharedPointer<QFile> createEmptyFile(QString const& fileName);
 
     void setViewOverridesForDesignConfiguration(QSharedPointer<DesignConfiguration> testDesignConfiguration,
-        QList<ComponentInstance> componentInstances);
+        QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances);
 
-    void setFileTypesForFileSet(QSharedPointer<FileSet> selectedFileset, QStringList fileTypes);
+    void setFileTypesForFileSet(QSharedPointer<FileSet> selectedFileset, QSharedPointer<QStringList> fileTypes);
 
     QSharedPointer<Component> topComponent_;
 
@@ -196,21 +199,26 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingTopComponentVerilogF
     filesForTopComponent.append(topVerilogFile->fileName());
 
     QSharedPointer<FileSet> topComponentFileSet = createTestFileset("verilogFileSet", filesForTopComponent);
-    topComponent_->addFileSet(topComponentFileSet);
+    topComponent_->getFileSets()->append(topComponentFileSet);
 
-    View* quartusTopView (new View("quartusTopView"));
-    quartusTopView->addFileSetRef(topComponentFileSet->getName());
-    topComponent_->addView(quartusTopView);
+	QSharedPointer<ComponentInstantiation> cimpTop( new ComponentInstantiation("TOP-INSTANTIATION") );
+	cimpTop->getFileSetReferences()->append(topComponentFileSet->name());
+	topComponent_->getComponentInstantiations()->append(cimpTop);
 
-    View* quartusTestView (new View("quartusView"));
-    quartusTestView->setHierarchyRef(*quartusDesign->getVlnv());
-    quartusTestView->setTopLevelView(quartusTopView->getName());
-    topComponent_->addView(quartusTestView);
+	QSharedPointer<DesignInstantiation> dist( new DesignInstantiation("joku" ));
+	topComponent_->getDesignInstantiations()->append(dist);
+	QSharedPointer<ConfigurableVLNVReference> desgref( new ConfigurableVLNVReference(quartusDesign->getVlnv()) );
+	dist->setDesignReference( desgref );
+
+	QSharedPointer<View> quartusTestView (new View("quartusView"));
+	quartusTestView->setDesignInstantiationRef(dist->name());
+	quartusTestView->setComponentInstantiationRef(cimpTop->name());
+	topComponent_->getViews()->append(quartusTestView);
 
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusTestView->getName());
+    quartusGenerator_->parseFiles(topComponent_, quartusTestView->name());
     quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
@@ -244,11 +252,15 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
     QStringList componentOneFiles;
     componentOneFiles.append(componentOneVhdlFile->fileName());
     QSharedPointer<FileSet> componentOneFileset = createTestFileset("vhdlFiles", componentOneFiles);
-    componentOne->addFileSet(componentOneFileset);
+    componentOne->getFileSets()->append(componentOneFileset);
 
-    View* componentOneView (new View("vhdlView"));
-    componentOneView->addFileSetRef(componentOneFileset->getName());
-    componentOne->addView(componentOneView);
+	QSharedPointer<ComponentInstantiation> cimpOne( new ComponentInstantiation("ONE-INSTANTIATION") );
+	cimpOne->getFileSetReferences()->append(componentOneFileset->name());
+	componentOne->getComponentInstantiations()->append(cimpOne);
+
+	QSharedPointer<View> componentOneView (new View("vhdlView"));
+	componentOneView->setComponentInstantiationRef(cimpOne->name());
+	componentOne->getViews()->append(componentOneView);
 
     QSharedPointer<Component> componentTwo = createTestComponent("componentTwo");
     QSharedPointer<QFile> componentTwoQipFile = createEmptyFile("componentTwoQip.qip");
@@ -256,11 +268,15 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
     QStringList componentTwoFiles;
     componentTwoFiles.append(componentTwoQipFile->fileName());
     QSharedPointer<FileSet> componentTwoFileset = createTestFileset("qipFiles", componentTwoFiles);
-    componentTwo->addFileSet(componentTwoFileset);
+    componentTwo->getFileSets()->append(componentTwoFileset);
 
-    View* componentTwoView (new View("qipView"));
-    componentTwoView->addFileSetRef(componentTwoFileset->getName());
-    componentTwo->addView(componentTwoView);
+	QSharedPointer<ComponentInstantiation> cimpTwo( new ComponentInstantiation("TWO-INSTANTIATION") );
+	cimpTwo->getFileSetReferences()->append(componentTwoFileset->name());
+	componentTwo->getComponentInstantiations()->append(cimpTwo);
+
+	QSharedPointer<View> componentTwoView (new View("qipView"));
+    componentTwoView->setComponentInstantiationRef(cimpTwo->name());
+    componentTwo->getViews()->append(componentTwoView);
 
     QSharedPointer<Component> componentThree = createTestComponent("componentThree");
     QSharedPointer<QFile> componentThreeSdcFile = createEmptyFile("componentThreeSdc.sdc");
@@ -268,11 +284,14 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
     QStringList componentThreeFiles;
     componentThreeFiles.append(componentThreeSdcFile->fileName());
     QSharedPointer<FileSet> componentThreeFileSet = createTestFileset("sdcFiles", componentThreeFiles);
-    componentThree->addFileSet(componentThreeFileSet);
+    componentThree->getFileSets()->append(componentThreeFileSet);
 
-    View* componentThreeView (new View("sdcView"));
-    componentThreeView->addFileSetRef(componentThreeFileSet->getName());
-    componentThree->addView(componentThreeView);
+	QSharedPointer<View> componentThreeView (new View("sdcView"));
+	QSharedPointer<ComponentInstantiation> cimpThree( new ComponentInstantiation("THREE-INSTANTIATION") );
+	cimpThree->getFileSetReferences()->append(componentThreeFileSet->name());
+	componentThreeView->setComponentInstantiationRef(cimpThree->name());
+	componentThree->getViews()->append(componentThreeView);
+	componentThree->getComponentInstantiations()->append(cimpThree);
 
     QList<QSharedPointer<Component> > componentsInDesign;
     componentsInDesign.append(componentOne);
@@ -289,21 +308,32 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
     QStringList topComponentFiles;
     topComponentFiles.append(topVerilogFile->fileName());
     QSharedPointer<FileSet> topComponentFileSet = createTestFileset("topFiles", topComponentFiles);
-    topComponent_->addFileSet(topComponentFileSet);
+    topComponent_->getFileSets()->append(topComponentFileSet);
 
-    View* quartusTopLevelView (new View("quartusTopView"));
-    quartusTopLevelView->addFileSetRef(topComponentFileSet->getName());
-    topComponent_->addView(quartusTopLevelView);
+	QSharedPointer<DesignInstantiation> des( new DesignInstantiation("design" ) );
+	QSharedPointer<ConfigurableVLNVReference> desRef( new ConfigurableVLNVReference( quartusDesign->getVlnv() ) );
+	des->setDesignReference( desRef );
+	topComponent_->getDesignInstantiations()->append(des);
 
-    View* quartusDesignView (new View("quartusView"));
-    quartusDesignView->setHierarchyRef(*quartusDesignConf->getVlnv());
-    quartusDesignView->setTopLevelView(quartusTopLevelView->getName());
-    topComponent_->addView(quartusDesignView);
+	QSharedPointer<DesignConfigurationInstantiation> disg( new DesignConfigurationInstantiation("desgonf" ) );
+	QSharedPointer<ConfigurableVLNVReference> desgConfRef( new ConfigurableVLNVReference( quartusDesignConf->getVlnv() ) );
+	disg->setDesignConfigurationReference( desgConfRef );
+	topComponent_->getDesignConfigurationInstantiations()->append(disg);
+
+	QSharedPointer<ComponentInstantiation> cimpTop( new ComponentInstantiation("TOP-INSTANTIATION") );
+	cimpTop->getFileSetReferences()->append(topComponentFileSet->name());
+	topComponent_->getComponentInstantiations()->append(cimpTop);
+
+	QSharedPointer<View> quartusDesignView (new View("quartusView"));
+	quartusDesignView->setDesignInstantiationRef(des->name());
+	quartusDesignView->setDesignConfigurationInstantiationRef(disg->name());
+	quartusDesignView->setComponentInstantiationRef(cimpTop->name());
+	topComponent_->getViews()->append(quartusDesignView);
 
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->getName());
+    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->name());
     quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
@@ -343,11 +373,14 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
     QStringList componentOneFiles;
     componentOneFiles.append(componentOneVhdlFile->fileName());
     QSharedPointer<FileSet> componentOneFileset = createTestFileset("vhdlFiles", componentOneFiles);
-    componentOne->addFileSet(componentOneFileset);
+    componentOne->getFileSets()->append(componentOneFileset);
 
-    View* componentOneView (new View("vhdlView"));
-    componentOneView->addFileSetRef(componentOneFileset->getName());
-    componentOne->addView(componentOneView);
+    QSharedPointer<View> componentOneView (new View("vhdlView"));
+	QSharedPointer<ComponentInstantiation> cimpOne( new ComponentInstantiation("ONE-INSTANTIATION") );
+	cimpOne->getFileSetReferences()->append(componentOneFileset->name());
+    componentOneView->setComponentInstantiationRef(cimpOne->name());
+	componentOne->getViews()->append(componentOneView);
+	componentOne->getComponentInstantiations()->append(cimpOne);
 
     QSharedPointer<QFile> componentOneVerilogFile = createEmptyFile("changingWithView.v");
 
@@ -355,11 +388,14 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
     componentOneFiles.append(componentOneVerilogFile->fileName());
     componentOneFiles.append(componentOneVhdlFile->fileName());
     QSharedPointer<FileSet> componentOneOtherFileset = createTestFileset("otherFiles", componentOneFiles);
-    componentOne->addFileSet(componentOneOtherFileset);
+    componentOne->getFileSets()->append(componentOneOtherFileset);
 
-    View* componentOneOtherView (new View("restView"));
-    componentOneOtherView->addFileSetRef(componentOneOtherFileset->getName());
-    componentOne->addView(componentOneOtherView);
+	QSharedPointer<View> componentOneOtherView (new View("restView"));
+	QSharedPointer<ComponentInstantiation> cimpOneOther( new ComponentInstantiation("ONE-OTHER-INSTANTIATION") );
+	cimpOneOther->getFileSetReferences()->append(componentOneOtherFileset->name());
+	componentOneOtherView->setComponentInstantiationRef(cimpOneOther->name());
+	componentOne->getViews()->append(componentOneOtherView);
+	componentOne->getComponentInstantiations()->append(cimpOneOther);
 
     QSharedPointer<Component> componentTwo = createTestComponent("componentTwo");
     QSharedPointer<QFile> componentTwoQipFile = createEmptyFile("componentTwoQip.qip");
@@ -367,14 +403,17 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
     QStringList componentTwoFiles;
     componentTwoFiles.append(componentTwoQipFile->fileName());
     QSharedPointer<FileSet> componentTwoFileset = createTestFileset("qipFiles", componentTwoFiles);
-    componentTwo->addFileSet(componentTwoFileset);
+    componentTwo->getFileSets()->append(componentTwoFileset);
 
-    View* componentTwoView (new View("qipView"));
-    componentTwoView->addFileSetRef(componentTwoFileset->getName());
-    componentTwo->addView(componentTwoView);
+	QSharedPointer<View> componentTwoView (new View("qipView"));
+	QSharedPointer<ComponentInstantiation> cimpTwo( new ComponentInstantiation("TWO-INSTANTIATION") );
+	cimpTwo->getFileSetReferences()->append(componentTwoFileset->name());
+	componentTwoView->setComponentInstantiationRef(cimpTwo->name());
+	componentTwo->getViews()->append(componentTwoView);
+	componentTwo->getComponentInstantiations()->append(cimpTwo);
 
-    View* componentTwoOtherView (new View("componentTwoEmptyView"));
-    componentTwo->addView(componentTwoOtherView);
+    QSharedPointer<View> componentTwoOtherView (new View("componentTwoEmptyView"));
+    componentTwo->getViews()->append(componentTwoView);
 
     QList<QSharedPointer<Component> > componentsInDesign;
     componentsInDesign.append(componentOne);
@@ -386,14 +425,25 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
 
     setViewOverridesForDesignConfiguration(quartusDesignConf, quartusDesign->getComponentInstances());
 
-    View* quartusDesignView (new View("quartusView"));
-    quartusDesignView->setHierarchyRef(*quartusDesignConf->getVlnv());
-    topComponent_->addView(quartusDesignView);
+	QSharedPointer<DesignInstantiation> des( new DesignInstantiation("design" ) );
+	QSharedPointer<ConfigurableVLNVReference> desRef( new ConfigurableVLNVReference( quartusDesign->getVlnv() ) );
+	des->setDesignReference( desRef );
+	topComponent_->getDesignInstantiations()->append(des);
+
+	QSharedPointer<DesignConfigurationInstantiation> disg( new DesignConfigurationInstantiation("desgonf" ) );
+	QSharedPointer<ConfigurableVLNVReference> desgConfRef( new ConfigurableVLNVReference( quartusDesignConf->getVlnv() ) );
+	disg->setDesignConfigurationReference( desgConfRef );
+	topComponent_->getDesignConfigurationInstantiations()->append(disg);
+
+	QSharedPointer<View> quartusDesignView (new View("quartusView"));
+	quartusDesignView->setDesignInstantiationRef(des->name());
+	quartusDesignView->setDesignConfigurationInstantiationRef(disg->name());
+    topComponent_->getViews()->append(quartusDesignView);
 
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->getName());
+    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->name());
     quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
@@ -430,7 +480,7 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
     QStringList componentOneFiles;
     componentOneFiles.append(componentOneVhdlFile->fileName());
     QSharedPointer<FileSet> componentOneFileset = createTestFileset("vhdlFiles", componentOneFiles);
-    componentOne->addFileSet(componentOneFileset);
+    componentOne->getFileSets()->append(componentOneFileset);
 
     QSharedPointer<QFile> componentOneVerilogFile = createEmptyFile("componentOneVerilog.v");
 
@@ -438,7 +488,7 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
     componentOneFiles.append(componentOneVerilogFile->fileName());
     componentOneFiles.append(componentOneVhdlFile->fileName());
     QSharedPointer<FileSet> componentOneOtherFileset = createTestFileset("otherFiles", componentOneFiles);
-    componentOne->addFileSet(componentOneOtherFileset);
+    componentOne->getFileSets()->append(componentOneOtherFileset);
 
     QSharedPointer<Component> componentTwo = createTestComponent("componentTwo");
     QSharedPointer<QFile> componentTwoQipFile = createEmptyFile("componentTwoQip.qip");
@@ -446,27 +496,31 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
     QStringList componentTwoFiles;
     componentTwoFiles.append(componentTwoQipFile->fileName());
     QSharedPointer<FileSet> componentTwoFileset = createTestFileset("qipFiles", componentTwoFiles);
-    componentTwo->addFileSet(componentTwoFileset);
+    componentTwo->getFileSets()->append(componentTwoFileset);
 
     componentTwoFiles.append(componentOneVerilogFile->fileName());
     componentTwoFiles.append(componentOneVhdlFile->fileName());
     QSharedPointer<FileSet> componentTwoOtherFileset = createTestFileset("allFiles", componentTwoFiles);
-    componentTwo->addFileSet(componentTwoOtherFileset);
+    componentTwo->getFileSets()->append(componentTwoOtherFileset);
 
-    View* componentTwoView (new View("qipView"));
-    componentTwoView->addFileSetRef(componentTwoFileset->getName());
-    componentTwo->addView(componentTwoView);
+	QSharedPointer<ComponentInstantiation> cimpTwo( new ComponentInstantiation("Two-INSTANTIATION") );
+	cimpTwo->getFileSetReferences()->append(componentTwoFileset->name());
+	componentTwo->getComponentInstantiations()->append(cimpTwo);
 
-    View* componentTwoOtherView (new View("componentTwoEmptyView"));
-    componentTwo->addView(componentTwoOtherView);
+	QSharedPointer<View> componentTwoView (new View("qipView"));
+	componentTwoView->setComponentInstantiationRef(cimpTwo->name());
+	componentTwo->getViews()->append(componentTwoView);
+
+    QSharedPointer<View> componentTwoOtherView (new View("componentTwoEmptyView"));
+    componentTwo->getViews()->append(componentTwoOtherView);
 
     QList<QSharedPointer<Component> > componentsInDesign;
     componentsInDesign.append(componentOne);
     componentsInDesign.append(componentTwo);
 
-    QStringList fileTypes;
-    fileTypes.append("vhdlSource");
-    fileTypes.append("verilogSource");
+    QSharedPointer<QStringList> fileTypes( new QStringList );
+    fileTypes->append("vhdlSource");
+    fileTypes->append("verilogSource");
     setFileTypesForFileSet(componentOneFileset, fileTypes);
     setFileTypesForFileSet(componentOneOtherFileset, fileTypes);
     setFileTypesForFileSet(componentTwoFileset, fileTypes);
@@ -476,21 +530,32 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
     QSharedPointer<DesignConfiguration> quartusDesignConf = createTestDesignConfiguration("quartusDesignConf",
         quartusDesign);
 
-    QMap<QString, QString> viewConfigurations;
-    foreach (ComponentInstance instance, quartusDesign->getComponentInstances())
+	QSharedPointer<QList<QSharedPointer<ViewConfiguration> > > viewConfigurations( new QList<QSharedPointer<ViewConfiguration> > );
+    foreach (QSharedPointer<ComponentInstance> instance, *quartusDesign->getComponentInstances())
     {
-        viewConfigurations.insert(instance.getInstanceName(), "");
+        viewConfigurations->append(QSharedPointer<ViewConfiguration>( new ViewConfiguration( instance->getInstanceName() ) ) );
     }
     quartusDesignConf->setViewConfigurations(viewConfigurations);
 
-    View* quartusDesignView (new View("quartusView"));
-    quartusDesignView->setHierarchyRef(*quartusDesignConf->getVlnv());
-    topComponent_->addView(quartusDesignView);
+	QSharedPointer<DesignConfigurationInstantiation> disg( new DesignConfigurationInstantiation("DESG-CONF-INSTANTIATION") );
+	topComponent_->getDesignConfigurationInstantiations()->append(disg);
+	QSharedPointer<ConfigurableVLNVReference> designConfRef( new ConfigurableVLNVReference( quartusDesignConf->getVlnv() ) );
+	disg->setDesignConfigurationReference( designConfRef );
+
+	QSharedPointer<DesignInstantiation> dis( new DesignInstantiation("DESIGN-INSTANTIATION") );
+	topComponent_->getDesignInstantiations()->append(dis);
+	QSharedPointer<ConfigurableVLNVReference> designRef( new ConfigurableVLNVReference( quartusDesign->getVlnv() ) );
+	dis->setDesignReference( designRef );
+
+	QSharedPointer<View> quartusDesignView (new View("quartusView"));
+	quartusDesignView->setDesignConfigurationInstantiationRef(disg->name());
+	quartusDesignView->setComponentInstantiationRef(dis->name());
+	topComponent_->getViews()->append(quartusDesignView);
 
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->getName());
+    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->name());
     quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
@@ -612,19 +677,21 @@ QSharedPointer<Design> tst_QuartusGenerator::createTestDesign(QString const& des
     library_.writeModelToFile(QFileInfo(".").absoluteFilePath() + "/", newDesign);
     library_.addComponent(newDesign);
 
-    QList<ComponentInstance> componentInstances;
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances(
+        new QList<QSharedPointer<ComponentInstance> >());
     QMap<QString, int> usedInstances;
     foreach (QSharedPointer<Component> currentComponent, containedComponents)
     {
-        int instanceNumber = usedInstances.value(currentComponent->getVlnv()->getName(), 0);
-        QString instanceName = currentComponent->getVlnv()->getName() + "_" + QString::number(instanceNumber);
+        int instanceNumber = usedInstances.value(currentComponent->getVlnv().getName(), 0);
+        QString instanceName = currentComponent->getVlnv().getName() + "_" + QString::number(instanceNumber);
         
-        ComponentInstance newInstance (instanceName, "", "", *currentComponent->getVlnv(), QPointF(),
-            instanceName + "ID");
+		QSharedPointer<ConfigurableVLNVReference> vlnvRef(new ConfigurableVLNVReference(currentComponent->getVlnv()));
+        QSharedPointer<ComponentInstance> newInstance (new ComponentInstance(instanceName, vlnvRef));
+        newInstance->setUuid(instanceName + "ID");
 
-        componentInstances.append(newInstance);
+        componentInstances->append(newInstance);
         
-        usedInstances.insert(currentComponent->getVlnv()->getName(), instanceNumber + 1);
+        usedInstances.insert(currentComponent->getVlnv().getName(), instanceNumber + 1);
     }
     newDesign->setComponentInstances(componentInstances);
 
@@ -644,18 +711,18 @@ QSharedPointer<DesignConfiguration> tst_QuartusGenerator::createTestDesignConfig
     library_.writeModelToFile(QFileInfo(".").absoluteFilePath() + "/", newDesignConfiguration);
     library_.addComponent(newDesignConfiguration);
 
-    newDesignConfiguration->setDesignRef(*referencedDesign->getVlnv());
+    newDesignConfiguration->setDesignRef(referencedDesign->getVlnv());
 
-    foreach (ComponentInstance currentInstance, referencedDesign->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> currentInstance, *referencedDesign->getComponentInstances())
     {
-        VLNV componentReference = currentInstance.getComponentRef();
+        VLNV componentReference = *currentInstance->getComponentRef();
         QSharedPointer<Component> referencedComponent =
             library_.getModel(componentReference).dynamicCast<Component>();
 
-        if (referencedComponent && referencedComponent->viewCount() > 0)
+        if (referencedComponent && referencedComponent->getModel()->getViews()->size() > 0)
         {
-            newDesignConfiguration->addViewConfiguration(currentInstance.getInstanceName(),
-                referencedComponent->getViews().at(0)->getName());
+            newDesignConfiguration->addViewConfiguration(currentInstance->getInstanceName(),
+                referencedComponent->getViews()->at(0)->name());
         }
     }
 
@@ -671,7 +738,7 @@ QSharedPointer<FileSet> tst_QuartusGenerator::createTestFileset(QString const& f
 
     foreach (QString fileName, filesToAdd)
     {
-        QSharedPointer<File> newFileForFileSet (new File(fileName, newFileSet.data()));
+        QSharedPointer<File> newFileForFileSet (new File(fileName));
 
         newFileSet->addFile(newFileForFileSet);
     }
@@ -694,19 +761,19 @@ QSharedPointer<QFile> tst_QuartusGenerator::createEmptyFile(QString const& fileN
 //-----------------------------------------------------------------------------
 // Function: tst_QuartusGenerator::setViewOverridesForDesignConfiguration()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::setViewOverridesForDesignConfiguration(
-    QSharedPointer<DesignConfiguration> testDesignConfiguration, QList<ComponentInstance> componentInstances)
+void tst_QuartusGenerator::setViewOverridesForDesignConfiguration( QSharedPointer<DesignConfiguration> testDesignConfiguration,
+	QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances)
 {
     QMap<QString, QString> viewOverrides;
-    foreach (ComponentInstance instance, componentInstances)
+    foreach (QSharedPointer<ComponentInstance> instance, *componentInstances)
     {
-        VLNV componentReferenceVLNV = instance.getComponentRef();
+        VLNV componentReferenceVLNV = *instance->getComponentRef();
         QSharedPointer<Component> referencedComponent =
             library_.getModel(componentReferenceVLNV).dynamicCast<Component>();
 
-        if (referencedComponent && referencedComponent->viewCount() > 1)
-        {
-            viewOverrides.insert(instance.getUuid(), referencedComponent->getViews().at(1)->getName());
+		if (referencedComponent && referencedComponent->getModel()->getViews()->size() > 1)
+		{
+            viewOverrides.insert(instance->getUuid(), referencedComponent->getViews()->at(1)->name());
         }
     }
 
@@ -716,9 +783,9 @@ void tst_QuartusGenerator::setViewOverridesForDesignConfiguration(
 //-----------------------------------------------------------------------------
 // Function: tst_QuartusGenerator::setFileTypesForFileSet()
 //-----------------------------------------------------------------------------
-void tst_QuartusGenerator::setFileTypesForFileSet(QSharedPointer<FileSet> selectedFileset, QStringList fileTypes)
+void tst_QuartusGenerator::setFileTypesForFileSet(QSharedPointer<FileSet> selectedFileset, QSharedPointer<QStringList> fileTypes)
 {
-    foreach (QSharedPointer<File> currentFile, selectedFileset->getFiles())
+    foreach (QSharedPointer<File> currentFile, *selectedFileset->getFiles())
     {
         currentFile->setFileTypes(fileTypes);
     }

@@ -12,7 +12,6 @@
 #ifndef QUARTUSPINSYNTAX_H
 #define QUARTUSPINSYNTAX_H
 
-#include <QString>
 #include <QRegularExpression>
 
 namespace QuartusPinSyntax

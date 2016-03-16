@@ -13,11 +13,7 @@
 
 #include "ModelParameterColumns.h"
 
-#include <IPXACTmodels/choice.h>
-#include <IPXACTmodels/Enumeration.h>
-
 #include <QComboBox>
-#include <QLineEdit>
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterDelegate::ModelParameterDelegate()

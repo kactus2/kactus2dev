@@ -13,11 +13,9 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/design.h>
-#include <IPXACTmodels/designconfiguration.h>
-
-#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 //-----------------------------------------------------------------------------
 // Function: DocumentTreeBuilder::DocumentTreeBuilder()
@@ -81,10 +79,10 @@ QObject* DocumentTreeBuilder::createFromComponent(VLNV const& root) const
     componentNode->setObjectName(root.toString());
     componentNode->setProperty("VLNVType", "Component");
 
-    QSharedPointer<LibraryComponent const> component = library_->getModelReadOnly(root);
+    QSharedPointer<Document const> component = library_->getModelReadOnly(root);
     QSharedPointer<Component const> rootComponent = component.dynamicCast<Component const>();
 
-    if (rootComponent->getComponentImplementation() == KactusAttribute::SW)
+    if (rootComponent->getImplementation() == KactusAttribute::SW)
     {
         componentNode->setProperty("implementation", "SW");
     }
@@ -123,7 +121,7 @@ QObject* DocumentTreeBuilder::createFromDesignConfiguration(VLNV const& designCo
     designConfigNode->setObjectName(designConfiguration.toString());
     designConfigNode->setProperty("VLNVType", "DesignConfiguration");
 
-    QSharedPointer<LibraryComponent const> configModel = library_->getModelReadOnly(designConfiguration);
+    QSharedPointer<Document const> configModel = library_->getModelReadOnly(designConfiguration);
     QSharedPointer<DesignConfiguration const> configuration = configModel.dynamicCast<DesignConfiguration const>();
 
     VLNV designRef = configuration->getDesignRef();
@@ -146,7 +144,7 @@ QObject* DocumentTreeBuilder::createFromDesign(VLNV const& designRef) const
     designNode->setObjectName(designRef.toString());
     designNode->setProperty("VLNVType", "Design");
 
-    QSharedPointer<LibraryComponent const> designModel = library_->getModelReadOnly(designRef);
+    QSharedPointer<Document const> designModel = library_->getModelReadOnly(designRef);
     QSharedPointer<Design const> design = designModel.dynamicCast<Design const>();
 
     if (design->getDesignImplementation() == KactusAttribute::SW)
@@ -162,20 +160,20 @@ QObject* DocumentTreeBuilder::createFromDesign(VLNV const& designRef) const
         designNode->setProperty("implementation", "HW");
     }
 
-    foreach (ComponentInstance swInstance, design->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> hwInstance, *design->getComponentInstances())
     {
-        QObject* instanceNode = createFrom(swInstance.getComponentRef());
+        QObject* instanceNode = createFrom(*hwInstance->getComponentRef());
         instanceNode->setParent(designNode);
 
-        instanceNode->setProperty("instanceName", swInstance.getInstanceName());
+        instanceNode->setProperty("instanceName", hwInstance->getInstanceName());
     }
 
-    foreach (SWInstance swInstance, design->getSWInstances())
+    foreach (QSharedPointer<SWInstance> swInstance, design->getSWInstances())
     {
-        QObject* swInstanceNode = createFrom(swInstance.getComponentRef());
+        QObject* swInstanceNode = createFrom(*swInstance->getComponentRef());
         swInstanceNode->setParent(designNode);
 
-        swInstanceNode->setProperty("instanceName", swInstance.getInstanceName());
+        swInstanceNode->setProperty("instanceName", swInstance->getInstanceName());
     }
 
     return designNode;

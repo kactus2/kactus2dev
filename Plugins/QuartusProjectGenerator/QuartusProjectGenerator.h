@@ -15,8 +15,8 @@
 #include "QuartusProjectGenerator_global.h"
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/component.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QObject>
 #include <QSharedPointer>
@@ -115,9 +115,9 @@ public:
      *
      *      @return True, if the generator supports the given component, otherwise false.
      */
-    virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp,
-        QSharedPointer<LibraryComponent const> libDesConf = QSharedPointer<LibraryComponent const>(),
-        QSharedPointer<LibraryComponent const> libDes = QSharedPointer<LibraryComponent const>()) const;
+    virtual bool checkGeneratorSupport(QSharedPointer<Document const> libComp,
+        QSharedPointer<Document const> libDesConf = QSharedPointer<Document const>(),
+        QSharedPointer<Document const> libDes = QSharedPointer<Document const>()) const;
 
     /*!
      *  Runs the generator.
@@ -127,9 +127,9 @@ public:
      *      @param [in] libDesConf  The design configuration if the generator is run on a hierarchical component.
      *      @param [in] libDes      The design if the generator is run on a hierarchical component.
      */
-    virtual void runGenerator(IPluginUtility* utility, QSharedPointer<LibraryComponent> libComp,
-        QSharedPointer<LibraryComponent> libDesConf = QSharedPointer<LibraryComponent>(),
-        QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent>());
+    virtual void runGenerator(IPluginUtility* utility, QSharedPointer<Document> libComp,
+        QSharedPointer<Document> libDesConf = QSharedPointer<Document>(),
+        QSharedPointer<Document> libDes = QSharedPointer<Document>());
 
     /*!
      *  Get a list of external program requirements of the plugin.
@@ -171,7 +171,7 @@ private:
      *
      *      @return The name of the view referencing to the open design.
      */
-    QString getOpenViewName(QSharedPointer<LibraryComponent> libDesConf, QSharedPointer<LibraryComponent> libDes,
+    QString getOpenViewName(QSharedPointer<Document> libDesConf, QSharedPointer<Document> libDes,
         QSharedPointer<Component> component);
 
 	//! The plugin utility.

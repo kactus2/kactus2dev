@@ -19,7 +19,9 @@
 #include <QTextEdit>
 
 class BusInterfaceWizard;
+class BusInterfaceValidator;
 class LibraryInterface;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Port map page for the bus interface wizard.
@@ -37,10 +39,13 @@ public:
      *      @param [in] busIf           The bus interface being edited.
      *      @param [in] lh              The component library handler.
      *      @param [in] physicalPorts   The physical ports selected for mapping.
+     *      @param [in] validator       The validator for bus interface.
      *      @param [in] parent          The parent wizard.
      */
     BusInterfaceWizardPortMapPage(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf, 
-        LibraryInterface* lh, QStringList physicalPorts, BusInterfaceWizard* parent);
+        LibraryInterface* lh, QStringList physicalPorts, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<BusInterfaceValidator> validator,
+        BusInterfaceWizard* parent);
 
     /*!
     *  Destructor.
@@ -56,16 +61,18 @@ public:
     *  Initializes the page.
     */
     virtual void initializePage();
-
+    
     /*!
-    *  Validates the page.
-    */
-    virtual bool validatePage();
+     * Checks if all the required fields on the page are valid.
+     *
+     *      @return True, if all fields are valid, otherwise false.
+     */
+    virtual bool isComplete() const;
 
 private slots:
     
     //! Handler for error messages.
-    virtual void showErrorMessage(const QString& msg);
+    virtual void showErrorMessage(QString const& msg);
 
 private:
     // Disable copying.
@@ -92,6 +99,8 @@ private:
 
     //! The widget for editing port maps.
     BusIfPortmapTab portMapTab_;
+
+    QSharedPointer<BusInterfaceValidator> validator_;
 
 };
 

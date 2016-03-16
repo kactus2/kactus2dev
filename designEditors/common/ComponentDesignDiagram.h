@@ -19,12 +19,12 @@
 #include <QUndoCommand>
 
 class ComponentItem;
-class GenericEditProvider;
-class GraphicsColumn;
-class DesignWidget;
-class LibraryInterface;
 class ConnectionEndpoint;
+class DesignWidget;
+class GraphicsColumn;
 class GraphicsConnection;
+class LibraryInterface;
+class IEditProvider;
 
 //-----------------------------------------------------------------------------
 // ComponentDesignDiagram is a base class for component designs.
@@ -38,7 +38,7 @@ public:
     /*!
      *  Constructor.
      */
-    ComponentDesignDiagram(LibraryInterface* lh, GenericEditProvider& editProvider, DesignWidget* parent = 0);
+    ComponentDesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, DesignWidget* parent = 0);
 
 	//! \brief The destructor
 	virtual ~ComponentDesignDiagram();
@@ -258,6 +258,13 @@ protected:
      */
     virtual int connectionType() const = 0;
 
+    /*!
+     *  Find the cursor position mapped to the current scene.
+     *
+     *      @return The cursor position mapped to the current scene.
+     */
+    QPointF findCursorPositionMappedToScene();
+
 private:
     // Disable copying.
     ComponentDesignDiagram(ComponentDesignDiagram const& rhs);
@@ -292,7 +299,7 @@ private:
      *
      *      @param [in] cursorPosition   The cursor position.     
      */
-    void setConnectionStaringPoint(QPointF const& cursorPosition);
+    void setConnectionStartingPoint(QPointF const& cursorPosition);
 
     /*!
      *  Checks if the starting point of current connection is set.

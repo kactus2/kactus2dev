@@ -27,8 +27,6 @@ namespace RegisterColumns
         TESTABLE_COLUMN,
         TEST_CONSTR_COLUMN,
         IS_PRESENT_COLUMN,
-        RESET_VALUE_COLUMN,
-        RESET_MASK_COLUMN,
         DESCRIPTION_COLUMN,
         COLUMN_COUNT
     };

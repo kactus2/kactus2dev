@@ -6,22 +6,27 @@
  */
 
 #include "busifinterfacemonitor.h"
-#include <IPXACTmodels/generaldeclarations.h>
-#include "busifgeneraltab.h"
+
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/busdefinition.h>
+
+#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/VLNV.h>
+
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QGridLayout>
 #include <QLabel>
 
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMonitor::BusIfInterfaceMonitor()
+//-----------------------------------------------------------------------------
 BusIfInterfaceMonitor::BusIfInterfaceMonitor(QSharedPointer<BusInterface> busif, 
 											 QSharedPointer<Component> component,
-											 BusIfGeneralTab* generalTab,
 											 LibraryInterface* libHandler,
 											 QWidget *parent): 
 BusIfInterfaceModeEditor(busif, component, tr("Monitor"), parent),
-generalTab_(generalTab),
 libHandler_(libHandler),
 monitor_(QSharedPointer<BusInterface::MonitorInterface>(new BusInterface::MonitorInterface())),
 interfaceMode_(this, QSharedPointer<BusInterface>(), false),
@@ -40,38 +45,50 @@ systemGroup_(this) {
 
 	connect(&interfaceMode_, SIGNAL(modeSelected(General::InterfaceMode)),
 		this, SLOT(onInterfaceModeChange(General::InterfaceMode)), Qt::UniqueConnection);
-	connect(&systemGroup_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onSystemGroupChange(const QString&)), Qt::UniqueConnection);
+	connect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
+		this, SLOT(onSystemGroupChange(QString const&)), Qt::UniqueConnection);
 }
 
-BusIfInterfaceMonitor::~BusIfInterfaceMonitor() {
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMonitor::~BusIfInterfaceMonitor()
+//-----------------------------------------------------------------------------
+BusIfInterfaceMonitor::~BusIfInterfaceMonitor()
+{
 }
 
-bool BusIfInterfaceMonitor::isValid() const {
-	
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMonitor::isValid()
+//-----------------------------------------------------------------------------
+bool BusIfInterfaceMonitor::isValid() const
+{
 	// if no interface mode is not defined
-	if (interfaceMode_.currentText().isEmpty()) {
+	if (interfaceMode_.currentText().isEmpty())
+    {
 		return false;
 	}
 
 	// if interface mode is system or mirrored system but group is not defined
 	else if ((interfaceMode_.selected() == General::SYSTEM ||
 		interfaceMode_.selected() == General::MIRROREDSYSTEM) && 
-		(systemGroup_.currentText().isEmpty())) {
-	
+		(systemGroup_.currentText().isEmpty()))
+    {
 		return false;
 	}
 
-	// all ok
 	return true;
 }
 
-void BusIfInterfaceMonitor::refresh() {
-
-	if (busif_->getMonitor()) {
+//-----------------------------------------------------------------------------
+// Function: BusIfInterfaceMonitor::refresh()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceMonitor::refresh()
+{
+	if (busif_->getMonitor())
+    {
 		monitor_ = busif_->getMonitor();
 	}
-	else {
+	else
+    {
 		monitor_ = QSharedPointer<BusInterface::MonitorInterface>(new BusInterface::MonitorInterface());
 	}
 	
@@ -82,8 +99,8 @@ void BusIfInterfaceMonitor::refresh() {
 	interfaceMode_.setMode(monitorMode);
 
 	// disconnect the combo box to avoid emitting signals
-	disconnect(&systemGroup_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onSystemGroupChange(const QString&)));
+	disconnect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
+		this, SLOT(onSystemGroupChange(QString const&)));
 
 	// clear the previous items from the group combo box
 	systemGroup_.clear();
@@ -96,14 +113,15 @@ void BusIfInterfaceMonitor::refresh() {
 			systemGroup_.setEnabled(true);
 
 			// find the current bus definition
-			VLNV busDefVLNV = generalTab_->getBusType();
+			VLNV busDefVLNV = busif_->getBusType();
 			
 			// if there is no bus definition
-			if (!libHandler_->contains(busDefVLNV)) {
+			if (!libHandler_->contains(busDefVLNV))
+            {
 				break;
 			}
 
-			QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(busDefVLNV);
+			QSharedPointer<Document> libComp = libHandler_->getModel(busDefVLNV);
 			Q_ASSERT(libComp);
 				
 			// if the library component with given vlnv was not a bus definition
@@ -135,8 +153,8 @@ void BusIfInterfaceMonitor::refresh() {
 	}
 
 	// reconnect the combo box
-	connect(&systemGroup_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onSystemGroupChange(const QString&)), Qt::UniqueConnection);	
+	connect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
+		this, SLOT(onSystemGroupChange(QString const&)), Qt::UniqueConnection);	
 }
 
 General::InterfaceMode BusIfInterfaceMonitor::getInterfaceMode() const {
@@ -147,7 +165,7 @@ void BusIfInterfaceMonitor::saveModeSpecific() {
 	busif_->setMonitor(monitor_);
 }
 
-void BusIfInterfaceMonitor::onSystemGroupChange( const QString& groupName ) {
+void BusIfInterfaceMonitor::onSystemGroupChange( QString const& groupName ) {
 	monitor_->group_ = groupName;
 	emit contentChanged();
 }
@@ -158,8 +176,8 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
 	monitor_->interfaceMode_ = mode;
 
 	// disconnect the combo box to avoid emitting signals
-	disconnect(&systemGroup_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onSystemGroupChange(const QString&)));
+	disconnect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
+		this, SLOT(onSystemGroupChange(QString const&)));
 
 	systemGroup_.clear();
 
@@ -170,14 +188,14 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
 		case General::MIRROREDSYSTEM: {
 			systemGroup_.setEnabled(true);
 			// find the current bus definition
-			VLNV busDefVLNV = generalTab_->getBusType();
+			VLNV busDefVLNV = busif_->getBusType();
 
 			// if there is no bus definition
 			if (!libHandler_->contains(busDefVLNV)) {
 				break;
 			}
 
-			QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(busDefVLNV);
+			QSharedPointer<Document> libComp = libHandler_->getModel(busDefVLNV);
 			Q_ASSERT(libComp);
 
 			// if the library component with given vlnv was not a bus definition
@@ -210,8 +228,8 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
 	}
 
 	// reconnect the combo box
-	connect(&systemGroup_, SIGNAL(currentIndexChanged(const QString&)),
-		this, SLOT(onSystemGroupChange(const QString&)), Qt::UniqueConnection);
+	connect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),
+		this, SLOT(onSystemGroupChange(QString const&)), Qt::UniqueConnection);
 
 	emit contentChanged();
 }

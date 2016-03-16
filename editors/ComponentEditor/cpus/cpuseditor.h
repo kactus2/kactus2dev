@@ -1,74 +1,72 @@
-/* 
- *  	Created on: 14.6.2012
- *      Author: Antti Kamppi
- * 		filename: cpuseditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: cpuseditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 14.06.2012
+//
+// Description:
+// Editor to add/remove/edit the cpu-elements of a component.
+//-----------------------------------------------------------------------------
 
 #ifndef CPUSEDITOR_H
 #define CPUSEDITOR_H
 
 #include <common/views/EditableTableView/editabletableview.h>
+
 #include <editors/ComponentEditor/itemeditor.h>
-#include <IPXACTmodels/component.h>
+
 #include "cpusmodel.h"
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 
+class Component;
+class CPUValidator;
 class LibraryInterface;
 
-/*! \brief Editor to add/remove/edit the cpu-elements of a component.
- *
- */
-class CpusEditor : public ItemEditor {
+//-----------------------------------------------------------------------------
+//! Editor to add/remove/edit the cpu-elements of a component.
+//-----------------------------------------------------------------------------
+class CpusEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param component Pointer to the component being edited.
-	 * \param handler Pointer to the instance managing the library.
-	 * \param parent Pointer to the parent of this editor.
-	 *
+	 *      @param [in] component   The component being edited.
+	 *      @param [in] handler     The instance managing the library.
+     *      @param [in] validator   The validator for cpus.
+	 *      @param [in] parent      The parent of this editor.
 	*/
-	CpusEditor(QSharedPointer<Component> component,
-		LibraryInterface* handler, 
-				QWidget* parent = 0);
+	CpusEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
+        QSharedPointer<CPUValidator> validator, QWidget* parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~CpusEditor();
 
-	/*! \brief Check for the validity of the editor
-	* 
-	* \return True if the editor is in valid state.
-	*/
-	virtual bool isValid() const;
-
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	//! Reload the information from the model to the editor.	
 	virtual void refresh();
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event
 	virtual void showEvent(QShowEvent* event);
 
 private:
-	//! \brief No copying
+	//! No copying
 	CpusEditor(const CpusEditor& other);
-
-	//! \brief No assignment
 	CpusEditor& operator=(const CpusEditor& other);
 
-	//! \brief The view to display the cpus
+	//! The view to display the cpus
 	EditableTableView view_;
 
-	//! \brief The model that does the sorting.
+	//! The model that does the sorting.
 	QSortFilterProxyModel proxy_;
 
-	//! \brief The model that manages the cpus of the editor.
+	//! The model that manages the cpus of the editor.
 	CpusModel model_;
 };
 

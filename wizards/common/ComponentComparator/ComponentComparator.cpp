@@ -11,14 +11,14 @@
 
 #include "ComponentComparator.h"
 #include <wizards/common/VLNVComparator/VLNVComparator.h>
-#include <wizards/common/ModelParameterComparator/ModelParameterComparator.h>
 #include <wizards/common/ParameterComparator/ParameterComparator.h>
 #include <wizards/common/PortComparator/PortComparator.h>
 #include <wizards/common/ViewComparator/ViewComparator.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/modelparameter.h>
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/View.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentComparator::ComponentComparator()
@@ -51,22 +51,11 @@ QList<QSharedPointer<IPXactDiff> > ComponentComparator::diff(QSharedPointer<cons
 bool ComponentComparator::compareVLNVs(QSharedPointer<const Component> referenceComponent,
     QSharedPointer<const Component> subjectComponent) const
 {   
-    QSharedPointer<VLNV> referenceVLNV(new VLNV(*referenceComponent->getVlnv()));
-    QSharedPointer<VLNV> subjectVLNV(new VLNV(*subjectComponent->getVlnv()));
+    QSharedPointer<VLNV> referenceVLNV(new VLNV(referenceComponent->getVlnv()));
+    QSharedPointer<VLNV> subjectVLNV(new VLNV(subjectComponent->getVlnv()));
 
     VLNVComparator vlnvComparator;
     return vlnvComparator.compare(referenceVLNV, subjectVLNV);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentComparator::compareModelParameters()
-//-----------------------------------------------------------------------------
-bool ComponentComparator::compareModelParameters(QSharedPointer<const Component> referenceComponent, 
-    QSharedPointer<const Component> subjectComponent) const
-{
-    ModelParameterComparator modelParameterComparator;
-    return modelParameterComparator.compare(*referenceComponent->getModelParameters(),
-        *subjectComponent->getModelParameters());
 }
 
 //-----------------------------------------------------------------------------
@@ -86,7 +75,7 @@ bool ComponentComparator::comparePorts(QSharedPointer<const Component> first,
     QSharedPointer<const Component> second) const
 {
     PortComparator portComparator;
-    return portComparator.compare(first->getPorts(), second->getPorts());
+    return portComparator.compare(*first->getPorts().data(), *second->getPorts().data());
 }
 
 //-----------------------------------------------------------------------------
@@ -96,7 +85,7 @@ bool ComponentComparator::compareViews(QSharedPointer<const Component> first,
     QSharedPointer<const Component> second) const
 {
     ViewComparator viewComparator;
-    return viewComparator.compare(first->getViews(), second->getViews());
+    return viewComparator.compare(*first->getViews().data(), *second->getViews().data());
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +103,6 @@ bool ComponentComparator::compareFields(QSharedPointer<const Component> first,
     QSharedPointer<const Component> second) const
 {
     return compareVLNVs(first, second) &&
-        compareModelParameters(first, second) &&
         comparePorts(first, second) &&
         compareViews(first, second);
 }
@@ -130,16 +118,9 @@ QList<QSharedPointer<IPXactDiff> > ComponentComparator::diffFields(QSharedPointe
     if (!compareVLNVs(reference, subject))
     {
         VLNVComparator vlnvComparator;
-        QSharedPointer<VLNV> referenceVLNV(new VLNV(*reference->getVlnv()));
-        QSharedPointer<VLNV> otherVLNV(new VLNV(*subject->getVlnv()));
+        QSharedPointer<VLNV> referenceVLNV(new VLNV(reference->getVlnv()));
+        QSharedPointer<VLNV> otherVLNV(new VLNV(subject->getVlnv()));
         diffResult.append(vlnvComparator.diff(referenceVLNV, otherVLNV));
-    }
-
-    if (!compareModelParameters(reference, subject))
-    {
-        ModelParameterComparator modelParameterComparator;
-        diffResult.append(modelParameterComparator.diff(*reference->getModelParameters(), 
-            *subject->getModelParameters()));
     }
 
     if (!compareParameters(reference, subject))
@@ -151,13 +132,13 @@ QList<QSharedPointer<IPXactDiff> > ComponentComparator::diffFields(QSharedPointe
     if (!comparePorts(reference, subject))
     {
         PortComparator portComparator;
-        diffResult.append(portComparator.diff(reference->getPorts(), subject->getPorts()));
+        diffResult.append(portComparator.diff(*reference->getPorts().data(), *subject->getPorts().data()));
     }
 
     if (!compareViews(reference, subject))
     {
         ViewComparator viewComparator;
-        diffResult.append(viewComparator.diff(reference->getViews(), subject->getViews()));
+        diffResult.append(viewComparator.diff(*reference->getViews().data(), *subject->getViews().data()));
     }
 
     return diffResult;

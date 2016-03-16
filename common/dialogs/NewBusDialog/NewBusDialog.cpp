@@ -12,11 +12,15 @@
 #include "NewBusDialog.h"
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
-#include <IPXACTmodels/abstractiondefinition.h>
-#include <IPXACTmodels/busdefinition.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/component.h>
+
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
+
+#include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/Component.h>
+
 #include <library/LibraryManager/libraryinterface.h>
+
 #include <editors/BusEditor/absdefgroup.h>
 #include <editors/BusEditor/busdefgroup.h>
 

@@ -10,45 +10,70 @@
 //-----------------------------------------------------------------------------
 
 #include "ComponentEditorSystemViewItem.h"
+
 #include <editors/ComponentEditor/software/systemView/SystemViewEditor.h>
 
-ComponentEditorSystemViewItem::ComponentEditorSystemViewItem(
-	QSharedPointer<SystemView> systemView,
-	ComponentEditorTreeModel* model,
-	LibraryInterface* libHandler,
-	QSharedPointer<Component> component,
-	ComponentEditorItem* parent):
+#include <library/LibraryManager/libraryinterface.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSystemViewItem::ComponentEditorSystemViewItem()
+//-----------------------------------------------------------------------------
+ComponentEditorSystemViewItem::ComponentEditorSystemViewItem(QSharedPointer<SystemView> systemView,
+    ComponentEditorTreeModel* model, 
+    LibraryInterface* libHandler,
+    QSharedPointer<Component> component,
+    ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-systemView_(systemView),
-editAction_(new QAction(tr("Edit"), this))
+    systemView_(systemView),
+    editAction_(new QAction(tr("Edit"), this))
 {
-	Q_ASSERT(systemView_);
+    Q_ASSERT(systemView_);
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
 }
 
-ComponentEditorSystemViewItem::~ComponentEditorSystemViewItem() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSystemViewItem::~ComponentEditorSystemViewItem()
+//-----------------------------------------------------------------------------
+ComponentEditorSystemViewItem::~ComponentEditorSystemViewItem()
+{
 }
 
-QString ComponentEditorSystemViewItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSystemViewItem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorSystemViewItem::getTooltip() const
+{
 	return tr("Contains the details of a software view");
 }
 
-QString ComponentEditorSystemViewItem::text() const {
-	return systemView_->getName();
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSystemViewItem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorSystemViewItem::text() const
+{
+	return systemView_->name();
 }
 
-bool ComponentEditorSystemViewItem::isValid() const {
-
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSystemViewItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorSystemViewItem::isValid() const
+{
 	QStringList fileSetNames = component_->getFileSetNames();
 	QStringList viewNames = component_->getViewNames();
 
 	// if system view is not valid
-	if (!systemView_->isValid(fileSetNames, viewNames)) {
+	if (!systemView_->isValid(fileSetNames, viewNames))
+    {
 		return false;
 	}
 
 	// check that the reference is found
-	if (!libHandler_->contains(systemView_->getHierarchyRef())) {
+	if (!libHandler_->contains(systemView_->getHierarchyRef()))
+    {
 		return false;
 	}
 
@@ -56,31 +81,39 @@ bool ComponentEditorSystemViewItem::isValid() const {
 	return true;
 }
 
-ItemEditor* ComponentEditorSystemViewItem::editor() {
-	if (!editor_) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSystemViewItem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorSystemViewItem::editor()
+{
+	if (!editor_)
+    {
 		editor_ = new SystemViewEditor(component_, systemView_, libHandler_, NULL);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()),
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 	}
+
 	return editor_;
 }
 
-bool ComponentEditorSystemViewItem::canBeOpened() const {
-
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSystemViewItem::canBeOpened()
+//-----------------------------------------------------------------------------
+bool ComponentEditorSystemViewItem::canBeOpened() const
+{
 	// if the library does not contain the referenced object
-	if (!libHandler_->contains(systemView_->getHierarchyRef())) {
+	if (!libHandler_->contains(systemView_->getHierarchyRef()))
+    {
 		return false;
 	}
 
 	// check that the reference has not been changed
 	// if it has then there is no way to open the design because the changes have not
 	// been made to the library
-	QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(*component_->getVlnv());
+	QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(component_->getVlnv());
 	QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
-	VLNV originalRef = comp->getHierSystemRef(systemView_->getName());
+	VLNV originalRef = comp->getHierSystemRef(systemView_->name());
 	return originalRef == systemView_->getHierarchyRef();
 }
 
@@ -95,15 +128,19 @@ QList<QAction*> ComponentEditorSystemViewItem::actions() const
     return actionList;   
 }
 
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSystemViewItem::openItem()
+//-----------------------------------------------------------------------------
 void ComponentEditorSystemViewItem::openItem()
 {
 	// if item can't be opened
-	if (!canBeOpened()) {
+	if (!canBeOpened())
+    {
 		emit errorMessage(tr("The changes to component must be saved before view can be opened."));
 		return;
 	}
 
-	QString viewName = systemView_->getName();
-	VLNV compVLNV = *component_->getVlnv();
+	QString viewName = systemView_->name();
+	VLNV compVLNV = component_->getVlnv();
 	emit openSystemDesign(compVLNV, viewName);
 }

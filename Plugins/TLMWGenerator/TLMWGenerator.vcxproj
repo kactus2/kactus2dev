@@ -187,6 +187,7 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\NameGenerationPolicy.cpp" />
     <ClCompile Include="CSourceWriter.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_TLMWGeneratorPlugin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
@@ -263,6 +264,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\NameGenerationPolicy.h" />
     <ClInclude Include="CSourceWriter.h" />
     <ClInclude Include="TLMWHeaderGenerator.h" />
     <ClInclude Include="TLMWParser.h" />
@@ -292,6 +294,11 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DQT_DLL -DQT_CORE_LIB -DQT_GUI_LIB -DQT_PRINTSUPPORT_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -DQT_XMLPATTERNS_LIB "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtPrintSupport" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtXml" "-I$(QTDIR)\..\qtxmlpatterns\include\QtXmlPatterns" "-I$(QTDIR)\..\qtxmlpatterns\include"</Command>
     </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Kactus2.vcxproj">
+      <Project>{09486b51-70a7-3073-b15b-6d4baf3ec8c6}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

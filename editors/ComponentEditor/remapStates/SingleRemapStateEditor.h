@@ -17,8 +17,7 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
-#include <IPXACTmodels/remapstate.h>
-
+class RemapState;
 //-----------------------------------------------------------------------------
 //! Editor to edit a remap state within a component.
 //-----------------------------------------------------------------------------
@@ -47,13 +46,6 @@ public:
 
 	//! The destructor
     virtual ~SingleRemapStateEditor();
-
-    /*!
-	 *  Check for the validity of the edited remap state.
-	 *
-     *      @return True, if the remap state is valid, false otherwise.
-	 */
-	virtual bool isValid() const;
 
 	/*!
 	 *  Reload the information from the model to the editor.

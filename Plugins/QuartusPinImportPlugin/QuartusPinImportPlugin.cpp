@@ -11,21 +11,12 @@
 
 
 #include "QuartusPinImportPlugin.h"
-
 #include "QuartusPinSyntax.h"
 
-#include <Plugins/PluginSystem/IPluginUtility.h>
-#include <Plugins/PluginSystem/ImportPlugin/Highlighter.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-
-#include <library/LibraryManager/libraryinterface.h>
-
-#include <QRegularExpression>
-#include <QStringList>
-#include <QtPlugin>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::QuartusPinImportPlugin()
@@ -139,9 +130,9 @@ void QuartusPinImportPlugin::import(QString const& input, QSharedPointer<Compone
         highlighter_->applyFontColor(input, QColor("gray"));
     }
 
-    foreach (QSharedPointer<Port> existingPort, targetComponent->getPorts())
+    foreach (QSharedPointer<Port> existingPort, *targetComponent->getPorts())
     {
-        existingPort->setDirection(General::DIRECTION_PHANTOM);
+        existingPort->setDirection(DirectionTypes::DIRECTION_PHANTOM);
     }
 
     foreach (QString line, input.split(QRegularExpression("(\\r\\n?|\\n\\r?)")))
@@ -169,15 +160,15 @@ void QuartusPinImportPlugin::createPort(QString const& line, QSharedPointer<Comp
     QString portName = lineMatch.captured(QuartusPinSyntax::LOCATION);
 
     QString direction = lineMatch.captured(QuartusPinSyntax::DIRECTION);
-    General::Direction portDirection = parseDirection(direction);
+    DirectionTypes::Direction portDirection = parseDirection(direction);
 
     QString description = lineMatch.captured(QuartusPinSyntax::PINUSAGE);
 
     QSharedPointer<Port> port = targetComponent->getPort(portName);
     if (port.isNull())
     {
-        port = QSharedPointer<Port>(new Port(portName, General::DIRECTION_PHANTOM, 0, 0, "", "", "", ""));
-        targetComponent->addPort(port);
+        port = QSharedPointer<Port>(new Port(portName, DirectionTypes::DIRECTION_PHANTOM));
+        targetComponent->getPorts()->append(port);
     }
 
     port->setDirection(portDirection);
@@ -188,23 +179,23 @@ void QuartusPinImportPlugin::createPort(QString const& line, QSharedPointer<Comp
 //-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::parseDirection()
 //-----------------------------------------------------------------------------
-General::Direction QuartusPinImportPlugin::parseDirection(QString const& direction)
+DirectionTypes::Direction QuartusPinImportPlugin::parseDirection(QString const& direction)
 {
     if (QRegularExpression("input", QRegularExpression::CaseInsensitiveOption).match(direction).hasMatch())
     {
-        return General::IN;
+        return DirectionTypes::IN;
     }
     else if (QRegularExpression("output", QRegularExpression::CaseInsensitiveOption).match(direction).hasMatch())
     {
-        return General::OUT;
+        return DirectionTypes::OUT;
     }
     else if (QRegularExpression("bidir|power|gnd",
         QRegularExpression::CaseInsensitiveOption).match(direction).hasMatch())
     {
-        return General::INOUT;
+        return DirectionTypes::INOUT;
     }
     else
     {
-        return General::DIRECTION_PHANTOM;
+        return DirectionTypes::DIRECTION_PHANTOM;
     }
 }

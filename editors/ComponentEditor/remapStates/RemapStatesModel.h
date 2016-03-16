@@ -12,12 +12,11 @@
 #ifndef REMAPSTATESMODEL_H
 #define REMAPSTATESMODEL_H
 
-#include <IPXACTmodels/remapstate.h>
-
 #include <QAbstractTableModel>
 #include <QList>
 #include <QSharedPointer>
 
+class RemapState;
 //-----------------------------------------------------------------------------
 //! The model to manage the remap states summary.
 //-----------------------------------------------------------------------------
@@ -104,13 +103,6 @@ public:
 	 *      @param [in] role    What kind of data should be saved.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-
-	/*!
-	 *  Check if the views model is in a valid state.
-	 *
-     *      @return True, if the state is valid and writing is possible, false otherwise.
-	 */
-	bool isValid() const;
 
 public slots:
 

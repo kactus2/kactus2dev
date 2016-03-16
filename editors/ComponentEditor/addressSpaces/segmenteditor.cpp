@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.2.2012
- *      Author: Antti Kamppi
- * 		filename: segmenteditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: segmenteditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.02.2012
+//
+// Description:
+// The editor to edit the segments of an address space.
+//-----------------------------------------------------------------------------
 
 #include "segmenteditor.h"
 
@@ -13,18 +17,19 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
 
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressSpace.h>
+#include <IPXACTmodels/Component/Segment.h>
+
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: SegmentEditor::SegmentEditor()
 //-----------------------------------------------------------------------------
-SegmentEditor::SegmentEditor(QSharedPointer<AddressSpace> addrSpace, 
-	QSharedPointer<Component> component,
-    QString const& componentPath,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-							 QWidget *parent ):
+SegmentEditor::SegmentEditor(QSharedPointer<AddressSpace> addrSpace, QSharedPointer<Component> component,
+                             QString const& componentPath, QSharedPointer<ParameterFinder> parameterFinder,
+                             QSharedPointer<ExpressionParser> expressionParser,
+                             QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent ):
 QGroupBox(tr("Segments"), parent),
 view_(this),
 model_(addrSpace, parameterFinder, expressionFormatter, this),
@@ -32,8 +37,7 @@ component_(component)
 {
     model_.setExpressionParser(expressionParser);
 
-	connect(&model_, SIGNAL(contentChanged()),
-		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(errorMessage(const QString&)),
@@ -88,6 +92,7 @@ component_(component)
 //-----------------------------------------------------------------------------
 SegmentEditor::~SegmentEditor()
 {
+
 }
 
 //-----------------------------------------------------------------------------

@@ -90,7 +90,7 @@ void DialerWidget::refreshVendors()
     QStringList vendorList;
     foreach (LibraryItem* item, vendors_) 
     {
-        vendorList.append(item->getName());
+        vendorList.append(item->name());
     }
     vendorList.removeDuplicates();
 
@@ -122,7 +122,9 @@ void DialerWidget::onVendorChanged(QString const& vendorText)
 
 	// if the last character is not '?' then append '*' to the string
 	if (!vendor.endsWith(QString("?"), Qt::CaseInsensitive))
+    {
 		vendor += QString("*");
+    }
 
 	QRegExp regExp(vendor, Qt::CaseInsensitive, QRegExp::Wildcard);
 	QRegExpValidator validator(regExp, this);
@@ -131,7 +133,7 @@ void DialerWidget::onVendorChanged(QString const& vendorText)
 	int pos = 0;
 	foreach (LibraryItem* item, vendors_)
     {
-		QString name = item->getName();
+		QString name = item->name();
 		if (validator.validate(name, pos) == QValidator::Acceptable)
         {
 			libraries_ += item->getLibraries();
@@ -142,7 +144,7 @@ void DialerWidget::onVendorChanged(QString const& vendorText)
 	QStringList libraryList;
     foreach (LibraryItem* item, libraries_)
     {
-        libraryList.append(item->getName());
+        libraryList.append(item->name());
     }
     libraryList.removeDuplicates();
 
@@ -185,7 +187,7 @@ void DialerWidget::onLibraryChanged(QString const& libraryText)
     int pos = 0;
     foreach (LibraryItem* item, libraries_)
     {
-        QString name = item->getName();
+        QString name = item->name();
         if (validator.validate(name, pos) == QValidator::Acceptable)
         {
             names_ += item->getNames();
@@ -196,7 +198,7 @@ void DialerWidget::onLibraryChanged(QString const& libraryText)
 	QStringList nameList;
     foreach (LibraryItem* item, names_)
     {
-        nameList.append(item->getName());
+        nameList.append(item->name());
     }
     nameList.removeDuplicates();
 
@@ -239,7 +241,7 @@ void DialerWidget::onNameChanged(QString const& nameText)
 	int pos = 0;
 	foreach (LibraryItem* item, names_)
     {
-        QString name = item->getName();
+        QString name = item->name();
         if (validator.validate(name, pos) == QValidator::Acceptable)
         {
             versions_ += item->getVersions();
@@ -250,7 +252,7 @@ void DialerWidget::onNameChanged(QString const& nameText)
 	QStringList versionList;
     foreach (LibraryItem* item, versions_)
     {
-        versionList.append(item->getName());
+        versionList.append(item->name());
     }
     versionList.removeDuplicates();
 

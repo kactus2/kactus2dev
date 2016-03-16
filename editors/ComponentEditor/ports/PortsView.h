@@ -8,13 +8,11 @@
 // Description:
 // View for port editor.
 //-----------------------------------------------------------------------------
-#ifndef PortsView_H
-#define PortsView_H
+
+#ifndef PORTSVIEW_H
+#define PORTSVIEW_H
 
 #include <common/views/EditableTableView/ColumnFreezableTable.h>
-
-#include <IPXACTmodels/port.h>
-#include <IPXACTmodels/component.h>
 
 #include <QAction>
 
@@ -34,9 +32,7 @@ public:
 	 */
 	PortsView(QWidget *parent);
 
-	/*!
-	 *  The destructor.
-	 */
+	//! The destructor.
 	virtual ~PortsView();
 
 signals:
@@ -69,4 +65,4 @@ private:
     QAction createExistingBus_;
 };
 
-#endif // PortsView_H
+#endif // PORTSVIEW_H

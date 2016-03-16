@@ -16,10 +16,10 @@
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialog.h>
 
-#include <IPXACTmodels/SWView.h>
-#include <IPXACTmodels/SystemView.h>
-#include <IPXACTmodels/fileset.h>
-#include <IPXACTmodels/librarycomponent.h>
+#include <IPXACTmodels/kactusExtensions/SWView.h>
+#include <IPXACTmodels/kactusExtensions/SystemView.h>
+
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <QDate>
 #include <QDir>
@@ -50,29 +50,20 @@ SystemMemoryMapHeaderWriter::~SystemMemoryMapHeaderWriter()
 void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component> component,
     QSharedPointer<DesignConfiguration> designConfiguration, QSharedPointer<Design> design)
 {
+    Q_ASSERT(component);
+    Q_ASSERT(designConfiguration);
+    Q_ASSERT(design);
+    Q_ASSERT(utility_);
+
     QSharedPointer<SystemView> systemView = findSystemView(component, designConfiguration);
 
-    QString hwViewName = systemView->getHWViewRef();
-
-    VLNV designVLNV;
-    foreach (QSharedPointer<View> hwView, component->getViews())
-    {
-        if (hwView->getName() == hwViewName)
-        {
-            designVLNV = hwView->getHierarchyRef();
-        }
-    }
+    VLNV designVLNV = component->getModel()->getHierRef(systemView->getHWViewRef());
 
     QSharedPointer<Design> hwDesign = utility_->getLibraryInterface()->getDesign(designVLNV);
 
-    Q_ASSERT(component);
-    Q_ASSERT(designConfiguration);
-	Q_ASSERT(design);
-	Q_ASSERT(utility_);
-
     systemGeneratorSettings_.clear();
 
-    QSharedPointer<SystemView> sysView = component->findSystemView(*designConfiguration->getVlnv());
+    QSharedPointer<SystemView> sysView = component->findSystemView(designConfiguration->getVlnv());
 	Q_ASSERT(sysView);
 
 	QStringList usedFileTypes;
@@ -80,11 +71,10 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 	usedFileTypes.append("cppSource");
 
 	// find all CPU instances
-	foreach (const ComponentInstance& instance, design->getComponentInstances())
+	foreach (QSharedPointer<const ComponentInstance> instance, *design->getComponentInstances())
     {
-		VLNV instanceVLNV = instance.getComponentRef();
-		QSharedPointer<const LibraryComponent> libComp = utility_->getLibraryInterface()->
-            getModelReadOnly(instanceVLNV);
+		VLNV instanceVLNV = *instance->getComponentRef();
+		QSharedPointer<const Document> libComp = utility_->getLibraryInterface()->getModelReadOnly(instanceVLNV);
 		QSharedPointer<const Component> instComponent = libComp.dynamicCast<const Component>();
 		Q_ASSERT(instComponent);
 
@@ -94,29 +84,40 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 		}
 
 		// create header settings object for the CPU instance
-		SystemHeaderSaveModel::SysHeaderOptions systemHeaderOption(instance.getInstanceName(), instanceVLNV);
+		SystemHeaderSaveModel::SysHeaderOptions systemHeaderOption(instance->getInstanceName(), instanceVLNV);
 
-		systemHeaderOption.instanceId_ = instance.getUuid();
+		systemHeaderOption.instanceId_ = instance->getUuid();
 
-        QString activeView = designConfiguration->getActiveView(instance.getInstanceName());
-		if (!activeView.isEmpty() && instComponent->hasSWView(activeView))
+        QString activeView = designConfiguration->getActiveView(instance->getInstanceName());
+		if (!activeView.isEmpty())
         {
-			QSharedPointer<SWView> swView = instComponent->findSWView(activeView);
-			QStringList fileSets = swView->getFileSetRefs();
-
-			// the files that are included in the active view
-			QStringList files = instComponent->getFilesFromFileSets(fileSets, usedFileTypes);
-
-			QString sourcePath = utility_->getLibraryInterface()->getPath(instanceVLNV);
-
-			// convert all relative paths from component to absolute path
-			foreach (QString relPath, files)
+			QSharedPointer<SWView> swView;
+            foreach (QSharedPointer<SWView> view, instComponent->getSWViews())
             {
-				QString absolutePath = General::getAbsolutePath(sourcePath, relPath);
+                if (view->name() == activeView)
+                {
+                    swView = view;
+                }                
+            }
 
-				QFileInfo info(absolutePath);
-				systemHeaderOption.includeFiles_.append(info);
-			}
+            if (swView)
+            {
+                QStringList fileSets = swView->getFileSetRefs();
+
+                // the files that are included in the active view
+                QStringList files = instComponent->getFilesFromFileSets(fileSets, usedFileTypes);
+
+                QString sourcePath = utility_->getLibraryInterface()->getPath(instanceVLNV);
+
+                // convert all relative paths from component to absolute path
+                foreach (QString relPath, files)
+                {
+                    QString absolutePath = General::getAbsolutePath(sourcePath, relPath);
+
+                    QFileInfo info(absolutePath);
+                    systemHeaderOption.includeFiles_.append(info);
+                }
+            }
 		}
         systemGeneratorSettings_.append(systemHeaderOption);
 	}
@@ -161,11 +162,11 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
         QString description(" * This file includes the header files which are automatically generated by Kactus2.\n"
             " * This file allows indirect includes for generated files, thus allowing more flexible SW "
             "development.\n"
-            " * Generated for system design: " + design->getVlnv()->toString() + "\n"
+            " * Generated for system design: " + design->getVlnv().toString() + "\n"
             " * Target instance: " + systemHeaderOption.instanceName_ + "\n"
             "*/");
 
-        QString headerGuard(component->getVlnv()->toString("_").toUpper() + "_" +
+        QString headerGuard(component->getVlnv().toString("_").toUpper() + "_" +
             systemHeaderOption.instanceName_.toUpper() + "_H");
 
         writeTopOfHeaderFile(stream, systemHeaderOption.sysHeaderInfo_.fileName(), headerGuard, description);
@@ -217,7 +218,7 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
         return;
     }
 
-    QSharedPointer<const LibraryComponent> libDesConf = utility_->getLibraryInterface()->getModelReadOnly(hierRef);
+    QSharedPointer<const Document> libDesConf = utility_->getLibraryInterface()->getModelReadOnly(hierRef);
     QSharedPointer<const DesignConfiguration> desConf = libDesConf.dynamicCast<const DesignConfiguration>();
 
     QSharedPointer<const Design> design;
@@ -229,7 +230,7 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
     else
     {
         VLNV designVLNV = desConf->getDesignRef();
-        QSharedPointer<const LibraryComponent> libDes =
+        QSharedPointer<const Document> libDes =
             utility_->getLibraryInterface()->getModelReadOnly(designVLNV);
         design = libDes.dynamicCast<const Design>();
     }
@@ -245,7 +246,7 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
     usedFileTypes.append("cSource");
     usedFileTypes.append("cppSource");
 
-    foreach (const ComponentInstance& instance, design->getComponentInstances())
+    foreach (QSharedPointer<const ComponentInstance> instance, *design->getComponentInstances())
     {
         bool matched = false;
 
@@ -260,7 +261,7 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
                 continue;
             }
 
-            else if (instance.getUuid() == systemHeaderOption.instanceId_)
+            else if (instance->getUuid() == systemHeaderOption.instanceId_)
             {
                 systemHeaderOption.found_ = true;
                 matched = true;
@@ -273,29 +274,30 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
                     break;
                 }
 
-                QStringList files = instanceFileSet->getFiles(usedFileTypes);
-
-                QString sourcePath = utility_->getLibraryInterface()->getPath(*component->getVlnv());
-                foreach (QString relPath, files)
+                QString sourcePath = utility_->getLibraryInterface()->getPath(component->getVlnv());
+                foreach (QString const& fileType, usedFileTypes)
                 {
-                    QString absolutePath = General::getAbsolutePath(sourcePath, relPath);
+                    foreach (QString const& relativePath, instanceFileSet->findFilesByFileType(fileType))
+                    {
+                        QString absolutePath = General::getAbsolutePath(sourcePath, relativePath);
 
-                    QFileInfo info(absolutePath);
-                    systemHeaderOption.includeFiles_.append(info);
+                        QFileInfo info(absolutePath);
+                        systemHeaderOption.includeFiles_.append(info);
+                    }
                 }
+
                 break;
             }
         }
 
         if (!matched)
         {
-            VLNV instanceVLNV = instance.getComponentRef();
-            QSharedPointer<const LibraryComponent> libComp =
-                utility_->getLibraryInterface()->getModelReadOnly(instanceVLNV);
+            VLNV instanceVLNV = *instance->getComponentRef();
+            QSharedPointer<const Document> libComp = utility_->getLibraryInterface()->getModelReadOnly(instanceVLNV);
             QSharedPointer<const Component> instanceComponent = libComp.dynamicCast<const Component>();
             Q_ASSERT(instanceComponent);
 
-            QString activeView = desConf->getActiveView(instance.getInstanceName());
+            QString activeView = desConf->getActiveView(instance->getInstanceName());
             if (activeView.isEmpty())
             {
                 QStringList hierViewNames = instanceComponent->getHierViews();
@@ -379,7 +381,7 @@ QSharedPointer<SystemView> SystemMemoryMapHeaderWriter::findSystemView(QSharedPo
 {
     foreach (QSharedPointer<SystemView> systemDesignView, component->getSystemViews())
     {
-        if (systemDesignView->getHierarchyRef() == *designConfiguration->getVlnv())
+        if (systemDesignView->getHierarchyRef() == designConfiguration->getVlnv())
         {
             return systemDesignView;
         }

@@ -15,7 +15,7 @@
 #include "VLNVDataTree.h"
 #include "VLNVContentMatcher.h"
 
-#include <IPXACTmodels/vlnv.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QGroupBox>
@@ -139,19 +139,12 @@ public slots:
 	*/
 	void setMandatory(bool mandatory);
 
-	/*!
-     *  Sets the contents of the editor to match the given VLNV.
-     *
-     *      @param [in] vlnv The VLNV.
-     */
-    void setVLNV(VLNV const* vlnv);
-
 	/*! 
 	 *  Set the contents of the editor to match the given VLNV.
 	 *
 	 *		@param [in] vlnv The VLNV. 
 	 */
-	void setVLNV(const VLNV& vlnv);
+	void setVLNV(VLNV const& vlnv);
 
     //! Updates the data tree.
     void updateFiltering();

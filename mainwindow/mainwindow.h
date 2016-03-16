@@ -17,10 +17,12 @@
 
 #include <designEditors/common/DrawMode.h>
 #include <common/widgets/tabDocument/TabDocument.h>
-#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/vlnv.h>
+
 #include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QMainWindow>
 #include <QActionGroup>
@@ -53,6 +55,9 @@ class HelpWindow;
 class Ribbon;
 class RibbonGroup;
 
+//-----------------------------------------------------------------------------
+//! The main window of Kactus2.
+//-----------------------------------------------------------------------------
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -116,8 +121,7 @@ public slots:
      *      @param [in] viewName       The name of the view to open.
      *      @param [in] forceUnlocked  Forces the design to be opened in unlocked mode.
      */
-	void openSWDesign(const VLNV& vlnv = VLNV(), QString const& viewName = QString(),
-                      bool forceUnlocked = false);
+	void openSWDesign(const VLNV& vlnv = VLNV(), QString const& viewName = QString(), bool forceUnlocked = false);
 
     /*!
      *  Opens a system design.
@@ -128,15 +132,17 @@ public slots:
      */
     void openSystemDesign(VLNV const &vlnv, QString const& viewName = QString(), bool forceUnlocked = false);
 
-    /*! \brief Open bus to be edited
+    /*!
+     *  Open bus to be edited
 	 *
 	 *      @param [in] vlnv           Identifies the bus definition
      *      @param [in] forceUnlocked  Forces the bus to be opened in unlocked mode.
 	 */
-	void openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV = VLNV(),
-                 bool disableBusDef = false, bool forceUnlocked = false);
+	void openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV = VLNV(), bool disableBusDef = false,
+        bool forceUnlocked = false);
 
-	/*! \brief Open component editor to edit a component details.
+	/*!
+     *  Open component editor to edit a component details.
 	 *
 	 *      @param [in] vlnv           Identifies the component to edit.
      *      @param [in] forceUnlocked  Forces the component to be opened in unlocked mode.
@@ -165,31 +171,32 @@ public slots:
     //! Called when the user has selected another tab.
     void onDocumentChanged(int index);
 
-	/*! \brief Search the file system for new IP-Xact libraries.
+	/*!
+     *  Search the file system for new IP-Xact libraries.
 	 *
-	 * This slot is called when user clicks to search for IP-Xact files.
-	*/
+	 *  This slot is called when user clicks to search for IP-Xact files.
+	 */
 	void onLibrarySearch();
 
-	/*! \brief Called when user selects a component on the draw board.
+	/*!
+     *  Called when user selects a component on the draw board.
 	 *
-	 * \param component Pointer to the DiagramComponent instance that is selected.
-	 *
-	*/
+	 *      @param [in] component   Pointer to the DiagramComponent instance that is selected.
+	 */
 	void onComponentSelected(ComponentItem* component);
 
-	/*! \brief Called when user selects an interface on the draw board.
+	/*!
+     *  Called when user selects an interface on the draw board.
 	 *
-	 * \param interface Pointer to the interface instance that is selected.
-	 *
-	*/
+	 *      @param [in] interface   Pointer to the interface instance that is selected.
+	 */
 	void onInterfaceSelected(ConnectionEndpoint* interface);
 
-	/*! \brief Called when user selects a connection on the draw board.
+	/*!
+     *  Called when user selects a connection on the draw board.
 	 *
-	 * \param connection Pointer to the connection that was selected.
-	 *
-	*/
+	 *      @param [in] connection  Pointer to the connection that was selected.
+	 */
 	void onConnectionSelected(GraphicsConnection* connection);
 
     //! Called when the menu strip needs to be updated.
@@ -210,7 +217,7 @@ public slots:
     //! Generates the ModelSim makefile from the current design.
     void generateModelSim();
 
-	//! \brief Generates the documentation for the current component/design.
+	//! Generates the documentation for the current component/design.
 	void generateDoc();
 
     //! Prompts the user to select a generator plugin and runs it.
@@ -261,9 +268,8 @@ public slots:
      *
      *      @remarks The component editor is opened automatically after successful creation.
      */
-    void createComponent(KactusAttribute::ProductHierarchy prodHier,
-                         KactusAttribute::Firmness firmness,
-                         VLNV const& vlnv, QString const& directory);
+    void createComponent(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
+        VLNV const& vlnv, QString const& directory);
 
     /*!
      *  Creates a SW component to the library.
@@ -285,8 +291,7 @@ public slots:
      *
      *      @remarks The HW design editor is opened automatically after successful creation.
      */
-    void createDesign(KactusAttribute::ProductHierarchy prodHier,
-                      KactusAttribute::Firmness firmness,
+    void createDesign(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
                       VLNV const& vlnv, QString const& directory);
     /*!
      *  Creates a new design for an existing component.
@@ -324,28 +329,26 @@ public slots:
      *      @param [in] sysVLNV    The VLNV of the system to be created.
      *      @param [in] directory  The directory where to save the system.
      */
-    void createSystem(VLNV const& compVLNV, QString const& viewName,
-                      VLNV const& sysVLNV, QString const& directory);
+    void createSystem(VLNV const& compVLNV, QString const& viewName, VLNV const& sysVLNV,
+        QString const& directory);
 
     void createSystemDesign(VLNV const& vlnv);
 
-    /*! \brief Creates a new bus definition and abstraction definition
+    /*!
+     *  Creates a new bus definition and abstraction definition
 	 *
-	 * \param vlnv The vlnv for the bus definition
-	 * \param directory The directory where to save the bus definition and abstraction
-	 * definition.
-	 *
-	*/
+	 *      @param [in] vlnv        The vlnv for the bus definition
+	 *      @param [in] directory   The directory where to save the bus definition and abstraction definition.
+	 */
 	void createBus(VLNV const& vlnv, QString const& directory);
 
-	/*! \brief Creates a new abstraction definition for given bus definition.
+	/*!
+     *  Creates a new abstraction definition for given bus definition.
 	 *
-	 * \param busDefVLNV Identifies the bus definition.
-	 * \param directory The directory where to save the abstraction definition.
-	 * \param disableBusDef If true then the bus definition editor is disabled when editor
-	 * is opened.
-	 *
-	*/
+	 *      @param [in] busDefVLNV      Identifies the bus definition.
+	 *      @param [in] directory       The directory where to save the abstraction definition.
+	 *      @param [in] disableBusDef   If true then the bus definition editor is disabled when editor is opened.
+	 */
 	void createAbsDef(const VLNV& busDefVLNV, const QString& directory, bool disableBusDef);
 
     /*!
@@ -385,10 +388,10 @@ public slots:
 
 signals:
 
-	//! \brief Print a notice message to the user
+	//! Print a notice message to the user.
 	void noticeMessage(const QString& msg);
 
-	//! \brief Print an error message to the user
+	//! Print an error message to the user.
 	void errorMessage(const QString& msg);
 
     //! Emitted when a help page should be changed in the context help window.
@@ -396,27 +399,27 @@ signals:
 
 protected:
 
-	//! \brief Called when the user requests to close the program.
+	//! Called when the user requests to close the program.
     virtual void closeEvent(QCloseEvent* event);
 
-	//! \brief Called when user i.e minimizes the main window.
+	//! Called when user i.e minimizes the main window.
 	virtual void hideEvent(QHideEvent* event);
 
-	//! \brief Called when user i.e maximizes the main window after it has been minimized.
+	//! Called when user i.e maximizes the main window after it has been minimized.
 	virtual void showEvent(QShowEvent* event);
 
 
 private slots:
-	//! \brief Handler for design widget's clearItemSelection signal.
+	//! Handler for design widget's clearItemSelection signal.
 	void onClearItemSelection();
 
-	//! \brief Handler for signals that inform that design has changed.
+	//! Handler for signals that inform that design has changed.
 	void onDesignChanged();
 
-    //! \brief Saves the document hierarchy under current document.
+    //! Saves the document hierarchy under current document.
     void saveCurrentDocumentHierarchy();
 
-	//! \brief Create a pop up menu to select which dock widgets to display.
+	//! Create a pop up menu to select which dock widgets to display.
 	void selectVisibleDocks();
 
     //! Opens the visibility control menu.
@@ -440,37 +443,37 @@ private slots:
      */
     void onDeleteWorkspace();
 
-	//! \brief Handler for output action's trigger.
+	//! Handler for output action's trigger.
 	void onOutputAction(bool show);
 
     //! Handler for context help action's trigger.
     void onContextHelpAction(bool show);
 
-	//! \brief Handler for preview box action's trigger.
+	//! Handler for preview box action's trigger.
 	void onPreviewAction(bool show);
 
-	//! \brief Handler for library action's trigger.
+	//! Handler for library action's trigger.
 	void onLibraryAction(bool show);
 
-	//! \brief Handler for configuration action's trigger.
+	//! Handler for configuration action's trigger.
 	void onConfigurationAction(bool show);
 
-    //! \brief Handler for system details action's trigger.
+    //! Handler for system details action's trigger.
     void onSystemDetailsAction(bool show);
 
-	//! \brief Handler for connection action's trigger.
+	//! Handler for connection action's trigger.
 	void onConnectionAction(bool show);
 
-	//! \brief Handler for interface action's trigger.
+	//! Handler for interface action's trigger.
 	void onInterfaceAction(bool show);
 
-	//! \brief Handler for instance action's trigger.
+	//! Handler for instance action's trigger.
 	void onInstanceAction(bool show);
 
-    // Handler for ad-hoc visibility action's trigger.
+    //! Handler for ad-hoc visibility action's trigger.
     void onAdHocAction(bool show);
 
-    //! \brief Handler for address action's trigger.
+    //! Handler for address action's trigger.
     void onAddressAction(bool show);
 
     /*!
@@ -565,16 +568,17 @@ private:
      */
     void saveWorkspace(QString const& workspaceName);
 
-	/*! \brief Set up the actions in the tool bars
-	 *
-	*/
+	/*!
+     *  Set up the actions in the tool bars
+	 */
 	void setupActions();
 
-	/*! \brief Set up the menus for the main window
+	/*!
+     *  Set up the menus for the main window.
 	 *
-	 * This function is used by the setupActions() after it has created the 
-	 * actions for the menus and should not be called directly.
-	*/
+	 *  This function is used by the setupActions() after it has created the actions for the menus and should not
+     *  be called directly.
+	 */
 	void setupMenus();
 
     /*!
@@ -587,17 +591,17 @@ private:
      */
     void updateGeneratorPluginActions();
 
-	/*! \brief Set up the drawing view where hierarchical components are edited.
-	 *
-	*/
+	/*!
+     *  Set up the drawing view where hierarchical components are edited.
+	 */
 	void setupDrawBoard();
 
-	/*! \brief Set up the dock for the LibraryHandler
-	 *
-	*/
+	/*!
+     *  Set up the dock for the LibraryHandler
+	 */
 	void setupLibraryDock();
 
-	//! \brief Set up the message console.
+	//! Set up the message console.
 	void setupMessageConsole();
 
     /*!
@@ -614,7 +618,7 @@ private:
     //! Sets up the address editor.
     void setupAddressEditor();
 
-	//! \brief Set up the configuration editor.
+	//! Set up the configuration editor.
 	void setupConfigurationEditor();
 
     /*!
@@ -622,20 +626,21 @@ private:
      */
     void setupSystemDetailsEditor();
 
-	//! \brief Set up the interface editor.
+	//! Set up the interface editor.
 	void setupInterfaceEditor();
 
-	//! \brief Set up the connection editor.
+	//! Set up the connection editor.
 	void setupConnectionEditor();
 
-	/*! \brief Check if a document with the given vlnv is already open.
+	/*!
+     *  Check if a document with the given vlnv is already open.
 	 *
-	 * \param vlnv The vlnv that identifies the document.
+	 *      @param [in] vlnv    The vlnv that identifies the document.
 	 * 
-	 * \remark If a document with given vlnv is open then the document is shown.
+	 *      @remark If a document with given vlnv is open then the document is shown.
 	 * 
-	 * \return True if the document was already open.
-	*/
+	 *      @return True if the document was already open.
+	 */
 	bool isOpen(const VLNV& vlnv) const;
 
     /*!
@@ -656,7 +661,7 @@ private:
 
 	/*!
 	 *  Update the windows menu to contain the supported windows and visibility of the windows.
-	*/
+	 */
     void updateWindows();
 
     /*!
@@ -727,28 +732,28 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! \brief The instance that manages the IP-Xact library
+	//! The instance that manages the IP-Xact library
     LibraryHandler *libraryHandler_;
 
-	//! \brief The dock widget that contains the library widgets.
+	//! The dock widget that contains the library widgets.
 	QDockWidget* libraryDock_;
     
-	//! \brief Contains the open documents as each in it's own tab.
+	//! Contains the open documents as each in it's own tab.
 	DrawingBoard* designTabs_;
 
-	//! \brief The widget to set the display rules for library items in library handler.
+	//! The widget to set the display rules for library items in library handler.
 	VLNVDialer* dialer_;
 
-	//! \brief The widget to display a preview of component.
+	//! The widget to display a preview of component.
 	ComponentPreviewBox* previewBox_;
 
-	//! \brief The dock widget that contains the preview box.
+	//! The dock widget that contains the preview box.
 	QDockWidget* previewDock_;
 
-	//! \brief The widget to print errors and notifications to user.
+	//! The widget to print errors and notifications to user.
 	MessageConsole* console_;
 
-	//! \brief The dock widget that contains the console.
+	//! The dock widget that contains the console.
 	QDockWidget* consoleDock_;
 
     //! Context help browser.
@@ -757,10 +762,10 @@ private:
     //! The dock widget for the context help browser.
     QDockWidget* contextHelpDock_;
 
-	//! \brief The widget to edit the settings of a component instance.
+	//! The widget to edit the settings of a component instance.
 	ComponentInstanceEditor* instanceEditor_;
 
-	//! \brief The dock widget that contains the instance editor.
+	//! The dock widget that contains the instance editor.
 	QDockWidget* instanceDock_;
 
     //! The ad-hoc visibility editor and its dock widget.
@@ -771,10 +776,10 @@ private:
     //AddressEditor* addressEditor_;
     //QDockWidget* addressDock_;
 
-	//! \brief The widget to edit the configuration of designs.
+	//! The widget to edit the configuration of designs.
 	ConfigurationEditor* configurationEditor_;
 
-    //! \brief The dock widget that contains the configuration editor.
+    //! The dock widget that contains the configuration editor.
     QDockWidget* configurationDock_;
 
     //! The widget to edit system details.
@@ -783,16 +788,16 @@ private:
     //! The dock widget for the system details editor.
     QDockWidget* systemDetailsDock_;
 
-	//! \brief The widget to edit the interfaces
+	//! The widget to edit the interfaces
 	InterfaceEditor* interfaceEditor_;
 
-	//! \brief The dock widget that contains the interface editor.
+	//! The dock widget that contains the interface editor.
 	QDockWidget* interfaceDock_;
 
-	//! \brief The widget to edit the connection
+	//! The widget to edit the connection
 	ConnectionEditor* connectionEditor_;
 
-	//! \brief The dock widget that contains the connection editor.
+	//! The dock widget that contains the connection editor.
 	QDockWidget* connectionDock_;
 
 	/*******************************************************************/
@@ -800,13 +805,13 @@ private:
 
     Ribbon* ribbon_;
 
-	//! \brief Create a new hierarchical component in the IP-Xact library
+	//! Create a new hierarchical component in the IP-Xact library
 	QAction *actNew_;
 
     //! Action to save the current design.
     QAction* actSave_;
 
-	//! \brief Action to save the current design as new object
+	//! Action to save the current design as new object
 	QAction* actSaveAs_;
 
     QAction* actSaveHierarchy_;
@@ -829,10 +834,10 @@ private:
     //! Action to set library locations.
     QAction* actLibraryLocations_;
 
-	//! \brief Search for IP-Xact files in the file system
+	//! Search for IP-Xact files in the file system
 	QAction* actLibrarySearch_;
 
-	//! \brief Check the library integrity
+	//! Check the library integrity
 	QAction* actCheckIntegrity_;
 
     //! The generation group.
@@ -847,7 +852,7 @@ private:
     //! Action to generate a ModelSim makefile from a design.
     QAction* actGenModelSim_;
 
-	//! \brief Action to generate the documentation for a component.
+	//! Action to generate the documentation for a component.
 	QAction* actGenDocumentation_;
 
     //! Action to run import wizard.
@@ -889,7 +894,7 @@ private:
     //! Action to adjust zoom to fit the document fully in view.
     QAction* actFitInView_;
 
-	//! \brief Action to select which dock widgets are visible.
+	//! Action to select which dock widgets are visible.
 	QAction* actVisibleDocks_;
 
     //! Action to manage visibility control.
@@ -927,7 +932,7 @@ private:
     //! The action to configure the views.
     QAction* actionConfigureViews_;
 
-	//! \brief The menu containing the actions to select which windows to display.
+	//! The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
 
     //! Menu which contains the actions for visibility control.
@@ -945,9 +950,8 @@ private:
     //! The help window.
     HelpWindow* helpWnd_;
 
-	/* Contains the visibility for the windows. Used to maintain the visibility information when windows are 
-     * hidden by change of the active document.
-     */
+	//! Contains the visibility for the windows.
+    //! Used to maintain the visibility information when windows are hidden by change of the active document.
 	QMap<TabDocument::SupportedWindows, bool> visibilities_;
 
 };

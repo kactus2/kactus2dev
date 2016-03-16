@@ -13,13 +13,11 @@
 
 #include "HWMappingItem.h"
 #include "SWPortItem.h"
-#include "SystemMoveCommands.h"
 #include "SystemDesignDiagram.h"
 
-#include <designEditors/HWDesign/HWMoveCommands.h>
-
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/model.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -37,20 +35,15 @@
 //-----------------------------------------------------------------------------
 // Function: SWComponentItem::SWComponentItem()
 //-----------------------------------------------------------------------------
-SWComponentItem::SWComponentItem(LibraryInterface* libInterface,
-                       QSharedPointer<Component> component,
-                       QString const& instanceName,
-                       QString const& displayName,
-                       QString const& description,
-							  QString const& uuid,
-                       QMap<QString, QString> const& configurableElementValues)
-    : SystemComponentItem(QRectF(-COMPONENTWIDTH / 2, 0, COMPONENTWIDTH, MIN_HEIGHT), libInterface, component, instanceName,
-                      displayName, description, uuid, configurableElementValues, 0),
-      oldStack_(0),
-      oldPos_(),
-      hierIcon_(0),
-      importedIcon_(0),
-      isDraft_(false)
+SWComponentItem::SWComponentItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
+                                 QSharedPointer<SWInstance> instance):
+SystemComponentItem(QRectF(-COMPONENTWIDTH / 2, 0, COMPONENTWIDTH, MIN_HEIGHT), libInterface, instance,
+    component, 0),
+oldStack_(0),
+oldPos_(),
+hierIcon_(0),
+importedIcon_(0),
+isDraft_(false)
 {
     setFlag(ItemIsMovable);
 
@@ -201,7 +194,7 @@ void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         // Add the undo command to the edit stack only if it has at least some real changes.
         if (cmd->childCount() > 0 || scenePos() != oldPos_)
         {
-            static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
+            static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
         }
 
         oldStack_ = 0;
@@ -215,14 +208,14 @@ void SWComponentItem::updateComponent()
 {
     ComponentItem::updateComponent();
 
-    VLNV* vlnv = componentModel()->getVlnv();
+    VLNV vlnv = componentModel()->getVlnv();
 
     // Check whether the component is packaged or not.
     if (isDraft())
     {
         setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
     }
-    else if (getLibraryInterface()->contains(*vlnv))
+    else if (getLibraryInterface()->contains(vlnv))
     {
         setBrush(QBrush(KactusColors::SW_COMPONENT));
     }
@@ -316,9 +309,9 @@ HWMappingItem const* SWComponentItem::getLinkedHW() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SWComponentItem::setPacketized()
+// Function: SWComponentItem::setPackaged()
 //-----------------------------------------------------------------------------
-void SWComponentItem::setPacketized()
+void SWComponentItem::setPackaged()
 {
     isDraft_ = false;
     updateComponent();

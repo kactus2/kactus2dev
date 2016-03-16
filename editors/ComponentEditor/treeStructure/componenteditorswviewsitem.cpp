@@ -1,66 +1,99 @@
-/* 
- *  	Created on: 24.5.2012
- *      Author: Antti Kamppi
- * 		filename: componenteditorswviewsitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: componenteditorswviewsitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.05.2012
+//
+// Description:
+// The Software Views-item in the component editor's navigation tree.
+//-----------------------------------------------------------------------------
 
 #include "componenteditorswviewsitem.h"
+
 #include "componenteditorswviewitem.h"
+
 #include <editors/ComponentEditor/software/swView/swviewseditor.h>
 
+#include <IPXACTmodels/Component/Component.h>
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSWViewsItem::ComponentEditorSWViewsItem()
+//-----------------------------------------------------------------------------
 ComponentEditorSWViewsItem::ComponentEditorSWViewsItem(
 	ComponentEditorTreeModel* model, 
 	LibraryInterface* libHandler,
 	QSharedPointer<Component> component,
 	ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent),
-swViews_(component->getSWViews()) {
-
-	foreach (QSharedPointer<SWView> swView, swViews_) {
-
+ComponentEditorItem(model, libHandler, component, parent)
+{
+	foreach (QSharedPointer<SWView> swView, component->getSWViews())
+    {
 		QSharedPointer<ComponentEditorSWViewItem> swViewItem(
 			new ComponentEditorSWViewItem(swView, model, libHandler, component, this)); 
 		childItems_.append(swViewItem);
 	}
 }
 
-ComponentEditorSWViewsItem::~ComponentEditorSWViewsItem() {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSWViewsItem::~ComponentEditorSWViewsItem()
+//-----------------------------------------------------------------------------
+ComponentEditorSWViewsItem::~ComponentEditorSWViewsItem()
+{
 }
 
-QFont ComponentEditorSWViewsItem::getFont() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSWViewsItem::getFont()
+//-----------------------------------------------------------------------------
+QFont ComponentEditorSWViewsItem::getFont() const
+{
     QFont font(ComponentEditorItem::getFont());
-    font.setBold(!swViews_.isEmpty());
+    font.setBold(component_->hasSWViews());    
     return font;
 }
 
-QString ComponentEditorSWViewsItem::getTooltip() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSWViewsItem::getTooltip()
+//-----------------------------------------------------------------------------
+QString ComponentEditorSWViewsItem::getTooltip() const
+{
 	return tr("Contains the software views of the component");
 }
 
-QString ComponentEditorSWViewsItem::text() const {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSWViewsItem::text()
+//-----------------------------------------------------------------------------
+QString ComponentEditorSWViewsItem::text() const
+{
 	return tr("Software views");
 }
 
-ItemEditor* ComponentEditorSWViewsItem::editor() {
-	if (!editor_) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSWViewsItem::editor()
+//-----------------------------------------------------------------------------
+ItemEditor* ComponentEditorSWViewsItem::editor()
+{
+	if (!editor_)
+    {
 		editor_ = new SWViewsEditor(component_, libHandler_);
 		editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()), 
-			this, SLOT(onEditorChanged()), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childAdded(int)),
-			this, SLOT(onAddChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(childRemoved(int)),
-			this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
-			this, SIGNAL(helpUrlRequested(QString const&)));
+
+		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(childRemoved(int)),	this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
+		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 	}
+
 	return editor_;
 }
 
-void ComponentEditorSWViewsItem::createChild( int index ) {
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorSWViewsItem::createChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorSWViewsItem::createChild(int index)
+{
 	QSharedPointer<ComponentEditorSWViewItem> swViewItem(
-		new ComponentEditorSWViewItem(swViews_.at(index), model_, libHandler_, component_, this));
+		new ComponentEditorSWViewItem(component_->getSWViews().at(index), model_, libHandler_, component_, this));
 	swViewItem->setLocked(locked_);
 	childItems_.insert(index, swViewItem);
 }

@@ -19,6 +19,7 @@
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
+class HWComponentItem;
 class OffPageConnectorItem;
 class LibraryInterface;
 class Port;
@@ -36,7 +37,7 @@ public:
     /*!
      *  Constructor.
      */
-    AdHocPortItem(Port* port, LibraryInterface* lh, QGraphicsItem* parent = 0);
+    AdHocPortItem(QSharedPointer<Port> port, HWComponentItem* parent);
 
 	/*!
      *  Destructor.
@@ -147,7 +148,7 @@ public:
      *      @remarks The function returns a null pointer if the end point is a bus interface.
      *               Use isBus() function to check for ad-hoc support (isBus() == false).
      */
-    virtual Port* getPort() const;
+    virtual QSharedPointer<Port> getPort() const;
 
     /*! 
      *  Returns true if the port represents a hierarchical connection.
@@ -206,11 +207,9 @@ private:
 	//! The name label.
 	QGraphicsTextItem nameLabel_;
 
-    Port* port_;
+    HWComponentItem* parentComponentItem_;
 
-	//! Library interface.
-    LibraryInterface* lh_;
-
+    QSharedPointer<Port> port_;
     //! The position of the port before mouse move.
     QPointF oldPos_;
 

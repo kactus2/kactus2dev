@@ -15,14 +15,13 @@
 #include "IPlugin.h"
 #include "IPluginUtility.h"
 
-#include <IPXACTmodels/component.h>
-
 #include <QString>
 #include <QStringList>
 #include <QSharedPointer>
 #include <QList>
 #include <QtPlugin>
 
+class Component;
 class FileDependency;
 
 //-----------------------------------------------------------------------------

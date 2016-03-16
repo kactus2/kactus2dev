@@ -7,34 +7,37 @@
 
 #include "bridgeseditor.h"
 #include "bridgesdelegate.h"
+#include "BridgeColumns.h"
+
+#include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
 
-BridgesEditor::BridgesEditor(QSharedPointer<SlaveInterface> slave, 
-							 QSharedPointer<Component> component,
-							 QWidget *parent):
-QGroupBox(tr("Bridges"), parent),
-component_(component),
-view_(this),
-proxy_(this),
-model_(slave, this) {
+//-----------------------------------------------------------------------------
+// Function: BridgesEditor::BridgesEditor()
+//-----------------------------------------------------------------------------
+BridgesEditor::BridgesEditor(QSharedPointer<SlaveInterface> slave, QSharedPointer<Component> component,
+    QWidget* parent):
+QGroupBox(tr("Transparent bridges"), parent),
+    view_(this),
+    proxy_(this),
+    model_(slave, this)
+{
+    view_.setItemDelegate(new BridgesDelegate(component, this));
 
-	view_.setItemDelegate(new BridgesDelegate(component_, this));
-
-	// items can not be dragged
-	view_.setItemsDraggable(false);
+    // items can not be dragged
+    view_.setItemsDraggable(false);
 
 	proxy_.setSourceModel(&model_);
 	view_.setModel(&proxy_);
 
-	// set default width for master column
-	view_.setColumnWidth(BridgesDelegate::MASTER_COLUMN, 200);
+	view_.setColumnWidth(BridgeColumns::MASTER_COLUMN, 200);    
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
-		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
+        &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
@@ -42,13 +45,25 @@ model_(slave, this) {
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
-BridgesEditor::~BridgesEditor() {
+//-----------------------------------------------------------------------------
+// Function: BridgesEditor::~BridgesEditor()
+//-----------------------------------------------------------------------------
+BridgesEditor::~BridgesEditor()
+{
 }
 
-bool BridgesEditor::isValid() const {
+//-----------------------------------------------------------------------------
+// Function: BridgesEditor::isValid()
+//-----------------------------------------------------------------------------
+bool BridgesEditor::isValid() const
+{
 	return model_.isValid();
 }
 
-void BridgesEditor::refresh( QSharedPointer<SlaveInterface> slave ) {
+//-----------------------------------------------------------------------------
+// Function: BridgesEditor::refresh()
+//-----------------------------------------------------------------------------
+void BridgesEditor::refresh(QSharedPointer<SlaveInterface> slave)
+{
 	model_.refresh(slave);
 }

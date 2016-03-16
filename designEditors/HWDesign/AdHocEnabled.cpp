@@ -11,7 +11,8 @@
 
 #include "AdHocEnabled.h"
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::AdHocEnabled()
@@ -29,16 +30,19 @@ void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<QStrin
     portAdHocVisibilities_.clear();
 
     // Parse port ad-hoc visibilities.
-    foreach (QSharedPointer<Port> adhocPort, component->getPorts())
+    if (component->hasPorts())
     {
-        bool visible = adhocPort->isAdHocVisible();
-
-        if (portAdHocVisibilities.contains(adhocPort->getName()))
+        foreach (QSharedPointer<Port> adhocPort, *component->getPorts())
         {
-            visible = portAdHocVisibilities.value(adhocPort->getName());
-        }
+            bool visible = adhocPort->isAdHocVisible();
 
-        portAdHocVisibilities_.insert(adhocPort->getName(), visible);
+            if (portAdHocVisibilities.contains(adhocPort->name()))
+            {
+                visible = portAdHocVisibilities.value(adhocPort->name());
+            }
+
+            portAdHocVisibilities_.insert(adhocPort->name(), visible);
+        }
     }
 }
 
@@ -75,7 +79,7 @@ void AdHocEnabled::onAdHocVisibilityChanged(QString const&, bool)
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::getPortAdHocVisibilities()
 //-----------------------------------------------------------------------------
-QMap<QString, bool> const& AdHocEnabled::getPortAdHocVisibilities() const
+QMap<QString, bool> AdHocEnabled::getPortAdHocVisibilities() const
 {
     return portAdHocVisibilities_;
 }
@@ -83,7 +87,7 @@ QMap<QString, bool> const& AdHocEnabled::getPortAdHocVisibilities() const
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::getPorts()
 //-----------------------------------------------------------------------------
-QList< QSharedPointer<Port> > AdHocEnabled::getPorts() const
+QSharedPointer<QList<QSharedPointer<Port> > > AdHocEnabled::getPorts() const
 {
     Q_ASSERT(component_ != 0);
     return component_->getPorts();

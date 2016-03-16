@@ -19,13 +19,14 @@ SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 	Plugins/QuartusPinImportPlugin/QuartusPinImportPlugin.pro \
 	Plugins/PadsPartGenerator/PadsPartGenerator.pro \
 	Plugins/MakefileGenerator/MakefileGenerator.pro \
+	Plugins/TLMWGenerator/TLMWGenerator.pro \
 	Plugins/VerilogGenerator/VerilogGeneratorPlugin.pro \
 	Plugins/VHDLimport/VHDLimport.pro \
 	Plugins/VerilogImport/VerilogImport.pro \
 	Plugins/VerilogIncludeImport/VerilogIncludeImport.pro \
 	Plugins/VerilogSourceAnalyzer/VerilogSourceAnalyzer.pro \
-        Plugins/QuartusProjectGenerator/QuartusProjectGenerator.pro \
-        Plugins/VHDLPackageImport/VHDLPackageImport.pro
+        Plugins/QuartusProjectGenerator/QuartusProjectGenerator.pro
+#        Plugins/VHDLPackageImport/VHDLPackageImport.pro
 
 CONFIG(test) {
 	SUBDIRS += tests/test_all.pro

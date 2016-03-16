@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 24.8.2012
- *      Author: Antti Kamppi
- * 		filename: addressblockeditor.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressblockeditor.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 24.08.2012
+//
+// Description:
+// Editor for editing the details of registers in an address block.
+//-----------------------------------------------------------------------------
 
 #include "addressblockeditor.h"
 
@@ -26,19 +30,17 @@
 // Function: AddressBlockEditor::AddressBlockEditor()
 //-----------------------------------------------------------------------------
 AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
-									   QSharedPointer<Component> component,
-									   LibraryInterface* handler,
-                                       QSharedPointer<ParameterFinder> parameterFinder,
-                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
-									   QWidget* parent /*= 0*/):
+    QSharedPointer<Component> component, LibraryInterface* handler,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<RegisterValidator> registerValidator, QWidget* parent /* = 0 */):
 QGroupBox(tr("Registers summary"), parent),
 view_(new EditableTableView(this)),
 model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new AddressBlockModel(addressBlock, component->getChoices(), expressionParser, parameterFinder,
-        expressionFormatter, this);
+    model_ = new AddressBlockModel(addressBlock, expressionParser, parameterFinder, expressionFormatter,
+        registerValidator, this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -50,15 +52,13 @@ model_(0)
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_OFFSET);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_SIZE);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_DIMENSION);
-    proxy->setColumnToAcceptExpressions(AddressBlockColumns::RESET_VALUE);
-    proxy->setColumnToAcceptExpressions(AddressBlockColumns::RESET_MASK);
     proxy->setColumnToAcceptExpressions(AddressBlockColumns::IS_PRESENT);
 
     proxy->setSourceModel(model_);
 	view_->setModel(proxy);
 
 	//! Enable import/export csv file
-	const QString compPath = handler->getDirectoryPath(*component->getVlnv());
+	const QString compPath = handler->getDirectoryPath(component->getVlnv());
 	QString defPath = QString("%1/registerList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
@@ -107,14 +107,6 @@ model_(0)
 AddressBlockEditor::~AddressBlockEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockEditor::isValid()
-//-----------------------------------------------------------------------------
-bool AddressBlockEditor::isValid() const
-{
-	return model_->isValid();
 }
 
 //-----------------------------------------------------------------------------

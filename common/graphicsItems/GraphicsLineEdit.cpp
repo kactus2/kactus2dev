@@ -16,7 +16,6 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QTextCursor>
 #include <QTextDocument>
-#include <QDebug>
 
 //-----------------------------------------------------------------------------
 // Function: GraphicsLineEdit::GraphicsLineEdit()

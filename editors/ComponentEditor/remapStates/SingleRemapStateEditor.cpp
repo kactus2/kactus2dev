@@ -11,7 +11,11 @@
 
 #include "SingleRemapStateEditor.h"
 
+#include <IPXACTmodels/Component/RemapState.h>
+
 #include <QScrollArea>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: SingleRemapStateEditor::SingleRemapStateEditor()
@@ -22,7 +26,7 @@ SingleRemapStateEditor::SingleRemapStateEditor(QSharedPointer<Component> compone
     QWidget* parent /* = 0 */):
 ItemEditor(component, libHandler, parent),
 remapState_(remapState),
-nameEditor_(remapState_->getNamegroup(), this, tr("Remap state name and description")),
+nameEditor_(remapState_, this, tr("Remap state name and description")),
 remapConditionEditor_(new RemapConditionEditor(remapState->getRemapPorts(), component, parameterFinder,
 expressionFormatter, this))
 {
@@ -43,14 +47,6 @@ expressionFormatter, this))
 SingleRemapStateEditor::~SingleRemapStateEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: SingleRemapStateEditor::isValid()
-//-----------------------------------------------------------------------------
-bool SingleRemapStateEditor::isValid() const
-{
-    return nameEditor_.isValid();
 }
 
 //-----------------------------------------------------------------------------

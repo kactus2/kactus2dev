@@ -1,14 +1,18 @@
-/* 
- *  	Created on: 4.1.2013
- *      Author: Antti Kamppi
- * 		filename: addressspacegapitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: addressspacegapitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 04.01.2013
+//
+// Description:
+// The graphical item that represents a gap in between address space objects.
+//-----------------------------------------------------------------------------
 
 #include "addressspacegapitem.h"
-#include <common/KactusColors.h>
 
-#include <QColor>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <QBrush>
 
 //-----------------------------------------------------------------------------
@@ -39,7 +43,9 @@ addrPosition_(addrPos)
 //-----------------------------------------------------------------------------
 // Function: ~AddressSpaceGapItem()
 //-----------------------------------------------------------------------------
-AddressSpaceGapItem::~AddressSpaceGapItem() {
+AddressSpaceGapItem::~AddressSpaceGapItem()
+{
+
 }
 
 //-----------------------------------------------------------------------------
@@ -47,7 +53,8 @@ AddressSpaceGapItem::~AddressSpaceGapItem() {
 //-----------------------------------------------------------------------------
 void AddressSpaceGapItem::refresh() 
 {
-    if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT) {
+    if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT)
+    {
         setLeftTopCorner(start_);
         if (end_ != start_)
         {
@@ -59,7 +66,8 @@ void AddressSpaceGapItem::refresh()
         }
     }
 
-    else {
+    else
+    {
         setRightTopCorner(start_);
         if (end_ != start_)
         {
@@ -80,25 +88,30 @@ void AddressSpaceGapItem::refresh()
 //-----------------------------------------------------------------------------
 // Function: getOffset()
 //-----------------------------------------------------------------------------
-quint64 AddressSpaceGapItem::getOffset() const {
+quint64 AddressSpaceGapItem::getOffset() const
+{
 	return start_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: getLastAddress()
 //-----------------------------------------------------------------------------
-quint64 AddressSpaceGapItem::getLastAddress() const {
+quint64 AddressSpaceGapItem::getLastAddress() const
+{
 	return end_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: setStartAddress()
 //-----------------------------------------------------------------------------
-void AddressSpaceGapItem::setStartAddress( quint64 address, bool contains /*= true*/ ) {
-	if (contains) {
+void AddressSpaceGapItem::setStartAddress( quint64 address, bool contains /*= true*/ )
+{
+	if (contains)
+    {
 		start_ = address;
 	}
-	else {
+	else
+    {
 		start_ = ++address;
 	}
 	refresh();
@@ -107,11 +120,14 @@ void AddressSpaceGapItem::setStartAddress( quint64 address, bool contains /*= tr
 //-----------------------------------------------------------------------------
 // Function: setEndAddress()
 //-----------------------------------------------------------------------------
-void AddressSpaceGapItem::setEndAddress( quint64 address, bool contains /*= true*/ ) {
-	if (contains) {
+void AddressSpaceGapItem::setEndAddress( quint64 address, bool contains /*= true*/ )
+{
+	if (contains)
+    {
 		end_ = address;
 	}
-	else {
+	else
+    {
 		end_ = --address;
 	}
 	refresh();
@@ -120,7 +136,8 @@ void AddressSpaceGapItem::setEndAddress( quint64 address, bool contains /*= true
 //-----------------------------------------------------------------------------
 // Function: setAddressAlign()
 //-----------------------------------------------------------------------------
-void AddressSpaceGapItem::setAddressAlign(AddressSpaceGapItem::AddressPosition pos ) {
+void AddressSpaceGapItem::setAddressAlign(AddressSpaceGapItem::AddressPosition pos )
+{
 	addrPosition_ = pos;
 	refresh();
 }
@@ -136,7 +153,8 @@ void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
     {
         setLeftTopCorner(firstFreeAddress_);
 
-        if (firstFreeAddress_ == lastFreeAddress_){        
+        if (firstFreeAddress_ == lastFreeAddress_)
+        {
             VisualizerItem::setLeftBottomCorner("");
         }
         else
@@ -149,7 +167,8 @@ void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
     {
         setRightTopCorner(firstFreeAddress_);
 
-        if (firstFreeAddress_ == lastFreeAddress_){        
+        if (firstFreeAddress_ == lastFreeAddress_)
+        {        
             VisualizerItem::setRightBottomCorner("");
         }
         else
@@ -168,7 +187,8 @@ void AddressSpaceGapItem::setOverlappingBottom(quint64 const& address)
 
     if (addrPosition_ == AddressSpaceGapItem::ALIGN_LEFT)
     {
-        if (firstFreeAddress_ == lastFreeAddress_){        
+        if (firstFreeAddress_ == lastFreeAddress_)
+        {
             VisualizerItem::setLeftBottomCorner("");
         }
         else
@@ -179,7 +199,8 @@ void AddressSpaceGapItem::setOverlappingBottom(quint64 const& address)
 
     else //if (addrPosition == AddressSpaceGapItem::ALIGN_RIGHT)
     {  
-        if (firstFreeAddress_ == lastFreeAddress_){        
+        if (firstFreeAddress_ == lastFreeAddress_)
+        {
             VisualizerItem::setRightBottomCorner("");
         }
         else

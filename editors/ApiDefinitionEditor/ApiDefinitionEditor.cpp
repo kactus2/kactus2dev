@@ -11,17 +11,16 @@
 
 #include "ApiDefinitionEditor.h"
 
-#include <IPXACTmodels/ComDefinition.h>
-
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
+#include <IPXACTmodels/kactusExtensions/ComDefinition.h>
+#include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
+#include <IPXACTmodels/kactusExtensions/validators/ApiDefinitionValidator.h>
+
 #include <QVBoxLayout>
-#include <QGridLayout>
-#include <QMessageBox>
-#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
-// Function: ApiDefinitionEditor()
+// Function: ApiDefinitionEditor::ApiDefinitionEditor()
 //-----------------------------------------------------------------------------
 ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
                                          QSharedPointer<ApiDefinition> apiDef)
@@ -33,9 +32,9 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
       functionEditor_(this)
 {
     // Initialize the editors.
-    dataTypeList_.initialize(apiDef->getDataTypes());
+    dataTypeList_.initialize(*apiDef->getDataTypes());
 
-    functionEditor_.updateDataTypes(apiDef->getDataTypes());
+    functionEditor_.updateDataTypes(*apiDef->getDataTypes());
     functionEditor_.restore(*apiDef);
 
     comDefVLNVEdit_.setTitle(tr("COM definition reference (optional)"));
@@ -57,23 +56,23 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
     setModified(false);
 
     // Set the document name and type.
-    VLNV const* vlnv = apiDef_->getVlnv();
-    setDocumentName(vlnv->getName() + " (" + vlnv->getVersion() + ")");
+    VLNV vlnv = apiDef_->getVlnv();
+    setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     setDocumentType(tr("API Definition"));
 
     // Open in unlocked mode by default only if the version is draft.
-    setProtection(vlnv->getVersion() != "draft");
+    setProtection(vlnv.getVersion() != "draft");
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ApiDefinitionEditor()
+// Function: ApiDefinitionEditor::~ApiDefinitionEditor()
 //-----------------------------------------------------------------------------
 ApiDefinitionEditor::~ApiDefinitionEditor()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: setProtection()
+// Function: ApiDefinitionEditor::setProtection()
 //-----------------------------------------------------------------------------
 void ApiDefinitionEditor::setProtection(bool locked)
 {
@@ -86,12 +85,12 @@ void ApiDefinitionEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void ApiDefinitionEditor::refresh()
 {
-    QSharedPointer<LibraryComponent> libComp = libHandler_->getModel(*apiDef_->getVlnv());
+    QSharedPointer<Document> libComp = libHandler_->getModel(apiDef_->getVlnv());
     apiDef_ = libComp.staticCast<ApiDefinition>();
 
     // Update the editors.
     comDefVLNVEdit_.setVLNV(apiDef_->getComDefinitionRef());
-    dataTypeList_.initialize(apiDef_->getDataTypes());
+    dataTypeList_.initialize(*apiDef_->getDataTypes());
     functionEditor_.restore(*apiDef_);
 
     setModified(false);
@@ -99,24 +98,28 @@ void ApiDefinitionEditor::refresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getDocumentVLNV()
+// Function: ApiDefinitionEditor::getDocumentVLNV()
 //-----------------------------------------------------------------------------
 VLNV ApiDefinitionEditor::getDocumentVLNV() const
 {
-    return *apiDef_->getVlnv();
+    return apiDef_->getVlnv();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ApiDefinitionEditor::validate()
 //-----------------------------------------------------------------------------
-bool ApiDefinitionEditor::validate(QStringList& errorList)
+bool ApiDefinitionEditor::validate(QVector<QString>& errorList)
 {
     applyChanges();
-    return apiDef_->isValid(errorList);
+
+	ApiDefinitionValidator validator;
+    validator.findErrorsIn( errorList, apiDef_ );
+
+    return errorList.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
-// Function: save()
+// Function: ApiDefinitionEditor::save()
 //-----------------------------------------------------------------------------
 bool ApiDefinitionEditor::save()
 {
@@ -127,7 +130,7 @@ bool ApiDefinitionEditor::save()
 }
 
 //-----------------------------------------------------------------------------
-// Function: saveAs()
+// Function: ApiDefinitionEditor::saveAs()
 //-----------------------------------------------------------------------------
 bool ApiDefinitionEditor::saveAs()
 {
@@ -135,7 +138,7 @@ bool ApiDefinitionEditor::saveAs()
     VLNV vlnv;
     QString directory;
 
-    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, *apiDef_->getVlnv(), vlnv, directory))
+    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, apiDef_->getVlnv(), vlnv, directory))
     {
         return false;
     }
@@ -188,7 +191,7 @@ void ApiDefinitionEditor::updateComDefinition()
     // Retrieve the new COM definition if the VLNV is valid.
     if (vlnv.isValid())
     {
-        QSharedPointer<LibraryComponent const> libComp = libHandler_->getModelReadOnly(vlnv);
+        QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(vlnv);
         QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
         functionEditor_.setComDefinition(comDef);
     }
@@ -207,7 +210,11 @@ void ApiDefinitionEditor::showEvent(QShowEvent* event)
     emit helpUrlRequested("definitions/apidefinition.html");
 }
 
-VLNV ApiDefinitionEditor::getIdentifyingVLNV() const {
+//-----------------------------------------------------------------------------
+// Function: ApiDefinitionEditor::getIdentifyingVLNV()
+//-----------------------------------------------------------------------------
+VLNV ApiDefinitionEditor::getIdentifyingVLNV() const
+{
 	return getDocumentVLNV();
 }
 

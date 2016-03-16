@@ -1,13 +1,17 @@
-/* 
- *  	Created on: 20.11.2012
- *      Author: Antti Kamppi
- * 		filename: memorygapitem.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorygapitem.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.11.2012
+//
+// Description:
+// The graphical item that represents a gap in the memory between objects.
+//-----------------------------------------------------------------------------
 
 #include "memorygapitem.h"
+
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
-#include <common/KactusColors.h>
 
 #include <QColor>
 #include <QBrush>
@@ -15,10 +19,11 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryGapItem()
 //-----------------------------------------------------------------------------
-MemoryGapItem::MemoryGapItem(QGraphicsItem* parent):
-MemoryVisualizationItem(parent),
+MemoryGapItem::MemoryGapItem(QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
+MemoryVisualizationItem(expressionParser, parent),
 start_(0),
-end_(0) {
+end_(0)
+{
 	setBrush(QBrush(QColor(Qt::white)));
 	ExpandableItem::setExpansionBrush(QBrush(QColor(Qt::white)));
 	setName("Reserved");
@@ -32,6 +37,7 @@ end_(0) {
 //-----------------------------------------------------------------------------
 MemoryGapItem::~MemoryGapItem()
 {
+
 }
 
 //-----------------------------------------------------------------------------

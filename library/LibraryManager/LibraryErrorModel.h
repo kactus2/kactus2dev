@@ -42,7 +42,7 @@ public:
     /*!
      *  Adds errors to the model.
      */
-    void addErrors(QStringList const& errorList);
+    void addErrors(QVector<QString> const& errorList);
 
     /*!
      *  Returns the number of rows to be displayed.
@@ -108,7 +108,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The list of errors.
-    QStringList errors_;
+    QVector<QString> errors_;
 };
 
 //-----------------------------------------------------------------------------

@@ -13,11 +13,12 @@
 #define ADDRESSENTRY_H
 
 #include <QString>
+#include <QSharedPointer>
 
 class ComponentItem;
 class BusPortItem;
 class ConnectionEndpoint;
-class GenericEditProvider;
+class IEditProvider;
 
 //-----------------------------------------------------------------------------
 //! Address entry class.
@@ -118,7 +119,7 @@ private:
     unsigned int baseEndAddress_;
 
     //! The edit provider.
-    GenericEditProvider& editProvider_;
+    QSharedPointer<IEditProvider> editProvider_;
 
     //! Addressable unit bits.
     unsigned int aub_;

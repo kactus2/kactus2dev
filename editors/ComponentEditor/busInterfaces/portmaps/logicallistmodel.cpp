@@ -1,92 +1,98 @@
-/* 
- *
- *  Created on: 11.5.2011
- *      Author: Antti Kamppi
- * 		filename: logicallistmodel.cpp
- */
+//-----------------------------------------------------------------------------
+// File: logicallistmodel.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.5.2011
+//
+// Description:
+// Model to display the Logical ports of an abstraction definition.
+//-----------------------------------------------------------------------------
 
 #include "logicallistmodel.h"
-#include "PortMapsTreeModel.h"
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <IPXACTmodels/vlnv.h>
-#include <IPXACTmodels/librarycomponent.h>
-#include <IPXACTmodels/abstractiondefinition.h>
+
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+
+#include <IPXACTmodels/common/VLNV.h>
 
 #include <QIcon>
 
-LogicalListModel::LogicalListModel(LibraryInterface* libHandler,
-								   PortMapsTreeModel* portMapsModel,
-								   QObject *parent ):
-PortListModel(portMapsModel, parent), 
-libHandler_(libHandler),
-absTypeVLNV_(),
-mode_(General::MASTER) {
-
-	refresh();
+//-----------------------------------------------------------------------------
+// Function: LogicalListModel::LogicalListModel()
+//-----------------------------------------------------------------------------
+LogicalListModel::LogicalListModel(LibraryInterface* libHandler, QObject* parent):
+PortListModel(parent), 
+    libHandler_(libHandler),
+    absTypeVLNV_(),
+    mode_(General::MASTER)
+{
+        refresh();
 }
 
-LogicalListModel::~LogicalListModel() {
+//-----------------------------------------------------------------------------
+// Function: LogicalListModel::~LogicalListModel()
+//-----------------------------------------------------------------------------
+LogicalListModel::~LogicalListModel()
+{
 }
 
-void LogicalListModel::setAbsType( const VLNV& vlnv, General::InterfaceMode mode ) {
-
+//-----------------------------------------------------------------------------
+// Function: LogicalListModel::setAbsType()
+//-----------------------------------------------------------------------------
+void LogicalListModel::setAbsType(VLNV const& vlnv, General::InterfaceMode mode)
+{
 	absTypeVLNV_ = vlnv;
 	
 	// update the mode
 	mode_ = mode;
 
-	if (!vlnv.isValid()) {
+	if (!vlnv.isValid())
+    {
 		beginResetModel();
-		PortListModel::list_.clear();
+		list_.clear();
 		endResetModel();
 		return;
 	}
 
 	// ask library to parse the model for abstraction definition
-	QSharedPointer<LibraryComponent> libComb;
-	if (libHandler_->contains(vlnv)) 
-		libComb = libHandler_->getModel(vlnv);
+	QSharedPointer<Document> document = libHandler_->getModel(vlnv);
+	if (!document) 
+    {
+        return;
+    }
 
-	// if library did not contain the vlnv
-	else
-		return;
-
-	// make sure the model is for abstraction definition
 	QSharedPointer<AbstractionDefinition> absdef;
-	if (libComb->getVlnv()->getType() == VLNV::ABSTRACTIONDEFINITION)
-		absdef = libComb.staticCast<AbstractionDefinition>();
-
-	// if model was some other type then free memory and exit
-	else {
+	if (document->getVlnv().getType() == VLNV::ABSTRACTIONDEFINITION)
+    {
+		absdef = document.staticCast<AbstractionDefinition>();
+    }
+	else 
+    {
 		return;
-	}
-
-	// ask the abstraction definition for list of the port names
-	QStringList portNames = absdef->getPortNames(mode_);
-
+    }
+    
 	beginResetModel();
-
-	list_.clear();
-
-	foreach (QString portName, portNames) {
-
-		// if the port is not yet in the list
-		if (!PortListModel::list_.contains(portName))
-			PortListModel::list_.append(portName);
-	}
-
+	list_ = absdef->getPortNames(mode_);
+    list_.removeDuplicates();
 	endResetModel();
 }
 
-void LogicalListModel::refresh() {
-
+//-----------------------------------------------------------------------------
+// Function: LogicalListModel::refresh()
+//-----------------------------------------------------------------------------
+void LogicalListModel::refresh()
+{
 	setAbsType(absTypeVLNV_, mode_);
 }
 
-QVariant LogicalListModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole */ ) const 
+//-----------------------------------------------------------------------------
+// Function: LogicalListModel::refresh()
+//-----------------------------------------------------------------------------
+QVariant LogicalListModel::data(QModelIndex const& index, int role) const 
 {
-    if (Qt::DecorationRole == role)
+    if (role == Qt::DecorationRole)
     {
         QSharedPointer<AbstractionDefinition> absdef;
 
@@ -98,22 +104,24 @@ QVariant LogicalListModel::data( const QModelIndex& index, int role /*= Qt::Disp
         }
         else
         {
-            return QVariant();
+            return QIcon(":icons/common/graphics/cross.png");
         }   
 
-        General::Direction direction =absdef->getPortDirection(data(index).toString(), mode_);      
-        switch( direction )
+        DirectionTypes::Direction direction = absdef->getPortDirection(data(index).toString(), mode_);      
+        if (direction == DirectionTypes::IN)
         {
-        case General::IN :
             return QIcon(":icons/common/graphics/control-180.png");
-
-        case General::OUT :
+        }
+        else if (direction == DirectionTypes::OUT)
+        {
             return QIcon(":icons/common/graphics/control.png");
-
-        case General::INOUT :
+        }
+        else if (direction == DirectionTypes::INOUT)
+        {
             return QIcon(":icons/common/graphics/control-dual.png");
-
-        default:
+        }
+        else
+        {
             return QIcon(":icons/common/graphics/cross.png");
         }
     }

@@ -37,13 +37,6 @@ public:
 	//! The destructor
 	virtual ~MessageConsole();
 
-	/*! Print the contents of the message console to a log file
-	*
-	* @param [in] path    Specifies the file path of the log file.
-	*
-	*/
-	void printLog(const QString& path = QString());
-
 public slots:
 
 	/*! Prints an error message to the text edit.

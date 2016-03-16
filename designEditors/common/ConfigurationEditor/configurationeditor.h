@@ -1,50 +1,56 @@
-/* 
- *  	Created on: 19.8.2011
- *      Author: Antti Kamppi
- * 		filename: configurationeditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: configurationeditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 19.08.2011
+//
+// Description:
+// Editor to edit the design configurations for component.
+//-----------------------------------------------------------------------------
 
 #ifndef CONFIGURATIONEDITOR_H
 #define CONFIGURATIONEDITOR_H
 
 #include "activevieweditor.h"
-#include <IPXACTmodels/component.h>
-#include <IPXACTmodels/designconfiguration.h>
 
 #include <QWidget>
 #include <QPushButton>
 #include <QComboBox>
 #include <QSharedPointer>
-#include <QList>
 
 class DesignWidget;
 class LibraryInterface;
+class Component;
+class View;
+class SWView;
+class DesignConfiguration;
 
-/*! Editor to edit the design configurations for component.
- *
- */
-class ConfigurationEditor : public QWidget {
+//-----------------------------------------------------------------------------
+//! Editor to edit the design configurations for component.
+//-----------------------------------------------------------------------------
+class ConfigurationEditor : public QWidget
+{
 	Q_OBJECT
 
 public:
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
-	 * \param handler Pointer to the instance that manages the library.
-	 * \param parent Pointer to the owner of this widget.
-	 *
-	*/
+	 *      @param [in] handler     Pointer to the instance that manages the library.
+	 *      @param [in] parent      Pointer to the owner of this widget.
+	 */
 	ConfigurationEditor(LibraryInterface* handler, QWidget *parent);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~ConfigurationEditor();
 
-	/*! Set the configuration to be displayed.
+	/*!
+     *  Set the configuration to be displayed.
 	 *
-	 * \param designWidget Pointer to the design widget used to edit the design.
-	 *
-	*/
+	 *      @param [in] designWidget    Pointer to the design widget used to edit the design.
+	 */
     void setConfiguration(DesignWidget* designWidget);
 
 	//! Clear the contents of this editor.
@@ -66,6 +72,9 @@ signals:
     //! Emitted when the active configuration changes.
 	void configurationChanged(QString const& newConfigName);
 
+    //! Emitted when the currently active design configuration changes.
+    void designConfigurationChanged(QSharedPointer<DesignConfiguration> newConfiguration);
+
 private slots:
 
 	//! Handler for add button clicks.
@@ -74,30 +83,67 @@ private slots:
 	//! Handler for remove button clicks.
 	void onRemove();
 
-	/*! Called when user changes the current configuration.
+	/*!
+     *  Called when user changes the current configuration.
 	 *
-	 * \param newConfigName The name of the new configuration to display.
-	 *
-	*/
+	 *      @param [in] newConfigName   The name of the new configuration to display.
+	 */
 	void onConfigurationChanged(QString const& newConfigName);
 
 private:
-	//! No copying
+	//! No copying.
 	ConfigurationEditor(const ConfigurationEditor& other);
 
-	//! No assignment
+	//! No assignment.
 	ConfigurationEditor& operator=(const ConfigurationEditor& other);
 
-	//! Set up the layout of this widget
+	//! Set up the layout of this widget.
 	void setuplayout();
 
 	//! Set up the signals between widgets.
 	void setupConnections();
 
-	/*! Ask user if he wants to save the previous configuration is it was modified.
-	 *
-	*/
+	/*!
+     *  Ask user if he wants to save the previous configuration is it was modified.
+	 */
 	void askSave();
+
+    /*!
+     *  Remove design and design configuration instantiation references from the selected view.
+     *
+     *      @param [in] viewName    The name of the selected view.
+     */
+    void removeViewHierarchicalInstantiationRefs(QString const& viewName) const;
+
+    /*!
+     *  Finds a component sw view matching the given name.
+     *
+     *      @param [in] viewName    The name of the sw view being searched.
+     *
+     *      @return SW view matching the given name.
+     */
+    QSharedPointer<SWView> findComponentSWView(QString const& viewName) const;
+
+    /*!
+     *  Remove a view from component.
+     *
+     *      @param [in] viewName    The name of the view being removed.
+     */
+    void removeViewFromComponent(QString const& viewName) const;
+
+    /*!
+     *  Remove an sw view from component.
+     *
+     *      @param [in] viewName    The name of the sw view being removed.
+     */
+    void removeSWViewFromComponent(QString const& viewName) const;
+
+    /*!
+     *  Remove a system view from component.
+     *
+     *      @param [in] viewName    The name of the system view being removed.
+     */
+    void removeSystemViewFromComponent(QString const& viewName) const;
 
     //-----------------------------------------------------------------------------
     // Data.

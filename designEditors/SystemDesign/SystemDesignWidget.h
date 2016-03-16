@@ -14,7 +14,7 @@
 
 #include <designEditors/common/DesignWidget.h>
 
-class SystemDesignDiagram;
+class SWConnectionEndpoint;
 
 //-----------------------------------------------------------------------------
 //! SystemDesignWidget class.
@@ -62,7 +62,7 @@ public slots:
     //! Adds a new column to the diagram.
     virtual void addColumn();
 
-    //! \brief Saves the design as new object
+    //! Saves the design as new object.
     virtual bool saveAs();
 
 protected:
@@ -73,6 +73,14 @@ private:
     // Disable copying.
     SystemDesignWidget(SystemDesignWidget const& rhs);
     SystemDesignWidget& operator=(SystemDesignWidget const& rhs);
+
+    /*!
+     *  Delete the connected end point.
+     *
+     *      @param [in] endPoint        The selected end point.
+     *      @param [in] parentCommand   The parent command.
+     */
+    void deleteConnectedEndPoint(SWConnectionEndpoint* endPoint, QSharedPointer<QUndoCommand> parentCommand);
 
     //-----------------------------------------------------------------------------
     // Data.

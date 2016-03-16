@@ -14,6 +14,11 @@
 #include "IGraphicsItemStack.h"
 
 #include <designEditors/HWDesign/HWComponentItem.h>
+#include <designEditors/SystemDesign/HWMappingItem.h>
+#include <designEditors/SystemDesign/SWComponentItem.h>
+
+#include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
 //-----------------------------------------------------------------------------
 // Function: ItemAddCommand()
@@ -76,14 +81,14 @@ void ItemAddCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ItemMoveCommand()
 //-----------------------------------------------------------------------------
-ItemMoveCommand::ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos,
-                                 IGraphicsItemStack* oldStack, QUndoCommand* parent)
-                                 : QUndoCommand(parent),
-                                 item_(item),
-                                 oldPos_(oldPos),
-                                 oldStack_(oldStack),
-                                 newPos_(item->scenePos()),
-                                 newStack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem()))
+ItemMoveCommand::ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
+                                 QUndoCommand* parent):
+QUndoCommand(parent),
+item_(item),
+oldPos_(oldPos),
+oldStack_(oldStack),
+newPos_(item->scenePos()),
+newStack_(dynamic_cast<IGraphicsItemStack*>(item->parentItem()))
 {
     Q_ASSERT(oldStack != 0);
 }
@@ -93,13 +98,13 @@ ItemMoveCommand::ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos,
 //-----------------------------------------------------------------------------
 ItemMoveCommand::ItemMoveCommand(QGraphicsItem* item, QPointF const& oldPos, IGraphicsItemStack* oldStack,
                                  QPointF const& newPos, IGraphicsItemStack* newStack,
-                                 QUndoCommand* parent /*= 0*/)
-                                 : QUndoCommand(parent),
-                                 item_(item),
-                                 oldPos_(oldPos),
-                                 oldStack_(oldStack),
-                                 newPos_(newPos),
-                                 newStack_(newStack)
+                                 QUndoCommand* parent /*= 0*/):
+QUndoCommand(parent),
+item_(item),
+oldPos_(oldPos),
+oldStack_(oldStack),
+newPos_(newPos),
+newStack_(newStack)
 {
     Q_ASSERT(oldStack != 0);
     Q_ASSERT(newStack != 0);
@@ -122,6 +127,25 @@ void ItemMoveCommand::undo()
     item_->setPos(oldPos_);
     oldStack_->addItem(item_);
 
+    SystemComponentItem* systemItem = dynamic_cast<SystemComponentItem*>(item_);
+    if (systemItem)
+    {
+        systemItem->getComponentInstance()->setPosition(oldPos_);
+        QSharedPointer<SWInstance> swInstance = systemItem->getComponentInstance().dynamicCast<SWInstance>();
+        if (swInstance)
+        {
+            HWMappingItem* hwMapItem = dynamic_cast<HWMappingItem*>(oldStack_);
+            if (hwMapItem && hwMapItem->getComponentInstance())
+            {
+                swInstance->setMapping(hwMapItem->getComponentInstance()->getUuid());
+            }
+            else
+            {
+                swInstance->setMapping("");
+            }
+        }
+    }
+
     // Execute child commands.
     QUndoCommand::undo();
 }
@@ -135,6 +159,25 @@ void ItemMoveCommand::redo()
 
     item_->setPos(newPos_);
     newStack_->addItem(item_);
+
+    SystemComponentItem* systemItem = dynamic_cast<SystemComponentItem*>(item_);
+    if (systemItem)
+    {
+        systemItem->getComponentInstance()->setPosition(newPos_);
+        QSharedPointer<SWInstance> swInstance = systemItem->getComponentInstance().dynamicCast<SWInstance>();
+        if (swInstance)
+        {
+            HWMappingItem* hwMapItem = dynamic_cast<HWMappingItem*>(newStack_);
+            if (hwMapItem && hwMapItem->getComponentInstance())
+            {
+                swInstance->setMapping(hwMapItem->getComponentInstance()->getUuid());
+            }
+            else
+            {
+                swInstance->setMapping("");
+            }
+        }
+    }
 
     // Execute child commands.
     QUndoCommand::redo();

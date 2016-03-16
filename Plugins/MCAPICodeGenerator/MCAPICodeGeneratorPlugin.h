@@ -13,13 +13,6 @@
 #define MCAPICodeGeneratorPlugin_H
 
 #include <Plugins/PluginSystem/IGeneratorPlugin.h>
-#include <QObject>
-
-#include <MCAPIParser.h>
-
-class Component;
-class CSourceWriter;
-class IPluginUtility;
 
 //-----------------------------------------------------------------------------
 //! MCAPI code generator.
@@ -85,9 +78,9 @@ public:
      *
      *      @return True, if the generator supports the given component. Otherwise false.
      */
-     virtual bool checkGeneratorSupport(QSharedPointer<LibraryComponent const> libComp, 
-         QSharedPointer<LibraryComponent const> libDesConf = QSharedPointer<LibraryComponent const>(), 
-         QSharedPointer<LibraryComponent const> libDes = QSharedPointer<LibraryComponent const>()) const;
+     virtual bool checkGeneratorSupport(QSharedPointer<Document const> libComp, 
+         QSharedPointer<Document const> libDesConf = QSharedPointer<Document const>(), 
+         QSharedPointer<Document const> libDes = QSharedPointer<Document const>()) const;
 
     /*!
      *  Runs the generator.
@@ -99,9 +92,9 @@ public:
      *      @param [in,out] libDes            The optional design object.
      */
      virtual void runGenerator(IPluginUtility* utility,
-         QSharedPointer<LibraryComponent> libComp, 
-         QSharedPointer<LibraryComponent> libDesConf = QSharedPointer<LibraryComponent const>(),
-         QSharedPointer<LibraryComponent> libDes = QSharedPointer<LibraryComponent>());
+         QSharedPointer<Document> libComp, 
+         QSharedPointer<Document> libDesConf = QSharedPointer<Document const>(),
+         QSharedPointer<Document> libDes = QSharedPointer<Document>());
 
      //! \brief Returns the external program requirements of the plugin.
      virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();

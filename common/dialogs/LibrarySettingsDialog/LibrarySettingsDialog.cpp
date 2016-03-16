@@ -11,7 +11,7 @@
 
 #include "LibrarySettingsDialog.h"
 #include "librarysettingsdelegate.h"
-#include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>

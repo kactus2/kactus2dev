@@ -7,28 +7,35 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
+HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
+    ../../../designEditors/HWDesign/AdHocEnabled.h \
+    ../../../designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h \
     ../../../designEditors/common/Association/Associable.h \
     ../../../designEditors/common/Association/Association.h \
     ../../../designEditors/common/Association/AssociationAddCommand.h \
     ../../../designEditors/common/Association/AssociationChangeEndpointCommand.h \
     ../../../designEditors/common/Association/AssociationRemoveCommand.h \
+    ../../../designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h \
     ../../../common/graphicsItems/ConnectionUndoCommands.h \
     ../../MockObjects/DesignWidgetFactoryMock.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
     ../../../common/graphicsItems/GraphicsColumnUndoCommands.h \
     ../../../designEditors/HWDesign/HWAddCommands.h \
+    ../../../designEditors/HWDesign/HWDeleteCommands.h \
     ../../../designEditors/HWDesign/HWMoveCommands.h \
     ../../../common/widgets/assistedLineEdit/LineContentAssistWidget.h \
     ../../../designEditors/common/NamelabelWidth.h \
+    ../../../editors/ComponentEditor/common/NullParser.h \
     ../../../designEditors/HWDesign/PortmapDialog.h \
     ../../../designEditors/common/StickyNote/StickyNoteEditCommand.h \
     ../../../designEditors/common/StickyNote/StickyNoteMoveCommand.h \
-    ../../../designEditors/SystemDesign/SystemMoveCommands.h \
+    ../../../designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h \
     ../../../common/widgets/vlnvEditor/VLNVContentMatcher.h \
     ../../../common/widgets/vlnvEditor/VLNVDataTree.h \
+    ../../../designEditors/HWDesign/AdHocConnectionItem.h \
     ../../../designEditors/HWDesign/AdHocInterfaceItem.h \
     ../../../designEditors/HWDesign/AdHocPortItem.h \
     ../../../common/widgets/assistedLineEdit/AssistedLineEdit.h \
@@ -42,6 +49,7 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../designEditors/common/StickyNote/ColorFillTextItem.h \
     ../../../designEditors/HWDesign/columnview/ColumnEditDialog.h \
     ../../../common/graphicsItems/CommonGraphicsUndoCommands.h \
+    ../../../designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h \
     ../../../designEditors/common/ComponentDesignDiagram.h \
     ../../../common/graphicsItems/ComponentItem.h \
     ../../../common/widgets/componentPreviewBox/ComponentPreviewBox.h \
@@ -57,7 +65,6 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../designEditors/HWDesign/HWComponentItem.h \
     ../../../designEditors/HWDesign/HWConnection.h \
     ../../../designEditors/HWDesign/HWConnectionEndpoint.h \
-    ../../../designEditors/HWDesign/HWDeleteCommands.h \
     ../../../designEditors/HWDesign/HWDesignDiagram.h \
     ../../MockObjects/HWDesignWidgetMock.h \
     ../../../common/IEditProvider.h \
@@ -101,10 +108,15 @@ HEADERS += ../../../designEditors/HWDesign/AdHocEnabled.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistmodel.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistview.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h \
-    ../../../common/widgets/vlnvEditor/vlnveditor.h
-SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
+    ../../../common/widgets/vlnvEditor/vlnveditor.h \
+    ../../../designEditors/HWDesign/undoCommands/PortPasteCommand.h \
+    ../../../designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h
+SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
+    ../../../designEditors/HWDesign/AdHocConnectionItem.cpp \
+    ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../designEditors/HWDesign/AdHocInterfaceItem.cpp \
     ../../../designEditors/HWDesign/AdHocPortItem.cpp \
+    ../../../designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.cpp \
     ../../../common/widgets/assistedLineEdit/AssistedLineEdit.cpp \
     ../../../designEditors/common/Association/Associable.cpp \
     ../../../designEditors/common/Association/Association.cpp \
@@ -121,10 +133,13 @@ SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../designEditors/common/StickyNote/ColorFillTextItem.cpp \
     ../../../designEditors/HWDesign/columnview/ColumnEditDialog.cpp \
     ../../../common/graphicsItems/CommonGraphicsUndoCommands.cpp \
+    ../../../designEditors/HWDesign/undoCommands/ComponentDeleteCommand.cpp \
     ../../../designEditors/common/ComponentDesignDiagram.cpp \
     ../../../common/graphicsItems/ComponentItem.cpp \
+    ../../../designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.cpp \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
+    ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
     ../../../common/graphicsItems/ConnectionEndpoint.cpp \
     ../../../common/graphicsItems/ConnectionUndoCommands.cpp \
     ../../../designEditors/common/DesignDiagram.cpp \
@@ -153,6 +168,7 @@ SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ../../../common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
     ../../../designEditors/common/NamelabelWidth.cpp \
+    ../../../editors/ComponentEditor/common/NullParser.cpp \
     ../../../designEditors/HWDesign/OffPageConnectorItem.cpp \
     ../../../designEditors/HWDesign/models/PortGenerationRow.cpp \
     ../../../designEditors/HWDesign/models/PortGenerationTableModel.cpp \
@@ -174,7 +190,6 @@ SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../designEditors/common/StickyNote/StickyNoteMoveCommand.cpp \
     ../../../designEditors/common/StickyNote/StickyNoteRemoveCommand.cpp \
     ../../../designEditors/SystemDesign/SystemComponentItem.cpp \
-    ../../../designEditors/SystemDesign/SystemMoveCommands.cpp \
     ../../../common/widgets/tabDocument/TabDocument.cpp \
     ../../../common/widgets/vlnvEditor/VLNVContentMatcher.cpp \
     ../../../common/widgets/vlnvEditor/VLNVDataTree.cpp \
@@ -196,4 +211,7 @@ SOURCES += ../../../designEditors/HWDesign/AdHocEnabled.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistview.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.cpp \
     ./tst_documentGenerator.cpp \
-    ../../../common/widgets/vlnvEditor/vlnveditor.cpp
+    ../../../common/widgets/vlnvEditor/vlnveditor.cpp \
+    ../../../designEditors/HWDesign/undoCommands/PortPasteCommand.cpp \
+    ../../../designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.cpp \
+    ../../../designEditors/SystemDesign/UndoCommands/SystemMoveCommands.cpp

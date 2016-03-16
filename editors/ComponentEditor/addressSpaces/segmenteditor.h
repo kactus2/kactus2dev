@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 22.2.2012
- *      Author: Antti Kamppi
- * 		filename: segmenteditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: segmenteditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 22.02.2012
+//
+// Description:
+// The editor to edit the segments of an address space.
+//-----------------------------------------------------------------------------
 
 #ifndef SEGMENTEDITOR_H
 #define SEGMENTEDITOR_H
@@ -12,55 +16,56 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <IPXACTmodels/addressspace.h>
-#include <IPXACTmodels/segment.h>
-#include <IPXACTmodels/component.h>
-
 #include <QSharedPointer>
 #include <QGroupBox>
 
 class LibraryInterface;
 class ExpressionParser;
 class ExpressionFormatter;
-/*! The editor to edit the segments of an address space.
- *
- */
-class SegmentEditor : public QGroupBox {
+class Component;
+class AddressSpace;
+class Segment;
+//-----------------------------------------------------------------------------
+//! The editor to edit the segments of an address space.
+//-----------------------------------------------------------------------------
+class SegmentEditor : public QGroupBox
+{
 	Q_OBJECT
 
 public:
 
-    /*! The constructor
+    /*!
+     *  The constructor
      *
-     *      @param [in] addrSpace           The address space whose segments are edited.
-     *      @param [in] component           The component being edited.
-     *      @param [in] componentPath       The path to component xml file.
-     *      @param [in] parameterFinder     Finder for available parameter names.
-     *      @param [in] expressionParser    Parser for expressions.
-     *      @param [in] expressionFormatter Formatter for expressions.
-     *      @param [in] parent              Pointer to the owner of this editor.
-     *
+     *      @param [in] addrSpace               The address space whose segments are edited.
+     *      @param [in] component               The component being edited.
+     *      @param [in] componentPath           The path to component xml file.
+     *      @param [in] parameterFinder         Finder for available parameter names.
+     *      @param [in] expressionParser        Parser for expressions.
+     *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] parent                  Pointer to the owner of this editor.
 	 */
 	SegmentEditor(QSharedPointer<AddressSpace> addrSpace, 
 		QSharedPointer<Component> component,
         QString const& componentPath,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser,
-            QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QWidget *parent);
 	
-	//! The destructor
+	//! The destructor.
 	virtual ~SegmentEditor();
 
-	/*! Check if the editor is in valid state.
+	/*!
+     *  Check if the editor is in valid state.
 	 *
 	 *      @return True if the editor is in valid state.
-	*/
+	 */
 	bool isValid() const;
 
-	/*! Read the settings from the address space to the editor.
-	 *
-	*/
+	/*!
+     *  Read the settings from the address space to the editor.
+	 */
 	void refresh();
 
 signals:
@@ -87,7 +92,8 @@ signals:
 	void segmentChanged(QSharedPointer<Segment> segment);
 
 private:
-	//! No copying
+
+	//! No copying. No assignment.
 	SegmentEditor(const SegmentEditor& other);
 	SegmentEditor& operator=(const SegmentEditor& other);
 

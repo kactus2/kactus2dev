@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 11.4.2012
- *      Author: Antti Kamppi
- * 		filename: memorymapseditor.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: memorymapseditor.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 11.04.2012
+//
+// Description:
+// Editor for editing the memory maps of a component.
+//-----------------------------------------------------------------------------
 
 #ifndef MEMORYMAPSEDITOR_H
 #define MEMORYMAPSEDITOR_H
@@ -13,8 +17,6 @@
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
-#include <IPXACTmodels/component.h>
-
 #include <QWidget>
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
@@ -22,18 +24,22 @@
 class LibraryInterface;
 class MemoryMapsView;
 class MemoryMapsModel;
-class LibraryInterface;
+class Component;
+class MemoryMap;
 
+class MemoryMapValidator;
 //-----------------------------------------------------------------------------
 //! Editor for editing the memory maps of a component.
 //-----------------------------------------------------------------------------
-class MemoryMapsEditor : public ItemEditor {
+class MemoryMapsEditor : public ItemEditor
+{
 	Q_OBJECT
 
 public:
 
-	//! \brief The default height and width of the editor.
-	enum Sizes {
+	//! The default height and width of the editor.
+	enum Sizes
+    {
 		HEIGHT = 300,
 		WIDTH = 700
 	};
@@ -44,35 +50,33 @@ public:
 	 *      @param [in] component           Pointer to the component being edited.
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
 	 *      @param [in] handler             Pointer to the instance managing the library.
+     *      @param [in] memoryMapValidator  Validator used for memory maps.
 	 *      @param [in] parent              Pointer to the owner of this editor.
 	 */
 	MemoryMapsEditor(QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
 		LibraryInterface* handler, 
+        QSharedPointer<MemoryMapValidator> memoryMapValidator,
 		QWidget *parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~MemoryMapsEditor();
 
-	/*! \brief Check for the validity of the edited memory maps.
-	*
-	* \return True if all memory maps are in valid state.
-	*/
-	virtual bool isValid() const;
-
-	/*! \brief Reload the information from the model to the editor.
-	*/
+	/*!
+     *  Reload the information from the model to the editor.
+	 */
 	virtual void refresh();
 
-	/*! \brief The size hint for the editor.
+	/*!
+     *  The size hint for the editor.
 	 *
-	 * \return QSize contains the size hint.
-	*/
+	 *      @return QSize contains the size hint.
+	 */
 	virtual QSize sizeHint() const;
 
 signals:
 
-	//! \brief Emitted when a bus interface editor should be opened.
+	//! Emitted when a bus interface editor should be opened.
 	void selectBusInterface(const QString& interfaceName);
 
     /*!
@@ -100,20 +104,20 @@ signals:
 
 protected:
 
-	//! \brief Handler for widget's show event
+	//! Handler for widget's show event.
 	virtual void showEvent(QShowEvent* event);
 
 private slots:
 
-	//! \brief Handler for view's doubleClicked-signal.
+	//! Handler for view's doubleClicked-signal.
 	virtual void onDoubleClick(const QModelIndex& index);
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	MemoryMapsEditor(const MemoryMapsEditor& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	MemoryMapsEditor& operator=(const MemoryMapsEditor& other);
 
     /*!

@@ -44,9 +44,9 @@ public:
     /*!
      *  Sets the edited API function.
      *
-     *      @param [in] func The function to edit.
+     *      @param [in] function The function to edit.
      */
-    void setFunction(QSharedPointer<ApiFunction> func);
+    void setFunction(QSharedPointer<ApiFunction> function);
 
     /*!
      *  Returns the number of rows in the model.
@@ -108,8 +108,7 @@ public:
 	 *
 	 *      @return True if data was successfully set.
 	 */
-	virtual bool setData(QModelIndex const& index, QVariant const& value, 
-		                 int role = Qt::EditRole);
+	virtual bool setData(QModelIndex const& index, QVariant const& value, int role = Qt::EditRole);
 
 	/*!
      *  Checks whether the model is in valid state or not.
@@ -148,7 +147,7 @@ private:
     //-----------------------------------------------------------------------------
 	
 	//! The API function being edited.
-    QSharedPointer<ApiFunction> func_;
+    QSharedPointer<ApiFunction> function_;
 };
 
 //-----------------------------------------------------------------------------
