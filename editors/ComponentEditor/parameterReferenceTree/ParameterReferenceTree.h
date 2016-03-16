@@ -31,6 +31,8 @@
 
 class Parameter;
 class ModuleParameter;
+class FileSet;
+class FileBuilder;
 
 //-----------------------------------------------------------------------------
 //! Tree widget for displaying references to a parameter within a component.
@@ -72,6 +74,62 @@ private:
      *  Setup the reference tree.
      */
     void setupTree();
+
+    /*!
+     *  Check if a reference exists in component file sets.
+     *
+     *      @return True, if a reference is found, false otherwise.
+     */
+    bool referenceExistsInFileSets() const;
+
+    /*!
+     *  Check if a reference exists in a single file set.
+     *
+     *      @param [in] fileSet     The selected file set.
+     *
+     *      @return True, if a reference is found, false otherwise.
+     */
+    bool fileSetHasReference(QSharedPointer<FileSet> fileSet) const;
+
+    /*!
+     *  Check if a reference exists in file builders.
+     *
+     *      @param [in] fileBuilders    The selected list of file builders.
+     *
+     *      @return True, if a reference is found, false otherwise.
+     */
+    bool referenceExistsInFileBuilders(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders) const;
+
+    /*!
+     *  Check if a reference exists in a single file builder.
+     *
+     *      @param [in] fileBuilder     The selected file builder.
+     *
+     *      @return True, if a reference is found, false otherwise.
+     */
+    bool fileBuilderHasReference(QSharedPointer<FileBuilder> fileBuilder) const;
+
+    /*!
+     *  Create references for file sets.
+     */
+    void createReferencesForFileSets();
+
+    /*!
+     *  Create references for file builders.
+     *
+     *      @param [in] fileBuilders    The selected file builders.
+     *      @param [in] parentItem      The parent item of the file builders item.
+     */
+    void createReferencesForFileBuilders(QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders,
+        QTreeWidgetItem* parentItem);
+
+    /*!
+     *  Create references for a single file builder.
+     *
+     *      @param [in] fileBuilder     The selected file builder.
+     *      @param [in] parentItem      The parent item.
+     */
+    void createReferencesForSingleFileBuilder(QSharedPointer<FileBuilder> fileBuilder, QTreeWidgetItem* parentItem);
 
     /*!
      *  Check if a reference exists in components parameters.
@@ -152,23 +210,25 @@ private:
     bool referenceExistsInSingleSegment(QSharedPointer<Segment> segment) const;
 
     /*!
-     *  Check if a reference exists in views' parameters.
+     *  Check if a reference exists in component instantiations.
      *
-     *      @return True, if there is a reference to this parameter, false otherwise.
+     *      @return True, if a reference is found, false otherwise.
      */
-    bool referenceExistsInViews() const;
+    bool referenceExistsInComponentInstantiations() const;
 
     /*!
-     *  Check if a reference exists in a single view parameters.
+     *  Check if a reference exists in a single component instantiation.
      *
-     *      @return True, if there is a reference to this parameter, false otherwise.
+     *      @param [in] instantiation   The selected component instantiation.
+     *
+     *      @return True, if a reference is found, false otherwise.
      */
-    bool referenceExistsInView(QSharedPointer<View> view) const;
+    bool referenceExistsInSingleComponentInstantiation(QSharedPointer<ComponentInstantiation> instantiation) const;
 
     /*!
-     *  Create the references for views.
+     *  Create references for component instantiations.
      */
-    void createReferencesForViews();
+    void createReferencesForComponentInstantiations();
 
     /*!
      *  Check if a reference exists in ports.

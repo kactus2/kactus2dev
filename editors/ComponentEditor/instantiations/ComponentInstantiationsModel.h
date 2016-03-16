@@ -20,6 +20,7 @@
 
 class InstantiationsValidator;
 class ParameterFinder;
+class Parameter;
 
 //-----------------------------------------------------------------------------
 //! Model for component instantiations summary.
@@ -148,6 +149,15 @@ private:
      *      @param [in] instantiation   The selected component instantiation.
      */
     void decreaseReferencesInRemovedComponentInstantiation(QSharedPointer<ComponentInstantiation> instantiation);
+
+    /*!
+     *  Get all the referable values form a given parameter.
+     *
+     *      @param [in] selectedParameter   The selected parameter.
+     *
+     *      @return A list of values with possible references to parameters.
+     */
+    QStringList getAllReferencableValuesFromParameter(QSharedPointer<Parameter> selectedParameter) const;
 
     //-----------------------------------------------------------------------------
     // Data.

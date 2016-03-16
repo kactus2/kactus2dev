@@ -363,9 +363,9 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 		}
         if (!fileBuilderReplaceDefaultFlagsIsValid(currentFileBuilder))
 		{
-			errors.append(QObject::tr("Invalid replace default flags %1 value set for default file builder in %2")
-                .arg(currentFileBuilder->getReplaceDefaultFlags())
-                .arg(currentFileBuilder->getReplaceDefaultFlags()));
+            errors.append(QObject::tr("Invalid \"replace default flags\" value set for component instantiation %1."
+                " Value must evaluate to 0 or 1.").
+                arg(instantiation->name()));
 		}
 	}
 

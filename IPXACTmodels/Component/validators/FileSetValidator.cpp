@@ -12,11 +12,12 @@
 #include "FileSetValidator.h"
 #include "FileValidator.h"
 
-#include <IPXACTmodels/Component/Choice.h>
-#include <IPXACTmodels/common/Enumeration.h>
-
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+
+#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Enumeration.h>
+#include <IPXACTmodels/common/FileBuilder.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -52,13 +53,8 @@ bool FileSetValidator::validate(QSharedPointer<FileSet> fileSet) const
 
 	foreach (QSharedPointer<FileBuilder> currentFileBuilder, *fileSet->getDefaultFileBuilders())
 	{
-		if (!hasValidName(currentFileBuilder->getFileType()))
-		{
-			return false;
-		}
-
-		if (!currentFileBuilder->getReplaceDefaultFlags().isEmpty() &&
-			!expressionParser_->isValidExpression( currentFileBuilder->getReplaceDefaultFlags()))
+		if (!hasValidName(currentFileBuilder->getFileType()) ||
+            !fileBuilderHasValidReplaceDefaultFlags(currentFileBuilder))
 		{
 			return false;
 		}
@@ -73,6 +69,26 @@ bool FileSetValidator::validate(QSharedPointer<FileSet> fileSet) const
 	}
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSetValidator::fileBuilderHasValidReplaceDefaultFlags()
+//-----------------------------------------------------------------------------
+bool FileSetValidator::fileBuilderHasValidReplaceDefaultFlags(QSharedPointer<FileBuilder> builder) const
+{
+    if (!builder->getReplaceDefaultFlags().isEmpty())
+    {
+        bool canConvert = true;
+        int replaceFlags =
+            expressionParser_->parseExpression(builder->getReplaceDefaultFlags()).toInt(&canConvert);
+
+        if (!canConvert || replaceFlags < 0 || replaceFlags > 1)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -95,11 +111,11 @@ void FileSetValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Fil
                 fileSet->name()));
 		}
 
-		if (!currentFileBuilder->getReplaceDefaultFlags().isEmpty() &&
-			!expressionParser_->isValidExpression( currentFileBuilder->getReplaceDefaultFlags() ) )
+        if (!fileBuilderHasValidReplaceDefaultFlags(currentFileBuilder))
 		{
-            errors.append(QObject::tr("\"Replace default flags\" expression '%1' in build command for file set %2" 
-                " is invalid.").arg(currentFileBuilder->getReplaceDefaultFlags(), fileSet->name()));
+            errors.append(QObject::tr("Invalid \"replace default flags\" value set for file set %1. Value must "
+                "evaluate to 0 or 1.").
+                arg(fileSet->name()));
 		}
 	}
 

@@ -297,6 +297,16 @@ void ComponentInstantiationsModel::decreaseReferencesInRemovedComponentInstantia
         expressionList.append(builder->getReplaceDefaultFlags());
     }
 
+    foreach (QSharedPointer<ModuleParameter> moduleParameter, *instantiation->getModuleParameters())
+    {
+        expressionList.append(getAllReferencableValuesFromParameter(moduleParameter));
+    }
+
+    foreach (QSharedPointer<Parameter> singleParameter, *instantiation->getParameters())
+    {
+        expressionList.append(getAllReferencableValuesFromParameter(singleParameter));
+    }
+
     ReferenceCalculator referenceCalculator(parameterFinder_);
     QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
     foreach (QString referencedID, referencedParameters.keys())
@@ -306,4 +316,21 @@ void ComponentInstantiationsModel::decreaseReferencesInRemovedComponentInstantia
             emit decreaseReferences(referencedID);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstantiationsModel::getAllReferencableValuesFromParameter()
+//-----------------------------------------------------------------------------
+QStringList ComponentInstantiationsModel::getAllReferencableValuesFromParameter(
+    QSharedPointer<Parameter> selectedParameter) const
+{
+    QStringList referenceList;
+
+    referenceList.append(selectedParameter->getValue());
+    referenceList.append(selectedParameter->getVectorLeft());
+    referenceList.append(selectedParameter->getVectorRight());
+    referenceList.append(selectedParameter->getAttribute("kactus2:arrayLeft"));
+    referenceList.append(selectedParameter->getAttribute("kactus2:arrayRight"));
+
+    return referenceList;
 }

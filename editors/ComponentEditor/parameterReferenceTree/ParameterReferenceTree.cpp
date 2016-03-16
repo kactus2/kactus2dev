@@ -17,9 +17,11 @@
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ModuleParameter.h>
+#include <IPXACTmodels/common/FileBuilder.h>
 
 namespace
 {
@@ -63,6 +65,11 @@ void ParameterReferenceTree::setupTree()
 {
     if (!component_.isNull())
     {
+        if (referenceExistsInFileSets())
+        {
+            createReferencesForFileSets();
+        }
+
         if (referenceExistsInParameters(component_->getParameters()))
         {
             QTreeWidgetItem* topParametersItem = createTopItem("Parameters");
@@ -79,9 +86,9 @@ void ParameterReferenceTree::setupTree()
             createReferencesForAddressSpaces();
         }
 
-        if (referenceExistsInViews())
+        if (referenceExistsInComponentInstantiations())
         {
-            createReferencesForViews();
+            createReferencesForComponentInstantiations();
         }
 
         if (referenceExistsInPorts())
@@ -108,6 +115,113 @@ void ParameterReferenceTree::setupTree()
     {
         createTopItem("Component does not exist.");
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInFileSets()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInFileSets() const
+{
+    foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
+    {
+        if (fileSetHasReference(fileSet))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::fileSetHasReference()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::fileSetHasReference(QSharedPointer<FileSet> fileSet) const
+{
+    return referenceExistsInFileBuilders(fileSet->getDefaultFileBuilders());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInFileBuilders()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInFileBuilders(
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders) const
+{
+    foreach (QSharedPointer<FileBuilder> builder, *fileBuilders)
+    {
+        if (fileBuilderHasReference(builder))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::fileBuilderHasReference()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::fileBuilderHasReference(QSharedPointer<FileBuilder> fileBuilder) const
+{
+    return fileBuilder->getReplaceDefaultFlags().contains(targetID_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForFileSets()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForFileSets()
+{
+    QTreeWidgetItem* topFileSetsItem = createTopItem("File sets");
+
+    foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
+    {
+        if (fileSetHasReference(fileSet))
+        {
+            QTreeWidgetItem* fileSetItem = createMiddleItem(fileSet->name(), topFileSetsItem);
+
+            if (referenceExistsInFileBuilders(fileSet->getDefaultFileBuilders()))
+            {
+                createReferencesForFileBuilders(fileSet->getDefaultFileBuilders(), fileSetItem);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForFileBuilders()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForFileBuilders(
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > fileBuilders, QTreeWidgetItem* parentItem)
+{
+    QTreeWidgetItem* buildCommandsItem = createMiddleItem("Default file build commands", parentItem);
+    colourItemGrey(buildCommandsItem);
+
+    foreach (QSharedPointer<FileBuilder> builder, *fileBuilders)
+    {
+        if (fileBuilderHasReference(builder))
+        {
+            createReferencesForSingleFileBuilder(builder, buildCommandsItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForSingleFileBuilder()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForSingleFileBuilder(QSharedPointer<FileBuilder> fileBuilder,
+    QTreeWidgetItem* parentItem)
+{
+    QString fileType = fileBuilder->getFileType();
+    if (fileType == QLatin1String("user"))
+    {
+        fileType = fileBuilder->getUserFileType();
+    }
+
+    QString fileTypeIdentifier = QObject::tr("File type: %1").arg(fileType);
+
+    QTreeWidgetItem* builderItem = createMiddleItem(fileTypeIdentifier, parentItem);
+
+    createItem(QLatin1String("Replace default flags"), fileBuilder->getReplaceDefaultFlags(), builderItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -248,13 +362,13 @@ bool ParameterReferenceTree::referenceExistsInSingleSegment(QSharedPointer<Segme
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReferenceTree::referenceExistsInViews()
+// Function: ParameterReferenceTree::referenceExistsInComponentInstantiations()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInViews() const
+bool ParameterReferenceTree::referenceExistsInComponentInstantiations() const
 {
-    foreach(QSharedPointer<View> view, *component_->getViews())
+    foreach (QSharedPointer<ComponentInstantiation> instantiation, *component_->getComponentInstantiations())
     {
-        if (referenceExistsInView(view))
+        if (referenceExistsInSingleComponentInstantiation(instantiation))
         {
             return true;
         }
@@ -264,77 +378,48 @@ bool ParameterReferenceTree::referenceExistsInViews() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReferenceTree::referenceExistsInView()
+// Function: ParameterReferenceTree::referenceExistsInSingleComponentInstantiation()
 //-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInView(QSharedPointer<View> view) const
+bool ParameterReferenceTree::referenceExistsInSingleComponentInstantiation(
+    QSharedPointer<ComponentInstantiation> instantiation) const
 {
-    if (!view->getComponentInstantiationRef().isEmpty())
-    {
-        foreach (QSharedPointer<ComponentInstantiation> instantiation, *component_->getComponentInstantiations())
-        {
-            if (instantiation->name() == view->getComponentInstantiationRef())
-            {
-                foreach (QSharedPointer<Parameter> parameter, *instantiation->getParameters())
-                {
-                    if (parameterHasReference(parameter))
-                    {
-                        return true;
-                    }
-                }
-                foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
-                {
-                    if (parameterHasReference(parameter))
-                    {
-                        return true;
-                    }
-                }
-
-                break;
-            }
-        }
-    }
-
-    return false;
+    return referenceExistsInModuleParameters(instantiation->getModuleParameters()) ||
+        referenceExistsInParameters(instantiation->getParameters()) ||
+        referenceExistsInFileBuilders(instantiation->getDefaultFileBuilders());
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReferenceTree::createReferencesForViews()
+// Function: ParameterReferenceTree::createReferencesForComponentInstantiations()
 //-----------------------------------------------------------------------------
-void ParameterReferenceTree::createReferencesForViews()
+void ParameterReferenceTree::createReferencesForComponentInstantiations()
 {
-    QTreeWidgetItem* topViewsItem = createTopItem("Views");
+    QTreeWidgetItem* topComponentInstantiationsItem = createTopItem("Component instantiations");
 
-    foreach (QSharedPointer<View> view, *component_->getViews())
+    foreach (QSharedPointer<ComponentInstantiation> instantiation, *component_->getComponentInstantiations())
     {
-        if (referenceExistsInView(view))
+        if (referenceExistsInSingleComponentInstantiation(instantiation))
         {
-            QTreeWidgetItem* viewItem = createMiddleItem(view->name(), topViewsItem);
-            if (!view->getComponentInstantiationRef().isEmpty())
+            QTreeWidgetItem* instantiationItem =
+                createMiddleItem(instantiation->name(), topComponentInstantiationsItem);
+
+            if (referenceExistsInParameters(instantiation->getParameters()))
             {
-                foreach (QSharedPointer<ComponentInstantiation> instantiation,
-                    *component_->getComponentInstantiations())
-                {
-                    if (instantiation->name() == view->getComponentInstantiationRef())
-                    {
-                        if (referenceExistsInParameters(instantiation->getParameters()))
-                        {
-                            QTreeWidgetItem* viewParametersItem = createMiddleItem("Parameters", viewItem);
-                            colourItemGrey(viewParametersItem);
+                QTreeWidgetItem* parametersItem = createMiddleItem(QLatin1String("Parameters"), instantiationItem);
+                colourItemGrey(parametersItem);
+                createParameterReferences(instantiation->getParameters(), parametersItem);
+            }
 
-                            createParameterReferences(instantiation->getParameters(), viewParametersItem);
-                        }
+            if (referenceExistsInModuleParameters(instantiation->getModuleParameters()))
+            {
+                QTreeWidgetItem* moduleParametersItem =
+                    createMiddleItem(QLatin1String("Module Parameters"), instantiationItem);
+                colourItemGrey(moduleParametersItem);
+                createReferencesForModuleParameters(instantiation->getModuleParameters(), moduleParametersItem);
+            }
 
-                        if (referenceExistsInModuleParameters(instantiation->getModuleParameters()))
-                        {
-                            QTreeWidgetItem* viewModuleParametersItem =
-                                createMiddleItem("Module Parameters", viewItem);
-                            colourItemGrey(viewModuleParametersItem);
-
-                            createReferencesForModuleParameters(instantiation->getModuleParameters(),
-                                viewModuleParametersItem);
-                        }
-                    }
-                }
+            if (referenceExistsInFileBuilders(instantiation->getDefaultFileBuilders()))
+            {
+                createReferencesForFileBuilders(instantiation->getDefaultFileBuilders(), instantiationItem);
             }
         }
     }
