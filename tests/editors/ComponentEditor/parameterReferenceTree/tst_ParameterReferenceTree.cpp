@@ -36,6 +36,8 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/BuildCommand.h>
 
 #include <QSharedPointer>
 
@@ -52,6 +54,8 @@ private slots:
     void testNoReferencesFoundAddsOneRow();
 
     void testReferenceInFileSetFileBuilderAddsFiveRows();
+
+    void testReferenceInFileBuildCommandAddsSixRows();
 
     void testReferenceInParameterValueAddsThreeRows();
     void testMultipleReferencesInOneParameter();
@@ -122,6 +126,10 @@ private:
     QSharedPointer<FileBuilder> createTestFileBuilder(QString const& fileType, QString const& replaceDefaultFlags);
 
     QSharedPointer<FileSet> createTestFileSet(QString const& name, QSharedPointer<FileBuilder> builder);
+
+    QSharedPointer<BuildCommand> createTestBuildCommand(QString const& replaceDefaultFlags);
+
+    QSharedPointer<File> createTestFile(QString const& name, QSharedPointer<BuildCommand> buildCommand);
 
     QSharedPointer<ExpressionFormatter> createTestExpressionFormatter(QSharedPointer<Component> component);   
 };
@@ -268,6 +276,64 @@ void tst_ParameterReferenceTree::testReferenceInFileSetFileBuilderAddsFiveRows()
         expressionFormatter->formatReferringExpression(referencingFileBuilder->getReplaceDefaultFlags()));
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::testReferenceInFileBuildCommandAddsSixRows()
+//-----------------------------------------------------------------------------
+void tst_ParameterReferenceTree::testReferenceInFileBuildCommandAddsSixRows()
+{
+    QSharedPointer<Parameter> searched(new Parameter);
+    searched->setName("searchedParameter");
+    searched->setValueId("searched");
+
+    QSharedPointer<BuildCommand> referencingBuild = createTestBuildCommand("searched * Saitama");
+
+    QSharedPointer<File> referencingFile = createTestFile("One", referencingBuild);
+
+    QSharedPointer<FileSet> referencingFileSet = createTestFileSet("testSet", QSharedPointer<FileBuilder>());
+    referencingFileSet->getFiles()->append(referencingFile);
+
+    QSharedPointer<Component> component(new Component);
+    component->getParameters()->append(searched);
+    component->getFileSets()->append(referencingFileSet);
+
+    QSharedPointer<ExpressionFormatter> expressionFormatter = createTestExpressionFormatter(component);
+
+    ParameterReferenceTree tree(component, expressionFormatter, searched->getValueId());
+
+    QCOMPARE(tree.topLevelItemCount(), 1);
+
+    QTreeWidgetItem* topItem = tree.topLevelItem(0);
+    QCOMPARE(topItem->text(ParameterReferenceTree::ITEM_NAME), QString("File sets"));
+    QCOMPARE(topItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(topItem->childCount(), 1);
+
+    QTreeWidgetItem* fileSetItem = topItem->child(0);
+    QCOMPARE(fileSetItem->text(ParameterReferenceTree::ITEM_NAME), referencingFileSet->name());
+    QCOMPARE(fileSetItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(fileSetItem->childCount(), 1);
+
+    QTreeWidgetItem* filesItem = fileSetItem->child(0);
+    QCOMPARE(filesItem->text(ParameterReferenceTree::ITEM_NAME), QString("Files"));
+    QCOMPARE(filesItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(filesItem->childCount(), 1);
+
+    QTreeWidgetItem* singleFileItem = filesItem->child(0);
+    QCOMPARE(singleFileItem->text(ParameterReferenceTree::ITEM_NAME), referencingFile->name());
+    QCOMPARE(singleFileItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(singleFileItem->childCount(), 1);
+
+    QTreeWidgetItem* buildCommandItem = singleFileItem->child(0);
+    QCOMPARE(buildCommandItem->text(ParameterReferenceTree::ITEM_NAME), QString("Build command"));
+    QCOMPARE(buildCommandItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(buildCommandItem->childCount(), 1);
+
+    QTreeWidgetItem* flagsItem = buildCommandItem->child(0);
+    QCOMPARE(flagsItem->text(ParameterReferenceTree::ITEM_NAME), QString("Replace default flags"));
+    QCOMPARE(flagsItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(referencingBuild->getReplaceDefaultFlags()));
+    QCOMPARE(flagsItem->childCount(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -1806,8 +1872,12 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     refRemapState->setName("refRemapState");
     refRemapState->getRemapPorts()->append(refRemapPort);
 
+    QSharedPointer<BuildCommand> referencingBuildCommand = createTestBuildCommand("searched+Dandy");
+    QSharedPointer<File> referencingFile = createTestFile("referencingFile", referencingBuildCommand);
+
     QSharedPointer<FileBuilder> refFileBuilder = createTestFileBuilder("systemCSource", "searched+1");
     QSharedPointer<FileSet> refFileSet = createTestFileSet("refFiles", refFileBuilder);
+    refFileSet->getFiles()->append(referencingFile);
 
     QSharedPointer<Component> component(new Component);
     component->getFileSets()->append(refFileSet);
@@ -1828,6 +1898,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
 
     QCOMPARE(tree.topLevelItemCount(), 8);
 
+    //! Test file sets.
     QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_NAME), QString("File sets"));
     QCOMPARE(tree.topLevelItem(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
@@ -1835,7 +1906,7 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME), refFileSet->name());
     QCOMPARE(tree.topLevelItem(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->childCount(), 2);
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_NAME),
         QString("Default file build commands"));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
@@ -1854,6 +1925,27 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
         expressionFormatter->formatReferringExpression(refFileBuilder->getReplaceDefaultFlags()));
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 0);
+
+    QTreeWidgetItem* filesItem = tree.topLevelItem(0)->child(0)->child(1);
+    QCOMPARE(filesItem->text(ParameterReferenceTree::ITEM_NAME), QString("Files"));
+    QCOMPARE(filesItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(filesItem->childCount(), 1);
+
+    QTreeWidgetItem* singleFileItem = filesItem->child(0);
+    QCOMPARE(singleFileItem->text(ParameterReferenceTree::ITEM_NAME), referencingFile->name());
+    QCOMPARE(singleFileItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(singleFileItem->childCount(), 1);
+
+    QTreeWidgetItem* buildCommandItem = singleFileItem->child(0);
+    QCOMPARE(buildCommandItem->text(ParameterReferenceTree::ITEM_NAME), QString("Build command"));
+    QCOMPARE(buildCommandItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(buildCommandItem->childCount(), 1);
+
+    QTreeWidgetItem* flagsItem = buildCommandItem->child(0);
+    QCOMPARE(flagsItem->text(ParameterReferenceTree::ITEM_NAME), QString("Replace default flags"));
+    QCOMPARE(flagsItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(referencingBuildCommand->getReplaceDefaultFlags()));
+    QCOMPARE(flagsItem->childCount(), 0);
 
     //! Test parameters.
     QCOMPARE(tree.topLevelItem(1)->text(ParameterReferenceTree::ITEM_NAME), QString("Parameters"));
@@ -2012,7 +2104,6 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
         expressionFormatter->formatReferringExpression(viewParamRef->getValue()));
     QCOMPARE(tree.topLevelItem(4)->child(0)->child(0)->child(0)->child(0)->childCount(), 0);
 
-    QTreeWidgetItem* builderItem = tree.topLevelItem(4)->child(0)->child(1);
     QTreeWidgetItem* defaultFileBuildersItem = tree.topLevelItem(4)->child(0)->child(1);
     QCOMPARE(defaultFileBuildersItem->text(ParameterReferenceTree::ITEM_NAME), QString("Default file build commands"));
     QCOMPARE(defaultFileBuildersItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
@@ -2270,9 +2361,36 @@ QSharedPointer<FileSet> tst_ParameterReferenceTree::createTestFileSet(QString co
     QSharedPointer<FileBuilder> builder)
 {
     QSharedPointer<FileSet> referencingFileSet (new FileSet(name));
-    referencingFileSet->getDefaultFileBuilders()->append(builder);
+
+    if (builder)
+    {
+        referencingFileSet->getDefaultFileBuilders()->append(builder);
+    }
 
     return referencingFileSet;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::createTestBuildCommand()
+//-----------------------------------------------------------------------------
+QSharedPointer<BuildCommand> tst_ParameterReferenceTree::createTestBuildCommand(QString const& replaceDefaultFlags)
+{
+    QSharedPointer<BuildCommand> newCommand (new BuildCommand());
+    newCommand->setReplaceDefaultFlags(replaceDefaultFlags);
+
+    return newCommand;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterReferenceTree::createTestFile()
+//-----------------------------------------------------------------------------
+QSharedPointer<File> tst_ParameterReferenceTree::createTestFile(QString const& name,
+    QSharedPointer<BuildCommand> buildCommand)
+{
+    QSharedPointer<File> newFile (new File(name));
+    newFile->setBuildcommand(buildCommand);
+
+    return newFile;
 }
 
 //-----------------------------------------------------------------------------

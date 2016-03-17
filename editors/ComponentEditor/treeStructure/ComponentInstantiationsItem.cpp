@@ -41,9 +41,14 @@ ComponentEditorItem(model, libHandler, component, parent),
 
     foreach(QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
     {
-        childItems_.append(QSharedPointer<ComponentEditorItem>(
-            new SingleComponentInstantiationItem(model, libHandler, component, instantiation, validator,
-            referenceCounter, parameterFinder, expressionFormatter, expressionParser, this)));
+        QSharedPointer<ComponentEditorItem> componentInstantiationItem (new SingleComponentInstantiationItem(
+            model, libHandler, component, instantiation, validator, referenceCounter, parameterFinder,
+            expressionFormatter, expressionParser, this));
+
+        childItems_.append(componentInstantiationItem);
+
+        connect(componentInstantiationItem.data(), SIGNAL(openReferenceTree(QString)),
+            this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
     }
 }
 
@@ -103,6 +108,9 @@ void ComponentInstantiationsItem::createChild( int index )
         referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, this));
 
     childItem->setLocked(locked_);
+
+    connect(childItem.data(), SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
     childItems_.append(childItem);
 }

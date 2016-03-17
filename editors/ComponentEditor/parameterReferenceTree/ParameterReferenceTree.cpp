@@ -18,6 +18,8 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/BuildCommand.h>
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/ModuleParameter.h>
@@ -138,7 +140,8 @@ bool ParameterReferenceTree::referenceExistsInFileSets() const
 //-----------------------------------------------------------------------------
 bool ParameterReferenceTree::fileSetHasReference(QSharedPointer<FileSet> fileSet) const
 {
-    return referenceExistsInFileBuilders(fileSet->getDefaultFileBuilders());
+    return referenceExistsInFileBuilders(fileSet->getDefaultFileBuilders()) ||
+        referenceExistsInFiles(fileSet->getFiles());
 }
 
 //-----------------------------------------------------------------------------
@@ -167,6 +170,46 @@ bool ParameterReferenceTree::fileBuilderHasReference(QSharedPointer<FileBuilder>
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInFiles()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInFiles(QSharedPointer<QList<QSharedPointer<File> > > fileList) const
+{
+    foreach (QSharedPointer<File> currentFile, *fileList)
+    {
+        if (fileHasReference(currentFile))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::fileHasReference()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::fileHasReference(QSharedPointer<File> file) const
+{
+    if (file->getBuildCommand())
+    {
+        if (buildCommandHasReference(file->getBuildCommand()))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::buildCommandHasReference()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::buildCommandHasReference(QSharedPointer<BuildCommand> fileBuildCommand) const
+{
+    return fileBuildCommand->getReplaceDefaultFlags().contains(targetID_);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterReferenceTree::createReferencesForFileSets()
 //-----------------------------------------------------------------------------
 void ParameterReferenceTree::createReferencesForFileSets()
@@ -182,6 +225,11 @@ void ParameterReferenceTree::createReferencesForFileSets()
             if (referenceExistsInFileBuilders(fileSet->getDefaultFileBuilders()))
             {
                 createReferencesForFileBuilders(fileSet->getDefaultFileBuilders(), fileSetItem);
+            }
+
+            if (referenceExistsInFiles(fileSet->getFiles()))
+            {
+                createReferencesForFiles(fileSet->getFiles(), fileSetItem);
             }
         }
     }
@@ -222,6 +270,42 @@ void ParameterReferenceTree::createReferencesForSingleFileBuilder(QSharedPointer
     QTreeWidgetItem* builderItem = createMiddleItem(fileTypeIdentifier, parentItem);
 
     createItem(QLatin1String("Replace default flags"), fileBuilder->getReplaceDefaultFlags(), builderItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForFiles()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForFiles(QSharedPointer<QList<QSharedPointer<File> > > fileList,
+    QTreeWidgetItem* parentItem)
+{
+    QTreeWidgetItem* filesItem = createMiddleItem("Files", parentItem);
+    colourItemGrey(filesItem);
+
+    foreach (QSharedPointer<File> currentFile, *fileList)
+    {
+        if (fileHasReference(currentFile))
+        {
+            createReferencesForSingleFile(currentFile, filesItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::createReferencesForSingleFile()
+//-----------------------------------------------------------------------------
+void ParameterReferenceTree::createReferencesForSingleFile(QSharedPointer<File> selectedFile,
+    QTreeWidgetItem* parentItem)
+{
+    QTreeWidgetItem* fileItem = createMiddleItem(selectedFile->name(), parentItem);
+
+    QSharedPointer<BuildCommand> buildCommand = selectedFile->getBuildCommand();
+
+    if (buildCommand && buildCommandHasReference(buildCommand))
+    {
+        QTreeWidgetItem* buildCommandItem = createMiddleItem("Build command", fileItem);
+
+        createItem("Replace default flags", buildCommand->getReplaceDefaultFlags(), buildCommandItem);
+    }
 }
 
 //-----------------------------------------------------------------------------

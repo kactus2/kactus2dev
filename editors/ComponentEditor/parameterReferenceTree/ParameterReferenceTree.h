@@ -33,6 +33,8 @@ class Parameter;
 class ModuleParameter;
 class FileSet;
 class FileBuilder;
+class File;
+class BuildCommand;
 
 //-----------------------------------------------------------------------------
 //! Tree widget for displaying references to a parameter within a component.
@@ -110,6 +112,33 @@ private:
     bool fileBuilderHasReference(QSharedPointer<FileBuilder> fileBuilder) const;
 
     /*!
+     *  Check if a reference exists in files.
+     *
+     *      @param [in] fileList    The list of selected files.
+     *
+     *      @return True, if a reference exists in the files, false otherwise.
+     */
+    bool referenceExistsInFiles(QSharedPointer<QList<QSharedPointer<File> > > fileList) const;
+
+    /*!
+     *  Check if a reference exists in a single file.
+     *
+     *      @param [in] file    The selected file.
+     *
+     *      @return True, if a reference exists in a single file, false otherwise.
+     */
+    bool fileHasReference(QSharedPointer<File> file) const;
+
+    /*!
+     *  Check if a reference exits in a build command.
+     *
+     *      @param [in] fileBuildCommand    The selected build command.
+     *
+     *      @return True, if a reference exists in the build command, false otherwise.
+     */
+    bool buildCommandHasReference(QSharedPointer<BuildCommand> fileBuildCommand) const;
+
+    /*!
      *  Create references for file sets.
      */
     void createReferencesForFileSets();
@@ -130,6 +159,23 @@ private:
      *      @param [in] parentItem      The parent item.
      */
     void createReferencesForSingleFileBuilder(QSharedPointer<FileBuilder> fileBuilder, QTreeWidgetItem* parentItem);
+
+    /*!
+     *  Create references from the selected files.
+     *
+     *      @param [in] fileList    A list of files with possible references.
+     *      @param [in] parentItem  The parent item.
+     */
+    void createReferencesForFiles(QSharedPointer<QList<QSharedPointer<File> > > fileList,
+        QTreeWidgetItem* parentItem);
+
+    /*!
+     *  Create references for a single file.
+     *
+     *      @param [in] selectedFile    The selected file.
+     *      @param [in] parentItem      The parent item.
+     */
+    void createReferencesForSingleFile(QSharedPointer<File> selectedFile, QTreeWidgetItem* parentItem);
 
     /*!
      *  Check if a reference exists in components parameters.

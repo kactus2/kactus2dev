@@ -91,6 +91,7 @@ ItemEditor* SingleComponentInstantiationItem::editor()
  		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
         connectItemEditorToReferenceCounter();
+        connectReferenceTree();
 	}
 	return editor_;
 }

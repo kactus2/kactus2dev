@@ -763,9 +763,14 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createHWRootItem(QShare
         &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
         expressionParser_, hwRoot)));
 
-    hwRoot->addChildItem(QSharedPointer<InstantiationsItem>(new InstantiationsItem(
-        &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser_, hwRoot)));
+    QSharedPointer<InstantiationsItem> instantiationsItem (
+        new InstantiationsItem(&navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
+        expressionFormatter_, expressionParser_, hwRoot));
+
+    hwRoot->addChildItem(instantiationsItem);
+
+    connect(instantiationsItem.data(), SIGNAL(openReferenceTree(QString)),
+        this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
     QSharedPointer<ComponentEditorViewsItem> viewsItem(new ComponentEditorViewsItem(&navigationModel_, libHandler_,
         component, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, hwRoot));

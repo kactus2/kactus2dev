@@ -48,6 +48,9 @@ ComponentEditorItem(model, libHandler, component, parent),
 
     setReferenceCounter(referenceCounter);
 
+    connect(componentInstantiationsItem_.data(), SIGNAL(openReferenceTree(QString)),
+        this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
+
     childItems_.append(componentInstantiationsItem_);
     childItems_.append(designConfigurationInstantiationsItem_);
     childItems_.append(designInstantiationsItem_);
