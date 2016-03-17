@@ -28,6 +28,8 @@
 class LibraryInterface;
 class Component;
 class File;
+class ParameterFinder;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Editor for the details of a file.
@@ -41,12 +43,15 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] file        Pointer to the file that is edited.
-	 *      @param [in] parent      Pointer to the owner of this widget.
+	 *      @param [in] handler             Pointer to the instance that manages the library.
+	 *      @param [in] component           Pointer to the component being edited.
+	 *      @param [in] file                Pointer to the file that is edited.
+     *      @param [in] parameterFinder     The used parameter finder.
+     *      @param [in] expressionParser    Parser for calculating expressions.
+	 *      @param [in] parent              Pointer to the owner of this widget.
 	 */
 	FileEditor(LibraryInterface* handler, QSharedPointer<Component> component, QSharedPointer<File> file,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
         QWidget *parent = 0);
 
 	//! The destructor.

@@ -25,6 +25,9 @@ class LibraryInterface;
 class BuildCommand;
 class File;
 class Component;
+class ExpressionEditor;
+class ParameterFinder;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! FileBuildCommand is a group box for editing buildCommand of a file.
@@ -38,13 +41,16 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent      Pointer to the owner of this widget.
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] file        Pointer to the file that is being edited.
+	 *      @param [in] parent              Pointer to the owner of this widget.
+	 *      @param [in] handler             Pointer to the instance that manages the library.
+	 *      @param [in] component           Pointer to the component being edited.
+	 *      @param [in] file                Pointer to the file that is being edited.
+     *      @param [in] parameterFinder     The used parameter finder.
+     *      @param [in] expressionParser    Parser for calculating expressions.
 	 */
-	FileBuildCommand(QWidget *parent, LibraryInterface* handler, QSharedPointer<Component> component,
-        QSharedPointer<File> file);
+    FileBuildCommand(QWidget *parent, LibraryInterface* handler, QSharedPointer<Component> component,
+        QSharedPointer<File> file, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
 	virtual ~FileBuildCommand();
@@ -58,6 +64,20 @@ signals:
 
 	//! Emitted when contents of the widget change.
 	void contentChanged();
+
+    /*!
+     *  Increase the number of references made to the selected parameter.
+     *
+     *      @param [in] id  ID of the selected parameter.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the number of references made to the selected parameter.
+     *
+     *      @param [in] id  ID of the selected parameter.
+     */
+    void decreaseReferences(QString id);
 
 private slots:
 
@@ -81,22 +101,18 @@ private:
 
     FileBuildCommand& operator=(const FileBuildCommand& other);
 
-	/*!
-	 *  Set up the target editor.
-	 */
-	void setupTarget();
+    /*!
+     *  Get the formatted value for an expression.
+     *
+     *      @param [in] expression  The selected expression.
+     *
+     *      @return The formatted expression.
+     */
+    QString formattedValueFor(QString const& expression) const;
 
-	/*!
-	 *  Set up the command editor.
-	 */
-	void setupCommand();
-
-	/*!
-	 *  Set up the flags editor.
-	 */
-	void setupFlags();
-
-    void setupReplaceDefaultFlags();
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The file whose build command to edit.
     QSharedPointer<File> file_;
@@ -110,11 +126,14 @@ private:
 	//! Editor to set build command's flags.
 	QLineEdit flagsEditor_;
 
-	//! Editor to set build command's replaceDefaultFlags setting.
-    QLineEdit replaceDefaultEditor_;
+	//! Expression editor to set build command's replaceDefaultFlags setting.
+    ExpressionEditor* replaceDefaultEditor_;
 
 	//! Editor to set build command's target file.
 	TargetNameEdit targetEditor_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // FILEBUILDCOMMAND_H

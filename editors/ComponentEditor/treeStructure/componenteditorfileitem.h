@@ -36,17 +36,20 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] file        The file being edited.
-	 *      @param [in] model       The model that owns the items.
-	 *      @param [in] libHandler  The instance that manages the library.
-	 *      @param [in] component   The component being edited.
-     *      @param [in] validator   The validator for checking file validity.
-	 *      @param [in] parent      The parent item.
+	 *      @param [in] file                The file being edited.
+	 *      @param [in] model               The model that owns the items.
+	 *      @param [in] libHandler          The instance that manages the library.
+	 *      @param [in] component           The component being edited.
+     *      @param [in] validator           The validator for checking file validity.
+     *      @param [in] parameterFinder     The used parameter finder.
+     *      @param [in] expressionParser    Parser for calculating expressions.
+     *      @param [in] referenceCounter    The counter for parameter references.
+	 *      @param [in] parent              The parent item.
 	 */
     ComponentEditorFileItem(QSharedPointer<File> file, ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler, QSharedPointer<Component> component, 
-        QSharedPointer<FileValidator> validator, 
-        ComponentEditorItem* parent);
+        LibraryInterface* libHandler, QSharedPointer<Component> component, QSharedPointer<FileValidator> validator, 
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ReferenceCounter> referenceCounter, ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~ComponentEditorFileItem();
@@ -181,6 +184,9 @@ private:
 
 	//! Action to open the containing folder.
 	QAction* openContainingFolderAction_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // COMPONENTEDITORFILEITEM_H

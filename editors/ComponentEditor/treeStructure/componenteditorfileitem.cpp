@@ -12,6 +12,8 @@
 #include "componenteditorfileitem.h"
 
 #include <editors/ComponentEditor/fileSet/file/fileeditor.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -35,17 +37,21 @@
 // Function: ComponentEditorFileItem::ComponentEditorFileItem()
 //-----------------------------------------------------------------------------
 ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file, ComponentEditorTreeModel* model,
-    LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<FileValidator> validator, 
-    ComponentEditorItem* parent):
+        LibraryInterface* libHandler, QSharedPointer<Component> component, QSharedPointer<FileValidator> validator,
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ReferenceCounter> referenceCounter, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-    file_(file),
-    validator_(validator),
-    editAction_(new QAction(tr("Edit"), this)),
-    editWithAction_(new QAction(tr("Edit/Run with..."), this)),
-    runAction_(new QAction(tr("Run"), this)),
-    openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this) )
+file_(file),
+validator_(validator),
+editAction_(new QAction(tr("Edit"), this)),
+editWithAction_(new QAction(tr("Edit/Run with..."), this)),
+runAction_(new QAction(tr("Run"), this)),
+openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this) ),
+expressionParser_(expressionParser)
 {
+    setParameterFinder(parameterFinder);
+    setReferenceCounter(referenceCounter);
+
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
     connect(editWithAction_, SIGNAL(triggered(bool)), this, SLOT(openWith()), Qt::UniqueConnection);
     connect(runAction_, SIGNAL(triggered(bool)), this, SLOT(run()), Qt::UniqueConnection);
@@ -106,12 +112,14 @@ ItemEditor* ComponentEditorFileItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new FileEditor(libHandler_, component_, file_);
+		editor_ = new FileEditor(libHandler_, component_, file_, parameterFinder_, expressionParser_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
         connect(editor_, SIGNAL(editFile()), this, SLOT(openItem()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(runFile()), this, SLOT(run()), Qt::UniqueConnection);
+
+        connectItemEditorToReferenceCounter();
 	}
 	return editor_;
 }

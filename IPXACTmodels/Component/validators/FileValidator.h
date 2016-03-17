@@ -20,6 +20,8 @@
 
 class ExpressionParser;
 class File;
+class BuildCommand;
+
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:File.
 //-----------------------------------------------------------------------------
@@ -44,6 +46,15 @@ public:
      *      @return True, if the File is valid IP-XACT, otherwise false.
      */
     virtual bool validate(QSharedPointer<File> file) const;
+
+    /*!
+     *  Check if a build command has a valid replace default flags value.
+     *
+     *      @param [in] buildCommand    The selected build command.
+     *
+     *      @return True, if the build command replace default flags is valid, false otherwise.
+     */
+    bool buildCommandHasValidReplaceDefaultFlags(QSharedPointer<BuildCommand> buildCommand) const;
 
     /*!
      *  Finds possible errors in a File and creates a list of them.

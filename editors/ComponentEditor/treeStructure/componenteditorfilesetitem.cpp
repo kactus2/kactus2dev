@@ -129,8 +129,8 @@ QString ComponentEditorFileSetItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ComponentEditorFileSetItem::createChild(int index)
 {
-	QSharedPointer<ComponentEditorFileItem> fileItem
-        (new ComponentEditorFileItem(files_->at(index), model_, libHandler_, component_, fileValidator_, this));
+	QSharedPointer<ComponentEditorFileItem> fileItem (new ComponentEditorFileItem(files_->at(index), model_,
+        libHandler_, component_, fileValidator_, parameterFinder_, expressionParser_, referenceCounter_, this));
 
     connect(fileItem.data(), SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             model_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);

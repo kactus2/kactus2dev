@@ -11,6 +11,13 @@
 
 #include "filebuildcommand.h"
 
+#include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/common/ParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
 
@@ -21,17 +28,29 @@
 //-----------------------------------------------------------------------------
 // Function: FileBuildCommand::FileBuildCommand()
 //-----------------------------------------------------------------------------
-FileBuildCommand::FileBuildCommand(QWidget *parent, LibraryInterface* handler,
-    QSharedPointer<Component> component, QSharedPointer<File> file):
+FileBuildCommand::FileBuildCommand(QWidget *parent, LibraryInterface* handler, QSharedPointer<Component> component,
+                                   QSharedPointer<File> file, QSharedPointer<ParameterFinder> parameterFinder,
+                                   QSharedPointer<ExpressionParser> expressionParser):
 QGroupBox(tr("Build command"), parent),
-    file_(file),
-    buildCommand_(),
-    commandEditor_(this),
-    flagsEditor_(this),
-    replaceDefaultEditor_(this),
-    targetEditor_(this, handler, component)
+file_(file),
+buildCommand_(),
+commandEditor_(this),
+flagsEditor_(this),
+replaceDefaultEditor_(new ExpressionEditor(parameterFinder, this)),
+targetEditor_(this, handler, component),
+expressionParser_(expressionParser)
 {
     Q_ASSERT_X(file, "FileBuildCommand constructor", "Null File-pointer given to the constructor");
+
+    replaceDefaultEditor_->setFixedHeight(20);
+
+    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
+    componentParametersModel->setExpressionParser(expressionParser);
+
+    ParameterCompleter* replaceCompleter = new ParameterCompleter(this);
+    replaceCompleter->setModel(componentParametersModel);
+
+    replaceDefaultEditor_->setAppendingCompleter(replaceCompleter);
 
     setupLayout();
 
@@ -41,8 +60,15 @@ QGroupBox(tr("Build command"), parent),
     connect(&commandEditor_, SIGNAL(textEdited(QString const& )), 
         this, SLOT(onCommandChanged()), Qt::UniqueConnection);
     connect(&flagsEditor_, SIGNAL(textEdited(QString const& )), this, SLOT(onFlagsChanged()), Qt::UniqueConnection);
-    connect(&replaceDefaultEditor_, SIGNAL(textEdited(QString const& )),
+
+    connect(replaceDefaultEditor_, SIGNAL(editingFinished()),
         this, SLOT(onReplaceDefaultChanged()), Qt::UniqueConnection);
+    connect(replaceDefaultEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(replaceDefaultEditor_, SIGNAL(increaseReference(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(replaceDefaultEditor_, SIGNAL(decreaseReference(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -69,8 +95,36 @@ void FileBuildCommand::refresh()
 
     commandEditor_.setText(buildCommand_->getCommand());
     flagsEditor_.setText(buildCommand_->getFlags());
-    replaceDefaultEditor_.setText(buildCommand_->getReplaceDefaultFlags());
+
+    replaceDefaultEditor_->blockSignals(true);
+
+    replaceDefaultEditor_->setExpression(buildCommand_->getReplaceDefaultFlags());
+    replaceDefaultEditor_->setToolTip(formattedValueFor(buildCommand_->getReplaceDefaultFlags()));
+
+    replaceDefaultEditor_->blockSignals(false);
+
     targetEditor_.setText(buildCommand_->getTargetName());
+}
+
+//-----------------------------------------------------------------------------
+// Function: filebuildcommand::formattedValueFor()
+//-----------------------------------------------------------------------------
+QString FileBuildCommand::formattedValueFor(QString const& expression) const
+{
+    if (expressionParser_->isValidExpression(expression))
+    {
+        ValueFormatter formatter;
+        return formatter.format(expressionParser_->parseExpression(expression),
+            expressionParser_->baseForExpression(expression));
+    }
+    else if (expressionParser_->isPlainValue(expression))
+    {
+        return expression;
+    }
+    else
+    {
+        return QLatin1String("n/a");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -108,9 +162,14 @@ void FileBuildCommand::onTargetChanged()
 //-----------------------------------------------------------------------------
 void FileBuildCommand::onReplaceDefaultChanged()
 {
-    buildCommand_->setReplaceDefaultFlags(replaceDefaultEditor_.text());
+    replaceDefaultEditor_->finishEditingCurrentWord();
+
+    QString newReplace = replaceDefaultEditor_->getExpression();
+    buildCommand_->setReplaceDefaultFlags(newReplace);
+
+    replaceDefaultEditor_->setToolTip(formattedValueFor(newReplace));
+
     updateFileBuildCommand();
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +178,7 @@ void FileBuildCommand::onReplaceDefaultChanged()
 void FileBuildCommand::updateFileBuildCommand()
 {
     bool emptyBuildCommand = commandEditor_.text().isEmpty() && flagsEditor_.text().isEmpty() &&
-        targetEditor_.text().isEmpty() && replaceDefaultEditor_.text().isEmpty();
+        targetEditor_.text().isEmpty() && replaceDefaultEditor_->getExpression().isEmpty();
 
     if (!file_->getBuildCommand() && !emptyBuildCommand)
     {
@@ -168,8 +227,10 @@ void FileBuildCommand::setupLayout()
     replaceLabel->setToolTip(replaceFlagsToolTip);
     flagsEditor_.setToolTip(replaceFlagsToolTip);
 
+    replaceDefaultEditor_->setFrameShadow(QFrame::Sunken);
+
     topLayout->addWidget(replaceLabel, 3, 0, 1, 1);
-    topLayout->addWidget(&replaceDefaultEditor_, 3, 1, 1, 2);
+    topLayout->addWidget(replaceDefaultEditor_, 3, 1, 1, 2);
 
     setContentsMargins(0, 0, 0, 0);
 }

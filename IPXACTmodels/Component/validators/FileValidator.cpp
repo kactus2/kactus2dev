@@ -11,9 +11,11 @@
 
 #include "FileValidator.h"
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
+
 #include <IPXACTmodels/Component/File.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <IPXACTmodels/Component/BuildCommand.h>
 
 #include <QRegularExpression>
 #include <QStringList>
@@ -63,13 +65,32 @@ bool FileValidator::validate(QSharedPointer<File> file) const
 		}
 	}
 
-	if (file->getBuildCommand() && !file->getBuildCommand()->getReplaceDefaultFlags().isEmpty() &&
-		!expressionParser_->isValidExpression(file->getBuildCommand()->getReplaceDefaultFlags()))
-	{
-		return false;
-	}
+    if (file->getBuildCommand() && !buildCommandHasValidReplaceDefaultFlags(file->getBuildCommand()))
+    {
+        return false;
+    }
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileValidator::buildCommandHasValidReplaceDefaultFlags()
+//-----------------------------------------------------------------------------
+bool FileValidator::buildCommandHasValidReplaceDefaultFlags(QSharedPointer<BuildCommand> buildCommand) const
+{
+    if (!buildCommand->getReplaceDefaultFlags().isEmpty())
+    {
+        bool canConvert = true;
+        int replaceFlags =
+            expressionParser_->parseExpression(buildCommand->getReplaceDefaultFlags()).toInt(&canConvert);
+
+        if (!canConvert || replaceFlags < 0 || replaceFlags > 1)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -103,11 +124,11 @@ void FileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<File> 
 		}
 	}
 
-	if (file->getBuildCommand() && !file->getBuildCommand()->getReplaceDefaultFlags().isEmpty() &&
-		!expressionParser_->isValidExpression(file->getBuildCommand()->getReplaceDefaultFlags()))
+    if (file->getBuildCommand() && !buildCommandHasValidReplaceDefaultFlags(file->getBuildCommand()))
 	{
-		errors.append(QObject::tr("\"Replace default flags\" expression '%1' in build command for file %2" 
-            "is invalid.").arg(file->getBuildCommand()->getReplaceDefaultFlags(), file->name()));
+        errors.append(QObject::tr("Invalid \"replace default flags\" value set for build command in file %1."
+            " Value must evaluate to 0 or 1.").
+            arg(file->name()));
 	}
 }
 

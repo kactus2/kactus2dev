@@ -21,8 +21,9 @@
 //-----------------------------------------------------------------------------
 // Function: fileeditor::FileEditor()
 //-----------------------------------------------------------------------------
-FileEditor::FileEditor( LibraryInterface* handler, QSharedPointer<Component> component, QSharedPointer<File> file,
-    QWidget *parent ):
+FileEditor::FileEditor(LibraryInterface* handler, QSharedPointer<Component> component, QSharedPointer<File> file,
+            QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+            QWidget *parent):
 ItemEditor(component, handler, parent),
 file_(file),
 nameEditor_(file_, this),
@@ -30,7 +31,7 @@ editButton_(new QPushButton(QIcon(":/icons/common/graphics/settings-code_editor.
 runButton_(new QPushButton(QIcon(":/icons/common/graphics/plugin-generator.png"), tr("Run file"), this)),
 generalEditor_(this, file),
 fileTypeEditor_(this, file),
-buildCommand_(this, handler, component, file),
+buildCommand_(this, handler, component, file, parameterFinder, expressionParser),
 dependenciesEditor_(tr("Dependencies"), handler, component, this),
 exportedNamesEditor_(tr("Exported names"), this),
 imageTypesEditor_(tr("Image types"), this)
@@ -57,6 +58,11 @@ imageTypesEditor_(tr("Image types"), this)
     connect(&exportedNamesEditor_, SIGNAL(contentChanged()),
         this, SLOT(onExportedNamesChanged()), Qt::UniqueConnection);
     connect(&imageTypesEditor_, SIGNAL(contentChanged()), this, SLOT(onImageTypesChanged()), Qt::UniqueConnection);
+
+    connect(&buildCommand_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&buildCommand_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
