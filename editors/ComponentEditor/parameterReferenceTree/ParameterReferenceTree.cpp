@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
@@ -644,7 +645,25 @@ bool ParameterReferenceTree::referenceExistsInAddressBlock(QSharedPointer<Addres
         return true;
     }
 
-    foreach (QSharedPointer<RegisterBase> registerItem, *addressBlock->getRegisterData())
+    return referenceExistsInRegisters(addressBlock->getRegisterData());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInAddressBlockValues()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInAddressBlockValues(QSharedPointer<AddressBlock> addressBlock) const
+{
+    return addressBlock->getBaseAddress().contains(targetID_) || addressBlock->getRange().contains(targetID_) ||
+        addressBlock->getWidth().contains(targetID_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterReferenceTree::referenceExistsInRegisters()
+//-----------------------------------------------------------------------------
+bool ParameterReferenceTree::referenceExistsInRegisters(
+    QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerList) const
+{
+    foreach (QSharedPointer<RegisterBase> registerItem, *registerList)
     {
         QSharedPointer<Register> targetRegister = registerItem.dynamicCast<Register>();
 
@@ -658,15 +677,6 @@ bool ParameterReferenceTree::referenceExistsInAddressBlock(QSharedPointer<Addres
     }
 
     return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterReferenceTree::referenceExistsInAddressBlockValues()
-//-----------------------------------------------------------------------------
-bool ParameterReferenceTree::referenceExistsInAddressBlockValues(QSharedPointer<AddressBlock> addressBlock) const
-{
-    return addressBlock->getBaseAddress().contains(targetID_) || addressBlock->getRange().contains(targetID_) ||
-        addressBlock->getWidth().contains(targetID_);
 }
 
 //-----------------------------------------------------------------------------
@@ -711,7 +721,10 @@ bool ParameterReferenceTree::referenceExistsInRegisterFields(QSharedPointer<Regi
 bool ParameterReferenceTree::registerFieldHasReference(QSharedPointer<Field> targetField) const
 {
     return targetField->getBitOffset().contains(targetID_) || targetField->getBitWidth().contains(targetID_) ||
-        targetField->getIsPresent().contains(targetID_);
+        targetField->getIsPresent().contains(targetID_) ||
+        (targetField->getWriteConstraint() &&
+        (targetField->getWriteConstraint()->getMinimum().contains(targetID_) ||
+        targetField->getWriteConstraint()->getMaximum().contains(targetID_)));
 }
 
 //-----------------------------------------------------------------------------
@@ -873,15 +886,21 @@ void ParameterReferenceTree::createReferencesForSingleAddressBlock(QSharedPointe
         createItemsForAddressBlock(addressBlock, addressBlockItem);
     }
 
-    foreach (QSharedPointer<RegisterBase> baseRegister, *addressBlock->getRegisterData())
+    if (referenceExistsInRegisters(addressBlock->getRegisterData()))
     {
-        QSharedPointer<Register> targetRegister = baseRegister.dynamicCast<Register>();
+        QTreeWidgetItem* registersItem = createMiddleItem("Registers", addressBlockItem);
+        colourItemGrey(registersItem);
 
-        if (targetRegister)
+        foreach (QSharedPointer<RegisterBase> baseRegister, *addressBlock->getRegisterData())
         {
-            if (registerHasReference(targetRegister))
+            QSharedPointer<Register> targetRegister = baseRegister.dynamicCast<Register>();
+
+            if (targetRegister)
             {
-                createReferencesForSingleRegister(targetRegister, addressBlockItem);
+                if (registerHasReference(targetRegister))
+                {
+                    createReferencesForSingleRegister(targetRegister, registersItem);
+                }
             }
         }
     }
@@ -1292,6 +1311,17 @@ void ParameterReferenceTree::createItemsForField(QSharedPointer<Field> targetFie
     if (targetField->getIsPresent().contains(targetID_))
     {
         createItem("Is Present", targetField->getIsPresent(), parent);
+    }
+    if (targetField->getWriteConstraint())
+    {
+        if (targetField->getWriteConstraint()->getMinimum().contains(targetID_))
+        {
+            createItem("Write constraint minimum", targetField->getWriteConstraint()->getMinimum(), parent);
+        }
+        if (targetField->getWriteConstraint()->getMaximum().contains(targetID_))
+        {
+            createItem("Write constraint maximum", targetField->getWriteConstraint()->getMaximum(), parent);
+        }
     }
 }
 

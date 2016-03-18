@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 23.8.2012
- *      Author: Antti Kamppi
- * 		filename: usagecombobox.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: usagecombobox.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 23.08.2012
+//
+// Description:
+// The combo box to select one of the defined usage types.
+//-----------------------------------------------------------------------------
 
 #ifndef USAGECOMBOBOX_H
 #define USAGECOMBOBOX_H
@@ -12,35 +16,45 @@
 
 #include <QComboBox>
 
-class UsageComboBox : public QComboBox {
+//-----------------------------------------------------------------------------
+//! The combo box to select one of the defined usage types.
+//-----------------------------------------------------------------------------
+class UsageComboBox : public QComboBox
+{
 	Q_OBJECT
 
 public:
 
+	/*!
+     *  The constructor.
+	 *
+     *      param [in] parent   Pointer to the owner of the combo box.
+	 */
 	UsageComboBox(QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~UsageComboBox();
 
-	/*! \brief Get the currently selected value on the combo box.
+	/*!
+     *  Get the currently selected value on the combo box.
 	 *
-	 * \return The selected usage value.
-	*/
+	 *      @return The selected usage value.
+	 */
 	General::Usage getCurrentValue() const;
 
-	/*! \brief Set the given usage value as the selected value.
+	/*!
+     *  Set the given usage value as the selected value.
 	 *
-	 * \param usage The value to select.
-	 *
-	*/
+	 *      @param [in] usage   The value to select.
+	 */
 	void setCurrentValue(General::Usage usage);
 
 private:
 	
-	//! \brief No copying
+	//! No copying.
 	UsageComboBox(const UsageComboBox& other);
 
-	//! \brief No assignment
+	//! No assignment.
 	UsageComboBox& operator=(const UsageComboBox& other);
 };
 

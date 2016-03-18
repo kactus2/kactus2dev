@@ -21,7 +21,7 @@ QComboBox(parent)
 	setEditable(false);
 
     // add items for all available access-values
-    for (int i = 0; i < AccessTypes::ACCESS_COUNT; ++i)
+    for (int i = 0; i <= AccessTypes::ACCESS_COUNT; ++i)
     {
         QString text = AccessTypes::access2Str(static_cast<AccessTypes::Access>(i));
         addItem(text);

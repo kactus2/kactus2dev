@@ -350,6 +350,15 @@ private:
     bool referenceExistsInAddressBlockValues(QSharedPointer<AddressBlock> addressBlock) const;
 
     /*!
+     *  Check if a reference exists in a list of base registers.
+     *
+     *      @param [in] registerList    The selected register list.
+     *
+     *      @return True, if a reference exists in the give list, false otherwise.
+     */
+    bool referenceExistsInRegisters(QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerList) const;
+
+    /*!
      *  Check if a register has a reference.
      *
      *      @param [in] targetRegister      The register being studied.

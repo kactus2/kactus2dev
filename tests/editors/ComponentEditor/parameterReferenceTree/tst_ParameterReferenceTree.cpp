@@ -27,6 +27,7 @@
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
@@ -75,15 +76,15 @@ private slots:
     void testReferenceInAddressBlockBaseAddressAddsSevenRows();
     void testReferenceInAddressBlockNoReferenceInRegister();
 
-    void testReferenceInRegisterDimensionAddsEightRows();
-    void testReferenceInRegisterIsPresentAddsEightRows();
+    void testReferenceInRegisterDimensionAddsNineRows();
+    void testReferenceInRegisterIsPresentAddsNineRows();
     void testReferenceInMultipleRegistersInTwoAddressBlocks();
     void testRegisterwithNoReferences();
 
     void testReferenceInAddressSpaceAddressBlockAddsSixRows();
     void testReferenceInAddressSpaceSegmentAddsSixRows();
 
-    void testReferenceInRegisterFieldAddsTenRows();
+    void testReferenceInRegisterFieldAddsElevenRows();
 
     void testReferenceInBusInterfaceParameterAddsFourRows();
 
@@ -985,7 +986,7 @@ void tst_ParameterReferenceTree::testReferenceInAddressBlockNoReferenceInRegiste
 //-----------------------------------------------------------------------------
 // Function: tst_ParameterReferenceTree::testReferenceInRegisterDimensionAddsEightRows()
 //-----------------------------------------------------------------------------
-void tst_ParameterReferenceTree::testReferenceInRegisterDimensionAddsEightRows()
+void tst_ParameterReferenceTree::testReferenceInRegisterDimensionAddsNineRows()
 {
     QSharedPointer<Parameter> searched(new Parameter);
     searched->setName("searchedParameter");
@@ -1041,7 +1042,11 @@ void tst_ParameterReferenceTree::testReferenceInRegisterDimensionAddsEightRows()
     QCOMPARE(addressBlock->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
     QCOMPARE(addressBlock->childCount(), 1);
-    QTreeWidgetItem* registerItem = addressBlock->child(0);
+    QTreeWidgetItem* registerListItem = addressBlock->child(0);
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_NAME), QString("Registers"));
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QTreeWidgetItem* registerItem = registerListItem->child(0);
     QCOMPARE(registerItem->text(ParameterReferenceTree::ITEM_NAME), registerRef->name());
     QCOMPARE(registerItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
@@ -1057,7 +1062,7 @@ void tst_ParameterReferenceTree::testReferenceInRegisterDimensionAddsEightRows()
 //-----------------------------------------------------------------------------
 // Function: tst_ParameterReferenceTree::testReferenceInRegisterIsPresentAddsEightRows()
 //-----------------------------------------------------------------------------
-void tst_ParameterReferenceTree::testReferenceInRegisterIsPresentAddsEightRows()
+void tst_ParameterReferenceTree::testReferenceInRegisterIsPresentAddsNineRows()
 {
     QSharedPointer<Parameter> searched(new Parameter);
     searched->setName("searchedParameter");
@@ -1114,7 +1119,11 @@ void tst_ParameterReferenceTree::testReferenceInRegisterIsPresentAddsEightRows()
     QCOMPARE(addressBlock->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
     QCOMPARE(addressBlock->childCount(), 1);
-    QTreeWidgetItem* registerItem = addressBlock->child(0);
+    QTreeWidgetItem* registerListItem = addressBlock->child(0);
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_NAME), QString("Registers"));
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QTreeWidgetItem* registerItem = registerListItem->child(0);
     QCOMPARE(registerItem->text(ParameterReferenceTree::ITEM_NAME), registerRef->name());
     QCOMPARE(registerItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
@@ -1194,35 +1203,34 @@ void tst_ParameterReferenceTree::testReferenceInMultipleRegistersInTwoAddressBlo
         ParameterReferenceTree::ITEM_NAME), addressBlockOne->name());
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
         ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 2);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_NAME), registerOne_1->name());
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 1);
+    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 1);
+    QTreeWidgetItem* registerListItem =
+        tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0);
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_NAME), QString("Registers"));
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerListItem->childCount(), 2);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_NAME), QString("Dimension"));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION),
+    QTreeWidgetItem* registerItemOne = registerListItem->child(0);
+    QCOMPARE(registerItemOne->text(ParameterReferenceTree::ITEM_NAME), registerOne_1->name());
+    QCOMPARE(registerItemOne->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerItemOne->childCount(), 1);
+
+    QTreeWidgetItem* registerOneDimensionItem = registerItemOne->child(0);
+    QCOMPARE(registerOneDimensionItem->text(ParameterReferenceTree::ITEM_NAME), QString("Dimension"));
+    QCOMPARE(registerOneDimensionItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(registerOne_1->getDimension()));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        childCount(), 0);
+    QCOMPARE(registerOneDimensionItem->childCount(), 0);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->text(
-        ParameterReferenceTree::ITEM_NAME), registerTwo_1->name());
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->childCount(), 1);
+    QTreeWidgetItem* registerItemTwo = registerListItem->child(1);
+    QCOMPARE(registerItemTwo->text(ParameterReferenceTree::ITEM_NAME), registerTwo_1->name());
+    QCOMPARE(registerItemTwo->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerItemTwo->childCount(), 1);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->text(
-        ParameterReferenceTree::ITEM_NAME), QString("Offset"));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION),
+    QTreeWidgetItem* offsetItem = registerItemTwo->child(0);
+    QCOMPARE(offsetItem->text(ParameterReferenceTree::ITEM_NAME), QString("Offset"));
+    QCOMPARE(offsetItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(registerTwo_1->getAddressOffset()));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->
-        childCount(), 0);
 
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->text(
         ParameterReferenceTree::ITEM_NAME), addressBlockTwo->name());
@@ -1230,27 +1238,27 @@ void tst_ParameterReferenceTree::testReferenceInMultipleRegistersInTwoAddressBlo
         ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->childCount(), 1);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->text(
-        ParameterReferenceTree::ITEM_NAME), registerOne_2->name());
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->childCount(), 2);
+    registerListItem = tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0);
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_NAME), QString("Registers"));
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerListItem->childCount(), 1);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_NAME), QString("Offset"));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION),
+    registerItemOne = registerListItem->child(0);
+    QCOMPARE(registerItemOne->text(ParameterReferenceTree::ITEM_NAME), registerOne_2->name());
+    QCOMPARE(registerItemOne->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerItemOne->childCount(), 2);
+
+    offsetItem = registerItemOne->child(0);
+    QCOMPARE(offsetItem->text(ParameterReferenceTree::ITEM_NAME), QString("Offset"));
+    QCOMPARE(offsetItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(registerOne_2->getAddressOffset()));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->child(0)->
-        childCount(), 0);
+    QCOMPARE(offsetItem->childCount(), 0);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->child(1)->text(
-        ParameterReferenceTree::ITEM_NAME), QString("Dimension"));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->child(1)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION),
+    QTreeWidgetItem* dimensionItem = registerItemOne->child(1);
+    QCOMPARE(dimensionItem->text(ParameterReferenceTree::ITEM_NAME), QString("Dimension"));
+    QCOMPARE(dimensionItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(registerOne_2->getDimension()));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->child(1)->
-        childCount(), 0);
+    QCOMPARE(dimensionItem->childCount(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -1313,22 +1321,24 @@ void tst_ParameterReferenceTree::testRegisterwithNoReferences()
         ParameterReferenceTree::ITEM_NAME), addressBlockRef->name());
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
         ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
-
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 1);
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_NAME), refRegister->name());
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 1);
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_NAME), QString("Dimension"));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION),
+    QTreeWidgetItem* registerListItem =
+        tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0);
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_NAME), QString("Registers"));
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerListItem->childCount(), 1);
+
+    QTreeWidgetItem* registerItem = registerListItem->child(0);
+    QCOMPARE(registerItem->text(ParameterReferenceTree::ITEM_NAME), QString(refRegister->name()));
+    QCOMPARE(registerItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerItem->childCount(), 1);
+
+    QTreeWidgetItem* dimensionItem = registerItem->child(0);
+    QCOMPARE(dimensionItem->text(ParameterReferenceTree::ITEM_NAME), QString("Dimension"));
+    QCOMPARE(dimensionItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(refRegister->getDimension()));
-
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        childCount(), 0);
+    QCOMPARE(dimensionItem->childCount(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -1460,7 +1470,7 @@ void tst_ParameterReferenceTree::testReferenceInAddressSpaceSegmentAddsSixRows()
 //-----------------------------------------------------------------------------
 // Function: tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsTenRows()
 //-----------------------------------------------------------------------------
-void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsTenRows()
+void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsElevenRows()
 {
     QSharedPointer<Parameter> searched(new Parameter);
     searched->setName("searchedParameter");
@@ -1469,11 +1479,17 @@ void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsTenRows()
     QList <QSharedPointer<Parameter> > componentParameters;
     componentParameters.append(searched);
 
-    QSharedPointer <Register> refRegister = createTestRegister("refRegister", "test", "test");
+    QSharedPointer<WriteValueConstraint> refWriteConstraint (new WriteValueConstraint());
+    refWriteConstraint->setType(WriteValueConstraint::MIN_MAX);
+    refWriteConstraint->setMinimum("searched - 1");
+    refWriteConstraint->setMaximum("searched + 1");
 
     QSharedPointer<Field> refField = createTestField("fieldRef", "searched", "nothing", "searched");
+    refField->setWriteConstraint(refWriteConstraint);
+
+    QSharedPointer <Register> refRegister = createTestRegister("refRegister", "test", "test");
     refRegister->getFields()->append(refField);
-    
+
     QSharedPointer <AddressBlock> addressBlockRef = createTestAddressBlock("addressBlockRef", "", "", "");
     addressBlockRef->getRegisterData()->append(refRegister);
 
@@ -1521,45 +1537,52 @@ void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsTenRows()
         ParameterReferenceTree::ITEM_NAME), addressBlockRef->name());
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
         ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
-
     QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 1);
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_NAME), refRegister->name());
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
-    
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 1);
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_NAME), QString("Fields"));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        childCount(), 1);
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        text(ParameterReferenceTree::ITEM_NAME), refField->name());
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QTreeWidgetItem* registerListItem =
+        tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0);
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_NAME), QString("Registers"));
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerListItem->childCount(), 1);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        childCount(), 2);
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        child(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Offset"));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), expressionFormatter->formatReferringExpression(
-        refField->getBitOffset()));
+    QTreeWidgetItem* registerItem = registerListItem->child(0);
+    QCOMPARE(registerItem->text(ParameterReferenceTree::ITEM_NAME), refRegister->name());
+    QCOMPARE(registerItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerItem->childCount(), 1);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        child(0)->childCount(), 0);
+    QTreeWidgetItem* fieldListItem = registerItem->child(0);
+    QCOMPARE(fieldListItem->text(ParameterReferenceTree::ITEM_NAME), QString("Fields"));
+    QCOMPARE(fieldListItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(fieldListItem->childCount(), 1);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        child(1)->text(ParameterReferenceTree::ITEM_NAME), QString("Is Present"));
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        child(1)->text(ParameterReferenceTree::ITEM_EXPRESSION), expressionFormatter->formatReferringExpression(
-        refField->getBitOffset()));
+    QTreeWidgetItem* fieldItem = fieldListItem->child(0);
+    QCOMPARE(fieldItem->text(ParameterReferenceTree::ITEM_NAME), refField->name());
+    QCOMPARE(fieldItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(fieldItem->childCount(), 4);
 
-    QCOMPARE(tree.topLevelItem(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->
-        child(1)->childCount(), 0);
+    QTreeWidgetItem* offsetItem = fieldItem->child(0);
+    QCOMPARE(offsetItem->text(ParameterReferenceTree::ITEM_NAME), QString("Offset"));
+    QCOMPARE(offsetItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(refField->getBitOffset()));
+    QCOMPARE(offsetItem->childCount(), 0);
+
+    QTreeWidgetItem* isPresentItem = fieldItem->child(1);
+    QCOMPARE(isPresentItem->text(ParameterReferenceTree::ITEM_NAME), QString("Is Present"));
+    QCOMPARE(isPresentItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(refField->getIsPresent()));
+    QCOMPARE(isPresentItem->childCount(), 0);
+
+    QTreeWidgetItem* constraintMinItem = fieldItem->child(2);
+    QCOMPARE(constraintMinItem->text(ParameterReferenceTree::ITEM_NAME), QString("Write constraint minimum"));
+    QCOMPARE(constraintMinItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(refField->getWriteConstraint()->getMinimum()));
+    QCOMPARE(constraintMinItem->childCount(), 0);
+
+    QTreeWidgetItem* constraintMaxItem = fieldItem->child(3);
+    QCOMPARE(constraintMaxItem->text(ParameterReferenceTree::ITEM_NAME), QString("Write constraint maximum"));
+    QCOMPARE(constraintMaxItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(refField->getWriteConstraint()->getMaximum()));
+    QCOMPARE(constraintMaxItem->childCount(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -1825,7 +1848,13 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     // Port: One reference, in default value.
     QSharedPointer<Port> portRef = createTestPort("portRef", "", "test", "searched", "", "");
 
+    QSharedPointer<WriteValueConstraint> constraintRef (new WriteValueConstraint());
+    constraintRef->setType(WriteValueConstraint::MIN_MAX);
+    constraintRef->setMinimum("Saitama");
+    constraintRef->setMaximum("searched + Saitama");
+
     QSharedPointer<Field> refField = createTestField("fieldRef", "", "searched", "");
+    refField->setWriteConstraint(constraintRef);
 
     // Register: One reference, in offset
     QSharedPointer<Register> registerRef = createTestRegister("registerRef", "searched", "test");
@@ -2005,46 +2034,48 @@ void tst_ParameterReferenceTree::testRerefencesInMultiplePlaces()
     QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->text(
         ParameterReferenceTree::ITEM_EXPRESSION), expressionFormatter->formatReferringExpression(
         addressRef->getRange()));
-
     QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(0)->childCount(), 0);
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->text(
-        ParameterReferenceTree::ITEM_NAME), registerRef->name());
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+
+    QTreeWidgetItem* registerListItem =
+        tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1);
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_NAME), QString("Registers"));
+    QCOMPARE(registerListItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerListItem->childCount(), 1);
+
+    QTreeWidgetItem* registerItem = registerListItem->child(0);
+    QCOMPARE(registerItem->text(ParameterReferenceTree::ITEM_NAME), registerRef->name());
+    QCOMPARE(registerItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(registerItem->childCount(), 2);
 
     //! Test registers.
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->childCount(), 2);
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->text(
-        ParameterReferenceTree::ITEM_NAME), QString("Offset"));
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION),
+    QTreeWidgetItem* offsetItem = registerItem->child(0);
+    QCOMPARE(offsetItem->text(ParameterReferenceTree::ITEM_NAME), QString("Offset"));
+    QCOMPARE(offsetItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(registerRef->getAddressOffset()));
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(0)->
-        childCount(), 0);
+    QCOMPARE(offsetItem->childCount(), 0);
 
     //! Test register fields.
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(1)->text(
-        ParameterReferenceTree::ITEM_NAME), QString("Fields"));
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(1)->text(
-        ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QTreeWidgetItem* fieldListItem = registerItem->child(1);
+    QCOMPARE(fieldListItem->text(ParameterReferenceTree::ITEM_NAME), QString("Fields"));
+    QCOMPARE(fieldListItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(fieldListItem->childCount(), 1);
 
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(1)->
-        childCount(), 1);
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(1)->child(0)->
-        text(ParameterReferenceTree::ITEM_NAME), refField->name());
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(1)->child(0)->
-        text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QTreeWidgetItem* fieldItem = fieldListItem->child(0);
+    QCOMPARE(fieldItem->text(ParameterReferenceTree::ITEM_NAME), refField->name());
+    QCOMPARE(fieldItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
+    QCOMPARE(fieldItem->childCount(), 2);
 
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(1)->child(0)->
-        childCount(), 1);
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(1)->child(0)->
-        child(0)->text(ParameterReferenceTree::ITEM_NAME), QString("Width"));
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(1)->child(0)->
-        child(0)->text(ParameterReferenceTree::ITEM_EXPRESSION), expressionFormatter->formatReferringExpression(
-        refField->getBitWidth()));
+    QTreeWidgetItem* widthItem = fieldItem->child(0);
+    QCOMPARE(widthItem->text(ParameterReferenceTree::ITEM_NAME), QString("Width"));
+    QCOMPARE(widthItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(refField->getBitWidth()));
+    QCOMPARE(widthItem->childCount(), 0);
 
-    QCOMPARE(tree.topLevelItem(2)->child(0)->child(0)->child(0)->child(0)->child(0)->child(1)->child(1)->child(0)->
-        child(0)->childCount(), 0);
+    QTreeWidgetItem* maxConstraintItem = fieldItem->child(1);
+    QCOMPARE(maxConstraintItem->text(ParameterReferenceTree::ITEM_NAME), QString("Write constraint maximum"));
+    QCOMPARE(maxConstraintItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(refField->getWriteConstraint()->getMaximum()));
+    QCOMPARE(maxConstraintItem->childCount(), 0);
 
     //! Test address Spaces.
     QCOMPARE(tree.topLevelItem(3)->text(ParameterReferenceTree::ITEM_NAME), QString("Address Spaces"));

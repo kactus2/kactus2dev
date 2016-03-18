@@ -26,7 +26,7 @@ class AccessComboBox : public QComboBox
 public:
 
 	/*!
-     *  The constructor
+     *  The constructor.
 	 *
      *      param [in] parent   Pointer to the owner of the combo box.
 	 */

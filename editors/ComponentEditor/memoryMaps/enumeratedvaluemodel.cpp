@@ -192,7 +192,7 @@ bool EnumeratedValueModel::setData( const QModelIndex& index, const QVariant& va
         else if (index.column() == EnumeratedValueColumns::USAGE_COLUMN)
         {
             enumValues_->at(index.row())->setUsage
-                (EnumeratedValue::str2Usage(value.toString(), EnumeratedValue::READWRITE));
+                (EnumeratedValue::str2Usage(value.toString(), EnumeratedValue::UNKNOWNUSAGE));
         }
         else if (index.column() == EnumeratedValueColumns::DESCRIPTION)
         {

@@ -110,7 +110,7 @@ void ChoiceValidator::findErrorsInEnumerations(QVector<QString>& errors, QShared
 {
     if (choice->enumerations()->isEmpty())
     {
-        errors.append(QObject::tr("No enumerations found in choice %1 within %2")
+        errors.append(QObject::tr("No enumerations found in choice '%1' within %2")
             .arg(choice->name()).arg(context));
     }
     else
@@ -119,7 +119,7 @@ void ChoiceValidator::findErrorsInEnumerations(QVector<QString>& errors, QShared
         {
             if (!expressionParser_->isValidExpression(enumeration->getValue()))
             {
-                errors.append(QObject::tr("Invalid value %1 set for enumeration in choice %2 within %3")
+                errors.append(QObject::tr("Invalid value '%1' set for enumeration in choice '%2' within %3")
                     .arg(enumeration->getValue()).arg(choice->name()).arg(context));
             }
         }

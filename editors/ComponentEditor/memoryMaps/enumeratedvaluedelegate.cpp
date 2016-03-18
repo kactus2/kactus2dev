@@ -44,6 +44,7 @@ QWidget* EnumeratedValueDelegate::createEditor( QWidget* parent, const QStyleOpt
         combo->addItem(tr("read-write"));
         combo->addItem(tr("read"));
         combo->addItem(tr("write"));
+        combo->addItem(QString(""));
         return combo;
     }
 

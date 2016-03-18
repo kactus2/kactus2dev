@@ -344,7 +344,9 @@ void FieldValidator::findErrorsInIsPresent(QVector<QString>& errors, QSharedPoin
 {
     if (!hasValidIsPresent(field))
     {
-        errors.append(QObject::tr("Invalid isPresent specified for %1 within %2").arg(field->name()).arg(context));
+        errors.append(QObject::tr("Invalid isPresent value specified for %1 within %2. Value should evaluate to "
+            "0 or 1.").
+            arg(field->name()).arg(context));
     }
 }
 
@@ -407,13 +409,13 @@ void FieldValidator::findErrorsInWriteValueConstraint(QVector<QString>& errors, 
             if (!minimumIsValid)
             {
                 errors.append(QObject::tr(
-                    "Invalid minimum value for write value constraint set for field %1 within %2").
+                    "Invalid minimum value set for write value constraint in field %1 within %2").
                     arg(field->name()).arg(context));
             }
             if (!maximumIsValid)
             {
                 errors.append(QObject::tr(
-                    "Invalid maximum value for write value constraint set for field %1 within %2").
+                    "Invalid maximum value set for write value constraint in field %1 within %2").
                     arg(field->name()).arg(context));
             }
 
