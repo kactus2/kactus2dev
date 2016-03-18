@@ -721,7 +721,8 @@ bool ParameterReferenceTree::referenceExistsInRegisterFields(QSharedPointer<Regi
 bool ParameterReferenceTree::registerFieldHasReference(QSharedPointer<Field> targetField) const
 {
     return targetField->getBitOffset().contains(targetID_) || targetField->getBitWidth().contains(targetID_) ||
-        targetField->getIsPresent().contains(targetID_) ||
+        targetField->getIsPresent().contains(targetID_) || targetField->getResetValue().contains(targetID_) ||
+        targetField->getResetMask().contains(targetID_) ||
         (targetField->getWriteConstraint() &&
         (targetField->getWriteConstraint()->getMinimum().contains(targetID_) ||
         targetField->getWriteConstraint()->getMaximum().contains(targetID_)));
@@ -1311,6 +1312,14 @@ void ParameterReferenceTree::createItemsForField(QSharedPointer<Field> targetFie
     if (targetField->getIsPresent().contains(targetID_))
     {
         createItem("Is Present", targetField->getIsPresent(), parent);
+    }
+    if (targetField->getResetValue().contains(targetID_))
+    {
+        createItem("Reset value", targetField->getResetValue(), parent);
+    }
+    if (targetField->getResetMask().contains(targetID_))
+    {
+        createItem("Reset mask", targetField->getResetMask(), parent);
     }
     if (targetField->getWriteConstraint())
     {

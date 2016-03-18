@@ -1486,6 +1486,8 @@ void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsElevenRows()
 
     QSharedPointer<Field> refField = createTestField("fieldRef", "searched", "nothing", "searched");
     refField->setWriteConstraint(refWriteConstraint);
+    refField->setResetMask("searched");
+    refField->setResetValue("searched");
 
     QSharedPointer <Register> refRegister = createTestRegister("refRegister", "test", "test");
     refRegister->getFields()->append(refField);
@@ -1558,7 +1560,7 @@ void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsElevenRows()
     QTreeWidgetItem* fieldItem = fieldListItem->child(0);
     QCOMPARE(fieldItem->text(ParameterReferenceTree::ITEM_NAME), refField->name());
     QCOMPARE(fieldItem->text(ParameterReferenceTree::ITEM_EXPRESSION), QString(""));
-    QCOMPARE(fieldItem->childCount(), 4);
+    QCOMPARE(fieldItem->childCount(), 6);
 
     QTreeWidgetItem* offsetItem = fieldItem->child(0);
     QCOMPARE(offsetItem->text(ParameterReferenceTree::ITEM_NAME), QString("Offset"));
@@ -1572,13 +1574,25 @@ void tst_ParameterReferenceTree::testReferenceInRegisterFieldAddsElevenRows()
         expressionFormatter->formatReferringExpression(refField->getIsPresent()));
     QCOMPARE(isPresentItem->childCount(), 0);
 
-    QTreeWidgetItem* constraintMinItem = fieldItem->child(2);
+    QTreeWidgetItem* resetValueItem = fieldItem->child(2);
+    QCOMPARE(resetValueItem->text(ParameterReferenceTree::ITEM_NAME), QString("Reset value"));
+    QCOMPARE(resetValueItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(refField->getResetValue()));
+    QCOMPARE(resetValueItem->childCount(), 0);
+
+    QTreeWidgetItem* resetMaskItem = fieldItem->child(3);
+    QCOMPARE(resetMaskItem->text(ParameterReferenceTree::ITEM_NAME), QString("Reset mask"));
+    QCOMPARE(resetMaskItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
+        expressionFormatter->formatReferringExpression(refField->getResetMask()));
+    QCOMPARE(resetMaskItem->childCount(), 0);
+
+    QTreeWidgetItem* constraintMinItem = fieldItem->child(4);
     QCOMPARE(constraintMinItem->text(ParameterReferenceTree::ITEM_NAME), QString("Write constraint minimum"));
     QCOMPARE(constraintMinItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(refField->getWriteConstraint()->getMinimum()));
     QCOMPARE(constraintMinItem->childCount(), 0);
 
-    QTreeWidgetItem* constraintMaxItem = fieldItem->child(3);
+    QTreeWidgetItem* constraintMaxItem = fieldItem->child(5);
     QCOMPARE(constraintMaxItem->text(ParameterReferenceTree::ITEM_NAME), QString("Write constraint maximum"));
     QCOMPARE(constraintMaxItem->text(ParameterReferenceTree::ITEM_EXPRESSION),
         expressionFormatter->formatReferringExpression(refField->getWriteConstraint()->getMaximum()));
