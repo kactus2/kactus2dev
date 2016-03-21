@@ -42,6 +42,7 @@ QStringList AddressSpaceExpressionGatherer::getExpressions(QSharedPointer<Addres
 
     expressionList.append(addressSpace->getRange());
     expressionList.append(addressSpace->getWidth());
+    expressionList.append(getExpressionsFromSegments(addressSpace->getSegments()));
 
     if (addressSpace->hasLocalMemoryMap())
     {
@@ -59,4 +60,21 @@ QStringList AddressSpaceExpressionGatherer::getExpressions(QSharedPointer<Addres
     }
 
     return expressionList;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceExpressionsGatherer::getExpressionsFromSegments()
+//-----------------------------------------------------------------------------
+QStringList AddressSpaceExpressionGatherer::getExpressionsFromSegments(
+    QSharedPointer<QList<QSharedPointer<Segment> > > segmentList) const
+{
+    QStringList segmentExpressions;
+
+    foreach (QSharedPointer<Segment> segment, *segmentList)
+    {
+        segmentExpressions.append(segment->getAddressOffset());
+        segmentExpressions.append(segment->getRange());
+    }
+
+    return segmentExpressions;
 }

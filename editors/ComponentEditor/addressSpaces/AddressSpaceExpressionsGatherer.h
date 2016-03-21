@@ -16,6 +16,7 @@
 #include <QStringList>
 
 class AddressSpace;
+class Segment;
 
 //-----------------------------------------------------------------------------
 //! Gathers expressions from an address space and its memory maps.
@@ -46,6 +47,19 @@ public:
 
 private:
 	
+    /*!
+     *  Get the expressions from segments.
+     *
+     *      @param [in] segmentList     A list of the selected segments.
+     *
+     *      @return A list of expressions contained within the segments.
+     */
+    QStringList getExpressionsFromSegments(QSharedPointer<QList<QSharedPointer<Segment> > > segmentList) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! No copying.
     AddressSpaceExpressionGatherer(const AddressSpaceExpressionGatherer& other);
 

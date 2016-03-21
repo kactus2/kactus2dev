@@ -74,7 +74,7 @@ masterInterfaceBindingLabel_(new QLabel(this))
 
 	refresh(busInterfaceNames);
 
-	connect(&addrUnitEditor_, SIGNAL(textChanged(QString const&)), this, SLOT(onAddrUnitChanged()), Qt::UniqueConnection);
+    connect(&addrUnitEditor_, SIGNAL(editingFinished()), this, SLOT(onAddrUnitChanged()), Qt::UniqueConnection);
     connect(&addrUnitEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
 	connect(widthEditor_, SIGNAL(editingFinished()), this, SLOT(onWidthChanged()), Qt::UniqueConnection);

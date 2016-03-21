@@ -13,6 +13,7 @@
 #include "SegmentColumns.h"
 
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>

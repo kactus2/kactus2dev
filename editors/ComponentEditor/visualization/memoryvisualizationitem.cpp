@@ -25,6 +25,7 @@
 MemoryVisualizationItem::MemoryVisualizationItem(QSharedPointer<ExpressionParser> expressionParser,
     QGraphicsItem* parent /* = 0 */):
 ExpandableItem(parent),
+childItems_(),
 firstFreeAddress_(-1),
 lastFreeAddress_(-1),
 childWidth_(VisualizerItem::DEFAULT_WIDTH),
@@ -104,7 +105,7 @@ void MemoryVisualizationItem::setWidth(qreal width)
         foreach(MemoryVisualizationItem* child, childItems_)
         {
             child->setWidth(newChildWidth);
-        }        
+        }
     }
 }
 

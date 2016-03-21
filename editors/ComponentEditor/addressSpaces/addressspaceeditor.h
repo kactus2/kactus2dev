@@ -77,6 +77,11 @@ signals:
      */
     void assignNewAddressUnitBits(QString const& newAddressUnitBits);
 
+    /*!
+     *  Inform the address block items of a change in address unit bits.
+     */
+    void newAddressUnitBitsForAddressSpaceChildItems();
+
 protected:
 
 	//! Handler for widget's show event.

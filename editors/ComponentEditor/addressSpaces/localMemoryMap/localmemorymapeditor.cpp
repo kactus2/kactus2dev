@@ -129,7 +129,7 @@ handler_(handler)
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
-        model_, SIGNAL(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);
+        model_, SLOT(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(nameEditor_);

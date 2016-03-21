@@ -121,6 +121,8 @@ public:
 	 */
 	virtual ItemVisualizer* visualizer();
 
+public slots:
+
     /*!
      *  Change the used address unit bits in the contained address blocks.
      */

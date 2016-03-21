@@ -134,6 +134,9 @@ ItemEditor* ComponentEditorAddrSpaceItem::editor()
         connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
             editor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
 
+        connect(editor_, SIGNAL(newAddressUnitBitsForAddressSpaceChildItems()),
+            this, SLOT(changeAdressUnitBitsOnAddressBlocks()), Qt::UniqueConnection);
+
         connectItemEditorToReferenceCounter();
 	}
 	return editor_;

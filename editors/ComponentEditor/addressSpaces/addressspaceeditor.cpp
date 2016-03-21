@@ -66,6 +66,11 @@ localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFor
     connect(&segmentsEditor_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
+    connect(&segmentsEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&segmentsEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
 	connect(&localMemMapEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&localMemMapEditor_, SIGNAL(graphicsChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(&localMemMapEditor_, SIGNAL(errorMessage(const QString&)),
@@ -80,6 +85,12 @@ localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFor
 
     connect(&generalEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)),
         &localMemMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
+
+    connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
+        &localMemMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
+
+    connect(&generalEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)),
+        this, SIGNAL(newAddressUnitBitsForAddressSpaceChildItems()), Qt::UniqueConnection);
 
     setupLayout();
 

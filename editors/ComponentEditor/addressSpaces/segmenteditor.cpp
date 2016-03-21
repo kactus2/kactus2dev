@@ -85,6 +85,14 @@ component_(component)
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
+
+    connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

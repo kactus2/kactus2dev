@@ -91,6 +91,20 @@ signals:
 	//! Emitted when the range or offset of a segment has changed.
 	void segmentChanged(QSharedPointer<Segment> segment);
 
+    /*!
+     *  Increase the amount of references to a parameter with a matching id.
+     *
+     *      @param [in] id      Id of the parameter, whose references are being increased.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to a parameter with a matching id.
+     *
+     *      @param [in] id      Id of the parameter, whose references are being increased.
+     */
+    void decreaseReferences(QString id);
+
 private:
 
 	//! No copying. No assignment.
