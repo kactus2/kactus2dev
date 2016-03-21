@@ -77,7 +77,7 @@ ItemEditor* RemapStatesItem::editor()
 {
     if (!editor_)
     {
-        editor_ = new RemapStatesEditor(component_, libHandler_);
+        editor_ = new RemapStatesEditor(component_, libHandler_, parameterFinder_);
         editor_->setProtection(locked_);
         
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
@@ -85,6 +85,8 @@ ItemEditor* RemapStatesItem::editor()
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+
+        connectItemEditorToReferenceCounter();
     }
 
     return editor_;

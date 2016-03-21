@@ -32,11 +32,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component   Pointer to the component being edited.
-     *      @param [in] handler     Pointer to the instance managing the library.
-     *      @param [in] parent      Pointer to the parent of this editor.
+     *      @param [in] component           Pointer to the component being edited.
+     *      @param [in] handler             Pointer to the instance managing the library.
+     *      @param [in] parameterFinder     Finder used to locate parameter ids.
+     *      @param [in] parent              Pointer to the parent of this editor.
      */
-    RemapStatesEditor(QSharedPointer<Component> component, LibraryInterface* handler, QWidget* parent = 0);
+    RemapStatesEditor(QSharedPointer<Component> component, LibraryInterface* handler,
+        QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
 	
 	/*!
 	 *  The destructor.

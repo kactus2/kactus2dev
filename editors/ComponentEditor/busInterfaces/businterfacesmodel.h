@@ -21,11 +21,13 @@ class BusInterfaceValidator;
 class Component;
 class LibraryInterface;
 class ParameterFinder;
+class Parameter;
 
 //-----------------------------------------------------------------------------
 //! The model that manages the objects for BusInterfacesEditor.
 //-----------------------------------------------------------------------------
-class BusInterfacesModel : public QAbstractTableModel {
+class BusInterfacesModel : public QAbstractTableModel
+{
 	Q_OBJECT
 
 public:
@@ -206,6 +208,19 @@ private:
      */
     void removeReferencesFromExpressions(int busInterfaceIndex);
    
+    /*!
+     *  Get the expressions from parameters.
+     *
+     *      @param [in] parameters  The selected list of parameters.
+     *
+     *      @return A list of possible expressions within the parameters.
+     */
+    QStringList getExpressionsFromParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! The instance that manages the library.
 	LibraryInterface* libHandler_;
 

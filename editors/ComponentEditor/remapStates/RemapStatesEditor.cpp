@@ -23,10 +23,10 @@
 // Function: RemapStatesEditor::RemapStatesEditor()
 //-----------------------------------------------------------------------------
 RemapStatesEditor::RemapStatesEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QWidget* parent):
+                                     QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
 ItemEditor(component, handler, parent),
 view_(this),
-model_(component->getRemapStates(), this)
+model_(component->getRemapStates(), parameterFinder, this)
 {
     SummaryLabel* summaryLabel = new SummaryLabel(tr("Remap states summary"), this);
 
@@ -55,6 +55,9 @@ model_(component->getRemapStates(), this)
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
         &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(decreaseReferences(QString)), this,
+        SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

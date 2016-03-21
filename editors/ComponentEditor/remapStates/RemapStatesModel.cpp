@@ -11,7 +11,10 @@
 
 #include "RemapStatesModel.h"
 
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
 #include <IPXACTmodels/Component/RemapState.h>
+#include <IPXACTmodels/Component/RemapPort.h>
 
 #include <QColor>
 
@@ -19,9 +22,10 @@
 // Function: RemapStatesModel::RemapStatesModel()
 //-----------------------------------------------------------------------------
 RemapStatesModel::RemapStatesModel(QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
-    QObject* parent):
+                                   QSharedPointer<ParameterFinder> parameterFinder, QObject* parent):
 QAbstractTableModel(parent),
-    remapStates_(remapStates)
+remapStates_(remapStates),
+parameterFinder_(parameterFinder)
 {
 
 }
@@ -211,9 +215,36 @@ void RemapStatesModel::onRemoveItem(const QModelIndex& index)
     }
 
     beginRemoveRows(QModelIndex(), index.row(), index.row());
+
+    removeReferencesFromRemapState(remapStates_->at(index.row()));
+
     remapStates_->removeAt(index.row());
     endRemoveRows();
 
     emit remapStateRemoved(index.row());
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: RemapStatesModel::removeReferencesFromRemapState()
+//-----------------------------------------------------------------------------
+void RemapStatesModel::removeReferencesFromRemapState(QSharedPointer<RemapState> remapState)
+{
+    QStringList expressions;
+
+    foreach (QSharedPointer<RemapPort> remapPort, *remapState->getRemapPorts())
+    {
+        expressions.append(remapPort->getValue());
+    }
+
+    ReferenceCalculator referenceCalculator(parameterFinder_);
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressions);
+
+    foreach (QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit decreaseReferences(referencedId);
+        }
+    }
 }

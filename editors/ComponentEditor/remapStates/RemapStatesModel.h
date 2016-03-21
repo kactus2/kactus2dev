@@ -17,6 +17,8 @@
 #include <QSharedPointer>
 
 class RemapState;
+class ParameterFinder;
+
 //-----------------------------------------------------------------------------
 //! The model to manage the remap states summary.
 //-----------------------------------------------------------------------------
@@ -37,10 +39,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] remapStates     The remap states of the component.
-     *      @param [in] parent          Pointer to the owner of the model.
+     *      @param [in] remapStates         The remap states of the component.
+     *      @param [in] parameterFinder     Finder used to locate parameter ids.
+     *      @param [in] parent              Pointer to the owner of the model.
      */
-    RemapStatesModel(QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,QObject* parent);
+    RemapStatesModel(QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
+        QSharedPointer<ParameterFinder> parameterFinder, QObject* parent);
 
     /*!
      *  The destructor.
@@ -141,6 +145,13 @@ signals:
      */
     void remapStateRemoved(int index);
 
+    /*!
+     *  Decrease the number of references to the selected parameter.
+     *
+     *      @param [in] id  ID of the selected parameter.
+     */
+    void decreaseReferences(QString id);
+
 private:
 	//! No copying
     RemapStatesModel(const RemapStatesModel& other);
@@ -148,8 +159,22 @@ private:
 	//! No assignment
     RemapStatesModel& operator=(const RemapStatesModel& other);
 
+    /*!
+     *  Remove references from a selected remap state.
+     *
+     *      @param [in] remapState  The selected remap state.
+     */
+    void removeReferencesFromRemapState(QSharedPointer<RemapState> remapState);
+    
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! Pointer to the list of remap states of the component.
     QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates_;
+
+    //! The used parameter finder.
+    QSharedPointer<ParameterFinder> parameterFinder_;
 };
 
 #endif // REMAPSTATESMODEL_H

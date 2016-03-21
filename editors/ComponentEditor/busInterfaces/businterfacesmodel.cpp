@@ -466,37 +466,57 @@ void BusInterfacesModel::removeReferencesFromExpressions(int busInterfaceIndex)
 {
     QSharedPointer<BusInterface> removedInterface = busifs_->at(busInterfaceIndex);
 
-    if (removedInterface->getInterfaceMode() == General::MASTER ||
-        removedInterface->getInterfaceMode() == General::MIRROREDMASTER ||
-        removedInterface->getInterfaceMode() == General::MIRROREDSLAVE)
+    QStringList expressions;
+
+    if ((removedInterface->getInterfaceMode() == General::MASTER ||
+        removedInterface->getInterfaceMode() == General::MIRROREDMASTER) && removedInterface->getMaster())
     {
-        QStringList expressions;
-        if (removedInterface->getMaster())
-        {
-            QSharedPointer<MasterInterface> removedMaster = removedInterface->getMaster();
-            expressions.append(removedMaster->getBaseAddress());
-        }
-        else if (removedInterface->getMirroredSlave())
-        {
-            QSharedPointer<MirroredSlaveInterface> removedMirrorSlave = removedInterface->getMirroredSlave();
-            expressions.append(removedMirrorSlave->getRange());
+        QSharedPointer<MasterInterface> removedMaster = removedInterface->getMaster();
+        expressions.append(removedMaster->getBaseAddress());
+    }
+    else if (removedInterface->getInterfaceMode() == General::MIRROREDSLAVE &&
+        removedInterface->getMirroredSlave())
+    {
+        QSharedPointer<MirroredSlaveInterface> removedMirrorSlave = removedInterface->getMirroredSlave();
+        expressions.append(removedMirrorSlave->getRange());
 
-            foreach(QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress, 
-                *removedMirrorSlave->getRemapAddresses())
-            {
-                expressions.append(remapAddress->remapAddress_);
-            }
-        }
-
-        ReferenceCalculator referenceCalculator(parameterFinder_);
-        QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressions);
-
-        foreach (QString referencedId, referencedParameters.keys())
+        foreach(QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress, 
+            *removedMirrorSlave->getRemapAddresses())
         {
-            for (int i = 0; i < referencedParameters.value(referencedId); ++i)
-            {
-                emit decreaseReferences(referencedId);
-            }
+            expressions.append(remapAddress->remapAddress_);
         }
     }
+
+    expressions.append(getExpressionsFromParameters(removedInterface->getParameters()));
+
+    ReferenceCalculator referenceCalculator(parameterFinder_);
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressions);
+
+    foreach (QString referencedId, referencedParameters.keys())
+    {
+        for (int i = 0; i < referencedParameters.value(referencedId); ++i)
+        {
+            emit decreaseReferences(referencedId);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: businterfacesmodel::getExpressionsFromParameters()
+//-----------------------------------------------------------------------------
+QStringList BusInterfacesModel::getExpressionsFromParameters(
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters) const
+{
+    QStringList parameterExpressions;
+
+    foreach (QSharedPointer<Parameter> currentParameter, *parameters)
+    {
+        parameterExpressions.append(currentParameter->getValue());
+        parameterExpressions.append(currentParameter->getVectorLeft());
+        parameterExpressions.append(currentParameter->getVectorRight());
+        parameterExpressions.append(currentParameter->getAttribute("kactus2:arrayLeft"));
+        parameterExpressions.append(currentParameter->getAttribute("kactus2:arrayRight"));
+    }
+
+    return parameterExpressions;
 }
