@@ -116,12 +116,15 @@ void FileSetReader::parseDefaultFileBuilders(QDomElement const& fileSetElement, 
 //-----------------------------------------------------------------------------
 void FileSetReader::parseDependencies(QDomElement const& fileSetElement, QSharedPointer<FileSet> newFileSet) const
 {
-    QDomNodeList dependencyNodeList = fileSetElement.elementsByTagName("ipxact:dependency");
-
-    for (int dependencyIndex = 0; dependencyIndex < dependencyNodeList.count(); ++dependencyIndex)
+    for (int childnodeIndex = 0; childnodeIndex < fileSetElement.childNodes().count(); ++childnodeIndex)
     {
-        QString dependency = dependencyNodeList.at(dependencyIndex).firstChild().nodeValue();
-        newFileSet->getDependencies()->append(dependency);
+        QDomNode childNode = fileSetElement.childNodes().at(childnodeIndex);
+
+        if (childNode.nodeName() == "ipxact:dependency")
+        {
+            QString dependency = childNode.firstChild().nodeValue();
+            newFileSet->getDependencies()->append(dependency);
+        }
     }
 }
 

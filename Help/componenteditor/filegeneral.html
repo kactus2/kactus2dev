@@ -21,11 +21,13 @@
     <h3>General options</h3>
     <p>
       <b>Logical name</b> specifies e.g. a VHDL library where the VHDL-file will be compiled to.
-      If it is <b>"only used as default"</b>, it can be overridden by another process. If check box is
-      unticked, then this logical name cannot be overrriden.
+      <br />If the checkbox <b>generators can override logical name </b> is ticked, the logical name can be 
+        overridden by another process. If the check box is unticked, then this logical name cannot be overrriden.
+      <br />The check box <b>File is structural RTL</b> informs that the file is a structural
+        <i>register transfer level</i> file.
       <br />The check box <b>file is include file </b> can be used to specify the file is an include file.
-      <br />The check box <b>file contains external declarations</b> can be used to specify that the file 
-      contains external declarations and is needed by other files in this file set.
+      <br />The check box <b>file contains external declarations</b> can be used to specify that the file contains 
+        external declarations and is needed by other files in this file set.
     </p>
     <h3>Build command</h3>
     <p>
@@ -34,8 +36,8 @@
       <br /><b>Build command</b> can be used to define a specific build <b>command</b> and <b>flags</b> 
       for this file.
       <br /><b>Flags</b> can either <b>replace default flags</b> (e.g. those specified for this file type) 
-      in the build script or be appended to them. The f(x) in the <i>replace default flags</i> informs that
-      the value for the field can be given as an expression.
+        in the build script or be appended to them. The value for <i>replace default flags</i> can be given as an 
+        expression, but must evaluate to 1 or 0.
     </p>
     <h3>External dependencies and defines </h3>
     <p>
