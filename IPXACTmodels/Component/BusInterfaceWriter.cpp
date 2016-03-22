@@ -479,34 +479,39 @@ void BusInterfaceWriter::writeMirroredSlaveInterface(QXmlStreamWriter& writer,
     if (mirroredSlave)
     {
         writer.writeStartElement("ipxact:mirroredSlave");
-        writer.writeStartElement("ipxact:baseAddresses");
 
-        // Write all remap addresses.
-        foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress, 
-            *mirroredSlave->getRemapAddresses())
+        if (!mirroredSlave->getRemapAddresses()->isEmpty() || !mirroredSlave->getRange().isEmpty())
         {
-            writer.writeStartElement("ipxact:remapAddress");
+            writer.writeStartElement("ipxact:baseAddresses");
 
-            // Write state if it exists.
-            if (!remapAddress->state_.isEmpty())
+            // Write all remap addresses.
+            foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress, 
+                *mirroredSlave->getRemapAddresses())
             {
-                writer.writeAttribute("state", remapAddress->state_);
+                writer.writeStartElement("ipxact:remapAddress");
+
+                // Write state if it exists.
+                if (!remapAddress->state_.isEmpty())
+                {
+                    writer.writeAttribute("state", remapAddress->state_);
+                }
+
+                // Write the rest of the attributes.
+                XmlUtils::writeAttributes(writer, remapAddress->remapAttributes_);
+
+                writer.writeCharacters(remapAddress->remapAddress_);
+                writer.writeEndElement();
             }
 
-            // Write the rest of the attributes.
-            XmlUtils::writeAttributes(writer, remapAddress->remapAttributes_);
+            // Write range if it exists.
+            if (!mirroredSlave->getRange().isEmpty())
+            {
+                writer.writeTextElement("ipxact:range", mirroredSlave->getRange());
+            }
 
-            writer.writeCharacters(remapAddress->remapAddress_);
-            writer.writeEndElement();
+            writer.writeEndElement(); // ipxact:baseAddresses
         }
 
-        // Write range if it exists.
-        if (!mirroredSlave->getRange().isEmpty())
-        {
-            writer.writeTextElement("ipxact:range", mirroredSlave->getRange());
-        }
-
-        writer.writeEndElement(); // ipxact:baseAddresses
         writer.writeEndElement(); // ipxact:mirroredSlave
     }
 }

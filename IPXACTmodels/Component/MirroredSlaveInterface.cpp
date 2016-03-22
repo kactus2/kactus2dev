@@ -100,3 +100,30 @@ QSharedPointer<QList<QSharedPointer<MirroredSlaveInterface::RemapAddress> > >
 {
 	return remapAddresses_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MirroredSlaveInterface::setRemapAddress()
+//-----------------------------------------------------------------------------
+void MirroredSlaveInterface::setRemapAddress(QString const& newRemapAddress)
+{
+    if (!newRemapAddress.isEmpty())
+    {
+        if (getRemapAddresses()->isEmpty())
+        {
+            QSharedPointer<RemapAddress> newRemapAddress (new RemapAddress(newRemapAddress));
+            getRemapAddresses()->append(newRemapAddress);
+        }
+        else
+        {
+            QSharedPointer<RemapAddress> firstRemapAddress = getRemapAddresses()->first();
+            firstRemapAddress->remapAddress_ = newRemapAddress;
+        }
+    }
+    else
+    {
+        if (!getRemapAddresses()->isEmpty())
+        {
+            getRemapAddresses()->removeFirst();
+        }
+    }
+}

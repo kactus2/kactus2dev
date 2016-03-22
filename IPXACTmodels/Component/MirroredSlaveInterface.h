@@ -78,6 +78,13 @@ public:
 	 */
 	QSharedPointer<QList<QSharedPointer<RemapAddress> > > getRemapAddresses() const;
 
+    /*!
+     *  Set the remap address.
+     *
+     *      @param [in] newRemapAddress     The new remap address.
+     */
+    void setRemapAddress(QString const& newRemapAddress);
+
 private:
 
 	//!  Specifies the address range to apply to the connected slave interface.

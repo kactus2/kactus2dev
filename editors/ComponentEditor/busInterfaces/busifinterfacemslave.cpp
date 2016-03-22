@@ -161,7 +161,10 @@ void BusIfInterfaceMSlave::saveModeSpecific()
 void BusIfInterfaceMSlave::onRemapChange()
 {
     remapEditor_->finishEditingCurrentWord();
-    mirroredSlave_->getRemapAddresses()->first()->remapAddress_ = remapEditor_->getExpression();
+
+    QString newRemapAddress = remapEditor_->getExpression();
+    mirroredSlave_->setRemapAddress(newRemapAddress);
+
     remapEditor_->setToolTip(formattedValueFor(remapEditor_->getExpression()));
 
     emit contentChanged();
