@@ -134,15 +134,5 @@
         is present in the register whereas value 0 marks the field to be treated as if it did not exist. Is 
         present can be given as a SystemVerilog expression, but it must evaluate to 1 or 0.
     </p>
-    <p>
-	    <b>Reset value</b> defines the actual reset value on reset. <i>Reset value</i> uses SystemVerilog 
-        syntax for binary values. The number of bits must be equal to the register <i>size</i>.
-    </p>
-    <p>
-	    <b>Reset mask</b> defines the bits that have a known reset value. Bit value of 1 means that the 
-        corresponding bit has a known reset value whereas 0 means that the value is unknown. <i>Reset mask</i> 
-        uses SystemVerilog syntax for binary values e.g. 'b1011, 4'b1011, and 4'b10_11 are all valid values. 
-        The number of bits must be equal to the register <i>size</i>.
-    </p>
   </body>
 </html>

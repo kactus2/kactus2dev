@@ -19,19 +19,18 @@
     </p>
     <p>
         <b>Base address</b> is mandatory and specifies the starting address for the address block expressed in
-        address unit bits. Base address can be given as a SystemVerilog expression.
+        <i>address unit bits</i>.
     </p>
     <p>
-        <b>Range</b> is mandatory and specifies the size of the block expressed in address units. Range can be 
-        given as a SystemVerilog expression.
+        <b>Range</b> is mandatory and specifies the size of the block expressed in <i>address units bits</i>.
     </p>
     <p>
-        <b>Width</b> is mandatory and defines the data width of a row in the address block in bits. Width can 
-        be given as a SystemVerilog expression.
+        <b>Width</b> is mandatory and defines the data width of a row in the address block. The width value is 
+            given in bits.
     </p>
     <p>
         <b>Usage</b> is a mandatory value to specify the usage of the address block and may have one of the
-        following values:
+            following values:
     </p>
         <ul>
             <li><i>Register</i> The address block range may contain registers.</li>
@@ -56,8 +55,8 @@
     </p>
     <h3>Registers table</h3>
     <p>
-      The register table enables the user to define registers for the address block. Each row
-      represents a single register. Each register must also contain at least one bit field.
+      The register table enables the user to define registers for the address block, with each row representing a 
+      single register. Each register must also contain at least one bit field.
     </p>
     <p>
       Each register has a unique <b>name</b> and an optional <b>description</b> for details.
@@ -70,13 +69,13 @@
         expression.
     </p>
     <p>
-        <b>Size</b> is mandatory and defines the number of data bits the register contains. Size must be less or
-        equal to the <i>width</i> of the containing address block.
+        <b>Size</b> is mandatory and defines the number of data bits the register contains. Size must be less than 
+            or equal to the <i>width</i> of the containing address block.
     </p>
     <p>
         <b>Dimension</b> assigns an array dimension to the register. The register will be repeated in the
-        address block as many times as indicated by the <i>dimension</i> value. Dimension 0 means that the 
-        register is not an array and will appear exactly once.
+            address block as many times as indicated by the <i>dimension</i> value. By default, the dimension is 
+            presumed to be 0. Dimension 0 means that the register is not an array and will appear exactly once.
     </p>
     <p>
         <b>Volatile</b> indicates whether the register value may change without a write operation to it, 

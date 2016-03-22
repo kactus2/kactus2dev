@@ -11,38 +11,36 @@
       Instantiations editor provides a summary of the different
 	  instantiations of the component. Instantiations are
 	  used in <i>views</i> to represent different aspects
-	  of the view.
+	  of the view. Instantiations contain a mandatory, unique <b>name</b>, a <b>display name</b> and a textual
+      description to identify the instantiations.
 	  This editor can be used to add and remove instantiations.
 	</p>
 	
 	<p>
-	  A <i>component instantiation</i> describes the details
-	  of instantiating the component in a hardware description
-	  language. <b>Name</b>
+	  A <i>component instantiation</i> describes the details of instantiating the component in a hardware 
+      description <b>language</b>, for example, verilog or vhdl. This editor can be used to add and remove 
+      component instantiations.
 	</p>
 	
-	<p>
-      <i>View</i> specifies a representation level of a component,
-      e.g. there might be different views for simulation and
-      synthesis. Component must have at least 1 view. It can also have
-      many views and one of them activated when component is
-      instantiated in a <i>design</i>.
-    </p>
     <p>
-      <b>Name</b> and <b>description</b> columns are editable here but
-      <b> view type</b> is not. It defines whether the view is
-      <i>hierarchical</i> or not, and it is set on the view's setting
-      page. Hierarchical view contains a reference to a <i>design</i>
-      or <i>design configuration</i> which instantiates sub-components
-      and connects them together. <i>Non-hierarchical</i> views refers
-      to 1 or multiple file sets within the containing component.
+        A <i>design configuration instantiation</i> details how a specific design configuration instance is 
+        associated with a <i>view</i>. This editor can be used to add and remove design configuration 
+        instantiations.
+        <br /><b>Design configuration reference</b> specifies the used design configuration.
     </p>
+	
+    <p>
+        A <i>design instantiation</i> specifies how a spicific design instance is associated with a view. This 
+        editor can be used to add and remove design instantiations.
+        <br /><b>Design reference</b> details the design description and configuration values applied to it.
+    </p>
+    
     <p>
       The editor contains a context menu that contains following options:
     </p>
     <ul>
-      <li>Add new view (Add row)</li>
-      <li>Remove view (Remove row)</li>
+      <li>Add a new instantiation (Add row)</li>
+      <li>Remove an instantiation (Remove row)</li>
       <li>Clear the selected cells</li>
       <li>Copy the contents of the selected cells to clipboard</li>
       <li>Paste the contents of the clipboard to the selected cells</li>
@@ -50,8 +48,8 @@
       <li>Export the contents of the editor to a csv-file</li>
     </ul>
     <p>
-      Views that are currently in an <font color="red"> invalid
-	state</font> are displayed in <font color="red">red</font>.
+      Instantiations that are currently in an <font color="red"> invalid state</font> are displayed in 
+      <font color="red">red</font>.
     </p>
     <hr>
 
