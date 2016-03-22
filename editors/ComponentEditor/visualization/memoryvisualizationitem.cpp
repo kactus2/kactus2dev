@@ -102,9 +102,10 @@ void MemoryVisualizationItem::setWidth(qreal width)
         VisualizerItem::setWidth(width);
         ExpandableItem::reorganizeChildren();
 
-        foreach(MemoryVisualizationItem* child, childItems_)
+        int childCount = childItems_.count();
+        for (int i = 0; i < childCount; i++)
         {
-            child->setWidth(newChildWidth);
+            childItems_.values().at(i)->setWidth(newChildWidth);
         }
     }
 }
