@@ -49,11 +49,11 @@ name_(),
     defaultValue_(""),
     desc_("")
 {
-    name_ = node.attributes().namedItem("name").nodeValue();
-    required_ = General::str2Bool(node.attributes().namedItem("required").nodeValue(), false);
-    type_ = node.attributes().namedItem("propertyType").nodeValue();
-    defaultValue_ = node.attributes().namedItem("defaultValue").nodeValue();
-    desc_ = node.attributes().namedItem("description").nodeValue();
+    name_ = node.attributes().namedItem("kactus2:name").nodeValue();
+    required_ = General::str2Bool(node.attributes().namedItem("kactus2:required").nodeValue(), false);
+    type_ = node.attributes().namedItem("kactus2:propertyType").nodeValue();
+    defaultValue_ = node.attributes().namedItem("kactus2:defaultValue").nodeValue();
+    desc_ = node.attributes().namedItem("kactus2:description").nodeValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -86,11 +86,11 @@ QString ComProperty::type() const
 void ComProperty::write(QXmlStreamWriter& writer) const
 {
     writer.writeEmptyElement("kactus2:property");
-    writer.writeAttribute("name", name_);
-    writer.writeAttribute("required", General::bool2Str(required_));
-    writer.writeAttribute("propertyType", type_);
-    writer.writeAttribute("defaultValue", defaultValue_);
-    writer.writeAttribute("description", desc_);
+    writer.writeAttribute("kactus2:name", name_);
+    writer.writeAttribute("kactus2:required", General::bool2Str(required_));
+    writer.writeAttribute("kactus2:propertyType", type_);
+    writer.writeAttribute("kactus2:defaultValue", defaultValue_);
+    writer.writeAttribute("kactus2:description", desc_);
 }
 
 //-----------------------------------------------------------------------------

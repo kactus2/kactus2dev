@@ -65,6 +65,15 @@ void tst_ComDefinitionWriter::baseCase()
 
 	testComDefinition_->setVlnv(VLNV(VLNV::APIDEFINITION,"me","kurjasto","def","0.11"));
 
+	QSharedPointer<ComProperty> prop = QSharedPointer<ComProperty>( new ComProperty );
+	testComDefinition_->getProperties()->append(prop);
+
+	prop->setName("max_transfer_size");
+	prop->setRequired( true);
+	prop->setType("integer");
+	prop->setDefaultValue("128");
+	prop->setDescription("Maximum size of a single transfer");
+
 	QString expectedOutput(
 		"<?xml version=\"1.0\"?>"
 		"<kactus2:comDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
@@ -77,7 +86,11 @@ void tst_ComDefinitionWriter::baseCase()
 		"<ipxact:name>def</ipxact:name>"
 		"<ipxact:version>0.11</ipxact:version>"
 		"<kactus2:transferTypes/>"
-		"<kactus2:properties/>"
+		"<kactus2:properties>"
+		"<kactus2:property kactus2:name=\"max_transfer_size\" kactus2:required=\"true\" "
+		"kactus2:propertyType=\"integer\" kactus2:defaultValue=\"128\" "
+		"kactus2:description=\"Maximum size of a single transfer\"/>"
+		"</kactus2:properties>"
 		"<ipxact:vendorExtensions/>"
 		"</kactus2:comDefinition>\n"
 		);

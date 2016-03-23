@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created by Kactus2 - Open source IP-Xact toolset -->
-<!-- http://sourceforge.net/projects/kactus2/ -->
-<!-- Date: 03.07.2012 -->
-<!-- Time: 12:05:30 -->
-<kactus2:comDefinition>
-	<spirit:vendor>TUT</spirit:vendor>
-	<spirit:library>global.communication</spirit:library>
-	<spirit:name>mcapi</spirit:name>
-	<spirit:version>2.015</spirit:version>
+<kactus2:comDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:kactus2="http://kactus2.cs.tut.fi" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd">
+	<ipxact:vendor>TUT</ipxact:vendor>
+	<ipxact:library>global.communication</ipxact:library>
+	<ipxact:name>mcapi</ipxact:name>
+	<ipxact:version>2.015</ipxact:version>
 	<kactus2:transferTypes>
 		<kactus2:transferType kactus2:name="message"/>
 		<kactus2:transferType kactus2:name="scalar"/>
@@ -19,4 +15,5 @@
 		<kactus2:property kactus2:name="handle_name" kactus2:required="true" kactus2:propertyType="string" kactus2:defaultValue="" kactus2:description=""/>
 		<kactus2:property kactus2:name="scalar_size" kactus2:required="true" kactus2:propertyType="integer" kactus2:defaultValue="" kactus2:description=""/>
 	</kactus2:properties>
+	<ipxact:vendorExtensions/>
 </kactus2:comDefinition>

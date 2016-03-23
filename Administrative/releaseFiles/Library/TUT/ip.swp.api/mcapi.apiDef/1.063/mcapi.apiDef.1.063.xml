@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created by Kactus2 - Open source IP-Xact toolset -->
-<!-- http://sourceforge.net/projects/kactus2/ -->
-<!-- Date: 16.01.2013 -->
-<!-- Time: 12:08:48 -->
-<kactus2:apiDefinition>
-	<spirit:vendor>TUT</spirit:vendor>
-	<spirit:library>ip.swp.api</spirit:library>
-	<spirit:name>mcapi.apiDef</spirit:name>
-	<spirit:version>1.063</spirit:version>
-	<kactus2:comDefinitionRef spirit:vendor="TUT" spirit:library="global.communication" spirit:name="mcapi" spirit:version="1.063"/>
+<kactus2:apiDefinition xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ipxact="http://www.accellera.org/XMLSchema/IPXACT/1685-2014" xmlns:kactus2="http://kactus2.cs.tut.fi" xsi:schemaLocation="http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd">
+	<ipxact:vendor>TUT</ipxact:vendor>
+	<ipxact:library>ip.swp.api</ipxact:library>
+	<ipxact:name>mcapi.apiDef</ipxact:name>
+	<ipxact:version>1.063</ipxact:version>
+	<kactus2:comDefinitionRef ipxact:vendor="" ipxact:library="" ipxact:name="" ipxact:version=""/>
 	<kactus2:dataTypes>
 		<kactus2:dataType kactus2:name="mcapi_int_t"/>
 		<kactus2:dataType kactus2:name="mcapi_uint_t"/>
@@ -306,4 +302,5 @@
 			<kactus2:functionParameter kactus2:name="mcapi_status" kactus2:type="mcapi_status_t*" kactus2:transferType="" kactus2:contentSource="" kactus2:dependentParamIndex="-1" kactus2:description="Pointer to status variable for checking against errors."/>
 		</kactus2:function>
 	</kactus2:functions>
+	<ipxact:vendorExtensions/>
 </kactus2:apiDefinition>

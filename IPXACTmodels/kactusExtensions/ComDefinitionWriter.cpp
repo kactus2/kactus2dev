@@ -68,12 +68,7 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
 
     foreach (QSharedPointer<ComProperty> prop, *comDefinition->getProperties())
 	{
-		writer.writeEmptyElement("kactus2:property");
-		writer.writeAttribute("name", prop->name());
-		writer.writeAttribute("required", General::bool2Str(prop->isRequired()));
-		writer.writeAttribute("propertyType", prop->getType());
-		writer.writeAttribute("defaultValue", prop->getDefaultValue());
-		writer.writeAttribute("description", prop->getDescription());
+		prop->write(writer);
     }
 
 	writer.writeEndElement(); // kactus2:properties
