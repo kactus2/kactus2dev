@@ -276,7 +276,14 @@ QSharedPointer<File> FileSet::addFile(const QString& filePath, QSettings& settin
 
     QFileInfo fileInfo(filePath);
     QStringList types = FileTypes::getFileTypes(settings, fileInfo);
-    file->getFileTypes()->append(types);
+
+    foreach (QString fileType, types)
+    {
+        if (!file->getFileTypes()->contains(fileType))
+        {
+            file->getFileTypes()->append(fileType);
+        }
+    }
 
     return file;
 }

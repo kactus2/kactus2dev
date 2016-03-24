@@ -262,8 +262,11 @@ QSharedPointer<ExpressionParser> MemoryVisualizationItem::getExpressionParser() 
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::showExpandIconIfHasChildren()
 {
-    foreach (MemoryVisualizationItem* item, childItems_)
+    int childCount = childItems_.count();
+    for (int i = 0; i < childCount; i++)
     {
+        MemoryVisualizationItem* item = childItems_.values().at(i);
+
         MemoryGapItem* gap = dynamic_cast<MemoryGapItem*>(item);
         if (!gap)
         {
@@ -282,19 +285,26 @@ void MemoryVisualizationItem::updateChildMap()
 {
     QMap<quint64, MemoryVisualizationItem*> updatedMap;
 
-    foreach (MemoryVisualizationItem* item, childItems_)
+    int childCount = childItems_.count();
+    for (int i = 0; i < childCount; i++)
     {
+        MemoryVisualizationItem* item = childItems_.values().at(i);
+
         MemoryGapItem* gap = dynamic_cast<MemoryGapItem*>(item);
         if (gap)
         {
             childItems_.remove(gap->getOffset(), gap);
+            childCount = childItems_.count();
             delete gap;
         }
     }
 
     quint64 lastAvailableAddress = getLastAddress();
-    foreach (MemoryVisualizationItem* item, childItems_)
-    {       
+    childCount = childItems_.count();
+    for (int i = 0; i < childCount; i++)
+    {
+        MemoryVisualizationItem* item = childItems_.values().at(i);
+
         item->updateDisplay();
         item->setConflicted(item->getLastAddress() > lastAvailableAddress);
         item->setVisible(isExpanded() && item->isPresent());
@@ -326,8 +336,11 @@ void MemoryVisualizationItem::updateChildMap()
     MemoryGapItem* previousOverlap = 0;
     MemoryVisualizationItem* previous = 0;
     quint64 previousLastAddress = lastAddressInUse;
-    foreach (MemoryVisualizationItem* current, childItems_)
+    childCount = childItems_.count();
+    for (int i = 0; i < childCount; i++)
     {
+        MemoryVisualizationItem* current = childItems_.values().at(i);
+
         if (current->isPresent())
         {
             quint64 currentOffset = current->getOffset();
@@ -400,8 +413,11 @@ void MemoryVisualizationItem::repositionChildren()
 {
     qreal yCoordinate = rect().bottom();
 
-    foreach (MemoryVisualizationItem* current, childItems_)
-    {     
+    int childCount = childItems_.count();
+    for (int i = 0; i < childCount; i++)
+    {
+        MemoryVisualizationItem* current = childItems_.values().at(i);
+
         if (current->isPresent())
         {
             current->setPos(MemoryVisualizationItem::CHILD_INDENTATION, yCoordinate);
