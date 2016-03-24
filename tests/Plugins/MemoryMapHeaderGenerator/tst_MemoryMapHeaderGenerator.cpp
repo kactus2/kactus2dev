@@ -112,6 +112,9 @@ private:
     QSharedPointer<Component> createTestBridgeComponent(QString const& componentName,
         QString const& masterBaseAddress, bool bridgeIsOpaque, QString const& bridgeReference);
 
+    void addConfigurableElementValueToInstance(QSharedPointer<ComponentInstance> instance,
+        QString const& referenceID, QString const& configurableValue);
+
     void readOutPutFile();
 
     MemoryMapHeaderGenerator* headerGenerator_;
@@ -1221,14 +1224,11 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithConfigurableElem
         QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(slaveComponent->getVlnv()))));
     slaveInstance->setUuid("slaveID");
 
-    QMap<QString, QString> slaveConfigurableElements;
-    slaveConfigurableElements.insert("param_ID", "4");
-    slaveConfigurableElements.insert("other_ID", "param_ID + 20");
+    addConfigurableElementValueToInstance(slaveInstance, "param_ID", "4");
+    addConfigurableElementValueToInstance(slaveInstance, "other_ID", "param_ID + 20");
 
     headerDesign->getComponentInstances()->append(masterInstance);
     headerDesign->getComponentInstances()->append(slaveInstance);
-
-    headerDesignConfiguration->setConfigurableElementValues(slaveInstance->getUuid(), slaveConfigurableElements);
 
     QSharedPointer<ActiveInterface> interfaceMaster(
         new ActiveInterface(masterInstance->getInstanceName(), masterComponent->getBusInterfaceNames().at(0)));
@@ -2231,6 +2231,17 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestBridgeComponen
     newBridgeComponent->getBusInterfaces()->append(bridgeMasterBus);
 
     return newBridgeComponent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapHeaderGenerator::addConfigurableElementValueToInstance()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapHeaderGenerator::addConfigurableElementValueToInstance(
+    QSharedPointer<ComponentInstance> instance, QString const& referenceID, QString const& configurableValue)
+{
+    QSharedPointer<ConfigurableElementValue> configurable (
+        new ConfigurableElementValue(configurableValue, referenceID));
+    instance->getConfigurableElementValues()->append(configurable);
 }
 
 //-----------------------------------------------------------------------------

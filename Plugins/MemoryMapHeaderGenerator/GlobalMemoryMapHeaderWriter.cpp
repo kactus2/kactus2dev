@@ -389,9 +389,9 @@ QSharedPointer<ListParameterFinder> GlobalMemoryMapHeaderWriter::createParameter
 
     QMap<QString, QString> configurableElementsInInstance;
 
-    if (componentDesignConfig_)
+    if (componentDesign_)
     {
-        configurableElementsInInstance = componentDesignConfig_->getConfigurableElementValues(instanceID);
+        configurableElementsInInstance = getConfigurableElementsFromInstance(instanceID);
     }
 
     foreach (QSharedPointer<Parameter> parameterPointer, *component->getParameters())
@@ -411,6 +411,31 @@ QSharedPointer<ListParameterFinder> GlobalMemoryMapHeaderWriter::createParameter
     listFinder->setParameterList(configurableElementValues);
 
     return listFinder;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GlobalMemoryMapHeaderWriter::getConfigurableElementsFromInstance()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> GlobalMemoryMapHeaderWriter::getConfigurableElementsFromInstance(QString const& instanceId)
+    const
+{
+    QMap<QString, QString> configurableElements;
+
+    foreach (QSharedPointer<ComponentInstance> instance, *componentDesign_->getComponentInstances())
+    {
+        if (instance->getUuid() == instanceId)
+        {
+            foreach (QSharedPointer<ConfigurableElementValue> configurable,
+                *instance->getConfigurableElementValues())
+            {
+                configurableElements.insert(configurable->getReferenceId(), configurable->getConfigurableValue());
+            }
+
+            break;
+        }
+    }
+
+    return configurableElements;
 }
 
 //-----------------------------------------------------------------------------

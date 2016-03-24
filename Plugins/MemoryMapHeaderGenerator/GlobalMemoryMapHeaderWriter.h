@@ -156,7 +156,25 @@ private:
      *      @return Uuid of the instance.
      */
     QString getInstanceID(QString const& interfaceReference) const;
+
+    /*!
+     *  Get configurable elements from the selected instance.
+     *
+     *      @param [in] instanceId  The id of the selected instance.
+     *
+     *      @return Map containing the configurable elements from the selected instance as ID / value pairs.
+     */
+    QMap<QString, QString> getConfigurableElementsFromInstance(QString const& instanceId) const;
+
+    /*!
+     *  Get the connected interfaces.
+     *
+     *      @param [in] interface   The start point interface of the connection.
+     *
+     *      @return A list of interfaces connected to the selected interface.
+     */
     QList<QSharedPointer<ActiveInterface> > getConnectedInterfaces(QSharedPointer<ActiveInterface> interface);
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

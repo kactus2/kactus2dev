@@ -1,9 +1,13 @@
-/* 
- *	Created on: 20.2.2013
- *	Author:		Antti Kamppi
- * 	File name:	localheadersavemodel.cpp
- * 	Project:	Kactus 2
-*/
+//-----------------------------------------------------------------------------
+// File: localheadersavemodel.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 20.02.2013
+//
+// Description:
+// The model class to display the header files to be created from component's local memory maps.
+//-----------------------------------------------------------------------------
 
 #include "localheadersavemodel.h"
 #include <library/LibraryManager/libraryinterface.h>
@@ -13,21 +17,30 @@
 #include <QDir>
 #include <QStringList>
 
+//-----------------------------------------------------------------------------
+// Function: localheadersavemodel::LocalHeaderSaveModel()
+//-----------------------------------------------------------------------------
 LocalHeaderSaveModel::LocalHeaderSaveModel(LibraryInterface* handler, QObject *parent ):
 QAbstractTableModel(parent),
-    component_(),
-    handler_(handler),
-    table_()
+component_(),
+handler_(handler),
+table_()
 {
 
 }
 
+//-----------------------------------------------------------------------------
+// Function: localheadersavemodel::~LocalHeaderSaveModel()
+//-----------------------------------------------------------------------------
 LocalHeaderSaveModel::~LocalHeaderSaveModel()
 {
 	qDeleteAll(table_);
 	table_.clear();
 }
 
+//-----------------------------------------------------------------------------
+// Function: localheadersavemodel::setComponent()
+//-----------------------------------------------------------------------------
 void LocalHeaderSaveModel::setComponent(QSharedPointer<Component> component)
 {
 	beginResetModel();
@@ -40,29 +53,31 @@ void LocalHeaderSaveModel::setComponent(QSharedPointer<Component> component)
 	QStringList swViewNames = component->getSWViewNames();
 	
 	// if there are no sw views then use default name to create one
-	if (swViewNames.isEmpty()) {
+	if (swViewNames.isEmpty())
+    {
 		defSWView = "swView";
 	}
 	// if there is at least one sw view then use it.
-	else {
+	else
+    {
 		defSWView = swViewNames.first();
 	}
 
 	foreach (QSharedPointer<AddressSpace> addrSpace, *component_->getAddressSpaces())
     {
-		QSharedPointer<MemoryMap> localMemMap = addrSpace->getLocalMemoryMap().dynamicCast<MemoryMap>();
+        QSharedPointer<MemoryMapBase> localMemoryMap = addrSpace->getLocalMemoryMap();
 
 		// if the address space contains a local memory map and contains at least one item
-		if (localMemMap && localMemMap->hasMemoryBlocks())
+        if (localMemoryMap && localMemoryMap->hasMemoryBlocks())
         {
 			LocalHeaderSaveModel::SaveFileOptions* options = new SaveFileOptions();
-			options->localMemMap_ = localMemMap;
+            options->localMemMap_ = localMemoryMap;
 
 			// the path to the directory containing the xml metadata
 			QString compPath(handler_->getDirectoryPath(component_->getVlnv()));
 
 			// the relative path from the xml dir to the header to generate
-			QString headerPath = QString("%1/%2.h").arg(tr("headers")).arg(localMemMap->name());
+            QString headerPath = QString("%1/%2.h").arg(tr("headers")).arg(localMemoryMap->name());
 
 			// the absolute path to the header file
 			const QString fullPath = QString("%1/%2").arg(compPath).arg(headerPath);
@@ -80,6 +95,9 @@ void LocalHeaderSaveModel::setComponent(QSharedPointer<Component> component)
 	endResetModel();
 }
 
+//-----------------------------------------------------------------------------
+// Function: localheadersavemodel::rowCount()
+//-----------------------------------------------------------------------------
 int LocalHeaderSaveModel::rowCount(QModelIndex const& parent) const
 {
 	if (parent.isValid())
@@ -90,6 +108,9 @@ int LocalHeaderSaveModel::rowCount(QModelIndex const& parent) const
 	return table_.size();
 }
 
+//-----------------------------------------------------------------------------
+// Function: localheadersavemodel::columnCount()
+//-----------------------------------------------------------------------------
 int LocalHeaderSaveModel::columnCount(QModelIndex const& parent) const
 {
 	if (parent.isValid())
@@ -100,6 +121,9 @@ int LocalHeaderSaveModel::columnCount(QModelIndex const& parent) const
 	return LocalHeaderSaveModel::COLUMN_COUNT;
 }
 
+//-----------------------------------------------------------------------------
+// Function: localheadersavemodel::flags()
+//-----------------------------------------------------------------------------
 Qt::ItemFlags LocalHeaderSaveModel::flags(QModelIndex const& index) const
 {
 	if (!index.isValid())
@@ -117,6 +141,9 @@ Qt::ItemFlags LocalHeaderSaveModel::flags(QModelIndex const& index) const
 	return flags;
 }
 
+//-----------------------------------------------------------------------------
+// Function: localheadersavemodel::headerData()
+//-----------------------------------------------------------------------------
 QVariant LocalHeaderSaveModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 	if (orientation != Qt::Horizontal)
@@ -125,30 +152,30 @@ QVariant LocalHeaderSaveModel::headerData(int section, Qt::Orientation orientati
 	}
 	if (Qt::DisplayRole == role)
     {
+        if (section == LocalHeaderSaveModel::SW_VIEW_NAME)
+        {
+            return tr("SW View");
+        }
+        else if (section == LocalHeaderSaveModel::MEM_MAP_NAME)
+        {
+            return tr("Local memory\nmap name");
+        }
+        else if (section == LocalHeaderSaveModel::FILE_NAME)
+        {
+            return tr("File name");
+        }
+        else if (section == LocalHeaderSaveModel::FILE_PATH)
+        {
+            return tr("File path");
+        }
+	}
 
-		switch (section) {
-		case LocalHeaderSaveModel::SW_VIEW_NAME: {
-			return tr("SW View");
-															  }
-		case LocalHeaderSaveModel::MEM_MAP_NAME: {
-			return tr("Local memory\nmap name");
-												 }
-		case LocalHeaderSaveModel::FILE_NAME: {
-			return tr("File name");
-													  }
-		case LocalHeaderSaveModel::FILE_PATH: {
-			return tr("File path");
-												  }
-		default: {
-			return QVariant();
-				 }
-		}
-	}
-	else {
-		return QVariant();
-	}
+    return QVariant();
 }
 
+//-----------------------------------------------------------------------------
+// Function: localheadersavemodel::data()
+//-----------------------------------------------------------------------------
 QVariant LocalHeaderSaveModel::data(QModelIndex const& index, int role) const
 {
 	if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
@@ -158,29 +185,30 @@ QVariant LocalHeaderSaveModel::data(QModelIndex const& index, int role) const
 
 	if (Qt::DisplayRole == role)
     {
-		switch (index.column()) {
-		case LocalHeaderSaveModel::SW_VIEW_NAME: {
-			return table_.at(index.row())->swView_;
-															  }
-		case LocalHeaderSaveModel::MEM_MAP_NAME: {
-			return table_.at(index.row())->localMemMap_->name();
-												 }
-		case LocalHeaderSaveModel::FILE_NAME: {
-			return table_.at(index.row())->fileInfo_.fileName();
-													  }
-		case LocalHeaderSaveModel::FILE_PATH: {
-
-			// display the relative path from xml directory to the header to be generated
-			QDir xmlDir(handler_->getDirectoryPath(component_->getVlnv()));
-			QString headerPath = table_.at(index.row())->fileInfo_.absoluteFilePath();
-			QString relPath = xmlDir.relativeFilePath(headerPath);
-
-			return relPath;
-												  }
-		default: {
-			return QVariant();
-				 }
-		}
+        if (index.column() == LocalHeaderSaveModel::SW_VIEW_NAME)
+        {
+            return table_.at(index.row())->swView_;
+        }
+        else if (index.column() == LocalHeaderSaveModel::MEM_MAP_NAME)
+        {
+            return table_.at(index.row())->localMemMap_->name();
+        }
+        else if (index.column() == LocalHeaderSaveModel::FILE_NAME)
+        {
+            return table_.at(index.row())->fileInfo_.fileName();
+        }
+        else if (index.column() == LocalHeaderSaveModel::FILE_PATH)
+        {
+            // display the relative path from xml directory to the header to be generated
+            QDir xmlDir(handler_->getDirectoryPath(component_->getVlnv()));
+            QString headerPath = table_.at(index.row())->fileInfo_.absoluteFilePath();
+            QString relPath = xmlDir.relativeFilePath(headerPath);
+            return relPath;
+        }
+        else
+        {
+            return QVariant();
+        }
 	}
 	// user role always returns the absolute file path
 	else if (Qt::UserRole == role)
@@ -198,11 +226,15 @@ QVariant LocalHeaderSaveModel::data(QModelIndex const& index, int role) const
 			return handler_->getDirectoryPath(component_->getVlnv());
 		}		
 	}
-	else {
+	else
+    {
 		return QVariant();
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: localheadersavemodel::setData()
+//-----------------------------------------------------------------------------
 bool LocalHeaderSaveModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
 	if (!index.isValid()|| index.row() < 0 || index.row() >= table_.size())
@@ -265,6 +297,9 @@ bool LocalHeaderSaveModel::setData(QModelIndex const& index, QVariant const& val
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: localheadersavemodel::getHeaderOptions()
+//-----------------------------------------------------------------------------
 const QList<LocalHeaderSaveModel::SaveFileOptions*>& LocalHeaderSaveModel::getHeaderOptions() const
 {
 	return table_;

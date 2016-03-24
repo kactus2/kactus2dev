@@ -163,7 +163,7 @@ void BaseMemoryMapHeaderWriter::displayMemoryMapHeader(QString const& filePath) 
 // Function: BaseMemoryMapHeaderWriter::writeRegistersFromMemoryMap()
 //-----------------------------------------------------------------------------
 void BaseMemoryMapHeaderWriter::writeRegisterFromMemoryMap(QSharedPointer<ParameterFinder> finder,
-    QSharedPointer<MemoryMap> containingMemoryMap, QTextStream& stream, bool useAddressBlockID, quint64 offset,
+    QSharedPointer<MemoryMapBase> containingMemoryMap, QTextStream& stream, bool useAddressBlockID, quint64 offset,
     QString const& idString)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser (new IPXactSystemVerilogParser(finder));
@@ -276,8 +276,8 @@ void BaseMemoryMapHeaderWriter::writeRegister(QSharedPointer<ExpressionParser> e
 // Function: BaseMemoryMapHeaderWriter::writeMemoryAddresses()
 //-----------------------------------------------------------------------------
 void BaseMemoryMapHeaderWriter::writeMemoryAddresses(QSharedPointer<ParameterFinder> finder,
-    QSharedPointer<MemoryMap> targetMemoryMap, QTextStream& stream, quint64 offset,
-    QString const& idString /* = QString() */) const
+    QSharedPointer<MemoryMapBase> targetMemoryMap, QTextStream& stream, quint64 offset,
+    QString const& idString) const
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser (new IPXactSystemVerilogParser(finder));
     QSharedPointer<ExpressionFormatter> formatter (new ExpressionFormatter(finder));

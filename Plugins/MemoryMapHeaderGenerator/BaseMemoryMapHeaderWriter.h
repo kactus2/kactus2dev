@@ -31,6 +31,7 @@ class PluginUtilityAdapter;
 class ExpressionParser;
 class ExpressionFormatter;
 class ParameterFinder;
+class MemoryMapBase;
 
 //-----------------------------------------------------------------------------
 //! The base implementation for memory map header writer.
@@ -102,15 +103,15 @@ protected:
      *  Write the registers contained in a memory map.
      *
      *      @param [in] finder                  The parameter finder containing the referenced parameters.
-     *      @param [in] containingMemoryMap     The memory map containing the registers.
+     *      @param [in] containingMemoryMap     The base memory map containing the registers.
      *      @param [in] stream                  The text stream to write into.
      *      @param [in] useAddressBlockID       Tells if an address block id is needed for the register name.
      *      @param [in] offset                  The current offset.
      *      @param [in] idString                Helps to identify non-unique registers.
      */
     void writeRegisterFromMemoryMap(QSharedPointer<ParameterFinder> finder,
-        QSharedPointer<MemoryMap> containingMemoryMap, QTextStream& stream, bool useAddressBlockID, quint64 offset,
-        QString const& idString = QString());
+        QSharedPointer<MemoryMapBase> containingMemoryMap, QTextStream& stream, bool useAddressBlockID,
+        quint64 offset, QString const& idString = QString());
 
     /*!
      *  Write registers contained in an address block.
@@ -145,13 +146,14 @@ protected:
      *  Write the memory names and given addresses.
      *
      *      @param [in] finder              The parameter finder containing the referenced parameters.
-     *      @param [in] targetMemoryMap     The used memory map.
+     *      @param [in] targetMemoryMap     The used base memory map.
      *      @param [in] stream              The text stream to write into.
      *      @param [in] offset              The current offset.
      *      @param [in] idString            Helps to identify non-unique elements.
      */
-    void writeMemoryAddresses(QSharedPointer<ParameterFinder> finder, QSharedPointer<MemoryMap> targetMemoryMap,
-        QTextStream& stream, quint64 offset, QString const& idString = QString()) const;
+    void writeMemoryAddresses(QSharedPointer<ParameterFinder> finder,
+        QSharedPointer<MemoryMapBase> targetMemoryMap, QTextStream& stream, quint64 offset,
+        QString const& idString = QString()) const;
 
     /*!
      *  Gets the ending address of an address block.
