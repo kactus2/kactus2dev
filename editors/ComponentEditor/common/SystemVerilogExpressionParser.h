@@ -212,6 +212,23 @@ private:
      */
     qreal parseConstantToDecimal(QString const& constantNumber) const;
 
+    /*!
+     *  Get the precision used from the terms.
+     *
+     *      @param [in] firstTerm   The first term of the operation.
+     *      @param [in] secondTerm  The second term of the operation.
+     *
+     *      @return The precision of the decimal used in the terms of the operation.
+     */
+    int getDecimalPrecision(QString const& firstTerm, QString const& secondTerm) const;
+
+    /*!
+     *  Get the base for a given number.
+     *
+     *      @param [in] constantNumber  The selected number.
+     *
+     *      @return The base for the selected number. Either 2, 8, 10 or 16.
+     */
     int getBaseForNumber(QString const& constantNumber) const;
 
     /*!
@@ -222,8 +239,6 @@ private:
      *      @return The base number for the format.
      */
     int baseForFormat(QString const& baseFormat) const;
-
-
 };
 
 #endif // SYSTEMVERILOGEXPRESSIONPARSER_H

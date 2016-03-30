@@ -1070,13 +1070,13 @@ void tst_ComponentValidator::testHasValidChoices()
 
         if (!createEnumeration)
         {
-            expectedError = QObject::tr("No enumerations found in choice %1 within component %2")
+            expectedError = QObject::tr("No enumerations found in choice '%1' within component %2")
                 .arg(choiceName).arg(testComponent->getVlnv().toString());
         }
 
         else if (enumeration.isEmpty())
         {
-            expectedError = QObject::tr("Invalid value %1 set for enumeration in choice %2 within component %3")
+            expectedError = QObject::tr("Invalid value '%1' set for enumeration in choice '%2' within component %3")
                 .arg(enumeration).arg(choiceName).arg(testComponent->getVlnv().toString());
         }
 

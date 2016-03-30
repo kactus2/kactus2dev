@@ -122,6 +122,7 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::newRow("Decimal number with multiple underscores should evaluate without underscores") 
         << "1_000_000" << "1000000";
     QTest::newRow("Decimal number with base and underscores should evaluate") << "'sd10_000" << "10000";
+    QTest::newRow("Decimal number 1000005 evaluates to 1000005") << "1000005" << "1000005";
 
     //! Fixed-point numbers.
     QTest::newRow("Fixed-point number 0.0 should evaluate to 0.0") << "0.0" << "0.0";
@@ -232,6 +233,9 @@ void tst_SystemVerilogExpressionParser::testParseAddition_data()
     QTest::newRow("Two plus two with whitespaces equals four") << "2 + 2" << "4";
     QTest::newRow("Multiple whitespaces") << " 1  +     1 " << "2";
     QTest::newRow("Sum of decimal values with sizes and signs") << "8'sd8 + 8'sd9" << "17";
+    QTest::newRow("Large decimal sum 1000003+1") << "1000003+1" << "1000004";
+    QTest::newRow("Larger decimal sum 1000004+1") << "1000004+1" << "1000005";
+    QTest::newRow("Sum of large decimal values 1000003+1000003") << "1000003+1000003" << "2000006";
 
     //! Fixed-point numbers.
     QTest::newRow("One plus one equals exactly two") << "1.0+1.0" << "2";
@@ -239,6 +243,7 @@ void tst_SystemVerilogExpressionParser::testParseAddition_data()
     QTest::newRow("Decimal one plus real two equals three") << "1+2.0" << "3";
     QTest::newRow("Half plus one quarter equals 0.75") << "0.5 + 0.25" << "0.75";
     QTest::newRow("Four quarters equals 1") << "0.25 + 0.25 + 0.25 + 0.25" << "1";
+    QTest::newRow("Real sum 1000004.012 + 1.84444444") << "1000004.012 + 1.84444444" << "1000005.85644444";
 
     //! Hexadecimal numbers.
     QTest::newRow("Sum of hexadecimal 'h10 + 'h0 equals 16") << "'h10 + 'h0" << "16";
@@ -367,8 +372,9 @@ void tst_SystemVerilogExpressionParser::testParseMultiply_data()
 
     //! Fixed-point numbers.
     QTest::newRow("Two times one half equals one") << "2*0.5" << "1";
-    QTest::newRow("Multiple fraction digits") << "0.25*0.25" << "0.0625";
+    QTest::newRow("Multiple fraction digits") << "0.250*0.25" << "0.0625";
     QTest::newRow("Zero times anything is zero") << "0.0*42" << "0";
+    QTest::newRow("Large real multiplication 10000.1 * 20002") << "10000.1 * 20002" << "200022000.2";
 
     //! Hexadecimal numbers.
     QTest::newRow("Multiply of hexadecimal 'h10 * 'h2 equals 32") << "'h10 * 'h2" << "32";
@@ -435,8 +441,14 @@ void tst_SystemVerilogExpressionParser::testParseDivision_data()
     //! Fixed-point numbers.
     QTest::newRow("Division result for integer divisor truncates towards zero") << "3/2.0" << "1";
     QTest::newRow("Division result for real does not truncate towards zero") << "3.0/2" << "1.5";
-    QTest::newRow("Number of fractional digits is five by default") << "10.0/3" << "3.33333";
+    QTest::newRow("Number of fractional digits is five by default") << "10.0/3" << "3.3";
     QTest::newRow("Division by zero is unknown") << "3.0/0.0" << "x";
+    QTest::newRow("Large real division 10000.1 / 20002") << "10000.1 / 20002" << "0.5";
+    QTest::newRow("Real division 1 / 7 ") << "1 / 7" << "0";
+    QTest::newRow("Real division 1.0 / 7 ") << "1.0 / 7" << "0.1";
+    QTest::newRow("Real division 1.00 / 7 ") << "1.00 / 7" << "0.14";
+    QTest::newRow("Real division 1.000 / 7 ") << "1.000 / 7" << "0.143";
+    QTest::newRow("Real division 1.0000 / 7 ") << "1.0000 / 7" << "0.1429";
 
     //! Hexadecimal numbers.
     QTest::newRow("Division of hexadecimal 'h10 / 'h2 equals 8") << "'h10 / 'h2" << "8";
@@ -513,7 +525,9 @@ void tst_SystemVerilogExpressionParser::testParsePower_data()
 
     //! Fixed-point numbers.
     QTest::newRow("Real gives real reciprocal") << "2.0 ** -1" << "0.5";
-    QTest::newRow("2.5 to the power of two") << "2.5 ** 2" << "6.25";
+    QTest::newRow("2.5 to the power of two") << "2.50 ** 2" << "6.25";
+    QTest::newRow("Large real in power 10000.1 ** 2") << "10000.1 ** 2" << "100002000.01";
+    QTest::newRow("Large real in larger power 10000.1**3") << "10000.1**3" << "1000030000300.001";
 }
 
 //-----------------------------------------------------------------------------
@@ -690,11 +704,11 @@ void tst_SystemVerilogExpressionParser::testGetBaseForExpression_data()
 void tst_SystemVerilogExpressionParser::testIsPlainValue()
 {
     QFETCH(QString, expression);
-    QFETCH(bool, explectedPlain);
+    QFETCH(bool, expectedPlain);
 
     SystemVerilogExpressionParser parser;
 
-    QCOMPARE(parser.isPlainValue(expression), explectedPlain);
+    QCOMPARE(parser.isPlainValue(expression), expectedPlain);
 }
 
 //-----------------------------------------------------------------------------
@@ -703,30 +717,30 @@ void tst_SystemVerilogExpressionParser::testIsPlainValue()
 void tst_SystemVerilogExpressionParser::testIsPlainValue_data()
 {
     QTest::addColumn<QString>("expression");
-    QTest::addColumn<bool>("explectedPlain");
+    QTest::addColumn<bool>("expectedPlain");
 
-   QTest::newRow("Decimal constant is plain") << "1" << true;
-   QTest::newRow("Hexadecimal constant is plain") << "'h1" << true;
-   QTest::newRow("Octal constant is plain") << "'o1" << true;
-   QTest::newRow("Binary constant is plain") << "'b1" << true;
-   QTest::newRow("String is plain") << "\"text\"" << true;
-   QTest::newRow("Empty value is plain") << "" << true;
-   QTest::newRow("Decimal with preceding and trailing spaces is plain") << "  1  " << true;
+    QTest::newRow("Decimal constant is plain") << "1" << true;
+    QTest::newRow("Hexadecimal constant is plain") << "'h1" << true;
+    QTest::newRow("Octal constant is plain") << "'o1" << true;
+    QTest::newRow("Binary constant is plain") << "'b1" << true;
+    QTest::newRow("String is plain") << "\"text\"" << true;
+    QTest::newRow("Empty value is plain") << "" << true;
+    QTest::newRow("Decimal with preceding and trailing spaces is plain") << "  1  " << true;
 
-   QTest::newRow("Addition is not plain") << "'h1 + 'h1" << false;
-   QTest::newRow("Subtraction is not plain") << "'o2 - 'o1" << false;
-   QTest::newRow("Multiply is not plain") << "2 * 2" << false;
-   QTest::newRow("Division is not plain") << "4/2" << false;
-   QTest::newRow("Power is not plain") << "2**8" << false;
-   QTest::newRow("clog2 function is not plain") << "$clog2(8)" << false;
+    QTest::newRow("Addition is not plain") << "'h1 + 'h1" << false;
+    QTest::newRow("Subtraction is not plain") << "'o2 - 'o1" << false;
+    QTest::newRow("Multiply is not plain") << "2 * 2" << false;
+    QTest::newRow("Division is not plain") << "4/2" << false;
+    QTest::newRow("Power is not plain") << "2**8" << false;
+    QTest::newRow("clog2 function is not plain") << "$clog2(8)" << false;
 
-   QTest::newRow("Constant in parentheses is plain") << "(8)" << true;
-   QTest::newRow("Constant in parentheses with spaces is plain") << " ( 8 ) " << true;
-   QTest::newRow("Addition in parentheses is not plain") << "(8 + 2)" << false;
+    QTest::newRow("Constant in parentheses is plain") << "(8)" << true;
+    QTest::newRow("Constant in parentheses with spaces is plain") << " ( 8 ) " << true;
+    QTest::newRow("Addition in parentheses is not plain") << "(8 + 2)" << false;
 
-   QTest::newRow("Large negative number is plain") << "-99999" << true;
-   QTest::newRow("Even larger negative number is plain") << "-9999999999999999" << true;
-   QTest::newRow("Even larger negative number is plain") << "-9999999999999999999" << true;
+    QTest::newRow("Large negative number is plain") << "-99999" << true;
+    QTest::newRow("Even larger negative number is plain") << "-99999999999999" << true;
+    QTest::newRow("Even larger negative number is plain") << "-999999999999999999" << true;
 }
 
 QTEST_APPLESS_MAIN(tst_SystemVerilogExpressionParser)

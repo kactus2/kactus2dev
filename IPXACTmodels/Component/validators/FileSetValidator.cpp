@@ -13,7 +13,6 @@
 #include "FileValidator.h"
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>

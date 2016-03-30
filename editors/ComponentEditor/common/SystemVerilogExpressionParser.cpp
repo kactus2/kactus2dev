@@ -458,7 +458,18 @@ QString SystemVerilogExpressionParser::solve(QString const& firstTerm, QString c
 
     else
     {
-        return QString::number(result);
+        qint64 resultInInt = result;
+        QString baseNumberString = QString::number(resultInInt);
+
+        qreal decimalPart = abs(result - resultInInt);
+
+        int decimalPrecision = getDecimalPrecision(firstTerm, secondTerm);
+        QString decimalString = QString::number(decimalPart, 'g', decimalPrecision);
+
+        decimalString = decimalString.right(decimalString.size() - 1);
+
+        QString resultInString = baseNumberString + decimalString;
+        return resultInString;
     }
 }
 
@@ -483,6 +494,40 @@ qreal SystemVerilogExpressionParser::parseConstantToDecimal(QString const& const
     {
         return result.toLongLong(0, getBaseForNumber(constantNumber));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::getDecimalPrecision()
+//-----------------------------------------------------------------------------
+int SystemVerilogExpressionParser::getDecimalPrecision(QString const& firstTerm, QString const& secondTerm) const
+{
+    int precision = 0;
+    if (firstTerm.contains('.') || secondTerm.contains('.'))
+    {
+        int firstDecimalLength = 0;
+        int secondDecimalLength = 0;
+
+        if (firstTerm.contains('.'))
+        {
+            QStringList firstList = firstTerm.split('.');
+            if (firstList.size() == 2)
+            {
+                firstDecimalLength = firstList.at(1).size();
+            }
+        }
+        if (secondTerm.contains('.'))
+        {
+            QStringList secondList = secondTerm.split('.');
+            if (secondList.size() == 2)
+            {
+                secondDecimalLength = secondList.at(1).size();
+            }
+        }
+
+        precision = qMax(firstDecimalLength, secondDecimalLength);
+    }
+
+    return precision;
 }
 
 //-----------------------------------------------------------------------------
