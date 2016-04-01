@@ -87,11 +87,12 @@ Q_DECLARE_METATYPE(HWDesignDiagram::ColumnCollectionCopyData)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::HWDesignDiagram()
 //-----------------------------------------------------------------------------
-HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider, DesignWidget* parent)
-    : ComponentDesignDiagram(lh, editProvider, parent),
-      dragCompType_(ColumnTypes::NONE),
-      dragBus_(false),
-      dragEndPoint_(0)
+HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider,
+                                 DesignWidget* parent):
+ComponentDesignDiagram(lh, editProvider, parent),
+dragCompType_(ColumnTypes::NONE),
+dragBus_(false),
+dragEndPoint_(0)
 {
 
 }

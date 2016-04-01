@@ -21,6 +21,8 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/HWConnection.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
+#include <designEditors/HWDesign/AdHocConnectionItem.h>
+#include <designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -56,7 +58,20 @@ ComponentDeleteCommand::ComponentDeleteCommand(DesignDiagram* diagram, GraphicsC
             {
                 if (!connections.contains(connection))
                 {
-                    new ConnectionDeleteCommand(diagram_, static_cast<HWConnection*>(connection), this);
+                    HWConnection* hwConnection = dynamic_cast<HWConnection*>(connection);
+                    if (hwConnection)
+                    {
+                        new ConnectionDeleteCommand(diagram_, hwConnection, this);
+                    }
+                    else
+                    {
+                        AdHocConnectionItem* adHocConnection = dynamic_cast<AdHocConnectionItem*>(connection);
+                        if (adHocConnection)
+                        {
+                            new AdHocConnectionDeleteCommand(diagram_, adHocConnection, this);
+                        }
+                    }
+
                     connections.append(connection);
                 }
             }

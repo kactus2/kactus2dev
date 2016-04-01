@@ -178,16 +178,16 @@ public:
      */
     HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider, DesignWidget* parent = 0);
 
-	//! \brief The destructor
+	//! The destructor.
 	virtual ~HWDesignDiagram();
 
-    /*! \brief Set the IP-XACT document that is viewed in HWDesignDiagram
-     *
+    /*!
+     *  Set the IP-XACT document that is viewed in HWDesignDiagram.
      */
     void loadDesign(QSharedPointer<Design> design);
 
-    /*! \brief Get HWComponentItem that has the given instance name
-     *
+    /*!
+     *  Get HWComponentItem that has the given instance name.
      */
     HWComponentItem* getComponentItem(QString const& instanceName);
 
@@ -235,12 +235,29 @@ public slots:
      *  Called when paste is selected from the context menu.
      */
 	virtual void onPasteAction();
+    
+    /*!
+     *  Paste hierarchical interfaces.
+     *
+     *      @param [in] mimeData    The data containing the pasted items.
+     */
     void pasteHierarchicalInterfaces(QMimeData const* mimeData);
 
+    /*!
+     *  Paste columns.
+     */
     void pasteColumns();
 
+    /*!
+     *  Paste components to a new column.
+     */
     void pasteComponentsToColumn();
 
+    /*!
+     *  Paste interfaces to a draft component.
+     *
+     *      @param [in] targetItem  The component item to paste interfaces into.
+     */
     void pasteInterfacesToDraftComponent(HWComponentItem* targetItem);
 
     /*!
@@ -276,10 +293,28 @@ protected:
 
     //! Handler for drop event.
     void dropEvent(QGraphicsSceneDragDropEvent *event);
+    
+    /*!
+     *  Set the interface VLNV at an end point.
+     *
+     *      @param [in] droppedVLNV     The selected VLNV.
+     */
     void setInterfaceVLNVatEndpoint(VLNV &droppedVLNV);
 
+    /*!
+     *  Replace the component item at the selected position.
+     *
+     *      @param [in] position    The position of the replaced component item.
+     *      @param [in] comp        The component item to replace the item at position.
+     */
     void replaceComponentItemAtPositionWith(QPointF position, QSharedPointer<Component> comp);
 
+    /*!
+     *  Create a new component item.
+     *
+     *      @param [in] comp        The selected component.
+     *      @param [in] position    Position of the new component item.
+     */
     void createComponentItem(QSharedPointer<Component> comp, QPointF position);
 
     //! Updates the dropAction and highlight according to underlying element.
@@ -495,8 +530,19 @@ private:
      */
     void createInterconnection(QSharedPointer<Interconnection> interconnection, QSharedPointer<Design> design);
 
+    /*!
+     *  Create an interconnection between components.
+     *
+     *      @param [in] interconnection     The selected interconnection.
+     *      @param [in] design              The design in which to create the interconnection.
+     */
     void createInterconnectionBetweenComponents(QSharedPointer<Interconnection> interconnection, QSharedPointer<Design> design);
 
+    /*!
+     *  Find or create a route for the interconnection.
+     *
+     *      @param [in] interconnectionName     The name of the interconnection.
+     */
     QSharedPointer<ConnectionRoute> findOrCreateRouteForInterconnection(QString const& interconnectionName);
 
     /*!
@@ -507,6 +553,12 @@ private:
      */
     void createHierarchicalConnection(QSharedPointer<Interconnection> connection,
           QSharedPointer<Design> design);
+    
+    /*!
+     *  Find or create a hierarchical interface.
+     *
+     *      @param [in] busRef  The name of the interface.
+     */
     ConnectionEndpoint* findOrCreateHierarchicalInterface(QString const& busRef);
 
     /*!
