@@ -30,14 +30,14 @@ class AdHocConnectionDeleteCommand : public QUndoCommand
 public:
 
     /*!
-     *  <Method description>.
+     *  The constructor.
      *
-     *      @param [in] diagram     The diagram containing the AdHocConnection item.
-     *      @param [in] adHocConnection  The AdHocConnection to remove.
-     *      @param [in] parent      The parent command.
+     *      @param [in] diagram             The diagram containing the AdHocConnection item.
+     *      @param [in] adHocConnection     The AdHocConnection to remove.
+     *      @param [in] parent              The parent command.
      */
-    AdHocConnectionDeleteCommand(DesignDiagram* diagram, 
-        AdHocConnectionItem* AdHocConnection, QUndoCommand* parent = 0);
+    AdHocConnectionDeleteCommand(DesignDiagram* diagram, AdHocConnectionItem* AdHocConnection,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -63,7 +63,7 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The .
+    //! The connection.
     AdHocConnectionItem* adHocConnection_;
 
     //! The port maps for the hierarchical end point (if any).

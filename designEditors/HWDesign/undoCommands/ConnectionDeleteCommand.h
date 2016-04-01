@@ -30,7 +30,7 @@ class ConnectionDeleteCommand : public QUndoCommand
 public:
 
     /*!
-     *  <Method description>.
+     *  The constructor.
      *
      *      @param [in] diagram     The diagram containing the connection item.
      *      @param [in] connection  The connection to remove.

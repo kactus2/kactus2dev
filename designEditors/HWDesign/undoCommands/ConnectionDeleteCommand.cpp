@@ -149,6 +149,8 @@ void ConnectionDeleteCommand::undo()
     }
 
     diagram_->getDesign()->getInterconnections()->append(connection_->getInterconnection());
+    diagram_->getDesign()->addRoute(connection_->getRouteExtension());
+
     diagram_->clearSelection();
     connection_->setVisible(true);
     connection_->setSelected(true);
@@ -169,6 +171,8 @@ void ConnectionDeleteCommand::redo()
 
     // Remove the item from the scene.
     diagram_->getDesign()->getInterconnections()->removeOne(connection_->getInterconnection());
+    diagram_->getDesign()->removeRoute(connection_->getRouteExtension());
+
     diagram_->removeItem(connection_);
     del_ = true;
 
