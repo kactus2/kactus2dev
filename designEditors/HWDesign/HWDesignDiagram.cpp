@@ -43,6 +43,7 @@
 #include <designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h>
 #include <designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h>
 #include <designEditors/HWDesign/undoCommands/PortPasteCommand.h>
+#include <designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h>
 
 #include <library/LibraryManager/libraryhandler.h>
 
@@ -1015,16 +1016,23 @@ void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
         // Find the topmost component under the cursor.
         ComponentItem* item = getTopmostComponent(event->scenePos());
 
+        GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
+
         // If the item is a HW component, determine whether the component can be replaced with the dragged one.
-        if (item != 0 && item->type() == HWComponentItem::Type)
+        if (item != 0 && item->type() == HWComponentItem::Type && column != 0)
         {
-            event->setDropAction(Qt::MoveAction);
+            if (column->getColumnDesc()->getAllowedItems() & dragCompType_)
+            {
+                event->setDropAction(Qt::MoveAction);
+            }
+            else
+            {
+                event->setDropAction(Qt::IgnoreAction);
+            }
         }
         else
         {
             // Otherwise check whether the component can be placed to the underlying column.
-            GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
-
             if (column != 0 && column->getColumnDesc()->getAllowedItems() & dragCompType_)
             {
                 event->setDropAction(Qt::CopyAction);

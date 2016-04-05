@@ -95,13 +95,11 @@ void ConnectionChangeCommand::redo()
 // Function: ConnectionExchangeCommand::ConnectionExchangeCommand()
 //-----------------------------------------------------------------------------
 ConnectionExchangeCommand::ConnectionExchangeCommand(GraphicsConnection* connection,
-    ConnectionEndpoint* oldEndpoint,
-    ConnectionEndpoint* newEndpoint,
-    QUndoCommand* parent):
+    ConnectionEndpoint* oldEndpoint, ConnectionEndpoint* newEndpoint, QUndoCommand* parent):
 QUndoCommand(parent),
-    connectionItem_(connection),
-    oldEndpoint_(oldEndpoint),
-    newEndpoint_(newEndpoint)
+connectionItem_(connection),
+oldEndpoint_(oldEndpoint),
+newEndpoint_(newEndpoint)
 {
 }
 

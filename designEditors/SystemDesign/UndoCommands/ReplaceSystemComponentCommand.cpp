@@ -44,29 +44,6 @@ oldComp_(oldComp),
 newComp_(newComp),
 existing_(existing)
 {
-    changeConnections(oldComp_, newComp_, containingDesign);
-
-    // Create a delete command for the old component if it should not be kept.
-    if (!keepOld)
-    {
-        SystemComponentDeleteCommand* deleteCmd =
-            new SystemComponentDeleteCommand(oldComp_, containingDesign, this);
-
-        connect(deleteCmd, SIGNAL(componentInstantiated(ComponentItem*)),
-            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-        connect(deleteCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-        foreach(Association* association, oldComp_->getAssociations())
-        {
-            new AssociationChangeEndpointCommand(association, oldComp_, newComp_, this);
-        }
-    }
-    else
-    {
-        changeConnections(newComp_, oldComp_, containingDesign);
-    }
-
     // Create a move/add command for the new component.
     if (existing)
     {
@@ -91,6 +68,29 @@ existing_(existing)
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
         connect(addCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+    }
+
+    changeConnections(oldComp_, newComp_, containingDesign);
+
+    // Create a delete command for the old component if it should not be kept.
+    if (!keepOld)
+    {
+        SystemComponentDeleteCommand* deleteCmd =
+            new SystemComponentDeleteCommand(oldComp_, containingDesign, this);
+
+        connect(deleteCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(deleteCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+        foreach(Association* association, oldComp_->getAssociations())
+        {
+            new AssociationChangeEndpointCommand(association, oldComp_, newComp_, this);
+        }
+    }
+    else
+    {
+        changeConnections(newComp_, oldComp_, containingDesign);
     }
 }
 

@@ -555,14 +555,7 @@ HEADERS += ./common/Global.h \
     ./editors/ConfigurationTools/ViewConfigurerColumns.h \
     ./editors/ConfigurationTools/ViewConfigurer.h \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.h \
-    ./designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.h \
-    ./designEditors/SystemDesign/UndoCommands/ApiConnectionAddCommand.h \
-    ./designEditors/SystemDesign/UndoCommands/ComConnectionAddCommand.h \
-    ./designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.h \
-    ./designEditors/SystemDesign/UndoCommands/SWInterfaceDeleteCommand.h \
-    ./designEditors/SystemDesign/UndoCommands/SWPortDeleteCommand.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
-    ./designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h \
     ./designEditors/SystemDesign/ComGraphicsConnection.h \
     ./designEditors/SystemDesign/ApiGraphicsConnection.h \
     ./designEditors/SystemDesign/SWComponentItem.h \
@@ -570,16 +563,30 @@ HEADERS += ./common/Global.h \
     ./designEditors/SystemDesign/SWInterfaceItem.h \
     ./designEditors/SystemDesign/SWOffPageConnectorItem.h \
     ./designEditors/SystemDesign/SWPortItem.h \
-    ./designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.h \
-    ./designEditors/SystemDesign/UndoCommands/ReplaceSystemComponentCommand.h \
     ./designEditors/SystemDesign/SystemColumn.h \
     ./designEditors/SystemDesign/SystemComponentItem.h \
-    ./designEditors/SystemDesign/UndoCommands/SystemDeleteCommands.h \
     ./designEditors/SystemDesign/SystemDesignDiagram.h \
     ./designEditors/SystemDesign/SystemDesignWidget.h \
     ./designEditors/SystemDesign/SystemDetailsEditor/ExportSWDialog.h \
     ./designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.h \
     ./designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h \
+    ./designEditors/SystemDesign/UndoCommands/ApiConnectionAddCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/ApiConnectionExchangeCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/ComConnectionAddCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/ComConnectionExchangeCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/SWInterfaceAddCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/SWInterfaceDeleteCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/SWInterfaceMoveCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/SWPortDeleteCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/SystemDeleteCommands.h \
+    ./designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h \
+    ./designEditors/SystemDesign/UndoCommands/ReplaceSystemComponentCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/SystemAddCommands.h \
+    ./designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.h \
+    ./designEditors/SystemDesign/UndoCommands/SystemChangeCommands.h \
     ./designEditors/MemoryDesigner/AddressBlockItem.h \
     ./designEditors/MemoryDesigner/SegmentItem.h \
     ./designEditors/MemoryDesigner/AddressSectionItem.h \
@@ -686,13 +693,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./designEditors/SystemDesign/UndoCommands/SystemAddCommands.h \
-    ./designEditors/SystemDesign/UndoCommands/SystemChangeCommands.h \
-    ./designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h \
-    ./designEditors/SystemDesign/UndoCommands/SWInterfaceAddCommand.h \
-    ./designEditors/SystemDesign/UndoCommands/SWInterfaceMoveCommand.h \
-    ./designEditors/SystemDesign/UndoCommands/ComConnectionExchangeCommand.h \
-    ./designEditors/SystemDesign/UndoCommands/ApiConnectionExchangeCommand.h
+    ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1222,32 +1223,38 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignWidget.cpp \
     ./designEditors/MemoryDesigner/MemoryItem.cpp \
     ./designEditors/MemoryDesigner/SegmentItem.cpp \
-    ./designEditors/SystemDesign/UndoCommands/ApiConnectionAddCommand.cpp \
-    ./designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.cpp \
     ./designEditors/SystemDesign/ApiGraphicsConnection.cpp \
-    ./designEditors/SystemDesign/UndoCommands/ComConnectionAddCommand.cpp \
-    ./designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.cpp \
     ./designEditors/SystemDesign/ComGraphicsConnection.cpp \
     ./designEditors/SystemDesign/HWMappingItem.cpp \
     ./designEditors/SystemDesign/SWComponentItem.cpp \
     ./designEditors/SystemDesign/SWConnectionEndpoint.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SWInterfaceDeleteCommand.cpp \
     ./designEditors/SystemDesign/SWInterfaceItem.cpp \
     ./designEditors/SystemDesign/SWOffPageConnectorItem.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SWPortDeleteCommand.cpp \
     ./designEditors/SystemDesign/SWPortItem.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SystemAddCommands.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SystemChangeCommands.cpp \
     ./designEditors/SystemDesign/SystemColumn.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.cpp \
     ./designEditors/SystemDesign/SystemComponentItem.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SystemDeleteCommands.cpp \
     ./designEditors/SystemDesign/SystemDesignDiagram.cpp \
     ./designEditors/SystemDesign/SystemDesignWidget.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/ExportSWDialog.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/SwitchHWDialog.cpp \
     ./designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.cpp \
+    ./designEditors/SystemDesign/UndoCommands/ApiConnectionAddCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/ApiConnectionDeleteCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/ApiConnectionExchangeCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/ComConnectionAddCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/ComConnectionDeleteCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/ComConnectionExchangeCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/ReplaceSystemComponentCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SWInterfaceAddCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SWInterfaceDeleteCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SWInterfaceMoveCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SWPortDeleteCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SystemAddCommands.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SystemChangeCommands.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SystemDeleteCommands.cpp \
+    ./designEditors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
     ./designEditors/common/ComponentDesignDiagram.cpp \
     ./designEditors/common/DesignCompletionModel.cpp \
     ./designEditors/common/DesignDiagram.cpp \
@@ -1294,10 +1301,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SWInterfaceAddCommand.cpp \
-    ./designEditors/SystemDesign/UndoCommands/SWInterfaceMoveCommand.cpp \
-    ./designEditors/SystemDesign/UndoCommands/ReplaceSystemComponentCommand.cpp \
-    ./designEditors/SystemDesign/UndoCommands/ComConnectionExchangeCommand.cpp \
-    ./designEditors/SystemDesign/UndoCommands/ApiConnectionExchangeCommand.cpp
+    ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.cpp
 RESOURCES += kactus.qrc

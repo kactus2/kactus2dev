@@ -29,9 +29,9 @@
 AdHocConnectionDeleteCommand::AdHocConnectionDeleteCommand(DesignDiagram* diagram, 
     AdHocConnectionItem* adHocConnection, QUndoCommand* parent) :
 QUndoCommand(parent),
-    adHocConnection_(adHocConnection),
-    diagram_(diagram),
-    del_(true)
+adHocConnection_(adHocConnection),
+diagram_(diagram),
+del_(true)
 {
     foreach(Association* association, adHocConnection_->getAssociations())
     {
