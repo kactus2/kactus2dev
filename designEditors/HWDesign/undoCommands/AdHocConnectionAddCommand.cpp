@@ -94,6 +94,5 @@ void AdHocConnectionAddCommand::redo()
 
     scene_->clearSelection();
     connection_->setVisible(true);
-    connection_->setSelected(true);
     del_ = false;
 }

@@ -159,15 +159,16 @@ void ConnectionAddCommand::undo()
         static_cast<DesignDiagram*>(scene_)->getEditProvider().dynamicCast<GenericEditProvider>();
     editProvider->setState("portsCopied", portsCopied_);
 
-    // Disconnect the ends.
-    connection_->disconnectEnds();
-    connection_->setSelected(false);
-
     // Remove the interconnection from the scene.
     if (connection_->scene() != 0)
     {
         scene_->removeItem(connection_);
     }
+
+    // Disconnect the ends.
+    connection_->setSelected(false);
+    connection_->disconnectEnds();
+
     del_ = true;
 
     design_->getInterconnections()->removeAll(connection_->getInterconnection());
@@ -216,14 +217,12 @@ void ConnectionAddCommand::redo()
             busIf2->getPortMaps()->append(portMaps_);
             connection_->endpoint2()->updateInterface();
         }
+
+        design_->getInterconnections()->append(connection_->getInterconnection());
+        design_->addRoute(connection_->getRouteExtension());
+
     }
 
-    design_->getInterconnections()->append(connection_->getInterconnection());
-    design_->addRoute(connection_->getRouteExtension());
-
-    scene_->clearSelection();
-    connection_->setVisible(true);
-    connection_->setSelected(true);
     del_ = false;
 }
 

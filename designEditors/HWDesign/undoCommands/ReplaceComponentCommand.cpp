@@ -64,7 +64,9 @@ newComp_(newComp)
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
     }
 
-    changeConnections(existing, oldComp_, newComp_, diagram);
+    QStringList connectionNames;
+
+    changeConnections(existing, connectionNames, oldComp_, newComp_, diagram);
 
     // Create a delete command for the old component if it should not be kept.
     if (!keepOld)
@@ -84,18 +86,16 @@ newComp_(newComp)
     }
     else
     {
-        changeConnections(true, newComp_, oldComp_, diagram);
+        changeConnections(true, connectionNames, newComp_, oldComp_, diagram);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: ReplaceComponentCommand::changeConnections()
 //-----------------------------------------------------------------------------
-void ReplaceComponentCommand::changeConnections(bool keepExistingComponent, HWComponentItem* oldComponentItem,
-    HWComponentItem* newComponentItem, DesignDiagram* diagram)
+void ReplaceComponentCommand::changeConnections(bool keepExistingComponent, QStringList& connectionNames,
+    HWComponentItem* oldComponentItem, HWComponentItem* newComponentItem, DesignDiagram* diagram)
 {
-    QStringList connectionNames;
-
     foreach (ConnectionEndpoint* oldEndpoint, oldComponentItem->getEndpoints())
     {
         if (!oldEndpoint->getConnections().isEmpty() || 
@@ -114,7 +114,7 @@ void ReplaceComponentCommand::changeConnections(bool keepExistingComponent, HWCo
 
             if (newEndpoint != 0)
             {
-                createConnectionExchangeCommands(oldEndpoint, newEndpoint);
+                createConnectionExchangeCommands(connectionNames, oldEndpoint, newEndpoint);
             }
             else if (keepExistingComponent)
             {
@@ -127,8 +127,8 @@ void ReplaceComponentCommand::changeConnections(bool keepExistingComponent, HWCo
 //-----------------------------------------------------------------------------
 // Function: ReplaceComponentCommand::createConnectionExchangeCommands()
 //-----------------------------------------------------------------------------
-void ReplaceComponentCommand::createConnectionExchangeCommands(ConnectionEndpoint* oldEndpoint,
-    HWConnectionEndpoint* newEndpoint)
+void ReplaceComponentCommand::createConnectionExchangeCommands(QStringList& connectionNames,
+    ConnectionEndpoint* oldEndpoint, HWConnectionEndpoint* newEndpoint)
 {
     // Create a move command to move the port to the same place where it is in the old component.
     new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
@@ -136,7 +136,11 @@ void ReplaceComponentCommand::createConnectionExchangeCommands(ConnectionEndpoin
     // Exchange connections between the endpoints.
     foreach (GraphicsConnection* connection, oldEndpoint->getConnections())
     {
-        new ConnectionExchangeCommand(connection, oldEndpoint, newEndpoint, this);
+        if (!connectionNames.contains(connection->name()))
+        {
+            new ConnectionExchangeCommand(connection, oldEndpoint, newEndpoint, this);
+            connectionNames.append(connection->name());
+        }
     }
 
     if (oldEndpoint->getOffPageConnector() &&
@@ -144,8 +148,12 @@ void ReplaceComponentCommand::createConnectionExchangeCommands(ConnectionEndpoin
     {
         foreach (GraphicsConnection* connection, oldEndpoint->getOffPageConnector()->getConnections())
         {
-            new ConnectionExchangeCommand(connection, oldEndpoint->getOffPageConnector(),
-                newEndpoint->getOffPageConnector(), this);
+            if (!connectionNames.contains(connection->name()))
+            {
+                new ConnectionExchangeCommand(connection, oldEndpoint->getOffPageConnector(),
+                    newEndpoint->getOffPageConnector(), this);
+                connectionNames.append(connection->name());
+            }
         }
     }
 }

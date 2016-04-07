@@ -89,14 +89,14 @@ void DesignDiagram::clearScene()
 bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointer<Design> design,
                               QSharedPointer<DesignConfiguration> designConf)
 {
-    // Clear the edit provider.
-    editProvider_->clear();
-
     // Deselect items.
     emit clearItemSelection();
     clearSelection();
 
-    // Clear the scene.    
+    // Clear the edit provider.
+    editProvider_->clear();
+
+    // Clear the scene.
     clearScene();
     getParent()->clearRelatedVLNVs();
     getParent()->addRelatedVLNV(component->getVlnv());

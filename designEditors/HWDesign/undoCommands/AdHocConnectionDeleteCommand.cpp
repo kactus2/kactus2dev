@@ -67,7 +67,6 @@ void AdHocConnectionDeleteCommand::undo()
 
     adHocConnection_->connectEnds();
     adHocConnection_->setVisible(true);
-    adHocConnection_->setSelected(true);
 
     del_ = false;
 }

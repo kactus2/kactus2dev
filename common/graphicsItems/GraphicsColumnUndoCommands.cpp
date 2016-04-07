@@ -164,6 +164,8 @@ void GraphicsColumnChangeCommand::changeModifiedColumnInDesign(QSharedPointer<Co
     columnDesc_->setName(newColumn->name());
     //columnDesc_->setPosition(newColumn->getPosition());
     columnDesc_->setWidth(newColumn->getWidth());
+
+    columnItem_->setColumnDesc(columnDesc_);
 }
 
 //-----------------------------------------------------------------------------

@@ -588,13 +588,25 @@ void ComponentDesignDiagram::setupActions()
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::destroyConnections()
 {
-    foreach (QGraphicsItem* item, items()) 
+    QList<GraphicsConnection*> connectionList;
+    foreach (QGraphicsItem* item, items())
     {
-        // if the item is an interconnection
-        if (dynamic_cast<GraphicsConnection*>(item)) 
+        if (item)
         {
-            removeItem(item);
-            delete item;
+            GraphicsConnection* graphicsConnection = dynamic_cast<GraphicsConnection*>(item);
+            if (graphicsConnection)
+            {
+                connectionList.append(graphicsConnection);
+            }
+        }
+    }
+
+    if (!connectionList.isEmpty())
+    {
+        foreach (GraphicsConnection* graphicsConnection, connectionList)
+        {
+            removeItem(graphicsConnection);
+            delete graphicsConnection;
         }
     }
 }

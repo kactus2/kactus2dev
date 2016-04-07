@@ -66,7 +66,6 @@ void ComConnectionDeleteCommand::undo()
     }
 
     scene_->clearSelection();
-    connection_->setSelected(true);
     deleteConnection_ = false;
 }
 

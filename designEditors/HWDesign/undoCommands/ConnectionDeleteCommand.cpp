@@ -127,33 +127,33 @@ void ConnectionDeleteCommand::undo()
     diagram_->addItem(connection_);
     
     // Connect the ends and set the interface modes.
-    connection_->connectEnds();
+    if (connection_->connectEnds())
+    {
     
-    QSharedPointer<BusInterface> busIf1 = connection_->endpoint1()->getBusInterface();
-    QSharedPointer<BusInterface> busIf2 = connection_->endpoint2()->getBusInterface();
+        QSharedPointer<BusInterface> busIf1 = connection_->endpoint1()->getBusInterface();
+        QSharedPointer<BusInterface> busIf2 = connection_->endpoint2()->getBusInterface();
 
-    if (busIf1 != 0 && busIf1->getBusType().isValid() && !connection_->endpoint1()->isTypeLocked())
-    {
-        busIf1->setInterfaceMode(mode1_);
-        busIf1->getPortMaps()->clear();
-        busIf1->getPortMaps()->append(portMaps_);
-        connection_->endpoint1()->updateInterface();
+        if (busIf1 != 0 && busIf1->getBusType().isValid() && !connection_->endpoint1()->isTypeLocked())
+        {
+            busIf1->setInterfaceMode(mode1_);
+            busIf1->getPortMaps()->clear();
+            busIf1->getPortMaps()->append(portMaps_);
+            connection_->endpoint1()->updateInterface();
+        }
+
+        if (busIf2 != 0 && busIf2->getBusType().isValid() && !connection_->endpoint2()->isTypeLocked())
+        {
+            busIf2->setInterfaceMode(mode2_);
+            busIf2->getPortMaps()->clear();
+            busIf2->getPortMaps()->append(portMaps_);
+            connection_->endpoint2()->updateInterface();
+        }
+
+        diagram_->getDesign()->getInterconnections()->append(connection_->getInterconnection());
+        diagram_->getDesign()->addRoute(connection_->getRouteExtension());
+
     }
 
-    if (busIf2 != 0 && busIf2->getBusType().isValid() && !connection_->endpoint2()->isTypeLocked())
-    {
-        busIf2->setInterfaceMode(mode2_);
-        busIf2->getPortMaps()->clear();
-        busIf2->getPortMaps()->append(portMaps_);
-        connection_->endpoint2()->updateInterface();
-    }
-
-    diagram_->getDesign()->getInterconnections()->append(connection_->getInterconnection());
-    diagram_->getDesign()->addRoute(connection_->getRouteExtension());
-
-    diagram_->clearSelection();
-    connection_->setVisible(true);
-    connection_->setSelected(true);
     del_ = false;
 }
 
@@ -167,13 +167,15 @@ void ConnectionDeleteCommand::redo()
 
     // Disconnect the ends.
     connection_->setSelected(false);
+
+    diagram_->removeItem(connection_);
+
     connection_->disconnectEnds();
 
     // Remove the item from the scene.
     diagram_->getDesign()->getInterconnections()->removeOne(connection_->getInterconnection());
     diagram_->getDesign()->removeRoute(connection_->getRouteExtension());
 
-    diagram_->removeItem(connection_);
     del_ = true;
 
     // Execute child commands.

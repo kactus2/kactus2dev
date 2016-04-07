@@ -1,6 +1,13 @@
-/* 
- * 		filename: designwidget.cpp
- */
+//-----------------------------------------------------------------------------
+// File: designwidget.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: 
+// Date: 
+//
+// Description:
+// HWDesignWidget is used to edit and view one design
+//-----------------------------------------------------------------------------
 
 #include "HWDesignWidget.h"
 

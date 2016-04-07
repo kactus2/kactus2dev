@@ -76,26 +76,28 @@ private:
      *  Change connections.
      *
      *      @param [in] keepExistingComponent   Flag for existence checking.
+     *      @param [in] connectionNames         Names of the changed connections.
      *      @param [in] oldComponentItem        The replaced component.
      *      @param [in] newComponentItem        The new component.
      *      @param [in] diagram                 The containing design diagram.
      */
-    void changeConnections(bool keepExistingComponent, HWComponentItem* oldComponentItem,
-        HWComponentItem* newComponentItem, DesignDiagram* diagram);
+    void changeConnections(bool keepExistingComponent, QStringList& connectionNames,
+        HWComponentItem* oldComponentItem, HWComponentItem* newComponentItem, DesignDiagram* diagram);
 
     /*!
      *  Create exchange commands for connections between the end points.
      *
-     *      @param [in] oldEndpoint     The replaced end point.
-     *      @param [in] newEndpoint     The new end point.
+     *      @param [in] connectionNames     Names of the changed connections.
+     *      @param [in] oldEndpoint         The replaced end point.
+     *      @param [in] newEndpoint         The new end point.
      */
-    void createConnectionExchangeCommands(ConnectionEndpoint* oldEndpoint,
+    void createConnectionExchangeCommands(QStringList& connectionNames, ConnectionEndpoint* oldEndpoint,
         HWConnectionEndpoint* newEndpoint);
 
     /*!
      *  Create delete commands for connections in the selected end point.
      *
-     *      @param [in] connectionNames     Names of the deleted connections.
+     *      @param [in] connectionNames     Names of the changed connections.
      *      @param [in] deletedEndPoint     The selected end point.
      *      @param [in] diagram             The containing design diagram.
      */
