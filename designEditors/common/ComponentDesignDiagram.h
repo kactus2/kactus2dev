@@ -438,6 +438,15 @@ private:
     void updateComponentReplaceDragCursor(QPointF const& cursorPosition);
 
     /*!
+     *  Check if a component item is allowed in the column located at the selected position.
+     *
+     *      @param [in] cursorPosition  The selected position.
+     *
+     *      @return True, if the item is allowed in the column, false otherwise.
+     */
+    bool componentItemIsAllowedInColumnAtPosition (QPointF const& cursorPosition) const;
+
+    /*!
      *  Ends the component replace at the given position. If another component is in the given position,
      *  it is replaced with the component being dragged.
      *
