@@ -992,36 +992,27 @@ void ComponentDesignDiagram::updateComponentReplaceDragCursor(QPointF const& cur
 //-----------------------------------------------------------------------------
 bool ComponentDesignDiagram::componentItemIsAllowedInColumnAtPosition(QPointF const& cursorPosition) const
 {
-    QSharedPointer<ComponentInstance> instance = sourceComp_->getComponentInstance();
-    if (instance)
+    QSharedPointer<Component> draggedComponent = sourceComp_->componentModel();
+    if (draggedComponent)
     {
-        QSharedPointer<ConfigurableVLNVReference> componentVLNV = instance->getComponentRef();
-        if (componentVLNV)
+        ColumnTypes::ColumnItemType itemType = ColumnTypes::COMPONENT;
+
+        if (draggedComponent->isBridge())
         {
-            QSharedPointer<Document> libraryDocument = getLibraryInterface()->getModel(*componentVLNV);
-            QSharedPointer<Component> draggedComponent = libraryDocument.dynamicCast<Component>();
-            if (draggedComponent)
-            {
-                ColumnTypes::ColumnItemType itemType = ColumnTypes::COMPONENT;
-
-                if (draggedComponent->isBridge())
-                {
-                    itemType = ColumnTypes::BRIDGE;
-                }
-                else if (draggedComponent->isChannel())
-                {
-                    itemType = ColumnTypes::CHANNEL;
-                }
-                else if (draggedComponent->isBus())
-                {
-                    itemType = ColumnTypes::INTERFACE;
-                }
-
-                GraphicsColumn* column = getLayout()->findColumnAt(cursorPosition);
-                
-                return column->getColumnDesc()->getAllowedItems() & itemType;
-            }
+            itemType = ColumnTypes::BRIDGE;
         }
+        else if (draggedComponent->isChannel())
+        {
+            itemType = ColumnTypes::CHANNEL;
+        }
+        else if (draggedComponent->isBus())
+        {
+            itemType = ColumnTypes::INTERFACE;
+        }
+
+        GraphicsColumn* column = getLayout()->findColumnAt(cursorPosition);
+
+        return column->getColumnDesc()->getAllowedItems() & itemType;
     }
 
     return false;
@@ -1037,26 +1028,21 @@ void ComponentDesignDiagram::endComponentReplaceDrag(QPointF const& endpoint)
     
     if (componentItemIsAllowedInColumnAtPosition(endpoint))
     {
-        ComponentItem* destComp = 0;
-        QList<QGraphicsItem*> itemList = items(endpoint);
+        ComponentItem* destinationComponent = getTopmostComponent(endpoint);
 
-        if (!itemList.empty())
-        {
-            destComp = dynamic_cast<ComponentItem*>(itemList.back());
-        }
-
-        if (destComp == 0 || destComp == sourceComp_)
+        if (destinationComponent == 0 || destinationComponent == sourceComp_)
         {
             return;
         }
 
         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-            tr("Component instance '%1' is about to be switched in place with '%2'. Continue and replace?").arg(
-            destComp->name(), sourceComp_->name()), QMessageBox::Yes | QMessageBox::No, getParent());
+            tr("Component instance '%1' is about to be switched in place with '%2'. Continue and replace?").
+            arg(destinationComponent->name(), sourceComp_->name()),
+            QMessageBox::Yes | QMessageBox::No, getParent());
 
         if (msgBox.exec() == QMessageBox::Yes)
         {
-            replace(destComp, sourceComp_);
+            replace(destinationComponent, sourceComp_);
         }
     }
 }
