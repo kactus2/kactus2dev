@@ -34,6 +34,7 @@ private slots:
     void testReadVector();
     void testReadArray();
     void testVendorExtensions();
+    void testReadAttributesAndValue();
 };
 
 //-----------------------------------------------------------------------------
@@ -196,6 +197,34 @@ void tst_ParameterReader::testVendorExtensions()
     QSharedPointer<Parameter> testParameter = parameterReader.createParameterFrom(parameterElement);
 
     QCOMPARE(testParameter->getVendorExtensions()->size(), 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ParameterReader::testReadAttributesAndValue()
+//-----------------------------------------------------------------------------
+void tst_ParameterReader::testReadAttributesAndValue()
+{
+    QDomDocument document;
+    document.setContent(QString(
+        "<ipxact:parameter parameterId=\"id\" prompt=\"please define a value:\">"
+            "<ipxact:name>parameter1</ipxact:name>"
+            "<ipxact:value vendorAttribute=\"attributeValue\">parameterValue</ipxact:value>"
+        "</ipxact:parameter>"));
+
+    QDomElement parameterElement = document.firstChildElement();
+
+    ParameterReader parameterReader;
+    QSharedPointer<Parameter> testParameter = parameterReader.createParameterFrom(parameterElement);
+
+    QCOMPARE(testParameter->name(), QString("parameter1"));
+
+    QCOMPARE(testParameter->getAttributeNames().size(), 2);
+
+    QCOMPARE(testParameter->getValueId(), QString("id"));
+    QCOMPARE(testParameter->getAttribute("prompt"), QString("please define a value:"));    
+    
+    QCOMPARE(testParameter->getValue(), QString("parameterValue"));
+    QCOMPARE(testParameter->getValueAttribute("vendorAttribute"), QString("attributeValue"));
 }
 
 QTEST_APPLESS_MAIN(tst_ParameterReader)

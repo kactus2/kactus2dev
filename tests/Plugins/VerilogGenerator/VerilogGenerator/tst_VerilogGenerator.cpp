@@ -67,14 +67,17 @@ private slots:
     void testMirroredSlaveInterconnectionToSlaves();  
 
     void testAdhocConnectionBetweenComponentInstances();    
+    void testMultipleAdhocConnectionsBetweenComponentInstances();
     void testAdHocConnectionBetweenComponentInstancesWithExpressions();
     void testHierarchicalAdhocConnection();
     void testAdHocConnectionToUnknownInstanceIsNotWritten();
-
+    void testAdHocConnectionBetweenMultipleComponentInstances();
+    
     void testDescriptionAndVLNVIsPrintedAboveInstance();
     void testDescriptionAndVLNVIsPrintedAboveInstance_data();
 
     void testTopLevelModuleParametersAreWritten();
+    void testInstanceModuleParametersAreWritten();
 
 private:
 
@@ -1104,26 +1107,66 @@ void tst_VerilogGenerator::testAdhocConnectionBetweenComponentInstances()
 
     runGenerator();
 
-    verifyOutputContains("wire        enableAdHoc;");
+    verifyOutputContains("wire        enable_out_from_sender;");
     verifyOutputContains("wire [7:0]  dataAdHoc;");
 
     verifyOutputContains(
         "    TestSender sender(\n"
         "        // Interface: data_bus\n"
         "        .data_out            (dataAdHoc),\n"
-        "        .enable_out          (enableAdHoc)");
+        "        .enable_out          (enable_out_from_sender)");
 
     verifyOutputContains(
         "    TestReceiver receiver1(\n"
         "        // Interface: data_bus\n"
         "        .data_in             (dataAdHoc),\n"
-        "        .enable_in           (enableAdHoc)");
+        "        .enable_in           (enable_out_from_sender)");
 
     verifyOutputContains(
         "    TestReceiver receiver2(\n"
         "        // Interface: data_bus\n"
         "        .data_in             ( ),\n"
-        "        .enable_in           (enableAdHoc)");
+        "        .enable_in           (enable_out_from_sender)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testMultipleAdhocConnectionsBetweenComponentInstances()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testMultipleAdhocConnectionsBetweenComponentInstances()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    addSenderComponentToLibrary(senderVLNV, General::MASTER);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    addReceiverComponentToLibrary(receiverVLNV, General::SLAVE);
+    addInstanceToDesign("receiver1", receiverVLNV);
+    addInstanceToDesign("receiver2", receiverVLNV);
+
+    addAdhocConnection("sender_enable_to_receiver1_enable", "sender", "enable_out", "receiver1", "enable_in");
+    addAdhocConnection("sender_enable_to_receiver2_enable", "sender", "enable_out", "receiver2", "enable_in");
+
+    runGenerator();
+
+    verifyOutputContains("wire        enable_out_from_sender;");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_bus\n"
+        "        .data_out            ( ),\n"
+        "        .enable_out          (enable_out_from_sender)");
+
+    verifyOutputContains(
+        "    TestReceiver receiver1(\n"
+        "        // Interface: data_bus\n"
+        "        .data_in             ( ),\n"
+        "        .enable_in           (enable_out_from_sender)");
+
+    verifyOutputContains(
+        "    TestReceiver receiver2(\n"
+        "        // Interface: data_bus\n"
+        "        .data_in             ( ),\n"
+        "        .enable_in           (enable_out_from_sender)");
 }
 
 //-----------------------------------------------------------------------------
@@ -1171,22 +1214,22 @@ void tst_VerilogGenerator::testAdHocConnectionBetweenComponentInstancesWithExpre
 
     runGenerator();
 
-    verifyOutputContains("wire [10:0] enableAdHoc;");
+    verifyOutputContains("wire [10:0] enable_out_from_sender;");
 
     verifyOutputContains(
         "    TestSender sender(\n"
         "        // Interface: data_bus\n"
-        "        .enable_out          (enableAdHoc)");
+        "        .enable_out          (enable_out_from_sender)");
 
     verifyOutputContains(
         "    TestReceiver receiver1(\n"
         "        // Interface: data_bus\n"
-        "        .enable_in           (enableAdHoc[4:0]));\n");
+        "        .enable_in           (enable_out_from_sender[4:0]));\n");
 
     verifyOutputContains(
         "    TestReceiver receiver2(\n"
         "        // Interface: data_bus\n"
-        "        .enable_in           (enableAdHoc[4:0]));\n");
+        "        .enable_in           (enable_out_from_sender[4:0]));\n");
 }
 
 //-----------------------------------------------------------------------------
@@ -1288,6 +1331,73 @@ void tst_VerilogGenerator::testAdHocConnectionToUnknownInstanceIsNotWritten()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testAdHocConnectionBetweenMultipleComponentInstances()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testAdHocConnectionBetweenMultipleComponentInstances()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
+    senderPort->setLeftBound("7");
+    senderPort->setRightBound("0");
+    senderComponent->getPorts()->append(senderPort);
+
+    addInterfaceToComponent("data_bus", senderComponent);
+    senderComponent->getBusInterface("data_bus")->setInterfaceMode(General::MASTER);
+
+    mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
+
+    library_.addComponent(senderComponent);
+    addInstanceToDesign("sender", senderVLNV);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+
+    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in", DirectionTypes::IN));
+    receiverPort->setLeftBound("7");
+    receiverPort->setRightBound("0");
+    receiverComponent->getPorts()->append(receiverPort);
+
+    addInterfaceToComponent("data_bus", receiverComponent);
+    receiverComponent->getBusInterface("data_bus")->setInterfaceMode(General::SLAVE);
+    mapPortToInterface("data_in", "DATA", "data_bus", receiverComponent);
+
+    library_.addComponent(receiverComponent);
+    addInstanceToDesign("receiver1", receiverVLNV);
+    addInstanceToDesign("receiver2", receiverVLNV);
+
+    QSharedPointer<AdHocConnection> multiConnection(new AdHocConnection("data_from_sender"));
+
+    QSharedPointer<PortReference> startReference(new PortReference("data_out", "sender"));
+    QSharedPointer<PortReference> endReference1(new PortReference("data_in", "receiver1"));
+    QSharedPointer<PortReference> endReference2(new PortReference("data_in", "receiver2"));
+
+    multiConnection->getInternalPortReferences()->append(startReference);
+    multiConnection->getInternalPortReferences()->append(endReference1);
+    multiConnection->getInternalPortReferences()->append(endReference2);
+
+    design_->getAdHocConnections()->append(multiConnection);
+
+    runGenerator();
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_bus\n"
+        "        .data_out            (data_out_from_sender)");
+
+    verifyOutputContains(
+        "    TestReceiver receiver1(\n"
+        "        // Interface: data_bus\n"
+        "        .data_in             (data_out_from_sender)");
+
+    verifyOutputContains(
+        "    TestReceiver receiver2(\n"
+        "        // Interface: data_bus\n"
+        "        .data_in             (data_out_from_sender)");
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ComponentInstanceVerilogWriter::testDescriptionAndVLNVIsPrintedAboveInstance()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testDescriptionAndVLNVIsPrintedAboveInstance()
@@ -1367,6 +1477,46 @@ void tst_VerilogGenerator::testTopLevelModuleParametersAreWritten()
         "\n"
         "endmodule\n"
         ));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testInstanceModuleParametersAreWritten()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testInstanceModuleParametersAreWritten()
+{
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");    
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    library_.addComponent(senderComponent);
+    addInstanceToDesign("sender", senderVLNV);
+
+    QSharedPointer<View> activeView(new View());
+    activeView->setName("rtl");
+    activeView->setComponentInstantiationRef("instance1");
+
+    QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
+    moduleParameter->setValueId("parameterId");
+    moduleParameter->setName("moduleParameter");
+    moduleParameter->setValue("1");
+
+    QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
+    instantiation->getModuleParameters()->append(moduleParameter);
+
+    senderComponent->getComponentInstantiations()->append(instantiation);
+    senderComponent->getViews()->append(activeView);
+
+    QSharedPointer<ComponentInstance> senderInstance = design_->getComponentInstances()->first();
+    
+    QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
+    parameterOverride->setReferenceId("parameterId");
+    parameterOverride->setConfigurableValue("2");
+    senderInstance->getConfigurableElementValues()->append(parameterOverride);
+
+    runGenerator();
+
+    verifyOutputContains(
+        "    TestSender #(\n"
+        "        .moduleParameter     (2))\n"
+        "    sender();");
 }
 
 //-----------------------------------------------------------------------------

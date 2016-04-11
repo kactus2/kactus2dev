@@ -130,7 +130,7 @@ private:
      *      @param [in] connectedInterfaces     The list of currently connected interfaces.
      *      @param [in] primaryInterface        The selected primary interface.
      */
-    bool primaryInterfaceIsUnique(QList<QSharedPointer<ActiveInterface> > connectedInterfaces,
+    bool primaryInterfaceIsUnique(QList<QSharedPointer<ActiveInterface> > const& connectedInterfaces,
         QSharedPointer<ActiveInterface> primaryInterface) const;
 
     /*!
@@ -316,7 +316,7 @@ private:
      *
      *      @return The aligned port.
      */
-    QSharedPointer<PortAlignment> calculateMappedPortBounds(QSharedPointer<PortMap> containingMap, int portLeft,
+    PortAlignment calculateMappedPortBounds(QSharedPointer<PortMap> containingMap, int portLeft,
         int portRight, QSharedPointer<ExpressionParser> parser, QString logicalPortWidth) const;
 
     /*!
@@ -329,8 +329,8 @@ private:
      *
      *      @return True, if the ports can be directly connected,
      */
-    bool fullWidthConnectionIsValid(QSharedPointer<PortAlignment> topAlignment,
-        QSharedPointer<PortAlignment> instanceAlignment, int topWidth, int instanceWidth) const;
+    bool fullWidthConnectionIsValid(PortAlignment const& topAlignment,
+        PortAlignment const&instanceAlignment, int topWidth, int instanceWidth) const;
 
     /*!
      *  Parses all the ad-hoc connections in the design.
@@ -344,14 +344,89 @@ private:
      *
      *      @return True, if the ad-hoc connection is hierarchical, otherwise false.
      */
-    bool isHierarchicalAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection);
+    bool isHierarchicalAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection) const;
 
     /*!
      *  Adds port connection to all component instances connected by the given hierarchical ad-hoc connection.
      *
      *      @param [in] adHocConnection   The ad-hoc connection whose connected instances to map.
      */
-    void connectInstancePortsTopPort(QSharedPointer<AdHocConnection> adHocConnection);
+    void connectInstancePortsToTopPort(QSharedPointer<AdHocConnection> adHocConnection);
+
+    /*!
+     *  Gets the primary ports in all ad hoc connections. A primary port (direction out) is potentially 
+     *  connected to multiple secondary sides (in ports).
+     *
+     *      @return The primary ports in ad hoc connections.
+     */
+    QVector<QSharedPointer<PortReference> > findPrimaryPortsInAdHocConnections() const;
+
+    /*!
+     *  Finds the physical port the referenced component.
+     *
+     *      @param [in] portReference   The reference for the port to find.
+     *
+     *      @return The found physical port.
+     */
+    QSharedPointer<Port> findPhysicalPort(QSharedPointer<PortReference> portReference) const;
+
+    /*!
+     *  Checks if the given port reference is unique within the given references.
+     *
+     *      @param [in] reference           The reference to check.
+     *      @param [in] otherReferences     The set of references to find the given reference in.
+     *
+     *      @return True, if no item in otherReferences refers the same port, otherwise false.
+     */
+    bool isUniquePortReference(QSharedPointer<PortReference> reference, 
+        QVector<QSharedPointer<PortReference> > const& otherReferences) const;
+
+    /*!
+     *  Checks if the given port references refer the same port.
+     *
+     *      @param [in] firstPort   The first reference.
+     *      @param [in] secondPort  The second reference.
+     *
+     *      @return True, if the references are for the same port in the same component instance, otherwise false.
+     */
+    bool referencesTheSamePort(QSharedPointer<PortReference> firstPort, 
+        QSharedPointer<PortReference> secondPort) const;
+
+    /*!
+     *  Creates a wire for the given primary ad-hoc port and wires the connected ports to it.
+     *
+     *      @param [in] primaryPort   The primary (output) port to create the wire for.
+     */
+    void wireConnectedPorts(QSharedPointer<PortReference> primaryPort);
+
+    /*!
+     *  Finds the ad-hoc connection for the given port reference.
+     *
+     *      @param [in] primaryPort   The port reference whose ad-hoc connection to find.
+     *
+     *      @return The ad-hoc connection for the given port reference.
+     */
+    QSharedPointer<AdHocConnection> findAdHocConnectionForPort(QSharedPointer<PortReference> primaryPort) const;
+
+    /*!
+     *  Finds the ports connected to the given primary (output) port.
+     *
+     *      @param [in] primaryPort   The port whose opposing ports to find.
+     *
+     *      @return The ports connected to the given port.
+     */
+    QVector<QSharedPointer<PortReference> > findConnectedPorts(QSharedPointer<PortReference> primaryPort) const;
+
+     /*!
+      *  Connects the given port to the given wire.
+      *
+      *      @param [in] port       The port to connect to the wire.
+      *      @param [in] wireName   The name of the wire to connect.
+      *      @param [in] wireSize   The size of the wire to connect.
+      *
+      *      @return <Description>.
+      */
+     void connectPortToWire(QSharedPointer<PortReference> port, QString const& wireName, int wireSize);
 
     /*!
      *  Checks if a wire should be created to represent the given ad-hoc connection.
@@ -360,15 +435,7 @@ private:
      *
      *      @return True, if a wire should be created, otherwise false.
      */
-    bool shouldCreateWireForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection);
-
-    /*!
-     *  Creates a wire writer to represent the given ad-hoc connection and connects ports in 
-     *  the ad-hoc connection to the wire.
-     *
-     *      @param [in] adHocConnection   The ad-hoc connection to create as wire and to connect.
-     */
-    void createWireForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection);
+    bool shouldCreateWireForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection) const;
 
     /*!
      *  Finds the required size for a wire representing a given ad-hoc connection.
@@ -378,17 +445,7 @@ private:
      *      @return The size of the wire required to represent the ad-hoc connection.
      */
     int findWireSizeForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection) const;
-
-    /*!
-     *  Connects all ports referenced in an ad-hoc connection to the given wire name.
-     *
-     *      @param [in] adHocConnection     The ad-hoc connection whose referenced ports to connect.
-     *      @param [in] wireName            The name of the wire to connect.
-     *      @param [in] wireSize            The size of the wire.
-     */
-    void connectPortsInAdHocConnectionToWire(QSharedPointer<AdHocConnection> adHocConnection,
-        QString const& wireName, int wireSize);
-
+   
      /*!
       *  Adds the generated writers to the top writer in correct order.            
       */

@@ -31,6 +31,9 @@ public:
      */
     PortAlignment(int leftAlignment = 0, int rightAlignment = 0);
 
+    //! The copy constructor.
+    PortAlignment(PortAlignment const& other);
+
 	/*!
 	 *  The destructor.
 	*/
@@ -79,8 +82,6 @@ public:
     void setAlignmentValidity(bool validity);
 
 private:
-    //! Disable copying.
-    PortAlignment(PortAlignment const& other);
 
 	// Disable assignment.
     PortAlignment& operator=(PortAlignment const& rhs);

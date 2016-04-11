@@ -14,10 +14,21 @@
 //-----------------------------------------------------------------------------
 // Function: PortAlignment::PortAlignment()
 //-----------------------------------------------------------------------------
-PortAlignment::PortAlignment(int leftAlignment /* = 0 */, int rightAlignment /* = 0 */):
+PortAlignment::PortAlignment(int leftAlignment, int rightAlignment):
 leftAlignment_(leftAlignment),
-rightAlignment_(rightAlignment),
-validAlignment_(true)
+    rightAlignment_(rightAlignment),
+    validAlignment_(true)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAlignment::PortAlignment()
+//-----------------------------------------------------------------------------
+PortAlignment::PortAlignment(PortAlignment const& other):
+leftAlignment_(other.leftAlignment_),
+    rightAlignment_(other.rightAlignment_),
+    validAlignment_(other.validAlignment_)
 {
 
 }

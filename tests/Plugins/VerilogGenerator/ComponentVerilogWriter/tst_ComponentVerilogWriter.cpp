@@ -66,14 +66,12 @@ private slots:
 
     void testParameterizedModelParameter();
 
-    void testModuleParameterIsWrittenAfterModelParameter();
-
 private:
     void writeComponent(QString const& activeView = QString()); 
 
     void addPort(QString const& portName, int portSize, DirectionTypes::Direction direction);
 
-    void addModelParameter(QString const& name, QString const& value, QString description = "");
+    void addModuleParameter(QString const& name, QString const& value, QString const& description = "");
 
     void addInterface( QString const& interfaceName );
 
@@ -450,8 +448,8 @@ void tst_ComponentVerilogWriter::mapPortToInterface( QString const& portName, QS
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testComponentWithModelParameters()
 {
-    addModelParameter("freq", "5000",  "Description for freq.");
-    addModelParameter("dataWidth", "8");    
+    addModuleParameter("freq", "5000",  "Description for freq.");
+    addModuleParameter("dataWidth", "8");    
 
     writeComponent(component_->getViews()->first()->name());
 
@@ -465,9 +463,10 @@ void tst_ComponentVerilogWriter::testComponentWithModelParameters()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ComponentVerilogWriter::addModelParameter()
+// Function: tst_ComponentVerilogWriter::addModuleParameter()
 //-----------------------------------------------------------------------------
-void tst_ComponentVerilogWriter::addModelParameter(QString const& name, QString const& value, QString description)
+void tst_ComponentVerilogWriter::addModuleParameter(QString const& name, QString const& value, 
+    QString const& description)
 {
     if (component_->getComponentInstantiations()->isEmpty())
     {
@@ -494,7 +493,7 @@ void tst_ComponentVerilogWriter::addModelParameter(QString const& name, QString 
 void tst_ComponentVerilogWriter::testParametersPrecedePorts()
 {
     addPort("data", 8, DirectionTypes::OUT);
-    addModelParameter("dataWidth", "8");    
+    addModuleParameter("dataWidth", "8");    
 
     writeComponent(component_->getViews()->first()->name());
 
@@ -514,7 +513,7 @@ void tst_ComponentVerilogWriter::testParametersPrecedePorts()
 //-----------------------------------------------------------------------------
 void tst_ComponentVerilogWriter::testParametrizedPort()
 {
-    addModelParameter("dataWidth", "8");    
+    addModuleParameter("dataWidth", "8");    
     QString parameterId =
         component_->getComponentInstantiations()->first()->getModuleParameters()->first()->getValueId();
 
@@ -555,7 +554,7 @@ void tst_ComponentVerilogWriter::testParameterizedModelParameter()
     component_->getViews()->append(testView);
     component_->getComponentInstantiations()->append(instantiation);
 
-    addModelParameter("referer", "TARGET-ID");
+    addModuleParameter("referer", "TARGET-ID");
 
     writeComponent(component_->getViews()->first()->name());
 
@@ -568,30 +567,6 @@ void tst_ComponentVerilogWriter::testParameterizedModelParameter()
         "endmodule\n"));
 }
 
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentVerilogWriter::testModuleParameterIsWrittenAfterModelParameter()
-//-----------------------------------------------------------------------------
-void tst_ComponentVerilogWriter::testModuleParameterIsWrittenAfterModelParameter()
-{
-    QSharedPointer<View> activeView (new View("rtl"));
-    component_->getViews()->append(activeView);
-
-    addModelParameter("modelParameter", "0");
-
-    activeView->setComponentInstantiationRef(component_->getComponentInstantiations()->first()->name());
-
-    addModelParameter("moduleParameter1", "1");
-
-    writeComponent("rtl");
-
-    QCOMPARE(outputString_, QString(
-        "module TestComponent #(\n"
-        "    parameter                              modelParameter   = 0,\n"
-        "    parameter                              moduleParameter1 = 1\n"
-        ") ();\n"
-        "\n"
-        "endmodule\n"));
-}
 
 QTEST_APPLESS_MAIN(tst_ComponentVerilogWriter)
 
