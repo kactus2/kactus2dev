@@ -118,7 +118,8 @@ public slots:
     void updateVisibilities();
 
 signals:
-	//! \brief Emitted when contents of the model change
+
+	//! Emitted when contents of the model change.
 	void contentChanged();
 
 private:
@@ -126,9 +127,23 @@ private:
     AdHocModel(AdHocModel const& rhs);
     AdHocModel& operator=(AdHocModel const& rhs);
 
+    /*!
+     *  Check if an ad hoc port can be hidden.
+     *
+     *      @param [in] port    The selected ad hoc port.
+     *
+     *      @return True, if the selected ad hoc port can be hidden, otherwise false.
+     */
+    bool adHocPortIsRemovable(QSharedPointer<Port> port) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The component whose ad-hoc port visibility is being edited.
     AdHocEnabled* dataSource_;
 
+    //! The edit provider.
      QSharedPointer<IEditProvider> editProvider_;
 
 	//! The table that is displayed to the user.

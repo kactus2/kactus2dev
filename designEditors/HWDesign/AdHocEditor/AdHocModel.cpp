@@ -18,6 +18,7 @@
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/AdHocEnabled.h>
+#include <designEditors/HWDesign/HWConnectionEndpoint.h>
 
 #include <designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
 
@@ -101,6 +102,8 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
         return QVariant();
     }
 
+    QSharedPointer<Port> adhocPort = table_->at(index.row());
+
     if (role == Qt::DisplayRole)
     {
         if (index.column() == AdHocColumns::ADHOC_COL_NAME)
@@ -109,7 +112,7 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
         }
         else if (index.column() == AdHocColumns::ADHOC_COL_DIRECTION)
         {
-            return DirectionTypes::direction2Str(table_->at(index.row())->getDirection());
+            return DirectionTypes::direction2Str(adhocPort->getDirection());
         }
         else
         {
@@ -120,7 +123,7 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
     {
         if (index.column() == AdHocColumns::ADHOC_COL_VISIBILITY)
         {
-            if (dataSource_->isPortAdHocVisible(table_->at(index.row())->name()))
+            if (dataSource_->isPortAdHocVisible(adhocPort->name()))
             {
                 return Qt::Checked;
             }
@@ -132,6 +135,31 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
         else
         {
             return QVariant();
+        }
+    }
+
+    else if (role == Qt::ForegroundRole)
+    {
+        if (adHocPortIsRemovable(adhocPort))
+        {
+            return QColor(Qt::black);
+        }
+        else
+        {
+            return QColor(Qt::gray);
+        }
+    }
+
+    else if (role == Qt::ToolTipRole)
+    {
+        if (!adHocPortIsRemovable(adhocPort))
+        {
+            QString connectedText = QObject::tr("Connected ad hoc port cannot be disabled.");
+            return connectedText;
+        }
+        else
+        {
+            return QString();
         }
     }
 
@@ -211,12 +239,31 @@ Qt::ItemFlags AdHocModel::flags(const QModelIndex& index) const
 
     Qt::ItemFlags flags = Qt::ItemIsEnabled;
 
-    if (index.column() == AdHocColumns::ADHOC_COL_VISIBILITY)
+    QSharedPointer<Port> indexedPort = table_->at(index.row());
+    if (index.column() == AdHocColumns::ADHOC_COL_VISIBILITY && adHocPortIsRemovable(indexedPort))
     {
         flags |= Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
     }
 
     return flags;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocModel::isAdHocPortRemovable()
+//-----------------------------------------------------------------------------
+bool AdHocModel::adHocPortIsRemovable(QSharedPointer<Port> port) const
+{
+    HWConnectionEndpoint* endpoint = dataSource_->getDiagramAdHocPort(port->name());
+    if (endpoint)
+    {
+        if (!endpoint->getConnections().isEmpty() || 
+            (endpoint->getOffPageConnector() && !endpoint->getOffPageConnector()->getConnections().isEmpty()))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

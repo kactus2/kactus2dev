@@ -17,7 +17,9 @@
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::AdHocEnabled()
 //-----------------------------------------------------------------------------
-AdHocEnabled::AdHocEnabled() : component_(), portAdHocVisibilities_()
+AdHocEnabled::AdHocEnabled() :
+component_(),
+portAdHocVisibilities_()
 {
 }
 
