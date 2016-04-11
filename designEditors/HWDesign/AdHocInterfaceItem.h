@@ -61,6 +61,11 @@ public:
      */
     void updateInterface();
 
+	/*!
+	 *  Get the type of this graphics item.
+	 *
+     *      @return AdHoc interface item type.
+	 */
 	int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
@@ -112,9 +117,8 @@ public:
      *
      *      @param [in] other The other endpoint.
      *
-     *      @remarks Does not take existing connections into account but simply
-     *               validates whether a connection between the endpoints would be valid
-     *               in a general case.
+     *      @remarks Does not take existing connections into account but simply validates whether a connection 
+     *               between the endpoints would be valid in a general case.
      */
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
@@ -124,8 +128,7 @@ public:
     virtual bool isExclusive() const;
 
     /*! 
-     *  Returns the encompassing component. if this port represents
-     *  a bus interface on a component.
+     *  Returns the encompassing component. if this port represents a bus interface on a component.
      */
     virtual ComponentItem* encompassingComp() const;
 
@@ -157,6 +160,11 @@ public:
      */
     virtual bool isBus() const;
 
+    /*!
+     *  Set the direction for this ad hoc interface item.
+     *
+     *      @param [in] dir     The new item direction.
+     */
     void setDirection(QVector2D const& dir);
 
     /*!
@@ -183,12 +191,33 @@ public:
 
 protected:
 
+    /*!
+     *  Notifies item state changes.
+     *
+     *      @param [in] change  The change.
+     *      @param [in] value   The new value.
+     */
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
 
+    /*!
+     *  Event for mouse press.
+     *
+     *      @param [in] event   The pressed mouse button.
+     */
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
+    /*!
+     *  Event for mouse move.
+     *
+     *      @param [in] event   The movement event.
+     */
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 
+    /*!
+     *  Event for mouse button release.
+     *
+     *      @param [in] event   The release event.
+     */
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:

@@ -2069,11 +2069,6 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
             }
         }
 
-        if (adHocConnection->isOffPage())
-        {
-            topAdHocPort = topAdHocPort->getOffPageConnector();
-        }
-
         foreach (QSharedPointer<PortReference> internalPort, *adHocConnection->getInternalPortReferences())
         {
             createConnectionForAdHocPorts(adHocConnection, internalPort, externalPort, topAdHocPort);
@@ -2111,6 +2106,8 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
     if (route->isOffpage())
     {
         adHocPort = static_cast<HWConnectionEndpoint*>(adHocPort->getOffPageConnector());
+
+        primaryPortItem = primaryPortItem->getOffPageConnector();
     }
 
     // Create the ad-hoc connection graphics item.

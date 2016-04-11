@@ -67,8 +67,8 @@ public:
      */
     void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
 
-    /*! Update the graphics to match the IP-XACT bus interface
-     *
+    /*!
+     *  Update the graphics to match the IP-XACT bus interface
      */
     void updateInterface();
 
@@ -106,30 +106,30 @@ public:
     // HWConnectionEndpoint implementation.
     //-----------------------------------------------------------------------------
 
-    /*! Returns the name of this port
-     *
+    /*!
+     *  Returns the name of this port
      */
     virtual QString name() const;
 
-	/*! Set the name for the interface.
+	/*!
+     *  Set the name for the interface.
 	 *
 	 *      @param [in] name The name to set for the interface.
-	 *
-	*/
+	 */
 	virtual void setName(const QString& name);
 
-	/*! Get the description of the interface.
-	 *
+	/*!
+     *  Get the description of the interface.
 	 *
 	 *      @return QString contains the description.
-	*/
+	 */
 	virtual QString description() const;
 
-	/*! Set the description for the interface.
+	/*!
+     *  Set the description for the interface.
 	 *
 	 *      @param [in] description Contains the description to set.
-	 *
-	*/
+	 */
 	virtual void setDescription(const QString& description);
 
     /*!
@@ -153,9 +153,8 @@ public:
      *
      *      @param [in] other The other endpoint.
      *
-     *      @remarks Does not take existing connections into account but simply
-     *               validates whether a connection between the endpoints would be valid
-     *               in a general case.
+     *      @remarks Does not take existing connections into account but simply validates whether a connection 
+     *               between the endpoints would be valid in a general case.
      */
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
@@ -169,11 +168,11 @@ public:
      */
     virtual ComponentItem* encompassingComp() const;
 
-	/*! Returns pointer to the top component that owns this interface.
-	 *
+	/*!
+     *  Returns pointer to the top component that owns this interface.
 	 *
 	 *      @return The component to which this interface belongs to.
-	*/
+	 */
 	virtual QSharedPointer<Component> getOwnerComponent() const;
 
     /*! 
@@ -189,8 +188,8 @@ public:
      */
     virtual QSharedPointer<Port> getPort() const;
 
-    /*! Returns true if the port represents a hierarchical connection
-     *
+    /*!
+     *  Returns true if the port represents a hierarchical connection
      */
     virtual bool isHierarchical() const;
 
@@ -199,13 +198,18 @@ public:
      */
     virtual bool isBus() const;
 
+    /*!
+     *  Set the direction for the bus interface item.
+     *
+     *      @param [in] dir     The new direction.
+     */
     void setDirection(QVector2D const& dir);
 
-	/*! Set the interface mode for the end point.
+	/*!
+     *  Set the interface mode for the end point.
 	 *
 	 *      @param [in] mode The interface mode to set.
-	 *
-	*/
+	 */
 	virtual void setInterfaceMode(General::InterfaceMode mode);
 
     /*!
@@ -230,12 +234,34 @@ signals:
     void errorMessage(const QString& errorMessage);
 
 protected:
+    
+    /*!
+     *  Notifies item state changes.
+     *
+     *      @param [in] change  The change.
+     *      @param [in] value   The new value.
+     */
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
 
+    /*!
+     *  Event for mouse press.
+     *
+     *      @param [in] event   The pressed mouse button.
+     */
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
+    /*!
+     *  Event for mouse move.
+     *
+     *      @param [in] event   The movement event.
+     */
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
 
+    /*!
+     *  Event for mouse button release.
+     *
+     *      @param [in] event   The release event.
+     */
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
 

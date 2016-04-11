@@ -45,14 +45,14 @@ AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component,
     QSharedPointer<Port> port, QSharedPointer<Kactus2Placeholder> dataGroup,
     QGraphicsItem *parent):
 HWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
-    nameLabel_("", this),
-    component_(component),
-    port_(port),
-    dataGroup_(dataGroup),
-    oldColumn_(0),
-    oldPos_(),
-    oldInterfacePositions_(),
-    offPageConnector_(new OffPageConnectorItem(this))
+nameLabel_("", this),
+component_(component),
+port_(port),
+dataGroup_(dataGroup),
+oldColumn_(0),
+oldPos_(),
+oldInterfacePositions_(),
+offPageConnector_()
 {
     Q_ASSERT_X(port, "AdHocInterfaceItem constructor", "Null port pointer given as parameter");
 
@@ -121,6 +121,7 @@ HWConnectionEndpoint(parent, QVector2D(1.0f, 0.0f)),
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemSendsScenePositionChanges);
 
+    offPageConnector_ = new OffPageConnectorItem(this);
     offPageConnector_->setPos(0.0, -GridSize * 3);
     offPageConnector_->setFlag(ItemStacksBehindParent);
     offPageConnector_->setVisible(false);

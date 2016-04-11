@@ -64,7 +64,7 @@ dataGroup_(dataGroup),
 oldColumn_(0),
 oldPos_(),
 oldInterfacePositions_(),
-offPageConnector_(new OffPageConnectorItem(this)),
+offPageConnector_(),
 portsCopied_(false)
 {
     setTemporary(busIf == 0);
@@ -107,6 +107,7 @@ portsCopied_(false)
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemSendsScenePositionChanges);
 
+    offPageConnector_ = new OffPageConnectorItem(this);
     offPageConnector_->setPos(0.0, -GridSize * 3);
     offPageConnector_->setFlag(ItemStacksBehindParent);
     offPageConnector_->setVisible(false);
