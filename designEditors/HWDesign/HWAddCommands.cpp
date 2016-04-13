@@ -88,18 +88,17 @@ void PortAddCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ConnectionAddCommand::ConnectionAddCommand()
 //-----------------------------------------------------------------------------
-ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene,
-    HWConnection* conn,
-    QSharedPointer<Design> design,
-    QUndoCommand* parent) : QUndoCommand(parent),
-    connection_(conn),
-    design_(design),
-    mode1_(General::MASTER),
-    mode2_(General::MASTER),
-    portMaps_(),
-    scene_(scene),
-    del_(false),
-    portsCopied_(false)
+ConnectionAddCommand::ConnectionAddCommand(QGraphicsScene* scene, HWConnection* conn,
+                                           QSharedPointer<Design> design, QUndoCommand* parent) :
+QUndoCommand(parent),
+connection_(conn),
+design_(design),
+mode1_(General::MASTER),
+mode2_(General::MASTER),
+portMaps_(),
+scene_(scene),
+del_(false),
+portsCopied_(false)
 
 {
     QSharedPointer<GenericEditProvider> editProvider = 
@@ -199,31 +198,46 @@ void ConnectionAddCommand::redo()
     // Connect the ends and set the interface modes and port map for the hierarchical end point.
     if (connection_->connectEnds())
     {
-        QSharedPointer<BusInterface> busIf1 = connection_->endpoint1()->getBusInterface();
-        QSharedPointer<BusInterface> busIf2 = connection_->endpoint2()->getBusInterface();
+        changeHierarchicalInterfaceBusReference();
 
-        if (busIf1 != 0 && busIf1->getBusType().isValid() && !connection_->endpoint1()->isTypeLocked())
-        {
-            busIf1->setInterfaceMode(mode1_);
-            busIf1->getPortMaps()->clear();
-            busIf1->getPortMaps()->append(portMaps_);
-            connection_->endpoint1()->updateInterface();
-        }
-
-        if (busIf2 != 0 && busIf2->getBusType().isValid() && !connection_->endpoint2()->isTypeLocked())
-        {
-            busIf2->setInterfaceMode(mode2_);
-            busIf2->getPortMaps()->clear();
-            busIf2->getPortMaps()->append(portMaps_);
-            connection_->endpoint2()->updateInterface();
-        }
+//         QSharedPointer<BusInterface> busIf1 = connection_->endpoint1()->getBusInterface();
+//         QSharedPointer<BusInterface> busIf2 = connection_->endpoint2()->getBusInterface();
 
         design_->getInterconnections()->append(connection_->getInterconnection());
         design_->addRoute(connection_->getRouteExtension());
-
     }
 
     del_ = false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWAddCommands::changeHierarchicalInterfaceBusReference()
+//-----------------------------------------------------------------------------
+void ConnectionAddCommand::changeHierarchicalInterfaceBusReference()
+{
+    QSharedPointer<Interconnection> interconnection = connection_->getInterconnection();
+    if (interconnection)
+    {
+        if (!interconnection->getHierInterfaces()->isEmpty())
+        {
+            QSharedPointer<HierInterface> topInterface = interconnection->getHierInterfaces()->first();
+            QSharedPointer<ActiveInterface> startInterface = interconnection->getStartInterface();
+
+            ConnectionEndpoint* firstPoint = connection_->endpoint1();
+            ConnectionEndpoint* secondPoint = connection_->endpoint2();
+            ComponentItem* firstComponent = firstPoint->encompassingComp();
+
+            if (firstComponent != 0 && firstComponent->name() == startInterface->getComponentReference() &&
+                firstPoint->getBusInterface()->name() == startInterface->getBusReference())
+            {
+                topInterface->setBusReference(secondPoint->getBusInterface()->name());
+            }
+            else
+            {
+                topInterface->setBusReference(firstPoint->getBusInterface()->name());
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

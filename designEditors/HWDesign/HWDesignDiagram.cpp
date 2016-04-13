@@ -1428,8 +1428,11 @@ QSharedPointer<QUndoCommand> HWDesignDiagram::createAddCommandForConnection(Grap
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const& pos)
 {
+    QString draftInterfaceName = createNameForHierarchicalDraftInterface(QString("bus"));
+
     QSharedPointer<BusInterface> busif(new BusInterface());
-    
+    busif->setName(draftInterfaceName);
+
     QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(busif->name()));
     getDesign()->getVendorExtensions()->append(dataGroup);
 
@@ -1470,6 +1473,34 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     }
 
     getEditProvider()->addCommand(cmd);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createNameForHierarchicalDraftInterface()
+//-----------------------------------------------------------------------------
+QString HWDesignDiagram::createNameForHierarchicalDraftInterface(QString const& defaultName) const
+{
+    QString newName = defaultName;
+
+    unsigned int busCount = 0;
+    QStringList busNames;
+
+    foreach (QGraphicsItem* graphicItem, items())
+    {
+        BusInterfaceItem* interfaceItem = dynamic_cast<BusInterfaceItem*>(graphicItem);
+        if (interfaceItem)
+        {
+            busNames.append(interfaceItem->name());
+        }
+    }
+
+    while (busNames.contains(newName))
+    {
+        busCount++;
+        newName = "bus_" + QString::number(busCount);
+    }
+
+    return newName;
 }
 
 //-----------------------------------------------------------------------------
@@ -1990,8 +2021,18 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
             QSharedPointer<Kactus2Placeholder> adHocExtension = positionExtension.dynamicCast<Kactus2Placeholder>();
             QString portName = adHocExtension->getAttributeValue("portName");
 
-            AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(), 
-                getEditedComponent()->getPort(portName), adHocExtension, 0);
+            QSharedPointer<Port> adHocPort = getEditedComponent()->getPort(portName);
+
+            AdHocInterfaceItem* adHocIf;
+
+            if (adHocPort)
+            {
+                adHocIf = new AdHocInterfaceItem(getEditedComponent(), adHocPort, adHocExtension, 0);
+            }
+            else
+            {
+                adHocIf = createMissingHierarchicalAdHocPort(portName, adHocExtension);
+            }
 
             // Add the ad-hoc interface to the first column where it is allowed to be placed.
             GraphicsColumn* column = getLayout()->findColumnAt(adHocIf->scenePos());
@@ -2005,6 +2046,20 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
             }
         }
     }  
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createMissingHierarchicalAdHocPort()
+//-----------------------------------------------------------------------------
+AdHocInterfaceItem* HWDesignDiagram::createMissingHierarchicalAdHocPort(QString const& portName,
+    QSharedPointer<Kactus2Placeholder> adHocExtension)
+{
+    QSharedPointer<Port> missingPort (new Port(portName));
+
+    AdHocInterfaceItem* missingInterface =
+        new AdHocInterfaceItem(getEditedComponent(), missingPort, adHocExtension, 0);
+
+    return missingInterface;
 }
 
 //-----------------------------------------------------------------------------

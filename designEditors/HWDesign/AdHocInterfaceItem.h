@@ -222,6 +222,17 @@ protected:
 
 private:
 
+    /*!
+     *  Check if the ad hoc port is valid.
+     *
+     *      @return True, if the port is valid, otherwise false.
+     */
+    bool adhocPortIsValid() const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! The name label.
 	QGraphicsTextItem nameLabel_;
 

@@ -153,49 +153,52 @@ void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDe
 {
     foreach (QSharedPointer<ComponentInstance> currentInstance, *currentDesign->getComponentInstances())
     {
-        VLNV componentReference = *currentInstance->getComponentRef();
-        QSharedPointer<Component> component = libraryHandler_->getModel(componentReference).dynamicCast<Component>();
-
-        QString instanceViewName = currentDesignConfiguration->getActiveView(currentInstance->getInstanceName());
-
-        QTreeWidgetItem* instanceItem (new QTreeWidgetItem(parentItem));
-        instanceItem->setText(ViewConfigurerColumns::ITEM_VLNV, componentReference.toString(":"));
-        instanceItem->setText(ViewConfigurerColumns::INSTANCE_NAME, currentInstance->getInstanceName());
-
-        if (instanceViewName.isEmpty())
+        if (!currentInstance->isDraft())
         {
-            instanceViewName = ViewConfigurerColumns::NOVIEWTEXT;
+            VLNV componentReference = *currentInstance->getComponentRef();
+            QSharedPointer<Component> component = libraryHandler_->getModel(componentReference).dynamicCast<Component>();
 
-            QBrush foreGroundBrush(Qt::red);
-            instanceItem->setForeground(ViewConfigurerColumns::INSTANCE_VIEW, foreGroundBrush);
-        }
+            QString instanceViewName = currentDesignConfiguration->getActiveView(currentInstance->getInstanceName());
 
-        instanceItem->setText(ViewConfigurerColumns::INSTANCE_VIEW, instanceViewName);
-        instanceItem->setText(ViewConfigurerColumns::INSTANCE_ID, currentInstance->getUuid());
+            QTreeWidgetItem* instanceItem (new QTreeWidgetItem(parentItem));
+            instanceItem->setText(ViewConfigurerColumns::ITEM_VLNV, componentReference.toString(":"));
+            instanceItem->setText(ViewConfigurerColumns::INSTANCE_NAME, currentInstance->getInstanceName());
 
-        instanceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
-
-        instanceItem->setIcon(ViewConfigurerColumns::ITEM_VLNV, QIcon(":/icons/common/graphics/hw-component.png"));
-
-        if (usedHierarchicalComponentVLNVS_.contains(instanceItem->text(ViewConfigurerColumns::ITEM_VLNV)))
-        {
-            instanceItem->setText(ViewConfigurerColumns::INSTANCE_VIEW, ViewConfigurerColumns::CYCLICCOMPONENTTEXT);
-
-            QBrush foreGroundBrush (Qt::red);
-            instanceItem->setForeground(ViewConfigurerColumns::INSTANCE_VIEW, foreGroundBrush);
-            instanceItem->setForeground(ViewConfigurerColumns::ITEM_VLNV, foreGroundBrush);
-            instanceItem->setForeground(ViewConfigurerColumns::INSTANCE_NAME, foreGroundBrush);
-            instanceItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-        }
-        else
-        {
-            usedHierarchicalComponentVLNVS_.append(instanceItem->text(ViewConfigurerColumns::ITEM_VLNV));
-
-            checkInstanceDesign(component, instanceViewName, instanceItem);
-
-            if (usedHierarchicalComponentVLNVS_.size() > 1)
+            if (instanceViewName.isEmpty())
             {
-                usedHierarchicalComponentVLNVS_.removeAll(instanceItem->text(ViewConfigurerColumns::ITEM_VLNV));
+                instanceViewName = ViewConfigurerColumns::NOVIEWTEXT;
+
+                QBrush foreGroundBrush(Qt::red);
+                instanceItem->setForeground(ViewConfigurerColumns::INSTANCE_VIEW, foreGroundBrush);
+            }
+
+            instanceItem->setText(ViewConfigurerColumns::INSTANCE_VIEW, instanceViewName);
+            instanceItem->setText(ViewConfigurerColumns::INSTANCE_ID, currentInstance->getUuid());
+
+            instanceItem->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+
+            instanceItem->setIcon(ViewConfigurerColumns::ITEM_VLNV, QIcon(":/icons/common/graphics/hw-component.png"));
+
+            if (usedHierarchicalComponentVLNVS_.contains(instanceItem->text(ViewConfigurerColumns::ITEM_VLNV)))
+            {
+                instanceItem->setText(ViewConfigurerColumns::INSTANCE_VIEW, ViewConfigurerColumns::CYCLICCOMPONENTTEXT);
+
+                QBrush foreGroundBrush (Qt::red);
+                instanceItem->setForeground(ViewConfigurerColumns::INSTANCE_VIEW, foreGroundBrush);
+                instanceItem->setForeground(ViewConfigurerColumns::ITEM_VLNV, foreGroundBrush);
+                instanceItem->setForeground(ViewConfigurerColumns::INSTANCE_NAME, foreGroundBrush);
+                instanceItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+            }
+            else
+            {
+                usedHierarchicalComponentVLNVS_.append(instanceItem->text(ViewConfigurerColumns::ITEM_VLNV));
+
+                checkInstanceDesign(component, instanceViewName, instanceItem);
+
+                if (usedHierarchicalComponentVLNVS_.size() > 1)
+                {
+                    usedHierarchicalComponentVLNVS_.removeAll(instanceItem->text(ViewConfigurerColumns::ITEM_VLNV));
+                }
             }
         }
     }

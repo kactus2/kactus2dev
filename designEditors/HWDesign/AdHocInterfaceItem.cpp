@@ -151,13 +151,33 @@ void AdHocInterfaceItem::updateInterface()
 {
     HWConnectionEndpoint::updateInterface();
 
-    setBrush(QBrush(Qt::black));
+    if (adhocPortIsValid())
+    {
+        setBrush(QBrush(Qt::black));
+    }
+    else
+    {
+        setBrush(QBrush(Qt::red));
+    }
 
     nameLabel_.setHtml("<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + port_->name() + "</div>");
 
     setLabelPosition();
 
     offPageConnector_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocInterfaceItem::adhocPortIsValid()
+//-----------------------------------------------------------------------------
+bool AdHocInterfaceItem::adhocPortIsValid() const
+{
+    if (component_->getPort(port_->name()))
+    {
+        return true;
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

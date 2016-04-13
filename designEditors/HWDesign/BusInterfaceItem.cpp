@@ -65,7 +65,8 @@ oldColumn_(0),
 oldPos_(),
 oldInterfacePositions_(),
 offPageConnector_(),
-portsCopied_(false)
+portsCopied_(false),
+oldName_()
 {
     setTemporary(busIf == 0);
 
@@ -296,6 +297,13 @@ void BusInterfaceItem::undefine(bool removePorts)
 
     busInterface_->setBusType(VLNV());
 
+    if (!oldName_.isEmpty())
+    {
+        setName(oldName_);
+    }
+
+    busInterface_->setInterfaceMode(General::INTERFACE_MODE_COUNT);
+
     // Remove the bus interface from the top-level component and destroy it.
     component_->getBusInterfaces()->removeOne(component_->getBusInterface(busInterface_->name()));
 }
@@ -401,6 +409,8 @@ bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
         return true;
     }
 
+    oldName_ = busInterface_->name();
+
     // Determine the name for the interface.
     QString newBusIfName = other->getBusInterface()->name();
     unsigned int index = 0;
@@ -414,16 +424,17 @@ bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
     // Create a new bus interface for the diagram interface.
     QSharedPointer<BusInterface> newBusIf(new BusInterface());
 
+    setName(newBusIfName);
+
     newBusIf->setName(newBusIfName);
     newBusIf->setInterfaceMode(other->getBusInterface()->getInterfaceMode());
     newBusIf->setBusType(other->getBusInterface()->getBusType());
 
-    QSharedPointer<AbstractionType> abstraction(new AbstractionType());
-    abstraction->setAbstractionRef(QSharedPointer<ConfigurableVLNVReference>(
-        new ConfigurableVLNVReference(*other->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef())));
+    QSharedPointer<AbstractionType> abstraction (
+        new AbstractionType(*other->getBusInterface()->getAbstractionTypes()->first()));
 
-    busInterface_->getAbstractionTypes()->clear();
-    busInterface_->getAbstractionTypes()->append(abstraction);
+    newBusIf->getAbstractionTypes()->clear();
+    newBusIf->getAbstractionTypes()->append(abstraction);
 
     QSharedPointer<GenericEditProvider> editProvider = 
         static_cast<DesignDiagram*>(scene())->getEditProvider().dynamicCast<GenericEditProvider>();

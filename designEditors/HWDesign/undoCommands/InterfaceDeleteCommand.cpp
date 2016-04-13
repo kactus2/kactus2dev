@@ -35,20 +35,29 @@
 // Function: InterfaceDeleteCommand::InterfaceDeleteCommand()
 //-----------------------------------------------------------------------------
 InterfaceDeleteCommand::InterfaceDeleteCommand(DesignDiagram* diagram, BusInterfaceItem* interface,
-                                               bool removePorts, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      interface_(interface),
-      busIf_(interface_->getBusInterface()),
-      busType_(interface_->getBusInterface()->getBusType()),
-      absType_(interface_->getBusInterface()->getAbstractionTypes()->first()),
-      ports_(),
-      mode_(interface_->getBusInterface()->getInterfaceMode()),
-      portMaps_(*interface_->getBusInterface()->getPortMaps()),
-      parent_(static_cast<GraphicsColumn*>(interface->parentItem())),
-      diagram_(diagram),
-      del_(true),
-      removePorts_(removePorts)
+                                               bool removePorts, QUndoCommand* parent):
+QUndoCommand(parent),
+interface_(interface),
+busIf_(interface_->getBusInterface()),
+busType_(interface_->getBusInterface()->getBusType()),
+absType_(),
+ports_(),
+mode_(interface_->getBusInterface()->getInterfaceMode()),
+portMaps_(),
+parent_(static_cast<GraphicsColumn*>(interface->parentItem())),
+diagram_(diagram),
+del_(true),
+removePorts_(removePorts)
 {
+    if (!busIf_->getAbstractionTypes()->isEmpty())
+    {
+        absType_ = busIf_->getAbstractionTypes()->first();
+        if (!busIf_->getPortMaps()->isEmpty())
+        {
+            portMaps_ = *busIf_->getPortMaps();
+        }
+    }
+
     if (removePorts_)
     {
         // Create copies of the related ports and remove commands for them.
@@ -102,11 +111,7 @@ void InterfaceDeleteCommand::undo()
     if (busIf_ != 0)
     {
         busIf_->setInterfaceMode(mode_);
-        busIf_->getPortMaps()->clear();
-        busIf_->getPortMaps()->append(portMaps_);
         busIf_->setBusType(busType_);
-        busIf_->getAbstractionTypes()->removeFirst();
-        busIf_->getAbstractionTypes()->prepend(absType_);
 
         interface_->define(busIf_, false, ports_);
 

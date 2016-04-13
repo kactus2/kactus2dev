@@ -128,6 +128,11 @@ private:
     ConnectionAddCommand(ConnectionAddCommand const& rhs);
     ConnectionAddCommand& operator=(ConnectionAddCommand const& rhs);
 
+    /*!
+     *  Change the bus reference of an interconnection containing a hierarchical interface.
+     */
+    void changeHierarchicalInterfaceBusReference();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

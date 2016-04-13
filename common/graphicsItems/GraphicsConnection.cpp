@@ -172,6 +172,8 @@ bool GraphicsConnection::connectEnds()
 
     updatePosition();
     name_ = createDefaultName();
+    setName(name_);
+
     return true;
 }
 

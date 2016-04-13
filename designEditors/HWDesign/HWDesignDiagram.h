@@ -51,6 +51,7 @@ class LibraryInterface;
 class PortReference;
 class VLNV;
 class InterfaceGraphicsData;
+class Kactus2Placeholder;
 
 //-----------------------------------------------------------------------------
 //! HWDesignDiagram is a graphical view to a design.
@@ -449,6 +450,15 @@ private:
     virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos);
 
     /*!
+     *  Create a new name for a hierarchical draft interface.
+     *
+     *      @param [in] defaultName     The default name of the interface.
+     *
+     *      @return The new name for the hierarchical draft interface.
+     */
+    QString createNameForHierarchicalDraftInterface(QString const& defaultName) const;
+
+    /*!
      *  Handler for draft tool clicks. Creates a draft component instance or a draft interface according to the
      *  clicked position.
      *
@@ -568,6 +578,17 @@ private:
      */
     void createHierachicalAdHocPorts(QSharedPointer<Design> design);
     
+    /*!
+     *  Create a missing hierarchical ad hoc port.
+     *
+     *      @param [in] portName        The name of the missing port.
+     *      @param [in] adHocExtension  The extension containing information of the port.
+     *
+     *      @return The interface item for the missing interface.
+     */
+    AdHocInterfaceItem* createMissingHierarchicalAdHocPort(QString const& portName,
+        QSharedPointer<Kactus2Placeholder> adHocExtension); 
+
     /*!
      *  Creates a graphics item for an ad-hoc interconnection and adds it to the diagram.
      *

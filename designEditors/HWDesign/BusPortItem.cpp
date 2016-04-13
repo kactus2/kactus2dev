@@ -164,12 +164,6 @@ void BusPortItem::updateInterface()
     {
         setBrush(QBrush(Qt::red));
     }
-    // Draft interface.
-    else if (!busInterface_->getBusType().isValid() ||
-        busInterface_->getInterfaceMode() == General::INTERFACE_MODE_COUNT)
-    {
-        setBrush(QBrush(Qt::black));
-    }
     else if (busInterface_->getInterfaceMode() == General::MASTER)
     {
         setBrush(QBrush(KactusColors::MASTER_INTERFACE));
@@ -200,7 +194,7 @@ void BusPortItem::updateInterface()
     }
     else
     {
-        setBrush(QBrush(Qt::red));
+        setBrush(QBrush(Qt::black));
     }
 
     // Determine the bus direction.
@@ -302,7 +296,7 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
                 General::InterfaceMode mode = otherBusIf->getInterfaceMode();
                 // Set a compatible interface mode. If the other end point is a hierarchical one,
                 // the same interface mode injects automatically. Otherwise the proper interface mode must
-                // be determined/asked based on the other bus interface.                
+                // be determined/asked based on the other bus interface.
                 if (!getModeAndPorts(other, mode, newPorts, newPortMaps))
                 {
                     return false;
@@ -352,6 +346,8 @@ void BusPortItem::onDisconnect(ConnectionEndpoint const*)
         busInterface_->getAbstractionTypes()->clear();
         busInterface_->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(new AbstractionType())); 
         busInterface_->getPortMaps()->clear();
+        busInterface_->setInterfaceMode(General::INTERFACE_MODE_COUNT);
+
         if (!oldName_.isEmpty())
         {
             busInterface_->setName(oldName_);
