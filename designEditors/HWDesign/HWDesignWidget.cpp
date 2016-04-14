@@ -26,6 +26,8 @@
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
 #include <designEditors/HWDesign/AdHocInterfaceItem.h>
+#include <designEditors/HWDesign/AdHocPortItem.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <designEditors/HWDesign/undoCommands/ColumnDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h>
@@ -595,12 +597,14 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 
             getEditProvider()->addCommand(parentCommand);
         }
-        
         else if (type == AdHocInterfaceItem::Type)
         {
             deleteSelectedAdhocInterfaces(selectedItems);
         }
-
+        else if (type == AdHocPortItem::Type)
+        {
+            deleteSelectedAdHocPorts(selectedItems);
+        }
         else if (type == StickyNote::Type)
         {
             removeSelectedNotes();
@@ -645,6 +649,41 @@ void HWDesignWidget::deleteSelectedAdhocInterfaces(QList<QGraphicsItem*> selecte
         parentCommand->redo();
 
         getEditProvider()->addCommand(parentCommand);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::deleteSelectedAdHocPorts()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::deleteSelectedAdHocPorts(QList<QGraphicsItem*> selectedItems)
+{
+    QList<AdHocPortItem*> adhocDeleteList;
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        AdHocPortItem* adHocItem = static_cast<AdHocPortItem*>(selected);
+        if (adHocItem && !adHocItem->adHocPortExists())
+        {
+            adhocDeleteList.append(adHocItem);
+        }
+    }
+
+    if (!adhocDeleteList.isEmpty())
+    {
+        HWComponentItem* containingItem = dynamic_cast<HWComponentItem*>(adhocDeleteList.first()->parentItem());
+        if (containingItem)
+        {
+            getDiagram()->clearSelection();
+
+            QSharedPointer<QUndoCommand> parentCommand (new QUndoCommand());
+            foreach (AdHocPortItem* portItem, adhocDeleteList)
+            {
+                new AdHocVisibilityChangeCommand(containingItem, portItem->name(), false, parentCommand.data());
+            }
+
+            parentCommand->redo();
+
+            getEditProvider()->addCommand(parentCommand);
+        }
     }
 }
 

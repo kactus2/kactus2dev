@@ -194,6 +194,13 @@ public:
 	 */
     void shortenNameLabel(qreal width);
 
+    /*!
+     *  Check if an ad hoc port exists in the containing component.
+     *
+     *      @return True, if the port exists in the containing component, otherwise false.
+     */
+    bool adHocPortExists() const;
+
 protected:
     virtual QVariant itemChange(GraphicsItemChange change,
                                 const QVariant &value);
@@ -204,6 +211,10 @@ protected:
 
 private:
     
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! The name label.
 	QGraphicsTextItem nameLabel_;
 

@@ -158,7 +158,10 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
     if (visible)
     {
         QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
-        Q_ASSERT(adhocPort != 0);
+        if (!adhocPort)
+        {
+            adhocPort = QSharedPointer<Port>(new Port(portName));
+        }
 
         AdHocPortItem* port = getAdHocPort(portName);
         if (!port)
@@ -678,6 +681,7 @@ void HWComponentItem::positionAdHocPortTerminals()
     QMap<QString, QPointF> instancePositions = getComponentInstance()->getAdHocPortPositions();
 
     // Parse port ad-hoc visibilities.
+    /*
     foreach (QSharedPointer<Port> adhocPort, *componentModel()->getPorts())
     {
         if (isPortAdHocVisible(adhocPort->name()))
@@ -700,6 +704,26 @@ void HWComponentItem::positionAdHocPortTerminals()
                 addPortToSideWithLessPorts(port);
             }
         }
+    }*/
+
+    QMapIterator<QString, QPointF> positionIterator(instancePositions);
+    while(positionIterator.hasNext())
+    {
+        positionIterator.next();
+
+        QString portName = positionIterator.key();
+        QPointF portPosition = positionIterator.value();
+
+        QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
+        if (!adhocPort)
+        {
+            adhocPort = QSharedPointer<Port>(new Port(portName));
+        }
+
+        AdHocPortItem* portItem = new AdHocPortItem(adhocPort, this);
+        portItem->setPos(portPosition);
+
+        addPortToSideByPosition(portItem);
     }
 }
 

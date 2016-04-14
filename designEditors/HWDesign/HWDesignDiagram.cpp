@@ -1442,11 +1442,14 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     QSharedPointer<BusInterface> busif(new BusInterface());
     busif->setName(draftInterfaceName);
 
+    QPointF newPosition = snapPointToGrid(pos);
+
     QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(busif->name()));
+    dataGroup->setPosition(newPosition);
     getDesign()->getVendorExtensions()->append(dataGroup);
 
     BusInterfaceItem* newItem = new BusInterfaceItem(getLibraryInterface(), getEditedComponent(), busif, dataGroup);
-    newItem->setPos(snapPointToGrid(pos));
+    newItem->setPos(newPosition);
 
     connect(newItem, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
