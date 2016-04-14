@@ -229,8 +229,7 @@ QList< QSharedPointer<PortMap> > BusInterfaceDialog::getPortMaps()
             QString physicalName = portsModel_->data(index,Qt::DisplayRole).toString();
 
             QSharedPointer<PortMap> generated(new PortMap(*portMap));
-            QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort());
-            physicalPort->name_ = physicalName;
+            QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort(physicalName));
 
             generated->setPhysicalPort(physicalPort);
             portMaps_.append(generated);

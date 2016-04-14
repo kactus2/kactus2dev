@@ -492,10 +492,8 @@ void InterfaceEditor::onPortMapChanged()
 		QString logicalPortName = mappings_.item(i, 0)->text();
 		QString physicalPortName = mappings_.item(i, 1)->text();
 
-        QSharedPointer<PortMap::LogicalPort> logicalPort (new PortMap::LogicalPort());
-        logicalPort->name_ = logicalPortName;
-        QSharedPointer<PortMap::PhysicalPort> physicalPort (new PortMap::PhysicalPort());
-        physicalPort->name_ = physicalPortName;
+        QSharedPointer<PortMap::LogicalPort> logicalPort (new PortMap::LogicalPort(logicalPortName));
+        QSharedPointer<PortMap::PhysicalPort> physicalPort (new PortMap::PhysicalPort(physicalPortName));
 
 		QSharedPointer<PortMap> portMap(new PortMap);
         portMap->setLogicalPort(logicalPort);

@@ -51,7 +51,7 @@ void SplashScreen::drawContents(QPainter *painter)
     font.setBold(true);
     painter->setFont(font);
 
-    painter->drawText(240, 240, tr("Version %1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
+    painter->drawText(240, 240, tr("Version %1.%2.%3 RC2 %4-bit").arg(QString::number(VERSION_MAJOR),
                                                                   QString::number(VERSION_MINOR),
                                                                   QString::number(VERSION_BUILDNO),
                                                                   QString::number(bits)));
@@ -61,7 +61,7 @@ void SplashScreen::drawContents(QPainter *painter)
     painter->setFont(font);    
  
     painter->drawText(QRectF(5, 240, 590, 160), Qt::AlignCenter,
-        QString::fromLatin1("Copyright 2010-2015 Tampere University of Technology,\n" 
+        QString::fromLatin1("Copyright 2010-2016 Tampere University of Technology,\n" 
                             "Korkeakoulunkatu 10, FI-33720 Tampere, Finland\n"
                             "http://funbase.cs.tut.fi\n"
                             "kactus2@cs.tut.fi\n" 

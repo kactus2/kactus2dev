@@ -30,8 +30,6 @@ proxy_(this)
 	// items can not be dragged
 	view_.setItemsDraggable(false);
 
-	view_.setProperty("mandatoryField", true);
-
 	// set source model for proxy
 	proxy_.setSourceModel(&model_);
 	// set proxy to be the source for the view

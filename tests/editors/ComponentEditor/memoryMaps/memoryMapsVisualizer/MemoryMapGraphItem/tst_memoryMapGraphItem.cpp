@@ -18,9 +18,9 @@
 #include <editors/ComponentEditor/common/NullParser.h>
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 
-#include <IPXACTmodels/addressblock.h>
-#include <IPXACTmodels/memorymap.h>
-#include <IPXACTmodels/memorymapitem.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/MemoryBlockBase.h>
 
 class tst_MemoryMapGraphItem : public QObject
 {
@@ -56,7 +56,7 @@ private slots:
     void testExpressions();
 
 private:
-    MemoryMapGraphItem* createMemoryMapItem(QSharedPointer<MemoryMap> memoryMap);
+    MemoryMapGraphItem* createMemoryBlockBase(QSharedPointer<MemoryMap> memoryMap);
 
     QSharedPointer<AddressBlock> createAddressBlock(QString const& name, QString const& baseAddress, QString const& range, int bitWidth);
 
@@ -80,9 +80,9 @@ void tst_MemoryMapGraphItem::testConstructor()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
     memoryMap->setName("testMap");
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QCOMPARE(memoryMapItem->name(), QString("testMap"));
     QCOMPARE(memoryMapItem->getOffset(), quint64(0));
@@ -105,15 +105,15 @@ void tst_MemoryMapGraphItem::testMemoryMapWithAddressBlock()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
     memoryMap->setName("testMap");
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> addressBlock = createAddressBlock("testAddressBlock", "8", "1", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(addressBlock);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
     
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -145,17 +145,17 @@ void tst_MemoryMapGraphItem::testMemoryMapWithAddressBlock()
 void tst_MemoryMapGraphItem::testMemoryMapWithConsecutiveAddressBlocks()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> firstBlock = createAddressBlock("firstAddressBlock", "0", "1", 8);
     QSharedPointer<AddressBlock> secondBlock = createAddressBlock("secondAddressBlock", "1", "1", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(firstBlock);
     addressBlocks.append(secondBlock);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
 
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -189,17 +189,17 @@ void tst_MemoryMapGraphItem::testMemoryMapWithConsecutiveAddressBlocks()
 void tst_MemoryMapGraphItem::testGapBetweenTwoAddressBlocks()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> firstBlock = createAddressBlock("firstAddressBlock", "0", "1", 8);
     QSharedPointer<AddressBlock> lastBlock = createAddressBlock("lastAddressBlock", "2", "1", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(firstBlock);
     addressBlocks.append(lastBlock);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
 
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -244,17 +244,17 @@ void tst_MemoryMapGraphItem::testGapBetweenTwoAddressBlocks()
 void tst_MemoryMapGraphItem::testPartiallyOverlappingAddressBlocks()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> firstBlock = createAddressBlock("firstAddressBlock", "0", "2", 8);
     QSharedPointer<AddressBlock> secondBlock = createAddressBlock("secondAddressBlock", "1", "2", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(firstBlock);
     addressBlocks.append(secondBlock);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
 
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -298,17 +298,17 @@ void tst_MemoryMapGraphItem::testPartiallyOverlappingAddressBlocks()
 void tst_MemoryMapGraphItem::testFullyOverlappingAddressBlocks()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> firstBlock = createAddressBlock("firstAddressBlock", "0", "1", 8);
     QSharedPointer<AddressBlock> secondBlock = createAddressBlock("secondAddressBlock", "0", "1", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(firstBlock);
     addressBlocks.append(secondBlock);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
 
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -344,19 +344,19 @@ void tst_MemoryMapGraphItem::testMultipleBlocksOverlapping()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
     memoryMap->setName("testMap");
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> largeBlock = createAddressBlock("largeAddressBlock", "0", "4", 8);
     QSharedPointer<AddressBlock> firstOverlappingBlock = createAddressBlock("firstOverlap", "1", "1", 8);
     QSharedPointer<AddressBlock> seconOverlappingBlock = createAddressBlock("secondOverlap", "3", "1", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(largeBlock);
     addressBlocks.append(firstOverlappingBlock);
     addressBlocks.append(seconOverlappingBlock);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
 
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -407,19 +407,19 @@ void tst_MemoryMapGraphItem::testTwoBlocksCompletelyOverlappingThird()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
     memoryMap->setName("testMap");
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> firstBlock = createAddressBlock("firstAddressBlock", "0", "2", 8);
     QSharedPointer<AddressBlock> overlappedBlock = createAddressBlock("overlappedBlock", "1", "2", 8);
     QSharedPointer<AddressBlock> lastBlock = createAddressBlock("secondAddressBlock", "2", "2", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(firstBlock);
     addressBlocks.append(overlappedBlock);
     addressBlocks.append(lastBlock);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
 
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -479,19 +479,19 @@ void tst_MemoryMapGraphItem::testTwoOverlappingBlocksInsideThrid()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
     memoryMap->setName("testMap");
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> largeAddressBlock = createAddressBlock("containerBlock", "0", "4", 8);
     QSharedPointer<AddressBlock> firstOverlappingBlock = createAddressBlock("firstOverlap", "1", "2", 8);
     QSharedPointer<AddressBlock> secondOverlappingBlock = createAddressBlock("secondOverlap", "2", "2", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(largeAddressBlock);
     addressBlocks.append(firstOverlappingBlock);
     addressBlocks.append(secondOverlappingBlock);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
 
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -541,19 +541,19 @@ void tst_MemoryMapGraphItem::testTwoOverlappingBlocksInsideThrid()
 void tst_MemoryMapGraphItem::testIdenticalBlocksOverlappingThird()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> uniqueBlock = createAddressBlock("unique", "0", "2", 8);
     QSharedPointer<AddressBlock> twin1 = createAddressBlock("firstTwin", "1", "2", 8);
     QSharedPointer<AddressBlock> twin2 = createAddressBlock("secondTwin", "1", "2", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(uniqueBlock);
     addressBlocks.append(twin1);
     addressBlocks.append(twin2);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
 
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -607,19 +607,19 @@ void tst_MemoryMapGraphItem::testIdenticalBlocksOverlappingThird()
 void tst_MemoryMapGraphItem::testConsecutiveBlocksInsideThird()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> containerBlock = createAddressBlock("container", "0", "5", 8);
     QSharedPointer<AddressBlock> firstInsideBlock = createAddressBlock("firstInsider", "1", "2", 8);
     QSharedPointer<AddressBlock> secondInsideBlock = createAddressBlock("secondInsider", "3", "2", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(containerBlock);
     addressBlocks.append(firstInsideBlock);
     addressBlocks.append(secondInsideBlock);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
 
-    MemoryMapGraphItem* memoryMapItem = createMemoryMapItem(memoryMap);
+    MemoryMapGraphItem* memoryMapItem = createMemoryBlockBase(memoryMap);
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -666,18 +666,17 @@ void tst_MemoryMapGraphItem::testConsecutiveBlocksInsideThird()
 void tst_MemoryMapGraphItem::testExpressions()
 {
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
-    memoryMap->setAddressUnitBits(8);
+    memoryMap->setAddressUnitBits("8");
 
     QSharedPointer<AddressBlock> parametrizedBlock = createAddressBlock("container", "'h2", "'h2+'h2", 8);
 
-    QList<QSharedPointer<MemoryMapItem> > addressBlocks;
+    QList<QSharedPointer<MemoryBlockBase> > addressBlocks;
     addressBlocks.append(parametrizedBlock);
-    memoryMap->setItems(addressBlocks);
+    memoryMap->getMemoryBlocks()->append(addressBlocks);
 
     QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
 
-    MemoryMapGraphItem* memoryMapItem = new MemoryMapGraphItem(memoryMap, memoryMap, 0);
-
+    MemoryMapGraphItem* memoryMapItem = new MemoryMapGraphItem(memoryMap, memoryMap, expressionParser, 0);
 
     AddressBlockGraphItem* parametrizedItem = new AddressBlockGraphItem(parametrizedBlock, expressionParser, memoryMapItem);
     memoryMapItem->addChild(parametrizedItem);
@@ -688,11 +687,12 @@ void tst_MemoryMapGraphItem::testExpressions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_MemoryMapGraphItem::createMemoryMapItem()
+// Function: tst_MemoryMapGraphItem::createMemoryBlockBase()
 //-----------------------------------------------------------------------------
-MemoryMapGraphItem* tst_MemoryMapGraphItem::createMemoryMapItem(QSharedPointer<MemoryMap> memoryMap)
+MemoryMapGraphItem* tst_MemoryMapGraphItem::createMemoryBlockBase(QSharedPointer<MemoryMap> memoryMap)
 {
-    MemoryMapGraphItem* memoryMapItem = new MemoryMapGraphItem(memoryMap, memoryMap, 0);
+    QSharedPointer<ExpressionParser> expressionParser(new SystemVerilogExpressionParser());
+    MemoryMapGraphItem* memoryMapItem = new MemoryMapGraphItem(memoryMap, memoryMap, expressionParser, 0);
     memoryMapItem->refresh();
 
     return memoryMapItem;
@@ -708,7 +708,7 @@ QSharedPointer<AddressBlock> tst_MemoryMapGraphItem::createAddressBlock(QString 
     addressBlock->setName(name);
     addressBlock->setBaseAddress(baseAddress);
     addressBlock->setRange(range);
-    addressBlock->setWidth(bitWidth);
+    addressBlock->setWidth(QString::number(bitWidth));
 
     return addressBlock;
 }

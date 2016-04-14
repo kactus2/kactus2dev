@@ -1839,7 +1839,7 @@ ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer
 //-----------------------------------------------------------------------------
 SWInterfaceItem* SystemDesignDiagram::getSWInterfaceItem(QString const& interfaceName) const
 {
-    SWInterfaceItem* endPoint;
+    SWInterfaceItem* endPoint = 0;
 
     foreach (QGraphicsItem* graphicsItem, items())
     {

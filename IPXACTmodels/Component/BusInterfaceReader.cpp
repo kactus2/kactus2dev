@@ -254,10 +254,10 @@ void BusinterfaceReader::readPortMaps(QDomElement const& portMapsElement,
 void BusinterfaceReader::readLogicalPort(QDomElement const& logicalPortElement, 
     QSharedPointer<PortMap> portMap) const
 {
-	QSharedPointer<PortMap::LogicalPort> logicalPort(new PortMap::LogicalPort());
-
     QDomElement nameElement = logicalPortElement.firstChildElement("ipxact:name");
-    logicalPort->name_ = XmlUtils::removeWhiteSpace(nameElement.firstChild().nodeValue());
+    QString portName = XmlUtils::removeWhiteSpace(nameElement.firstChild().nodeValue());
+
+    QSharedPointer<PortMap::LogicalPort> logicalPort(new PortMap::LogicalPort(portName));
 
     QDomElement rangeElement = logicalPortElement.firstChildElement("ipxact:range");
     if (!rangeElement.isNull())
@@ -282,10 +282,9 @@ void BusinterfaceReader::readPhysicalPort(QDomElement const& physicalPortElement
         return;
     }
 
-	QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort());
-
     QDomElement nameElement = physicalPortElement.firstChildElement("ipxact:name");
-    physicalPort->name_ = XmlUtils::removeWhiteSpace(nameElement.firstChild().nodeValue());
+    QString portName = XmlUtils::removeWhiteSpace(nameElement.firstChild().nodeValue());
+	QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort(portName));
 
     QDomElement partSelectElement = physicalPortElement.firstChildElement("ipxact:partSelect");
     if (!partSelectElement.isNull())

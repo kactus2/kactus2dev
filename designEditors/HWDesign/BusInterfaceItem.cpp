@@ -852,8 +852,9 @@ bool BusInterfaceItem::clonePortMaps(QSharedPointer<BusInterface> busIf, Connect
         // Duplicate and add the port map to the bus interface.
         QSharedPointer<PortMap> newPortMap(new PortMap(*portMap));
 
-        QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort);
-        physicalPort->name_ = nameMappings.value(portMap->getPhysicalPort()->name_);
+        QString portName = nameMappings.value(portMap->getPhysicalPort()->name_);
+        QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort(portName));
+
         newPortMap->setPhysicalPort(physicalPort);
 
         newPortMaps.append(newPortMap);

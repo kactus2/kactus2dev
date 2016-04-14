@@ -812,14 +812,13 @@ QSharedPointer<PortMap> BitMappingModel::createPortMapForPin(General::PortBounds
     }
 
     QSharedPointer<PortMap> map(new PortMap());
-    QSharedPointer<PortMap::LogicalPort> logical(new PortMap::LogicalPort());
-    logical->name_ = logicalPort_;
+    QSharedPointer<PortMap::LogicalPort> logical(new PortMap::LogicalPort(logicalPort_));
     QSharedPointer<Range> logicalRange(new Range(QString::number(logLeft), QString::number(logRight)));    
     logical->range_ = logicalRange;
     map->setLogicalPort(logical);
 
-    QSharedPointer<PortMap::PhysicalPort> physical(new PortMap::PhysicalPort());
-    physical->name_ = pin.portName_;
+    QSharedPointer<PortMap::PhysicalPort> physical(new PortMap::PhysicalPort(pin.portName_));
+
     QSharedPointer<PartSelect> physicalRange(new PartSelect(QString::number(physLeft), QString::number(physRight)));
     physical->partSelect_ = physicalRange;
     map->setPhysicalPort(physical);

@@ -544,12 +544,11 @@ void BusIfPortmapTab::mapPorts(QString const& physicalPort, QString const& logic
     int logicalSize = getLogicalSize(logicalPort);
 
     QSharedPointer<PortMap> portMap(new PortMap());
-    QSharedPointer<PortMap::PhysicalPort> physical(new PortMap::PhysicalPort());
-    physical->name_ = physicalPort;
+
+    QSharedPointer<PortMap::PhysicalPort> physical(new PortMap::PhysicalPort(physicalPort));
     portMap->setPhysicalPort(physical);
 
-    QSharedPointer<PortMap::LogicalPort> logical(new PortMap::LogicalPort());
-    logical->name_ = logicalPort;
+    QSharedPointer<PortMap::LogicalPort> logical(new PortMap::LogicalPort(logicalPort));
     portMap->setLogicalPort(logical);
 
     if (logicalSize > 0)

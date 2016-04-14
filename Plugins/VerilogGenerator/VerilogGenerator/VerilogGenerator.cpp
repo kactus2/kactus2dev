@@ -363,13 +363,19 @@ QPair<int, int> VerilogGenerator::logicalBoundsInInstance(QString const& instanc
     QSharedPointer<Component> instanceComponent = getComponentForInstance(instanceName);
     if (instanceComponent)
     {
+        QSharedPointer<ComponentParameterFinder> instanceFinder(new ComponentParameterFinder(instanceComponent));
+        IPXactSystemVerilogParser instanceParser(instanceFinder);
+
         if (portMap->getLogicalPort() && portMap->getLogicalPort()->range_)
         {
-            QSharedPointer<ComponentParameterFinder> instanceFinder(new ComponentParameterFinder(instanceComponent));
-            IPXactSystemVerilogParser instanceParser(instanceFinder);
-
             bounds.first = instanceParser.parseExpression(portMap->getLogicalPort()->range_->getLeft()).toInt();
             bounds.second = instanceParser.parseExpression(portMap->getLogicalPort()->range_->getRight()).toInt();
+        }
+        else if(portMap->getPhysicalPort() && instanceComponent->hasPort(portMap->getPhysicalPort()->name_))
+        {
+            QSharedPointer<Port> physicalPort = instanceComponent->getPort(portMap->getPhysicalPort()->name_);
+            bounds.first = instanceParser.parseExpression(physicalPort->getLeftBound()).toInt();
+            bounds.second = instanceParser.parseExpression(physicalPort->getRightBound()).toInt();
         }
     }
 

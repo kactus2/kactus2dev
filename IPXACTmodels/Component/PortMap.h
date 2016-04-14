@@ -38,7 +38,7 @@ public:
 		QSharedPointer<Range> range_;
 
 		//! The default constructor.
-		IPXACTMODELS_EXPORT  LogicalPort() {}
+		IPXACTMODELS_EXPORT LogicalPort(QString const& name = QString()): name_(name) {}
 	};
 
 	//! The physical port of the port map.
@@ -51,7 +51,7 @@ public:
 		QSharedPointer<PartSelect> partSelect_;
 
 		//! The default constructor.
-		IPXACTMODELS_EXPORT  PhysicalPort() {}
+		IPXACTMODELS_EXPORT PhysicalPort(QString const& name = QString()): name_(name) {}
 	};
 
     //! Default constructor

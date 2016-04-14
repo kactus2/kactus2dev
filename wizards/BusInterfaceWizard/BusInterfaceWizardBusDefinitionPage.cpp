@@ -321,8 +321,8 @@ void BusInterfaceWizardBusEditorPage::createPortMaps()
                             QString::number(lowerLogical)));
                         portMap->setLogicalPort(logicalPort);
 
-                        QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort());
-                        physicalPort->name_ = port;
+                        QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort(port));
+ 
                         physicalPort->partSelect_ = 
                             QSharedPointer<PartSelect>(new PartSelect(QString::number(portWidth - 1),
                             QStringLiteral("0")));
