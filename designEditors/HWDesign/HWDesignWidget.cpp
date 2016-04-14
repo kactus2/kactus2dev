@@ -25,12 +25,15 @@
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
+#include <designEditors/HWDesign/AdHocInterfaceItem.h>
+
 #include <designEditors/HWDesign/undoCommands/ColumnDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/PortDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h>
+#include <designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
 
 #include <common/graphicsItems/GraphicsColumn.h>
 #include <common/graphicsItems/GraphicsColumnLayout.h>
@@ -592,6 +595,12 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 
             getEditProvider()->addCommand(parentCommand);
         }
+        
+        else if (type == AdHocInterfaceItem::Type)
+        {
+            deleteSelectedAdhocInterfaces(selectedItems);
+        }
+
         else if (type == StickyNote::Type)
         {
             removeSelectedNotes();
@@ -604,6 +613,38 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
     else
     {
         TabDocument::keyPressEvent(event);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::deleteSelectedAdhocInterfaces()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::deleteSelectedAdhocInterfaces(QList<QGraphicsItem*> selectedItems)
+{
+    QList<AdHocInterfaceItem*> adhocDeleteList;
+
+    foreach (QGraphicsItem* selected, selectedItems)
+    {
+        AdHocInterfaceItem* adhocItem = static_cast<AdHocInterfaceItem*>(selected);
+        if (adhocItem && !adhocItem->adhocPortIsValid())
+        {
+            adhocDeleteList.append(adhocItem);
+        }
+    }
+
+    if (!adhocDeleteList.isEmpty())
+    {
+        getDiagram()->clearSelection();
+
+        QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
+        foreach (AdHocInterfaceItem* interfaceItem, adhocDeleteList)
+        {
+            new AdHocVisibilityChangeCommand(getDiagram(), interfaceItem->name(), false, parentCommand.data());
+        }
+
+        parentCommand->redo();
+
+        getEditProvider()->addCommand(parentCommand);
     }
 }
 

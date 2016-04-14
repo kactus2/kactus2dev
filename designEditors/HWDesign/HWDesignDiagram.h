@@ -583,11 +583,12 @@ private:
      *
      *      @param [in] portName        The name of the missing port.
      *      @param [in] adHocExtension  The extension containing information of the port.
+     *      @param [in] parentItem      The parent item of the missing ad hoc port.
      *
      *      @return The interface item for the missing interface.
      */
     AdHocInterfaceItem* createMissingHierarchicalAdHocPort(QString const& portName,
-        QSharedPointer<Kactus2Placeholder> adHocExtension); 
+        QSharedPointer<Kactus2Placeholder> adHocExtension, QGraphicsItem* parentItem = (QGraphicsItem*)0);
 
     /*!
      *  Creates a graphics item for an ad-hoc interconnection and adds it to the diagram.

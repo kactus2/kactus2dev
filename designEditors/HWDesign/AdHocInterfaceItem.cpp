@@ -490,3 +490,11 @@ void AdHocInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         oldColumn_ = 0;
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: AdHocInterfaceItem::getDataGroup()
+//-----------------------------------------------------------------------------
+QSharedPointer<Kactus2Placeholder> AdHocInterfaceItem::getDataGroup() const
+{
+    return dataGroup_;
+}

@@ -188,6 +188,20 @@ public:
 	 *  Set the position of the name label.
 	 */
 	void setLabelPosition();
+    
+    /*!
+     *  Check if the ad hoc port is valid.
+     *
+     *      @return True, if the port is valid, otherwise false.
+     */
+    bool adhocPortIsValid() const;
+
+    /*!
+     *  Get the visibility data group of the item.
+     *
+     *      @return The visibility data group of the item.
+     */
+    QSharedPointer<Kactus2Placeholder> getDataGroup() const;
 
 protected:
 
@@ -221,13 +235,6 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-
-    /*!
-     *  Check if the ad hoc port is valid.
-     *
-     *      @return True, if the port is valid, otherwise false.
-     */
-    bool adhocPortIsValid() const;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -283,8 +283,17 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
         QSharedPointer<Kactus2Placeholder> adhocData(new Kactus2Placeholder("kactus2:adHocVisible"));
         adhocGroup->addToGroup(adhocData);
 
-        AdHocInterfaceItem* adHocIf = new AdHocInterfaceItem(getEditedComponent(),
-            getEditedComponent()->getPort(portName), adhocData, 0);
+        AdHocInterfaceItem* adHocIf;
+
+        QSharedPointer<Port> adhocPort = getEditedComponent()->getPort(portName);
+        if (adhocPort)
+        {
+            adHocIf = new AdHocInterfaceItem(getEditedComponent(), adhocPort, adhocData, 0);
+        }
+        else
+        {
+            adHocIf = createMissingHierarchicalAdHocPort(portName, adhocData, 0);
+        }
 
         // Add the ad-hoc interface to the first column where it is allowed to be placed.
         getLayout()->addItem(adHocIf);
@@ -2031,7 +2040,7 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
             }
             else
             {
-                adHocIf = createMissingHierarchicalAdHocPort(portName, adHocExtension);
+                adHocIf = createMissingHierarchicalAdHocPort(portName, adHocExtension, 0);
             }
 
             // Add the ad-hoc interface to the first column where it is allowed to be placed.
@@ -2052,12 +2061,12 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
 // Function: HWDesignDiagram::createMissingHierarchicalAdHocPort()
 //-----------------------------------------------------------------------------
 AdHocInterfaceItem* HWDesignDiagram::createMissingHierarchicalAdHocPort(QString const& portName,
-    QSharedPointer<Kactus2Placeholder> adHocExtension)
+    QSharedPointer<Kactus2Placeholder> adHocExtension, QGraphicsItem* parentItem /*= (QGraphicsItem*)0*/)
 {
     QSharedPointer<Port> missingPort (new Port(portName));
 
     AdHocInterfaceItem* missingInterface =
-        new AdHocInterfaceItem(getEditedComponent(), missingPort, adHocExtension, 0);
+        new AdHocInterfaceItem(getEditedComponent(), missingPort, adHocExtension, parentItem);
 
     return missingInterface;
 }

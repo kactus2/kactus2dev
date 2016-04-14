@@ -46,6 +46,17 @@ void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<QStrin
             portAdHocVisibilities_.insert(adhocPort->name(), visible);
         }
     }
+
+    QMapIterator<QString, bool> visibilityIterator(portAdHocVisibilities);
+    while (visibilityIterator.hasNext())
+    {
+        visibilityIterator.next();
+
+        if (!portAdHocVisibilities_.contains(visibilityIterator.key()))
+        {
+            portAdHocVisibilities_.insert(visibilityIterator.key(), visibilityIterator.value());
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

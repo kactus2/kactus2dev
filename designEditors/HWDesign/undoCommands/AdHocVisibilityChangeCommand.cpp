@@ -17,11 +17,10 @@
 
 #include <designEditors/HWDesign/AdHocEnabled.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
-#include <designEditors/HWDesign/HWConnection.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
+#include <designEditors/HWDesign/AdHocConnectionItem.h>
 
-#include <designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
-#include <designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h>
+#include <designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand()
@@ -46,16 +45,30 @@ newVisibility_(newVisibility)
 
             foreach (GraphicsConnection* connection, port->getConnections())
             {
-                new ConnectionDeleteCommand(static_cast<DesignDiagram*>(port->scene()), 
-                    static_cast<HWConnection*>(connection), this);
+                createConnectionDeleteCommand(connection);
             }
 
             foreach (GraphicsConnection* connection, port->getOffPageConnector()->getConnections())
             {
-                new ConnectionDeleteCommand(static_cast<DesignDiagram*>(port->scene()), 
-                    static_cast<HWConnection*>(connection), this);
+                createConnectionDeleteCommand(connection);
             }
         }        
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocVisibilityChangeCommand::createConnectionDeleteCommand()
+//-----------------------------------------------------------------------------
+void AdHocVisibilityChangeCommand::createConnectionDeleteCommand(GraphicsConnection* connection)
+{
+    DesignDiagram* adHocDiagram = dynamic_cast<DesignDiagram*>(dataSource_);
+    if (adHocDiagram)
+    {
+        AdHocConnectionItem* adHocConnection = dynamic_cast<AdHocConnectionItem*>(connection);
+        if (adHocConnection)
+        {
+            new AdHocConnectionDeleteCommand(adHocDiagram, adHocConnection, this);
+        }
     }
 }
 

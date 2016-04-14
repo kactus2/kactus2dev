@@ -16,6 +16,7 @@
 #include <QUndoCommand>
 
 class AdHocEnabled;
+class GraphicsConnection;
 
 //-----------------------------------------------------------------------------
 //! Undo command for changing port adhoc visibility in design diagram.
@@ -31,8 +32,8 @@ public:
      *      @param [in] newVisiblity  The new ad-hoc visibility of the port.
      *      @param [in] parent        The parent undo command.
      */
-    AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName,
-                                 bool newVisibility, QUndoCommand* parent = 0);
+    AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName, bool newVisibility,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -53,6 +54,13 @@ private:
     // Disable copying.
     AdHocVisibilityChangeCommand(AdHocVisibilityChangeCommand const& rhs);
     AdHocVisibilityChangeCommand& operator=(AdHocVisibilityChangeCommand const& rhs);
+
+    /*!
+     *  Create a delete command for a connected connection.
+     *
+     *      @param [in] connection  The selected connection.
+     */
+    void createConnectionDeleteCommand(GraphicsConnection* connection);
 
     //-----------------------------------------------------------------------------
     // Data.

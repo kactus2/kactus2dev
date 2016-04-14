@@ -112,6 +112,13 @@ private:
     HWDesignWidget &operator=(const HWDesignWidget &);
 
     /*!
+     *  Delete the selected ad hoc interfaces. Only invalid interfaces can be deleted.
+     *
+     *      @param [in] selectedItems   A list of the selected items to be deleted.
+     */
+    void deleteSelectedAdhocInterfaces(QList<QGraphicsItem*> selectedItems);
+
+    /*!
      *  Create an empty hierarchical component.
      *
      *      @return Pointer to the created component.
