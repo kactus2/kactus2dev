@@ -1127,8 +1127,7 @@ void tst_VerilogGenerator::testPortMapsWithoutBoundsInInterconnection()
     receiverInterface->setInterfaceMode(General::SLAVE);
     receiverComponent->getBusInterfaces()->append(receiverInterface);
 
-
-    QSharedPointer<PortMap::LogicalPort> receiverLogicalPort(new PortMap::LogicalPort"DATA"());
+    QSharedPointer<PortMap::LogicalPort> receiverLogicalPort(new PortMap::LogicalPort("DATA"));
     QSharedPointer<PortMap::PhysicalPort> receiverPhysicalPort(new PortMap::PhysicalPort("data_in"));
 
     QSharedPointer<PortMap> receiverPortMap(new PortMap());
@@ -1261,7 +1260,7 @@ void tst_VerilogGenerator::testAdHocConnectionBetweenComponentInstancesWithExpre
     mapPortToInterface("enable_out", "ENABLE", "data_bus", senderComponent);
     QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
     QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
-    logPort->range_ = QSharedPointer<Range>( new Range("10/2","1") );
+    logPort->range_ = QSharedPointer<Range>(new Range("10/2","1"));
 
     library_.addComponent(senderComponent);
     addInstanceToDesign("sender", senderVLNV);

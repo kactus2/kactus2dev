@@ -88,7 +88,7 @@ void RegisterGraphItem::updateDisplay()
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::removeChild( MemoryVisualizationItem* childItem )
 {
-    quint64 offset = childItem->getLastAddress();
+    quint64 offset = childItems_.key(childItem);
 
     Q_ASSERT(childItems_.contains(offset));
     childItems_.remove(offset, childItem);
