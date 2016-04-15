@@ -190,7 +190,8 @@ void RegisterDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
 bool RegisterDelegate::columnAcceptsExpression(int column) const
 {
     return column == RegisterColumns::WIDTH_COLUMN || column == RegisterColumns::OFFSET_COLUMN ||
-        column == RegisterColumns::IS_PRESENT_COLUMN;
+        column == RegisterColumns::IS_PRESENT_COLUMN || column == RegisterColumns::RESETVALUE_COLUMN ||
+        column == RegisterColumns::RESETMASK_COLUMN;
 }
 
 //-----------------------------------------------------------------------------

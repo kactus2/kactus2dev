@@ -20,6 +20,8 @@ namespace RegisterColumns
         NAME_COLUMN = 0,
         OFFSET_COLUMN,
         WIDTH_COLUMN,
+        RESETVALUE_COLUMN,
+        RESETMASK_COLUMN,
         VOLATILE_COLUMN,
         ACCESS_COLUMN,
         MOD_WRITE_COLUMN,
