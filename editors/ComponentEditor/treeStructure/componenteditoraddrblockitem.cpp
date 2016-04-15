@@ -19,6 +19,7 @@
 
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/Field.h>
 
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 
@@ -139,6 +140,11 @@ void ComponentEditorAddrBlockItem::createChild( int index )
         {
 			regItem->setVisualizer(visualizer_);
 		}
+
+        QSharedPointer<Field> newField (new Field());
+        reg->getFields()->append(newField);
+
+        regItem->createChild(0);
 
         onGraphicsChanged();
 
