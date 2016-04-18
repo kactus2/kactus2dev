@@ -16,7 +16,6 @@
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QString>
-#include <QObject>
 
 class IGraphicsItemStack;
 class ComponentItem;
@@ -24,9 +23,8 @@ class ComponentItem;
 //-----------------------------------------------------------------------------
 //! ItemAddCommand class.
 //-----------------------------------------------------------------------------
-class ItemAddCommand : public QObject, public QUndoCommand
+class ItemAddCommand : public QUndoCommand
 {
-	Q_OBJECT
 
 public:
     /*!
@@ -52,14 +50,6 @@ public:
      *  Redoes the command.
      */
     virtual void redo();
-
-signals:
-
-	//! \brief Emitted when a new component is instantiated to the design.
-	void componentInstantiated(ComponentItem*);
-
-	//! \brief Emitted when a component instance is removed from the design.
-	void componentInstanceRemoved(ComponentItem*);
 
 private:
     // Disable copying.

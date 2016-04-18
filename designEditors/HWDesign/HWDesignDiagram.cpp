@@ -44,6 +44,7 @@
 #include <designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h>
 #include <designEditors/HWDesign/undoCommands/PortPasteCommand.h>
 #include <designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h>
+#include <designEditors/HWDesign/undoCommands/HWComponentAddCommand.h>
 
 #include <library/LibraryManager/libraryhandler.h>
 
@@ -991,12 +992,13 @@ void HWDesignDiagram::replaceComponentItemAtPositionWith(QPointF position, QShar
 
     if (msgBox.exec() == QMessageBox::Yes)
     {
-        
-
         // Create the component item.
         QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
         componentInstance->setInstanceName(createInstanceName(comp->getVlnv().getName()));
-        getDesign()->getComponentInstances()->append(componentInstance);
+
+        QSharedPointer<ConfigurableVLNVReference> componentReference
+            (new ConfigurableVLNVReference(comp->getVlnv()));
+        componentInstance->setComponentRef(componentReference);
 
         GraphicsColumn* column = getLayout()->findColumnAt(oldCompItem->scenePos());
         HWComponentItem* newCompItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp, column);
@@ -1602,21 +1604,20 @@ void HWDesignDiagram::addDraftComponentInstance(GraphicsColumn* column, QPointF 
     // Create the corresponding diagram component.
     QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
     componentInstance->setInstanceName(name);
-    getDesign()->getComponentInstances()->append(componentInstance);
 
     HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), componentInstance, comp, column);
     diagComp->setDraft();
     diagComp->setPos(snapPointToGrid(position));
 
-    QSharedPointer<ItemAddCommand> cmd(new ItemAddCommand(column, diagComp));
+    QSharedPointer<HWComponentAddCommand> addCommand(new HWComponentAddCommand(getDesign(), column, diagComp));
 
-    connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+    connect(addCommand.data(), SIGNAL(componentInstantiated(ComponentItem*)),
         this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-    connect(cmd.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+    connect(addCommand.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
         this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-    getEditProvider()->addCommand(cmd);
-    cmd->redo();
+    getEditProvider()->addCommand(addCommand);
+    addCommand->redo();
 }
 
 //-----------------------------------------------------------------------------
@@ -1747,12 +1748,10 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<Component> comp, QPoint
         QString instanceName = createInstanceName(comp->getVlnv().getName());
         componentInstance->setInstanceName(instanceName);
 
-        getDesign()->getComponentInstances()->append(componentInstance);
-
         HWComponentItem *newItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
         newItem->setPos(snapPointToGrid(position));
 
-        QSharedPointer<ItemAddCommand> addCommand(new ItemAddCommand(column, newItem));
+        QSharedPointer<HWComponentAddCommand> addCommand(new HWComponentAddCommand(getDesign(), column, newItem));
 
         connect(addCommand.data(), SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);

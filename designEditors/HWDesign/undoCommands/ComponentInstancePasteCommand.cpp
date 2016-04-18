@@ -19,6 +19,8 @@
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 
+#include <designEditors/HWDesign/undoCommands/HWComponentAddCommand.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 #include <IPXACTmodels/Design/Design.h>
@@ -27,11 +29,11 @@
 // Function: ComponentInstancePasteCommand::ComponentInstancePasteCommand()
 //-----------------------------------------------------------------------------
 ComponentInstancePasteCommand::ComponentInstancePasteCommand(QSharedPointer<Component> component,
-    QSharedPointer<ComponentInstance> componentInstance, QPointF const& position,
-    GraphicsColumn* column, DesignDiagram* diagram, QUndoCommand* parent):
-    QUndoCommand(parent),
-    componentInstance_(new ComponentInstance(*componentInstance)),
-    design_(diagram->getDesign())
+    QSharedPointer<ComponentInstance> componentInstance, QPointF const& position, GraphicsColumn* column,
+    DesignDiagram* diagram, QUndoCommand* parent):
+QUndoCommand(parent),
+componentInstance_(new ComponentInstance(*componentInstance)),
+design_(diagram->getDesign())
 {
     // Take a copy of the component in case of a draft.
     QSharedPointer<Component> componentCopy = component;
@@ -70,7 +72,8 @@ ComponentInstancePasteCommand::ComponentInstancePasteCommand(QSharedPointer<Comp
 
     if (targetColumn != 0)
     {
-        ItemAddCommand* graphicsAddCommand = new ItemAddCommand(targetColumn, componentItem, this);
+        HWComponentAddCommand* graphicsAddCommand =
+            new HWComponentAddCommand(design_, targetColumn, componentItem, this);
 
         QObject::connect(graphicsAddCommand, SIGNAL(componentInstantiated(ComponentItem*)),
             diagram, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -93,8 +96,6 @@ ComponentInstancePasteCommand::~ComponentInstancePasteCommand()
 void ComponentInstancePasteCommand::undo()
 {
     QUndoCommand::undo();
-    
-    design_->getComponentInstances()->removeOne(componentInstance_);
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +103,5 @@ void ComponentInstancePasteCommand::undo()
 //-----------------------------------------------------------------------------
 void ComponentInstancePasteCommand::redo()
 {
-    design_->getComponentInstances()->append(componentInstance_);
-
     QUndoCommand::redo();
 }

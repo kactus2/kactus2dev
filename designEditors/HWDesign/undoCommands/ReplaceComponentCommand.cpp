@@ -29,6 +29,7 @@
 #include <designEditors/HWDesign/AdHocInterfaceItem.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 
+#include <designEditors/HWDesign/undoCommands/HWComponentAddCommand.h>
 #include <designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h>
@@ -56,7 +57,8 @@ newComp_(newComp)
     }
     else
     {
-        ItemAddCommand* addCmd = new ItemAddCommand(oldComp_->getParentStack(), newComp_, this);
+        HWComponentAddCommand* addCmd =
+            new HWComponentAddCommand(diagram->getDesign(), oldComp_->getParentStack(), newComp_, this);
 
         connect(addCmd, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);

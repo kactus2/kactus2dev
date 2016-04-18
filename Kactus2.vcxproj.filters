@@ -1360,9 +1360,6 @@
     <ClCompile Include="GeneratedFiles\moc_ComponentItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_CommonGraphicsUndoCommands.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_comboselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4285,6 +4282,12 @@
     <ClCompile Include="designEditors\HWDesign\undoCommands\ReplaceComponentCommand.cpp">
       <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_HWComponentAddCommand.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\HWComponentAddCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5887,6 +5890,9 @@
       <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\undoCommands\ReplaceComponentCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\undoCommands\HWComponentAddCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </CustomBuild>
   </ItemGroup>

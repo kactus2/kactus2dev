@@ -23,9 +23,11 @@
 //-----------------------------------------------------------------------------
 // Function: ItemAddCommand()
 //-----------------------------------------------------------------------------
-ItemAddCommand::ItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item,
-                               QUndoCommand* parent) : QUndoCommand(parent), item_(item),
-                               stack_(stack), del_(false)
+ItemAddCommand::ItemAddCommand(IGraphicsItemStack* stack, QGraphicsItem* item, QUndoCommand* parent) :
+QUndoCommand(parent),
+item_(item),
+stack_(stack),
+del_(false)
 {
 }
 
@@ -50,11 +52,6 @@ void ItemAddCommand::undo()
     item_->scene()->removeItem(item_);
     del_ = true;
 
-    if (dynamic_cast<ComponentItem*>(item_) != 0)
-    {
-        emit componentInstanceRemoved(static_cast<ComponentItem*>(item_));
-    }
-
     // Execute child commands.
     QUndoCommand::undo();
 }
@@ -67,11 +64,6 @@ void ItemAddCommand::redo()
     // Add the item to the stack.
     stack_->addItem(item_);
     del_ = false;
-
-    if (dynamic_cast<ComponentItem*>(item_) != 0)
-    {
-        emit componentInstantiated(static_cast<ComponentItem*>(item_));
-    }
 
     // Child commands need not be executed because the other items change their position
     // in a deterministic way.

@@ -33,12 +33,12 @@
 // Function: ComponentDeleteCommand::ComponentDeleteCommand()
 //-----------------------------------------------------------------------------
 ComponentDeleteCommand::ComponentDeleteCommand(DesignDiagram* diagram, GraphicsColumn* column,
-    HWComponentItem* component, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      componentItem_(component),
-      column_(column),
-      diagram_(diagram),
-      del_(true)
+    HWComponentItem* component, QUndoCommand* parent):
+QUndoCommand(parent),
+componentItem_(component),
+column_(column),
+diagram_(diagram),
+del_(true)
 {
     // Create child commands for removing interconnections.
     QList<GraphicsConnection*> connections;

@@ -641,6 +641,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/undoCommands/PortPasteCommand.h \
     ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h \
     ./designEditors/common/DesignWidgetFactory.h \
     ./designEditors/common/DesignWidgetFactoryImplementation.h \
     ./designEditors/common/NamelabelWidth.h \
@@ -693,7 +694,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h
+    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1213,6 +1214,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/PortDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/PortPasteCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.cpp \
     ./designEditors/MemoryDesigner/AddressBlockItem.cpp \
     ./designEditors/MemoryDesigner/AddressSectionItem.cpp \
     ./designEditors/MemoryDesigner/AddressSpaceItem.cpp \
@@ -1301,5 +1303,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.cpp
+    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.cpp
 RESOURCES += kactus.qrc
