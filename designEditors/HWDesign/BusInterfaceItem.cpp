@@ -855,6 +855,12 @@ bool BusInterfaceItem::clonePortMaps(QSharedPointer<BusInterface> busIf, Connect
         QString portName = nameMappings.value(portMap->getPhysicalPort()->name_);
         QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort(portName));
 
+        if (portMap->getPhysicalPort()->partSelect_)
+        {
+            QSharedPointer<PartSelect> copiedPartSelect (new PartSelect(*portMap->getPhysicalPort()->partSelect_));
+            physicalPort->partSelect_ = copiedPartSelect;
+        }
+
         newPortMap->setPhysicalPort(physicalPort);
 
         newPortMaps.append(newPortMap);

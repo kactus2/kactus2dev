@@ -54,7 +54,7 @@ removePorts_(removePorts)
         absType_ = busIf_->getAbstractionTypes()->first();
         if (!busIf_->getPortMaps()->isEmpty())
         {
-            portMaps_ = *busIf_->getPortMaps();
+            portMaps_ = busIf_->getPortMaps();
         }
     }
 
@@ -112,6 +112,14 @@ void InterfaceDeleteCommand::undo()
     {
         busIf_->setInterfaceMode(mode_);
         busIf_->setBusType(busType_);
+
+        if (absType_)
+        {
+            QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes
+                (new QList<QSharedPointer<AbstractionType> > ());
+            abstractionTypes->append(absType_);
+            busIf_->setAbstractionTypes(abstractionTypes);
+        }
 
         interface_->define(busIf_, false, ports_);
 

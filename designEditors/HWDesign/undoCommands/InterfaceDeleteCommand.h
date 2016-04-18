@@ -89,7 +89,7 @@ private:
     General::InterfaceMode mode_;
 
     //! The port maps.
-    QList< QSharedPointer<PortMap> > portMaps_;
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
 
     //! The port's parent.
     GraphicsColumn* parent_;
