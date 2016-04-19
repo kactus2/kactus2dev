@@ -447,6 +447,7 @@ bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
             QMessageBox::NoButton, (QWidget*)scene()->parent());
         QPushButton* btnCopy = msgBox.addButton(tr("Copy"), QMessageBox::YesRole);
         QPushButton* btnManual = msgBox.addButton(tr("Manual Setup"), QMessageBox::NoRole);
+        msgBox.addButton(tr("Cancel"), QMessageBox::RejectRole);
 
         msgBox.exec();
 
@@ -476,6 +477,10 @@ bool BusInterfaceItem::onConnect(ConnectionEndpoint const* other)
             }
 
             portsCopied_ = false;
+        }
+        else
+        {
+            return false;
         }
 
         editProvider->setState("portsCopied", portsCopied_);
