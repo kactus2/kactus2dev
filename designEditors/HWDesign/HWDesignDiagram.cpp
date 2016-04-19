@@ -2030,6 +2030,8 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
     QSharedPointer<VendorExtension> adHocPortPositions = design->getAdHocPortPositions();
     QSharedPointer<Kactus2Group> adhocGroup = adHocPortPositions.dynamicCast<Kactus2Group>();
 
+    QStringList visiblePortNames;
+
     if (!adhocGroup.isNull())
     {
         foreach (QSharedPointer<VendorExtension> positionExtension, adhocGroup->getByType("kactus2:adHocVisible"))
@@ -2044,6 +2046,8 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
             if (adHocPort)
             {
                 adHocIf = new AdHocInterfaceItem(getEditedComponent(), adHocPort, adHocExtension, 0);
+
+                visiblePortNames.append(portName);
             }
             else
             {
@@ -2061,7 +2065,24 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
                 getLayout()->addItem(adHocIf);
             }
         }
-    }  
+    }
+
+    foreach (QSharedPointer<Port> adhocPort, *getEditedComponent()->getPorts())
+    {
+        if (adhocPort->isAdHocVisible() && !visiblePortNames.contains(adhocPort->name()))
+        {
+            QSharedPointer<Kactus2Placeholder> positionPlaceHolder
+                (new Kactus2Placeholder("kactus2:adHocVisible"));
+            positionPlaceHolder->setAttribute("portName", adhocPort->name());
+
+            adhocGroup->addToGroup(positionPlaceHolder);
+
+            AdHocInterfaceItem* adhocInterface
+                (new AdHocInterfaceItem(getEditedComponent(), adhocPort, positionPlaceHolder, 0));
+
+            getLayout()->addItem(adhocInterface);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

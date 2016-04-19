@@ -140,13 +140,13 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
 
     else if (role == Qt::ForegroundRole)
     {
-        if (adHocPortIsRemovable(adhocPort))
+        if (!adHocPortIsRemovable(adhocPort) || adhocPort->isAdHocVisible())
         {
-            return QColor(Qt::black);
+            return QColor(Qt::gray);
         }
         else
         {
-            return QColor(Qt::gray);
+            return QColor(Qt::black);
         }
     }
 
@@ -156,6 +156,12 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
         {
             QString connectedText = QObject::tr("Connected ad hoc port cannot be disabled.");
             return connectedText;
+        }
+        else if (adhocPort->isAdHocVisible())
+        {
+            QString componentPortVisibleText = QObject::tr("Component determines port %1 to be visible.").
+                arg(adhocPort->name());
+            return componentPortVisibleText;
         }
         else
         {
@@ -240,7 +246,8 @@ Qt::ItemFlags AdHocModel::flags(const QModelIndex& index) const
     Qt::ItemFlags flags = Qt::ItemIsEnabled;
 
     QSharedPointer<Port> indexedPort = table_->at(index.row());
-    if (index.column() == AdHocColumns::ADHOC_COL_VISIBILITY && adHocPortIsRemovable(indexedPort))
+    if (index.column() == AdHocColumns::ADHOC_COL_VISIBILITY && adHocPortIsRemovable(indexedPort)
+        && !indexedPort->isAdHocVisible())
     {
         flags |= Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
     }

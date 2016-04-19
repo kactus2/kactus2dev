@@ -680,32 +680,6 @@ void HWComponentItem::positionAdHocPortTerminals()
 {
     QMap<QString, QPointF> instancePositions = getComponentInstance()->getAdHocPortPositions();
 
-    // Parse port ad-hoc visibilities.
-    /*
-    foreach (QSharedPointer<Port> adhocPort, *componentModel()->getPorts())
-    {
-        if (isPortAdHocVisible(adhocPort->name()))
-        {
-            AdHocPortItem* port = new AdHocPortItem(adhocPort, this);
-
-            // Check if the default position has been specified.
-            if (instancePositions.contains(adhocPort->name()))
-            {
-                port->setPos(instancePositions.value(adhocPort->name()));
-                addPortToSideByPosition(port);
-            }
-            else if (!adhocPort->getDefaultPos().isNull())
-            {
-                port->setPos(adhocPort->getDefaultPos());
-                addPortToSideByPosition(port);
-            }
-            else
-            {
-                addPortToSideWithLessPorts(port);
-            }
-        }
-    }*/
-
     QMapIterator<QString, QPointF> positionIterator(instancePositions);
     while(positionIterator.hasNext())
     {
@@ -724,6 +698,16 @@ void HWComponentItem::positionAdHocPortTerminals()
         portItem->setPos(portPosition);
 
         addPortToSideByPosition(portItem);
+    }
+
+    foreach (QSharedPointer<Port> adhocPort, *componentModel()->getPorts())
+    {
+        if (adhocPort->isAdHocVisible() && !instancePositions.contains(adhocPort->name()))
+        {
+            AdHocPortItem* adhocPort (new AdHocPortItem(adhocPort, this));
+
+            addPortToSideWithLessPorts(adhocPort);
+        }
     }
 }
 
