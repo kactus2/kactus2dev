@@ -719,6 +719,12 @@ QSharedPointer<QUndoCommand> DesignDiagram::createAssociationAddCommand(Associab
     QGraphicsItem* item = getBaseItemOf(itemAt(endPointExtension->position(), QTransform()));
     Associable* endItem = dynamic_cast<Associable*>(item);
 
+    if (!endItem && item && item->parentItem())
+    {
+        QGraphicsItem* associableParentItem = item->parentItem();
+        endItem = dynamic_cast<Associable*>(associableParentItem);
+    }
+
     QSharedPointer<QUndoCommand> addCommand(new QUndoCommand());
 
     if (canAssociateItems(startItem, endItem))
