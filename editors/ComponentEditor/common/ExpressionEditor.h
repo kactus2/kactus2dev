@@ -170,7 +170,7 @@ private:
      *      @param [in] word    The word to insert into the text.
      *      @param [in] cursor  The cursor to use to insert the text.
      */
-    void insertWord(QString word, QTextCursor& cursor);
+    void insertWord(QString const& word, QTextCursor& cursor);
 
     /*!
      *  Checks if a given text is a reference to a parameter.

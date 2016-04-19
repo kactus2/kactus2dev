@@ -306,7 +306,7 @@ QRegularExpression ExpressionEditor::wordDelimiter() const
 //-----------------------------------------------------------------------------
 // Function: ExpressionEditor::insertWord()
 //-----------------------------------------------------------------------------
-void ExpressionEditor::insertWord(QString word, QTextCursor& cursor)
+void ExpressionEditor::insertWord(QString const& word, QTextCursor& cursor)
 {
     if (isReference(word))
     {
@@ -340,7 +340,8 @@ bool ExpressionEditor::isReference(QString const& text) const
 //-----------------------------------------------------------------------------
 bool ExpressionEditor::wordIsConstant(QString const& word) const
 {
-    QRegularExpression constant(SystemVerilogSyntax::INTEGRAL_NUMBER + "|" + SystemVerilogSyntax::STRING_LITERAL);
+    QRegularExpression constant("^" + SystemVerilogSyntax::INTEGRAL_NUMBER + "|" +
+        SystemVerilogSyntax::STRING_LITERAL + "$");
     return constant.match(word).hasMatch();
 }
 

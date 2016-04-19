@@ -953,7 +953,12 @@ void HWDesignDiagram::setInterfaceVLNVatEndpoint(VLNV &droppedVLNV)
         if (dragEndPoint_->getBusInterface() != 0)
         {
             oldBusType = dragEndPoint_->getBusInterface()->getBusType();
-            oldAbsType = *dragEndPoint_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef();
+            if (dragEndPoint_->getBusInterface()->getAbstractionTypes() && 
+                !dragEndPoint_->getBusInterface()->getAbstractionTypes()->isEmpty())
+            {
+                oldAbsType = *dragEndPoint_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef();
+            }
+            
             oldMode = dragEndPoint_->getBusInterface()->getInterfaceMode();
             oldName = dragEndPoint_->getBusInterface()->name();
         }

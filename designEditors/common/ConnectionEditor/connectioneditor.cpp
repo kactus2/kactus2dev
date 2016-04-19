@@ -253,7 +253,8 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
         type_.setTitle(tr("Bus type VLNV"));
 	    type_.setVLNV(endpoint1->getBusInterface()->getBusType(), true);
         if (endpoint1->getBusInterface()->getAbstractionTypes() && 
-            !endpoint1->getBusInterface()->getAbstractionTypes()->isEmpty())
+            !endpoint1->getBusInterface()->getAbstractionTypes()->isEmpty() &&
+            endpoint1->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef())
         {
             absType_.setVLNV(*endpoint1->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef(), 
                 true);
@@ -432,7 +433,8 @@ void ConnectionEditor::setPortMaps()
 
     // get the abstraction def for the interfaces
     VLNV absDefVLNV;
-    if (busIf1->getAbstractionTypes() && !busIf1->getAbstractionTypes()->isEmpty())
+    if (busIf1->getAbstractionTypes() && !busIf1->getAbstractionTypes()->isEmpty() &&
+        busIf1->getAbstractionTypes()->first()->getAbstractionRef())
     {
         absDefVLNV = *busIf1->getAbstractionTypes()->first()->getAbstractionRef();
     }
