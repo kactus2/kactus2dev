@@ -346,25 +346,27 @@ void EditableTableView::onRemoveAction()
 	QApplication::setOverrideCursor(Qt::WaitCursor);
 
 	qSort(indexes);
-	int rowCount = qMax(1, countRows(indexes));
+    int lastColumn = indexes.last().column();
 
-	// Remove as many rows as wanted.
-    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
+    QString copyText;
 
-	for (int i = 0; i < rowCount; ++i)
+    foreach (QModelIndex index, indexes)
     {
-        QModelIndex index = indexes.first();
-        if (sortProxy != 0)
-        {
-            index = sortProxy->mapToSource(index);
-        }
+        copyText.append(index.data(Qt::EditRole).toString());
 
-		emit removeItem(index);
+        model()->setData(index, QVariant(), Qt::EditRole);
+
+        if (index.column() < lastColumn)
+        {
+            copyText.append("\t");
+        }
+        else
+        {
+            copyText.append("\n");
+        }
 	}
 
-	clearSelection();
-	setCurrentIndex(QModelIndex());
-
+    QApplication::clipboard()->setText(copyText);
 	QApplication::restoreOverrideCursor();
 }
 
