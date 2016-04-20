@@ -171,7 +171,7 @@ void EditableTableView::keyPressEvent(QKeyEvent* event)
 	}
     if (event->matches(QKeySequence::Cut))
     {
-        onRemoveAction();
+        onCutAction();
     }
 }
 
@@ -337,15 +337,51 @@ int EditableTableView::countRows(QModelIndexList const& indexes)
 //-----------------------------------------------------------------------------
 void EditableTableView::onRemoveAction()
 {
-	QModelIndexList indexes = selectedIndexes();
-	if (indexes.isEmpty())
+    QModelIndexList indexes = selectedIndexes();
+    if (indexes.isEmpty())
     {
-		return;
-	}
+        return;
+    }
 
-	QApplication::setOverrideCursor(Qt::WaitCursor);
+    QApplication::setOverrideCursor(Qt::WaitCursor);
 
-	qSort(indexes);
+    qSort(indexes);
+    int rowCount = qMax(1, countRows(indexes));
+
+    // Remove as many rows as wanted.
+    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
+
+    for (int i = 0; i < rowCount; ++i)
+    {
+        QModelIndex index = indexes.first();
+        if (sortProxy != 0)
+        {
+            index = sortProxy->mapToSource(index);
+        }
+
+        emit removeItem(index);
+    }
+
+    clearSelection();
+    setCurrentIndex(QModelIndex());
+
+    QApplication::restoreOverrideCursor();
+}
+
+//-----------------------------------------------------------------------------
+// Function: editabletableview::onCutAction()
+//-----------------------------------------------------------------------------
+void EditableTableView::onCutAction()
+{
+    QModelIndexList indexes = selectedIndexes();
+    if (indexes.isEmpty())
+    {
+        return;
+    }
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    qSort(indexes);
     int lastColumn = indexes.last().column();
 
     QString copyText;
@@ -364,10 +400,10 @@ void EditableTableView::onRemoveAction()
         {
             copyText.append("\n");
         }
-	}
+    }
 
     QApplication::clipboard()->setText(copyText);
-	QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------
@@ -505,6 +541,7 @@ void EditableTableView::onPasteAction()
                     column = getUniqueName(column);
                 }
 
+//                 model()->setData(itemToSet, column, Qt::UserRole+1);
                 model()->setData(itemToSet, column, Qt::EditRole);
 			}
 

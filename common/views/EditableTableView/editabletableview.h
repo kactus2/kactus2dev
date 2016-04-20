@@ -175,6 +175,9 @@ protected slots:
 	//! Handler for cell clear action
 	virtual void onClearAction(); 
 
+    //! Handler for cut action.
+    virtual void onCutAction();
+
 private:
 
 	//! No copying
