@@ -11,6 +11,8 @@
 22/04/2016 3.0.0
 ----------------------------------------------------
 
++ Updated all IP-XACT elements to 2014 standard
++ Improved validation for many IP-XACT elements
 + Updated Verilog generation for one-to-many ad-hoc connections.
 + Added new view related editors for component editor:
 	* Component instantiations
@@ -21,21 +23,17 @@
 + Updated expression parser.
 + Updated component editor memory map visualization.
 + In component editor, changed cut command to copy and remove selected cells of a table.
-+ Updated HW design editor.
++ Updated HW design editor:
+	* Updated component instance creation.
+	* Updated component instance removing.
+	* Updated component instance replacing.
+	* Updated connection removing.
+	* Invalid ad-hoc interfaces and ports are displayed with a red colour.
+	* Enabled deleting of invalid ad-hoc interfaces and ports.
 + Usability fixing.
 
 KNOWN UNRESOLVED ISSUES:
-* Paste command in component editor does not work properly with expressions containing references to parameters.
-* Memory map header generation from a system design does not work properly.
-* Parameters created with version 2.7.0 may not work with the latest release due to 
-  change in id formatting. The fastest way to fix this is to re-create the parameters.
-* SystemVerilog expressions are not supported by some features including generators.
-  If expressions or references have been used, it may cause at least the following issues:
-	* VHDL generator will generate wrong values.
-	* Port maps will not automatically adjust to changes in port size.
-* VHDL import does not preserve references to model parameters.
-* In ports editor, creating a bus interface through ports is not possible for name column.
-* VHDL generator crashes unexpectedly during run
+* UI issue: paste command does not update usage count of referenced parameters.
 
 29/02/2016 3.0.0 RC1
 ----------------------------------------------------
