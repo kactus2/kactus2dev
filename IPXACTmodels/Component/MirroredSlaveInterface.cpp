@@ -110,8 +110,8 @@ void MirroredSlaveInterface::setRemapAddress(QString const& newRemapAddress)
     {
         if (getRemapAddresses()->isEmpty())
         {
-            QSharedPointer<RemapAddress> newRemapAddress (new RemapAddress(newRemapAddress));
-            getRemapAddresses()->append(newRemapAddress);
+            QSharedPointer<RemapAddress> remapAddress (new RemapAddress(newRemapAddress));
+            getRemapAddresses()->append(remapAddress);
         }
         else
         {

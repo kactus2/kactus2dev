@@ -704,9 +704,9 @@ void HWComponentItem::positionAdHocPortTerminals()
     {
         if (adhocPort->isAdHocVisible() && !instancePositions.contains(adhocPort->name()))
         {
-            AdHocPortItem* adhocPort (new AdHocPortItem(adhocPort, this));
+            AdHocPortItem* adhocItem (new AdHocPortItem(adhocPort, this));
 
-            addPortToSideWithLessPorts(adhocPort);
+            addPortToSideWithLessPorts(adhocItem);
         }
     }
 }
