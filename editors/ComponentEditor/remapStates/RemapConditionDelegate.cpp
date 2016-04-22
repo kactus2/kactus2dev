@@ -19,9 +19,7 @@
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 
-#include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
-#include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>
-#include <editors/ComponentEditor/parameters/Array/ArrayView.h>
+#include <editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.h>
 
 #include <IPXACTmodels/Component/Choice.h>
 
@@ -32,10 +30,11 @@
 // Function: RemapConditionDelegate::RemapConditionDelegate()
 //-----------------------------------------------------------------------------
 RemapConditionDelegate::RemapConditionDelegate(QStringList const& portNameList, QCompleter* parameterCompleter,
-    QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QObject* parent /* = 0 */):
+                        QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionParser> expressionParser,
+                        QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent):
 ExpressionDelegate(parameterCompleter, finder, parent),
 expressionFormatter_(expressionFormatter),
+expressionParser_(expressionParser),
 availablePortNames_(portNameList)
 {
 
@@ -73,15 +72,17 @@ QWidget* RemapConditionDelegate::createEditor(QWidget* parent, QStyleOptionViewI
 
     else if (index.column() == RemapConditionColumns::VALUE_COLUMN && valueIsArray(index))
     {
-        ArrayView* editor = new ArrayView(parent);
+        ValueOrIndexedValueEditor* editor =
+            new ValueOrIndexedValueEditor(getParameterFinder(), expressionParser_, expressionFormatter_, parent);
 
-        QScrollArea* scrollingWidget = new QScrollArea(parent);
-        scrollingWidget->setWidgetResizable(true);
-        scrollingWidget->setWidget(editor);
+        parent->installEventFilter(editor);
 
-        scrollingWidget->parent()->installEventFilter(editor);
+        connect(editor, SIGNAL(increaseReferences(QString)),
+            this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+        connect(editor, SIGNAL(decreaseReferences(QString)),
+            this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-        return scrollingWidget;
+        return editor;
     }
 
     else
@@ -104,7 +105,7 @@ void RemapConditionDelegate::setEditorData(QWidget* editor, QModelIndex const& i
     }
     else if (index.column() == RemapConditionColumns::VALUE_COLUMN && valueIsArray(index))
     {
-        setArrayEditor(editor, index);
+        setValueAndArrayEditor(editor, index);
     }
     else
     {
@@ -113,50 +114,24 @@ void RemapConditionDelegate::setEditorData(QWidget* editor, QModelIndex const& i
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapConditionDelegate::setArrayEditor()
+// Function: RemapConditionDelegate::setValueAndArrayEditor()
 //-----------------------------------------------------------------------------
-void RemapConditionDelegate::setArrayEditor(QWidget* editor, QModelIndex const& index) const
+void RemapConditionDelegate::setValueAndArrayEditor(QWidget* editor, QModelIndex const& index) const
 {
-    ArrayView* view = dynamic_cast<ArrayView*>(dynamic_cast<QScrollArea*>(editor)->widget());
-
-    int arraySize = getPortWidth(index);
-
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(
-        getParameterFinder()));
-
     QModelIndex portLeftIndex = index.sibling(index.row(), RemapConditionColumns::LEFT_COLUMN);
     int portLeft = portLeftIndex.data(Qt::ToolTipRole).toInt();
 
     QModelIndex portRightIndex = index.sibling(index.row(), RemapConditionColumns::RIGHT_COLUMN);
     int portRight = portRightIndex.data(Qt::ToolTipRole).toInt();
 
-    int arrayStart = portLeft;
-    if (portRight < portLeft)
-    {
-        arrayStart = portRight;
-    }
-
-    ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
-        expressionFormatter_, QSharedPointer<Choice>(new Choice()), QColor("white"), arrayStart, view);
-
     QModelIndex valueIndex = index.sibling(index.row(), RemapConditionColumns::VALUE_COLUMN);
     QString portValue = valueIndex.data(Qt::EditRole).toString();
-    model->setArrayData(portValue);
 
-    view->setItemDelegate(new ArrayDelegate(getNameCompleter(), getParameterFinder(),
-        QSharedPointer<Choice>(new Choice()), this->parent()));
-
-    view->setModel(model);
-
-    view->setSortingEnabled(false);
-    view->resizeColumnsToContents();
-
-    connect(model, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
-    connect(view->itemDelegate(), SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(view->itemDelegate(), SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    ValueOrIndexedValueEditor* valueEditor = qobject_cast<ValueOrIndexedValueEditor*>(editor);
+    if (valueEditor)
+    {
+        valueEditor->setupArrayEditor(portValue, portLeft, portRight);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -173,12 +148,13 @@ void RemapConditionDelegate::setModelData(QWidget* editor, QAbstractItemModel* m
     }
     else if (index.column() == RemapConditionColumns::VALUE_COLUMN && valueIsArray(index))
     {
-        QScrollArea* scrollWidget = qobject_cast<QScrollArea*>(editor);
-        ArrayView* arrayTable = qobject_cast<ArrayView*>(scrollWidget->widget());
-        ParameterArrayModel* arrayModel = qobject_cast<ParameterArrayModel*>(arrayTable->model());
+        ValueOrIndexedValueEditor* valueEditor = qobject_cast<ValueOrIndexedValueEditor*>(editor);
+        if (valueEditor)
+        {
+            QString arrayValue = valueEditor->getValueData();
 
-        QString arrayValue = arrayModel->getArrayData();
-        model->setData(index, arrayValue, Qt::EditRole);
+            model->setData(index, arrayValue, Qt::EditRole);
+        }
     }
     else
     {
@@ -256,18 +232,30 @@ void RemapConditionDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOp
 {
     int portWidth = getPortWidth(index);
 
-    int editorMinimumSize = 24 * (portWidth + 1);
+    const int ROWHEIGHT = 23;
+
+    int editorMinimumSize = ROWHEIGHT * (portWidth + 4);
 
     const int PARENT_HEIGHT = editor->parentWidget()->height();
     const int AVAILABLE_HEIGHT_BELOW = PARENT_HEIGHT - option.rect.top();
 
     if (AVAILABLE_HEIGHT_BELOW > editorMinimumSize)
     {
-        editor->move(option.rect.topLeft());
+        int movementY = option.rect.topLeft().y() - 20;
+
+        if (movementY <= 0)
+        {
+            movementY = 0;
+        }
+
+        QPoint targetPoint (option.rect.topLeft().x(), movementY);
+
+        editor->move(targetPoint);
     }
     else
     {
         int editorNewY = PARENT_HEIGHT - editorMinimumSize;
+
         if (editorNewY <= 0)
         {
             editorNewY = 0;

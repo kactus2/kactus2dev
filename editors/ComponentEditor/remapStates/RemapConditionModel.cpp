@@ -189,7 +189,26 @@ QVariant RemapConditionModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == RemapConditionColumns::VALUE_COLUMN)
     {
-        return remapPort->getValue();
+        QString remapValue = remapPort->getValue();
+        if (remapValue.contains('{') && remapValue.contains('}'))
+        {
+            QStringList remapData = remapValue.split(',');
+            remapData.first().remove('{');
+            remapData.last().remove('}');
+
+            QStringList remapInLSB;
+
+            for (int i = 0; i < remapData.size(); i++)
+            {
+                remapInLSB.prepend(remapData.at(i));
+            }
+
+            remapInLSB.first().prepend('{');
+            remapInLSB.last().append('}');
+
+            remapValue = remapInLSB.join(',');
+        }
+        return remapValue;
     }
 
     return QVariant();
@@ -200,7 +219,16 @@ QVariant RemapConditionModel::valueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant RemapConditionModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    return valueForIndex(index);
+    if (index.column() == RemapConditionColumns::VALUE_COLUMN)
+    {
+        QSharedPointer<RemapPort> remapPort = remapPortsVisibleInModel_->at(index.row());
+
+        return remapPort->getValue();
+    }
+    else
+    {
+        return valueForIndex(index);
+    }
 }
 
 //-----------------------------------------------------------------------------

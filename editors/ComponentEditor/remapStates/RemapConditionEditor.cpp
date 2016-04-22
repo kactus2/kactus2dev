@@ -66,7 +66,7 @@ component_(component)
     parameterCompleter->setModel(parameterModel);
 
     delegate_ = new RemapConditionDelegate(component->getPortNames(), parameterCompleter, parameterFinder,
-        expressionFormatter, this);
+        expressionParser, expressionFormatter, this);
 
     view_->setItemDelegate(delegate_);
 

@@ -118,12 +118,12 @@ bool RemapStateValidator::remapPortHasValidIndex(QSharedPointer<RemapPort> remap
         bool rightOk = true;
         int rightBound = expressionParser_->parseExpression(referencedPort->getRightBound()).toInt(&rightOk);
 
-        int portSize = abs(leftBound - rightBound) + 1;
+        int maxBound = qMax(leftBound, rightBound);
 
         bool indexOk = true;
         int remapIndex = expressionParser_->parseExpression(remapPort->getPortIndex()).toInt(&indexOk);
 
-        return leftOk && rightOk && indexOk && remapIndex >= 0 && remapIndex < portSize;
+        return leftOk && rightOk && indexOk && remapIndex >= 0 && remapIndex <= maxBound;
     }
 
     return true;

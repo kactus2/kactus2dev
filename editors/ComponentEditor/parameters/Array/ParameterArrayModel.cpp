@@ -369,6 +369,14 @@ QString ParameterArrayModel::getArrayData()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterArrayModel::getArrayDataAsList()
+//-----------------------------------------------------------------------------
+QStringList ParameterArrayModel::getArrayDataAsList()
+{
+    return arrayValues_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterArrayModel::setParameterType()
 //-----------------------------------------------------------------------------
 void ParameterArrayModel::setParameterType(QString const& parameterType)

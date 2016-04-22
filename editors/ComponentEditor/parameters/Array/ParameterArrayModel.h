@@ -130,9 +130,16 @@ public:
     /*!
      *  Gets the data of the array.
      *
-     *      @return The data in the array, in one string separated by ',' and in between {}.
+     *      @return The data in the array in one string separated by ',' and in between {}.
      */
     QString getArrayData();
+
+    /*!
+     *  Get the data of the array as a list of items.
+     *
+     *      @return The data in the array in a list of items.
+     */
+    QStringList getArrayDataAsList();
 
     /*!
      *  Set the type for the values in the array.

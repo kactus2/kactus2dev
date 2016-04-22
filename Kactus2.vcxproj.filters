@@ -4288,6 +4288,12 @@
     <ClCompile Include="designEditors\HWDesign\undoCommands\HWComponentAddCommand.cpp">
       <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\remapStates\ValueOrIndexedValueEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\remapStates</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ValueOrIndexedValueEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5894,6 +5900,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\undoCommands\HWComponentAddCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\remapStates\ValueOrIndexedValueEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

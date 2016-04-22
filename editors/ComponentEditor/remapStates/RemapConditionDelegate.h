@@ -17,6 +17,8 @@
 
 #include <QCompleter>
 
+class ExpressionParser;
+
 //-----------------------------------------------------------------------------
 //! Delegate that provides widgets for editing remap condition.
 //-----------------------------------------------------------------------------
@@ -32,12 +34,14 @@ public:
      *      @param [in] portNameList            The list of available port names.
      *      @param [in] parameterCompleter      The completer to use for expression editors.
      *      @param [in] finder                  The parameter finder to use for expression editors.
+     *      @param [in] expressionParser        The expression parser used for calculating expressions.
      *      @param [in] expressionFormatter     The expression formatter for changing ids to parameter names.
      *      @param [in] parent                  The parent of the object.
      */
     RemapConditionDelegate(QStringList const& portNameList,
         QCompleter* parameterCompleter,
         QSharedPointer<ParameterFinder> finder,
+        QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject* parent = 0);
 
@@ -125,12 +129,12 @@ private:
     RemapConditionDelegate& operator=(const RemapConditionDelegate& other);
 
     /*!
-     *  Set the data for the array editor.
+     *  Setup the data for the condition value editor.
      *
-     *      @param [in] editor  The editor used to edit the array.
-     *      @param [in] index   The index of the current remap port.
+     *      @param [in] editor  The selected editor.
+     *      @param [in] index   Index of the editor containing port.
      */
-    void setArrayEditor(QWidget* editor, QModelIndex const& index) const;
+    void setValueAndArrayEditor(QWidget* editor, QModelIndex const& index) const;
 
     /*!
      *  Check if the value should be an array.
@@ -165,6 +169,9 @@ private:
 
     //! The expression formatter used to change parameter uuids in references to parameter names.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! The expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 
     //! The list of ports usable as remap ports.
     QStringList availablePortNames_;
