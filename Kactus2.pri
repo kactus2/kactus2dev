@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/Global.h \
+HEADERS += ./version.h \
+    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -527,6 +528,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/remapStates/RemapConditionModel.h \
     ./editors/ComponentEditor/remapStates/RemapConditionEditor.h \
     ./editors/ComponentEditor/remapStates/RemapConditionDelegate.h \
+    ./editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.h \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.h \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationsColumns.h \
     ./editors/ComponentEditor/instantiations/DesignInstantiationColumns.h \
@@ -641,6 +643,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/undoCommands/PortPasteCommand.h \
     ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.h \
     ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h \
     ./designEditors/common/DesignWidgetFactory.h \
     ./designEditors/common/DesignWidgetFactoryImplementation.h \
@@ -693,8 +696,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.h
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1149,6 +1151,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/remapStates/RemapStatesEditor.cpp \
     ./editors/ComponentEditor/remapStates/RemapStatesModel.cpp \
     ./editors/ComponentEditor/remapStates/SingleRemapStateEditor.cpp \
+    ./editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.cpp \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.cpp \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationEditor.cpp \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.cpp \
@@ -1211,6 +1214,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.cpp \
     ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/PortDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/PortPasteCommand.cpp \
@@ -1302,6 +1306,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.cpp
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp
 RESOURCES += kactus.qrc

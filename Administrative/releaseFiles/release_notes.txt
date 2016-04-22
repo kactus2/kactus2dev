@@ -35,6 +35,28 @@
 KNOWN UNRESOLVED ISSUES:
 * UI issue: paste command does not update usage count of referenced parameters.
 
+18/03/2016 3.0.0 RC2
+----------------------------------------------------
+
++ Fixed Linux compilation
++ Added support for expressions in file build command flag replace
++ Improved element validation with large numbers
++ Improved expression evaluation performance
++ Other minor improvements to usability
+
+- Corrected loading sticky notes in design editor
+
+KNOWN UNRESOLVED ISSUES:
+* Memory map header generation from a system design does not work properly.
+* SystemVerilog expressions are not supported by some features including generators.
+  If expressions or references have been used, it may cause at least the following issues:
+	* VHDL generator will generate wrong values.
+	* Port maps will not automatically adjust to changes in port size.
+* VHDL import does not preserve references to model parameters.
+* In ports editor, creating a bus interface through ports is not possible for name column.
+* VHDL generator crashes unexpectedly during run
+
+
 29/02/2016 3.0.0 RC1
 ----------------------------------------------------
 

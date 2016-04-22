@@ -51,7 +51,7 @@ void SplashScreen::drawContents(QPainter *painter)
     font.setBold(true);
     painter->setFont(font);
 
-    painter->drawText(240, 240, tr("Version %1.%2.%3 RC2 %4-bit").arg(QString::number(VERSION_MAJOR),
+    painter->drawText(240, 240, tr("Version %1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
                                                                   QString::number(VERSION_MINOR),
                                                                   QString::number(VERSION_BUILDNO),
                                                                   QString::number(bits)));
