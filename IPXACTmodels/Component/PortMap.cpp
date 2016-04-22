@@ -33,11 +33,34 @@ isInformative_()
 PortMap::PortMap(PortMap const& other): 
 invert_(other.invert_),
 isPresent_(other.isPresent_),
-logicalPort_(other.logicalPort_),
-physicalPort_(other.physicalPort_),
+logicalPort_(),
+physicalPort_(),
 logicalTieOff_(other.logicalTieOff_),
 isInformative_(other.isInformative_)
 {
+    if (other.logicalPort_)
+    {
+        logicalPort_ = QSharedPointer<PortMap::LogicalPort>(new PortMap::LogicalPort());
+        logicalPort_->name_ = other.logicalPort_->name_;
+
+        if (other.logicalPort_->range_)
+        {
+            logicalPort_->range_ = QSharedPointer<Range>(new Range(other.logicalPort_->range_->getLeft(), 
+                other.logicalPort_->range_->getRight()));
+        }
+    }
+
+    if (other.physicalPort_)
+    {
+        physicalPort_ = QSharedPointer<PortMap::PhysicalPort>(new PortMap::PhysicalPort());
+        physicalPort_->name_ = other.physicalPort_->name_;
+
+        if (other.physicalPort_->partSelect_)
+        {
+            physicalPort_->partSelect_ =
+                QSharedPointer<PartSelect>(new PartSelect(*other.physicalPort_->partSelect_));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

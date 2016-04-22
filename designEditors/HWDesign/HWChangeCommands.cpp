@@ -196,15 +196,17 @@ void ComponentActiveViewChangeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ComponentPacketizeCommand::ComponentPacketizeCommand()
 //-----------------------------------------------------------------------------
-ComponentPacketizeCommand::ComponentPacketizeCommand(ComponentItem* component,
-                                                     VLNV const& vlnv,
-                                                     QUndoCommand* parent) : QUndoCommand(parent),
-                                                     component_(component),
-                                                     vlnv_(vlnv),
-                                                     endpointLockedStates_()
+ComponentPacketizeCommand::ComponentPacketizeCommand(DesignDiagram* diagram,
+    ComponentItem* component,
+    VLNV const& vlnv,
+    QUndoCommand* parent) : QUndoCommand(parent),
+    diagram_(diagram),
+    componentItem_(component),
+    vlnv_(vlnv),
+    endpointLockedStates_()
 {
     // Save the locked states of each endpoint.
-    foreach (QGraphicsItem* item, component_->childItems())
+    foreach (QGraphicsItem* item, componentItem_->childItems())
     {
         ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
 
@@ -227,15 +229,14 @@ ComponentPacketizeCommand::~ComponentPacketizeCommand()
 //-----------------------------------------------------------------------------
 void ComponentPacketizeCommand::undo()
 {
-    // Unregister the VLNV.
-    static_cast<DesignDiagram*>(component_->scene())->getParent()->removeRelatedVLNV(vlnv_);
-    component_->setDraft();
+    diagram_->getParent()->removeRelatedVLNV(vlnv_);
 
-    // Set an empty VLNV.
-    component_->componentModel()->setVlnv(VLNV());
-    
+    componentItem_->setDraft();
+    componentItem_->getComponentInstance()->getComponentRef()->setVLNV(VLNV());
+    componentItem_->componentModel()->setVlnv(VLNV());    
+
     // Mark all endpoints as temporary.
-    foreach (QGraphicsItem* item, component_->childItems())
+    foreach (QGraphicsItem* item, componentItem_->childItems())
     {
         ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
 
@@ -246,7 +247,7 @@ void ComponentPacketizeCommand::undo()
         }
     }
 
-    component_->updateComponent();
+    componentItem_->updateComponent();
 }
 
 //-----------------------------------------------------------------------------
@@ -254,14 +255,14 @@ void ComponentPacketizeCommand::undo()
 //-----------------------------------------------------------------------------
 void ComponentPacketizeCommand::redo()
 {
-    component_->componentModel()->setVlnv(vlnv_);
-    component_->setPackaged();
+    componentItem_->componentModel()->setVlnv(vlnv_);
+    componentItem_->getComponentInstance()->getComponentRef()->setVLNV(vlnv_);
+    componentItem_->setPackaged();
 
-    // Register the VLNV.
-    static_cast<DesignDiagram*>(component_->scene())->getParent()->addRelatedVLNV(vlnv_);
+    diagram_->getParent()->addRelatedVLNV(vlnv_);
 
     // Mark all endpoints as non-temporary.
-    foreach (QGraphicsItem* item, component_->childItems())
+    foreach (QGraphicsItem* item, componentItem_->childItems())
     {
         ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
 
@@ -272,7 +273,7 @@ void ComponentPacketizeCommand::redo()
         }
     }
 
-    component_->updateComponent();
+    componentItem_->updateComponent();
 }
 
 //-----------------------------------------------------------------------------

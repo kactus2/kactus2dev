@@ -284,6 +284,11 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
 
         if (otherBusIf != 0 && otherBusIf->getBusType().isValid())
         {
+            if (busInterface_->getAbstractionTypes()->isEmpty())
+            {
+                busInterface_->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(new AbstractionType()));
+            }
+
             QSharedPointer<GenericEditProvider> editProvider = 
                 static_cast<DesignDiagram*>(scene())->getEditProvider().dynamicCast<GenericEditProvider>();
             editProvider->setState("portsCopied", false);
@@ -312,20 +317,25 @@ bool BusPortItem::onConnect(ConnectionEndpoint const* other)
                 busInterface_->getPortMaps()->append(newPortMaps);
             }
 
-            QString ifName = other->getBusInterface()->name();
+            QString ifName = other->name();
             int count = 0;
             while (getOwnerComponent()->hasInterface(ifName))
             {
                 count++;
-                ifName = other->getBusInterface()->name() + "_" + QString::number(count);
+                ifName = other->name() + "_" + QString::number(count);
             }
             busInterface_->setName(ifName);
 
             // Copy the bus and abstraction definitions.
             busInterface_->setBusType(otherBusIf->getBusType());
-            busInterface_->getAbstractionTypes()->clear();
-            busInterface_->getAbstractionTypes()->append(QSharedPointer<AbstractionType>(
-                new AbstractionType(*otherBusIf->getAbstractionTypes()->first())));
+
+            if (otherBusIf->getAbstractionTypes()->first()->getAbstractionRef())
+            {
+                QSharedPointer<ConfigurableVLNVReference> abstractionReference(new ConfigurableVLNVReference());
+                abstractionReference->setVLNV(*otherBusIf->getAbstractionTypes()->first()->getAbstractionRef());
+
+                busInterface_->getAbstractionTypes()->first()->setAbstractionRef(abstractionReference);
+            }
 
             updateInterface();
         }

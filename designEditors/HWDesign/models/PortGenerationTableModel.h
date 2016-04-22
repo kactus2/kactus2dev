@@ -33,7 +33,7 @@ class PortGenerationTableModel : public QAbstractTableModel
 
 public:
 
-    //! \brief Column numbering.
+    //! Column numbering.
     enum
     {
         SRC_DESCRIPTION = 0,
@@ -45,154 +45,146 @@ public:
         TARGET_DESCRIPTION        
     };
 
-    //! \brief The constructor.
+    //! The constructor.
     PortGenerationTableModel(QObject* parent = 0);
 
-    //! \brief The destructor.
+    //! The destructor.
     virtual ~PortGenerationTableModel();
 	
-	/*! \brief Get the number of rows in the model.
+	/*! Get the number of rows in the model.
 	 *
-	 * @param [in] parent Model index of the parent of the item. Must be invalid
-	 * because this is not hierarchical model.
+	 *      @param [in] parent Model index of the parent of the item.
 	 *
-	 * @return Number of rows currently in the model.
+	 *      @return Number of rows currently in the model.
 	*/
-	virtual int rowCount(const QModelIndex& parent = QModelIndex() ) const;
+	virtual int rowCount(QModelIndex const& parent = QModelIndex() ) const;
 
-	/*! \brief Get the number of columns in the model
+	/*! Get the number of columns in the model
 	 *
-	 * @param [in] parent Model index of the parent of the item. Must be invalid
-	 * because this is not hierarchical model.
+	 *      @param [in] parent Model index of the parent of the item.
 	 *
-	 * \return Number of columns currently in the model.
+	 *      @return Number of columns currently in the model.
 	*/
-	virtual int columnCount(const QModelIndex& parent = QModelIndex() ) const;
+	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
 
-	/*! \brief Get the data for the specified item for specified role.
+	/*! Get the data for the specified item for specified role.
 	 *
-	 * @param [in] index Identifies the item that's data is wanted.
-	 * @param [in] role Specifies what kind of data is wanted.
+	 *      @param [in] index Identifies the item that's data is wanted.
+	 *      @param [in] role Specifies what kind of data is wanted.
 	 *
-	 * @return QVariant containing the data.
+	 *      @return QVariant containing the data.
 	*/
-	virtual QVariant data(const QModelIndex& index, 
-		int role = Qt::DisplayRole ) const;
+	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
-	/*! \brief Get the data for the headers
+	/*! Get the data for the headers
 	 *
-	 * @param [in] section The column that's header is wanted.
-	 * @param [in] orientation Only Qt::Horizontal is supported.
-	 * @param [in] role Specified the type of data that is wanted.
+	 *      @param [in] section The column that's header is wanted.
+	 *      @param [in] orientation Only Qt::Horizontal is supported.
+	 *      @param [in] role Specified the type of data that is wanted.
 	 *
-	 * @return QVariant containing the data to be displayed.
+	 *      @return QVariant containing the data to be displayed.
 	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation, 
-		int role = Qt::DisplayRole ) const;
+	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
-	/*! \brief Set the data for specified item.
+	/*! Set the data for specified item.
 	 *
-	 * @param [in] index Specifies the item that's data is modified
-	 * @param [in] value The value to be set.
-	 * @param [in] role The role that is trying to modify the data. Only Qt::EditRole
-	 * is supported.
+	 *      @param [in] index Specifies the item that's data is modified
+	 *      @param [in] value The value to be set.
+	 *      @param [in] role The role that is trying to modify the data. Only Qt::EditRole is supported.
 	 *
-	 * @return True if data was successfully set in non-locked column.
+	 *      @return True if data was successfully set in non-locked column.
+	 */
+	virtual bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
+
+	/*! Set the header data for specified section.
+	 *
+	 *      @param [in] section Specifies the item that's data is modified
+	 *      @param [in] orientation The header's orientation. Only Qt::Horizontal is supported.
+	 *      @param [in] value The value to be set.
+	 *      @param [in] role The role that is trying to modify the data. Only Qt::EditRole is supported.
+	 *
+	 *      @return True if the header was successfully set.
 	*/
-	virtual bool setData(const QModelIndex& index, const QVariant& value, 
-		int role = Qt::EditRole );
+    bool setHeaderData(int section, Qt::Orientation orientation, QVariant const& value, int role = Qt::EditRole);
 
-	/*! \brief Set the header data for specified section.
+	/*! Get information on how specified item can be handled.
 	 *
-	 * @param [in] section Specifies the item that's data is modified
-	 * @param [in] orientation The header's orientation. Only Qt::Horizontal is supported.
-	 * @param [in] value The value to be set.
-	 * @param [in] role The role that is trying to modify the data. Only Qt::EditRole
-	 * is supported.
+	 *      @param [in] index Specifies the item that's flags are wanted.
 	 *
-	 * @return True if the header was successfully set.
+	 *      @return Qt::ItemFlags that define how object can be handled.
 	*/
-    bool setHeaderData( int section, Qt::Orientation orientation, 
-        const QVariant & value, int role = Qt::EditRole );
+	virtual Qt::ItemFlags flags(QModelIndex const& index) const;
 
-	/*! \brief Get information on how specified item can be handled.
+	/*! Check if the model is in valid state or not.
 	 *
-	 * @param [in] index Specifies the item that's flags are wanted.
-	 *
-	 * @return Qt::ItemFlags that define how object can be handled.
-	*/
-	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
-
-	/*! \brief Check if the model is in valid state or not.
-	 *
-	 * @return True if all items in model are valid.
+	 *      @return True if all items in model are valid.
 	*/
 	bool isValid() const;
 
-	/*! \brief Creates the initial content according to specified interfaces.
+	/*! Creates the initial content according to specified interfaces.
      *     
-     * @param [in] srcComponent         The component to copy from.
-     * @param [in] busIf                Bus interface to copy.
-     * @param [in] targetComponent      The component to copy to.
-     * @param [in] lh                   The library interface.
-     * @param [in] selectedMode         Bus interface mode for target component.
+     *      @param [in] srcComponent         The component to copy from.
+     *      @param [in] busIf                Bus interface to copy.
+     *      @param [in] targetComponent      The component to copy to.
+     *      @param [in] lh                   The library interface.
+     *      @param [in] selectedMode         Bus interface mode for target component.
 	*/
     void initialize(QSharedPointer<Component> srcComponent, QSharedPointer<BusInterface> busIf, 
         QSharedPointer<Component> targetComponent, LibraryInterface* lh, General::InterfaceMode selectedMode);
 
-	//! \brief Locks a column.
+	//! Locks a column.
 	void lockColumn(int const column);
 
-    //! \brief Opens a column lock.	
+    //! Opens a column lock.	
 	void openColumn(int const column);
 
-    /*! \brief Checks if a column is locked.
+    /*! Checks if a column is locked.
 	 *
 	 * @return True if column was locked.
 	*/
 	bool columnLocked(int column) const;
 
 private:
-    //! \brief No copying.
+    //! No copying.
 	PortGenerationTableModel(const PortGenerationTableModel& other);
 
 	//! No assignment.
 	PortGenerationTableModel& operator=(const PortGenerationTableModel& other);
 
-    /*! \brief Checks if table or draft component has same name for anohter port.
+    /*! Checks if table or draft component has same name for another port.
 	 *
-     * @param [in] row The row whose generated name is compared to others.
+     *      @param [in] row The row whose generated name is compared to others.
      *  
-	 * @return True if a port with same name was found.
+	 *      @return True if a port with same name was found.
 	*/
     bool nameDuplicates(int const row) const;
 
-    /*! \brief Generates a unique name for a port.
+    /*! Generates a unique name for a port.
 	 *
-     * @param [in] name                 The port name in the opposite interface.
-     * @param [in] opposingDirection    The port direction  in the opposite interface.
-     * @param [in] draftDirection       The port direction in the draft interface.
-     * @param [in] delimiter            Delimiter for in/out/inout in port name.
-
-	 * @return Unique name for a port in the draft component.
-	*/
-    QString generateName(QString name, DirectionTypes::Direction opposingDirection, 
-        DirectionTypes::Direction draftDirection, QString delimiter = "_");
+     *      @param [in] name                 The port name in the opposite interface.
+     *      @param [in] opposingDirection    The port direction  in the opposite interface.
+     *      @param [in] draftDirection       The port direction in the draft interface.
+     *      @param [in] delimiter            Delimiter for in/out/inout in port name.
+     *
+	 *      @return Unique name for a port in the draft component.
+	 */
+    QString generateName(QString const& name, DirectionTypes::Direction opposingDirection, 
+        DirectionTypes::Direction draftDirection, QString const& delimiter = "_");
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! \brief Pointer to the draft component.
+    //! Pointer to the draft component.
     QSharedPointer<Component> draftComponent_;
 
-    //! \brief Columns whose content cannot be changed by the user.
+    //! Columns whose content cannot be changed by the user.
     QList<int> lockedColumns_;
 
-    //! \brief Table rows.
+    //! Table rows.
     QList< QSharedPointer<PortGenerationRow> > rows_;
 
-    //! \brief Table headers.
+    //! Table headers.
     QStringList headers_;
 };
 

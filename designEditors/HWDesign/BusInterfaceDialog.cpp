@@ -219,13 +219,22 @@ QList< QSharedPointer<PortMap> > BusInterfaceDialog::getPortMaps()
                 if (sourceName == portMap->getPhysicalPort()->name_)
                 {
                      physicalName = targetIndex.data(Qt::DisplayRole).toString();
+                     break;
                 }
             }
        
-            QSharedPointer<PortMap> generated(new PortMap(*portMap));
-            QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort(physicalName));
+            QSharedPointer<PortMap::PhysicalPort> originalPort = portMap->getPhysicalPort();
 
-            generated->setPhysicalPort(physicalPort);
+            QSharedPointer<PortMap> generated(new PortMap(*portMap));
+            QSharedPointer<PortMap::PhysicalPort> physicalPort = generated->getPhysicalPort();
+            if (!physicalPort)
+            {
+                physicalPort = QSharedPointer<PortMap::PhysicalPort>(new PortMap::PhysicalPort());
+                generated->setPhysicalPort(physicalPort);
+            }
+
+            physicalPort->name_ = physicalName;
+
             portMaps_.append(generated);
         }
     }

@@ -636,7 +636,7 @@ void SystemDesignDiagram::onAddToLibraryAction()
             getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
 
             // Create an undo command.
-            QSharedPointer<ComponentPacketizeCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
+            QSharedPointer<ComponentPacketizeCommand> cmd(new ComponentPacketizeCommand(this, comp, vlnv));
             getEditProvider()->addCommand(cmd);
             cmd->redo();
 

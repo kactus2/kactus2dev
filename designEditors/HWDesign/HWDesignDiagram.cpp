@@ -564,7 +564,7 @@ void HWDesignDiagram::onAddToLibraryAction()
             getLibraryInterface()->writeModelToFile(dialog.getPath(), comp->componentModel());
 
             // Create an undo command.
-            QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(comp, vlnv));
+            QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(this, comp, vlnv));
             getEditProvider()->addCommand(cmd);
             cmd->redo();
 

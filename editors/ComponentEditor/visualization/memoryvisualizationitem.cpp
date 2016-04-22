@@ -80,7 +80,7 @@ void MemoryVisualizationItem::addChild(MemoryVisualizationItem* childItem)
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::removeChild(MemoryVisualizationItem* childItem)
 {
-    quint64 offset = childItem->getOffset();
+    quint64 offset = childItems_.key(childItem);
 
     Q_ASSERT(childItems_.contains(offset));
     childItems_.remove(offset, childItem);

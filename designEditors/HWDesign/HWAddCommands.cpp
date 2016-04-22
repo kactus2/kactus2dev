@@ -129,8 +129,7 @@ portsCopied_(false)
         foreach (QSharedPointer<PortMap> portMap, portMaps_)
         {
             QSharedPointer<Port> port = srcComponent->getPort(portMap->getPhysicalPort()->name_);
-            // Check that port exists.
-            if (!port.isNull())            
+            if (!port.isNull())
             {
                 new AddPhysicalPortCommand(srcComponent, port, this);
             }

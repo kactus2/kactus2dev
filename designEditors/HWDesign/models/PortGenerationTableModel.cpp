@@ -40,32 +40,35 @@ namespace
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortGenerationTableModel()
+// Function: PortGenerationTableModel::PortGenerationTableModel()
 //-----------------------------------------------------------------------------
-PortGenerationTableModel::PortGenerationTableModel(QObject* parent)
-    : QAbstractTableModel(parent), draftComponent_(0), 
-    lockedColumns_(), rows_(),
+PortGenerationTableModel::PortGenerationTableModel(QObject* parent):
+QAbstractTableModel(parent), 
+    draftComponent_(0), 
+    lockedColumns_(),
+    rows_(),
     headers_()
 {
-    for( int i = 0; i < PortGenerationRow::COLUMNS; i++ )
+    for(int i = 0; i < PortGenerationRow::COLUMNS; i++)
     {
         headers_.append(HEADER_DEFAULT_NAMES[i]);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~PortGenerationTableModel()
+// Function: PortGenerationTableModel::~PortGenerationTableModel()
 //-----------------------------------------------------------------------------
 PortGenerationTableModel::~PortGenerationTableModel()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: rowCount()
+// Function: PortGenerationTableModel::rowCount()
 //-----------------------------------------------------------------------------
-int PortGenerationTableModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/ ) const
+int PortGenerationTableModel::rowCount(QModelIndex const& parent) const
 {
-    if (parent.isValid()) {
+    if (parent.isValid())
+    {
         return 0;
     }
 
@@ -73,11 +76,12 @@ int PortGenerationTableModel::rowCount(const QModelIndex& parent /*= QModelIndex
 }
 
 //-----------------------------------------------------------------------------
-// Function: columnCount()
+// Function: PortGenerationTableModel::columnCount()
 //-----------------------------------------------------------------------------
-int PortGenerationTableModel::columnCount(const QModelIndex& parent /*= QModelIndex()*/ ) const
+int PortGenerationTableModel::columnCount(QModelIndex const& parent) const
 {
-    if (parent.isValid()) {
+    if (parent.isValid())
+    {
         return 0;
     }
 
@@ -85,79 +89,72 @@ int PortGenerationTableModel::columnCount(const QModelIndex& parent /*= QModelIn
 }
 
 //-----------------------------------------------------------------------------
-// Function: data()
+// Function: PortGenerationTableModel::data()
 //-----------------------------------------------------------------------------
-QVariant PortGenerationTableModel::data(const QModelIndex& index, 
-    int role /*= Qt::DisplayRole*/ ) const
+QVariant PortGenerationTableModel::data(QModelIndex const& index, int role) const
 {
-    if ( !index.isValid() )
-    {
-        return QVariant();
-    }
-    
-    if ( index.row() >= rows_.size() || index.column() >= PortGenerationRow::COLUMNS )
+    if (!index.isValid() || index.row() >= rows_.size() || index.column() >= PortGenerationRow::COLUMNS)
     {
         return QVariant();
     }
 
-    if ( role == Qt::DisplayRole ) 
+    if (role == Qt::DisplayRole) 
     {
         QSharedPointer<PortGenerationRow> row = rows_.at(index.row());
-        switch (index.column()) {
 
-        case SRC_DESCRIPTION : 
+        if (index.column() == SRC_DESCRIPTION ) 
+        {
+            return row->getSourceDescription();
+        }   
+        else if (index.column() == SRC_DIRECTION)
+        {
+            return DirectionTypes::direction2Str(row->getSourceDirection());
+        }
+        else if (index.column() == SRC_NAME)
+        {
+            return row->getSourceName();
+        }
+        else if (index.column() == SIZE)
+        {
+            return row->getSize();
+        }
+        else if (index.column() == TARGET_NAME)
+        {
+            return row->getDraftName();
+        }
+        else if (index.column() == TARGET_DIRECTION)
+        {
+            DirectionTypes::Direction dir = row->getDraftDirection();
+            if (dir == DirectionTypes::DIRECTION_INVALID)
             {
-                return row->getSourceDescription();
-            }   
-        case SRC_DIRECTION : 
-            {
-                return DirectionTypes::direction2Str(row->getSourceDirection());
+                return QString(tr("undefined"));
             }
-        case SRC_NAME : 
-            {
-                return row->getSourceName();
-            }
-        case SIZE : 
-            {
-                return row->getSize();
-            }
-        case TARGET_NAME :
-            {
-                return row->getDraftName();
-            }
-        case TARGET_DIRECTION :
-            {
-                DirectionTypes::Direction dir = row->getDraftDirection();
-                if (dir == DirectionTypes::DIRECTION_INVALID)
-                {
-                    return QString(tr("undefined"));
-                }
-                return DirectionTypes::direction2Str(dir);
-            }
-        case TARGET_DESCRIPTION : 
-            {
-                return row->getDraftDescription();
-            }
-        default :
-            {
-                return QVariant();
-            }
+
+            return DirectionTypes::direction2Str(dir);
+        }
+        else if (index.column() == TARGET_DESCRIPTION)
+        {
+            return row->getDraftDescription();
+        }
+        else
+        {
+            return QVariant();
         }
     }
 
     else if ( role == Qt::ForegroundRole )
     {
         
-        if ( index.column() == TARGET_NAME && nameDuplicates(index.row()) )
+        if (index.column() == TARGET_NAME && nameDuplicates(index.row()))
         {
             return QColor("red");
         } 
-        else if ( index.column() == TARGET_DIRECTION && 
-            rows_.at(index.row())->getDraftDirection() == DirectionTypes::DIRECTION_INVALID )
+        else if (index.column() == TARGET_DIRECTION && 
+            rows_.at(index.row())->getDraftDirection() == DirectionTypes::DIRECTION_INVALID)
         {
             return QColor("red");
         }
-        else if ( columnLocked(index.column()) )
+        else if (columnLocked(index.column()))
         {
             return QColor("gray");
         }
@@ -165,9 +162,9 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
         return QColor("black");
     }
 
-    else if ( role == Qt::BackgroundRole )
+    else if (role == Qt::BackgroundRole)
     {
-        if ( index.column() == TARGET_NAME )
+        if (index.column() == TARGET_NAME)
         {
             return QColor("LemonChiffon");
         }
@@ -177,8 +174,7 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
 
     else if (role == Qt::TextAlignmentRole)
     {
-        if ( index.column() == SRC_DIRECTION || index.column() == SIZE || 
-            index.column() == TARGET_DIRECTION )
+        if ( index.column() == SRC_DIRECTION || index.column() == SIZE || index.column() == TARGET_DIRECTION )
         {
             return Qt::AlignCenter;
         }
@@ -188,29 +184,21 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
         }
     }
 
-    else if ( role == Qt::EditRole )
+    else if (role == Qt::EditRole && !columnLocked(index.column()))
     {
-        if ( !columnLocked(index.column()) )
-        {
-            return data(index, Qt::DisplayRole);
-        }
+        return data(index, Qt::DisplayRole);
     }
 
-    else if ( role == Qt::ToolTipRole )
+    else if (role == Qt::ToolTipRole)
     {
-        if ( index.column() == TARGET_NAME )
+        if (index.column() == TARGET_NAME && nameDuplicates(index.row()))
         {
-            if ( nameDuplicates(index.row()) )
-            {
                 return QString(tr("Name %1 already in use.").arg(data(index).toString()));
-            } 
         }
-        else if ( index.column() == TARGET_DIRECTION )
+        else if (index.column() == TARGET_DIRECTION &&
+            rows_.at(index.row())->getDraftDirection() == DirectionTypes::DIRECTION_INVALID)
         {
-            if ( rows_.at(index.row())->getDraftDirection() == DirectionTypes::DIRECTION_INVALID )
-            {
-                return QString(tr("Direction not defined in bus abstraction definition."));
-            }
+            return QString(tr("Direction not defined in bus abstraction definition."));
         }
     }
 
@@ -218,31 +206,18 @@ QVariant PortGenerationTableModel::data(const QModelIndex& index,
 }
 
 //-----------------------------------------------------------------------------
-// Function: headerData()
+// Function: PortGenerationTableModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant PortGenerationTableModel::headerData(int section, Qt::Orientation orientation, 
-    int role /*= Qt::DisplayRole*/ ) const
+QVariant PortGenerationTableModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if ( orientation != Qt::Horizontal )
+    if (orientation != Qt::Horizontal)
     {
         return QVariant();
     }
 
-    if ( role == Qt::DisplayRole ) 
+    if (role == Qt::DisplayRole && section < headers_.size()) 
     {
-        if ( section < headers_.size() )
-        {
-            return headers_.at(section);
-        }
-        else{
-            return QVariant();
-        }
-
-        // if unsupported role
-    }
-    else 
-    {
-        return QVariant();
+        return headers_.at(section);
     }
 
     return QVariant();
@@ -251,75 +226,58 @@ QVariant PortGenerationTableModel::headerData(int section, Qt::Orientation orien
 //-----------------------------------------------------------------------------
 // Function: setData()
 //-----------------------------------------------------------------------------
-bool PortGenerationTableModel::setData(const QModelIndex& index, const QVariant& value, 
-    int role /*Qt::EditRole*/ )
+bool PortGenerationTableModel::setData(QModelIndex const& index, const QVariant& value, int role)
 {
-    if (!index.isValid())
-    {
-        return false;
-    }
-    // if row is invalid
-    else if ( index.row() < 0 || index.row() >= rows_.size() ){
-        return false;
-    }
-    else if ( columnLocked(index.column()) )
+    if (!index.isValid() || index.row() < 0 || index.row() >= rows_.size() || columnLocked(index.column()))
     {
         return false;
     }
 
-    if ( role == Qt::EditRole )
+    if (role == Qt::EditRole)
     {
         QSharedPointer<PortGenerationRow> row = rows_.at(index.row());
-        switch (index.column()) 
+        if (index.column() == TARGET_NAME)
         {
-
-        case TARGET_NAME :
-            {
-                row->setDraftName(value.toString());
-                emit dataChanged(index,index);
-                return true;
-            }
-        case TARGET_DIRECTION :
-            {
-                row->setDraftDirection(DirectionTypes::str2Direction(value.toString(), 
-                    DirectionTypes::DIRECTION_INVALID));
-                emit dataChanged(index,index);
-                return true;
-            }
-        case TARGET_DESCRIPTION : 
-            {
-                row->setDraftDescription(value.toString());
-                emit dataChanged(index,index);
-                return true;
-            }
-        default :
-            {
-                return false;
-            }
+            row->setDraftName(value.toString());
+            emit dataChanged(index, index);
+            return true;
         }
+        else if (index.column() == TARGET_DIRECTION)
+        {
+            row->setDraftDirection(DirectionTypes::str2Direction(value.toString(), 
+                DirectionTypes::DIRECTION_INVALID));
+            emit dataChanged(index, index);
+            return true;
+        }
+        else if (index.column() == TARGET_DESCRIPTION)
+        {
+            row->setDraftDescription(value.toString());
+            emit dataChanged(index, index);
+            return true;
+        }
+        else
+        {
+            return false;
+        }        
     }
+
     return false;
 }
 
 //-----------------------------------------------------------------------------
-// Function: setHeaderData()
+// Function: PortGenerationTableModel::setHeaderData()
 //-----------------------------------------------------------------------------
-bool PortGenerationTableModel::setHeaderData( int section, Qt::Orientation orientation, 
-    const QVariant & value, int role /*= Qt::EditRole*/ )
+bool PortGenerationTableModel::setHeaderData( int section, Qt::Orientation orientation, QVariant const& value, 
+    int role)
 {
-    if( orientation != Qt::Horizontal )
+    if (orientation != Qt::Horizontal || !value.isValid())
     {
         return false;
     }
 
-    if ( !value.isValid() )
+    if (role == Qt::EditRole && section < headers_.size())
     {
-        return false;
-    }
-
-    if( role == Qt::EditRole && section < headers_.size() )
-    {
-        headers_.replace(section,value.toString());
+        headers_.replace(section, value.toString());
         emit headerDataChanged(orientation,section,section);
         return true;
     }
@@ -328,16 +286,16 @@ bool PortGenerationTableModel::setHeaderData( int section, Qt::Orientation orien
 }
 
 //-----------------------------------------------------------------------------
-// Function: flags()
+// Function: PortGenerationTableModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags PortGenerationTableModel::flags(const QModelIndex& index) const
+Qt::ItemFlags PortGenerationTableModel::flags(QModelIndex const& index) const
 {
-    if ( !index.isValid() )
+    if (!index.isValid())
     {
         return Qt::NoItemFlags;
     }
 
-    if ( columnLocked( index.column()) )
+    if (columnLocked( index.column()))
     {
         return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
@@ -346,13 +304,13 @@ Qt::ItemFlags PortGenerationTableModel::flags(const QModelIndex& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: isValid()
+// Function: PortGenerationTableModel::isValid()
 //-----------------------------------------------------------------------------
 bool PortGenerationTableModel::isValid() const
 {
     for ( int i = 0; i < rows_.size(); i++ ) 
     {
-        if ( !rows_.at(i)->isValid() || nameDuplicates(i) )
+        if (!rows_.at(i)->isValid() || nameDuplicates(i))
         {
             return false;
         }
@@ -362,7 +320,7 @@ bool PortGenerationTableModel::isValid() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: initialize()
+// Function: PortGenerationTableModel::initialize()
 //-----------------------------------------------------------------------------
 void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent, 
     QSharedPointer<BusInterface> busIf, 
@@ -370,7 +328,6 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
     LibraryInterface* lh, 
     General::InterfaceMode selectedMode)
 {
-    // Store pointer to draft component.
     draftComponent_ = targetComponent;
 
     // Get the abstract definition of the bus interface.
@@ -378,8 +335,7 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
     QSharedPointer<AbstractionDefinition> absDef = libComp.staticCast<AbstractionDefinition>();
 
     beginResetModel();    
-    //rows_.clear();
-
+    
     bool createNew = rows_.empty();
     QSharedPointer<PortGenerationRow> row = QSharedPointer<PortGenerationRow>();
     int count = 0;
@@ -388,32 +344,29 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
     foreach (QSharedPointer<PortMap> portMap, *busIf->getPortMaps())
     {
         QString portName = portMap->getPhysicalPort()->name_;
+
         QSharedPointer<Port> port = srcComponent->getPort(portName);
-
-        if (!port)
+        if (port)
         {
-            continue;
-        }
+            if (createNew)
+            {
+                int portSize = abs(port->getLeftBound().toInt() - port->getRightBound().toInt()) + 1;
+                row = QSharedPointer<PortGenerationRow>(new PortGenerationRow(portName, port->getDirection(),
+                    port->description(), portSize));
+                rows_.append(row);
+            }
+            else
+            {
+                row = rows_.at(count);
+            }
 
-        if (createNew)
-        {
-            row = QSharedPointer<PortGenerationRow>(new PortGenerationRow(portName, port->getDirection(),
-                port->description(), 1));//port->getPortSize()));
-        }
-        else
-        {
-            row = rows_.at(count);
-        }
+            DirectionTypes::Direction draftDir = absDef->getPortDirection(portMap->getLogicalPort()->name_,
+                selectedMode);
+            row->setDraftDirection(draftDir);
+            row->setDraftName(generateName(portName, port->getDirection(), draftDir));
 
-        DirectionTypes::Direction draftDir = absDef->getPortDirection(portMap->getLogicalPort()->name_, selectedMode);
-        row->setDraftDirection(draftDir);
-        row->setDraftName(generateName(portName, port->getDirection(), draftDir));
-        if (createNew)
-        {
-            rows_.append(QSharedPointer<PortGenerationRow>(row));
+            count++;
         }
-
-        count++;
     }
 
     endResetModel();
@@ -426,18 +379,18 @@ void PortGenerationTableModel::initialize(QSharedPointer<Component> srcComponent
 }
 
 //-----------------------------------------------------------------------------
-// Function: lockColumn()
+// Function: PortGenerationTableModel::lockColumn()
 //-----------------------------------------------------------------------------
 void PortGenerationTableModel::lockColumn(int const column)
 {
-    if( !lockedColumns_.contains(column) )
+    if (!lockedColumns_.contains(column))
     {
         lockedColumns_.append(column);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: openColumn()
+// Function: PortGenerationTableModel::openColumn()
 //-----------------------------------------------------------------------------
 void PortGenerationTableModel::openColumn(int const column)
 {
@@ -445,7 +398,7 @@ void PortGenerationTableModel::openColumn(int const column)
 }
 
 //-----------------------------------------------------------------------------
-// Function: columnLocked()
+// Function: PortGenerationTableModel::columnLocked()
 //-----------------------------------------------------------------------------
 bool PortGenerationTableModel::columnLocked(int column) const
 {
@@ -453,18 +406,18 @@ bool PortGenerationTableModel::columnLocked(int column) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: nameDuplicates()
+// Function: PortGenerationTableModel::nameDuplicates()
 //-----------------------------------------------------------------------------
 bool PortGenerationTableModel::nameDuplicates(int const row) const
 {
-    if ( row < rows_.size() ){
-
+    if (row < rows_.size())
+    {
         QSharedPointer<PortGenerationRow> comparable = rows_.at(row);
 
-        foreach ( QSharedPointer<PortGenerationRow> portRow, rows_ )
+        foreach (QSharedPointer<PortGenerationRow> portRow, rows_)
         {
             // Check draft component for identical port names.
-            if ( draftComponent_->getPort(comparable->getDraftName()) != 0 )
+            if (draftComponent_->getPort(comparable->getDraftName()) != 0)
             {
                 return true;
             }
@@ -478,8 +431,6 @@ bool PortGenerationTableModel::nameDuplicates(int const row) const
             {
                 return true;
             }
-
-
         }
     }
 
@@ -489,8 +440,10 @@ bool PortGenerationTableModel::nameDuplicates(int const row) const
 //-----------------------------------------------------------------------------
 // Function: PortGenerationTableModel::generateName()
 //-----------------------------------------------------------------------------
-QString PortGenerationTableModel::generateName(QString name, DirectionTypes::Direction opposingDirection,
-    DirectionTypes::Direction draftDirection, QString delimiter)
+QString PortGenerationTableModel::generateName(QString const& name, 
+    DirectionTypes::Direction opposingDirection, 
+    DirectionTypes::Direction draftDirection, 
+    QString const& delimiter)
 {
     if (name.isEmpty())
     {
@@ -505,14 +458,14 @@ QString PortGenerationTableModel::generateName(QString name, DirectionTypes::Dir
     QString ending = delimiter + DirectionTypes::direction2Str(opposingDirection); 
     QString replacement = delimiter + DirectionTypes::direction2Str(draftDirection); 
     QString nameCandidate = name + replacement;
-    if ( name.endsWith(ending) )
+    if (name.endsWith(ending))
     {
         nameCandidate = name.left(name.lastIndexOf(ending))+replacement;
     }
 
     QString uniqueName = nameCandidate;
     int count = 0;
-    while( draftComponent_->getPort(uniqueName) != 0 )
+    while (draftComponent_->getPort(uniqueName) != 0)
     {
         count++;
         uniqueName = nameCandidate + "_" + QString::number(count);

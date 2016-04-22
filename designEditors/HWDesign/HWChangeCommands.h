@@ -296,11 +296,13 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component  The component.
-     *      @param [in] vlnv       The VLNV of the packetized component.
-     *      @param [in] parent     The parent command.
+     *      @param [in] diagram     The design diagram containing the packaged component.
+     *      @param [in] component   The component to package.
+     *      @param [in] vlnv        The VLNV of the packaged component.
+     *      @param [in] parent      The parent command.
      */
-    ComponentPacketizeCommand(ComponentItem* component, VLNV const& vlnv, QUndoCommand* parent = 0);
+    ComponentPacketizeCommand(DesignDiagram* diagram, ComponentItem* component, VLNV const& vlnv, 
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -329,8 +331,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! The containing design diagram.
+    DesignDiagram* diagram_;
+
     //! The diagram component.
-    ComponentItem* component_;
+    ComponentItem* componentItem_;
 
     //! The component VLNV.
     VLNV vlnv_;
