@@ -53,6 +53,9 @@ private slots:
     void testIsPlainValue();
     void testIsPlainValue_data();
 
+    void testParseComparison();
+    void testParseComparison_data();
+
 };
 
 //-----------------------------------------------------------------------------
@@ -741,6 +744,45 @@ void tst_SystemVerilogExpressionParser::testIsPlainValue_data()
     QTest::newRow("Large negative number is plain") << "-99999" << true;
     QTest::newRow("Even larger negative number is plain") << "-99999999999999" << true;
     QTest::newRow("Even larger negative number is plain") << "-999999999999999999" << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParseComparison()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParseComparison()
+{
+    QFETCH(QString, expression);
+    QFETCH(int, expectedResult);
+
+    SystemVerilogExpressionParser parser;
+
+    QString parserResult = parser.parseExpression(expression);
+
+    QCOMPARE(parserResult.toInt(), expectedResult);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_SystemVerilogExpressionParser::testParseComparison_data()
+//-----------------------------------------------------------------------------
+void tst_SystemVerilogExpressionParser::testParseComparison_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<int>("expectedResult");
+
+    QTest::newRow("Single value: 10 is greater than 2 returns 1") << "10 > 2" << 1;
+    QTest::newRow("Single value: 2 is greater than 10 returns 0") << "2 > 10" << 0;
+    QTest::newRow("Single value: 10 is lesser than 2 returns 0") << "10 < 2" << 0;
+    QTest::newRow("Single value: 2 is lesser than 10 returns 1") << "2 < 10" << 1;
+
+    QTest::newRow("5 is greater than 5 returns 0") << "5>5" << 0;
+    QTest::newRow("5 is lesser than 5 returns 0") << "5<5" << 0;
+
+    QTest::newRow("Expression: 14*2 is greater than 2-3*2+8 returns 1") << "14*2 > 2-3*2+8" << 1;
+    QTest::newRow("Expression: 2-3*2+8 is greater than 14*2 returns 0") << "2 > 10" << 0;
+    QTest::newRow("Expression: 14*2 is lesser than 2-3*2+8 returns 0") << "10 < 2" << 0;
+    QTest::newRow("Expression: 2-3*2+8 is lesser than 14*2 returns 1") << "2 < 10" << 1;
+
+    QTest::newRow("14-2 is greater than 3 is greater than 0 returns 1") << "14-2>3>0" << 1;
 }
 
 QTEST_APPLESS_MAIN(tst_SystemVerilogExpressionParser)

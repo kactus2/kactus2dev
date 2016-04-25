@@ -23,11 +23,14 @@ namespace
     const QString REAL_NUMBER("[+-]?[0-9_]+[.][0-9_]+");
 
     const QRegularExpression PRIMARY_LITERAL("((?:[(]\\s*)*)\\s*(" + REAL_NUMBER + "|" + 
-        SystemVerilogSyntax::INTEGRAL_NUMBER + "|"  + 
-        CLOG2_FUNCTION + ")\\s*((?:[)]\\s*)*)");
+        SystemVerilogSyntax::INTEGRAL_NUMBER + "|"  + CLOG2_FUNCTION + ")\\s*((?:[)]\\s*)*)");
 
     const QRegularExpression BINARY_OPERATOR("[+-/*//]|[/*][/*]");
-    const QRegularExpression NEXT_OPERAND("(" + BINARY_OPERATOR.pattern() + ")\\s*"
+    const QRegularExpression COMPARISON_OPERATOR("[<>]");
+
+    const QRegularExpression COMBINED_OPERATOR(BINARY_OPERATOR.pattern() + "|" + COMPARISON_OPERATOR.pattern());
+
+    const QRegularExpression NEXT_OPERAND("(" + COMBINED_OPERATOR.pattern() + ")\\s*"
         "(" + PRIMARY_LITERAL.pattern() + ")");
 }
 
@@ -86,6 +89,11 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
         return arrayExpression;
     }
 
+    if (isComparison(expression))
+    {
+        return parseComparison(expression);
+    }
+
     QStringList equation = toStringList(expression);
 
     equation = solveMathFuctions(equation);
@@ -108,6 +116,44 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
 
         return QString::number(parseConstantToDecimal(equation.first()), 'f', precision);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::isComparison()
+//-----------------------------------------------------------------------------
+bool SystemVerilogExpressionParser::isComparison(QString const& expression) const
+{
+    QRegularExpression comparisonExpression (".+" + COMPARISON_OPERATOR.pattern() + ".+");
+
+    return comparisonExpression.match(expression).hasMatch();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemVerilogExpressionParser::parseComparison()
+//-----------------------------------------------------------------------------
+QString SystemVerilogExpressionParser::parseComparison(QString const& expression) const
+{
+    QString solvedComparison = expression;
+
+    int operatorPosition = solvedComparison.lastIndexOf(COMPARISON_OPERATOR);
+
+    QString selectedOperator = solvedComparison.at(operatorPosition);
+
+    QString leftOperand = solvedComparison.left(operatorPosition);
+    QString rightOperand = solvedComparison.right(solvedComparison.size() - operatorPosition - 1);
+
+    int leftResult = parseExpression(leftOperand).toInt();
+    int rightResult = parseExpression(rightOperand).toInt();
+
+    QString comparisonResult = "0";
+
+    if ((selectedOperator == ">" && leftResult > rightResult) ||
+        (selectedOperator == "<" && leftResult < rightResult))
+    {
+        comparisonResult = "1";
+    }
+
+    return comparisonResult;
 }
 
 //-----------------------------------------------------------------------------

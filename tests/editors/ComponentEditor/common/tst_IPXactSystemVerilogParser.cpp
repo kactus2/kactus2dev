@@ -63,6 +63,9 @@ private slots:
 
     void testExpressionWithRealValueParameterReferences();
     void testExpressionWithRealValueParameterReferences_data();
+
+    void testExpressionComparison();
+    void testExpressionComparison_data();
 };
 
 //-----------------------------------------------------------------------------
@@ -411,6 +414,50 @@ void tst_IPXactSystemVerilogParser::testExpressionWithRealValueParameterReferenc
     QTest::newRow("Two parameters addition, integer and floating point") << "firstValue + secondValue" << "30.751";
     QTest::newRow("Two parameters subtraction, integer and floating point") <<
         "firstValue - secondValue" << "29.249";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_IPXactSystemVerilogParser::testExpressionComparison()
+//-----------------------------------------------------------------------------
+void tst_IPXactSystemVerilogParser::testExpressionComparison()
+{
+    QFETCH(QString, expression);
+    QFETCH(int, expectedResult);
+
+    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Parameter> firstParameter(new Parameter());
+    firstParameter->setValueId("firstValue");
+    firstParameter->setValue("10");
+    testComponent->getParameters()->append(firstParameter);
+
+    QSharedPointer<Parameter> secondParameter(new Parameter());
+    secondParameter->setValueId("secondValue");
+    secondParameter->setValue("4*2");
+    testComponent->getParameters()->append(secondParameter);
+
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
+
+    QCOMPARE(parser.parseExpression(expression).toInt(), expectedResult);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_IPXactSystemVerilogParser::testExpressionComparison_data()
+//-----------------------------------------------------------------------------
+void tst_IPXactSystemVerilogParser::testExpressionComparison_data()
+{
+    QTest::addColumn<QString>("expression");
+    QTest::addColumn<int>("expectedResult");
+
+    QTest::newRow("Value 1 is greater than value 2 returns 1") << "firstValue > secondValue" << 1;
+    QTest::newRow("Value 2 is greater than value 1 returns 0") << "secondValue > firstValue" << 0;
+
+    QTest::newRow("Value 1 is lesser than value 2 returns 0") << "firstValue < secondValue" << 0;
+    QTest::newRow("Value 2 is lesser than value 1 returns 1") << "secondValue < firstValue" << 1;
+
+    QTest::newRow("Value 1 + value 2 is greater than value 1 returns 1") <<
+        "firstValue + secondValue > firstValue" << 1;
+    QTest::newRow("Value 1 + value 2 is lesser than value 1 returns 0") <<
+        "firstValue + secondValue < firstValue" << 0;
 }
 
 QTEST_APPLESS_MAIN(tst_IPXactSystemVerilogParser)

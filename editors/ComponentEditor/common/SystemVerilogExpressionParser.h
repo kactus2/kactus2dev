@@ -99,6 +99,24 @@ private:
     bool isLiteral(QString const& expression) const;
 
     /*!
+     *  Check if the selected expression is a comparison.
+     *
+     *      @param [in] expression  The selected expression.
+     *
+     *      @return True, if the selected expression is a comparison, otherwise false.
+     */
+    bool isComparison(QString const& expression) const;
+
+    /*!
+     *  Parse the selected comparison.
+     *
+     *      @param [in] expression  The selected comparison.
+     *
+     *      @return 1 for a comparison with a value of true, 0 for false.
+     */
+    QString parseComparison(QString const& expression) const;
+
+    /*!
      *  Splits the given expression to string list with terms and operations as separate items.
      *
      *      @param [in] expression   The expression to split.
