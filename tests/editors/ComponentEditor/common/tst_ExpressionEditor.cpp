@@ -92,7 +92,6 @@ private:
 
     ExpressionEditor* createEditorWithoutFinder();
     ExpressionEditor* createEditorForComponent(QSharedPointer<Component> component);
-   
 
 };
 
@@ -1207,6 +1206,21 @@ void tst_ExpressionEditor::testComparisonOperators_data()
     QTest::newRow("Inserting equals-operator") << "3== 3";
     QTest::newRow("Inserting equals-operator") << "3 ==3";
     QTest::newRow("Inserting equals-operator") << "3 == 3";
+
+    QTest::newRow("Inserting greater than or equals -operator") << "4>=3";
+    QTest::newRow("Inserting greater than or equals -operator") << "3>= 3";
+    QTest::newRow("Inserting greater than or equals -operator") << "3 >=3";
+    QTest::newRow("Inserting greater than or equals -operator") << "2 >= 3";
+
+    QTest::newRow("Inserting lesser than or equals -operator") << "4<=3";
+    QTest::newRow("Inserting lesser than or equals -operator") << "3<= 3";
+    QTest::newRow("Inserting lesser than or equals -operator") << "3 <=3";
+    QTest::newRow("Inserting lesser than or equals -operator") << "2 <= 3";
+
+    QTest::newRow("Inserting not equals -operator") << "4!=3";
+    QTest::newRow("Inserting not equals -operator") << "3!= 3";
+    QTest::newRow("Inserting not equals -operator") << "3 !=3";
+    QTest::newRow("Inserting not equals -operator") << "2 != 3";
 }
 
 //-----------------------------------------------------------------------------

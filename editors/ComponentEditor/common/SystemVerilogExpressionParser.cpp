@@ -26,7 +26,7 @@ namespace
         SystemVerilogSyntax::INTEGRAL_NUMBER + "|"  + CLOG2_FUNCTION + ")\\s*((?:[)]\\s*)*)");
 
     const QRegularExpression BINARY_OPERATOR("[+-/*//]|[/*][/*]");
-    const QRegularExpression COMPARISON_OPERATOR("<|>|==");
+    const QRegularExpression COMPARISON_OPERATOR("[<>]=?|[!=]=");
 
     const QRegularExpression COMBINED_OPERATOR(BINARY_OPERATOR.pattern() + "|" + COMPARISON_OPERATOR.pattern());
 
@@ -135,14 +135,24 @@ QString SystemVerilogExpressionParser::parseComparison(QString const& expression
 {
     QString solvedComparison = expression;
 
-    int operatorPosition = solvedComparison.lastIndexOf(COMPARISON_OPERATOR);
+    QString selectedOperator = COMPARISON_OPERATOR.match(solvedComparison).captured();
 
-    QString selectedOperator = solvedComparison.at(operatorPosition);
+    int operatorPosition = solvedComparison.indexOf(selectedOperator);
 
-    if (selectedOperator == "=")
+    QString partialComparison =
+        solvedComparison.right(solvedComparison.size() - (operatorPosition + selectedOperator.size()));
+
+    while(COMPARISON_OPERATOR.match(partialComparison).hasMatch())
     {
-        selectedOperator = solvedComparison.mid(operatorPosition, 2);
+        selectedOperator =
+            COMPARISON_OPERATOR.match(partialComparison).captured();
+        operatorPosition = partialComparison.indexOf(selectedOperator);
+
+        partialComparison =
+            partialComparison.right(partialComparison.size() - (operatorPosition + selectedOperator.size()));
     }
+
+    operatorPosition = solvedComparison.indexOf(selectedOperator);
 
     QString leftOperand = solvedComparison.left(operatorPosition);
     QString rightOperand =
@@ -155,7 +165,10 @@ QString SystemVerilogExpressionParser::parseComparison(QString const& expression
 
     if ((selectedOperator == ">" && leftResult > rightResult) ||
         (selectedOperator == "<" && leftResult < rightResult) ||
-        (selectedOperator == "==" && leftResult == rightResult))
+        (selectedOperator == "==" && leftResult == rightResult) ||
+        (selectedOperator == ">=" && leftResult >= rightResult) ||
+        (selectedOperator == "<=" && leftResult <= rightResult) ||
+        (selectedOperator == "!=" && leftResult != rightResult))
     {
         comparisonResult = "1";
     }

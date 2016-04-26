@@ -300,7 +300,7 @@ void ExpressionEditor::updateCompletions()
 //-----------------------------------------------------------------------------
 QRegularExpression ExpressionEditor::wordDelimiter() const
 {
-    return QRegularExpression("[-+/*() ,{}<>]|[=]{1,2}");
+    return QRegularExpression("[-+/*() ,{}]|[<>]=?|[!=]=?");
 }
 
 //-----------------------------------------------------------------------------

@@ -769,8 +769,6 @@ void tst_SystemVerilogExpressionParser::testParseComparison_data()
     QTest::addColumn<QString>("expression");
     QTest::addColumn<int>("expectedResult");
 
-    QTest::newRow("14-2 is greater than 3 equals 0 returns 0") << "14-2>3==0" << 0;
-
     QTest::newRow("Single value: 10 is greater than 2 returns 1") << "10 > 2" << 1;
     QTest::newRow("Single value: 2 is greater than 10 returns 0") << "2 > 10" << 0;
     QTest::newRow("Single value: 10 is lesser than 2 returns 0") << "10 < 2" << 0;
@@ -784,17 +782,33 @@ void tst_SystemVerilogExpressionParser::testParseComparison_data()
     QTest::newRow("Expression: 14*2 is lesser than 2-3*2+8 returns 0") << "10 < 2" << 0;
     QTest::newRow("Expression: 2-3*2+8 is lesser than 14*2 returns 1") << "2 < 10" << 1;
 
-    QTest::newRow("14-2 is greater than 3 is greater than 0 returns 1") << "14-2>3>0" << 1;
-
     QTest::newRow("Single value: 10 is equal to 10 returns 1") << "10==10" << 1;
     QTest::newRow("Single value: 10 is equal to 2 returns 0") << "10==2" << 0;
 
     QTest::newRow("Expression: 14-2*2 is equal to 2*5 returns 1") << "14-2*2 == 2*5" << 1;
     QTest::newRow("Expression: 14-2*2+1 is equal to 2*5 returns 0") << "14-2*2+1 == 2*5" << 0;
 
-    QTest::newRow("14-2 is greater than 3 equals 1 returns 1") << "14-2>3==1" << 1;
+    QTest::newRow("Single value: 10 is greater or equal than 2 returns 1") << "10>=2" << 1;
+    QTest::newRow("Single value: 10 is greater or equal than 10 returns 1") << "10>=10" << 1;
+    QTest::newRow("Single value: 10 is greater or equal than 11 returns 0") << "10>=11" << 0;
 
-    QTest::newRow("Invalid comparison") << "==4" << 0;
+    QTest::newRow("Expression: 10/2 is greater or equal than 2+1-2 returns 1") << "10/2>=2+1-2" << 1;
+    QTest::newRow("Expression: 10/2 is greater or equal than 2*3-1 returns 1") << "10/2>=2*3-1" << 1;
+    QTest::newRow("Expression: 10/2 is greater or equal than 11+1*10 returns 0") << "10/2>=11+1*10" << 0;
+
+    QTest::newRow("Single value: 2 is lesser or equal than 10 returns 1") << "2<=10" << 1;
+    QTest::newRow("Single value: 10 is lesser or equal than 10 returns 1") << "10<=10" << 1;
+    QTest::newRow("Single value: 11 is lesser or equal than 10 returns 0") << "11<=10" << 0;
+
+    QTest::newRow("Expression: 2+1-2 is lesser or equal than 10/2 returns 1") << "2+1-2<=10/2" << 1;
+    QTest::newRow("Expression: 2*3-1 is lesser or equal than 10/2 returns 1") << "2*3-1<=10/2" << 1;
+    QTest::newRow("Expression: 11+1*10 is lesser or equal than 10/2 returns 0") << "11+1*10<=10/2" << 0;
+
+    QTest::newRow("Single value: 2 is not equal to 10 returns 1") << "2!=10" << 1;
+    QTest::newRow("Single value: 10 is not equal to 10 returns 0") << "10!=10" << 0;
+
+    QTest::newRow("Expression: 2+1-2 is not equal to 10/2 returns 1") << "2+1-2!=10/2" << 1;
+    QTest::newRow("Expression: 2*3-1 is not equal to 10/2 returns 0") << "2*3-1!=10/2" << 0;
 }
 
 QTEST_APPLESS_MAIN(tst_SystemVerilogExpressionParser)
