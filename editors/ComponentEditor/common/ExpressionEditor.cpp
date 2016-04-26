@@ -300,7 +300,7 @@ void ExpressionEditor::updateCompletions()
 //-----------------------------------------------------------------------------
 QRegularExpression ExpressionEditor::wordDelimiter() const
 {
-    return QRegularExpression("[-+/*() ,{}<>]");
+    return QRegularExpression("[-+/*() ,{}<>]|[=]{1,2}");
 }
 
 //-----------------------------------------------------------------------------
@@ -438,7 +438,22 @@ QString ExpressionEditor::currentWord() const
 //-----------------------------------------------------------------------------
 int ExpressionEditor::startOfCurrentWord() const
 {
-    return toPlainText().left(textCursor().position()).lastIndexOf(wordDelimiter()) + 1;
+
+    QString plainText = toPlainText();
+    QString leftSide = plainText.left(textCursor().position());
+
+    int operandIndex = leftSide.lastIndexOf(wordDelimiter());
+
+    int operatorSize = 1;
+
+    if (operandIndex > 0 && operandIndex < leftSide.size())
+    {
+        QString operatorAtPosition = leftSide.at(operandIndex);
+
+        operatorSize = wordDelimiter().match(leftSide, operandIndex).capturedLength();
+    }
+
+    return operandIndex + operatorSize;
 }
 
 //-----------------------------------------------------------------------------

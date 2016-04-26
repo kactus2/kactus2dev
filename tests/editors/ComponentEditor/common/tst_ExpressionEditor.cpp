@@ -83,6 +83,11 @@ private slots:
     void testEditingConstantExpression();
     void testEditingConstantExpression_data();
 
+    void testComparisonOperators();
+    void testComparisonOperators_data();
+
+    void testReferencesInModifiedComparison();
+
 private:
 
     ExpressionEditor* createEditorWithoutFinder();
@@ -1152,6 +1157,92 @@ void tst_ExpressionEditor::testEditingConstantExpression_data()
 
     QTest::newRow("Inserting space before last term") << "1+1" << 2 << " " << "1+ 1";
     QTest::newRow("Inserting operator in constant term") << "11" << 1 << "+" << "1+1";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testComparisonOperators()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testComparisonOperators()
+{
+    QFETCH(QString, input);
+
+    QSharedPointer<Component> emptyComponent(new Component());
+
+    ExpressionEditor* editor = createEditorForComponent(emptyComponent);
+
+    editor->setExpression("");
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.setPosition(0);
+    editor->setTextCursor(cursor);
+
+    QTest::keyClicks(editor, input);
+
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->toPlainText(), input);
+    QCOMPARE(editor->getExpression(), input);
+
+    delete editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testComparisonOperators_data()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testComparisonOperators_data()
+{
+    QTest::addColumn<QString>("input");
+
+    QTest::newRow("Inserting greater than -operator") << "4>3";
+    QTest::newRow("Inserting greater than -operator") << "4> 3";
+    QTest::newRow("Inserting greater than -operator") << "4 >3";
+    QTest::newRow("Inserting greater than -operator") << "4 > 3";
+
+    QTest::newRow("Inserting lesser than -operator") << "4<3";
+    QTest::newRow("Inserting lesser than -operator") << "4< 3";
+    QTest::newRow("Inserting lesser than -operator") << "4 <3";
+    QTest::newRow("Inserting lesser than -operator") << "4 < 3";
+
+    QTest::newRow("Inserting equals-operator") << "3==3";
+    QTest::newRow("Inserting equals-operator") << "3== 3";
+    QTest::newRow("Inserting equals-operator") << "3 ==3";
+    QTest::newRow("Inserting equals-operator") << "3 == 3";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ExpressionEditor::testReferencesInModifiedComparison()
+//-----------------------------------------------------------------------------
+void tst_ExpressionEditor::testReferencesInModifiedComparison()
+{
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setName("testParameter");
+    testParameter->setValueId("id");
+    testParameter->setValue("10");
+
+    QSharedPointer<Component> targetComponent(new Component());
+    targetComponent->getParameters()->append(testParameter);
+
+    ExpressionEditor* editor = createEditorForComponent(targetComponent);
+
+    QSignalSpy referenceDecreases(editor, SIGNAL(decreaseReference(QString const&)));
+
+    editor->setExpression("id+2");
+
+    QTextCursor cursor = editor->textCursor();
+    cursor.movePosition(QTextCursor::End);
+    editor->setTextCursor(cursor);
+
+    QTest::keyClick(editor, Qt::Key_Left);
+    QTest::keyClick(editor, Qt::Key_Backspace);
+
+    editor->finishEditingCurrentWord();
+
+    QCOMPARE(editor->toPlainText(), QString("testParameter2"));
+    QCOMPARE(editor->getExpression(), QString("testParameter2"));
+
+    QCOMPARE(referenceDecreases.size(), 1);
+
+    delete editor;
 }
 
 //-----------------------------------------------------------------------------

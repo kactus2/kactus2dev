@@ -26,7 +26,7 @@ namespace
         SystemVerilogSyntax::INTEGRAL_NUMBER + "|"  + CLOG2_FUNCTION + ")\\s*((?:[)]\\s*)*)");
 
     const QRegularExpression BINARY_OPERATOR("[+-/*//]|[/*][/*]");
-    const QRegularExpression COMPARISON_OPERATOR("[<>]");
+    const QRegularExpression COMPARISON_OPERATOR("<|>|==");
 
     const QRegularExpression COMBINED_OPERATOR(BINARY_OPERATOR.pattern() + "|" + COMPARISON_OPERATOR.pattern());
 
@@ -139,8 +139,14 @@ QString SystemVerilogExpressionParser::parseComparison(QString const& expression
 
     QString selectedOperator = solvedComparison.at(operatorPosition);
 
+    if (selectedOperator == "=")
+    {
+        selectedOperator = solvedComparison.mid(operatorPosition, 2);
+    }
+
     QString leftOperand = solvedComparison.left(operatorPosition);
-    QString rightOperand = solvedComparison.right(solvedComparison.size() - operatorPosition - 1);
+    QString rightOperand =
+        solvedComparison.right(solvedComparison.size() - (operatorPosition + selectedOperator.size()));
 
     int leftResult = parseExpression(leftOperand).toInt();
     int rightResult = parseExpression(rightOperand).toInt();
@@ -148,7 +154,8 @@ QString SystemVerilogExpressionParser::parseComparison(QString const& expression
     QString comparisonResult = "0";
 
     if ((selectedOperator == ">" && leftResult > rightResult) ||
-        (selectedOperator == "<" && leftResult < rightResult))
+        (selectedOperator == "<" && leftResult < rightResult) ||
+        (selectedOperator == "==" && leftResult == rightResult))
     {
         comparisonResult = "1";
     }
