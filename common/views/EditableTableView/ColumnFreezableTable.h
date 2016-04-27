@@ -19,6 +19,9 @@
 #include <QModelIndex>
 #include <QSharedPointer>
 
+//-----------------------------------------------------------------------------
+//! Editable table view, with a possibility for freezing a column in place.
+//-----------------------------------------------------------------------------
 class ColumnFreezableTable : public EditableTableView
 {
     Q_OBJECT
@@ -78,48 +81,17 @@ protected:
      */
     virtual void resizeEvent(QResizeEvent *event);
 
-    /*!
-     *  Moves the cursor in accordance with the given action.
-     *
-     *      @param [in] cursorAction    The given cursor action.
-     *      @param [in] modifiers       Modifiers for the action.
-     */
-    virtual QModelIndex moveCursor(CursorAction cursorAction, Qt::KeyboardModifier modifiers);
-
-    /*!
-     *  Scrolls the view if necessary, ensuring that item at index is visible.
-     *
-     *      @param [in] index   Index of the item.
-     *      @param [in] hint    The view will try to position the item according to the given hint.
-     */
-    void scrollTo (const QModelIndex& index, QAbstractItemView::ScrollHint hint = EnsureVisible);
-
 private slots:
 
     /*!
-     *  Update the width of the section.
-     *
-     *      @param [in] logicalIndex    The index of the column.
-     *      @param [in]                 Needed to accept signal sectionResized.
-     *      @param [in] newSize         The new size of the column.
+     *  Close the sorting section from the frozen columns.
      */
-    void updateSectionWidth(int logicalIndex, int, int newSize);
+    void closeSortingSectionInFrozenColumn();
 
     /*!
-     *  Update the height of the section.
-     *
-     *      @param [in] logicalIndex    The index of the row.
-     *      @param [in]                 Needed to accept signal sectionResized.
-     *      @param [in] newSize         The new size of the column.
+     *  Close the sorting section from the main table.
      */
-    void updateSectionHeight(int logicalIndex, int, int newSize);
-
-    /*!
-     *  Close the sorting section from the table that wasn't used in sorting.
-     *
-     *      @param [in] logicalIndex   The index of the sorting column.
-     */
-    void closeSortingSection(int logicalIndex);
+    void closeSortingSectionInMainEditor();
 
 private:
 

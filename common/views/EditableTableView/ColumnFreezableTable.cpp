@@ -10,8 +10,11 @@
 //-----------------------------------------------------------------------------
 
 #include "ColumnFreezableTable.h"
+
 #include <QHeaderView>
 #include <QScrollBar>
+
+static const int MAXIMUMFROZENWIDTH_ = 200;
 
 //-----------------------------------------------------------------------------
 // Function: ColumnFreezableTable::ColumnFreezableTable()
@@ -22,7 +25,12 @@ EditableTableView(parent),
 frozenColumns_(frozenColumns),
 numberOfFrozenColumns_(numberOfFrozenColumns)
 {
+    frozenColumns_->setParent(this);
 
+    frozenColumns_->verticalHeader()->hide();
+
+    frozenColumns_->setMaximumWidth(MAXIMUMFROZENWIDTH_);
+    frozenColumns_->horizontalHeader()->setMaximumSectionSize(MAXIMUMFROZENWIDTH_);
 }
 
 //-----------------------------------------------------------------------------
@@ -42,11 +50,6 @@ void ColumnFreezableTable::setModel(QAbstractItemModel* model)
 
     init();
 
-    connect(horizontalHeader(), SIGNAL(sectionResized(int, int, int)),
-        this, SLOT(updateSectionWidth(int, int, int)));
-    connect(verticalHeader(), SIGNAL(sectionResized(int, int, int)),
-        this, SLOT(updateSectionHeight(int, int, int)));
-
     connect(frozenColumns_->verticalScrollBar(), SIGNAL(valueChanged(int)),
         verticalScrollBar(), SLOT(setValue(int)));
     connect(verticalScrollBar(), SIGNAL(valueChanged(int)),
@@ -59,8 +62,9 @@ void ColumnFreezableTable::setModel(QAbstractItemModel* model)
     connect(frozenColumns_.data(), SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)), Qt::UniqueConnection);
 
-    connect(frozenColumns_->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(closeSortingSection(int)));
-    connect(horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(closeSortingSection(int)));
+    connect(frozenColumns_->horizontalHeader(), SIGNAL(sectionClicked(int)),
+        this, SLOT(closeSortingSectionInMainEditor()));
+    connect(horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(closeSortingSectionInFrozenColumn()));
 }
 
 //-----------------------------------------------------------------------------
@@ -96,43 +100,22 @@ void ColumnFreezableTable::setDelegate(QAbstractItemDelegate *delegateItem)
 void ColumnFreezableTable::resizeEvent(QResizeEvent *event)
 {
     QTableView::resizeEvent(event);
+
+    frozenColumns_->resizeColumnsToContents();
+
     updateColumnFreezableTableGeometry();
-}
 
-//-----------------------------------------------------------------------------
-// Function: ColumnFreezableTable::moveCursor()
-//-----------------------------------------------------------------------------
-QModelIndex ColumnFreezableTable::moveCursor(CursorAction cursorAction, Qt::KeyboardModifier modifiers)
-{
-    QModelIndex current = QTableView::moveCursor(cursorAction, modifiers);
+    int frozenWidth = frozenColumns_->width();
+    int horizontalHeight = horizontalHeader()->height();
 
-    int totalWidth = 0;
-    for (int col = 0; col < numberOfFrozenColumns_; ++col)
+    if (frozenWidth > MAXIMUMFROZENWIDTH_)
     {
-        totalWidth += frozenColumns_->columnWidth(col);
+        frozenWidth = MAXIMUMFROZENWIDTH_;
     }
 
-    totalWidth += numberOfFrozenColumns_;
+    setViewportMargins(frozenWidth, horizontalHeight, 0, 0);
 
-    if (cursorAction == MoveLeft && current.column() > 0 && visualRect(current).topLeft().x() <
-        totalWidth)
-    {
-        const int newValue = horizontalScrollBar()->value() + visualRect(current).topLeft().x() - totalWidth;
-        horizontalScrollBar()->setValue(newValue);
-    }
-
-    return current;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ColumnFreezableTable::scrollTo()
-//-----------------------------------------------------------------------------
-void ColumnFreezableTable::scrollTo(const QModelIndex &index, QAbstractItemView::ScrollHint hint /* = EnsureVisible */)
-{
-    if (index.column() > 0)
-    {
-        QTableView::scrollTo(index, hint);
-    }
+    frozenColumns_->move(0,0);
 }
 
 //-----------------------------------------------------------------------------
@@ -158,15 +141,11 @@ void ColumnFreezableTable::init()
 
     frozenColumns_->setFocusPolicy(Qt::NoFocus);
 
-    stackUnder(frozenColumns_.data());
-
     frozenColumns_->setSelectionModel(selectionModel());
     for (int col=numberOfFrozenColumns_; col < model()->columnCount(); col++)
     {
         frozenColumns_->setColumnHidden(col, true);
     }
-
-    frozenColumns_->setColumnWidth(0, columnWidth(0));
 
     frozenColumns_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     frozenColumns_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -183,41 +162,38 @@ void ColumnFreezableTable::updateColumnFreezableTableGeometry()
     int totalWidth = 0;
     for (int col = 0; col < numberOfFrozenColumns_; ++col)
     {
-        totalWidth += columnWidth(col);
+        totalWidth += frozenColumns_->columnWidth(col);
     }
 
     totalWidth += numberOfFrozenColumns_;
 
-    frozenColumns_->setGeometry(pos().x(), pos().y(), totalWidth + verticalHeader()->width(),
+    totalWidth = totalWidth + verticalHeader()->width();
+
+    if (totalWidth > MAXIMUMFROZENWIDTH_)
+    {
+        totalWidth = MAXIMUMFROZENWIDTH_;
+    }
+
+    frozenColumns_->setGeometry(pos().x(), pos().y(), totalWidth,
         viewport()->height() + horizontalHeader()->height());
 }
 
 //-----------------------------------------------------------------------------
-// Function: ColumnFreezableTable::updateSectionWidth()
+// Function: ColumnFreezableTable::closeSortingSectionInFrozenColumn()
 //-----------------------------------------------------------------------------
-void ColumnFreezableTable::updateSectionWidth(int logicalIndex, int, int newSize)
+void ColumnFreezableTable::closeSortingSectionInFrozenColumn()
 {
-    if (logicalIndex < numberOfFrozenColumns_)
-    {
-        frozenColumns_->setColumnWidth(numberOfFrozenColumns_ - 1, 
-            newSize - (verticalHeader()->width()/numberOfFrozenColumns_));
-        updateColumnFreezableTableGeometry();
-    }
+    horizontalHeader()->setSortIndicatorShown(true);
+
+    frozenColumns_->horizontalHeader()->setSortIndicatorShown(false);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ColumnFreezableTable::updateSectionHeight()
+// Function: ColumnFreezableTable::closeSortingSectionInMainEditor()
 //-----------------------------------------------------------------------------
-void ColumnFreezableTable::updateSectionHeight(int logicalIndex, int, int newSize)
+void ColumnFreezableTable::closeSortingSectionInMainEditor()
 {
-    frozenColumns_->setRowHeight(logicalIndex, newSize);
-}
+    frozenColumns_->horizontalHeader()->setSortIndicatorShown(true);
 
-//-----------------------------------------------------------------------------
-// Function: ColumnFreezableTable::closeSortingSection()
-//-----------------------------------------------------------------------------
-void ColumnFreezableTable::closeSortingSection(int logicalIndex)
-{
-    horizontalHeader()->setSortIndicatorShown(logicalIndex >= numberOfFrozenColumns_);
-    frozenColumns_->horizontalHeader()->setSortIndicatorShown(logicalIndex < numberOfFrozenColumns_);
+    horizontalHeader()->setSortIndicatorShown(false);
 }
