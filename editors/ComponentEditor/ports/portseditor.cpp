@@ -78,6 +78,8 @@ handler_(handler)
     proxy_.setSourceModel(model_);
     view_->setModel(&proxy_);
 
+    view_->resizeColumnsToContents();
+
     proxy_.setSortCaseSensitivity(Qt::CaseInsensitive);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

@@ -75,11 +75,11 @@ public slots:
 protected:
 
     /*!
-     *  Receives resize events. Calls table views resize event, and updates the table geometry.
+     *  Receives viewport events. Updates the frozen column width.
      *
-     *      @param [in] event   Resize events.
+     *      @param [in] event   The viewport event.
      */
-    virtual void resizeEvent(QResizeEvent *event);
+    virtual bool viewportEvent(QEvent* event);
 
 private slots:
 
@@ -104,6 +104,15 @@ private:
      *  Update the geometry of the frozen columns.
      */
     void updateColumnFreezableTableGeometry();
+
+    /*!
+     *  Resizes the view port margins of the table.
+     */
+    void resizeEditorMargins();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The frozen part of the editable table.
     QSharedPointer <EditableTableView> frozenColumns_;

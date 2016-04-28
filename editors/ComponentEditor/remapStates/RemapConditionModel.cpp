@@ -543,7 +543,15 @@ void RemapConditionModel::setupVisibleRemapPorts()
     foreach (QSharedPointer<RemapPort> remapStatePortPointer, *remapPortsOfRemapState_)
     {
         int arrayIndex = getArrayStartIndex(remapStatePortPointer->getPortNameRef());
-        arrayIndex = remapStatePortPointer->getPortIndex().toInt() - arrayIndex; 
+
+        if (remapStatePortPointer->getPortIndex().isEmpty())
+        {
+            arrayIndex = -1;
+        }
+        else
+        {
+            arrayIndex = remapStatePortPointer->getPortIndex().toInt() - arrayIndex; 
+        }
 
         if (!remapPortIsAlreadyVisible(remapStatePortPointer, arrayIndex))
         {

@@ -18,12 +18,13 @@
 #include <QSharedPointer>
 #include <QGroupBox>
 
-class EditableTableView;
 class RegisterTableModel;
 class LibraryInterface;
 class ParameterFinder;
 class ExpressionFormatter;
 class FieldValidator;
+class ColumnFreezableTable;
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of fields in a register.
 //-----------------------------------------------------------------------------
@@ -123,7 +124,7 @@ private:
 	RegisterEditor& operator=(const RegisterEditor& other);
 
 	//! Pointer to the view that displays the items.
-	EditableTableView* view_;
+    ColumnFreezableTable* view_;
 
 	//! Pointer to the model that manages the details of items.
 	RegisterTableModel* model_;

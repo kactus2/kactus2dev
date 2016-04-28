@@ -29,7 +29,6 @@ numberOfFrozenColumns_(numberOfFrozenColumns)
 
     frozenColumns_->verticalHeader()->hide();
 
-    frozenColumns_->setMaximumWidth(MAXIMUMFROZENWIDTH_);
     frozenColumns_->horizontalHeader()->setMaximumSectionSize(MAXIMUMFROZENWIDTH_);
 }
 
@@ -95,12 +94,21 @@ void ColumnFreezableTable::setDelegate(QAbstractItemDelegate *delegateItem)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ColumnFreezableTable::resizeEvent()
+// Function: ColumnFreezableTable::viewportEvent()
 //-----------------------------------------------------------------------------
-void ColumnFreezableTable::resizeEvent(QResizeEvent *event)
+bool ColumnFreezableTable::viewportEvent(QEvent* event)
 {
-    QTableView::resizeEvent(event);
+    resizeEditorMargins();
 
+    return QAbstractItemView::viewportEvent(event);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ColumnFreezableTable::resizeEditorMargins()
+//-----------------------------------------------------------------------------
+void ColumnFreezableTable::resizeEditorMargins()
+{
     frozenColumns_->resizeColumnsToContents();
 
     updateColumnFreezableTableGeometry();
@@ -108,9 +116,9 @@ void ColumnFreezableTable::resizeEvent(QResizeEvent *event)
     int frozenWidth = frozenColumns_->width();
     int horizontalHeight = horizontalHeader()->height();
 
-    if (frozenWidth > MAXIMUMFROZENWIDTH_)
+    if (frozenWidth > MAXIMUMFROZENWIDTH_ * numberOfFrozenColumns_)
     {
-        frozenWidth = MAXIMUMFROZENWIDTH_;
+        frozenWidth = MAXIMUMFROZENWIDTH_ * numberOfFrozenColumns_;
     }
 
     setViewportMargins(frozenWidth, horizontalHeight, 0, 0);
@@ -133,7 +141,6 @@ void ColumnFreezableTable::init()
 
     frozenColumns_->setModel(model());
     
-    resizeColumnsToContents();
     frozenColumns_->resizeColumnsToContents();
 
     frozenColumns_->horizontalHeader()->setMinimumHeight(horizontalHeader()->height());
@@ -142,9 +149,9 @@ void ColumnFreezableTable::init()
     frozenColumns_->setFocusPolicy(Qt::NoFocus);
 
     frozenColumns_->setSelectionModel(selectionModel());
-    for (int col=numberOfFrozenColumns_; col < model()->columnCount(); col++)
+    for (int col = numberOfFrozenColumns_; col < model()->columnCount(); col++)
     {
-        frozenColumns_->setColumnHidden(col, true);
+        frozenColumns_->hideColumn(col);
     }
 
     frozenColumns_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -169,9 +176,9 @@ void ColumnFreezableTable::updateColumnFreezableTableGeometry()
 
     totalWidth = totalWidth + verticalHeader()->width();
 
-    if (totalWidth > MAXIMUMFROZENWIDTH_)
+    if (totalWidth > MAXIMUMFROZENWIDTH_ * numberOfFrozenColumns_)
     {
-        totalWidth = MAXIMUMFROZENWIDTH_;
+        totalWidth = MAXIMUMFROZENWIDTH_ * numberOfFrozenColumns_;
     }
 
     frozenColumns_->setGeometry(pos().x(), pos().y(), totalWidth,

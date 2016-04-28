@@ -17,6 +17,7 @@
 #include "RegisterColumns.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
+#include <common/views/EditableTableView/ColumnFreezableTable.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -25,6 +26,7 @@
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <QVBoxLayout>
+#include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: registereditor::RegisterEditor()
@@ -34,9 +36,14 @@ RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, QSharedPointer<Comp
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
     QWidget* parent /* = 0 */):
 QGroupBox(tr("Fields summary"), parent),
-view_(new EditableTableView(this)),
+view_(0),
 model_(0)
 {
+    QSharedPointer<EditableTableView> frozenView(new EditableTableView(this));
+    frozenView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+    view_ = new ColumnFreezableTable(1, frozenView, this);
+
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
     model_ = new RegisterTableModel(reg, expressionParser, parameterFinder, expressionFormatter, fieldValidator,
@@ -68,7 +75,7 @@ model_(0)
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
 
-    view_->setItemDelegate(new RegisterDelegate(parameterCompleter, parameterFinder, this));
+    view_->setDelegate(new RegisterDelegate(parameterCompleter, parameterFinder, this));
 
     view_->sortByColumn(RegisterColumns::OFFSET_COLUMN, Qt::AscendingOrder);
 
@@ -76,6 +83,9 @@ model_(0)
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(fieldAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(model_, SIGNAL(fieldRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

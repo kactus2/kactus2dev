@@ -106,6 +106,8 @@ model_(0)
 	// set proxy to be the source for the view
     view_->setModel(sortingProxy);
 
+    view_->resizeColumnsToContents();
+
     sortingProxy->setSortCaseSensitivity(Qt::CaseInsensitive);
 
     view_->sortByColumn(0, Qt::AscendingOrder);
@@ -116,7 +118,7 @@ model_(0)
 
 	// create the layout, add widgets to it
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
+    layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
     layout->addWidget(view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
