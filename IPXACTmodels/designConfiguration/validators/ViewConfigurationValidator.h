@@ -17,6 +17,7 @@
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
+#include "QStringList"
 
 class ViewConfiguration;
 
@@ -168,7 +169,7 @@ private:
     QSharedPointer<ExpressionParser> parser_;
 
     //! The currently available views.
-    QSharedPointer<QList<QSharedPointer<View> > > availableViews_;
+    QStringList availableViews_;
 
     //! The currently available component instances.
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > availableInstances_;

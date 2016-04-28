@@ -119,11 +119,11 @@ bool ViewConfigurationValidator::hasValidViewReference(QSharedPointer<ViewConfig
 {
     changeAvailableViews(configuration);
 
-    if (!configuration->getViewReference().isEmpty() && availableViews_)
+    if (!configuration->getViewReference().isEmpty())
     {
-        foreach (QSharedPointer<View> currentView, *availableViews_)
+        foreach (const QString& currentView, availableViews_)
         {
-            if (configuration->getViewReference() == currentView->name())
+            if (configuration->getViewReference() == currentView)
             {
                 return true;
             }
@@ -151,7 +151,8 @@ void ViewConfigurationValidator::changeAvailableViews(QSharedPointer<ViewConfigu
 
                     if (component)
                     {
-                        availableViews_ = component->getViews();
+						availableViews_ = component->getViewNames();
+						availableViews_.append( component->getSWViewNames() );
                         return;
                     }
                 }
@@ -160,11 +161,8 @@ void ViewConfigurationValidator::changeAvailableViews(QSharedPointer<ViewConfigu
             }
         }
     }
-    
-    if (availableViews_)
-    {
-        availableViews_->clear();
-    }
+
+    availableViews_.clear();
 }
 
 //-----------------------------------------------------------------------------
