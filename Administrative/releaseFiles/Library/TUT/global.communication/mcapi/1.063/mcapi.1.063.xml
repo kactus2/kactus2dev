@@ -5,14 +5,14 @@
 	<ipxact:name>mcapi</ipxact:name>
 	<ipxact:version>1.063</ipxact:version>
 	<kactus2:transferTypes>
-		<kactus2:transferType kactus2:name="message"/>
-		<kactus2:transferType kactus2:name="scalar"/>
-		<kactus2:transferType kactus2:name="packet"/>
+		<kactus2:transferType name="message"/>
+		<kactus2:transferType name="scalar"/>
+		<kactus2:transferType name="packet"/>
 	</kactus2:transferTypes>
 	<kactus2:properties>
-		<kactus2:property kactus2:name="port_id" kactus2:required="true" kactus2:propertyType="integer" kactus2:defaultValue="0" kactus2:description=""/>
-		<kactus2:property kactus2:name="remote_endpoint_name" kactus2:required="true" kactus2:propertyType="string" kactus2:defaultValue="" kactus2:description=""/>
-		<kactus2:property kactus2:name="handle_name" kactus2:required="true" kactus2:propertyType="string" kactus2:defaultValue="" kactus2:description=""/>
+		<kactus2:property name="port_id" required="true" propertyType="integer" defaultValue="0" description=""/>
+		<kactus2:property name="remote_endpoint_name" required="true" propertyType="string" defaultValue="" description=""/>
+		<kactus2:property name="handle_name" required="true" propertyType="string" defaultValue="" description=""/>
 	</kactus2:properties>
 	<ipxact:vendorExtensions/>
 </kactus2:comDefinition>

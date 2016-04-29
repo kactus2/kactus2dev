@@ -55,13 +55,13 @@ ApiFunctionParameter::ApiFunctionParameter(QDomNode& node)
 {
     Q_ASSERT(node.nodeName() == "kactus2:functionParameter");
 
-    name_ = node.attributes().namedItem("kactus2:name").nodeValue();
-    type_ = node.attributes().namedItem("kactus2:type").nodeValue();
-    comTransferType_ = node.attributes().namedItem("kactus2:transferType").nodeValue();
-    comDirection_ = DirectionTypes::str2Direction(node.attributes().namedItem("kactus2:comDirection").nodeValue(), DirectionTypes::DIRECTION_INVALID);
-    contentSource_ = node.attributes().namedItem("kactus2:contentSource").nodeValue();
-    dependentParamIndex_ = node.attributes().namedItem("kactus2:dependentParamIndex").nodeValue().toInt();
-    desc_ = node.attributes().namedItem("kactus2:description").nodeValue();
+    name_ = node.attributes().namedItem("name").nodeValue();
+    type_ = node.attributes().namedItem("type").nodeValue();
+    comTransferType_ = node.attributes().namedItem("transferType").nodeValue();
+    comDirection_ = DirectionTypes::str2Direction(node.attributes().namedItem("comDirection").nodeValue(), DirectionTypes::DIRECTION_INVALID);
+    contentSource_ = node.attributes().namedItem("contentSource").nodeValue();
+    dependentParamIndex_ = node.attributes().namedItem("dependentParamIndex").nodeValue().toInt();
+    desc_ = node.attributes().namedItem("description").nodeValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -77,18 +77,18 @@ ApiFunctionParameter::~ApiFunctionParameter()
 void ApiFunctionParameter::write(QXmlStreamWriter& writer)
 {
     writer.writeEmptyElement("kactus2:functionParameter");
-    writer.writeAttribute("kactus2:name", name_);
-    writer.writeAttribute("kactus2:type", type_);
-    writer.writeAttribute("kactus2:transferType", comTransferType_);
+    writer.writeAttribute("name", name_);
+    writer.writeAttribute("type", type_);
+    writer.writeAttribute("transferType", comTransferType_);
 
     if (comDirection_ != DirectionTypes::DIRECTION_INVALID)
     {
-        writer.writeAttribute("kactus2:comDirection", DirectionTypes::direction2Str(comDirection_));
+        writer.writeAttribute("comDirection", DirectionTypes::direction2Str(comDirection_));
     }
 
-    writer.writeAttribute("kactus2:contentSource", contentSource_);
-    writer.writeAttribute("kactus2:dependentParamIndex", QString::number(dependentParamIndex_));
-    writer.writeAttribute("kactus2:description", desc_);
+    writer.writeAttribute("contentSource", contentSource_);
+    writer.writeAttribute("dependentParamIndex", QString::number(dependentParamIndex_));
+    writer.writeAttribute("description", desc_);
 }
 
 //-----------------------------------------------------------------------------

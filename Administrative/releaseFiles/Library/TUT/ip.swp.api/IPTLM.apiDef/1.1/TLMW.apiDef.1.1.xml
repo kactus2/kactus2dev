@@ -3,8 +3,8 @@
 	<ipxact:vendor>TUT</ipxact:vendor>
 	<ipxact:library>ip.swp.api</ipxact:library>
 	<ipxact:name>TLMW.apiDef</ipxact:name>
-	<ipxact:version>1.0</ipxact:version>
-	<kactus2:comDefinitionRef ipxact:vendor="" ipxact:library="" ipxact:name="" ipxact:version=""/>
+	<ipxact:version>1.1</ipxact:version>
+	<kactus2:comDefinitionRef vendor="TUT" library="global.communication" name="TLMW" version="1.1"/>
 	<kactus2:dataTypes/>
 	<kactus2:functions/>
 	<ipxact:vendorExtensions/>

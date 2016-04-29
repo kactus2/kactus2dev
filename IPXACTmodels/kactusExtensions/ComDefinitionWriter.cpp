@@ -58,7 +58,7 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
     foreach (QString const& type, *comDefinition->getTransferTypes())
     {
         writer.writeEmptyElement("kactus2:transferType");
-        writer.writeAttribute("kactus2:name", type);
+        writer.writeAttribute("name", type);
     }
 
     writer.writeEndElement(); // kactus2:transferTypes

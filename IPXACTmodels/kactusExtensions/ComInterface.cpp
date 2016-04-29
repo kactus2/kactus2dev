@@ -360,8 +360,8 @@ void ComInterface::parsePropertyValues(QDomNode& node)
 
         if (propNode.nodeName() == "kactus2:propertyValue")
         {
-            QString name = propNode.attributes().namedItem("kactus2:name").nodeValue();
-            QString value = propNode.attributes().namedItem("kactus2:value").nodeValue();
+            QString name = propNode.attributes().namedItem("name").nodeValue();
+            QString value = propNode.attributes().namedItem("value").nodeValue();
 
             propertyValues_.insert(name, value);
         }

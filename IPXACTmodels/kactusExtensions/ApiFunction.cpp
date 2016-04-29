@@ -55,9 +55,9 @@ ApiFunction::ApiFunction(QDomNode& node)
     Q_ASSERT(node.nodeName() == "kactus2:function");
 
     // Read basic information from attributes.
-    name_ = node.attributes().namedItem("kactus2:name").nodeValue();
-    returnType_ = node.attributes().namedItem("kactus2:returnType").nodeValue();
-    desc_ = node.attributes().namedItem("kactus2:description").nodeValue();
+    name_ = node.attributes().namedItem("name").nodeValue();
+    returnType_ = node.attributes().namedItem("returnType").nodeValue();
+    desc_ = node.attributes().namedItem("description").nodeValue();
 
     // Parse return value and parameters from the child nodes.
     for (int i = 0; i < node.childNodes().count(); ++i)
@@ -66,8 +66,8 @@ ApiFunction::ApiFunction(QDomNode& node)
 
         if (paramNode.nodeName() == "kactus2:returnValue")
         {
-            returnType_ = paramNode.attributes().namedItem("kactus2:type").nodeValue();
-            returnValueDesc_ = paramNode.attributes().namedItem("kactus2:description").nodeValue();
+            returnType_ = paramNode.attributes().namedItem("type").nodeValue();
+            returnValueDesc_ = paramNode.attributes().namedItem("description").nodeValue();
         }
         if (paramNode.nodeName() == "kactus2:functionParameter")
         {
@@ -90,12 +90,12 @@ ApiFunction::~ApiFunction()
 void ApiFunction::write(QXmlStreamWriter& writer)
 {
     writer.writeStartElement("kactus2:function");
-    writer.writeAttribute("kactus2:name", name_);
-    writer.writeAttribute("kactus2:description", desc_);
+    writer.writeAttribute("name", name_);
+    writer.writeAttribute("description", desc_);
 
     writer.writeEmptyElement("kactus2:returnValue");
-    writer.writeAttribute("kactus2:type", returnType_);
-    writer.writeAttribute("kactus2:description", returnValueDesc_);
+    writer.writeAttribute("type", returnType_);
+    writer.writeAttribute("description", returnValueDesc_);
 
     foreach (QSharedPointer<ApiFunctionParameter> param, params_)
     {

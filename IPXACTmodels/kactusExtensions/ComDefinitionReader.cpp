@@ -107,7 +107,7 @@ void ComDefinitionReader::parseTransferTypes(QDomNode& node, QSharedPointer<ComD
 
 		if (typeNode.nodeName() == "kactus2:transferType")
 		{
-			QString name = typeNode.attributes().namedItem("kactus2:name").nodeValue();
+			QString name = typeNode.attributes().namedItem("name").nodeValue();
 			comDefinition->getTransferTypes()->append(name);
 		}
 	}

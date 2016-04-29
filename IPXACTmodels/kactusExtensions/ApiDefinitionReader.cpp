@@ -116,7 +116,7 @@ void ApiDefinitionReader::parseDataTypes(QDomNode& node, QSharedPointer<ApiDefin
 
 		if (typeNode.nodeName() == "kactus2:dataType")
 		{
-			QString name = typeNode.attributes().namedItem("kactus2:name").nodeValue();
+			QString name = typeNode.attributes().namedItem("name").nodeValue();
 			apiDefinition->getDataTypes()->append(name);
 		}
 	}
