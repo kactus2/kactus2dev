@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AdHocModel.h
+// File: AdHocVisibilityModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,8 +9,8 @@
 // Table model for visualizing ad-hoc visibility for component ports.
 //-----------------------------------------------------------------------------
 
-#ifndef ADHOCMODEL_H
-#define ADHOCMODEL_H
+#ifndef ADHOCVISIBILITYMODEL_H
+#define ADHOCVISIBILITYMODEL_H
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
@@ -23,7 +23,7 @@ class Port;
 //-----------------------------------------------------------------------------
 //! Table model for visualizing ad-hoc visibility for component ports.
 //-----------------------------------------------------------------------------
-class AdHocModel : public QAbstractTableModel
+class AdHocVisibilityModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -35,12 +35,12 @@ public:
      *      @param [in] editProvider  The edit provider managing the undo/redo stack.
 	 *      @param [in] parent        Pointer to the owner of this model.
 	 */
-	AdHocModel(QObject *parent);
+	AdHocVisibilityModel(QObject *parent);
 	
 	/*!
      *  Destructor.
      */
-	virtual ~AdHocModel();
+	virtual ~AdHocVisibilityModel();
 
     /*!
      *  Sets the ad-hoc port visibility data source being edited.
@@ -124,8 +124,8 @@ signals:
 
 private:
     // Disable copying.
-    AdHocModel(AdHocModel const& rhs);
-    AdHocModel& operator=(AdHocModel const& rhs);
+    AdHocVisibilityModel(AdHocVisibilityModel const& rhs);
+    AdHocVisibilityModel& operator=(AdHocVisibilityModel const& rhs);
 
     /*!
      *  Check if an ad hoc port can be hidden.
@@ -152,4 +152,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // ADHOCMODEL_H
+#endif // ADHOCVISIBILITYMODEL_H

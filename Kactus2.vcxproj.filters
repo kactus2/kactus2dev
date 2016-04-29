@@ -4276,22 +4276,22 @@
     <ClCompile Include="GeneratedFiles\moc_ValueOrIndexedValueEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocDelegate.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AdHocVisibilityDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocEditor.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AdHocVisibilityEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocModel.cpp">
+    <ClCompile Include="GeneratedFiles\moc_AdHocVisibilityModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocDelegate.cpp">
+    <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.cpp">
       <Filter>Source Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocEditor.cpp">
+    <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityEditor.cpp">
       <Filter>Source Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocModel.cpp">
+    <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.cpp">
       <Filter>Source Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5895,13 +5895,13 @@
     <CustomBuild Include="editors\ComponentEditor\remapStates\ValueOrIndexedValueEditor.h">
       <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
     </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocDelegate.h">
+    <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityDelegate.h">
       <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocEditor.h">
+    <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityEditor.h">
       <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
     </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocModel.h">
+    <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.h">
       <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -6413,7 +6413,7 @@
     <ClInclude Include="designEditors\SystemDesign\UndoCommands\ApiConnectionExchangeCommand.h">
       <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocColumns.h">
+    <ClInclude Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityColumns.h">
       <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
     </ClInclude>
   </ItemGroup>

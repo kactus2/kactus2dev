@@ -626,7 +626,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/AddressEditor/AddressEditor.h \
     ./designEditors/HWDesign/AddressEditor/AddressModel.h \
     ./designEditors/HWDesign/AddressEditor/AddressTableView.h \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocColumns.h \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityColumns.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h \
@@ -691,9 +691,9 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocModel.h \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocEditor.h \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocDelegate.h \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityDelegate.h \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.h \
     ./editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.h \
     ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
@@ -1201,9 +1201,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressEntry.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressModel.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressTableView.cpp \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocModel.cpp \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocEditor.cpp \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocDelegate.cpp \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityDelegate.cpp \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.cpp \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.cpp \

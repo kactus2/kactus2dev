@@ -21,7 +21,7 @@
 
 #include <QSharedPointer>
 
-class AdHocEditor;
+class AdHocVisibilityEditor;
 class AdHocPortItem;
 class BusPortItem;
 class ComponentInstance;
@@ -30,9 +30,9 @@ class HWColumn;
 class LibraryInterface;
 class VendorExtension;
 
-/*! HWComponentItem represents graphically an IP-XACT component instance
- *
- */
+//-----------------------------------------------------------------------------
+//! HWComponentItem represents graphically an IP-XACT component instance
+//-----------------------------------------------------------------------------
 class HWComponentItem : public ComponentItem, public AdHocEnabled
 {
     Q_OBJECT 
@@ -77,12 +77,12 @@ public:
     /*!
      *  Attaches the data source to an ad-hoc editor.
      */
-    virtual void attach(AdHocEditor* editor);
+    virtual void attach(AdHocVisibilityEditor* editor);
 
     /*!
      *  Detaches the data source from the ad-hoc editor.
      */
-    virtual void detach(AdHocEditor* editor);
+    virtual void detach(AdHocVisibilityEditor* editor);
 
     virtual QString adHocIdentifier() const;
 

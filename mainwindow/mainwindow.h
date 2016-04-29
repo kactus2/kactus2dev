@@ -44,7 +44,7 @@ class SystemDetailsEditor;
 //class AddressEditor;
 class InterfaceEditor;
 class ConnectionEditor;
-class AdHocEditor;
+class AdHocVisibilityEditor;
 class HWConnection;
 class DrawingBoard;
 class ConnectionEndpoint;
@@ -769,7 +769,7 @@ private:
 	QDockWidget* instanceDock_;
 
     //! The ad-hoc visibility editor and its dock widget.
-    AdHocEditor* adHocEditor_;
+    AdHocVisibilityEditor* adHocVisibilityEditor_;
     QDockWidget* adHocDock_;
 
     //! Address editor for HW designs and its dock widget.

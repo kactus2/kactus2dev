@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AdHocEditor.h
+// File: AdHocVisibilityEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,10 +9,10 @@
 // Ad-hoc visibility editor.
 //-----------------------------------------------------------------------------
 
-#ifndef ADHOCEDITOR_H
-#define ADHOCEDITOR_H
+#ifndef ADHOCVISIBILITYEDITOR_H
+#define ADHOCVISIBILITYEDITOR_H
 
-#include "AdHocModel.h"
+#include "AdHocVisibilityModel.h"
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
@@ -30,7 +30,7 @@ class IEditProvider;
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of a component instance within a design.
 //-----------------------------------------------------------------------------
-class AdHocEditor : public QWidget
+class AdHocVisibilityEditor : public QWidget
 {
 	Q_OBJECT
 
@@ -40,12 +40,12 @@ public:
      *
      *      @param [in] parent The parent widget.
      */
-	AdHocEditor(QWidget *parent);
+	AdHocVisibilityEditor(QWidget *parent);
 	
 	/*!
      *  Destructor.
      */
-	virtual ~AdHocEditor();
+	virtual ~AdHocVisibilityEditor();
 
 	/*!
 	 *  Sets the ad-hoc ports visibility data source.
@@ -71,8 +71,8 @@ private slots:
 
 private:
 	// Disable copying.
-	AdHocEditor(AdHocEditor const& rhs);
-	AdHocEditor& operator=(AdHocEditor const& rhs);
+	AdHocVisibilityEditor(AdHocVisibilityEditor const& rhs);
+	AdHocVisibilityEditor& operator=(AdHocVisibilityEditor const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -88,7 +88,7 @@ private:
     QTableView portAdHocTable_;
 
     //! The ad-hoc model.
-    AdHocModel adHocModel_;
+    AdHocVisibilityModel adHocModel_;
 };
 
-#endif // ADHOCEDITOR_H
+#endif // ADHOCVISIBILITYEDITOR_H

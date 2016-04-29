@@ -22,7 +22,7 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/StickyNote/StickyNoteAddCommand.h>
-#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocEditor.h>
+#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
 #include <designEditors/common/Association/AssociationAddCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -117,7 +117,7 @@ bool DesignDiagram::setDesign(QSharedPointer<Component> component, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::attach()
 //-----------------------------------------------------------------------------
-void DesignDiagram::attach(AdHocEditor* editor)
+void DesignDiagram::attach(AdHocVisibilityEditor* editor)
 {
     connect(this, SIGNAL(contentChanged()), editor, SLOT(onContentChanged()), Qt::UniqueConnection);
     connect(this, SIGNAL(destroyed(QObject*)), editor, SLOT(clear()), Qt::UniqueConnection);
@@ -126,7 +126,7 @@ void DesignDiagram::attach(AdHocEditor* editor)
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::detach()
 //-----------------------------------------------------------------------------
-void DesignDiagram::detach(AdHocEditor* editor)
+void DesignDiagram::detach(AdHocVisibilityEditor* editor)
 {
     disconnect(editor);
 }

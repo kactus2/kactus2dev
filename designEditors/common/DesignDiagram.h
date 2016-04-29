@@ -43,6 +43,7 @@ class Kactus2Group;
 class Kactus2Position;
 class StickyNoteAddCommand;
 class IEditProvider;
+class AdHocVisibilityEditor;
 
 //-----------------------------------------------------------------------------
 //! Base class for all design diagrams.
@@ -89,12 +90,12 @@ public:
     /*!
      *  Attaches the data source to an ad-hoc editor.
      */
-    virtual void attach(AdHocEditor* editor);
+    virtual void attach(AdHocVisibilityEditor* editor);
 
     /*!
      *  Detaches the data source from the ad-hoc editor.
      */
-    virtual void detach(AdHocEditor* editor);
+    virtual void detach(AdHocVisibilityEditor* editor);
 
         
     virtual QString adHocIdentifier() const;

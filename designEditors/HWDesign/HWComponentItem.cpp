@@ -27,7 +27,7 @@
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
-#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocEditor.h>
+#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
 #include <designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
@@ -196,7 +196,7 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::attach()
 //-----------------------------------------------------------------------------
-void HWComponentItem::attach(AdHocEditor* editor)
+void HWComponentItem::attach(AdHocVisibilityEditor* editor)
 {
     connect(this, SIGNAL(adHocVisibilitiesChanged()), editor, SLOT(onContentChanged()), Qt::UniqueConnection);
     connect(this, SIGNAL(destroyed(ComponentItem*)), editor, SLOT(clear()), Qt::UniqueConnection);
@@ -205,7 +205,7 @@ void HWComponentItem::attach(AdHocEditor* editor)
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::detach()
 //-----------------------------------------------------------------------------
-void HWComponentItem::detach(AdHocEditor* editor)
+void HWComponentItem::detach(AdHocVisibilityEditor* editor)
 {
     disconnect(editor);
 }

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AdHocColumns.h
+// File: AdHocVisibilityColumns.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
@@ -9,10 +9,10 @@
 // Common declarations for ad hoc columns.
 //-----------------------------------------------------------------------------
 
-#ifndef ADHOCCOLUMNS_H
-#define ADHOCCOLUMNS_H
+#ifndef ADHOCVISIBILITYCOLUMNS_H
+#define ADHOCVISIBILITYCOLUMNS_H
 
-namespace AdHocColumns
+namespace AdHocVisibilityColumns
 {
     //! Defines the columns for the ad hoc table.
     enum Columns
@@ -24,4 +24,4 @@ namespace AdHocColumns
     };
 }
 
-#endif //ADHOCCOLUMNS_H
+#endif //ADHOCVISIBILITYCOLUMNS_H

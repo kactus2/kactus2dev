@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AdHocDelegate.cpp
+// File: AdHocVisibilityDelegate.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,8 +9,8 @@
 // Delegate for the table visualizing ad-hoc visibility for component ports.
 //-----------------------------------------------------------------------------
 
-#include "AdHocDelegate.h"
-#include "AdHocColumns.h"
+#include "AdHocVisibilityDelegate.h"
+#include "AdHocVisibilityColumns.h"
 
 #include <QLabel>
 #include <QApplication>
@@ -18,9 +18,9 @@
 #include <QPainter>
 
 //-----------------------------------------------------------------------------
-// Function: AdHocDelegate::AdHocDelegate()
+// Function: AdHocVisibilityDelegate::AdHocVisibilityDelegate()
 //-----------------------------------------------------------------------------
-AdHocDelegate::AdHocDelegate(QObject *parent /*= 0*/):
+AdHocVisibilityDelegate::AdHocVisibilityDelegate(QObject *parent /*= 0*/):
 QStyledItemDelegate(parent),
 adhocGroupModify_(false),
 adhocGroupState_(Qt::Unchecked)
@@ -29,20 +29,21 @@ adhocGroupState_(Qt::Unchecked)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocDelegate::~AdHocDelegate()
+// Function: AdHocVisibilityDelegate::~AdHocVisibilityDelegate()
 //-----------------------------------------------------------------------------
-AdHocDelegate::~AdHocDelegate()
+AdHocVisibilityDelegate::~AdHocVisibilityDelegate()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocDelegate::createEditor()
+// Function: AdHocVisibilityDelegate::createEditor()
 //-----------------------------------------------------------------------------
-QWidget* AdHocDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
+QWidget* AdHocVisibilityDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
                                      QModelIndex const& index) const
 {
-    if (index.column() == AdHocColumns::ADHOC_COL_NAME || index.column() == AdHocColumns::ADHOC_COL_DIRECTION)
+    if (index.column() == AdHocVisibilityColumns::ADHOC_COL_NAME ||
+        index.column() == AdHocVisibilityColumns::ADHOC_COL_DIRECTION)
     {
         QLabel* label = new QLabel(parent);
         return label;
@@ -55,11 +56,12 @@ QWidget* AdHocDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocDelegate::setEditorData()
+// Function: AdHocVisibilityDelegate::setEditorData()
 //-----------------------------------------------------------------------------
-void AdHocDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
+void AdHocVisibilityDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
 {
-    if (index.column() == AdHocColumns::ADHOC_COL_NAME || index.column() == AdHocColumns::ADHOC_COL_DIRECTION)
+    if (index.column() == AdHocVisibilityColumns::ADHOC_COL_NAME ||
+        index.column() == AdHocVisibilityColumns::ADHOC_COL_DIRECTION)
     {
         QString text = index.model()->data(index, Qt::DisplayRole).toString();
         QLabel* label = qobject_cast<QLabel*>(editor);
@@ -72,21 +74,23 @@ void AdHocDelegate::setEditorData(QWidget* editor, const QModelIndex& index) con
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocDelegate::setModelData()
+// Function: AdHocVisibilityDelegate::setModelData()
 //-----------------------------------------------------------------------------
-void AdHocDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
+void AdHocVisibilityDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index)
+    const
 {
     QStyledItemDelegate::setModelData(editor, model, index);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocDelegate::paint()
+// Function: AdHocVisibilityDelegate::paint()
 //-----------------------------------------------------------------------------
-void AdHocDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option, QModelIndex const& index) const
+void AdHocVisibilityDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option,
+    QModelIndex const& index) const
 {
     QStyleOptionViewItemV4 viewItemOption(option);
 
-    if (index.column() == AdHocColumns::ADHOC_COL_VISIBILITY)
+    if (index.column() == AdHocVisibilityColumns::ADHOC_COL_VISIBILITY)
     {
         painter->fillRect(option.rect, Qt::white);
 
@@ -103,10 +107,10 @@ void AdHocDelegate::paint(QPainter *painter, QStyleOptionViewItem const& option,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocDelegate::editorEvent()
+// Function: AdHocVisibilityDelegate::editorEvent()
 //-----------------------------------------------------------------------------
-bool AdHocDelegate::editorEvent(QEvent* event, QAbstractItemModel* model, QStyleOptionViewItem const& option,
-                                QModelIndex const& index)
+bool AdHocVisibilityDelegate::editorEvent(QEvent* event, QAbstractItemModel* model,
+    QStyleOptionViewItem const& option, QModelIndex const& index)
 {
     Q_ASSERT(event);
     Q_ASSERT(model);

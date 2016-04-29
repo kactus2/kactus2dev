@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AdHocModel.cpp
+// File: AdHocVisibilityModel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,8 +9,8 @@
 // Table model for visualizing ad-hoc visibility for dataSource ports.
 //-----------------------------------------------------------------------------
 
-#include "AdHocModel.h"
-#include "AdHocColumns.h"
+#include "AdHocVisibilityModel.h"
+#include "AdHocVisibilityColumns.h"
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -25,9 +25,9 @@
 #include <common/IEditProvider.h>
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::AdHocModel()
+// Function: AdHocVisibilityModel::AdHocVisibilityModel()
 //-----------------------------------------------------------------------------
-AdHocModel::AdHocModel(QObject *parent):
+AdHocVisibilityModel::AdHocVisibilityModel(QObject *parent):
 QAbstractTableModel(parent),
 dataSource_(0),
 table_(new QList<QSharedPointer<Port> > ())
@@ -36,17 +36,17 @@ table_(new QList<QSharedPointer<Port> > ())
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::~AdHocModel()
+// Function: AdHocVisibilityModel::~AdHocVisibilityModel()
 //-----------------------------------------------------------------------------
-AdHocModel::~AdHocModel()
+AdHocVisibilityModel::~AdHocVisibilityModel()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::setDataSource()
+// Function: AdHocVisibilityModel::setDataSource()
 //-----------------------------------------------------------------------------
-void AdHocModel::setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider)
+void AdHocVisibilityModel::setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider)
 {
     dataSource_ = dataSource;
     editProvider_ = editProvider;
@@ -66,9 +66,9 @@ void AdHocModel::setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditPro
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::rowCount()
+// Function: AdHocVisibilityModel::rowCount()
 //-----------------------------------------------------------------------------
-int AdHocModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int AdHocVisibilityModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
 {
     if (parent.isValid() || !table_)
     {
@@ -79,22 +79,22 @@ int AdHocModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::columnCount()
+// Function: AdHocVisibilityModel::columnCount()
 //-----------------------------------------------------------------------------
-int AdHocModel::columnCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int AdHocVisibilityModel::columnCount(QModelIndex const& parent /*= QModelIndex()*/) const
 {
     if (parent.isValid())
     {
         return 0;
     }
 
-    return AdHocColumns::ADHOC_COL_COUNT;
+    return AdHocVisibilityColumns::ADHOC_COL_COUNT;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::data()
+// Function: AdHocVisibilityModel::data()
 //-----------------------------------------------------------------------------
-QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
+QVariant AdHocVisibilityModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
 {
     // Check for invalid index.
     if (!index.isValid() || index.row() < 0 || index.row() >= table_->size())
@@ -106,11 +106,11 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
 
     if (role == Qt::DisplayRole)
     {
-        if (index.column() == AdHocColumns::ADHOC_COL_NAME)
+        if (index.column() == AdHocVisibilityColumns::ADHOC_COL_NAME)
         {
             return table_->at(index.row())->name();
         }
-        else if (index.column() == AdHocColumns::ADHOC_COL_DIRECTION)
+        else if (index.column() == AdHocVisibilityColumns::ADHOC_COL_DIRECTION)
         {
             return DirectionTypes::direction2Str(adhocPort->getDirection());
         }
@@ -121,7 +121,7 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
     }
     else if (Qt::CheckStateRole == role)
     {
-        if (index.column() == AdHocColumns::ADHOC_COL_VISIBILITY)
+        if (index.column() == AdHocVisibilityColumns::ADHOC_COL_VISIBILITY)
         {
             if (dataSource_->isPortAdHocVisible(adhocPort->name()))
             {
@@ -173,23 +173,23 @@ QVariant AdHocModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::headerData()
+// Function: AdHocVisibilityModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant AdHocModel::headerData(int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/) const
+QVariant AdHocVisibilityModel::headerData(int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/) const
 {
     if (role == Qt::DisplayRole)
     {
         if (orientation == Qt::Horizontal)
         {
-            if (section == AdHocColumns::ADHOC_COL_NAME)
+            if (section == AdHocVisibilityColumns::ADHOC_COL_NAME)
             {
                 return tr("Name");
             }
-            else if (section == AdHocColumns::ADHOC_COL_DIRECTION)
+            else if (section == AdHocVisibilityColumns::ADHOC_COL_DIRECTION)
             {
                 return tr("Direction");
             }
-            else if (section == AdHocColumns::ADHOC_COL_VISIBILITY)
+            else if (section == AdHocVisibilityColumns::ADHOC_COL_VISIBILITY)
             {
                 return tr("Ad-hoc");
             }
@@ -209,9 +209,9 @@ QVariant AdHocModel::headerData(int section, Qt::Orientation orientation, int ro
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::setData()
+// Function: AdHocVisibilityModel::setData()
 //-----------------------------------------------------------------------------
-bool AdHocModel::setData(const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/)
+bool AdHocVisibilityModel::setData(const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/)
 {
     // Check for invalid index.
     if (!index.isValid() || index.row() < 0 || index.row() >= table_->size())
@@ -234,9 +234,9 @@ bool AdHocModel::setData(const QModelIndex& index, const QVariant& value, int ro
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::flags()
+// Function: AdHocVisibilityModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags AdHocModel::flags(const QModelIndex& index) const
+Qt::ItemFlags AdHocVisibilityModel::flags(const QModelIndex& index) const
 {
     if (!index.isValid())
     {
@@ -246,7 +246,7 @@ Qt::ItemFlags AdHocModel::flags(const QModelIndex& index) const
     Qt::ItemFlags flags = Qt::ItemIsEnabled;
 
     QSharedPointer<Port> indexedPort = table_->at(index.row());
-    if (index.column() == AdHocColumns::ADHOC_COL_VISIBILITY && adHocPortIsRemovable(indexedPort)
+    if (index.column() == AdHocVisibilityColumns::ADHOC_COL_VISIBILITY && adHocPortIsRemovable(indexedPort)
         && !indexedPort->isAdHocVisible())
     {
         flags |= Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
@@ -256,9 +256,9 @@ Qt::ItemFlags AdHocModel::flags(const QModelIndex& index) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::isAdHocPortRemovable()
+// Function: AdHocVisibilityModel::isAdHocPortRemovable()
 //-----------------------------------------------------------------------------
-bool AdHocModel::adHocPortIsRemovable(QSharedPointer<Port> port) const
+bool AdHocVisibilityModel::adHocPortIsRemovable(QSharedPointer<Port> port) const
 {
     HWConnectionEndpoint* endpoint = dataSource_->getDiagramAdHocPort(port->name());
     if (endpoint)
@@ -274,10 +274,10 @@ bool AdHocModel::adHocPortIsRemovable(QSharedPointer<Port> port) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocModel::updateVisibilities()
+// Function: AdHocVisibilityModel::updateVisibilities()
 //-----------------------------------------------------------------------------
-void AdHocModel::updateVisibilities()
+void AdHocVisibilityModel::updateVisibilities()
 {
-    emit dataChanged(index(0, AdHocColumns::ADHOC_COL_VISIBILITY), index(table_->size() - 1,
-        AdHocColumns::ADHOC_COL_VISIBILITY));
+    emit dataChanged(index(0, AdHocVisibilityColumns::ADHOC_COL_VISIBILITY), index(table_->size() - 1,
+        AdHocVisibilityColumns::ADHOC_COL_VISIBILITY));
 }

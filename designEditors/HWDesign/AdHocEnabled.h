@@ -21,7 +21,7 @@
 class Port;
 class HWConnectionEndpoint;
 class GenericEditProvider;
-class AdHocEditor;
+class AdHocVisibilityEditor;
 
 //-----------------------------------------------------------------------------
 //! Base class for adding ad-hoc support to a derived class.
@@ -79,12 +79,12 @@ public:
     /*!
      *  Attaches the data source to an ad-hoc editor.
      */
-    virtual void attach(AdHocEditor* editor) = 0;
+    virtual void attach(AdHocVisibilityEditor* editor) = 0;
 
     /*!
      *  Detaches the data source from the ad-hoc editor.
      */
-    virtual void detach(AdHocEditor* editor) = 0;
+    virtual void detach(AdHocVisibilityEditor* editor) = 0;
 
 
     virtual QString adHocIdentifier() const = 0;

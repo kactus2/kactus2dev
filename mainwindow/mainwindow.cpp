@@ -53,7 +53,7 @@
 #include <designEditors/HWDesign/BusPortItem.h>
 #include <designEditors/HWDesign/BusInterfaceItem.h>
 //#include <designEditors/HWDesign/AddressEditor/AddressEditor.h>
-#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocEditor.h>
+#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
 #include <designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
 #include <designEditors/SystemDesign/SystemDesignWidget.h>
 #include <designEditors/SystemDesign/SystemDesignDiagram.h>
@@ -152,7 +152,7 @@ contextHelpBrowser_(0),
 contextHelpDock_(0),
 instanceEditor_(0),
 instanceDock_(0),
-adHocEditor_(0),
+adHocVisibilityEditor_(0),
 adHocDock_(0),
 //addressEditor_(0),
 //addressDock_(0),
@@ -1272,8 +1272,8 @@ void MainWindow::setupAdHocVisibilityEditor()
     adHocDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     adHocDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-    adHocEditor_ = new AdHocEditor(adHocDock_);
-    adHocDock_->setWidget(adHocEditor_);
+    adHocVisibilityEditor_ = new AdHocVisibilityEditor(adHocDock_);
+    adHocDock_->setWidget(adHocVisibilityEditor_);
     addDockWidget(Qt::RightDockWidgetArea, adHocDock_);
 }
 
@@ -1374,12 +1374,12 @@ void MainWindow::onClearItemSelection()
 
     if (designWidget != 0)
     {
-        adHocEditor_->setDataSource(designWidget->getDiagram(), designWidget->getEditProvider(), 
+        adHocVisibilityEditor_->setDataSource(designWidget->getDiagram(), designWidget->getEditProvider(), 
             designWidget->isProtected());
     }
     else
     {
-        adHocEditor_->clear();
+        adHocVisibilityEditor_->clear();
     }
 
     //addressEditor_->clear();
@@ -1418,12 +1418,12 @@ void MainWindow::onComponentSelected( ComponentItem* component )
     HWComponentItem* hwComponent = dynamic_cast<HWComponentItem*>(component);
     if (hwComponent != 0)
     {
-        adHocEditor_->setDataSource(hwComponent, designWidget->getEditProvider(), designWidget->isProtected());
+        adHocVisibilityEditor_->setDataSource(hwComponent, designWidget->getEditProvider(), designWidget->isProtected());
         //addressEditor_->setComponent(component);
     }
     else
     {
-        adHocEditor_->clear();
+        adHocVisibilityEditor_->clear();
     }
 
 	if (component->componentModel()->getVlnv().isValid())
@@ -1458,7 +1458,7 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface )
         libraryHandler_->onClearSelection();
     }
 
-    adHocEditor_->clear();
+    adHocVisibilityEditor_->clear();
 	connectionEditor_->clear();
 	instanceEditor_->clear();
     
@@ -1482,7 +1482,7 @@ void MainWindow::onConnectionSelected( GraphicsConnection* connection )
     DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
 
 	Q_ASSERT(connection);
-    adHocEditor_->clear();
+    adHocVisibilityEditor_->clear();
     //addressEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
@@ -2005,7 +2005,7 @@ void MainWindow::onDocumentChanged(int index)
         systemDetailsEditor_->clear();
         //addressEditor_->clear();
 		instanceEditor_->clear();
-        adHocEditor_->clear();
+        adHocVisibilityEditor_->clear();
 		interfaceEditor_->clear();
 		connectionEditor_->clear();
 	}

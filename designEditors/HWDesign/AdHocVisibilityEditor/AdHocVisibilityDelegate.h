@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: AdHocDelegate.h
+// File: AdHocVisibilityDelegate.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Joni-Matti M‰‰tt‰
@@ -9,15 +9,15 @@
 // Delegate for the table visualizing ad-hoc visibility for component ports.
 //-----------------------------------------------------------------------------
 
-#ifndef ADHOCDELEGATE_H
-#define ADHOCDELEGATE_H
+#ifndef ADHOCVISIBILITYDELEGATE_H
+#define ADHOCVISIBILITYDELEGATE_H
 
 #include <QStyledItemDelegate>
 
 //-----------------------------------------------------------------------------
 //! Delegate for the table visualizing ad-hoc visibility for component ports.
 //-----------------------------------------------------------------------------
-class AdHocDelegate : public QStyledItemDelegate
+class AdHocVisibilityDelegate : public QStyledItemDelegate
 {
 	Q_OBJECT
 
@@ -28,12 +28,12 @@ public:
      *
 	 *      @param [in] parent Pointer to the owner of this instance.
 	 */
-	AdHocDelegate(QObject *parent = 0);
+	AdHocVisibilityDelegate(QObject *parent = 0);
 	
 	/*!
      *  Destructor.
      */
-	virtual ~AdHocDelegate();
+	virtual ~AdHocVisibilityDelegate();
 
 	/*!
      *  Creates a new editor for the given item.
@@ -88,8 +88,8 @@ protected:
 
 private:
     // Disable copying.
-    AdHocDelegate(AdHocDelegate const& rhs);
-    AdHocDelegate& operator=(AdHocDelegate const& rhs);
+    AdHocVisibilityDelegate(AdHocVisibilityDelegate const& rhs);
+    AdHocVisibilityDelegate& operator=(AdHocVisibilityDelegate const& rhs);
 
     //! Boolean for ad-hoc group modify.
     bool adhocGroupModify_;
@@ -100,4 +100,4 @@ private:
 
 //-----------------------------------------------------------------------------
 
-#endif // ADHOCDELEGATE_H
+#endif // ADHOCVISIBILITYDELEGATE_H
