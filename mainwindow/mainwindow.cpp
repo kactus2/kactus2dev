@@ -53,7 +53,7 @@
 #include <designEditors/HWDesign/BusPortItem.h>
 #include <designEditors/HWDesign/BusInterfaceItem.h>
 //#include <designEditors/HWDesign/AddressEditor/AddressEditor.h>
-#include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
+#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocEditor.h>
 #include <designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
 #include <designEditors/SystemDesign/SystemDesignWidget.h>
 #include <designEditors/SystemDesign/SystemDesignDiagram.h>

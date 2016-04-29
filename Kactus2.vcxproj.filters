@@ -587,12 +587,6 @@
     <Filter Include="Source Files\designEditors\HWDesign\AddressEditor">
       <UniqueIdentifier>{7d233129-b394-406f-a685-e12be4d6bb83}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\designEditors\HWDesign\AdHocEditor">
-      <UniqueIdentifier>{f1e5422a-1fae-4477-baf6-fced4fe21f6a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\designEditors\HWDesign\AdHocEditor">
-      <UniqueIdentifier>{892a9b94-615c-4e95-9c4c-e30a7c23f3bd}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\mainwindow\MessageConsole">
       <UniqueIdentifier>{d0c9547c-34a4-4a9f-9160-deefc67f0b9a}</UniqueIdentifier>
     </Filter>
@@ -949,6 +943,12 @@
     </Filter>
     <Filter Include="Source Files\designEditors\SystemDesign\UndoCommands">
       <UniqueIdentifier>{59f2df92-4f9d-4ef6-a702-abe7737495ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\designEditors\HWDesign\AdHocVisibilityEditor">
+      <UniqueIdentifier>{892a9b94-615c-4e95-9c4c-e30a7c23f3bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\HWDesign\AdHocVisibilityEditor">
+      <UniqueIdentifier>{f1e5422a-1fae-4477-baf6-fced4fe21f6a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2118,24 +2118,6 @@
     </ClCompile>
     <ClCompile Include="designEditors\HWDesign\AddressEditor\AddressTableView.cpp">
       <Filter>Source Files\designEditors\HWDesign\AddressEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AdHocEditor\AdHocDelegate.cpp">
-      <Filter>Source Files\designEditors\HWDesign\AdHocEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AdHocEditor\AdHocEditor.cpp">
-      <Filter>Source Files\designEditors\HWDesign\AdHocEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\AdHocEditor\AdHocModel.cpp">
-      <Filter>Source Files\designEditors\HWDesign\AdHocEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocDelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocModel.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="mainwindow\MessageConsole\messageconsole.cpp">
       <Filter>Source Files\mainwindow\MessageConsole</Filter>
@@ -4294,6 +4276,24 @@
     <ClCompile Include="GeneratedFiles\moc_ValueOrIndexedValueEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocDelegate.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocEditor.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocModel.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4874,15 +4874,6 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\AddressEditor\AddressTableView.h">
       <Filter>Header Files\designEditors\HWDesign\AddressEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\AdHocEditor\AdHocDelegate.h">
-      <Filter>Header Files\designEditors\HWDesign\AdHocEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\AdHocEditor\AdHocEditor.h">
-      <Filter>Header Files\designEditors\HWDesign\AdHocEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\AdHocEditor\AdHocModel.h">
-      <Filter>Header Files\designEditors\HWDesign\AdHocEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="mainwindow\MessageConsole\messageconsole.h">
       <Filter>Header Files\mainwindow\MessageConsole</Filter>
@@ -5904,6 +5895,15 @@
     <CustomBuild Include="editors\ComponentEditor\remapStates\ValueOrIndexedValueEditor.h">
       <Filter>Header Files\editors\ComponentEditor\remapStates</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocDelegate.h">
+      <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocEditor.h">
+      <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocModel.h">
+      <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6332,9 +6332,6 @@
     <ClInclude Include="editors\ComponentEditor\views\ViewColumns.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\HWDesign\AdHocEditor\AdHocColumns.h">
-      <Filter>Header Files\designEditors\HWDesign\AdHocEditor</Filter>
-    </ClInclude>
     <ClInclude Include="wizards\common\ModuleParameterComparator\ModuleParameterComparator.h">
       <Filter>Header Files\wizards\common\ModuleParameterComparator</Filter>
     </ClInclude>
@@ -6415,6 +6412,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\SystemDesign\UndoCommands\ApiConnectionExchangeCommand.h">
       <Filter>Header Files\designEditors\SystemDesign\UndoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocColumns.h">
+      <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

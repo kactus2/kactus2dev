@@ -22,7 +22,7 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/StickyNote/StickyNote.h>
 #include <designEditors/common/StickyNote/StickyNoteAddCommand.h>
-#include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
+#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocEditor.h>
 #include <designEditors/common/Association/AssociationAddCommand.h>
 
 #include <library/LibraryManager/libraryinterface.h>

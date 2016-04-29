@@ -27,7 +27,7 @@
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
-#include <designEditors/HWDesign/AdHocEditor/AdHocEditor.h>
+#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocEditor.h>
 #include <designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
