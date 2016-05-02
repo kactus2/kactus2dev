@@ -950,6 +950,12 @@
     <Filter Include="Source Files\designEditors\HWDesign\AdHocVisibilityEditor">
       <UniqueIdentifier>{f1e5422a-1fae-4477-baf6-fced4fe21f6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\designEditors\HWDesign\AdhocEditor">
+      <UniqueIdentifier>{714a78e1-1e51-4562-aaf4-8763b721c470}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\designEditors\HWDesign\AdhocEditor">
+      <UniqueIdentifier>{5367a917-9157-4218-9be2-292e41d3556f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4294,6 +4300,12 @@
     <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.cpp">
       <Filter>Source Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdhocEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AdhocEditor\AdhocEditor.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AdhocEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5903,6 +5915,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityModel.h">
       <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AdhocEditor\AdhocEditor.h">
+      <Filter>Header Files\designEditors\HWDesign\AdhocEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

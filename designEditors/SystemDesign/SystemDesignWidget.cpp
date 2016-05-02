@@ -59,7 +59,7 @@ SystemDesignWidget::SystemDesignWidget(bool onlySW, LibraryInterface* lh, QWidge
 DesignWidget(lh, parent),
 onlySW_(onlySW)
 {
-    supportedWindows_ |= INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW | CONFIGURATIONWINDOW | NOTES_WINDOW;
+    supportedWindows_ |= INSTANCEWINDOW | INTERFACEWINDOW | CONNECTIONWINDOW | CONFIGURATIONWINDOW;
 
     if (!onlySW_)
     {

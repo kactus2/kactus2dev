@@ -695,7 +695,8 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h \
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.h \
     ./editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.h \
-    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.h
+    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.h \
+    ./designEditors/HWDesign/AdhocEditor/AdhocEditor.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1305,5 +1306,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
     ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.cpp \
-    ./editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.cpp
+    ./editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.cpp \
+    ./designEditors/HWDesign/AdhocEditor/AdhocEditor.cpp
 RESOURCES += kactus.qrc

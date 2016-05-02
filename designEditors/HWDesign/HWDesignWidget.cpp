@@ -78,8 +78,8 @@ DesignWidget(lh, parent),
 expressionParser_()
 {
 	// update the supported windows 
-	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
-		CONNECTIONWINDOW | INTERFACEWINDOW | INSTANCEWINDOW | ADHOC_WINDOW | ADDRESS_WINDOW | NOTES_WINDOW);
+	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW | CONNECTIONWINDOW | INTERFACEWINDOW |
+        INSTANCEWINDOW | ADHOCVISIBILITY_WINDOW | ADHOC_WINDOW | ADDRESS_WINDOW);
 
     setDiagram(new HWDesignDiagram(lh, getEditProvider(), this));
     getDiagram()->setProtection(false);

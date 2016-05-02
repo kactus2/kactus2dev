@@ -45,6 +45,7 @@ class SystemDetailsEditor;
 class InterfaceEditor;
 class ConnectionEditor;
 class AdHocVisibilityEditor;
+class AdHocEditor;
 class HWConnection;
 class DrawingBoard;
 class ConnectionEndpoint;
@@ -471,7 +472,10 @@ private slots:
 	void onInstanceAction(bool show);
 
     //! Handler for ad-hoc visibility action's trigger.
-    void onAdHocAction(bool show);
+    void onAdHocVisibilityAction(bool show);
+
+    //! Handler for ad hoc editor action's trigger.
+    void onAdHocEditorAction(bool show);
 
     //! Handler for address action's trigger.
     void onAddressAction(bool show);
@@ -614,6 +618,11 @@ private:
 
     //! Sets up the ad-hoc visibility editor.
     void setupAdHocVisibilityEditor();
+
+    /*!
+     *  Setup the ad hoc editor.
+     */
+    void setupAdHocEditor();
 
     //! Sets up the address editor.
     void setupAddressEditor();
@@ -770,7 +779,11 @@ private:
 
     //! The ad-hoc visibility editor and its dock widget.
     AdHocVisibilityEditor* adHocVisibilityEditor_;
-    QDockWidget* adHocDock_;
+    QDockWidget* adHocVisibilityDock_;
+
+    //! Ad hoc editor and its dock widget.
+    AdHocEditor* adhocEditor_;
+    QDockWidget* adhocDock_;
 
     //! Address editor for HW designs and its dock widget.
     //AddressEditor* addressEditor_;

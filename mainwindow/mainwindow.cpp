@@ -52,8 +52,10 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/BusPortItem.h>
 #include <designEditors/HWDesign/BusInterfaceItem.h>
-//#include <designEditors/HWDesign/AddressEditor/AddressEditor.h>
 #include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
+#include <designEditors/HWDesign/AdhocEditor/AdhocEditor.h>
+//#include <designEditors/HWDesign/AddressEditor/AddressEditor.h>
+
 #include <designEditors/SystemDesign/SystemDetailsEditor/SystemDetailsEditor.h>
 #include <designEditors/SystemDesign/SystemDesignWidget.h>
 #include <designEditors/SystemDesign/SystemDesignDiagram.h>
@@ -153,7 +155,9 @@ contextHelpDock_(0),
 instanceEditor_(0),
 instanceDock_(0),
 adHocVisibilityEditor_(0),
-adHocDock_(0),
+adHocVisibilityDock_(0),
+adhocEditor_(0),
+adhocDock_(0),
 //addressEditor_(0),
 //addressDock_(0),
 configurationEditor_(0),
@@ -239,6 +243,7 @@ visibilities_()
     setupLibraryDock();
     setupInstanceEditor();
     setupAdHocVisibilityEditor();
+    setupAdHocEditor();
     //setupAddressEditor();
 	setupConfigurationEditor();
     setupSystemDetailsEditor();
@@ -383,14 +388,15 @@ void MainWindow::createNewWorkspace(QString workspaceName)
 	settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
 	settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
 	settings.setValue("InstanceVisibility", visibilities_.value(TabDocument::INSTANCEWINDOW));
-	settings.setValue("AdHocVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
+	settings.setValue("AdHocVisibility", visibilities_.value(TabDocument::ADHOCVISIBILITY_WINDOW));
+    settings.setValue("AdHocEditorVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
 	settings.setValue("AddressVisibility", visibilities_.value(TabDocument::ADDRESS_WINDOW));
 	settings.setValue("InterfaceVisibility", visibilities_.value(TabDocument::INTERFACEWINDOW));
 	settings.setValue("LibraryVisibility", visibilities_.value(TabDocument::LIBRARYWINDOW));
 	settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
 	settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
 	settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
-	settings.setValue("NotesVisibility", visibilities_.value(TabDocument::NOTES_WINDOW));
+    // 	settings.setValue("NotesVisibility", visibilities_.value(TabDocument::NOTES_WINDOW));
 
 	// Save filters.
 	settings.beginGroup("LibraryFilters");
@@ -539,9 +545,13 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     visibilities_.insert(TabDocument::INSTANCEWINDOW, instanceVisible); 
     instanceDock_->toggleViewAction()->setChecked(instanceVisible);
 
-    const bool adHocVisible = settings.value("AdHocVisibility", true).toBool();
-    visibilities_.insert(TabDocument::ADHOC_WINDOW, adHocVisible);
-    adHocDock_->toggleViewAction()->setChecked(adHocVisible);
+    const bool adHocVisibilityVisible = settings.value("AdHocVisibility", true).toBool();
+    visibilities_.insert(TabDocument::ADHOCVISIBILITY_WINDOW, adHocVisibilityVisible);
+    adHocVisibilityDock_->toggleViewAction()->setChecked(adHocVisibilityVisible);
+
+    const bool adHocEditorVisible = settings.value("AdHocEditorVisibility", true).toBool();
+    visibilities_.insert(TabDocument::ADHOC_WINDOW, adHocEditorVisible);
+    adhocDock_->toggleViewAction()->setChecked(adHocEditorVisible);
 
     /*const bool addressVisible = settings.value("AddressVisibility", false).toBool();
     visibilities_.insert(TabDocument::ADDRESS_WINDOW, addressVisible);
@@ -640,14 +650,15 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.setValue("SystemDetailsVisibility", visibilities_.value(TabDocument::SYSTEM_DETAILS_WINDOW));
     settings.setValue("ConnectionVisibility", visibilities_.value(TabDocument::CONNECTIONWINDOW));
     settings.setValue("InstanceVisibility", visibilities_.value(TabDocument::INSTANCEWINDOW));
-    settings.setValue("AdHocVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
+    settings.setValue("AdHocVisibility", visibilities_.value(TabDocument::ADHOCVISIBILITY_WINDOW));
+    settings.setValue("AdHocEditorVisibility", visibilities_.value(TabDocument::ADHOC_WINDOW));
     settings.setValue("AddressVisibility", visibilities_.value(TabDocument::ADDRESS_WINDOW));
     settings.setValue("InterfaceVisibility", visibilities_.value(TabDocument::INTERFACEWINDOW));
     settings.setValue("LibraryVisibility", visibilities_.value(TabDocument::LIBRARYWINDOW));
     settings.setValue("OutputVisibility", visibilities_.value(TabDocument::OUTPUTWINDOW));
     settings.setValue("ContextHelpVisibility", visibilities_.value(TabDocument::CONTEXT_HELP_WINDOW));
     settings.setValue("PreviewVisibility", visibilities_.value(TabDocument::PREVIEWWINDOW));
-    settings.setValue("NotesVisibility", visibilities_.value(TabDocument::NOTES_WINDOW));
+//     settings.setValue("NotesVisibility", visibilities_.value(TabDocument::NOTES_WINDOW));
 
     // Save filters.
     settings.beginGroup("LibraryFilters");
@@ -1014,7 +1025,8 @@ void MainWindow::setupMenus()
 
 	// the menu to display the dock widgets
     //windowsMenu_.addAction(addressDock_->toggleViewAction());	
-    windowsMenu_.addAction(adHocDock_->toggleViewAction());	        
+    windowsMenu_.addAction(adHocVisibilityDock_->toggleViewAction());
+    windowsMenu_.addAction(adhocDock_->toggleViewAction());
     windowsMenu_.addAction(connectionDock_->toggleViewAction());
     windowsMenu_.addAction(contextHelpDock_->toggleViewAction());    
     windowsMenu_.addAction(instanceDock_->toggleViewAction());
@@ -1267,14 +1279,31 @@ void MainWindow::setupInstanceEditor()
 //-----------------------------------------------------------------------------
 void MainWindow::setupAdHocVisibilityEditor()
 {
-    adHocDock_ = new QDockWidget(tr("Ad-hoc Visibility"), this);
-    adHocDock_->setObjectName(tr("Ad-hoc Visibility"));
-    adHocDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    adHocDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+    adHocVisibilityDock_ = new QDockWidget(tr("Ad hoc Visibility"), this);
+    adHocVisibilityDock_->setObjectName(tr("Ad-hoc Visibility"));
+    adHocVisibilityDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    adHocVisibilityDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-    adHocVisibilityEditor_ = new AdHocVisibilityEditor(adHocDock_);
-    adHocDock_->setWidget(adHocVisibilityEditor_);
-    addDockWidget(Qt::RightDockWidgetArea, adHocDock_);
+    adHocVisibilityEditor_ = new AdHocVisibilityEditor(adHocVisibilityDock_);
+    adHocVisibilityDock_->setWidget(adHocVisibilityEditor_);
+    addDockWidget(Qt::RightDockWidgetArea, adHocVisibilityDock_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupAdHocEditor()
+//-----------------------------------------------------------------------------
+void MainWindow::setupAdHocEditor()
+{
+    adhocDock_ = new QDockWidget(tr("Ad hoc port details"));
+    adhocDock_->setObjectName(tr("Ad hoc port details"));
+    adhocDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    adhocDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
+
+    adhocEditor_ = new AdHocEditor(adhocDock_);
+    adhocDock_->setWidget(adhocEditor_);
+    addDockWidget(Qt::RightDockWidgetArea, adhocDock_);
+
+    connect(adhocEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1386,6 +1415,7 @@ void MainWindow::onClearItemSelection()
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
 	connectionEditor_->clear();
+    adhocEditor_->clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -1397,7 +1427,7 @@ void MainWindow::onComponentSelected( ComponentItem* component )
 
 	connectionEditor_->clear();
 	interfaceEditor_->clear();
-
+    adhocEditor_->clear();
     
     DesignWidget* designWidget(0);
 
@@ -1459,7 +1489,7 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface )
     }
 
     adHocVisibilityEditor_->clear();
-	connectionEditor_->clear();
+    connectionEditor_->clear();
 	instanceEditor_->clear();
     
     // TODO: Address editor bus interface select.
@@ -1467,9 +1497,14 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface )
     if (!interface->isAdHoc())
     {
 	    interfaceEditor_->setInterface(interface);
+
+        adhocEditor_->clear();
     }
     else
     {
+        HWConnectionEndpoint* hwEndpoint = dynamic_cast<HWConnectionEndpoint*>(interface);
+        adhocEditor_->setAdhocPort(hwEndpoint);
+
         interfaceEditor_->clear();
     }
 }
@@ -1483,6 +1518,7 @@ void MainWindow::onConnectionSelected( GraphicsConnection* connection )
 
 	Q_ASSERT(connection);
     adHocVisibilityEditor_->clear();
+    adhocEditor_->clear();
     //addressEditor_->clear();
 	instanceEditor_->clear();
 	interfaceEditor_->clear();
@@ -2006,6 +2042,7 @@ void MainWindow::onDocumentChanged(int index)
         //addressEditor_->clear();
 		instanceEditor_->clear();
         adHocVisibilityEditor_->clear();
+        adhocEditor_->clear();
 		interfaceEditor_->clear();
 		connectionEditor_->clear();
 	}
@@ -3519,7 +3556,8 @@ void MainWindow::updateWindows()
     updateWindowAndControlVisibility(TabDocument::CONNECTIONWINDOW, connectionDock_);
     updateWindowAndControlVisibility(TabDocument::INTERFACEWINDOW, interfaceDock_);
     updateWindowAndControlVisibility(TabDocument::INSTANCEWINDOW, instanceDock_);
-    updateWindowAndControlVisibility(TabDocument::ADHOC_WINDOW, adHocDock_);
+    updateWindowAndControlVisibility(TabDocument::ADHOCVISIBILITY_WINDOW, adHocVisibilityDock_);
+    updateWindowAndControlVisibility(TabDocument::ADHOC_WINDOW, adhocDock_);
     //updateWindowAndControlVisibility(TabDocument::ADDRESS_WINDOW, addressDock_);   
 }
 
@@ -3641,8 +3679,11 @@ void MainWindow::connectVisibilityControls()
         this, SLOT(onInstanceAction(bool)), Qt::UniqueConnection);
 
     // Action to show/hide the ad-hoc visibility editor.
-    connect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
-        this, SLOT(onAdHocAction(bool)), Qt::UniqueConnection);
+    connect(adHocVisibilityDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
+        this, SLOT(onAdHocVisibilityAction(bool)), Qt::UniqueConnection);
+
+    connect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        this, SLOT(onAdHocEditorAction(bool)), Qt::UniqueConnection);
 
     // Action to show/hide the address editor.
     /*connect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), 
@@ -3674,7 +3715,10 @@ void MainWindow::disconnectVisibilityControls()
 
     disconnect(instanceDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onInstanceAction(bool)));
 
-    disconnect(adHocDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAdHocAction(bool)));
+    disconnect(adHocVisibilityDock_->toggleViewAction(), SIGNAL(toggled(bool)),
+        this, SLOT(onAdHocVisibilityAction(bool)));
+
+    disconnect(adhocDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAdHocEditorAction(bool)));
 
     //disconnect(addressDock_->toggleViewAction(), SIGNAL(toggled(bool)), this, SLOT(onAddressAction(bool)));
 }
@@ -4228,7 +4272,15 @@ void MainWindow::onInterfaceAction( bool show )
 //-----------------------------------------------------------------------------
 // Function: mainwindow::onAdHocAction()
 //-----------------------------------------------------------------------------
-void MainWindow::onAdHocAction( bool show )
+void MainWindow::onAdHocVisibilityAction( bool show )
+{
+    setWindowVisibilityForSupportedWindow(TabDocument::ADHOCVISIBILITY_WINDOW, show);
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onAdHocEditorAction()
+//-----------------------------------------------------------------------------
+void MainWindow::onAdHocEditorAction(bool show)
 {
     setWindowVisibilityForSupportedWindow(TabDocument::ADHOC_WINDOW, show);
 }
