@@ -252,38 +252,41 @@ void LibrarySettingsDialog::onSelectLocation( QTableWidgetItem* cur, QTableWidge
 	removeLocationButton_->setEnabled(cur != 0);
 }
 
-void LibrarySettingsDialog::onItemClicked( QTableWidgetItem* item ) {
-	
-	// if the item is the check box to select the default library
-	if (item->column() == LibrarySettingsDelegate::DEF_COLUMN) {
-
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDialog::onItemClicked()
+//-----------------------------------------------------------------------------
+void LibrarySettingsDialog::onItemClicked( QTableWidgetItem* item )
+{
+	// If the item is the check box to select the default library.
+	if (item->column() == LibrarySettingsDelegate::DEF_COLUMN)
+	{
 		changed_ = true;
 
-		// if item was checked then uncheck other items because only one library can be default
-		if (item->checkState() == Qt::Checked) {
+		// Default library should be active.
+		QTableWidgetItem* activeItem = libLocationsTable_->item(item->row(), LibrarySettingsDelegate::ACTIVE_COL);
+		activeItem->setCheckState(Qt::Checked);
 
-			// default library should be active
-			QTableWidgetItem* activeItem = libLocationsTable_->item(item->row(), LibrarySettingsDelegate::ACTIVE_COL);
-			activeItem->setCheckState(Qt::Checked);
+		// Uncheck other items because only one library can be default.
+		for (int i = 0; i < libLocationsTable_->rowCount(); ++i)
+		{
+			QTableWidgetItem* temp = libLocationsTable_->item(i, LibrarySettingsDelegate::DEF_COLUMN);
 
-			for (int i = 0; i < libLocationsTable_->rowCount(); ++i) {
-				QTableWidgetItem* temp = libLocationsTable_->item(i, LibrarySettingsDelegate::DEF_COLUMN);
-
-				// if the item is not the clicked item
-				if (temp != item) {
-					temp->setCheckState(Qt::Unchecked);
-				}
+			// If the item is not the clicked item.
+			if (temp != item)
+			{
+				temp->setCheckState(Qt::Unchecked);
 			}
-        }
-        // Do not allow unchecking
-        else
-        {
+		}
+
+        // Do not allow unchecking.
+        if (item->checkState() != Qt::Checked)
+		{
             item->setCheckState(Qt::Checked);
         }           
     }
-
-	// if the item is the check box to select the active libraries
-	else if (item->column() == LibrarySettingsDelegate::ACTIVE_COL) {
+	// If the item is the check box to select the active libraries.
+	else if (item->column() == LibrarySettingsDelegate::ACTIVE_COL)
+	{
 		changed_ = true;
 	}
 }
