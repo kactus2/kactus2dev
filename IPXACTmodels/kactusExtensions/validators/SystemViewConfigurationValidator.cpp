@@ -29,7 +29,7 @@
 SystemViewConfigurationValidator::SystemViewConfigurationValidator(LibraryInterface* library,
     QSharedPointer<ExpressionParser> parser):
 ViewConfigurationValidator(library, parser),
-availableSystemViews_()
+availableViews_()
 {
 
 }
@@ -65,11 +65,11 @@ bool SystemViewConfigurationValidator::hasValidViewReference(QSharedPointer<View
 {
     changeAvailableSystemViews(configuration);
 
-    if (!configuration->getViewReference().isEmpty() && !availableSystemViews_.isEmpty())
+    if (!configuration->getViewReference().isEmpty() && !availableViews_.isEmpty())
     {
-        foreach (QSharedPointer<SystemView> currentView, availableSystemViews_)
+        foreach (QString currentView, availableViews_)
         {
-            if (configuration->getViewReference() == currentView->name())
+            if (configuration->getViewReference() == currentView)
             {
                 return true;
             }
@@ -97,7 +97,8 @@ void SystemViewConfigurationValidator::changeAvailableSystemViews(QSharedPointer
 
                     if (component)
                     {
-                        availableSystemViews_ = component->getSystemViews();
+                        availableViews_ = component->getSWViewNames();
+						availableViews_.append( component->getSystemViewNames() );
                         return;
                     }
                 }
@@ -107,8 +108,8 @@ void SystemViewConfigurationValidator::changeAvailableSystemViews(QSharedPointer
         }
     }
     
-    if (!availableSystemViews_.isEmpty())
+    if (!availableViews_.isEmpty())
     {
-        availableSystemViews_.clear();
+        availableViews_.clear();
     }
 }

@@ -78,7 +78,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The currently available system views.
-    QList<QSharedPointer<SystemView> > availableSystemViews_;
+    QStringList availableViews_;
 };
 
 #endif // SYSTEMVIEWCONFIGURATIONVALIDATOR_H
