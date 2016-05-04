@@ -67,10 +67,19 @@ bool SystemDesignConfigurationValidator::hasValidViewConfigurations(
             foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
                 *designConfiguration->getViewConfigurations())
             {
-                if (instanceNames.contains(viewConfiguration->getInstanceName()) ||
-                    ((viewConfigurationReferencesHWInstance(viewConfiguration, hwInstances) &&
-                    !getViewConfigurationValidator()->validate(viewConfiguration)) ||
-                    systemViewConfigurationValidator_->validate(viewConfiguration)))
+				if ( instanceNames.contains(viewConfiguration->getInstanceName() ) )
+				{
+					return false;
+				}
+					
+				if ( viewConfigurationReferencesHWInstance(viewConfiguration, hwInstances) )
+				{
+					if ( !getViewConfigurationValidator()->validate(viewConfiguration) )
+					{
+						return false;
+					}
+				}
+				else if ( !systemViewConfigurationValidator_->validate(viewConfiguration) )
                 {
                     return false;
                 }

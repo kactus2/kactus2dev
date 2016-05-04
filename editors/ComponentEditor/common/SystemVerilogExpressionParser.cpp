@@ -15,15 +15,18 @@
 #include <QRegularExpression>
 #include <QStringList>
 #include <qmath.h>
+#include "qnamespace.h"
 
 namespace
 {
     const QString CLOG2_FUNCTION = "[$]clog2[(](?:[^)]+)[)]";
 
+	const QString BOOLEAN_VALUE = "(?i)true|(?i)false";
+
     const QString REAL_NUMBER("[+-]?[0-9_]+[.][0-9_]+");
 
-    const QRegularExpression PRIMARY_LITERAL("((?:[(]\\s*)*)\\s*(" + REAL_NUMBER + "|" + 
-        SystemVerilogSyntax::INTEGRAL_NUMBER + "|"  + CLOG2_FUNCTION + ")\\s*((?:[)]\\s*)*)");
+    const QRegularExpression PRIMARY_LITERAL("((?:[(]\\s*)*)\\s*(" + REAL_NUMBER + "|" + BOOLEAN_VALUE + "|"
+		+ SystemVerilogSyntax::INTEGRAL_NUMBER + "|"  + CLOG2_FUNCTION + ")\\s*((?:[)]\\s*)*)");
 
     const QRegularExpression BINARY_OPERATOR("[+-/*//]|[/*][/*]");
     const QRegularExpression COMPARISON_OPERATOR("[<>]=?|[!=]=");
@@ -547,11 +550,17 @@ qreal SystemVerilogExpressionParser::parseConstantToDecimal(QString const& const
     QRegularExpression size("([1-9][0-9_]*)?(?=')");
     QRegularExpression baseFormat("'" + SystemVerilogSyntax::SIGNED + "[dDbBoOhH]?");
 
+	// Remove formating off the number.
     QString result = constantNumber;
     result.remove(size);
     result.remove(baseFormat);
     result.remove('_');
 
+	// True = 1 and False = 0.
+	result.replace( QString( "true" ), QString( "1" ), Qt::CaseInsensitive );
+	result.replace( QString( "false" ), QString( "0" ), Qt::CaseInsensitive );
+
+	// Number containing a dot is interpreted as a floating number. Otherwise it is seen as an integer.
     if (constantNumber.contains('.'))
     {
         return result.toDouble();

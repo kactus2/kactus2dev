@@ -86,6 +86,15 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::addColumn<QString>("constant");
     QTest::addColumn<QString>("expectedValue");
 
+	//! Booleans
+	QTest::newRow("Boolean true should evaluate to 1") << "true" << "1";
+	QTest::newRow("Boolean false should evaluate to 0") << "false" << "0";
+	QTest::newRow("Array of {true,false} should evaluate to an array of {1,0}") << "{true,false}" << "{1,0}";
+	QTest::newRow("Boolean True should evaluate to 1") << "True" << "1";
+	QTest::newRow("Boolean False should evaluate to 0") << "False" << "0";
+	QTest::newRow("Boolean True should evaluate to 1") << "TRUe" << "1";
+	QTest::newRow("Boolean False should evaluate to 0") << "fALSe" << "0";
+
     //! Array.
     QTest::newRow("Array of {1,1} should evaluate to an array of {1,1}") << "{1,1}" << "{1,1}";
     QTest::newRow("Array with one value is a valid array") << "{2}" << "{2}";
@@ -222,6 +231,10 @@ void tst_SystemVerilogExpressionParser::testParseAddition_data()
     QTest::newRow("No addition on constant equals constant") << "1" << "1";
     QTest::newRow("Addition without second operand is unknown") << "1+" << "x";
     QTest::newRow("Addition without second operand and whitespaces is unknown") << " 1 + " << "x";
+
+	//! Booleans
+	QTest::newRow("True + false + true equals two") << "True + false + true" << "2";
+	QTest::newRow("true+true inside array equals 2") << "{false,true+true}" << "{0,2}";
 
     //! Array.
     QTest::newRow("Addition of arrays should evaluate to unknown") << "{1,1}+{1,1}" << "x";
