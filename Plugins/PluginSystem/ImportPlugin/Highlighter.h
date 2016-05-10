@@ -6,7 +6,7 @@
 // Date: 18.09.2014
 //
 // Description:
-// <Short description of the class/file contents>
+// Interface for syntax highlighter.
 //-----------------------------------------------------------------------------
 
 #ifndef HIGHLIGHTER_H
@@ -31,7 +31,7 @@ public:
     virtual void applyHighlight(QString const& text, QColor const& highlightColor) = 0;
 
     /*!
-     *  Called when a section should be highlighted with the given color>.
+     *  Called when a section should be highlighted with the given color.
      *
      *      @param [in] beginPosition   The beginning character index.
      *      @param [in] endPosition     The end character index.

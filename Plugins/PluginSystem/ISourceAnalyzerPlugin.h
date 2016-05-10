@@ -29,8 +29,11 @@ class FileDependency;
 //-----------------------------------------------------------------------------
 struct FileDependencyDesc
 {
-    QString filename;       //!< The name of the dependent file.
-    QString description;    //!< Possible automatically deduced description for the dependency.
+	//! The name of the dependent file, for example "componentName.vhd".
+    QString filename;
+	//! Possible automatically deduced description for the dependency, for example
+	//! "Component instantiation for entity componentName".
+    QString description;    
 
     /*!
      *  Default constructor.
@@ -41,7 +44,10 @@ struct FileDependencyDesc
 };
 
 //-----------------------------------------------------------------------------
-//! Source analyzer plugin interface for dependency analysis.
+//! Kactus2 contains a dependency analyzer to manage and visualize dependencies between source files of
+//! a component. Source analyzer plugins are used in the dependency analyzer to add support for different code
+//! languages and even custom file types. Single source analyzer plugin implements support for a single language
+//! or predefined file types.
 //-----------------------------------------------------------------------------
 class ISourceAnalyzerPlugin : public IPlugin
 {
@@ -52,12 +58,15 @@ public:
     virtual ~ISourceAnalyzerPlugin() {}
 
     /*!
-     *  Returns the list of file types this plugin can run analysis for.
+     *  Returns the list of file types this plugin can run analysis for. File type is described as an IP-XACT style string,
+	 *  e.g. cppSource or vhdlSource. Kactus2 includes a settings page for setting which file extensions map to which
+	 *  file types so that the analyzer plugin doesn't have to hard-code the supported extensions.
      */
     virtual QStringList getSupportedFileTypes() const = 0;
 
     /*!
-     *  Calculates a language-dependent hash for the given file.
+     *  Calculates a language-dependent hash for the analyzed file. Hash calculation here should ignore
+	 *  whites pace and comments.
      *
      *      @param [in] filename  The name of the file.
      *
@@ -68,9 +77,10 @@ public:
     virtual QString calculateHash(QString const& filename) = 0;
 
     /*!
-     *  Begins the analysis for the given component.
+     *  This function is called once when the dependency analysis scan is started. It gives the plugin the
+	 *  ability to do preparations before any file is analyzed.
      *
-     *      @param [in] component      The component.
+     *      @param [in] component       The component to which the dependency scan is being run.
      *      @param [in] componentPath  The path to the directory where the component is located.
      *
      *      @remarks Any preparations needed for the file dependency analysis should be made here.
@@ -78,9 +88,10 @@ public:
     virtual void beginAnalysis(Component const* component, QString const& componentPath) = 0;
 
     /*!
-     *  Ends the analysis for the given component.
+     *  This function is called once after the dependency analysis scan has completed. It allows the plugin to
+	 *  make cleanup operations after the dependency scan has been finished, e.g destroy internal data structures.
      *
-     *      @param [in] component      The component.
+     *      @param [in] component       The component to which the dependency scan is being run.
      *      @param [in] componentPath  The path to the directory where the component is located.
      *
      *      @remarks Any cleanups needed should be made here.
@@ -88,7 +99,9 @@ public:
     virtual void endAnalysis(Component const* component, QString const& componentPath) = 0;
 
     /*!
-     *  Retrieves all file dependencies the given file has.
+     *  This function is responsible of extracting all dependencies that are found by parsing the given source
+	 *  file. The returned file dependency descriptions must contain the names of the dependent files relative
+	 *  to the analyzed file.
      *
      *      @param [in]  component      The component to which the dependency scan is being run.
      *      @param [in]  componentPath  The path to the directory where the component is located.

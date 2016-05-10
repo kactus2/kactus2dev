@@ -260,7 +260,7 @@ QStringList VerilogParameterParser::findDeclarations(QRegularExpression const& d
         previousStart = declarationStart;
         declarationStart = inspect.indexOf(declarationRule, declarationStart  + declarationLength + 1);
 
-        // Take the matching part and append to the list.
+        // Take the matching part of the text and remove extra white space.
         QString declaration = inspect.mid(previousStart, declarationStart - previousStart);
         declaration = declaration.trimmed();
 
@@ -270,6 +270,7 @@ QStringList VerilogParameterParser::findDeclarations(QRegularExpression const& d
             highlighter_->applyHighlight(declaration, ImportColors::MODELPARAMETER);
         }
 
+		// Append the part to the list.
         declarations.append(declaration);
     }
 

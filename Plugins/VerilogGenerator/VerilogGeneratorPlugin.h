@@ -34,6 +34,7 @@ class VERILOGGENERATORPLUGIN_EXPORT VerilogGeneratorPlugin : public QObject, pub
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "kactus2.plugins.veriloggeneratorplugin" FILE "veriloggeneratorplugin.json")
+
     Q_INTERFACES(IPlugin)
     Q_INTERFACES(IGeneratorPlugin)
 

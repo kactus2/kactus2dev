@@ -19,7 +19,9 @@
 #include <QtPlugin>
 
 //-----------------------------------------------------------------------------
-//! Plugin information interface.
+//! All plugin interfaces inherit from a common IPlugin interface which all plugins must implement.
+//! It is used by Kactus2 to acquire plugin information.
+//! Most of the plugins do not inherit this interface directly, but some derived interface.
 //-----------------------------------------------------------------------------
 class IPlugin
 {
@@ -64,21 +66,25 @@ public:
     virtual QString getVendor() const = 0;
 
     /*!
-     *  Returns the licence of the plugin.
+     *  Returns the licence of the plugin (e.g. GPL2).
      */
     virtual QString getLicence() const = 0;
 
     /*!
-     *  Returns the licence holder of the plugin.
+     *  Returns the license holder i.e. who is the plugin licensed to (e.g. Public or Tampere University of Technology).
      */
     virtual QString getLicenceHolder() const = 0;
 
     /*!
-     *  Returns the settings widget.
+     *  This can be used to show custom plugin-specific settings UI in the Kactus2 settings dialog.
+	 *  If the plugin has no custom settings, a null pointer should be returned.
      */
     virtual PluginSettingsWidget* getSettingsWidget() = 0;
 
-	//! \brief Returns the external program requirements of the plugin.
+    /*!
+     *  This can be used to indicate what external programs the plugin needs in order to operate correctly.
+	 *  This allows Kactus2 to show settings to set paths where those external program are located.
+     */
 	 virtual QList<ExternalProgramRequirement> getProgramRequirements() = 0;
 };
 

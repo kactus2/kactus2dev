@@ -17,9 +17,6 @@
 #include <QFile>
 #include <QString>
 
-//-----------------------------------------------------------------------------
-//! MCAPI code generator.
-//-----------------------------------------------------------------------------
 class CppSourceAnalyzer : public QObject, public ISourceAnalyzerPlugin
 {
     Q_OBJECT
@@ -87,7 +84,7 @@ public:
     /*!
      *  Begins the analysis for the given component.
      *
-     *      @param [in] component      The component.
+     *      @param [in] component       The component to which the dependency scan is being run.
      *      @param [in] componentPath  The path to the directory where the component is located.
      *
      *      @remarks Any preparations needed for the file dependency analysis should be made here.
@@ -97,7 +94,7 @@ public:
     /*!
      *  Ends the analysis for the given component.
      *
-     *      @param [in] component      The component.
+     *      @param [in] component       The component to which the dependency scan is being run.
      *      @param [in] componentPath  The path to the directory where the component is located.
      *
      *      @remarks Any cleanups needed should be made here.

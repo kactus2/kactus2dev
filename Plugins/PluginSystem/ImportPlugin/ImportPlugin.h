@@ -6,7 +6,9 @@
 // Date: 17.09.2014
 //
 // Description:
-// Interface for import parser plugins.
+// Import plugins can be used to create elements e.g. ports in components from implementation source files
+// e.g. VHDL files. The import can be run in component wizard. After selecting the top-level file, all active
+// import plugins, whose accepted file ypes match the selected file, will be run.
 //-----------------------------------------------------------------------------
 
 #ifndef IMPORTPARSER_H
@@ -19,9 +21,6 @@
 
 class Component;
 
-//-----------------------------------------------------------------------------
-//! Interface for import parser plugins.
-//-----------------------------------------------------------------------------
 class ImportPlugin : public IPlugin
 {
 public:
@@ -30,14 +29,14 @@ public:
     virtual ~ImportPlugin() {};
 
     /*!
-     *  Returns the supported import file types.
+     *  Returns the file types supported by the plugin.
      *
      *      @return The file types the import plugin supports.
      */
     virtual QStringList getSupportedFileTypes() const = 0;
 
     /*!
-     *  Gets any compatibility warnings for the plugin.
+     *  Returns a compatibility warning concerning the import plugin usage. Can be empty.
      *
      *      @return The warning text.
      */

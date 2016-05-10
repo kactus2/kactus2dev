@@ -177,9 +177,11 @@ bool VerilogImporter::hasModuleDeclaration(QString const& input)
 //-----------------------------------------------------------------------------
 void VerilogImporter::highlightModule(QString const& input)
 {
+	// Find the beginning and end of the module
     int moduleBegin = input.indexOf(VerilogSyntax::MODULE_BEGIN);
     int moduleEnd = VerilogSyntax::MODULE_END.match(input).capturedEnd();
 
+	// Paint the text black.
     if (highlighter_)
     {        
         highlighter_->applyFontColor(input.mid(moduleBegin, moduleEnd  - moduleBegin), QColor("black"));
@@ -192,18 +194,23 @@ void VerilogImporter::highlightModule(QString const& input)
 void VerilogImporter::importModelName(QString const& input, QSharedPointer<Component> targetComponent,
 	QSharedPointer<ComponentInstantiation> targetComponentInstantiation)
 {
+	// Find the beginning of the module.
     int moduleBegin = input.indexOf(VerilogSyntax::MODULE_BEGIN);
+
+	// Operate if it exists.
     if (moduleBegin != -1)
     {
-        QString modelName = VerilogSyntax::MODULE_BEGIN.match(input).captured(1);
-
-        targetComponentInstantiation->setModuleName(modelName);
+		// Find the name of the module.
+        QString moduleName = VerilogSyntax::MODULE_BEGIN.match(input).captured(1);
+        targetComponentInstantiation->setModuleName(moduleName);
 
         if (highlighter_)
         {
-            int modelNameBegin = input.indexOf(modelName, moduleBegin);
-            int modelNameEnd = modelNameBegin + modelName.length();
-            highlighter_->applyHighlight(modelNameBegin, modelNameEnd, ImportColors::VIEWNAME);
+			// Find the beginning and the end of the name.
+            int moduleNameBegin = input.indexOf(moduleName, moduleBegin);
+			int moduleNameEnd = moduleNameBegin + moduleName.length();
+			// Highlight the name.
+            highlighter_->applyHighlight(moduleNameBegin, moduleNameEnd, ImportColors::VIEWNAME);
         }
     }
 }

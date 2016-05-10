@@ -14,9 +14,6 @@
 
 #include "Highlighter.h"
 
-//-----------------------------------------------------------------------------
-//! Interface for all highlighting import plugins.
-//-----------------------------------------------------------------------------
 class HighlightSource
 {
 public:
