@@ -52,6 +52,7 @@ class PortReference;
 class VLNV;
 class InterfaceGraphicsData;
 class Kactus2Placeholder;
+class DesignDiagramResolver;
 
 //-----------------------------------------------------------------------------
 //! HWDesignDiagram is a graphical view to a design.
@@ -598,6 +599,13 @@ private:
     void createAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection);
 
     /*!
+     *  Create a symbol for an ad hoc tie off value.
+     *
+     *      @param [in] connection  The selected ad hoc connection.
+     */
+    void createAdHocTieOffConnection(QSharedPointer<AdHocConnection> connection);
+
+    /*!
      *  Creates a graphics item for an ad-hoc interconnection between two ports and adds it to the diagram.
      *
      *      @param [in] adHocConnection     The ad-hoc connection containing the ports.
@@ -669,6 +677,9 @@ private:
 
     //! The possible end point under cursor while performing drag.
     HWConnectionEndpoint* dragEndPoint_;
+
+    //! Handler for design diagram calculation.
+    QSharedPointer<DesignDiagramResolver> diagramResolver_;
 };
 
 #endif // HWDESIGNDIAGRAM_H

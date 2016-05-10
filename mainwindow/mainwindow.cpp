@@ -52,6 +52,7 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/BusPortItem.h>
 #include <designEditors/HWDesign/BusInterfaceItem.h>
+#include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
 #include <designEditors/HWDesign/AdhocEditor/AdhocEditor.h>
 //#include <designEditors/HWDesign/AddressEditor/AddressEditor.h>
@@ -1403,8 +1404,10 @@ void MainWindow::onClearItemSelection()
 
     if (designWidget != 0)
     {
-        adHocVisibilityEditor_->setDataSource(designWidget->getDiagram(), designWidget->getEditProvider(), 
-            designWidget->isProtected());
+        QSharedPointer<Design> containedDesign = designWidget->getDiagram()->getDesign();
+
+        adHocVisibilityEditor_->setDataSource(designWidget->getDiagram(), containedDesign,
+            designWidget->getEditProvider(), designWidget->isProtected());
     }
     else
     {
@@ -1448,7 +1451,10 @@ void MainWindow::onComponentSelected( ComponentItem* component )
     HWComponentItem* hwComponent = dynamic_cast<HWComponentItem*>(component);
     if (hwComponent != 0)
     {
-        adHocVisibilityEditor_->setDataSource(hwComponent, designWidget->getEditProvider(), designWidget->isProtected());
+        QSharedPointer<Design> containedDesign = designWidget->getDiagram()->getDesign();
+
+        adHocVisibilityEditor_->setDataSource(hwComponent, containedDesign, designWidget->getEditProvider(),
+            designWidget->isProtected());
         //addressEditor_->setComponent(component);
     }
     else
@@ -1502,8 +1508,15 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface )
     }
     else
     {
-        HWConnectionEndpoint* hwEndpoint = dynamic_cast<HWConnectionEndpoint*>(interface);
-        adhocEditor_->setAdhocPort(hwEndpoint);
+        AdHocItem* adhocEndPoint = dynamic_cast<AdHocItem*>(interface);
+        if (adhocEndPoint)
+        {
+            adhocEditor_->setAdhocPort(adhocEndPoint);
+        }
+        else
+        {
+            adhocEditor_->clear();
+        }
 
         interfaceEditor_->clear();
     }

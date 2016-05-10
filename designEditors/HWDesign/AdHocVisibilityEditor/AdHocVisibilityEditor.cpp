@@ -14,11 +14,14 @@
 #include "AdHocVisibilityColumns.h"
 
 #include <common/IEditProvider.h>
-#include <designEditors/HWDesign/AdHocEnabled.h>
 
+#include <designEditors/HWDesign/AdHocEnabled.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
+#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Design/Design.h>
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -30,9 +33,10 @@
 AdHocVisibilityEditor::AdHocVisibilityEditor(QWidget *parent):
 QWidget(parent),
 dataSource_(0),
+visibilityPolicy_(new AdHocVisibilityPolicy()),
 nameLabel_(tr("Component: "), this),
 portAdHocTable_(this),
-adHocModel_(this)
+adHocModel_(visibilityPolicy_, this)
 {
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
@@ -73,8 +77,8 @@ AdHocVisibilityEditor::~AdHocVisibilityEditor()
 //-----------------------------------------------------------------------------
 // Function: AdHocVisibilityEditor::setDataSource()
 //-----------------------------------------------------------------------------
-void AdHocVisibilityEditor::setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider,
-    bool lockEditor)
+void AdHocVisibilityEditor::setDataSource(AdHocEnabled* dataSource, QSharedPointer<Design> design,
+    QSharedPointer<IEditProvider> editProvider, bool lockEditor)
 {
 	Q_ASSERT(dataSource);
 	parentWidget()->raise();
@@ -90,6 +94,8 @@ void AdHocVisibilityEditor::setDataSource(AdHocEnabled* dataSource, QSharedPoint
     nameLabel_.setText(tr("Component: %1").arg(dataSource_->adHocIdentifier()));
 
     portAdHocTable_.setEnabled(!lockEditor);
+
+    visibilityPolicy_->setDataSource(dataSource, design->getAdHocConnections());
 
     adHocModel_.setDataSource(dataSource_, editProvider);
     portAdHocTable_.resizeRowsToContents();
@@ -113,6 +119,9 @@ void AdHocVisibilityEditor::clear()
 
 	dataSource_ = 0;
     adHocModel_.setDataSource(0, QSharedPointer<IEditProvider>());
+
+    visibilityPolicy_->setDataSource(0, QSharedPointer<QList<QSharedPointer<AdHocConnection> > > ());
+
     portAdHocTable_.hide();
 
 	parentWidget()->setMaximumHeight(20);

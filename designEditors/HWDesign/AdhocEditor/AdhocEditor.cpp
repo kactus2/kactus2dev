@@ -15,15 +15,14 @@
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
-#include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/AdHocPortItem.h>
 #include <designEditors/HWDesign/AdHocInterfaceItem.h>
-#include <designEditors/HWDesign/HWConnectionEndpoint.h>
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 #include <IPXACTmodels/Design/Design.h>
@@ -88,7 +87,7 @@ void AdHocEditor::setupLayout()
 //-----------------------------------------------------------------------------
 // Function: AdhocEditor::setAdhocPort()
 //-----------------------------------------------------------------------------
-void AdHocEditor::setAdhocPort(HWConnectionEndpoint* endPoint)
+void AdHocEditor::setAdhocPort(AdHocItem* endPoint)
 {
     if(endPoint->isAdHoc())
     {
@@ -102,28 +101,22 @@ void AdHocEditor::setAdhocPort(HWConnectionEndpoint* endPoint)
 
         AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(containedPortItem_);
         AdHocInterfaceItem* adhocInterfaceItem = dynamic_cast<AdHocInterfaceItem*>(containedPortItem_);
-        
-        QSharedPointer<Port> referencedPort;
+
+        QString containingItemName = "";
+        QSharedPointer<Port> referencedPort = containedPortItem_->getPort();
+
         if (adhocPortItem)
         {
-            referencedPort = adhocPortItem->getPort();
-        }
-        else if (adhocInterfaceItem)
-        {
-            referencedPort = adhocInterfaceItem->getPort();
+            ComponentItem* instanceItem = adhocPortItem->encompassingComp();
+            if (instanceItem)
+            {
+                containingItemName = instanceItem->name();
+            }
         }
 
         if (referencedPort)
         {
-            ComponentItem* componentItem = containedPortItem_->encompassingComp();
-            if (componentItem)
-            {
-                componentFinder_->setComponent(componentItem->componentModel());
-            }
-            else
-            {
-                componentFinder_->setComponent(containedPortItem_->getOwnerComponent());
-            }
+            componentFinder_->setComponent(containedPortItem_->getOwnerComponent());
 
             DirectionTypes::Direction direction = referencedPort->getDirection();
 
@@ -132,6 +125,8 @@ void AdHocEditor::setAdhocPort(HWConnectionEndpoint* endPoint)
             leftBoundValue_->setText(expressionParser_->parseExpression(referencedPort->getLeftBound()));
             rightBoundValue_->setText(expressionParser_->parseExpression(referencedPort->getRightBound()));
 
+            QString tiedValue = "";
+
             if ((adhocPortItem && direction == DirectionTypes::IN) ||
                 (adhocInterfaceItem && direction == DirectionTypes::OUT) ||
                 direction == DirectionTypes::INOUT)
@@ -139,17 +134,19 @@ void AdHocEditor::setAdhocPort(HWConnectionEndpoint* endPoint)
                 DesignDiagram* containingDiagram = dynamic_cast<DesignDiagram*>(containedPortItem_->scene());
                 bool locked = containingDiagram->isProtected();
 
-                QString tiedValue = getTiedValue();
+                tiedValue = getTiedValue(containingItemName);
 
                 tiedValueEditor_->setEnabled(!locked);
-
-                tiedValueEditor_->setExpression(tiedValue);
-                tiedValueEditor_->setToolTip(formattedValueFor(tiedValue));
             }
             else
             {
                 tiedValueEditor_->setEnabled(false);
             }
+
+            tiedValueEditor_->blockSignals(true);
+            tiedValueEditor_->setExpression(tiedValue);
+            tiedValueEditor_->setToolTip(formattedValueFor(tiedValue));
+            tiedValueEditor_->blockSignals(false);
 
             parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
         }
@@ -159,9 +156,9 @@ void AdHocEditor::setAdhocPort(HWConnectionEndpoint* endPoint)
 //-----------------------------------------------------------------------------
 // Function: AdhocEditor::getTiedValue()
 //-----------------------------------------------------------------------------
-QString AdHocEditor::getTiedValue() const
+QString AdHocEditor::getTiedValue(QString const& instanceName) const
 {
-    QSharedPointer<AdHocConnection> connection = getTiedConnection();
+    QSharedPointer<AdHocConnection> connection = getTiedConnection(instanceName);
     if (connection)
     {
         return connection->getTiedValue();
@@ -173,30 +170,36 @@ QString AdHocEditor::getTiedValue() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdhocEditor::getTiedValue()
+// Function: AdhocEditor::getTiedConnection()
 //-----------------------------------------------------------------------------
-QSharedPointer<AdHocConnection> AdHocEditor::getTiedConnection() const
+QSharedPointer<AdHocConnection> AdHocEditor::getTiedConnection(QString const& instanceName) const
 {
     DesignDiagram* containingDiagram = dynamic_cast<DesignDiagram*>(containedPortItem_->scene());
     QSharedPointer<Design> containingDesign = containingDiagram->getDesign();
 
     foreach (QSharedPointer<AdHocConnection> connection, *containingDesign->getAdHocConnections())
     {
-        foreach (QSharedPointer<PortReference> internalReference, *connection->getInternalPortReferences())
+        if (!instanceName.isEmpty())
         {
-            if (internalReference->getPortRef() == containedPortItem_->name() &&
-                connection->name().contains("tiedValue"))
+            foreach (QSharedPointer<PortReference> internalReference, *connection->getInternalPortReferences())
             {
-                return connection;
+                if (internalReference->getPortRef() == containedPortItem_->name() &&
+                    internalReference->getComponentRef() == instanceName &&
+                    !connection->getTiedValue().isEmpty())
+                {
+                    return connection;
+                }
             }
         }
-
-        foreach (QSharedPointer<PortReference> externalReference, *connection->getExternalPortReferences())
+        else
         {
-            if (externalReference->getPortRef() == containedPortItem_->name() &&
-                connection->name().contains("tiedValue"))
+            foreach (QSharedPointer<PortReference> externalReference, *connection->getExternalPortReferences())
             {
-                return connection;
+                if (externalReference->getPortRef() == containedPortItem_->name() &&
+                    !connection->getTiedValue().isEmpty())
+                {
+                    return connection;
+                }
             }
         }
     }
@@ -209,15 +212,15 @@ QSharedPointer<AdHocConnection> AdHocEditor::getTiedConnection() const
 //-----------------------------------------------------------------------------
 QString AdHocEditor::formattedValueFor(QString const& expression) const
 {
-    if (expressionParser_->isValidExpression(expression))
+    if (expression.isEmpty() || expressionParser_->isPlainValue(expression))
+    {
+        return expression;
+    }
+    else if (expressionParser_->isValidExpression(expression))
     {
         ValueFormatter formatter;
         return formatter.format(
             expressionParser_->parseExpression(expression), expressionParser_->baseForExpression(expression));
-    }
-    else if (expressionParser_->isPlainValue(expression))
-    {
-        return expression;
     }
     else
     {
@@ -234,12 +237,21 @@ void AdHocEditor::onTiedValueChanged()
 
     QString newTiedValue = tiedValueEditor_->getExpression();
 
-    tiedValueEditor_->setToolTip(formattedValueFor(newTiedValue));
+    QString formattedTiedValue = formattedValueFor(newTiedValue);
+
+    tiedValueEditor_->setToolTip(formattedTiedValue);
 
     DesignDiagram* containingDiagram = dynamic_cast<DesignDiagram*>(containedPortItem_->scene());
     QSharedPointer<Design> containingDesign = containingDiagram->getDesign();
 
-    QSharedPointer<AdHocConnection> connection = getTiedConnection();
+    QString instanceName = "";
+    ComponentItem* containingInstance = containedPortItem_->encompassingComp();
+    if (containingInstance)
+    {
+        instanceName = containingInstance->name();
+    }
+
+    QSharedPointer<AdHocConnection> connection = getTiedConnection(instanceName);
 
     if (!newTiedValue.isEmpty())
     {
@@ -257,11 +269,13 @@ void AdHocEditor::onTiedValueChanged()
         containingDesign->getAdHocConnections()->removeAll(connection);
     }
 
+    drawTieOffItem(formattedTiedValue);
+
     emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdhocEditor::setTiedValueToConnection()
+// Function: AdhocEditor::createConnectionForTiedValue()
 //-----------------------------------------------------------------------------
 void AdHocEditor::createConnectionForTiedValue(QString const& newTiedValue,
     QSharedPointer<Design> containingDesign)
@@ -307,6 +321,35 @@ QString AdHocEditor::createNameForTiedValueConnection() const
     QString tiedValuePart = "_to_tiedValue";
 
     return instanceName + portName + tiedValuePart;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdhocEditor::drawTieOffItem()
+//-----------------------------------------------------------------------------
+void AdHocEditor::drawTieOffItem(QString const& formattedTieOff) const
+{
+    int intTiedValue = expressionParser_->parseExpression(formattedTieOff).toInt();
+
+    if (formattedTieOff.isEmpty())
+    {
+        containedPortItem_->removeTieOffItem();
+    }
+    else if (formattedTieOff== tr("n/a"))
+    {
+        containedPortItem_->createNonResolvableTieOff();
+    }
+    else if (intTiedValue == 1)
+    {
+        containedPortItem_->createHighTieOff();
+    }
+    else if (intTiedValue == 0)
+    {
+        containedPortItem_->createLowTieOff();
+    }
+    else
+    {
+        containedPortItem_->createNumberedTieOff();
+    }
 }
 
 //-----------------------------------------------------------------------------

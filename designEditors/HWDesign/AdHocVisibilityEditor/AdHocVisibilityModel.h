@@ -19,6 +19,7 @@ class AdHocEnabled;
 class GenericEditProvider;
 class IEditProvider;
 class Port;
+class AdHocVisibilityPolicy;
 
 //-----------------------------------------------------------------------------
 //! Table model for visualizing ad-hoc visibility for component ports.
@@ -30,22 +31,23 @@ class AdHocVisibilityModel : public QAbstractTableModel
 public:
 
 	/*!
-     *  Constructor.
+     *  The constructor.
 	 *
-     *      @param [in] editProvider  The edit provider managing the undo/redo stack.
-	 *      @param [in] parent        Pointer to the owner of this model.
+     *      @param [in] visibilityPolicy    Handler for ad hoc visibilities.
+     *      @param [in] parent              Pointer to the owner of this model.
 	 */
-	AdHocVisibilityModel(QObject *parent);
+	AdHocVisibilityModel(QSharedPointer<AdHocVisibilityPolicy> visibilityPolicy, QObject *parent);
 	
 	/*!
-     *  Destructor.
+     *  The destructor.
      */
 	virtual ~AdHocVisibilityModel();
 
     /*!
      *  Sets the ad-hoc port visibility data source being edited.
      *
-     *      @param [in] dataSource The data source.
+     *      @param [in] dataSource      The data source.
+     *      @param [in] editProvider    The provider for undo commands.
      */
     void setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider);
 
@@ -127,21 +129,12 @@ private:
     AdHocVisibilityModel(AdHocVisibilityModel const& rhs);
     AdHocVisibilityModel& operator=(AdHocVisibilityModel const& rhs);
 
-    /*!
-     *  Check if an ad hoc port can be hidden.
-     *
-     *      @param [in] port    The selected ad hoc port.
-     *
-     *      @return True, if the selected ad hoc port can be hidden, otherwise false.
-     */
-    bool adHocPortIsRemovable(QSharedPointer<Port> port) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The component whose ad-hoc port visibility is being edited.
-    AdHocEnabled* dataSource_;
+    //! The handler for ad hoc visibilities.
+    QSharedPointer<AdHocVisibilityPolicy> visibilityPolicy_;
 
     //! The edit provider.
      QSharedPointer<IEditProvider> editProvider_;

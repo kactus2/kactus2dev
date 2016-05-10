@@ -15,19 +15,19 @@
 #include <QSharedPointer>
 #include <QVector2D>
 
-#include "HWConnectionEndpoint.h"
-
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
+#include <designEditors/HWDesign/AdHocItem.h>
+
+#include <QPolygonF>
+
 class HWComponentItem;
-class OffPageConnectorItem;
-class LibraryInterface;
 class Port;
 
 //-----------------------------------------------------------------------------
 //! AdHocPortItem class.
 //-----------------------------------------------------------------------------
-class AdHocPortItem : public HWConnectionEndpoint
+class AdHocPortItem : public AdHocItem
 {
     Q_OBJECT
 
@@ -35,29 +35,28 @@ public:
     enum { Type = GFX_TYPE_DIAGRAM_ADHOC_PORT };
 
     /*!
-     *  Constructor.
+     *  The constructor.
+     *
+     *      @param [in] port    The selected port.
+     *      @param [in] parent  The owner of this item.
      */
     AdHocPortItem(QSharedPointer<Port> port, HWComponentItem* parent);
 
 	/*!
-     *  Destructor.
+     *  The destructor.
      */
 	virtual ~AdHocPortItem();
-
-    /*!
-     *  Sets the bus and abstraction types and the interface mode for the end point.
-     *
-     *      @param [in] busType  The bus type (bus definition VLNV).
-     *      @param [in] absType  The abstraction type (abstraction definition VLNV).
-     *      @param [in] mode     The interface mode.
-     */
-    void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
 
     /*!
      *  Updates the graphics to match the IP-XACT port.
      */
     void updateInterface();
 
+	/*!
+	 *  Get the type of this graphics item.
+	 *
+     *      @return AdHoc interface item type.
+	 */
 	int type() const { return Type; }
 
     //-----------------------------------------------------------------------------
@@ -70,47 +69,6 @@ public:
     virtual bool isDirectionFixed() const;
 
     /*!
-     *  Returns the name of the ad-hoc port.
-     */
-    virtual QString name() const;
-
-	/*!
-     *  Sets the name of the ad-hoc port.
-     *
-     *      @param [in] name The name to set.
-     */
-	virtual void setName(const QString& name);
-
-	/*!
-     *  Returns the description of the port.
-     */
-	virtual QString description() const;
-
-	/*!
-     *  Sets the description of the port.
-     *
-     *      @param [in] description The description to set.
-     */
-	virtual void setDescription(const QString& description);
-
-    /*!
-     *  Called when a connection between this and another end point is done.
-     *
-     *      @param [in] other The other end point of the connection.
-     *
-     *      @return False if there was an error in the connection. Otherwise true.
-     */
-    virtual bool onConnect(ConnectionEndpoint const* other);
-
-
-    /*!
-     *  Called when a connection has been removed from between this and another end point.
-     *
-     *      @param [in] other The other end point of the connection.
-     */
-    virtual void onDisconnect(ConnectionEndpoint const* other);
-
-    /*!
      *  Returns true if a connection is valid between the two endpoints.
      *
      *      @param [in] other The other endpoint.
@@ -121,56 +79,22 @@ public:
      */
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
-    /*!
-     *  Returns true if the endpoint is exclusive, i.e. can only have one connection.
-     */
-    virtual bool isExclusive() const;
-
     /*! 
-    *  Returns the encompassing component. if this port represents
-    *  a bus interface on a component.
+     *  Returns the encompassing component. if this port represents a bus interface on a component.
      */
     virtual ComponentItem* encompassingComp() const;
 
 	/*!
-     *  Returns a pointer to the top component that owns this interface
+     *  Returns a pointer to the component referenced by the instance that owns this item.
 	 */
 	virtual QSharedPointer<Component> getOwnerComponent() const;
 
-    /*! 
-     *  Returns the IP-XACT bus interface model of the port.
-     */
-    virtual QSharedPointer<BusInterface> getBusInterface() const;
-
     /*!
-     *  Returns the ad-hoc port of the end point.
+     *  Check if the port is hierarchical.
      *
-     *      @remarks The function returns a null pointer if the end point is a bus interface.
-     *               Use isBus() function to check for ad-hoc support (isBus() == false).
-     */
-    virtual QSharedPointer<Port> getPort() const;
-
-    /*! 
-     *  Returns true if the port represents a hierarchical connection.
+     *      @return False, port items are always instance items and thus non-hierarchical.
      */
     virtual bool isHierarchical() const;
-
-    /*!
-     *  Returns true if the end point is a bus interface end point.
-     */
-    virtual bool isBus() const;
-
-	/*!
-     *  Sets the interface mode for the port.
-     *
-     *      @param [in] mode The mode to set.
-     */
-	virtual void setInterfaceMode(General::InterfaceMode mode);
-
-    /*!
-     *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
-     */
-    virtual ConnectionEndpoint* getOffPageConnector();
 
 	/*!
 	 *  Set the position of the name label.
@@ -202,33 +126,68 @@ public:
     bool adHocPortExists() const;
 
 protected:
-    virtual QVariant itemChange(GraphicsItemChange change,
-                                const QVariant &value);
 
+    /*!
+     *  Notifies item state changes.
+     *
+     *      @param [in] change  The change.
+     *      @param [in] value   The new value.
+     */
+    virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
+    /*!
+     *  Event for mouse press.
+     *
+     *      @param [in] event   The pressed mouse button.
+     */
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    
+    /*!
+     *  Event for mouse move.
+     *
+     *      @param [in] event   The movement event.
+     */
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    
+    /*!
+     *  Event for mouse button release.
+     *
+     *      @param [in] event   The release event.
+     */
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 
 private:
-    
+
+    /*!
+     *  Get the shape of an in port.
+     *
+     *      @param [in] squareSize  The size of a square in the design grid.
+     *
+     *      @return Polygon containing the shape of an in port.
+     */
+    virtual QPolygonF getInPortShape(const int squareSize) const;
+
+    /*!
+     *  Get the shape of an out port.
+     *
+     *      @param [in] squareSize  The size of a square in the design grid.
+     *
+     *      @return Polygon containing the shape of an out port.
+     */
+    virtual QPolygonF getOutPortShape(const int squareSize) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The name label.
-	QGraphicsTextItem nameLabel_;
-
+    //! The component item containing this port item.
     HWComponentItem* parentComponentItem_;
 
-    QSharedPointer<Port> port_;
     //! The position of the port before mouse move.
     QPointF oldPos_;
 
     //! The old positions of the other component ports before mouse move.
     QMap<ConnectionEndpoint*, QPointF> oldPortPositions_;
-
-    //! The off-page connector.
-    OffPageConnectorItem* offPageConnector_;
 };
 
 //-----------------------------------------------------------------------------

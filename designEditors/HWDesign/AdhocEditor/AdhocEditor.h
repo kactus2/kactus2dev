@@ -20,7 +20,7 @@ class ExpressionParser;
 class ComponentParameterFinder;
 class Design;
 class AdHocConnection;
-class HWConnectionEndpoint;
+class AdHocItem;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of an Ad hoc port in designAd-hoc editor.
@@ -48,7 +48,7 @@ public:
      *
      *      @param [in] endPoint    The selected ad hoc port.
      */
-    void setAdhocPort(HWConnectionEndpoint* endPoint);
+    void setAdhocPort(AdHocItem* endPoint);
 
 public slots:
 
@@ -94,16 +94,20 @@ private:
     /*!
      *  Get the tied value associated with contained ad hoc port.
      *
+     *      @param [in] instanceName    Name of the instance containing the port. Empty for top level ports.
+     *
      *      @return The tied value of the ad hoc port.
      */
-    QString getTiedValue() const;
+    QString getTiedValue(QString const& instanceName) const;
 
     /*!
      *  Get the ad hoc connection containing this ad hoc ports tied value.
      *
+     *      @param [in] instanceName    Name of the instance containing the port. Empty for top level ports.
+     *
      *      @return The selected ad hoc connection, or an empty pointer if no connection was found.
      */
-    QSharedPointer<AdHocConnection> getTiedConnection() const;
+    QSharedPointer<AdHocConnection> getTiedConnection(QString const& instanceName) const;
 
     /*!
      *  Create a connection for the ad hoc port.
@@ -120,6 +124,13 @@ private:
      *              <PortName>_to_tiedValue for a top component ad hoc port.
      */
     QString createNameForTiedValueConnection() const;
+
+    /*!
+     *  Draw the tie off of the selected port.
+     *
+     *      @param [in] parsedTieOff    The formatted tie off value.
+     */
+    void drawTieOffItem(QString const& formattedTieOff) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -147,7 +158,7 @@ private:
     ExpressionEditor* tiedValueEditor_;
 
     //! The selected ad hoc port item.
-    HWConnectionEndpoint* containedPortItem_;
+    AdHocItem* containedPortItem_;
 };
 
 #endif // ADHOCEDITOR_H

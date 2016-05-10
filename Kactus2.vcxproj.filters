@@ -1747,9 +1747,6 @@
     <ClCompile Include="GeneratedFiles\moc_busportsview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocInterfaceItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AdHocPortItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4306,6 +4303,21 @@
     <ClCompile Include="designEditors\HWDesign\AdhocEditor\AdhocEditor.cpp">
       <Filter>Source Files\designEditors\HWDesign\AdhocEditor</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AdHocItem.cpp">
+      <Filter>Source Files\designEditors\HWDesign</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocInterfaceItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AdHocItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\DesignDiagramResolver.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.cpp">
+      <Filter>Source Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5919,6 +5931,12 @@
     <CustomBuild Include="designEditors\HWDesign\AdhocEditor\AdhocEditor.h">
       <Filter>Header Files\designEditors\HWDesign\AdhocEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AdHocItem.h">
+      <Filter>Header Files\designEditors\HWDesign</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.h">
+      <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6430,6 +6448,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityColumns.h">
       <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\common\DesignDiagramResolver.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

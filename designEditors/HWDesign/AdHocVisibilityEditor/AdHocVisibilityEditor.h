@@ -26,6 +26,8 @@
 class AdHocEnabled;
 class ComponentItem;
 class IEditProvider;
+class AdHocVisibilityPolicy;
+class Design;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of a component instance within a design.
@@ -51,10 +53,12 @@ public:
 	 *  Sets the ad-hoc ports visibility data source.
 	 *
 	 *      @param [in] dataSource      The data source.
+     *      @param [in] design          The design containing the data source.
 	 *      @param [in] editProvider    The edit provider to use for undo/redo.
 	 *      @param [in] lockEditor      If true, the contents cannot be edited.
 	 */
-	void setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider, bool lockEditor);
+	void setDataSource(AdHocEnabled* dataSource, QSharedPointer<Design> design,
+        QSharedPointer<IEditProvider> editProvider, bool lockEditor);
 
 public slots:
     /*!
@@ -80,6 +84,9 @@ private:
 
 	//! The data source being edited.
 	AdHocEnabled* dataSource_;
+
+    //! The handler for ad hoc port visibilities.
+    QSharedPointer<AdHocVisibilityPolicy> visibilityPolicy_;
 
     //! The name label.
     QLabel nameLabel_;

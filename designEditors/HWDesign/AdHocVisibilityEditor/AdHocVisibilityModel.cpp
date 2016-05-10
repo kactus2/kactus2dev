@@ -12,24 +12,25 @@
 #include "AdHocVisibilityModel.h"
 #include "AdHocVisibilityColumns.h"
 
-#include <IPXACTmodels/common/DirectionTypes.h>
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Port.h>
+#include <common/IEditProvider.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/AdHocEnabled.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
-
+#include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.h>
 #include <designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h>
 
-#include <common/IEditProvider.h>
+#include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocVisibilityModel::AdHocVisibilityModel()
 //-----------------------------------------------------------------------------
-AdHocVisibilityModel::AdHocVisibilityModel(QObject *parent):
+AdHocVisibilityModel::AdHocVisibilityModel(QSharedPointer<AdHocVisibilityPolicy> visibilityPolicy,
+    QObject *parent):
 QAbstractTableModel(parent),
-dataSource_(0),
+visibilityPolicy_(visibilityPolicy),
 table_(new QList<QSharedPointer<Port> > ())
 {
 
@@ -48,12 +49,11 @@ AdHocVisibilityModel::~AdHocVisibilityModel()
 //-----------------------------------------------------------------------------
 void AdHocVisibilityModel::setDataSource(AdHocEnabled* dataSource, QSharedPointer<IEditProvider> editProvider)
 {
-    dataSource_ = dataSource;
     editProvider_ = editProvider;
 
     beginResetModel();
 
-    if (dataSource_ != 0)
+    if (dataSource != 0)
     {
         table_ = dataSource->getPorts();
     }
@@ -123,7 +123,7 @@ QVariant AdHocVisibilityModel::data(QModelIndex const& index, int role /*= Qt::D
     {
         if (index.column() == AdHocVisibilityColumns::ADHOC_COL_VISIBILITY)
         {
-            if (dataSource_->isPortAdHocVisible(adhocPort->name()))
+            if (visibilityPolicy_->isPortAdhocVisible(adhocPort->name()))
             {
                 return Qt::Checked;
             }
@@ -140,7 +140,7 @@ QVariant AdHocVisibilityModel::data(QModelIndex const& index, int role /*= Qt::D
 
     else if (role == Qt::ForegroundRole)
     {
-        if (!adHocPortIsRemovable(adhocPort) || adhocPort->isAdHocVisible())
+        if (!visibilityPolicy_->canChangeVisibility(adhocPort))
         {
             return QColor(Qt::gray);
         }
@@ -152,10 +152,15 @@ QVariant AdHocVisibilityModel::data(QModelIndex const& index, int role /*= Qt::D
 
     else if (role == Qt::ToolTipRole)
     {
-        if (!adHocPortIsRemovable(adhocPort))
+        if (visibilityPolicy_->portHasConnections(adhocPort))
         {
             QString connectedText = QObject::tr("Connected ad hoc port cannot be disabled.");
             return connectedText;
+        }
+        else if (visibilityPolicy_->portHasTieOffConnection(adhocPort))
+        {
+            QString tieOffText = QObject::tr("Port with a tie off value cannot be disabled.");
+            return tieOffText;
         }
         else if (adhocPort->isAdHocVisible())
         {
@@ -221,8 +226,8 @@ bool AdHocVisibilityModel::setData(const QModelIndex& index, const QVariant& val
 
     if (role == Qt::CheckStateRole)
     {
-        QSharedPointer<QUndoCommand> cmd(
-            new AdHocVisibilityChangeCommand(dataSource_, table_->at(index.row())->name(), value == Qt::Checked));
+        QSharedPointer<QUndoCommand> cmd(new AdHocVisibilityChangeCommand(
+            visibilityPolicy_->getDataSource(), table_->at(index.row())->name(), value == Qt::Checked));
         editProvider_->addCommand(cmd);
         cmd->redo();
 
@@ -246,31 +251,13 @@ Qt::ItemFlags AdHocVisibilityModel::flags(const QModelIndex& index) const
     Qt::ItemFlags flags = Qt::ItemIsEnabled;
 
     QSharedPointer<Port> indexedPort = table_->at(index.row());
-    if (index.column() == AdHocVisibilityColumns::ADHOC_COL_VISIBILITY && adHocPortIsRemovable(indexedPort)
-        && !indexedPort->isAdHocVisible())
+    if (index.column() == AdHocVisibilityColumns::ADHOC_COL_VISIBILITY &&
+        visibilityPolicy_->canChangeVisibility(indexedPort))
     {
         flags |= Qt::ItemIsUserCheckable | Qt::ItemIsSelectable;
     }
 
     return flags;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocVisibilityModel::isAdHocPortRemovable()
-//-----------------------------------------------------------------------------
-bool AdHocVisibilityModel::adHocPortIsRemovable(QSharedPointer<Port> port) const
-{
-    HWConnectionEndpoint* endpoint = dataSource_->getDiagramAdHocPort(port->name());
-    if (endpoint)
-    {
-        if (!endpoint->getConnections().isEmpty() || 
-            (endpoint->getOffPageConnector() && !endpoint->getOffPageConnector()->getConnections().isEmpty()))
-        {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------
