@@ -12,7 +12,7 @@
 #ifndef TLMWGeneratorPlugin_H
 #define TLMWGeneratorPlugin_H
 
-#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <QObject>
 
 #include <TLMWParser.h>

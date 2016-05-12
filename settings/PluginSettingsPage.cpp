@@ -12,7 +12,7 @@
 #include "PluginSettingsPage.h"
 
 #include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportPlugin.h>
 #include <Plugins/PluginSystem/PluginListDialog.h>

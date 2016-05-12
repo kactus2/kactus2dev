@@ -6,7 +6,8 @@
 // Date: 28.6.2012
 //
 // Description:
-// Interface which offers core utilities for plugins.
+// Interface which offers core utilities for plugins, namely access to the console, the parent widget, and most
+// importantly the library interface. It is provided for a plugin via the implemented plugin interface.
 //-----------------------------------------------------------------------------
 
 #ifndef IPLUGINUTILITY_H
@@ -17,9 +18,6 @@
 
 class LibraryInterface;
 
-//-----------------------------------------------------------------------------
-//! Interface which offers core utilities for plugins.
-//-----------------------------------------------------------------------------
 class IPluginUtility
 {
 public:

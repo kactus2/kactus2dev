@@ -11,7 +11,7 @@
 
 #include "NewPluginsDialog.h"
 
-#include "IGeneratorPlugin.h"
+#include "GeneratorPlugin/IGeneratorPlugin.h"
 #include "IPlugin.h"
 #include "PluginInfoWidget.h"
 #include "ISourceAnalyzerPlugin.h"

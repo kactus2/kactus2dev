@@ -14,7 +14,7 @@
 
 #include "makefilegenerator_global.h"
 
-#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
 class MAKEFILEGENERATOR_EXPORT MakefileGeneratorPlugin : public QObject, public IGeneratorPlugin

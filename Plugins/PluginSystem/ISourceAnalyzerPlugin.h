@@ -99,10 +99,8 @@ public:
     virtual void endAnalysis(Component const* component, QString const& componentPath) = 0;
 
     /*!
-     *  This function is responsible of extracting all dependencies that are found by parsing the given source
-	 *  file. The returned file dependency descriptions must contain the names of the dependent files relative
-	 *  to the analyzed file.
-     *
+     *  Retrieves all file dependencies the given file has.
+	 *
      *      @param [in]  component      The component to which the dependency scan is being run.
      *      @param [in]  componentPath  The path to the directory where the component is located.
      *      @param [in]  filename       The name of the file to which the analysis is run.

@@ -15,7 +15,7 @@
 #include "veriloggeneratorplugin_global.h"
 
 #include <Plugins/PluginSystem/IPlugin.h>
-#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 

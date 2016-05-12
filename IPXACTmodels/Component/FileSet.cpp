@@ -159,8 +159,8 @@ QSharedPointer<QList<QSharedPointer<FileBuilder> > > FileSet::getDefaultFileBuil
 //-----------------------------------------------------------------------------
 void FileSet::setDefaultFileBuilders(QSharedPointer<QList<QSharedPointer<FileBuilder> > > newDefaultFileBuilders)
 {
-        defaultFileBuilders_->clear();
-        defaultFileBuilders_ = newDefaultFileBuilders;
+    defaultFileBuilders_->clear();
+    defaultFileBuilders_ = newDefaultFileBuilders;
 }
 
 //-----------------------------------------------------------------------------
@@ -195,7 +195,6 @@ QSharedPointer<QList<QSharedPointer<Function> > > FileSet::getFunctions() const
 {
 	return functions_;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: FileSet::setFunctions()

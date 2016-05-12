@@ -102,7 +102,7 @@
 
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
-#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/PluginListDialog.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>

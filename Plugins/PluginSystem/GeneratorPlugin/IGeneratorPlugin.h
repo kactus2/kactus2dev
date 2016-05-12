@@ -13,7 +13,7 @@
 #ifndef IGENERATORPLUGIN_H
 #define IGENERATORPLUGIN_H
 
-#include "IPlugin.h"
+#include "../IPlugin.h"
 
 #include <QSharedPointer>
 #include <QWidget>
@@ -46,9 +46,9 @@ public:
      *  Checks whether the generator may run for the given component or design. 
      *
      *      @param [in] libComp		The component for which to check support. If libDes is not null, libComp
-	 *                                              must refer to libDes or libDesConf.
+	 *                              must refer to libDes or libDesConf.
      *      @param [in] libDesConf	The design configuration for design libDes, if it is not null.
-     *      @param [in] libDes		The design, if the generator is ran for a design.
+     *      @param [in] libDes	    The design, if the generator is ran for a design.
      *
      *      @return True, if the generator may run the given component. Otherwise false.
      */
@@ -61,8 +61,8 @@ public:
 	 *  also access to the parent window widget, so that it can show dialogs for the user to aid the generation.
      *
      *      @param [in]			utility			The plugin utility interface.
-     *      @param [in,out]	libComp			The component for which the generator is run. If libDes is not null,
-	 *                                                         libComp must refer to libDes or libDesConf.
+     *      @param [in,out]     libComp			The component for which the generator is run. If libDes is not null,
+	 *                                          libComp must refer to libDes or libDesConf.
      *      @param [in, out]	libDesConf		The design configuration for design libDes, if it is not null.
      *      @param [in, out]	libDes			The design, if the generator is ran for a design.
      */

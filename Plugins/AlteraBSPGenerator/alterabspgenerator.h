@@ -10,7 +10,7 @@
 
 #include "alterabspgenerator_global.h"
 
-#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/Component/FileSet.h>

@@ -6,7 +6,7 @@
 // Date: 22.02.2011
 //
 // Description:
-// LibraryInterface defines an interface to operate the IP-Xact-library.
+// LibraryInterface defines an interface to operate the IP-XACT-library.
 //-----------------------------------------------------------------------------
 
 #ifndef LIBRARYINTERFACE_H
@@ -22,16 +22,15 @@ class LibraryItem;
 class Document;
 
 //-----------------------------------------------------------------------------
-//! LibraryInterface defines an interface to operate the IP-Xact-library.
+//! LibraryInterface defines an interface to operate the IP-XACT-library.
 //-----------------------------------------------------------------------------
 class LibraryInterface
 {
 
 public:
 
-	/*! Get a model that matches given VLNV.
-	 *
-	 * This function can be called to get a model that matches an IP-Xact document.
+	/*! Get a model that matches given VLNV. Must be used when changes are made to the document.
+	 *  The provided document is a copy, meaning that it must be explicitly saved after the changes.
 	 * 
 	 *      @param [in] vlnv    Identifies the desired document.
 	 *
@@ -39,9 +38,8 @@ public:
 	*/
 	virtual QSharedPointer<Document> getModel(VLNV const& vlnv) = 0;
 
-    /*! Get a model that matches given VLNV for read-only access.
-	 *
-	 * This function can be called to get a model that matches an IP-Xact document.
+    /*! Get a model that matches given VLNV for read-only access. May be used when no changes are to be made
+	 *  for the document.
 	 * 
 	 *      @param [in] vlnv    Identifies the desired document.
 	 *
@@ -49,19 +47,19 @@ public:
 	*/
 	virtual QSharedPointer<Document const> getModelReadOnly(VLNV const& vlnv) = 0;
 
-	/*! Checks if the library already contains the specified vlnv.
+	/*! Checks if the library already contains the specified VLNV.
 	 *
-	 *      @param [in] vlnv    The vlnv that is searched within the library.
+	 *      @param [in] vlnv    The VLNV that is searched within the library.
 	 *
 	 *      @return True if the vlnv was found, otherwise false.
 	*/
 	virtual bool contains(VLNV const& vlnv) = 0;
 
-	/*! Get a path to the specified IP-Xact document.
+	/*! Get a path to the specified IP-XACT document.
 	 *
-	 *      @param [in] vlnv    Specifies the wanted IP-Xact document.
+	 *      @param [in] vlnv    Specifies the wanted IP-XACT document.
 	 *
-	 *      @return The path to the document. If vlnv is not found then empty string is returned.
+	 *      @return The path to the document. If VLNV is not found then empty string is returned.
 	*/
 	virtual const QString getPath(VLNV const& vlnv) const = 0;
 
@@ -69,7 +67,7 @@ public:
 	 *
 	 *      @param [in] vlnv    Specifies the wanted IP-XACT document.
 	 *
-	 *      @return The directory path to the document. Does not contain the xml file name.
+	 *      @return The directory path to the document. Does not contain the XML file name.
 	*/
 	virtual QString getDirectoryPath(VLNV const& vlnv) const = 0;
 
@@ -100,20 +98,18 @@ public:
 	*/
 	virtual bool writeModelToFile(QSharedPointer<Document> model, bool printErrors = true) = 0;
 
-	//! Search for IP-Xact files in the file system and add them to library.
+	//! Search for IP-XACT files in the file system and add them to library.
 	virtual void searchForIPXactFiles() = 0;
 
 	/*! Get list of VLNVs that are needed by given document.
 	*
-	* This function takes an IP-Xact document and searches it and returns list
-	* of all vlnvs that are needed by that document. Function also searches
-	* all possible sub vlnvs that need other vlnvs and adds them to the list.
-	* The list doesn't contain single vlnv twice.
+	* This function takes an IP-XACT document and searches it and returns list
+	* of all VLNVs that are needed by that document. Function also searches
+	* all possible sub VLNVs that need other VLNVs and adds them to the list.
+	* The list doesn't contain single VLNV twice.
 	*
-	*      @param [in] vlnv     The vlnv that is used as starting point for the search.
-	*      @param [out] list    The list where all vlnvs are added to.
-	*
-	*      @return All VLNVs that are referenced in any of the documents.
+	*      @param [in] vlnv     The VLNV that is used as starting point for the search.
+	*      @param [out] list    The list where all VLNVs are added to.
 	*/
 	virtual void getNeededVLNVs(VLNV const& vlnv, QList<VLNV>& list) = 0;
 
@@ -123,21 +119,20 @@ public:
 	* absolute file paths to the needed files. This function searches files
 	* only from this document, it does not search possible subcomponents.
 	*
-	*      @param [in] vlnv     The vlnv that is used for the search.
+	*      @param [in] vlnv     The VLNV that is used for the search.
 	*      @param [out] list    The files are appended to the list if they are not already on the list.
 	*/
 	virtual void getDependencyFiles(VLNV const& vlnv, QStringList& list) = 0;
 
 	/*! Get list of the files that are needed by the given document either directly or indirectly.
 	  *
-	  *      @param [in] vlnv   The vlnv identifying the document.
+	  *      @param [in] vlnv   The VLNV identifying the document.
 	  *      @param [out] list   The files are appended to the list if they are not already on the list.
 	 */
 	 virtual void getHierarchicalDependencyFiles(VLNV const& vlnv, QStringList& list) = 0;
 
-	/*! Get const-pointer to the library tree's root item
-	*
-	*      @return LibraryItem const*The root item.
+	/*! 
+	*      Returns const-pointer to the library tree's root item
 	*/
 	virtual LibraryItem const* getTreeRoot() const = 0;
 
@@ -181,23 +176,23 @@ public:
 	 *
 	 * This function can be used by calling it with a hierarchy reference found
 	 * in a component's hierarchical view. Function checks if the reference is
-	 * directly for a design and returns the design vlnv. If reference is for a
-	 * configuration then the design vlnv is searched from the configuration and
-	 * design vlnv is returned. If design is not found then invalid vlnv is 
+	 * directly for a design and returns the design VLNV. If reference is for a
+	 * configuration then the design VLNV is searched from the configuration and
+	 * design VLNV is returned. If design is not found then invalid VLNV is 
 	 * returned.
 	 * 
 	 *      @param [in] hierarchyRef The hierarchical reference obtained from component's view.
 	 *
-	 *      @return VLNV The vlnv identifying the design object.
+	 *      @return VLNV The VLNV identifying the design object.
 	*/
 	virtual VLNV getDesignVLNV(VLNV const& hierarchyRef) = 0;
 
 	/*! Get the design for a given hierarchy reference.
 	 * 
-	 * * This function can be used by calling it with a hierarchy reference found
+	 * This function can be used by calling it with a hierarchy reference found
 	 * if a component's hierarchical view. Function checks if the reference is
 	 * directly for a design and returns the design pointer. If reference is for a
-	 * configuration then the design vlnv is searched from the configuration and
+	 * configuration then the design VLNV is searched from the configuration and
 	 * design pointer is returned. If design is not found then null pointer is 
 	 * returned.
 	 * 
@@ -209,7 +204,7 @@ public:
 
 	/*! Check if the identified object is in valid state.
 	 *
-	 *      @param [in] vlnv Identifies the object to check.
+	 *      @param [in] VLNV Identifies the object to check.
 	 *
 	 *      @return bool True if the object was valid. False if invalid or object was not found in library.
 	*/
