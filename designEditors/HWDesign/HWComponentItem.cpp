@@ -27,6 +27,7 @@
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
 #include <designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h>
 
@@ -711,3 +712,55 @@ void HWComponentItem::positionAdHocPortTerminals()
     }
 }
 
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::createAdhocItem()
+//-----------------------------------------------------------------------------
+AdHocItem* HWComponentItem::createAdhocItem(QString const& portName)
+{
+    QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
+    if (!adhocPort)
+    {
+        adhocPort = QSharedPointer<Port>(new Port(portName));
+    }
+
+    AdHocPortItem* portItem = getAdHocPort(portName);
+    if (!portItem)
+    {
+        portItem = new AdHocPortItem(adhocPort, this);
+        addPortToSideWithLessPorts(portItem);
+    }
+
+    return portItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::showAdhocPort()
+//-----------------------------------------------------------------------------
+void HWComponentItem::showAdhocPort(AdHocItem* portItem)
+{
+    AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(portItem);
+    if (adhocPortItem)
+    {
+        getComponentInstance()->updateAdHocPortPosition(adhocPortItem->name(), adhocPortItem->pos());
+
+        updateSize();
+
+        emit adHocVisibilitiesChanged();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWComponentItem::hideAdhocPort()
+//-----------------------------------------------------------------------------
+void HWComponentItem::hideAdhocPort(AdHocItem* portItem)
+{
+    AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(portItem);
+    if (adhocPortItem)
+    {
+        removePort(adhocPortItem);
+
+        getComponentInstance()->hideAdHocPort(adhocPortItem->name());
+
+        emit adHocVisibilitiesChanged();
+    }
+}

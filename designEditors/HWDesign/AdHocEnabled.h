@@ -22,6 +22,7 @@ class Port;
 class HWConnectionEndpoint;
 class GenericEditProvider;
 class AdHocVisibilityEditor;
+class AdHocItem;
 
 //-----------------------------------------------------------------------------
 //! Base class for adding ad-hoc support to a derived class.
@@ -86,7 +87,11 @@ public:
      */
     virtual void detach(AdHocVisibilityEditor* editor) = 0;
 
-
+    /*!
+     *  Get the name of the ad hoc enabled item.
+     *
+     *      @return The name of the ad hoc enabled item.
+     */
     virtual QString adHocIdentifier() const = 0;
 
     /*!
@@ -99,10 +104,41 @@ public:
      */
     virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
+    /*!
+     *  Create an ad hoc port item with the selected name.
+     *
+     *      @param [in] portName    The selected port name.
+     *
+     *      @return 0. Child items should create their own items where desired.
+     */
+    virtual AdHocItem* createAdhocItem(QString const& portName);
+
+    /*!
+     *  Change the visibility of an ad hoc port item.
+     *
+     *      @param [in] portItem        The selected port item.
+     *      @param [in] newVisibility   The new visibility of the port item.
+     */
+    void changeAdhocVisibility(AdHocItem* portItem, bool newVisibility);
+
 private:
     // Disable copying.
     AdHocEnabled(AdHocEnabled const& rhs);
     AdHocEnabled& operator=(AdHocEnabled const& rhs);
+
+    /*!
+     *  Show an ad hoc port item.
+     *
+     *      @param [in] portItem    The selected item.
+     */
+    virtual void showAdhocPort(AdHocItem* portItem);
+
+    /*!
+     *  Hide an ad hoc port item.
+     *
+     *      @param [in] portItem    The selected item.
+     */
+    virtual void hideAdhocPort(AdHocItem* portItem);
 
     //-----------------------------------------------------------------------------
     // Data.

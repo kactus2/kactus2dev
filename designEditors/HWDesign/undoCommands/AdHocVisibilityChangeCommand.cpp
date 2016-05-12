@@ -15,6 +15,7 @@
 
 #include <designEditors/common/DesignDiagram.h>
 
+#include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/AdHocEnabled.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
@@ -31,28 +32,33 @@ QUndoCommand(parent),
 dataSource_(dataSource),
 portName_(portName),
 pos_(),
-newVisibility_(newVisibility)
+newVisibility_(newVisibility),
+adhocPort_()
 {
-    if (!newVisibility_)
-    {
-        // Create child commands for removing interconnections.
-        HWConnectionEndpoint* port = dataSource->getDiagramAdHocPort(portName);
-        Q_ASSERT(port != 0);
+    HWConnectionEndpoint* port = dataSource_->getDiagramAdHocPort(portName);
 
-        if (port)
+    if (port)
+    {
+        adhocPort_ = dynamic_cast<AdHocItem*>(port);
+        
+        if (!newVisibility_ && adhocPort_)
         {
             pos_ = port->scenePos();
 
-            foreach (GraphicsConnection* connection, port->getConnections())
+            foreach (GraphicsConnection* connection, adhocPort_->getConnections())
             {
                 createConnectionDeleteCommand(connection);
             }
 
-            foreach (GraphicsConnection* connection, port->getOffPageConnector()->getConnections())
+            foreach (GraphicsConnection* connection, adhocPort_->getOffPageConnector()->getConnections())
             {
                 createConnectionDeleteCommand(connection);
             }
-        }        
+        }
+    }
+    else
+    {
+        adhocPort_ = dataSource_->createAdhocItem(portName);
     }
 }
 
@@ -85,22 +91,26 @@ AdHocVisibilityChangeCommand::~AdHocVisibilityChangeCommand()
 //-----------------------------------------------------------------------------
 void AdHocVisibilityChangeCommand::undo()
 {
-    dataSource_->setPortAdHocVisible(portName_, !newVisibility_);
+    dataSource_->changeAdhocVisibility(adhocPort_, !newVisibility_);
+
+    changePortItemVisibility(!newVisibility_);
 
     if (!newVisibility_)
     {
-        HWConnectionEndpoint* port = dataSource_->getDiagramAdHocPort(portName_);
-        port->setPos(port->parentItem()->mapFromScene(pos_));
+        adhocPort_->setPos(adhocPort_->parentItem()->mapFromScene(pos_));
 
-        if (port->type() == GFX_TYPE_DIAGRAM_ADHOC_INTERFACE) 
+        if (adhocPort_->type() == GFX_TYPE_DIAGRAM_ADHOC_INTERFACE)
         {
-            GraphicsColumn* column = static_cast<GraphicsColumn*>(port->parentItem());
-            column->onMoveItem(port);
+            GraphicsColumn* column = static_cast<GraphicsColumn*>(adhocPort_->parentItem());
+            if (column)
+            {
+                column->onMoveItem(adhocPort_);
+            }
         }
-        else if (port->type() == GFX_TYPE_DIAGRAM_ADHOC_PORT)
+        else if (adhocPort_->type() == GFX_TYPE_DIAGRAM_ADHOC_PORT)
         {
-            HWComponentItem* comp = static_cast<HWComponentItem*>(port->parentItem());
-            comp->onMovePort(port);
+            HWComponentItem* componentItem = static_cast<HWComponentItem*>(adhocPort_->parentItem());
+            componentItem->onMovePort(adhocPort_);
         }
     }
 
@@ -116,5 +126,22 @@ void AdHocVisibilityChangeCommand::redo()
     // Execute child commands.
     QUndoCommand::redo();
 
-    dataSource_->setPortAdHocVisible(portName_, newVisibility_);
+    dataSource_->changeAdhocVisibility(adhocPort_, newVisibility_);
+
+    changePortItemVisibility(newVisibility_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocVisibilityChangeCommand::changePortItemVisibility()
+//-----------------------------------------------------------------------------
+void AdHocVisibilityChangeCommand::changePortItemVisibility(bool currentVisibility)
+{
+    if (currentVisibility)
+    {
+        adhocPort_->show();
+    }
+    else
+    {
+        adhocPort_->hide();
+    }
 }

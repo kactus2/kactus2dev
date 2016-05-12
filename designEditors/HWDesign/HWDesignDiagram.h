@@ -53,6 +53,7 @@ class VLNV;
 class InterfaceGraphicsData;
 class Kactus2Placeholder;
 class DesignDiagramResolver;
+class AdHocItem;
 
 //-----------------------------------------------------------------------------
 //! HWDesignDiagram is a graphical view to a design.
@@ -389,6 +390,15 @@ protected:
      */
     virtual int connectionType() const;
 
+    /*!
+     *  Create an ad hoc interface item with the selected name.
+     *
+     *      @param [in] portName    The name of the new ad hoc interface item.
+     *
+     *      @return The created ad hoc interface item.
+     */
+    virtual AdHocItem* createAdhocItem(QString const& portName);
+
 private:
     // Disable copying.
     HWDesignDiagram(HWDesignDiagram const& rhs);
@@ -664,6 +674,20 @@ private:
      */
     void createComponentPasteCommand(ComponentCollectionCopyData const& collection, GraphicsColumn* column, 
         QUndoCommand* parentCommand, bool useCursorPos);
+
+    /*!
+     *  Show the selected hoc port item.
+     *
+     *      @param [in] portItem    The selected ad hoc port item.
+     */
+    virtual void showAdhocPort(AdHocItem* portItem);
+
+    /*!
+     *  Hide the selected hoc port item.
+     *
+     *      @param [in] portItem    The selected ad hoc port item.
+     */
+    virtual void hideAdhocPort(AdHocItem* portItem);
 
     //-----------------------------------------------------------------------------
     // Data.

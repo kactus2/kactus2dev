@@ -21,6 +21,7 @@ class ComponentParameterFinder;
 class Design;
 class AdHocConnection;
 class AdHocItem;
+class IEditProvider;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of an Ad hoc port in designAd-hoc editor.
@@ -46,9 +47,10 @@ public:
     /*!
      *  Set the ad hoc port.
      *
-     *      @param [in] endPoint    The selected ad hoc port.
+     *      @param [in] endPoint        The selected ad hoc port.
+     *      @param [in] editProvider    The provider for undo commands.
      */
-    void setAdhocPort(AdHocItem* endPoint);
+    void setAdhocPort(AdHocItem* endPoint, QSharedPointer<IEditProvider> editProvider);
 
 public slots:
 
@@ -110,27 +112,11 @@ private:
     QSharedPointer<AdHocConnection> getTiedConnection(QString const& instanceName) const;
 
     /*!
-     *  Create a connection for the ad hoc port.
+     *  Create a tie off change command.
      *
-     *      @param [in] newTiedValue        The new tied value.
-     *      @param [in] containingDesign    The design containing this ad hoc port.
+     *      @param [in] newTiedValue    The new tie off value.
      */
-    void createConnectionForTiedValue(QString const& newTiedValue, QSharedPointer<Design> containingDesign);
-
-    /*!
-     *  Create a name for the tied value ad hoc connection.
-     *
-     *      @return <InstanceName>_<PortName>_to_tiedValue for an instance ad hoc port.
-     *              <PortName>_to_tiedValue for a top component ad hoc port.
-     */
-    QString createNameForTiedValueConnection() const;
-
-    /*!
-     *  Draw the tie off of the selected port.
-     *
-     *      @param [in] parsedTieOff    The formatted tie off value.
-     */
-    void drawTieOffItem(QString const& formattedTieOff) const;
+    void createTieOffChangeCommand(QString const& newTiedValue);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -159,6 +145,9 @@ private:
 
     //! The selected ad hoc port item.
     AdHocItem* containedPortItem_;
+
+    //! The currently used provider for undo commands.
+    QSharedPointer<IEditProvider> editProvider_;
 };
 
 #endif // ADHOCEDITOR_H

@@ -15,6 +15,7 @@
 #include <QPointF>
 #include <QUndoCommand>
 
+class AdHocItem;
 class AdHocEnabled;
 class GraphicsConnection;
 
@@ -62,6 +63,13 @@ private:
      */
     void createConnectionDeleteCommand(GraphicsConnection* connection);
 
+    /*!
+     *  Change the visibility status of the selected port item.
+     *
+     *      @param [in] currentVisibility   The new visibility of the port item.
+     */
+    void changePortItemVisibility(bool currentVisibility);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -77,6 +85,9 @@ private:
 
     //! The new ad-hoc visibility for the port.
     bool newVisibility_;
+
+    //! The selected ad hoc port item.
+    AdHocItem* adhocPort_;
 };
 
 #endif // ADHOCVISIBILITYCHANGECOMMAND_H

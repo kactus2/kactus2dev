@@ -41,6 +41,7 @@
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/DesignDiagramResolver.h>
 
+#include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h>
 #include <designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h>
 #include <designEditors/HWDesign/undoCommands/PortPasteCommand.h>
@@ -2528,5 +2529,89 @@ void HWDesignDiagram::createComponentPasteCommand(ComponentCollectionCopyData co
 
         new ComponentInstancePasteCommand(instance.component, instance.instance, position, column, this,
             parentCommand);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::createAdhocItem()
+//-----------------------------------------------------------------------------
+AdHocItem* HWDesignDiagram::createAdhocItem(QString const& portName)
+{
+    QSharedPointer<VendorExtension> adhocExtension = getDesign()->getAdHocPortPositions();
+    QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
+
+    if (!adhocGroup)
+    {
+        adhocGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:adHocVisibilities"));
+        getDesign()->getVendorExtensions()->append(adhocGroup);
+    }
+
+    QSharedPointer<Kactus2Placeholder> adhocData(new Kactus2Placeholder("kactus2:adHocVisible"));
+    adhocGroup->addToGroup(adhocData);
+
+    AdHocInterfaceItem* adHocIf;
+
+    QSharedPointer<Port> adhocPort = getEditedComponent()->getPort(portName);
+    if (adhocPort)
+    {
+        adHocIf = new AdHocInterfaceItem(getEditedComponent(), adhocPort, adhocData, 0);
+    }
+    else
+    {
+        adHocIf = createMissingHierarchicalAdHocPort(portName, adhocData, 0);
+    }
+
+    return adHocIf;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::showAdhocPort()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::showAdhocPort(AdHocItem* portItem)
+{
+    AdHocInterfaceItem* interfaceItem = dynamic_cast<AdHocInterfaceItem*>(portItem);
+    if (interfaceItem)
+    {
+        QPointF interfacePosition = interfaceItem->scenePos();
+
+        GraphicsColumn* targetColumn = getLayout()->findColumnAt(interfacePosition);
+
+        if (targetColumn->isItemAllowed(interfaceItem))
+        {
+            targetColumn->addItem(interfaceItem);
+        }
+        else
+        {
+            getLayout()->addItem(interfaceItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::hideAdhocPort()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::hideAdhocPort(AdHocItem* portItem)
+{
+    QSharedPointer<VendorExtension> adhocExtension = getDesign()->getAdHocPortPositions();
+    QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
+
+    AdHocInterfaceItem* interfaceItem = dynamic_cast<AdHocInterfaceItem*>(portItem);
+    if (adhocGroup && interfaceItem)
+    {
+        static_cast<GraphicsColumn*>(interfaceItem->parentItem())->removeItem(interfaceItem);
+
+        foreach(QSharedPointer<VendorExtension> extension, adhocGroup->getByType("kactus2:adHocVisible"))
+        {
+            QSharedPointer<Kactus2Placeholder> portExtension = extension.dynamicCast<Kactus2Placeholder>();
+            if (portExtension->getAttributeValue("portName") == interfaceItem->name())
+            {
+                adhocGroup->removeFromGroup(portExtension);
+            }
+        }
+
+        if (adhocGroup->getByType("kactus2:adHocVisible").isEmpty())
+        {
+            getDesign()->getVendorExtensions()->removeAll(adhocExtension);
+        }
     }
 }

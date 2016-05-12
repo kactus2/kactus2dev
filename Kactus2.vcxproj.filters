@@ -4318,6 +4318,9 @@
     <ClCompile Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.cpp">
       <Filter>Source Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocTieOffChangeCommand.cpp">
+      <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6451,6 +6454,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\common\DesignDiagramResolver.h">
       <Filter>Header Files\designEditors\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffChangeCommand.h">
+      <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

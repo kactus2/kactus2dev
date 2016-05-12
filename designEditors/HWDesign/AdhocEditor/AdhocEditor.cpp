@@ -12,6 +12,7 @@
 #include "AdhocEditor.h"
 
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/GenericEditProvider.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
@@ -23,6 +24,7 @@
 #include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/AdHocPortItem.h>
 #include <designEditors/HWDesign/AdHocInterfaceItem.h>
+#include <designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.h>
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 #include <IPXACTmodels/Design/Design.h>
@@ -41,7 +43,8 @@ portDirection_(new QLabel(this)),
 leftBoundValue_(new QLabel(this)),
 rightBoundValue_(new QLabel(this)),
 tiedValueEditor_(new ExpressionEditor(componentFinder_, this)),
-containedPortItem_()
+containedPortItem_(),
+editProvider_()
 {
     tiedValueEditor_->setFixedHeight(20);
 
@@ -87,10 +90,12 @@ void AdHocEditor::setupLayout()
 //-----------------------------------------------------------------------------
 // Function: AdhocEditor::setAdhocPort()
 //-----------------------------------------------------------------------------
-void AdHocEditor::setAdhocPort(AdHocItem* endPoint)
+void AdHocEditor::setAdhocPort(AdHocItem* endPoint, QSharedPointer<IEditProvider> editProvider)
 {
     if(endPoint->isAdHoc())
     {
+        editProvider_ = editProvider;
+
         containedPortItem_ = endPoint;
 
         portName_->show();
@@ -241,114 +246,45 @@ void AdHocEditor::onTiedValueChanged()
 
     tiedValueEditor_->setToolTip(formattedTiedValue);
 
+    createTieOffChangeCommand(newTiedValue);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdhocEditor::createTieOffChangeCommand()
+//-----------------------------------------------------------------------------
+void AdHocEditor::createTieOffChangeCommand(QString const& newTiedValue)
+{
     DesignDiagram* containingDiagram = dynamic_cast<DesignDiagram*>(containedPortItem_->scene());
     QSharedPointer<Design> containingDesign = containingDiagram->getDesign();
 
     QString instanceName = "";
+
     ComponentItem* containingInstance = containedPortItem_->encompassingComp();
     if (containingInstance)
     {
         instanceName = containingInstance->name();
     }
 
+    QString parsedNewTieOff = expressionParser_->parseExpression(newTiedValue);
+
     QSharedPointer<AdHocConnection> connection = getTiedConnection(instanceName);
+    QString oldTieOffValue = "";
+    QString parsedOldTieOff = "";
 
-    if (!newTiedValue.isEmpty())
+    if (connection)
     {
-        if (connection)
-        {
-            connection->setTiedValue(newTiedValue);
-        }
-        else
-        {
-            createConnectionForTiedValue(newTiedValue, containingDesign);
-        }
-    }
-    else if (connection)
-    {
-        containingDesign->getAdHocConnections()->removeAll(connection);
+        oldTieOffValue = connection->getTiedValue();
+        parsedOldTieOff = expressionParser_->parseExpression(connection->getTiedValue());
     }
 
-    drawTieOffItem(formattedTiedValue);
-
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdhocEditor::createConnectionForTiedValue()
-//-----------------------------------------------------------------------------
-void AdHocEditor::createConnectionForTiedValue(QString const& newTiedValue,
-    QSharedPointer<Design> containingDesign)
-{
-    QString connectionName = createNameForTiedValueConnection();
-
-    QSharedPointer<AdHocConnection> connection (new AdHocConnection(connectionName));
-    connection->setTiedValue(newTiedValue);
-
-    QSharedPointer<PortReference> portReference (new PortReference(containedPortItem_->name()));
-
-    ComponentItem* containingComponent = containedPortItem_->encompassingComp();
-    if (containingComponent)
+    if (newTiedValue != oldTieOffValue)
     {
-        portReference->setComponentRef(containingComponent->name());
-        connection->getInternalPortReferences()->append(portReference);
-    }
-    else
-    {
-        connection->getExternalPortReferences()->append(portReference);
-    }
+        QSharedPointer<QUndoCommand> tieOffUndoCommand(new AdHocTieOffChangeCommand(containedPortItem_, connection,
+            newTiedValue, parsedNewTieOff, oldTieOffValue, parsedOldTieOff, containingDesign));
+        editProvider_->addCommand(tieOffUndoCommand);
+        tieOffUndoCommand->redo();
 
-    containingDesign->getAdHocConnections()->append(connection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdhocEditor::createNameForTiedValueConnection()
-//-----------------------------------------------------------------------------
-QString AdHocEditor::createNameForTiedValueConnection() const
-{
-    ComponentItem* containingComponent = containedPortItem_->encompassingComp();
-
-    QString instanceName = "";
-
-    if (containingComponent)
-    {
-        instanceName = containingComponent->name();
-        instanceName.append("_");
-    }
-
-    QString portName = containedPortItem_->name();
-
-    QString tiedValuePart = "_to_tiedValue";
-
-    return instanceName + portName + tiedValuePart;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdhocEditor::drawTieOffItem()
-//-----------------------------------------------------------------------------
-void AdHocEditor::drawTieOffItem(QString const& formattedTieOff) const
-{
-    int intTiedValue = expressionParser_->parseExpression(formattedTieOff).toInt();
-
-    if (formattedTieOff.isEmpty())
-    {
-        containedPortItem_->removeTieOffItem();
-    }
-    else if (formattedTieOff== tr("n/a"))
-    {
-        containedPortItem_->createNonResolvableTieOff();
-    }
-    else if (intTiedValue == 1)
-    {
-        containedPortItem_->createHighTieOff();
-    }
-    else if (intTiedValue == 0)
-    {
-        containedPortItem_->createLowTieOff();
-    }
-    else
-    {
-        containedPortItem_->createNumberedTieOff();
+        emit contentChanged();
     }
 }
 

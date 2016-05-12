@@ -699,7 +699,8 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/AdhocEditor/AdhocEditor.h \
     ./designEditors/HWDesign/AdHocItem.h \
     ./designEditors/common/DesignDiagramResolver.h \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.h
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1313,5 +1314,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/HWDesign/AdhocEditor/AdhocEditor.cpp \
     ./designEditors/HWDesign/AdHocItem.cpp \
     ./designEditors/common/DesignDiagramResolver.cpp \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.cpp
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.cpp
 RESOURCES += kactus.qrc

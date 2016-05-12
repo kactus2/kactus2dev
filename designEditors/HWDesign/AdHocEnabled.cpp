@@ -11,6 +11,8 @@
 
 #include "AdHocEnabled.h"
 
+#include <designEditors/HWDesign/AdHocItem.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
 
@@ -112,4 +114,50 @@ QSharedPointer<QList<QSharedPointer<Port> > > AdHocEnabled::getPorts() const
 HWConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(QString const&)
 {
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocEnabled::createAdhocItem()
+//-----------------------------------------------------------------------------
+AdHocItem* AdHocEnabled::createAdhocItem(QString const&)
+{
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocEnabled::changeAdhocVisibility()
+//-----------------------------------------------------------------------------
+void AdHocEnabled::changeAdhocVisibility(AdHocItem* portItem, bool newVisibility)
+{
+    // Check if the visibility has changed.
+    if (portAdHocVisibilities_.value(portItem->name()) != newVisibility)
+    {
+        // Update the value and call onAdHocVisiblityChanged().
+        portAdHocVisibilities_.insert(portItem->name(), newVisibility);
+
+        if (newVisibility == true)
+        {
+            showAdhocPort(portItem);
+        }
+        else
+        {
+            hideAdhocPort(portItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocEnabled::showAdhocPort()
+//-----------------------------------------------------------------------------
+void AdHocEnabled::showAdhocPort(AdHocItem*)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocEnabled::hideAdhocPort()
+//-----------------------------------------------------------------------------
+void AdHocEnabled::hideAdhocPort(AdHocItem*)
+{
+
 }

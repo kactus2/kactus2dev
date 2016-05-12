@@ -1511,7 +1511,11 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface )
         AdHocItem* adhocEndPoint = dynamic_cast<AdHocItem*>(interface);
         if (adhocEndPoint)
         {
-            adhocEditor_->setAdhocPort(adhocEndPoint);
+            HWDesignWidget* hwDesignWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
+            if (hwDesignWidget)
+            {
+                adhocEditor_->setAdhocPort(adhocEndPoint, hwDesignWidget->getEditProvider());
+            }
         }
         else
         {

@@ -29,6 +29,7 @@ class HWConnectionEndpoint;
 class HWColumn;
 class LibraryInterface;
 class VendorExtension;
+class AdHocItem;
 
 //-----------------------------------------------------------------------------
 //! HWComponentItem represents graphically an IP-XACT component instance
@@ -159,6 +160,15 @@ public:
      */
     bool isDraft();
 
+    /*!
+     *  Create an ad hoc port item with the given name.
+     *
+     *      @param [in] portName    The name of the ad hoc port item.
+     *
+     *      @return The created ad hoc port item.
+     */
+    virtual AdHocItem* createAdhocItem(QString const& portName);
+
 signals:
     //! Emitted when the ad-hoc visibilities have been changed.
     void adHocVisibilitiesChanged();
@@ -225,6 +235,20 @@ private:
 
     //! Positions the adhoc port items for the component.
     void positionAdHocPortTerminals();
+
+    /*!
+     *  Show the selected ad hoc port item.
+     *
+     *      @param [in] portItem    The selected port item.
+     */
+    virtual void showAdhocPort(AdHocItem* portItem);
+
+    /*!
+     *  Hide the selected ad hoc port item.
+     *
+     *      @param [in] portItem    The selected port item.
+     */
+    virtual void hideAdhocPort(AdHocItem* portItem);
 
     //-----------------------------------------------------------------------------
     // Data.
