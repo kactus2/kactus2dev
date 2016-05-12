@@ -6044,9 +6044,6 @@
     <ClInclude Include="Help\HelpSystem\HelpWindow.h">
       <Filter>Header Files\Help\HelpSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\IGeneratorPlugin.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\IPlugin.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
@@ -6457,6 +6454,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\undoCommands\AdHocTieOffChangeCommand.h">
       <Filter>Header Files\designEditors\HWDesign\undoCommands</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\GeneratorPlugin\IGeneratorPlugin.h">
+      <Filter>Header Files\Plugins</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
