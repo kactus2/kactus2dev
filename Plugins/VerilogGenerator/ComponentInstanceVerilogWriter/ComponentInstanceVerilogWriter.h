@@ -74,6 +74,14 @@ public:
     void assignPortForRange(QString const& instancePortName, QString const& assignedConnection, 
         int leftBound, int rightBound);
 
+    /*!
+     *  Assigns a port tie off value for the instance writer.
+     *
+     *      @param [in] portName        The name of the port containing the tie off value.
+     *      @param [in] tieOffValue     The tie off value.
+     */
+    void assignPortTieOff(QString const& portName, QString const& tieOffValue);
+
 private:
 
 	// Disable copying.
@@ -185,6 +193,9 @@ private:
 
     //! The assigned port connections.
     QMap<QString, General::PortBounds> portAssignments_;
+
+    //! The assigned tie off values.
+    QMap<QString, QString> tieOffAssignments_;
 
     //! The assigned expression formatter.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

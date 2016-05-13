@@ -118,6 +118,22 @@ private:
      */
     void createTieOffChangeCommand(QString const& newTiedValue);
 
+    /*!
+     *  Calculate the tie off value.
+     *
+     *      @param [in] tieOffValue     The selected tie off value.
+     *
+     *      @return The calculated tie off value.
+     */
+    QString getParsedTieOffValue(QString const& tieOffValue) const;
+
+    /*!
+     *  Set a tool tip for the tied value editor.
+     *
+     *      @param [in] tiedValue   The new tied value.
+     */
+    void setTiedValueEditorToolTip(QString const& tiedValue);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

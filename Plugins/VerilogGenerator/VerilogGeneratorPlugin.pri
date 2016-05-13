@@ -29,7 +29,8 @@ HEADERS += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../editors/ComponentEditor/common/ParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../designEditors/common/TopComponentParameterFinder.h
+    ../../designEditors/common/TopComponentParameterFinder.h \
+    ./VerilogTiedValueWriter/VerilogTiedValueWriter.h
 SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
     ./VerilogGeneratorPlugin.cpp \
@@ -48,5 +49,6 @@ SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ../../designEditors/common/TopComponentParameterFinder.cpp
+    ../../designEditors/common/TopComponentParameterFinder.cpp \
+    ./VerilogTiedValueWriter/VerilogTiedValueWriter.cpp
 RESOURCES += VerilogGenerator.qrc

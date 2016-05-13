@@ -29,11 +29,13 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
-ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<Component> component, 
-    QString const& activeView,
-    QSharedPointer<const PortSorter> sorter, 
-    QSharedPointer<ExpressionFormatter> expressionFormatter) :
-component_(component), activeView_(activeView), sorter_(sorter), childWriters_(), formatter_(expressionFormatter)
+ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<Component> component, QString const& activeView,
+    QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionFormatter> expressionFormatter) :
+component_(component),
+activeView_(activeView),
+sorter_(sorter),
+childWriters_(),
+formatter_(expressionFormatter)
 {
 
 }

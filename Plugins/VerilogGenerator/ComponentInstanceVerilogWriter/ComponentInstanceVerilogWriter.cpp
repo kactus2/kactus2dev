@@ -67,7 +67,10 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 void ComponentInstanceVerilogWriter::assignPortForFullWidth(QString const& instancePortName, 
     QString const& assignedConnection)
 {
-    portAssignments_.insert(instancePortName, General::PortBounds(assignedConnection, ALL_BITS, ALL_BITS));
+    if (!tieOffAssignments_.contains(instancePortName))
+    {
+        portAssignments_.insert(instancePortName, General::PortBounds(assignedConnection, ALL_BITS, ALL_BITS));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -76,7 +79,18 @@ void ComponentInstanceVerilogWriter::assignPortForFullWidth(QString const& insta
 void ComponentInstanceVerilogWriter::assignPortForRange(QString const& instancePortName, 
     QString const& assignedConnection, int leftBound, int rightBound)
 {
-    portAssignments_.insert(instancePortName, General::PortBounds(assignedConnection, leftBound, rightBound));
+    if (!tieOffAssignments_.contains(instancePortName))
+    {
+        portAssignments_.insert(instancePortName, General::PortBounds(assignedConnection, leftBound, rightBound));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::assignPortTieOff()
+//-----------------------------------------------------------------------------
+void ComponentInstanceVerilogWriter::assignPortTieOff(QString const& portName, QString const& tieOffValue)
+{
+    tieOffAssignments_.insert(portName, tieOffValue);
 }
 
 //-----------------------------------------------------------------------------
@@ -225,24 +239,37 @@ QString ComponentInstanceVerilogWriter::connectionForPort(QString portName) cons
         return portDefaultValue(portName);
     }
 
-    General::PortBounds connectionBounds = portAssignments_.value(portName);
+    QString assignment;
 
-    if (assignAllBitsInConnection(connectionBounds))
+    if (tieOffAssignments_.contains(portName))
     {
-        return connectionBounds.portName_;
-    }
-
-    QString assignment = "<signalName>[<bits>]";
-    assignment.replace("<signalName>", connectionBounds.portName_);
-
-    if (assignSingleBitInConnection(connectionBounds))
-    {
-        assignment.replace("<bits>", QString::number(connectionBounds.left_));
+        assignment = expressionFormatter_->formatReferringExpression(tieOffAssignments_.value(portName));
+        if (assignment.isEmpty())
+        {
+            assignment = " ";
+        }
     }
     else
     {
-        assignment.replace("<bits>", QString::number(connectionBounds.left_) + ":" +
-            QString::number(connectionBounds.right_));
+        General::PortBounds connectionBounds = portAssignments_.value(portName);
+
+        if (assignAllBitsInConnection(connectionBounds))
+        {
+            return connectionBounds.portName_;
+        }
+
+        assignment = "<signalName>[<bits>]";
+        assignment.replace("<signalName>", connectionBounds.portName_);
+
+        if (assignSingleBitInConnection(connectionBounds))
+        {
+            assignment.replace("<bits>", QString::number(connectionBounds.left_));
+        }
+        else
+        {
+            assignment.replace("<bits>", QString::number(connectionBounds.left_) + ":" +
+                QString::number(connectionBounds.right_));
+        }
     }
 
     return assignment;
@@ -253,7 +280,7 @@ QString ComponentInstanceVerilogWriter::connectionForPort(QString portName) cons
 //-----------------------------------------------------------------------------
 bool ComponentInstanceVerilogWriter::notConnected(QString portName) const
 {
-    return !portAssignments_.contains(portName);
+    return !portAssignments_.contains(portName) && !tieOffAssignments_.contains(portName);
 }
 
 //-----------------------------------------------------------------------------

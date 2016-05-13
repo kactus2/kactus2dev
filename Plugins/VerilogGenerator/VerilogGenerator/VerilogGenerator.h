@@ -25,6 +25,7 @@
 
 class ComponentVerilogWriter;
 class ComponentInstanceVerilogWriter;
+class VerilogTiedValueWriter;
 class ExpressionFormatter;
 class LibraryInterface;
 class PortSorter;
@@ -338,6 +339,27 @@ private:
     void connectAndWireAdHocConnections();
 
     /*!
+     *  Parse an ad hoc connection with a tied value.
+     *
+     *      @param [in] adHocConnection     The selected ad hoc connection.
+     */
+    void connectTieOffConnection(QSharedPointer<AdHocConnection> adHocConnection);
+
+    /*!
+     *  Get the tied value for an ad hoc connection.
+     *
+     *      @param [in] adHocConnection         The selected ad hoc connection.
+     *      @param [in] containingComponent     Component containing the ad hoc port.
+     *      @param [in] portReference           The connection port reference.
+     *      @param [in] requiredDirection       The direction that is required for a tied value.
+     *
+     *      @return The tie off value.
+     */
+    QString getConnectionTieOffValue(QSharedPointer<AdHocConnection> adHocConnection,
+        QSharedPointer<Component> containingComponent, QSharedPointer<PortReference> portReference,
+        DirectionTypes::Direction requiredDirection) const;
+
+    /*!
      *  Checks if a given ad-hoc connection is hierarchical.
      *
      *      @param [in] adHocConnection   The ad-hoc connection to check.
@@ -481,6 +503,9 @@ private:
 
      //! Writers for Verilog wires.
      QSharedPointer<WriterGroup> wireWriters_;
+
+     //! Writer for ad hoc tied values.
+     QSharedPointer<VerilogTiedValueWriter> tiedValueWriter_;
 
      //! Writers for Verilog instances.
      QMap<QString, QSharedPointer<ComponentInstanceVerilogWriter> > instanceWriters_;

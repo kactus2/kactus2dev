@@ -36,6 +36,7 @@
 #include <Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h>
 #include <Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h>
 #include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
+#include <Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.h>
 
 #include <QDateTime>
 #include <QFileInfo>
@@ -43,8 +44,16 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()
 //-----------------------------------------------------------------------------
-VerilogGenerator::VerilogGenerator(LibraryInterface* library): library_(library), headerWriter_(0), topWriter_(0), 
-topComponent_(), design_(), wireWriters_(), instanceWriters_(), sorter_(new InterfaceDirectionNameSorter())
+VerilogGenerator::VerilogGenerator(LibraryInterface* library):
+library_(library),
+headerWriter_(0),
+topWriter_(0), 
+topComponent_(),
+design_(),
+wireWriters_(),
+tiedValueWriter_(),
+instanceWriters_(),
+sorter_(new InterfaceDirectionNameSorter())
 {
 
 }
@@ -119,12 +128,16 @@ void VerilogGenerator::initializeWriters(QString const& topComponentView)
     headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent_->getVlnv(), 
         componentXmlPath, currentUser));
 
+    QSharedPointer<ExpressionFormatter> topFormatter = createFormatterForComponent(topComponent_);
+
     topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, topComponentView,
-        sorter_, createFormatterForComponent(topComponent_)));
+        sorter_, topFormatter));
 
     instanceWriters_.clear();
 
     wireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    tiedValueWriter_ = QSharedPointer<VerilogTiedValueWriter>(new VerilogTiedValueWriter(topFormatter));
 }
 
 //-----------------------------------------------------------------------------
@@ -744,7 +757,11 @@ void VerilogGenerator::connectAndWireAdHocConnections()
 {
     foreach(QSharedPointer<AdHocConnection> adHocConnection, *design_->getAdHocConnections())
     {
-        if (isHierarchicalAdHocConnection(adHocConnection))
+        if (!adHocConnection->getTiedValue().isEmpty())
+        {
+            connectTieOffConnection(adHocConnection);
+        }
+        else if (isHierarchicalAdHocConnection(adHocConnection))
         {
             connectInstancePortsToTopPort(adHocConnection);   
         }
@@ -754,6 +771,72 @@ void VerilogGenerator::connectAndWireAdHocConnections()
     {
         wireConnectedPorts(primaryPort);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::connectTieOffConnection()
+//-----------------------------------------------------------------------------
+void VerilogGenerator::connectTieOffConnection(QSharedPointer<AdHocConnection> adHocConnection)
+{
+    if (!adHocConnection->getInternalPortReferences()->isEmpty())
+    {
+        QSharedPointer<PortReference> portReference = adHocConnection->getInternalPortReferences()->first();
+
+        QSharedPointer<Component> instanceComponent = getComponentForInstance(portReference->getComponentRef());
+
+        QString tieOffValue =
+            getConnectionTieOffValue(adHocConnection, instanceComponent, portReference, DirectionTypes::IN);
+
+        if (instanceWriters_.contains(portReference->getComponentRef()))
+        {
+            QSharedPointer<ComponentInstanceVerilogWriter> containingInstanceWriter =
+                instanceWriters_.value(portReference->getComponentRef());
+
+            containingInstanceWriter->assignPortTieOff(portReference->getPortRef(), tieOffValue);
+        }
+    }
+    else if (!adHocConnection->getExternalPortReferences()->isEmpty())
+    {
+        QSharedPointer<PortReference> portReference = adHocConnection->getExternalPortReferences()->first();
+
+        QString tieOffValue =
+            getConnectionTieOffValue(adHocConnection, topComponent_, portReference, DirectionTypes::OUT);
+
+        if (!tieOffValue.isEmpty() && tiedValueWriter_)
+        {
+            tiedValueWriter_->addPortTiedValue(portReference->getPortRef(), tieOffValue);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::getConnectionTieOffValue()
+//-----------------------------------------------------------------------------
+QString VerilogGenerator::getConnectionTieOffValue(QSharedPointer<AdHocConnection> adHocConnection,
+    QSharedPointer<Component> containingComponent, QSharedPointer<PortReference> portReference,
+    DirectionTypes::Direction requiredDirection) const
+{
+    QString tieOffValue = "";
+
+    if (containingComponent)
+    {
+        QSharedPointer<Port> referencedPort = containingComponent->getPort(portReference->getPortRef());
+        if (referencedPort && referencedPort->getDirection() == requiredDirection ||
+            referencedPort->getDirection() == DirectionTypes::INOUT)
+        {
+            tieOffValue = adHocConnection->getTiedValue();
+            if (QString::compare(tieOffValue, "default", Qt::CaseInsensitive) == 0)
+            {
+                tieOffValue = referencedPort->getDefaultValue();
+            }
+            else if (QString::compare(tieOffValue, "open", Qt::CaseInsensitive) == 0)
+            {
+                tieOffValue = "";
+            }
+        }
+    }
+
+    return tieOffValue;
 }
 
 //-----------------------------------------------------------------------------
@@ -791,7 +874,8 @@ QVector<QSharedPointer<PortReference> > VerilogGenerator::findPrimaryPortsInAdHo
 
     foreach(QSharedPointer<AdHocConnection> adHocConnection, *design_->getAdHocConnections())
     {
-        if (!isHierarchicalAdHocConnection(adHocConnection) && shouldCreateWireForAdHocConnection(adHocConnection))
+        if (adHocConnection->getTiedValue().isEmpty() && !isHierarchicalAdHocConnection(adHocConnection) &&
+            shouldCreateWireForAdHocConnection(adHocConnection))
         {
             foreach(QSharedPointer<PortReference> internalPort, *adHocConnection->getInternalPortReferences())
             {
@@ -1021,7 +1105,9 @@ void VerilogGenerator::connectPortToWire(QSharedPointer<PortReference> port, QSt
 //-----------------------------------------------------------------------------
 void VerilogGenerator::addWritersToTopInDesiredOrder() const
 {
-    topWriter_->add(wireWriters_);    
+    topWriter_->add(wireWriters_);
+
+    topWriter_->add(tiedValueWriter_);
 
     foreach(QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter, instanceWriters_)
     {

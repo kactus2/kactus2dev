@@ -150,7 +150,7 @@ void AdHocEditor::setAdhocPort(AdHocItem* endPoint, QSharedPointer<IEditProvider
 
             tiedValueEditor_->blockSignals(true);
             tiedValueEditor_->setExpression(tiedValue);
-            tiedValueEditor_->setToolTip(formattedValueFor(tiedValue));
+            setTiedValueEditorToolTip(tiedValue);
             tiedValueEditor_->blockSignals(false);
 
             parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
@@ -213,6 +213,25 @@ QSharedPointer<AdHocConnection> AdHocEditor::getTiedConnection(QString const& in
 }
 
 //-----------------------------------------------------------------------------
+// Function: AdhocEditor::setTiedValueEditorToolTip()
+//-----------------------------------------------------------------------------
+void AdHocEditor::setTiedValueEditorToolTip(QString const& tiedValue)
+{
+    QString formattedTiedValue = "";
+
+    if (QString::compare(tiedValue, "open", Qt::CaseInsensitive) == 0)
+    {
+        formattedTiedValue = "Open";
+    }
+    else
+    {
+        formattedTiedValue = formattedValueFor(getParsedTieOffValue(tiedValue));
+    }
+
+    tiedValueEditor_->setToolTip(formattedTiedValue);
+}
+
+//-----------------------------------------------------------------------------
 // Function: AdhocEditor::formattedValueFor()
 //-----------------------------------------------------------------------------
 QString AdHocEditor::formattedValueFor(QString const& expression) const
@@ -242,9 +261,7 @@ void AdHocEditor::onTiedValueChanged()
 
     QString newTiedValue = tiedValueEditor_->getExpression();
 
-    QString formattedTiedValue = formattedValueFor(newTiedValue);
-
-    tiedValueEditor_->setToolTip(formattedTiedValue);
+    setTiedValueEditorToolTip(newTiedValue);
 
     createTieOffChangeCommand(newTiedValue);
 }
@@ -265,16 +282,17 @@ void AdHocEditor::createTieOffChangeCommand(QString const& newTiedValue)
         instanceName = containingInstance->name();
     }
 
-    QString parsedNewTieOff = expressionParser_->parseExpression(newTiedValue);
+    QString parsedNewTieOff = getParsedTieOffValue(newTiedValue);
 
     QSharedPointer<AdHocConnection> connection = getTiedConnection(instanceName);
+    
     QString oldTieOffValue = "";
     QString parsedOldTieOff = "";
 
     if (connection)
     {
         oldTieOffValue = connection->getTiedValue();
-        parsedOldTieOff = expressionParser_->parseExpression(connection->getTiedValue());
+        parsedOldTieOff = getParsedTieOffValue(oldTieOffValue);
     }
 
     if (newTiedValue != oldTieOffValue)
@@ -286,6 +304,30 @@ void AdHocEditor::createTieOffChangeCommand(QString const& newTiedValue)
 
         emit contentChanged();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdhocEditor::getParsedTieOffValue()
+//-----------------------------------------------------------------------------
+QString AdHocEditor::getParsedTieOffValue(QString const& tieOffValue) const
+{
+    QString parsedTieOff;
+
+    if (QString::compare(tieOffValue, "default", Qt::CaseInsensitive) == 0)
+    {
+        QString portDefaultValue = containedPortItem_->getPort()->getDefaultValue();
+        parsedTieOff = expressionParser_->parseExpression(portDefaultValue);
+    }
+    else if (QString::compare(tieOffValue, "open", Qt::CaseInsensitive) == 0)
+    {
+        parsedTieOff = "";
+    }
+    else
+    {
+        parsedTieOff = expressionParser_->parseExpression(tieOffValue);
+    }
+
+    return parsedTieOff;
 }
 
 //-----------------------------------------------------------------------------

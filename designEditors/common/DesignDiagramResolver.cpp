@@ -48,7 +48,7 @@ void DesignDiagramResolver::resolveAdhocTieOff(QString const& tieOff, AdHocItem*
         QSharedPointer<Component> ownerComponent = tieOffPort->getOwnerComponent();
         componentFinder_->setComponent(ownerComponent);
 
-        QString parsedTieOff = expressionParser_->parseExpression(tieOff);
+        QString parsedTieOff = getParsedTieOffValue(tieOff, ownerComponent, tieOffPort);
 
         bool canConvertToInt = true; 
         int tieOffInInt = parsedTieOff.toInt(&canConvertToInt);
@@ -70,4 +70,29 @@ void DesignDiagramResolver::resolveAdhocTieOff(QString const& tieOff, AdHocItem*
             tieOffPort->createNumberedTieOff();
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagramResolver::getParsedTieOffValue()
+//-----------------------------------------------------------------------------
+QString DesignDiagramResolver::getParsedTieOffValue(QString const& tieOffValue,
+    QSharedPointer<Component> ownerComponent, AdHocItem* portItem) const
+{
+    QString parsedTieOff;
+    if (QString::compare(tieOffValue, "default", Qt::CaseInsensitive) == 0)
+    {
+        QSharedPointer<Port> adhocPort = ownerComponent->getPort(portItem->name());
+        QString portDefaultValue = adhocPort->getDefaultValue();
+        parsedTieOff = expressionParser_->parseExpression(portDefaultValue);
+    }
+    else if (QString::compare(tieOffValue, "open", Qt::CaseInsensitive) == 0)
+    {
+        parsedTieOff = "";
+    }
+    else
+    {
+        parsedTieOff = expressionParser_->parseExpression(tieOffValue);
+    }
+
+    return parsedTieOff;
 }

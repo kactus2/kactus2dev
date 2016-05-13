@@ -68,9 +68,11 @@ private slots:
 
     void testPortMapsWithoutBoundsInInterconnection();
     void testAdhocConnectionBetweenComponentInstances();    
+    void testAdhocTieOffInComponentInstance();
     void testMultipleAdhocConnectionsBetweenComponentInstances();
     void testAdHocConnectionBetweenComponentInstancesWithExpressions();
     void testHierarchicalAdhocConnection();
+    void testHierarchicalAdHocTieOffValues();
     void testAdHocConnectionToUnknownInstanceIsNotWritten();
     void testAdHocConnectionBetweenMultipleComponentInstances();
     
@@ -113,6 +115,12 @@ private:
 
     void addAdhocConnection(QString const& connectionName, QString const& sourceInstance, QString const& sourcePort,
         QString const& targetInstance, QString const& targetPort);
+
+    void addTieOffAdhocConnectionToInstancePort(QString const& tieOffValue, QString const& instanceName,
+        QString const& portName, QString const& connectionName);
+
+    void addTieOffConnectionToTopComponentPort(QString const& tieOffValue, QString const& portName,
+        QString const& connectionName);
 
     void addHierAdhocConnection(QString const& topPort, QString const& targetInstance, QString const& targetPort);
 
@@ -1202,6 +1210,76 @@ void tst_VerilogGenerator::testAdhocConnectionBetweenComponentInstances()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testAdhocTieOffInComponentInstance()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testAdhocTieOffInComponentInstance()
+{
+    VLNV tieOffVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestTieOff", "1.0");
+    QSharedPointer<Component> tieOffComponent(new Component(tieOffVLNV));
+
+    QString instanceName = "tieOffer";
+
+    QString zeroName = "zeroTieOff";
+    QString oneName = "oneTieOff";
+    QString naName = "n/aTieOff";
+    QString numberedName = "numberedTieOff";
+    QString outName = "tieOffOut";
+    QString inOutName = "tieOffInOut";
+    QString defaultName = "defaultTieOff";
+    QString openName = "openTieOff";
+    QString expressionName = "expressionTieOff";
+
+    addPort(zeroName, 2, DirectionTypes::IN, tieOffComponent);
+    addPort(oneName, 4, DirectionTypes::IN, tieOffComponent);
+    addPort(naName, 0, DirectionTypes::IN, tieOffComponent);
+    addPort(numberedName, 10, DirectionTypes::IN, tieOffComponent);
+    addPort(outName, 2, DirectionTypes::OUT, tieOffComponent);
+    addPort(inOutName, 10, DirectionTypes::INOUT, tieOffComponent);
+    addPort(defaultName, 1, DirectionTypes::IN, tieOffComponent);
+    addPort(openName, 1, DirectionTypes::IN, tieOffComponent);
+    addPort(expressionName, 1, DirectionTypes::IN, tieOffComponent);
+
+    library_.addComponent(tieOffComponent);
+
+    addInstanceToDesign(instanceName, tieOffVLNV);
+
+    QSharedPointer<Port> defaultPort = tieOffComponent->getPort("defaultTieOff");
+    defaultPort->setDefaultValue("20");
+
+    QSharedPointer<Parameter> expressionParameter (new Parameter());
+    expressionParameter->setName("expName");
+    expressionParameter->setValueId("expID");
+    expressionParameter->setValue("4");
+    tieOffComponent->getParameters()->append(expressionParameter);
+
+    addTieOffAdhocConnectionToInstancePort("0", instanceName, zeroName, "zero_connection");
+    addTieOffAdhocConnectionToInstancePort("1", instanceName, oneName, "one_connection");
+    addTieOffAdhocConnectionToInstancePort("abc", instanceName, naName, "n/a_connection");
+    addTieOffAdhocConnectionToInstancePort("12", instanceName, numberedName, "number_connection");
+    addTieOffAdhocConnectionToInstancePort("0", instanceName, outName, "out_connection");
+    addTieOffAdhocConnectionToInstancePort("1", instanceName, inOutName, "inOut_connection");
+    addTieOffAdhocConnectionToInstancePort("default", instanceName, defaultName, "default_connection");
+    addTieOffAdhocConnectionToInstancePort("open", instanceName, openName, "open_connection");
+    addTieOffAdhocConnectionToInstancePort("expID - 4", instanceName, expressionName, "expression_connection");
+
+    runGenerator();
+
+    verifyOutputContains(
+        "    // IP-XACT VLNV: Test:TestLibrary:TestTieOff:1.0\n"
+        "    TestTieOff tieOffer(\n"
+        "        // These ports are not in any interface\n"
+        "        .defaultTieOff       (20),\n"
+        "        .expressionTieOff    (expName - 4),\n"
+        "        .n/aTieOff           (abc),\n"
+        "        .numberedTieOff      (12),\n"
+        "        .oneTieOff           (1),\n"
+        "        .openTieOff          ( ),\n"
+        "        .zeroTieOff          (0),\n"
+        "        .tieOffOut           ( ),\n"
+        "        .tieOffInOut         (1));");
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::testMultipleAdhocConnectionsBetweenComponentInstances()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testMultipleAdhocConnectionsBetweenComponentInstances()
@@ -1341,6 +1419,21 @@ void tst_VerilogGenerator::addAdhocConnection(QString const& connectionName,
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::addTieOffAdhocConnectionToInstancePort()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::addTieOffAdhocConnectionToInstancePort(QString const& tieOffValue,
+    QString const& instanceName, QString const& portName, QString const& connectionName)
+{
+    QSharedPointer<PortReference> referencedPort(new PortReference(portName, instanceName));
+
+    QSharedPointer<AdHocConnection> connection(new AdHocConnection(connectionName));
+    connection->setTiedValue(tieOffValue);
+    connection->getInternalPortReferences()->append(referencedPort);
+
+    design_->getAdHocConnections()->append(connection);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::testHierarchicalAdhocConnection()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testHierarchicalAdhocConnection()
@@ -1383,6 +1476,79 @@ void tst_VerilogGenerator::addHierAdhocConnection(QString const& topPort,
     connection->getInternalPortReferences()->append(instancePortReference);
 
     design_->getAdHocConnections()->append(connection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
+{
+    QString zeroName = "zeroTieOff";
+    QString oneName = "oneTieOff";
+    QString naName = "n/aTieOff";
+    QString numberedName = "numberedTieOff";
+    QString inName = "tieOffIn";
+    QString inOutName = "inOutTieOff";
+    QString defaultName = "defaultTieOff";
+    QString openName = "openTieOff";
+    QString expressionName = "expressionTieOff";
+
+    addPort(zeroName, 2, DirectionTypes::OUT, topComponent_);
+    addPort(oneName, 4, DirectionTypes::OUT, topComponent_);
+    addPort(naName, 0, DirectionTypes::OUT, topComponent_);
+    addPort(numberedName, 10, DirectionTypes::OUT, topComponent_);
+    addPort(inName, 2, DirectionTypes::IN, topComponent_);
+    addPort(inOutName, 10, DirectionTypes::INOUT, topComponent_);
+    addPort(defaultName, 1, DirectionTypes::OUT, topComponent_);
+    addPort(openName, 1, DirectionTypes::OUT, topComponent_);
+    addPort(expressionName, 1, DirectionTypes::OUT, topComponent_);
+
+    QSharedPointer<Port> defaultPort = topComponent_->getPort("defaultTieOff");
+    defaultPort->setDefaultValue("20");
+
+    QSharedPointer<Parameter> expressionParameter (new Parameter());
+    expressionParameter->setName("expName");
+    expressionParameter->setValueId("expID");
+    expressionParameter->setValue("4");
+    topComponent_->getParameters()->append(expressionParameter);
+
+    addTieOffConnectionToTopComponentPort("0", zeroName, "zero_connection");
+    addTieOffConnectionToTopComponentPort("1", oneName, "one_connection");
+    addTieOffConnectionToTopComponentPort("abc", naName, "n/a_connection");
+    addTieOffConnectionToTopComponentPort("12", numberedName, "number_connection");
+    addTieOffConnectionToTopComponentPort("0", inName, "in_connection");
+    addTieOffConnectionToTopComponentPort("1", inOutName, "inOut_connection");
+    addTieOffConnectionToTopComponentPort("default", defaultName, "default_connection");
+    addTieOffConnectionToTopComponentPort("open", openName, "open_connection");
+    addTieOffConnectionToTopComponentPort("expID - 4", expressionName, "expression_connection");
+
+    runGenerator();
+
+    verifyOutputContains(
+        "    // Tie off values for the ports of the encompassing component\n"
+        "    assign defaultTieOff = 20;\n"
+        "    assign expressionTieOff = expName - 4;\n"
+        "    assign inOutTieOff = 1;\n"
+        "    assign n/aTieOff = abc;\n"
+        "    assign numberedTieOff = 12;\n"
+        "    assign oneTieOff = 1;\n"
+        "    assign zeroTieOff = 0;\n"
+        );
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::addTieOffConnectionToTopComponentPort()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::addTieOffConnectionToTopComponentPort(QString const& tieOffValue,
+    QString const& portName, QString const& connectionName)
+{
+    QSharedPointer<PortReference> newPortReference (new PortReference(portName));
+
+    QSharedPointer<AdHocConnection> newConnection(new AdHocConnection(connectionName));
+    newConnection->setTiedValue(tieOffValue);
+    newConnection->getExternalPortReferences()->append(newPortReference);
+
+    design_->getAdHocConnections()->append(newConnection);
 }
 
 //-----------------------------------------------------------------------------

@@ -17,6 +17,7 @@
 class ExpressionParser;
 class ComponentParameterFinder;
 class AdHocItem;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Resolver class containing functionality for calculating expressions within design diagrams.
@@ -49,6 +50,18 @@ private:
     // Disable copying.
     DesignDiagramResolver(DesignDiagramResolver const& rhs);
     DesignDiagramResolver& operator=(DesignDiagramResolver const& rhs);
+
+    /*!
+     *  Get the parsed value from a tie off value.
+     *
+     *      @param [in] tieOffValue     The unparsed tie off value.
+     *      @param [in] ownerComponent  The encompassing component of the ad hoc port containing the tie off value.
+     *      @param [in] portItem        The ad hoc port item.
+     *
+     *      @return Parsed tie off value.
+     */
+    QString getParsedTieOffValue(QString const& tieOffValue, QSharedPointer<Component> ownerComponent,
+        AdHocItem* portItem) const;
 
     //-----------------------------------------------------------------------------
     // Data.

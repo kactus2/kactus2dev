@@ -113,6 +113,12 @@
     <Filter Include="Header Files\editors\DesignEditor">
       <UniqueIdentifier>{2ece6617-9617-4da5-bbef-c3a1fed77fdf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\VerilogTiedValueWriter">
+      <UniqueIdentifier>{dc219def-890b-4f59-a0e0-720eb14259a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VerilogTiedValueWriter">
+      <UniqueIdentifier>{12df4dee-4481-4416-b6a3-d1bf09812f88}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VerilogGenerator\VerilogGenerator.cpp">
@@ -187,6 +193,9 @@
     <ClCompile Include="..\..\designEditors\common\TopComponentParameterFinder.cpp">
       <Filter>Source Files\editors\DesignEditor</Filter>
     </ClCompile>
+    <ClCompile Include="VerilogTiedValueWriter\VerilogTiedValueWriter.cpp">
+      <Filter>Source Files\VerilogTiedValueWriter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="veriloggeneratorplugin_global.h">
@@ -251,6 +260,9 @@
     </ClInclude>
     <ClInclude Include="..\..\designEditors\common\TopComponentParameterFinder.h">
       <Filter>Header Files\editors\DesignEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogTiedValueWriter\VerilogTiedValueWriter.h">
+      <Filter>Header Files\VerilogTiedValueWriter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
