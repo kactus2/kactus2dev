@@ -105,8 +105,10 @@ QString ComponentEditorViewItem::getTooltip() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorViewItem::canBeOpened() const
 {
-    return viewValidator_->hasValidDesignInstantiationReference(view_) ||
-        viewValidator_->hasValidDesignConfigurationInstantiationReference(view_);
+    return ( !view_->getDesignInstantiationRef().isEmpty() &&
+		viewValidator_->hasValidDesignInstantiationReference(view_) ) ||
+        ( !view_->getDesignConfigurationInstantiationRef().isEmpty() &&
+		viewValidator_->hasValidDesignConfigurationInstantiationReference(view_) );
 }
 
 //-----------------------------------------------------------------------------

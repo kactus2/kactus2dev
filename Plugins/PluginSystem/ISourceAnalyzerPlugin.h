@@ -65,14 +65,12 @@ public:
     virtual QStringList getSupportedFileTypes() const = 0;
 
     /*!
-     *  Calculates a language-dependent hash for the analyzed file. Hash calculation here should ignore
-	 *  whites pace and comments.
+     *  Calculates a language-dependent hash for the analyzed file. Hash calculation here may ignore
+	 *  whitespace and comments.
      *
      *      @param [in] filename  The name of the file.
      *
      *      @return The hash value for the file.
-     *
-     *      @remarks Comments and whitespace are ignored and do not affect the hash value.
      */
     virtual QString calculateHash(QString const& filename) = 0;
 
