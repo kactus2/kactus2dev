@@ -57,6 +57,10 @@ designDiagram_()
 
     tiedValueEditor_->setAppendingCompleter(tiedValueCompleter);
 
+    QStringList reservedWordsForTiedValue;
+    reservedWordsForTiedValue << "open" << "default";
+    tiedValueEditor_->setReservedWords(reservedWordsForTiedValue);
+
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
     setupLayout();

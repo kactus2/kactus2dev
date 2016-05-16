@@ -63,6 +63,13 @@ public:
      */
     void finishEditingCurrentWord();
 
+    /*!
+     *  Set the reserved words.
+     *
+     *      @param [in] newReservations     A list of the new reserved words.
+     */
+    void setReservedWords(QStringList newReservations);
+
 protected:
 
     /*!
@@ -327,6 +334,11 @@ private:
     void colorCurrentWordRed();
 
     /*!
+     *  Changes the color of the font for the current word to black.
+     */
+    void colorCurrentWordBlack();
+
+    /*!
      *  Checks if the given text is a word delimiter.
      *
      *      @param [in] text   The text to check.
@@ -406,6 +418,9 @@ private:
     
     //! Flag for indicating that the user is not selecting text with the mouse.
     bool notSelectingText_;
+
+    //! The list of the reserved words for this editor.
+    QStringList reservedWords_;
 };
 
 #endif // EXPRESSIONEDITOR_H

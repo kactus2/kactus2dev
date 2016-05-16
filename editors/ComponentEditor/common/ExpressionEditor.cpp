@@ -27,9 +27,12 @@
 //-----------------------------------------------------------------------------
 // Function: ExpressionEditor::ExpressionEditor()
 //-----------------------------------------------------------------------------
-ExpressionEditor::ExpressionEditor(QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent)
-    : QTextEdit(parent), nameCompleter_(new QCompleter(this)), parameterFinder_(parameterFinder), 
-    notSelectingText_(true)
+ExpressionEditor::ExpressionEditor(QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
+QTextEdit(parent),
+nameCompleter_(new QCompleter(this)),
+parameterFinder_(parameterFinder),
+notSelectingText_(true),
+reservedWords_()
 {
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -132,7 +135,11 @@ void ExpressionEditor::finishEditingCurrentWord()
         if (currentWordIsUniqueParameterName())
         {
             complete(nameCompleter_->currentIndex());
-        } 
+        }
+        else if (reservedWords_.contains(finishedWord, Qt::CaseInsensitive))
+        {
+            colorCurrentWordBlack();
+        }
         else if (!finishedWord.isEmpty() && !wordIsConstant(finishedWord))
         {
             colorCurrentWordRed();
@@ -312,7 +319,7 @@ void ExpressionEditor::insertWord(QString const& word, QTextCursor& cursor)
     {
         cursor.insertText(parameterFinder_->nameForId(word), colorFormat("darkGreen"));
     }
-    else if(wordIsConstant(word))
+    else if(wordIsConstant(word) || reservedWords_.contains(word, Qt::CaseInsensitive))
     {
         cursor.insertText(word, colorFormat("black"));
     }
@@ -548,6 +555,17 @@ void ExpressionEditor::colorCurrentWordRed()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ExpressionEditor::colorCurrentWordBlack()
+//-----------------------------------------------------------------------------
+void ExpressionEditor::colorCurrentWordBlack()
+{
+    QTextCursor cursor = textCursor();
+    cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
+    cursor.setCharFormat(colorFormat("black"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: ExpressionEditor::isWordDelimiter()
 //-----------------------------------------------------------------------------
 bool ExpressionEditor::isWordDelimiter(QString const& text) const
@@ -680,4 +698,12 @@ void ExpressionEditor::focusOutEvent(QFocusEvent *event)
     QTextEdit::focusOutEvent(event);
 
     emit editingFinished();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::setReservedWords()
+//-----------------------------------------------------------------------------
+void ExpressionEditor::setReservedWords(QStringList newReservations)
+{
+    reservedWords_ = newReservations;
 }
