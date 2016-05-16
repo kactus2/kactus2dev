@@ -13,6 +13,9 @@
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/AdHocItem.h>
+#include <designEditors/HWDesign/AdHocPortItem.h>
+#include <designEditors/HWDesign/AdHocInterfaceItem.h>
+#include <designEditors/HWDesign/HWDesignDiagram.h>
 
 #include <IPXACTmodels/Design/AdHocConnection.h>
 #include <IPXACTmodels/Design/Design.h>
@@ -22,11 +25,11 @@
 //-----------------------------------------------------------------------------
 AdHocTieOffChangeCommand::AdHocTieOffChangeCommand(AdHocItem* portItem, QSharedPointer<AdHocConnection> connection,
     QString const& newTieOffValue, QString newParsedTieOff, QString const& oldTieOffValue, QString oldParsedTieOff,
-    QSharedPointer<Design> design, QUndoCommand* parent):
+    HWDesignDiagram* designDiagram, QUndoCommand* parent):
 QUndoCommand(parent),
-tieOffPortItem_(portItem),
 tieOffConnection_(connection),
-containingDesign_(design),
+containingDiagram_(designDiagram),
+containingDesign_(containingDiagram_->getDesign()),
 oldTieOff_(oldTieOffValue),
 parsedOldTieOff_(oldParsedTieOff),
 newTieOff_(newTieOffValue),
@@ -104,7 +107,7 @@ void AdHocTieOffChangeCommand::undo()
     {
         tieOffConnection_->setTiedValue(oldTieOff_);
 
-        drawTieOffSymbol(oldTieOff_, parsedOldTieOff_);
+        changeTieOffSymbolsInConnectedPorts(oldTieOff_, parsedOldTieOff_);
 
         addOrRemoveConnection(oldTieOff_);
     }
@@ -119,7 +122,7 @@ void AdHocTieOffChangeCommand::redo()
     {
         tieOffConnection_->setTiedValue(newTieOff_);
 
-        drawTieOffSymbol(newTieOff_, parsedNewTieOff_);
+        changeTieOffSymbolsInConnectedPorts(newTieOff_, parsedNewTieOff_);
 
         addOrRemoveConnection(newTieOff_);
     }
@@ -128,32 +131,76 @@ void AdHocTieOffChangeCommand::redo()
 }
 
 //-----------------------------------------------------------------------------
+// Function: AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts()
+//-----------------------------------------------------------------------------
+void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const& tieOffValue,
+    QString const& parsedTieOff) const
+{
+    if (!tieOffConnection_->getInternalPortReferences()->isEmpty())
+    {
+        foreach (QSharedPointer<PortReference> internalReference, *tieOffConnection_->getInternalPortReferences())
+        {
+            HWComponentItem* componentItem =
+                containingDiagram_->getComponentItem(internalReference->getComponentRef());
+
+            if (componentItem)
+            {
+                AdHocPortItem* portItem = componentItem->getAdHocPort(internalReference->getPortRef());
+
+                if (portItem)
+                {
+                    drawTieOffSymbol(portItem, tieOffValue, parsedTieOff);
+                }
+            }
+        }
+    }
+
+    if (!tieOffConnection_->getExternalPortReferences()->isEmpty())
+    {
+        foreach (QSharedPointer<PortReference> externalReference, *tieOffConnection_->getExternalPortReferences())
+        {
+            HWConnectionEndpoint* endPoint =
+                containingDiagram_->getDiagramAdHocPort(externalReference->getPortRef());
+            if (endPoint)
+            {
+                AdHocItem* portItem = dynamic_cast<AdHocItem*>(endPoint);
+                if (portItem)
+                {
+                    drawTieOffSymbol(portItem, tieOffValue, parsedTieOff);
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: AdHocTieOffChangeCommand::drawTieOffSymbol()
 //-----------------------------------------------------------------------------
-void AdHocTieOffChangeCommand::drawTieOffSymbol(QString const& tieOffValue, QString const& parsedTieOff) const
+void AdHocTieOffChangeCommand::drawTieOffSymbol(AdHocItem* portItem, QString const& tieOffValue,
+    QString const& parsedTieOff) const
 {
     bool canConvertTieOffToInt = true;
     int intTieOff = parsedTieOff.toInt(&canConvertTieOffToInt);
 
     if (tieOffValue.isEmpty())
     {
-        tieOffPortItem_->removeTieOffItem();
+        portItem->removeTieOffItem();
     }
     else if (!canConvertTieOffToInt)
     {
-        tieOffPortItem_->createNonResolvableTieOff();
+        portItem->createNonResolvableTieOff();
     }
     else if (intTieOff == 1)
     {
-        tieOffPortItem_->createHighTieOff();
+        portItem->createHighTieOff();
     }
     else if (intTieOff == 0)
     {
-        tieOffPortItem_->createLowTieOff();
+        portItem->createLowTieOff();
     }
     else
     {
-        tieOffPortItem_->createNumberedTieOff();
+        portItem->createNumberedTieOff();
     }
 }
 

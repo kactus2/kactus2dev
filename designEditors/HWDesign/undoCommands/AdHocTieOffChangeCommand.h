@@ -18,6 +18,7 @@
 class AdHocItem;
 class AdHocConnection;
 class Design;
+class HWDesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! Undo command for changing tie off in ad hoc editor.
@@ -40,7 +41,7 @@ public:
      */
     AdHocTieOffChangeCommand(AdHocItem* portItem, QSharedPointer<AdHocConnection> connection,
         QString const& newTieOffValue, QString newParsedTieOff, QString const& oldTieOffValue,
-        QString oldParsedTieOff, QSharedPointer<Design> design, QUndoCommand* parent = 0);
+        QString oldParsedTieOff, HWDesignDiagram* designDiagram, QUndoCommand* parent = 0);
 
     /*!
      *  The destructor.
@@ -82,12 +83,21 @@ private:
     QString createNameForTiedValueConnection(AdHocItem* portItem) const;
 
     /*!
+     *  Change the tie off symbols in the connected ports.
+     *
+     *      @param [in] tieOffValue     The tie off value.
+     *      @param [in] parsedTieOff    The parsed tie off value.
+     */
+    void changeTieOffSymbolsInConnectedPorts(QString const& tieOffValue, QString const& parsedTieOff) const;
+
+    /*!
      *  Draw a tie off symbol matching the given value.
      *
+     *      @param [in] portItem        The port item whose symbol is being redrawn.
      *      @param [in] tieOffValue     The tie off expression.
      *      @param [in] parsedTieOff    The parsed tie off value.
      */
-    void drawTieOffSymbol(QString const& tieOffValue, QString const& parsedTieOff) const;
+    void drawTieOffSymbol(AdHocItem* portItem, QString const& tieOffValue, QString const& parsedTieOff) const;
 
     /*!
      *  Add or remove the ad hoc connection containing the tie off value from the design.
@@ -100,11 +110,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The selected port item.
-    AdHocItem* tieOffPortItem_;
-
     //! The tie off connection.
     QSharedPointer<AdHocConnection> tieOffConnection_;
+
+    //! The design diagram containing the related ad hoc port item.
+    HWDesignDiagram* containingDiagram_;
 
     //! The containing design.
     QSharedPointer<Design> containingDesign_;

@@ -728,6 +728,8 @@ AdHocItem* HWComponentItem::createAdhocItem(QString const& portName)
     {
         portItem = new AdHocPortItem(adhocPort, this);
         addPortToSideWithLessPorts(portItem);
+
+        updateSize();
     }
 
     return portItem;

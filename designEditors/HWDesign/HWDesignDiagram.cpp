@@ -2190,24 +2190,41 @@ void HWDesignDiagram::createAdHocTieOffConnection(QSharedPointer<AdHocConnection
 
     if (!connection->getInternalPortReferences()->isEmpty())
     {
-        QSharedPointer<PortReference> internalPort = connection->getInternalPortReferences()->first();
-        HWComponentItem* comp1 = getComponentItem(internalPort->getComponentRef());
-        HWConnectionEndpoint* connectionPort = comp1->getAdHocPort(internalPort->getPortRef());
+        foreach (QSharedPointer<PortReference> internalPort, *connection->getInternalPortReferences())
+        {
+            HWComponentItem* comp1 = getComponentItem(internalPort->getComponentRef());
+            HWConnectionEndpoint* connectionPort = comp1->getAdHocPort(internalPort->getPortRef());
 
-        tieOffPort = dynamic_cast<AdHocItem*>(connectionPort);
+            if (connectionPort)
+            {
+                tieOffPort = dynamic_cast<AdHocItem*>(connectionPort);
+            }
+            else
+            {
+                tieOffPort = comp1->createAdhocItem(internalPort->getPortRef());
+            }
+
+            diagramResolver_->resolveAdhocTieOff(connection->getTiedValue(), tieOffPort);
+        }
     }
 
-    else if (!connection->getExternalPortReferences()->isEmpty())
+    if (!connection->getExternalPortReferences()->isEmpty())
     {
-        QSharedPointer<PortReference> externalPort = connection->getExternalPortReferences()->first();
-        HWConnectionEndpoint* topAdHocPort = getDiagramAdHocPort(externalPort->getPortRef());
+        foreach (QSharedPointer<PortReference> externalPort, *connection->getExternalPortReferences())
+        {
+            HWConnectionEndpoint* topAdHocPort = getDiagramAdHocPort(externalPort->getPortRef());
 
-        tieOffPort = dynamic_cast<AdHocItem*>(topAdHocPort);
-    }
+            if (topAdHocPort)
+            {
+                tieOffPort = dynamic_cast<AdHocItem*>(topAdHocPort);
+            }
+            else
+            {
+                tieOffPort = createAdhocItem(externalPort->getPortRef());
+            }
 
-    if (tieOffPort)
-    {
-        diagramResolver_->resolveAdhocTieOff(connection->getTiedValue(), tieOffPort);
+            diagramResolver_->resolveAdhocTieOff(connection->getTiedValue(), tieOffPort);
+        }
     }
 }
 

@@ -20,10 +20,10 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/AdHocPortItem.h>
 #include <designEditors/HWDesign/AdHocInterfaceItem.h>
+#include <designEditors/HWDesign/HWDesignDiagram.h>
 #include <designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.h>
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
@@ -44,7 +44,8 @@ leftBoundValue_(new QLabel(this)),
 rightBoundValue_(new QLabel(this)),
 tiedValueEditor_(new ExpressionEditor(componentFinder_, this)),
 containedPortItem_(),
-editProvider_()
+editProvider_(),
+designDiagram_()
 {
     tiedValueEditor_->setFixedHeight(20);
 
@@ -90,12 +91,13 @@ void AdHocEditor::setupLayout()
 //-----------------------------------------------------------------------------
 // Function: AdhocEditor::setAdhocPort()
 //-----------------------------------------------------------------------------
-void AdHocEditor::setAdhocPort(AdHocItem* endPoint, QSharedPointer<IEditProvider> editProvider)
+void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingDiagram,
+    QSharedPointer<IEditProvider> editProvider)
 {
     if(endPoint->isAdHoc())
     {
+        designDiagram_ = containingDiagram;
         editProvider_ = editProvider;
-
         containedPortItem_ = endPoint;
 
         portName_->show();
@@ -136,8 +138,7 @@ void AdHocEditor::setAdhocPort(AdHocItem* endPoint, QSharedPointer<IEditProvider
                 (adhocInterfaceItem && direction == DirectionTypes::OUT) ||
                 direction == DirectionTypes::INOUT)
             {
-                DesignDiagram* containingDiagram = dynamic_cast<DesignDiagram*>(containedPortItem_->scene());
-                bool locked = containingDiagram->isProtected();
+                bool locked = designDiagram_->isProtected();
 
                 tiedValue = getTiedValue(containingItemName);
 
@@ -179,8 +180,7 @@ QString AdHocEditor::getTiedValue(QString const& instanceName) const
 //-----------------------------------------------------------------------------
 QSharedPointer<AdHocConnection> AdHocEditor::getTiedConnection(QString const& instanceName) const
 {
-    DesignDiagram* containingDiagram = dynamic_cast<DesignDiagram*>(containedPortItem_->scene());
-    QSharedPointer<Design> containingDesign = containingDiagram->getDesign();
+    QSharedPointer<Design> containingDesign = designDiagram_->getDesign();
 
     foreach (QSharedPointer<AdHocConnection> connection, *containingDesign->getAdHocConnections())
     {
@@ -217,18 +217,27 @@ QSharedPointer<AdHocConnection> AdHocEditor::getTiedConnection(QString const& in
 //-----------------------------------------------------------------------------
 void AdHocEditor::setTiedValueEditorToolTip(QString const& tiedValue)
 {
-    QString formattedTiedValue = "";
+    QString newToolTip = "";
 
     if (QString::compare(tiedValue, "open", Qt::CaseInsensitive) == 0)
     {
-        formattedTiedValue = "Open";
+        newToolTip = "Open";
     }
     else
     {
-        formattedTiedValue = formattedValueFor(getParsedTieOffValue(tiedValue));
+        QString parsedTieOff = getParsedTieOffValue(tiedValue);
+
+        if (parsedTieOff.isEmpty() && QString::compare(tiedValue, "default", Qt::CaseInsensitive) == 0)
+        {
+            newToolTip = QObject::tr("No default value defined for port ") + containedPortItem_->name();
+        }
+        else
+        {
+            newToolTip = formattedValueFor(getParsedTieOffValue(tiedValue));
+        }
     }
 
-    tiedValueEditor_->setToolTip(formattedTiedValue);
+    tiedValueEditor_->setToolTip(newToolTip);
 }
 
 //-----------------------------------------------------------------------------
@@ -271,9 +280,6 @@ void AdHocEditor::onTiedValueChanged()
 //-----------------------------------------------------------------------------
 void AdHocEditor::createTieOffChangeCommand(QString const& newTiedValue)
 {
-    DesignDiagram* containingDiagram = dynamic_cast<DesignDiagram*>(containedPortItem_->scene());
-    QSharedPointer<Design> containingDesign = containingDiagram->getDesign();
-
     QString instanceName = "";
 
     ComponentItem* containingInstance = containedPortItem_->encompassingComp();
@@ -298,7 +304,7 @@ void AdHocEditor::createTieOffChangeCommand(QString const& newTiedValue)
     if (newTiedValue != oldTieOffValue)
     {
         QSharedPointer<QUndoCommand> tieOffUndoCommand(new AdHocTieOffChangeCommand(containedPortItem_, connection,
-            newTiedValue, parsedNewTieOff, oldTieOffValue, parsedOldTieOff, containingDesign));
+            newTiedValue, parsedNewTieOff, oldTieOffValue, parsedOldTieOff, designDiagram_));
         editProvider_->addCommand(tieOffUndoCommand);
         tieOffUndoCommand->redo();
 

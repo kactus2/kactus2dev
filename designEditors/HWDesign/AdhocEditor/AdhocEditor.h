@@ -22,6 +22,7 @@ class Design;
 class AdHocConnection;
 class AdHocItem;
 class IEditProvider;
+class HWDesignDiagram;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of an Ad hoc port in designAd-hoc editor.
@@ -47,10 +48,12 @@ public:
     /*!
      *  Set the ad hoc port.
      *
-     *      @param [in] endPoint        The selected ad hoc port.
-     *      @param [in] editProvider    The provider for undo commands.
+     *      @param [in] endPoint            The selected ad hoc port.
+     *      @param [in] containingDiagram   The design diagram containing the ad hoc port.
+     *      @param [in] editProvider        The provider for undo commands.
      */
-    void setAdhocPort(AdHocItem* endPoint, QSharedPointer<IEditProvider> editProvider);
+    void setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingDiagram,
+        QSharedPointer<IEditProvider> editProvider);
 
 public slots:
 
@@ -164,6 +167,9 @@ private:
 
     //! The currently used provider for undo commands.
     QSharedPointer<IEditProvider> editProvider_;
+
+    //! The design diagram containing the ad hoc port item.
+    HWDesignDiagram* designDiagram_;
 };
 
 #endif // ADHOCEDITOR_H
