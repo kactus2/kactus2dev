@@ -12,7 +12,7 @@
 #ifndef MCAPICodeGeneratorPlugin_H
 #define MCAPICodeGeneratorPlugin_H
 
-#include <Plugins/PluginSystem/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 
 //-----------------------------------------------------------------------------
 //! MCAPI code generator.

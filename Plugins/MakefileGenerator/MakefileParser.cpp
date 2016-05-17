@@ -681,8 +681,8 @@ QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod, QSha
 QString MakefileParser::getFileFlags(QSharedPointer<Component> component, QSharedPointer<MakefileParser::MakeObjectData> &mod, MakefileParser::MakeFileData &mfd) const
 {
 	QString cFlags;
-	QString fileReplaceFlags;
-	QString fileSetReplaceFlags;
+	int fileReplaceFlags;
+	int fileSetReplaceFlags;
 
 	QSharedPointer<ListParameterFinder> finder (new ListParameterFinder());
 	finder->setParameterList(component->getParameters());
@@ -692,34 +692,36 @@ QString MakefileParser::getFileFlags(QSharedPointer<Component> component, QShare
 	if ( mod->fileBuildCmd != 0 )
 	{
 		cFlags += mod->fileBuildCmd->getFlags();
-		fileReplaceFlags = expressionParser->parseExpression(mod->fileBuildCmd->getReplaceDefaultFlags());
+		fileReplaceFlags =
+			expressionParser->parseExpression(mod->fileBuildCmd->getReplaceDefaultFlags()).toInt();
 	}
 
 	// See if file set flags replace anything.
 	if ( mod->fileSetBuildCmd != 0 )
 	{
-		fileSetReplaceFlags = expressionParser->parseExpression(mod->fileSetBuildCmd->getReplaceDefaultFlags());
+		fileSetReplaceFlags =
+			expressionParser->parseExpression(mod->fileSetBuildCmd->getReplaceDefaultFlags()).toInt();
 	}
 
 	// This mesh does following:
 	// 1. If file does not override flags, may use fileSet flags
 	// 2. If fileSet does not override flags, may use software flags
 	// 2. If software does not override flags, may use hardware flags
-	if ( mod->fileBuildCmd == 0 || fileReplaceFlags != "true" )
+	if ( mod->fileBuildCmd == 0 || fileReplaceFlags != 1 )
 	{
 		if ( mod->fileSetBuildCmd != 0 )
 		{
 			cFlags += " " + mod->fileSetBuildCmd->getFlags();
 		}
 
-		if ( mod->fileSetBuildCmd == 0 || fileSetReplaceFlags != "true" )
+		if ( mod->fileSetBuildCmd == 0 || fileSetReplaceFlags != 1 )
 		{
 			if ( mod->swBuildCmd != 0 )
 			{
 				cFlags += " " + mod->swBuildCmd->getFlags();
 			}   
 
-			if ( ( mod->swBuildCmd == 0 || mod->swBuildCmd->getReplaceDefaultFlags() != "true" )
+			if ( ( mod->swBuildCmd == 0 || mod->swBuildCmd->getReplaceDefaultFlags().toInt() != 1 )
                 && mfd.hwBuildCmd != 0 )
 			{
 				cFlags += " " + mfd.hwBuildCmd->getFlags();
