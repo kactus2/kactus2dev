@@ -166,7 +166,7 @@ void QuartusProjectGenerator::runGenerator(IPluginUtility* utility,
     {
         QString openViewName = getOpenViewName(libDesConf, libDes, component);
 
-        QuartusGenerator quartusGenerator(utility->getLibraryInterface(), utility->getParentWidget());
+        QuartusGenerator quartusGenerator(path, utility);
 
         connect(&quartusGenerator, SIGNAL(errorMessage(QString const&)),
             this, SLOT(onErrorMessage(QString const&)), Qt::UniqueConnection);
@@ -177,7 +177,7 @@ void QuartusProjectGenerator::runGenerator(IPluginUtility* utility,
 
         quartusGenerator.readExistingPinMap(component);
         quartusGenerator.parseFiles(component, openViewName);
-        quartusGenerator.generateProject(path, component->getVlnv().getName(), generatorInformation);
+        quartusGenerator.generateProject(component->getVlnv().getName(), generatorInformation);
 
         utility->printInfo(tr("Quartus project generation complete."));
     }

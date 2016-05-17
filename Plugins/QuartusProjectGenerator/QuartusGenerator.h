@@ -16,6 +16,7 @@ class LibraryInterface;
 class Design;
 class DesignConfiguration;
 class View;
+class IPluginUtility;
 /*! \brief QuartusGenerator generates a Quartus project for the component.
  *
  * Generator creates two files:
@@ -32,11 +33,11 @@ public:
 
 	/*! \brief The constructor
 	 *
-	 * \param handler Pointer to the instance that manages the library
-	 * \param parent Owner of this generator
+	 * \param outputPath The path, where the project files are generated
+	 * \param utility The Plugin utility, where to get libraries etc.
 	 *
 	*/
-	QuartusGenerator(LibraryInterface* handler, QWidget* parent);
+	QuartusGenerator(QString outputPath, IPluginUtility* utility);
 
 	/*! \brief Set the name of the FPGA board the project is created for.
 	 *
@@ -65,7 +66,7 @@ public:
 	 * The files are named after the top component's name.
 	 *
 	 */
-	void generateProject(QString outputPath, const QString& top_entity, QString const& generatorInformation);
+	void generateProject(const QString& top_entity, QString const& generatorInformation);
 
     /*!
      *  Replace the printed time with the given text.
@@ -153,7 +154,7 @@ private:
 	 * \exception std::runtime_error Occurs if output file can't be opened for
 	 * writing.
 	 */
-	void writeQuartusProjectFile(const QString& outPutDir, const QString& top_entity,
+	void writeQuartusProjectFile(const QString& top_entity,
         QString const& generatorInformation);
 
 	/*! \brief Writes the Quartus Settings File into specified directory.
@@ -161,7 +162,7 @@ private:
 	 * \param outPutDir Path to the directory where the .qsf file is written to
 	 *
 	 */
-	void writeQuartusSettingsFile(const QString& outputDir, const QString& top_entity,
+	void writeQuartusSettingsFile(const QString& top_entity,
         QString const& generatorInformation);
 
     /*!
@@ -173,7 +174,7 @@ private:
      *
      *      @return Either a quartus project file or a quartus settings file, depending on the given suffix.
      */
-    QSharedPointer<QFile> createQuartusProjectFile(QString const& outputDirectory, QString const& topEntity,
+    QSharedPointer<QFile> createQuartusProjectFile(QString const& topEntity,
         QString const& fileSuffix);
 
 	/*! \brief Writes the header info for the Quartus Project File.
@@ -186,18 +187,24 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+	//! Path where the project files will be generated.
+	QString outputPath_;
+
+	//! The Plugin utility, where to get libraries etc.
+	IPluginUtility* utility_;
+
 	/*! \brief Contains the file paths of the needed files.
 	 *
 	 */
 	QStringList files_;
 
-	//! \brief Contains the pin assignments retrieved from the IP-Xact metadata.
+	//! \Contains the pin assignments retrieved from the IP-Xact metadata.
 	QStringList assignments_;
 
-	//! \brief Pointer to the LibraryHandler instance managing the IP library.
+	//! Pointer to the LibraryHandler instance managing the IP library.
 	LibraryInterface* handler_;
 
-	//! \brief Pointer to the owner of this generator.
+	//! Pointer to the owner of this generator.
 	QWidget* parent_;
 
     //! Time replacement for the creation time. Used in tests.
