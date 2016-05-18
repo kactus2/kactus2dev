@@ -13,24 +13,30 @@
 #define MAKEFILEGENERATOR_H
 
 #include "MakefileParser.h"
+#include "Struct.h"
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
 class MakefileGenerator
 {
 public:
-    MakefileGenerator( MakefileParser& parser, IPluginUtility* utility );
+    /*!
+     *  The constructor.
+     *
+	 *      @param [in] generalFileSet  The file set, where design configuration specific things belong to.
+	*/
+	MakefileGenerator( MakefileParser& parser, IPluginUtility* utility, QSharedPointer<FileSet> generalFileSet );
 
     ~MakefileGenerator();
 
     /*!
      *  Generates all makefiles based on the parsed data.
      *
-     *      @param [in] targetPath   The path, where the makefiles are created.
-	 *      @param [in] targetPath   The path, where the top component is.
-	 *      @param [in] sysViewName  Name of the system view pointing to used design configuration.
+     *      @param [in] targetPath		The path, where the makefiles are created.
+	 *      @param [in] topPath			The path, where the top component is.
+	 *      @param [in] sysViewName		Name of the system view pointing to used design configuration.
      */
-    void generate(QString targetPath, QString topPath, QString sysViewName) const;
+	void generate(QString targetPath, QString topPath, QString sysViewName);
 
 private:
 
@@ -42,7 +48,8 @@ private:
      *      @param [in] mfd   The make data associated with the makefile as whole.
      *      @param [in] makeNames   The directory of the created makefile must be added here.
      */
-    void generateInstanceMakefile(QString basePath, QString topPath, MakefileParser::MakeFileData &mfd, QStringList &makeNames) const;
+    void generateInstanceMakefile(QString basePath, QString topPath,
+		QSharedPointer<MakeFileData> mfd, QStringList &makeNames);
 
     /*!
      *  Creates a makefile calling all the other makefiles associated with the design.
@@ -66,7 +73,7 @@ private:
      *      @param [in] mfd   The make data associated with the makefile as whole.
      *      @param [in] outStream   The stream where the makefile is written.
      */
-     void writeFinalFlagsAndBuilder(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const;
+     void writeFinalFlagsAndBuilder(QSharedPointer<MakeFileData> mfd, QTextStream& outStream) const;
 
     /*!
      *  Writes the list of the built and used objects to the stream.
@@ -74,7 +81,7 @@ private:
      *      @param [in] mfd   The make data associated with the makefile as whole.
      *      @param [in] outStream   The stream where the makefile is written.
      */
-     void writeObjectList(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const;
+     void writeObjectList(QSharedPointer<MakeFileData> mfd, QTextStream& outStream) const;
 
     /*!
      *  Writes the build command of the executable to the stream.
@@ -92,7 +99,7 @@ private:
      *      @param [in] instancePath   Path of the makefile and thus the path where it is called from.
      */
      void writeMakeObjects(QTextStream& outStream,
-		 QList<QSharedPointer<MakefileParser::MakeObjectData> >& objects, QString instancePath) const;
+		 QList<QSharedPointer<MakeObjectData> >& objects, QString instancePath) const;
 
      /*!
       *  Writes list of launched executables.
@@ -125,7 +132,7 @@ private:
       void writeEnding(QTextStream& outStream) const;
 
       //! Collection of data sets, one for each makefile.
-      QList<MakefileParser::MakeFileData> parsedData_;
+      QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData_;
       //! The fileSet for the main makefile and the launcher.
       QSharedPointer<FileSet> generalFileSet_;
       //! The utility used to print message and etc.

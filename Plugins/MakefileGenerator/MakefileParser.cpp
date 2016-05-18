@@ -6,7 +6,7 @@
 // Date: 22.09.2014
 //
 // Description:
-// Parses design and its configuration for make file generation data.
+// Parses makefile data from SW stack.
 //-----------------------------------------------------------------------------
 
 #include "MakefileParser.h"
@@ -24,7 +24,9 @@
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::MakefileParser()
 //-----------------------------------------------------------------------------
-MakefileParser::MakefileParser()
+MakefileParser::MakefileParser( LibraryInterface* library, SWStackParser& swStackParser ) :
+library_( library ), swStackParser_(swStackParser), parsedData_( QSharedPointer<QList<QSharedPointer<MakeFileData> > >
+	( new QList<QSharedPointer<MakeFileData> > ) )
 {
 }
 
@@ -38,37 +40,21 @@ MakefileParser::~MakefileParser()
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::getParsedData()
 //-----------------------------------------------------------------------------
-QList<MakefileParser::MakeFileData>& MakefileParser::getParsedData()
+QSharedPointer<QList<QSharedPointer<MakeFileData> > > MakefileParser::getParsedData()
 {
     return parsedData_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MakefileParser::getGeneralFileSet()
-//-----------------------------------------------------------------------------
-const QSharedPointer<FileSet>& MakefileParser::getGeneralFileSet()
-{
-    return generalFileSet_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakefileParser::getReplacedFiles()
-//-----------------------------------------------------------------------------
-const QStringList& MakefileParser::getReplacedFiles()
-{
-    return replacedFiles_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: MakefileParser::findConflicts()
 //-----------------------------------------------------------------------------
-QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > > MakefileParser::findConflicts() const
+QVector<QSet<QSharedPointer<MakeObjectData> > > MakefileParser::findConflicts() const
 {
 	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts;
 
-	foreach(MakeFileData const& makefileData, parsedData_)
+	foreach(QSharedPointer<MakeFileData> makefileData, *parsedData_)
 	{
-		QList<QSharedPointer<MakeObjectData> > objects = makefileData.swObjects;
+		QList<QSharedPointer<MakeObjectData> > objects = makefileData->swObjects;
 
 		// Go on until the list is empty.
 		while (!objects.empty())
@@ -140,357 +126,51 @@ QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > > MakefileParser::
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::searchSWComponent()
 //-----------------------------------------------------------------------------
-void MakefileParser::parse(LibraryInterface* library, QSharedPointer<Component> topComponent,
-    QSharedPointer<DesignConfiguration const> desgConf, QSharedPointer<const Design> design,
-    QString sysViewName, QString targetPath)
+void MakefileParser::parse()
 {
-    // Fabricate name for the fileSet of design-wide files.
-    QString fileSetName = NameGenerationPolicy::systemViewFilesetName(sysViewName);
-
-	// Obtain the the fileSet by name and set it as a source file group.
-	QSharedPointer<FileSet> fileSet = topComponent->getFileSet(fileSetName);
-
-	if (!fileSet)
+	foreach (QSharedPointer<MakeFileData> makeData, *swStackParser_.getParsedData())
 	{
-		QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets = topComponent->getFileSets();
-		fileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, "sourceFiles"));
-		fileSets->append(fileSet);
-	}
+		// Parse the files of hard view.
+		parseMakeObjects(makeData->hardView,
+			makeData->hardComponent, makeData, makeData->swObjects, false);
 
-    fileSet->setGroups("sourceFiles");
+		// Also parse the associated instance headers.
+		parseFileSet(makeData->instanceHeaders, makeData->swObjects, makeData, false, QSharedPointer<SWView>());
 
-    // This is also a fileSet referenced by the makefile generation
-    generalFileSet_ = fileSet;
-
-    // The base directory for the software.
-    QString basePath = targetPath + "/sw_" + sysViewName + "/";
-
-    // Check if the main make file and the launcher files already exits.
-    QString mainMakeDir = basePath + "Makefile";
-    QFile makeFile(mainMakeDir);
-
-    if (makeFile.exists())
-    {
-        replacedFiles_.append(mainMakeDir);
-    }
-
-    // We also need to know if the file exists
-    QString launcherDir = basePath + "launcher.sh";
-    QFile launcherFile(launcherDir);
-
-    if (launcherFile.exists())
-    {
-        replacedFiles_.append(launcherDir);
-    }
-
-    foreach (QSharedPointer<SWInstance> softInstance, design->getSWInstances())
-    {
-        // The VLNV and the component of the instance are needed.
-        QSharedPointer<VLNV> softwareVLNV = softInstance->getComponentRef();
-        QSharedPointer<Component> softComponent = library->getModel(*softwareVLNV).dynamicCast<Component>();
-
-        // Lower levels of a stack do not get their own instances.
-        if (isTopOfStack(design, softInstance, softComponent))
-        {
-            // Initialize the data of make file to collection of parsed entities.
-            MakeFileData makeData;
-
-            // The top component of the design may contain header files specific to the instance.
-            findInstanceHeaders(library, topComponent, desgConf, sysViewName, softInstance, makeData);
-
-            // Parse files of the underlying hardware.
-            QSharedPointer<SWView> hardView = parseHWMakeObjects(design, softInstance->getMapping(), desgConf, 
-                library, makeData);
-
-            // There may be only one active software view.
-            QString softViewName = desgConf->getActiveView(softInstance->getInstanceName());
-            
-            QSharedPointer<SWView> softView;
-            foreach(QSharedPointer<SWView> view, softComponent->getSWViews())
-            {
-                if (view->name() == softViewName)
-                {
-                    softView = view;
-                    break;
-                }
-            }
-
-            if (softView)
-            {
-                // Parse its files, as well as files of any instance in the underlying stack.
-                parseStackObjects(softComponent, softView, softInstance, design, library, desgConf, makeData);
-
-                // Both component and hardware software views are needed to build.
-                findHardwareBuildCommand(makeData, softView, hardView);
-
-                // Now we may check the compiler and flags of individual files...
-                foreach ( QSharedPointer<MakeObjectData> mod, makeData.swObjects )
-                {
-                    mod->compiler = getFileCompiler( mod, hardView);
-                    mod->flags = getFileFlags(softComponent, mod , makeData );
-                }
-
-                // Check if software objects found: If none, no need for a make file.
-                if (!makeData.swObjects.isEmpty())
-                {
-                    makeData.includeDirectories.removeDuplicates();
-                    makeData.softViewFlags.removeDuplicates();
-
-                    // Since every software stack gets its own makefile, naming is after the instance name.
-                    makeData.name = softInstance->getInstanceName();
-
-                    // We may need the absolute path of the file
-                    QString instancePath = basePath + makeData.name;
-                    QString dir = instancePath + "/Makefile";
-
-                    // We also need to know if the file exists
-                    QFile makeFile(dir);
-
-                    // If it does, put in the list.
-                    if (makeFile.exists())
-                    {
-                        replacedFiles_.append(dir);
-                    }
-
-                    parsedData_.append(makeData);
-                }
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakefileParser::isTopOfStack()
-//-----------------------------------------------------------------------------
-bool MakefileParser::isTopOfStack(QSharedPointer<const Design> design, QSharedPointer<SWInstance> softInstance,
-	QSharedPointer<Component> softComponent)
-{
-    foreach (QSharedPointer<ApiInterconnection> connection, design->getApiConnections())
-    {
-        QSharedPointer<ApiInterface> ourInterface;
-
-        if (softInstance->getInstanceName() == connection->getStartInterface()->getComponentReference())
-        {
-            ourInterface = softComponent->getApiInterface(connection->getStartInterface()->getBusReference());
-        }
-        else
-        {
-            // See if one of the ends is ours.
-            foreach (QSharedPointer<ActiveInterface> activeInterface, *connection->getActiveInterfaces())
-            {
-                if (softInstance->getInstanceName() == activeInterface->getComponentReference())
-                {
-                    ourInterface = softComponent->getApiInterface(activeInterface->getBusReference());
-                    break;
-                }
-            }
-        }
-
-        // If found and it turns out that we are an active provider, we are not on the top of a stack.
-        if (!ourInterface.isNull() && ourInterface->getDependencyDirection() == DEPENDENCY_PROVIDER)
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakefileParser::findInstanceHeaders()
-//-----------------------------------------------------------------------------
-void MakefileParser::findInstanceHeaders(LibraryInterface* library, QSharedPointer<Component> topComponent,
-    QSharedPointer<DesignConfiguration const> desgConf, QString sysViewName,
-    QSharedPointer<SWInstance> softInstance, MakeFileData& makeData)
-{
-    // The path leading to the design.
-    QString fileSetName = softInstance->getFileSetRef();
-
-    // Create a new fileSet, if no reference exist
-    if (fileSetName.isNull())
-    {
-        // If not, make a new one.
-        fileSetName = NameGenerationPolicy::instanceFilesetName(sysViewName, softInstance->getInstanceName());
-        softInstance->setFileSetRef(fileSetName);
-    }
-
-	// Obtain the the fileSet by name and set it as a source file group.
-	QSharedPointer<FileSet> fileSet = topComponent->getFileSet(fileSetName);
-
-	if (!fileSet)
-	{
-		QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets = topComponent->getFileSets();
-		fileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, "sourceFiles"));
-		fileSets->append(fileSet);
-	}
-
-	fileSet->setGroups("sourceFiles");
-
-    // This is also a fileSet referenced by the makefile generation
-	makeData.fileSet = fileSet;
-
-	// They want the name of the instance.
-	QString instanceName = softInstance->getDisplayName();
-
-	if (instanceName.isEmpty())
-	{
-		instanceName = softInstance->getInstanceName();
-	}
-
-	// Finally parse the files of the said view.
-	parseFileSet(fileSet, instanceName, makeData.swObjects, library, topComponent, makeData, false,
-        QSharedPointer<SWView>());
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakefileParser::parseHWMakeObjects()
-//-----------------------------------------------------------------------------
-QSharedPointer<SWView> MakefileParser::parseHWMakeObjects(QSharedPointer<const Design> design, QString hwName,
-    QSharedPointer<DesignConfiguration const> desgConf, LibraryInterface* library, MakeFileData &makeData)
-{
-    QSharedPointer<SWView> hardView;
-    QSharedPointer<ComponentInstance> hwInstance;
-
-    // See if the design contains a hardware instance corresponding the mapped hardware instance.
-    foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
-    {
-        if (instance->getUuid() == hwName)
-        {
-            hwInstance = instance;
-            break;
-        }
-    }
-
-    // If not found, skip.
-    if (hwInstance)
-    {
-        // The active view is the interesting one.
-        QString hardViewName = desgConf->getActiveView(hwInstance->getInstanceName());
-
-        // Get the component of the hardware instance.
-        QSharedPointer<VLNV> hardwareVLNV = hwInstance->getComponentRef();
-        QSharedPointer<Component> hardComponent = library->getModel(*hardwareVLNV).dynamicCast<Component>();
-
-		foreach(QSharedPointer<SWView> view, hardComponent->getSWViews())
+		foreach (QSharedPointer<StackPart> stackPart, makeData->parts_)
 		{
-			if (view->name() == hardViewName)
-			{
-				hardView = view;
-				break;
-			}
+			// Parse the files of the given software view.
+			parseMakeObjects(stackPart->softView,
+				stackPart->softComponent, makeData, makeData->swObjects, true);
 		}
 
-		if (hardView)
+		// Now we may check the compiler and flags of individual files...
+		foreach ( QSharedPointer<MakeObjectData> mod, makeData->swObjects )
 		{
-            // They want the name of the instance.
-            QString instanceName = hwInstance->getDisplayName();
-            if (instanceName.isEmpty())
-            {
-                instanceName = hwInstance->getInstanceName();
-            }
-
-            // Finally parse the files of the said view.
-            parseMakeObjects(library, hardView, instanceName, hardComponent, makeData, makeData.swObjects, false);
+			mod->compiler = getFileCompiler( mod, makeData->hardView );
+			mod->flags = getFileFlags(makeData->parts_.first()->softComponent, mod, makeData );
 		}
-    }
-    
-    return hardView;
-}
 
-//-----------------------------------------------------------------------------
-// Function: MakefileParser::parseStackObjects()
-//-----------------------------------------------------------------------------
-void MakefileParser::parseStackObjects(QSharedPointer<Component> softComponent,
-    QSharedPointer<SWView> softView, QSharedPointer<SWInstance> softInstance, QSharedPointer<const Design> design,
-    LibraryInterface* library, QSharedPointer<DesignConfiguration const> desgConf, MakeFileData& makeData)
-{
-    // Skip if already parsed
-    if ( makeData.parsedInstances.contains( softInstance->getInstanceName() ) )
-    {
-        return;
+		// Check if software objects found: If none, no need for a makefile.
+		if (makeData->swObjects.isEmpty())
+		{
+			continue;
+		}
+
+		// Remove duplicates: They are not needed.
+		makeData->includeDirectories.removeDuplicates();
+		makeData->softViewFlags.removeDuplicates();
+
+		// Append to the list.
+		parsedData_->append(makeData);
 	}
-
-	// They want the name of the instance.
-	QString instanceName = softInstance->getDisplayName();
-
-	if ( instanceName.isEmpty() )
-	{
-		instanceName = softInstance->getInstanceName();
-	}
-
-    // Parse the files of the given software view.
-    parseMakeObjects(library, softView, instanceName, softComponent, makeData, makeData.swObjects, true);
-
-    // Add to the list
-    makeData.parsedInstances.append(instanceName);
-
-    // Go through the list of connections in the design to retrieve remote endpoint identifiers.
-    foreach (QSharedPointer<ApiInterconnection> connection, design->getApiConnections())
-    {
-        QSharedPointer<ApiInterface> ourInterface;
-        QSharedPointer<ApiInterface> theirInterface;
-        QSharedPointer<SWInstance> theirInstance;
-        QSharedPointer<Component> theirComponent;
-
-        // We must find the API interfaces of the both ends, and the software instance and component of the
-        // end that is NOT us.
-        if (softInstance->getInstanceName() == connection->getStartInterface()->getComponentReference())
-        {
-            ourInterface = softComponent->getApiInterface(connection->getStartInterface()->getBusReference());
-        }
-        else
-        {
-            theirComponent = searchSWComponent(library, design, connection->getStartInterface()->getComponentReference(),
-                theirInstance);
-            theirInterface = theirComponent->getApiInterface(connection->getStartInterface()->getBusReference());
-        }
-
-        foreach(QSharedPointer<ActiveInterface> activeInterface, *connection->getActiveInterfaces())
-        {
-            if (softInstance->getInstanceName() == activeInterface->getComponentReference())
-            {
-                ourInterface = softComponent->getApiInterface(activeInterface->getBusReference());
-            }
-            else
-            {
-                theirComponent = searchSWComponent(library, design, activeInterface->getComponentReference(),
-                    theirInstance);
-                theirInterface = theirComponent->getApiInterface(activeInterface->getBusReference());
-            }
-        }
-
-        // If both ends are found and are pointing the right way, we may parse the files of its active view.
-        if (!ourInterface.isNull() && ourInterface->getDependencyDirection() == DEPENDENCY_REQUESTER && 
-            !theirInterface.isNull() && theirInterface->getDependencyDirection() == DEPENDENCY_PROVIDER &&
-			!theirInstance.isNull())
-        {
-			// They must have an active view!
-			QString softViewName = desgConf->getActiveView(theirInstance->getInstanceName());
-			
-            QSharedPointer<SWView> theirView;
-			foreach(QSharedPointer<SWView> view, theirComponent->getSWViews())
-			{
-				if (view->name() == softViewName)
-				{
-					theirView = view;
-					break;
-				}
-			}
-
-			if (theirView)
-			{
-			    parseStackObjects(theirComponent, theirView, theirInstance, design, library, desgConf, makeData);
-			}
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::parseMakeObjects()
 //-----------------------------------------------------------------------------
-void MakefileParser::parseMakeObjects(LibraryInterface* library, QSharedPointer<SWView> view, QString instanceName,
-    QSharedPointer<Component> component, MakeFileData &makeData, QList<QSharedPointer<MakeObjectData> >& objects, 
-    bool pickSWView)
+void MakefileParser::parseMakeObjects(QSharedPointer<SWView> view, QSharedPointer<Component> component,
+	QSharedPointer<MakeFileData> makeData, QList<QSharedPointer<MakeObjectData> >& objects, bool pickSWView)
 {
     // Go through the fileSets referenced in the software view.
     foreach( QString fsetName, view->getFileSetRefs())
@@ -500,7 +180,7 @@ void MakefileParser::parseMakeObjects(LibraryInterface* library, QSharedPointer<
 		// Skip, if no such file set exist!
 		if ( fset )
 		{
-			parseFileSet(fset, instanceName, objects, library, component, makeData, pickSWView, view);
+			parseFileSet(fset, objects, makeData, pickSWView, view);
 		}
     }
 }
@@ -508,9 +188,8 @@ void MakefileParser::parseMakeObjects(LibraryInterface* library, QSharedPointer<
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::parseFileSet()
 //-----------------------------------------------------------------------------
-void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QString instanceName, 
-    QList<QSharedPointer<MakeObjectData> > &objects, LibraryInterface* library, 
-    QSharedPointer<Component> component, MakeFileData &makeData, bool pickSWView, QSharedPointer<SWView> view)
+void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QList<QSharedPointer<MakeObjectData> > &objects,
+    QSharedPointer<MakeFileData> makeData, bool pickSWView, QSharedPointer<SWView> view)
 {
 	// Go through the files in the fileSet.
 	foreach( QSharedPointer<File> file, *fset->getFiles())
@@ -519,26 +198,22 @@ void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QString instance
 		QSharedPointer<MakeObjectData> objectData( new MakeObjectData );
 		objects.append(objectData);
 
-		// We may assume that a file path is relative to the component path, and thus the include path
-		// is component path + file path.
-		QFileInfo componentQfi = QFileInfo(library->getPath(component->getVlnv()));
-		QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->getFileName());
+		QFileInfo fileQfi = QFileInfo(file->name());
 
 		// Set the needed fields.
 		objectData->file = file;
 		objectData->fileBuildCmd = file->getBuildCommand();
 		objectData->fileName = fileQfi.fileName();
 		objectData->path = fileQfi.absolutePath();
-		objectData->instanceName = instanceName;
 		objectData->fileSet = fset;
 
 		// In case of an include file:
 		if ( file->isIncludeFile() )
 		{
 			// Its path is added to the collection of the include paths.
-			makeData.includeDirectories.append(fileQfi.absolutePath());
+			makeData->includeDirectories.append(fileQfi.absolutePath());
 			// Itself is added to the collection of the include files.
-			makeData.includeFiles.append(objectData);
+			makeData->includeFiles.append(objectData);
 		}
 
 		// A fileSet builder associated with the file type is also a possible field.
@@ -561,65 +236,13 @@ void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QString instance
 					objectData->swBuildCmd = buildCmd;
 
 					// If found, append the flags of the software view for later use.
-					makeData.softViewFlags.append(buildCmd->getFlags());
+					makeData->softViewFlags.append(buildCmd->getFlags());
 
 					break;
 				}
 			}
 		}
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakefileParser::searchSWComponent()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component> MakefileParser::searchSWComponent(LibraryInterface* library,
-    QSharedPointer<const Design> design, QString instanceName, QSharedPointer<SWInstance>& targetInstance)
-{
-    // Go through the software instances of the design, finding the right one.
-    foreach ( QSharedPointer<SWInstance> instance, design->getSWInstances() )
-    {
-        // If the found instance name is same as target, it is what we seek.
-        if ( instance->getInstanceName() == instanceName )
-        {
-            targetInstance = instance;
-            break;
-        }
-    }
-
-    // Obtain the component of the instance.
-    QSharedPointer<VLNV> instanceVLNV = targetInstance->getComponentRef();
-    QSharedPointer<Document> instanceLibComp = library->getModel(*instanceVLNV);
-    QSharedPointer<Component> instanceComp = instanceLibComp.dynamicCast<Component>();
-
-    return instanceComp;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakefileParser::findHardwareBuildCommand()
-//-----------------------------------------------------------------------------
-void MakefileParser::findHardwareBuildCommand(MakeFileData &makeData, QSharedPointer<SWView> softView, 
-    QSharedPointer<SWView> hardView)
-{
-    // No software view from hardware means no can do.
-    if ( hardView == 0 )
-    {
-        return;
-    }
-
-    // Go through the files parsed from the software view of the software component.
-    foreach(QSharedPointer<MakeObjectData> mod, makeData.swObjects)
-    {
-        // Find build command from the software view of the hardware component matching file type.
-        foreach( QSharedPointer<SWFileBuilder> buildCmd, *hardView->getSWBuildCommands() )
-        {
-            if ( mod->file->getFileTypes()->contains( buildCmd->getFileType() ) )
-            {
-                makeData.hwBuildCmd = buildCmd;
-                break;
-            }
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -678,7 +301,8 @@ QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod, QSha
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::getFileFlags()
 //-----------------------------------------------------------------------------
-QString MakefileParser::getFileFlags(QSharedPointer<Component> component, QSharedPointer<MakefileParser::MakeObjectData> &mod, MakefileParser::MakeFileData &mfd) const
+QString MakefileParser::getFileFlags(QSharedPointer<Component> component,
+	QSharedPointer<MakeObjectData> &mod, QSharedPointer<MakeFileData> makeData) const
 {
 	QString cFlags;
 	int fileReplaceFlags;
@@ -722,9 +346,9 @@ QString MakefileParser::getFileFlags(QSharedPointer<Component> component, QShare
 			}   
 
 			if ( ( mod->swBuildCmd == 0 || mod->swBuildCmd->getReplaceDefaultFlags().toInt() != 1 )
-                && mfd.hwBuildCmd != 0 )
+                && makeData->hwBuildCmd != 0 )
 			{
-				cFlags += " " + mfd.hwBuildCmd->getFlags();
+				cFlags += " " + makeData->hwBuildCmd->getFlags();
 			}
 		}
 	}

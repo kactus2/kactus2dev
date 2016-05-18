@@ -20,9 +20,9 @@
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::MakefileGenerator()
 //-----------------------------------------------------------------------------
-MakefileGenerator::MakefileGenerator( MakefileParser& parser, IPluginUtility* utility )
-    : parsedData_( parser.getParsedData() ), generalFileSet_( parser.getGeneralFileSet() ),
-    utility_( utility )
+MakefileGenerator::MakefileGenerator( MakefileParser& parser, IPluginUtility* utility,
+	QSharedPointer<FileSet> generalFileSet ) :
+	parsedData_( parser.getParsedData() ), utility_( utility ), generalFileSet_( generalFileSet )
 {
 }
 
@@ -36,7 +36,7 @@ MakefileGenerator::~MakefileGenerator()
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generate()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generate(QString targetPath, QString topPath, QString sysViewName) const
+void MakefileGenerator::generate(QString targetPath, QString topPath, QString sysViewName)
 {
     // Names of the created directories to be referenced by the master makefile.
     QStringList makeNames;
@@ -45,7 +45,7 @@ void MakefileGenerator::generate(QString targetPath, QString topPath, QString sy
     QDir path;
     path.mkpath( basePath );
 
-    foreach(MakefileParser::MakeFileData mfd, parsedData_)
+    foreach(QSharedPointer<MakeFileData> mfd, *parsedData_)
     {
         generateInstanceMakefile(basePath, topPath, mfd, makeNames);
     }
@@ -59,10 +59,10 @@ void MakefileGenerator::generate(QString targetPath, QString topPath, QString sy
 // Function: MakefileGenerator::generateInstanceMakefile()
 //-----------------------------------------------------------------------------
 void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPath,
-    MakefileParser::MakeFileData &mfd, QStringList &makeNames) const
+    QSharedPointer<MakeFileData> mfd, QStringList &makeNames)
 {
     // Construct the path and folder.
-    QString instancePath = basePath + mfd.name;
+    QString instancePath = basePath + mfd->name;
     QDir path;
     path.mkpath( instancePath );
 
@@ -84,7 +84,7 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     // Write the paths of directories containing includes.
     outStream << "_INCLUDES=";
 
-    foreach( QString path, mfd.includeDirectories )
+    foreach( QString path, mfd->includeDirectories )
     {
         outStream << " " << General::getRelativePath(instancePath,path);
     }
@@ -96,7 +96,7 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     // The include files themselves are dependencies of the source files.
     outStream << "DEPS=";
 
-    foreach(QSharedPointer<MakefileParser::MakeObjectData> file, mfd.includeFiles)
+    foreach(QSharedPointer<MakeObjectData> file, mfd->includeFiles)
     {
         outStream << " " << General::getRelativePath(instancePath,file->path) << "/" << file->fileName;
     }
@@ -119,12 +119,12 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
 		"-fno-inline-functions-called-once -fno-optimize-sibling-calls" << endl;
 	outStream << "profile: $(ENAME)" << endl;
 
-    writeMakeObjects(outStream, mfd.swObjects, instancePath);
+    writeMakeObjects(outStream, mfd->swObjects, instancePath);
 
     // Close after it is done.
     makeFile.close();
 
-    QSharedPointer<FileSet> fileSet = mfd.fileSet;
+    QSharedPointer<FileSet> fileSet = mfd->instanceHeaders;
 
     // The path in the fileSet must be relative to the basePath.
     QString relDir = General::getRelativePath(topPath,makePath);
@@ -235,27 +235,27 @@ void MakefileGenerator::generateLauncher(QString basePath, QString topPath, QStr
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::writeFinalFlagsAndBuilder()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::writeFinalFlagsAndBuilder(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const
+void MakefileGenerator::writeFinalFlagsAndBuilder(QSharedPointer<MakeFileData> mfd, QTextStream& outStream) const
 {
     QString finalFlags = "$(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS)";
     QString finalBuilder;
 
     // If build command of software view of the hardware instance exist, its properties are used.
-    if ( mfd.hwBuildCmd != 0 )
+    if ( mfd->hwBuildCmd != 0 )
     {
-        finalBuilder = mfd.hwBuildCmd->getCommand();
+        finalBuilder = mfd->hwBuildCmd->getCommand();
 
-        finalFlags += " " + mfd.hwBuildCmd->getFlags();
+        finalFlags += " " + mfd->hwBuildCmd->getFlags();
     }
 
     // All flags of all software views must be appended to the flags.
-    foreach ( QString flag, mfd.softViewFlags )
+    foreach ( QString flag, mfd->softViewFlags )
     {
         finalFlags += " " + flag;
     }
 
     // Finally, write down what we learned.
-    outStream << "ENAME= " << mfd.name << endl;
+    outStream << "ENAME= " << mfd->name << endl;
     outStream << "EFLAGS= " << finalFlags << endl;
     outStream << "EBUILDER= " << finalBuilder << endl;
 }
@@ -263,12 +263,12 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(MakefileParser::MakeFileData &
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::writeObjectList()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::writeObjectList(MakefileParser::MakeFileData &mfd, QTextStream& outStream) const
+void MakefileGenerator::writeObjectList(QSharedPointer<MakeFileData> mfd, QTextStream& outStream) const
 {
     // Include files are skipped and the object file is simply original filename + ".o".
     outStream << "_OBJ=";
 
-    foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, mfd.swObjects)
+    foreach(QSharedPointer<MakeObjectData> mod, mfd->swObjects)
     {
         if ( ( !mod->file || !mod->file->isIncludeFile() ) && !mod->compiler.isEmpty() )
         {
@@ -306,9 +306,9 @@ void MakefileGenerator::writeExeBuild(QTextStream& outStream) const
 // Function: MakefileGenerator::writeMakeObjects()
 //-----------------------------------------------------------------------------
 void MakefileGenerator::writeMakeObjects(QTextStream& outStream, 
-    QList<QSharedPointer<MakefileParser::MakeObjectData> >& objects, QString instancePath) const
+    QList<QSharedPointer<MakeObjectData> >& objects, QString instancePath) const
 {
-    foreach(QSharedPointer<MakefileParser::MakeObjectData> mod, objects)
+    foreach(QSharedPointer<MakeObjectData> mod, objects)
     {
         // Skip the include files, as they do not get object files. Also compilerless files are skipped.
         if ( ( mod->file && mod->file->isIncludeFile() ) || mod->compiler.isEmpty() )
