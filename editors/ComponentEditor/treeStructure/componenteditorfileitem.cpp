@@ -72,7 +72,7 @@ ComponentEditorFileItem::~ComponentEditorFileItem()
 //-----------------------------------------------------------------------------
 QString ComponentEditorFileItem::text() const
 {
-    return QFileInfo(file_->name()).fileName();
+    return file_->getFileName();
 }
 
 //-----------------------------------------------------------------------------

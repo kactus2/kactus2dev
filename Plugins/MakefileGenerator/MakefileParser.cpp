@@ -522,7 +522,7 @@ void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QString instance
 		// We may assume that a file path is relative to the component path, and thus the include path
 		// is component path + file path.
 		QFileInfo componentQfi = QFileInfo(library->getPath(component->getVlnv()));
-		QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->name());
+		QFileInfo fileQfi = QFileInfo(componentQfi.absolutePath() + "/" + file->getFileName());
 
 		// Set the needed fields.
 		objectData->file = file;

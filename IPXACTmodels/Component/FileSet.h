@@ -293,6 +293,11 @@ public:
 	 */
 	void setFileSetId(const QString& newId);
 
+	/*! 
+     *  Sorts files by file name.
+	 */
+	void sortFiles();
+
 private:
 
     /*!

@@ -25,6 +25,7 @@ Extendable(),
 fileId_(),
 attributes_(),
 name_(filePath),
+fileName_(),
 isPresent_(),
 fileTypes_(new QStringList()),
 structural_(false),
@@ -40,6 +41,8 @@ imageTypes_(new QStringList()),
 description_(),
 pendingHash_()
 {
+	parseFileName();
+
     if (!fileType.isEmpty())
     {
         fileTypes_->append(fileType);
@@ -54,6 +57,7 @@ Extendable(other),
 fileId_(other.fileId_),
 attributes_(other.attributes_),
 name_(other.name_),
+fileName_(other.fileName_),
 isPresent_(other.isPresent_),
 fileTypes_(new QStringList()),
 structural_(other.structural_),
@@ -178,6 +182,7 @@ QString File::name() const
 void File::setName(QString const& newName)
 {
     name_ = newName;
+	parseFileName();
 }
 
 //-----------------------------------------------------------------------------
@@ -644,6 +649,23 @@ void File::setBuildFlags(QString const& buildFlags, QString const& replaceDefaul
     }
     buildCommand_->setFlags(buildFlags);
     buildCommand_->setReplaceDefaultFlags(replaceDefaultFlags);
+}
+
+//-----------------------------------------------------------------------------
+// Function: File::getFileName()
+//-----------------------------------------------------------------------------
+QString File::getFileName() const
+{
+	return fileName_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: File::parseFileName()
+//-----------------------------------------------------------------------------
+void File::parseFileName()
+{
+	QFileInfo fileInfo(name_);
+	fileName_ = fileInfo.fileName();
 }
 
 //-----------------------------------------------------------------------------

@@ -401,8 +401,18 @@ public:
 	 *
 	 */
     void setBuildFlags(QString const& buildFlags, QString const& replaceDefaultFlags);
+	
+	/*! 
+     *  Get the file name, including the extension, if it exists. Excludes the path.
+	 */
+	QString getFileName() const;
 
 private:
+	
+    /*!
+     *  Parses the current fileName_ from path in name_.
+     */
+	void parseFileName();
 
     /*!
      *  Copy the build command from another file.
@@ -431,6 +441,9 @@ private:
     
 	//! Contains a path to a filename of a directory.
 	QString name_;
+
+	//! Contains the name of the file, including the extension, if it exists.
+	QString fileName_;
 
     //! Contains the presence of the file.
     QString isPresent_;

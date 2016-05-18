@@ -15,6 +15,9 @@
 #include <IPXACTmodels/common/FileTypes.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
+#include <QCollator>
+#include <QFileInfo>
+
 //-----------------------------------------------------------------------------
 // Function: FileSet::FileSet()
 //-----------------------------------------------------------------------------
@@ -240,16 +243,18 @@ QStringList FileSet::getFilePaths() const
 //-----------------------------------------------------------------------------
 void FileSet::addFile(QSharedPointer<File> file)
 {
+	// If a duplicate exists, remove it.
     for (int i = 0; i < files_->size(); ++i)
     {
         if (files_->at(i)->name() == file->name())
         {
             files_->removeAt(i);
-            files_->append(file);
-            return;
+
+            break;
         }
     }
 
+	// At any rate, append the file to the list.
     files_->append(file);
 }
 
@@ -282,7 +287,7 @@ QSharedPointer<File> FileSet::addFile(const QString& filePath, QSettings& settin
         {
             file->getFileTypes()->append(fileType);
         }
-    }
+	}
 
     return file;
 }
@@ -535,6 +540,33 @@ void FileSet::setFileSetId( const QString& id )
         QSharedPointer<Kactus2Value> idExtension (new Kactus2Value("kactus2:fileSetId", id));
         getVendorExtensions()->append(idExtension);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileSet::sortFiles()
+//-----------------------------------------------------------------------------
+void FileSet::sortFiles()
+{
+	// Get the list of files.
+	auto entryList = files_;
+
+	// Used to commit the comparison.
+	QCollator collator;
+	collator.setNumericMode(true);
+
+	// STD-sort was recommended by web sources.
+	std::sort(
+		entryList->begin(),
+		entryList->end(),
+		[&collator](const QSharedPointer<File>& file1, const QSharedPointer<File>& file2) -> bool
+	{
+		// Path infos are needed to extract the actual file names.
+		QFileInfo filePathInfo1(file1->name());
+		QFileInfo filePathInfo2(file2->name());
+
+		// Return based on the comparison result.
+		return collator.compare(filePathInfo1.fileName(), filePathInfo2.fileName()) < 0;
+	});
 }
 
 //-----------------------------------------------------------------------------

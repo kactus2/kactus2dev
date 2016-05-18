@@ -15,9 +15,6 @@
 #include <IPXACTmodels/common/FileBuilderReader.h>
 #include <IPXACTmodels/common/NameGroupReader.h>
 
-#include <QCollator>
-#include <QFileInfo>
-
 //-----------------------------------------------------------------------------
 // Function: FileSetReader::FileSetReader()
 //-----------------------------------------------------------------------------
@@ -80,40 +77,23 @@ void FileSetReader::parseGroups(QDomElement const& fileSetElement, QSharedPointe
 //-----------------------------------------------------------------------------
 void FileSetReader::parseFiles(QDomElement const& fileSetElement, QSharedPointer<FileSet> newFileSet) const
 {
+	// Find all file-elements.
     QDomNodeList fileNodeList = fileSetElement.elementsByTagName("ipxact:file");
 
     if (!fileNodeList.isEmpty())
     {
         FileReader fileReader;
         for (int fileIndex = 0; fileIndex < fileNodeList.count(); ++fileIndex)
-        {
+		{
+			// Read each file with the file reader.
             QSharedPointer<File> newFile = fileReader.createFileFrom(fileNodeList.at(fileIndex));
+			// Then append the file to the list.
             newFileSet->getFiles()->append(newFile);
         }
     }
 
-	// Get the list of files.
-	auto entryList = newFileSet->getFiles();
-
-	// Used to commit the comparison.
-	QCollator collator;
-	collator.setNumericMode(true);
-
-	// STD-sort was recommended by web sources.
-	std::sort(
-		entryList->begin(),
-		entryList->end(),
-		[&collator](const QSharedPointer<File>& file1, const QSharedPointer<File>& file2) -> bool
-	{
-		// Path infos are needed to extract the actual file names.
-		QFileInfo filePathInfo1(file1->name());
-		QFileInfo filePathInfo2(file2->name());
-
-		// Return based on the comparison result.
-		return collator.compare(filePathInfo1.fileName(), filePathInfo2.fileName()) < 0;
-	});
-
-
+	// Sort the files in the file set.
+	newFileSet->sortFiles();
 }
 
 //-----------------------------------------------------------------------------
