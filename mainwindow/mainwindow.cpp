@@ -1337,6 +1337,8 @@ void MainWindow::setupInterfaceEditor()
 	interfaceEditor_ = new InterfaceEditor(interfaceDock_, libraryHandler_);
 	interfaceDock_->setWidget(interfaceEditor_);
 	addDockWidget(Qt::RightDockWidgetArea, interfaceDock_);
+    
+    connect(interfaceEditor_, SIGNAL(contentChanged()), this, SLOT(onDesignChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -1502,7 +1504,15 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface )
 
     if (!interface->isAdHoc())
     {
-	    interfaceEditor_->setInterface(interface);
+        DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
+        if (designWidget)
+        {
+            DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(designWidget->getDiagram());
+            if (diagram)
+            {
+                interfaceEditor_->setInterface(interface, diagram->getDesign());
+            }
+        }
 
         adhocEditor_->clear();
     }

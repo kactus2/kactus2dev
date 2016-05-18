@@ -27,6 +27,10 @@
 
 class ConnectionEndpoint;
 class ComDefinition;
+class InterfacePortMapModel;
+class EditableTableView;
+class ActiveInterface;
+class Design;
 
 //-----------------------------------------------------------------------------
 //! Editor to display/edit the details of a bus interface.
@@ -40,7 +44,8 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent  Pointer to the owner of this widget.
+	 *      @param [in] parent      Pointer to the owner of this widget.
+     *      @param [in] handler     The library handler.
 	 */
 	InterfaceEditor(QWidget *parent, LibraryInterface* handler);
 	
@@ -50,9 +55,17 @@ public:
 	/*!
      *  Set the interface for the editor.
 	 *
-	 *      @param [in] interface   Pointer to the interface.
+	 *      @param [in] interface           Pointer to the interface.
+     *      @param [in] containingDesign    The design containing the end point.
 	 */
-	void setInterface(ConnectionEndpoint* interface);
+	void setInterface(ConnectionEndpoint* interface, QSharedPointer<Design> containingDesign);
+
+signals:
+
+    /*!
+     *  Informs of a content change in the editor.
+     */
+    void contentChanged();
 
 public slots:
 
@@ -111,10 +124,31 @@ private:
 	//! No assignment.
 	InterfaceEditor& operator=(const InterfaceEditor& other);
 
-	/*!
-     *  Set the port maps from interface_ to mappings_ so they are displayed.
-	 */
-	void setPortMaps();
+    /*!
+     *  Get a list of active interfaces referencing the selected interface.
+     *
+     *      @param [in] endPoint    The selected interface end point.
+     *      @param [in] design      The containing design.
+     *
+     *      @return A list of active interfaces referencing the selected interface.
+     */
+    QList<QSharedPointer<ActiveInterface> > getActiveInterfaces(ConnectionEndpoint* endPoint,
+        QSharedPointer<Design> design);
+
+    /*!
+     *  Check if the selected active interface contains a reference to the selected end point.
+     *
+     *      @param [in] currentInterface    The selected active interface.
+     *      @param [in] endPoint            The selected end point.
+     *
+     *      @return True, if the active interface contains a reference to the end point, otherwise false.
+     */
+    bool activeInterfaceReferencesBusInterface(QSharedPointer<ActiveInterface> currentInterface,
+        ConnectionEndpoint* endPoint) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! Widget to display the bus/API/COM type.
 	VLNVDisplayer type_;
@@ -161,8 +195,11 @@ private:
 	//! Label for the mappings of logical and physical ports
 	QLabel mappingsLabel_;
 
-	//! Contains the mapping of ports and logical signals
-	QTableWidget mappings_;
+    //! The view for the port mappings.
+    EditableTableView portMapsView_;
+
+    //! The model for the port mappings.
+    InterfacePortMapModel* portMapsModel_;
 
 	//! Label for the description editor
 	QLabel descriptionLabel_;
@@ -181,6 +218,9 @@ private:
 
 	//! Pointer to the instance that manages the library.
 	LibraryInterface* handler_;
+
+    //! The design containing the selected interface.
+    QSharedPointer<Design> containingDesign_;
 };
 
 #endif // INTERFACEEDITOR_H

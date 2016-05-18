@@ -181,7 +181,7 @@ HEADERS += ./common/Global.h \
     ./Help/HelpSystem/HelpWindow.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
-    ./Plugins/PluginSystem/IGeneratorPlugin.h \
+    ./Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h \
     ./Plugins/PluginSystem/IPlugin.h \
     ./Plugins/PluginSystem/IPluginUtility.h \
     ./Plugins/PluginSystem/ISourceAnalyzerPlugin.h \
@@ -527,6 +527,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/remapStates/RemapConditionModel.h \
     ./editors/ComponentEditor/remapStates/RemapConditionEditor.h \
     ./editors/ComponentEditor/remapStates/RemapConditionDelegate.h \
+    ./editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.h \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.h \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationsColumns.h \
     ./editors/ComponentEditor/instantiations/DesignInstantiationColumns.h \
@@ -602,6 +603,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/HWMoveCommands.h \
     ./designEditors/HWDesign/PortmapDialog.h \
     ./designEditors/HWDesign/AdHocConnectionItem.h \
+    ./designEditors/HWDesign/AdHocItem.h \
     ./designEditors/HWDesign/AdHocInterfaceItem.h \
     ./designEditors/HWDesign/AdHocPortItem.h \
     ./designEditors/HWDesign/BusInterfaceDialog.h \
@@ -626,9 +628,9 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/AddressEditor/AddressEditor.h \
     ./designEditors/HWDesign/AddressEditor/AddressModel.h \
     ./designEditors/HWDesign/AddressEditor/AddressTableView.h \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityColumns.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.h \
     ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h \
@@ -638,7 +640,15 @@ HEADERS += ./common/Global.h \
     ./designEditors/HWDesign/undoCommands/PortPasteCommand.h \
     ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h \
     ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.h \
+    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.h \
     ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityColumns.h \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityDelegate.h \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.h \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.h \
+    ./designEditors/HWDesign/AdhocEditor/AdhocEditor.h \
+    ./designEditors/common/DesignDiagramResolver.h \
     ./designEditors/common/DesignWidgetFactory.h \
     ./designEditors/common/DesignWidgetFactoryImplementation.h \
     ./designEditors/common/NamelabelWidth.h \
@@ -691,16 +701,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityDelegate.h \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.h \
-    ./editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.h \
-    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.h \
-    ./designEditors/HWDesign/AdhocEditor/AdhocEditor.h \
-    ./designEditors/HWDesign/AdHocItem.h \
-    ./designEditors/common/DesignDiagramResolver.h \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.h \
-    ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.h
+    ./designEditors/common/InterfaceEditor/InterfacePortMapModel.h \
+    ./designEditors/common/InterfaceEditor/InterfacePortMapDelegate.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1155,6 +1157,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/remapStates/RemapStatesEditor.cpp \
     ./editors/ComponentEditor/remapStates/RemapStatesModel.cpp \
     ./editors/ComponentEditor/remapStates/SingleRemapStateEditor.cpp \
+    ./editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.cpp \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.cpp \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationEditor.cpp \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.cpp \
@@ -1180,6 +1183,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/HWDesign/AdHocConnectionItem.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
     ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
+    ./designEditors/HWDesign/AdHocItem.cpp \
     ./designEditors/HWDesign/AdHocPortItem.cpp \
     ./designEditors/HWDesign/BusInterfaceDialog.cpp \
     ./designEditors/HWDesign/BusInterfaceItem.cpp \
@@ -1206,21 +1210,25 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressEntry.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressModel.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressTableView.cpp \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityDelegate.cpp \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.cpp \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/AdHocVisibilityChangeCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ColumnDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ComponentDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
+    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.cpp \
     ./designEditors/HWDesign/undoCommands/InterfaceDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/PortDeleteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/PortPasteCommand.cpp \
     ./designEditors/HWDesign/undoCommands/ReplaceComponentCommand.cpp \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityDelegate.cpp \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.cpp \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.cpp \
+    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.cpp \
+    ./designEditors/HWDesign/AdhocEditor/AdhocEditor.cpp \
     ./designEditors/MemoryDesigner/AddressBlockItem.cpp \
     ./designEditors/MemoryDesigner/AddressSectionItem.cpp \
     ./designEditors/MemoryDesigner/AddressSpaceItem.cpp \
@@ -1266,6 +1274,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/ComponentDesignDiagram.cpp \
     ./designEditors/common/DesignCompletionModel.cpp \
     ./designEditors/common/DesignDiagram.cpp \
+    ./designEditors/common/DesignDiagramResolver.cpp \
     ./designEditors/common/DesignWidget.cpp \
     ./designEditors/common/DesignWidgetFactoryImplementation.cpp \
     ./designEditors/common/NamelabelWidth.cpp \
@@ -1309,11 +1318,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./designEditors/HWDesign/undoCommands/HWComponentAddCommand.cpp \
-    ./editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.cpp \
-    ./designEditors/HWDesign/AdhocEditor/AdhocEditor.cpp \
-    ./designEditors/HWDesign/AdHocItem.cpp \
-    ./designEditors/common/DesignDiagramResolver.cpp \
-    ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.cpp \
-    ./designEditors/HWDesign/undoCommands/AdHocTieOffChangeCommand.cpp
+    ./designEditors/common/InterfaceEditor/InterfacePortMapModel.cpp \
+    ./designEditors/common/InterfaceEditor/InterfacePortMapDelegate.cpp
 RESOURCES += kactus.qrc

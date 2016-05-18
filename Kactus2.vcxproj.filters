@@ -4321,6 +4321,18 @@
     <ClCompile Include="designEditors\HWDesign\undoCommands\AdHocTieOffChangeCommand.cpp">
       <Filter>Source Files\designEditors\HWDesign\undoCommands</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_InterfacePortMapModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\InterfaceEditor\InterfacePortMapModel.cpp">
+      <Filter>Source Files\designEditors\common\InterfaceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_InterfacePortMapDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\common\InterfaceEditor\InterfacePortMapDelegate.cpp">
+      <Filter>Source Files\designEditors\common\InterfaceEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5939,6 +5951,12 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\AdHocVisibilityEditor\AdHocVisibilityPolicy.h">
       <Filter>Header Files\designEditors\HWDesign\AdHocVisibilityEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\InterfaceEditor\InterfacePortMapModel.h">
+      <Filter>Header Files\designEditors\common\InterfaceEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\InterfaceEditor\InterfacePortMapDelegate.h">
+      <Filter>Header Files\designEditors\common\InterfaceEditor</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -28,15 +28,22 @@
 
 #include <common/GenericEditProvider.h>
 #include <common/graphicsItems/ComponentItem.h>
-
-#include <IPXACTmodels/validators/namevalidator.h>
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/InterfaceEditor/InterfacePortMapModel.h>
+#include <designEditors/common/InterfaceEditor/InterfacePortMapDelegate.h>
+#include <designEditors/common/InterfaceEditor/InterfacePortMapColumns.h>
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+
+#include <IPXACTmodels/validators/namevalidator.h>
+#include <IPXACTmodels/Design/ActiveInterface.h>
+#include <IPXACTmodels/Design/Interconnection.h>
+#include <IPXACTmodels/Design/Design.h>
 
 #include <QVBoxLayout>
 #include <QStringList>
@@ -67,13 +74,15 @@ transferTypeCombo_(this),
 interface_(NULL),
 comDef_(),
 mappingsLabel_(tr("Port map"), this),
-mappings_(this),
+portMapsView_(this),
+portMapsModel_(new InterfacePortMapModel(handler, this)),
 descriptionLabel_(tr("Description"), this),
 descriptionEdit_(this),
 propertyValueLabel_(tr("Property values"), this),
 propertyValueEditor_(this),
 dummyWidget_(this),
-handler_(handler)
+handler_(handler),
+containingDesign_()
 {
 	Q_ASSERT(parent);
 	Q_ASSERT(handler);
@@ -108,18 +117,26 @@ handler_(handler)
     comDirectionCombo_.addItem("out");
     comDirectionCombo_.addItem("inout");
 
-	// There are always 2 columns.
-	mappings_.setColumnCount(2);
-	mappings_.setHorizontalHeaderItem(0, new QTableWidgetItem(tr("Logical name")));
-	mappings_.setHorizontalHeaderItem(1, new QTableWidgetItem(tr("Physical name")));
-	mappings_.horizontalHeader()->setStretchLastSection(true);
-	mappings_.horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
-	mappings_.verticalHeader()->hide();
-	mappings_.setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked |
-		QAbstractItemView::EditKeyPressed);
+    portMapsView_.setSortingEnabled(true);
+    portMapsView_.setSelectionMode(QAbstractItemView::SingleSelection);
+    portMapsView_.verticalHeader()->hide();
+
+    portMapsView_.setItemDelegate(new InterfacePortMapDelegate(this));
+
+    QSortFilterProxyModel* proxy = new QSortFilterProxyModel(this);
+    proxy->setSourceModel(portMapsModel_);
+    portMapsView_.setModel(proxy);
+
+    portMapsView_.resizeColumnsToContents();
+
+    portMapsView_.setContextMenuPolicy(Qt::NoContextMenu);
+    portMapsView_.setAlternatingRowColors(false);
+    portMapsView_.horizontalHeader()->setStretchLastSection(true);
 
 	// set the maximum height for the description editor
 	descriptionEdit_.setMaximumHeight(MAX_DESC_HEIGHT);
+
+    connect(portMapsModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&type_);
@@ -137,7 +154,7 @@ handler_(handler)
 	layout->addWidget(&descriptionLabel_);
 	layout->addWidget(&descriptionEdit_);
 	layout->addWidget(&mappingsLabel_);
-    layout->addWidget(&mappings_, 1);
+    layout->addWidget(&portMapsView_, 1);
     layout->addWidget(&propertyValueLabel_);
     layout->addWidget(&propertyValueEditor_, 1);
     layout->addWidget(&dummyWidget_, 1);
@@ -156,7 +173,7 @@ InterfaceEditor::~InterfaceEditor()
 //-----------------------------------------------------------------------------
 // Function: interfaceeditor::setInterface()
 //-----------------------------------------------------------------------------
-void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
+void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer<Design> containingDesign)
 {
 	Q_ASSERT(interface);
 
@@ -172,6 +189,7 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
 	}
 
 	interface_ = interface;
+    containingDesign_ = containingDesign;
 
     // set text for the name editor, signal must be disconnected when name is set to avoid loops 
     disconnect(&nameEdit_, SIGNAL(textEdited(const QString&)), this, SLOT(onInterfaceNameChanged(const QString&)));
@@ -183,6 +201,10 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
     disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
     descriptionEdit_.setPlainText(interface->description());
     connect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+
+    QList<QSharedPointer<ActiveInterface> > activeInterfaces = getActiveInterfaces(interface_, containingDesign_);
+
+    portMapsModel_->setInterfaceData(interface_, activeInterfaces);
 
     // Fill the rest of the editors based on the interface type.
     if (interface->isBus())
@@ -210,7 +232,6 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
 		    this, SLOT(onInterfaceModeChanged(const QString&)), Qt::UniqueConnection);
 
 	    // set port maps to be displayed in the table widget.
-	    setPortMaps();
     }
     else if (interface->isApi())
     {
@@ -302,6 +323,8 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
 
     bool locked = static_cast<DesignDiagram*>(interface->scene())->isProtected();
 
+    portMapsView_.setEnabled(!locked);
+
     // Allow editing of values only in unlocked mode when the interface is a hierarchical one
     // or unpackaged.
 	if (!locked && (interface->isHierarchical() ||
@@ -312,8 +335,6 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
 		modeEdit_.setEnabled(true);
         dependencyDirCombo_.setEnabled(true);
         comDirectionCombo_.setEnabled(true);
-		mappings_.setEnabled(true);
-		mappings_.setEditTriggers(QAbstractItemView::NoEditTriggers);
 		descriptionEdit_.setEnabled(true);
         propertyValueEditor_.setEnabled(true);
         transferTypeCombo_.setEnabled(true);
@@ -327,8 +348,6 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
 		descriptionEdit_.setDisabled(true);
         propertyValueEditor_.setDisabled(true);
         transferTypeCombo_.setDisabled(true);
-
-		mappings_.setEditTriggers(QAbstractItemView::NoEditTriggers);
 	}
 
 	// show the editors
@@ -342,7 +361,7 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
     modeEdit_.setVisible(interface->isBus());
     modeLabel_.setVisible(interface->isBus());
     mappingsLabel_.setVisible(interface->isBus());
-    mappings_.setVisible(interface->isBus());
+    portMapsView_.setVisible(interface->isBus());
 
     dependencyDirCombo_.setVisible(interface->isApi());
     dependencyDirLabel_.setVisible(interface->isApi());
@@ -356,6 +375,50 @@ void InterfaceEditor::setInterface( ConnectionEndpoint* interface )
     propertyValueEditor_.setVisible(interface->isCom());
 
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
+}
+
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::getActiveInterfaces()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<ActiveInterface> > InterfaceEditor::getActiveInterfaces(ConnectionEndpoint* endPoint,
+    QSharedPointer<Design> design)
+{
+    QList<QSharedPointer<ActiveInterface> > newInterfaces;
+
+    if (endPoint->encompassingComp() != 0)
+    {
+        foreach (QSharedPointer<Interconnection> connection, *design->getInterconnections())
+        {
+            QSharedPointer<ActiveInterface> startInterface = connection->getStartInterface();
+
+            if (activeInterfaceReferencesBusInterface(startInterface, endPoint))
+            {
+                newInterfaces.append(startInterface);
+            }
+            else
+            {
+                foreach (QSharedPointer<ActiveInterface> currentInterface, *connection->getActiveInterfaces())
+                {
+                    if (activeInterfaceReferencesBusInterface(currentInterface, endPoint))
+                    {
+                        newInterfaces.append(currentInterface);
+                    }
+                }
+            }
+        }
+    }
+
+    return newInterfaces;
+}
+
+//-----------------------------------------------------------------------------
+// Function: interfaceeditor::activeInterfaceReferencesBusInterface()
+//-----------------------------------------------------------------------------
+bool InterfaceEditor::activeInterfaceReferencesBusInterface(QSharedPointer<ActiveInterface> currentInterface,
+    ConnectionEndpoint* endPoint) const
+{
+    return currentInterface->getComponentReference() == endPoint->encompassingComp()->name() &&
+        currentInterface->getBusReference() == endPoint->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -382,7 +445,6 @@ void InterfaceEditor::clear()
         this, SLOT(onComTransferTypeChanged(QString const&)));
     disconnect(&propertyValueEditor_, SIGNAL(contentChanged()), this, SLOT(onComPropertyValuesChanged()));
 	disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
-	disconnect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(onPortMapChanged()));
 
 	type_.setVLNV(VLNV(), true);
 	type_.hide();
@@ -415,8 +477,8 @@ void InterfaceEditor::clear()
     transferTypeCombo_.hide();
     transferTypeLabel_.hide();
 
-	mappings_.clearContents();
-	mappings_.hide();
+    portMapsView_.hide();
+
 	mappingsLabel_.hide();
 
 	parentWidget()->setMaximumHeight(20);
@@ -487,6 +549,7 @@ void InterfaceEditor::onPortMapChanged()
 
 	QList<QSharedPointer<PortMap> > portMaps;
 
+    /*
 	for (int i = 0; i < mappings_.rowCount(); i++)
     {
 		QString logicalPortName = mappings_.item(i, 0)->text();
@@ -500,7 +563,7 @@ void InterfaceEditor::onPortMapChanged()
         portMap->setPhysicalPort(physicalPort);
 
 		portMaps.append(portMap);
-	}
+	}*/
 
 	QSharedPointer<QUndoCommand> cmd(
         new EndPointPortMapCommand(static_cast<HWConnectionEndpoint*>(interface_), portMaps));
@@ -511,157 +574,12 @@ void InterfaceEditor::onPortMapChanged()
 }
 
 //-----------------------------------------------------------------------------
-// Function: interfaceeditor::setPortMaps()
-//-----------------------------------------------------------------------------
-void InterfaceEditor::setPortMaps()
-{
-	Q_ASSERT(interface_);
-
-	// signal must be disconnected when changing items to avoid loops
-	disconnect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(onPortMapChanged()));
-
-	QSharedPointer<BusInterface> busIf = interface_->getBusInterface();
-	Q_ASSERT(busIf);
-    QList<QSharedPointer<PortMap> > portMaps;
-    if (busIf->getPortMaps())
-    {
-        portMaps = *busIf->getPortMaps();
-    }    
-
-	// get the abstraction def for the interface
-    VLNV absDefVLNV;
-    if (busIf->getAbstractionTypes() && !busIf->getAbstractionTypes()->isEmpty() &&
-        busIf->getAbstractionTypes()->first()->getAbstractionRef())
-    {
-        absDefVLNV = *busIf->getAbstractionTypes()->first()->getAbstractionRef();
-    }
-    
-	QSharedPointer<AbstractionDefinition> absDef;
-	if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
-    {
-		QSharedPointer<Document> libComp = handler_->getModel(absDefVLNV);
-		absDef = libComp.staticCast<AbstractionDefinition>();
-	}
-
-	// get the component that contains the selected interface
-	QSharedPointer<Component> component = interface_->getOwnerComponent();
-	Q_ASSERT(component);
-
-	// get the interface mode of the bus interface
-	General::InterfaceMode interfaceMode = busIf->getInterfaceMode();
-
-	// as many rows as there are interface maps and always 2 columns
-	mappings_.setRowCount(portMaps.size());
-
-    QSharedPointer<ComponentParameterFinder> finder (new ComponentParameterFinder(component));
-    IPXactSystemVerilogParser parser(finder);
-
-	// stop sorting when adding the ports to avoid sorting after each add
-	mappings_.setSortingEnabled(false);
-	int row = 0;
-	foreach (QSharedPointer<PortMap> portMap, portMaps)
-    {
-        QString logicalPortName = portMap->getLogicalPort()->name_;
-
-        int logicalSize = 1;
-        // if the logical port is vectored
-        if (portMap->getLogicalPort() && portMap->getLogicalPort()->range_)
-        {
-            QString logicalLeft = parser.parseExpression(portMap->getLogicalPort()->range_->getLeft());
-            QString logicalRight = parser.parseExpression(portMap->getLogicalPort()->range_->getRight());
-
-            logicalSize = abs(logicalLeft.toInt() - logicalRight.toInt()) + 1;
-
-            logicalPortName += "[" + logicalLeft + ".." + logicalRight + "]";
-        }
-
-		QTableWidgetItem* logicalItem = new QTableWidgetItem(logicalPortName);
-		logicalItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		// if no abs type is specified
-		if (!absDef)
-        {
-			logicalItem->setForeground(QBrush(Qt::red));
-		}
-		// if the logical port does not belong to the abs def
-        else if (!absDef->hasPort(portMap->getLogicalPort()->name_, interfaceMode))
-        {
-			logicalItem->setForeground(QBrush(Qt::red));
-		}
-		else
-        {
-			logicalItem->setForeground(QBrush(Qt::black));
-		}
-		
-		// display at least the name of physical port
-        QString physicalPortName = portMap->getPhysicalPort()->name_;
-
-        int physicalSize = 1;
-
-        int physicalLeft = 0;
-        int physicalRight = 0;
-        if (portMap->getPhysicalPort())
-        {
-            QSharedPointer<PortMap::PhysicalPort> physicalPort = portMap->getPhysicalPort();
-            if (portMap->getPhysicalPort()->partSelect_)
-            {
-                physicalLeft = parser.parseExpression(physicalPort->partSelect_->getLeftRange()).toInt();
-                physicalRight = parser.parseExpression(physicalPort->partSelect_->getRightRange()).toInt();
-
-                physicalSize = abs(physicalLeft - physicalRight) + 1;
-            }
-		}
-		// if port map does not contain physical vector but port is found on the component
-		else if (component->hasPort(physicalPortName))
-        {
-            QSharedPointer<Port> componentPort = component->getPort(physicalPortName);
-
-            physicalLeft = parser.parseExpression(componentPort->getLeftBound()).toInt();
-            physicalRight = parser.parseExpression(componentPort->getRightBound()).toInt();
-
-            physicalSize = abs(physicalLeft - physicalRight) + 1;
-		}
-
-        physicalPortName += "[" + QString::number(physicalLeft) + ".." + QString::number(physicalRight) + "]";
-
-		QTableWidgetItem* physItem = new QTableWidgetItem(physicalPortName);
-		physItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		// if the port is not contained in the component
-        if (!component->hasPort(portMap->getPhysicalPort()->name_))
-        {
-			physItem->setForeground(QBrush(Qt::red));
-		}
-		else
-        {
-			physItem->setForeground(QBrush(Qt::black));
-		}
-
-		// if the sizes of the ports don't match
-		if (logicalSize != physicalSize)
-        {
-			logicalItem->setForeground(QBrush(Qt::red));
-			physItem->setForeground(QBrush(Qt::red));
-		}
-		
-		mappings_.setItem(row, 0, logicalItem);
-		mappings_.setItem(row, 1, physItem);
-
-		row++;
-	}
-
-	// set sorting back after all items are added
-	mappings_.setSortingEnabled(true);
-
-	connect(&mappings_, SIGNAL(itemChanged(QTableWidgetItem*)),
-        this, SLOT(onPortMapChanged()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
 // Function: interfaceeditor::refresh()
 //-----------------------------------------------------------------------------
 void InterfaceEditor::refresh()
 {
 	Q_ASSERT(interface_);
-	setInterface(interface_);
+	setInterface(interface_, containingDesign_);
 }
 
 //-----------------------------------------------------------------------------
