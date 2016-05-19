@@ -119,17 +119,22 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
     QSharedPointer<Document> libDesConf,
     QSharedPointer<Document> libDes)
 {
+	// Convert the documents to their proper data types.
     QSharedPointer<const Design> design = libDes.dynamicCast<Design const>();
-    QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
+    QSharedPointer<Component> topComponent = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
-    
-    QString targetDir = QFileInfo(utility->getLibraryInterface()->getPath(libDes->getVlnv())).absolutePath(); 
-	QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(libComp->getVlnv())).absolutePath(); 
+	// Library interface is utilized.
+    LibraryInterface* library = utility->getLibraryInterface();
+
+	// Target directory is under the path of the design.
+    QString targetDir = QFileInfo(library->getPath(libDes->getVlnv())).absolutePath(); 
+	// Also the directory of the top component is needed for the generated files.
+	QString topDir = QFileInfo(library->getPath(libComp->getVlnv())).absolutePath(); 
 
 	// Find the name of the system view pointing to the design configuration.
 	QString sysViewName;
 
-	foreach ( QSharedPointer<SystemView> view, comp->getSystemViews() )
+	foreach ( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
 	{
 		if ( view->getHierarchyRef() == desgConf->getVlnv() )
 		{
@@ -138,10 +143,10 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 		}
 	}
 
-    MakefileParser parser;
-    parser.parse( utility->getLibraryInterface(), comp, desgConf, design, sysViewName, targetDir );
+	SWStackParser stackParser( library );
+	stackParser.parse( topComponent, desgConf, design, sysViewName, targetDir );
 
-    QStringList replacedFiles = parser.getReplacedFiles();
+    QStringList replacedFiles = stackParser.getReplacedFiles();
 
     // Ask verification from the user, if any file is being replaced,
     if ( replacedFiles.size() > 0 )
@@ -167,7 +172,10 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
         }
     }
 
-	QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > > conflicts = parser.findConflicts();
+	MakefileParser makeParser( library, stackParser );
+	makeParser.parse( topComponent );
+
+	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.findConflicts();
 
 	if ( conflicts.size() > 0 )
 	{
@@ -183,10 +191,10 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 		}
 	}
 
-    MakefileGenerator generator( parser, utility );
+    MakefileGenerator generator( makeParser, utility, stackParser.getGeneralFileSet() );
     generator.generate(targetDir, topDir, sysViewName);
 
-    utility->getLibraryInterface()->writeModelToFile(libComp);
+    library->writeModelToFile(libComp);
 
     utility->printInfo( "Makefile generation complete.");
 }

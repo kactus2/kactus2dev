@@ -1,5 +1,16 @@
-#ifndef STRUCT_H
-#define STRUCT_H
+//-----------------------------------------------------------------------------
+// File: MakeCommon.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Janne Virtanen
+// Date: 19.05.2016
+//
+// Description:
+// Contains the data types and constants commonly used in the makefile generation.
+//-----------------------------------------------------------------------------
+
+#ifndef MAKECOMMON_H
+#define MAKECOMMON_H
 
 #include <QString>
 #include <QSharedPointer>
@@ -37,24 +48,35 @@ struct MakeObjectData
 	QSharedPointer<FileSet> fileSet;
 };
 
+// A struct containing parsed data of software instance in a stack.
 struct StackPart
 {
-	QSharedPointer<SWInstance> softInstance;
-	QSharedPointer<Component> softComponent;
-	QSharedPointer<SWView> softView;
+	// The software instance.
+	QSharedPointer<SWInstance> instance;
+	// The instantiated component.
+	QSharedPointer<Component> component;
+	// The active view in the current design configuration.
+	QSharedPointer<SWView> view;
+	// The selected build command of the active software view of the software instance.
+	QSharedPointer<SWFileBuilder> swBuildCmd;
 };
 
 // A struct containing needed data of a single makefile.
 struct MakeFileData
 {
+	// The parsed software stack.
 	QList<QSharedPointer<StackPart> > parts_;
 
+	// The hardware instance, where the top component of the stack is mapped to.
 	QSharedPointer<ComponentInstance> hardInstance;
+	// The instantiated hardware component.
 	QSharedPointer<Component> hardComponent;
+	// The active software view of the hardware in the current design configuration.
 	QSharedPointer<SWView> hardView;
+
 	// Parsed files found in software views of software components.
 	QList<QSharedPointer<MakeObjectData> > swObjects;
-	// The build command of the active software view of the hardware instance.
+	// The selected build command of the active software view of the hardware instance.
 	QSharedPointer<SWFileBuilder> hwBuildCmd;
 	// Flags passed down from software views.
 	QStringList softViewFlags;
@@ -69,6 +91,8 @@ struct MakeFileData
 	// Header files associated with the component instance.
 	// This is to contain the makefile generated for the instance.
 	QSharedPointer<FileSet> instanceHeaders;
+	// The path where the makefile is generated to.
+	QString targetPath;
 };
 
-#endif // STRUCT_H
+#endif // MAKECOMMON_H

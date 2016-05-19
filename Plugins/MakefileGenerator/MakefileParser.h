@@ -15,7 +15,7 @@
 #include <QString>
 
 #include "SWStackParser.h"
-#include "Struct.h"
+#include "MakeCommon.h"
 
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -49,35 +49,33 @@ public:
     /*!
      *  Parses all software components from the design for the data needed in makefiles.
      */
-    void parse();
+    void parse(QSharedPointer<Component> topComponent);
 
 private:
 
     /*!
-     *  Parses all source files in all filesets in the given software view.
-     *
-     *      @param [in] view   The software view which filesets are parsed.
-     *      @param [in] component   The component of softInstance.
-     *      @param [in] makeData   The make data associated with the makefile as whole.
-     *      @param [in] objects   The collection of the parsed data of the files.
-     *      @param [in] pickSWView   True, if flags corresponding file type are culled from the software view.
+     *  Parses all source files in all file sets in the given part of a stack.
+	 *
+	 *      @param [in] makeData   The make data associated with the makefile as whole.
+	 *      @param [in] view       The software view, where the files belong to.
+     *      @param [in] buildCmd   The build command of the associated software view.
+	 *      @param [in] component  The component of softInstance.
      */
-      void parseMakeObjects(QSharedPointer<SWView> view, QSharedPointer<Component> component,
-		  QSharedPointer<MakeFileData> makeData, QList<QSharedPointer<MakeObjectData> >& objects,
-		  bool pickSWView);
+	 void parseMakeObjects( QSharedPointer<MakeFileData> makeData, QSharedPointer<SWView> view,
+		QSharedPointer<SWFileBuilder> buildCmd, QSharedPointer<Component> component );
 
 	/*!
-	*  Parses all files of parameters fset, adding the to parameters objects.
-	*  Parsing involves defining the file as header, and determining its relevant build commands and path.
-	*
-	*      @param [in] fset				The inspected file set
-	*      @param [in] objects			The list of parsed objects, where the file data will be appended.
-	*      @param [in] makeData			The make data associated with the makefile as whole.
-	*      @param [in] pickSWView		True, if flags corresponding file type are culled from the software view.
-	*      @param [in] view				The software view which file sets are parsed.
-	*/
-	  void parseFileSet(QSharedPointer<FileSet> fset, QList<QSharedPointer<MakeObjectData> > &objects,
-		  QSharedPointer<MakeFileData> makeData, bool pickSWView, QSharedPointer<SWView> view);
+	 *  Parses all files of parameters fset, adding the to parameters objects.
+	 *  Parsing involves defining the file as header, and determining its relevant build commands and path.
+	 *
+	 *      @param [in] fset				The inspected file set
+	 *      @param [in] objects			The list of parsed objects, where the file data will be appended.
+	 *      @param [in] makeData			The make data associated with the makefile as whole.
+	 *      @param [in] buildCmd			The build command 
+	 *      @param [in] componentPath	Path to the component where the file sets belong to.
+	 */
+	 void parseFileSet(QSharedPointer<FileSet> fset, QSharedPointer<MakeFileData> makeData, 
+		  QSharedPointer<SWFileBuilder> buildCmd, QString& componentPath);
 
     /*!
      *  Gets the compiler used for the file.
@@ -87,7 +85,7 @@ private:
 	 *
 	 *      @return The resolved compiler for the file.
 	 */
-	 QString getFileCompiler(QSharedPointer<MakeObjectData> mod, QSharedPointer<SWView> hardView) const;
+	 QString getFileCompiler(QSharedPointer<MakeObjectData> mod, QSharedPointer<SWFileBuilder> hardBuilder) const;
 
     /*!
      *  Gets concatenated the build flags of the file with those fileSet and software views.

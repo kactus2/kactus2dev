@@ -13,7 +13,7 @@
 #define MAKEFILEGENERATOR_H
 
 #include "MakefileParser.h"
-#include "Struct.h"
+#include "MakeCommon.h"
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
@@ -48,8 +48,8 @@ private:
      *      @param [in] mfd   The make data associated with the makefile as whole.
      *      @param [in] makeNames   The directory of the created makefile must be added here.
      */
-    void generateInstanceMakefile(QString basePath, QString topPath,
-		QSharedPointer<MakeFileData> mfd, QStringList &makeNames);
+    void generateInstanceMakefile(QString topPath,
+		QSharedPointer<MakeFileData> makeData, QStringList &makeNames);
 
     /*!
      *  Creates a makefile calling all the other makefiles associated with the design.

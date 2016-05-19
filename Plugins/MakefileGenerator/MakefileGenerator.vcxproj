@@ -157,6 +157,7 @@
     <ClCompile Include="MakefileGenerator.cpp" />
     <ClCompile Include="MakefileGeneratorPlugin.cpp" />
     <ClCompile Include="MakefileParser.cpp" />
+    <ClCompile Include="SWStackParser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
@@ -165,8 +166,10 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogSyntax.h" />
     <ClInclude Include="..\common\NameGenerationPolicy.h" />
     <ClInclude Include="CompileConflictDialog.h" />
+    <ClInclude Include="MakeCommon.h" />
     <ClInclude Include="MakefileGenerator.h" />
     <ClInclude Include="MakefileParser.h" />
+    <ClInclude Include="SWStackParser.h" />
     <CustomBuild Include="MakefileGeneratorPlugin.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>

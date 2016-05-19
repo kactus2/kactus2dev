@@ -173,35 +173,50 @@ void SWStackParser::parse(QSharedPointer<Component> topComponent,
 			instanceName = hardInstance->getInstanceName();
 		}
 
+		// Get the hardware data.
 		makeData->hardInstance = hardInstance;
 		makeData->hardComponent = hardComponent;
 		makeData->hardView = hardView;
 
+		// This is also the point where hardware build command is decided.
+		// TODO: Ask from user which one.
 		if ( hardView->getSWBuildCommands()->count() > 0 )
 		{
 			makeData->hwBuildCmd = hardView->getSWBuildCommands()->first();
 		}
 
+		// No hardware build command means no makefile.
+		if ( !makeData->hwBuildCmd )
+		{
+			continue;
+		}
+
 		// Parse its files, as well as files of any instance in the underlying stack.
 		parseStackObjects(softComponent, softInstance, design, desgConf, makeData);
 
-		// Since every software stack gets its own makefile, naming is after the instance name.
-		makeData->name = makeData->parts_.first()->softInstance->getInstanceName();
-
-		// We may need the absolute path of the file
-		QString instancePath = basePath + makeData->name;
-		QString dir = instancePath + "/Makefile";
-
-		// We also need to know if the file exists
-		QFile makeFile(dir);
-
-		// If it does, put in the list.
-		if (makeFile.exists())
+		// Empty stack means no makefile.
+		if ( makeData->parts_.count() < 1 )
 		{
-			replacedFiles_.append(dir);
+			continue;
 		}
 
-		// Finally, append to the list.
+		// Since every software stack gets its own makefile, naming is after the instance name.
+		makeData->name = makeData->parts_.first()->instance->getInstanceName();
+
+		// We need the absolute path of the file.
+		makeData->targetPath = basePath + makeData->name;
+		QString filePath = makeData->targetPath + "/Makefile";
+
+		// We also need to know if the file exists.
+		QFile makeFile(filePath);
+
+		// If it does, put in the list: We have to warn user for overriding.
+		if (makeFile.exists())
+		{
+			replacedFiles_.append(filePath);
+		}
+
+		// Finally, append to the list of parsed stuff.
 		parsedData_->append(makeData);
 	}
 }
@@ -276,14 +291,38 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
 		return;
 	}
 
+	// Find build command of matching file type from the software view.
+	QSharedPointer<SWFileBuilder> softViewBuildCmd;
+
+	foreach( QSharedPointer<SWFileBuilder> buildCmd, *softView->getSWBuildCommands() )
+	{
+		if ( buildCmd->getFileType() == makeData->hwBuildCmd->getFileType() )
+		{
+			softViewBuildCmd = buildCmd;
+
+			break;
+		}
+	}
+
+	// If no suitable command exists, the software view is unusable for us.
+	if (!softViewBuildCmd)
+	{
+		return;
+	}
+
+	// Add the instance as a new part of the stack.
 	auto stackPart = QSharedPointer<StackPart>( new StackPart );
-	stackPart->softInstance = softInstance;
-	stackPart->softComponent = softComponent;
-	stackPart->softView = softView;
+	stackPart->instance = softInstance;
+	stackPart->component = softComponent;
+	stackPart->view = softView;
+	stackPart->swBuildCmd = softViewBuildCmd;
 
 	// Add to the lists.
 	makeData->parts_.append(stackPart);
-    makeData->parsedInstances.append(softInstance);
+	makeData->parsedInstances.append(softInstance);
+
+	// Its flags are to be used.
+	makeData->softViewFlags.append(softViewBuildCmd->getFlags());
 
     // Go through the list of connections in the design to retrieve remote endpoint identifiers.
     foreach (QSharedPointer<ApiInterconnection> connection, design->getApiConnections())
@@ -366,7 +405,7 @@ void SWStackParser::findInstanceHeaders(QSharedPointer<Component> topComponent,
 	QString fileSetName = softInstance->getFileSetRef();
 
 	// Create a new fileSet, if no reference exist
-	if (fileSetName.isNull())
+	if (fileSetName.isEmpty())
 	{
 		// If not, make a new one.
 		fileSetName = NameGenerationPolicy::instanceFilesetName(sysViewName, softInstance->getInstanceName());

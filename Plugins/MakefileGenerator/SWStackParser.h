@@ -27,7 +27,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include "Struct.h"
+#include "MakeCommon.h"
 
 class SWStackParser
 {
@@ -95,7 +95,7 @@ private:
      *
      *      @param [in] design   The design object.
      *      @param [in] instanceName   Name of the searched software instance.
-     *      @param [in] targetInstance   The found software instance.
+     *      @param [out] targetInstance   The found software instance.
      *
      *      @return The component of the found instance.
      */

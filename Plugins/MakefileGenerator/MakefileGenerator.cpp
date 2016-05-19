@@ -47,7 +47,7 @@ void MakefileGenerator::generate(QString targetPath, QString topPath, QString sy
 
     foreach(QSharedPointer<MakeFileData> mfd, *parsedData_)
     {
-        generateInstanceMakefile(basePath, topPath, mfd, makeNames);
+        generateInstanceMakefile(topPath, mfd, makeNames);
     }
 
     generateMainMakefile(basePath, topPath, makeNames);
@@ -58,35 +58,43 @@ void MakefileGenerator::generate(QString targetPath, QString topPath, QString sy
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generateInstanceMakefile()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPath,
-    QSharedPointer<MakeFileData> mfd, QStringList &makeNames)
+void MakefileGenerator::generateInstanceMakefile(QString topPath,
+    QSharedPointer<MakeFileData> makeData, QStringList &makeNames)
 {
-    // Construct the path and folder.
-    QString instancePath = basePath + mfd->name;
-    QDir path;
-    path.mkpath( instancePath );
+	// No path -> no action.
+	if ( makeData->targetPath.isEmpty() )
+	{
+		return;
+	}
 
-    // Create the makefile and open a stream to write it.
-    QString makePath = instancePath + "/Makefile"; 
+    // Construct the path and folder.
+    QDir path;
+    path.mkpath( makeData->targetPath );
+
+    // Create the makefile.
+    QString makePath = makeData->targetPath + "/Makefile"; 
     QFile makeFile(makePath);
     
+	// If it cannot be written, then it is too bad.
     if ( !makeFile.open(QIODevice::WriteOnly) )
     {
         utility_->printError("Could not open the makefile at location " + makePath);
         utility_->printError("Reason: " + makeFile.errorString() );
+		return;
     }
 
+	// Nicer to handle as a stream.
     QTextStream outStream(&makeFile);
 
     // Add the path to the list of created makefiles for later reference.
-    makeNames.append( instancePath );
+    makeNames.append( makeData->targetPath );
 
     // Write the paths of directories containing includes.
     outStream << "_INCLUDES=";
 
-    foreach( QString path, mfd->includeDirectories )
+    foreach( QString path, makeData->includeDirectories )
     {
-        outStream << " " << General::getRelativePath(instancePath,path);
+        outStream << " " << General::getRelativePath(makeData->targetPath,path);
     }
 
     outStream << endl;
@@ -96,17 +104,17 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
     // The include files themselves are dependencies of the source files.
     outStream << "DEPS=";
 
-    foreach(QSharedPointer<MakeObjectData> file, mfd->includeFiles)
+    foreach(QSharedPointer<MakeObjectData> file, makeData->includeFiles)
     {
-        outStream << " " << General::getRelativePath(instancePath,file->path) << "/" << file->fileName;
+        outStream << " " << General::getRelativePath(makeData->targetPath,file->path) << "/" << file->fileName;
     }
 
     outStream << endl << endl;
 
     // Other stuff is in their own functions.
-    writeFinalFlagsAndBuilder(mfd, outStream);
+    writeFinalFlagsAndBuilder(makeData, outStream);
 
-    writeObjectList(mfd, outStream);
+    writeObjectList(makeData, outStream);
     writeExeBuild(outStream);
 
 	// Create rule for using debugging and profiling options
@@ -119,22 +127,23 @@ void MakefileGenerator::generateInstanceMakefile(QString basePath, QString topPa
 		"-fno-inline-functions-called-once -fno-optimize-sibling-calls" << endl;
 	outStream << "profile: $(ENAME)" << endl;
 
-    writeMakeObjects(outStream, mfd->swObjects, instancePath);
+	// Write the compilation rules for the object files.
+    writeMakeObjects(outStream, makeData->swObjects, makeData->targetPath);
 
     // Close after it is done.
     makeFile.close();
 
-    QSharedPointer<FileSet> fileSet = mfd->instanceHeaders;
+    QSharedPointer<FileSet> fileSet = makeData->instanceHeaders;
 
-    // The path in the fileSet must be relative to the basePath.
-    QString relDir = General::getRelativePath(topPath,makePath);
+    // The path in the file set must be relative to the basePath.
+    QString relPath = General::getRelativePath(topPath,makePath);
 
-    // Add the file to instance fileSet
-    if ( fileSet && !fileSet->contains(relDir) )
+    // Add the file to instance fileSet, if it does not exist there.
+    if ( fileSet && !fileSet->contains(relPath) )
     {
         QSharedPointer<File> file;
         QSettings settings;
-        file = fileSet->addFile(relDir, settings);
+        file = fileSet->addFile(relPath, settings);
         file->addFileType("makefile");
     }
 }

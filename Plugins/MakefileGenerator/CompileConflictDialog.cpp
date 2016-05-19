@@ -19,8 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: CompileConflictDialog()
 //-----------------------------------------------------------------------------
-CompileConflictDialog::CompileConflictDialog(QVector<QSet<QSharedPointer<MakefileParser::MakeObjectData> > >& conflicts, QWidget* parent)
-	: QDialog(parent), descLabel_(tr("Conflicting file configurations:"), this), conflictTable_( this )
+CompileConflictDialog::CompileConflictDialog(QVector<QSet<QSharedPointer<MakeObjectData> > >& conflicts,
+	QWidget* parent) : QDialog(parent), descLabel_(tr("Conflicting file configurations:"), this),
+	conflictTable_( this )
 {
     // Create the layout for the dialog.
     QPushButton* btnOK = new QPushButton(tr("Generate") , this);
@@ -66,11 +67,11 @@ CompileConflictDialog::CompileConflictDialog(QVector<QSet<QSharedPointer<Makefil
 	// Every second conflict is highlighted.
 	bool highLight = true;
 
-	foreach ( QSet<QSharedPointer<MakefileParser::MakeObjectData> > conflictSet, conflicts )
+	foreach ( QSet<QSharedPointer<MakeObjectData> > conflictSet, conflicts )
 	{
 		conflictTable_.setRowCount( conflictSet.size() + conflictTable_.rowCount() );
 
-		foreach ( QSharedPointer<MakefileParser::MakeObjectData> partisipant, conflictSet )
+		foreach ( QSharedPointer<MakeObjectData> partisipant, conflictSet )
 		{
 			conflictTable_.setItem(i, 0, new QTableWidgetItem( partisipant->fileName ) );
 			conflictTable_.setItem(i, 1, new QTableWidgetItem( partisipant->instanceName ) );

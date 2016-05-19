@@ -126,29 +126,32 @@ QVector<QSet<QSharedPointer<MakeObjectData> > > MakefileParser::findConflicts() 
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::searchSWComponent()
 //-----------------------------------------------------------------------------
-void MakefileParser::parse()
+void MakefileParser::parse(QSharedPointer<Component> topComponent)
 {
 	foreach (QSharedPointer<MakeFileData> makeData, *swStackParser_.getParsedData())
 	{
 		// Parse the files of hard view.
-		parseMakeObjects(makeData->hardView,
-			makeData->hardComponent, makeData, makeData->swObjects, false);
+		parseMakeObjects(makeData, makeData->hardView, makeData->hwBuildCmd,
+			makeData->hardComponent);
+
+		// Path to the top component is needed to construct the absolute path.
+		QFileInfo componentQfi = QFileInfo(library_->getPath(topComponent->getVlnv()));
+		QString componentPath = componentQfi.absolutePath() + "/";
 
 		// Also parse the associated instance headers.
-		parseFileSet(makeData->instanceHeaders, makeData->swObjects, makeData, false, QSharedPointer<SWView>());
+		parseFileSet(makeData->instanceHeaders, makeData, makeData->hwBuildCmd, componentPath);
 
 		foreach (QSharedPointer<StackPart> stackPart, makeData->parts_)
 		{
 			// Parse the files of the given software view.
-			parseMakeObjects(stackPart->softView,
-				stackPart->softComponent, makeData, makeData->swObjects, true);
+			parseMakeObjects(makeData, stackPart->view, stackPart->swBuildCmd, stackPart->component );
 		}
 
 		// Now we may check the compiler and flags of individual files...
 		foreach ( QSharedPointer<MakeObjectData> mod, makeData->swObjects )
 		{
-			mod->compiler = getFileCompiler( mod, makeData->hardView );
-			mod->flags = getFileFlags(makeData->parts_.first()->softComponent, mod, makeData );
+			mod->compiler = getFileCompiler( mod, makeData->hwBuildCmd );
+			mod->flags = getFileFlags(makeData->parts_.first()->component, mod, makeData );
 		}
 
 		// Check if software objects found: If none, no need for a makefile.
@@ -169,9 +172,13 @@ void MakefileParser::parse()
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::parseMakeObjects()
 //-----------------------------------------------------------------------------
-void MakefileParser::parseMakeObjects(QSharedPointer<SWView> view, QSharedPointer<Component> component,
-	QSharedPointer<MakeFileData> makeData, QList<QSharedPointer<MakeObjectData> >& objects, bool pickSWView)
+void MakefileParser::parseMakeObjects( QSharedPointer<MakeFileData> makeData, QSharedPointer<SWView> view,
+	QSharedPointer<SWFileBuilder> buildCmd, QSharedPointer<Component> component )
 {
+	// Path to the component is needed to construct the absolute path.
+	QFileInfo componentQfi = QFileInfo(library_->getPath(component->getVlnv()));
+	QString componentPath = componentQfi.absolutePath() + "/";
+
     // Go through the fileSets referenced in the software view.
     foreach( QString fsetName, view->getFileSetRefs())
     {
@@ -180,7 +187,7 @@ void MakefileParser::parseMakeObjects(QSharedPointer<SWView> view, QSharedPointe
 		// Skip, if no such file set exist!
 		if ( fset )
 		{
-			parseFileSet(fset, objects, makeData, pickSWView, view);
+			parseFileSet(fset, makeData, buildCmd, componentPath );
 		}
     }
 }
@@ -188,17 +195,24 @@ void MakefileParser::parseMakeObjects(QSharedPointer<SWView> view, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::parseFileSet()
 //-----------------------------------------------------------------------------
-void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QList<QSharedPointer<MakeObjectData> > &objects,
-    QSharedPointer<MakeFileData> makeData, bool pickSWView, QSharedPointer<SWView> view)
+void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QSharedPointer<MakeFileData> makeData, 
+	QSharedPointer<SWFileBuilder> buildCmd, QString& componentPath)
 {
 	// Go through the files in the fileSet.
 	foreach( QSharedPointer<File> file, *fset->getFiles())
 	{
+		// First of all, the selected build commands must support the file type.
+		if ( !file->getFileTypes()->contains( buildCmd->getFileType() ) )
+		{
+			continue;
+		}
+
 		// Initialize the data to the collection associated with the makefile data.
 		QSharedPointer<MakeObjectData> objectData( new MakeObjectData );
-		objects.append(objectData);
+		makeData->swObjects.append(objectData);
 
-		QFileInfo fileQfi = QFileInfo(file->name());
+		// Get info about the file.
+		QFileInfo fileQfi = QFileInfo( componentPath + file->name() );
 
 		// Set the needed fields.
 		objectData->file = file;
@@ -206,6 +220,7 @@ void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QList<QSharedPoi
 		objectData->fileName = fileQfi.fileName();
 		objectData->path = fileQfi.absolutePath();
 		objectData->fileSet = fset;
+		objectData->swBuildCmd = buildCmd;
 
 		// In case of an include file:
 		if ( file->isIncludeFile() )
@@ -225,30 +240,14 @@ void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QList<QSharedPoi
 				break;
 			}
 		}
-
-		if( pickSWView )
-		{
-			// Find build command of matching file type from the software view.
-			foreach( QSharedPointer<SWFileBuilder> buildCmd, *view->getSWBuildCommands() )
-			{
-				if ( file->getFileTypes()->contains( buildCmd->getFileType() ) )
-				{
-					objectData->swBuildCmd = buildCmd;
-
-					// If found, append the flags of the software view for later use.
-					makeData->softViewFlags.append(buildCmd->getFlags());
-
-					break;
-				}
-			}
-		}
 	}
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileParser::getFileCompiler()
 //-----------------------------------------------------------------------------
-QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod, QSharedPointer<SWView> hardView) const
+QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod,
+	QSharedPointer<SWFileBuilder> hardBuilder) const
 {
 	QString compiler;
 	QSharedPointer<SWFileBuilder> swbc;
@@ -257,22 +256,13 @@ QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod, QSha
 	// 1. No file builder -> use fileSet builder
 	// 2. No fileSet builder -> use builder of the software view of the software instance
 	// 3. If nothing else, use the builder of the software view of the hardware instance
-	// 4. However, if the builder of latter two is not off matching file type, it is ignored.
 	if ( mod->fileBuildCmd == 0 || mod->fileBuildCmd->getCommand().isEmpty() )
 	{
 		if ( mod->fileSetBuildCmd == 0 || mod->fileSetBuildCmd->getCommand().isEmpty() )
 		{
 			if ( mod->swBuildCmd == 0 || mod->swBuildCmd->getCommand().isEmpty() )
 			{
-				// Find build command from the software view of the hardware component matching file type.
-				foreach( QSharedPointer<SWFileBuilder> buildCmd, *hardView->getSWBuildCommands() )
-				{
-					if ( mod->file->getFileTypes()->contains( buildCmd->getFileType() ) )
-					{
-						swbc = buildCmd;
-						break;
-					}
-				}
+				swbc = hardBuilder;
 			}
 			else
 			{
@@ -346,7 +336,7 @@ QString MakefileParser::getFileFlags(QSharedPointer<Component> component,
 			}   
 
 			if ( ( mod->swBuildCmd == 0 || mod->swBuildCmd->getReplaceDefaultFlags().toInt() != 1 )
-                && makeData->hwBuildCmd != 0 )
+                && makeData->hwBuildCmd != 0 && makeData->hwBuildCmd != mod->swBuildCmd )
 			{
 				cFlags += " " + makeData->hwBuildCmd->getFlags();
 			}
