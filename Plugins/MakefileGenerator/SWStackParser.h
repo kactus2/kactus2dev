@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: SWStackParser.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 18.05.2016
 //
@@ -78,17 +78,19 @@ private:
 
     /*!
      *  Recursively parses source files for the whole stack fow the given software instance.
-     *
+	 *
+	 *      @param [in] topComponent   The top component associated with the design.
      *      @param [in] softComponent   The component of softInstance.
-     *      @param [in] softView   The active view of the softIntance.
      *      @param [in] softInstance   The software instance which active view is to be parsed.
      *      @param [in] design   The design object.
      *      @param [in] desgConf   The design configuration object associated with the design.
-     *      @param [in] makeData   The make data associated with the makefile as whole.
+	 *      @param [in] makeData   The make data associated with the makefile as whole.
+	 *      @param [in] sysViewName  Name of the system view pointing to used design configuration.
      */
-     void parseStackObjects(QSharedPointer<Component> softComponent, QSharedPointer<SWInstance> softInstance,
-		 QSharedPointer<const Design> design, QSharedPointer<DesignConfiguration const> desgConf,
-		 QSharedPointer<MakeFileData> makeData);
+     void parseStackObjects(QSharedPointer<Component> topComponent, QSharedPointer<Component> softComponent,
+		 QSharedPointer<SWInstance> softInstance, QSharedPointer<const Design> design,
+		 QSharedPointer<DesignConfiguration const> desgConf, QSharedPointer<MakeFileData> makeData,
+		 QString& systemViewName);
 
     /*!
      *  Tries to find a software instance by name and the component associated with it.
@@ -101,19 +103,6 @@ private:
      */
      QSharedPointer<Component> searchSWComponent(QSharedPointer<const Design> design, QString instanceName,
 		 QSharedPointer<SWInstance>& targetInstance);
-
-    /*!
-     *  Finds all files in the instance header fileSet if none exist, and add their directories as includes.
-     *
-     *      @param [in] topComponent   The top component associated with the design.
-     *      @param [in] desgConf   The design configuration object associated with the design.
-     *      @param [in] sysViewName   The name of the system view associated with the design.
-     *      @param [in] softInstance   The software instance which instance headers are to be found.
-     *      @param [in] makeData   The make data associated with the makefile as whole.
-     */
-     void findInstanceHeaders(QSharedPointer<Component> topComponent,
-         QSharedPointer<DesignConfiguration const> desgConf, QString sysViewName, QSharedPointer<SWInstance> softInstance,
-         QSharedPointer<MakeFileData> makeData);
 
 	 //! The library containing all components in the design.
 	 LibraryInterface* library_;

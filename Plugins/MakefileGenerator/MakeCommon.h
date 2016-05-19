@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: MakeCommon.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 19.05.2016
 //
@@ -59,6 +59,8 @@ struct StackPart
 	QSharedPointer<SWView> view;
 	// The selected build command of the active software view of the software instance.
 	QSharedPointer<SWFileBuilder> swBuildCmd;
+	// Header files associated with the component instance.
+	QSharedPointer<FileSet> instanceHeaders;
 };
 
 // A struct containing needed data of a single makefile.
@@ -88,7 +90,7 @@ struct MakeFileData
 	QList<QSharedPointer<MakeObjectData> > includeFiles;
 	// The list of parsed software instances. Tracked to avoid re-parsing a dependency.
 	QList<QSharedPointer<SWInstance> > parsedInstances;
-	// Header files associated with the component instance.
+	// Header files associated with the topmost component instance.
 	// This is to contain the makefile generated for the instance.
 	QSharedPointer<FileSet> instanceHeaders;
 	// The path where the makefile is generated to.

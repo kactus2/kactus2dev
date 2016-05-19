@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: MakefileParser.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 22.09.2014
 //
@@ -138,11 +138,11 @@ void MakefileParser::parse(QSharedPointer<Component> topComponent)
 		QFileInfo componentQfi = QFileInfo(library_->getPath(topComponent->getVlnv()));
 		QString componentPath = componentQfi.absolutePath() + "/";
 
-		// Also parse the associated instance headers.
-		parseFileSet(makeData->instanceHeaders, makeData, makeData->hwBuildCmd, componentPath);
 
 		foreach (QSharedPointer<StackPart> stackPart, makeData->parts_)
 		{
+			// Also parse the associated instance headers.
+			parseFileSet(stackPart->instanceHeaders, makeData, makeData->hwBuildCmd, componentPath);
 			// Parse the files of the given software view.
 			parseMakeObjects(makeData, stackPart->view, stackPart->swBuildCmd, stackPart->component );
 		}

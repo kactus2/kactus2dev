@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: MakefileGeneratorPlugin.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 15.9.2014
 //
@@ -143,6 +143,7 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 		}
 	}
 
+	// Parse the design for buildable software stacks.
 	SWStackParser stackParser( library );
 	stackParser.parse( topComponent, desgConf, design, sysViewName, targetDir );
 
@@ -172,9 +173,11 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
         }
     }
 
+	// Parse the stacks for buildable objects.
 	MakefileParser makeParser( library, stackParser );
 	makeParser.parse( topComponent );
 
+	// Conflicts mean that the user needs to be informed.
 	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.findConflicts();
 
 	if ( conflicts.size() > 0 )
@@ -191,12 +194,25 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 		}
 	}
 
+	// Generate files from parsed data.
     MakefileGenerator generator( makeParser, utility, stackParser.getGeneralFileSet() );
-    generator.generate(targetDir, topDir, sysViewName);
+    int exe_count = generator.generate(targetDir, topDir, sysViewName);
 
-    library->writeModelToFile(libComp);
+	// Did we actually generate anything?
+	if ( exe_count > 0 )
+	{
+		// Top component and the design may have affected by changes -> save.
+		library->writeModelToFile(libComp);
+		library->writeModelToFile(libDes);
 
-    utility->printInfo( "Makefile generation complete.");
+		// Inform that the generation is complete.
+		utility->printInfo( tr("Makefile generation complete. Created a makefile for %1 executables.").arg(exe_count) );
+	}
+	else
+	{
+		// Inform that there was nothing to generate.
+		utility->printError( "No makefiles generated.");
+	}
 }
 
 //-----------------------------------------------------------------------------

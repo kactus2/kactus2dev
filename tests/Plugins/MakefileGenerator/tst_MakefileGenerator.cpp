@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: tst_MakefileGenerator.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 02.09.2014
 //
@@ -148,7 +148,7 @@ void tst_MakefileGenerator::baseCase()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, outputDir_ );
 	MakefileParser makeParser( &library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -173,7 +173,8 @@ void tst_MakefileGenerator::fileBuildOverride()
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	addCmd2View(hardView, "gcc", "cSource", "", false);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
@@ -191,7 +192,7 @@ void tst_MakefileGenerator::fileBuildOverride()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -199,7 +200,7 @@ void tst_MakefileGenerator::fileBuildOverride()
 	QCOMPARE( data->swObjects.size(), 1 );
 
 	QCOMPARE( data->swObjects.first()->compiler, QString("python") );
-	QCOMPARE( data->swObjects.first()->flags, QString("-l -sw") );
+	QCOMPARE( data->swObjects.first()->flags.trimmed(), QString("-l -sw") );
 	QCOMPARE( data->softViewFlags.contains("-sw"), true );
 }
 
@@ -215,7 +216,8 @@ void tst_MakefileGenerator::fileSetBuildOverride()
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	addCmd2View(hardView, "gcc", "cSource", "", false);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
@@ -232,7 +234,7 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -257,7 +259,8 @@ void tst_MakefileGenerator::fileFlagReplace()
     QSharedPointer<SWView> hardView;
     QSharedPointer<SWView> softView;
 
-    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	addCmd2View(hardView, "gcc", "cSource", "", false);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
@@ -275,7 +278,7 @@ void tst_MakefileGenerator::fileFlagReplace()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -299,7 +302,8 @@ void tst_MakefileGenerator::fileSetFlagReplace()
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	addCmd2View(hardView, "gcc", "cSource", "", false);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
@@ -316,7 +320,7 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -340,7 +344,8 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	addCmd2View(hardView, "gcc", "cSource", "", false);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
@@ -357,7 +362,7 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -380,7 +385,7 @@ void tst_MakefileGenerator::hwBuilder()
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
@@ -400,7 +405,7 @@ void tst_MakefileGenerator::hwBuilder()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -411,7 +416,7 @@ void tst_MakefileGenerator::hwBuilder()
 	QCOMPARE( data->swObjects.first()->flags.simplified(), QString("-u -lrt -sw -hw") );
 }
 
-// See if hardware builder works if there are no software view for the software component.
+// No software view in software components means no makefile.
 void tst_MakefileGenerator::hwBuilderWithNoSoftView()
 {
     QSharedPointer<Design> design;
@@ -423,7 +428,8 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
-    createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	createHW(hwInstanceName, design, hardViewName, desgconf, hardView);
+	addCmd2View(hardView, "gcc", "cSource", "", false);
 
     QString swInstanceName = "software_0";
     QString softViewName = "default";
@@ -441,16 +447,13 @@ void tst_MakefileGenerator::hwBuilderWithNoSoftView()
 
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+
+	QCOMPARE( stackParser.getParsedData()->size(), 0 );
+
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
-	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
-	QCOMPARE( datas->size(), 1 );
-	QSharedPointer<MakeFileData> data = datas->first();
-	QCOMPARE( data->swObjects.size(), 1 );
-
-	QCOMPARE( data->swObjects.first()->compiler, QString("super_asm") );
-	QCOMPARE( data->swObjects.first()->flags.simplified(), QString("-u -lrt -hw") );
+	QCOMPARE( makeParser.getParsedData()->size(), 0 );
 }
 
 // See if file set of hardware references work.
@@ -487,7 +490,7 @@ void tst_MakefileGenerator::hwRef()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser( &library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -542,7 +545,7 @@ void tst_MakefileGenerator::hwandswRef()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser( &library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -602,7 +605,7 @@ void tst_MakefileGenerator::instanceHeaders()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser( &library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -655,7 +658,7 @@ void tst_MakefileGenerator::multipleFiles()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -716,7 +719,7 @@ void tst_MakefileGenerator::multipleFileSets()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser( &library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -765,7 +768,8 @@ void tst_MakefileGenerator::multipleComponents()
     addFileToSet(afileSet, "array.h", "cSource", true);
     addFileToSet(bfileSet, "support.h", "cSource", true);
 
-    addCmd2View(hardView, "hopo", "cSource", "-hw", false);
+	addCmd2View(hardView, "hopo", "cSource", "-hw", false);
+	addCmd2View(asoftView, "", "cSource", "-amw", false);
     addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
 
     QSharedPointer<File> file;
@@ -775,20 +779,21 @@ void tst_MakefileGenerator::multipleComponents()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 2 );
 	QSharedPointer<MakeFileData> data1 = datas->first();
 	QCOMPARE( data1->swObjects.size(), 3 );
+	QCOMPARE( data1->softViewFlags.contains("-amw"), true );
 	QCOMPARE( data1->name, QString("crapware_0") );
 
 	QCOMPARE( data1->swObjects.at(0)->compiler, QString("hopo" ) );
 	QCOMPARE( data1->swObjects.at(0)->fileName, QString("array.c") );
-	QCOMPARE( data1->swObjects.at(0)->flags.simplified(), QString("-hw") );
+	QCOMPARE( data1->swObjects.at(0)->flags.simplified(), QString("-amw -hw") );
 	QCOMPARE( data1->swObjects.at(1)->compiler, QString("continental" ) );
 	QCOMPARE( data1->swObjects.at(1)->fileName, QString("support.c") );
-	QCOMPARE( data1->swObjects.at(1)->flags.simplified(), QString("-y -hw") );
+	QCOMPARE( data1->swObjects.at(1)->flags.simplified(), QString("-y -amw -hw") );
 	QCOMPARE( data1->swObjects.at(2)->fileName, QString("array.h") );
 	QCOMPARE( data1->swObjects.at(2)->file->isIncludeFile(), true );
 
@@ -839,6 +844,7 @@ void tst_MakefileGenerator::multipleHardWare()
     addCmd2View(ahardView, "hopo", "cSource", "-ahw", false);
     addCmd2View(bhardView, "juu -f", "cSource", "-bhw", false);
 
+	addCmd2View(asoftView, "", "cSource", "", false);
     addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
 
     QSharedPointer<File> file;
@@ -848,7 +854,7 @@ void tst_MakefileGenerator::multipleHardWare()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 2 );
@@ -923,6 +929,7 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     addCmd2View(ahardView, "hopo", "cSource", "-ahw", false);
     addCmd2View(bhardView, "juu", "cSource", "-bhw", false);
 
+	addCmd2View(asoftView, "", "cSource", "", false);
     addCmd2View(bsoftView, "asm-meister", "cSource", "-bmw", false);
 
     QSharedPointer<File> file;
@@ -932,7 +939,7 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
 	SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 2 );
@@ -997,7 +1004,7 @@ void tst_MakefileGenerator::multipleInstances()
 	SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 2 );
@@ -1031,7 +1038,7 @@ void tst_MakefileGenerator::noHardWare()
 	SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
     MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
 	generator.generate(outputDir_,outputDir_,"tsydemi");
@@ -1070,7 +1077,7 @@ void tst_MakefileGenerator::noFilesComponent()
 	SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser( &library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -1082,7 +1089,7 @@ void tst_MakefileGenerator::noFilesComponent()
 	QCOMPARE( data->swObjects.at(2)->fileName, QString("support.h") );
 }
 
-// File with unsupported file type must not have compiler!
+// File with unsupported file does not appear in our lists.
 void tst_MakefileGenerator::noFileType()
 {
 	QSharedPointer<Design> design;
@@ -1115,18 +1122,15 @@ void tst_MakefileGenerator::noFileType()
 	SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
 	QSharedPointer<MakeFileData> data = datas->first();
-	QCOMPARE( data->swObjects.size(), 3 );
+	QCOMPARE( data->swObjects.size(), 2 );
 
-	QCOMPARE( data->swObjects.at(0)->fileName, QString("hiterbehn.c") );
-	QCOMPARE( data->swObjects.at(1)->fileName, QString("array.c") );
-	QCOMPARE( data->swObjects.at(2)->fileName, QString("support.h") );
-
-	QCOMPARE( data->swObjects.at(0)->compiler.isEmpty(), true );
+	QCOMPARE( data->swObjects.at(0)->fileName, QString("array.c") );
+	QCOMPARE( data->swObjects.at(1)->fileName, QString("support.h") );
 }
 
 // Must include API dependencies to the makefile.
@@ -1138,7 +1142,7 @@ void tst_MakefileGenerator::apiUsage()
 
     QSharedPointer<SWView> hardView;
     QSharedPointer<SWView> asoftView;
-    QSharedPointer<SWView> bsoftView;
+	QSharedPointer<SWView> bsoftView;
 
     QString hwInstanceName = "hardware_0";
     QString hardViewName = "firmware";
@@ -1153,7 +1157,11 @@ void tst_MakefileGenerator::apiUsage()
 	addAPIConnection(design,"crapware_0","apina","stackware_0","banaani");
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
-    QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
+	QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
+
+	addCmd2View(hardView, "gcc", "cSource", "", false);
+	addCmd2View(asoftView, "", "cSource", "", false);
+	addCmd2View(bsoftView, "", "cSource", "", false);
 
     addFileToSet(afileSet, "array.c");
     addFileToSet(afileSet, "support.c");
@@ -1166,7 +1174,7 @@ void tst_MakefileGenerator::apiUsage()
     SWStackParser stackParser( &library_ );
 	stackParser.parse(topComponent, desgconf, design, "tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE(datas->size(), 1);
@@ -1215,7 +1223,12 @@ void tst_MakefileGenerator::threeLevelStack()
 
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
-    QSharedPointer<FileSet> cfileSet = addFileSet(gsw, "gamaFileSet", gsoftView);
+	QSharedPointer<FileSet> cfileSet = addFileSet(gsw, "gamaFileSet", gsoftView);
+
+	addCmd2View(hardView, "gcc", "cSource", "", false);
+	addCmd2View(asoftView, "", "cSource", "", false);
+	addCmd2View(bsoftView, "", "cSource", "", false);
+	addCmd2View(gsoftView, "", "cSource", "", false);
 
     addFileToSet(afileSet, "array.c");
     addFileToSet(afileSet, "support.c");
@@ -1230,7 +1243,7 @@ void tst_MakefileGenerator::threeLevelStack()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -1282,6 +1295,11 @@ void tst_MakefileGenerator::fullCircularapiUsage()
 	addAPIConnection(design, "stackware_0","stackDriver","driver_0","driverStack");
 	addAPIConnection(design, "topware_0","upBottom","driver_0","bottomUp");
 
+	addCmd2View(hardView, "gcc", "cSource", "", false);
+	addCmd2View(asoftView, "", "cSource", "", false);
+	addCmd2View(bsoftView, "", "cSource", "", false);
+	addCmd2View(gsoftView, "", "cSource", "", false);
+
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
     QSharedPointer<FileSet> cfileSet = addFileSet(gsw, "gamaFileSet", gsoftView);
@@ -1299,7 +1317,7 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 0 );
@@ -1345,6 +1363,11 @@ void tst_MakefileGenerator::circularapiUsage()
 	addAPIConnection(design, "stackware_0","stackDriver","driver_0","driverStack");
 	addAPIConnection(design, "stackware_0","upBottom","driver_0","bottomUp");
 
+	addCmd2View(hardView, "gcc", "cSource", "", false);
+	addCmd2View(asoftView, "", "cSource", "", false);
+	addCmd2View(bsoftView, "", "cSource", "", false);
+	addCmd2View(gsoftView, "", "cSource", "", false);
+
     QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
     QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
     QSharedPointer<FileSet> cfileSet = addFileSet(gsw, "gamaFileSet", gsoftView);
@@ -1363,7 +1386,7 @@ void tst_MakefileGenerator::circularapiUsage()
     SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
@@ -1405,6 +1428,10 @@ void tst_MakefileGenerator::sameFileSeparateExe()
 	QSharedPointer<FileSet> afileSet = addFileSet(asw, "alphaFileSet", asoftView);
 	QSharedPointer<FileSet> bfileSet = addFileSet(bsw, "betaFileSet", bsoftView);
 
+	addCmd2View(hardView, "gcc", "cSource", "", false);
+	addCmd2View(asoftView, "", "cSource", "", false);
+	addCmd2View(bsoftView, "", "cSource", "", false);
+
 	addFileToSet(afileSet, "array.c");
 	addFileToSet(afileSet, "support.c");
 	addFileToSet(bfileSet, "array.c");
@@ -1442,6 +1469,9 @@ void tst_MakefileGenerator::sameFileDiffCompiler()
 	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
 	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
 
+	addCmd2View(hardView, "gcc", "cSource", "", false);
+	addCmd2View(softView, "", "cSource", "", false);
+
 	addFileToSet(afileSet, "array.c");
 	addFileToSet(afileSet, "support.c");
 	addFileToSet(bfileSet, "array.c");
@@ -1455,7 +1485,7 @@ void tst_MakefileGenerator::sameFileDiffCompiler()
 	SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.findConflicts();
 
@@ -1514,7 +1544,7 @@ void tst_MakefileGenerator::sameFileDiffFlags()
 	SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.findConflicts();
 
@@ -1573,7 +1603,7 @@ void tst_MakefileGenerator::sameFile()
 	SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser( &library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.findConflicts();
 
@@ -1594,6 +1624,7 @@ void tst_MakefileGenerator::basicGeneration()
 	makeData->name = "software_0";
 	makeData->hwBuildCmd->setFlags("-joku");
 	makeData->softViewFlags.append("-jotain");
+	makeData->targetPath = outputDir_ + "/sw_tsydemi/" + makeData->name;
 
 	QSharedPointer<MakeObjectData> mod( new MakeObjectData );
 	makeData->swObjects.append( mod );
@@ -1626,6 +1657,7 @@ void tst_MakefileGenerator::multiObjectGeneration()
 	makeData->hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
 	makeData->hwBuildCmd->setCommand("gcc");
 	makeData->name = "software_0";
+	makeData->targetPath = outputDir_ + "/sw_tsydemi/" + makeData->name;
 
 	QSharedPointer<MakeObjectData> mod1( new MakeObjectData );
 	makeData->swObjects.append( mod1 );
@@ -1661,6 +1693,7 @@ void tst_MakefileGenerator::multiFileGeneration()
 	makeData1->name = "software_0";
 	makeData1->hwBuildCmd->setFlags("-joku");
 	makeData1->softViewFlags.append("-jotain");
+	makeData1->targetPath = outputDir_ + "/sw_tsydemi/" + makeData1->name;
 
 	QSharedPointer<MakeObjectData> mod1( new MakeObjectData );
 	makeData1->swObjects.append( mod1 );
@@ -1676,6 +1709,7 @@ void tst_MakefileGenerator::multiFileGeneration()
 	makeData2->name = "crapware_0";
 	makeData2->hwBuildCmd->setFlags("-yks");
 	makeData2->softViewFlags.append("-kaks");
+	makeData2->targetPath = outputDir_ + "/sw_tsydemi/" + makeData2->name;
 
 	QSharedPointer<MakeObjectData> mod2( new MakeObjectData );
 	makeData2->swObjects.append( mod2 );
@@ -1711,6 +1745,7 @@ void tst_MakefileGenerator::includeFile()
 	makeData->hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
 	makeData->hwBuildCmd->setCommand("gcc");
 	makeData->name = "software_0";
+	makeData->targetPath = outputDir_ + "/sw_tsydemi/" + makeData->name;
 
 	QSharedPointer<MakeObjectData> mod1( new MakeObjectData );
 	makeData->swObjects.append( mod1 );
@@ -1790,7 +1825,7 @@ void tst_MakefileGenerator::allTheWay()
 	stackParser.parse( topComponent, desgconf, design, outputDir_ );
 
 	MakefileParser makeParser( &library_, stackParser );
-	makeParser.parse();
+	makeParser.parse( topComponent );
 
 	MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
 	generator.generate(outputDir_,outputDir_,"tsydemi");
@@ -1802,7 +1837,7 @@ void tst_MakefileGenerator::allTheWay()
 	verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS)");
 	verifyOutputContains("software_0", "EBUILDER= gcc");
 	verifyOutputContains("software_0", "$(ENAME): $(OBJ)\n\t$(EBUILDER) -o $(ENAME) $(OBJ) $(EFLAGS)");
-	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o ../../../array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
 }
 
 QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design>& design,

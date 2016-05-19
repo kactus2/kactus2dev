@@ -17,7 +17,7 @@ HEADERS += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
     ../../../Plugins/MakefileGenerator/MakefileParser.h \
     ../../../Plugins/MakefileGenerator/SWStackParser.h \
-    ../../../Plugins/MakefileGenerator/Struct.h
+    ../../../Plugins/MakefileGenerator/MakeCommon.h
 SOURCES += ../../../Plugins/MakefileGenerator/MakefileParser.cpp \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../MockObjects/LibraryMock.cpp \

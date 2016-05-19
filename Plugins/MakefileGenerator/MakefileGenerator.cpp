@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: MakefileGenerator.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 02.09.2014
 //
@@ -36,7 +36,7 @@ MakefileGenerator::~MakefileGenerator()
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generate()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::generate(QString targetPath, QString topPath, QString sysViewName)
+int MakefileGenerator::generate(QString targetPath, QString topPath, QString sysViewName)
 {
     // Names of the created directories to be referenced by the master makefile.
     QStringList makeNames;
@@ -50,9 +50,14 @@ void MakefileGenerator::generate(QString targetPath, QString topPath, QString sy
         generateInstanceMakefile(topPath, mfd, makeNames);
     }
 
-    generateMainMakefile(basePath, topPath, makeNames);
+	if ( makeNames.count() > 0 )
+	{
+		generateMainMakefile(basePath, topPath, makeNames);
 
-    generateLauncher(basePath, topPath, makeNames);
+		generateLauncher(basePath, topPath, makeNames);
+	}
+
+	return makeNames.count();
 }
 
 //-----------------------------------------------------------------------------
@@ -61,9 +66,17 @@ void MakefileGenerator::generate(QString targetPath, QString topPath, QString sy
 void MakefileGenerator::generateInstanceMakefile(QString topPath,
     QSharedPointer<MakeFileData> makeData, QStringList &makeNames)
 {
+	// Nothing to make -> no action.
+	if ( makeData->swObjects.count() < 1 )
+	{
+		utility_->printError("No objects for makefile. Top instance: " + makeData->name);
+		return;
+	}
+
 	// No path -> no action.
 	if ( makeData->targetPath.isEmpty() )
 	{
+		utility_->printError("Empty path for a makefile. Top instance: " + makeData->name);
 		return;
 	}
 
@@ -79,7 +92,8 @@ void MakefileGenerator::generateInstanceMakefile(QString topPath,
     if ( !makeFile.open(QIODevice::WriteOnly) )
     {
         utility_->printError("Could not open the makefile at location " + makePath);
-        utility_->printError("Reason: " + makeFile.errorString() );
+		utility_->printError("Reason: " + makeFile.errorString());
+		utility_->printError("Top instance: " + makeData->name);
 		return;
     }
 

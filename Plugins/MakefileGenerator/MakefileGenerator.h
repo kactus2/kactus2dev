@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: MakefileGenerator.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 02.09.2014
 //
@@ -35,8 +35,10 @@ public:
      *      @param [in] targetPath		The path, where the makefiles are created.
 	 *      @param [in] topPath			The path, where the top component is.
 	 *      @param [in] sysViewName		Name of the system view pointing to used design configuration.
-     */
-	void generate(QString targetPath, QString topPath, QString sysViewName);
+	 *
+	 *      @return How many executables got a makefile.
+	 */
+	int generate(QString targetPath, QString topPath, QString sysViewName);
 
 private:
 
