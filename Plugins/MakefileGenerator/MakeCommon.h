@@ -22,6 +22,8 @@
 
 #include <IPXACTmodels/kactusExtensions/SWView.h>
 
+const QString MAKEFILE_NAME = "Makefile";
+
 // A struct containing needed data of a single file parsed to be used in a makefile.
 // Provided that it is not a header file, it likely yields an object file.
 struct MakeObjectData

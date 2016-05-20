@@ -1765,7 +1765,7 @@ void tst_MakefileGenerator::includeFile()
 	MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
 	generator.generate(outputDir_,outputDir_,"tsydemi");
 
-	verifyOutputContains("software_0", "DEPS= /array.h");
+	verifyOutputContains("software_0", "DEPS= " + MAKEFILE_NAME + " /array.h");
 	verifyOutputContains("software_0", "_OBJ= array.c.o");
 }
 
@@ -1942,7 +1942,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createHW(QString const& hwInsta
 //-----------------------------------------------------------------------------
 void tst_MakefileGenerator::verifyOutputContains(QString instanceName, QString const& expectedOutput)
 {
-    QFile outputFile(outputDir_ + "/sw_tsydemi/" + instanceName + "/Makefile");
+    QFile outputFile(outputDir_ + "/sw_tsydemi/" + instanceName + "/" + MAKEFILE_NAME);
 
     QVERIFY(outputFile.open(QIODevice::ReadOnly));
 

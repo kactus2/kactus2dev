@@ -116,7 +116,8 @@ void MakefileGenerator::generateInstanceMakefile(QString topPath,
     outStream << "INCLUDES=$(patsubst %, -I%, $(_INCLUDES))" << endl << endl;
 
     // The include files themselves are dependencies of the source files.
-    outStream << "DEPS=";
+	// Makefile is also its own dependency, in case a new one is generated.
+    outStream << "DEPS= " << MAKEFILE_NAME;
 
     foreach(QSharedPointer<MakeObjectData> file, makeData->includeFiles)
     {
@@ -167,9 +168,9 @@ void MakefileGenerator::generateInstanceMakefile(QString topPath,
 //-----------------------------------------------------------------------------
 void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, QStringList makeNames) const
 {
-    QString dir = basePath + "Makefile";
+    QString dir = basePath + MAKEFILE_NAME;
     // Create the master makefile.
-    QFile makeFile( basePath + "Makefile" );
+    QFile makeFile( basePath + MAKEFILE_NAME );
     makeFile.open(QIODevice::WriteOnly);
     QTextStream outStream(&makeFile);
 
