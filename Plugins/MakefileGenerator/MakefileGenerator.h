@@ -91,6 +91,13 @@ private:
      *      @param [in] outStream   The stream where the makefile is written.
      */
      void writeExeBuild(QTextStream& outStream) const;
+	 
+    /*!
+     *  Writes the cleaning rules for makefile, which removes both object and dependency files.
+     *
+     *      @param [in] outStream   The stream where the makefile is written.
+     */
+	 void writeCleanRules(QTextStream& outStream) const;
 
     /*!
      *  Writes the build rules for the object files of the makefile.

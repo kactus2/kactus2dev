@@ -227,8 +227,6 @@ void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QSharedPointer<M
 		{
 			// Its path is added to the collection of the include paths.
 			makeData->includeDirectories.append(fileQfi.absolutePath());
-			// Itself is added to the collection of the include files.
-			makeData->includeFiles.append(objectData);
 		}
 
 		// A fileSet builder associated with the file type is also a possible field.

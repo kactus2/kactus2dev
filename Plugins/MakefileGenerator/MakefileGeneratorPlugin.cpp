@@ -48,7 +48,7 @@ QString MakefileGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString MakefileGeneratorPlugin::getVersion() const
 {
-    return "1.0";
+    return "1.1";
 }
 
 //-----------------------------------------------------------------------------
@@ -56,7 +56,7 @@ QString MakefileGeneratorPlugin::getVersion() const
 //-----------------------------------------------------------------------------
 QString MakefileGeneratorPlugin::getDescription() const
 {
-    return "Generates Makefile for the design.";
+    return "Generates C/C++ makefiles for a system design.";
 }
 
 //-----------------------------------------------------------------------------

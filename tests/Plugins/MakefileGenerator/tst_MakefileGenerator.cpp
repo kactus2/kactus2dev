@@ -77,7 +77,6 @@ private slots:
 	void basicGeneration();
 	void multiObjectGeneration();
 	void multiFileGeneration();
-	void includeFile();
 	void noCompiler();
 	void allTheWay();
 
@@ -1642,7 +1641,8 @@ void tst_MakefileGenerator::basicGeneration()
 	verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -joku -jotain");
 	verifyOutputContains("software_0", "EBUILDER= gcc");
 	verifyOutputContains("software_0", "$(ENAME): $(OBJ)\n\t$(EBUILDER) -o $(ENAME) $(OBJ) $(EFLAGS)");
-	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+	verifyOutputContains("software_0", "gcc " + DEFAULT_OBJECT_FLAGS + " $(ODIR)/array.c.o /array.c $(INCLUDES)" +
+		" $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
 }
 
 // Must be able to generate multiple objects.
@@ -1675,8 +1675,10 @@ void tst_MakefileGenerator::multiObjectGeneration()
 	generator.generate(outputDir_,outputDir_,"tsydemi");
 
 	verifyOutputContains("software_0", "_OBJ= array.c.o support.c.o");
-	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
-	verifyOutputContains("software_0", "super-asm -c -o $(ODIR)/support.c.o /support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -a -b");
+	verifyOutputContains("software_0", "gcc " + DEFAULT_OBJECT_FLAGS + 
+		" $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+	verifyOutputContains("software_0", "super-asm " + DEFAULT_OBJECT_FLAGS + 
+		" $(ODIR)/support.c.o /support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -a -b");
 }
 
 // Must be able to generate multiple files.
@@ -1724,49 +1726,15 @@ void tst_MakefileGenerator::multiFileGeneration()
 	verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -joku -jotain");
 	verifyOutputContains("software_0", "ENAME= software_0");
 	verifyOutputContains("software_0", "EBUILDER= gcc");
-	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+	verifyOutputContains("software_0", "gcc " + DEFAULT_OBJECT_FLAGS +
+		" $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
 
 	verifyOutputContains("crapware_0", "_OBJ= support.c.o");
 	verifyOutputContains("crapware_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -yks -kaks");
 	verifyOutputContains("crapware_0", "ENAME= crapware_0");
 	verifyOutputContains("crapware_0", "EBUILDER= j33");
-	verifyOutputContains("crapware_0", "super-asm -c -o $(ODIR)/support.c.o /support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -a -b");
-}
-
-// Include files should not yield object files, but should appear on the list of dependencies.
-void tst_MakefileGenerator::includeFile()
-{
-	SWStackParser stackParser( &library_ );
-	MakefileParser makeParser( &library_, stackParser );
-	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
-	auto makeData = QSharedPointer<MakeFileData>( new MakeFileData );
-	datas->append(makeData);
-
-	makeData->hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
-	makeData->hwBuildCmd->setCommand("gcc");
-	makeData->name = "software_0";
-	makeData->targetPath = outputDir_ + "/sw_tsydemi/" + makeData->name;
-
-	QSharedPointer<MakeObjectData> mod1( new MakeObjectData );
-	makeData->swObjects.append( mod1 );
-	mod1->fileName = "array.h";
-	mod1->compiler = "gcc";
-	mod1->flags = "-sw -hw";
-	mod1->file = QSharedPointer<File>( new File() );
-	mod1->file->setIncludeFile( true );
-	makeData->includeFiles.append(mod1);
-
-	QSharedPointer<MakeObjectData> mod2( new MakeObjectData );
-	makeData->swObjects.append( mod2 );
-	mod2->fileName = "array.c";
-	mod2->compiler = "gcc";
-	mod2->flags = "-sw -hw";
-
-	MakefileGenerator generator( makeParser, &utilityMock_, stackParser.getGeneralFileSet() );
-	generator.generate(outputDir_,outputDir_,"tsydemi");
-
-	verifyOutputContains("software_0", "DEPS= " + MAKEFILE_NAME + " /array.h");
-	verifyOutputContains("software_0", "_OBJ= array.c.o");
+	verifyOutputContains("crapware_0", "super-asm " + DEFAULT_OBJECT_FLAGS +
+		" $(ODIR)/support.c.o /support.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -a -b");
 }
 
 // File with no compiler must not be in makefile!
@@ -1837,7 +1805,8 @@ void tst_MakefileGenerator::allTheWay()
 	verifyOutputContains("software_0", "EFLAGS= $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS)");
 	verifyOutputContains("software_0", "EBUILDER= gcc");
 	verifyOutputContains("software_0", "$(ENAME): $(OBJ)\n\t$(EBUILDER) -o $(ENAME) $(OBJ) $(EFLAGS)");
-	verifyOutputContains("software_0", "gcc -c -o $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
+	verifyOutputContains("software_0", "gcc " + DEFAULT_OBJECT_FLAGS +
+		" $(ODIR)/array.c.o /array.c $(INCLUDES) $(DEBUG_FLAGS) $(PROFILE_FLAGS) -sw -hw");
 }
 
 QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Design>& design,
