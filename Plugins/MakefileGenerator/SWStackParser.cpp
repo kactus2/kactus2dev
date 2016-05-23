@@ -171,19 +171,20 @@ void SWStackParser::parse(QSharedPointer<Component> topComponent,
 		}
 
 		// Get the hardware data.
-		makeData->hardInstance = hardInstance;
-		makeData->hardComponent = hardComponent;
-		makeData->hardView = hardView;
+		makeData->hardPart = QSharedPointer<StackPart>( new StackPart );
+		makeData->hardPart->component = hardComponent;
+		makeData->hardPart->instanceName = hardInstance->getInstanceName();
+		makeData->hardPart->view = hardView;
 
 		// This is also the point where hardware build command is decided.
 		// TODO: Ask from user which one.
 		if ( hardView->getSWBuildCommands()->count() > 0 )
 		{
-			makeData->hwBuildCmd = hardView->getSWBuildCommands()->first();
+			makeData->hardPart->buildCmd = hardView->getSWBuildCommands()->first();
 		}
 
 		// No hardware build command means no makefile.
-		if ( !makeData->hwBuildCmd )
+		if ( !makeData->hardPart->buildCmd )
 		{
 			continue;
 		}
@@ -192,16 +193,19 @@ void SWStackParser::parse(QSharedPointer<Component> topComponent,
 		parseStackObjects(topComponent, softComponent, softInstance, design, desgConf, makeData, sysViewName);
 
 		// Empty stack means no makefile.
-		if ( makeData->parts_.count() < 1 )
+		if ( makeData->parts.count() < 1 )
 		{
 			continue;
 		}
 
+		// Now add the hardware to the list of parts as well.
+		makeData->parts.append( makeData->hardPart );
+
 		// We need a file set for makefile. It shall be the header set of the topmost instance.
-		makeData->instanceHeaders = makeData->parts_.first()->instanceHeaders;
+		makeData->instanceHeaders = makeData->parts.first()->instanceHeaders;
 
 		// Since every software stack gets its own makefile, naming is after the instance name.
-		makeData->name = makeData->parts_.first()->instance->getInstanceName();
+		makeData->name = makeData->parts.first()->instanceName;
 
 		// We need the absolute path of the file.
 		makeData->targetPath = basePath + makeData->name;
@@ -297,7 +301,7 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> topComponent,
 
 	foreach( QSharedPointer<SWFileBuilder> buildCmd, *softView->getSWBuildCommands() )
 	{
-		if ( buildCmd->getFileType() == makeData->hwBuildCmd->getFileType() )
+		if ( buildCmd->getFileType() == makeData->hardPart->buildCmd->getFileType() )
 		{
 			softViewBuildCmd = buildCmd;
 
@@ -313,13 +317,13 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> topComponent,
 
 	// Add the instance as a new part of the stack.
 	auto stackPart = QSharedPointer<StackPart>( new StackPart );
-	stackPart->instance = softInstance;
+	stackPart->instanceName = softInstance->getInstanceName();
 	stackPart->component = softComponent;
 	stackPart->view = softView;
-	stackPart->swBuildCmd = softViewBuildCmd;
+	stackPart->buildCmd = softViewBuildCmd;
 
 	// Add to the lists.
-	makeData->parts_.append(stackPart);
+	makeData->parts.append(stackPart);
 	makeData->parsedInstances.append(softInstance);
 
 	// Its flags are to be used.

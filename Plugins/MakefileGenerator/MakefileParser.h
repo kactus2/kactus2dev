@@ -42,10 +42,6 @@ public:
     // Returns reference to all parsed MakeFileData.
     QSharedPointer<QList<QSharedPointer<MakeFileData> > > getParsedData();
 
-	// List of conflicts: Each set contains the parsed metadata of files
-	// that are included multiple times.
-	QVector<QSet<QSharedPointer<MakeObjectData> > > findConflicts() const;
-
     /*!
      *  Parses all software components from the design for the data needed in makefiles.
      */
@@ -61,8 +57,8 @@ private:
      *      @param [in] buildCmd   The build command of the associated software view.
 	 *      @param [in] component  The component of softInstance.
      */
-	 void parseMakeObjects( QSharedPointer<MakeFileData> makeData, QSharedPointer<SWView> view,
-		QSharedPointer<SWFileBuilder> buildCmd, QSharedPointer<Component> component );
+	void parseMakeObjects( QSharedPointer<MakeFileData> makeData, 
+		QSharedPointer<StackPart> stackPart );
 
 	/*!
 	 *  Parses all files of parameters fset, adding the to parameters objects.
@@ -75,7 +71,7 @@ private:
 	 *      @param [in] componentPath	Path to the component where the file sets belong to.
 	 */
 	 void parseFileSet(QSharedPointer<FileSet> fset, QSharedPointer<MakeFileData> makeData, 
-		  QSharedPointer<SWFileBuilder> buildCmd, QString& componentPath);
+	 QSharedPointer<StackPart> stackPart, QString& componentPath);
 
     /*!
      *  Gets the compiler used for the file.
@@ -97,6 +93,13 @@ private:
      */
      QString getFileFlags(QSharedPointer<Component> component, QSharedPointer<MakeObjectData> &mod,
 		 QSharedPointer<MakeFileData> makeData) const;
+	 
+    /*!
+	 *  Finds conflicting files within the stack: The same file with different meta data.
+     *
+     *      @param [in] makeData			The make data associated with the makefile as whole.
+     */
+	 void findConflicts(QSharedPointer<MakeFileData> makeData);
 
 	 //! The library containing all components in the design.
 	 LibraryInterface* library_;

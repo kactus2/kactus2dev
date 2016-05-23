@@ -368,7 +368,7 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
 	QSharedPointer<MakeFileData> data = datas->first();
 	QCOMPARE( data->swObjects.size(), 1 );
 
-	QCOMPARE( data->hwBuildCmd->getCommand(), QString("gcc") );
+	QCOMPARE( data->hardPart->buildCmd->getCommand(), QString("gcc") );
 	QCOMPARE( data->softViewFlags.contains("-sw"), true );
 }
 
@@ -552,14 +552,14 @@ void tst_MakefileGenerator::hwandswRef()
 	QCOMPARE( data->swObjects.size(), 2 );
 
 	QCOMPARE( data->swObjects.first()->compiler, QString("super_asm") );
-	QCOMPARE( data->swObjects.first()->fileName, QString("harray.c") );
-	QCOMPARE( data->swObjects.first()->flags.simplified(), QString("-hu -hset -hw") );
+	QCOMPARE( data->swObjects.first()->fileName, QString("sarray.c") );
+	QCOMPARE( data->swObjects.first()->flags.simplified(), QString("-su -sset -sw -hw") );
 	QCOMPARE( data->swObjects.last()->compiler, QString("super_asm") );
-	QCOMPARE( data->swObjects.last()->fileName, QString("sarray.c") );
-	QCOMPARE( data->swObjects.last()->flags.simplified(), QString("-su -sset -sw -hw") );
+	QCOMPARE( data->swObjects.last()->fileName, QString("harray.c") );
+	QCOMPARE( data->swObjects.last()->flags.simplified(), QString("-hu -hset -hw") );
 
-	QCOMPARE( data->hwBuildCmd->getCommand(), QString("super_asm") );
-	QCOMPARE( data->hwBuildCmd->getFlags(), QString("-hw") );
+	QCOMPARE( data->hardPart->buildCmd->getCommand(), QString("super_asm") );
+	QCOMPARE( data->hardPart->buildCmd->getFlags(), QString("-hw") );
 	QCOMPARE( data->softViewFlags.contains("-sw"), true );
 }
 
@@ -614,7 +614,7 @@ void tst_MakefileGenerator::instanceHeaders()
 	QCOMPARE( data->swObjects.first()->file->isIncludeFile(), true );
 	QCOMPARE( data->swObjects.first()->compiler, QString("gcc") );
 	QCOMPARE( data->swObjects.first()->fileName, QString("array.h") );
-	QCOMPARE( data->swObjects.first()->flags.simplified(), QString("-hw") );
+	QCOMPARE( data->swObjects.first()->flags.simplified(), QString("-sw -hw") );
 }
 
 // Generate makefile with multiple source and header files.
@@ -860,8 +860,8 @@ void tst_MakefileGenerator::multipleHardWare()
 	QSharedPointer<MakeFileData> data1 = datas->first();
 	QCOMPARE( data1->swObjects.size(), 3 );
 	QCOMPARE( data1->name, QString("crapware_0") );
-	QCOMPARE( data1->hwBuildCmd->getCommand(), QString("hopo") );
-	QCOMPARE( data1->hwBuildCmd->getFlags(), QString("-ahw") );
+	QCOMPARE( data1->hardPart->buildCmd->getCommand(), QString("hopo") );
+	QCOMPARE( data1->hardPart->buildCmd->getFlags(), QString("-ahw") );
 
 	QCOMPARE( data1->swObjects.at(0)->compiler, QString("hopo" ) );
 	QCOMPARE( data1->swObjects.at(0)->fileName, QString("array.c") );
@@ -876,8 +876,8 @@ void tst_MakefileGenerator::multipleHardWare()
 	QCOMPARE( data2->swObjects.size(), 3 );
 	QCOMPARE( data2->softViewFlags.contains("-bmw"), true );
 	QCOMPARE( data2->name, QString("stackware_0") );
-	QCOMPARE( data2->hwBuildCmd->getCommand(), QString("juu -f") );
-	QCOMPARE( data2->hwBuildCmd->getFlags(), QString("-bhw") );
+	QCOMPARE( data2->hardPart->buildCmd->getCommand(), QString("juu -f") );
+	QCOMPARE( data2->hardPart->buildCmd->getFlags(), QString("-bhw") );
 	QCOMPARE( data2->softViewFlags.contains("-bmw"), true );
 
 	QCOMPARE( data2->swObjects.at(0)->fileName, QString("additional.c") );
@@ -946,11 +946,11 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
 	QCOMPARE( data1->swObjects.size(), 4 );
 	QCOMPARE( data1->name, QString("crapware_0") );
 
-	QCOMPARE( data1->swObjects.at(0)->fileName, QString("harray.c") );
-	QCOMPARE( data1->swObjects.at(1)->fileName, QString("array.c") );
-	QCOMPARE( data1->swObjects.at(2)->fileName, QString("support.c") );
-	QCOMPARE( data1->swObjects.at(3)->fileName, QString("array.h") );
-	QCOMPARE( data1->swObjects.at(3)->file->isIncludeFile(), true );
+	QCOMPARE( data1->swObjects.at(0)->fileName, QString("array.c") );
+	QCOMPARE( data1->swObjects.at(1)->fileName, QString("support.c") );
+	QCOMPARE( data1->swObjects.at(2)->fileName, QString("array.h") );
+	QCOMPARE( data1->swObjects.at(2)->file->isIncludeFile(), true );
+	QCOMPARE( data1->swObjects.at(3)->fileName, QString("harray.c") );
 
 	QSharedPointer<MakeFileData> data2 = datas->last();
 	QCOMPARE( data2->swObjects.size(), 3 );
@@ -1442,8 +1442,10 @@ void tst_MakefileGenerator::sameFileSeparateExe()
 	SWStackParser stackParser( &library_ );
 	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
 	MakefileParser makeParser(&library_, stackParser );
+	makeParser.parse( topComponent );
 
-	QCOMPARE( makeParser.findConflicts().size(), 0 );
+	QCOMPARE( makeParser.getParsedData()->first()->conflicts.size(), 0 );
+	QCOMPARE( makeParser.getParsedData()->last()->conflicts.size(), 0 );
 }
 
 // Must detect if the same file is used by multiple component instances or file sets!
@@ -1486,7 +1488,7 @@ void tst_MakefileGenerator::sameFileDiffCompiler()
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
-	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.findConflicts();
+	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.getParsedData()->first()->conflicts;
 
 	QCOMPARE( conflicts.size(), 2 );
 
@@ -1524,7 +1526,8 @@ void tst_MakefileGenerator::sameFileDiffFlags()
 	QString swInstanceName = "software_0";
 	QString softViewName = "default";
 
-	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf,
+		softView,swInstanceName);
 
 	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
 	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
@@ -1545,7 +1548,7 @@ void tst_MakefileGenerator::sameFileDiffFlags()
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
-	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.findConflicts();
+	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.getParsedData()->first()->conflicts;
 
 	QCOMPARE( conflicts.size(), 2 );
 
@@ -1566,7 +1569,7 @@ void tst_MakefileGenerator::sameFileDiffFlags()
 	QCOMPARE( eka->fileName, QString("support.c") );
 }
 
-// If the files are completely same, that is, have the same flags, compiler, and include status, no conflict.
+// No conflict, ff the files are completely same, having the same flags, compiler, and include status.
 void tst_MakefileGenerator::sameFile()
 {
 	QSharedPointer<Design> design;
@@ -1583,7 +1586,8 @@ void tst_MakefileGenerator::sameFile()
 	QString swInstanceName = "software_0";
 	QString softViewName = "default";
 
-	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf, softView,swInstanceName);
+	QSharedPointer<Component> sw = createSW("software", hwInstanceName, design, softViewName, desgconf,
+		softView,swInstanceName);
 
 	QSharedPointer<FileSet> afileSet = addFileSet(sw, "alphaFileSet", softView);
 	QSharedPointer<FileSet> bfileSet = addFileSet(sw, "betaFileSet", softView);
@@ -1604,7 +1608,7 @@ void tst_MakefileGenerator::sameFile()
 	MakefileParser makeParser( &library_, stackParser );
 	makeParser.parse( topComponent );
 
-	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.findConflicts();
+	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.getParsedData()->first()->conflicts;
 
 	QCOMPARE( conflicts.size(), 0 );
 }
@@ -1618,10 +1622,11 @@ void tst_MakefileGenerator::basicGeneration()
 	auto makeData = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData);
 
-	makeData->hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
-	makeData->hwBuildCmd->setCommand("gcc");
+	makeData->hardPart = QSharedPointer<StackPart>( new StackPart );
+	makeData->hardPart->buildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder );
+	makeData->hardPart->buildCmd->setCommand("gcc");
 	makeData->name = "software_0";
-	makeData->hwBuildCmd->setFlags("-joku");
+	makeData->hardPart->buildCmd->setFlags("-joku");
 	makeData->softViewFlags.append("-jotain");
 	makeData->targetPath = outputDir_ + "/sw_tsydemi/" + makeData->name;
 
@@ -1654,8 +1659,9 @@ void tst_MakefileGenerator::multiObjectGeneration()
 	auto makeData = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData);
 
-	makeData->hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
-	makeData->hwBuildCmd->setCommand("gcc");
+	makeData->hardPart = QSharedPointer<StackPart>( new StackPart );
+	makeData->hardPart->buildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData->hardPart->buildCmd->setCommand("gcc");
 	makeData->name = "software_0";
 	makeData->targetPath = outputDir_ + "/sw_tsydemi/" + makeData->name;
 
@@ -1690,10 +1696,11 @@ void tst_MakefileGenerator::multiFileGeneration()
 	auto makeData1 = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData1);
 
-	makeData1->hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
-	makeData1->hwBuildCmd->setCommand("gcc");
+	makeData1->hardPart = QSharedPointer<StackPart>( new StackPart );
+	makeData1->hardPart->buildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData1->hardPart->buildCmd->setCommand("gcc");
 	makeData1->name = "software_0";
-	makeData1->hwBuildCmd->setFlags("-joku");
+	makeData1->hardPart->buildCmd->setFlags("-joku");
 	makeData1->softViewFlags.append("-jotain");
 	makeData1->targetPath = outputDir_ + "/sw_tsydemi/" + makeData1->name;
 
@@ -1706,10 +1713,11 @@ void tst_MakefileGenerator::multiFileGeneration()
 	auto makeData2 = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData2);
 
-	makeData2->hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
-	makeData2->hwBuildCmd->setCommand("j33");
+	makeData2->hardPart = QSharedPointer<StackPart>( new StackPart );
+	makeData2->hardPart->buildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData2->hardPart->buildCmd->setCommand("j33");
 	makeData2->name = "crapware_0";
-	makeData2->hwBuildCmd->setFlags("-yks");
+	makeData2->hardPart->buildCmd->setFlags("-yks");
 	makeData2->softViewFlags.append("-kaks");
 	makeData2->targetPath = outputDir_ + "/sw_tsydemi/" + makeData2->name;
 
@@ -1746,8 +1754,9 @@ void tst_MakefileGenerator::noCompiler()
 	auto makeData = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData);
 
-	makeData->hwBuildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
-	makeData->hwBuildCmd->setCommand("gcc");
+	makeData->hardPart = QSharedPointer<StackPart>( new StackPart );
+	makeData->hardPart->buildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData->hardPart->buildCmd->setCommand("gcc");
 	makeData->name = "software_0";
 
 	QSharedPointer<MakeObjectData> mod1( new MakeObjectData );

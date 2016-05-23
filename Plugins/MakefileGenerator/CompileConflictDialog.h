@@ -28,7 +28,7 @@ public:
     /*!
      *  Constructor.
      */
-    CompileConflictDialog(QVector<QSet<QSharedPointer<MakeObjectData> > >& conflicts, QWidget* parent);
+    CompileConflictDialog(QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, QWidget* parent);
 
     /*!
      *  Destructor.

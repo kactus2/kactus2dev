@@ -177,21 +177,14 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 	MakefileParser makeParser( library, stackParser );
 	makeParser.parse( topComponent );
 
-	// Conflicts mean that the user needs to be informed.
-	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.findConflicts();
+	// Show the dialog.
+	CompileConflictDialog dialog(makeParser.getParsedData(), utility->getParentWidget());
 
-	if ( conflicts.size() > 0 )
+	// Return, if user did not want to proceed after seeing it.
+	if ( dialog.exec() == QDialog::Rejected )
 	{
-		CompileConflictDialog dialog(conflicts, utility->getParentWidget());
-
-		utility->printError( "Conflicting source files in system design!");
-
-		// Return, if user did not want to proceed after seeing the conflicts
-		if ( dialog.exec() == QDialog::Rejected )
-		{
-			utility->printInfo( "Makefile generation terminated by user due to conflicts.");
-			return;
-		}
+		utility->printError( "Makefile generation rejected by user.");
+		return;
 	}
 
 	// Generate files from parsed data.

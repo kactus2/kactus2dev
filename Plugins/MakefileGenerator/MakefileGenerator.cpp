@@ -262,11 +262,11 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(QSharedPointer<MakeFileData> m
     QString finalBuilder;
 
     // If build command of software view of the hardware instance exist, its properties are used.
-    if ( mfd->hwBuildCmd != 0 )
+    if ( mfd->hardPart->buildCmd != 0 )
     {
-        finalBuilder = mfd->hwBuildCmd->getCommand();
+        finalBuilder = mfd->hardPart->buildCmd->getCommand();
 
-        finalFlags += " " + mfd->hwBuildCmd->getFlags();
+        finalFlags += " " + mfd->hardPart->buildCmd->getFlags();
     }
 
     // All flags of all software views must be appended to the flags.

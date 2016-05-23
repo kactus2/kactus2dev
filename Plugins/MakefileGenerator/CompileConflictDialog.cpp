@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: CompileConflictDialog()
 //-----------------------------------------------------------------------------
-CompileConflictDialog::CompileConflictDialog(QVector<QSet<QSharedPointer<MakeObjectData> > >& conflicts,
+CompileConflictDialog::CompileConflictDialog(QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData,
 	QWidget* parent) : QDialog(parent), descLabel_(tr("Conflicting file configurations:"), this),
 	conflictTable_( this )
 {
@@ -67,53 +67,56 @@ CompileConflictDialog::CompileConflictDialog(QVector<QSet<QSharedPointer<MakeObj
 	// Every second conflict is highlighted.
 	bool highLight = true;
 
-	foreach ( QSet<QSharedPointer<MakeObjectData> > conflictSet, conflicts )
+	foreach ( QSharedPointer<MakeFileData> makeData, *parsedData )
 	{
-		conflictTable_.setRowCount( conflictSet.size() + conflictTable_.rowCount() );
-
-		foreach ( QSharedPointer<MakeObjectData> partisipant, conflictSet )
+		foreach ( QSet<QSharedPointer<MakeObjectData> > conflictSet, makeData->conflicts )
 		{
-			conflictTable_.setItem(i, 0, new QTableWidgetItem( partisipant->fileName ) );
-			conflictTable_.setItem(i, 1, new QTableWidgetItem( partisipant->instanceName ) );
-			conflictTable_.setItem(i, 2, new QTableWidgetItem( partisipant->fileSet->name() ) );
-			conflictTable_.setItem(i, 4, new QTableWidgetItem( partisipant->compiler ) );
-			conflictTable_.setItem(i, 5, new QTableWidgetItem( partisipant->flags ) );
+			conflictTable_.setRowCount( conflictSet.size() + conflictTable_.rowCount() );
 
-			// The boolean variable include file is presented as a check box.
-			QTableWidgetItem* defCheckItem = new QTableWidgetItem();
-
-			if ( partisipant->file->isIncludeFile() )
+			foreach ( QSharedPointer<MakeObjectData> partisipant, conflictSet )
 			{
-				defCheckItem->setCheckState(Qt::Checked);
+				conflictTable_.setItem(i, 0, new QTableWidgetItem( partisipant->fileName ) );
+				conflictTable_.setItem(i, 1, new QTableWidgetItem( partisipant->stackPart->instanceName ) );
+				conflictTable_.setItem(i, 2, new QTableWidgetItem( partisipant->fileSet->name() ) );
+				conflictTable_.setItem(i, 4, new QTableWidgetItem( partisipant->compiler ) );
+				conflictTable_.setItem(i, 5, new QTableWidgetItem( partisipant->flags ) );
+
+				// The boolean variable include file is presented as a check box.
+				QTableWidgetItem* defCheckItem = new QTableWidgetItem();
+
+				if ( partisipant->file->isIncludeFile() )
+				{
+					defCheckItem->setCheckState(Qt::Checked);
+				}
+				else
+				{
+					defCheckItem->setCheckState(Qt::Unchecked);
+				}
+
+				// Disable editing.
+				defCheckItem->setFlags( Qt::ItemIsSelectable );
+
+				// Finally, set it to the table.
+				conflictTable_.setItem(i, 3, defCheckItem );
+
+				QBrush color = Qt::lightGray;
+
+				if ( highLight )
+				{
+					conflictTable_.item(i, 0)->setBackground(color);
+					conflictTable_.item(i, 1)->setBackground(color);
+					conflictTable_.item(i, 2)->setBackground(color);
+					conflictTable_.item(i, 3)->setBackground(color);
+					conflictTable_.item(i, 4)->setBackground(color);
+					conflictTable_.item(i, 5)->setBackground(color);
+				}
+
+				++i;
 			}
-			else
-			{
-				defCheckItem->setCheckState(Qt::Unchecked);
-			}
 
-			// Disable editing.
-			defCheckItem->setFlags( Qt::ItemIsSelectable );
-
-			// Finally, set it to the table.
-			conflictTable_.setItem(i, 3, defCheckItem );
-
-			QBrush color = Qt::lightGray;
-
-			if ( highLight )
-			{
-				conflictTable_.item(i, 0)->setBackground(color);
-				conflictTable_.item(i, 1)->setBackground(color);
-				conflictTable_.item(i, 2)->setBackground(color);
-				conflictTable_.item(i, 3)->setBackground(color);
-				conflictTable_.item(i, 4)->setBackground(color);
-				conflictTable_.item(i, 5)->setBackground(color);
-			}
-
-			++i;
+			// Reverse highlight for next conflict.
+			highLight = !highLight;
 		}
-
-		// Reverse highlight for next conflict.
-		highLight = !highLight;
 	}
 
     connect(btnOK, SIGNAL(clicked()), this, SLOT(accept()));

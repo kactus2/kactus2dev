@@ -288,6 +288,7 @@ void SWComponentItem::setFileSetRef(QString const& fileSetName)
     if (fileSetRef_ != fileSetName)
     {
         fileSetRef_ = fileSetName;
+		getComponentInstance().dynamicCast<SWInstance>()->setFileSetRef( fileSetRef_ );
         emit fileSetRefChanged(fileSetRef_);
     }
 }
