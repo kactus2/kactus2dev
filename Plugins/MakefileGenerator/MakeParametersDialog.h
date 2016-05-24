@@ -1,20 +1,25 @@
 //-----------------------------------------------------------------------------
-// File: CompileConflictDialog.h
+// File: MakeParametersDialog.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
 // Date: 15.10.2015
 //
 // Description:
-// Dialog for presenting files that conflict in compilation.
+// Dialog for presenting parameters, which may be chosen for makefile generation.
 //-----------------------------------------------------------------------------
 
-#ifndef CompileConflictDIALOG_H
-#define CompileConflictDIALOG_H
+#ifndef MAKEPARAMETERSDIALOG_H
+#define MAKEPARAMETERSDIALOG_H
 
 #include <QDialog>
 #include <QListWidget>
 #include <QLabel>
+
+#include <QPushButton>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+#include <QHeaderView>
 
 #include "MakefileParser.h"
 #include "QTableWidget"
@@ -22,35 +27,26 @@
 //-----------------------------------------------------------------------------
 //! CompileConflictDialog class.
 //-----------------------------------------------------------------------------
-class CompileConflictDialog : public QDialog
+class MakeParametersDialog : public QDialog
 {
 public:
     /*!
      *  Constructor.
      */
-    CompileConflictDialog(QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, QWidget* parent);
+    MakeParametersDialog(QStringList replacedFiles,
+		QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, QWidget* parent);
 
     /*!
      *  Destructor.
      */
-    ~CompileConflictDialog();
+    ~MakeParametersDialog();
 
 private:
     // Disable copying.
-    CompileConflictDialog(CompileConflictDialog const& rhs);
-    CompileConflictDialog& operator=(CompileConflictDialog const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    //! The description label.
-    QLabel descLabel_;
-
-	//! Table used to display all detected conflicts and their participants.
-	QTableWidget conflictTable_;
+    MakeParametersDialog(MakeParametersDialog const& rhs);
+    MakeParametersDialog& operator=(MakeParametersDialog const& rhs);
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // CompileConflictDIALOG_H
+#endif // MAKEPARAMETERSDIALOG_H

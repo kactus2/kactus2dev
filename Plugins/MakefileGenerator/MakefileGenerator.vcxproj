@@ -135,7 +135,6 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="..\common\NameGenerationPolicy.cpp" />
-    <ClCompile Include="CompileConflictDialog.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_MakefileGeneratorPlugin.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -157,6 +156,7 @@
     <ClCompile Include="MakefileGenerator.cpp" />
     <ClCompile Include="MakefileGeneratorPlugin.cpp" />
     <ClCompile Include="MakefileParser.cpp" />
+    <ClCompile Include="MakeParametersDialog.cpp" />
     <ClCompile Include="SWStackParser.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -165,10 +165,10 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogSyntax.h" />
     <ClInclude Include="..\common\NameGenerationPolicy.h" />
-    <ClInclude Include="CompileConflictDialog.h" />
     <ClInclude Include="MakeCommon.h" />
     <ClInclude Include="MakefileGenerator.h" />
     <ClInclude Include="MakefileParser.h" />
+    <ClInclude Include="MakeParametersDialog.h" />
     <ClInclude Include="SWStackParser.h" />
     <CustomBuild Include="MakefileGeneratorPlugin.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>

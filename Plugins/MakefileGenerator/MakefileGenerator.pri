@@ -12,7 +12,7 @@ HEADERS += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../editors/ComponentEditor/common/SystemVerilogSyntax.h \
     ../common/NameGenerationPolicy.h \
-    ./CompileConflictDialog.h \
+    ./MakeParametersDialog.h \
     ./MakefileGenerator.h \
     ./MakefileParser.h \
     ./makefilegenerator_global.h \
@@ -23,7 +23,7 @@ SOURCES += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../common/NameGenerationPolicy.cpp \
-    ./CompileConflictDialog.cpp \
+    ./MakeParametersDialog.cpp \
     ./MakefileGenerator.cpp \
     ./MakefileGeneratorPlugin.cpp \
     ./MakefileParser.cpp \

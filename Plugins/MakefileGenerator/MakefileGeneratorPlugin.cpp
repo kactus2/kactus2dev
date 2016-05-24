@@ -11,7 +11,7 @@
 
 #include "MakefileGenerator.h"
 #include "MakefileGeneratorPlugin.h"
-#include "CompileConflictDialog.h"
+#include "MakeParametersDialog.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -147,38 +147,13 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 	SWStackParser stackParser( library );
 	stackParser.parse( topComponent, desgConf, design, sysViewName, targetDir );
 
-    QStringList replacedFiles = stackParser.getReplacedFiles();
-
-    // Ask verification from the user, if any file is being replaced,
-    if ( replacedFiles.size() > 0 )
-    {
-        // Details will be the list of files being replaced.
-        QString detailMsg;
-
-        foreach ( QString file, replacedFiles )
-        {
-            detailMsg += file + "\n";
-        }
-
-        QMessageBox msgBox( QMessageBox::Warning, QCoreApplication::applicationName(),
-            "Some files will be WRITTEN OVER in the generation. Proceed?",
-            QMessageBox::Yes | QMessageBox::No, utility->getParentWidget());
-        msgBox.setDetailedText(detailMsg);
-
-        // Return, if user did not want to replace the files.
-        if (msgBox.exec() == QMessageBox::No)
-		{
-			utility->printInfo( "Makefile generation terminated by user due to overwriting.");
-            return;
-        }
-    }
-
 	// Parse the stacks for buildable objects.
 	MakefileParser makeParser( library, stackParser );
 	makeParser.parse( topComponent );
 
 	// Show the dialog.
-	CompileConflictDialog dialog(makeParser.getParsedData(), utility->getParentWidget());
+	MakeParametersDialog dialog(stackParser.getReplacedFiles(), makeParser.getParsedData(),
+		utility->getParentWidget());
 
 	// Return, if user did not want to proceed after seeing it.
 	if ( dialog.exec() == QDialog::Rejected )
