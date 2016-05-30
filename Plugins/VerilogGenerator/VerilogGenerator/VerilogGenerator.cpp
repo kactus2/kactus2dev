@@ -14,6 +14,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -73,9 +74,10 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QString const&
     QSharedPointer<Design> design)
 {
     topComponent_ = component;
+    topComponentView_ = topComponentView;
     design_ = design;
 
-    initializeWriters(topComponentView);
+    initializeWriters();
 
     if (design_)
     {
@@ -83,7 +85,7 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QString const&
 
         connectAndWireAdHocConnections();
 
-        connectHierarchicalConnectionsToInstances(topComponentView);
+        connectHierarchicalConnectionsToInstances();
         createWiresForInterconnections();        
     }
 
@@ -119,7 +121,7 @@ void VerilogGenerator::generate(QString const& outputPath) const
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::initializeWriters()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::initializeWriters(QString const& topComponentView)
+void VerilogGenerator::initializeWriters()
 {
     QSettings settings;
     QString currentUser = settings.value("General/Username").toString();
@@ -130,7 +132,7 @@ void VerilogGenerator::initializeWriters(QString const& topComponentView)
 
     QSharedPointer<ExpressionFormatter> topFormatter = createFormatterForComponent(topComponent_);
 
-    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, topComponentView,
+    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, topComponentView_,
         sorter_, topFormatter));
 
     instanceWriters_.clear();
@@ -144,9 +146,22 @@ void VerilogGenerator::initializeWriters(QString const& topComponentView)
 // Function: VerilogGenerator::createFormatterForComponent()
 //-----------------------------------------------------------------------------
 QSharedPointer<ExpressionFormatter> VerilogGenerator::createFormatterForComponent(QSharedPointer<Component> targetComponent)
-{
-    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent));
-    return QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
+{    
+    if (targetComponent != topComponent_)
+    {
+        QSharedPointer<MultipleParameterFinder> finder(new MultipleParameterFinder());
+
+        QSharedPointer<TopComponentParameterFinder> topFinder(new TopComponentParameterFinder(topComponent_));
+        topFinder->setActiveView(topComponentView_);
+        finder->addFinder(topFinder);
+        finder->addFinder(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(targetComponent)));
+        return QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(finder));
+    }
+    else
+    {
+        QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent));
+        return QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
+    }    
 }
 
 //-----------------------------------------------------------------------------
@@ -384,7 +399,7 @@ QPair<int, int> VerilogGenerator::logicalBoundsInInstance(QString const& instanc
             bounds.first = instanceParser.parseExpression(portMap->getLogicalPort()->range_->getLeft()).toInt();
             bounds.second = instanceParser.parseExpression(portMap->getLogicalPort()->range_->getRight()).toInt();
         }
-        else if(portMap->getPhysicalPort() && instanceComponent->hasPort(portMap->getPhysicalPort()->name_))
+        else if (portMap->getPhysicalPort() && instanceComponent->hasPort(portMap->getPhysicalPort()->name_))
         {
             QSharedPointer<Port> physicalPort = instanceComponent->getPort(portMap->getPhysicalPort()->name_);
             bounds.first = instanceParser.parseExpression(physicalPort->getLeftBound()).toInt();
@@ -532,15 +547,13 @@ General::InterfaceMode VerilogGenerator::interfaceModeForInterface(QSharedPointe
 QSharedPointer<BusInterface> VerilogGenerator::getBusinterfaceForInterface(
     QSharedPointer<ActiveInterface> interface) const
 {
-    QSharedPointer<BusInterface> busInterface;
-
     QSharedPointer<Component> component = getComponentForInstance(interface->getComponentReference());
     if (component)
     {
-        busInterface = component->getBusInterface(interface->getBusReference());
+        return component->getBusInterface(interface->getBusReference());
     }
 
-    return busInterface;
+    return QSharedPointer<BusInterface>();
 }
 
 //-----------------------------------------------------------------------------
@@ -564,12 +577,12 @@ void VerilogGenerator::createWritersForComponentInstances()
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::connectHierarchicalConnectionsToInstances()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::connectHierarchicalConnectionsToInstances(QString const& topComponentView)
+void VerilogGenerator::connectHierarchicalConnectionsToInstances()
 {
     if (!design_->getInterconnections()->isEmpty())
     {
         QSharedPointer<TopComponentParameterFinder> topFinder(new TopComponentParameterFinder(topComponent_));
-        topFinder->setActiveView(topComponentView);
+        topFinder->setActiveView(topComponentView_);
 
         QSharedPointer<IPXactSystemVerilogParser> topParser(new IPXactSystemVerilogParser(topFinder));
 
@@ -899,15 +912,13 @@ QVector<QSharedPointer<PortReference> > VerilogGenerator::findPrimaryPortsInAdHo
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> VerilogGenerator::findPhysicalPort(QSharedPointer<PortReference> portReference) const
 {
-    QSharedPointer<Port> instancePort(0);
-
     QSharedPointer<Component> instanceComponent = getComponentForInstance(portReference->getComponentRef());
     if (instanceComponent)
     {
-        instancePort = instanceComponent->getPort(portReference->getPortRef());
+        return instanceComponent->getPort(portReference->getPortRef());
     }
 
-    return instancePort;
+    return QSharedPointer<Port>(0);
 }
 
 //-----------------------------------------------------------------------------
@@ -945,14 +956,10 @@ void VerilogGenerator::wireConnectedPorts(QSharedPointer<PortReference> primaryP
     QSharedPointer<AdHocConnection> primaryConnection = findAdHocConnectionForPort(primaryPort);
     QVector<QSharedPointer<PortReference> > connectedPorts = findConnectedPorts(primaryPort);
 
-    QString wireName;
+    QString wireName = primaryConnection->name();
     if (connectedPorts.count() > 1)
     {
         wireName = primaryPort->getPortRef() + "_from_" + primaryPort->getComponentRef();
-    }
-    else
-    {
-        wireName = primaryConnection->name();                         
     }
 
     int wireSize = findWireSizeForAdHocConnection(primaryConnection);
@@ -1047,7 +1054,6 @@ int VerilogGenerator::findWireSizeForAdHocConnection(QSharedPointer<AdHocConnect
             portSize = abs(portLeft - portRight) + 1;
         }
         else if (part)
-
         {
             int partLeft = instanceParser.parseExpression(part->getLeftRange()).toInt();
             int partRight = instanceParser.parseExpression(part->getRightRange()).toInt();
@@ -1074,7 +1080,7 @@ void VerilogGenerator::connectPortToWire(QSharedPointer<PortReference> port, QSt
         QSharedPointer<Component> referencedComponent = getComponentForInstance(port->getComponentRef());
         QSharedPointer<Port> referencedPort = referencedComponent->getPort(port->getPortRef());
 
-        QSharedPointer<ComponentParameterFinder> finder (new ComponentParameterFinder(referencedComponent));
+        QSharedPointer<ComponentParameterFinder> finder(new ComponentParameterFinder(referencedComponent));
         IPXactSystemVerilogParser parser(finder);
 
         int portLeft = parser.parseExpression(referencedPort->getLeftBound()).toInt();

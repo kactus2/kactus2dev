@@ -82,6 +82,8 @@ private slots:
     void testTopLevelModuleParametersAreWritten();
     void testInstanceModuleParametersAreWritten();
 
+    void testParameterPropagationFromTop();
+
 private:
 
     void addPort( QString const& portName, int portSize, DirectionTypes::Direction direction, 
@@ -1754,6 +1756,53 @@ void tst_VerilogGenerator::testInstanceModuleParametersAreWritten()
     verifyOutputContains(
         "    TestSender #(\n"
         "        .moduleParameter     (2))\n"
+        "    sender();");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testParameterPropagationFromTop()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testParameterPropagationFromTop()
+{
+    QSharedPointer<Parameter> topParameter(new Parameter());
+    topParameter->setName("topParameter");
+    topParameter->setValueId("topID");
+    topParameter->setValue("10");
+    topComponent_->getParameters()->append(topParameter);
+
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");    
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    library_.addComponent(senderComponent);
+    addInstanceToDesign("sender", senderVLNV);
+
+    QSharedPointer<View> activeView(new View());
+    activeView->setName("rtl");
+    activeView->setComponentInstantiationRef("instance1");
+
+    QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
+    moduleParameter->setValueId("parameterId");
+    moduleParameter->setName("moduleParameter");
+    moduleParameter->setValueResolve("User");
+    moduleParameter->setValue("1");
+
+    QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
+    instantiation->getModuleParameters()->append(moduleParameter);
+
+    senderComponent->getComponentInstantiations()->append(instantiation);
+    senderComponent->getViews()->append(activeView);
+
+    QSharedPointer<ComponentInstance> senderInstance = design_->getComponentInstances()->first();
+
+    QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
+    parameterOverride->setReferenceId("parameterId");
+    parameterOverride->setConfigurableValue("topID");
+    senderInstance->getConfigurableElementValues()->append(parameterOverride);
+
+    runGenerator();
+
+    verifyOutputContains(
+        "    TestSender #(\n"
+        "        .moduleParameter     (topParameter))\n"
         "    sender();");
 }
 

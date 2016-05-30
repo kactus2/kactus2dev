@@ -79,7 +79,7 @@ private:
     /*!
      *  Initializes writers for parsing.
      */
-    void initializeWriters(QString const& topComponentView);
+    void initializeWriters();
 
     /*!
      *  Creates an expression formatter for the given component.
@@ -291,10 +291,8 @@ private:
     /*!
      *  Parses all the hierarchical connections for a component instance in the design and connects
      *  the instance ports to top ports.
-     *
-     *      @param [in] topComponentView    The active view of the top component.
      */
-    void connectHierarchicalConnectionsToInstances(QString const& topComponentView);
+    void connectHierarchicalConnectionsToInstances();
 
     /*!
      *  Creates port maps to instance for bus interface with a hierarchical connection..
@@ -500,6 +498,9 @@ private:
 
      //! The design to parse.
      QSharedPointer<Design> design_;
+
+     //! The active view for top component.
+     QString topComponentView_;
 
      //! Writers for Verilog wires.
      QSharedPointer<WriterGroup> wireWriters_;
