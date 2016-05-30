@@ -196,6 +196,9 @@
     <ClCompile Include="VerilogTiedValueWriter\VerilogTiedValueWriter.cpp">
       <Filter>Source Files\VerilogTiedValueWriter</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="veriloggeneratorplugin_global.h">
@@ -263,6 +266,9 @@
     </ClInclude>
     <ClInclude Include="VerilogTiedValueWriter\VerilogTiedValueWriter.h">
       <Filter>Header Files\VerilogTiedValueWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
