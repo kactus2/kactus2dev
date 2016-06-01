@@ -225,14 +225,20 @@ void BusInterfaceWriter::writePortMaps(QXmlStreamWriter& writer,
                 writer.writeTextElement("ipxact:isPresent", portMap->getIsPresent());
             }
 
+            // Write ports for the port map.
+            if (portMap->getLogicalPort())
+            {
+                writeLogicalPort(writer, portMap->getLogicalPort());
+            }
+            if (portMap->getPhysicalPort())
+            {
+                writePhysicalPort(writer, portMap->getPhysicalPort());
+            }
+
             if (!portMap->getLogicalTieOff().isEmpty() )
             {
                 writer.writeTextElement("ipxact:logicalTieOff", portMap->getLogicalTieOff());
             }
-
-            // Write ports for the port map.
-            writeLogicalPort(writer, portMap->getLogicalPort());
-            writePhysicalPort(writer, portMap->getPhysicalPort());
 
             if (!portMap->getIsInformative().toString().isEmpty())
             {

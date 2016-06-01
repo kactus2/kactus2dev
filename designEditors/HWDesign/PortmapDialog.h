@@ -17,7 +17,7 @@
 class BusInterface;
 class Component;
 class LibraryInterface;
-class BusIfPortmapTab;
+class BusInterfacePortMapTab;
 
 //-----------------------------------------------------------------------------
 //! PortmapDialog class.
@@ -52,7 +52,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Port map editor widget.
-    BusIfPortmapTab* portmapWidget_;
+    BusInterfacePortMapTab* portmapWidget_;
 
     //! The bus interface whose port map to edit.
     QSharedPointer<BusInterface> busIf_;

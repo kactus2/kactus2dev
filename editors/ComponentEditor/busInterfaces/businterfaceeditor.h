@@ -13,12 +13,14 @@
 #define BUSINTERFACEEDITOR_H
 
 #include "busifgeneraltab.h"
-#include "busifportmaptab.h"
 
 #include <editors/ComponentEditor/itemeditor.h>
+#include <editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
+
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 
 #include <QSharedPointer>
 #include <QTabWidget>
@@ -45,6 +47,7 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser.
+     *      @param [in] busInterfaceValidator   The validator for bus interfaces.
 	 *      @param [in] parent                  The owner of this container.
 	 *      @param [in] parentWnd               The parent window.
 	 */
@@ -54,6 +57,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<BusInterfaceValidator> busInterfaceValidator,
 		QWidget* parent,
         QWidget* parentWnd);
 	
@@ -93,7 +97,7 @@ private:
 	BusIfGeneralTab generalEditor_;
 
 	//! The tab for port maps of bus interface
-	BusIfPortmapTab portmapsEditor_;
+    BusInterfacePortMapTab portmapsEditor_;
 };
 
 #endif // BUSINTERFACEEDITOR_H

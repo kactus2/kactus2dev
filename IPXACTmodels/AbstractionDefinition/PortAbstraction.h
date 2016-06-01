@@ -158,7 +158,16 @@ public:
      *      @return The required presence for the mode.
      */
     PresenceTypes::Presence getPresence(General::InterfaceMode mode) const;
- 
+
+    /*!
+     *  Check if the port has the selected interface mode.
+     *
+     *      @param [in] mode    The selected interface mode.
+     *
+     *      @return True, if the port has the selected mode, otherwise false.
+     */
+    bool hasMode(General::InterfaceMode mode) const;
+
 private:
 
     //! Condition for port existence.

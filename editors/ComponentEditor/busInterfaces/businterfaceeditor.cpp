@@ -22,12 +22,12 @@
 BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busif, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    QWidget* parent, QWidget* parentWnd): 
+    QSharedPointer<BusInterfaceValidator> busInterfaceValidator, QWidget* parent, QWidget* parentWnd):
 ItemEditor(component, libHandler, parent),
 busif_(busif),
 tabs_(this), 
 generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, &tabs_, parentWnd),
-portmapsEditor_(libHandler, component, busif, expressionParser, &tabs_)
+portmapsEditor_(libHandler, component, busif, expressionParser, expressionFormatter, parameterFinder, &tabs_)
 {
 	Q_ASSERT(component);
 	Q_ASSERT(libHandler);
@@ -47,6 +47,11 @@ portmapsEditor_(libHandler, component, busif, expressionParser, &tabs_)
         this, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
     connect(&portmapsEditor_, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+
+    connect(&portmapsEditor_, SIGNAL(increaseReferences(QString)), this,
+        SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&portmapsEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	connect(&generalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&generalEditor_, SIGNAL(errorMessage(QString const&)),

@@ -12,7 +12,7 @@
 #ifndef BUSINTERFACEWIZARDPORTMAPPAGE_H
 #define BUSINTERFACEWIZARDPORTMAPPAGE_H
 
-#include <editors/ComponentEditor/busInterfaces/busifportmaptab.h>
+#include <editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.h>
 
 #include <QWizardPage>
 #include <QLabel>
@@ -22,6 +22,8 @@ class BusInterfaceWizard;
 class BusInterfaceValidator;
 class LibraryInterface;
 class ExpressionParser;
+class ParameterFinder;
+class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
 //! Port map page for the bus interface wizard.
@@ -35,31 +37,34 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component       The component whose bus interface is being edited.
-     *      @param [in] busIf           The bus interface being edited.
-     *      @param [in] lh              The component library handler.
-     *      @param [in] physicalPorts   The physical ports selected for mapping.
-     *      @param [in] validator       The validator for bus interface.
-     *      @param [in] parent          The parent wizard.
+     *      @param [in] component           The component whose bus interface is being edited.
+     *      @param [in] busIf               The bus interface being edited.
+     *      @param [in] lh                  The component library handler.
+     *      @param [in] physicalPorts       The physical ports selected for mapping.
+     *      @param [in] expressionParser    The used expression parser.
+     *      @param [in] formatter           The used expression formatter.
+     *      @param [in] parameterFinder     The used parameter finder.
+     *      @param [in] validator           The validator for bus interface.
+     *      @param [in] parent              The parent wizard.
      */
     BusInterfaceWizardPortMapPage(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf, 
         LibraryInterface* lh, QStringList physicalPorts, QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<BusInterfaceValidator> validator,
-        BusInterfaceWizard* parent);
+        QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<BusInterfaceValidator> validator, BusInterfaceWizard* parent);
 
     /*!
-    *  Destructor.
-    */
+     *  The destructor.
+     */
     ~BusInterfaceWizardPortMapPage();
 
     /*!
-    *  Returns the ID of the next page.
-    */
+     *  Returns the ID of the next page.
+     */
     virtual int nextId() const;
 
     /*!
-    *  Initializes the page.
-    */
+     *  Initializes the page.
+     */
     virtual void initializePage();
     
     /*!
@@ -98,10 +103,10 @@ private:
     LibraryInterface* handler_;
 
     //! The widget for editing port maps.
-    BusIfPortmapTab portMapTab_;
+    BusInterfacePortMapTab portMapTab_;
 
+    //! The bus interface validator.
     QSharedPointer<BusInterfaceValidator> validator_;
-
 };
 
 #endif // BUSINTERFACEWIZARDPORTMAPPAGE_H

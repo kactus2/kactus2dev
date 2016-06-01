@@ -11,7 +11,7 @@
 
 #include "PortmapDialog.h"
 
-#include <editors/ComponentEditor/busInterfaces/busifportmaptab.h>
+#include <editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.h>
 #include <editors/ComponentEditor/common/NullParser.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -19,6 +19,10 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
+
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -32,7 +36,10 @@
 //-----------------------------------------------------------------------------
 PortmapDialog::PortmapDialog(LibraryInterface* libInterface, QSharedPointer<Component> component,
                              QSharedPointer<BusInterface> busIf, QSharedPointer<BusInterface> otherBusIf,
-                             QWidget* parent) : QDialog(parent), busIf_(busIf), otherBusIf_(otherBusIf)
+                             QWidget* parent) :
+QDialog(parent),
+busIf_(busIf),
+otherBusIf_(otherBusIf)
 {
     Q_ASSERT(libInterface != 0);
     Q_ASSERT(component != 0);
@@ -41,9 +48,14 @@ PortmapDialog::PortmapDialog(LibraryInterface* libInterface, QSharedPointer<Comp
 
     setWindowTitle(tr("Define Port Maps"));
 
+    QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+    QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
+
     // Create the port map widget.
-    portmapWidget_ = new BusIfPortmapTab(libInterface, component, busIf, 
-        QSharedPointer<ExpressionParser>(new NullParser()), this);
+    portmapWidget_ = new BusInterfacePortMapTab(libInterface, component, busIf, expressionParser,
+        expressionFormatter, parameterFinder, this);
+
     portmapWidget_->setAbsType(*busIf->getAbstractionTypes()->first()->getAbstractionRef(),
         busIf->getInterfaceMode());
 

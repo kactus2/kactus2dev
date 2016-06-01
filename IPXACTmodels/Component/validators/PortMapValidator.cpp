@@ -59,7 +59,11 @@ PortMapValidator::~PortMapValidator()
 bool PortMapValidator::validate(QSharedPointer<PortMap> portMap) const
 {
 	QSharedPointer<PortAbstraction> logicalPort = findLogicalPort(portMap->getLogicalPort()->name_);
-	QSharedPointer<Port> physicalPort = findPhysicalPort(portMap->getPhysicalPort()->name_);
+    QSharedPointer<Port> physicalPort;
+    if (portMap->getPhysicalPort())
+    {
+        physicalPort = findPhysicalPort(portMap->getPhysicalPort()->name_);
+    }
 
 	return hasValidIsPresent(portMap) && hasValidLogicalPort(portMap) && 
 		hasValidPhysicalPort(portMap, physicalPort) &&
@@ -262,7 +266,7 @@ bool PortMapValidator::connectedPortsHaveValidDirections(QSharedPointer<PortAbst
         return true;
     }
 
-    return false;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -277,7 +281,7 @@ bool PortMapValidator::connectedPortsHaveValidPortTypes(QSharedPointer<PortAbstr
             (logicalPort->getTransactional() && physicalPort->getTransactional());
     }
 
-    return false;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -309,7 +313,7 @@ bool PortMapValidator::connectedPortsHaveSameRange(QSharedPointer<PortMap> portM
         }
     }
 
-    return false;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -319,7 +323,12 @@ void PortMapValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Por
     QString const& context) const
 {
 	QSharedPointer<PortAbstraction> logicalPort = findLogicalPort(portMap->getLogicalPort()->name_);
-	QSharedPointer<Port> physicalPort = findPhysicalPort(portMap->getPhysicalPort()->name_);
+
+    QSharedPointer<Port> physicalPort;
+    if (portMap->getPhysicalPort())
+    {
+        physicalPort = findPhysicalPort(portMap->getPhysicalPort()->name_);
+    }
 
     findErrorsInIsPresent(errors, portMap, context);
     findErrorsInLogicalPort(errors, portMap->getLogicalPort(), logicalPort, context);

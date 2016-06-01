@@ -151,9 +151,12 @@ void PortListSortProxyModel::onConnectionsReset()
         {
             foreach (QSharedPointer<PortMap> portMap, *busIf->getPortMaps())
             {
-                if (!connectedPorts_.contains(portMap->getPhysicalPort()->name_))
+                if (portMap->getPhysicalPort())
                 {
-                    connectedPorts_.append(portMap->getPhysicalPort()->name_);
+                    if (!connectedPorts_.contains(portMap->getPhysicalPort()->name_))
+                    {
+                        connectedPorts_.append(portMap->getPhysicalPort()->name_);
+                    }
                 }
             }
         }        

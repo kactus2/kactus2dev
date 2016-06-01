@@ -265,3 +265,18 @@ PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode
 
     return PresenceTypes::UNKNOWN;
 }
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstraction::hasMode()
+//-----------------------------------------------------------------------------
+bool PortAbstraction::hasMode(General::InterfaceMode mode) const
+{
+    if (hasWire())
+    {
+        return wire_->hasMode(mode);
+    }
+    else
+    {
+        return false;
+    }
+}

@@ -546,7 +546,10 @@ QStringList BusInterface::getPhysicalPortNames() const
     {
         foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
         {
-            list.append(portMap->getPhysicalPort()->name_);
+            if (portMap->getPhysicalPort())
+            {
+                list.append(portMap->getPhysicalPort()->name_);
+            }
         }
     }
 

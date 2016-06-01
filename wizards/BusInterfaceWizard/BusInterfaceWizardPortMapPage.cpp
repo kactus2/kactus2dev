@@ -30,13 +30,14 @@
 //-----------------------------------------------------------------------------
 BusInterfaceWizardPortMapPage::BusInterfaceWizardPortMapPage(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, LibraryInterface* lh, QStringList physicalPorts,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<BusInterfaceValidator> validator,
+    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> formatter,
+    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<BusInterfaceValidator> validator,
     BusInterfaceWizard* parent):
 QWizardPage(parent),
 component_(component),
 busIf_(busIf),
 handler_(lh),
-portMapTab_(lh, component, busIf, expressionParser, this),
+portMapTab_(handler_, component_, busIf_, expressionParser, formatter, parameterFinder, this),
 validator_(validator)
 {
     setTitle(tr("Port Maps"));

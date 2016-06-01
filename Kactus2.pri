@@ -274,6 +274,7 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/channels/channelsmodel.h \
     ./editors/ComponentEditor/busInterfaces/BridgeColumns.h \
     ./editors/ComponentEditor/busInterfaces/BusInterfaceColumns.h \
+    ./editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.h \
     ./editors/ComponentEditor/busInterfaces/bridgesmodel.h \
     ./editors/ComponentEditor/busInterfaces/busifgeneraldetails.h \
     ./editors/ComponentEditor/busInterfaces/busifgeneraltab.h \
@@ -283,7 +284,6 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/busInterfaces/busifinterfacemslave.h \
     ./editors/ComponentEditor/busInterfaces/busifinterfaceslave.h \
     ./editors/ComponentEditor/busInterfaces/busifinterfacesystem.h \
-    ./editors/ComponentEditor/busInterfaces/busifportmaptab.h \
     ./editors/ComponentEditor/busInterfaces/businterfaceeditor.h \
     ./editors/ComponentEditor/busInterfaces/businterfacesdelegate.h \
     ./editors/ComponentEditor/busInterfaces/businterfaceseditor.h \
@@ -292,22 +292,17 @@ HEADERS += ./common/Global.h \
     ./editors/ComponentEditor/busInterfaces/ApiCreateDialog.h \
     ./editors/ComponentEditor/busInterfaces/bridgesdelegate.h \
     ./editors/ComponentEditor/busInterfaces/bridgeseditor.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/BitMappingModel.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/BitMappingView.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/logicallistmodel.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/logicallistview.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/physlistmodel.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/physlistview.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/portlistmodel.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingColumns.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/portlistview.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsBitMapItem.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsLogicalItem.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.h \
     ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersdelegate.h \
     ./editors/ComponentEditor/fileBuilders/filebuilderseditor.h \
@@ -671,6 +666,8 @@ HEADERS += ./common/Global.h \
     ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.h \
     ./designEditors/common/ConnectionEditor/AdHocBoundsModel.h \
     ./designEditors/common/ConnectionEditor/connectioneditor.h \
+    ./designEditors/common/InterfaceEditor/InterfacePortMapModel.h \
+    ./designEditors/common/InterfaceEditor/InterfacePortMapDelegate.h \
     ./designEditors/common/InterfaceEditor/interfaceeditor.h \
     ./designEditors/common/ConfigurationEditor/activeviewdelegate.h \
     ./designEditors/common/ConfigurationEditor/activevieweditor.h \
@@ -700,9 +697,7 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./designEditors/common/InterfaceEditor/InterfacePortMapModel.h \
-    ./designEditors/common/InterfaceEditor/InterfacePortMapDelegate.h
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -915,28 +910,21 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/busInterfaces/busifinterfacemslave.cpp \
     ./editors/ComponentEditor/busInterfaces/busifinterfaceslave.cpp \
     ./editors/ComponentEditor/busInterfaces/busifinterfacesystem.cpp \
-    ./editors/ComponentEditor/busInterfaces/busifportmaptab.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfaceeditor.cpp \
+    ./editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfacesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfaceseditor.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfacesmodel.cpp \
     ./editors/ComponentEditor/busInterfaces/interfacemodestack.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/BitMappingModel.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/BitMappingView.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/BitSelectionDialog.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/logicallistmodel.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/logicallistview.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/physlistmodel.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/physlistview.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/portlistmodel.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/portlistview.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsBitMapItem.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsLogicalItem.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.cpp \
     ./editors/ComponentEditor/channels/channelsdelegate.cpp \
     ./editors/ComponentEditor/channels/channelseditor.cpp \
     ./editors/ComponentEditor/channels/channelsmodel.cpp \
@@ -1289,6 +1277,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/common/ConnectionEditor/AdHocBoundsModel.cpp \
     ./designEditors/common/ConnectionEditor/connectioneditor.cpp \
     ./designEditors/common/InterfaceEditor/interfaceeditor.cpp \
+    ./designEditors/common/InterfaceEditor/InterfacePortMapDelegate.cpp \
+    ./designEditors/common/InterfaceEditor/InterfacePortMapModel.cpp \
     ./designEditors/common/ConfigurationEditor/activeviewdelegate.cpp \
     ./designEditors/common/ConfigurationEditor/activevieweditor.cpp \
     ./designEditors/common/ConfigurationEditor/activeviewmodel.cpp \
@@ -1317,7 +1307,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./designEditors/common/InterfaceEditor/InterfacePortMapModel.cpp \
-    ./designEditors/common/InterfaceEditor/InterfacePortMapDelegate.cpp
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp
 RESOURCES += kactus.qrc

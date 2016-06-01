@@ -169,6 +169,15 @@ public:
      */
     QString getWidth(General::InterfaceMode mode) const;
 
+    /*!
+     *  Check if the wire has the selected interface mode.
+     *
+     *      @param [in] mode    The selected interface mode.
+     *
+     *      @return True, if the wire has the selected mode, otherwise false.
+     */
+    bool hasMode(General::InterfaceMode mode) const;
+
 private:
 
     //! The qualifier describing the information the wire carries.
