@@ -110,7 +110,7 @@ signals:
 	/*!
      *  Emitted when the description-field changes.
 	 */
-    void descriptionChanged(const QString& newDescription);
+    void descriptionChanged();
 
 private:
 

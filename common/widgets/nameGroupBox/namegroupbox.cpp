@@ -70,8 +70,8 @@ descriptionEdit_(0)
     connect(displayNameEdit_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(displayNameEdit_, SIGNAL(editingFinished()), this, SIGNAL(displayNameChanged()), Qt::UniqueConnection);
 
-    connect(descriptionEdit_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(descriptionEdit_, SIGNAL(editingFinished()), this, SIGNAL(descriptionChanged()), Qt::UniqueConnection);
+    connect(descriptionEdit_, SIGNAL(textChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(descriptionEdit_, SIGNAL(textChanged()), this, SIGNAL(descriptionChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
