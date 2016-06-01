@@ -204,8 +204,6 @@ void ComponentEditorAddrSpaceItem::updateGraphics()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpaceItem::removeGraphicsItem()
 {
-    Q_ASSERT(graphItem_);
-
     if (graphItem_)
     {
         // remove the graph item from the scene

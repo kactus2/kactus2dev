@@ -2035,38 +2035,41 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
 
     QStringList visiblePortNames;
 
-    if (!adhocGroup.isNull())
+    if (adhocGroup.isNull())
+	{
+		adhocGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:adHocVisibilities"));
+		design->getVendorExtensions()->append(adhocGroup);
+	}
+
+    foreach (QSharedPointer<VendorExtension> positionExtension, adhocGroup->getByType("kactus2:adHocVisible"))
     {
-        foreach (QSharedPointer<VendorExtension> positionExtension, adhocGroup->getByType("kactus2:adHocVisible"))
+        QSharedPointer<Kactus2Placeholder> adHocExtension = positionExtension.dynamicCast<Kactus2Placeholder>();
+        QString portName = adHocExtension->getAttributeValue("portName");
+
+        QSharedPointer<Port> adHocPort = getEditedComponent()->getPort(portName);
+
+        AdHocInterfaceItem* adHocIf;
+
+        if (adHocPort)
         {
-            QSharedPointer<Kactus2Placeholder> adHocExtension = positionExtension.dynamicCast<Kactus2Placeholder>();
-            QString portName = adHocExtension->getAttributeValue("portName");
+            adHocIf = new AdHocInterfaceItem(getEditedComponent(), adHocPort, adHocExtension, 0);
 
-            QSharedPointer<Port> adHocPort = getEditedComponent()->getPort(portName);
+            visiblePortNames.append(portName);
+        }
+        else
+        {
+            adHocIf = createMissingHierarchicalAdHocPort(portName, adHocExtension, 0);
+        }
 
-            AdHocInterfaceItem* adHocIf;
-
-            if (adHocPort)
-            {
-                adHocIf = new AdHocInterfaceItem(getEditedComponent(), adHocPort, adHocExtension, 0);
-
-                visiblePortNames.append(portName);
-            }
-            else
-            {
-                adHocIf = createMissingHierarchicalAdHocPort(portName, adHocExtension, 0);
-            }
-
-            // Add the ad-hoc interface to the first column where it is allowed to be placed.
-            GraphicsColumn* column = getLayout()->findColumnAt(adHocIf->scenePos());
-            if (column != 0 && column->isItemAllowed(adHocIf))
-            {
-                column->addItem(adHocIf, true);
-            }
-            else
-            {
-                getLayout()->addItem(adHocIf);
-            }
+        // Add the ad-hoc interface to the first column where it is allowed to be placed.
+        GraphicsColumn* column = getLayout()->findColumnAt(adHocIf->scenePos());
+        if (column != 0 && column->isItemAllowed(adHocIf))
+        {
+            column->addItem(adHocIf, true);
+        }
+        else
+        {
+            getLayout()->addItem(adHocIf);
         }
     }
 
