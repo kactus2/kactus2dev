@@ -786,7 +786,6 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	Q_ASSERT(model);
 
 	QSharedPointer<View> hierView(new View(viewName));
-    hierView->addEnvIdentifier("");
     hierView->setDesignConfigurationInstantiationRef(configurationName);
     
     QSharedPointer<DesignConfigurationInstantiation> configuration(new DesignConfigurationInstantiation());

@@ -341,15 +341,14 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> topComponent,
 		softInstance->setFileSetRef(fileSetName);
 	}
 
-	// Obtain the the fileSet by name and set it as a source file group.
+	// Obtain the the fileSet by name.
 	QSharedPointer<FileSet> fileSet = topComponent->getFileSet(fileSetName);
 
+	// Create and add to the top component if needed.
 	if (!fileSet)
 	{
-		QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets = topComponent->getFileSets();
 		fileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, "sourceFiles"));
-		fileSets->append(fileSet);
-		fileSet->setGroups("sourceFiles");
+		topComponent->getFileSets()->append(fileSet);
 	}
 
 	// Save for later use.

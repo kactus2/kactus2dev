@@ -169,7 +169,7 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 	// Did we actually generate anything?
 	if ( exe_count > 0 )
 	{
-		// Top component and the design may have affected by changes -> save.
+		// Top component and the design may have been affected by changes -> save.
 		library->writeModelToFile(libComp);
 		library->writeModelToFile(libDes);
 

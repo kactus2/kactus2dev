@@ -345,26 +345,42 @@ void VerilogGeneratorPlugin::addRTLViewToTopComponent(QString const& activeViewN
         topComponent_->getViews()->append(rtlView);
 	}
 
-	QSharedPointer<ComponentInstantiation> cimp;
+	// Needs a component instantiation.
+	QSharedPointer<ComponentInstantiation> cimp =
+		topComponent_->getModel()->findComponentInstantiation( rtlView->getComponentInstantiationRef() );
 
-	if ( rtlView->getComponentInstantiationRef().isEmpty() )
+	if ( !cimp )
 	{
+		// If the view has no component instantiation, make new one.
 		cimp = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
 		cimp->setName(rtlView->name() + "_instantiation");
 		rtlView->setComponentInstantiationRef( cimp->name() );
 		topComponent_->getComponentInstantiations()->append(cimp);
 	}
-	else
+
+	// Set language
+	cimp->setLanguage("verilog");
+
+	// Form name for the file set reference.
+	QString fileSetRef = fileSetNameForActiveView(activeViewName);
+
+	// Append to the list, if does not exist.
+	if ( !cimp->getFileSetReferences()->contains( fileSetRef ) )
 	{
-		cimp = topComponent_->getModel()->findComponentInstantiation( rtlView->getComponentInstantiationRef() );
+		cimp->getFileSetReferences()->append( fileSetRef );
 	}
 
-	cimp->setLanguage("verilog");
-	cimp->getFileSetReferences()->append( fileSetNameForActiveView(activeViewName) );
- 
+	// This is environment identifiers.
+	QString envId = QString("verilog:Kactus2:");
+
 	QStringList envIds = rtlView->getEnvIdentifiers();
-	envIds.append("verilog:Kactus2:");
-    rtlView->setEnvIdentifiers(envIds);
+
+	// If does not exist within the view, append to the list.
+	if ( !envIds.contains(envId) )
+	{
+		envIds.append(envId);
+		rtlView->setEnvIdentifiers(envIds);
+	}
 }
 
 //-----------------------------------------------------------------------------

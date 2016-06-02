@@ -2234,7 +2234,7 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier, Kac
     {
         emptyFlatView->setName("flat");
     }
-    emptyFlatView->addEnvIdentifier("::");
+
     component->getViews()->append(emptyFlatView);
 
     component->setVersion(VERSION_FILESTR);
