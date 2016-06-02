@@ -37,7 +37,7 @@ public:
      *
      *      @param [in] output   The output to write to.
      */
-    virtual void write(QTextStream& output) const;
+    virtual void write(QTextStream& outputStream) const;
     
     /*!
      *  Adds a new writer to the group.

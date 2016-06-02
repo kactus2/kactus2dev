@@ -115,8 +115,42 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
 		{
 			if ( currentInsta->name() == view->getComponentInstantiationRef() )
 			{
-				QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite
-					= currentInsta->getModuleParameters();
+				// Create a new list of module parameters.
+				auto parametersToWrite = QSharedPointer<QList<QSharedPointer<ModuleParameter> > >
+					( new QList<QSharedPointer<ModuleParameter> > );
+				
+				// Go through existing ones on the instance.
+				foreach ( QSharedPointer<ModuleParameter> parameterAdd, *currentInsta->getModuleParameters() )
+				{
+					// If true, the parameter is appended to the end of list.
+					bool append = true;
+
+					// Go through parameters that have been so far appended to the list.
+					for ( auto parameterCmp = parametersToWrite->begin();
+						 parameterCmp != parametersToWrite->end(); ++parameterCmp )
+					{
+						// Resolve the value of the formerly appended item.
+						QString formatted = this->formatter_->
+							 formatReferringExpression((*parameterCmp)->getValue());
+
+						// If it contains a reference to the inspected parameter, the inspected parameter comes
+						// before it is referred.
+						if ( formatted.contains(parameterAdd->name()) )
+						{
+							parametersToWrite->insert( parameterCmp, parameterAdd );
+
+							// It will not be inserted twice, so break here.
+							append = false;
+							break;
+						}
+					 }
+
+					// If the parameter was not needed anywhere, it is appended to the end of the list.
+					if ( append )
+					{
+						parametersToWrite->append( parameterAdd );
+					}
+				}
 
 				if (!parametersToWrite->isEmpty())
 				{
