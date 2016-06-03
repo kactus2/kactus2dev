@@ -548,7 +548,7 @@ void FileSet::setFileSetId( const QString& id )
 void FileSet::sortFiles()
 {
 	// Get the list of files.
-	auto entryList = files_;
+	QSharedPointer<QList<QSharedPointer<File> > > entryList = files_;
 
 	// Used to commit the comparison.
 	QCollator collator;

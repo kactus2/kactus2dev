@@ -316,7 +316,7 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> topComponent,
 	}
 
 	// Add the instance as a new part of the stack.
-	auto stackPart = QSharedPointer<StackPart>( new StackPart );
+	QSharedPointer<StackPart> stackPart = QSharedPointer<StackPart>( new StackPart );
 	stackPart->instanceName = softInstance->getInstanceName();
 	stackPart->component = softComponent;
 	stackPart->view = softView;
