@@ -19,6 +19,7 @@
 #include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/PortMapValidator.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/AbstractionType.h>
 #include <IPXACTmodels/Component/PortMap.h>
@@ -38,6 +39,7 @@
 
 #include <tests/MockObjects/LibraryMock.h>
 
+#include <QSharedPointer>
 #include <QtTest>
 
 class tst_BusInterfaceValidator : public QObject
@@ -98,6 +100,17 @@ private slots:
 private:
     
     bool errorIsNotFoundInErrorList(QString const& expectedError, QVector<QString> errorList);
+
+    QSharedPointer<BusInterfaceValidator> createBusInterfaceValidator(
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QSharedPointer<QList<QSharedPointer<View> > > views, QSharedPointer<QList<QSharedPointer<Port> > > ports,
+        QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces,
+        QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps,
+        QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces,
+        QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
+        QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
+        LibraryInterface* libraryHandler);
 };
 
 //-----------------------------------------------------------------------------
@@ -119,19 +132,21 @@ void tst_BusInterfaceValidator::testHasValidName()
     testBus->setName(name);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
         QSharedPointer<QList<QSharedPointer<FileSet> > > (),
         QSharedPointer<QList<QSharedPointer<RemapState> > > (), 0);
-    QCOMPARE(validator.hasValidName(testBus), isValid);
+
+    QCOMPARE(validator->hasValidName(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testBus, "test");
+        validator->findErrorsIn(foundErrors, testBus, "test");
 
         QString expectedError = QObject::tr("Invalid name specified for bus interface %1 within %2")
             .arg(testBus->name()).arg("test");
@@ -169,19 +184,21 @@ void tst_BusInterfaceValidator::testHasValidIsPresent()
     testBus->setIsPresent(isPresent);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
         QSharedPointer<QList<QSharedPointer<FileSet> > > (),
         QSharedPointer<QList<QSharedPointer<RemapState> > > (), 0);
-    QCOMPARE(validator.hasValidIsPresent(testBus->getIsPresent()), isValid);
+
+    QCOMPARE(validator->hasValidIsPresent(testBus->getIsPresent()), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testBus, "test");
+        validator->findErrorsIn(foundErrors, testBus, "test");
 
         QString expectedError = QObject::tr("Invalid isPresent set for bus interface %1 within %2")
             .arg(testBus->name()).arg("test");
@@ -219,7 +236,8 @@ void tst_BusInterfaceValidator::testHasValidBusType()
 
     LibraryMock* mockLibrary (new LibraryMock(this));
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
@@ -228,10 +246,10 @@ void tst_BusInterfaceValidator::testHasValidBusType()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE(validator.hasValidBusType(testBus), false);
+    QCOMPARE(validator->hasValidBusType(testBus), false);
 
     QVector<QString> foundErrors;
-    validator.findErrorsIn(foundErrors, testBus, "test");
+    validator->findErrorsIn(foundErrors, testBus, "test");
 
     QString expectedError = QObject::tr("Bus definition must be given for bus interface %1 within %2")
         .arg(testBus->name()).arg("test");
@@ -243,10 +261,10 @@ void tst_BusInterfaceValidator::testHasValidBusType()
     ConfigurableVLNVReference testType(VLNV::BUSDEFINITION, "testVendor", "testLibrary", "busDefinition", "1.1");
     testBus->setBusType(testType);
 
-    QCOMPARE(validator.hasValidBusType(testBus), false);
+    QCOMPARE(validator->hasValidBusType(testBus), false);
 
     foundErrors.clear();
-    validator.findErrorsIn(foundErrors, testBus, "test");
+    validator->findErrorsIn(foundErrors, testBus, "test");
 
     expectedError = QObject::tr("Bus definition %1 set for bus interface %2 within %3 could not be found "
         "in the library").arg(testType.toString()).arg(testBus->name()).arg("test");
@@ -260,15 +278,15 @@ void tst_BusInterfaceValidator::testHasValidBusType()
 
     mockLibrary->addComponent(testDefinition);
 
-    QCOMPARE(validator.hasValidBusType(testBus), true);
+    QCOMPARE(validator->hasValidBusType(testBus), true);
 
     ConfigurableVLNVReference componentType (VLNV::COMPONENT, "testVendor", "testLbirary", "component", "0.8");
     testBus->setBusType(componentType);
 
-    QCOMPARE(validator.hasValidBusType(testBus), false);
+    QCOMPARE(validator->hasValidBusType(testBus), false);
 
     foundErrors.clear();
-    validator.findErrorsIn(foundErrors, testBus, "test");
+    validator->findErrorsIn(foundErrors, testBus, "test");
 
     expectedError = QObject::tr("Invalid bus definition set for %1 within %2").arg(testBus->name()).arg("test");
     if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -289,7 +307,8 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeAbstractionRef()
 
     LibraryMock* mockLibrary (new LibraryMock(this));
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
@@ -298,14 +317,14 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeAbstractionRef()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE(validator.hasValidAbstractionTypes(testBus), true);
+    QCOMPARE(validator->hasValidAbstractionTypes(testBus), true);
 
     testBus->getAbstractionTypes()->append(testAbstraction);
 
-    QCOMPARE(validator.hasValidAbstractionTypes(testBus), false);
+    QCOMPARE(validator->hasValidAbstractionTypes(testBus), false);
 
     QVector<QString> errorsFound;
-    validator.findErrorsIn(errorsFound, testBus, "test");
+    validator->findErrorsIn(errorsFound, testBus, "test");
     QString expectedError = QObject::tr("Abstraction reference must be set for each abstraction type in "
         "bus interface %1").arg(testBus->name());
     if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -317,10 +336,10 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeAbstractionRef()
         VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "Everett", "5.1"));
     testAbstraction->setAbstractionRef(abstractionReference);
 
-    QCOMPARE(validator.hasValidAbstractionTypes(testBus), false);
+    QCOMPARE(validator->hasValidAbstractionTypes(testBus), false);
 
     errorsFound.clear();
-    validator.findErrorsIn(errorsFound, testBus, "test");
+    validator->findErrorsIn(errorsFound, testBus, "test");
     expectedError = QObject::tr("Abstraction reference %1 set for bus interface %2 could not be found "
         "in the library").arg(abstractionReference->toString()).arg(testBus->name());
     if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -333,7 +352,7 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeAbstractionRef()
 
     mockLibrary->addComponent(abstractionDefinition);
 
-    QCOMPARE(validator.hasValidAbstractionTypes(testBus), true);
+    QCOMPARE(validator->hasValidAbstractionTypes(testBus), true);
 }
 
 //-----------------------------------------------------------------------------
@@ -375,7 +394,8 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeViewRef()
     testBus->getAbstractionTypes()->append(testAbstraction);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator (parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), testViews,
+    QSharedPointer<BusInterfaceValidator> validator  = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (), testViews,
         QSharedPointer<QList<QSharedPointer<Port> > > (), QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
@@ -383,12 +403,12 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeViewRef()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE (validator.hasValidAbstractionTypes(testBus), isValid);
+    QCOMPARE (validator->hasValidAbstractionTypes(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
         QString expectedError = QObject::tr("Invalid view reference %1 set for abstraction type in bus interface "
             "%2").arg(viewName).arg(testBus->name());
         if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -484,7 +504,8 @@ void tst_BusInterfaceValidator::testPortMapLogicalPortIsValid()
     componentPorts->append(newPort);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator (parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), componentPorts,
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
@@ -493,12 +514,12 @@ void tst_BusInterfaceValidator::testPortMapLogicalPortIsValid()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE (validator.hasValidAbstractionTypes(testBus), isValid);
+    QCOMPARE (validator->hasValidAbstractionTypes(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString context = QObject::tr("%1 bus interface %2")
             .arg(General::interfaceMode2Str(testBus->getInterfaceMode())).arg(testBus->name());
@@ -671,7 +692,8 @@ void tst_BusInterfaceValidator::testMultiplePortMapLogicalPortsAreValid()
     componentPorts->append(newPortTwo);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator (parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), componentPorts,
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
@@ -680,12 +702,12 @@ void tst_BusInterfaceValidator::testMultiplePortMapLogicalPortsAreValid()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE (validator.hasValidAbstractionTypes(testBus), isValid);
+    QCOMPARE (validator->hasValidAbstractionTypes(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString context = QObject::tr("%1 bus interface %2")
             .arg(General::interfaceMode2Str(testBus->getInterfaceMode())).arg(testBus->name());
@@ -795,7 +817,8 @@ void tst_BusInterfaceValidator::testPortMapPhysicalPortIsValid()
     }
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator (parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), componentPorts,
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
@@ -804,12 +827,12 @@ void tst_BusInterfaceValidator::testPortMapPhysicalPortIsValid()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE (validator.hasValidAbstractionTypes(testBus), isValid);
+    QCOMPARE (validator->hasValidAbstractionTypes(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString expectedError;
 
@@ -952,7 +975,8 @@ void tst_BusInterfaceValidator::testPortMapConnectedPortDirectionsAreValid()
     }
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator (parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), componentPorts,
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
@@ -961,12 +985,12 @@ void tst_BusInterfaceValidator::testPortMapConnectedPortDirectionsAreValid()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE (validator.hasValidAbstractionTypes(testBus), isValid);
+    QCOMPARE (validator->hasValidAbstractionTypes(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString context = QObject::tr("%1 bus interface %2")
             .arg(General::interfaceMode2Str(testBus->getInterfaceMode())).arg(testBus->name());
@@ -1092,7 +1116,8 @@ void tst_BusInterfaceValidator::testPortMapConnectedPortsHaveValidType()
     testBus->getAbstractionTypes()->append(testAbstraction);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator (parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), componentPorts,
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
@@ -1101,12 +1126,12 @@ void tst_BusInterfaceValidator::testPortMapConnectedPortsHaveValidType()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE (validator.hasValidAbstractionTypes(testBus), isValid);
+    QCOMPARE (validator->hasValidAbstractionTypes(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString context = QObject::tr("%1 bus interface %2")
             .arg(General::interfaceMode2Str(testBus->getInterfaceMode())).arg(testBus->name());
@@ -1199,7 +1224,8 @@ void tst_BusInterfaceValidator::testPortMapConnectedPortsHaveSameRange()
     testBus->getAbstractionTypes()->append(testAbstraction);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator (parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), componentPorts,
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
@@ -1208,12 +1234,12 @@ void tst_BusInterfaceValidator::testPortMapConnectedPortsHaveSameRange()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE (validator.hasValidAbstractionTypes(testBus), isValid);
+    QCOMPARE (validator->hasValidAbstractionTypes(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString context = QObject::tr("%1 bus interface %2")
             .arg(General::interfaceMode2Str(testBus->getInterfaceMode())).arg(testBus->name());
@@ -1281,19 +1307,21 @@ void tst_BusInterfaceValidator::testHasValidMasterInterface()
     testBus->setInterfaceMode(General::MASTER);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator (parser, QSharedPointer<QList<QSharedPointer<Choice> > >(),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > >(),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         componentSpaces, QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
         QSharedPointer<QList<QSharedPointer<FileSet> > > (),
-        QSharedPointer<QList<QSharedPointer<RemapState> > > (), 0);
+        QSharedPointer<QList<QSharedPointer<RemapState> > > (),
+        0);
 
-    QCOMPARE(validator.hasValidInterfaceMode(testBus), isValid);
+    QCOMPARE(validator->hasValidInterfaceMode(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString expectedError = QObject::tr("Invalid address space reference set for master bus interface %1")
             .arg(testBus->name());
@@ -1440,17 +1468,19 @@ void tst_BusInterfaceValidator::testHasValidSlaveInterface()
     busInterfaces->append(testBus);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (), memoryMaps, busInterfaces, fileSets,
-        QSharedPointer<QList<QSharedPointer<RemapState> > > (), 0);
+        QSharedPointer<QList<QSharedPointer<RemapState> > > (),
+        0);
 
-    QCOMPARE(validator.hasValidInterfaceMode(testBus), isValid);
+    QCOMPARE(validator->hasValidInterfaceMode(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString expectedError = QObject::tr("Invalid slave interface set for bus interface %1")
             .arg(testBus->name());
@@ -1569,7 +1599,8 @@ void tst_BusInterfaceValidator::testHasValidSystemInterface()
     testBus->setBusType(testType);
     
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (),
         QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -1579,12 +1610,12 @@ void tst_BusInterfaceValidator::testHasValidSystemInterface()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE(validator.hasValidInterfaceMode(testBus), isValid);
+    QCOMPARE(validator->hasValidInterfaceMode(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString expectedError = QObject::tr("No system group given for system bus interface %1")
             .arg(testBus->name());
@@ -1655,19 +1686,22 @@ void tst_BusInterfaceValidator::testHasValidMirroredSlaveInterface()
     testBus->setMirroredSlave(testMirrorSlave);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
-        QSharedPointer<QList<QSharedPointer<FileSet> > > (), remapStates, 0);
+        QSharedPointer<QList<QSharedPointer<FileSet> > > (),
+        remapStates,
+        0);
 
-    QCOMPARE(validator.hasValidInterfaceMode(testBus), isValid);
+    QCOMPARE(validator->hasValidInterfaceMode(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString expectedError = QObject::tr("Invalid mirroredSlave interface set for bus interface %1")
             .arg(testBus->name());
@@ -1766,7 +1800,8 @@ void tst_BusInterfaceValidator::testHasValidMonitorInterface()
     testBus->setBusType(testType);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (),
         QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -1776,12 +1811,12 @@ void tst_BusInterfaceValidator::testHasValidMonitorInterface()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         mockLibrary);
 
-    QCOMPARE(validator.hasValidInterfaceMode(testBus), isValid);
+    QCOMPARE(validator->hasValidInterfaceMode(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString expectedError = QObject::tr("Invalid interface mode set for monitor bus interface %1")
             .arg(testBus->name());
@@ -1841,7 +1876,8 @@ void tst_BusInterfaceValidator::testHasValidBitsInLau()
     testBus->setBitsInLau(bitsInLAU);
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (),
         QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -1851,12 +1887,12 @@ void tst_BusInterfaceValidator::testHasValidBitsInLau()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         0);
 
-    QCOMPARE(validator.hasValidBitsInLAU(testBus), isValid);
+    QCOMPARE(validator->hasValidBitsInLAU(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString expectedError = QObject::tr("Invalid bits in LAU set for bus interface %1 within %2")
             .arg(testBus->name()).arg("test");
@@ -1906,7 +1942,8 @@ void tst_BusInterfaceValidator::testHasValidBitSteeringForInterfaceMode()
     }
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (),
         QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
@@ -1916,12 +1953,12 @@ void tst_BusInterfaceValidator::testHasValidBitSteeringForInterfaceMode()
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
         0);
 
-    QCOMPARE(validator.hasValidBitSteering(testBus), isValid);
+    QCOMPARE(validator->hasValidBitSteering(testBus), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator.findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test");
 
         QString expectedError = QObject::tr("Bit steering value is not allowed in %1 bus interface %2 within %3")
             .arg(interfaceMode).arg(testBus->name()).arg("test");
@@ -1979,18 +2016,20 @@ void tst_BusInterfaceValidator::testHasValidParameters()
     testBus->getParameters()->append(testParameter);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-    BusInterfaceValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > > (),
         QSharedPointer<QList<QSharedPointer<View> > > (), QSharedPointer<QList<QSharedPointer<Port> > > (),
         QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
         QSharedPointer<QList<QSharedPointer<FileSet> > > (),
-        QSharedPointer<QList<QSharedPointer<RemapState> > > (), 0);
+        QSharedPointer<QList<QSharedPointer<RemapState> > > (),
+        0);
 
-    QCOMPARE(validator.hasValidParameters(testBus), false);
+    QCOMPARE(validator->hasValidParameters(testBus), false);
 
     QVector<QString> errorsFound;
-    validator.findErrorsIn(errorsFound, testBus, "test");
+    validator->findErrorsIn(errorsFound, testBus, "test");
 
     QString expectedError = QObject::tr("No value specified for %1 %2 within bus interface %3").
         arg(testParameter->elementName()).arg(testParameter->name()).arg(testBus->name());
@@ -2001,16 +2040,16 @@ void tst_BusInterfaceValidator::testHasValidParameters()
     }
 
     testParameter->setValue("20");
-    QCOMPARE(validator.hasValidParameters(testBus), true);
+    QCOMPARE(validator->hasValidParameters(testBus), true);
 
     QSharedPointer<Parameter> otherParameter (new Parameter(*testParameter.data()));
     otherParameter->setValue("2");
     testBus->getParameters()->append(otherParameter);
 
-    QCOMPARE(validator.hasValidParameters(testBus), false);
+    QCOMPARE(validator->hasValidParameters(testBus), false);
 
     errorsFound.clear();
-    validator.findErrorsIn(errorsFound, testBus, "test");
+    validator->findErrorsIn(errorsFound, testBus, "test");
     expectedError = QObject::tr("Parameter name %1 is not unique within bus interface %2.")
         .arg(otherParameter->name()).arg(testBus->name());
     if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -2036,6 +2075,34 @@ bool tst_BusInterfaceValidator::errorIsNotFoundInErrorList(QString const& expect
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_BusInterfaceValidator::createBusInterfaceValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<BusInterfaceValidator> tst_BusInterfaceValidator::createBusInterfaceValidator(
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    QSharedPointer<QList<QSharedPointer<View> > > views,
+    QSharedPointer<QList<QSharedPointer<Port> > > ports,
+    QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces,
+    QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps,
+    QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces,
+    QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
+    QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
+    LibraryInterface* libraryHandler)
+{
+    QSharedPointer<ParameterValidator2014> parameterValidator(
+        new ParameterValidator2014(expressionParser, choices));
+
+    QSharedPointer<PortMapValidator> newPortMapValidator (new PortMapValidator(
+        expressionParser, ports, libraryHandler));
+
+    QSharedPointer<BusInterfaceValidator> newValidator(new BusInterfaceValidator(expressionParser, choices, views,
+        ports, addressSpaces, memoryMaps, busInterfaces, fileSets, remapStates, newPortMapValidator,
+        parameterValidator, libraryHandler));
+
+    return newValidator;
 }
 
 QTEST_APPLESS_MAIN(tst_BusInterfaceValidator)

@@ -20,6 +20,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/validators/PortMapValidator.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
@@ -34,7 +35,7 @@
 PortMapTreeModel::PortMapTreeModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
     LibraryInterface* handler, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ParameterFinder> parameterFinder,
-    QObject *parent):
+    QSharedPointer<PortMapValidator> portMapValidator, QObject *parent):
 QAbstractItemModel(parent),
 ParameterizableTable(parameterFinder),
 component_(component),
@@ -43,7 +44,8 @@ containingBusInterface_(busif),
 absDef_(),
 interfaceMode_(General::MASTER),
 formatter_(expressionFormatter),
-portMappings_()
+portMappings_(),
+portMapValidator_(portMapValidator)
 {
     setExpressionParser(expressionParser);
 }
@@ -190,6 +192,10 @@ QVariant PortMapTreeModel::headerData(int section, Qt::Orientation orientation, 
             {
                 return tr("Logical port");
             }
+            else if (section == PortMapsColumns::LOGICAL_PRESENCE)
+            {
+                return tr("Requirement");
+            }
             else if (section == PortMapsColumns::LOGICAL_LEFT)
             {
                 QString logicalLeft = tr("Logical left") + getExpressionSymbol();
@@ -268,6 +274,16 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
         {
             return getPhysicalPortName(index, portMap);
         }
+        else if (!index.parent().isValid() && index.column() == PortMapsColumns::LOGICAL_PRESENCE)
+        {
+            PresenceTypes::Presence requirement = abstractPort->getPresence(interfaceMode_);
+            if (requirement == PresenceTypes::UNKNOWN)
+            {
+                requirement = PresenceTypes::OPTIONAL;
+            }
+
+            return PresenceTypes::presence2Str(requirement);
+        }
         else
         {
             return formatter_->formatReferringExpression(valueForIndex(index, abstractPort, portMap).toString());
@@ -290,14 +306,15 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::ForegroundRole)
     {
+        if (index.column() == PortMapsColumns::LOGICAL_PRESENCE)
+        {
+            return QColor("Grey");
+        }
         return blackForValidOrRedForInvalidIndex(index);
     }
     else if (role == Qt::BackgroundRole)
     {
-        if (!index.parent().isValid())
-        {
-            return QColor("aliceblue");
-        }
+        return getBackgroundColour(index, abstractPort, portMap);
     }
     else if (role == Qt::DecorationRole)
     {
@@ -326,23 +343,15 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
                 return getIconForDirection(direction);
             }
         }
-    }  
-    else if (role == Qt::TextAlignmentRole)
-    {
-        if (index.column() == PortMapsColumns::LOGICAL_LEFT || index.column() == PortMapsColumns::LOGICAL_RIGHT ||
-            index.column() == PortMapsColumns::PHYSICAL_LEFT || index.column() == PortMapsColumns::PHYSICAL_RIGHT ||
-            index.column() == PortMapsColumns::TIEOFF)
-        {
-            return Qt::AlignRight + Qt::AlignVCenter;
-        }
-        else
-        {
-            return Qt::AlignLeft + Qt::AlignVCenter;
-        }
     }
     else if (role == Qt::SizeHintRole)
     {
-        return QSize(100, 16);
+        return QSize(100, 20);
+    }
+    else if (role == Qt::UserRole)
+    {
+        QString presenceInString = PresenceTypes::presence2Str(abstractPort->getPresence(interfaceMode_));
+        return presenceInString;
     }
     else if (role == Qt::UserRole + 1)
     {
@@ -351,6 +360,36 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
     }
 
     // Unsupported role.
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapTreeModel::getBackgroundColour()
+//-----------------------------------------------------------------------------
+QVariant PortMapTreeModel::getBackgroundColour(QModelIndex const& index,
+    QSharedPointer<PortAbstraction> logicalPort, QSharedPointer<PortMap> portMap) const
+{
+    if (!index.parent().isValid())
+    {
+        if (logicalPort->getPresence(interfaceMode_) == PresenceTypes::REQUIRED &&
+            index.column() == PortMapsColumns::PHYSICAL_PORT)
+        {
+            return QColor("lemonChiffon");
+        }
+        else
+        {
+            return QColor("aliceblue");
+        }
+    }
+    else
+    {
+        if (index.column() == PortMapsColumns::LOGICAL_PORT ||
+            (index.column() == PortMapsColumns::PHYSICAL_PORT && portMap->getLogicalTieOff().isEmpty()) ||
+            (index.column() == PortMapsColumns::TIEOFF && !portMap->getPhysicalPort()))
+        {
+            return QColor("lemonChiffon");
+        }
+    }
     return QVariant();
 }
 
@@ -560,13 +599,12 @@ bool PortMapTreeModel::setData(const QModelIndex &index, const QVariant &value, 
         {
             QSharedPointer<PortMap> changedPortMap = getIndexedPortMap(index.parent(), index.row());
 
-            if (index.column() == PortMapsColumns::LOGICAL_PORT && changedPortMap->getLogicalPort() &&
-                changedPortMap->getLogicalPort()->name_ != value.toString())
+            if (index.column() == PortMapsColumns::LOGICAL_PORT)
             {
                 switchMappedLogicalPort(index, value, changedPortMap);
             }
-            else if ((index.column() == PortMapsColumns::LOGICAL_LEFT ||
-                index.column() == PortMapsColumns::LOGICAL_RIGHT) && changedPortMap->getLogicalPort())
+            else if (index.column() == PortMapsColumns::LOGICAL_LEFT ||
+                index.column() == PortMapsColumns::LOGICAL_RIGHT)
             {
                 setLogicalValue(index, value, changedPortMap);
             }
@@ -613,31 +651,51 @@ void PortMapTreeModel::switchMappedLogicalPort(QModelIndex const& index, const Q
 {
     if (index.parent().isValid())
     {
-        QString newLogicalPortName = value.toString();
-        switchedPortMap->getLogicalPort()->name_ = newLogicalPortName;
+        QString newLogicalName = value.toString();
 
-        QModelIndex sourceParentIndex = index.parent();
-
-        for (int logicalIndex = 0; logicalIndex  < portMappings_.size(); ++logicalIndex)
+        QSharedPointer<PortMap::LogicalPort> logicalPort = switchedPortMap->getLogicalPort();
+        if (!logicalPort)
         {
-            if (portMappings_[logicalIndex].logicalPort_->name().compare(newLogicalPortName, Qt::CaseInsensitive)
-                == 0)
+            logicalPort = QSharedPointer<PortMap::LogicalPort> (new PortMap::LogicalPort());
+            switchedPortMap->setLogicalPort(logicalPort);
+        }
+
+        if (logicalPort->name_.compare(newLogicalName, Qt::CaseInsensitive) != 0)
+        {
+            logicalPort->name_ = newLogicalName;
+
+            QModelIndex sourceParentIndex = index.parent();
+
+            QModelIndex destinationParentIndex =
+                sourceParentIndex.sibling(portMappings_.size() - 1, PortMapsColumns::LOGICAL_PORT);
+
+            for (int logicalIndex = 0; logicalIndex  < portMappings_.size(); ++logicalIndex)
             {
-                QModelIndex destinationParentIndex =
-                    sourceParentIndex.sibling(logicalIndex, PortMapsColumns::LOGICAL_PORT);
+                if (portMappings_[logicalIndex].logicalPort_->name().compare(newLogicalName, Qt::CaseInsensitive)
+                    == 0)
+                {
+                    destinationParentIndex =
+                        sourceParentIndex.sibling(logicalIndex, PortMapsColumns::LOGICAL_PORT);
+                    break;
+                }
+            }
+            int sourceRow = index.row();
 
-                int sourceRow = index.row();
-                int destinationPortMapCount = portMappings_[logicalIndex].portMaps_.size();
+            int destinationPortMapCount = portMappings_[destinationParentIndex.row()].portMaps_.size();
 
-                beginMoveRows(sourceParentIndex, sourceRow, sourceRow, destinationParentIndex,
-                    destinationPortMapCount);
+            beginMoveRows(sourceParentIndex, sourceRow, sourceRow, destinationParentIndex,
+                destinationPortMapCount);
 
-                portMappings_[sourceParentIndex.row()].portMaps_.removeAll(switchedPortMap);
-                portMappings_[destinationParentIndex.row()].portMaps_.append(switchedPortMap);
+            portMappings_[sourceParentIndex.row()].portMaps_.removeAll(switchedPortMap);
+            portMappings_[destinationParentIndex.row()].portMaps_.append(switchedPortMap);
 
-                endMoveRows();
+            endMoveRows();
 
-                return;
+            if (logicalPort && logicalPort->name_.isEmpty() && (!logicalPort->range_ || (logicalPort->range_ &&
+                logicalPort->range_->getLeft().isEmpty() && logicalPort->range_->getRight().isEmpty())))
+            {
+                logicalPort->range_.clear();
+                switchedPortMap->setLogicalPort(QSharedPointer<PortMap::LogicalPort>());
             }
         }
     }
@@ -650,6 +708,11 @@ void PortMapTreeModel::setLogicalValue(QModelIndex const& index, const QVariant&
     QSharedPointer<PortMap> changedPortMap)
 {
     QSharedPointer<PortMap::LogicalPort> logicalPort = changedPortMap->getLogicalPort();
+    if (!logicalPort)
+    {
+        logicalPort = QSharedPointer<PortMap::LogicalPort>(new PortMap::LogicalPort());
+        changedPortMap->setLogicalPort(logicalPort);
+    }
 
     if (!value.toString().isEmpty() && !logicalPort->range_)
     {
@@ -767,7 +830,8 @@ Qt::ItemFlags PortMapTreeModel::flags(QModelIndex const& index) const
 
     Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
 
-    if (index.column() == PortMapsColumns::PHYSICAL_PORT || index.parent().isValid())
+    if (index.column() == PortMapsColumns::PHYSICAL_PORT ||
+        (index.parent().isValid() && index.column() != PortMapsColumns::LOGICAL_PRESENCE))
     {
         itemFlags |= Qt::ItemIsEditable;
     }
@@ -915,6 +979,10 @@ QVariant PortMapTreeModel::expressionOrValueForIndex(QModelIndex const& index) c
     {
         return getPhysicalPortName(index, portMap);
     }
+    else if (index.column() == PortMapsColumns::LOGICAL_PRESENCE)
+    {
+        return PresenceTypes::presence2Str(abstractPort->getPresence(interfaceMode_));
+    }
     else
     {
         return valueForIndex(index, abstractPort, portMap).toString();
@@ -933,6 +1001,54 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
         if (portMap->getPhysicalPort() && !portMap->getLogicalTieOff().isEmpty() &&
             (index.column() == PortMapsColumns::PHYSICAL_PORT || index.column() == PortMapsColumns::PHYSICAL_LEFT ||
             index.column() == PortMapsColumns::PHYSICAL_RIGHT || index.column() == PortMapsColumns::TIEOFF))
+        {
+            return false;
+        }
+
+        if (index.column() == PortMapsColumns::TIEOFF)
+        {
+            return portMapValidator_->hasValidTieOff(portMap);
+        }
+        else if (index.column() == PortMapsColumns::LOGICAL_PORT ||
+            index.column() == PortMapsColumns::LOGICAL_LEFT || index.column() == PortMapsColumns::LOGICAL_RIGHT)
+        {
+            if (portMapValidator_->hasValidLogicalPort(portMap))
+            {
+                if (index.column() == PortMapsColumns::LOGICAL_LEFT || 
+                    index.column() == PortMapsColumns::LOGICAL_RIGHT)
+                {
+                    return portMapValidator_->connectedPortsHaveSameRange(portMap);
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else if ((index.column() == PortMapsColumns::PHYSICAL_PORT ||
+            index.column() == PortMapsColumns::PHYSICAL_LEFT ||
+            index.column() == PortMapsColumns::PHYSICAL_RIGHT) && portMap && portMap->getPhysicalPort())
+        {
+            QSharedPointer<Port> physicalPort = component_->getPort(portMap->getPhysicalPort()->name_);
+            if (portMapValidator_->hasValidPhysicalPort(portMap, physicalPort))
+            {
+                if (index.column() == PortMapsColumns::PHYSICAL_LEFT ||
+                    index.column() == PortMapsColumns::PHYSICAL_RIGHT)
+                {
+                    return portMapValidator_->connectedPortsHaveSameRange(portMap);
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+    else
+    {
+        QSharedPointer<PortAbstraction> logicalPort = portMappings_.at(index.row()).logicalPort_;
+        bool hasPortMaps = !portMappings_.at(index.row()).portMaps_.isEmpty();
+        if (logicalPort && (logicalPort->getPresence(interfaceMode_) == PresenceTypes::ILLEGAL) && hasPortMaps)
         {
             return false;
         }

@@ -52,6 +52,16 @@ protected:
 	 */
     bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const;
 
+    /*!
+     *  Check if left index is less than right index..
+     *
+     *      @param [in] left    The selected left index.
+     *      @param [in] right   The selected right index.
+     *
+     *      @return True, if the left index is less than the right index.
+     */
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const;
+
 private:
 
     //! No copying.
@@ -59,6 +69,15 @@ private:
 
     //! No assignment.
     PortMapTreeSortProxyModel& operator=(const PortMapTreeSortProxyModel& other);  
+
+    /*!
+     *  Check if the selected index is valid.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return True, if the index is valid, false otherwise.
+     */
+    bool indexIsValid(QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.

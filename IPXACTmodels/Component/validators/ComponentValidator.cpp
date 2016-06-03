@@ -32,6 +32,7 @@
 #include <IPXACTmodels/common/validators/AssertionValidator.h>
 
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/PortMapValidator.h>
 #include <IPXACTmodels/Component/validators/ChannelValidator.h>
 #include <IPXACTmodels/Component/validators/RemapStateValidator.h>
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
@@ -78,13 +79,16 @@ assertionValidator_()
     parameterValidator_ = QSharedPointer<ParameterValidator2014>(new ParameterValidator2014(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > > ()));
 
+    QSharedPointer<PortMapValidator> portMapvalidator(
+        new PortMapValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > > (), library));
+
     busInterfaceValidator_ = QSharedPointer<BusInterfaceValidator>(new BusInterfaceValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > > (), QSharedPointer<QList<QSharedPointer<View> > > (),
         QSharedPointer<QList<QSharedPointer<Port> > > (), QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
         QSharedPointer<QList<QSharedPointer<FileSet> > > (),
-        QSharedPointer<QList<QSharedPointer<RemapState> > > (), library));
+        QSharedPointer<QList<QSharedPointer<RemapState> > > (), portMapvalidator, parameterValidator_, library));
 
     channelValidator_ = QSharedPointer<ChannelValidator>(
         new ChannelValidator(parser, QSharedPointer<QList<QSharedPointer<BusInterface> > > ()));

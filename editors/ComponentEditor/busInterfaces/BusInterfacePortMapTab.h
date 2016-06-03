@@ -31,11 +31,10 @@ class Component;
 class LibraryInterface;
 class PortMap;
 class ExpressionParser;
-
 class VLNV;
 class ParameterFinder;
-
 class PortMapTreeDelegate;
+class PortMapValidator;
 
 //-----------------------------------------------------------------------------
 //! Tab for editing and viewing bus interface port maps.
@@ -55,11 +54,13 @@ public:
      *      @param [in] expressionParser    The used expression parser.
      *      @param [in] formatter           The used expression formatter.
      *      @param [in] finder              The used parameter finder.
+     *      @param [in] portMapValidator    Validator used for port maps.
 	 *      @param [in] parent              The owner of the editor.
 	 */
 	BusInterfacePortMapTab(LibraryInterface* libHandler, QSharedPointer<Component> component, 
         QSharedPointer<BusInterface> busif,	QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> finder, QWidget* parent);
+        QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> finder,
+        QSharedPointer<PortMapValidator> portMapValidator, QWidget* parent);
 	
 	/*!
      *  The destructor.

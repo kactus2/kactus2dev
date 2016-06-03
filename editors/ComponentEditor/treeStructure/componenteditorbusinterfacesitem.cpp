@@ -16,6 +16,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+#include <IPXACTmodels/Component/validators/PortMapValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorbusinterfacesitem::ComponentEditorBusInterfacesItem()
@@ -28,13 +29,13 @@ ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(ComponentEdit
     QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
-    busifs_(component->getBusInterfaces()),
-    parentWnd_(parentWnd),
-    expressionParser_(expressionParser),
-    validator_(new BusInterfaceValidator(expressionParser, component->getChoices(), component->getViews(),
-    component->getPorts(), component->getAddressSpaces(), component->getMemoryMaps(), component->getBusInterfaces(),
-    component->getFileSets(), component->getRemapStates(), libHandler))
+busifs_(component->getBusInterfaces()),
+parentWnd_(parentWnd),
+expressionParser_(expressionParser),
+validator_()
 {
+    createBusInterfaceValidator();
+
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
     setReferenceCounter(referenceCounter);
@@ -57,6 +58,23 @@ ComponentEditorItem(model, libHandler, component, parent),
 //-----------------------------------------------------------------------------
 ComponentEditorBusInterfacesItem::~ComponentEditorBusInterfacesItem() 
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditorbusinterfacesitem::createBusInterfaceValidator()
+//-----------------------------------------------------------------------------
+void ComponentEditorBusInterfacesItem::createBusInterfaceValidator()
+{
+    QSharedPointer<PortMapValidator> portMapValidator(
+        new PortMapValidator(expressionParser_, component_->getPorts(), libHandler_));
+
+    QSharedPointer<ParameterValidator2014> parameterValidator(
+        new ParameterValidator2014(expressionParser_, component_->getChoices()));
+
+    validator_ = QSharedPointer<BusInterfaceValidator>(new BusInterfaceValidator(expressionParser_,
+        component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
+        component_->getMemoryMaps(), component_->getBusInterfaces(), component_->getFileSets(),
+        component_->getRemapStates(), portMapValidator, parameterValidator, libHandler_));
 }
 
 //-----------------------------------------------------------------------------

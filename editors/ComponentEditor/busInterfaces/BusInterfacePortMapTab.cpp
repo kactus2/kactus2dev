@@ -33,7 +33,8 @@
 //-----------------------------------------------------------------------------
 BusInterfacePortMapTab::BusInterfacePortMapTab(LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busif, QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> finder, QWidget* parent):
+    QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> finder,
+    QSharedPointer<PortMapValidator> portMapValidator, QWidget* parent):
 QWidget(parent),
 busif_(busif),
 component_(component),
@@ -44,12 +45,14 @@ physicalPortSorter_(component_, this),
 nameFilterEditor_(new QLineEdit(this)),
 directionFilter_(this),
 hideConnectedPortsBox_(this),
-portMapsModel_(busif, component, libHandler, expressionParser, formatter, finder, this),
+portMapsModel_(busif, component, libHandler, expressionParser, formatter, finder, portMapValidator, this),
 portMapsView_(this),
 portMapsDelegate_(),
 autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect", this),
 removeAllMappingsButton_(QIcon(":/icons/common/graphics/cleanup.png"), "Remove all", this)
 {
+    autoConnectButton_.setDisabled(true);
+
     hideConnectedPortsBox_.setCheckState(Qt::Checked);
 
     physicalPortSorter_.setSourceModel(&physicalPortModel_);

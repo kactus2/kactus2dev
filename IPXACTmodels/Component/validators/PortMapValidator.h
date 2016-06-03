@@ -38,17 +38,30 @@ public:
      *
      *      @param [in] parser                  The parse to use for solving expressions.
      *      @param [in] ports                   The available ports.
-     *      @param [in] abstractionReference    The used abstraction definition reference.
-     *      @param [in] interfaceMode           The current interface mode.
      *      @param [in] libraryHandler          The library interface.
      */
     PortMapValidator(QSharedPointer<ExpressionParser> parser, QSharedPointer<QList<QSharedPointer<Port> > > ports,
-        QSharedPointer<ConfigurableVLNVReference> abstractionReference, General::InterfaceMode interfaceMode,
         LibraryInterface* libraryHandler);
 
 	//! The destructor.
 	~PortMapValidator();
     
+    /*!
+     *  Handle the change in bus interface.
+     *
+     *      @param [in] newAbstractionReference     Abstraction definition of the new bus interface.
+     *      @param [in] newInterfaceMode            Interface mode of the new bus interface.
+     */
+    void busInterfaceChanged(QSharedPointer<ConfigurableVLNVReference> newAbstractionReference,
+        General::InterfaceMode newInterfaceMode);
+
+    /*!
+     *  Handle the change in component.
+     *
+     *      @param [in] newPorts    List of new ports.
+     */
+    void componentChanged(QSharedPointer<QList<QSharedPointer<Port> > > newPorts);
+
     /*!
      *  Validates the given port map.
      *
@@ -88,6 +101,15 @@ public:
 		QSharedPointer<Port> physicalPort) const;
 
     /*!
+     *  Check if the tie off value is valid in the selected port map.
+     *
+     *      @param [in] portMap     The selected port map.
+     *
+     *      @return True, if the tie off value is valid, otherwise false.
+     */
+    bool hasValidTieOff(QSharedPointer<PortMap> portMap) const;
+
+    /*!
      *  Check if the connected ports have valid directions.
      *
 	 *      @param [in] logicalPort     The logical port to check.
@@ -108,6 +130,15 @@ public:
      */
 	bool connectedPortsHaveValidPortTypes(QSharedPointer<PortAbstraction> logicalPort,
 		QSharedPointer<Port> physicalPort) const;
+
+    /*!
+     *  Check if the connected ports have the same range.
+     *
+     *      @param [in] portMap     The selected port map.
+     *
+     *      @return True, if the connected ports have the same range, otherwise false.
+     */
+    bool connectedPortsHaveSameRange(QSharedPointer<PortMap> portMap) const;
 
     /*!
      *  Locate errors within a port map.
@@ -142,7 +173,7 @@ private:
      *      @return The referenced physical port.
      */
     QSharedPointer<Port> findPhysicalPort(QString const& portName) const;
-
+    
     /*!
      *  Check if the logical port has a valid range.
      *
@@ -182,15 +213,6 @@ private:
      */
     bool physicalPortRangeIsWithinReferencedPort(QSharedPointer<Port> referencedPort,
         QSharedPointer<PortMap::PhysicalPort> physicalPort) const;
-
-    /*!
-     *  Check if the connected ports have the same range.
-     *
-     *      @param [in] portMap     The selected port map.
-     *
-     *      @return True, if the connected ports have the same range, otherwise false.
-     */
-    bool connectedPortsHaveSameRange(QSharedPointer<PortMap> portMap) const;
 
     /*!
      *  Find errors within port map isPresent.

@@ -221,6 +221,14 @@ void PortMapTreeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
 
     painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
 
+    if (!index.parent().isValid())
+    {
+        newPen.setWidth(2);
+        painter->setPen(newPen);
+
+        painter->drawLine(option.rect.topLeft(), option.rect.topRight());
+    }
+
     painter->setPen(oldPen);
 }
 

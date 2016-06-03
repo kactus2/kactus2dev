@@ -30,19 +30,20 @@
 // Function: PortMapValidator::PortMapValidator()
 //-----------------------------------------------------------------------------
 PortMapValidator::PortMapValidator(QSharedPointer<ExpressionParser> parser,
-    QSharedPointer<QList<QSharedPointer<Port> > > ports,
-    QSharedPointer<ConfigurableVLNVReference> abstractionReference, General::InterfaceMode interfaceMode,
-    LibraryInterface* libraryHandler):
+    QSharedPointer<QList<QSharedPointer<Port> > > ports, LibraryInterface* libraryHandler):
 expressionParser_(parser),
 availablePorts_(ports),
-abstractionReference_(abstractionReference),
+abstractionReference_(),
 abstractionDefinition_(),
-interfaceMode_(interfaceMode),
+interfaceMode_(General::INTERFACE_MODE_COUNT),
 libraryHandler_(libraryHandler)
 {
-    QSharedPointer<Document const> abstractionDocument = libraryHandler_->getModelReadOnly(*abstractionReference_.data());
+    if (abstractionReference_)
+    {
+        QSharedPointer<Document const> abstractionDocument = libraryHandler_->getModelReadOnly(*abstractionReference_.data());
 
-    abstractionDefinition_ = abstractionDocument.dynamicCast<AbstractionDefinition const>();
+        abstractionDefinition_ = abstractionDocument.dynamicCast<AbstractionDefinition const>();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -54,11 +55,41 @@ PortMapValidator::~PortMapValidator()
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortMapValidator::busInterfaceChanged()
+//-----------------------------------------------------------------------------
+void PortMapValidator::busInterfaceChanged(QSharedPointer<ConfigurableVLNVReference> newAbstractionReference,
+    General::InterfaceMode newInterfaceMode)
+{
+    if (newAbstractionReference)
+    {
+        abstractionReference_ = newAbstractionReference;
+
+        QSharedPointer<Document const> abstractionDocument =
+            libraryHandler_->getModelReadOnly(*abstractionReference_.data());
+        abstractionDefinition_ = abstractionDocument.dynamicCast<AbstractionDefinition const>();
+    }
+
+    interfaceMode_ = newInterfaceMode;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::componentChanged()
+//-----------------------------------------------------------------------------
+void PortMapValidator::componentChanged(QSharedPointer<QList<QSharedPointer<Port> > > newPorts)
+{
+    availablePorts_ = newPorts;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortMapValidator::validate()
 //-----------------------------------------------------------------------------
 bool PortMapValidator::validate(QSharedPointer<PortMap> portMap) const
 {
-	QSharedPointer<PortAbstraction> logicalPort = findLogicalPort(portMap->getLogicalPort()->name_);
+    QSharedPointer<PortAbstraction> logicalPort;
+    if (portMap->getLogicalPort())
+    {
+        logicalPort = findLogicalPort(portMap->getLogicalPort()->name_);
+    }
     QSharedPointer<Port> physicalPort;
     if (portMap->getPhysicalPort())
     {
@@ -66,7 +97,7 @@ bool PortMapValidator::validate(QSharedPointer<PortMap> portMap) const
     }
 
 	return hasValidIsPresent(portMap) && hasValidLogicalPort(portMap) && 
-		hasValidPhysicalPort(portMap, physicalPort) &&
+		hasValidPhysicalPort(portMap, physicalPort) && hasValidTieOff(portMap) &&
 		connectedPortsHaveValidDirections(logicalPort, physicalPort) && 
 		connectedPortsHaveValidPortTypes(logicalPort, physicalPort) &&
         connectedPortsHaveSameRange(portMap);
@@ -183,6 +214,22 @@ bool PortMapValidator::hasValidPhysicalPort(QSharedPointer<PortMap> portMap,
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapValidator::hasValidTieOff()
+//-----------------------------------------------------------------------------
+bool PortMapValidator::hasValidTieOff(QSharedPointer<PortMap> portMap) const
+{
+    if (portMap && !portMap->getLogicalTieOff().isEmpty() && !portMap->getPhysicalPort())
+    {
+        bool changeOk = true;
+        int logicalTieOff = expressionParser_->parseExpression(portMap->getLogicalTieOff()).toInt(&changeOk);
+
+        return changeOk && logicalTieOff > 0;
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -322,7 +369,11 @@ bool PortMapValidator::connectedPortsHaveSameRange(QSharedPointer<PortMap> portM
 void PortMapValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<PortMap> portMap,
     QString const& context) const
 {
-	QSharedPointer<PortAbstraction> logicalPort = findLogicalPort(portMap->getLogicalPort()->name_);
+    QSharedPointer<PortAbstraction> logicalPort;
+    if (portMap->getLogicalPort())
+    {
+        logicalPort = findLogicalPort(portMap->getLogicalPort()->name_);
+    }
 
     QSharedPointer<Port> physicalPort;
     if (portMap->getPhysicalPort())

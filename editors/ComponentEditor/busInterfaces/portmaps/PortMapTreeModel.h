@@ -31,6 +31,7 @@ class ExpressionParser;
 class PortAbstraction;
 class PortMap;
 class ExpressionFormatter;
+class PortMapValidator;
 
 //-----------------------------------------------------------------------------
 //! A model for displaying bus interface port maps.
@@ -50,12 +51,13 @@ public:
      *      @param [in] expressionParser        The used expression parser.
      *      @param [in] expressionFormatter     The used expression formatter.
      *      @param [in] parameterFinder         The used parameter finder.
+     *      @param [in] portMapValidator        Validator used for port maps.
      *      @param [in] parent                  The owner of this model.
      */
     PortMapTreeModel(QSharedPointer<BusInterface> busif, QSharedPointer<Component> component,
         LibraryInterface* handler, QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ParameterFinder> parameterFinder,
-        QObject *parent);
+        QSharedPointer<PortMapValidator> portMapValidator, QObject *parent);
 
     /*!
      *  The destructor.
@@ -384,6 +386,16 @@ private:
      */
     void sendPortConnectionSignal(QString const& oldName, QString const& newName);
 
+    /*!
+     *  Get the background color for the selected index.
+     *
+     *      @param [in] index           The selected index.
+     *      @param [in] logicalPort     Logical port of the selected index.
+     *      @param [in] portMap         Port map of the index.
+     */
+    QVariant getBackgroundColour(QModelIndex const& index, QSharedPointer<PortAbstraction> logicalPort,
+        QSharedPointer<PortMap> portMap) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //----------------------------------------------------------------------------- 
@@ -418,6 +430,9 @@ private:
 
     //! A list of port mappings.
     QList<PortMapping> portMappings_;
+
+    //! The used port map validator.
+    QSharedPointer<PortMapValidator> portMapValidator_;
 };
 
 //-----------------------------------------------------------------------------

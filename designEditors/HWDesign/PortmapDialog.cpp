@@ -19,6 +19,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/validators/PortMapValidator.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
@@ -52,9 +53,12 @@ otherBusIf_(otherBusIf)
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
+    QSharedPointer<PortMapValidator> portMapValidator(
+        new PortMapValidator(expressionParser, component->getPorts(), libInterface));
+
     // Create the port map widget.
     portmapWidget_ = new BusInterfacePortMapTab(libInterface, component, busIf, expressionParser,
-        expressionFormatter, parameterFinder, this);
+        expressionFormatter, parameterFinder, portMapValidator, this);
 
     portmapWidget_->setAbsType(*busIf->getAbstractionTypes()->first()->getAbstractionRef(),
         busIf->getInterfaceMode());

@@ -100,6 +100,15 @@ private:
 	//! No assignment
 	ComponentEditorBusInterfacesItem& operator=(const ComponentEditorBusInterfacesItem& other);
 
+    /*!
+     *  Create the validator for bus interfaces.
+     */
+    void createBusInterfaceValidator();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
 	//! Contains the bus interfaces to edit.
 	QSharedPointer<QList<QSharedPointer<BusInterface> > > busifs_;
 

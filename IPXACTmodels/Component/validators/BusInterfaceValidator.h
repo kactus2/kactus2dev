@@ -35,6 +35,9 @@ class MemoryMap;
 class Port;
 class RemapState;
 class View;
+class PortMapValidator;
+class AbstractionDefinition;
+class PortAbstraction;
 
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:busInterface.
@@ -55,6 +58,8 @@ public:
      *      @param [in] busInterfaces       List of available bus interfaces.
      *      @param [in] fileSets            List of available file sets.
      *      @param [in] remapStates         List of available remap states.
+     *      @param [in] portMapValidator    Validator used for port maps.
+     *      @param [in] parameterValidator  Validator used for parameters.
      *      @param [in] libraryHandler      The library interface.
      */
     BusInterfaceValidator(QSharedPointer<ExpressionParser> expressionParser,
@@ -66,6 +71,8 @@ public:
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces,
         QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
         QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
+        QSharedPointer<PortMapValidator> portMapValidator,
+        QSharedPointer<ParameterValidator2014> parameterValidator,
         LibraryInterface* libraryHandler);
 
 	//! The destructor.
@@ -91,6 +98,13 @@ public:
         QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces,
         QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets,
         QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates);
+
+    /*!
+     *  Get the used port map validator.
+     *
+     *      @return The used port map validator.
+     */
+    QSharedPointer<PortMapValidator> getPortMapValidator();
 
     /*!
      *  Validates the given bus interface.
@@ -506,6 +520,77 @@ private:
     void findErrorsInBitSteering(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QString const& context) const;
 
+    /*!
+     *  Get the abstraction definition from the selected reference.
+     *
+     *      @param [in] abstractionReference    The selected abstraction reference.
+     *
+     *      @return Abstraction definition matching the abstraction reference.
+     */
+    QSharedPointer<AbstractionDefinition const> getAbstractionDefinition(
+        QSharedPointer<ConfigurableVLNVReference> abstractionReference) const;
+
+    /*!
+     *  Get the logical port.
+     *
+     *      @param [in] portName                The name of the logical port.
+     *      @param [in] abstractionDefinition   Abstraction definition containing the logical port.
+     *
+     *      @return The selected logical port.
+     */
+    QSharedPointer<PortAbstraction> getLogicalPort(QString const& portName,
+        QSharedPointer<AbstractionDefinition const> abstractionDefinition) const;
+
+    /*!
+     *  Check if the logical port has a valid presence.
+     *
+     *      @param [in] abstractionDefinition   The abstraction definition containing the logical port.
+     *      @param [in] logicalPortName         The name of the logical port.
+     *      @param [in] mode                    Interface mode used in the containing bus interface.
+     *
+     *      @return True, if the logical port has a valid presence, otherwise false.
+     */
+    bool logicalPortHasValidPresence(QSharedPointer<AbstractionDefinition const> abstractionDefinition,
+        QString const& logicalPortName, General::InterfaceMode mode) const;
+
+    /*!
+     *  Check if the required logical ports have port maps.
+     *
+     *      @param [in] busInterface            Bus interface containing the port maps.
+     *      @param [in] abstractionDefinition   Abstraction definition containing the logical port.
+     *      @param [in] portMaps                The port maps.
+     *
+     *      @return True, if the required logical port has been mapped, otherwise false.
+     */
+    bool requiredPortAbstractionsAreMapped(QSharedPointer<BusInterface> busInterface,
+        QSharedPointer<AbstractionDefinition const> abstractionDefinition,
+        QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps) const;
+
+    /*!
+     *  Check if a logical port has been referenced in any port maps.
+     *
+     *      @param [in] portName    Name of the selected logical port.
+     *      @param [in] portMaps    List of contained port maps.
+     *
+     *      @return True, if the logical port has been referenced in a port map, otherwise false.
+     */
+    bool logicalPortHasReferencingPortMaps(QString const& portName,
+        QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps) const;
+
+    /*!
+     *  Find errors in required port map logical ports.
+     *
+     *      @param [in] errors                  List of errors found.
+     *      @param [in] context                 Context of the bus interface.
+     *      @param [in] busInterface            The containing bus interface.
+     *      @param [in] abstractionDefinition   The abstraction definition containing the logical port.
+     *      @param [in] portMaps                List of port maps.
+     */
+    void findErrorsInRequiredPortAbstractions(QVector<QString>& errors, QString const& context,
+        QSharedPointer<BusInterface> busInterface,
+        QSharedPointer<AbstractionDefinition const> abstractionDefinition,
+        QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -541,7 +626,10 @@ private:
     LibraryInterface* libraryHandler_;
 
     //! Validator for parameters.
-    ParameterValidator2014 parameterValidator_;
+    QSharedPointer<ParameterValidator2014> parameterValidator_;
+
+    //! Validator for port maps.
+    QSharedPointer<PortMapValidator> portMapValidator_;
 };
 
 #endif // ADDRESSSPACEVALIDATOR_H

@@ -43,7 +43,6 @@ collapseAllItemsAction_(tr("Collapse all"), this)
 
     setAlternatingRowColors(false);
     setSortingEnabled(true);
-    setUniformRowHeights(true);
     setAcceptDrops(true);
     viewport()->setAcceptDrops(true);
     setDropIndicatorShown(true);   
@@ -95,9 +94,13 @@ void PortMapTreeView::keyPressEvent(QKeyEvent* event)
     // When delete is pressed, attempt to delete the selected mapping.
     if (event->key() == Qt::Key_Delete)
     {
-        if (!selectedIndexes().isEmpty())
+        QModelIndexList indexList = selectedIndexes();
+        if (!indexList.isEmpty())
         {
-            // emit removeItem(selectedIndexes().first());
+            foreach (QModelIndex index, indexList)
+            {
+                model()->setData(index, QVariant(), Qt::EditRole);
+            }
         }
     }
     else

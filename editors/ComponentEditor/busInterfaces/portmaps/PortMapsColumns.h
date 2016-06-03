@@ -17,6 +17,7 @@ namespace PortMapsColumns
         LOGICAL_PORT = 0,
         LOGICAL_LEFT,
         LOGICAL_RIGHT,
+        LOGICAL_PRESENCE,
         PHYSICAL_PORT,
         PHYSICAL_LEFT,
         PHYSICAL_RIGHT,

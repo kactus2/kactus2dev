@@ -12,14 +12,16 @@
 #ifndef BUSINTERFACEWIZARD_H
 #define BUSINTERFACEWIZARD_H
 
-#include <QWizard>
-
 #include <IPXACTmodels/common/VLNV.h>
+
+#include <QWizard>
+#include <QSharedPointer>
 
 class BusInterface;
 class BusInterfaceValidator;
 class Component;
 class LibraryInterface;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Bus wizard dialog.
@@ -84,6 +86,16 @@ private:
     // Disable copying.
     BusInterfaceWizard(BusInterfaceWizard const& rhs);
     BusInterfaceWizard& operator=(BusInterfaceWizard const& rhs);
+
+    /*!
+     *  Create the validator for bus interfaces.
+     *
+     *      @param [in] component   Component containing the bus interfaces.
+     *      @param [in] parser      The used expression parser.
+     *      @param [in] handler     Library handler.
+     */
+    QSharedPointer<BusInterfaceValidator> createBusInterfaceValidator(QSharedPointer<Component> component,
+        QSharedPointer<ExpressionParser> parser, LibraryInterface* handler);
 };
 
 #endif // BUSINTERFACEWIZARD_H

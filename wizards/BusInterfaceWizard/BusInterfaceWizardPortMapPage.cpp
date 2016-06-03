@@ -37,7 +37,8 @@ QWizardPage(parent),
 component_(component),
 busIf_(busIf),
 handler_(lh),
-portMapTab_(handler_, component_, busIf_, expressionParser, formatter, parameterFinder, this),
+portMapTab_(handler_, component_, busIf_, expressionParser, formatter, parameterFinder,
+    validator->getPortMapValidator(), this),
 validator_(validator)
 {
     setTitle(tr("Port Maps"));

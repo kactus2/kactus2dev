@@ -27,7 +27,8 @@ ItemEditor(component, libHandler, parent),
 busif_(busif),
 tabs_(this), 
 generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, &tabs_, parentWnd),
-portmapsEditor_(libHandler, component, busif, expressionParser, expressionFormatter, parameterFinder, &tabs_)
+portmapsEditor_(libHandler, component, busif, expressionParser, expressionFormatter, parameterFinder,
+    busInterfaceValidator->getPortMapValidator(), &tabs_)
 {
 	Q_ASSERT(component);
 	Q_ASSERT(libHandler);

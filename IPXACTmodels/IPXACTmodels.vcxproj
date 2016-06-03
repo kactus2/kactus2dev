@@ -2075,6 +2075,7 @@
     <ClInclude Include="Component\validators\AddressBlockValidator.h" />
     <ClInclude Include="Component\validators\AddressSpaceValidator.h" />
     <ClInclude Include="Component\validators\BuildCommandValidator.h" />
+    <ClInclude Include="Component\validators\BusInterfaceValidator.h" />
     <ClInclude Include="Component\validators\ChannelValidator.h" />
     <ClInclude Include="Component\validators\ChoiceValidator.h" />
     <ClInclude Include="Component\validators\ComponentGeneratorValidator.h" />
