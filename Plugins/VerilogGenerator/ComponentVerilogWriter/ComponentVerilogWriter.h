@@ -88,6 +88,15 @@ private:
       *      @param [in] outputStream   The output to write to.
       */
     void writeParameterDeclarations(QTextStream& outputStream) const;
+	
+    /*!
+     *  Sorts list of module parameters based on their interdependencies.
+     *
+     *      @param [in] currentInsta			The component instantiation, which module parameters are referred.
+     *      @param [out] parametersToWrite      The list containing parameters, that will be sorted.
+     */
+	void sortModuleParameters(QSharedPointer<ComponentInstantiation> currentInsta,
+		QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite) const;
 
     /*!
      *  Writes a single parameter declaration.

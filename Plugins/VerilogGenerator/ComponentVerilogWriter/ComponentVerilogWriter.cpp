@@ -76,7 +76,7 @@ bool ComponentVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::writeModuleDeclaration()
 //-----------------------------------------------------------------------------
-void ComponentVerilogWriter::writeModuleDeclaration( QTextStream& outputStream ) const
+void ComponentVerilogWriter::writeModuleDeclaration(QTextStream& outputStream) const
 {
     outputStream << "module " << component_->getVlnv().getName();
     
@@ -94,65 +94,33 @@ QString ComponentVerilogWriter::portNames() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogComponentVerilogWriterGenerator::writeParameterDeclarations()
+// Function: ComponentVerilogWriter::writeParameterDeclarations()
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStream) const
 {
 	QSharedPointer<View> view;
 
-	foreach( QSharedPointer<View> currentView, *component_->getViews() )
+	foreach(QSharedPointer<View> currentView, *component_->getViews())
 	{
-		if ( currentView->name() == activeView_ )
+		if (currentView->name() == activeView_)
 		{
 			view = currentView;
 			break;
 		}
 	}
 
-	if ( view )
+	if (view)
 	{
-		foreach( QSharedPointer<ComponentInstantiation> currentInsta, *component_->getComponentInstantiations() )
+		foreach(QSharedPointer<ComponentInstantiation> currentInsta, *component_->getComponentInstantiations())
 		{
-			if ( currentInsta->name() == view->getComponentInstantiationRef() )
+			if (currentInsta->name() == view->getComponentInstantiationRef())
 			{
-				// Create a new list of module parameters.
-				QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite =
-					QSharedPointer<QList<QSharedPointer<ModuleParameter> > >
-					( new QList<QSharedPointer<ModuleParameter> > );
+				// Take copy the parameters of the component instantiation.
+				QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite
+					(new QList<QSharedPointer<ModuleParameter> >);
+				parametersToWrite->append(*(currentInsta->getModuleParameters()));
 				
-				// Go through existing ones on the instance.
-				foreach ( QSharedPointer<ModuleParameter> parameterAdd, *currentInsta->getModuleParameters() )
-				{
-					// If true, the parameter is appended to the end of list.
-					bool append = true;
-
-					// Go through parameters that have been so far appended to the list.
-					for ( QList<QSharedPointer<ModuleParameter> >::Iterator parameterCmp =
-						parametersToWrite->begin();
-						parameterCmp != parametersToWrite->end(); ++parameterCmp )
-					{
-						// Resolve the value of the formerly appended item.
-						QString formatted = this->formatter_->
-							 formatReferringExpression((*parameterCmp)->getValue());
-
-						// If it contains a reference to the inspected parameter, the inspected parameter comes
-						// before it is referred.
-						if ( formatted.contains(parameterAdd->name()) )
-						{
-							parametersToWrite->insert( parameterCmp, parameterAdd );
-
-							// It will not be inserted twice, so break here.
-							append = false;
-							break;
-						}
-					 }
-
-					// If the parameter was not needed anywhere, it is appended to the end of the list.
-					if ( append )
-					{
-						parametersToWrite->append( parameterAdd );
-					}
-				}
+				sortModuleParameters(currentInsta, parametersToWrite);
 
 				if (!parametersToWrite->isEmpty())
 				{
@@ -169,6 +137,77 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
 
 				break;
 			}
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter::sortModuleParameters()
+//-----------------------------------------------------------------------------
+void ComponentVerilogWriter::sortModuleParameters(QSharedPointer<ComponentInstantiation> currentInsta,
+	QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite) const
+{
+	// Go through existing ones on the instance.
+	for (QList<QSharedPointer<ModuleParameter> >::Iterator parameterAdd =
+		currentInsta->getModuleParameters()->begin();
+		parameterAdd != currentInsta->getModuleParameters()->end(); ++parameterAdd)
+	{
+		// The first position for the second pass.
+		QList<QSharedPointer<ModuleParameter> >::Iterator minPos =
+			parametersToWrite->begin();
+
+		// Resolve the value of the inspected parameter.
+		QString addFormatted = formatter_->
+			formatReferringExpression((*parameterAdd)->getValue());
+
+		// First pass: Detect if the parameter depends on another parameter.
+		for (QList<QSharedPointer<ModuleParameter> >::Iterator parameterCmp =
+			parametersToWrite->begin();
+			parameterCmp != parametersToWrite->end(); ++parameterCmp)
+		{
+			if (addFormatted.contains((*parameterCmp)->name()))
+			{
+				// A match found: The parameter must be positioned after this one!
+				minPos = ++parameterCmp;
+
+				// The first one needed is the relevant one, so break here.
+				break;
+			}
+		}
+
+		// If true, the parameter will be appended to the end of the list.
+		bool append = true;
+
+		// The second pass: Find the actual position before the parameter is referred.
+		for (QList<QSharedPointer<ModuleParameter> >::Iterator parameterCmp = minPos;
+			parameterCmp != parametersToWrite->end(); ++parameterCmp)
+		{
+			// Resolve the value of the the compared parameter.
+			QString formatted = this->formatter_->
+				formatReferringExpression((*parameterCmp)->getValue());
+
+			// Check if it contains a reference to the inspected parameter.
+			if (formatted.contains((*parameterAdd)->name()))
+			{
+				// Remove the inspected parameter from the previous place.
+				parametersToWrite->removeOne(*parameterAdd);
+
+				// Then the inspected parameter comes before it is referred.
+				parametersToWrite->insert(parameterCmp, *parameterAdd);
+
+				// It will not be inserted twice, so break here.
+				append = false;
+				break;
+			}
+		}
+
+		// If there was no match in the second pass, or no second pass at all, at to then end.
+		if (append)
+		{
+			// Remove the inspected parameter from the previous place.
+			parametersToWrite->removeOne(*parameterAdd);
+			// Append at the end of the list.
+			parametersToWrite->append(*parameterAdd);
 		}
 	}
 }
