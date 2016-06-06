@@ -220,18 +220,23 @@ void VerilogImporter::importModelName(QString const& input, QSharedPointer<Compo
 //-----------------------------------------------------------------------------
 QSharedPointer<View> VerilogImporter::findOrCreateFlatView(QSharedPointer<Component> targetComponent) const
 {
+	// Find any flat views from the target component.
     QStringList flatViews = targetComponent->getFlatViews();
+
     if (flatViews.isEmpty())
     {
-		// create new view
+		// If there was none, create a new view.
 		QSharedPointer<View> newView( new View() );
-		newView->setName("flat");
-		newView->addEnvIdentifier(QString("::"));
+		// Rip its name from the generation policy.
+		newView->setName(NameGenerationPolicy::verilogStructuralViewName(NameGenerationPolicy::flatViewName()));
+		// Add to the component.
 		targetComponent->getViews()->append(newView);
 
-        flatViews = targetComponent->getFlatViews();
+		// Return the result.
+		return newView;
     }
 
+	// Return the first one from the list.
     return targetComponent->getModel()->findView(flatViews.first());
 }
 
@@ -241,17 +246,15 @@ QSharedPointer<View> VerilogImporter::findOrCreateFlatView(QSharedPointer<Compon
 void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Component> targetComponent,
 	QSharedPointer<ComponentInstantiation>& targetComponentInstantiation) const
 {
+	// Needs a view, no matter if it exist.
     QSharedPointer<View> flatView = findOrCreateFlatView(targetComponent);
 
+	// Create environment identifiers for the view as needed.
     QString envIdentifierForImport = "verilog:Kactus2:";
 
     QStringList envIdentifiers = flatView->getEnvIdentifiers();
 
-    if (envIdentifiers.contains("::"))
-    {
-        envIdentifiers.replace(envIdentifiers.indexOf("::"), envIdentifierForImport);
-    }
-    else if (!envIdentifiers.contains(envIdentifierForImport, Qt::CaseInsensitive))
+    if (!envIdentifiers.contains(envIdentifierForImport, Qt::CaseInsensitive))
     {
         envIdentifiers.append(envIdentifierForImport);
     }
@@ -259,17 +262,21 @@ void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Comp
 	flatView->setEnvIdentifiers(envIdentifiers);
 
 	// Must have a component instantiation for module parameters.
-	QString instaName = NameGenerationPolicy::verilogComponentInstantiationName( flatView->name() );
-	targetComponentInstantiation = targetComponent->getModel()->findComponentInstantiation(instaName);
+	targetComponentInstantiation = targetComponent->getModel()->
+		findComponentInstantiation(flatView->getComponentInstantiationRef());
 
-	// Create and add to the component if does not exist.
 	if ( !targetComponentInstantiation )
 	{
+		// Create if does not exist.
+		QString instaName = NameGenerationPolicy::verilogComponentInstantiationName( flatView->name() );
 		targetComponentInstantiation = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
+		// Set appropriate name and language.
 		targetComponentInstantiation->setName(instaName);
 		targetComponentInstantiation->setLanguage("verilog");
-		targetComponent->getComponentInstantiations()->append(targetComponentInstantiation);
-	}
 
-	flatView->setComponentInstantiationRef( instaName );
+		// Add to the component.
+		targetComponent->getComponentInstantiations()->append(targetComponentInstantiation);
+		// Set the view to refer to it.
+		flatView->setComponentInstantiationRef( instaName );
+	}
 }
