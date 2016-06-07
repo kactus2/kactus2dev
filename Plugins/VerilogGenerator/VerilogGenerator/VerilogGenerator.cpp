@@ -70,8 +70,8 @@ VerilogGenerator::~VerilogGenerator()
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::parse()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::parse(QSharedPointer<Component> component, QString const& topComponentView, 
-    QSharedPointer<Design> design)
+void VerilogGenerator::parse(QSharedPointer<Component> component, QString topComponentView, 
+    QSharedPointer<Design> design /*= QSharedPointer<Design>()*/)
 {
     topComponent_ = component;
     topComponentView_ = topComponentView;
@@ -132,8 +132,8 @@ void VerilogGenerator::initializeWriters()
 
     QSharedPointer<ExpressionFormatter> topFormatter = createFormatterForComponent(topComponent_);
 
-    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_, topComponentView_,
-        sorter_, topFormatter));
+    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_,
+		topComponentView_, sorter_, topFormatter));
 
     instanceWriters_.clear();
 

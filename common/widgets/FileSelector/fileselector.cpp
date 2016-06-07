@@ -150,21 +150,30 @@ void FileSelector::selectFile( const QString& filePath )
 //-----------------------------------------------------------------------------
 void FileSelector::onIndexChange( int newIndex )
 {
-	// find the text for the index
+	// Find the text for the index.
 	QString filePath = itemText(newIndex);
-	emit fileSelected(filePath);
+
+	// Find corresponding IP-XACT objects.
+	QSharedPointer<FileSet> fileSet = fileSets_[filePath];
+
+	// Emit signal with complete data.
+	emit fileSelected(filePath,fileSet);
 }
 
 //-----------------------------------------------------------------------------
 // Function: fileselector::getFileNames()
 //-----------------------------------------------------------------------------
-QStringList FileSelector::getFileNames(QSharedPointer<Component> component) const
+QStringList FileSelector::getFileNames(QSharedPointer<Component> component)
 {
     QStringList fileNames;
 
     foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
-    {
-        fileNames.append(fileSet->getFileNames());
+	{
+		foreach (QSharedPointer<File> file, *fileSet->getFiles())
+		{
+			fileSets_[file->name()] = fileSet;
+			fileNames.append(file->name());
+		}
     }
 
     return fileNames;

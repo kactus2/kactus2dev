@@ -21,6 +21,7 @@
 #include <wizards/ComponentWizard/ImportRunner.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
@@ -66,8 +67,8 @@ componentViews_(component->getViews())
 
     connect(portEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
-    connect(fileSelector_, SIGNAL(fileSelected(const QString&)),
-        this, SLOT(onFileSelected(const QString&)), Qt::UniqueConnection);
+    connect(fileSelector_, SIGNAL(fileSelected(const QString&, QSharedPointer<FileSet>)), this,
+		SLOT(onFileSelected(const QString&, QSharedPointer<FileSet>)), Qt::UniqueConnection);
 
     connect(refreshButton_, SIGNAL(clicked()),this, SLOT(onRefresh()), Qt::UniqueConnection);
     connect(editButton_, SIGNAL(clicked()), this, SLOT(onOpenEditor()), Qt::UniqueConnection);
@@ -120,9 +121,10 @@ bool ImportEditor::checkEditorValidity() const
 //-----------------------------------------------------------------------------
 // Function: ImportEditor::onFileSelected()
 //-----------------------------------------------------------------------------
-void ImportEditor::onFileSelected(QString const& filePath)
+void ImportEditor::onFileSelected(QString const& filePath, QSharedPointer<FileSet> fileSet)
 {
     selectedSourceFile_ = filePath;
+	selectedFileSet_ = fileSet;
 
     onRefresh();
 }
@@ -148,6 +150,18 @@ void ImportEditor::onRefresh()
     portEditor_->setComponent(importComponent_);
 
     componentViews_ = importComponent_->getViews();
+
+	if ( selectedFileSet_ )
+	{
+		foreach( QSharedPointer<ComponentInstantiation> componentInstantiation, 
+			*importComponent_->getComponentInstantiations() )
+		{
+			if (!componentInstantiation->getFileSetReferences()->contains(selectedFileSet_->name()))
+			{
+				componentInstantiation->getFileSetReferences()->append(selectedFileSet_->name());
+			}
+		}
+	}
 
     emit componentChanged(importComponent_);
     emit contentChanged();

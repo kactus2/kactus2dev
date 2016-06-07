@@ -13,6 +13,10 @@
 #define GENERATORCONFIGURATION_H
 
 #include <QString>
+#include <QSharedPointer>
+
+class View;
+class ComponentInstantiation;
 
 //-----------------------------------------------------------------------------
 //! Container class for generator configuration.
@@ -30,16 +34,44 @@ public:
     /*!
      *  Sets the active view for the top component in generation.
      *
-     *      @param [in] viewName   The name of the active view.
+     *      @param [in] view   The active view.
      */
-    void setActiveView(QString const& viewName);
+    void setActiveView(QSharedPointer<View> view);
 
     /*!
      *  Gets the active view for the top component.
      *
-     *      @return The active view name.
+     *      @return The active view.
      */
-    QString getActiveViewName() const;
+	QSharedPointer<View> getActiveView() const;
+	
+    /*!
+     *  Sets the component instantiation for the active view.
+     *
+     *      @param [in] instantiation   The ComponentInstantiation.
+     */
+	void GeneratorConfiguration::setInstantiation(QSharedPointer<ComponentInstantiation> instantiation);
+	
+    /*!
+     *  Gets the component instantiation for the active view.
+     *
+     *      @return The ComponentInstantiation.
+     */
+	QSharedPointer<ComponentInstantiation> GeneratorConfiguration::getInstantiation() const;
+
+    /*!
+     *  Sets the file set referred by the instantiation.
+     *
+     *      @param [in] fileSetRef   The fileSetRef to set.
+     */
+    void setFileSetRef(QString const& fileSetRef);
+
+    /*!
+     *  Gets the file set referred by the instantiation.
+     *
+     *      @return The fileSetRef.
+     */
+    QString getFileSetRef() const;
 
     /*!
      *  Sets whether the output file should be added to top component file sets or not.
@@ -78,8 +110,14 @@ private:
     //! The path for output file.
     QString outputPath_;
 
-    //! The name of the top component active view.
-    QString activeViewName_;
+    //! The active view of the top component.
+	QSharedPointer<View> activeView_;
+
+	//! The component instantiation of the active view
+	QSharedPointer<ComponentInstantiation> instantiation_;
+
+	//! Tthe file set referred by the instantiation.
+	QString fileSetRef_;
 
     //! Flag for indicating if the output file should be saved to top component file sets.
     bool saveToFileset_;

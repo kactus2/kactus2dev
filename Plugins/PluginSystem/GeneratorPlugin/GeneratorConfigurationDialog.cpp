@@ -21,49 +21,103 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
 //-----------------------------------------------------------------------------
 GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration, 
-    QWidget *parent)
-    : QDialog(parent), configuration_(), addToFileset_(new QCheckBox(this)), 
-    viewSelection_(new QComboBox(this)), pathEditor_(new QLineEdit(this))
+    QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > instantiations, 
+    QWidget *parent) : QDialog(parent), configuration_(configuration),  instantiations_(instantiations),
+	viewSelection_(new QComboBox(this)), addToFileset_(new QGroupBox(tr("Add file to fileset"))),
+	instantiationSelection_(new QComboBox(this)), fileSetSelection_(new QComboBox(this)),
+	pathEditor_(new QLineEdit(this)), instantiationWarningLabel_(new QLabel), fileSetWarningLabel_(new QLabel)
 {    
     setWindowTitle(tr("Configure file generation"));
 
-    QFormLayout* filesetLayout = new QFormLayout();
-    filesetLayout->addRow(tr("Add file to fileset"), addToFileset_);
+	// Make view selection its own layout.
+	QFormLayout* viewSelectionLayout = new QFormLayout();
+	viewSelectionLayout->addRow(tr("Select view"), viewSelection_);
 
-    filesetLayout->addRow(tr("Select view"), viewSelection_);
+	// Checkable group box used to include generated file in the IP-XACT component.
+	addToFileset_->setCheckable(true);
+	addToFileset_->setChecked(configuration->getSaveToFileset() != 0);
 
+	// It will have its own sub layout.
+	QFormLayout* filesetLayout = new QFormLayout();
+	addToFileset_->setLayout(filesetLayout);
+
+	// Widgets for choosing configuration instantiation and the file set.
+	filesetLayout->addRow(tr("Select component instantiation"), instantiationSelection_);
+	filesetLayout->addRow(tr("Select file set"), fileSetSelection_);
+	// Both are editable, in case a custom entry is desired.
+	instantiationSelection_->setEditable(true);
+	fileSetSelection_->setEditable(true);
+
+	// The instantiation selection shall be populated by all available instantiations.
+	foreach ( QSharedPointer<ComponentInstantiation> cimp, *instantiations_ )
+	{
+		instantiationSelection_->addItem( cimp->name() );
+	}
+
+	// Evaluate the instantiations.
+	instantiationSelection_->setCurrentIndex(0);
+	onInstantiationChanged(instantiationSelection_->currentText());
+
+	// Layout for path selection widgets.
     QHBoxLayout* pathSelectionLayout = new QHBoxLayout();
     pathSelectionLayout->addWidget(new QLabel(tr("Select output file")));
     pathSelectionLayout->addWidget(pathEditor_);
-   
+
+	// Get the default output path from the generation configuration.
+	pathEditor_->setText(configuration_->getOutputPath());
+
+	// Add button for choosing the path via dialog.
     QPushButton* browseButton = new QPushButton(tr("Browse"), this);
     pathSelectionLayout->addWidget(browseButton);
 
+	// Layout for thing coming to the bottom part of the dialog.
+	QHBoxLayout* bottomLayout = new QHBoxLayout();
+
+	// Widgets for warning messages
+	QVBoxLayout* warningLayout = new QVBoxLayout();
+	bottomLayout->addLayout(warningLayout);
+	warningLayout->addWidget(instantiationWarningLabel_);
+	warningLayout->addWidget(fileSetWarningLabel_);
+
+	// Add Ok and cancel give the dialog results.
     QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
         Qt::Horizontal, this);
 
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addLayout(filesetLayout);
+	bottomLayout->addWidget(dialogButtons);
+
+	// Add everything it their proper position in the final layout.
+	QVBoxLayout* topLayout = new QVBoxLayout(this);
+	topLayout->addLayout(viewSelectionLayout);
+    topLayout->addWidget(addToFileset_);
     topLayout->addLayout(pathSelectionLayout);
     topLayout->addStretch(1);
-    topLayout->addWidget(dialogButtons);
+    topLayout->addLayout(bottomLayout);
 
-    loadConfiguration(configuration);
-
-    connect(addToFileset_, SIGNAL(stateChanged(int)), 
-        this, SLOT(onFileSetStateChanged(int)), Qt::UniqueConnection);
+	// Finally, connect the relevant events to their handler functions.
+    connect(addToFileset_, SIGNAL(toggled(bool)), 
+        this, SLOT(onFileSetStateChanged(bool)), Qt::UniqueConnection);
     connect(viewSelection_, SIGNAL(currentIndexChanged(QString const&)),
-        this, SLOT(onViewChanged(QString const&)), Qt::UniqueConnection);
+		this, SLOT(onViewChanged(QString const&)), Qt::UniqueConnection);
+	connect(instantiationSelection_, SIGNAL(currentTextChanged(QString const&)),
+		this, SLOT(onInstantiationInserted(QString const&)), Qt::UniqueConnection);
+	connect(instantiationSelection_, SIGNAL(currentIndexChanged(QString const&)),
+		this, SLOT(onInstantiationChanged(QString const&)), Qt::UniqueConnection);
+	connect(fileSetSelection_, SIGNAL(currentIndexChanged(QString const&)),
+		this, SLOT(onFileSetChanged(QString const&)), Qt::UniqueConnection);
+	connect(fileSetSelection_, SIGNAL(currentTextChanged(QString const&)),
+		this, SLOT(onFileSetChanged(QString const&)), Qt::UniqueConnection);
     connect(pathEditor_, SIGNAL(editingFinished()), this, SLOT(onPathEdited()), Qt::UniqueConnection);
     connect(browseButton, SIGNAL(clicked(bool)), this, SLOT(onBrowse()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::~GeneratorConfigurationDialog()
@@ -74,24 +128,20 @@ GeneratorConfigurationDialog::~GeneratorConfigurationDialog()
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfigurationDialog::loadConfiguration()
-//-----------------------------------------------------------------------------
-void GeneratorConfigurationDialog::loadConfiguration(QSharedPointer<GeneratorConfiguration> configuration)
-{
-    configuration_ = configuration;
-
-    addToFileset_->setChecked(configuration->getSaveToFileset() != 0);
-    pathEditor_->setText(configuration_->getOutputPath());
-}
-
-//-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::setViewNames()
 //-----------------------------------------------------------------------------
-void GeneratorConfigurationDialog::setViewNames(QStringList const& viewNames)
+void GeneratorConfigurationDialog::setViews(QSharedPointer<QList<QSharedPointer<View> > > const views)
 {
     viewSelection_->clear();
-    viewSelection_->addItems(viewNames);
-    viewSelection_->setCurrentIndex(0);
+
+	// Set names as the of views as items, but also keep track on which name corresponds which view.
+	foreach ( QSharedPointer<View> currentView, *views )
+	{
+		views_[currentView->name()] = currentView;
+		viewSelection_->addItem( currentView->name() );
+	}
+
+	viewSelection_->setCurrentIndex(0);
 }
 
 //-----------------------------------------------------------------------------
@@ -99,9 +149,27 @@ void GeneratorConfigurationDialog::setViewNames(QStringList const& viewNames)
 //-----------------------------------------------------------------------------
 void GeneratorConfigurationDialog::accept()
 {
+	// Must have path for a file. 
     if (pathEditor_->text().isEmpty())
-    {
-        return;
+	{
+		fileSetWarningLabel_->setText("Must have a path for file!");
+		return;
+	}
+	
+	// If file is saved to file set, must have a file set and instantiation.
+	if ( configuration_->getSaveToFileset() )
+	{
+		if ( instantiationSelection_->currentText().isEmpty() )
+		{
+			instantiationWarningLabel_->setText("Must have a component instantiation!");
+			return;
+		}
+
+		if ( fileSetSelection_->currentText().isEmpty() )
+		{
+			fileSetWarningLabel_->setText("Must have a file set!");
+			return;
+		}
     }
 
     QDialog::accept();
@@ -110,10 +178,9 @@ void GeneratorConfigurationDialog::accept()
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::onFileSetStateChanged()
 //-----------------------------------------------------------------------------
-void GeneratorConfigurationDialog::onFileSetStateChanged(int state)
+void GeneratorConfigurationDialog::onFileSetStateChanged(bool on)
 {
-    bool addToFileset = state;
-    configuration_->setSaveToFileset(addToFileset);
+    configuration_->setSaveToFileset(on);
 }
 
 //-----------------------------------------------------------------------------
@@ -129,10 +196,12 @@ void GeneratorConfigurationDialog::onPathEdited()
 //-----------------------------------------------------------------------------
 void GeneratorConfigurationDialog::onBrowse()
 {
+	// Acquire the path to the file through a dialog.
     QString selectedPath = QFileDialog::getSaveFileName(this,
         tr("Select output file for generation"), pathEditor_->text(),
         tr("Verilog files (*.v)"));
 
+	// If any path chosen, set it as the selected path.
     if (!selectedPath.isEmpty())
     {
         pathEditor_->setText(selectedPath);
@@ -143,7 +212,94 @@ void GeneratorConfigurationDialog::onBrowse()
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::onViewChanged()
 //-----------------------------------------------------------------------------
-void GeneratorConfigurationDialog::onViewChanged(QString const& selectedView)
+void GeneratorConfigurationDialog::onViewChanged(QString const& selectedViewName)
 {
-    configuration_->setActiveView(selectedView);
+	// Get matching view from the list.
+	QSharedPointer<View> selectedView = views_[selectedViewName];
+
+	// Should exist.
+	if (selectedView)
+	{
+		// Set to the configuration.
+		configuration_->setActiveView(selectedView);
+
+		// For convenience, set the matching component instantiation as the default choice.
+		int index = instantiationSelection_->findText(selectedView->getComponentInstantiationRef());
+
+		if ( index != -1 )
+		{
+			instantiationSelection_->setCurrentIndex(index);
+		}
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfigurationDialog::onInstantiationInserted()
+//-----------------------------------------------------------------------------
+void GeneratorConfigurationDialog::onInstantiationInserted(QString const& selectedInstantiationName)
+{
+	// Get matching instantiation from the list.
+	QSharedPointer<ComponentInstantiation> selectedInstantiation =
+		instantiations_->value(selectedInstantiationName);
+
+	if ( !selectedInstantiation && !selectedInstantiationName.isEmpty() )
+	{
+		// Create a new one if does not exist.
+		selectedInstantiation = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
+		selectedInstantiation->setName(selectedInstantiationName);
+		selectedInstantiation->setLanguage("verilog");
+
+		// Set it as the selected instantiation.
+		configuration_->setInstantiation(selectedInstantiation);
+
+		// Warn user that a new instantiation will be created.
+		instantiationWarningLabel_->setText(tr("Will a create new component instantiation %1.").
+			arg(selectedInstantiationName));
+	}
+	else
+	{
+		instantiationWarningLabel_->setText("");
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfigurationDialog::onInstantiationChanged()
+//-----------------------------------------------------------------------------
+void GeneratorConfigurationDialog::onInstantiationChanged(QString const& selectedInstantiationName)
+{
+	// Get matching instantiation from the list.
+	QSharedPointer<ComponentInstantiation> selectedInstantiation =
+		instantiations_->value(selectedInstantiationName);
+
+	if ( selectedInstantiation )
+	{
+		// Set to the configuration.
+		configuration_->setInstantiation(selectedInstantiation);
+
+		// Affects the available file sets.
+		fileSetSelection_->clear();
+		fileSetSelection_->addItems( *(selectedInstantiation->getFileSetReferences()) );
+		fileSetSelection_->setCurrentIndex(0);
+		onFileSetChanged(fileSetSelection_->currentText());
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfigurationDialog::onFileSetChanged()
+//-----------------------------------------------------------------------------
+void GeneratorConfigurationDialog::onFileSetChanged(QString const& fileSetName)
+{
+	// Set to the configuration.
+	configuration_->setFileSetRef(fileSetName);
+
+	if ( !fileSetName.isEmpty() && ( !configuration_->getInstantiation() ||
+		!configuration_->getInstantiation()->getFileSetReferences()->contains(fileSetName) ) )
+	{
+		// Warn user that a new file set will be created.
+		fileSetWarningLabel_->setText(tr("Will a create new a file set %1.").arg(fileSetName));
+	}
+	else
+	{
+		fileSetWarningLabel_->setText("");
+	}
 }

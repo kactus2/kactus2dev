@@ -11,10 +11,13 @@
 
 #include "GeneratorConfiguration.h"
 
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
+
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
-GeneratorConfiguration::GeneratorConfiguration() : outputPath_(), activeViewName_(), saveToFileset_(false)
+GeneratorConfiguration::GeneratorConfiguration() : outputPath_(), activeView_(), saveToFileset_(false)
 {
 
 }
@@ -30,17 +33,49 @@ GeneratorConfiguration::~GeneratorConfiguration()
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::setActiveView()
 //-----------------------------------------------------------------------------
-void GeneratorConfiguration::setActiveView(QString const& viewName)
+void GeneratorConfiguration::setActiveView(QSharedPointer<View> view)
 {
-    activeViewName_ = viewName;
+    activeView_ = view;
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::getActiveViewName()
+// Function: GeneratorConfiguration::getActiveView()
 //-----------------------------------------------------------------------------
-QString GeneratorConfiguration::getActiveViewName() const
+QSharedPointer<View> GeneratorConfiguration::getActiveView() const
 {
-    return activeViewName_;
+    return activeView_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::setActiveView()
+//-----------------------------------------------------------------------------
+void GeneratorConfiguration::setInstantiation(QSharedPointer<ComponentInstantiation> instantiation)
+{
+	instantiation_ = instantiation;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getActiveView()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentInstantiation> GeneratorConfiguration::getInstantiation() const
+{
+	return instantiation_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::setFileSetRef()
+//-----------------------------------------------------------------------------
+void GeneratorConfiguration::setFileSetRef(QString const& fileSetRef)
+{
+	fileSetRef_ = fileSetRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getFileSetRef()
+//-----------------------------------------------------------------------------
+QString GeneratorConfiguration::getFileSetRef() const
+{
+	return fileSetRef_;
 }
 
 //-----------------------------------------------------------------------------

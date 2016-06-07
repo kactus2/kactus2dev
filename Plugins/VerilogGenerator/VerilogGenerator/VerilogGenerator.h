@@ -58,7 +58,7 @@ public:
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
-    void parse(QSharedPointer<Component> component, QString const& topComponentView, 
+    void parse(QSharedPointer<Component> component, QString topComponentView, 
         QSharedPointer<Design> design = QSharedPointer<Design>());
     
     /*!

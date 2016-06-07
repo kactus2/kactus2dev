@@ -22,6 +22,7 @@
 #include <QTabWidget>
 #include <QWidget>
 
+class FileSet;
 class Component;
 class FileSelector;
 class ImportRunner;
@@ -99,7 +100,7 @@ signals:
 private slots:
 
     //! Called when a source file has been selected.
-    void onFileSelected(QString const& filePath);
+    void onFileSelected(QString const& filePath, QSharedPointer<FileSet> fileSet);
 
     //! Called when the selected source file should be opened in an editor.
     void onOpenEditor();
@@ -157,6 +158,9 @@ private:
 
     //! Top-level source file relative path from component XML file.
     QString selectedSourceFile_;
+
+	//! The file set where the selectedSourceFile_ belongs to.
+	QSharedPointer<FileSet> selectedFileSet_;
 
 	//! Editor for the imported ports.
 	PortsEditor* portEditor_;

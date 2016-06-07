@@ -45,22 +45,7 @@ private slots:
     // Test cases:
     void testFilesetIsCreatedWhenRunForComponent();
     void testFilesetIsCreatedWhenRunForDesign();
-    void testFilesetIsCreatedWhenRunForDesign_data();
-   
-    void testRTLViewIsCreatedWhenRunForComponent();
-   
-    void testStructuralViewIsCreatedWhenRunForDesign();
-
-    void testStructuralViewIsCreatedWhenRunForDesign_data();
-    void testStructuralViewIsCreatedWhenRunWithDesignConfiguration();
-    void testStructuralViewIsCreatedWhenRunWithDesignConfiguration_data();
-
-    void testTopLevelViewIsSetWhenMultipleFlatViews();
-
-    void testRTLViewIsCreatedWhenRunWithInvalidHierarchicalView();
-    void testRTLViewIsCreatedWhenRunForComponentWithHierarchicalView();
-
-    void testConsecutiveRunsCreateOnlyOneView();
+	void testFilesetIsCreatedWhenRunForDesign_data();
 
     void testFlatViewsArePossibleForTopComponent();
     void testRefenecedDesignViewIsPossible();
@@ -68,7 +53,8 @@ private slots:
 
 protected:
 
-    virtual bool couldConfigure(QStringList const& possibleViewNames) const;
+	virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
+		QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const;
 
     virtual QSharedPointer<GeneratorConfiguration> getConfiguration();
 
@@ -150,8 +136,8 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForComponent()
     runGenerator(&utilityMock_, targetComponent);
 
     QVERIFY2(QFile::exists("test.v"), "No file created");
-    QVERIFY2(targetComponent->hasFileSet("verilogSource"), "No file set created");
-    QVERIFY2(targetComponent->getFileSet("verilogSource")->getFileNames().contains("test.v"), 
+    QCOMPARE(targetComponent->getFileSets()->count(), 1);
+    QVERIFY2(targetComponent->getFileSets()->first()->getFileNames().contains("test.v"), 
         "No file added to fileset");
 }
 
@@ -176,8 +162,8 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign()
     runGenerator(&utilityMock_, targetComponent, QSharedPointer<Document>(), targetDesign);
 
     QVERIFY2(QFile::exists("test.v"), "No file created");
-    QVERIFY2(targetComponent->hasFileSet(viewName + "_verilogSource"), "No file set created");
-    QVERIFY2(targetComponent->getFileSet(viewName + "_verilogSource")->getFileNames().contains("test.v"), 
+    QCOMPARE(targetComponent->getFileSets()->count(), 1);
+    QVERIFY2(targetComponent->getFileSets()->first()->getFileNames().contains("test.v"), 
         "No file added to fileset");
 }
 
@@ -191,187 +177,6 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign_data()
     QTest::newRow("structural") << "structural";
     QTest::newRow("hierarchical") << "hierarchical";
     QTest::newRow("design") << "design";
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testRTLViewIsCreatedWhenRunForComponent()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testRTLViewIsCreatedWhenRunForComponent()
-{
-	QSharedPointer<Component> targetComponent = createTestComponent();
-
-    runGenerator(&utilityMock_, targetComponent);
-    
-    QVERIFY2(targetComponent->hasView("rtl"), "No rtl view created");
-
-    QSharedPointer<View> rtlView = targetComponent->getModel()->findView("rtl");
-    verifyRTLView(rtlView, targetComponent->getModel()->findComponentInstantiation(rtlView->getComponentInstantiationRef()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunForDesign()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunForDesign()
-{
-    QFETCH(QString, viewName);
-
-    QSharedPointer<Component> targetComponent = createTestComponent();
-    QSharedPointer<Design> targetDesign = createTestDesign();
-
-	QSharedPointer<View> structuralView( new View(viewName) );
-	QSharedPointer<DesignInstantiation> di( new DesignInstantiation("test_design_insta") );
-	structuralView->setDesignInstantiationRef(di->name());
-	QSharedPointer<ConfigurableVLNVReference> cvr( new ConfigurableVLNVReference( targetDesign->getVlnv() ) );
-	di->setDesignReference(cvr);
-	targetComponent->getDesignInstantiations()->append(di);
-	targetComponent->getViews()->append(structuralView);
-
-    runGenerator(&utilityMock_, targetComponent, QSharedPointer<Document>(0), targetDesign);
-
-    QVERIFY2(targetComponent->hasView( NameGenerationPolicy::verilogStructuralViewName(viewName)), "No implementation view created");
-
-    QSharedPointer<View> verilogView = targetComponent->getModel()->findView(
-		NameGenerationPolicy::verilogStructuralViewName( viewName ) );
-    verifyHierarchicalView(verilogView, viewName,
-		targetComponent->getModel()->findComponentInstantiation(verilogView->getComponentInstantiationRef()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunForDesign_data()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunForDesign_data()
-{
-    testFilesetIsCreatedWhenRunForDesign_data();
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunWithDesignConfiguration()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunWithDesignConfiguration()
-{
-    QFETCH(QString, viewName);
-
-    QSharedPointer<Component> targetComponent = createTestComponent();
-    QSharedPointer<DesignConfiguration> targetDesignConfig = createTestDesignConfig();
-    QSharedPointer<Design> targetDesign = createTestDesign();
-
-    targetDesignConfig->setDesignRef(targetDesign->getVlnv());
-
-    QSharedPointer<View> structuralView( new View(viewName) );
-	QSharedPointer<DesignConfigurationInstantiation> disg( new DesignConfigurationInstantiation("test-desgcof-insta") );
-	QSharedPointer<ConfigurableVLNVReference> cvr( new ConfigurableVLNVReference( targetDesignConfig->getVlnv() ) );
-	disg->setDesignConfigurationReference(cvr);
-    structuralView->setDesignConfigurationInstantiationRef(disg->name());
-    targetComponent->getViews()->append(structuralView);
-	targetComponent->getDesignConfigurationInstantiations()->append(disg);
-
-    runGenerator(&utilityMock_, targetComponent, targetDesignConfig, targetDesign);
-
-	QString verilogViewName = NameGenerationPolicy::verilogStructuralViewName( viewName );
-    QVERIFY2(targetComponent->hasView( verilogViewName ), "No implementation view created");
-
-    QSharedPointer<View> verilogView = targetComponent->getModel()->findView( verilogViewName );
-    verifyHierarchicalView(verilogView, viewName,
-		targetComponent->getModel()->findComponentInstantiation(verilogView->getComponentInstantiationRef()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunWithDesignConfiguration_data()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunWithDesignConfiguration_data()
-{
-    testFilesetIsCreatedWhenRunForDesign_data();
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testStructuralViewIsCreatedWhenRunWithDesignConfiguration()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testTopLevelViewIsSetWhenMultipleFlatViews()
-{
-    QSharedPointer<Component> targetComponent = createTestComponent();
-    QSharedPointer<DesignConfiguration> targetDesignConfig = createTestDesignConfig();
-    QSharedPointer<Design> targetDesign = createTestDesign();
-
-    targetDesignConfig->setDesignRef(targetDesign->getVlnv());
-
-	QSharedPointer<View> structuralView( new View("structural") );
-	QSharedPointer<DesignConfigurationInstantiation> disg( new DesignConfigurationInstantiation("test-desgcof-insta") );
-	QSharedPointer<ConfigurableVLNVReference> cvr( new ConfigurableVLNVReference( targetDesignConfig->getVlnv() ) );
-	disg->setDesignConfigurationReference(cvr);
-	structuralView->setDesignConfigurationInstantiationRef(disg->name());
-	targetComponent->getViews()->append(structuralView);
-	targetComponent->getDesignConfigurationInstantiations()->append(disg);
-
-    runGenerator(&utilityMock_, targetComponent, targetDesignConfig, targetDesign);
-
-	QString verilogViewName = NameGenerationPolicy::verilogStructuralViewName( structuralView->name() );
-    QVERIFY2(targetComponent->hasView(verilogViewName), "No implementation view created");
-
-    QSharedPointer<View> verilogView = targetComponent->getModel()->findView(verilogViewName);
-    verifyHierarchicalView(verilogView, "structural", targetComponent->getModel()->
-		findComponentInstantiation(verilogView->getComponentInstantiationRef()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testRTLViewIsCreatedWhenRunWithInvalidHierarchicalView()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testRTLViewIsCreatedWhenRunWithInvalidHierarchicalView()
-{
-    QSharedPointer<Component> targetComponent = createTestComponent();
-    QSharedPointer<DesignConfiguration> targetDesignConfig = createTestDesignConfig();
-    QSharedPointer<Design> targetDesign = createTestDesign();
-
-	QSharedPointer<View> structuralView( new View("structural") );
-	QSharedPointer<DesignConfigurationInstantiation> disg( new DesignConfigurationInstantiation("test-desgcof-insta") );
-	QSharedPointer<ConfigurableVLNVReference> cvr( new ConfigurableVLNVReference( VLNV(VLNV::DESIGN, "", "", "", "") ) );
-	disg->setDesignConfigurationReference(cvr);
-	structuralView->setDesignConfigurationInstantiationRef(disg->name());
-	targetComponent->getViews()->append(structuralView);
-
-    runGenerator(&utilityMock_, targetComponent, targetDesignConfig, targetDesign);
-
-    QVERIFY2(targetComponent->hasView("rtl"), "No implementation view created");
-
-    QSharedPointer<View> verilogView = targetComponent->getModel()->findView("rtl");
-	verifyRTLView(verilogView, targetComponent->getModel()->
-		findComponentInstantiation(verilogView->getComponentInstantiationRef()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testRTLViewIsCreatedWhenRunForComponentWithHierarchicalView()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testRTLViewIsCreatedWhenRunForComponentWithHierarchicalView()
-{    
-    QSharedPointer<Component> targetComponent = createTestComponent();
-
-	QSharedPointer<View> structuralView( new View("structural") );
-	QSharedPointer<DesignConfigurationInstantiation> disg( new DesignConfigurationInstantiation("test-desgcof-insta") );
-	QSharedPointer<ConfigurableVLNVReference> cvr( new ConfigurableVLNVReference( VLNV(VLNV::DESIGNCONFIGURATION, "TUT", "TestLib", "TestDesign", "1.0") ) );
-	disg->setDesignConfigurationReference(cvr);
-	structuralView->setDesignConfigurationInstantiationRef(disg->name());
-	targetComponent->getViews()->append(structuralView);
-
-    runGenerator(&utilityMock_, targetComponent, QSharedPointer<Document>(0), QSharedPointer<Document>(0));
-
-    QVERIFY2(targetComponent->hasView("rtl"), "No implementation view created");    
-
-    QSharedPointer<View> verilogView = targetComponent->getModel()->findView("rtl");
-	verifyRTLView(verilogView, targetComponent->getModel()->
-		findComponentInstantiation(verilogView->getComponentInstantiationRef()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testConsecutiveRunsCreateOnlyOneView()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testConsecutiveRunsCreateOnlyOneView()
-{    
-    QSharedPointer<Component> targetComponent = createTestComponent();
-
-    runGenerator(&utilityMock_, targetComponent, QSharedPointer<Document>(0), QSharedPointer<Document>(0));
-    runGenerator(&utilityMock_, targetComponent, QSharedPointer<Document>(0), QSharedPointer<Document>(0));
-
-    QVERIFY2(targetComponent->hasView("rtl"), "No implementation view created");    
-    QCOMPARE(targetComponent->getViews()->size(), 1);    
 }
 
 //-----------------------------------------------------------------------------
@@ -396,12 +201,12 @@ void tst_VerilogGenerator::testFlatViewsArePossibleForTopComponent()
 	targetComponent->getDesignInstantiations()->append(di);
     targetComponent->getViews()->append(hierView);
 
-    QStringList possibleViews = findPossibleViewNames(targetComponent, QSharedPointer<Document>(0), 
-        QSharedPointer<Document>(0));
+	QSharedPointer<QList<QSharedPointer<View> > > possibleViews =
+		findPossibleViews(targetComponent, QSharedPointer<Document>(0), QSharedPointer<Document>(0));
 
-    QCOMPARE(possibleViews.count(), 2);
-    QVERIFY(possibleViews.contains("View1"));
-    QVERIFY(possibleViews.contains("View2"));
+    QCOMPARE(possibleViews->count(), 2);
+    QVERIFY(possibleViews->contains(firstView));
+    QVERIFY(possibleViews->contains(secondView));
 }
 
 //-----------------------------------------------------------------------------
@@ -426,11 +231,11 @@ void tst_VerilogGenerator::testRefenecedDesignViewIsPossible()
 	targetComponent->getDesignInstantiations()->append(di);
 	targetComponent->getViews()->append(hierView);
 
-    QStringList possibleViews = findPossibleViewNames(targetComponent, targetDesign, 
-        QSharedPointer<Document>(0));
+    QSharedPointer<QList<QSharedPointer<View> > > possibleViews =
+		findPossibleViews(targetComponent, targetDesign, QSharedPointer<Document>(0));
 
-    QCOMPARE(possibleViews.count(), 1);
-    QVERIFY(possibleViews.contains("hierView"));
+    QCOMPARE(possibleViews->count(), 1);
+    QVERIFY(possibleViews->contains(hierView));
 }
 
 //-----------------------------------------------------------------------------
@@ -462,21 +267,22 @@ void tst_VerilogGenerator::testRefenecedDesignConfigurationViewIsPossible()
 	targetComponent->getDesignConfigurationInstantiations()->append(disg);
 	targetComponent->getViews()->append(designConfigView);
 
-    QStringList possibleViews = findPossibleViewNames(targetComponent, targetDesign, targetConfiguration);
+	QSharedPointer<QList<QSharedPointer<View> > > possibleViews =
+		findPossibleViews(targetComponent, targetDesign, targetConfiguration);
 
-    QCOMPARE(possibleViews.count(), 1);
-    QVERIFY(possibleViews.contains("designConfigView"));
+    QCOMPARE(possibleViews->count(), 1);
+    QVERIFY(possibleViews->contains(designConfigView));
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::couldConfigure()
 //-----------------------------------------------------------------------------
-bool tst_VerilogGenerator::couldConfigure(QStringList const& possibleViewNames) const
+bool tst_VerilogGenerator::couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
+	QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const
 {
-    configuration_->setActiveView("");
-    if (!possibleViewNames.isEmpty())
+    if (!possibleViews->isEmpty())
     {
-        configuration_->setActiveView(possibleViewNames.first());
+        configuration_->setActiveView(possibleViews->first());
     }
 
     return true;
@@ -488,7 +294,9 @@ bool tst_VerilogGenerator::couldConfigure(QStringList const& possibleViewNames) 
 QSharedPointer<GeneratorConfiguration> tst_VerilogGenerator::getConfiguration()
 {
     configuration_->setSaveToFileset(true);
-    configuration_->setOutputPath("test.v");
+	configuration_->setOutputPath("test.v");
+	configuration_->setFileSetRef("testFileSet");
+	configuration_->setInstantiation(QSharedPointer<ComponentInstantiation>(new ComponentInstantiation));
 
     return configuration_;
 }

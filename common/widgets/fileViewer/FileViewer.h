@@ -21,6 +21,7 @@
 class Component;
 class LibraryInterface;
 class FileSelector;
+class FileSet;
 
 //-----------------------------------------------------------------------------
 //! Viewer widget for browsing files in component's fileset.
@@ -47,7 +48,7 @@ public:
 
 private slots:
 
-    void onFileSelected(const QString&);
+    void onFileSelected(const QString&, QSharedPointer<FileSet> fileSet);
 
 private:
     // Disable copying.

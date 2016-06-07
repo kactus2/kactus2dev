@@ -26,6 +26,8 @@
 class Component;
 class GeneratorConfiguration;
 class Document;
+class View;
+class ComponentInstantiation;
 
 //-----------------------------------------------------------------------------
 //! Plugin for structural verilog generation.
@@ -120,7 +122,7 @@ public:
 protected:
 
     /*!
-     *  Finds the possible view names for generation.
+     *  Finds the possible views for generation.
      *
      *      @param [in,out]	    libComp			The library component for which the generator is run.
      *      @param [in]	        libDes   		The design which the generator is run.
@@ -128,18 +130,19 @@ protected:
      *
      *      @return List of possible view names for which to run the generation.
      */
-    QStringList findPossibleViewNames(QSharedPointer<Document> libComp, 
-        QSharedPointer<Document> libDes, 
-        QSharedPointer<Document> libDesConf) const;
+    QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<Document> libComp, 
+        QSharedPointer<Document> libDes, QSharedPointer<Document> libDesConf) const;
 
     /*!
      *  Checks if the generator could be configured.
      *
-     *      @param [in] possibleViewNames   The list of possible view names for generation.
+	 *      @param [in] possibleViews			The list of possible views for generation.
+	 *      @param [in] possibleInstantiations	The list of possible instantiations for generation.
      *
      *      @return True, if configuration was successful, otherwise false.
      */
-    virtual bool couldConfigure(QStringList const& possibleViewNames) const;
+    virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
+		QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const;
 
     /*!
      *  Gets the configuration for the generation.
@@ -178,27 +181,15 @@ private:
 
     /*!
      *  Adds the generated file to a file set in the top component.
+	 *  Will do nothing, if the fileSetName is empty.
      *
-     *      @param [in] activeViewName   The name of the top component active view.
+	 *      @param [in] activeView		The top component active view, which will refer to the instantiation.
+	 *      @param [in] instantiation   The instantiation, which will have the fileSetName as reference.
+	 *      @param [in] fileSetName		The name of the file set, where the file will be appended to.
      *
      */
-    void addGeneratedFileToFileSet(QString const& activeViewName) const;    
-
-    /*!
-     *  Creates a name for the file set containing the generated file.
-     *
-     *      @param [in] activeViewName   The name of the top component active view.
-     *
-     *      @return Name for the generated file set.
-     */
-    QString fileSetNameForActiveView(QString const& activeViewName) const;
-
-    /*!
-     *  Adds an RTL view to the top component for the generated model.
-     *
-     *      @param [in] activeViewName   The name of the top component active view.
-     */
-    void addRTLViewToTopComponent(QString const& activeViewName) const;
+    void addGeneratedFileToFileSet(QSharedPointer<View> activeView,
+		QSharedPointer<ComponentInstantiation> instantiation, QString fileSetName) const;
 
     //! Saves the changes made to the top component.
     void saveChanges() const;
@@ -209,9 +200,10 @@ private:
      *      @param [in] containingComponent     The component whose views to search through.
      *      @param [in] targetReference         The reference to find in views.
      *
-     *      @return The names of the views referencing the given VLNV.
+     *      @return The the views referencing the given VLNV.
      */
-    QStringList findReferencingViews(QSharedPointer<Component> containingComponent, VLNV targetReference) const;
+    QSharedPointer<QList<QSharedPointer<View> > > findReferencingViews(QSharedPointer<Component> containingComponent,
+		VLNV targetReference) const;
 
      //-----------------------------------------------------------------------------
     // Data.

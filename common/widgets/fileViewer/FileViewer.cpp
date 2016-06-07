@@ -32,8 +32,9 @@ FileViewer::FileViewer(QSharedPointer<Component> component, QString const& baseP
 {
     editor_->setReadOnly(true);
 
-    connect(fileSelector_, SIGNAL(fileSelected(const QString&)), 
-        this, SLOT(onFileSelected(const QString&)),Qt::UniqueConnection);
+    connect(fileSelector_, SIGNAL(fileSelected(const QString&,QSharedPointer<FileSet>)), this,
+		SLOT(onFileSelected(const QString&,QSharedPointer<FileSet>)),
+		Qt::UniqueConnection);
 
     setupLayout();
 }
@@ -56,7 +57,7 @@ void FileViewer::refresh()
 //-----------------------------------------------------------------------------
 // Function: FileViewer::onFileSelected()
 //-----------------------------------------------------------------------------
-void FileViewer::onFileSelected(const QString& filePath)
+void FileViewer::onFileSelected(const QString& filePath, QSharedPointer<FileSet> fileSet)
 {
 	if (filePath.isEmpty())
     {

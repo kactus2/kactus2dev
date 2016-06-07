@@ -12,13 +12,16 @@
 #ifndef GENERATORCONFIGURATIONDIALOG_H
 #define GENERATORCONFIGURATIONDIALOG_H
 
-#include <QCheckBox>
 #include <QComboBox>
 #include <QDialog>
 #include <QSharedPointer>
 #include <QLineEdit>
+#include <QGroupBox>
+#include <QLabel>
 
 class GeneratorConfiguration;
+class View;
+class ComponentInstantiation;
 
 //-----------------------------------------------------------------------------
 //! Dialog for setting file generation options.
@@ -29,14 +32,15 @@ class GeneratorConfigurationDialog : public QDialog
 public:
 
 	//! The constructor.
-	GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration, QWidget *parent);
+	GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration,
+		QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > instantiations, QWidget *parent);
 
 	//! The destructor.
 	~GeneratorConfigurationDialog();
 
-    void loadConfiguration(QSharedPointer<GeneratorConfiguration> configuration);
+	void setViews(QSharedPointer<QList<QSharedPointer<View> > > const views);
 
-    void setViewNames(QStringList const& viewNames);
+	void setInstantiationNames(QString const& names);
 
 public slots:
 
@@ -44,9 +48,15 @@ public slots:
 
 private slots:
 
-    void onFileSetStateChanged(int state);
+    void onFileSetStateChanged(bool on);
 
-    void onViewChanged(QString const& selectedView);
+	void onViewChanged(QString const& selectedViewName);
+
+	void onInstantiationInserted(QString const& selectedInstantiationName);
+
+	void onInstantiationChanged(QString const& selectedInstantiationName);
+
+	void onFileSetChanged(QString const& fileSetName);
 
     void onPathEdited();
 
@@ -63,13 +73,25 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    QSharedPointer<GeneratorConfiguration> configuration_;
+	QSharedPointer<GeneratorConfiguration> configuration_;
 
-    QCheckBox* addToFileset_;
+	QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > instantiations_;
 
-    QComboBox* viewSelection_;
+	QComboBox* viewSelection_;
+
+	QGroupBox* addToFileset_;
+
+	QComboBox* instantiationSelection_;
+
+	QComboBox* fileSetSelection_;
 
     QLineEdit* pathEditor_;
+
+	QLabel* instantiationWarningLabel_;
+
+	QLabel* fileSetWarningLabel_;
+
+	QMap<QString,QSharedPointer<View> > views_;
 };
 
 #endif //GENERATORCONFIGURATIONDIALOG_H

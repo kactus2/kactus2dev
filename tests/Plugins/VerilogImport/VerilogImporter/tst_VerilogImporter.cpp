@@ -856,11 +856,14 @@ void tst_VerilogImporter::testExistingModelParameterIdDoesNotChange()
     existingParameter->setName("dataWidth_g");
 	existingParameter->setValueId("existingId");
 
+	QSharedPointer<View> importView = QSharedPointer<View>(new View);
 	QSharedPointer<ComponentInstantiation> importComponentInstantiation( new ComponentInstantiation );
 	importComponentInstantiation->setName( NameGenerationPolicy::verilogComponentInstantiationName
 		( NameGenerationPolicy::flatViewName() ) );
 	importComponentInstantiation->getModuleParameters()->append(existingParameter);
 	importComponent_->getModel()->getComponentInstantiations()->append(importComponentInstantiation);
+	importView->setComponentInstantiationRef(importComponentInstantiation->name());
+	importComponent_->getViews()->append(importView);
 
     QString fileContent = 
         "module test #(\n"
@@ -1018,7 +1021,7 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView()
 	QSharedPointer<ComponentInstantiation> importComponentInstantiation =
 		importComponent_->getModel()->getComponentInstantiations()->first();
 
-    QVERIFY2(importComponent_->hasView("flat"), "No view 'flat' found in component.");
+	QCOMPARE(importComponent_->getFlatViews().count(), 1);
 
     QCOMPARE(importComponentInstantiation->getModuleName(), modelName);
     QCOMPARE(importComponentInstantiation->getLanguage(), QString("verilog"));

@@ -17,6 +17,8 @@
 #include <QStringList>
 
 class Component;
+class FileSet;
+
 //-----------------------------------------------------------------------------
 //! Used to select one file from the component's file sets.
 //-----------------------------------------------------------------------------
@@ -64,7 +66,7 @@ public slots:
 signals:
 
 	//! Emitted when a file is selected.
-	void fileSelected(const QString& filePath);
+	void fileSelected(const QString& filePath, QSharedPointer<FileSet> fileSet);
 
 private slots:
 
@@ -78,7 +80,7 @@ private:
      *
      *      @param [in] component   The component to search the files from.
      */
-    QStringList getFileNames(QSharedPointer<Component> component) const;
+    QStringList getFileNames(QSharedPointer<Component> component);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -95,6 +97,9 @@ private:
 
 	//! Contains the file suffixes used to filter file types.
 	QStringList filters_;
+
+	//! Contains IP-XACT file sets indexed by the file name/path.
+	QMap<QString,QSharedPointer<FileSet> > fileSets_;
 };
 
 #endif // FILESELECTOR_H
