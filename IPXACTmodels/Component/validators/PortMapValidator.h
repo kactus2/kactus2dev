@@ -56,6 +56,15 @@ public:
         General::InterfaceMode newInterfaceMode);
 
     /*!
+     *  Handle the change of abstraction definition.
+     *
+     *      @param [in] newDefinition       The new abstraction definition.
+     *      @param [in] newInterfaceMode    The new interface mode.
+     */
+    void abstractionDefinitionChanged(QSharedPointer<AbstractionDefinition> newDefinition,
+        General::InterfaceMode newInterfaceMode);
+
+    /*!
      *  Handle the change in component.
      *
      *      @param [in] newPorts    List of new ports.

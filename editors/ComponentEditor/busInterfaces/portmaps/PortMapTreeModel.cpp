@@ -996,6 +996,8 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
 {
     if (index.parent().isValid())
     {
+        portMapValidator_->abstractionDefinitionChanged(absDef_, interfaceMode_);
+
         QSharedPointer<PortMap> portMap = getIndexedPortMap(index.parent(), index.row());
 
         if (portMap->getPhysicalPort() && !portMap->getLogicalTieOff().isEmpty() &&
@@ -1227,5 +1229,35 @@ void PortMapTreeModel::onRemoveAllPortMappings()
     {
         QModelIndex mappingIndex = index(i, PortMapsColumns::LOGICAL_PORT);
         onRemoveAllChildItemsFrom(mappingIndex);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapTreeModel::onAddConnectedPortMap()
+//-----------------------------------------------------------------------------
+void PortMapTreeModel::onAddConnectedPortMap(QSharedPointer<PortMap> newPortMap)
+{
+    if (newPortMap->getLogicalPort() && newPortMap->getPhysicalPort())
+    {
+        for (int portMapIndex = 0; portMapIndex < portMappings_.size(); ++portMapIndex)
+        {
+            if (portMappings_[portMapIndex].logicalPort_->name() == newPortMap->getLogicalPort()->name_)
+            {
+                QModelIndex logicalIndex = index(portMapIndex, PortMapsColumns::LOGICAL_PORT);
+                int portMapCount = portMappings_[portMapIndex].portMaps_.size();
+
+                beginInsertRows(logicalIndex, portMapCount, portMapCount);
+
+                portMappings_[portMapIndex].portMaps_.append(newPortMap);
+                containingBusInterface_->getPortMaps()->append(newPortMap);
+
+                endInsertRows();
+
+                emit portConnected(newPortMap->getPhysicalPort()->name_);
+                emit contentChanged();
+
+                return;
+            }
+        }
     }
 }

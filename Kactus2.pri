@@ -697,7 +697,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -921,6 +922,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.cpp \

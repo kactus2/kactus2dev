@@ -4291,6 +4291,12 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeSortProxyModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_PortMapAutoConnector.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapAutoConnector.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5893,6 +5899,9 @@
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeSortProxyModel.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapAutoConnector.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
   </ItemGroup>

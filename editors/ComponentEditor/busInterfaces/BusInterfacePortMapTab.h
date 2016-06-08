@@ -17,6 +17,7 @@
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -35,6 +36,7 @@ class VLNV;
 class ParameterFinder;
 class PortMapTreeDelegate;
 class PortMapValidator;
+class PortMapAutoConnector;
 
 //-----------------------------------------------------------------------------
 //! Tab for editing and viewing bus interface port maps.
@@ -215,6 +217,9 @@ private:
 
     //! Button for removing all the port maps.
     QPushButton removeAllMappingsButton_;
+
+    //! Automatic port map creator.
+    PortMapAutoConnector autoConnector_;
 };
 
 #endif // BUSINTERFACEPORTMAPTAB_H

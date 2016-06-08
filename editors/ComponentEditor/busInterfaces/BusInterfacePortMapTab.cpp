@@ -11,10 +11,10 @@
 
 #include "BusInterfacePortMapTab.h"
 
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h>
-#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -49,10 +49,9 @@ portMapsModel_(busif, component, libHandler, expressionParser, formatter, finder
 portMapsView_(this),
 portMapsDelegate_(),
 autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect", this),
-removeAllMappingsButton_(QIcon(":/icons/common/graphics/cleanup.png"), "Remove all", this)
+removeAllMappingsButton_(QIcon(":/icons/common/graphics/cleanup.png"), "Remove all", this),
+autoConnector_(component, busif, expressionParser, libHandler, this)
 {
-    autoConnectButton_.setDisabled(true);
-
     hideConnectedPortsBox_.setCheckState(Qt::Checked);
 
     physicalPortSorter_.setSourceModel(&physicalPortModel_);
@@ -152,6 +151,7 @@ void BusInterfacePortMapTab::setAbsType(const VLNV& vlnv, General::InterfaceMode
 {
     portMapsModel_.setAbsType(vlnv, mode);
     portMapsDelegate_->updateLogicalPortNames(vlnv, mode);
+    autoConnector_.setAbstractionDefinition(vlnv);
 
     refresh();
 }
@@ -243,6 +243,10 @@ void BusInterfacePortMapTab::connectItems()
 
     connect(&removeAllMappingsButton_, SIGNAL(clicked(bool)),
         &portMapsModel_, SLOT(onRemoveAllPortMappings()), Qt::UniqueConnection);
+
+    connect(&autoConnectButton_, SIGNAL(clicked()), &autoConnector_, SLOT(onAutoConnect()), Qt::UniqueConnection);
+    connect(&autoConnector_, SIGNAL(portMapCreated(QSharedPointer<PortMap>)), &portMapsModel_,
+        SLOT(onAddConnectedPortMap(QSharedPointer<PortMap>)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

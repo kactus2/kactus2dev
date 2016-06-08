@@ -32,6 +32,7 @@ class PortAbstraction;
 class PortMap;
 class ExpressionFormatter;
 class PortMapValidator;
+class Port;
 
 //-----------------------------------------------------------------------------
 //! A model for displaying bus interface port maps.
@@ -215,6 +216,13 @@ public slots:
      *  Handler for removing all port maps from all the logical ports.
      */
     void onRemoveAllPortMappings();
+
+    /*!
+     *  Add a port map to the correct parent item.
+     *
+     *      @param [in] newPortMap  The selected port map.
+     */
+    void onAddConnectedPortMap(QSharedPointer<PortMap> newPortMap);
 
 signals:
 
