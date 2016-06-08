@@ -313,3 +313,12 @@ bool BusInterfacePortMapTab::isValid() const
 {
     return true;
 }
+
+//-----------------------------------------------------------------------------
+// Function: BusIfPortmapTab::focusInEvent()
+//-----------------------------------------------------------------------------
+void BusInterfacePortMapTab::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+    emit helpUrlRequested("componenteditor/portmaps.html");
+}

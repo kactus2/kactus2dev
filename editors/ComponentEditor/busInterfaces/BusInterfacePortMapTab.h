@@ -128,6 +128,11 @@ signals:
      */
     void decreaseReferences(QString id);
 
+protected:
+
+    //! Handler for widget's show event
+    virtual void showEvent(QShowEvent* event);
+
 private slots:
 
     /*!

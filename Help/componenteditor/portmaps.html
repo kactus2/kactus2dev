@@ -7,109 +7,167 @@
   </head>
   <body>
     <h2>Port maps editor</h2> 
+    <p>
+        User can map the <i>logical signals</i> of a bus interface to the physical <i>ports</i> of the component.
+        The physical ports are located in the top table, while the logical signals and port maps are located in
+        the bottom table.
+    </p>
+    
+    <h4>Physical port filters</h4>
+    <ul>
+        <li>
+            <b>Port name</b> allows regular expressions to filter ports not matching the given expression.
+        </li>
+        <li>
+            <b>Direction</b> allows the selection of a port direction and filtering all the other ports with
+            different directions.
+        </li>
+        <li>
+            Connected ports can also be hidden through <b>Hide connected ports</b>. By default, this filter is on,
+            but can be removed.
+        </li>
+    </ul>
 
-    User can map the <i>logical signals</i> of a <i>bus interface</i>
-    to the physical <i>ports</i> of the component.
+    <h3>Creating a port map</h3>
+    <ul>
+        <li>
+            <b>Drag & Drop.</b> A <i>physical port</i> can be dragged over a <i>logical signal</i> to create a
+            port map connecting the selected physical port to the selected logical signal. Multiple physical ports
+            can be dragged simultaneously to the selected logical signal to create multiple port maps.
+        </li>
+        <li>
+            <b>Selecting a port.</b> A <i>physical port</i> can be selected for the logical signal from the
+            physical port column. This creates a port map connecting the selected physical port to the logical
+            signal.
+        </li>
+        <li>
+            <b>Context menu.</b> Right clicking on a logical port opens a context menu, through which it is
+            possible to create a new port map. This port map can then be filled with the desired data.
+        </li>
+        <li>
+            <b>Auto connect.</b> Creates a single port map for each logical signal that does not have a port map.
+            A suitable physical port is selected by matching the direction, size and the name of the logical signal
+            to physical ports.
+        </li>
+    </ul>
 
-    <h3>To map a pair of logical and physical ports</h3>
+    <h3>Removing a port map</h3>
+    <ul>
+        <li>
+            <b>Context menu.</b> A <i>port map</i> can be removed throught the context menu. Right click on the
+            selected port map to open the menu. From there, select remove port map.
+            <br />Opening the context menu on a <i>logical signal</i> allows the removing of all the port maps
+            connected to the logical signal.
+        </li>
+        <li>
+            <b>Remove all.</b> Clicking the <i>Remove all</i> button removes all the port maps from this bus
+            interface.
+        </li>
+    </ul>
+    
+    <h3>Port maps</h3>
     <p>
-      Select a port from left or right list and drag-drop it over to
-      the other list. When dropped, the pair(s) of physical and
-      logical port(s) appear on the bottom.
+        The port maps table consists of both the <i>logical signals</i> and the <i>port maps</i> referencing
+        logical signals. The table is constructed as a tree, where the port maps are child items of a logical
+        signal. Values for columns with an f(x) symbol can be given as expressions.
+        <br />If a logical signal has been referenced only was in the port maps of the bus interface, information
+        of the port map is displayed on the same row as the logical signal.
+        <br />If a single physical port is referenced in all the port maps referencing the logical signal, the
+        physical port name is displayed on the same row as the logical signal. If multiple port maps referencing
+        the same logical signal contain different physical ports, the name is displayed as [multiple].
     </p>
-    <h3>To remove mapping</h3>
     <p>
-      Select some cell(s) on the bottom table and hit DEL or
-      right-click <b>Remove mapping</b>.
+        The <i>logical signal</i> of a port map can be changed from the <b>logical port</b> column. This moves the
+        selected port map from its current position to the selected logical signal.
+        <br />The <i>physical port</i> can be changed from the <b>physical port</b> column.
     </p>
-    <h3>To map multiple ports at once</h3>
-    <ol>
-      <li>Move ports up/down in both lists to desired order.</li>
-      <li>Select range of ports by SHIFT or picking by CTRL first on
-      one list and then on the other.</li>
-      <li>Click&nbsp;<b>Connect&nbsp;</b>.</li>
-    </ol>
-    <h3>Bit field mapping</h3>
     <p>
-      Ports can also be mapped bit by bit. Click <b>Show bit-field 
-	  mapping</b> to open the editor. To create mapping:
-	  <ol>
-      <li>Select a logical port from the list. The editor displays 
-	  the bits in the logical signal.</li>
-      <li>Map physical port(s) to the logical bits. Drag-drop a 
-	  physical port on the lowest logical bit of the mapping. 
-	  Alternatively, selected physical port(s) can be mapped to the 
-	  first unmapped logical bit(s) by SHIFT+ENTER.</li>
-      <li>Click&nbsp;<b>Connect&nbsp;</b>.</li>
-    </ol>
+        A port map can be defined by giving ranges for the logical and physical sides. These ranges determine how
+        many and which bits are connected between the port and signal. These can be defined in the columns for the
+        <b>logical left</b>, <b>logical right</b>, <b>physical left</b> and <b>physical right</b>.
     </p>
+    <p>
+        <b>Requirement</b> informs the user of the port map requirement of the logical signal. The requirement is
+        set in the abstraction abstraction definition of a bus definition, and cannot be edited here. The possible
+        values are:
+    </p>
+    <ul>
+        <li>
+            <b>Illegal.</b> <i>Logical signal</i> may not be refereneced in a port map.
+        </li>
+        <li>
+            <b>Required.</b> <i>Logical signal</i> must be referenced in a port map.
+        </li>
+        <li>
+            <b>Optional.</b> The default value. Port maps can be created referencing the <i>logical signal</i>.
+        </li>
+    </ul>
+    <p>
+        <b>Tie off</b> displays the possible logical tie off of the port map. A port map must contain either a
+        reference to a physical port, or a logical tie off. The logical tie off indicates thate the physical
+        connection for this logical port is the specified value.
+    </p>
+
+    <h4>Port maps context menu (right mouse button)</h4>
+    <ul>
+        <li>
+            <b>Expand all.</b> Show the port maps connected to each logical signal.
+        </li>
+        <li>
+            <b>Collapse all.</b> Hide the port maps connected to each logical signal.
+        </li>
+        <li>
+            <b>Add port map</b> (logical signal / port map). Add a port map to the selected logical signal.
+        </li>
+        <li>
+            <b>Remove all port maps</b> (logical signal). Remove all the port maps referencing the selected
+            logical signal.
+        </li>
+        <li>
+            <b>Remove port map</b> (port map). Remove the selected port map.
+        </li>
+    </ul>
+    
     <h3>Details</h3>
     <p>
-      The port maps tab of a bus interface editor is used to group the
-      physical ports of the containing component to the logical
-      signals listed in the associated abstraction definition.
+        The port maps tab of a bus interface editor is used to group the physical ports of the containing component
+        to the logical signals listed in the associated abstraction definition.
     </p>
     <p>
-      The left list contains the <i>logical signals</i> that were
-      defined in the associated <i>abstraction definition</i>. The
-      right contains a list of the physical <i>ports</i> in the
-      component. The bottom table displays the mappings between
-      logical signals and physical ports. A mapping can be created by
-      dragging an item from one of the top lists to the another or by
-      selecting an item in the both lists and pressing enter or
-      clicking the connect button. The mapped items disappear from the
-      top lists and appear the bottom table.
+        The lower table contains the <i>logical signals</i> that were defined in the associated
+        <i>abstraction definition</i>. The upper table contains a list of the physical <i>ports</i> in the
+        component. The bottom table displays the mappings between logical signals and physical ports. The mapped
+        physical ports disappear from the physical ports table.
     </p>
 	<p>
-      The port directions are shown using the following icons:
-	  <ul>
-      <li><img src="../images/control-180.png"></img>in</li>
-	  <li><img src="../images/control.png"></img>out</li>
-	  <li><img src="../images/control-dual.png">inout</img></li>
-    </ul>
+        The port directions are shown using the following icons:
+        <ul>
+            <li><img src="../images/control-180.png"></img>in</li>
+            <li><img src="../images/control.png"></img>out</li>
+            <li><img src="../images/control-dual.png">inout</img></li>
+        </ul>
     </p>
     <p>
-      If user selects several items on both lists and connects them,
-      then mappings between the ports are made in the order which the
-      items were listed. User can remove the mappings from the bottom
-      table by selecting the row and pressing delete or selecting
-      <b>Remove mapping</b> from the context menu. When a mapping is
-      removed the associated ports return to the top lists. 
-
-      <br>Pressing the <b>Clean up</b> button will remove any
-      duplicate or missing ports from the lists. A port can also be 
-	  returned to the top list by selecting it in the bottom table and 
-	  selecting <b>Restore port to list</b> in the context menu. 
-    </p>
-      
-    <p>Picture below depicts how the physical ports between two
-    component instances are connected through their bus
-    interfaces.<br> <img src="../images/PortmapVisualization.png"
-    alt="The association between physical ports and logical signals"
-    ><br> The physical ports of the component A are on the left and
-    those of component B on the right. Logical signals are in the
-    middle and the lines denote port mappings.  For example component
-    A has mapped its port 'comm_out' to the logical signal 'COMM' and
-    component B has mapped its port comm_in to it.  When user connects
-    these interfaces together in a design, the physical ports get
-    connected. 
-      <br>
-    All ports of the component do not need to be mapped in the
-    interface nor do all the logical signals of the abstraction
-    definition need to be associated with a physical port. Abstraction
-    definition defines the directions of the signals in different
-    interface modes thus making it possible to validate connections so
-    that two output ports are not accidentally connected to each
-    other. In the figure above the abstraction definition could have
-    defined the DATA signal to have direction out in master interfaces
-    and in at slave interfaces.
+        Picture below depicts how the physical ports between two component instances are connected through their
+        bus interfaces.<br> <img src="../images/PortmapVisualization.png"
+        alt="The association between physical ports and logical signals"><br> The physical ports of the component
+        A are on the left and those of component B on the right. Logical signals are in the middle and the lines
+        denote port mappings.  For example component A has mapped its port 'comm_out' to the logical signal 'COMM'
+        and component B has mapped its port comm_in to it.  When user connects these interfaces together in a
+        design, the physical ports get connected.
+        <br>
+        All ports of the component do not need to be mapped in the interface nor do all the logical signals of the
+        abstraction definition need to be associated with a physical port. Abstraction definition defines the
+        directions of the signals in different interface modes thus making it possible to validate connections so
+        that two output ports are not accidentally connected to each other. In the figure above the abstraction
+        definition could have defined the DATA signal to have direction out in master interfaces and in at slave
+        interfaces.
     </p>
     <p>
-      A vectored physical port can be sliced to connect only part of
-      it by assigning left and right bounds in the mapping table.
-      Picture below depicts how a part of the physical port can be
-      connected.<br> <img src="../images/portSlicingVisualization.png"
-      alt="Connecting only a part of a vectored port in port map"><br>
+        A vectored physical port can be sliced to connect only part of it by assigning left and right bounds in the
+        mapping table. Picture below depicts how a part of the physical port can be connected.
+        <br> <img src="../images/portSlicingVisualization.png"
+        alt="Connecting only a part of a vectored port in port map"><br>
     </p>
   </body>
 </html>
