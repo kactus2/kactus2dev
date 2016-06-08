@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <QMetaType>
 #include <QString>
 #include <QStringList>
 #include <QVector>

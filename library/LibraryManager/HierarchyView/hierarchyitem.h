@@ -205,7 +205,7 @@ public:
 	 *
 	 *      @return QList<HierarchyItem*> contains pointers to the hierarchy items.
 	*/
-	QList<HierarchyItem*> findItems(const VLNV& vlnv);
+	QVector<HierarchyItem*> findItems(const VLNV& vlnv);
 
 	/*! Update hierarchy items with given vlnv.
 	 *
@@ -255,7 +255,7 @@ public:
 	 *
 	 *      @return QList<VLNV> contains the list of vlnvs
 	*/
-	QList<VLNV> getVLNVs() const;
+	QVector<VLNV> getVLNVs() const;
 
 	/*! Remove all children from item.
 	 *
@@ -405,9 +405,24 @@ private:
 	/*! Parse this hierarchy item to match a design.
 	 *
 	 *      @param [in] vlnv The vlnv of the design.
-	 *
 	*/
 	void parseDesign(const VLNV& vlnv, KactusAttribute::Implementation implementation, QString const& viewName);
+
+    /*!
+     *  Finds the valid component references in a design item.
+     *
+     *      @return The valid VLVN references.
+     */
+    QVector<VLNV> getValidComponentsInDesign();
+
+    /*!
+     *  Checks if the given VLNV reference to a component is valid.
+     *
+     *      @param [in] componentVLNV   The VLNV to check.
+     *
+     *      @return True, if the VLVN reference is valid, otherwise false.
+     */
+    bool isValidComponentInstanceVLNV(VLNV const& componentVLNV);
 
     //-----------------------------------------------------------------------------
     // Data.

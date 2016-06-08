@@ -104,7 +104,6 @@
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
-#include <Plugins/PluginSystem/PluginListDialog.h>
 #include <Plugins/PluginSystem/PluginUtilityAdapter.h>
 
 #include <settings/SettingsDialog.h>
@@ -1222,8 +1221,8 @@ void MainWindow::setupContextHelp()
 //-----------------------------------------------------------------------------
 // Function: mainwindow::setupConfigurationEditor()
 //-----------------------------------------------------------------------------
-void MainWindow::setupConfigurationEditor() {
-
+void MainWindow::setupConfigurationEditor()
+{
 	configurationDock_ = new QDockWidget(tr("Design Configuration Details"), this);
 	configurationDock_->setObjectName(tr("Configuration editor"));
 	configurationDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -1426,7 +1425,7 @@ void MainWindow::onClearItemSelection()
 //-----------------------------------------------------------------------------
 // Function: mainwindow::onComponentSelected()
 //-----------------------------------------------------------------------------
-void MainWindow::onComponentSelected( ComponentItem* component )
+void MainWindow::onComponentSelected(ComponentItem* component)
 {
 	Q_ASSERT(component);
 
@@ -1478,7 +1477,7 @@ void MainWindow::onComponentSelected( ComponentItem* component )
 //-----------------------------------------------------------------------------
 // Function: mainwindow::onInterfaceSelected()
 //-----------------------------------------------------------------------------
-void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface )
+void MainWindow::onInterfaceSelected(ConnectionEndpoint* interface)
 {
 	Q_ASSERT(interface);
 
@@ -1543,7 +1542,7 @@ void MainWindow::onInterfaceSelected( ConnectionEndpoint* interface )
 //-----------------------------------------------------------------------------
 // Function: onConnectionSelected()
 //-----------------------------------------------------------------------------
-void MainWindow::onConnectionSelected( GraphicsConnection* connection )
+void MainWindow::onConnectionSelected(GraphicsConnection* connection)
 {
     DesignWidget* designWidget = dynamic_cast<DesignWidget*>(designTabs_->currentWidget());
 
@@ -1752,14 +1751,6 @@ void MainWindow::generateModelSim()
 }
 
 //-----------------------------------------------------------------------------
-// Function: runGeneratorPlugin()
-//-----------------------------------------------------------------------------
-void MainWindow::runGeneratorPlugin()
-{
-    Q_ASSERT(false);
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainWindow::runGeneratorPlugin()
 //-----------------------------------------------------------------------------
 void MainWindow::runGeneratorPlugin(QAction* action)
@@ -1789,8 +1780,8 @@ void MainWindow::runGeneratorPlugin(QAction* action)
 
 	 // if the design is supported by the document type
 	 DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
-	 if (desWidget) {
-
+	 if (desWidget)
+     {
 		 // the vlnvs must be for different objects
 		 Q_ASSERT(compVLNV != desVLNV);
 
@@ -2192,7 +2183,7 @@ void MainWindow::createNew()
 	NewBusPage* busPage = new NewBusPage(libraryHandler_, &dialog);
 	connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
 		this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
-	dialog.addPage(QIcon(":icons/common/graphics/new-bus.png"), tr("Bus"), busPage);
+	dialog.addPage(QIcon(":icons/common/graphics/new-bus.png"), tr("Bus Definition"), busPage);
 
     NewComDefinitionPage* comDefPage = new NewComDefinitionPage(libraryHandler_, &dialog);
     connect(comDefPage, SIGNAL(createComDefinition(VLNV const&, QString const&)),
@@ -2657,15 +2648,11 @@ void MainWindow::openSettings()
 {
 	SettingsDialog dialog(*pluginMgr_, this);
 
-	connect(&dialog, SIGNAL(scanLibrary()),
-		this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
+	connect(&dialog, SIGNAL(scanLibrary()), this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
 
 	if (dialog.exec() == QDialog::Accepted)
 	{
 		applySettingsToOpenDocuments();
-
-
-        // Update the generator plugin actions.
         updateGeneratorPluginActions();
 	}
 }

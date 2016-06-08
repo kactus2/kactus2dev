@@ -221,9 +221,6 @@ public slots:
 	//! Generates the documentation for the current component/design.
 	void generateDoc();
 
-    //! Prompts the user to select a generator plugin and runs it.
-    void runGeneratorPlugin();
-
     /*!
      *  Runs the plugin generator specified by the given action.
      *

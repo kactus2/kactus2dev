@@ -21,8 +21,6 @@
 #include <QSizePolicy>
 #include <QLabel>
 
-static const int MAX_BITS_IN_LAU = 2048;
-
 //-----------------------------------------------------------------------------
 // Function: BusIfGeneralDetails::BusIfGeneralDetails()
 //-----------------------------------------------------------------------------
@@ -30,7 +28,7 @@ BusIfGeneralDetails::BusIfGeneralDetails(QSharedPointer<BusInterface> busif, QWi
 QGroupBox(tr("General") ,parent),
     busif_(busif),
     modeSelector_(this, busif),
-    connRequired_(tr("Connection required"), this),
+    connectionRequired_(this),
     bitsInLauEditor_(this),
     endiannessSelector_(this),
     bitSteeringSelector_(this)
@@ -47,7 +45,7 @@ QGroupBox(tr("General") ,parent),
 
     connect(&modeSelector_, SIGNAL(modeSelected(General::InterfaceMode)),
         this, SIGNAL(modeSelected(General::InterfaceMode)), Qt::UniqueConnection);
-	connect(&connRequired_, SIGNAL(stateChanged(int)),
+	connect(&connectionRequired_, SIGNAL(stateChanged(int)),
         this, SLOT(onConnectionRequiredChanged()), Qt::UniqueConnection);
 	connect(&bitsInLauEditor_, SIGNAL(editingFinished()),
 		this, SLOT(onAddressableUnitChanged()), Qt::UniqueConnection);
@@ -81,7 +79,7 @@ void BusIfGeneralDetails::refresh()
 {
     modeSelector_.setMode(busif_->getInterfaceMode());
 
-	connRequired_.setChecked(busif_->getConnectionRequired() == "1");
+	connectionRequired_.setChecked(busif_->getConnectionRequired() == "1");
 
 	bitsInLauEditor_.setText(busif_->getBitsInLau());
 
@@ -158,7 +156,7 @@ void BusIfGeneralDetails::onBitSteeringChanged()
 //-----------------------------------------------------------------------------
 void BusIfGeneralDetails::onConnectionRequiredChanged()
 {
-	busif_->setConnectionRequired(connRequired_.isChecked());
+	busif_->setConnectionRequired(connectionRequired_.isChecked());
 	emit contentChanged();
 }
 
@@ -167,13 +165,10 @@ void BusIfGeneralDetails::onConnectionRequiredChanged()
 //-----------------------------------------------------------------------------
 void BusIfGeneralDetails::setupLayout()
 {
-    QFormLayout* modeLayout = new QFormLayout();
+    QFormLayout* modeLayout = new QFormLayout(this);
     modeLayout->addRow(tr("Interface mode:"), &modeSelector_);
     modeLayout->addRow(tr("Addressable unit size:"), &bitsInLauEditor_);
     modeLayout->addRow(tr("Endianness:"), &endiannessSelector_);
     modeLayout->addRow(tr("Bit steering:"), &bitSteeringSelector_);
-
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addLayout(modeLayout);
-    topLayout->addWidget(&connRequired_);
+    modeLayout->addRow(tr("Connection required:"), &connectionRequired_);
 }

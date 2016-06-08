@@ -30,7 +30,6 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 class LibraryTreeModel : public QAbstractItemModel
 {
-
     Q_OBJECT
 
 public:
@@ -245,6 +244,8 @@ public slots:
 	//! Reset the model.
 	void onResetModel();
 
+    void onDocumentSaved(VLNV const& vlnv);
+
 private:
 
 	//! No copying
@@ -258,6 +259,19 @@ private:
 	*      @param [in] toRemove     The LibraryItem that is the highest-level item to remove.
 	*/
 	void removeLibraryItem(LibraryItem* toRemove);
+    
+    /*!
+     *  Validates the given item and possible sub-items.
+     *
+     *      @param [in] item   The item to validate.
+     *
+     *      @return True, if the item is valid, otherwise false.
+     */
+    bool validate(LibraryItem* item);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! The data model that holds the library
 	LibraryData* dataSource_;
@@ -266,7 +280,7 @@ private:
 	*
 	* The LibraryTreeFilter owns the root item and the root item owns it's child items.
 	*/
-	QSharedPointer<LibraryItem> rootItem_;
+	LibraryItem* rootItem_;
 
 	//! The instance that manages the library.
 	LibraryInterface* handler_;

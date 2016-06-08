@@ -51,8 +51,7 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
     LibraryItem* item = static_cast<LibraryItem*>(itemIndex.internalPointer());
 
     // get all vlnvs for the item
-    QList<VLNV> list;
-    item->getVLNVs(list);
+    QVector<VLNV> list = item->getVLNVs();
 
     // if none of the vlnvs match the search rules
     if (!checkVLNVs(list))
@@ -62,69 +61,65 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
 
     foreach (VLNV const& vlnv, list)
     {
-        if (!handler_->contains(vlnv))
+        if (handler_->contains(vlnv))
         {
-            continue;
-        }
+            QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
+            VLNV::IPXactType documentType = handler_->getDocumentType(vlnv);
 
-        QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
-        VLNV::IPXactType documentType = handler_->getDocumentType(vlnv);
-
-        if (documentType == VLNV::COMPONENT)
-        {
-            // if components are not be displayed
-            if (!type().components_)
+            if (documentType == VLNV::COMPONENT)
             {
-                continue;
+                if (type().components_)
+                {
+                    QSharedPointer<Component const> component = document.staticCast<Component const>();
+
+                    if (checkImplementation(component) && checkHierarchy(component) && checkFirmness(component))
+                    {
+                        return true;
+                    }
+                }
             }
 
-            QSharedPointer<Component const> component = document.staticCast<Component const>();
-         
-            if (checkImplementation(component) && checkHierarchy(component) && checkFirmness(component))
+            else if (documentType == VLNV::ABSTRACTIONDEFINITION)
             {
-                return true;
+                if (type().buses_ && implementation().hw_) 
+                {
+                    return true;
+                }
             }
-        }
 
-        else if (documentType == VLNV::ABSTRACTIONDEFINITION)
-        {
-            if (type().buses_ && implementation().hw_) 
+            else if (documentType == VLNV::BUSDEFINITION)
             {
-                return true;
+                if (type().buses_ && implementation().hw_)
+                {
+                    return true;
+                }
             }
-        }
 
-        else if (documentType == VLNV::BUSDEFINITION)
-        {
-            if (type().buses_ && implementation().hw_)
+            else if (documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION)
             {
-                return true;
+                if (type().buses_)
+                {
+                    return true;
+                }
             }
-        }
 
-        else if (documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION)
-        {
-            if (type().buses_)
+            else if (documentType == VLNV::DESIGN)
             {
-                 return true;
+                QSharedPointer<Design> design = handler_->getDesign(vlnv);
+
+                if (type().advanced_ || ( type().components_ && implementation().sw_ &&
+                    design->getImplementation() == KactusAttribute::SW ))
+                {
+                    return true;
+                }
             }
-        }
 
-        else if (documentType == VLNV::DESIGN)
-        {
-            QSharedPointer<Design> design = handler_->getDesign(vlnv);
-
-			if ( type().advanced_ || ( type().components_ && implementation().sw_ && design->getImplementation() == KactusAttribute::SW ) )
-			{
-				return true;
-			}
-        }
-       
-        else // if type is one of the advanced
-        {
-            if (type().advanced_)
+            else // if type is one of the advanced
             {
-                return true;
+                if (type().advanced_)
+                {
+                    return true;
+                }
             }
         }
     }

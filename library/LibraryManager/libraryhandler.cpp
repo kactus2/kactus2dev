@@ -114,8 +114,6 @@ QSharedPointer<Document> LibraryHandler::getModel(VLNV const& vlnv)
     else
     {
         QSharedPointer<Document> document = data_->getModel(vlnv);
-
-        // if item was found
         if (document)
         {
             // save the parsed item to the map and return pointer to it
@@ -142,8 +140,6 @@ QSharedPointer<Document const> LibraryHandler::getModelReadOnly(VLNV const& vlnv
     else
     { 
         QSharedPointer<Document> libComp = data_->getModel(vlnv);
-
-        // if item was found
         if (libComp)
         {
             // save the parsed item to the map and return pointer to it
@@ -196,28 +192,12 @@ QString LibraryHandler::getDirectoryPath(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::writeModelToFile()
 //-----------------------------------------------------------------------------
-bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Document> model, bool printErrors)
+bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Document> model)
 {
 	if (path.isEmpty())
     {
 		return false;
 	}
-
-	// if the model is not in the state that it can be written
-	QStringList errorList;
-	/*if (!model->isValid(errorList))
-    {
-		if (printErrors)
-        {
-			emit noticeMessage(tr("Item %1 contained following errors:").arg(model->getVlnv()->toString()));
-
-			// print all errors that were found
-			foreach (QString errorMsg, errorList)
-            {
-				emit errorMessage(errorMsg);
-			}
-		}
-	}*/
 
 	VLNV vlnv = model->getVlnv();
 	Q_ASSERT(!data_->contains(vlnv));
@@ -245,6 +225,7 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
 		data_->addVLNV(vlnv, filePath);
 
 		// the hierarchy model must be re-built
+        treeModel_->onDocumentSaved(vlnv);
 		hierarchyModel_->onResetModel();
 	}
 	else
@@ -258,25 +239,9 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::writeModelToFile()
 //-----------------------------------------------------------------------------
-bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model, bool printErrors)
+bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model)
 {
 	Q_ASSERT(data_->contains(model->getVlnv()));
-
-	// if the model is not in the state that it can be written
-	QStringList errorList;
-	/*if (!model->isValid(errorList))
-    {
-		if (printErrors)
-        {
-			emit noticeMessage(tr("Item %1 contained following errors:").arg(model->getVlnv()->toString()));
-
-			// print all errors that were found
-			foreach (QString errorMsg, errorList)
-            {
-				emit errorMessage(errorMsg);
-			}
-		}
-	}*/
 
 	// Make sure the object is parsed again next time.
 	VLNV objectVLNV = model->getVlnv();
@@ -308,7 +273,7 @@ void LibraryHandler::searchForIPXactFiles()
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::getNeededVLNVs()
 //-----------------------------------------------------------------------------
-void LibraryHandler::getNeededVLNVs(const VLNV& vlnv, QList<VLNV>& list)
+void LibraryHandler::getNeededVLNVs(VLNV const& vlnv, QList<VLNV>& list)
 {
     if (!vlnv.isValid())
     {
@@ -316,7 +281,7 @@ void LibraryHandler::getNeededVLNVs(const VLNV& vlnv, QList<VLNV>& list)
     }
 
     // get the vlnvs needed by this vlnv
-    QSharedPointer<Document> document = getModel(vlnv);
+    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
 
     // if there was no match for the vlnv
     if (!document)
@@ -325,21 +290,19 @@ void LibraryHandler::getNeededVLNVs(const VLNV& vlnv, QList<VLNV>& list)
             "Vendor: %1\n"
             "Library: %2\n"
             "Name: %3\n"
-            "Version: %4").arg(vlnv.getVendor()).arg(vlnv.getLibrary()).arg(vlnv.getName()).arg(
-            vlnv.getVersion()));
+            "Version: %4").arg(vlnv.getVendor(), vlnv.getLibrary(), vlnv.getName(), vlnv.getVersion()));
         return;
     }
 
     // this document is searched so add it to the list
     list.append(vlnv);
 
-    QList<VLNV> tempList = document->getDependentVLNVs();
-    for (int i = 0; i < tempList.size(); ++i)
+    foreach (VLNV const& dependentVLNV, document->getDependentVLNVs())
     {
-        if (!list.contains(tempList.at(i)))
+        if (!list.contains(dependentVLNV))
         {
             // search recursively for vlnvs
-            getNeededVLNVs(tempList.at(i), list);
+            getNeededVLNVs(dependentVLNV, list);
         }
     }
 }
@@ -349,8 +312,7 @@ void LibraryHandler::getNeededVLNVs(const VLNV& vlnv, QList<VLNV>& list)
 //-----------------------------------------------------------------------------
 void LibraryHandler::getDependencyFiles(VLNV const& vlnv, QStringList& list)
 {
-    QSharedPointer<Document> document = getModel(vlnv);
-    QStringList ownList = document->getDependentFiles();
+    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
 
     // Get path to the IP-Xact document that is used as base for relative file paths.
     QFileInfo documentFile(data_->getPath(vlnv));
@@ -364,7 +326,7 @@ void LibraryHandler::getDependencyFiles(VLNV const& vlnv, QStringList& list)
     QDir documentDirectory(documentFile.absolutePath());
 
     // Convert all relative file path to an absolute to make the file accessible in the caller function.
-    foreach (QString const& relativePath, ownList)
+    foreach (QString const& relativePath, document->getDependentFiles())
     {
         QString absolutePath = documentDirectory.absoluteFilePath(relativePath);
 
@@ -421,8 +383,7 @@ VLNV::IPXactType LibraryHandler::getDocumentType(VLNV const& vlnv)
 int LibraryHandler::referenceCount(VLNV const& vlnv) const
 {
     QList<VLNV> list;
-    hierarchyModel_->getOwners(list, vlnv);
-    return list.size();
+    return hierarchyModel_->getOwners(list, vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -430,8 +391,7 @@ int LibraryHandler::referenceCount(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 int LibraryHandler::getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const
 {
-    hierarchyModel_->getOwners(list, vlnvToSearch);
-    return list.size();
+    return hierarchyModel_->getOwners(list, vlnvToSearch);
 }
 
 //-----------------------------------------------------------------------------
@@ -461,7 +421,8 @@ VLNV LibraryHandler::getDesignVLNV(VLNV const& hierarchyRef)
 
     if (data_->getType(hierarchyRef) == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<DesignConfiguration> desConf = getModel(hierarchyRef).staticCast<DesignConfiguration>();
+        QSharedPointer<const DesignConfiguration> desConf = 
+            getModelReadOnly(hierarchyRef).staticCast<const DesignConfiguration>();
 
         VLNV designVLNV = desConf->getDesignRef();
         if (!data_->contains(designVLNV)) 
@@ -510,7 +471,6 @@ QSharedPointer<Design> LibraryHandler::getDesign(VLNV const& hierarchyRef)
     {
         return getModel(designVlnv).staticCast<Design>();
     }
-
     else
     {
         return QSharedPointer<Design>();
@@ -532,8 +492,6 @@ bool LibraryHandler::isValid(VLNV const& vlnv)
     else 
     {
         document = getModel(vlnv);
-
-        // if the object was not found
         if (!document)
         {
             return false;
@@ -599,8 +557,8 @@ void LibraryHandler::onEditItem(VLNV const& vlnv)
 
     else if (documentType == VLNV::ABSTRACTIONDEFINITION)
     {
-        QSharedPointer<Document> document = getModel(vlnv);
-        QSharedPointer<AbstractionDefinition> absDef = document.staticCast<AbstractionDefinition>();
+        QSharedPointer<const Document> document = getModelReadOnly(vlnv);
+        QSharedPointer<const AbstractionDefinition> absDef = document.staticCast<const AbstractionDefinition>();
 
         VLNV busDefVLNV = absDef->getBusType();
 
@@ -621,7 +579,6 @@ void LibraryHandler::onEditItem(VLNV const& vlnv)
         {
             emit openBus(busDefVLNV, vlnv, false);
         }
-
         else  // If there are multiple abstraction definitions for that one bus def, disable bus definition.
         {
             emit openBus(busDefVLNV, vlnv, true);
@@ -780,7 +737,7 @@ void LibraryHandler::onClearSelection()
 //-----------------------------------------------------------------------------
 void LibraryHandler::onOpenDesign(VLNV const& vlnv)
 {
-    QSharedPointer<Document> document = getModel(vlnv);
+    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
     if (!document)
     {
         emit errorMessage(tr("Component was not found"));
@@ -789,15 +746,13 @@ void LibraryHandler::onOpenDesign(VLNV const& vlnv)
 
     if (document->getVlnv().getType() == VLNV::COMPONENT)
     {
-        QSharedPointer<Component> component = document.staticCast<Component>();
+        QSharedPointer<const Component> component = document.staticCast<const Component>();
 
         QStringList views = component->getHierViews();
-        if (views.isEmpty())
+        if (!views.isEmpty())
         {
-            return;
+            emit openDesign(vlnv, views.first());
         }
-
-        emit openDesign(vlnv, views.first());
     }
 }
 
@@ -806,7 +761,7 @@ void LibraryHandler::onOpenDesign(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::onOpenMemoryDesign(VLNV const& vlnv)
 {
-    QSharedPointer<Document> document = getModel(vlnv);
+    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
     if (!document)
     {
         emit errorMessage(tr("Component was not found"));
@@ -815,15 +770,13 @@ void LibraryHandler::onOpenMemoryDesign(VLNV const& vlnv)
 
     if (document->getVlnv().getType() == VLNV::COMPONENT)
     {
-        QSharedPointer<Component> component = document.staticCast<Component>();
+        QSharedPointer<const Component> component = document.staticCast<const Component>();
 
         QStringList views = component->getHierViews();
-        if (views.isEmpty())
+        if (!views.isEmpty())
         {
-            return;
+            emit openMemoryDesign(vlnv, views.first());
         }
-
-        emit openMemoryDesign(vlnv, views.first());
     }
 }
 
@@ -832,7 +785,7 @@ void LibraryHandler::onOpenMemoryDesign(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::onOpenSWDesign(VLNV const& vlnv)
 {
-    QSharedPointer<Document> document = getModel(vlnv);
+    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
     if (!document)
     {
         emit errorMessage(tr("Component was not found"));
@@ -841,15 +794,13 @@ void LibraryHandler::onOpenSWDesign(VLNV const& vlnv)
 
     if (document->getVlnv().getType() == VLNV::COMPONENT)
     {
-        QSharedPointer<Component> component = document.staticCast<Component>();
+        QSharedPointer<const Component> component = document.staticCast<const Component>();
 
         QStringList swViews = component->getSWViewNames();
-        if (swViews.isEmpty())
+        if (!swViews.isEmpty())
         {
-            return;
+            emit openSWDesign(vlnv, swViews.first());
         }
-
-        emit openSWDesign(vlnv, swViews.first());
     }
 }
 
@@ -858,7 +809,7 @@ void LibraryHandler::onOpenSWDesign(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryHandler::onOpenSystemDesign(VLNV const& vlnv)
 {
-    QSharedPointer<Document> document = getModel(vlnv);
+    QSharedPointer<const Document> document = getModelReadOnly(vlnv);
     if (!document)
     {
         emit errorMessage(tr("Component was not found"));
@@ -867,15 +818,13 @@ void LibraryHandler::onOpenSystemDesign(VLNV const& vlnv)
 
     if (document->getVlnv().getType() == VLNV::COMPONENT)
     {
-        QSharedPointer<Component> component = document.staticCast<Component>();
+        QSharedPointer<const Component> component = document.staticCast<const Component>();
 
         QStringList systemViews = component->getSystemViewNames();
-        if (systemViews.isEmpty())
+        if (!systemViews.isEmpty())
         {
-            return;
+            emit openSystemDesign(vlnv, systemViews.first());
         }
-
-        emit openSystemDesign(vlnv, systemViews.first());
     }
 }
 
@@ -891,8 +840,8 @@ void LibraryHandler::onCreateNewItem(VLNV const& vlnv)
 
     if (contains(vlnv) && getDocumentType(vlnv) == VLNV::COMPONENT)
     {
-        QSharedPointer<Document> document = getModel(vlnv);
-        QSharedPointer<Component> component = document.staticCast<Component>();
+        QSharedPointer<const Document> document = getModelReadOnly(vlnv);
+        QSharedPointer<const Component> component = document.staticCast<const Component>();
 
         KactusAttribute::ProductHierarchy prodHier = component->getHierarchy();
         KactusAttribute::Firmness firmness = component->getFirmness();
@@ -1026,6 +975,7 @@ void LibraryHandler::endSave()
 
     // rebuild the hierarchy view.
     hierarchyModel_->onResetModel();
+    //treeModel_->onResetModel();
 }
 
 //-----------------------------------------------------------------------------
@@ -1089,7 +1039,8 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
         VLNV::IPXactType vlnvType = data_->getType(vlnvToRemove);
         if (vlnvType == VLNV::COMPONENT)
         {
-            QSharedPointer<Component> componentToRemove = getModel(vlnvToRemove).staticCast<Component>();
+            QSharedPointer<const Component> componentToRemove =
+                getModelReadOnly(vlnvToRemove).staticCast<const Component>();
 
             foreach (VLNV const& ref, componentToRemove->getHierRefs())
             {
@@ -1099,8 +1050,8 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
 
                     if (data_->getType(ref) == VLNV::DESIGNCONFIGURATION)
                     {
-                        QSharedPointer<DesignConfiguration> desConf =
-                            getModel(ref).staticCast<DesignConfiguration>();
+                        QSharedPointer<const DesignConfiguration> desConf =
+                            getModelReadOnly(ref).staticCast<const DesignConfiguration>();
 
                         VLNV designVLNV = desConf->getDesignRef();
                         if (data_->contains(designVLNV))
@@ -1131,7 +1082,8 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
 
         else if (vlnvType == VLNV::DESIGNCONFIGURATION)
         {
-            QSharedPointer<DesignConfiguration> desConf = getModel(vlnvToRemove).staticCast<DesignConfiguration>();
+            QSharedPointer<const DesignConfiguration> desConf =
+                getModelReadOnly(vlnvToRemove).staticCast<const DesignConfiguration>();
 
             VLNV designVLNV = desConf->getDesignRef();
             if (data_->contains(designVLNV))
@@ -1157,7 +1109,8 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
 
         else if (vlnvType == VLNV::ABSTRACTIONDEFINITION)
         {
-            QSharedPointer<AbstractionDefinition> absDef = getModel(vlnvToRemove).staticCast<AbstractionDefinition>();
+            QSharedPointer<const AbstractionDefinition> absDef =
+                getModelReadOnly(vlnvToRemove).staticCast<const AbstractionDefinition>();
 
             VLNV busDefVLNV = absDef->getBusType();
             if (data_->contains(busDefVLNV))
@@ -1174,10 +1127,7 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
         }
     }
 
-    int result = removeDialog.exec();
-
-    // if user clicked cancel
-    if (result == QDialog::Rejected)
+    if (removeDialog.exec() == QDialog::Rejected)
     {
         return;
     }
@@ -1232,10 +1182,8 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
     // make sure the model is parsed again next time to make all changes available
     objects_.remove(vlnv);
 
-    if (savedItem.getType() == VLNV::COMPONENT)
-    {
-        hierarchyModel_->onComponentSaved(savedItem);
-    }
+    treeModel_->onDocumentSaved(vlnv);
+    hierarchyModel_->onDocumentSaved(savedItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -1267,48 +1215,49 @@ bool LibraryHandler::writeFile(QString const& filePath, QSharedPointer<Document>
     xmlWriter.setAutoFormatting(true);
     xmlWriter.setAutoFormattingIndent(-1);
 
-    if (model->getVlnv().getType() == VLNV::ABSTRACTIONDEFINITION)
+    VLNV::IPXactType documentType = model->getVlnv().getType();
+    if (documentType == VLNV::ABSTRACTIONDEFINITION)
     {
         AbstractionDefinitionWriter writer;
         QSharedPointer<AbstractionDefinition> absDef = model.dynamicCast<AbstractionDefinition>();
         writer.writeAbstractionDefinition(xmlWriter, absDef);
     }
 
-    else if (model->getVlnv().getType() == VLNV::BUSDEFINITION)
+    else if (documentType == VLNV::BUSDEFINITION)
     {
         BusDefinitionWriter writer;
         QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
         writer.writeBusDefinition(xmlWriter, busDef);
     }
-    else if (model->getVlnv().getType() == VLNV::COMPONENT)
+    else if (documentType == VLNV::COMPONENT)
     {
         ComponentWriter writer;
         QSharedPointer<Component> component = model.dynamicCast<Component>();
         writer.writeComponent(xmlWriter, component);
     }
 
-    else if (model->getVlnv().getType() == VLNV::DESIGN)
+    else if (documentType == VLNV::DESIGN)
     {
         DesignWriter designWriter;
         QSharedPointer<Design> design = model.dynamicCast<Design>();
         designWriter.writeDesign(xmlWriter, design);
     }
 
-    else if (model->getVlnv().getType() == VLNV::DESIGNCONFIGURATION)
+    else if (documentType == VLNV::DESIGNCONFIGURATION)
     {
         DesignConfigurationWriter designConfigurationWriter;
         QSharedPointer<DesignConfiguration> designConfiguration = model.dynamicCast<DesignConfiguration>();
         designConfigurationWriter.writeDesignConfiguration(xmlWriter, designConfiguration);
 	}
 
-	else if (model->getVlnv().getType() == VLNV::APIDEFINITION)
+	else if (documentType == VLNV::APIDEFINITION)
 	{
 		ApiDefinitionWriter apiDefinitionWriter;
 		QSharedPointer<ApiDefinition> apiDefinition = model.dynamicCast<ApiDefinition>();
 		apiDefinitionWriter.writeApiDefinition(xmlWriter, apiDefinition);
 	}
 
-	else if (model->getVlnv().getType() == VLNV::COMDEFINITION)
+	else if (documentType == VLNV::COMDEFINITION)
 	{
 		ComDefinitionWriter comDefinitionWriter;
 		QSharedPointer<ComDefinition> comDefinition = model.dynamicCast<ComDefinition>();

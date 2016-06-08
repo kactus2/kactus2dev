@@ -75,7 +75,6 @@ public:
      *
      *      @param [in] path            Directory path that specifies the directory to save to file into.
      *      @param [in] model           The library component that is written.
-     *      @param [in] printErrors     If true then the errors detected in the model are printed to user.
      * 
      *      @return True if the model was in valid state and was successfully written.
      *
@@ -83,20 +82,18 @@ public:
      *      @remark If file already exists in file system it is overwritten.
      *      @remark It is not necessary to call onItemSaved() because it is called by this function.
      */
-    virtual bool writeModelToFile(QString const& path, QSharedPointer<Document> model, 
-        bool printErrors = true) = 0;
+    virtual bool writeModelToFile(QString const& path, QSharedPointer<Document> model) = 0;
 
 	/*! Write the already registered model to file system.
 	 * 
 	 *      @param [in] modelThe        model to be written.
-	 *      @param [in] printErrors     If true then the errors detected in the model are printed to user.
 	 * 
 	 *      @return True if the model was in valid state and was successfully written.
      *
      *      @remark The model must be already part of the library and it's file path can be found.
      *      @remark This operation cannot be undone.
 	*/
-	virtual bool writeModelToFile(QSharedPointer<Document> model, bool printErrors = true) = 0;
+	virtual bool writeModelToFile(QSharedPointer<Document> model) = 0;
 
 	//! Search for IP-XACT files in the file system and add them to library.
 	virtual void searchForIPXactFiles() = 0;

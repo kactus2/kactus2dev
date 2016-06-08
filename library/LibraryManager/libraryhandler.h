@@ -111,11 +111,10 @@ public:
      *
      *      @param [in] path            Directory path that specifies the directory to save to file into.
      *      @param [in] model           The library component that is written.
-     *      @param [in] printErrors     If true then the errors detected in the model are printed to user.
      * 
      *      @return True if the model was in valid state and was successfully written.
      */
-    virtual bool writeModelToFile(QString const& path, QSharedPointer<Document> model, bool printErrors = true);
+    virtual bool writeModelToFile(QString const& path, QSharedPointer<Document> model);
 
 	/*! Write the already registered model to file system.
 	 *
@@ -125,11 +124,10 @@ public:
 	 * state after this operation.
 	 * 
 	 *      @param [in] model           The model to be written.
-	 *      @param [in] printErrors     If true then the errors detected in the model are printed to user.
 	 * 
 	 *      @return True if the model was in valid state and was successfully written.
 	*/
-	virtual bool writeModelToFile(QSharedPointer<Document> model, bool printErrors = true);
+	virtual bool writeModelToFile(QSharedPointer<Document> model);
 
 	//! Search for IP-Xact files in the file system and add them to library
 	virtual void searchForIPXactFiles();

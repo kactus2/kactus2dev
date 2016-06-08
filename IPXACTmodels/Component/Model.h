@@ -69,7 +69,7 @@ public:
 	 *
 	 *      @return The component instantiation if found, else null.
 	 */
-	QSharedPointer<ComponentInstantiation> findComponentInstantiation(const QString name) const;
+	QSharedPointer<ComponentInstantiation> findComponentInstantiation(QString const& name) const;
 
     /*!
      *  Get the component instantiations.
@@ -90,7 +90,7 @@ public:
 	 *
 	 *      @return The design instantiation if found, else null.
 	 */
-	QSharedPointer<DesignInstantiation> findDesignInstantiation(const QString name) const;
+	QSharedPointer<DesignInstantiation> findDesignInstantiation(QString const& name) const;
 
     /*!
      *  Get the design instantiations.
@@ -111,7 +111,7 @@ public:
 	 *
 	 *      @return The design configuration instantiation if found, else null.
 	 */
-	QSharedPointer<DesignConfigurationInstantiation> findDesignConfigurationInstantiation(const QString name) const;
+	QSharedPointer<DesignConfigurationInstantiation> findDesignConfigurationInstantiation(QString const& name) const;
 
     /*!
      *  Get the design configuration instantiations.
@@ -183,14 +183,14 @@ public:
 	 *
 	 *      @return A vlnv of a design that is used within this component. Null pointer if design is not found.
 	 */
-	VLNV getHierRef(const QString viewName = QString()) const;
+	VLNV getHierRef(QString const& viewName = QString()) const;
 
 	/*!
      *  Get list of the design VLNVs that are referenced within model.
 	 *
 	 *      @return QList containing pointers to the VLNVs
 	 */
-	const QList<VLNV> getHierarchyRefs() const;
+	QList<VLNV> getHierarchyRefs() const;
     
 	/*!
      *  Get the specific port of the model.

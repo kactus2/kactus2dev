@@ -99,7 +99,7 @@ private:
     InterfaceModeSelector modeSelector_;
 
 	//! Set the connection required to true or false
-	QCheckBox connRequired_;
+	QCheckBox connectionRequired_;
 
 	//! Sets the value for bits in lau.
 	QLineEdit bitsInLauEditor_;

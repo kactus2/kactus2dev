@@ -344,17 +344,17 @@ bool HWDesignWidget::saveAs()
 	getLibraryInterface()->beginSave();
 
 	// if design configuration is used then write it.
-	if (designConf && !getLibraryInterface()->writeModelToFile(directory, designConf, false))
+	if (designConf && !getLibraryInterface()->writeModelToFile(directory, designConf))
     {
 	    writeSucceeded = false;
 	}
 
-	if (!getLibraryInterface()->writeModelToFile(directory, design, false))
+	if (!getLibraryInterface()->writeModelToFile(directory, design))
     {
 		writeSucceeded = false;
 	}
 
-	if (!getLibraryInterface()->writeModelToFile(directory, topComponent, false))
+	if (!getLibraryInterface()->writeModelToFile(directory, topComponent))
     {
 		writeSucceeded = false;
 	}

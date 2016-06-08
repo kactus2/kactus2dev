@@ -129,7 +129,7 @@ QString LibraryData::getPath(VLNV const& vlnv)
 			"Name: %3\n"
 			"Version: %4\n"
 			"was not found in the library.").arg(
-			vlnv.getVendor()).arg(vlnv.getLibrary()).arg(vlnv.getName()).arg(vlnv.getVersion()));
+            vlnv.getVendor(), vlnv.getLibrary(), vlnv.getName(), vlnv.getVersion()));
 
 		return QString();
 	}
@@ -148,8 +148,7 @@ bool LibraryData::addVLNV(VLNV const& vlnv, QString const& path)
 			"Name: %3\n"
 			"Version: %4\n"
 			"Already existed in the library and was not added.").arg(
-			vlnv.getVendor()).arg(vlnv.getLibrary()).arg(vlnv.getName()).arg(
-			vlnv.getVersion()));
+			vlnv.getVendor(), vlnv.getLibrary(), vlnv.getName(), vlnv.getVersion()));
 
 		return false;
 	}

@@ -14,13 +14,11 @@
 
 #include "librarydata.h"
 
-#include <QList>
+#include <QVector>
 #include <QString>
 #include <QObject>
-#include <QRegExpValidator>
 
 class VLNV;
-class LibraryTreeModel;
 
 //-----------------------------------------------------------------------------
 //! LibraryItem class is used to create the hierarchical structure of IP library.
@@ -48,7 +46,7 @@ public:
 	*
 	*       @remark Only used when creating a root item for a tree structure.
 	*/
-	LibraryItem(QString const& name, QObject* parent);
+	LibraryItem(QObject* parent);
 
 	/*! The constructor
 	*
@@ -136,9 +134,9 @@ public:
 
 	/*! Get list of all VLNV tags that exist under this item.
 	 *
-	 *      @param [in/out] vlnvList List to save all VLNVs.
+	 *      @return List of all VLNVs.
 	 */
-	void getVLNVs(QList<VLNV>& vlnvList);
+	QVector<VLNV> getVLNVs() const;
 
 	/*! Remove a child of this item.
 	 *
@@ -185,45 +183,43 @@ public:
 	//! Remove the children of this item.
 	void clear();
 
-	/*! Get the vendor items that's name passes the validator.
-	 *
-	 *      @param [in] validator   The validator to use to filter the vendors.
-	 *
-	 *      @return The items that passed the validator.
-	*/
-	QList<LibraryItem*> getVendors(QRegExpValidator const& validator) const;
-
 	/*! Get all vendor items.
 	 *
 	 *      @return All vendor items under this item.
 	*/
-	QList<LibraryItem*> getVendors() const;
-
-	/*! Get the library items that's name passes the validator.
-	 *
-	 *      @param [in] validator   The validator to use to filter the libraries.
-	 *
-	 *      @return The items that passed the validator.
-	*/
-	QList<LibraryItem*> getLibraries(const QRegExpValidator& validator) const;
+	QVector<LibraryItem*> getVendors() const;
 
 	/*! Get all library items.
 	 *
 	 *      @return All library items under this item.
 	*/
-	QList<LibraryItem*> getLibraries() const;
+	QVector<LibraryItem*> getLibraries() const;
 
 	/*! Get all name items.
 	 *
 	 *      @return All name items under this item.
 	*/
-	QList<LibraryItem*> getNames() const;
+	QVector<LibraryItem*> getNames() const;
 
 	/*! Get all version items.
 	 *
 	 *      @return All version items under this item.
 	*/
-	QList<LibraryItem*> getVersions() const;
+	QVector<LibraryItem*> getVersions() const;
+
+    /*!
+     *  Checks if the item is valid.
+     *
+     *      @return True, if the item is valid, otherwise false.
+     */
+    bool isValid() const;
+
+    /*!
+     *  Sets the validity of the item.
+     *
+     *      @param [in] valid   The validity to set.
+     */
+    void setValid(bool valid);
 
 private:
 
@@ -255,13 +251,15 @@ private:
 	Level level_;
 
 	//! The child items of current item in the hierarchy.
-	QList<LibraryItem*> childItems_;
+	QVector<LibraryItem*> childItems_;
 
 	//! The parent of the item.
 	LibraryItem *parentItem_;
 
 	//! A VLNV tag that matches the version.
 	VLNV vlnv_;
+
+    bool valid_;
 };
 
 #endif // LIBRARYITEM_H

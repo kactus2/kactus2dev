@@ -14,31 +14,33 @@
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <QString>
-#include <QList>
+#include <QVector>
 #include <QObject>
 
 //-----------------------------------------------------------------------------
 // Function: LibraryItem::LibraryItem()
 //-----------------------------------------------------------------------------
-LibraryItem::LibraryItem(QString const& name, QObject* parent): QObject(parent),
-    name_(name), 
+LibraryItem::LibraryItem(QObject* parent): QObject(parent),
+    name_(tr("root")), 
     level_(LibraryItem::ROOT),
     childItems_(),
     parentItem_(0),
-    vlnv_()
+    vlnv_(),
+    valid_(false)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryItem::LibraryItem()
 //-----------------------------------------------------------------------------
-LibraryItem::LibraryItem(VLNV const& vlnv, Level level, LibraryItem *parent): 
+LibraryItem::LibraryItem(VLNV const& vlnv, Level level, LibraryItem* parent): 
 QObject(parent), 
     name_(), 
     level_(level),
     childItems_(), 
     parentItem_(parent),
-    vlnv_()
+    vlnv_(),
+    valid_(false)
 {
 	// Choose name for the item in the tree.
 	if (level == VENDOR)
@@ -181,14 +183,16 @@ int LibraryItem::getRow()
 //-----------------------------------------------------------------------------
 bool LibraryItem::hasChildren() const
 {
-	return (childItems_.size() != 0);
+	return !childItems_.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryItem::getVLNVs()
 //-----------------------------------------------------------------------------
-void LibraryItem::getVLNVs(QList<VLNV>& vlnvList)
+QVector<VLNV> LibraryItem::getVLNVs() const
 {	
+    QVector<VLNV> vlnvList;
+
 	// if this is a leaf-object
 	if (vlnv_.isValid())
     {
@@ -196,11 +200,13 @@ void LibraryItem::getVLNVs(QList<VLNV>& vlnvList)
 	}
 	else 
     {
-		for (int i = 0; i < childItems_.size(); i++)
+		foreach (LibraryItem* child, childItems_)
         {
-			childItems_.value(i)->getVLNVs(vlnvList);
+			vlnvList += child->getVLNVs();
 		}
 	}
+
+    return vlnvList;
 }
 
 //-----------------------------------------------------------------------------
@@ -333,35 +339,7 @@ void LibraryItem::clear()
 //-----------------------------------------------------------------------------
 // Function: LibraryItem::getVendors()
 //-----------------------------------------------------------------------------
-QList<LibraryItem*> LibraryItem::getVendors(QRegExpValidator const& validator) const
-{
-	QList<LibraryItem*> list;
-    int pos = 0;
-
-    if (level_ == LibraryItem::ROOT)
-    {
-        foreach (LibraryItem* item, childItems_) 
-        {
-            QString vendor = item->name();
-            if (validator.validate(vendor, pos) == QValidator::Acceptable)
-            {
-                list.append(item);
-            }
-        }
-    }
-    else
-    {
-        Q_ASSERT_X(false, "LibraryItem::getVendors", "If came to code that should never be executed");
-    }
-
-    // when items are appended to list return it.
-    return list;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryItem::getVendors()
-//-----------------------------------------------------------------------------
-QList<LibraryItem*> LibraryItem::getVendors() const
+QVector<LibraryItem*> LibraryItem::getVendors() const
 {
     if (level_ == LibraryItem::ROOT)
     {
@@ -370,56 +348,21 @@ QList<LibraryItem*> LibraryItem::getVendors() const
     else
     {
         Q_ASSERT_X(false, "LibraryItem::getVendors", "If came to code that should never be executed");
-        return QList<LibraryItem*>();
+        return QVector<LibraryItem*>();
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryItem::getLibraries()
 //-----------------------------------------------------------------------------
-QList<LibraryItem*> LibraryItem::getLibraries(QRegExpValidator const& validator) const
-{
-    QList<LibraryItem*> list;
-
-    if (level_ == LibraryItem::ROOT)
-    {
-        foreach (LibraryItem* item, childItems_)
-        {
-            list += item->getLibraries(validator);
-        }
-    }
-    else if (level_ == LibraryItem::VENDOR)
-    {
-        int pos = 0;
-        foreach (LibraryItem* item, childItems_)
-        {
-            QString library = item->name();
-            if (validator.validate(library, pos) == QValidator::Acceptable)
-            {
-                list.append(item);
-            }
-        }
-    }
-    else
-    {
-        Q_ASSERT_X(false, "LibraryItem::getVendors", "If came to code that should never be executed");
-    }
-
-    // when items are appended to list return it.
-    return list;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryItem::getLibraries()
-//-----------------------------------------------------------------------------
-QList<LibraryItem*> LibraryItem::getLibraries() const
+QVector<LibraryItem*> LibraryItem::getLibraries() const
 {
     if (level_ == LibraryItem::VENDOR)
     {
         return childItems_;
     }
 
-    QList<LibraryItem*> list;
+    QVector<LibraryItem*> list;
     if (level_ == LibraryItem::ROOT)
     {
         foreach (LibraryItem* item, childItems_)
@@ -438,14 +381,14 @@ QList<LibraryItem*> LibraryItem::getLibraries() const
 //-----------------------------------------------------------------------------
 // Function: LibraryItem::getNames()
 //-----------------------------------------------------------------------------
-QList<LibraryItem*> LibraryItem::getNames() const
+QVector<LibraryItem*> LibraryItem::getNames() const
 {
     if (level_ == LibraryItem::LIBRARY)
     {
         return childItems_;
     }
 
-    QList<LibraryItem*> list;
+    QVector<LibraryItem*> list;
 
     if (level_ == ROOT || level_ == VENDOR)
     {
@@ -465,19 +408,35 @@ QList<LibraryItem*> LibraryItem::getNames() const
 //-----------------------------------------------------------------------------
 // Function: LibraryItem::getVersions()
 //-----------------------------------------------------------------------------
-QList<LibraryItem*> LibraryItem::getVersions() const
+QVector<LibraryItem*> LibraryItem::getVersions() const
 {
     if (level_ == NAME)
     {
         return childItems_;
     }
 
-	QList<LibraryItem*> list;
+	QVector<LibraryItem*> list;
     foreach (LibraryItem* item, childItems_)
     {
         list += item->getNames();
     }
     return list;
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryItem::isValid()
+//-----------------------------------------------------------------------------
+bool LibraryItem::isValid() const
+{
+    return valid_;         
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryItem::setValid()
+//-----------------------------------------------------------------------------
+void LibraryItem::setValid(bool valid)
+{
+    valid_ = valid;
 }
 
 //-----------------------------------------------------------------------------

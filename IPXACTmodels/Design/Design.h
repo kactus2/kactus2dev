@@ -243,13 +243,6 @@ public:
 	virtual QList<VLNV> getDependentVLNVs() const;
 
 	/*!
-	 *  Get the VLNVs of the components referenced in this design.
-	 *
-     *      @return A list of component VLNVs.
-	 */
-	QList<VLNV> getComponents() const;
-
-	/*!
 	 *  Get the VLNV of the HW component instantiated with the given name.
 	 *
 	 *      @param [in] instanceName    The name identifying the component instance.

@@ -377,8 +377,6 @@ void HierarchyView::onOpenContainingFolder()
 //-----------------------------------------------------------------------------
 void HierarchyView::contextMenuEvent(QContextMenuEvent* event)
 {
-	Q_ASSERT_X(event, "LibraryTreeView::contextMenuEvent", "Invalid event pointer given as parameter");
-
 	// accept the event so it is not passed forwards
 	event->accept();
 
@@ -455,8 +453,6 @@ void HierarchyView::contextMenuEvent(QContextMenuEvent* event)
 		}
 		else if (item->type() == HierarchyItem::BUSDEFINITION)
         {
-			QSharedPointer<BusDefinition const> busDef = libComp.staticCast<BusDefinition const>();
-
             menu.addAction(openBusAction_);
             menuNew = menu.addMenu(tr("Add"));
             menuNew->addAction(addSignalsAction_);
@@ -495,16 +491,16 @@ void HierarchyView::contextMenuEvent(QContextMenuEvent* event)
 
         menu.addSeparator();
 
-//          if (!libComp->isValid())
-//          {
-//              menu.addAction(showErrorsAction_);
-//          }
+        if (!item->isValid())
+        {
+            menu.addAction(showErrorsAction_);
+        }
 
         menu.addAction(openContainingFolderAction_);
         menu.addAction(openXmlAction_);
-	}
+    }
 
-	menu.addAction(exportAction_);
+    menu.addAction(exportAction_);
 
 	menu.exec(event->globalPos());
 }
@@ -514,8 +510,6 @@ void HierarchyView::contextMenuEvent(QContextMenuEvent* event)
 //-----------------------------------------------------------------------------
 void HierarchyView::mouseDoubleClickEvent(QMouseEvent* event)
 {
-	Q_ASSERT_X(event, "LibraryTreeView::contextMenuEvent", "Invalid event pointer given as parameter");
-
 	// accept the event so it is not passed forwards
 	event->accept();
 

@@ -353,36 +353,6 @@ void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
 }
 
 //-----------------------------------------------------------------------------
-// Function: Design::getComponents()
-//-----------------------------------------------------------------------------
-QList<VLNV> Design::getComponents() const
-{
-	QList<VLNV> list;
-
-    foreach(QSharedPointer<ComponentInstance> instance, *componentInstances_)
-    {
-        if (!instance->isDraft())
-        {
-            list.append(*instance->getComponentRef());
-        }
-	}
-
-    QList<QSharedPointer<VendorExtension> > swExtensions =
-        getGroupedExtensionsByType("kactus2:swInstances", "kactus2:swInstance");
-
-    foreach (QSharedPointer<VendorExtension> extensions, swExtensions)
-    {
-        QSharedPointer<SWInstance> swInstance = extensions.dynamicCast<SWInstance>();
-        if (swInstance->isDraft())
-        {
-            list.append(*swInstance->getComponentRef());
-        }
-    }
-
-	return list;
-}
-
-//-----------------------------------------------------------------------------
 // Function: Design::setVlnv()
 //-----------------------------------------------------------------------------
 void Design::setVlnv(VLNV const& vlnv)

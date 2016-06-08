@@ -15,6 +15,8 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/common/Association/AssociationAddCommand.h \
     ../../../designEditors/common/Association/AssociationChangeEndpointCommand.h \
     ../../../designEditors/common/Association/AssociationRemoveCommand.h \
+    ../../../common/graphicsItems/CommonGraphicsUndoCommands.h \
+    ../../../designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h \
     ../../../designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h \
@@ -29,10 +31,11 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/widgets/assistedLineEdit/LineContentAssistWidget.h \
     ../../../designEditors/common/NamelabelWidth.h \
     ../../../editors/ComponentEditor/common/NullParser.h \
+    ../../../designEditors/HWDesign/undoCommands/PortPasteCommand.h \
     ../../../designEditors/HWDesign/PortmapDialog.h \
     ../../../designEditors/common/StickyNote/StickyNoteEditCommand.h \
     ../../../designEditors/common/StickyNote/StickyNoteMoveCommand.h \
-    ../../../designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h \
+    ../../../designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h \
     ../../../common/widgets/vlnvEditor/VLNVContentMatcher.h \
     ../../../common/widgets/vlnvEditor/VLNVDataTree.h \
     ../../../designEditors/HWDesign/AdHocConnectionItem.h \
@@ -48,7 +51,6 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/HWDesign/views/CellEditTableView.h \
     ../../../designEditors/common/StickyNote/ColorFillTextItem.h \
     ../../../designEditors/HWDesign/columnview/ColumnEditDialog.h \
-    ../../../common/graphicsItems/CommonGraphicsUndoCommands.h \
     ../../../designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h \
     ../../../designEditors/common/ComponentDesignDiagram.h \
     ../../../common/graphicsItems/ComponentItem.h \
@@ -109,8 +111,13 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portlistview.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.h \
     ../../../common/widgets/vlnvEditor/vlnveditor.h \
-    ../../../designEditors/HWDesign/undoCommands/PortPasteCommand.h \
-    ../../../designEditors/SystemDesign/UndoCommands/SystemMoveCommands.h
+    ../../../designEditors/HWDesign/AdHocItem.h \
+    ../../../designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h \
+    ../../../designEditors/HWDesign/undoCommands/HWComponentAddCommand.h \
+    ../../../designEditors/common/DesignDiagramResolver.h \
+    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h
 SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../../designEditors/HWDesign/AdHocConnectionItem.cpp \
     ../../../designEditors/HWDesign/AdHocEnabled.cpp \
@@ -135,6 +142,7 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ../../../designEditors/HWDesign/undoCommands/ComponentDeleteCommand.cpp \
     ../../../designEditors/common/ComponentDesignDiagram.cpp \
+    ../../../designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.cpp \
     ../../../common/graphicsItems/ComponentItem.cpp \
     ../../../designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.cpp \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
@@ -178,6 +186,7 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeItem.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeModel.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapsTreeView.cpp \
+    ../../../designEditors/HWDesign/undoCommands/PortPasteCommand.cpp \
     ../../../designEditors/HWDesign/PortmapDialog.cpp \
     ../../../designEditors/SystemDesign/SWComponentItem.cpp \
     ../../../designEditors/SystemDesign/SWConnectionEndpoint.cpp \
@@ -190,6 +199,7 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/common/StickyNote/StickyNoteMoveCommand.cpp \
     ../../../designEditors/common/StickyNote/StickyNoteRemoveCommand.cpp \
     ../../../designEditors/SystemDesign/SystemComponentItem.cpp \
+    ../../../designEditors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
     ../../../common/widgets/tabDocument/TabDocument.cpp \
     ../../../common/widgets/vlnvEditor/VLNVContentMatcher.cpp \
     ../../../common/widgets/vlnvEditor/VLNVDataTree.cpp \
@@ -212,6 +222,10 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../editors/ComponentEditor/busInterfaces/portmaps/portmapsdelegate.cpp \
     ./tst_documentGenerator.cpp \
     ../../../common/widgets/vlnvEditor/vlnveditor.cpp \
-    ../../../designEditors/HWDesign/undoCommands/PortPasteCommand.cpp \
-    ../../../designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.cpp \
-    ../../../designEditors/SystemDesign/UndoCommands/SystemMoveCommands.cpp
+    ../../../designEditors/HWDesign/AdHocItem.cpp \
+    ../../../designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \
+    ../../../designEditors/HWDesign/undoCommands/HWComponentAddCommand.cpp \
+    ../../../designEditors/common/DesignDiagramResolver.cpp \
+    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../designEditors/HWDesign/undoCommands/ReplaceComponentCommand.cpp

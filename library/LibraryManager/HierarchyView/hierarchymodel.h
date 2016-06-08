@@ -219,15 +219,13 @@ public slots:
 	//! Remove the specified vlnv from the tree.
 	void onRemoveVLNV(VLNV const& vlnv);
 	
-	/*! This function should be called when a component has changed.
+	/*! This function should be called when an IP-XACT document has changed.
 	 * 
-	 * Function updates the hierarchical model so that changes made to the 
-	 * component are visible.
+	 * Function updates the hierarchical model so that changes made to the document are visible.
 	 * 
-	 *      @param [in] vlnv Identifies the component that was saved.
-	 *
+	 *      @param [in] vlnv Identifies the document that was saved.
 	*/
-	void onComponentSaved(VLNV const& vlnv);
+	void onDocumentSaved(VLNV const& vlnv);
 
 signals:
 
@@ -299,7 +297,7 @@ private:
 	LibraryData* dataModel_;
 
 	//! The root item of the model
-	QSharedPointer<HierarchyItem> rootItem_;
+	HierarchyItem* rootItem_;
 
 	//! The instance that manages the library.
 	LibraryInterface* handler_;

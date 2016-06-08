@@ -300,7 +300,7 @@ bool ComponentEditor::validate(QVector<QString>& errorList)
 //-----------------------------------------------------------------------------
 bool ComponentEditor::save()
 {
-	if (libHandler_->writeModelToFile(component_, false))
+	if (libHandler_->writeModelToFile(component_))
     {
 		return TabDocument::save();
 	}

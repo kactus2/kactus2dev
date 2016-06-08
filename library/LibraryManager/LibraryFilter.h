@@ -120,11 +120,11 @@ protected:
 
 	/*! Check the list of vlnvs if they match the search rules
 	 *
-	 *     @param [in]  list Contains the vlnvs to check. 
+	 *      @param [in]  list Contains the vlnvs to check. 
 	 *
-	 * \return bool True if at least one match is found.
+	 *      @return True if at least one match is found.
 	*/
-	bool checkVLNVs(QList<VLNV> const& list) const;
+	bool checkVLNVs(QVector<VLNV> const& list) const;
 
 private:
 

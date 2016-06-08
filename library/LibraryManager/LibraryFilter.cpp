@@ -287,9 +287,9 @@ bool LibraryFilter::checkHierarchy(QSharedPointer<Component const> component) co
 //-----------------------------------------------------------------------------
 // Function: LibraryFilter::checkVLNVs()
 //-----------------------------------------------------------------------------
-bool LibraryFilter::checkVLNVs(QList<VLNV> const& list) const
+bool LibraryFilter::checkVLNVs(QVector<VLNV> const& list) const
 {
-    foreach (VLNV vlnv, list)
+    foreach (VLNV const& vlnv, list)
     {
         int pos = 0;
 
@@ -305,9 +305,9 @@ bool LibraryFilter::checkVLNVs(QList<VLNV> const& list) const
             (nameValidator_.validate(name, pos) == QValidator::Acceptable) &&
             (versionValidator_.validate(version, pos) == QValidator::Acceptable)) 
         {
-                return true;
+            return true;
         }
-	}
-	// if none of the vlnvs matched
+    }
+    // if none of the vlnvs matched
 	return false;
 }

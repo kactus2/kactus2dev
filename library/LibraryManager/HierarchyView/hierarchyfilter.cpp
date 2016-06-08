@@ -102,13 +102,5 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
         }
     }
 
-    QList<VLNV> list = item->getVLNVs();
-    if (!checkVLNVs(list))
-    {
-        return false;
-    }
-    else 
-    {
-        return true;
-    }
+    return checkVLNVs(item->getVLNVs());
 }

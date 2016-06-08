@@ -375,7 +375,7 @@ void LibraryTreeView::mouseReleaseEvent(QMouseEvent* event)
 		LibraryItem* item = static_cast<LibraryItem*>(sourceIndex.internalPointer());
 
 		// if item contains a single vlnv
-		VLNV vlnv = item->getVLNV();
+        VLNV vlnv = item->getVLNV();
 		if (vlnv.isValid())
         {
 			emit itemSelected(vlnv);
@@ -407,10 +407,10 @@ void LibraryTreeView::mouseMoveEvent(QMouseEvent* event)
 			    // if vlnv is valid
 			    if (vlnv.isValid())
                 {
-				    QMimeData *mimeData = new QMimeData;
+				    QMimeData* mimeData = new QMimeData;
 				    mimeData->setImageData(QVariant::fromValue(vlnv));
 
-                    QDrag *drag = new QDrag(this);
+                    QDrag* drag = new QDrag(this);
 				    drag->setMimeData(mimeData);
 				    drag->exec(Qt::MoveAction | Qt::CopyAction | Qt::LinkAction);
 			    }

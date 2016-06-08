@@ -366,7 +366,7 @@ void QuartusGenerator::parseSingleFile(QSharedPointer<File> currentFile, QString
 
     if (relativePath.isEmpty())
     {
-        utility_->printError(tr("The file %1 was not found within %2").arg(currentFile->getFileName, absolutePath));
+        utility_->printError(tr("The file %1 was not found within %2").arg(currentFile->getFileName(), absolutePath));
         return;
     }
 

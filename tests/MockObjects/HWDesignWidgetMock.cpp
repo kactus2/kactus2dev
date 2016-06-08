@@ -31,12 +31,11 @@
 //-----------------------------------------------------------------------------
 // Function: HWDesignWidgetMock::HWDesignWidgetMock()
 //-----------------------------------------------------------------------------
-HWDesignWidgetMock::HWDesignWidgetMock(LibraryInterface *lh, QWidget* parent)
-    : DesignWidget(lh, parent)
+HWDesignWidgetMock::HWDesignWidgetMock(LibraryInterface *lh, QWidget* parent): DesignWidget(lh, parent)
 {
 	// update the supported windows 
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
-		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW | ADDRESS_WINDOW | NOTES_WINDOW);
+		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW | ADDRESS_WINDOW);
 
     setDiagram(new HWDesignDiagram(lh, getEditProvider(), this));
     getDiagram()->setProtection(false);

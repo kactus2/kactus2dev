@@ -643,16 +643,20 @@ bool SystemDesignWidget::saveAs()
     getLibraryInterface()->beginSave();
 
     // if design configuration is used then write it.
-    if (designConf) {
-        if (!getLibraryInterface()->writeModelToFile(directory, designConf, false)) {
+    if (designConf)
+    {
+        if (!getLibraryInterface()->writeModelToFile(directory, designConf))
+        {
             writeSucceeded = false;
         }
     }
 
-    if (!getLibraryInterface()->writeModelToFile(directory, design, false)) {
+    if (!getLibraryInterface()->writeModelToFile(directory, design))
+    {
         writeSucceeded = false;
     }
-    if (!getLibraryInterface()->writeModelToFile(directory, getEditedComponent(), false)) {
+    if (!getLibraryInterface()->writeModelToFile(directory, getEditedComponent()))
+    {
         writeSucceeded = false;
     }
 

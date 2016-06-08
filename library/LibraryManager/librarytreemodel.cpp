@@ -43,6 +43,7 @@ QAbstractItemModel(parent),
 //-----------------------------------------------------------------------------
 LibraryTreeModel::~LibraryTreeModel()
 {
+    delete rootItem_;
 }
 
 //-----------------------------------------------------------------------------
@@ -84,7 +85,7 @@ int LibraryTreeModel::rowCount(QModelIndex const& parent) const
 	// if the given item is invalid, it is interpreted as root item
 	if (!parent.isValid()) 
     {
-		parentItem = rootItem_.data();
+		parentItem = rootItem_;
 	}
 	else
     {
@@ -110,7 +111,7 @@ QModelIndex LibraryTreeModel::index(int row, int column, QModelIndex const& pare
 	// if the index of the parent is invalid then it is the root item
 	if (!parent.isValid()) 
     {
-		parentItem = rootItem_.data();
+		parentItem = rootItem_;
 	}
 	else
     {
@@ -163,31 +164,27 @@ QModelIndex LibraryTreeModel::index(LibraryItem* item)
 //-----------------------------------------------------------------------------
 QModelIndex LibraryTreeModel::parent(QModelIndex const& child) const
 {
-	// if invalid index
 	if(!child.isValid())
     {
 		return QModelIndex();
 	}
 
-	// pointer to the child item
 	LibraryItem *childItem = static_cast<LibraryItem*>(child.internalPointer());
     LibraryItem *parent = childItem->parent();
 
-	// if the parent does not exist then this item is root item
+	// If the parent does not exist then this item is the root item.
 	if (!parent)
     {
 		return QModelIndex();
 	}
 
-	// if row is invalid then the grandparent does not exist and parent is
-	// a root item so we return an invalid QModelIndex
+	// If row is invalid then the grandparent does not exist and parent is the root.
 	int row = parent->row();
 	if (row == -1)
     {
 		return QModelIndex();
 	}
 
-	// create new index and return it
 	return createIndex(row, 0, parent);
 }
 
@@ -210,21 +207,14 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
 
 	else if (role == Qt::ForegroundRole)
     {
-		// check all vlnvs that the item represents
-		QList<VLNV> vlnvs;
-		item->getVLNVs(vlnvs);
-
-		foreach (VLNV const& vlnv, vlnvs)
+        if (item->isValid())
         {
-			// if at least one vlnv is valid then the item is valid
-			if (handler_->isValid(vlnv))
-            {
-				return QBrush(QColor("black"));
-			}
-		}
-
-		// if the document is not valid then it is marked with red color
-		return QBrush(QColor("red"));		
+            return QColor("black");
+        }
+        else
+        {
+            return QColor("red");
+        }
 	}
 
 	else if (role == Qt::ToolTipRole)
@@ -333,24 +323,10 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
             {
 				return QIcon(":/icons/common/graphics/configuration.png");
 			}
-			
-			else
-            {
-				return QVariant();
-            }
 		}
-
-		else 
-        {
-			return QVariant();	
-        }
 	}
 	
-	// unsupported data role
-	else
-    {
-		return QVariant();
-	}
+	return QVariant();
 }
 
 //-----------------------------------------------------------------------------
@@ -358,7 +334,6 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 Qt::ItemFlags LibraryTreeModel::flags(QModelIndex const& index) const
 {
-	// if given index is invalid
 	if (!index.isValid())
     {
 		return Qt::ItemIsEnabled;
@@ -383,7 +358,7 @@ bool LibraryTreeModel::hasChildren(QModelIndex const& parent) const
 	// if the given item is invalid, it is interpreted as root item
 	if (!parent.isValid())
     {
-		parentItem = rootItem_.data();
+		parentItem = rootItem_;
 	}
 	else
     {
@@ -407,10 +382,9 @@ void LibraryTreeModel::onExportItem(QModelIndex const& index)
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
 	// ask the item for all the VLNVs it represents
-	QList<VLNV> vlnvList;
-	item->getVLNVs(vlnvList);
+	QVector<VLNV> vlnvList = item->getVLNVs();
 
-	emit exportItems(vlnvList);
+	emit exportItems(vlnvList.toList());
 }
 
 //-----------------------------------------------------------------------------
@@ -427,11 +401,10 @@ void LibraryTreeModel::onDeleteItem(QModelIndex const& index)
 	LibraryItem* toRemove = child->findHighestUnique();
 
 	// ask the item for all the VLNVs it represents
-	QList<VLNV> vlnvList;
-	toRemove->getVLNVs(vlnvList);
+	QVector<VLNV> vlnvList = toRemove->getVLNVs();
 
 	// inform the library handler that these VLNVs should be removed
-	emit removeVLNV(vlnvList);
+	emit removeVLNV(vlnvList.toList());
 }
 
 //-----------------------------------------------------------------------------
@@ -468,7 +441,7 @@ void LibraryTreeModel::onAddVLNV(VLNV const& vlnv)
 	QModelIndex parentIndex;
 
 	// if the highest unique is not the root
-	if (parentItem != rootItem_.data())
+	if (parentItem != rootItem_)
     {
 		int row = parentItem->row();
 		Q_ASSERT(row >= 0);
@@ -492,10 +465,6 @@ void LibraryTreeModel::removeLibraryItem(LibraryItem* toRemove)
 {
 	int row = toRemove->parent()->getIndexOf(toRemove);
 
-	// ask the item for all the VLNVs it represents
-	QList<VLNV> vlnvList;
-	toRemove->getVLNVs(vlnvList);
-
 	QModelIndex removeIndex = createIndex(row, 0, toRemove);
 
 	// get the model index of the parent
@@ -517,7 +486,7 @@ void LibraryTreeModel::onResetModel()
 
 	if (!rootItem_)
     {
-		rootItem_ = QSharedPointer<LibraryItem>(new LibraryItem(tr("root"), this));
+		rootItem_ = new LibraryItem(this);
 	}
 	else
     {
@@ -525,13 +494,12 @@ void LibraryTreeModel::onResetModel()
 	}
 
 	// get the items to be displayed from the data source
-	QList<VLNV> items = dataSource_->getItems();
-
-    int itemCount = items.count();
-	for (int i = 0; i < itemCount; i++)
+	foreach (VLNV const& item, dataSource_->getItems())
     {
-		rootItem_->createChild(items.at(i), LibraryItem::ROOT);
+		rootItem_->createChild(item, LibraryItem::ROOT);
 	}
+
+    validate(rootItem_);
 
 	endResetModel();
 
@@ -539,11 +507,26 @@ void LibraryTreeModel::onResetModel()
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onComponentSaved()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onDocumentSaved(VLNV const& vlnv)
+{
+    LibraryItem* item = rootItem_->findHighestUnique(vlnv);
+    if (item)
+    {
+        validate(item);
+
+        QModelIndex itemIndex = index(item);
+        emit dataChanged(itemIndex, itemIndex);
+    }    
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryTreeModel::getRoot()
 //-----------------------------------------------------------------------------
 LibraryItem* LibraryTreeModel::getRoot() const
 {
-	return rootItem_.data();
+	return rootItem_;
 }
 
 //-----------------------------------------------------------------------------
@@ -786,4 +769,32 @@ void LibraryTreeModel::onShowErrors(QModelIndex const& index)
 
     LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
     emit showErrors(item->getVLNV());
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::validate()
+//-----------------------------------------------------------------------------
+bool LibraryTreeModel::validate(LibraryItem* item)
+{
+    bool isValid = false;
+    if (item->getLevel() == LibraryItem::VERSION)
+    {
+        isValid = handler_->isValid(item->getVLNV());
+    }
+    else
+    {
+        bool hasOneValidChild = false;
+
+        int childCount = item->getNumberOfChildren();        
+        for (int i = 0; i < childCount; i++)
+        {
+            bool childIsValid = validate(item->child(i));
+            hasOneValidChild |= childIsValid;
+        }
+
+        isValid = hasOneValidChild;
+    }
+
+    item->setValid(isValid);
+    return isValid;
 }

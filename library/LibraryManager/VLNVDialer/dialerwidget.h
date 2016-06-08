@@ -15,7 +15,7 @@
 #include <QWidget>
 #include <QString>
 #include <QComboBox>
-#include <QList>
+#include <QVector>
 
 class LibraryItem;
 
@@ -108,16 +108,16 @@ private:
 	const LibraryItem* root_;
 
 	//! The library items that represent vendors.
-	QList<LibraryItem*> vendors_;
+	QVector<LibraryItem*> vendors_;
 
 	//! The library items that represent libraries.
-	QList<LibraryItem*> libraries_;
+	QVector<LibraryItem*> libraries_;
 
 	//! The library items that represent names.
-	QList<LibraryItem*> names_;
+	QVector<LibraryItem*> names_;
 
 	//! The library items that represent versions.
-	QList<LibraryItem*> versions_;
+	QVector<LibraryItem*> versions_;
 };
 
 #endif // DIALERWIDGET_H
