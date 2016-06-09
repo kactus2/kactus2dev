@@ -12,6 +12,7 @@ HEADERS += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
     ./VerilogGeneratorPlugin.h \
     ./VerilogGenerator/VerilogGenerator.h \
+    ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../common/NameGenerationPolicy.h \
     ./common/Writer.h \
     ./common/WriterGroup.h \
@@ -31,7 +32,7 @@ HEADERS += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../designEditors/common/TopComponentParameterFinder.h \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.h \
-    ../../editors/ComponentEditor/common/MultipleParameterFinder.h
+    ./TextBodyWriter/TextBodyWriter.h
 SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
     ./VerilogGeneratorPlugin.cpp \
@@ -44,6 +45,7 @@ SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ./VerilogHeaderWriter/VerilogHeaderWriter.cpp \
     ./VerilogWireWriter/VerilogWireWriter.cpp \
     ./CommentWriter/CommentWriter.cpp \
+    ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../common/NameGenerationPolicy.cpp \
     ./common/WriterGroup.cpp \
     ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
@@ -52,5 +54,5 @@ SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../designEditors/common/TopComponentParameterFinder.cpp \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
-    ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp
+    ./TextBodyWriter/TextBodyWriter.cpp
 RESOURCES += VerilogGenerator.qrc

@@ -151,6 +151,15 @@ protected:
      */
     virtual QSharedPointer<GeneratorConfiguration> getConfiguration();
 
+public slots:
+
+    /*!
+     *  Called when an error is reported to us.
+     *
+	 *      @param [in] report			The error message.
+	 */
+	void onErrorReport(const QString& report);
+
 private:
 	// Disable copying.
 	VerilogGeneratorPlugin(VerilogGeneratorPlugin const& rhs);

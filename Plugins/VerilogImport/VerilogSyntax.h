@@ -16,9 +16,15 @@
 
 namespace VerilogSyntax
 {
+	//! Warning that is generated to generated files.
+	const QString TAG_OVERRIDE("WARNING: EVERYTHING ON AND ABOVE THIS LINE MAY BE OVERWRITTEN BY KACTUS2!!!");
+
     //! Module begins with module <name> #(<parameters>) (<ports>);.
-    const QRegularExpression MODULE_BEGIN("module\\s+(\\w+)\\s*(#\\s*[(].*[)])?\\s*(?=([(][^)][)])?\\s*;)?",
+    const QRegularExpression MODULE_BEGIN("module\\s+(\\w+)\\s*(#\\s*[(].*[)])?\\s*(?=([(][^)]*[)])?\\s*;)?",
         QRegularExpression::DotMatchesEverythingOption);
+
+	//! Module header begins with module <name> #(.
+	const QRegularExpression MODULE_KEY_WORD("module\\s+(\\w+)\\s*(#?\\s*[(])");
 
     //! Module ends with keyword endmodule.
     const QRegularExpression MODULE_END("endmodule");

@@ -22,6 +22,8 @@
 #include <Plugins/VerilogGenerator/common/Writer.h>
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>
 
+#include <Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h>
+
 #include <QSharedPointer>
 #include <QTextStream>
 #include <QList>
@@ -52,9 +54,15 @@ public:
 
 	/*! Writes the Verilog module into a text stream.
 	 *
-	 *      @param [in] output   The text stream to write the module into.
+	 *      @param [in] output			The text stream to write the module into.
+	 *      @param [in] output			Any text in the file that comes after the module declaration.
 	 */
     virtual void write(QTextStream& outputStream) const;
+	
+	/*! 
+	 *      Sets post module writer that will write the post module.
+	 */
+	void setPostModule( QSharedPointer<TextBodyWriter> postModule );
 
 private:
 	// Disable copying.
@@ -171,7 +179,10 @@ private:
     QList<QSharedPointer<Writer> > childWriters_;
 
     //! The formatter for expressions.
-    QSharedPointer<ExpressionFormatter> formatter_;
+	QSharedPointer<ExpressionFormatter> formatter_;
+
+	//! The extra stuff that comes after the written module.
+	QSharedPointer<TextBodyWriter> postModule_;
 };
 
 #endif // COMPONENTVERILOGWRITER_H

@@ -39,13 +39,15 @@
 #include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
 #include <Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.h>
 
+#include <Plugins/VerilogImport/VerilogSyntax.h>
+
 #include <QDateTime>
 #include <QFileInfo>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()
 //-----------------------------------------------------------------------------
-VerilogGenerator::VerilogGenerator(LibraryInterface* library):
+VerilogGenerator::VerilogGenerator(LibraryInterface* library): QObject(0), 
 library_(library),
 headerWriter_(0),
 topWriter_(0), 
@@ -71,7 +73,7 @@ VerilogGenerator::~VerilogGenerator()
 // Function: VerilogGenerator::parse()
 //-----------------------------------------------------------------------------
 void VerilogGenerator::parse(QSharedPointer<Component> component, QString topComponentView, 
-    QSharedPointer<Design> design /*= QSharedPointer<Design>()*/)
+    QString const& outputPath /*=""*/, QSharedPointer<Design> design /*= QSharedPointer<Design>()*/ )
 {
     topComponent_ = component;
     topComponentView_ = topComponentView;
@@ -81,15 +83,40 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QString topCom
 
     if (design_)
     {
+		// If we are generating based on a design, it should contain stuff like instances and interconnections.
         createWritersForComponentInstances();
 
         connectAndWireAdHocConnections();
 
         connectHierarchicalConnectionsToInstances();
-        createWiresForInterconnections();        
-    }
+		createWiresForInterconnections(); 
 
-    addWritersToTopInDesiredOrder();
+		addWritersToTopInDesiredOrder();       
+    }
+	else
+	{
+		// If we are not generating based on a design, we must parse the existing implementation.
+		QString implementation;
+		QString postModule;
+
+		if (!selectImplementation(outputPath, implementation, postModule))
+		{
+			// If parser says no-go, we dare not do nothing.
+			return;
+		}
+
+		// Must add a warning before the existing implementation.
+		QSharedPointer<CommentWriter> tagWriter(new CommentWriter(VerilogSyntax::TAG_OVERRIDE));
+		topWriter_->add(tagWriter);
+
+		// Next comes the implementation.
+		QSharedPointer<TextBodyWriter> implementationWriter(new TextBodyWriter(implementation));
+		topWriter_->add(implementationWriter);
+
+		// Also write any stuff that comes after the actual module.
+		QSharedPointer<TextBodyWriter> postModuleWriter(new TextBodyWriter(postModule));
+		topWriter_->setPostModule( postModuleWriter );
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -98,13 +125,15 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QString topCom
 void VerilogGenerator::generate(QString const& outputPath) const
 {
     if (nothingToWrite())
-    {
+	{
+		emit reportError(tr("Nothing to write"));
         return;
     }
 
-    QFile outputFile(outputPath); 
+	QFile outputFile(outputPath); 
     if (!outputFile.open(QIODevice::WriteOnly))
-    {
+	{
+		emit reportError(tr("Could not open output file for writing: %1").arg(outputPath));
         return;
     }
 
@@ -116,6 +145,91 @@ void VerilogGenerator::generate(QString const& outputPath) const
     topWriter_->write(outputStream);
 
     outputFile.close();
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::selectImplementation()
+//-----------------------------------------------------------------------------
+bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& implementation,
+	QString& postModule) const
+{
+	// Check if the output file already exists.
+	QFile outputFile(outputPath); 
+
+	// If it does not, there is nothing do here.
+	if (!outputFile.exists())
+	{
+		return true;
+	}
+
+	// Must be able to open it for reading.
+	if (!outputFile.open(QIODevice::ReadOnly))
+	{
+		emit reportError(tr("Could not open output file for reading: %1").arg(outputPath));
+		return false;
+	}
+
+	// Read the content.
+	QTextStream outputStream(&outputFile);
+	QString fileContent = outputStream.readAll();
+
+	// We do not support multiple modules in the same file.
+	if (fileContent.count(VerilogSyntax::MODULE_KEY_WORD) > 1)
+	{
+		emit reportError(tr("There was more than one module headers in the output file!"));
+		return false;
+	}
+
+	// Find the beginning of the module header.
+	int moduleDeclarationBeginIndex = fileContent.indexOf(VerilogSyntax::MODULE_KEY_WORD);
+
+	// Must have it to proceed.
+	if (moduleDeclarationBeginIndex == -1)
+	{
+		emit reportError(tr("Could not find module header start from the output file!"));
+		return false;
+	}
+
+	// Find the ending of the module header.
+	int moduleDeclarationEndIndex = fileContent.indexOf(");",moduleDeclarationBeginIndex);
+
+	// Must have it to proceed.
+	if (moduleDeclarationEndIndex == -1)
+	{
+		emit reportError(tr("Could not find module header end from the output file!"));
+		return false;
+	}
+
+	// End of the header is the beginning of the implementation.
+	int implementationStart = moduleDeclarationEndIndex + 2;
+	int implementationEnd = fileContent.indexOf(VerilogSyntax::MODULE_END);
+
+	// The module must end some where.
+	if (implementationEnd == -1)
+	{
+		emit reportError(tr("Could not find module end from the output file!"));
+		return false;
+	}
+
+	// Rip the implementation once detected.
+	int implementationLength = implementationEnd - implementationStart;
+	implementation = fileContent.mid(implementationStart,implementationLength);
+
+	// Remove the tag, if it exists.
+	implementation.remove("// " + VerilogSyntax::TAG_OVERRIDE);
+
+	// Also trim away extra white space.
+	implementation = implementation.trimmed();
+
+	// Then take all the text that comes after the module, just in case.
+	int postStart = implementationEnd + 9;
+	postModule = fileContent.mid(postStart);
+
+	// Also trim away extra white space.
+	postModule = postModule.trimmed();
+
+	// The destructor shall close the file. All done here.
+	return true;
 }
 
 //-----------------------------------------------------------------------------

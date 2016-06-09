@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
+HEADERS += ../../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
+    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
@@ -27,8 +28,10 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
     ../../../MockObjects/LibraryMock.h \
-    ../../../../editors/ComponentEditor/common/MultipleParameterFinder.h
-SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
+    ../../../../Plugins/VerilogImport/VerilogSyntax.h \
+    ../../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h
+SOURCES += ../../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
+    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
@@ -46,4 +49,4 @@ SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp 
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
     ./tst_VerilogGenerator.cpp \
-    ../../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp
+    ../../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.cpp

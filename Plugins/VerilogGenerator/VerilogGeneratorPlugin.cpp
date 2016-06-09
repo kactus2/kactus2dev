@@ -174,9 +174,11 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
         utility_->printInfo(tr("Generation started %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
         
-        VerilogGenerator generator(utility->getLibraryInterface());
-        generator.parse(topComponent_, configuration->getActiveView()->name(), libDes.dynamicCast<Design>());
-        generator.generate(outputFile_);
+		VerilogGenerator generator(utility->getLibraryInterface());
+		connect(&generator, SIGNAL(reportError(const QString&)), 
+			this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
+        generator.parse(topComponent_, configuration->getActiveView()->name(), outputFile_, libDes.dynamicCast<Design>());
+		generator.generate(outputFile_);
 
         utility_->printInfo(tr("Finished writing file %1.").arg(outputFile_));
 
@@ -258,6 +260,14 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 QSharedPointer<GeneratorConfiguration> VerilogGeneratorPlugin::getConfiguration()
 {
     return configuration_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGeneratorPlugin:::onErrorReport()
+//-----------------------------------------------------------------------------
+void VerilogGeneratorPlugin::onErrorReport(const QString& report)
+{
+	utility_->printError(report);
 }
 
 //-----------------------------------------------------------------------------

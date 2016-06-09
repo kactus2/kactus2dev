@@ -119,6 +119,12 @@
     <Filter Include="Source Files\VerilogTiedValueWriter">
       <UniqueIdentifier>{12df4dee-4481-4416-b6a3-d1bf09812f88}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\TextBodyWrite">
+      <UniqueIdentifier>{087779c9-1f4e-4c00-89b6-05295736929e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\TextBodyWrite">
+      <UniqueIdentifier>{2d88d741-961b-458c-9da6-1fe4fcd13d83}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VerilogGenerator\VerilogGenerator.cpp">
@@ -199,13 +205,19 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_VerilogGenerator.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_VerilogGenerator.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="TextBodyWriter\TextBodyWriter.cpp">
+      <Filter>Source Files\TextBodyWrite</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="veriloggeneratorplugin_global.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VerilogGenerator\VerilogGenerator.h">
-      <Filter>Header Files\VerilogGenerator</Filter>
     </ClInclude>
     <ClInclude Include="common\Writer.h">
       <Filter>Header Files\common</Filter>
@@ -270,6 +282,9 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="TextBodyWriter\TextBodyWriter.h">
+      <Filter>Header Files\TextBodyWrite</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="VerilogGenerator.qrc">
@@ -280,6 +295,9 @@
     </CustomBuild>
     <CustomBuild Include="VerilogGeneratorPlugin.h">
       <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="VerilogGenerator\VerilogGenerator.h">
+      <Filter>Header Files\VerilogGenerator</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

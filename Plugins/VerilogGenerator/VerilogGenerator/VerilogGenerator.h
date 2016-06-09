@@ -40,8 +40,10 @@ class PortAlignment;
 //-----------------------------------------------------------------------------
 // Verilog file generator.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT VerilogGenerator
+class VERILOGGENERATORPLUGIN_EXPORT VerilogGenerator : public QObject
 {
+	Q_OBJECT
+
 public:
     //! The constructor.
     VerilogGenerator(LibraryInterface* library);
@@ -54,12 +56,13 @@ public:
      *
      *      @param [in] component           The component to parse for generation.
      *      @param [in] topComponentView    The component view to parse for generation.
-     *      @param [in] design              The design to parse for generation.
+	 *      @param [in] design              The design to parse for generation.
+	 *      @param [in] implementation	The implementation within the module, which will be written back to the file.
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
     void parse(QSharedPointer<Component> component, QString topComponentView, 
-        QSharedPointer<Design> design = QSharedPointer<Design>());
+        QString const& outputPath = QString(""), QSharedPointer<Design> design = QSharedPointer<Design>() );
     
     /*!
      *  Generates the component Verilog to a given file.
@@ -68,7 +71,26 @@ public:
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
-    void generate(QString const& outputPath) const;
+	void generate(QString const& outputPath) const;
+	
+    /*!
+     *  Parses the module implementation out of verilog file given as output, if it already exists.
+     *
+	 *      @param [in] outputPath		The path to the output file.
+	 *      @param [in] implementation	The module implementation.
+	 *      @param [in] postModule		Anything that exists after the module declaration.
+	 *
+	 *      @return False, if the file exists, but could not be opened or parsed properly.
+     */
+	bool selectImplementation(QString const& outputPath, QString& implementation,
+		QString& postModule) const;
+
+signals:
+	
+    /*!
+     *  Emitted when reportable error occurs.
+     */
+	void reportError(const QString& errorMessage) const;
 
 private:
 
@@ -79,7 +101,7 @@ private:
     /*!
      *  Initializes writers for parsing.
      */
-    void initializeWriters();
+	void initializeWriters();
 
     /*!
      *  Creates an expression formatter for the given component.

@@ -26,6 +26,8 @@
 #include "IPXACTmodels/Component/View.h"
 #include "IPXACTmodels/Component/ComponentInstantiation.h"
 
+#include <Plugins/VerilogImport/VerilogSyntax.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
@@ -61,8 +63,21 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
     writeModuleDeclaration(outputStream);
 
     writeInternalWiresAndComponentInstances(outputStream);
+		
+	writeModuleEnd(outputStream);
 
-    writeModuleEnd(outputStream);
+	if ( postModule_ )
+	{
+		postModule_->write(outputStream);
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter::setPostModule
+//-----------------------------------------------------------------------------
+void ComponentVerilogWriter::setPostModule( QSharedPointer<TextBodyWriter> postModule )
+{
+	postModule_ = postModule;
 }
 
 //-----------------------------------------------------------------------------
@@ -98,16 +113,7 @@ QString ComponentVerilogWriter::portNames() const
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStream) const
 {
-	QSharedPointer<View> view;
-
-	foreach(QSharedPointer<View> currentView, *component_->getViews())
-	{
-		if (currentView->name() == activeView_)
-		{
-			view = currentView;
-			break;
-		}
-	}
+	QSharedPointer<View> view = component_->getModel()->findView(activeView_);
 
 	if (view)
 	{
