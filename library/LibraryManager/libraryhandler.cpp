@@ -70,7 +70,8 @@ QTabWidget(parent),
     hierarchyWidget_(0),
     objects_(),
     saveInProgress_(false),
-    itemsToAdd_() 
+    itemsToAdd_() ,
+    modifiedItems_()
 {
 	setWindowTitle(tr("LibraryHandler"));
 
@@ -255,8 +256,12 @@ bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model)
 
 	if (!saveInProgress_)
     {
-		onItemSaved(model->getVlnv());
+		onItemSaved(objectVLNV);
 	}
+    else
+    {
+        modifiedItems_.append(objectVLNV);
+    }
 
 	return true;
 }
@@ -968,14 +973,22 @@ void LibraryHandler::endSave()
         for (QMap<VLNV, QString>::iterator i = itemsToAdd_.begin(); i != itemsToAdd_.end(); ++i)
         {
             data_->addVLNV(i.key(), i.value());
+
         }
 
         itemsToAdd_.clear();
     }
 
-    // rebuild the hierarchy view.
-    hierarchyModel_->onResetModel();
-    //treeModel_->onResetModel();
+    if (!modifiedItems_.isEmpty())
+    {
+        foreach (VLNV const& modifiedVLNV, modifiedItems_)
+        {
+            hierarchyModel_->onDocumentSaved(modifiedVLNV);
+            treeModel_->onDocumentSaved(modifiedVLNV);
+        }
+
+        modifiedItems_.clear();
+    }
 }
 
 //-----------------------------------------------------------------------------

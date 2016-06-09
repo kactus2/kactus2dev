@@ -256,8 +256,8 @@ bool BusEditor::saveAs()
 			return false;
 		}
 
-		busDefVLNV = VLNV(VLNV::BUSDEFINITION, vlnv.getVendor(), vlnv.getLibrary(), vlnv.getName(), 
-            vlnv.getVersion());
+		busDefVLNV = vlnv;
+        busDefVLNV.setType(VLNV::BUSDEFINITION);
 
 		busDef_->setVlnv(busDefVLNV);
 	}
@@ -272,8 +272,8 @@ bool BusEditor::saveAs()
 
 		absDefGroup_.save();
 
-		absDefVLNV = VLNV(VLNV::ABSTRACTIONDEFINITION, vlnv.getVendor(), vlnv.getLibrary(),	vlnv.getName(), 
-            vlnv.getVersion());
+		absDefVLNV = vlnv;
+        absDefVLNV.setType(VLNV::ABSTRACTIONDEFINITION);
 
 		absDef_->setVlnv(absDefVLNV);
 

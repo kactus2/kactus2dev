@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeModel::LibraryTreeModel()
 //-----------------------------------------------------------------------------
-LibraryTreeModel::LibraryTreeModel(LibraryInterface* handler, LibraryData* sourceModel, QObject* parent) :
+LibraryTreeModel::LibraryTreeModel(LibraryInterface* handler, LibraryData* sourceModel, QObject* parent):
 QAbstractItemModel(parent),
     dataSource_(sourceModel),
     rootItem_(),
@@ -55,10 +55,8 @@ QVariant LibraryTreeModel::headerData(int section, Qt::Orientation orientation, 
     {
 		return tr("Library items");
 	}
-	else 
-    {
-		return QVariant();
-    }
+		
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------
@@ -381,10 +379,7 @@ void LibraryTreeModel::onExportItem(QModelIndex const& index)
 
 	LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
 
-	// ask the item for all the VLNVs it represents
-	QVector<VLNV> vlnvList = item->getVLNVs();
-
-	emit exportItems(vlnvList.toList());
+	emit exportItems(item->getVLNVs().toList());
 }
 
 //-----------------------------------------------------------------------------
@@ -400,11 +395,8 @@ void LibraryTreeModel::onDeleteItem(QModelIndex const& index)
 	LibraryItem* child = static_cast<LibraryItem*>(index.internalPointer());
 	LibraryItem* toRemove = child->findHighestUnique();
 
-	// ask the item for all the VLNVs it represents
-	QVector<VLNV> vlnvList = toRemove->getVLNVs();
-
 	// inform the library handler that these VLNVs should be removed
-	emit removeVLNV(vlnvList.toList());
+	emit removeVLNV(toRemove->getVLNVs().toList());
 }
 
 //-----------------------------------------------------------------------------

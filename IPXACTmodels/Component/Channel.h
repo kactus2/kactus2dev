@@ -55,13 +55,13 @@ public:
 
 	/*! Get the references to bus interfaces that belong to this channel.
 	 *
-	 *      @return Reference to QStringList containing the interface references.
+	 *      @return The interface name references.
 	*/
 	QStringList getInterfaces() const;
 
 	/*! Set the interfaces that belong to this channel.
 	 *
-	 *      @param [in] interfaceNames QStringList containing the references to interfaces.
+	 *      @param [in] interfaceNames The name references to interfaces.
 	*/
 	void setInterfaces(QStringList const& interfaceNames);
 

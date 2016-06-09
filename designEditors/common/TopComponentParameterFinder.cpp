@@ -160,7 +160,7 @@ void TopComponentParameterFinder::setActiveView(QString const& view)
 QList<QSharedPointer<Parameter> > TopComponentParameterFinder::activeViewParameters() const
 {
     QList<QSharedPointer<Parameter> > viewParameters;
-
+    
     foreach (QSharedPointer<View> view, *component_->getViews())
     {
         if (view->name() == activeView_)
@@ -172,10 +172,8 @@ QList<QSharedPointer<Parameter> > TopComponentParameterFinder::activeViewParamet
                 {
                     if (instantiation->name() == view->getComponentInstantiationRef())
                     {
-                        foreach (QSharedPointer<Parameter> parameter, *instantiation->getParameters())
-                        {
-                            viewParameters.append(parameter);
-                        }
+                        viewParameters.append(*instantiation->getParameters());
+
                         foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
                         {
                             viewParameters.append(parameter);

@@ -30,9 +30,9 @@
 ParameterValidator2014::ParameterValidator2014(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices):
 expressionParser_(expressionParser),
-availableChoices_(availableChoices)
+    availableChoices_(availableChoices),
+    typeValidator_(QRegularExpression("bit|byte|shortint|int|longint|shortreal|real|string|^$"))
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ ParameterValidator2014::~ParameterValidator2014()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterValidator2014::setChoices()
+// Function: ParameterValidator2014::componentChange()
 //-----------------------------------------------------------------------------
 void ParameterValidator2014::componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices)
 {
@@ -71,16 +71,7 @@ bool ParameterValidator2014::validate(QSharedPointer<const Parameter> parameter)
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidName(QSharedPointer<const Parameter> parameter) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(parameter->name());
-
-    if (parameter->name().isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return !parameter->name().trimmed().isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -88,10 +79,17 @@ bool ParameterValidator2014::hasValidName(QSharedPointer<const Parameter> parame
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidValue(QSharedPointer<const Parameter> parameter) const
 {
-    return !parameter->getValue().isEmpty() &&
-        hasValidValueForType(parameter) &&
-        !valueIsLessThanMinimum(parameter) &&
-        !valueIsGreaterThanMaximum(parameter) &&
+    if (parameter->getValue().isEmpty())
+    {
+        return false;
+    }
+
+    QString value = expressionParser_->parseExpression(parameter->getValue());
+    QString type = parameter->getType();
+
+    return hasValidValueForType(parameter) &&
+        !valueIsLessThanMinimum(parameter, value, type) &&
+        !valueIsGreaterThanMaximum(parameter, value, type) &&
         hasValidValueForChoice(parameter);
 }
 
@@ -100,11 +98,8 @@ bool ParameterValidator2014::hasValidValue(QSharedPointer<const Parameter> param
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidType(QSharedPointer<const Parameter> parameter) const
 {
-    QString type = parameter->getType();
-
-    return type.isEmpty() || type == "bit" || type == "byte" || type == "shortint" ||
-        type == "int" || type == "longint" || type == "shortreal" || type == "real" || 
-        type == "string";
+    int pos = 0;
+    return typeValidator_.validate(parameter->getType(), pos) == QRegularExpressionValidator::Acceptable;  
 }
 
 //-----------------------------------------------------------------------------
@@ -112,11 +107,6 @@ bool ParameterValidator2014::hasValidType(QSharedPointer<const Parameter> parame
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::hasValidValueForType(QString const& value, QString const& type) const
 {
-    if (type.isEmpty())
-    {
-        return expressionParser_->isValidExpression(value) && expressionParser_->parseExpression(value) != "x";
-    }
-
     if (!expressionParser_->isValidExpression(value))
     {
         return false;
@@ -127,23 +117,16 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
         return isArrayValidForType(value, type);
     }
 
-    bool canConvert = false;
     QString solvedValue = expressionParser_->parseExpression(value);
 
+    if (type.isEmpty())
+    {
+        return solvedValue != "x";
+    }
+
+    bool canConvert = false;
     if (type == "bit")
     {
-        /*
-        QRegularExpression bitStructure("^[1-9]?[0-9]*'([bB]|[hH])");
-        if (bitStructure.match(value).hasMatch())
-        {
-            ValueFormatter formatter;
-            solvedValue = formatter.format(solvedValue, 2);
-        }
-
-        QRegularExpression bitExpression("^([01]|[1-9]?[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$");
-        return bitExpression.match(value).hasMatch() || bitExpression.match(solvedValue).hasMatch();
-        */
-
         solvedValue.toInt(&canConvert);
         if (canConvert)
         {
@@ -206,7 +189,7 @@ bool ParameterValidator2014::isArrayValidForType(QString const& arrayExpression,
     {
         foreach (QString innerValue, subValues)
         {
-            innerValue = innerValue.remove(" ");
+            innerValue.remove(" ");
             if (!hasValidValueForType(innerValue, type))
             {
                 return false;
@@ -214,10 +197,8 @@ bool ParameterValidator2014::isArrayValidForType(QString const& arrayExpression,
         }
         return true;
     }
-    else
-    {
-        return false;
-    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -289,29 +270,27 @@ bool ParameterValidator2014::hasValidValueForChoice(QSharedPointer<const Paramet
     {
         return true;
     }
-    else
+
+    QSharedPointer<Choice> referencedChoice = findChoiceByName(parameter->getChoiceRef());
+
+    if (!referencedChoice.isNull() && parameter->getValue().contains('{') &&
+        parameter->getValue().contains('}'))
     {
-        QSharedPointer<Choice> referencedChoice = findChoiceByName(parameter->getChoiceRef());
+        QStringList valueArray = parameter->getValue().split(',');
+        valueArray.first().remove('{');
+        valueArray.last().remove('}');
 
-        if (!referencedChoice.isNull() && parameter->getValue().contains('{') &&
-            parameter->getValue().contains('}'))
+        foreach (QString const& parameterValue, valueArray)
         {
-            QStringList valueArray = parameter->getValue().split(',');
-            valueArray.first().remove('{');
-            valueArray.last().remove('}');
-
-            foreach (QString parameterValue, valueArray)
+            if (!referencedChoice->hasEnumeration(parameterValue))
             {
-                if (!referencedChoice->hasEnumeration(parameterValue))
-                {
-                    return false;
-                }
+                return false;
             }
-            return true;
         }
-
-        return !referencedChoice.isNull() && referencedChoice->hasEnumeration(parameter->getValue());
+        return true;
     }
+
+    return !referencedChoice.isNull() && referencedChoice->hasEnumeration(parameter->getValue());
 }
 
 //-----------------------------------------------------------------------------
@@ -321,7 +300,8 @@ bool ParameterValidator2014::hasValidResolve(QSharedPointer<const Parameter> par
 {
     QString resolve = parameter->getValueResolve();
 
-    return resolve.isEmpty() || resolve == "immediate" || resolve == "user" || resolve == "generated";
+    return resolve.isEmpty() || resolve == QLatin1String("immediate") || resolve == QLatin1String("user") ||
+        resolve == QLatin1String("generated");
 }
 
 //-----------------------------------------------------------------------------
@@ -331,7 +311,7 @@ bool ParameterValidator2014::hasValidValueId(QSharedPointer<const Parameter> par
 {
     QString resolve = parameter->getValueResolve();
 
-    if (resolve == "user" || resolve == "generated")
+    if (resolve == QLatin1String("user") || resolve == QLatin1String("generated"))
     {
         return !parameter->getValueId().isEmpty();
     }
@@ -339,32 +319,15 @@ bool ParameterValidator2014::hasValidValueId(QSharedPointer<const Parameter> par
     return true;
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::valueIsLessThanMinimum()
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::valueIsLessThanMinimum(QSharedPointer<const Parameter> parameter) const
 {
-    QString minimum = parameter->getMinimumValue();
     QString type = parameter->getType();
     QString value = expressionParser_->parseExpression(parameter->getValue());
 
-    if (expressionParser_->isArrayExpression(value) && type != "bit" && type != "string" && !type.isEmpty())
-    {
-        QStringList subValues = splitArrayToList(value);
-
-        foreach (QString innerValue, subValues)
-        {
-            if (shouldCompareValueAndBoundary(minimum, type) && valueOf(innerValue, type) < valueOf(minimum, type))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    return shouldCompareValueAndBoundary(minimum, type) && valueOf(value, type) < valueOf(minimum, type);
+    return valueIsLessThanMinimum(parameter, value, type);
 }
 
 //-----------------------------------------------------------------------------
@@ -372,26 +335,10 @@ bool ParameterValidator2014::valueIsLessThanMinimum(QSharedPointer<const Paramet
 //-----------------------------------------------------------------------------
 bool ParameterValidator2014::valueIsGreaterThanMaximum(QSharedPointer<const Parameter> parameter) const
 {
-    QString maximum = parameter->getMaximumValue();
     QString type = parameter->getType();
     QString value = expressionParser_->parseExpression(parameter->getValue());
 
-    if (expressionParser_->isArrayExpression(value) && type != "bit" && type != "string" && !type.isEmpty())
-    {
-        QStringList subValues = splitArrayToList(value);
-
-        foreach (QString innerValue, subValues)
-        {
-            if (shouldCompareValueAndBoundary(maximum, type) && valueOf(innerValue, type) > valueOf(maximum, type))
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    return shouldCompareValueAndBoundary(maximum, type) && valueOf(value, type) > valueOf(maximum, type);
+    return valueIsGreaterThanMaximum(parameter, value, type);
 }
 
 //-----------------------------------------------------------------------------
@@ -416,7 +363,7 @@ void ParameterValidator2014::findErrorsIn(QVector<QString>& errors, QSharedPoint
 bool ParameterValidator2014::shouldCompareValueAndBoundary(QString const& boundaryValue, QString const& type) const
 {
      return expressionParser_->isValidExpression(boundaryValue) && 
-         (type != "bit" && type != "string" && !type.isEmpty());
+         (!type.isEmpty() && type != QLatin1String("bit") && type != QLatin1String("string"));
 }
 
 //-----------------------------------------------------------------------------
@@ -424,13 +371,13 @@ bool ParameterValidator2014::shouldCompareValueAndBoundary(QString const& bounda
 //-----------------------------------------------------------------------------
 qreal ParameterValidator2014::valueOf(QString const& value, QString const& type) const
 {
-    if (type == "real" || type == "shortreal")
+    if (type == QLatin1String("real") || type == QLatin1String("shortreal"))
     {
-        return expressionParser_->parseExpression(value).toDouble();
+        return value.toDouble();
     }
     else
     {
-        return expressionParser_->parseExpression(value).toLongLong();
+        return value.toLongLong();
     }
 }
 
@@ -468,38 +415,38 @@ void ParameterValidator2014::findErrorsInValue(QVector<QString>& errors, QShared
 {
     if (parameter->getValue().isEmpty())
     {
-        errors.append(QObject::tr("No value specified for %1 %2 within %3").arg(
-            parameter->elementName(), parameter->name(), context));
+        errors.append(QObject::tr("No value specified for %1 %2 within %3").arg(parameter->elementName(),
+            parameter->name(), context));
+        return;
     }
-    else
+
+    QString solvedValue = expressionParser_->parseExpression(parameter->getValue());
+    QString parameterType = parameter->getType();
+
+    if (!hasValidValueForType(solvedValue, parameterType))
     {
-        if (!hasValidValueForType(parameter))
-        {
-            errors.append(QObject::tr("Value '%1' is not valid for type %2 in %3 %4 within %5").arg(
-                parameter->getValue(), parameter->getType(), parameter->elementName(), 
-                parameter->name(), context));
-        }
+        errors.append(QObject::tr("Value '%1' is not valid for type %2 in %3 %4 within %5").arg(
+            parameter->getValue(), parameter->getType(), parameter->elementName(), parameter->name(), context));
+    }
 
-        if (valueIsLessThanMinimum(parameter))
-        {
-            errors.append(QObject::tr("Value '%1' violates minimum value %2 in %3 %4 within %5"
-                ).arg(parameter->getValue(), parameter->getMinimumValue(), 
-                parameter->elementName(), parameter->name(), context));
-        }
+    if (valueIsLessThanMinimum(parameter, solvedValue, parameterType))
+    {
+        errors.append(QObject::tr("Value '%1' violates minimum value %2 in %3 %4 within %5").arg(
+            parameter->getValue(), parameter->getMinimumValue(), parameter->elementName(), parameter->name(),
+            context));
+    }
 
-        if (valueIsGreaterThanMaximum(parameter))
-        {
-            errors.append(QObject::tr("Value '%1' violates maximum value %2 in %3 %4 within %5"
-                ).arg(parameter->getValue(), parameter->getMaximumValue(), 
-                parameter->elementName(), parameter->name(), context));
-        }
+    if (valueIsGreaterThanMaximum(parameter, solvedValue, parameterType))
+    {
+        errors.append(QObject::tr("Value '%1' violates maximum value %2 in %3 %4 within %5").arg(
+            parameter->getValue(), parameter->getMaximumValue(), parameter->elementName(), parameter->name(), 
+            context));
+    }
 
-        if (!hasValidValueForChoice(parameter))
-        {           
-            errors.append(QObject::tr("Value '%1' references unknown enumeration for choice "
-                "%2 in %3 %4 within %5").arg(parameter->getValue(), parameter->getChoiceRef(), 
-                parameter->elementName(), parameter->name(), context));
-        }
+    if (!hasValidValueForChoice(parameter))
+    {           
+        errors.append(QObject::tr("Value '%1' references unknown enumeration for choice %2 in %3 %4 within %5").arg(
+            parameter->getValue(), parameter->getChoiceRef(), parameter->elementName(), parameter->name(), context));
     }
 }
 
@@ -513,8 +460,8 @@ void ParameterValidator2014::findErrorsInMinimumValue(QVector<QString>& errors, 
         && !hasValidValueForFormat(parameter->getValueAttribute("ipxact:minimum")))
     {
         errors.append(QObject::tr("Minimum value %1 is not valid for format %2 in %3 %4 within %5").arg(
-            parameter->getValueAttribute("ipxact:minimum"), parameter->getValueAttribute("ipxact:format"),parameter->elementName(),
-            parameter->name(), context));
+            parameter->getValueAttribute("ipxact:minimum"), parameter->getValueAttribute("ipxact:format"),
+            parameter->elementName(), parameter->name(), context));
     }
 }
 
@@ -528,8 +475,8 @@ void ParameterValidator2014::findErrorsInMaximumValue(QVector<QString>& errors, 
         && !hasValidValueForFormat(parameter->getValueAttribute("ipxact:maximum")))
     {
         errors.append(QObject::tr("Maximum value %1 is not valid for format %2 in %3 %4 within %5").arg(
-            parameter->getValueAttribute("ipxact:maximum"),
-            parameter->getValueAttribute("ipxact:format"),parameter->elementName(), parameter->name(), context));
+            parameter->getValueAttribute("ipxact:maximum"), parameter->getValueAttribute("ipxact:format"),
+            parameter->elementName(), parameter->name(), context));
     }
 }
 
@@ -575,9 +522,60 @@ void ParameterValidator2014::findErrorsInVector(QVector<QString>& errors, QShare
 {
     if (!hasValidVector(parameter))
     {
-        errors.append(QObject::tr("Invalid bit vector values specified for %1 %2 within %3")
-            .arg(parameter->elementName(), parameter->name(), context));
+        errors.append(QObject::tr("Invalid bit vector values specified for %1 %2 within %3").arg(
+            parameter->elementName(), parameter->name(), context));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::valueIsLessThanMinimum()
+//-----------------------------------------------------------------------------
+bool ParameterValidator2014::valueIsLessThanMinimum(QSharedPointer<const Parameter> parameter,
+    QString const& solvedValue, QString const& type) const
+{
+    QString minimum = parameter->getMinimumValue();
+    if (expressionParser_->isArrayExpression(solvedValue) && type != "bit" && type != "string" && !type.isEmpty())
+    {
+        QStringList subValues = splitArrayToList(solvedValue);
+
+        foreach (QString const& innerValue, subValues)
+        {
+            if (shouldCompareValueAndBoundary(minimum, type) && valueOf(innerValue, type) < valueOf(minimum, type))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    return shouldCompareValueAndBoundary(minimum, type) && valueOf(solvedValue, type) < valueOf(minimum, type);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterValidator2014::valueIsGreaterThanMaximum()
+//-----------------------------------------------------------------------------
+bool ParameterValidator2014::valueIsGreaterThanMaximum(QSharedPointer<const Parameter> parameter,
+    QString const& solvedValue, QString const& type) const
+{
+    QString maximum = parameter->getMaximumValue();
+
+    if (expressionParser_->isArrayExpression(solvedValue) && type != "bit" && type != "string" && !type.isEmpty())
+    {
+        QStringList subValues = splitArrayToList(solvedValue);
+
+        foreach (QString const& innerValue, subValues)
+        {
+            if (shouldCompareValueAndBoundary(maximum, type) && valueOf(innerValue, type) > valueOf(maximum, type))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    return shouldCompareValueAndBoundary(maximum, type) && valueOf(solvedValue, type) > valueOf(maximum, type);
 }
 
 //-----------------------------------------------------------------------------
@@ -597,9 +595,9 @@ QStringList ParameterValidator2014::splitArrayToList(QString const& arrayValue) 
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator2014::arrayValuesAreSameSize()
 //-----------------------------------------------------------------------------
-bool ParameterValidator2014::arrayValuesAreSameSize(QStringList const& bitArray, QString type) const
+bool ParameterValidator2014::arrayValuesAreSameSize(QStringList const& bitArray, QString const& type) const
 {
-    if (type == "bit" && bitArray.size() > 1)
+    if (type == QLatin1String("bit") && bitArray.size() > 1)
     {
         ValueFormatter formatter;
         QString formattedFirst = formatter.format(expressionParser_->parseExpression(bitArray.first()), 2);
@@ -630,18 +628,15 @@ bool ParameterValidator2014::validateArrayValues(QString const& arrayLeft, QStri
         return true;
     }
 
-    else
-    {
-        bool arrayLeftIsOk = true;
-        bool arrayRightIsOk = true;
+    bool arrayLeftIsOk = true;
+    bool arrayRightIsOk = true;
 
-        QString leftValue = expressionParser_->parseExpression(arrayLeft);
-        QString rightValue = expressionParser_->parseExpression(arrayRight);
-        leftValue.toInt(&arrayLeftIsOk);
-        rightValue.toInt(&arrayRightIsOk);
+    QString leftValue = expressionParser_->parseExpression(arrayLeft);
+    QString rightValue = expressionParser_->parseExpression(arrayRight);
+    leftValue.toInt(&arrayLeftIsOk);
+    rightValue.toInt(&arrayRightIsOk);
 
-        return arrayLeftIsOk && arrayRightIsOk;
-    }
+    return arrayLeftIsOk && arrayRightIsOk;
 }
 
 //-----------------------------------------------------------------------------

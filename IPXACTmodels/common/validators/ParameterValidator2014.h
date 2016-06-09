@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <QRegularExpressionValidator>
 #include <QString>
 #include <QSharedPointer>
 
@@ -153,6 +154,7 @@ public:
      *      @return True, if the ID is valid, otherwise false.
      */
     bool hasValidValueId(QSharedPointer<const Parameter> parameter) const;
+
     /*!
      *  Checks if the value of the given parameter is less than the specified minimum value.
      *
@@ -328,6 +330,30 @@ private:
 	ParameterValidator2014& operator=(ParameterValidator2014 const& rhs);
 
     /*!
+     *  Checks if the value of the given parameter is less than the specified minimum value.
+     *
+     *      @param [in] parameter       The parameter whose value to compare to minimum.
+     *      @param [in] solvedValue     The resolved parameter value.
+     *      @param [in] type            The parameter type.
+     *
+     *      @return True, if the value is less than minimum, otherwise false.
+     */
+    bool valueIsLessThanMinimum(QSharedPointer<const Parameter> parameter, QString const& solvedValue, 
+        QString const& type) const;
+    
+    /*!
+     *  Checks if the value of the given parameter is greater than the specified maximum value.
+     *
+     *      @param [in] parameter   The parameter whose value to compare to maximum.
+     *      @param [in] solvedValue     The resolved parameter value.
+     *      @param [in] type            The parameter type.
+     *
+     *      @return True, if the value is greater than maximum, otherwise false.
+     */   
+    bool valueIsGreaterThanMaximum(QSharedPointer<const Parameter> parameter, QString const& solvedValue,
+        QString const& type) const;
+
+    /*!
      *  Split the given array to a list.
      *
      *      @param [in] arrayValue  The given array.
@@ -344,7 +370,7 @@ private:
      *
      *      @return True, if the array values are of the same size, otherwise false.
      */
-    bool arrayValuesAreSameSize(QStringList const& bitArray, QString type) const;
+    bool arrayValuesAreSameSize(QStringList const& bitArray, QString const& type) const;
 
     /*!
      *  Finds the choice.
@@ -362,6 +388,8 @@ private:
 
     //! The available choices for a parameter.
     QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices_;
+
+    QRegularExpressionValidator typeValidator_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

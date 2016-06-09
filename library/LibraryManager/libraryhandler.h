@@ -584,8 +584,11 @@ private:
 	//! If true then items are being saved and library is not refreshed
 	bool saveInProgress_;
 
-	//! Contains the IP-Xact items to be added to the library
+	//! Contains the IP-Xact items to be added to the library.
 	QMap<VLNV, QString> itemsToAdd_;
+
+    //! Contains the IP-Xact items that have been saved, but not updated in library views yet.
+    QVector<VLNV> modifiedItems_;
 };
 
 #endif // LIBRARYHANDLER_H

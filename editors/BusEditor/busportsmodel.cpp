@@ -421,8 +421,9 @@ void BusPortsModel::addSignal()
 {
     BusPortsModel::SignalRow port;
     port.abstraction_ = QSharedPointer<PortAbstraction>(new PortAbstraction());
-    port.abstraction_->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction));
+    port.abstraction_->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
     port.wire_ = QSharedPointer<WirePort>(new WirePort());
+
     absDef_->getLogicalPorts()->append(port.abstraction_);
 
     beginInsertRows(QModelIndex(), 0, 0);
@@ -493,37 +494,6 @@ void BusPortsModel::addSignalOptions(QModelIndexList const& indexes)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusPortsModel::removeIndexes()
-//-----------------------------------------------------------------------------
-void BusPortsModel::removeIndexes(QModelIndexList const& indexes) 
-{
-    QList<BusPortsModel::SignalRow> portsToRemove;
-    foreach (QModelIndex index, indexes) 
-    {
-        if (0 <= index.row() && index.row() <= table_.size()) 
-        {
-            BusPortsModel::SignalRow temp = table_.at(index.row());
-            if (!portsToRemove.contains(temp))
-            {
-                portsToRemove.append(temp);
-            }
-        }
-    }
-
-    beginResetModel();
-
-    foreach (BusPortsModel::SignalRow portToRemove, portsToRemove) 
-    {
-        table_.removeAt(table_.indexOf(portToRemove));
-        emit portRemoved(portToRemove.abstraction_->getLogicalName(), portToRemove.mode_);
-    }
-
-    endResetModel();
-
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusPortsModel::onRemoveItem()
 //-----------------------------------------------------------------------------
 void BusPortsModel::onRemoveItem(QModelIndex const& index)
@@ -537,9 +507,24 @@ void BusPortsModel::onRemoveItem(QModelIndex const& index)
 
         beginRemoveRows(QModelIndex(), index.row(), index.row());
         table_.removeAt(table_.indexOf(portToRemove));
+        
+        bool removeAbstraction = true;
+        foreach (BusPortsModel::SignalRow const& row, table_)
+        {
+            if (row.abstraction_ == portToRemove.abstraction_)
+            {
+                removeAbstraction = false;
+            }
+        }
+
+        if (removeAbstraction)
+        {
+            absDef_->getLogicalPorts()->removeOne(portToRemove.abstraction_);
+        }
+
         endRemoveRows();
 
-        emit contentChanged();        
+        emit contentChanged();
         emit portRemoved(removedName, removedMode);      
     }
 }

@@ -132,13 +132,6 @@ public slots:
 	 */
 	void addSignalOptions(const QModelIndexList& indexes);
 
-	/*!
-	 *  Remove the items with given indexes from the model.
-	 *
-	 *      @param [in] indexes     List of QModelIndexes that identify items to be removed.
-	 */
-	void removeIndexes(const QModelIndexList& indexes);
-
     /*!
      *  Remove the item with the given index.
      *
