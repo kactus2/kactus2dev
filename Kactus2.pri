@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/Global.h \
+HEADERS += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h \
+    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -1309,5 +1310,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp
+    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.cpp
 RESOURCES += kactus.qrc

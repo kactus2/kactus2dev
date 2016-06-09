@@ -4297,6 +4297,9 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapAutoConnector.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapHeaderView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6426,6 +6429,9 @@
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapsColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapHeaderView.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClInclude>
   </ItemGroup>

@@ -15,6 +15,8 @@
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -77,7 +79,15 @@ autoConnector_(component, busif, expressionParser, libHandler, this)
     connect(portMapsDelegate_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    PortMapHeaderView* portMapHorizontalHeader = new PortMapHeaderView(Qt::Horizontal, this);
+    portMapHorizontalHeader->setStretchLastSection(true);
+    portMapsView_.setHeader(portMapHorizontalHeader);
     portMapsView_.setItemDelegate(portMapsDelegate_);
+
+    for (int i = 0; i < PortMapsColumns::COLUMN_COUNT; ++i)
+    {
+        portMapsView_.resizeColumnToContents(i);
+    }
 
 	setupLayout();
 

@@ -204,7 +204,7 @@ void BusinterfaceReader::readPortMaps(QDomElement const& portMapsElement,
 
         QSharedPointer<PortMap> portMap (new PortMap());
 
-        if (!portMapElement.hasAttribute("invert"))
+        if (portMapElement.hasAttribute("invert"))
         {
             if (portMapElement.attribute("invert") == QLatin1String("true"))
             {

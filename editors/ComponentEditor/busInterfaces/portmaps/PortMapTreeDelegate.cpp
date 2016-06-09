@@ -23,6 +23,8 @@
 
 #include <QPen>
 #include <QIcon>
+#include <QApplication>
+#include <QMouseEvent>
 
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeDelegate::PortMapTreeDelegate()
@@ -34,7 +36,9 @@ ExpressionDelegate(parameterCompleter, finder, parent),
 physicalPortNames_(portNames),
 logicalPortNames_(),
 component_(component),
-libraryHandler_(libraryHandler)
+libraryHandler_(libraryHandler),
+invertModify_(false),
+invertCheckState_(Qt::Unchecked)
 {
 
 }
@@ -212,7 +216,26 @@ void PortMapTreeDelegate::setModelData(QWidget* editor, QAbstractItemModel* mode
 void PortMapTreeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index)
     const
 {
-    QStyledItemDelegate::paint(painter, option, index);
+    QStyleOptionViewItemV4 viewItemOption(option);
+
+    if (index.parent().isValid() && index.column() == PortMapsColumns::INVERT)
+    {
+        QVariant colourVariant = index.data(Qt::BackgroundRole);
+        QColor backgroundColour = colourVariant.value<QColor>();
+
+        painter->fillRect(option.rect, backgroundColour);
+
+        const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
+
+        QRect newRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
+            QSize(option.decorationSize.width() + 5, option.decorationSize.height()),
+            QRect(option.rect.x() + textMargin, option.rect.y(),
+            option.rect.width() - (2 * textMargin), option.rect.height()));
+
+        viewItemOption.rect = newRect;
+    }
+
+    QStyledItemDelegate::paint(painter, viewItemOption, index);
 
     QPen oldPen = painter->pen();
     QPen newPen(Qt::lightGray);
@@ -221,12 +244,17 @@ void PortMapTreeDelegate::paint(QPainter *painter, const QStyleOptionViewItem &o
 
     painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
 
+    newPen.setWidth(2);
+    painter->setPen(newPen);
+    
     if (!index.parent().isValid())
     {
-        newPen.setWidth(2);
-        painter->setPen(newPen);
-
         painter->drawLine(option.rect.topLeft(), option.rect.topRight());
+    }
+
+    if (index.column() == PortMapsColumns::LOGICAL_PRESENCE || index.column() == PortMapsColumns::INVERT)
+    {
+        painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
     }
 
     painter->setPen(oldPen);
@@ -269,4 +297,95 @@ void PortMapTreeDelegate::updateEditorGeometry(QWidget *editor, const QStyleOpti
             portSelector->setMinimumWidth(optionWidth);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapTreeDelegate::editorEvent()
+//-----------------------------------------------------------------------------
+bool PortMapTreeDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
+    const QModelIndex &index)
+{
+    Q_ASSERT(event);
+    Q_ASSERT(model);
+
+    // Always reset the ad-hoc group modify flag.
+    if (event->type() == QEvent::MouseButtonRelease)
+    {
+        invertModify_ = false;
+    }
+
+    // Make sure that the item is checkable.
+    Qt::ItemFlags flags = model->flags(index);
+
+    if (!(flags & Qt::ItemIsUserCheckable) || !(flags & Qt::ItemIsEnabled))
+    {
+        return false;
+    }
+
+    // Make sure that we have a check state.
+    QVariant value = index.data(Qt::CheckStateRole);
+
+    if (!value.isValid())
+    {
+        return false;
+    }
+
+    Qt::CheckState newState = static_cast<Qt::CheckState>(value.toInt());
+
+    // Handle the mouse button events.
+    if (event->type() == QEvent::MouseButtonPress)
+    {
+        const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
+
+        QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
+            option.decorationSize,
+            QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
+            option.rect.width() - (2 * textMargin),
+            option.rect.height()));
+
+        if (!checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
+        {
+            return false;
+        }
+
+        newState = (static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+        invertModify_ = true;
+        invertCheckState_ = newState;
+    }
+    else if (event->type() == QEvent::MouseMove)
+    {
+        if (!invertModify_ || static_cast<Qt::CheckState>(value.toInt()) == invertCheckState_)
+        {
+            return false;
+        }
+
+        const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
+
+        QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignCenter,
+            option.decorationSize,
+            QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
+            option.rect.width() - (2 * textMargin),
+            option.rect.height()));
+
+        if (!checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
+        {
+            return false;
+        }
+
+        newState = invertCheckState_;
+    }
+    else if (event->type() == QEvent::KeyPress)
+    {
+        if (static_cast<QKeyEvent*>(event)->key() != Qt::Key_Space &&
+            static_cast<QKeyEvent*>(event)->key() != Qt::Key_Select)
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+
+    return model->setData(index, newState, Qt::CheckStateRole);
 }

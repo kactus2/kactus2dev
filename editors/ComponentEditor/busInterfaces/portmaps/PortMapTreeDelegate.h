@@ -133,6 +133,17 @@ protected:
      */
     virtual bool columnAcceptsExpression(int column) const;
 
+    /*!
+     *  The editor events.
+     *
+     *      @param [in] event   The event itself.
+     *      @param [in] model   The used item model.
+     *      @param [in] option  The style options.
+     *      @param [in] index   The current model index.
+     */
+    virtual bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option,
+        const QModelIndex &index);
+
 private:
 
 	//! No copying.
@@ -161,6 +172,12 @@ private:
 
     //! The library handler.
     LibraryInterface* libraryHandler_;
+
+    //! Invert modify for checkbox editor.
+    bool invertModify_;
+
+    //! The new state for invert.
+    Qt::CheckState invertCheckState_;
 };
 
 #endif // PORTMAPTREEDELEGATE_H

@@ -220,6 +220,10 @@ QVariant PortMapTreeModel::headerData(int section, Qt::Orientation orientation, 
                 QString physicalRight = tr("Physical right") + getExpressionSymbol();
                 return physicalRight;
             }
+            else if (section == PortMapsColumns::INVERT)
+            {
+                return tr("Invert");
+            }
             else if (section == PortMapsColumns::TIEOFF)
             {
                 QString tieOff = tr("Tie Off") + getExpressionSymbol();
@@ -289,6 +293,18 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
             return formatter_->formatReferringExpression(valueForIndex(index, abstractPort, portMap).toString());
         }
     }
+    else if (index.parent().isValid() && role == Qt::CheckStateRole && index.column() == PortMapsColumns::INVERT)
+    {
+        if (portMap->getInvert().toBool())
+        {
+            return Qt::Checked;
+        }
+        else
+        {
+            return Qt::Unchecked;
+        }
+    }
+
     else if (role == Qt::EditRole)
     {
         return valueForIndex(index, abstractPort, portMap);
@@ -390,7 +406,8 @@ QVariant PortMapTreeModel::getBackgroundColour(QModelIndex const& index,
             return QColor("lemonChiffon");
         }
     }
-    return QVariant();
+    // return QVariant();
+    return QColor("white");
 }
 
 //-----------------------------------------------------------------------------
@@ -639,6 +656,16 @@ bool PortMapTreeModel::setData(const QModelIndex &index, const QVariant &value, 
 
         return true;
     }
+    else if (index.parent().isValid() && role == Qt::CheckStateRole)
+    {
+        bool inverValue = value == Qt::Checked;
+
+        QSharedPointer<PortMap> portMap = getIndexedPortMap(index.parent(), index.row());
+        portMap->setInvert(inverValue);
+
+        emit dataChanged(index, index);
+        emit contentChanged();
+    }
 
     return false;
 }
@@ -830,7 +857,11 @@ Qt::ItemFlags PortMapTreeModel::flags(QModelIndex const& index) const
 
     Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
 
-    if (index.column() == PortMapsColumns::PHYSICAL_PORT ||
+    if (index.column() == PortMapsColumns::INVERT && index.parent().isValid())
+    {
+        itemFlags |= Qt::ItemIsUserCheckable;
+    }
+    else if (index.column() == PortMapsColumns::PHYSICAL_PORT ||
         (index.parent().isValid() && index.column() != PortMapsColumns::LOGICAL_PRESENCE))
     {
         itemFlags |= Qt::ItemIsEditable;
