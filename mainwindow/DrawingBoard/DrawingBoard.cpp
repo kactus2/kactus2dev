@@ -150,9 +150,25 @@ void DrawingBoard::refreshCurrentDocument()
 
     if (doc->isModified())
     {
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-            tr("The document has been modified. Save changes before refresh?"),
+        QVector<QString> errorList;
+        bool documentIsValid = doc->validate(errorList);
+
+        QString warningText = tr("The document has been modified. Save changes before refresh?");
+
+        if (!documentIsValid)
+        {
+            QString errorText = tr("%1 error(s) located within the document.").arg(QString::number(errorList.size()));
+            warningText.append("\n" + errorText);
+        }
+
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(), warningText,
             QMessageBox::Yes | QMessageBox::No, this);
+        
+        if (!documentIsValid)
+        {
+            QString errorText = "* " + QStringList(errorList.toList()).join("\n* ");
+            msgBox.setDetailedText(errorText);
+        }
 
         if (msgBox.exec() == QMessageBox::Yes)
         {
