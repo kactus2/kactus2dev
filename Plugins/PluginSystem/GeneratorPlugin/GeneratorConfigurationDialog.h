@@ -58,7 +58,7 @@ private slots:
 
 	void onFileSetChanged(QString const& fileSetName);
 
-    void onPathEdited();
+    void onPathEdited(const QString &text);
 
     void onBrowse();
 
@@ -90,6 +90,8 @@ private:
 	QLabel* instantiationWarningLabel_;
 
 	QLabel* fileSetWarningLabel_;
+
+	QLabel* generalWarningLabel_;
 
 	QMap<QString,QSharedPointer<View> > views_;
 };

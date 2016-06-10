@@ -307,6 +307,8 @@ QWidget* PortsDelegate::createSelectorWithVHDLTypes(QWidget* parent) const
     combo->setEditable(true);
     combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
+	combo->addItem("reg");
+
     for (unsigned int i = 0; i < VhdlGeneral::VHDL_TYPE_COUNT; ++i)
     {
         combo->addItem(VhdlGeneral::VHDL_TYPES[i]);

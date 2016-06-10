@@ -32,7 +32,8 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     QWidget *parent) : QDialog(parent), configuration_(configuration),  instantiations_(instantiations),
 	viewSelection_(new QComboBox(this)), addToFileset_(new QGroupBox(tr("Add file to fileset"))),
 	instantiationSelection_(new QComboBox(this)), fileSetSelection_(new QComboBox(this)),
-	pathEditor_(new QLineEdit(this)), instantiationWarningLabel_(new QLabel), fileSetWarningLabel_(new QLabel)
+	pathEditor_(new QLineEdit(this)), instantiationWarningLabel_(new QLabel), fileSetWarningLabel_(new QLabel),
+	generalWarningLabel_(new QLabel)
 {    
     setWindowTitle(tr("Configure file generation"));
 
@@ -98,7 +99,12 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     topLayout->addWidget(addToFileset_);
     topLayout->addLayout(pathSelectionLayout);
     topLayout->addStretch(1);
-    topLayout->addLayout(bottomLayout);
+	topLayout->addLayout(bottomLayout);
+	topLayout->addWidget(generalWarningLabel_);
+
+	// Use red to make it more warny.
+	generalWarningLabel_->setStyleSheet("QLabel { color : red; }");
+	onPathEdited("");
 
 	// Finally, connect the relevant events to their handler functions.
     connect(addToFileset_, SIGNAL(toggled(bool)), 
@@ -113,7 +119,8 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 		this, SLOT(onFileSetChanged(QString const&)), Qt::UniqueConnection);
 	connect(fileSetSelection_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onFileSetChanged(QString const&)), Qt::UniqueConnection);
-    connect(pathEditor_, SIGNAL(editingFinished()), this, SLOT(onPathEdited()), Qt::UniqueConnection);
+    connect(pathEditor_, SIGNAL(textChanged(const QString &)), this,
+		SLOT(onPathEdited(const QString &)), Qt::UniqueConnection);
     connect(browseButton, SIGNAL(clicked(bool)), this, SLOT(onBrowse()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
@@ -152,7 +159,7 @@ void GeneratorConfigurationDialog::accept()
 	// Must have path for a file. 
     if (pathEditor_->text().isEmpty())
 	{
-		fileSetWarningLabel_->setText("Must have a path for file!");
+		generalWarningLabel_->setText("Must have a path for the output file!");
 		return;
 	}
 	
@@ -186,9 +193,23 @@ void GeneratorConfigurationDialog::onFileSetStateChanged(bool on)
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::onPathEdited()
 //-----------------------------------------------------------------------------
-void GeneratorConfigurationDialog::onPathEdited()
+void GeneratorConfigurationDialog::onPathEdited(const QString &text)
 {
+	// At any rate, tell the path to the configuration.
     configuration_->setOutputPath(pathEditor_->text());
+
+	QFile fileCandidate(pathEditor_->text());
+
+	if ( fileCandidate.exists() )
+	{
+		// Warn user if it already exists
+		generalWarningLabel_->setText("<b>THE SELECTED FILE EXISTS AND WILL BE OVERWRITTEN!!!</b>");
+	}
+	else
+	{
+		// Else clear any warning.
+		generalWarningLabel_->setText("");
+	}
 }
 
 //-----------------------------------------------------------------------------
