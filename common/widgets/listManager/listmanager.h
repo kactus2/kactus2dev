@@ -18,65 +18,62 @@
 #include <QObject>
 #include <QStringList>
 
-/*! \brief ListManager is a widget to manage a list of strings.
- *
- * This class can be used as a general widget to manage a string list with a
- * GUI.
- */
-class ListManager : public QGroupBox {
-	
+
+//-----------------------------------------------------------------------------
+//! ListManager is a widget to manage a list of strings.
+//-----------------------------------------------------------------------------
+class ListManager : public QGroupBox 
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor.
+	/*! The constructor.
 	 *
-	 * \param title The title to be set for the QGroupBox
-	 * \param parent Pointer to the owner of this widget.
+	 *      @param [in] title   The title to be set for the QGroupBox
+	 *      @param [in] parent  The owner of this widget.
 	 */
-	ListManager(const QString title = tr("List"), QWidget *parent = 0);
+	ListManager(QString const& title = tr("List"), QWidget *parent = 0);
 
-	//! \brief the destructor
+	//! the destructor
 	virtual ~ListManager();
 
-	/*! \brief Initialize the list manager.
+	/*! Initialize the list manager.
 	 *
-	 * This function must be called after creating the list manager and before
-	 * using it.
+	 * This function must be called after creating the list manager and before using it.
 	 * 
-	 * \param items QStringList that contains the items to add to the widget.
-	 *
-	*/
+	 *      @param [in] items QStringList that contains the items to add to the widget.
+	 */
 	virtual void initialize(const QStringList& items = QStringList());
 
-	/*! \brief Get the string items currently stored in the model.
-	*
-	* \return QStringList that is contained in this widget.
-	*/
-	const QStringList& items() const;
+	/*! Get the string items currently stored in the model.
+	 *
+	 *       @return QStringList that is contained in this widget.
+	 */
+	QStringList items() const;
 
-	/*! \brief Set the items to be stored in this widget.
-	*
-	* \param items QStringList containing the strings to add.
-	*/
+	/*! Set the items to be stored in this widget.
+	 *
+	 *      @param [in] items QStringList containing the strings to add.
+	 */
 	void setItems(const QStringList& items);
 
-	/*! \brief Get the number of items stored in the list.
+	/*! Get the number of items stored in the list.
 	 *
-	 * \return Number of items in the list.
-	*/
+	 *      @return Number of items in the list.
+	 */
 	int size() const;
 
 signals:
-	//! \brief Emitted when contents of the ListManager change.
+	//! Emitted when contents of the ListManager change.
 	void contentChanged();
 
 protected:
 
-	//! \brief The model that contains the list of strings.
+	//! The model that contains the list of strings.
 	ListManagerModel* model_;
 
-	//! \brief The View to display the list of strings.
+	//! The View to display the list of strings.
 	EditableListView* view_;
 
 private:

@@ -39,7 +39,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     busDef_(busDef),
     absDef_(absDef),
     busDefGroup_(this),
-    absDefGroup_(libHandler ,this),
+    absDefGroup_(this),
     expressionParser_(new SystemVerilogExpressionParser()),
     busDefinitionValidator_(new BusDefinitionValidator(expressionParser_)),
     absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
@@ -56,6 +56,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     if (busDef_)
     {
         busDefGroup_.setBusDef(busDef_);
+        absDefGroup_.setBusDef(busDef_);
     } 
     
 	busDefGroup_.setDisabled(!busDef_ || disableBusDef);
@@ -123,6 +124,7 @@ void BusEditor::refresh()
     {
         busDef_ = libHandler_->getModel(busDef_->getVlnv()).dynamicCast<BusDefinition>();
         busDefGroup_.setBusDef(busDef_);
+        absDefGroup_.setBusDef(busDef_);
     } 
 
     // The document is no longer modified.
@@ -172,6 +174,7 @@ void BusEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
     busDef_ = busDef;
 
     busDefGroup_.setBusDef(busDef_);
+    absDefGroup_.setBusDef(busDef_);
     busDefGroup_.setDisabled(false);
 
     VLNV vlnv = busDef_->getVlnv();
@@ -346,7 +349,7 @@ void BusEditor::showEvent(QShowEvent* event)
 // Function: BusEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void BusEditor::setupLayout()
-{
+{    
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);    
@@ -361,6 +364,7 @@ void BusEditor::setupLayout()
     verticalSplitter->addWidget(&absDefGroup_);
     verticalSplitter->setStretchFactor(1, 1);
     verticalSplitter->setContentsMargins(2, 2, 2, 2);
+    verticalSplitter->setHandleWidth(10);
 
     QSplitterHandle* handle = verticalSplitter->handle(1);
     QVBoxLayout* handleLayout = new QVBoxLayout(handle);
@@ -373,8 +377,6 @@ void BusEditor::setupLayout()
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
     handleLayout->addWidget(line);
-
-    verticalSplitter->setHandleWidth(10);
 
     scrollArea->setWidget(verticalSplitter);
 }

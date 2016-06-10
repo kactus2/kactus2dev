@@ -14,6 +14,7 @@
 
 #include "busportsview.h"
 #include "busportsmodel.h"
+#include "busportsdelegate.h"
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
@@ -21,7 +22,7 @@
 #include <QPushButton>
 #include <QSharedPointer>
 
-class LibraryInterface;
+class BusDefinition;
 
 //-----------------------------------------------------------------------------
 //! Editor for the logical ports of an abstraction definition.
@@ -35,10 +36,9 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] handler     The instance that manages the library.
 	 *      @param [in] parent      The owner of the editor.
 	 */
-	AbsDefGroup(LibraryInterface* handler, QWidget *parent);
+	AbsDefGroup(QWidget *parent);
 	
 	//! The destructor.
 	virtual ~AbsDefGroup();
@@ -51,6 +51,12 @@ public:
 	 *      @param [in] absDef  The Abstraction definition to edit.
 	*/
 	void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
+    
+	/*! Set the bus definition referenced by the abstraction definition.
+	 *
+	 *      @param [in] busDefinition  The referenced bus definition.
+	*/
+    void setBusDef(QSharedPointer<BusDefinition> busDefinition);
 
 signals:
 
@@ -83,15 +89,15 @@ private:
 
     //! Sets the editor layout.
 	void setupLayout();
-
+    
 	//! The table view to display the logical signals
 	BusPortsView portView_;
 
 	//! The model that contains the logical signals of Abstraction Definition.
 	BusPortsModel portModel_;
 
-	//! The instance managing the library.
-	LibraryInterface* handler_;
+    //! The item delegate for portView_.
+    BusPortsDelegate portDelegate_;
 
 };
 

@@ -15,6 +15,8 @@
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/PresenceTypes.h>
 
+#include <IPXACTmodels/BusDefinition/BusDefinition.h>
+
 #include <QColor>
 #include <QStringList>
 
@@ -24,6 +26,7 @@
 BusPortsModel::BusPortsModel(QObject *parent): 
 QAbstractTableModel(parent),
 absDef_(),
+busDefinition_(),
 table_() 
 {
 
@@ -256,10 +259,17 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
     else if (role == Qt::ForegroundRole)
     {
         if ((index.column() == LogicalPortColumns::NAME && port.abstraction_->getLogicalName().isEmpty()) ||
-            (index.column() == LogicalPortColumns::SYSTEM_GROUP && port.mode_ != General::SYSTEM) ||
             (index.column() == LogicalPortColumns::MODE && port.mode_ == General::INTERFACE_MODE_COUNT))
         {
             return QColor("red");
+        }
+        else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
+        {
+            if (port.mode_ != General::SYSTEM || !busDefinition_ || 
+                !busDefinition_->getSystemGroupNames().contains(port.wire_->getSystemGroup()))
+            {
+                return QColor("red");
+            }
         }
         else
         {
@@ -386,6 +396,14 @@ void BusPortsModel::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 
     qSort(table_);
     endResetModel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusPortsModel::setBusDef()
+//-----------------------------------------------------------------------------
+void BusPortsModel::setBusDef(QSharedPointer<BusDefinition> busDefinition)
+{
+    busDefinition_ = busDefinition;
 }
 
 //-----------------------------------------------------------------------------

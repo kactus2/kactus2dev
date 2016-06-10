@@ -85,8 +85,7 @@ bool SystemViewEditor::isValid() const
     }
 
     // check the file set references that they are to valid file sets.
-    QStringList fileSetRefs = fileSetRefEditor_->items();
-    foreach (QString ref, fileSetRefs)
+    foreach (QString const& ref, fileSetRefEditor_->items())
     {
         // if the component does not contain the referenced file set.
         if (!component()->hasFileSet(ref))

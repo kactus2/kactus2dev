@@ -26,6 +26,8 @@
 #include <QList>
 #include <QString>
 
+class BusDefinition;
+
 //-----------------------------------------------------------------------------
 //! Data model for the wires within abstraction definition.
 //-----------------------------------------------------------------------------
@@ -109,9 +111,16 @@ public:
 	/*!
 	 *  Set the abstraction definition for the model.
 	 *
-	 *      @param [in] absDef      Pointer to the Abstraction definition.
+	 *      @param [in] absDef      The Abstraction definition to set.
 	 */
 	void setAbsDef(QSharedPointer<AbstractionDefinition> absDef);
+    
+	/*!
+	 *  Set the bus definition for the model.
+	 *
+	 *      @param [in] busDefinition      The bus definition to set.
+	 */
+    void setBusDef(QSharedPointer<BusDefinition> busDefinition);
 
 	/*!
 	 *  Write the ports from the table to the abstraction definition.
@@ -269,6 +278,9 @@ private:
 
 	//! The abstraction definition being edited.
 	QSharedPointer<AbstractionDefinition> absDef_;
+
+    //! The bus definition detailed in the abstraction definition.
+    QSharedPointer<BusDefinition> busDefinition_;
 
 	//! Contains the rows in the table.
 	QList<SignalRow> table_;

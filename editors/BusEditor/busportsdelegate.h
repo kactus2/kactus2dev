@@ -14,6 +14,7 @@
 
 #include <QStyledItemDelegate>
 
+class BusDefinition;
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors for logical port properties in Abstraction Definition.
 //-----------------------------------------------------------------------------
@@ -59,6 +60,12 @@ public:
 	 *
 	*/
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
+        
+	/*! Set the bus definition referenced by the edited abstraction definition.
+	 *
+	 *      @param [in] busDefinition  The referenced bus definition.
+	*/
+    void setBusDef(QSharedPointer<BusDefinition> busDefinition);
 
 private slots:
 
@@ -73,6 +80,9 @@ private:
 
 	//! No assignment
 	BusPortsDelegate& operator=(const BusPortsDelegate& other);
+
+    //! The bus definition referenced by the edited abstraction definition.
+    QSharedPointer<BusDefinition> busDefinition_;
 };
 
 #endif // BUSPORTSDELEGATE_H

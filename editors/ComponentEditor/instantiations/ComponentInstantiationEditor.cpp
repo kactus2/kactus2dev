@@ -195,10 +195,9 @@ void ComponentInstantiationEditor::onConfigurationChange()
 void ComponentInstantiationEditor::onFileSetRefChange()
 {
     componentInstantiation_->getFileSetReferences()->clear();
-    foreach (QString setReference, fileSetRefs_.items())
-    {
-        componentInstantiation_->getFileSetReferences()->append(setReference);
-    }
+
+    componentInstantiation_->getFileSetReferences()->append(fileSetRefs_.items());
+
 
 	emit contentChanged();
 }

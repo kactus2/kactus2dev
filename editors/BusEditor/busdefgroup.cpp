@@ -24,21 +24,24 @@
 //-----------------------------------------------------------------------------
 BusDefGroup::BusDefGroup(QWidget *parent): 
 QGroupBox(tr("General (Bus Definition)"), parent),
-busDef_(),
-directConnection_(tr("Allow direct master-slave connection"), this),
-isBroadcast_(tr("Support broadcast"), this),
-isAddressable_(tr("Addressable bus"), this),
-maxMastersEditor_(this),
-maxSlavesEditor_(this),
-descriptionEditor_(this)
+    busDef_(),
+    directConnection_(tr("Allow direct master-slave connection"), this),
+    isBroadcast_(tr("Support broadcast"), this),
+    isAddressable_(tr("Addressable bus"), this),
+    maxMastersEditor_(this),
+    maxSlavesEditor_(this),
+    systemgroupEditor_(tr("System group names"), this),
+    descriptionEditor_(this)
 {    
     QRegExp numberExpression(QString("[0-9]*"), Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
     QRegExpValidator* numberValidator = new QRegExpValidator(numberExpression, this);
     maxMastersEditor_.setValidator(numberValidator);
     maxSlavesEditor_.setValidator(numberValidator);
-	
+
     maxMastersEditor_.setPlaceholderText(tr("unbound"));
     maxSlavesEditor_.setPlaceholderText(tr("unbound"));
+
+    systemgroupEditor_.initialize();
 
     setupLayout();
 
@@ -49,6 +52,8 @@ descriptionEditor_(this)
         this, SLOT(onDirectConnectionChanged(bool)), Qt::UniqueConnection);
     connect(&isBroadcast_, SIGNAL(toggled(bool)), this, SLOT(onIsBroadcastChanged(bool)), Qt::UniqueConnection);
 	connect(&isAddressable_, SIGNAL(toggled(bool)), this, SLOT(onIsAddressableChanged(bool)), Qt::UniqueConnection);
+
+    connect(&systemgroupEditor_, SIGNAL(contentChanged()), this, SLOT(onSystemNamesChanged()), Qt::UniqueConnection);
 
     connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
@@ -74,6 +79,8 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
 
     maxMastersEditor_.setText(busDef_->getMaxMasters());
 	maxSlavesEditor_.setText(busDef_->getMaxSlaves());
+
+    systemgroupEditor_.setItems(busDef_->getSystemGroupNames());
 
     descriptionEditor_.setPlainText(busDef_->getDescription());
 }
@@ -124,11 +131,23 @@ void BusDefGroup::onSlavesChanged()
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusDefGroup::onSystemNamesChanged()
+//-----------------------------------------------------------------------------
+void BusDefGroup::onSystemNamesChanged()
+{
+    QStringList systemGroupNames = systemgroupEditor_.items();
+    systemGroupNames.removeDuplicates();
+
+    busDef_->setSystemGroupNames(systemGroupNames);
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusDefGroup::onDescriptionChanged()
 //-----------------------------------------------------------------------------
 void BusDefGroup::onDescriptionChanged()
 {
-   busDef_->setDescription(descriptionEditor_.toPlainText());
+    busDef_->setDescription(descriptionEditor_.toPlainText());
 	emit contentChanged();
 }
 
@@ -157,10 +176,12 @@ void BusDefGroup::setupLayout()
     
     QHBoxLayout* topLayout = new QHBoxLayout(this);
     topLayout->addWidget(selectionGroup);
+    topLayout->addWidget(&systemgroupEditor_);
     topLayout->addWidget(descriptionGroup, 1);
 
     maxMastersEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
     maxSlavesEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::MinimumExpanding);
 
-    descriptionEditor_.setMaximumHeight(120);
+    systemgroupEditor_.setMinimumHeight(100);
+    descriptionEditor_.setMinimumHeight(100);
 }

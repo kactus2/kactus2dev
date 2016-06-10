@@ -12,6 +12,8 @@
 #ifndef BUSDEFGROUP_H
 #define BUSDEFGROUP_H
 
+#include <common/widgets/listManager/listmanager.h>
+
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <QGroupBox>
@@ -68,6 +70,9 @@ private slots:
 	//! Handler for changes in max slaves line edit.
 	void onSlavesChanged();
 
+    //! Handler for changes in system group names.
+    void onSystemNamesChanged();
+
     //! Handler for changes in the description.
     void onDescriptionChanged();
 
@@ -98,6 +103,9 @@ private:
 
 	//! Editor to set the maximum number of slaves.
 	QLineEdit maxSlavesEditor_;
+
+    //! Editor for system group names.
+    ListManager systemgroupEditor_;
 
     //! Editor for bus definition description.
     QPlainTextEdit descriptionEditor_;
