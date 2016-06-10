@@ -14,14 +14,14 @@
 
 #include <common/Global.h>
 
-#include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QAction>
 #include <QContextMenuEvent>
 
 //-----------------------------------------------------------------------------
 //! This widget is used to print event information to the user.
 //-----------------------------------------------------------------------------
-class MessageConsole : public QTextEdit
+class MessageConsole : public QPlainTextEdit
 {
 	Q_OBJECT
 
@@ -29,7 +29,7 @@ public:
 
 	/*! The constructor
 	 *
-	 * @param [in] parent     Pointer to the owner of this widget
+	 *      @param [in] parent     The owner of this widget
 	 *
 	*/
 	MessageConsole(QWidget *parent);
@@ -41,27 +41,20 @@ public slots:
 
 	/*! Prints an error message to the text edit.
 	 *
-	 * @param [in] message     The message to print.
-	 *
+	 *      @param [in] message     The message to print.
 	*/
-	void onErrorMessage(const QString& message);
+	void onErrorMessage(QString const& message);
 
 	/*! Prints a notice message to the text edit.
 	 *
-	 * @param [in] message  The message to print.
-	 *
+	 *      @param [in] message  The message to print.
 	*/
-	void onNoticeMessage(const QString& message);
+	void onNoticeMessage(QString const& message);
 
 protected:
 
 	//! Event handler for context menu requests.
 	virtual void contextMenuEvent(QContextMenuEvent* event);
-
-private slots:
-
-	//! Set copy action to be available or not.
-	void onCopyAvailable(bool yes);
 
 private:
 	
@@ -70,8 +63,10 @@ private:
 
 	//! No assignment
 	MessageConsole& operator=(const MessageConsole& other);
-
-	//! Copy the selected text to the clip board.
+    
+    void setTextColor(QColor const& color);
+	
+    //! Copy the selected text to the clip board.
 	QAction copyAction_;
 
 	//! Select all text in the text edit.
@@ -79,9 +74,6 @@ private:
 
 	//! Clear all text from the text edit.
 	QAction clearAction_;
-
-	//! Defines if copy is available or not.
-	bool copyAvailable_;
 };
 
 #endif // MESSAGECONSOLE_H

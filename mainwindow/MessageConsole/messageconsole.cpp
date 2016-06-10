@@ -12,29 +12,26 @@
 #include "messageconsole.h"
 
 #include <QColor>
-#include <QCoreApplication>
-#include <QFile>
-#include <QTextStream>
 #include <QMenu>
 
 //-----------------------------------------------------------------------------
 // Function: MessageConsole::MessageConsole()
 //-----------------------------------------------------------------------------
 MessageConsole::MessageConsole(QWidget *parent):
-QTextEdit(parent),
-copyAction_(tr("Copy"), this),
-selectAllAction_(tr("Select all"), this),
-clearAction_(tr("Clear"), this),
-copyAvailable_(false)
+QPlainTextEdit(parent),
+    copyAction_(tr("Copy"), this),
+    selectAllAction_(tr("Select all"), this),
+    clearAction_(tr("Clear"), this)
 {
 	setReadOnly(true);
+    setUndoRedoEnabled(false);
 
 	copyAction_.setDisabled(true);
 
 	connect(&copyAction_, SIGNAL(triggered()), this, SLOT(copy()), Qt::UniqueConnection);
 	connect(&selectAllAction_, SIGNAL(triggered()), this, SLOT(selectAll()), Qt::UniqueConnection);
 	connect(&clearAction_, SIGNAL(triggered()),	this, SLOT(clear()), Qt::UniqueConnection);
-	connect(this, SIGNAL(copyAvailable(bool)), this, SLOT(onCopyAvailable(bool)), Qt::UniqueConnection);
+	connect(this, SIGNAL(copyAvailable(bool)), &copyAction_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +45,7 @@ MessageConsole::~MessageConsole()
 //-----------------------------------------------------------------------------
 // Function: MessageConsole::onErrorMessage()
 //-----------------------------------------------------------------------------
-void MessageConsole::onErrorMessage( const QString& message )
+void MessageConsole::onErrorMessage(QString const& message)
 {
 	if (message.isEmpty())
     {
@@ -59,18 +56,13 @@ void MessageConsole::onErrorMessage( const QString& message )
 
 	// errors are printed in red color
 	setTextColor(QColor("red"));
-	//insertPlainText(tr("Error: "));
-    insertPlainText(message);
-
-	// add endline and set cursor to the end of the text
-	insertPlainText("\n");
-	//moveCursor(QTextCursor::End);
+    appendPlainText(message);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MessageConsole::onNoticeMessage()
 //-----------------------------------------------------------------------------
-void MessageConsole::onNoticeMessage( const QString& message )
+void MessageConsole::onNoticeMessage(QString const& message)
 {
 	if (message.isEmpty())
     {
@@ -81,31 +73,28 @@ void MessageConsole::onNoticeMessage( const QString& message )
 
 	// notices are printed in blue
 	setTextColor(QColor("blue"));
-	insertPlainText(message);
-
-	// add endline and set cursor to the end of the text
-	insertPlainText("\n");
-	//moveCursor(QTextCursor::End);
+	appendPlainText(message);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MessageConsole::contextMenuEvent()
 //-----------------------------------------------------------------------------
-void MessageConsole::contextMenuEvent( QContextMenuEvent* event )
+void MessageConsole::contextMenuEvent(QContextMenuEvent* event)
 {
-	copyAction_.setEnabled(copyAvailable_);
-
 	QMenu menu;
 	menu.addAction(&copyAction_);
 	menu.addAction(&selectAllAction_);
 	menu.addAction(&clearAction_);
+
 	menu.exec(event->globalPos());
 }
 
 //-----------------------------------------------------------------------------
-// Function: MessageConsole::onCopyAvailable()
+// Function: MessageConsole::setTextColor()
 //-----------------------------------------------------------------------------
-void MessageConsole::onCopyAvailable( bool yes )
+void MessageConsole::setTextColor(QColor const& color)
 {
-	copyAvailable_ = yes;
+    QTextCharFormat format = currentCharFormat();
+    format.setForeground(QBrush(color));
+    setCurrentCharFormat(format);
 }
