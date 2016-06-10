@@ -71,18 +71,21 @@ void PortMapAutoConnector::setAbstractionDefinition(VLNV const& abstractionDefin
 //-----------------------------------------------------------------------------
 void PortMapAutoConnector::onAutoConnect()
 {
-    foreach (QSharedPointer<PortAbstraction> logicalPort, *absDef_->getLogicalPorts())
+    if (absDef_)
     {
-        if (!logicalPortHasReferencingPortMap(logicalPort->name()) &&
-            logicalPort->getPresence(busInterface_->getInterfaceMode()) != PresenceTypes::ILLEGAL)
+        foreach (QSharedPointer<PortAbstraction> logicalPort, *absDef_->getLogicalPorts())
         {
-            QString portName = getMatchingPhysicalPort(logicalPort);
-            if (!portName.isEmpty())
+            if (!logicalPortHasReferencingPortMap(logicalPort->name()) &&
+                logicalPort->getPresence(busInterface_->getInterfaceMode()) != PresenceTypes::ILLEGAL)
             {
-                QSharedPointer<Port> physicalPort = component_->getPort(portName);
-                if (physicalPort)
+                QString portName = getMatchingPhysicalPort(logicalPort);
+                if (!portName.isEmpty())
                 {
-                    connectPorts(logicalPort, physicalPort);
+                    QSharedPointer<Port> physicalPort = component_->getPort(portName);
+                    if (physicalPort)
+                    {
+                        connectPorts(logicalPort, physicalPort);
+                    }
                 }
             }
         }

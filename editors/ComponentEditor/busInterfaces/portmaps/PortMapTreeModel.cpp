@@ -371,8 +371,11 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::UserRole + 1)
     {
-        bool definitionHasPort = absDef_->hasPort(abstractPort->name(), interfaceMode_);
-        return definitionHasPort;
+        if (absDef_)
+        {
+            bool definitionHasPort = absDef_->hasPort(abstractPort->name(), interfaceMode_);
+            return definitionHasPort;
+        }
     }
 
     // Unsupported role.
@@ -879,6 +882,12 @@ void PortMapTreeModel::reset()
 
     portMappings_.clear();
 
+    QSharedPointer<PortAbstraction> unconnectedPort (new PortAbstraction());
+    unconnectedPort->setLogicalName("Unknown");
+
+    PortMapping unconnectedMapping;
+    unconnectedMapping.logicalPort_ = unconnectedPort;
+
     if (absDef_)
     {
         foreach (QSharedPointer<PortAbstraction> logicalPort, *absDef_->getLogicalPorts())
@@ -891,49 +900,43 @@ void PortMapTreeModel::reset()
                 portMappings_.append(newMapping);
             }
         }
+    }
 
-        QSharedPointer<PortAbstraction> unconnectedPort (new PortAbstraction());
-        unconnectedPort->setLogicalName("Unknown");
+    foreach (QSharedPointer<PortMap> currentMap, *containingBusInterface_->getPortMaps())
+    {
+        bool logicalPortFound = false;
 
-        PortMapping unconnectedMapping;
-        unconnectedMapping.logicalPort_ = unconnectedPort;
-
-        foreach (QSharedPointer<PortMap> currentMap, *containingBusInterface_->getPortMaps())
+        for (int mappingIndex = 0; mappingIndex< portMappings_.size(); ++mappingIndex)
         {
-            bool logicalPortFound = false;
-
-            for (int mappingIndex = 0; mappingIndex< portMappings_.size(); ++mappingIndex)
+            if (portMappings_.at(mappingIndex).logicalPort_->name() == currentMap->getLogicalPort()->name_)
             {
-                if (portMappings_.at(mappingIndex).logicalPort_->name() == currentMap->getLogicalPort()->name_)
-                {
-                    portMappings_[mappingIndex].portMaps_.append(currentMap);
-                    logicalPortFound = true;
-                    break;;
-                }
-            }
-
-            if (!logicalPortFound)
-            {
-                if (currentMap->getLogicalPort() && !currentMap->getLogicalPort()->name_.isEmpty())
-                {
-                    QSharedPointer<PortAbstraction> newAbstractionPort (new PortAbstraction());
-                    newAbstractionPort->setLogicalName(currentMap->getLogicalPort()->name_);
-
-                    PortMapping newMapping;
-                    newMapping.logicalPort_ = newAbstractionPort;
-                    newMapping.portMaps_.append(currentMap);
-
-                    portMappings_.append(newMapping);
-                }
-                else
-                {
-                    unconnectedMapping.portMaps_.append(currentMap);
-                }
+                portMappings_[mappingIndex].portMaps_.append(currentMap);
+                logicalPortFound = true;
+                break;;
             }
         }
 
-        portMappings_.append(unconnectedMapping);
+        if (!logicalPortFound)
+        {
+            if (currentMap->getLogicalPort() && !currentMap->getLogicalPort()->name_.isEmpty())
+            {
+                QSharedPointer<PortAbstraction> newAbstractionPort (new PortAbstraction());
+                newAbstractionPort->setLogicalName(currentMap->getLogicalPort()->name_);
+
+                PortMapping newMapping;
+                newMapping.logicalPort_ = newAbstractionPort;
+                newMapping.portMaps_.append(currentMap);
+
+                portMappings_.append(newMapping);
+            }
+            else
+            {
+                unconnectedMapping.portMaps_.append(currentMap);
+            }
+        }
     }
+
+    portMappings_.append(unconnectedMapping);
 
     endResetModel();
 }
@@ -945,21 +948,18 @@ void PortMapTreeModel::setAbsType(VLNV const& vlnv, General::InterfaceMode mode)
 {
     interfaceMode_ = mode;
 
-    if (!vlnv.isValid())
-    {
-        absDef_ = QSharedPointer<AbstractionDefinition>();
-        return;
-    }
+    absDef_ = QSharedPointer<AbstractionDefinition>();
 
-    QSharedPointer<Document> libComb = handler_->getModel(vlnv);
-    if (!libComb)
+    if (vlnv.isValid())
     {
-        return;
-    }
-
-    if (handler_->getDocumentType(vlnv) == VLNV::ABSTRACTIONDEFINITION)
-    {
-        absDef_ = libComb.dynamicCast<AbstractionDefinition>();
+        QSharedPointer<Document> libComb = handler_->getModel(vlnv);
+        if (libComb)
+        {
+            if (handler_->getDocumentType(vlnv) == VLNV::ABSTRACTIONDEFINITION)
+            {
+                absDef_ = libComb.dynamicCast<AbstractionDefinition>();
+            }
+        }
     }
 
     // Add existing mappings.
