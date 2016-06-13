@@ -261,6 +261,24 @@ PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode
         {
             return wire_->getMasterPort()->getPresence();
         }
+        else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && wire_->hasSlavePort())
+        {
+            return wire_->getSlavePort()->getPresence();
+        }
+        else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) &&
+            !wire_->getSystemPorts()->isEmpty())
+        {
+            PresenceTypes::Presence systemPresence = wire_->getSystemPorts()->first()->getPresence();
+            foreach (QSharedPointer<WirePort> systemPort, *wire_->getSystemPorts())
+            {
+                if (systemPort->getPresence() != systemPresence)
+                {
+                    return PresenceTypes::UNKNOWN;
+                }
+            }
+
+            return systemPresence;
+        }
     }
 
     return PresenceTypes::UNKNOWN;
