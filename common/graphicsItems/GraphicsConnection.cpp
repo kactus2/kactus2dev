@@ -1852,3 +1852,11 @@ QPointF GraphicsConnection::findClosestPoint(QList<QPointF> const& sourcePoints,
 
     return closest;
 }
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::changeConnectionComponentReference()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::changeConnectionComponentReference(QString const&, QString const& )
+{
+    return;
+}

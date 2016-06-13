@@ -85,6 +85,8 @@ HWConnection::~HWConnection()
 //-----------------------------------------------------------------------------
 void HWConnection::setName(QString const& name)
 {
+    GraphicsConnection::setName(name);
+
     interconnection_->setName(name);
     route_->setName(name);
     
@@ -378,4 +380,12 @@ void HWConnection::setWidthLabelDefaultFont()
     font.setPointSize(8);
     font.setBold(true);
     widthLabel_->setFont(font);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnection::changeConnectionComponentReference()
+//-----------------------------------------------------------------------------
+void HWConnection::changeConnectionComponentReference(QString const& oldName, QString const& newName)
+{
+    interconnection_->changetInterfaceComponentReferences(oldName, newName);
 }

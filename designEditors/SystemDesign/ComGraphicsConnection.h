@@ -150,6 +150,14 @@ public:
      */
     int type() const { return Type; }
 
+    /*!
+     *  Change the component reference of a contained interface.
+     *
+     *      @param [in] oldName     The old component reference.
+     *      @param [in] newName     The new component reference.
+     */
+    virtual void changeConnectionComponentReference(QString const& oldName, QString const& newName);
+
 private:
 
     //! The connected COM interconnection.

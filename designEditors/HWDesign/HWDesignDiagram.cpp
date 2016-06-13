@@ -2266,8 +2266,8 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
     }
 
     // Create the ad-hoc connection graphics item.
-    AdHocConnectionItem* connection = new AdHocConnectionItem(adHocPort, primaryPortItem, adHocConnection,
-        route, this);
+    AdHocConnectionItem* connection =
+        new AdHocConnectionItem(primaryPortItem, adHocPort, adHocConnection, route, this);
 
     connection->setRoute(adHocConnection->getRoute());
 

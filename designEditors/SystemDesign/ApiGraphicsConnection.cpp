@@ -156,3 +156,11 @@ void ApiGraphicsConnection::setRoute(QList<QPointF> path)
 
     GraphicsConnection::setRoute(path);
 }
+
+//-----------------------------------------------------------------------------
+// Function: ApiGraphicsConnection::changeConnectionComponentReference()
+//-----------------------------------------------------------------------------
+void ApiGraphicsConnection::changeConnectionComponentReference(QString const& oldName, QString const& newName)
+{
+    apiInterconnection_->changetInterfaceComponentReferences(oldName, newName);
+}

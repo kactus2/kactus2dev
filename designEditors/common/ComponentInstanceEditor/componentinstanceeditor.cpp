@@ -45,7 +45,8 @@ propertyValueEditor_(new PropertyValueEditor(this)),
 editProvider_(0),
 instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
 listFinder_(new ListParameterFinder()),
-topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0)))
+topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0))),
+containingDesign_()
 {
     QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
     multiFinder->addFinder(listFinder_);
@@ -107,7 +108,8 @@ ComponentInstanceEditor::~ComponentInstanceEditor()
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::setComponentInstance()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider)
+void ComponentInstanceEditor::setComponentInstance(ComponentItem* component,
+    QSharedPointer<IEditProvider> editProvider, QSharedPointer<Design> design)
 {
 	Q_ASSERT(component);
 
@@ -125,6 +127,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSh
                    this, SLOT(onFileSetRefChanged(QString const&)));
 	}
 
+    containingDesign_ = design;
 	component_ = component;
     instanceFinder_->setComponent(component->componentModel());
 
@@ -280,7 +283,8 @@ void ComponentInstanceEditor::onNameChanged()
     QString newName = nameGroup_->name();
 
 	// create command to the undo/redo stack
-	QSharedPointer<ComponentChangeNameCommand> cmd(new ComponentChangeNameCommand(component_, newName));
+	QSharedPointer<ComponentChangeNameCommand> cmd(
+        new ComponentChangeNameCommand(component_, newName, containingDesign_));
 
 	disconnect(component_, SIGNAL(nameChanged(QString const&, QString const&)),
 		       nameGroup_, SLOT(setName(QString const&)));

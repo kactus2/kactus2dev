@@ -80,6 +80,8 @@ AdHocConnectionItem::~AdHocConnectionItem()
 //-----------------------------------------------------------------------------
 void AdHocConnectionItem::setName(QString const& name)
 {
+    GraphicsConnection::setName(name);
+
     adHocConnection_->setName(name);
     route_->setName(name);
     
@@ -387,4 +389,18 @@ void AdHocConnectionItem::setWidthLabelDefaultFont()
     font.setPointSize(8);
     font.setBold(true);
     widthLabel_->setFont(font);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocConnectionItem::changeConnectionComponentReference()
+//-----------------------------------------------------------------------------
+void AdHocConnectionItem::changeConnectionComponentReference(QString const& oldName, QString const& newName)
+{
+    foreach (QSharedPointer<PortReference> portReference, *adHocConnection_->getInternalPortReferences())
+    {
+        if (portReference->getComponentRef() == oldName)
+        {
+            portReference->setComponentRef(newName);
+        }
+    }
 }

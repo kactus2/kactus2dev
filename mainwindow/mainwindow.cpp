@@ -1446,15 +1446,15 @@ void MainWindow::onComponentSelected(ComponentItem* component)
         designWidget = systemDesignWidget;
     }
 
-	// Update the instance and ad-hoc visibility editors.
-	instanceEditor_->setComponentInstance(component, designWidget->getEditProvider());
+    QSharedPointer<Design> containingDesign = designWidget->getDiagram()->getDesign();
+	
+    // Update the instance and ad-hoc visibility editors.
+	instanceEditor_->setComponentInstance(component, designWidget->getEditProvider(), containingDesign);
 
     HWComponentItem* hwComponent = dynamic_cast<HWComponentItem*>(component);
     if (hwComponent != 0)
     {
-        QSharedPointer<Design> containedDesign = designWidget->getDiagram()->getDesign();
-
-        adHocVisibilityEditor_->setDataSource(hwComponent, containedDesign, designWidget->getEditProvider(),
+        adHocVisibilityEditor_->setDataSource(hwComponent, containingDesign, designWidget->getEditProvider(),
             designWidget->isProtected());
         //addressEditor_->setComponent(component);
     }

@@ -10,35 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include "HWChangeCommands.h"
-
 #include "HWMoveCommands.h"
 #include "HWAddCommands.h"
-
-#include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/Component.h>
-
-#include <IPXACTmodels/Design/ComponentInstance.h>
-#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
-#include <IPXACTmodels/common/ConfigurableElementValue.h>
-
-#include <IPXACTmodels/kactusExtensions/ComInterface.h>
-
-#include <designEditors/common/DesignDiagram.h>
-#include <designEditors/common/DesignWidget.h>
-#include <designEditors/common/Association/AssociationChangeEndpointCommand.h>
-
-#include <common/graphicsItems/ComponentItem.h>
-#include <common/graphicsItems/ConnectionUndoCommands.h>
-#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
-#include <common/graphicsItems/GraphicsColumnLayout.h>
-
-#include <designEditors/common/ConfigurationEditor/activeviewmodel.h>
-
-#include <designEditors/HWDesign/AdHocConnectionItem.h>
-
-#include <designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
-#include <designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h>
-
 #include "HWConnection.h"
 #include "BusPortItem.h"
 #include "AdHocPortItem.h"
@@ -47,15 +20,43 @@
 #include "BusInterfaceItem.h"
 #include "columnview/HWColumn.h"
 
+#include <common/graphicsItems/ComponentItem.h>
+#include <common/graphicsItems/ConnectionUndoCommands.h>
+#include <common/graphicsItems/CommonGraphicsUndoCommands.h>
+#include <common/graphicsItems/GraphicsColumnLayout.h>
+
+#include <designEditors/common/DesignDiagram.h>
+#include <designEditors/common/DesignWidget.h>
+#include <designEditors/common/Association/AssociationChangeEndpointCommand.h>
+#include <designEditors/common/ConfigurationEditor/activeviewmodel.h>
+
+#include <designEditors/HWDesign/AdHocConnectionItem.h>
+#include <designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
+#include <designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h>
+
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+#include <IPXACTmodels/common/ConfigurableElementValue.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/Design/AdHocConnection.h>
+#include <IPXACTmodels/Design/PortReference.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
+
+#include <IPXACTmodels/kactusExtensions/ComInterface.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentChangeNameCommand()
 //-----------------------------------------------------------------------------
-ComponentChangeNameCommand::ComponentChangeNameCommand(ComponentItem* component,
-    QString const& newName,
-    QUndoCommand* parent) : QUndoCommand(parent),
-    component_(component),
-    oldName_(component->name()),
-    newName_(newName)
+ComponentChangeNameCommand::ComponentChangeNameCommand(ComponentItem* component, QString const& newName,
+    QSharedPointer<Design> design, QUndoCommand* parent):
+QUndoCommand(parent),
+component_(component),
+oldName_(component->name()),
+newName_(newName),
+containingDesign_(design)
 {
 }
 
@@ -72,6 +73,12 @@ ComponentChangeNameCommand::~ComponentChangeNameCommand()
 void ComponentChangeNameCommand::undo()
 {
     component_->setName(oldName_);
+
+    HWComponentItem* hwItem = dynamic_cast<HWComponentItem*>(component_);
+    if (hwItem)
+    {
+        changeAdHocTieOffConnectionReferences(newName_, oldName_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -80,6 +87,61 @@ void ComponentChangeNameCommand::undo()
 void ComponentChangeNameCommand::redo()
 {
     component_->setName(newName_);
+
+    HWComponentItem* hwItem = dynamic_cast<HWComponentItem*>(component_);
+    if (hwItem)
+    {
+        changeAdHocTieOffConnectionReferences(oldName_, newName_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWChangeCommands::changeAdHocTieOffConnectionReferences()
+//-----------------------------------------------------------------------------
+void ComponentChangeNameCommand::changeAdHocTieOffConnectionReferences(QString const& oldReference,
+    QString const& newReference)
+{
+    if (containingDesign_)
+    {
+        foreach (QSharedPointer<AdHocConnection> connection, *containingDesign_->getAdHocConnections())
+        {
+            if (!connection->getTiedValue().isEmpty())
+            {
+                foreach (QSharedPointer<PortReference> internalReference, *connection->getInternalPortReferences())
+                {
+                    if (internalReference->getComponentRef().compare(oldReference) == 0)
+                    {
+                        internalReference->setComponentRef(newReference);
+                        changeAdHocConnectionDefaultName(connection, internalReference->getPortRef(), oldReference,
+                            newReference);
+                    }
+                }
+                foreach (QSharedPointer<PortReference> externalReference, *connection->getExternalPortReferences())
+                {
+                    if (externalReference->getComponentRef().compare(oldReference) == 0)
+                    {
+                        externalReference->setComponentRef(newReference);
+                        changeAdHocConnectionDefaultName(connection, externalReference->getPortRef(), oldReference,
+                            newReference);
+                    }
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWChangeCommands::changeAdHocConnectionDefaultName()
+//-----------------------------------------------------------------------------
+void ComponentChangeNameCommand::changeAdHocConnectionDefaultName(QSharedPointer<AdHocConnection> connection,
+    QString const& portReference, QString const& oldReference, QString const& newReference)
+{
+    QString defaultName = oldReference + "_" + portReference + "_to_tiedValue";
+    if (connection->name().compare(defaultName) == 0)
+    {
+        QString newName = newReference + "_" + portReference + "_to_tiedValue";
+        connection->setName(newName);
+    }
 }
 
 //-----------------------------------------------------------------------------

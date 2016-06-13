@@ -41,8 +41,9 @@ class GraphicsConnection;
 class HWComponentItem;
 class HWConnection;
 class HWConnectionEndpoint;
-
 class ComponentInstance;
+class Design;
+class AdHocConnection;
 
 //-----------------------------------------------------------------------------
 //! ComponentChangeNameCommand class.
@@ -53,12 +54,13 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component      The component.
-     *      @param [in] newName        The component's new name.
-     *      @param [in] parent         The parent command.
+     *      @param [in] component   The component.
+     *      @param [in] newName     The component's new name.
+     *      @param [in] design      Design containing the component instance.
+     *      @param [in] parent      The parent command.
      */
-    ComponentChangeNameCommand(ComponentItem* component, QString const& newName,
-		QUndoCommand* parent = 0);
+    ComponentChangeNameCommand(ComponentItem* component, QString const& newName, QSharedPointer<Design> design,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -80,6 +82,25 @@ private:
     ComponentChangeNameCommand(ComponentChangeNameCommand const& rhs);
     ComponentChangeNameCommand& operator=(ComponentChangeNameCommand const& rhs);
 
+    /*!
+     *  Change the component reference of interfaces within an ad hoc connection with a tied value.
+     *
+     *      @param [in] oldReference    The old component reference.
+     *      @param [in] newReference    The new component reference.
+     */
+    void changeAdHocTieOffConnectionReferences(QString const& oldReference, QString const& newReference);
+
+    /*!
+     *  Change the default name of an ad hoc connection.
+     *
+     *      @param [in] connection      The selected ad hoc connection.
+     *      @param [in] portReference   The reference port of the containing interface.
+     *      @param [in] oldReference    Old component reference.
+     *      @param [in] newReference    New component reference.
+     */
+    void changeAdHocConnectionDefaultName(QSharedPointer<AdHocConnection> connection, QString const& portReference,
+        QString const& oldReference, QString const& newReference);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -92,6 +113,9 @@ private:
 
     //! The component's new name.
     QString newName_;
+
+    //! Design containing the componnet instance.
+    QSharedPointer<Design> containingDesign_;
 };
 
 class ComponentChangeDisplayNameCommand : public QUndoCommand

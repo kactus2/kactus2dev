@@ -136,20 +136,32 @@ void ComponentItem::setName(QString const& newName)
 {
     QString oldName = name();
 
-    componentInstance_->setInstanceName(newName);
-
     // Find all connections that are using the default naming and should be simultaneously renamed.
     QList<GraphicsConnection*> renamedConnections;
     foreach (ConnectionEndpoint* endpoint, getEndpoints())
     {
         foreach (GraphicsConnection* conn, endpoint->getConnections())
         {
+            conn->changeConnectionComponentReference(oldName, newName);
+
+            if (conn->hasDefaultName())
+            {
+                renamedConnections.append(conn);
+            }
+        }
+
+        foreach (GraphicsConnection* conn, endpoint->getOffPageConnector()->getConnections())
+        {
+            conn->changeConnectionComponentReference(oldName, newName);
+
             if (conn->hasDefaultName())
             {
                 renamedConnections.append(conn);
             }
         }
     }
+
+    componentInstance_->setInstanceName(newName);
 
     if (displayName().isEmpty())
     {

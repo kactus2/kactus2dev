@@ -32,6 +32,8 @@
 class ComponentItem;
 class ParameterFinder;
 class TopComponentParameterFinder;
+class Design;
+
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of a component instance within a design.
 //-----------------------------------------------------------------------------
@@ -54,9 +56,12 @@ public:
 	/*!
      *  Set the component to be edited.
 	 *
-	 *      @param [in] component Pointer to the component instance being edited.
+	 *      @param [in] component       Pointer to the component instance being edited.
+     *      @param [in] editProvider    Interface for providing editing capabilities (undo & redo).
+     *      @param [in] design          Design containing the component instance.
 	 */
-    void setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider);
+    void setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider,
+        QSharedPointer<Design> design);
 
     /*!
      *  Sets the top component for the instances.
@@ -163,6 +168,9 @@ private:
 
     //! The current top component.
     QSharedPointer<Component> topComponent_;
+
+    //! The design containing the component instance.
+    QSharedPointer<Design> containingDesign_;
 };
 
 #endif // COMPONENTINSTANCEEDITOR_H

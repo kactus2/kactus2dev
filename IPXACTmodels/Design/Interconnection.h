@@ -126,6 +126,14 @@ public:
      */
     bool hasInterfaceReferencingComponent(QString const& instanceName, QString const& busInterfaceName) const;
 
+    /*!
+     *  Change the component reference of contained interfaces.
+     *
+     *      @param [in] oldName     The old component reference.
+     *      @param [in] newName     The new component reference.
+     */
+    void changetInterfaceComponentReferences(QString const& oldComponent, QString const& newComponent);
+
 private:
 
     //-----------------------------------------------------------------------------

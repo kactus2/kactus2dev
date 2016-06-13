@@ -190,8 +190,9 @@ bool PortValidator::portBoundIsValid(QString const& portBound) const
     {
         if (expressionParser_->isValidExpression(portBound))
         {
-            int valueInt = expressionParser_->parseExpression(portBound).toInt();
-            return valueInt >= 0;
+            bool canConvertToInt = true;
+            int valueInt = expressionParser_->parseExpression(portBound).toInt(&canConvertToInt);
+            return canConvertToInt && valueInt >= 0;
         }
     }
 

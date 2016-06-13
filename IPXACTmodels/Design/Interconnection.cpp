@@ -233,3 +233,21 @@ bool Interconnection::hasInterfaceReferencingComponent(QString const& instanceNa
 
     return false;
 }
+
+//-----------------------------------------------------------------------------
+// Function: Interconnection::changetInterfaceComponentReferences()
+//-----------------------------------------------------------------------------
+void Interconnection::changetInterfaceComponentReferences(QString const& oldComponent, QString const& newComponent)
+{
+    if (startInterface_ && startInterface_->getComponentReference() == oldComponent)
+    {
+        startInterface_->setComponentReference(newComponent);
+    }
+    foreach (QSharedPointer<ActiveInterface> currentInterface, *activeInterfaces_)
+    {
+        if (currentInterface->getComponentReference() == oldComponent)
+        {
+            currentInterface->setComponentReference(newComponent);
+        }
+    }
+}
