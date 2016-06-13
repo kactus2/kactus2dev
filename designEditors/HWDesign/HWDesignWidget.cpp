@@ -63,7 +63,6 @@
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <kactusGenerators/vhdlGenerator/vhdlgenerator2.h>
-#include <kactusGenerators/modelsimGenerator/modelsimgenerator.h>
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -932,70 +931,6 @@ QString HWDesignWidget::findEntityName() const
     }
 
     return QString();
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignWidget::onModelsimGenerate()
-//-----------------------------------------------------------------------------
-void HWDesignWidget::onModelsimGenerate()
-{
-	if (isModified() && askSaveFile())
-    {
-		save();
-	}
-
-	QString fileName = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
-	QFileInfo targetInfo(fileName);
-	fileName = targetInfo.absolutePath();
-	fileName += QString("/%1.%2.compile.do").arg(
-		getEditedComponent()->getVlnv().getName()).arg(getOpenViewName());
-
-	// ask user to select a location to save the makefile
-	fileName = QFileDialog::getSaveFileName(this, 
-		tr("Set the file name for the modelsim script."), fileName,
-		tr("Modelsim scripts (*.do);;Shell cripts (*.sh)"));
-
-	// if user clicked cancel
-	if (fileName.isEmpty())
-    {
-		return;
-    }
-
-	// construct the generator
-	ModelsimGenerator generator(getLibraryInterface(), this);
-	connect(&generator, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(&generator, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-
-	// parse the getEditedComponent() and view / sub-designs
-	generator.parseFiles(getEditedComponent(), getOpenViewName());
-
-	// create the script file
-	generator.generateMakefile(fileName);
-
-	// check if the file already exists in the metadata
-	QString basePath = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
-	QString relativePath = General::getRelativePath(basePath, fileName);
-	if (!getEditedComponent()->hasFile(relativePath))
-    {
-		// Ask user if he wants to save the generated modelsim script into object metadata.
-		QMessageBox::StandardButton button = QMessageBox::question(this, 
-			tr("Save generated modelsim script to metadata?"),
-			tr("Would you like to save the generated modelsim script to IP-Xact"
-			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-		if (button == QMessageBox::Yes)
-        {
-			QString xmlPath = getLibraryInterface()->getPath(getEditedComponent()->getVlnv());
-
-			// if the file was successfully added to the library
-			if (generator.addMakefile2IPXact(getEditedComponent(), fileName, xmlPath))
-            {
-				getLibraryInterface()->writeModelToFile(getEditedComponent());
-			}
-		}
-	}
 }
 
 //-----------------------------------------------------------------------------

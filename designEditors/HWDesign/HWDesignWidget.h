@@ -93,9 +93,6 @@ public slots:
 	void onVhdlGenerate();
     QString findEntityName() const;
 
-	//! Called when user clicks the generate modelsim icon.
-	void onModelsimGenerate();
-
 protected:
     
     /*!

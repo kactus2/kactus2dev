@@ -183,7 +183,6 @@ actCheckIntegrity_(0),
 generationGroup_(0),
 pluginActionGroup_(0),
 actGenVHDL_(0),
-actGenModelSim_(0),
 actGenDocumentation_(0),
 actRunImport_(0),
 diagramToolsGroup_(0),
@@ -754,11 +753,6 @@ void MainWindow::setupActions()
 		tr("Generate Top-VHDL"), this);
 	connect(actGenVHDL_, SIGNAL(triggered()), this, SLOT(generateVHDL()), Qt::UniqueConnection);
 
-	// Initialize the action to generate a ModelSim makefile.
-	actGenModelSim_ = new QAction(QIcon(":/icons/common/graphics/modelsim_generator.png"),
-		tr("Generate ModelSim Makefile"), this);
-	connect(actGenModelSim_, SIGNAL(triggered()), this, SLOT(generateModelSim()), Qt::UniqueConnection);
-
 	// initialize the action to generate documentation for the component/design
 	actGenDocumentation_ = new QAction(QIcon(":icons/common/graphics/documentation.png"),
 		tr("Generate Documentation"), this);
@@ -943,14 +937,12 @@ void MainWindow::setupMenus()
     generationGroup_->addAction(actGenDocumentation_);
     generationGroup_->addAction(actRunImport_);
     generationGroup_->addAction(actGenVHDL_);
-    generationGroup_->addAction(actGenModelSim_);
     generationGroup_->setVisible(false);
     generationGroup_->setEnabled(false);
 
 	generationGroup_->widgetForAction(actGenDocumentation_)->installEventFilter(ribbon_);
 	generationGroup_->widgetForAction(actRunImport_)->installEventFilter(ribbon_);
 	generationGroup_->widgetForAction(actGenVHDL_)->installEventFilter(ribbon_);
-	generationGroup_->widgetForAction(actGenModelSim_)->installEventFilter(ribbon_);
 	
     createGeneratorPluginActions();
     
@@ -1598,9 +1590,6 @@ void MainWindow::updateMenuStrip()
 		actGenDocumentation_->setEnabled(unlocked);
 		actGenDocumentation_->setVisible(true);
 		
-		actGenModelSim_->setEnabled(unlocked);
-		actGenModelSim_->setVisible(true);
-		
 		actRunImport_->setEnabled(false);
         actRunImport_->setVisible(false);
 	}
@@ -1612,9 +1601,6 @@ void MainWindow::updateMenuStrip()
 		
 		actGenDocumentation_->setEnabled(unlocked);
 		actGenDocumentation_->setVisible(true);
-		
-		actGenModelSim_->setEnabled(unlocked);
-		actGenModelSim_->setVisible(true);
 
         actRunImport_->setEnabled(unlocked);
         actRunImport_->setVisible(true);
@@ -1623,7 +1609,6 @@ void MainWindow::updateMenuStrip()
     {
 		actGenVHDL_->setVisible(false);
 		actGenDocumentation_->setVisible(false);
-		actGenModelSim_->setVisible(false);
         actRunImport_->setVisible(false);
 	}
 
@@ -1725,29 +1710,6 @@ void MainWindow::generateVHDL()
 			openComponent(compVLNV, true);
 		}
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: generateModelSim()
-//-----------------------------------------------------------------------------
-void MainWindow::generateModelSim()
-{
-	HWDesignWidget* designWidget = dynamic_cast<HWDesignWidget*>(designTabs_->currentWidget());
-	ComponentEditor* compEditor = dynamic_cast<ComponentEditor*>(designTabs_->currentWidget());
-
-	if (designWidget != 0)
-    {
-		designWidget->onModelsimGenerate();
-	}
-	else if (compEditor)
-    {
-		// if user changed the contents of the metadata then refresh the editor
-		if (compEditor->onModelsimGenerate())
-        {
-			compEditor->refresh();
-		}
-	}
-
 }
 
 //-----------------------------------------------------------------------------

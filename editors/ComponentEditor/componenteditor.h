@@ -123,12 +123,6 @@ public slots:
 	*/
 	bool onVhdlGenerate();
 
-	/*! Run modelsim generator for the component.
-	 *
-	 *      @return bool True if the metadata was changed and the editor should be refreshed.
-	*/
-	bool onModelsimGenerate();
-
 	/*! Set the protection state of the document.
 	 *
 	 *      @param [in] locked True for locked state, false for unlocked.

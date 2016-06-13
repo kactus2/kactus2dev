@@ -530,9 +530,6 @@
     <Filter Include="Source Files\kactusGenerators\DocumentGenerator">
       <UniqueIdentifier>{69521121-c455-4608-9dc4-da1c622addad}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\kactusGenerators\modelsimGenerator">
-      <UniqueIdentifier>{4697ea43-7841-4607-b56a-5d057f770e05}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\kactusGenerators">
       <UniqueIdentifier>{92fda97e-e51f-4e8f-94dc-dd7b59575d10}</UniqueIdentifier>
     </Filter>
@@ -541,9 +538,6 @@
     </Filter>
     <Filter Include="Header Files\kactusGenerators\DocumentGenerator">
       <UniqueIdentifier>{9e423b88-6032-4541-9a86-aa8855635370}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\kactusGenerators\modelsimGenerator">
-      <UniqueIdentifier>{40496d77-2846-4a5a-a656-02401bc3b522}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\designEditors\common">
       <UniqueIdentifier>{4dbcb3e0-06d1-48aa-9b91-0766a72b6575}</UniqueIdentifier>
@@ -1981,9 +1975,6 @@
     <ClCompile Include="kactusGenerators\DocumentGenerator\documentgenerator.cpp">
       <Filter>Source Files\kactusGenerators\DocumentGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="kactusGenerators\modelsimGenerator\modelsimgenerator.cpp">
-      <Filter>Source Files\kactusGenerators\modelsimGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlcomponentdeclaration.cpp">
       <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
     </ClCompile>
@@ -2010,9 +2001,6 @@
     </ClCompile>
     <ClCompile Include="kactusGenerators\vhdlGenerator\vhdlsignal.cpp">
       <Filter>Source Files\kactusGenerators\vhdlGenerator</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_modelsimgenerator.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_documentgenerator.cpp">
       <Filter>Generated Files</Filter>
@@ -4821,9 +4809,6 @@
     <CustomBuild Include="kactusGenerators\vhdlGenerator\vhdlsignal.h">
       <Filter>Header Files\kactusGenerators\vhdlGenerator</Filter>
     </CustomBuild>
-    <CustomBuild Include="kactusGenerators\modelsimGenerator\modelsimgenerator.h">
-      <Filter>Header Files\kactusGenerators\modelsimGenerator</Filter>
-    </CustomBuild>
     <CustomBuild Include="kactusGenerators\DocumentGenerator\documentgenerator.h">
       <Filter>Header Files\kactusGenerators\DocumentGenerator</Filter>
     </CustomBuild>
@@ -6605,9 +6590,6 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="common\graphics\mcapi-type.png">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="common\graphics\modelsim_generator.png">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="common\graphics\naming-policy.png">

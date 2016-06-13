@@ -104,8 +104,8 @@ QIcon MakefileGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 bool MakefileGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> libComp,
     QSharedPointer<Document const> libDesConf,
-    QSharedPointer<Document const> libDes ) const {
-
+    QSharedPointer<Document const> libDes ) const
+{
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
     return ( libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM );

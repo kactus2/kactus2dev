@@ -44,7 +44,6 @@
 #include <common/dialogs/comboSelector/comboselector.h>
 
 #include <kactusGenerators/vhdlGenerator/vhdlgenerator2.h>
-#include <kactusGenerators/modelsimGenerator/modelsimgenerator.h>
 
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/ComponentEditor/itemvisualizer.h>
@@ -554,80 +553,6 @@ bool ComponentEditor::onVhdlGenerate()
 		}
 	}
 
-	return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditor::onModelsimGenerate()
-//-----------------------------------------------------------------------------
-bool ComponentEditor::onModelsimGenerate()
-{
-	if (isModified() && askSaveFile())
-    {
-		save();
-	}
-
-	// select a view to generate the modelsim script for
-	QString viewName = ComboSelector::selectView(component_, this, QString(),
-		tr("Select a view to generate the modelsim script for"));
-	if (viewName.isEmpty()) {
-		return false;
-	}
-
-	QString fileName = libHandler_->getPath(component_->getVlnv());
-	QFileInfo targetInfo(fileName);
-	fileName = targetInfo.absolutePath();
-	fileName += QString("/%1.%2.create_makefile").arg(component_->getVlnv().getName()).arg(viewName);
-
-	// ask user to select a location to save the makefile
-	fileName = QFileDialog::getSaveFileName(this, 
-		tr("Set the file name for the modelsim script."), fileName,
-		tr("Modelsim scripts (*.do);;Shell cripts (*.sh)"));
-
-	// if user clicked cancel
-	if (fileName.isEmpty())
-    {
-		return false;
-    }
-
-	// construct the generator
-	ModelsimGenerator generator(libHandler_, this);
-	connect(&generator, SIGNAL(noticeMessage(const QString&)),
-		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
-	connect(&generator, SIGNAL(errorMessage(const QString&)),
-		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-
-	// parse the component and view / sub-designs
-	generator.parseFiles(component_, viewName);
-
-	// create the script file
-	generator.generateMakefile(fileName);
-
-	// check if the file already exists in the metadata
-	QString basePath = libHandler_->getPath(component_->getVlnv());
-	QString relativePath = General::getRelativePath(basePath, fileName);
-	if (!component_->hasFile(relativePath))
-    {
-		// ask user if he wants to save the generated modelsim script into 
-		// object metadata
-		QMessageBox::StandardButton button = QMessageBox::question(this, 
-			tr("Save generated modelsim script to metadata?"),
-			tr("Would you like to save the generated modelsim script to IP-Xact"
-			" metadata?"), QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
-
-		// if the generated file is saved
-		if (button == QMessageBox::Yes)
-        {
-			QString xmlPath = libHandler_->getPath(component_->getVlnv());
-
-			// if the file was successfully added to the library
-			if (generator.addMakefile2IPXact(component_, fileName, xmlPath))
-            {
-				libHandler_->writeModelToFile(component_);
-				return true;
-			}
-		}
-	}
 	return false;
 }
 

@@ -215,9 +215,6 @@ public slots:
     //! Generates the VHDL from the current design.
     void generateVHDL();
 
-    //! Generates the ModelSim makefile from the current design.
-    void generateModelSim();
-
 	//! Generates the documentation for the current component/design.
 	void generateDoc();
 
@@ -858,9 +855,6 @@ private:
 
     //! Action to generate VHDL from a design.
     QAction* actGenVHDL_;
-
-    //! Action to generate a ModelSim makefile from a design.
-    QAction* actGenModelSim_;
 
 	//! Action to generate the documentation for a component.
 	QAction* actGenDocumentation_;
