@@ -12,6 +12,7 @@
 #include "PortMapTreeView.h"
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h>
 
 #include <IPXACTmodels/Component/PortMap.h>
 
@@ -31,7 +32,8 @@ ConfigurableElementsView(parent),
 removeAllMapsAction_(tr("Remove all port maps"), this),
 addMapAction_(tr("Add port map"), this),
 expandAllItemsAction_(tr("Expand all"), this),
-collapseAllItemsAction_(tr("Collapse all"), this)
+collapseAllItemsAction_(tr("Collapse all"), this),
+autoConnectAction_(tr("Auto connect"), this)
 {
     getRemoveAction()->setText("Remove port map");
 
@@ -47,6 +49,8 @@ collapseAllItemsAction_(tr("Collapse all"), this)
     viewport()->setAcceptDrops(true);
     setDropIndicatorShown(true);   
     setDragDropMode(QAbstractItemView::DropOnly);
+
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
 
     setupActions();
 }
@@ -84,6 +88,12 @@ void PortMapTreeView::setupActions()
     collapseAllItemsAction_.setToolTip(tr("Collapse all port maps."));
     collapseAllItemsAction_.setStatusTip(tr("Collapse all port maps."));
     connect(&collapseAllItemsAction_, SIGNAL(triggered()), this, SLOT(onCollapseAll()), Qt::UniqueConnection);
+
+    autoConnectAction_.setToolTip(
+        tr("Automatically create a port map from this logical signal and physical port."));
+    autoConnectAction_.setStatusTip(
+        tr("Automatically create a port map from this logical signal and physical port."));
+    connect(&autoConnectAction_, SIGNAL(triggered()), this, SLOT(onAutoConnect()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -125,6 +135,7 @@ void PortMapTreeView::contextMenuEvent(QContextMenuEvent* event)
         if (!contextMenuIndex.parent().isValid())
         {
             contextMenu.addAction(&removeAllMapsAction_);
+            contextMenu.addAction(&autoConnectAction_);
         }
         else
         {
@@ -280,6 +291,29 @@ void PortMapTreeView::onExpandAll()
 void PortMapTreeView::onCollapseAll()
 {
     collapseAll();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortMapTreeView::onAutoConnect()
+//-----------------------------------------------------------------------------
+void PortMapTreeView::onAutoConnect()
+{
+    QModelIndexList indexList = selectedIndexes();
+
+    QStringList selectedLogicalSignals;
+
+    foreach (QModelIndex index, indexList)
+    {
+        if (!index.parent().isValid())
+        {
+            QModelIndex logicalSibling = index.sibling(index.row(), PortMapsColumns::LOGICAL_PORT);
+            QString logicalName = logicalSibling.data(Qt::DisplayRole).toString();
+
+            selectedLogicalSignals.append(logicalName);
+        }
+    }
+
+    emit autoConnecteLogicalSignals(selectedLogicalSignals);
 }
 
 //-----------------------------------------------------------------------------

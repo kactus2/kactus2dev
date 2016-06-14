@@ -82,6 +82,13 @@ signals:
      */
     void removeAllChildItemsFromIndex(QModelIndex const& position);
 
+    /*!
+     *  Automatically create port maps for the selected logical signals.
+     *
+     *      @param [in] logicalSignals  The selected logical signals.
+     */
+    void autoConnecteLogicalSignals(QStringList const& logicalSignals);
+
 private slots:
 
     /*!
@@ -109,6 +116,11 @@ private slots:
      */
     void onCollapseAll();
 
+    /*!
+     *  Handler for automatically creating port maps for selected logical signals.
+     */
+    void onAutoConnect();
+
 private:
    
     // Disable copying.
@@ -135,6 +147,9 @@ private:
 
     //! The action for collapsing all items.
     QAction collapseAllItemsAction_;
+
+    //! The action for automatically connecting logical signals to physical ports.
+    QAction autoConnectAction_;
 };
 
 //-----------------------------------------------------------------------------

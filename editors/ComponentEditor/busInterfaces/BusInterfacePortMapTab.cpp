@@ -51,7 +51,7 @@ QWidget(parent),
     portMapsModel_(busif, component, libHandler, expressionParser, formatter, finder, portMapValidator, this),
     portMapsView_(this),
     portMapsDelegate_(0),
-    autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect", this),
+    autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect all", this),
     removeAllMappingsButton_(QIcon(":/icons/common/graphics/cleanup.png"), "Remove all", this),
     autoConnector_(component, busif, expressionParser, libHandler, this)
 {
@@ -261,8 +261,11 @@ void BusInterfacePortMapTab::connectItems()
         &portMapsModel_, SLOT(onRemoveAllPortMappings()), Qt::UniqueConnection);
 
     connect(&autoConnectButton_, SIGNAL(clicked()), &autoConnector_, SLOT(onAutoConnect()), Qt::UniqueConnection);
-    connect(&autoConnector_, SIGNAL(portMapCreated(QSharedPointer<PortMap>)), &portMapsModel_,
-        SLOT(onAddConnectedPortMap(QSharedPointer<PortMap>)), Qt::UniqueConnection);
+
+    connect(&autoConnector_, SIGNAL(portMapCreated(QSharedPointer<PortMap>)),
+        &portMapsModel_, SLOT(onAddConnectedPortMap(QSharedPointer<PortMap>)), Qt::UniqueConnection);
+    connect(&portMapsView_, SIGNAL(autoConnecteLogicalSignals(QStringList const&)),
+        &autoConnector_, SLOT(onAutoConnectLogicalSignals(QStringList const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

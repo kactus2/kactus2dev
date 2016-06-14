@@ -364,11 +364,6 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
     {
         return QSize(100, 20);
     }
-    else if (role == Qt::UserRole)
-    {
-        QString presenceInString = PresenceTypes::presence2Str(abstractPort->getPresence(interfaceMode_));
-        return presenceInString;
-    }
     else if (role == Qt::UserRole + 1)
     {
         if (absDef_)
@@ -589,7 +584,8 @@ bool PortMapTreeModel::setData(const QModelIndex &index, const QVariant &value, 
 
     if (role == Qt::EditRole)
     {
-        if (!index.parent().isValid() && PortMapsColumns::PHYSICAL_PORT && !value.toString().isEmpty())
+        if (!index.parent().isValid() && PortMapsColumns::PHYSICAL_PORT &&
+            !value.toString().isEmpty() && value.toString().compare(index.data(Qt::DisplayRole).toString()) != 0)
         {
             QSharedPointer<PortMap> newPortMap (new PortMap());
 

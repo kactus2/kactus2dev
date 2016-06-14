@@ -14,6 +14,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QMap>
 
 class Component;
 class BusInterface;
@@ -65,6 +66,13 @@ public slots:
      */
     void onAutoConnect();
 
+    /*!
+     *  Handler for selective automatic connection.
+     *
+     *      @param [in] logicalSignals  The selected logical signals to be connected.
+     */
+    void onAutoConnectLogicalSignals(QStringList const& logicalSignals);
+
 signals:
 
     /*!
@@ -80,6 +88,23 @@ private:
     PortMapAutoConnector(PortMapAutoConnector const& rhs);
     PortMapAutoConnector& operator=(PortMapAutoConnector const& rhs);
 
+    //! Structure for possible logical-physical pairs.
+    struct PossiblePortMaps
+    {
+        //! The logical signal.
+        QSharedPointer<PortAbstraction> logicalPort_;
+
+        //! Possible physical ports in the order of their weights.
+        QMap<double, QString> possiblePhysicals_;
+    };
+
+    /*!
+     *  Connect the selected logical signals.
+     *
+     *      @param [in] logicalPorts    List of the selected logical signals.
+     */
+    void connectSelectedLogicalPorts(QList<QSharedPointer<PortAbstraction> > logicalPorts);
+
     /*!
      *  Check if the logical port has been referenced in a port map.
      *
@@ -90,13 +115,26 @@ private:
     bool logicalPortHasReferencingPortMap(QString const& logicalName) const;
 
     /*!
-     *  Get the name of the physical port that is the best match for the selected logical port.
+     *  Get the possible physical ports for the selected logical port.
      *
      *      @param [in] logicalPort     The selected logical port.
      *
+     *      @return The possible physical ports combined with weights.
+     */
+    QMap<double, QString> getWeightedPhysicalPorts(QSharedPointer<PortAbstraction> logicalPort) const;
+
+    /*!
+     *  Get the best matching physical port. If another logical signal has the same port with a better value, it
+     *  is ignored.
+     *
+     *      @param [in] logicalPort         The selected logical port.
+     *      @param [in] logicalIndex        Index of the logical port.
+     *      @param [in] possiblePairings    A list of the possible logical-physical pairings.
+     *
      *      @return Name of the best matching physical port.
      */
-    QString getMatchingPhysicalPort(QSharedPointer<PortAbstraction> logicalPort) const;
+    QString getBestMatchingPhysicalPort(QSharedPointer<PortAbstraction> logicalPort, int logicalIndex,
+        QList<PossiblePortMaps> possiblePairings) const;
 
     /*!
      *  Get a list of possible weighted ports by the direction of the selected logical port.
@@ -135,8 +173,7 @@ private:
      *
      *      @return A list of physical ports weighted by the name of the logical port.
      */
-    QMap<QString, double> reorderPortsToMatchLogicalName(QString logicalName, QMap<QString, double> portList)
-        const;
+    QMap<QString, double> weightPortsByLogicalName(QString logicalName, QMap<QString, double> portList) const;
 
     /*!
      *  Get the matching characters from the selected names.
@@ -200,26 +237,6 @@ private:
     QStringList reorderPortsToWeight(QMap<QString, double> portList) const;
 
     /*!
-     *  Get the name of an unconnected physical port. If the logical port is required to have a port map, a
-     *  connected port can be selected.
-     *
-     *      @param [in] portList        A list of ports.
-     *      @param [in] logicalPort     The selected logical port.
-     *
-     *      @return The name of the selected physical port.
-     */
-    QString getUnconnectedPhysicalPort(QStringList portList, QSharedPointer<PortAbstraction> logicalPort) const;
-
-    /*!
-     *  Check if a physical port has been referenced in a port map.
-     *
-     *      @param [in] physicalPort    The name of the selected physical port.
-     *
-     *      @return True, if the physical port has been referenced in a port map, false otherwise.
-     */
-    bool physicalPortHasBeenConnected(QString const& physicalPort) const;
-
-    /*!
      *  Create a port map from the selected logical port and physical port.
      *
      *      @param [in] portAbstraction     The selected logical port.
@@ -227,11 +244,20 @@ private:
      */
     void connectPorts(QSharedPointer<PortAbstraction> portAbstraction, QSharedPointer<Port> componentPort);
 
+    /*!
+     *  Get the logical port with the given name.
+     *
+     *      @param [in] logicalName     The selected logical port name.
+     *
+     *      @return The selected logical port.
+     */
+    QSharedPointer<PortAbstraction> getLogicalPort(QString const& logicalName) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //----------------------------------------------------------------------------- 
 
-    //! Componennt containing the bus interface.
+    //! Component containing the bus interface.
     QSharedPointer<Component> component_;
 
     //! The containing bus interface.

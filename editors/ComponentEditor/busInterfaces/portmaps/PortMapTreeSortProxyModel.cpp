@@ -66,11 +66,13 @@ bool PortMapTreeSortProxyModel::lessThan(const QModelIndex &left, const QModelIn
 {
     if (indexIsValid(left) && indexIsValid(right) && !left.parent().isValid() && !right.parent().isValid())
     {
-        PresenceTypes::Presence leftPresence =
-            PresenceTypes::str2Presence(left.data(Qt::UserRole).toString(), PresenceTypes::UNKNOWN);
+        QModelIndex leftPresenceIndex = left.sibling(left.row(), PortMapsColumns::LOGICAL_PRESENCE);
+        QModelIndex rightPresenceIndex = right.sibling(right.row(), PortMapsColumns::LOGICAL_PRESENCE);
 
-        PresenceTypes::Presence rightPresence =
-            PresenceTypes::str2Presence(right.data(Qt::UserRole).toString(), PresenceTypes::UNKNOWN);
+        PresenceTypes::Presence leftPresence = PresenceTypes::str2Presence(
+            leftPresenceIndex.data(Qt::DisplayRole).toString(), PresenceTypes::UNKNOWN);
+        PresenceTypes::Presence rightPresence = PresenceTypes::str2Presence(
+            rightPresenceIndex.data(Qt::DisplayRole).toString(), PresenceTypes::UNKNOWN);
 
         if (leftPresence == PresenceTypes::ILLEGAL && rightPresence != PresenceTypes::ILLEGAL)
         {
