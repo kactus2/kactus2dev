@@ -19,6 +19,8 @@
 #include <QGroupBox>
 #include <QLabel>
 
+#include "ViewSelectionWidget.h"
+
 class GeneratorConfiguration;
 class View;
 class ComponentInstantiation;
@@ -33,30 +35,17 @@ public:
 
 	//! The constructor.
 	GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration,
-		QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > instantiations, QWidget *parent);
+		QSharedPointer<QList<QSharedPointer<View> > > views, 
+		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, QWidget *parent);
 
 	//! The destructor.
 	~GeneratorConfigurationDialog();
-
-	void setViews(QSharedPointer<QList<QSharedPointer<View> > > const views);
-
-	void setInstantiationNames(QString const& names);
 
 public slots:
 
     virtual void accept();
 
 private slots:
-
-    void onFileSetStateChanged(bool on);
-
-	void onViewChanged(QString const& selectedViewName);
-
-	void onInstantiationInserted(QString const& selectedInstantiationName);
-
-	void onInstantiationChanged(QString const& selectedInstantiationName);
-
-	void onFileSetChanged(QString const& fileSetName);
 
     void onPathEdited(const QString &text);
 
@@ -75,25 +64,11 @@ private:
 
 	QSharedPointer<GeneratorConfiguration> configuration_;
 
-	QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > instantiations_;
+	QLineEdit* pathEditor_;
 
-	QComboBox* viewSelection_;
-
-	QGroupBox* addToFileset_;
-
-	QComboBox* instantiationSelection_;
-
-	QComboBox* fileSetSelection_;
-
-    QLineEdit* pathEditor_;
-
-	QLabel* instantiationWarningLabel_;
-
-	QLabel* fileSetWarningLabel_;
+	ViewSelectionWidget* viewSelection_;
 
 	QLabel* generalWarningLabel_;
-
-	QMap<QString,QSharedPointer<View> > views_;
 };
 
 #endif //GENERATORCONFIGURATIONDIALOG_H

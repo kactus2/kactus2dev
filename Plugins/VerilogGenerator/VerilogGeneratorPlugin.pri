@@ -32,7 +32,8 @@ HEADERS += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../designEditors/common/TopComponentParameterFinder.h \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.h \
-    ./TextBodyWriter/TextBodyWriter.h
+    ./TextBodyWriter/TextBodyWriter.h \
+    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h
 SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
     ./VerilogGeneratorPlugin.cpp \
@@ -54,5 +55,6 @@ SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../designEditors/common/TopComponentParameterFinder.cpp \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
-    ./TextBodyWriter/TextBodyWriter.cpp
+    ./TextBodyWriter/TextBodyWriter.cpp \
+    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp
 RESOURCES += VerilogGenerator.qrc

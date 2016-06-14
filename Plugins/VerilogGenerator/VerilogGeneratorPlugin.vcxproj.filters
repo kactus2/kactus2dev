@@ -214,6 +214,15 @@
     <ClCompile Include="TextBodyWriter\TextBodyWriter.cpp">
       <Filter>Source Files\TextBodyWrite</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ViewSelectionWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ViewSelectionWidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="veriloggeneratorplugin_global.h">
@@ -298,6 +307,9 @@
     </CustomBuild>
     <CustomBuild Include="VerilogGenerator\VerilogGenerator.h">
       <Filter>Header Files\VerilogGenerator</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

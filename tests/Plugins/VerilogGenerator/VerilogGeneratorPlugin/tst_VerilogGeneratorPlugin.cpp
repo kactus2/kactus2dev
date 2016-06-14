@@ -54,7 +54,7 @@ private slots:
 protected:
 
 	virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
-		QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const;
+		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const;
 
     virtual QSharedPointer<GeneratorConfiguration> getConfiguration();
 
@@ -278,7 +278,7 @@ void tst_VerilogGenerator::testRefenecedDesignConfigurationViewIsPossible()
 // Function: tst_VerilogGenerator::couldConfigure()
 //-----------------------------------------------------------------------------
 bool tst_VerilogGenerator::couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
-	QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const
+	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const
 {
     if (!possibleViews->isEmpty())
     {

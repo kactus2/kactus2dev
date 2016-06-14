@@ -59,17 +59,17 @@ void MakefileParser::parse(QSharedPointer<Component> topComponent)
 		foreach (QSharedPointer<StackPart> stackPart, makeData->parts)
 		{
 			// Also parse the associated instance headers, if any exist.
-			if ( stackPart->instanceHeaders )
+			if (stackPart->instanceHeaders)
 			{
 				parseFileSet(stackPart->instanceHeaders, makeData, stackPart, componentPath);
 			}
 
 			// Parse the files of the given software view.
-			parseMakeObjects(makeData, stackPart );
+			parseMakeObjects(makeData, stackPart);
 		}
 
 		// Now we may check the compiler and flags of individual files...
-		foreach ( QSharedPointer<MakeObjectData> mod, makeData->swObjects )
+		foreach (QSharedPointer<MakeObjectData> mod, makeData->swObjects)
 		{
 			mod->compiler = getFileCompiler( mod, makeData->hardPart->buildCmd );
 			mod->flags = getFileFlags(makeData->parts.first()->component, mod, makeData );

@@ -142,7 +142,7 @@ protected:
      *      @return True, if configuration was successful, otherwise false.
      */
     virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
-		QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const;
+		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const;
 
     /*!
      *  Gets the configuration for the generation.
