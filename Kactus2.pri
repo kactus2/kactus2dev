@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h \
-    ./common/Global.h \
+HEADERS += ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -293,10 +292,12 @@ HEADERS += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h 
     ./editors/ComponentEditor/busInterfaces/ApiCreateDialog.h \
     ./editors/ComponentEditor/busInterfaces/bridgesdelegate.h \
     ./editors/ComponentEditor/busInterfaces/bridgeseditor.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingColumns.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.h \
@@ -697,9 +698,7 @@ HEADERS += ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h 
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -921,9 +920,10 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.cpp \
@@ -1309,7 +1309,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./kactusGenerators/modelsimGenerator/modelsimgenerator.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc
