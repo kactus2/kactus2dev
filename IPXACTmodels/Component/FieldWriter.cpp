@@ -236,7 +236,7 @@ void FieldWriter::writeReadAction(QXmlStreamWriter& writer, QSharedPointer<Field
 {
     if (field->getReadAction() != General::READ_ACTION_COUNT)
     {
-        QString readActionQstring = General::readAction2Str(field->getReadAction());
+        QString readAction = General::readAction2Str(field->getReadAction());
 
         writer.writeStartElement("ipxact:readAction");
 
@@ -244,7 +244,7 @@ void FieldWriter::writeReadAction(QXmlStreamWriter& writer, QSharedPointer<Field
         {
             writer.writeAttribute("modify", field->getReadActionModify());
         }
-        writer.writeCharacters(readActionQstring);
+        writer.writeCharacters(readAction);
 
         writer.writeEndElement(); // ipxact:readAction
     }

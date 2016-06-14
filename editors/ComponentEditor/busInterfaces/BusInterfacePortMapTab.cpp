@@ -23,6 +23,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
+#include <QSplitter>
 #include <QSharedPointer>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -38,21 +39,21 @@ BusInterfacePortMapTab::BusInterfacePortMapTab(LibraryInterface* libHandler, QSh
     QSharedPointer<ExpressionFormatter> formatter, QSharedPointer<ParameterFinder> finder,
     QSharedPointer<PortMapValidator> portMapValidator, QWidget* parent):
 QWidget(parent),
-busif_(busif),
-component_(component),
-libHandler_(libHandler),
-physicalPortView_(this),
-physicalPortModel_(component_, expressionParser, this),
-physicalPortSorter_(component_, this),
-nameFilterEditor_(new QLineEdit(this)),
-directionFilter_(this),
-hideConnectedPortsBox_(this),
-portMapsModel_(busif, component, libHandler, expressionParser, formatter, finder, portMapValidator, this),
-portMapsView_(this),
-portMapsDelegate_(),
-autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect", this),
-removeAllMappingsButton_(QIcon(":/icons/common/graphics/cleanup.png"), "Remove all", this),
-autoConnector_(component, busif, expressionParser, libHandler, this)
+    busif_(busif),
+    component_(component),
+    libHandler_(libHandler),
+    physicalPortView_(this),
+    physicalPortModel_(component_, expressionParser, this),
+    physicalPortSorter_(component_, this),
+    nameFilterEditor_(new QLineEdit(this)),
+    directionFilter_(this),
+    hideConnectedPortsBox_(this),
+    portMapsModel_(busif, component, libHandler, expressionParser, formatter, finder, portMapValidator, this),
+    portMapsView_(this),
+    portMapsDelegate_(0),
+    autoConnectButton_(QIcon(":/icons/common/graphics/connect.png"), "Auto connect", this),
+    removeAllMappingsButton_(QIcon(":/icons/common/graphics/cleanup.png"), "Remove all", this),
+    autoConnector_(component, busif, expressionParser, libHandler, this)
 {
     hideConnectedPortsBox_.setCheckState(Qt::Checked);
 
@@ -117,7 +118,7 @@ void BusInterfacePortMapTab::addItemsToDirectionFilter()
     directionFilter_.addItem("");
     directionFilter_.addItems(directions);
 
-    for (int directionIndex = 0; directionIndex < directions.size(); ++directionIndex)
+    for (int directionIndex = 0; directionIndex < directions.size(); directionIndex++)
     {
         QString portDirection = directions.at(directionIndex);
         QString iconPath = ":icons/common/graphics/cross.png";
@@ -152,7 +153,6 @@ void BusInterfacePortMapTab::refresh()
 
     physicalPortSorter_.onConnectionsReset();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfacePortMapTab::setAbsType()
@@ -206,7 +206,8 @@ void BusInterfacePortMapTab::setupLayout()
     QGroupBox* physicalGroupBox = new QGroupBox(tr("Physical ports"), this);
     physicalGroupBox->setLayout(physicalPortLayout);
 
-    QHBoxLayout* topLayout = new QHBoxLayout();
+    QWidget* topWidget = new QWidget(this);
+    QHBoxLayout* topLayout = new QHBoxLayout(topWidget);
     topLayout->addWidget(physicalGroupBox, 1);
     topLayout->addLayout(filterAndFunctionLayout);
 
@@ -217,8 +218,13 @@ void BusInterfacePortMapTab::setupLayout()
     portMapsGroupBox->setLayout(portMapsLayout);
 
     QVBoxLayout* masterLayout = new QVBoxLayout(this);
-    masterLayout->addLayout(topLayout);
-    masterLayout->addWidget(portMapsGroupBox);
+
+    QSplitter* splitter = new QSplitter(Qt::Vertical, this);    
+    splitter->addWidget(topWidget);
+    splitter->addWidget(portMapsGroupBox);
+    splitter->setStretchFactor(1, 1);
+
+    masterLayout->addWidget(splitter);
 }
 
 //-----------------------------------------------------------------------------
@@ -314,14 +320,6 @@ void BusInterfacePortMapTab::onDirectionFilterChanged(QString const& newDirectio
         physicalPortSorter_.setFilterInDirection(false);
         physicalPortSorter_.setFilterOutDirection(false);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfacePortMapTab::isValid()
-//-----------------------------------------------------------------------------
-bool BusInterfacePortMapTab::isValid() const
-{
-    return true;
 }
 
 //-----------------------------------------------------------------------------

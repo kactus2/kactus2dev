@@ -89,13 +89,6 @@ public:
      */
     virtual void setPhysicalPorts(QStringList const& ports);
 
-    /*!
-     *  Check if the editor is in a valid state.
-     *
-     *      @return True, if the editor is valid, otherwise false.
-     */
-    bool isValid() const;
-
 signals:
 
     //! Emitted when an error occurs.

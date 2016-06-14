@@ -28,18 +28,24 @@
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
 //-----------------------------------------------------------------------------
 GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration, 
-    QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > instantiations, 
-    QWidget *parent) : QDialog(parent), configuration_(configuration),  instantiations_(instantiations),
-	viewSelection_(new QComboBox(this)), addToFileset_(new QGroupBox(tr("Add file to fileset"))),
-	instantiationSelection_(new QComboBox(this)), fileSetSelection_(new QComboBox(this)),
-	pathEditor_(new QLineEdit(this)), instantiationWarningLabel_(new QLabel), fileSetWarningLabel_(new QLabel),
-	generalWarningLabel_(new QLabel)
+    QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > instantiations, QWidget *parent) : 
+QDialog(parent), 
+    configuration_(configuration),
+    instantiations_(instantiations),
+    viewSelection_(new QComboBox(this)),
+    addToFileset_(new QGroupBox(tr("Add file to fileset"))),
+    instantiationSelection_(new QComboBox(this)),
+    fileSetSelection_(new QComboBox(this)),
+    pathEditor_(new QLineEdit(this)),
+    instantiationWarningLabel_(new QLabel),
+    fileSetWarningLabel_(new QLabel),
+    generalWarningLabel_(new QLabel)
 {    
     setWindowTitle(tr("Configure file generation"));
 
 	// Make view selection its own layout.
 	QFormLayout* viewSelectionLayout = new QFormLayout();
-	viewSelectionLayout->addRow(tr("Select view"), viewSelection_);
+	viewSelectionLayout->addRow(tr("Select view:"), viewSelection_);
 
 	// Checkable group box used to include generated file in the IP-XACT component.
 	addToFileset_->setCheckable(true);
@@ -50,16 +56,16 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 	addToFileset_->setLayout(filesetLayout);
 
 	// Widgets for choosing configuration instantiation and the file set.
-	filesetLayout->addRow(tr("Select component instantiation"), instantiationSelection_);
-	filesetLayout->addRow(tr("Select file set"), fileSetSelection_);
+	filesetLayout->addRow(tr("Select component instantiation:"), instantiationSelection_);
+	filesetLayout->addRow(tr("Select file set:"), fileSetSelection_);
 	// Both are editable, in case a custom entry is desired.
 	instantiationSelection_->setEditable(true);
 	fileSetSelection_->setEditable(true);
 
 	// The instantiation selection shall be populated by all available instantiations.
-	foreach ( QSharedPointer<ComponentInstantiation> cimp, *instantiations_ )
+	foreach (QSharedPointer<ComponentInstantiation> cimp, *instantiations_)
 	{
-		instantiationSelection_->addItem( cimp->name() );
+		instantiationSelection_->addItem(cimp->name());
 	}
 
 	// Evaluate the instantiations.
@@ -68,7 +74,7 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 
 	// Layout for path selection widgets.
     QHBoxLayout* pathSelectionLayout = new QHBoxLayout();
-    pathSelectionLayout->addWidget(new QLabel(tr("Select output file")));
+    pathSelectionLayout->addWidget(new QLabel(tr("Select output file:")));
     pathSelectionLayout->addWidget(pathEditor_);
 
 	// Get the default output path from the generation configuration.
@@ -142,10 +148,10 @@ void GeneratorConfigurationDialog::setViews(QSharedPointer<QList<QSharedPointer<
     viewSelection_->clear();
 
 	// Set names as the of views as items, but also keep track on which name corresponds which view.
-	foreach ( QSharedPointer<View> currentView, *views )
+	foreach (QSharedPointer<View> currentView, *views)
 	{
 		views_[currentView->name()] = currentView;
-		viewSelection_->addItem( currentView->name() );
+		viewSelection_->addItem(currentView->name());
 	}
 
 	viewSelection_->setCurrentIndex(0);
@@ -159,22 +165,22 @@ void GeneratorConfigurationDialog::accept()
 	// Must have path for a file. 
     if (pathEditor_->text().isEmpty())
 	{
-		generalWarningLabel_->setText("Must have a path for the output file!");
+		fileSetWarningLabel_->setText("File path must be defined!");
 		return;
 	}
 	
 	// If file is saved to file set, must have a file set and instantiation.
-	if ( configuration_->getSaveToFileset() )
+	if (configuration_->getSaveToFileset())
 	{
-		if ( instantiationSelection_->currentText().isEmpty() )
+		if (instantiationSelection_->currentText().isEmpty())
 		{
-			instantiationWarningLabel_->setText("Must have a component instantiation!");
+			instantiationWarningLabel_->setText("Please define a component instantiation.");
 			return;
 		}
 
-		if ( fileSetSelection_->currentText().isEmpty() )
+		if (fileSetSelection_->currentText().isEmpty())
 		{
-			fileSetWarningLabel_->setText("Must have a file set!");
+			fileSetWarningLabel_->setText("Please define a file set.");
 			return;
 		}
     }
@@ -200,10 +206,10 @@ void GeneratorConfigurationDialog::onPathEdited(const QString &text)
 
 	QFile fileCandidate(pathEditor_->text());
 
-	if ( fileCandidate.exists() )
+	if (fileCandidate.exists())
 	{
 		// Warn user if it already exists
-		generalWarningLabel_->setText("<b>THE SELECTED FILE EXISTS AND WILL BE OVERWRITTEN!!!</b>");
+		generalWarningLabel_->setText("<b>The selected file already exists and will be overwritten.</b>");
 	}
 	else
 	{
@@ -247,7 +253,7 @@ void GeneratorConfigurationDialog::onViewChanged(QString const& selectedViewName
 		// For convenience, set the matching component instantiation as the default choice.
 		int index = instantiationSelection_->findText(selectedView->getComponentInstantiationRef());
 
-		if ( index != -1 )
+		if (index != -1)
 		{
 			instantiationSelection_->setCurrentIndex(index);
 		}
@@ -263,7 +269,7 @@ void GeneratorConfigurationDialog::onInstantiationInserted(QString const& select
 	QSharedPointer<ComponentInstantiation> selectedInstantiation =
 		instantiations_->value(selectedInstantiationName);
 
-	if ( !selectedInstantiation && !selectedInstantiationName.isEmpty() )
+	if (!selectedInstantiation && !selectedInstantiationName.isEmpty())
 	{
 		// Create a new one if does not exist.
 		selectedInstantiation = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
@@ -274,8 +280,8 @@ void GeneratorConfigurationDialog::onInstantiationInserted(QString const& select
 		configuration_->setInstantiation(selectedInstantiation);
 
 		// Warn user that a new instantiation will be created.
-		instantiationWarningLabel_->setText(tr("Will a create new component instantiation %1.").
-			arg(selectedInstantiationName));
+		instantiationWarningLabel_->setText(tr("New component instantiation '%1' will be created.").arg(
+            selectedInstantiationName));
 	}
 	else
 	{
@@ -292,14 +298,14 @@ void GeneratorConfigurationDialog::onInstantiationChanged(QString const& selecte
 	QSharedPointer<ComponentInstantiation> selectedInstantiation =
 		instantiations_->value(selectedInstantiationName);
 
-	if ( selectedInstantiation )
+	if (selectedInstantiation)
 	{
 		// Set to the configuration.
 		configuration_->setInstantiation(selectedInstantiation);
 
 		// Affects the available file sets.
 		fileSetSelection_->clear();
-		fileSetSelection_->addItems( *(selectedInstantiation->getFileSetReferences()) );
+		fileSetSelection_->addItems(*(selectedInstantiation->getFileSetReferences()));
 		fileSetSelection_->setCurrentIndex(0);
 		onFileSetChanged(fileSetSelection_->currentText());
 	}
@@ -313,11 +319,11 @@ void GeneratorConfigurationDialog::onFileSetChanged(QString const& fileSetName)
 	// Set to the configuration.
 	configuration_->setFileSetRef(fileSetName);
 
-	if ( !fileSetName.isEmpty() && ( !configuration_->getInstantiation() ||
-		!configuration_->getInstantiation()->getFileSetReferences()->contains(fileSetName) ) )
+	if (!fileSetName.isEmpty() && ( !configuration_->getInstantiation() ||
+		!configuration_->getInstantiation()->getFileSetReferences()->contains(fileSetName)))
 	{
 		// Warn user that a new file set will be created.
-		fileSetWarningLabel_->setText(tr("Will a create new a file set %1.").arg(fileSetName));
+		fileSetWarningLabel_->setText(tr("New file set '%1' will be created.").arg(fileSetName));
 	}
 	else
 	{

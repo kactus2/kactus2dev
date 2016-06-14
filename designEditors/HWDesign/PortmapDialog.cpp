@@ -39,8 +39,8 @@ PortmapDialog::PortmapDialog(LibraryInterface* libInterface, QSharedPointer<Comp
                              QSharedPointer<BusInterface> busIf, QSharedPointer<BusInterface> otherBusIf,
                              QWidget* parent) :
 QDialog(parent),
-busIf_(busIf),
-otherBusIf_(otherBusIf)
+    busIf_(busIf),
+    otherBusIf_(otherBusIf)
 {
     Q_ASSERT(libInterface != 0);
     Q_ASSERT(component != 0);
@@ -99,18 +99,8 @@ PortmapDialog::~PortmapDialog()
 //-----------------------------------------------------------------------------
 void PortmapDialog::accept()
 {
-    // Check if the port map settings are invalid.
-    if (!portmapWidget_->isValid())
-    {
-        return;
-    }
-
-	// this has changed, now port map tab makes the changes immediately
-    // Apply the changes to the bus interface.
-    //portmapWidget_->applyChanges();
-
     // Check if all required logical ports are not mapped.
-    QList<QString> missingMappings;
+    QVector<QString> missingMappings;
 
     foreach (QSharedPointer<PortMap> portMap, *otherBusIf_->getPortMaps())
     {
@@ -127,8 +117,7 @@ void PortmapDialog::accept()
             }
         }
 
-        // If the corresponding port map was not found, add the logical port to the list
-        // of missing mappings.
+        // If the corresponding port map was not found, add the logical port to the list of missing mappings.
         if (!found)
         {
             missingMappings.append(portMap->getLogicalPort()->name_);

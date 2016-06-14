@@ -69,8 +69,9 @@ QTabWidget(parent),
     treeWidget_(0),
     hierarchyWidget_(0),
     objects_(),
+    objectValidity_(),
     saveInProgress_(false),
-    itemsToAdd_() ,
+    itemsToAdd_(),
     modifiedItems_()
 {
 	setWindowTitle(tr("LibraryHandler"));
@@ -203,6 +204,7 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
 	VLNV vlnv = model->getVlnv();
 	Q_ASSERT(!data_->contains(vlnv));
 	Q_ASSERT(!objects_.contains(vlnv));
+    objectValidity_.remove(vlnv);
 
     // Create the path if it does not exist.
     if (!QDir(path).exists() && !QDir().mkpath(path))
@@ -247,7 +249,7 @@ bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model)
 	// Make sure the object is parsed again next time.
 	VLNV objectVLNV = model->getVlnv();
 	objects_.remove(objectVLNV);
-
+    objectValidity_.remove(objectVLNV);
 	QString filePath = data_->getPath(model->getVlnv());
     if (!writeFile(filePath, model))
     {
@@ -272,6 +274,7 @@ bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model)
 void LibraryHandler::searchForIPXactFiles()
 {
     objects_.clear();
+    objectValidity_.clear();
     data_->parseLibrary();
 }
 
@@ -487,6 +490,12 @@ QSharedPointer<Design> LibraryHandler::getDesign(VLNV const& hierarchyRef)
 //-----------------------------------------------------------------------------
 bool LibraryHandler::isValid(VLNV const& vlnv)
 {	
+    if (objectValidity_.contains(vlnv))
+    {
+        return objectValidity_.value(vlnv);
+    }
+
+    
     QSharedPointer<Document> document;
 
     // if object has already been parsed before
@@ -503,7 +512,9 @@ bool LibraryHandler::isValid(VLNV const& vlnv)
         }
     }
 
-    return data_->validateDocument(document);
+    bool valid = data_->validateDocument(document);
+    objectValidity_.insert(vlnv, valid);
+    return valid;
 }
 
 //-----------------------------------------------------------------------------
@@ -926,6 +937,7 @@ void LibraryHandler::removeObject(VLNV const& vlnv)
     }
 
     objects_.remove(vlnv);
+    objectValidity_.remove(vlnv);
 
     QString documentPath = data_->getPath(vlnv);
 
@@ -985,6 +997,7 @@ void LibraryHandler::endSave()
         {
             hierarchyModel_->onDocumentSaved(modifiedVLNV);
             treeModel_->onDocumentSaved(modifiedVLNV);
+            objectValidity_.remove(modifiedVLNV);
         }
 
         modifiedItems_.clear();
@@ -1042,6 +1055,7 @@ void LibraryHandler::onRemoveVLNV(QList<VLNV> const vlnvs)
         if (!data_->contains(vlnvToRemove))
         {
             objects_.remove(vlnvToRemove);
+            objectValidity_.remove(vlnvToRemove);
             continue;
         }
 
@@ -1194,6 +1208,7 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
 
     // make sure the model is parsed again next time to make all changes available
     objects_.remove(vlnv);
+    objectValidity_.remove(vlnv);
 
     treeModel_->onDocumentSaved(vlnv);
     hierarchyModel_->onDocumentSaved(savedItem);

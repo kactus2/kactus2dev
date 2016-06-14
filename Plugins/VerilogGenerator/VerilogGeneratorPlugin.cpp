@@ -13,6 +13,8 @@
 
 #include "VerilogGenerator/VerilogGenerator.h"
 
+#include <Plugins/common/NameGenerationPolicy.h>
+
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h>
@@ -20,6 +22,8 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
 
 #include <IPXACTmodels/Design/Design.h>
 
@@ -28,9 +32,6 @@
 #include <QDateTime>
 #include <QFileDialog>
 #include <QMessageBox>
-#include "IPXACTmodels/Component/View.h"
-#include "IPXACTmodels/Component/ComponentInstantiation.h"
-#include "../common/NameGenerationPolicy.h"
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::VerilogGeneratorPlugin()
@@ -54,8 +55,7 @@ VerilogGeneratorPlugin::~VerilogGeneratorPlugin()
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getName() const
 {
-    static QString name(tr("Verilog Generator"));
-    return name;
+    return tr("Verilog Generator");
 }
 
 //-----------------------------------------------------------------------------
@@ -63,25 +63,21 @@ QString VerilogGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVersion() const
 {
-    static QString version(tr("1.2"));
-    return version;
-}
+    return "1.2";}
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getDescription()
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getDescription() const
 {
-    static QString description(tr("Generates a top-level Verilog module for a HW design or component."));
-    return description;
+    return tr("Generates a top-level Verilog module for a HW design or component.");
 }
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getVendor()
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVendor() const
 {
-    static QString vendor(tr("TUT"));
-    return vendor;
+    return tr("TUT");
 }
 
 //-----------------------------------------------------------------------------
@@ -89,8 +85,7 @@ QString VerilogGeneratorPlugin::getVendor() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getLicence() const
 {
-    static QString licence(tr("GPL2"));
-    return licence;
+    return tr("GPL2");
 }
 
 //-----------------------------------------------------------------------------
@@ -98,8 +93,7 @@ QString VerilogGeneratorPlugin::getLicence() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getLicenceHolder() const
 {
-    static QString holder(tr("Public"));
-    return holder;
+    return tr("Public");
 }
 
 //-----------------------------------------------------------------------------

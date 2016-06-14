@@ -581,6 +581,9 @@ private:
 	 */
 	QMap<VLNV, QSharedPointer<Document> > objects_;
 
+    //! Validity status for library objects.
+    QMap<VLNV, bool> objectValidity_;
+
 	//! If true then items are being saved and library is not refreshed
 	bool saveInProgress_;
 
