@@ -2,8 +2,8 @@
 // File: tst_DesignReader.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: <Name>
-// Date: <Date in the format dd.mm.yyyy>
+// Author: Mikko Teuho
+// Date: 25.08.2015
 //
 // Description:
 // Unit test for class DesignReader.
@@ -27,6 +27,7 @@ public:
 
 private slots:
     void testReadSimpleDesign();
+    void testReadProcessingInstructions();
 
     void testReadComponentInstances();
     void testReadComponentInstanceExtensions();
@@ -91,6 +92,43 @@ void tst_DesignReader::testReadSimpleDesign()
     QCOMPARE(testDesign->getVlnv().getName(), QString("TestDesign"));
     QCOMPARE(testDesign->getVlnv().getVersion(), QString("0.1"));
     QCOMPARE(testDesign->getDescription(), QString("TestDescription"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadProcessingInstructions()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadProcessingInstructions()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<!-- Header comment -->"
+        "<?xml-stylesheet href=\"style.css\"?>"
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+        "</ipxact:design>");
+
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignReader designReader;
+
+    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+
+    QCOMPARE(testDesign->getXmlProcessingInstructions().count(), 1);
+
+    QPair<QString, QString> styleInstruction = testDesign->getXmlProcessingInstructions().first();
+    QCOMPARE(styleInstruction.first, QString("xml-stylesheet"));
+    QCOMPARE(styleInstruction.second, QString("href=\"style.css\""));
+
+    QCOMPARE(testDesign->getTopComments().first(), QString(" Header comment "));
 }
 
 //-----------------------------------------------------------------------------

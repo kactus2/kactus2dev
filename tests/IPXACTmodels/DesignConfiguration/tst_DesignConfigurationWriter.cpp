@@ -35,6 +35,8 @@ private slots:
 
     void testSimpleDesignConfiguration();
     void testTopCommentsAreWritten();
+    void testProcessingInstructionsAreWritten();
+
     void testDesignReference();
     void testGeneratorChainConfiguration();
     void testInterconnectionConfiguration();
@@ -180,6 +182,39 @@ void tst_DesignConfigurationWriter::testTopCommentsAreWritten()
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
         "\t<ipxact:version>0.1</ipxact:version>\n"
+        "</ipxact:designConfiguration>\n");
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationWriter::testProcessingInstructionsAreWritten()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationWriter::testProcessingInstructionsAreWritten()
+{
+    designConfiguration_->addXmlProcessingInstructions("xml-stylesheet", "href=\"style.css\"");
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    DesignConfigurationWriter designConfigurationWriter;
+    designConfigurationWriter.writeDesignConfiguration(xmlStreamWriter, designConfiguration_);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<?xml-stylesheet href=\"style.css\"?>\n"
+        "<ipxact:designConfiguration "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesignConfiguration</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
         "</ipxact:designConfiguration>\n");
     QCOMPARE(output, expectedOutput);
 }

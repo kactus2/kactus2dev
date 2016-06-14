@@ -68,6 +68,7 @@ void DesignWriter::writeDesign(QXmlStreamWriter& writer, QSharedPointer<Design> 
 void DesignWriter::writeDesignStart(QXmlStreamWriter& writer, QSharedPointer<Design> design) const
 {
     writeTopComments(writer, design);
+    writeXmlProcessingInstructions(writer, design);
     writer.writeStartElement("ipxact:design");
 }
 

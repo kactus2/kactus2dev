@@ -42,6 +42,8 @@ public:
 private slots:
     void testReadVLNAndMandatoryFields();
     void testReadTopComments();
+    void testProcessingInstructionsAreParsed();
+
     void testReadExtends();
     void testReadDescription();
 
@@ -132,6 +134,39 @@ void tst_AbstractionDefinitionReader::testReadTopComments()
     QCOMPARE(definition->getTopComments().size(), 2);
     QCOMPARE(definition->getTopComments().first(), QString("Commented line 1"));   
     QCOMPARE(definition->getTopComments().last(), QString("Commented line 2"));   
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionReader::testProcessingInstructionsAreWritten()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionReader::testProcessingInstructionsAreParsed()
+{
+    QDomDocument document;
+    document.setContent(QString(        
+        "<?xml version=\"1.0\"?>"
+        "<!--Header comment -->"
+        "<?xml-stylesheet href=\"style.css\"?>"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>MinimalDefinition</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBus\" version=\"2.0\"/>"
+        "</ipxact:abstractionDefinition>"
+        ));
+
+    AbstractionDefinitionReader reader;
+    QSharedPointer<AbstractionDefinition> definition = reader.createAbstractionDefinitionFrom(document);
+
+    QCOMPARE(definition->getXmlProcessingInstructions().count(), 1);
+
+    QPair<QString, QString> styleInstruction = definition->getXmlProcessingInstructions().first();
+    QCOMPARE(styleInstruction.first, QString("xml-stylesheet"));
+    QCOMPARE(styleInstruction.second, QString("href=\"style.css\""));
 }
 
 //-----------------------------------------------------------------------------

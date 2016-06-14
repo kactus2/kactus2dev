@@ -58,6 +58,8 @@ private slots:
 
     void writeSimpleComponent();
 
+    void writeXMLProcessingInstructions();
+
     void writeBusInterfaces();
     void writeChannels();
     void writeRemapStates();
@@ -160,6 +162,41 @@ void tst_ComponentWriter::writeSimpleComponent()
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
             "\t<ipxact:description>coreDrill</ipxact:description>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeXMLProcessingInstructions()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeXMLProcessingInstructions()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    testComponent_->addXmlProcessingInstructions("xml-stylesheet", "href=\"style.css\"");
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<?xml-stylesheet href=\"style.css\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
         "</ipxact:component>\n"
         );
 

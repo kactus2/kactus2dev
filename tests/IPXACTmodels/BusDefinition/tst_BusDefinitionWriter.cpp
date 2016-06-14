@@ -26,12 +26,18 @@ public:
     tst_BusDefinition();
 
 private slots:
+
     void testWriteMinimalBusDefinition();
+
     void testTopCommentsAreWritten();
+    void testProcessingInstructionsAreWritten();
+
     void testWriteExtendingBusDefinition();
     void testWriteBroadcastAndDescription();
+
     void testWriteMasterAndSlaveMaximum();
     void testWriteSystemGroupNames();
+
     void testWriteParameters();
     void testWriteAssertions();
     void testVendorExtensions();
@@ -107,6 +113,39 @@ void tst_BusDefinition::testTopCommentsAreWritten()
             "<ipxact:version>1.0</ipxact:version>"
             "<ipxact:directConnection>true</ipxact:directConnection>"
             "<ipxact:isAddressable>true</ipxact:isAddressable>"
+        "</ipxact:busDefinition>\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_BusDefinition::testProcessingInstructionsAreWritten()
+//-----------------------------------------------------------------------------
+void tst_BusDefinition::testProcessingInstructionsAreWritten()
+{
+    VLNV vlnv(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "StyledBus", "1.0");
+    QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
+    busDefinition->setVlnv(vlnv);
+    busDefinition->addXmlProcessingInstructions("xml-stylesheet", "href=\"style.css\" attribute=\"value\"");
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    BusDefinitionWriter busWriter;
+
+    busWriter.writeBusDefinition(xmlStreamWriter, busDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<?xml-stylesheet href=\"style.css\" attribute=\"value\"?>"
+        "<ipxact:busDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+        "<ipxact:vendor>TUT</ipxact:vendor>"
+        "<ipxact:library>TestLibrary</ipxact:library>"
+        "<ipxact:name>StyledBus</ipxact:name>"
+        "<ipxact:version>1.0</ipxact:version>"
+        "<ipxact:directConnection>true</ipxact:directConnection>"
+        "<ipxact:isAddressable>true</ipxact:isAddressable>"
         "</ipxact:busDefinition>\n"));
 }
 

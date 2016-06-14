@@ -27,13 +27,14 @@
 //-----------------------------------------------------------------------------
 Document::Document():
 Extendable(),
-vlnv_(), 
-description_(),
-topComments_(),
-parameters_(new QList<QSharedPointer<Parameter> >()),
-assertions_(new QList<QSharedPointer<Assertion> >())
+    vlnv_(), 
+    description_(),
+    topComments_(),
+    xmlProcessingInstructions_(),
+    parameters_(new QList<QSharedPointer<Parameter> >()),
+    assertions_(new QList<QSharedPointer<Assertion> >())
 {
-	vlnv_ = VLNV();
+    vlnv_ = VLNV();
 }
 
 //-----------------------------------------------------------------------------
@@ -41,11 +42,12 @@ assertions_(new QList<QSharedPointer<Assertion> >())
 //-----------------------------------------------------------------------------
 Document::Document(const VLNV &vlnv):
 Extendable(),
-vlnv_(), 
-description_(),
-topComments_(),
-parameters_(new QList<QSharedPointer<Parameter> >()),
-assertions_(new QList<QSharedPointer<Assertion> >())
+    vlnv_(), 
+    description_(),
+    topComments_(),
+    xmlProcessingInstructions_(),
+    parameters_(new QList<QSharedPointer<Parameter> >()),
+    assertions_(new QList<QSharedPointer<Assertion> >())
 {
     vlnv_ = vlnv;
 }
@@ -55,11 +57,12 @@ assertions_(new QList<QSharedPointer<Assertion> >())
 //-----------------------------------------------------------------------------
 Document::Document(Document const& other):
 Extendable(other),
-vlnv_(other.vlnv_),
-description_(other.description_),
-topComments_(other.topComments_),
-parameters_(new QList<QSharedPointer<Parameter> >()),
-assertions_(new QList<QSharedPointer<Assertion> >())
+    vlnv_(other.vlnv_),
+    description_(other.description_),
+    topComments_(other.topComments_),
+    xmlProcessingInstructions_(other.xmlProcessingInstructions_),
+    parameters_(new QList<QSharedPointer<Parameter> >()),
+    assertions_(new QList<QSharedPointer<Assertion> >())
 {
     copyParameters(other);
     copyAssertions(other);
@@ -180,6 +183,22 @@ void Document::setTopComments( const QStringList& comments )
 QStringList Document::getTopComments() const
 {
     return topComments_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::setXmlProcessingInstructions()
+//-----------------------------------------------------------------------------
+void Document::addXmlProcessingInstructions(QString const& target, QString const& data)
+{
+    xmlProcessingInstructions_.append(qMakePair(target, data));
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::getXmlProcessingInstructions()
+//-----------------------------------------------------------------------------
+QVector<QPair<QString, QString> > Document::getXmlProcessingInstructions() const
+{
+    return xmlProcessingInstructions_;
 }
 
 //-----------------------------------------------------------------------------

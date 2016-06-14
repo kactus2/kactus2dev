@@ -30,11 +30,15 @@ public:
 
 private slots:
     void testReadVLNAndMandatoryFields();
+
     void testReadTopComments();
+    void testProcessingInstructionsAreParsed();
+
     void testReadExtends();
     void testReadBroadcastAndDescription();
     void testReadMaximumMasterAndMaximumSlave();
     void testReadSystemGroupNames();
+
     void testReadParameters();
     void testReadAssertions();
     void testReadVendorExtension();
@@ -113,6 +117,41 @@ void tst_BusDefinitionReader::testReadTopComments()
     QCOMPARE(testBus->getTopComments().size(), 2);
     QCOMPARE(testBus->getTopComments().first(), QString("Commented line 1"));   
     QCOMPARE(testBus->getTopComments().last(), QString("Commented line 2"));   
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_BusDefinitionReader::testProcessingInstructionsAreParsed()
+//-----------------------------------------------------------------------------
+void tst_BusDefinitionReader::testProcessingInstructionsAreParsed()
+{
+    QDomDocument document;
+    document.setContent(QString(        
+        "<?xml version=\"1.0\"?>"
+        "<!-- Header comments -->"
+        "<?xml-stylesheet href=\"style.css\"?>"
+        "<ipxact:busDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>MinimalBus</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:directConnection>true</ipxact:directConnection>"
+            "<ipxact:isAddressable>true</ipxact:isAddressable>"
+        "</ipxact:busDefinition>"
+        "<!--Comment not to include-->"));
+
+    BusDefinitionReader busReader;
+    QSharedPointer<BusDefinition> testBus = busReader.createBusDefinitionFrom(document);
+
+    QCOMPARE(testBus->getXmlProcessingInstructions().count(), 1);
+
+    QPair<QString, QString> styleInstruction = testBus->getXmlProcessingInstructions().first();
+    QCOMPARE(styleInstruction.first, QString("xml-stylesheet"));
+    QCOMPARE(styleInstruction.second, QString("href=\"style.css\""));
+
 }
 
 //-----------------------------------------------------------------------------

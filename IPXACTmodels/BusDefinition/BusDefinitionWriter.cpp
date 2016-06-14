@@ -39,6 +39,8 @@ void BusDefinitionWriter::writeBusDefinition(QXmlStreamWriter& writer,
     
     writeTopComments(writer, busDefinition);
 
+    writeXmlProcessingInstructions(writer, busDefinition);
+
     writer.writeStartElement("ipxact:busDefinition");
     writeNamespaceDeclarations(writer);
 

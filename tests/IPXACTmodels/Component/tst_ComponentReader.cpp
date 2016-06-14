@@ -48,6 +48,8 @@ public:
 private slots:
 
     void readSimpleComponent();
+    
+    void readXMLProcessingInstructions();
 
     void readBusInterfaces();
     void readChannels();
@@ -120,6 +122,48 @@ void tst_ComponentReader::readSimpleComponent()
     QCOMPARE(testComponent->getVlnv().getVersion(), QString("8.14"));
     QCOMPARE(testComponent->getVlnv().getType(), VLNV::COMPONENT);
     QCOMPARE(testComponent->getDescription(), QString("coreDrill"));
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentReader::readXMLProcessingInstructions()
+//-----------------------------------------------------------------------------
+void tst_ComponentReader::readXMLProcessingInstructions()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<!-- Header comments -->"
+        "<?xml-stylesheet href=\"style.css\"?>"
+        "<?xml-stylesheet href=\"other.css\" attribute=\"value\" title=\"Other\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+        "</ipxact:component>\n"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    ComponentReader componentReader;
+
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+
+    QCOMPARE(testComponent->getXmlProcessingInstructions().size(), 2);
+
+    QPair<QString, QString> firstInstructions = testComponent->getXmlProcessingInstructions().first();
+    QCOMPARE(firstInstructions.first, QString("xml-stylesheet"));
+    QCOMPARE(firstInstructions.second, QString("href=\"style.css\""));
+
+    QPair<QString, QString> secondInstructions = testComponent->getXmlProcessingInstructions().last();
+    QCOMPARE(secondInstructions.first, QString("xml-stylesheet"));
+    QCOMPARE(secondInstructions.second, QString("href=\"other.css\" attribute=\"value\" title=\"Other\""));
 }
 
 //-----------------------------------------------------------------------------

@@ -80,6 +80,7 @@ void DesignConfigurationWriter::writeDesignConfigurationStart(QXmlStreamWriter& 
     QSharedPointer<DesignConfiguration> designConfiguration) const
 {
     writeTopComments(writer, designConfiguration);
+    writeXmlProcessingInstructions(writer, designConfiguration);
     writer.writeStartElement("ipxact:designConfiguration");
 }
 

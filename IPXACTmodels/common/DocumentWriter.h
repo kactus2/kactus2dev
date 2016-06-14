@@ -48,6 +48,8 @@ protected:
      */
     void writeTopComments(QXmlStreamWriter& writer, QSharedPointer<Document> document) const;
 
+    void writeXmlProcessingInstructions(QXmlStreamWriter& writer, QSharedPointer<Document> document) const;
+
     /*!
      *  Writes the namespace declarations for IP-XACT 2014 documents.
      *

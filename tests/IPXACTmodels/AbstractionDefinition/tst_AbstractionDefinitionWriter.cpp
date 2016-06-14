@@ -39,6 +39,7 @@ public:
 private slots:
     void testWriteAbstractionDefinitionWithoutPorts();
     void testTopCommentsAreWritten();
+    void testProcessingInstructionsAreWritten();
     void testWriteExtendingAbstractionDefinition();
 
     void testWriteSimpleWirePort();
@@ -121,6 +122,41 @@ void tst_AbstractionDefinition::testTopCommentsAreWritten()
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
         "<!--Commented section-->"
+        "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>MinimalAbsDef</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
+        "</ipxact:abstractionDefinition>\n"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinition::testProcessingInstructionsAreWritten()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinition::testProcessingInstructionsAreWritten()
+{
+    VLNV targetBus(VLNV::BUSDEFINITION, "TUT", "TestLibrary", "TargetBusDef", "1.0");
+
+    VLNV vlnv(VLNV::ABSTRACTIONDEFINITION, "TUT", "TestLibrary", "MinimalAbsDef", "1.0");
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
+    abstractionDefinition->setVlnv(vlnv);
+    abstractionDefinition->setBusType(targetBus);
+    abstractionDefinition->addXmlProcessingInstructions("xml-stylesheet", "href=\"style.css\"");
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    AbstractionDefinitionWriter absDefWriter;
+
+    absDefWriter.writeAbstractionDefinition(xmlStreamWriter, abstractionDefinition);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<?xml-stylesheet href=\"style.css\"?>"
         "<ipxact:abstractionDefinition xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
         "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "

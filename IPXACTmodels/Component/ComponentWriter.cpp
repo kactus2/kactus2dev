@@ -55,6 +55,8 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
 
     writeTopComments(writer, component);
 
+    writeXmlProcessingInstructions(writer, component);
+
     writer.writeStartElement("ipxact:component");
 
     writeNamespaceDeclarations(writer);

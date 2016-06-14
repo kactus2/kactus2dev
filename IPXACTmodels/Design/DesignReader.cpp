@@ -47,6 +47,8 @@ QSharedPointer<Design> DesignReader::createDesignFrom(QDomDocument const& docume
 
     parseTopComments(document, newDesign);
 
+    parseXMLProcessingInstructions(document, newDesign);
+
     QDomNode designNode = document.firstChildElement();
 
     parseVLNVElements(designNode, newDesign, VLNV::DESIGN);

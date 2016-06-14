@@ -605,9 +605,9 @@ void tst_BusInterfaceValidator::testMultiplePortMapLogicalPortsAreValid()
         VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "Everett", "5.1"));
 
     QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition());
-    abstractionDefinition->setVlnv(*abstractionReference.data());
+    abstractionDefinition->setVlnv(*abstractionReference);
 
-    QSharedPointer<WirePort> masterWireOne (new WirePort());
+    QSharedPointer<WirePort> masterWireOne(new WirePort());
     masterWireOne->setDirection(DirectionTypes::IN);
 
     QSharedPointer<WireAbstraction> logicalWireAbstractionOne (new WireAbstraction());
@@ -709,11 +709,11 @@ void tst_BusInterfaceValidator::testMultiplePortMapLogicalPortsAreValid()
         QVector<QString> errorsFound;
         validator->findErrorsIn(errorsFound, testBus, "test");
 
-        QString context = QObject::tr("%1 bus interface %2")
-            .arg(General::interfaceMode2Str(testBus->getInterfaceMode())).arg(testBus->name());
+        QString context = tr("%1 bus interface %2").arg(General::interfaceMode2Str(testBus->getInterfaceMode()),
+            testBus->name());
 
-        QString expectedError = QObject::tr("Multiple definitions of logical port %1 overlap within %2")
-            .arg(logicalNameTwo).arg(context);
+        QString expectedError = QObject::tr("Multiple definitions of logical port %1 overlap within %2").arg(
+            logicalNameTwo, context);
 
         if (errorIsNotFoundInErrorList(expectedError, errorsFound))
         {

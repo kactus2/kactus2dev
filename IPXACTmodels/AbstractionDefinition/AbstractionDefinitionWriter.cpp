@@ -43,6 +43,8 @@ void AbstractionDefinitionWriter::writeAbstractionDefinition(QXmlStreamWriter& w
     
     writeTopComments(writer, abstractionDefinition);
 
+    writeXmlProcessingInstructions(writer, abstractionDefinition);
+
     writer.writeStartElement("ipxact:abstractionDefinition");
     writeNamespaceDeclarations(writer);
 

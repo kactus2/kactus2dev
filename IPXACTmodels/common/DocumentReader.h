@@ -54,6 +54,8 @@ protected:
      */
     void parseTopComments(QDomNode const& documentNode, QSharedPointer<Document> document) const;
 
+    void parseXMLProcessingInstructions(QDomNode const& documentNode, QSharedPointer<Document> document) const;
+
     /*!
      *  Parses the VLNV from XML to a document.
      *

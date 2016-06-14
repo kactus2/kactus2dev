@@ -35,6 +35,7 @@ private slots:
     void cleanup();
 
     void testWriteSimpleDesign();
+    void testWriteProcessingInstructions();
 
     void testWriteComponentInstances();
     void testWriteComponentInstanceExtensions();
@@ -163,6 +164,43 @@ void tst_DesignWriter::testWriteSimpleDesign()
     designWriter.writeDesign(xmlStreamWriter, testDesign_);
 
     compareOutputToExpected(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignWriter::testWriteProcessingInstructions()
+//-----------------------------------------------------------------------------
+void tst_DesignWriter::testWriteProcessingInstructions()
+{
+    testDesign_->setTopComments("Header comment");
+    testDesign_->addXmlProcessingInstructions("xml-stylesheet", "href=\"style.css\"");
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<!--Header comment-->\n"
+        "<?xml-stylesheet href=\"style.css\"?>\n"
+        "<ipxact:design "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestDesign</ipxact:name>\n"
+            "\t<ipxact:version>0.1</ipxact:version>\n"
+        "</ipxact:design>\n"
+        );
+
+    DesignWriter designWriter;
+    designWriter.writeDesign(xmlStreamWriter, testDesign_);
+
+    QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------

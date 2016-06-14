@@ -44,6 +44,8 @@ QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstrac
 
     parseTopComments(document, abstractionDefinion);
 
+    parseXMLProcessingInstructions(document, abstractionDefinion);
+
     QDomNode definitionNode = document.firstChildElement("ipxact:abstractionDefinition");
 
     parseVLNVElements(definitionNode, abstractionDefinion, VLNV::ABSTRACTIONDEFINITION);

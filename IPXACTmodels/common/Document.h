@@ -131,6 +131,21 @@ public:
 	 *      @return The comments if any.
 	 */
 	QStringList getTopComments() const;
+        
+    /*!
+     *  Adds a new XML processing instruction for the document.
+     *
+     *      @param [in] target  The target for the instruction.
+     *      @param [in] data    The data in the instruction.
+     */
+    void addXmlProcessingInstructions(QString const& target, QString const& data);
+
+    /*!
+     *  Gets the XML processing instructions for the document.
+     *
+     *      @return The XML processing instructions as target-data pairs.
+     */
+    QVector<QPair<QString, QString> > getXmlProcessingInstructions() const;
 
 	/*! A pure virtual function to be implemented by subclasses.
 	 *
@@ -269,6 +284,9 @@ private:
 
 	//! Contains the comment lines from the beginning of the document.
 	QStringList topComments_;
+
+    //! Contains the xml processing instructions as target-data pairs.
+    QVector<QPair<QString, QString> > xmlProcessingInstructions_;
 
     //! A list of parameters for the document.
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;

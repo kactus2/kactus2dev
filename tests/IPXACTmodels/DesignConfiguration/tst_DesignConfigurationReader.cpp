@@ -25,6 +25,7 @@ private slots:
 
     void testReadSimpleDesignConfiguration();
     void testReadTopComments();
+    void testProcessingInstructionsAreParsed();
 
     void testReadDesignReference();
     void testReadGeneratorChainConfigurations();
@@ -113,6 +114,41 @@ void tst_DesignConfigurationReader::testReadTopComments()
     QCOMPARE(testDesignConfiguration->getTopComments().size(), 3);
     QCOMPARE(testDesignConfiguration->getTopComments().first(), QString("testComment 1"));
     QCOMPARE(testDesignConfiguration->getTopComments().last(), QString("testComment 3"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignConfigurationReader::testProcessingInstructionsAreParsed()
+//-----------------------------------------------------------------------------
+void tst_DesignConfigurationReader::testProcessingInstructionsAreParsed()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<?xml-stylesheet href=\"style.css\"?>"
+        "<ipxact:designConfiguration xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesignConfiguration</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:description>TestDescription</ipxact:description>"
+        "</ipxact:designConfiguration>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    DesignConfigurationReader designConfigurationReader;
+
+    QSharedPointer<DesignConfiguration> testDesignConfiguration =
+        designConfigurationReader.createDesignConfigurationFrom(document);
+
+    QCOMPARE(testDesignConfiguration->getXmlProcessingInstructions().count(), 1);
+
+    QPair<QString, QString> styleInstruction = testDesignConfiguration->getXmlProcessingInstructions().first();
+    QCOMPARE(styleInstruction.first, QString("xml-stylesheet"));
+    QCOMPARE(styleInstruction.second, QString("href=\"style.css\""));
 }
 
 //-----------------------------------------------------------------------------

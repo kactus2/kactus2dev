@@ -38,6 +38,8 @@ QSharedPointer<DesignConfiguration> DesignConfigurationReader::createDesignConfi
 
     parseTopComments(document, newDesignConfiguration);
 
+    parseXMLProcessingInstructions(document, newDesignConfiguration);
+
     QDomNode designConfigurationNode = document.firstChildElement();
 
     parseVLNVElements(designConfigurationNode, newDesignConfiguration, VLNV::DESIGNCONFIGURATION);

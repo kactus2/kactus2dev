@@ -53,6 +53,28 @@ void DocumentReader::parseTopComments(QDomNode const& documentNode, QSharedPoint
 }
 
 //-----------------------------------------------------------------------------
+// Function: DocumentReader::parseXMLProcessingInstructions()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseXMLProcessingInstructions(QDomNode const& documentNode, 
+    QSharedPointer<Document> document) const
+{
+    QDomNodeList nodeList = documentNode.childNodes();
+    QDomNode singleDocumentNode = documentNode.firstChildElement();
+
+    for (int i = 0; i < nodeList.size() && nodeList.at(i) != singleDocumentNode; i++)
+    {
+        if (nodeList.at(i).isProcessingInstruction())
+        {
+            QDomProcessingInstruction instruction = nodeList.at(i).toProcessingInstruction();
+            if (!instruction.data().startsWith("version"))
+            {
+                document->addXmlProcessingInstructions(instruction.target(), instruction.data());
+            }            
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: DocumentReader::parseVLNV()
 //-----------------------------------------------------------------------------
 void DocumentReader::parseVLNVElements(QDomNode const& documentNode, QSharedPointer<Document> document,

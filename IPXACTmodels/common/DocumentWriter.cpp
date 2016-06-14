@@ -13,6 +13,7 @@
 #include "Document.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
+#include <QPair>
 
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::DocumentWriter()
@@ -36,10 +37,24 @@ DocumentWriter::~DocumentWriter()
 //-----------------------------------------------------------------------------
 void DocumentWriter::writeTopComments(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
 {
-    foreach (QString comment, document->getTopComments())
+    foreach (QString const& comment, document->getTopComments())
     {
         writer.writeComment(comment);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: DocumentWriter::writeXmlProcessingInstructions()
+//-----------------------------------------------------------------------------
+void DocumentWriter::writeXmlProcessingInstructions(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
+{
+    QVector<QPair<QString, QString> > instructions = document->getXmlProcessingInstructions();
+    
+    int instructionCount = instructions.count();
+    for (int i = 0; i < instructionCount; i++)
+    {
+        writer.writeProcessingInstruction(instructions.at(i).first, instructions.at(i).second);
+    }   
 }
 
 //-----------------------------------------------------------------------------
