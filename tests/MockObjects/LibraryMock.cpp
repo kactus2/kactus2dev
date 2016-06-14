@@ -92,7 +92,7 @@ QString LibraryMock::getDirectoryPath(const VLNV& /*vlnv*/) const
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::writeModelToFile()
 //-----------------------------------------------------------------------------
-bool LibraryMock::writeModelToFile(const QString& path, QSharedPointer<Document> model, bool /*printErrors*/)
+bool LibraryMock::writeModelToFile(const QString& path, QSharedPointer<Document> model)
 {
     paths_.insert(model->getVlnv(), path);
     return true;
@@ -101,7 +101,7 @@ bool LibraryMock::writeModelToFile(const QString& path, QSharedPointer<Document>
 //-----------------------------------------------------------------------------
 // Function: LibraryMock::writeModelToFile()
 //-----------------------------------------------------------------------------
-bool LibraryMock::writeModelToFile(QSharedPointer<Document> /*model*/, bool /*printErrors*/)
+bool LibraryMock::writeModelToFile(QSharedPointer<Document> /*model*/)
 {
     return false;
 }
