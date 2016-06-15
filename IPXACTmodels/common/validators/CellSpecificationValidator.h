@@ -9,8 +9,8 @@
 // Validator for ipxact:CellSpecification.
 //-----------------------------------------------------------------------------
 
-#ifndef CellSpecificationVALIDATOR_H
-#define CellSpecificationVALIDATOR_H
+#ifndef CELLSPECIFICATIONVALIDATOR_H
+#define CELLSPECIFICATIONVALIDATOR_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -64,4 +64,4 @@ private:
 	QVector<QString> functions_;
 };
 
-#endif // SYSTEMVERILOGVALIDATOR_H
+#endif // CELLSPECIFICATIONVALIDATOR_H

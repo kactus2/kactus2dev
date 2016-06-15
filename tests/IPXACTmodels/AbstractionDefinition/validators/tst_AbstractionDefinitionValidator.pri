@@ -63,8 +63,8 @@ SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../../IPXACTmodels/BusDefinition/BusDefinition.cpp \
     ../../../../IPXACTmodels/common/CellSpecification.cpp \
-    ../../../../IPXACTmodels/Component/Choice.cpp \
     ../../../../IPXACTmodels/common/validators/CellSpecificationValidator.cpp \
+    ../../../../IPXACTmodels/Component/Choice.cpp \
     ../../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp \
     ../../../../IPXACTmodels/common/DirectionTypes.cpp \
@@ -92,7 +92,6 @@ SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/common/Range.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../IPXACTmodels/common/TimingConstraint.cpp \
-    ../../../../IPXACTmodels/common/validators/CellSpecificationValidator.cpp \
     ../../../../IPXACTmodels/common/validators/TimingConstraintValidator.cpp \
     ../../../../IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.cpp \
     ../../../../IPXACTmodels/AbstractionDefinition/TransactionalPort.cpp \
