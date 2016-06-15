@@ -259,7 +259,7 @@ void tst_businterfaceWriter::testWriteEndianness()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-    testbusinterface_->setEndianness(BusInterface::BIG_ENDIAN);
+    testbusinterface_->setEndianness(BusInterface::BIG);
 
 	QString expectedOutput(
 		"<ipxact:busInterface>"

@@ -454,7 +454,7 @@ void tst_businterfaceReader::testReadEndianness()
 	BusinterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getEndianness(), BusInterface::BIG_ENDIAN);
+	QCOMPARE(testbusinterface->getEndianness(), BusInterface::Endianness::BIG);
 }
 
 //-----------------------------------------------------------------------------

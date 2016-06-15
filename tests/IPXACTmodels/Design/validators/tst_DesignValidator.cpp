@@ -883,7 +883,7 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
     QSharedPointer<ConfigurableVLNVReference> startVLNV (
         new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Start", "1.0")));
     QSharedPointer<Component> startComponent (new Component(*startVLNV));
-    mockLibrary->addComponent(startComponent);
+    mockLibrary.addComponent(startComponent);
 
     QSharedPointer<ComponentInstance> startInstance (
         new ComponentInstance(startInterface->getComponentReference(), startVLNV));
