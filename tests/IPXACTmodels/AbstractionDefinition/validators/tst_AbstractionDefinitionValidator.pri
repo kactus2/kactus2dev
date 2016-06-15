@@ -54,7 +54,15 @@ HEADERS += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/AbstractionDefinition/WirePort.h \
     ../../../../IPXACTmodels/XmlUtils.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../MockObjects/LibraryMock.h
+    ../../../MockObjects/LibraryMock.h \
+    ../../../../IPXACTmodels/Design/Design.h \
+    ../../../../IPXACTmodels/Design/ComponentInstance.h \
+    ../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h \
+    ../../../../IPXACTmodels/kactusExtensions/Kactus2Position.h \
+    ../../../../IPXACTmodels/Design/MonitorInterconnection.h \
+    ../../../../IPXACTmodels/Design/AdHocConnection.h \
+    ../../../../IPXACTmodels/Design/PortReference.h \
+    ../../../../IPXACTmodels/validators/namevalidator.h
 SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../../IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.cpp \
     ../../../../IPXACTmodels/Design/ActiveInterface.cpp \
@@ -103,4 +111,12 @@ SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/AbstractionDefinition/WirePort.cpp \
     ../../../../IPXACTmodels/XmlUtils.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_AbstractionDefinitionValidator.cpp
+    ./tst_AbstractionDefinitionValidator.cpp \
+    ../../../../IPXACTmodels/Design/Design.cpp \
+    ../../../../IPXACTmodels/Design/ComponentInstance.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/Kactus2Position.cpp \
+    ../../../../IPXACTmodels/Design/MonitorInterconnection.cpp \
+    ../../../../IPXACTmodels/Design/AdHocConnection.cpp \
+    ../../../../IPXACTmodels/Design/PortReference.cpp \
+    ../../../../IPXACTmodels/validators/namevalidator.cpp
