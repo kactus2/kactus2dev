@@ -62,7 +62,11 @@ HEADERS += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/Design/MonitorInterconnection.h \
     ../../../../IPXACTmodels/Design/AdHocConnection.h \
     ../../../../IPXACTmodels/Design/PortReference.h \
-    ../../../../IPXACTmodels/validators/namevalidator.h
+    ../../../../IPXACTmodels/validators/namevalidator.h \
+    ../../../../IPXACTmodels/kactusExtensions/ApiInterconnection.h \
+    ../../../../IPXACTmodels/kactusExtensions/SWInstance.h \
+    ../../../../IPXACTmodels/kactusExtensions/ColumnDesc.h \
+    ../../../../IPXACTmodels/kactusExtensions/ConnectionRoute.h
 SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.cpp \
     ../../../../IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.cpp \
     ../../../../IPXACTmodels/Design/ActiveInterface.cpp \
@@ -119,4 +123,8 @@ SOURCES += ../../../../IPXACTmodels/AbstractionDefinition/AbstractionDefinition.
     ../../../../IPXACTmodels/Design/MonitorInterconnection.cpp \
     ../../../../IPXACTmodels/Design/AdHocConnection.cpp \
     ../../../../IPXACTmodels/Design/PortReference.cpp \
-    ../../../../IPXACTmodels/validators/namevalidator.cpp
+    ../../../../IPXACTmodels/validators/namevalidator.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/ApiInterconnection.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/SWInstance.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/ColumnDesc.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/ConnectionRoute.cpp
