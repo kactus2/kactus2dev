@@ -89,7 +89,8 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/Component/Wire.h \
     ../../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../../IPXACTmodels/Component/WriteValueConstraint.h \
-    ../../../../IPXACTmodels/generaldeclarations.h
+    ../../../../IPXACTmodels/generaldeclarations.h \
+    ../../../../IPXACTmodels/kactusExtensions/FileDependency.h
 SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../IPXACTmodels/Component/AddressSpace.cpp \
@@ -173,4 +174,5 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_BusDefinitionValidator.cpp
+    ./tst_BusDefinitionValidator.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/FileDependency.cpp
