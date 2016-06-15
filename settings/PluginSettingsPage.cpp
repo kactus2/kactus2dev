@@ -54,7 +54,7 @@ PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& plugi
 {
     // Initialize the widgets and create the layout.
     pluginDirSelector_.setPersistentDirectory("Plugins");
-    pluginDirSelector_.setPersistentDirectory("/usr/share/kactus2/plugins");
+    pluginDirSelector_.setPersistentDirectory("plugins");
 
     pluginsTree_.setHeaderHidden(true);
     pluginsTree_.setColumnCount(1);
