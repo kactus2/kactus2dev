@@ -116,7 +116,7 @@ HEADERS += ./common/Global.h \
     ./mainwindow/Ribbon/Ribbon.h \
     ./mainwindow/Ribbon/RibbonGroup.h \
     ./mainwindow/NewPages/NewApiDefinitionPage.h \
-    ./mainwindow/NewPages/newbuspage.h \
+    ./mainwindow/NewPages/NewBusDefinitionPage.h \
     ./mainwindow/NewPages/NewComDefinitionPage.h \
     ./mainwindow/NewPages/NewComponentPage.h \
     ./mainwindow/NewPages/NewDesignPage.h \
@@ -790,7 +790,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./mainwindow/NewWorkspaceDialog.cpp \
     ./mainwindow/SplashScreen.cpp \
     ./mainwindow/NewPages/NewApiDefinitionPage.cpp \
-    ./mainwindow/NewPages/newbuspage.cpp \
+    ./mainwindow/NewPages/NewBusDefinitionPage.cpp \
     ./mainwindow/NewPages/NewComDefinitionPage.cpp \
     ./mainwindow/NewPages/NewComponentPage.cpp \
     ./mainwindow/NewPages/NewDesignPage.cpp \

@@ -28,7 +28,7 @@
 #include <mainwindow/NewPages/NewSystemPage.h>
 #include <mainwindow/NewPages/NewComDefinitionPage.h>
 #include <mainwindow/NewPages/NewApiDefinitionPage.h>
-#include <mainwindow/NewPages/newbuspage.h>
+#include <mainwindow/NewPages/NewBusDefinitionPage.h>
 #include <mainwindow/DrawingBoard/DrawingBoard.h>
 #include <mainwindow/SaveHierarchy/DocumentTreeBuilder.h>
 #include <mainwindow/SaveHierarchy/SaveHierarchyDialog.h>
@@ -2142,7 +2142,7 @@ void MainWindow::createNew()
 		this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)));
 	dialog.addPage(QIcon(":icons/common/graphics/system-component.png"), tr("System"), sysPage);
 
-	NewBusPage* busPage = new NewBusPage(libraryHandler_, &dialog);
+	NewBusDefinitionPage* busPage = new NewBusDefinitionPage(libraryHandler_, &dialog);
 	connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
 		this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
 	dialog.addPage(QIcon(":icons/common/graphics/new-bus.png"), tr("Bus Definition"), busPage);

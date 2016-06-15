@@ -2128,9 +2128,6 @@
     <ClCompile Include="mainwindow\NewPages\NewApiDefinitionPage.cpp">
       <Filter>Source Files\mainwindow\NewPages</Filter>
     </ClCompile>
-    <ClCompile Include="mainwindow\NewPages\newbuspage.cpp">
-      <Filter>Source Files\mainwindow\NewPages</Filter>
-    </ClCompile>
     <ClCompile Include="mainwindow\NewPages\NewComDefinitionPage.cpp">
       <Filter>Source Files\mainwindow\NewPages</Filter>
     </ClCompile>
@@ -2153,9 +2150,6 @@
       <Filter>Source Files\mainwindow\NewPages</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_NewApiDefinitionPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_newbuspage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_NewComDefinitionPage.cpp">
@@ -4288,6 +4282,12 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapHeaderView.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\NewBusDefinitionPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewBusDefinitionPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4873,9 +4873,6 @@
       <Filter>Header Files\mainwindow\Ribbon</Filter>
     </CustomBuild>
     <CustomBuild Include="mainwindow\NewPages\NewApiDefinitionPage.h">
-      <Filter>Header Files\mainwindow\NewPages</Filter>
-    </CustomBuild>
-    <CustomBuild Include="mainwindow\NewPages\newbuspage.h">
       <Filter>Header Files\mainwindow\NewPages</Filter>
     </CustomBuild>
     <CustomBuild Include="mainwindow\NewPages\NewComDefinitionPage.h">
@@ -5891,6 +5888,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapAutoConnector.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewBusDefinitionPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

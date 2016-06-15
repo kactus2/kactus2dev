@@ -19,16 +19,16 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! New bus page.
 //-----------------------------------------------------------------------------
-class NewBusPage : public NewPage 
+class NewBusDefinitionPage : public NewPage 
 {
 	Q_OBJECT
 
 public:
 
-	NewBusPage(LibraryInterface* libHandler, QWidget *parent);
+	NewBusDefinitionPage(LibraryInterface* libHandler, QWidget *parent);
 	
 	//! The destructor.
-	virtual ~NewBusPage();
+	virtual ~NewBusDefinitionPage();
 	
     /*!
      *  Validates the contents of the page thoroughly.
@@ -52,10 +52,10 @@ signals:
 
 private:
 	//! No copying.
-	NewBusPage(const NewBusPage& other);
+	NewBusDefinitionPage(const NewBusDefinitionPage& other);
 
 	//! No assignment.
-	NewBusPage& operator=(const NewBusPage& other);	    
+	NewBusDefinitionPage& operator=(const NewBusDefinitionPage& other);	    
 
 };
 

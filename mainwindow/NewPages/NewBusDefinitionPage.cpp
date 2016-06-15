@@ -9,7 +9,7 @@
 // New bus page.
 //-----------------------------------------------------------------------------
 
-#include "newbuspage.h"
+#include "NewBusDefinitionPage.h"
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
@@ -20,8 +20,8 @@
 //-----------------------------------------------------------------------------
 // Function: NewBusPage()
 //-----------------------------------------------------------------------------
-NewBusPage::NewBusPage(LibraryInterface* libHandler, QWidget *parentDlg):
-NewPage(libHandler, VLNV::BUSDEFINITION, tr("New Bus"), tr("Creates a new bus"), parentDlg)
+NewBusDefinitionPage::NewBusDefinitionPage(LibraryInterface* libHandler, QWidget *parentDlg):
+NewPage(libHandler, VLNV::BUSDEFINITION, tr("New Bus Definition"), tr("Creates a new bus definition"), parentDlg)
 {
 	Q_ASSERT_X(libHandler, "NewBusPage constructor", "Null LibraryInterface pointer given as parameter");	
 }
@@ -29,7 +29,7 @@ NewPage(libHandler, VLNV::BUSDEFINITION, tr("New Bus"), tr("Creates a new bus"),
 //-----------------------------------------------------------------------------
 // Function: ~NewBusPage()
 //-----------------------------------------------------------------------------
-NewBusPage::~NewBusPage()
+NewBusDefinitionPage::~NewBusDefinitionPage()
 {
 
 }
@@ -37,7 +37,7 @@ NewBusPage::~NewBusPage()
 //-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
-bool NewBusPage::validate()
+bool NewBusDefinitionPage::validate()
 {
     // Check if any of the VLNVs already exists.
     bool validVLNV = NewPage::validate();
@@ -53,7 +53,7 @@ bool NewBusPage::validate()
 //-----------------------------------------------------------------------------
 // Function: apply()
 //-----------------------------------------------------------------------------
-void NewBusPage::apply()
+void NewBusDefinitionPage::apply()
 {
 	 emit createBus(vlnvEditor_->getVLNV(), selectedPath());
 }
