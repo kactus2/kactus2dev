@@ -15,6 +15,7 @@ SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
 	Plugins/CppSourceAnalyzer/CppSourceAnalyzer.pro \
 	Plugins/VHDLAnalyzer/VHDLSourceAnalyzer.pro \
 	Plugins/MemoryMapHeaderGenerator/MemoryMapHeaderGenerator.pro \
+	Plugins/ModelSimGenerator/ModelSimGenerator.pro \
 	Plugins/AlteraBSPGenerator/AlteraBSPGenerator.pro \
 	Plugins/QuartusPinImportPlugin/QuartusPinImportPlugin.pro \
 	Plugins/PadsPartGenerator/PadsPartGenerator.pro \

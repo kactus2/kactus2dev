@@ -6,7 +6,6 @@ A) Installing Qt5 packages through the package manager
 The following packages are needed:
 qt5-default
 libqt5xmlpatterns5-dev
-libqt5sql5-sqlite
 qttools5-private-dev
 qttools5-dev-tools
 

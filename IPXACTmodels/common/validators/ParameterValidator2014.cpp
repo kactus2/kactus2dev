@@ -99,7 +99,8 @@ bool ParameterValidator2014::hasValidValue(QSharedPointer<const Parameter> param
 bool ParameterValidator2014::hasValidType(QSharedPointer<const Parameter> parameter) const
 {
     int pos = 0;
-    return typeValidator_.validate(parameter->getType(), pos) == QRegularExpressionValidator::Acceptable;  
+    QString type = parameter->getType();
+    return typeValidator_.validate(type, pos) == QRegularExpressionValidator::Acceptable;  
 }
 
 //-----------------------------------------------------------------------------
