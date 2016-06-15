@@ -103,14 +103,14 @@ private:
 	 */
 	void writeMakefile(QTextStream& stream);
 
-	//! \brief Pointer to the LibraryHandler instance that controls the library
-	LibraryInterface* handler_;
-
 	//! The parser, to get access to parsed data.
 	ModelSimParser& parsedData_;
 
 	//! The utility used to print messages and access library etc.
     IPluginUtility* utility_;
+
+	//! \brief Pointer to the LibraryHandler instance that controls the library
+	LibraryInterface* handler_;
 };
 
 #endif // MODELSIMGENERATOR_H

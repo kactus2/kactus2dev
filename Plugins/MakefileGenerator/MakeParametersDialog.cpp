@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "MakeParametersDialog.h"
-#include "..\QtWidgets\QScrollArea"
+#include <QtWidgets/QScrollArea>
 
 //-----------------------------------------------------------------------------
 // Function: CompileConflictDialog()

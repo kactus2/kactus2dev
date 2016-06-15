@@ -50,14 +50,14 @@ public:
      *
      *      @param [in] instantiation   The ComponentInstantiation.
      */
-	void GeneratorConfiguration::setInstantiation(QSharedPointer<ComponentInstantiation> instantiation);
+	void setInstantiation(QSharedPointer<ComponentInstantiation> instantiation);
 	
     /*!
      *  Gets the component instantiation for the active view.
      *
      *      @return The ComponentInstantiation.
      */
-	QSharedPointer<ComponentInstantiation> GeneratorConfiguration::getInstantiation() const;
+	QSharedPointer<ComponentInstantiation> getInstantiation() const;
 
     /*!
      *  Sets the file set referred by the instantiation.

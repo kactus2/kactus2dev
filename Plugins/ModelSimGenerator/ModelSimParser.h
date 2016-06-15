@@ -88,7 +88,10 @@ public:
     ModelSimParser( IPluginUtility* utility, LibraryInterface* handler );
 	~ModelSimParser();
 
-	QSharedPointer<QList<FileOptions> > ModelSimParser::getParsedData();
+	/*!
+	 *  Returns the parsed data.
+	*/
+	QSharedPointer<QList<FileOptions> > getParsedData();
 
 	/*! \brief Parse the files associated with component's given view.
 	 *
