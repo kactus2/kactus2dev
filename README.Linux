@@ -25,16 +25,27 @@ Binary path of the manually installed Qt5 needs to be set as the defaults in fol
 
 After successful installation of Qt5, Kactus2 is built and installed with the following steps:
 
+A) Installation shared between users, using admin privileges:
+./configure
+make
+sudo make install
+
+B) A local installation from the installation directory:
+Set the installation target directory to variable LOCAL_INSTALL_DIR in file .qmake.conf
 ./configure
 make
 make install
 
-To run Kactus2: 
+To run Kactus2:
 
+A) Installation shared between users:
 /usr/bin/Kactus2
+
+B) A local installation from the installation directory:
+LD_LIBRARY_PATH=. ./Kactus2
 
 Success reports
 ---------------
 
-Tested on Ubuntu 14.04.1 64-bit with Qt 5.2.1 on 27th Mar 2015
+Tested on Ubuntu 16.04 64-bit with Qt 5.5.1 on 16th Jun 2016 for Kactus2 3.0.193
 

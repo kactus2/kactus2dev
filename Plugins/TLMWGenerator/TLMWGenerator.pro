@@ -22,7 +22,7 @@ OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(TLMWGenerator.pri)
-OTHER_FILES += mcapi.json
+OTHER_FILES += tlmw.json
 
-target.path = /usr/share/kactus2/plugins
+target.path = $$plugin_path
 INSTALLS += target

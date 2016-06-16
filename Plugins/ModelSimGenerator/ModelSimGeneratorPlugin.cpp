@@ -56,8 +56,8 @@ QString ModelSimGeneratorPlugin::getVersion() const
 //-----------------------------------------------------------------------------
 QString ModelSimGeneratorPlugin::getDescription() const
 {
-	return "Generates a ModelSim do file, which adds the files in design to ModelSim library and then starts \
-		 a simulation for the design.";
+	return "Generates a ModelSim do file, which adds the files in design to ModelSim library and then starts "\
+		 "a simulation for the design.";
 }
 
 //-----------------------------------------------------------------------------

@@ -24,5 +24,5 @@ UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(PadsPartGenerator.pri)
 
-target.path = /usr/share/kactus2/plugins
+target.path = $$plugin_path
 INSTALLS += target

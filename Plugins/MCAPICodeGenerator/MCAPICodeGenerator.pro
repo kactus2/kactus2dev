@@ -8,13 +8,11 @@ DESTDIR = ../../executable/Plugins
 QT += core xml widgets gui
 CONFIG += plugin release
 DEFINES += MCAPICODEGENERATOR_LIB QT_DLL QT QT_WIDGETS_LIB QT_XML_LIB QT_
-INCLUDEPATH += ./GeneratedFiles \
+INCLUDEPATH += ./../.. \
+    ./GeneratedFiles \
     . \
-    ./../.. \
     $(QTDIR)/../qttools/include 
-
 LIBS += -L"./../../executable" \
-    -lKactus2 \
     -lIPXACTmodels
 DEPENDPATH += .
 MOC_DIR += ./GeneratedFiles/release
@@ -22,7 +20,6 @@ OBJECTS_DIR += release
 UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(MCAPICodeGenerator.pri)
-OTHER_FILES += mcapi.json
 
-target.path = /usr/share/kactus2/plugins
+target.path = $$plugin_path
 INSTALLS += target

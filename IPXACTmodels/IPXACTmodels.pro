@@ -19,5 +19,5 @@ UI_DIR += ./GeneratedFiles
 RCC_DIR += ./GeneratedFiles
 include(IPXACTmodels.pri)
 
-target.path = /usr/lib
+target.path = $$lib_path
 INSTALLS += target

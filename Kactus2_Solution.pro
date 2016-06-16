@@ -10,52 +10,27 @@
 TEMPLATE = subdirs
 CONFIG += ordered
 SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
-        Kactus2.pro \
-        Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro \
-	Plugins/CppSourceAnalyzer/CppSourceAnalyzer.pro \
-	Plugins/VHDLAnalyzer/VHDLSourceAnalyzer.pro \
-	Plugins/MemoryMapHeaderGenerator/MemoryMapHeaderGenerator.pro \
-	Plugins/ModelSimGenerator/ModelSimGenerator.pro \
-	Plugins/AlteraBSPGenerator/AlteraBSPGenerator.pro \
-	Plugins/QuartusPinImportPlugin/QuartusPinImportPlugin.pro \
-	Plugins/PadsPartGenerator/PadsPartGenerator.pro \
-	Plugins/MakefileGenerator/MakefileGenerator.pro \
-	Plugins/TLMWGenerator/TLMWGenerator.pro \
-	Plugins/VerilogGenerator/VerilogGeneratorPlugin.pro \
-	Plugins/VHDLimport/VHDLimport.pro \
-	Plugins/VerilogImport/VerilogImport.pro \
-	Plugins/VerilogIncludeImport/VerilogIncludeImport.pro \
-	Plugins/VerilogSourceAnalyzer/VerilogSourceAnalyzer.pro \
-        Plugins/QuartusProjectGenerator/QuartusProjectGenerator.pro
-#        Plugins/VHDLPackageImport/VHDLPackageImport.pro
+    Kactus2.pro \
+    Plugins/MCAPICodeGenerator/MCAPICodeGenerator.pro \
+    Plugins/CppSourceAnalyzer/CppSourceAnalyzer.pro \
+    Plugins/VHDLAnalyzer/VHDLSourceAnalyzer.pro \
+    Plugins/MemoryMapHeaderGenerator/MemoryMapHeaderGenerator.pro \
+    Plugins/ModelSimGenerator/ModelSimGenerator.pro \
+    Plugins/AlteraBSPGenerator/AlteraBSPGenerator.pro \
+    Plugins/QuartusPinImportPlugin/QuartusPinImportPlugin.pro \
+    Plugins/PadsPartGenerator/PadsPartGenerator.pro \
+    Plugins/MakefileGenerator/MakefileGenerator.pro \
+    Plugins/TLMWGenerator/TLMWGenerator.pro \
+    Plugins/VerilogGenerator/VerilogGeneratorPlugin.pro \
+    Plugins/VHDLimport/VHDLimport.pro \
+    Plugins/VerilogImport/VerilogImport.pro \
+    Plugins/VerilogIncludeImport/VerilogIncludeImport.pro \
+    Plugins/VerilogSourceAnalyzer/VerilogSourceAnalyzer.pro \
+    Plugins/QuartusProjectGenerator/QuartusProjectGenerator.pro
 
 CONFIG(test) {
 	SUBDIRS += tests/test_all.pro
 }
-
-unix:upgrade.path = /usr/share/kactus2
-unix:upgrade.files = ./Administrative/releaseFiles/upgrade.cfg
-
-unix:doc.path = /usr/share/kactus2/doc
-unix:doc.files = ./Administrative/releaseFiles/*.txt
-
-unix:help.path = /usr/share/kactus2/help
-unix:help.files = ./Help/Kactus2Help.qch ./Help/Kactus2Help.qhc
-
-unix:config.path = /etc/xdg/TUT
-
-UNAME = $$system(uname -m)
-equals(UNAME, x86_64): unix:config.extra = cp ./Administrative/releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; (test -d /usr/lib64 && ln -f -s /usr/bin/Kactus2 /usr/lib64/libKactus2.so) || (test -d /lib/x86_64-linux-gnu && ln -f -s /usr/bin/Kactus2 /lib/x86_64-linux-gnu/libKactus2.so)
-!equals(UNAME, x86_64): unix:config.extra = cp ./Administrative/releaseFiles/DefaultSettingsLinux.ini /etc/xdg/TUT/Kactus2.ini; ln -f -s /usr/bin/Kactus2 /usr/lib/libKactus2.so
-
-unix:library.path = /usr/share/kactus2/library
-unix:library.files = ./Administrative/releaseFiles/Library/*
-
-unix:icons.path = /usr/share/pixmaps
-unix:icons.files = ./Administrative/releaseFiles/kactus2.xpm ./Administrative/releaseFiles/kactus2.png
-
-unix:desktop.path = /usr/share/applications
-unix:desktop.files = ./Administrative/releaseFiles/kactus2.desktop
 
 INSTALLS += help doc upgrade config library icons desktop
 
