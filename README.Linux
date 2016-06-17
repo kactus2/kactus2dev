@@ -11,17 +11,8 @@ qttools5-dev-tools
 
 B) Manually downloading and installing from http://qt-project.org/downloads
 
-However, when using manually installed Qt5, you need to make sure that Kactus2 is
-installed using its files. There are two way to do this:
-
-First way:
-Set variable QBIN_PATH located in the configure file as the binary path of Qt5.
-
-Second way:
-Binary path of the manually installed Qt5 needs to be set as the defaults in following files:
-
-/usr/lib/x86_64-linux-gnu/qt-default/qtchooser/default.conf
-/usr/lib/x86_64-linux-gnu/qtchooser/qt5-x86_64-linux-gnu.conf
+However, when using manually installed Qt5, you need to make sure that Kactus2 is installed
+using its files. Open file configure and set the binary path of Qt5 as the value of variable QTBIN_PATH.
 
 After successful installation of Qt5, change to directory of Kactus2.
 There are two ways to build:
@@ -32,14 +23,14 @@ make
 make install (needs admin privileges)
 
 B) A local installation for the current user:
-Set the installation directory in file .qmake.conf to variable LOCAL_INSTALL_DIR
+Open file .qmake.conf and set the installation directory as the value of variable LOCAL_INSTALL_DIR.
 ./configure
 make
 make install
 
 There are three ways to run Kactus2:
 
-A) Installation shared between users:
+A) An installation shared between users:
 /usr/bin/Kactus2
 
 B) A local installation from the installation directory:
