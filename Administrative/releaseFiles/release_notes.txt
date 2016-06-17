@@ -8,6 +8,28 @@
               * Changed or Information
 ===============================================================================
 
+17/06/2016 3.1.0
+----------------------------------------------------
+
++ New design for port map editor:
+	* Added feature to auto-connect logical and physical ports
+	* Logical and physical bounds are now easily editable	
++ Added support for tieoff values in design and port maps
++ Added feature to copy memory-elements along with their sub-elements
++ Improved expression support:
+	* Basic comparison operators are now accepted
+	* Values true/false are now accepted
++ System group names are now visible and editable in Bus editor
++ Generated Verilog parameters are now correctly ordered for references
++ Performance improvements
+
+* ModelSim Generator moved from core to a separate plugin
+* XML processing instructions are now retained in IP-XACT files
+* Added option for Linux installation without admin privilidges
+
+KNOWN UNRESOLVED ISSUES:
+* UI issue: paste command does not update usage count of referenced parameters.
+
 22/04/2016 3.0.0
 ----------------------------------------------------
 

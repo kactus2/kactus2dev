@@ -26,7 +26,10 @@ class MODELSIMGENERATOR_EXPORT ModelSimGeneratorPlugin : public QObject, public 
     Q_INTERFACES(IGeneratorPlugin)
 
 public:
+    //! The default constructor.
     ModelSimGeneratorPlugin();
+
+    //! The destructor.
     ~ModelSimGeneratorPlugin();
 
     /*!
@@ -97,19 +100,9 @@ public:
          QSharedPointer<Document> libDesConf = QSharedPointer<Document const>(),
          QSharedPointer<Document> libDes = QSharedPointer<Document>());
 
-     //! \brief Returns the external program requirements of the plugin.
+     //! Returns the external program requirements of the plugin.
      virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements();
 
-private:
-
-	/*! Run modelsim generator for a component.
-	 *
-	 *      @return bool True if the metadata was changed and the editor should be refreshed.
-	*/
-	/*bool componentModelsimGenerate();
-
-	//! Called when user clicks the generate modelsim icon.
-	void designModelsimGenerate();*/
 };
 
 #endif // MODELSIMGENERATORPLUGIN_H
