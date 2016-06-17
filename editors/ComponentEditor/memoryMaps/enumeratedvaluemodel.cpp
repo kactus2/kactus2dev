@@ -17,6 +17,9 @@
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 
 #include <QColor>
+#include <QApplication>
+#include <QClipboard>
+#include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: enumeratedvaluemodel::EnumeratedValueModel()
@@ -294,4 +297,102 @@ QVariant EnumeratedValueModel::valueForIndex(QModelIndex const& index) const
     {
         return QVariant();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::onCopyRows()
+//-----------------------------------------------------------------------------
+void EnumeratedValueModel::onCopyRows(QModelIndexList indexList)
+{
+    QList<QSharedPointer<EnumeratedValue> > copiedEnumeratedValues;
+    foreach (QModelIndex index, indexList)
+    {
+        QSharedPointer<EnumeratedValue> enumValue = enumValues_->at(index.row());
+        copiedEnumeratedValues.append(enumValue);
+    }
+
+    QVariant enumValueVariant;
+    enumValueVariant.setValue(copiedEnumeratedValues);
+    
+    QMimeData* newMimeData = new QMimeData();
+    
+    newMimeData->setData("text/xml/ipxact:enumeratedValue", QByteArray());
+    newMimeData->setImageData(enumValueVariant);
+
+    QApplication::clipboard()->setMimeData(newMimeData);
+}
+
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::onPasteRows()
+//-----------------------------------------------------------------------------
+void EnumeratedValueModel::onPasteRows()
+{
+    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+
+    if (pasteData->hasImage())
+    {
+        QVariant pasteVariant = pasteData->imageData();
+        if (pasteVariant.canConvert<QList<QSharedPointer<EnumeratedValue> > >())
+        {
+            QList<QSharedPointer<EnumeratedValue> > newEnumeratedValeus =
+                pasteVariant.value<QList<QSharedPointer<EnumeratedValue> > >();
+
+            int rowBegin = enumValues_->size();
+            int rowEnd = rowBegin + newEnumeratedValeus.size() - 1;
+
+            beginInsertRows(QModelIndex(), rowBegin, rowEnd);
+
+            foreach(QSharedPointer<EnumeratedValue> copiedEnumValue, newEnumeratedValeus)
+            {
+                QSharedPointer<EnumeratedValue> newEnumValue (new EnumeratedValue(*copiedEnumValue.data()));
+                newEnumValue->setName(getUniqueName(newEnumValue->name()));
+
+                enumValues_->append(newEnumValue);
+
+                emit enumAdded(enumValues_->size() - 1);
+            }
+
+            endInsertRows();
+
+            emit contentChanged();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::getUniqueName()
+//-----------------------------------------------------------------------------
+QString EnumeratedValueModel::getUniqueName(QString const& originalName)
+{
+    QString name = originalName;
+    int trailingNumber = 1;
+
+    bool match =  true;
+    while (match)
+    {
+        match = false;        
+        for(int row = 0; row < enumValues_->size(); row++)
+        {
+            if (name.compare(enumValues_->at(row)->name()) == 0)
+            {
+                match = true;
+                name = originalName + "_" + QString::number(trailingNumber);
+                trailingNumber++;
+            }
+        }
+    }
+
+    return name;
+}
+
+//-----------------------------------------------------------------------------
+// Function: enumeratedvaluemodel::mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList EnumeratedValueModel::mimeTypes() const
+{
+    QStringList types(QAbstractItemModel::mimeTypes());
+
+    types << "text/xml/ipxact:enumeratedValue";
+
+    return types;
 }

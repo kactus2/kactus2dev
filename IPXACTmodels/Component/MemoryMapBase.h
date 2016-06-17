@@ -117,4 +117,6 @@ private:
     QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks_;
 };
 
+Q_DECLARE_METATYPE(QSharedPointer<MemoryMapBase>);
+
 #endif // MEMORYMAPBASE_H

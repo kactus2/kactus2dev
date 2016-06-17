@@ -236,4 +236,6 @@ private:
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_;
 };
 
+Q_DECLARE_METATYPE(QSharedPointer<AddressBlock>);
+
 #endif // ADDRESSBLOCK_H

@@ -23,6 +23,9 @@
 
 #include <QColor>
 #include <QRegularExpression>
+#include <QApplication>
+#include <QClipboard>
+#include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapModel::MemoryMapModel()
@@ -36,7 +39,7 @@ MemoryMapModel::MemoryMapModel(QSharedPointer<MemoryMapBase> memoryRemap,
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 memoryRemap_(memoryRemap),
-memoryBlocks(memoryRemap->getMemoryBlocks()),
+memoryBlocks_(memoryRemap->getMemoryBlocks()),
 expressionFormatter_(expressionFormatter),
 addressBlockValidator_(addressBlockValidator),
 addressUnitBits_(addressUnitBits)
@@ -63,7 +66,7 @@ int MemoryMapModel::rowCount(QModelIndex const& parent) const
     {
 		return 0;
 	}
-	return memoryBlocks->size();
+	return memoryBlocks_->size();
 }
 
 //-----------------------------------------------------------------------------
@@ -152,7 +155,7 @@ QVariant MemoryMapModel::headerData(int section, Qt::Orientation orientation, in
 //-----------------------------------------------------------------------------
 QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= memoryBlocks->size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= memoryBlocks_->size())
     {
 		return QVariant();
 	}
@@ -216,7 +219,7 @@ QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= memoryBlocks->size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= memoryBlocks_->size())
     {
 		return false;
 	}
@@ -225,7 +228,7 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
     {
         if (index.column() == MemoryMapColumns::USAGE_COLUMN)
         {
-            QSharedPointer<AddressBlock> addrBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
+            QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
             if (addrBlock)
             {
                 addrBlock->setUsage(General::str2Usage(value.toString(), General::USAGE_COUNT));
@@ -238,20 +241,20 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         }
         else if (index.column() == MemoryMapColumns::NAME_COLUMN)
         {
-            memoryBlocks->at(index.row())->setName(value.toString());
+            memoryBlocks_->at(index.row())->setName(value.toString());
         }									
         else if (index.column() == MemoryMapColumns::BASE_COLUMN)
         {
             if (!value.isValid())
             {
-                removeReferencesFromSingleExpression(memoryBlocks->at(index.row())->getBaseAddress());
+                removeReferencesFromSingleExpression(memoryBlocks_->at(index.row())->getBaseAddress());
             }
 
-            memoryBlocks->at(index.row())->setBaseAddress(value.toString());
+            memoryBlocks_->at(index.row())->setBaseAddress(value.toString());
         }
         else if (index.column() == MemoryMapColumns::RANGE_COLUMN)
         {
-            QSharedPointer<AddressBlock> addrBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
+            QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
             if (addrBlock)
             {
                 if (!value.isValid())
@@ -268,7 +271,7 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         }
         else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
         {
-            QSharedPointer<AddressBlock> addrBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
+            QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
             if (addrBlock)
             {
                 if (!value.isValid())
@@ -284,11 +287,11 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         }
         else if (index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
         {
-            memoryBlocks->at(index.row())->setDescription(value.toString());
+            memoryBlocks_->at(index.row())->setDescription(value.toString());
         }
         else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
         {
-            QSharedPointer<AddressBlock> addrBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
+            QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
             if (addrBlock)
             {
                 addrBlock->setAccess(AccessTypes::str2Access(value.toString(), AccessTypes::ACCESS_COUNT));
@@ -300,7 +303,7 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         }
         else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)
         {
-            QSharedPointer<AddressBlock> addrBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
+            QSharedPointer<AddressBlock> addrBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
             if (addrBlock)
             {
                 addrBlock->setVolatile(value.toBool());
@@ -344,7 +347,7 @@ void MemoryMapModel::addressUnitBitsUpdated(QString const& newAddressUnitBits)
 //-----------------------------------------------------------------------------
 void MemoryMapModel::onAddItem( QModelIndex const& index )
 {
-	int row = memoryBlocks->size();
+	int row = memoryBlocks_->size();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -363,15 +366,15 @@ void MemoryMapModel::onAddItem( QModelIndex const& index )
     int lastBaseAddress = 0;
     int lastRange = 0;
 
-    for (int itemIndex = 0; itemIndex < memoryBlocks->size(); ++itemIndex)
+    for (int itemIndex = 0; itemIndex < memoryBlocks_->size(); ++itemIndex)
     {
-        QString calculatedExpression = parseExpressionToDecimal(memoryBlocks->at(itemIndex)->getBaseAddress());
+        QString calculatedExpression = parseExpressionToDecimal(memoryBlocks_->at(itemIndex)->getBaseAddress());
         int addressBlockBaseAddress = calculatedExpression.toInt();
 
         if (addressBlockBaseAddress > lastBaseAddress ||
-            (itemIndex == memoryBlocks->size() - 1 && lastBaseAddress == 0))
+            (itemIndex == memoryBlocks_->size() - 1 && lastBaseAddress == 0))
         {
-            QSharedPointer<AddressBlock> addressBlock = memoryBlocks->at(itemIndex).dynamicCast<AddressBlock>();
+            QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(itemIndex).dynamicCast<AddressBlock>();
             if (addressBlock)
             {
                 lastBaseAddress = addressBlockBaseAddress;
@@ -391,7 +394,7 @@ void MemoryMapModel::onAddItem( QModelIndex const& index )
     addrBlock->setWidth("32");
 	addrBlock->setRange("4");
 	addrBlock->setBaseAddress(newBase);
-	memoryBlocks->insert(row, addrBlock);
+	memoryBlocks_->insert(row, addrBlock);
 	endInsertRows();
 
 	// inform navigation tree that file set is added
@@ -407,7 +410,7 @@ void MemoryMapModel::onAddItem( QModelIndex const& index )
 void MemoryMapModel::onRemoveItem( QModelIndex const& index )
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= memoryBlocks->size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= memoryBlocks_->size())
     {
 		return;
 	}
@@ -415,13 +418,13 @@ void MemoryMapModel::onRemoveItem( QModelIndex const& index )
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
 
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
+    QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
     if (addressBlock)
     {
         decreaseReferencesWithRemovedAddressBlock(addressBlock);
     }
 
-	memoryBlocks->removeAt(index.row());
+	memoryBlocks_->removeAt(index.row());
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed
@@ -465,7 +468,7 @@ bool MemoryMapModel::isValidExpressionColumn(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant MemoryMapModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
+    QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
 
     if (addressBlock)
     {
@@ -495,7 +498,7 @@ QVariant MemoryMapModel::expressionOrValueForIndex(QModelIndex const& index) con
 //-----------------------------------------------------------------------------
 bool MemoryMapModel::validateIndex(QModelIndex const& index) const
 {
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
+    QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
     if (!addressBlock)
     {
         return false;
@@ -530,11 +533,11 @@ bool MemoryMapModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 int MemoryMapModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
 {
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks->at(row).dynamicCast<AddressBlock>();
+    QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(row).dynamicCast<AddressBlock>();
 
     if (addressBlock)
     {
-        int referencesInBaseAddress = memoryBlocks->at(row)->getBaseAddress().count(valueID);
+        int referencesInBaseAddress = memoryBlocks_->at(row)->getBaseAddress().count(valueID);
         int referencesInRange = addressBlock->getRange().count(valueID);
         int referencesInWidth = addressBlock->getWidth().count(valueID);
 
@@ -555,18 +558,18 @@ QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
 {
     if (index.column() == MemoryMapColumns::NAME_COLUMN)
     {
-        return memoryBlocks->at(index.row())->name();
+        return memoryBlocks_->at(index.row())->name();
     }
     else if (index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
     {
-        return memoryBlocks->at(index.row())->description();
+        return memoryBlocks_->at(index.row())->description();
     }
     else if (index.column() == MemoryMapColumns::BASE_COLUMN)
     {
-        return memoryBlocks->at(index.row())->getBaseAddress();
+        return memoryBlocks_->at(index.row())->getBaseAddress();
     }
 
-    QSharedPointer<AddressBlock> addressBlock = memoryBlocks->at(index.row()).dynamicCast<AddressBlock>();
+    QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();
     if (addressBlock)
     {
         if (index.column() == MemoryMapColumns::USAGE_COLUMN)
@@ -633,4 +636,119 @@ quint64 MemoryMapModel::getLastAddress() const
 
 //     return lastBaseAddress + General::str2Uint(static_cast<AddressBlock*>(memoryRemap_->getMemoryBlocks()->at(index).data())->getRange()) - 1;
     return lastBaseAddress + parseExpressionToDecimal(block->getRange()).toInt() - 1;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::onCopyRows()
+//-----------------------------------------------------------------------------
+void MemoryMapModel::onCopyRows(QModelIndexList indexList)
+{
+    QList<QSharedPointer<MemoryBlockBase> > copiedBlocks;
+    foreach (QModelIndex index, indexList)
+    {
+        QSharedPointer<MemoryBlockBase> memoryBlock = memoryBlocks_->at(index.row());
+        copiedBlocks.append(memoryBlock);
+    }
+
+    QVariant memoryBlockVariant;
+    memoryBlockVariant.setValue(copiedBlocks);
+
+    QMimeData* newMimeData = new QMimeData();
+    newMimeData->setData("text/xml/ipxact:addressBlock", QByteArray());
+    newMimeData->setImageData(memoryBlockVariant);
+
+    QApplication::clipboard()->setMimeData(newMimeData);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::onPasteRows()
+//-----------------------------------------------------------------------------
+void MemoryMapModel::onPasteRows()
+{
+    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+
+    if (pasteData->hasImage())
+    {
+        QVariant pasteVariant = pasteData->imageData();
+        if (pasteVariant.canConvert<QList<QSharedPointer<MemoryBlockBase> > >())
+        {
+            AddressBlockExpressionGatherer gatherer;
+            ReferenceCalculator referenceCalculator(getParameterFinder());
+
+            QList<QSharedPointer<MemoryBlockBase> > newMemoryBlocks =
+                pasteVariant.value<QList<QSharedPointer<MemoryBlockBase> > >();
+
+            int rowBegin = memoryBlocks_->size();
+            int rowEnd = rowBegin + newMemoryBlocks.size() - 1;
+
+            beginInsertRows(QModelIndex(), rowBegin, rowEnd);
+
+            foreach(QSharedPointer<MemoryBlockBase> copiedBlock, newMemoryBlocks)
+            {
+                QSharedPointer<AddressBlock> addressBlock = copiedBlock.dynamicCast<AddressBlock>();
+                if (addressBlock)
+                {
+                    QSharedPointer<AddressBlock> newBlock (new AddressBlock(*addressBlock.data()));
+                    newBlock->setName(getUniqueName(newBlock->name(), getCurrentItemNames()));
+
+                    memoryBlocks_->append(newBlock);
+
+                    increaseReferencesInPastedAddressBlock(newBlock, gatherer, referenceCalculator);
+
+                    emit itemAdded(memoryBlocks_->size() - 1);
+                }
+            }
+
+            endInsertRows();
+
+            emit contentChanged();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapmodel::getCurrentItemNames()
+//-----------------------------------------------------------------------------
+QStringList MemoryMapModel::getCurrentItemNames()
+{
+    QStringList names;
+    foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryBlocks_)
+    {
+        names.append(memoryBlock->name());
+    }
+
+    return names;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::increaseReferencesInPastedAddressBlock()
+//-----------------------------------------------------------------------------
+void MemoryMapModel::increaseReferencesInPastedAddressBlock(QSharedPointer<AddressBlock> pastedBlock,
+    AddressBlockExpressionGatherer& gatherer, ReferenceCalculator& referenceCalculator)
+{
+    QStringList blockExpressions = gatherer.getExpressions(pastedBlock);
+
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(blockExpressions);
+
+    QMapIterator<QString, int> refParameterIterator (referencedParameters);
+    while (refParameterIterator.hasNext())
+    {
+        refParameterIterator.next();
+        for (int i = 0; i < refParameterIterator.value(); ++i)
+        {
+            emit increaseReferences(refParameterIterator.key());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList MemoryMapModel::mimeTypes() const
+{
+    QStringList types(QAbstractItemModel::mimeTypes());
+
+    types << "text/xml/ipxact:addressBlock";
+
+    return types;
 }

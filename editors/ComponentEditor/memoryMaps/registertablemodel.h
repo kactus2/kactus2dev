@@ -25,6 +25,9 @@
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 class FieldValidator;
+class FieldExpressionsGatherer;
+class ReferenceCalculator;
+
 //-----------------------------------------------------------------------------
 //! The model to manage the details of a single register.
 //-----------------------------------------------------------------------------
@@ -112,6 +115,13 @@ public:
 	 *      @return True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+    
+    /*!
+     *  Get the list of acceptable mime types.
+     *
+     *      @return The list of acceptable mime types.
+     */
+    virtual QStringList mimeTypes() const;
 
 protected:
 
@@ -168,6 +178,18 @@ public slots:
 	 */
 	virtual void onRemoveItem(const QModelIndex& index);
 
+    /*!
+     *  Copy the items in the selected rows.
+     *
+     *      @param [in] indexList   List of indexes pointing to the selected rows.
+     */
+    void onCopyRows(QModelIndexList indexList);
+
+    /*!
+     *  Paste the copied items.
+     */
+    void onPasteRows();
+
 signals:
 
 	//! Emitted when the contents of the model change.
@@ -200,6 +222,27 @@ private:
      *      @return     The data in the given index.
      */
     QVariant valueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Increase the number of references made in the copied field.
+     *
+     *      @param [in] pastedField             The copied field.
+     *      @param [in] gatherer                Field expressions gatherer.
+     *      @param [in] referenceCalculator     The reference calculator.
+     */
+    void increaseReferencesInPastedField(QSharedPointer<Field> pastedField, FieldExpressionsGatherer& gatherer,
+        ReferenceCalculator& referenceCalculator);
+
+    /*!
+     *  Get the names of the contained fields.
+     *
+     *      @return The names of the contained fields.
+     */
+    QStringList getCurrentItemNames() const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! Pointer to the register being edited.
 	QSharedPointer<Register> reg_;

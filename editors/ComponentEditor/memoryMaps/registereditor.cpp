@@ -74,6 +74,7 @@ model_(0)
     view_->setAllowImportExport(true);
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
+    view_->setAllowElementCopying(true);
 
     view_->setDelegate(new RegisterDelegate(parameterCompleter, parameterFinder, this));
 
@@ -99,6 +100,12 @@ model_(0)
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(copyRows(QModelIndexList)),
+        model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(pasteRows()), model_, SLOT(onPasteRows()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

@@ -83,6 +83,20 @@ signals:
      */
     void addMemoryRemapItem(const QModelIndex& index);
 
+    /*!
+     *  Copy the selected rows.
+     *
+     *      @param [in] indexList   List of selected indexes containing the copied rows.
+     */
+    void copyRows(QModelIndexList indexList);
+
+    /*!
+     *  Paste the copied rows.
+     *
+     *      @param [in] targetIndex     The target of the paste action.
+     */
+    void pasteRows(QModelIndex targetIndex);
+
 protected:
 
     /*!
@@ -130,6 +144,12 @@ protected:
 	//! Action for exporting a csv-file.
 	QAction exportAction_;
 
+    //! The action to copy an element.
+    QAction copyRowsAction_;
+
+    //! The action to paste an element.
+    QAction pasteRowsAction_;
+
 	//! Specifies if the items can be imported/exported to a csv file..
 	bool importExportable_;
 
@@ -165,6 +185,16 @@ private slots:
      */
     virtual void onAddMemoryRemapAction();
 
+    /*!
+     *  Handler for element copy action.
+     */
+    void onCopyRowsAction();
+
+    /*!
+     *  Handler for element paste action.
+     */
+    void onPasteRowsAction();
+
 private:
 
 	//! No copying.
@@ -174,7 +204,7 @@ private:
     MemoryMapsView& operator=(const MemoryMapsView& other);
 
 	/*!
-	 *  Set upt the actions for the context menu.
+	 *  Set up the actions for the context menu.
 	 */
 	void setupActions();
 

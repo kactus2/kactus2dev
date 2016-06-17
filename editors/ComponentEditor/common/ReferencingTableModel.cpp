@@ -60,3 +60,29 @@ void ReferencingTableModel::removeReferencesFromSingleExpression(QString const& 
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: ReferencingTableModel::getUniqueName()
+//-----------------------------------------------------------------------------
+QString ReferencingTableModel::getUniqueName(QString const& originalName, QStringList currentNames) const
+{
+    QString name = originalName;
+    int trailingNumber = 1;
+
+    bool match =  true;
+    while (match)
+    {
+        match = false;        
+        for(int row = 0; row < currentNames.size(); row++)
+        {
+            if (name.compare(currentNames.at(row)) == 0)
+            {
+                match = true;
+                name = originalName + "_" + QString::number(trailingNumber);
+                trailingNumber++;
+            }
+        }
+    }
+
+    return name;
+}

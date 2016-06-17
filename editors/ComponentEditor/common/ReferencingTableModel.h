@@ -64,6 +64,16 @@ protected:
      */
     void removeReferencesFromSingleExpression(QString const& expression) const;
 
+    /*!
+     *  Get the unique name from the selected name.
+     *
+     *      @param [in] originalName    The selected name.
+     *      @param [in] currentNames    A list of already used names.
+     *
+     *      @return A unique name created from the selected name.
+     */
+    QString getUniqueName(QString const& originalName, QStringList currentNames) const;
+
 signals:
 
     /*!
@@ -72,6 +82,13 @@ signals:
      *      @param [in] valueId   The id of the referenced parameter.
      */
     void decreaseReferences(const QString& valueId) const;
+
+    /*!
+     *  Increase the amount of references to the selected parameter.
+     *
+     *      @param [in] valueId   The id of the referenced parameter.
+     */
+    void increaseReferences(QString const& parameterID);
 
 private:
 

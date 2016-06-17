@@ -69,6 +69,7 @@ model_(0)
 	QString defPath = QString("%1/registerList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
+    view_->setAllowElementCopying(true);
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
 
@@ -106,6 +107,13 @@ model_(0)
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(copyRows(QModelIndexList)),
+        model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(pasteRows()), model_, SLOT(onPasteRows()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

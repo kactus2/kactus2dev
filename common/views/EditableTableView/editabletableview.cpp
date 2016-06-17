@@ -27,23 +27,27 @@
 #include <QFontMetrics>
 #include <QSize>
 #include <QHeaderView>
+#include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: EditableTableView::EditableTableView()
 //-----------------------------------------------------------------------------
-EditableTableView::EditableTableView(QWidget *parent)
-    : QTableView(parent),
-      pressedPoint_(),
-      addAction_(tr("Add row"), this),
-      removeAction_(tr("Remove row"), this),
-      copyAction_(tr("Copy"), this),
-      pasteAction_(tr("Paste"), this),
-      clearAction_(tr("Clear"), this),
-      importAction_(tr("Import csv-file"), this),
-      exportAction_(tr("Export csv-file"), this),
-      importExportEnabled_(false),
-      defImportExportPath_(),
-      itemsDraggable_(true)
+EditableTableView::EditableTableView(QWidget *parent):
+QTableView(parent),
+pressedPoint_(),
+addAction_(tr("Add row"), this),
+removeAction_(tr("Remove row"), this),
+copyAction_(tr("Copy"), this),
+pasteAction_(tr("Paste"), this),
+clearAction_(tr("Clear"), this),
+importAction_(tr("Import csv-file"), this),
+exportAction_(tr("Export csv-file"), this),
+copyElementAction_(tr("Copy element"), this),
+pasteElementAction_(tr("Paste element"), this),
+importExportEnabled_(false),
+elementCopyIsAllowed_(false),
+defImportExportPath_(),
+itemsDraggable_(true)
 {
 	// cells are resized to match contents 
 	horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
@@ -97,6 +101,14 @@ void EditableTableView::setAllowImportExport(bool allow)
 bool EditableTableView::importExportAllowed() const
 {
     return importExportEnabled_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: editabletableview::setAllowElementCopying()
+//-----------------------------------------------------------------------------
+void EditableTableView::setAllowElementCopying(bool allow)
+{
+    elementCopyIsAllowed_ = allow;
 }
 
 //-----------------------------------------------------------------------------
@@ -238,6 +250,32 @@ void EditableTableView::contextMenuEvent(QContextMenuEvent* event)
 		menu.addAction(&copyAction_);
         menu.addAction(&pasteAction_);
     }
+    if (elementCopyIsAllowed_)
+    {
+        bool validIndex = index.isValid();
+        bool containsMimeData = false;
+
+        const QMimeData* clipMimeData = QApplication::clipboard()->mimeData();
+        QString modelAcceptedMimeType = model()->mimeTypes().last();
+        if (clipMimeData->hasImage() && clipMimeData->hasFormat(modelAcceptedMimeType))
+        {
+            containsMimeData = true;
+        }
+
+        if (validIndex || containsMimeData)
+        {
+            menu.addSeparator();
+            if (validIndex)
+            {
+                menu.addAction(&copyElementAction_);
+            }
+            if (containsMimeData)
+            {
+                menu.addAction(&pasteElementAction_);
+            }
+        }
+    }
+
 	if (importExportAllowed())
     {
         menu.addSeparator();
@@ -421,13 +459,13 @@ void EditableTableView::setupActions()
 	connect(&removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
     removeAction_.setShortcut(Qt::SHIFT + Qt::Key_Delete);
 
-	copyAction_.setToolTip(tr("Copy a row from the table"));
-	copyAction_.setStatusTip(tr("Copy a row from the table"));
+	copyAction_.setToolTip(tr("Copy the contents of a cell from the table"));
+	copyAction_.setStatusTip(tr("Copy the contents of a cell from the table"));
 	connect(&copyAction_, SIGNAL(triggered()), this, SLOT(onCopyAction()), Qt::UniqueConnection);
 	copyAction_.setShortcut(QKeySequence::Copy);
 
-	pasteAction_.setToolTip(tr("Paste a row to the table"));
-	pasteAction_.setStatusTip(tr("Paste a row to the table"));
+	pasteAction_.setToolTip(tr("Paste the contents of a cell to the table"));
+	pasteAction_.setStatusTip(tr("Paste the contents of a cell to the table"));
 	connect(&pasteAction_, SIGNAL(triggered()), this, SLOT(onPasteAction()), Qt::UniqueConnection);
 	pasteAction_.setShortcut(QKeySequence::Paste);
 
@@ -443,6 +481,14 @@ void EditableTableView::setupActions()
 	exportAction_.setToolTip(tr("Export table to a csv-file"));
 	exportAction_.setStatusTip(tr("Export table to a csv-file"));
 	connect(&exportAction_, SIGNAL(triggered()), this, SLOT(onCSVExport()), Qt::UniqueConnection);
+
+    copyElementAction_.setToolTip(tr("Copy a row from the table"));
+    copyElementAction_.setStatusTip(tr("Copy a row from the table"));
+    connect(&copyElementAction_, SIGNAL(triggered()), this, SLOT(onCopyElementAction()), Qt::UniqueConnection);
+
+    pasteElementAction_.setToolTip(tr("Paste a row from the table"));
+    pasteElementAction_.setStatusTip(tr("Paste a row from the table"));
+    connect(&pasteElementAction_, SIGNAL(triggered()), this, SIGNAL(pasteRows()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -560,6 +606,48 @@ void EditableTableView::onPasteAction()
     }
 
 	QApplication::restoreOverrideCursor();
+}
+
+//-----------------------------------------------------------------------------
+// Function: editabletableview::onCopyElementAction()
+//-----------------------------------------------------------------------------
+void EditableTableView::onCopyElementAction()
+{
+    // if nothing was selected then don't copy anything
+    if (!currentIndex().isValid())
+    {
+        return;
+    }
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    QModelIndexList indexList = selectedIndexes();
+    qSort(indexList);
+
+    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
+
+    QVector<int> usedRows;
+
+    QModelIndexList singleRowIndexList;
+    for (int i = 0; i < indexList.size(); i++)
+    {
+        QModelIndex index = indexList.at(i);
+
+        if (sortProxy != 0)
+        {
+            index = sortProxy->mapToSource(index);
+        }
+
+        if (!usedRows.contains(index.row()))
+        {
+            usedRows.append(index.row());
+            singleRowIndexList.append(index);
+        }
+    }
+
+    emit copyRows(singleRowIndexList);
+
+    QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------

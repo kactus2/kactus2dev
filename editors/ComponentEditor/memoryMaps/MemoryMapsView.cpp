@@ -22,6 +22,7 @@
 #include <QApplication>
 #include <QPainter>
 #include <QPen>
+#include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapsView::MemoryMapsView()
@@ -36,6 +37,8 @@ pasteAction_(tr("Paste"), this),
 clearAction_(tr("Clear"), this),
 importAction_(tr("Import csv-file"), this),
 exportAction_(tr("Export csv-file"), this),
+copyRowsAction_(tr("Copy elements"), this),
+pasteRowsAction_(tr("Paste elements"), this),
 importExportable_(false),
 defaultImportExportPath_()
 {
@@ -154,6 +157,36 @@ void MemoryMapsView::contextMenuEvent(QContextMenuEvent* event)
         menu.addAction(&copyAction_);
     }
 
+    bool validIndex = index.isValid();
+    bool containsCorrectMimeData = false;
+
+    const QMimeData* clipMime = QApplication::clipboard()->mimeData();
+    QStringList modelMimes = model()->mimeTypes();
+    QString remapMime = modelMimes.last();
+    QString mapMime = modelMimes.at(modelMimes.size() - 2);
+
+    if (clipMime->hasImage())
+    {
+        if (index.isValid() && (clipMime->hasFormat(remapMime) || clipMime->hasFormat(mapMime)) ||
+            (!index.isValid() && clipMime->hasFormat(mapMime)))
+        {
+            containsCorrectMimeData = true;
+        }
+    }
+
+    if (validIndex || containsCorrectMimeData)
+    {
+        menu.addSeparator();
+        if (validIndex)
+        {
+            menu.addAction(&copyRowsAction_);
+        }
+        if (containsCorrectMimeData)
+        {
+            menu.addAction(&pasteRowsAction_);
+        }
+    }
+
     if (importExportable_)
     {
         menu.addSeparator();
@@ -183,12 +216,12 @@ void MemoryMapsView::setupActions()
     addMemoryRemapAction_.setStatusTip(tr("Add a new memory remap to the selected memory map."));
     connect(&addMemoryRemapAction_, SIGNAL(triggered()), this, SLOT(onAddMemoryRemapAction()), Qt::UniqueConnection);
 
-    copyAction_.setToolTip(tr("Copy a row from the table."));
-    copyAction_.setStatusTip(tr("Copy a row from the table."));
+    copyAction_.setToolTip(tr("Copy the contents of a cell from the table."));
+    copyAction_.setStatusTip(tr("Copy the contents of a cell from the table."));
     connect(&copyAction_, SIGNAL(triggered()), this, SLOT(onCopyAction()), Qt::UniqueConnection);
 
-    pasteAction_.setToolTip(tr("Paste a row to the table."));
-    pasteAction_.setStatusTip(tr("Paste a row to the table."));
+    pasteAction_.setToolTip(tr("Paste the contents of a cell to the table."));
+    pasteAction_.setStatusTip(tr("Paste the contents of a cell to the table."));
     connect(&pasteAction_, SIGNAL(triggered()), this, SLOT(onPasteAction()), Qt::UniqueConnection);
 
     clearAction_.setToolTip(tr("Clear the contents of a cell."));
@@ -202,6 +235,14 @@ void MemoryMapsView::setupActions()
     exportAction_.setToolTip(tr("Export table to a csv-file."));
     exportAction_.setStatusTip(tr("Export table to a csv-file."));
     connect(&exportAction_, SIGNAL(triggered()), this, SLOT(onCSVExport()), Qt::UniqueConnection);
+
+    copyRowsAction_.setToolTip(tr("Copy a row from the table"));
+    copyRowsAction_.setStatusTip(tr("Copy a row from the table"));
+    connect(&copyRowsAction_, SIGNAL(triggered()), this, SLOT(onCopyRowsAction()), Qt::UniqueConnection);
+
+    pasteRowsAction_.setToolTip(tr("Paste a row from the table"));
+    pasteRowsAction_.setStatusTip(tr("Paste a row from the table"));
+    connect(&pasteRowsAction_, SIGNAL(triggered()), this, SLOT(onPasteRowsAction()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -592,6 +633,63 @@ void MemoryMapsView::onRemoveAction()
 
     QApplication::restoreOverrideCursor();
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsView::onCopyRowsAction()
+//-----------------------------------------------------------------------------
+void MemoryMapsView::onCopyRowsAction()
+{
+    // if nothing was selected then don't copy anything
+    if (!currentIndex().isValid())
+    {
+        return;
+    }
+
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    QModelIndexList indexList = selectedIndexes();
+    qSort(indexList);
+
+    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
+
+    QModelIndexList singleRowIndexList;
+    for (int i = 0; i < indexList.size(); i++)
+    {
+        QModelIndex index = indexList.at(i);
+
+        if (sortProxy != 0)
+        {
+            index = sortProxy->mapToSource(index);
+        }
+
+        singleRowIndexList.append(index);
+    }
+
+    emit copyRows(singleRowIndexList);
+
+    QApplication::restoreOverrideCursor();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsView::onPasteRowsAction()
+//-----------------------------------------------------------------------------
+void MemoryMapsView::onPasteRowsAction()
+{
+    QModelIndex pasteTarget = indexAt(pressedPoint_);
+
+    QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
+    if (sortProxy != 0)
+    {
+        pasteTarget = sortProxy->mapToSource(pasteTarget);
+    }
+
+    if (pasteTarget.parent().isValid())
+    {
+        pasteTarget = pasteTarget.parent();
+    }
+
+    emit pasteRows(pasteTarget);
 }
 
 //-----------------------------------------------------------------------------

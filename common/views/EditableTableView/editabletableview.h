@@ -36,19 +36,23 @@ public:
     //! Number of the column for name.
     static const int NAME_COLUMN = 0; 
 
-	/*! The constructor
+	/*!
+     *  The constructor.
 	 *
-	 *      @param [in] parent Pointer to the owner of this view.
-	*/
+     *      @param [in] parent  Pointer to the owner of this view.
+	 */
 	EditableTableView(QWidget *parent);
 	
-	//! The destructor
+	/*!
+     *  The destructor.
+     */
 	virtual ~EditableTableView();
 
-	/*! Enable/disable the import/export csv file functionality.
+	/*!
+     *  Enable/disable the import/export csv file functionality.
 	 *
-	 *      @param [in] allow If true then import/export is enabled.
-	*/
+	 *      @param [in] allow   If true then import/export is enabled.
+	 */
 	virtual void setAllowImportExport(bool allow);
 
     /*!
@@ -58,58 +62,85 @@ public:
      */
     bool importExportAllowed() const;
 
-	/*! Set the model class for this view.	 
+    /*!
+     *  Enable / disable the element copying.
+     *
+     *      @param [in] allow   If true, element copying is allowed.
+     */
+    void setAllowElementCopying(bool allow);
+
+	/*!
+     *  Set the model class for this view.	 
 	 *
 	 *      @param [in] model The model displayed by this view.
-	*/
+	 */
 	virtual void setModel(QAbstractItemModel* model);
 
 public slots:
 
-	/*! Set the items in the view to be draggable or not.
+	/*!
+     *  Set the items in the view to be draggable or not.
 	 *
 	 *      @param [in] draggable   If true the positions of the items can change by dragging.
-	*/
+     */
 	void setItemsDraggable(bool draggable);
 
-	/*! Create a csv-file of the editor contents.
+	/*!
+     *  Create a csv-file of the editor contents.
 	 *
 	 *      @param [in] filePath    Contains an absolute file path to the file to create.
-	*/
+	 */
 	void onCSVExport(const QString& filePath = QString());
 
-	/*! Import contents of a csv-file to the editor.
+	/*!
+     *  Import contents of a csv-file to the editor.
 	 *
 	 *      @param [in] filePath    The path to the csv-file to import.
-	*/
+	 */
 	void onCSVImport(const QString& filePath = QString());
 
-	/*! Set the default path to use for import/export csv.
+	/*!
+     *  Set the default path to use for import/export csv.
 	 *
 	 *      @param [in]  path   The path to use as default.
-	*/
+	 */
 	virtual void setDefaultImportExportPath(const QString& path);
 
 signals:
 
-	/*! A new item should be added to given index.
+	/*!
+     *  A new item should be added to given index.
 	 *
 	 *      @param [in] index   The position where new item should be added at.
-	*/
+	 */
 	void addItem(const QModelIndex& index);
 
-	/*! An item should be removed from the model.
+	/*!
+     *  An item should be removed from the model.
 	 * 
 	 *  @param [in] index   Identifies the item that should be removed.
-	*/
+	 */
 	void removeItem(const QModelIndex& index);
 
-	/*! Move item to another position.
+	/*!
+     *  Move item to another position.
 	 *
-	 *      @param [in] originalPos Identifies the item that should be moved.
-	 *      @param [in] newPos      The new position the item should be moved to.
-	*/
+	 *      @param [in] originalPos     Identifies the item that should be moved.
+	 *      @param [in] newPos          The new position the item should be moved to.
+	 */
 	void moveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
+
+    /*!
+     *  Copy the selected rows.
+     *
+     *      @param [in] indexList   List of selected indexes containing the copied rows.
+     */
+    void copyRows(QModelIndexList indexList);
+
+    /*!
+     *  Paste the copied rows.
+     */
+    void pasteRows();
 
 protected:
 
@@ -155,8 +186,17 @@ protected:
 	//! Action to export a csv-file
 	QAction exportAction_;
 
+    //! The action to copy an element.
+    QAction copyElementAction_;
+
+    //! The action to paste an element.
+    QAction pasteElementAction_;
+
 	//! Specified if the items can be imported/exported to a csv file.
 	bool importExportEnabled_;
+
+    //! Specifies if the elements can be copied / pasted.
+    bool elementCopyIsAllowed_;
 
 protected slots:
 
@@ -178,6 +218,11 @@ protected slots:
     //! Handler for cut action.
     virtual void onCutAction();
 
+    /*!
+     *  Handler for element copy action.
+     */
+    virtual void onCopyElementAction();
+
 private:
 
 	//! No copying
@@ -197,12 +242,12 @@ private:
     int countRows(QModelIndexList const& indexes);
 
     /*!
-    *  Generates a unique name within the table for the item.
-    *
-    *      @param [in] original     The original name of the item.
-    *
-    *      @return Unique name for the item.
-    */
+     *  Generates a unique name within the table for the item.
+     *
+     *      @param [in] original     The original name of the item.
+     *
+     *      @return Unique name for the item.
+     */
     QString getUniqueName(QString const& original);
 
     //-----------------------------------------------------------------------------

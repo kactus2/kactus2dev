@@ -23,8 +23,11 @@ class Component;
 class MemoryMapBase;
 class MemoryMap;
 class MemoryRemap;
-
 class MemoryMapValidator;
+class MemoryMapExpressionGatherer;
+class MemoryRemapExpressionGatherer;
+class ReferenceCalculator;
+
 //-----------------------------------------------------------------------------
 //! The model to manage the memory maps summary.
 //-----------------------------------------------------------------------------
@@ -128,6 +131,13 @@ public:
      *      @return QModelindex that identifies the parent of the given object.
      */
     QModelIndex parent(const QModelIndex &child) const;
+    
+    /*!
+     *  Get the list of acceptable mime types.
+     *
+     *      @return The list of acceptable mime types.
+     */
+    virtual QStringList mimeTypes() const;
 
 public slots:
 
@@ -151,6 +161,20 @@ public slots:
      *      @param [in] index   The parent index of the new memory remap item.
      */
     virtual void onAddMemoryRemap(const QModelIndex& index);
+
+    /*!
+     *  Copy the selected items matching the selected indexes.
+     *
+     *      @param [in] indexList   A list of the selected indexes.
+     */
+    void onCopyRows(QModelIndexList indexList);
+
+    /*!
+     *  Paste the selected items.
+     *
+     *      @param [in] index   The owner of the pasted memory remap items.
+     */
+    void onPasteRows(QModelIndex index);
 
 signals:
 
@@ -281,6 +305,61 @@ private:
      *      @return Black for valid, red for invalid and gray for data that cannot be changed.
      */
     QColor getForegroundColor(QModelIndex const& index) const;
+
+    /*!
+     *  Create a copy from the selected memory map.
+     *
+     *      @param [in] memoryMap               The selected memory map.
+     *      @param [in] gatherer                The memory map expression gatherer.
+     *      @param [in] referenceCalculator     The reference calculator.
+     */
+    void createPastedMemoryMap(QSharedPointer<MemoryMap> memoryMap, MemoryMapExpressionGatherer& gatherer,
+        ReferenceCalculator& referenceCalculator);
+
+    /*!
+     *  Create a copy from the selected memory remap.
+     *
+     *      @param [in] memoryRemap             The selected memory remap.
+     *      @param [in] parentIndex             The index of the parent memory map of the copied memory remap.
+     *      @param [in] gatherer                The memory remap expression gatherer.
+     *      @param [in] referenceCalculator     The reference calculator.
+     */
+    void createPastedMemoryRemap(QSharedPointer<MemoryRemap> memoryRemap, QModelIndex const& parentIndex,
+        MemoryRemapExpressionGatherer& gatherer, ReferenceCalculator& referenceCalculator);
+
+    /*!
+     *  Create a unique name from the selected name.
+     *
+     *      @param [in] originalName    The selected name.
+     *      @param [in] currentNames    The list of currently used names.
+     *
+     *      @return A unique name created from the original name.
+     */
+    QString createUniqueName(QString const& originalName, QStringList currentNames) const;
+
+    /*!
+     *  Get the names of the root memory maps.
+     *
+     *      @return The root memory map names.
+     */
+    QStringList getRootMemoryMapNames() const;
+
+    /*!
+     *  Increase the number of references in the referenced parameters.
+     *
+     *      @param [in] mapExpressions          List of expressions contained within the selected map.
+     *      @param [in] referenceCalculator     The used reference calculator.
+     */
+    void increaseReferencesInPastedMap(QStringList mapExpressions, ReferenceCalculator& referenceCalculator);
+
+    /*!
+     *  Get the names of the memory maps contained within the selected memory map.
+     *
+     *      @param [in] currentMap  The selected memory map.
+     *
+     *      @return The names of the memory remaps contained within the selected memory map.
+     */
+    QStringList getMemoryRemapNames(QSharedPointer<MemoryMap> currentMap) const;
 
     //-----------------------------------------------------------------------------
     // Data.

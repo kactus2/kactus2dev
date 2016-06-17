@@ -25,6 +25,9 @@
 
 #include <QColor>
 #include <QRegularExpression>
+#include <QApplication>
+#include <QClipboard>
+#include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlockModel::AddressBlockModel()
@@ -655,4 +658,119 @@ void AddressBlockModel::decreaseReferencesWithRemovedRegister(QSharedPointer<Reg
 void AddressBlockModel::addressUnitBitsChanged(int newAddressUnitbits)
 {
     addressUnitBits_ = newAddressUnitbits;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::onCopyRows()
+//-----------------------------------------------------------------------------
+void AddressBlockModel::onCopyRows(QModelIndexList indexList)
+{
+    QList<QSharedPointer<RegisterBase> > copiedRegisters;
+    foreach (QModelIndex index, indexList)
+    {
+        QSharedPointer<RegisterBase> registerBase = items_->at(index.row());
+        copiedRegisters.append(registerBase);
+    }
+
+    QVariant registerVariant;
+    registerVariant.setValue(copiedRegisters);
+
+    QMimeData* newMimeData = new QMimeData();
+    newMimeData->setData("text/xml/ipxact:register", QByteArray());
+    newMimeData->setImageData(registerVariant);
+
+    QApplication::clipboard()->setMimeData(newMimeData);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::onPasteRows()
+//-----------------------------------------------------------------------------
+void AddressBlockModel::onPasteRows()
+{
+    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+
+    if (pasteData->hasImage())
+    {
+        QVariant pasteVariant = pasteData->imageData();
+        if (pasteVariant.canConvert<QList<QSharedPointer<RegisterBase> > >())
+        {
+            RegisterExpressionsGatherer gatherer;
+            ReferenceCalculator referenceCalculator(getParameterFinder());
+
+            QList<QSharedPointer<RegisterBase> > newRegsiters =
+                pasteVariant.value<QList<QSharedPointer<RegisterBase> > >();
+
+            int rowBegin = items_->size();
+            int rowEnd = rowBegin + newRegsiters.size() - 1;
+
+            beginInsertRows(QModelIndex(), rowBegin, rowEnd);
+
+            foreach(QSharedPointer<RegisterBase> copiedRegister, newRegsiters)
+            {
+                QSharedPointer<Register> registerItem = copiedRegister.dynamicCast<Register>();
+                if (registerItem)
+                {
+                    QSharedPointer<Register> newRegister (new Register(*registerItem.data()));
+                    newRegister->setName(getUniqueName(newRegister->name(), getCurrentItemNames()));
+
+                    items_->append(newRegister);
+
+                    increaseReferencesInPastedRegister(newRegister, gatherer, referenceCalculator);
+
+                    emit itemAdded(items_->size() - 1);
+                }
+            }
+
+            endInsertRows();
+
+            emit contentChanged();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: addressblockmodel::getCurrentItemNames()
+//-----------------------------------------------------------------------------
+QStringList AddressBlockModel::getCurrentItemNames()
+{
+    QStringList names;
+    foreach (QSharedPointer<RegisterBase> registerItem, *items_)
+    {
+        names.append(registerItem->name());
+    }
+
+    return names;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::increaseReferencesInPastedField()
+//-----------------------------------------------------------------------------
+void AddressBlockModel::increaseReferencesInPastedRegister(QSharedPointer<Register> pastedRegister,
+    RegisterExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator)
+{
+    QStringList registerExpressions = gatherer.getExpressions(pastedRegister);
+
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(registerExpressions);
+
+    QMapIterator<QString, int> refParameterIterator (referencedParameters);
+    while (refParameterIterator.hasNext())
+    {
+        refParameterIterator.next();
+        for (int i = 0; i < refParameterIterator.value(); ++i)
+        {
+            emit increaseReferences(refParameterIterator.key());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockModel::mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList AddressBlockModel::mimeTypes() const
+{
+    QStringList types(QAbstractItemModel::mimeTypes());
+
+    types << "text/xml/ipxact:register";
+
+    return types;
 }

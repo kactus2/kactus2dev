@@ -138,4 +138,6 @@ private:
     QSharedPointer<QList<QSharedPointer<AlternateRegister> > > alternateRegisters_;
 };
 
+Q_DECLARE_METATYPE(QSharedPointer<Register>);
+
 #endif // REGISTER_H

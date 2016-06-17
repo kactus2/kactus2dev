@@ -65,11 +65,13 @@ model_(new MemoryMapModel(memoryRemap, expressionParser, parameterFinder, expres
 	QString defPath = QString("%1/addrBlockList.csv").arg(compPath);
 	view_->setDefaultImportExportPath(defPath);
 	view_->setAllowImportExport(true);
+    view_->setAllowElementCopying(true);
 
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
 
     view_->setItemDelegate(new MemoryMapDelegate(parameterCompleter, parameterFinder, this));
+
 	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -89,6 +91,13 @@ model_(new MemoryMapModel(memoryRemap, expressionParser, parameterFinder, expres
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(model_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(copyRows(QModelIndexList)),
+        model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(pasteRows()), model_, SLOT(onPasteRows()), Qt::UniqueConnection);
 
     connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
         model_, SLOT(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);

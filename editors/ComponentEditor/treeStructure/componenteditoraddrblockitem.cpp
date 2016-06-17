@@ -141,10 +141,13 @@ void ComponentEditorAddrBlockItem::createChild( int index )
 			regItem->setVisualizer(visualizer_);
 		}
 
-        QSharedPointer<Field> newField (new Field());
-        reg->getFields()->append(newField);
+        if (reg->getFields()->isEmpty())
+        {
+            QSharedPointer<Field> newField (new Field());
+            reg->getFields()->append(newField);
 
-        regItem->createChild(0);
+            regItem->createChild(0);
+        }
 
         onGraphicsChanged();
 

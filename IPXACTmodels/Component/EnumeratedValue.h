@@ -111,4 +111,6 @@ private:
     QString value_;
 };
 
+Q_DECLARE_METATYPE(QSharedPointer<EnumeratedValue>);
+
 #endif // ENUMERATEDVALUE_H

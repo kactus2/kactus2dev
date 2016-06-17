@@ -26,8 +26,10 @@
 
 class Choice;
 class AddressBlock;
-
 class AddressBlockValidator;
+class AddressBlockExpressionGatherer;
+class ReferenceCalculator;
+
 //-----------------------------------------------------------------------------
 //! The model to manage the details of a single memory map.
 //-----------------------------------------------------------------------------
@@ -117,6 +119,13 @@ public:
 	 *      @return True if saving happened successfully.
 	 */
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
+    
+    /*!
+     *  Get the list of acceptable mime types.
+     *
+     *      @return The list of acceptable mime types.
+     */
+    virtual QStringList mimeTypes() const;
 
 public slots:
 
@@ -140,6 +149,18 @@ public slots:
      *      @param [in] newAddressUnitBits  The new address unit bits.
      */
     void addressUnitBitsUpdated(QString const& newAddressUnitBits);
+
+    /*!
+     *  Copy the items in the selected rows.
+     *
+     *      @param [in] indexList   List of indexes pointing to the selected rows.
+     */
+    void onCopyRows(QModelIndexList indexList);
+
+    /*!
+     *  Paste the copied items.
+     */
+    void onPasteRows();
 
 protected:
 
@@ -221,6 +242,23 @@ private:
     void decreaseReferencesWithRemovedAddressBlock(QSharedPointer<AddressBlock> removedAddressBlock);
 
     /*!
+     *  Get the names of the contained address blocks.
+     *
+     *      @return The names of the contained address blocks.
+     */
+    QStringList getCurrentItemNames();
+
+    /*!
+     *  Increase the number of references made in the copied address block.
+     *
+     *      @param [in] pastedBlock             The copied address block.
+     *      @param [in] gatherer                Register expressions gatherer.
+     *      @param [in] referenceCalculator     The reference calculator.
+     */
+    void increaseReferencesInPastedAddressBlock(QSharedPointer<AddressBlock> pastedBlock,
+        AddressBlockExpressionGatherer& gatherer, ReferenceCalculator& referenceCalculator);
+
+    /*!
      *  Get the last used address.
      *
      *      @return The last used address.
@@ -235,7 +273,7 @@ private:
     QSharedPointer<MemoryMapBase> memoryRemap_;
 
 	//! Contains the memory map items being edited.
-    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks;
+    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > memoryBlocks_;
 
     //! The expression formatter, changes referenced ids to parameter names.
     QSharedPointer <ExpressionFormatter> expressionFormatter_;

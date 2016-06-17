@@ -14,8 +14,14 @@
 
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h>
+#include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
+
 #include <QColor>
 #include <QRegularExpression>
+#include <QApplication>
+#include <QClipboard>
+#include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: registertablemodel::RegisterTableModel()
@@ -617,4 +623,114 @@ void RegisterTableModel::onRemoveItem( const QModelIndex& index )
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterTableModel::onCopyRows()
+//-----------------------------------------------------------------------------
+void RegisterTableModel::onCopyRows(QModelIndexList indexList)
+{
+    QList<QSharedPointer<Field> > copiedFields;
+    foreach (QModelIndex index, indexList)
+    {
+        QSharedPointer<Field> field = fields_->at(index.row());
+        copiedFields.append(field);
+    }
+
+    QVariant fieldVariant;
+    fieldVariant.setValue(copiedFields);
+
+    QMimeData* newMimeData = new QMimeData();
+    newMimeData->setData("text/xml/ipxact:field", QByteArray());
+    newMimeData->setImageData(fieldVariant);
+
+    QApplication::clipboard()->setMimeData(newMimeData);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterTableModel::onPasteRows()
+//-----------------------------------------------------------------------------
+void RegisterTableModel::onPasteRows()
+{
+    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+
+    if (pasteData->hasImage())
+    {
+        QVariant pasteVariant = pasteData->imageData();
+        if (pasteVariant.canConvert<QList<QSharedPointer<Field> > >())
+        {
+            FieldExpressionsGatherer gatherer;
+            ReferenceCalculator referenceCalculator(getParameterFinder());
+
+            QList<QSharedPointer<Field> > newFields = pasteVariant.value<QList<QSharedPointer<Field> > >();
+
+            int rowBegin = fields_->size();
+            int rowEnd = rowBegin + newFields.size() - 1;
+
+            beginInsertRows(QModelIndex(), rowBegin, rowEnd);
+
+            foreach(QSharedPointer<Field> copiedField, newFields)
+            {
+                QSharedPointer<Field> newField (new Field(*copiedField.data()));
+                newField->setName(getUniqueName(newField->name(), getCurrentItemNames()));
+
+                fields_->append(newField);
+
+                increaseReferencesInPastedField(newField, gatherer, referenceCalculator);
+
+                emit fieldAdded(fields_->size() - 1);
+            }
+
+            endInsertRows();
+
+            emit contentChanged();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::getCurrentItemNames()
+//-----------------------------------------------------------------------------
+QStringList RegisterTableModel::getCurrentItemNames() const
+{
+    QStringList names;
+    foreach (QSharedPointer<Field> currentField, *fields_)
+    {
+        names.append(currentField->name());
+    }
+
+    return names;
+}
+
+//-----------------------------------------------------------------------------
+// Function: registertablemodel::increaseReferencesInPastedField()
+//-----------------------------------------------------------------------------
+void RegisterTableModel::increaseReferencesInPastedField(QSharedPointer<Field> pastedField,
+    FieldExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator)
+{
+    QStringList fieldExpressions = gatherer.getExpressions(pastedField);
+
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(fieldExpressions);
+
+    QMapIterator<QString, int> refParameterIterator (referencedParameters);
+    while (refParameterIterator.hasNext())
+    {
+        refParameterIterator.next();
+        for (int i = 0; i < refParameterIterator.value(); ++i)
+        {
+            emit increaseReferences(refParameterIterator.key());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterTableModel::mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList RegisterTableModel::mimeTypes() const
+{
+    QStringList types(QAbstractItemModel::mimeTypes());
+
+    types << "text/xml/ipxact:field";
+
+    return types;
 }

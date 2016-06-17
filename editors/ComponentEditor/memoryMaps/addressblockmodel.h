@@ -24,8 +24,10 @@
 
 class Choice;
 class Register;
-
 class RegisterValidator;
+class RegisterExpressionsGatherer;
+class ReferenceCalculator;
+
 //-----------------------------------------------------------------------------
 //! The model to manage the registers of a single address block.
 //-----------------------------------------------------------------------------
@@ -113,6 +115,13 @@ public:
 	 *      @return True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+    
+    /*!
+     *  Get the list of acceptable mime types.
+     *
+     *      @return The list of acceptable mime types.
+     */
+    virtual QStringList mimeTypes() const;
 
 protected:
 
@@ -176,6 +185,18 @@ public slots:
      */
     void addressUnitBitsChanged(int newAddressUnitbits);
 
+    /*!
+     *  Copy the items in the selected rows.
+     *
+     *      @param [in] indexList   List of indexes pointing to the selected rows.
+     */
+    void onCopyRows(QModelIndexList indexList);
+
+    /*!
+     *  Paste the copied items.
+     */
+    void onPasteRows();
+
 signals:
 
 	//! Emitted when the contents of the model change.
@@ -216,6 +237,23 @@ private:
      *      @param [in] removedRegister     The removed register.
      */
     void decreaseReferencesWithRemovedRegister(QSharedPointer<Register> removedRegister);
+
+    /*!
+     *  Get the names of the contained registers.
+     *
+     *      @return The names of the contained registers.
+     */
+    QStringList getCurrentItemNames();
+
+    /*!
+     *  Increase the number of references made in the copied register.
+     *
+     *      @param [in] pastedRegister          The copied register.
+     *      @param [in] gatherer                Register expressions gatherer.
+     *      @param [in] referenceCalculator     The reference calculator.
+     */
+    void increaseReferencesInPastedRegister(QSharedPointer<Register> pastedRegister,
+        RegisterExpressionsGatherer& gatherer, ReferenceCalculator& referenceCalculator);
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -98,6 +98,13 @@ public:
 	 *      @return True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+    
+    /*!
+     *  Get the list of acceptable mime types.
+     *
+     *      @return The list of acceptable mime types.
+     */
+    virtual QStringList mimeTypes() const;
 
 public slots:
 
@@ -114,6 +121,18 @@ public slots:
 	 *      @param [in] index   The index identifying the item to remove.
 	 */
 	virtual void onRemoveItem(const QModelIndex& index);
+
+    /*!
+     *  Copy the items in the selected rows.
+     *
+     *      @param [in] indexList   List of indexes pointing to the selected rows.
+     */
+    void onCopyRows(QModelIndexList indexList);
+
+    /*!
+     *  Paste the copied items.
+     */
+    void onPasteRows();
 
 signals:
 
@@ -143,7 +162,20 @@ private:
      */
     QVariant valueForIndex(QModelIndex const& index) const;
 
-	//! Contains the enumerated values being edited.
+    /*!
+     *  Get a unique name for the selected name.
+     *
+     *      @param [in] originalName    The selected name.
+     *
+     *      @return A unique name created from the selected name.
+     */
+    QString getUniqueName(QString const& originalName);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Contains the enumerated values being edited.
     QSharedPointer<QList<QSharedPointer<EnumeratedValue> > > enumValues_;
 
     //! The validator for enumerated values.

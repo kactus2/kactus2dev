@@ -26,6 +26,9 @@
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 
 #include <QRegularExpression>
+#include <QApplication>
+#include <QClipboard>
+#include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: memorymapsmodel::MemoryMapsModel()
@@ -683,4 +686,228 @@ QColor MemoryMapsModel::getForegroundColor(QModelIndex const& index) const
     }
 
     return QColor("black");
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::onCopyRows()
+//-----------------------------------------------------------------------------
+void MemoryMapsModel::onCopyRows(QModelIndexList indexList)
+{
+    QList<QSharedPointer<MemoryMapBase> > copiedMemoryMaps;
+    bool hasMemoryMaps = false;
+    bool hasMemoryRemaps = false;
+    foreach (QModelIndex index, indexList)
+    {
+        QSharedPointer<MemoryMapBase> newCopy;
+
+        if (index.parent().isValid())
+        {
+            newCopy = getIndexedMemoryRemap(index.parent(), index.row());
+            hasMemoryRemaps = true;
+        }
+        else
+        {
+            newCopy = rootMemoryMaps_->at(index.row());
+            hasMemoryMaps = true;
+        }
+
+        if (!copiedMemoryMaps.contains(newCopy))
+        {
+            copiedMemoryMaps.append(newCopy);
+        }
+    }
+
+    QVariant memoryMapVariant;
+    memoryMapVariant.setValue(copiedMemoryMaps);
+
+    QMimeData* newMimeData = new QMimeData();
+    if (hasMemoryMaps)
+    {
+        newMimeData->setData("text/xml/ipxact:memoryMap", QByteArray());
+    }
+    if (hasMemoryRemaps)
+    {
+        newMimeData->setData("text/xml/ipxact:memoryRemap", QByteArray());
+    }
+    newMimeData->setImageData(memoryMapVariant);
+
+    QApplication::clipboard()->setMimeData(newMimeData);
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::onPasteRows()
+//-----------------------------------------------------------------------------
+void MemoryMapsModel::onPasteRows(QModelIndex index)
+{
+    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+
+    if (pasteData->hasImage())
+    {
+        QVariant pasteVariant = pasteData->imageData();
+        if (pasteVariant.canConvert<QList<QSharedPointer<MemoryMapBase> > >())
+        {
+            MemoryRemapExpressionGatherer remapExpressionsGatherer;
+            MemoryMapExpressionGatherer memoryMapExpressionsGatherer;
+            ReferenceCalculator referenceCalculator(parameterFinder_);
+
+            QList<QSharedPointer<MemoryMapBase> > newBaseMemoryMaps =
+                pasteVariant.value<QList<QSharedPointer<MemoryMapBase> > >();
+
+            foreach (QSharedPointer<MemoryMapBase> baseMemory, newBaseMemoryMaps)
+            {
+                QSharedPointer<MemoryMap> memoryMap = baseMemory.dynamicCast<MemoryMap>();
+                if (memoryMap)
+                {
+                    createPastedMemoryMap(memoryMap, memoryMapExpressionsGatherer, referenceCalculator);
+                }
+                else
+                {
+                    QSharedPointer<MemoryRemap> memoryRemap = baseMemory.dynamicCast<MemoryRemap>();
+                    if (memoryRemap)
+                    {
+                        createPastedMemoryRemap(memoryRemap, index, remapExpressionsGatherer, referenceCalculator);
+                    }
+                }
+            }
+
+            emit contentChanged();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::createNewMemoryMap()
+//-----------------------------------------------------------------------------
+void MemoryMapsModel::createPastedMemoryMap(QSharedPointer<MemoryMap> memoryMap,
+    MemoryMapExpressionGatherer& gatherer, ReferenceCalculator& referenceCalculator)
+{
+    int insertBegin = rootMemoryMaps_->size();
+    beginInsertRows(QModelIndex(), insertBegin, insertBegin);
+
+    QSharedPointer<MemoryMap> copyMemoryMap (new MemoryMap(*memoryMap.data()));
+    copyMemoryMap->setName(createUniqueName(copyMemoryMap->name(), getRootMemoryMapNames()));
+
+    rootMemoryMaps_->append(copyMemoryMap);
+
+    increaseReferencesInPastedMap(gatherer.getExpressions(copyMemoryMap), referenceCalculator);
+
+    emit memoryMapAdded(insertBegin);
+
+    emit aubChangedOnRow(insertBegin);
+
+    endInsertRows();
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::createUniqueName()
+//-----------------------------------------------------------------------------
+QString MemoryMapsModel::createUniqueName(QString const& originalName, QStringList currentNames) const
+{
+    QString name = originalName;
+    int trailingNumber = 1;
+
+    bool match =  true;
+    while (match)
+    {
+        match = false;        
+        for(int row = 0; row < currentNames.size(); row++)
+        {
+            if (name.compare(currentNames.at(row)) == 0)
+            {
+                match = true;
+                name = originalName + "_" + QString::number(trailingNumber);
+                trailingNumber++;
+            }
+        }
+    }
+
+    return name;
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::getRootMemoryMapNames()
+//-----------------------------------------------------------------------------
+QStringList MemoryMapsModel::getRootMemoryMapNames() const
+{
+    QStringList mapNames;
+    foreach (QSharedPointer<MemoryMap> memoryMap, *rootMemoryMaps_)
+    {
+        mapNames.append(memoryMap->name());
+    }
+
+    return mapNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::increaseReferencesInPastedMemoryMap()
+//-----------------------------------------------------------------------------
+void MemoryMapsModel::increaseReferencesInPastedMap(QStringList mapExpressions,
+    ReferenceCalculator& referenceCalculator)
+{
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(mapExpressions);
+
+    QMapIterator<QString, int> refParameterIterator (referencedParameters);
+    while (refParameterIterator.hasNext())
+    {
+        refParameterIterator.next();
+        for (int i = 0; i < refParameterIterator.value(); ++i)
+        {
+            emit increaseReferences(refParameterIterator.key());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::createPastedMemoryRemap()
+//-----------------------------------------------------------------------------
+void MemoryMapsModel::createPastedMemoryRemap(QSharedPointer<MemoryRemap> memoryRemap,
+    QModelIndex const& parentIndex, MemoryRemapExpressionGatherer& gatherer,
+    ReferenceCalculator& referenceCalculator)
+{
+    if (parentIndex.isValid())
+    {
+        QSharedPointer<MemoryMap> parentMemoryMap = rootMemoryMaps_->at(parentIndex.row());
+        int rowOfNewItem = parentMemoryMap->getMemoryRemaps()->count();
+
+        QSharedPointer<MemoryRemap> copiedMemoryRemap (new MemoryRemap(*memoryRemap.data()));
+        copiedMemoryRemap->setName(
+            createUniqueName(copiedMemoryRemap->name(), getMemoryRemapNames(parentMemoryMap)));
+
+        beginInsertRows(parentIndex, rowOfNewItem, rowOfNewItem);
+
+        parentMemoryMap->getMemoryRemaps()->append(copiedMemoryRemap);
+
+        increaseReferencesInPastedMap(gatherer.getExpressions(memoryRemap), referenceCalculator);
+
+        emit memoryRemapAdded(rowOfNewItem, parentMemoryMap);
+
+        endInsertRows();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::getMemoryRemapNames()
+//-----------------------------------------------------------------------------
+QStringList MemoryMapsModel::getMemoryRemapNames(QSharedPointer<MemoryMap> currentMap) const
+{
+    QStringList remapNames;
+    foreach (QSharedPointer<MemoryRemap> remap, *currentMap->getMemoryRemaps())
+    {
+        remapNames.append(remap->name());
+    }
+
+    return remapNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: memorymapsmodel::mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList MemoryMapsModel::mimeTypes() const
+{
+    QStringList types(QAbstractItemModel::mimeTypes());
+
+    types << "text/xml/ipxact:memoryMap";
+    types << "text/xml/ipxact:memoryRemap";
+
+    return types;
 }

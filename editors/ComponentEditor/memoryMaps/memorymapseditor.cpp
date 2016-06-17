@@ -88,6 +88,10 @@ delegate_()
         
 	connect(view_, SIGNAL(doubleClicked(const QModelIndex&)),
 		this, SLOT(onDoubleClick(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(copyRows(QModelIndexList)),
+        model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(pasteRows(QModelIndex)), model_, SLOT(onPasteRows(QModelIndex)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

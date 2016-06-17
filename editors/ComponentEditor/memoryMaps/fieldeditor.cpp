@@ -46,6 +46,7 @@ enumModel_(new EnumeratedValueModel(enumeratedValues, enumeratedValueValidator, 
 	// items can not be dragged
 	enumView_->setItemsDraggable(false);
 	enumView_->setSortingEnabled(true);
+    enumView_->setAllowElementCopying(true);
 	enumView_->setItemDelegate(new EnumeratedValueDelegate(this));
 
 	connect(enumModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -53,6 +54,10 @@ enumModel_(new EnumeratedValueModel(enumeratedValues, enumeratedValueValidator, 
 		enumModel_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(enumView_, SIGNAL(removeItem(const QModelIndex&)),
         enumModel_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(enumView_, SIGNAL(copyRows(QModelIndexList)),
+        enumModel_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
+    connect(enumView_, SIGNAL(pasteRows()), enumModel_, SLOT(onPasteRows()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
