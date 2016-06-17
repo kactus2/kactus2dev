@@ -328,7 +328,6 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
 	}
 	else if (role == Qt::DecorationRole && index.column() == HierarchyModel::OBJECT_COLUMN)
     {
-        // if item is component
         if (item->type() == HierarchyItem::COMPONENT)
         {
             if (item->getImplementation() == KactusAttribute::SYSTEM)
@@ -358,7 +357,6 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
                 }		
             }
         }
-		// if item is bus
         else if (item->type() == HierarchyItem::COMDEFINITION)
         {
             return QIcon(":/icons/common/graphics/new-com_definition.png");

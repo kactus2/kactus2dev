@@ -1711,6 +1711,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidTiedValue_data()
     QTest::newRow("Tied value default is valid") << "default" << true;
     QTest::newRow("Tied value open is valid") << "open" << true;
     QTest::newRow("Numerical tied value is valid") << "1" << true;
+    QTest::newRow("Hexadecimal tied value is valid") << "'h01" << true;
     QTest::newRow("Empty tied value is valid") << "" << true;
 
     QTest::newRow("Tied value of text is not valid") << "text" << false;

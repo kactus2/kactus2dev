@@ -107,7 +107,7 @@ bool AdHocConnectionValidator::hasValidTiedValue(QSharedPointer<AdHocConnection>
     {
         QString tiedValue = connection->getTiedValue();
         bool toInt = true;
-        tiedValue.toInt(&toInt);
+        parser_->parseExpression(tiedValue).toInt(&toInt);
 
         return toInt || tiedValue == QLatin1String("default") || tiedValue == QLatin1String("open");
     }

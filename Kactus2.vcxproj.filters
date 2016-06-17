@@ -2866,9 +2866,6 @@
     <ClCompile Include="editors\ComponentEditor\fileSet\groupmanager.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\groupmanagerdelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\fileSet</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </ClCompile>
@@ -4287,6 +4284,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_NewBusDefinitionPage.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\fileSet\groupmanagerdelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\general</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

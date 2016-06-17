@@ -905,7 +905,7 @@ void LibraryData::findErrorsInDependentFiles(QSharedPointer<const Document> docu
             }
             else
             {
-                errorList.append(tr("\tFile %1 was not found in the file system.").arg(filePath));               
+                errorList.append(tr("File %1 was not found in the file system.").arg(filePath));               
                 errors_++;
                 fileErrors_++;
             }

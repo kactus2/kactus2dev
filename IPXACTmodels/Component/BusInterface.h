@@ -446,6 +446,9 @@ private:
 	//! The vlnv of the bus definition this bus interface is referenced.
     ConfigurableVLNVReference busType_;
 
+    //! List of abstraction types existing within this object.
+    QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes_;
+
 	//! Describes further information on the mode for this interface.
 	General::InterfaceMode interfaceMode_;
 
@@ -482,8 +485,6 @@ private:
 	//! A pointer to the mirroredSlave instance.
 	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
 
-	//! List of abstraction types existing within this object.
-	QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes_;
 };
 
 #endif // BUSINTERFACE_H

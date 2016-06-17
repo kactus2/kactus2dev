@@ -42,11 +42,12 @@ group_()
 BusInterface::BusInterface():
 NameGroup(),
 Extendable(),
+isPresent_(),
 attributes_(),
 busType_(),
+abstractionTypes_(new QList<QSharedPointer<AbstractionType> > ()),
 interfaceMode_(General::INTERFACE_MODE_COUNT),
 connectionRequired_(),
-abstractionTypes_(new QList<QSharedPointer<AbstractionType> > ()),
 bitsInLau_(),
 bitSteering_(BusInterface::BITSTEERING_UNSPECIFIED),
 bitSteeringAttributes_(),
@@ -55,7 +56,8 @@ parameters_(new QList<QSharedPointer<Parameter> >()),
 master_(QSharedPointer<MasterInterface>(new MasterInterface)),
 slave_(),
 systemGroup_(),
-monitor_()
+monitor_(),
+mirroredSlave_()
 {
 
 }
@@ -66,11 +68,12 @@ monitor_()
 BusInterface::BusInterface( const BusInterface &other ):
 NameGroup(other),
 Extendable(other),
+isPresent_(other.isPresent_),
 attributes_(other.attributes_),
 busType_(other.busType_),
+abstractionTypes_(new QList<QSharedPointer<AbstractionType> > ()),
 interfaceMode_(other.interfaceMode_),
 connectionRequired_(other.connectionRequired_),
-abstractionTypes_(new QList<QSharedPointer<AbstractionType> > ()),
 bitsInLau_(other.bitsInLau_),
 bitSteering_(other.bitSteering_),
 bitSteeringAttributes_(other.bitSteeringAttributes_),
