@@ -12,6 +12,8 @@
 #ifndef PORTMAPAUTOCONNECTOR_H
 #define PORTMAPAUTOCONNECTOR_H
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QMap>
@@ -56,8 +58,9 @@ public:
      *  Set the abstraction definition.
      *
      *      @param [in] abstractionDefinitionVLNV   VLNV of the abstraction definition.
+     *      @param [in] newMode                     The new interface mode.
      */
-    void setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV);
+    void setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV, General::InterfaceMode newMode);
 
 public slots:
 
@@ -271,6 +274,9 @@ private:
 
     //! The used library handler.
     LibraryInterface* libraryHandler_;
+
+    //! The used interface mode.
+    General::InterfaceMode interfaceMode_;
 };
 
 //-----------------------------------------------------------------------------

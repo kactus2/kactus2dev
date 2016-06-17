@@ -52,8 +52,10 @@ PortMapAutoConnector::~PortMapAutoConnector()
 //-----------------------------------------------------------------------------
 // Function: PortMapAutoConnector::setAbstractionDefinition()
 //-----------------------------------------------------------------------------
-void PortMapAutoConnector::setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV)
+void PortMapAutoConnector::setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV,
+    General::InterfaceMode newMode)
 {
+    interfaceMode_ = newMode;
     absDef_.clear();
 
     if (abstractionDefinitionVLNV.isValid())
@@ -93,7 +95,7 @@ void PortMapAutoConnector::connectSelectedLogicalPorts(QList<QSharedPointer<Port
     foreach (QSharedPointer<PortAbstraction> logicalPort, logicalPorts)
     {
         if (!logicalPortHasReferencingPortMap(logicalPort->name()) &&
-            logicalPort->getPresence(busInterface_->getInterfaceMode()) != PresenceTypes::ILLEGAL)
+            logicalPort->getPresence(interfaceMode_) != PresenceTypes::ILLEGAL)
         {
             QMap<double, QString> physicalPorts = getWeightedPhysicalPorts(logicalPort);
 
@@ -223,7 +225,7 @@ QMap<QSharedPointer<Port>, double> PortMapAutoConnector::getPortsByDirection(
     QSharedPointer<PortAbstraction> logicalPort) const
 {
     DirectionTypes::Direction logicalDirection =
-        absDef_->getPortDirection(logicalPort->name(), busInterface_->getInterfaceMode());
+        absDef_->getPortDirection(logicalPort->name(), interfaceMode_);
 
     QMap<QSharedPointer<Port>, double> availablePorts;
 
@@ -251,7 +253,7 @@ QString PortMapAutoConnector::getLogicalPortWidth(QSharedPointer<PortAbstraction
     QSharedPointer<WireAbstraction> abstractWire = logicalPort->getWire();
     if (abstractWire)
     {
-        QString logicalWidthString = abstractWire->getWidth(busInterface_->getInterfaceMode());
+        QString logicalWidthString = abstractWire->getWidth(interfaceMode_);
         return logicalWidthString;
     }
 
@@ -487,16 +489,14 @@ void PortMapAutoConnector::connectPorts(QSharedPointer<PortAbstraction> portAbst
 {
     if (portAbstraction && componentPort)
     {
-        General::InterfaceMode interfaceMode = busInterface_->getInterfaceMode();
-
         QSharedPointer<PortMap::PhysicalPort> newMappedPhysical(new PortMap::PhysicalPort(componentPort->name()));
         
         QSharedPointer<PortMap::LogicalPort> newMappedLogical(new PortMap::LogicalPort(portAbstraction->name()));
         
         QSharedPointer<WireAbstraction> logicalWire = portAbstraction->getWire();
-        if (logicalWire && !logicalWire->getWidth(interfaceMode).isEmpty())
+        if (logicalWire && !logicalWire->getWidth(interfaceMode_).isEmpty())
         {
-            int logicalSize = parser_->parseExpression(logicalWire->getWidth(interfaceMode)).toInt();
+            int logicalSize = parser_->parseExpression(logicalWire->getWidth(interfaceMode_)).toInt();
             int logicalLeft = logicalSize - 1;
             int logicalRight = 0;
 

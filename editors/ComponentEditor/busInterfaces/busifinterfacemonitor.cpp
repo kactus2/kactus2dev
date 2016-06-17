@@ -170,8 +170,11 @@ void BusIfInterfaceMonitor::onSystemGroupChange( QString const& groupName ) {
 	emit contentChanged();
 }
 
-void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode ) {
-
+//-----------------------------------------------------------------------------
+// Function: busifinterfacemonitor::onInterfaceModeChange()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
+{
 	// update the mode to the monitor 
 	monitor_->interfaceMode_ = mode;
 
@@ -183,49 +186,45 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
 
 	// if selected interface mode is system or mirrored system then enable
 	// the system group combo box
-	switch (mode) {
-		case General::SYSTEM:
-		case General::MIRROREDSYSTEM: {
-			systemGroup_.setEnabled(true);
-			// find the current bus definition
-			VLNV busDefVLNV = busif_->getBusType();
+    if (mode == General::SYSTEM || mode == General::MIRROREDSYSTEM)
+    {
+        systemGroup_.setEnabled(true);
+        // find the current bus definition
+        VLNV busDefVLNV = busif_->getBusType();
 
 			// if there is no bus definition
-			if (!libHandler_->contains(busDefVLNV)) {
-				break;
-			}
+        if (libHandler_->contains(busDefVLNV))
+        {
+            QSharedPointer<Document> libComp = libHandler_->getModel(busDefVLNV);
+            Q_ASSERT(libComp);
 
-			QSharedPointer<Document> libComp = libHandler_->getModel(busDefVLNV);
-			Q_ASSERT(libComp);
+            // if the library component with given vlnv was not a bus definition
+            if (libHandler_->getDocumentType(busDefVLNV) == VLNV::BUSDEFINITION)
+            {
+                // get the system groups from the bus definition
+                QSharedPointer<BusDefinition> busDef = libComp.staticCast<BusDefinition>();
+                QStringList groupList = busDef->getSystemGroupNames();
 
-			// if the library component with given vlnv was not a bus definition
-			if (libHandler_->getDocumentType(busDefVLNV) != VLNV::BUSDEFINITION) {
-				break;
-			}
+                // add the system names to the list
+                systemGroup_.addItems(groupList);
 
-			// get the system groups from the bus definition
-			QSharedPointer<BusDefinition> busDef = libComp.staticCast<BusDefinition>();
-			QStringList groupList = busDef->getSystemGroupNames();
+                // ask the monitor which group to select
+                QString selectedGroup = monitor_->group_;
 
-			// add the system names to the list
-			systemGroup_.addItems(groupList);
+                // select the same text that was previously selected if it still can be found
+                int index = systemGroup_.findText(selectedGroup);
+                systemGroup_.setCurrentIndex(index);
+            }
+        }
+    }
+    // if interface mode is not system or mirrored system then disable the combo box
+    else
+    {
+        monitor_->group_.clear();
 
-			// ask the monitor which group to select
-			QString selectedGroup = monitor_->group_;
-
-			// select the same text that was previously selected if it still can be found
-			int index = systemGroup_.findText(selectedGroup);
-			systemGroup_.setCurrentIndex(index);
-			break;
-									  }
-									  // if interface mode is not system or mirrored system then disable the
-									  // combo box
-		default: {
-			systemGroup_.setDisabled(true);
-			systemGroup_.setCurrentIndex(-1);
-			break;
-				 }
-	}
+        systemGroup_.setDisabled(true);
+        systemGroup_.setCurrentIndex(-1);
+    }
 
 	// reconnect the combo box
 	connect(&systemGroup_, SIGNAL(currentIndexChanged(QString const&)),

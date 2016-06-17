@@ -90,8 +90,14 @@ void BusInterfaceEditor::onTabChange(int index)
 	// if port maps tab is selected
 	if (index == 1)
     {
+        General::InterfaceMode busMode = busif_->getInterfaceMode();
+        if (busMode == General::MONITOR && busif_->getMonitor())
+        {
+            busMode = busif_->getMonitor()->interfaceMode_;
+        }
+
 		// update the abstraction type
-		portmapsEditor_.setAbsType(generalEditor_.getAbsType(), busif_->getInterfaceMode());
+        portmapsEditor_.setAbsType(generalEditor_.getAbsType(), busMode);
 	}
 }
 
