@@ -29,6 +29,11 @@
 #include <QSize>
 #include <QMimeData>
 
+namespace
+{
+    QString const MULTIPLEPHYSICALS = "[multiple]";
+}
+
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeModel::PortMapTreeModel()
 //-----------------------------------------------------------------------------
@@ -347,7 +352,7 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
         else if (index.column() == PortMapsColumns::PHYSICAL_PORT)
         {
             QString physicalPortName = getPhysicalPortName(index, portMap).toString();
-            if (!physicalPortName.isEmpty() && physicalPortName.compare("[multiple]", Qt::CaseSensitive) != 0)
+            if (!physicalPortName.isEmpty() && physicalPortName.compare(MULTIPLEPHYSICALS, Qt::CaseSensitive) != 0)
             {
                 DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
                 QSharedPointer<Port> physicalPort = component_->getPort(physicalPortName);
@@ -484,7 +489,7 @@ QVariant PortMapTreeModel::getPhysicalPortName(QModelIndex const& itemIndex, QSh
         }
         else if (physicalNames.size() > 1)
         {
-            physicalName = "[multiple]";
+            physicalName = MULTIPLEPHYSICALS;
         }
     }
 
@@ -1021,32 +1026,50 @@ QVariant PortMapTreeModel::expressionOrValueForIndex(QModelIndex const& index) c
 //-----------------------------------------------------------------------------
 bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
 {
+    QModelIndex logicalIndex = index;
+    QSharedPointer<PortMap> currentPortMap;
     if (index.parent().isValid())
     {
-        portMapValidator_->abstractionDefinitionChanged(absDef_, interfaceMode_);
+        logicalIndex = index.parent();
+        currentPortMap = portMappings_.at(logicalIndex.row()).portMaps_.at(index.row());
+    }
 
-        QSharedPointer<PortMap> portMap = getIndexedPortMap(index.parent(), index.row());
+    portMapValidator_->abstractionDefinitionChanged(absDef_, interfaceMode_);
 
-        if (portMap->getPhysicalPort() && !portMap->getLogicalTieOff().isEmpty() &&
-            (index.column() == PortMapsColumns::PHYSICAL_PORT || index.column() == PortMapsColumns::PHYSICAL_LEFT ||
-            index.column() == PortMapsColumns::PHYSICAL_RIGHT || index.column() == PortMapsColumns::TIEOFF))
+    QSharedPointer<PortAbstraction> logicalPort = portMappings_.at(logicalIndex.row()).logicalPort_;
+    if (!absDef_->hasPort(logicalPort->name(), interfaceMode_))
+    {
+        return false;
+    }
+
+    QModelIndex physicalPortIndex = index.sibling(index.row(), PortMapsColumns::PHYSICAL_PORT);
+    QString physicalPortName = physicalPortIndex.data(Qt::DisplayRole).toString();
+    QSharedPointer<Port> physicalPort = component_->getPort(physicalPortName);
+
+    if ((index.column() == PortMapsColumns::LOGICAL_PORT || index.column() == PortMapsColumns::PHYSICAL_PORT) &&
+        (!physicalPortName.isEmpty() || physicalPortName.compare(MULTIPLEPHYSICALS) != 0) && physicalPort &&
+        logicalPort->getWire())
+    {
+        DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_);
+        DirectionTypes::Direction physicalDirection = physicalPort->getDirection();
+        if (logicalDirection != physicalDirection)
         {
             return false;
         }
+    }
 
-        if (index.column() == PortMapsColumns::TIEOFF)
-        {
-            return portMapValidator_->hasValidTieOff(portMap);
-        }
-        else if (index.column() == PortMapsColumns::LOGICAL_PORT ||
+    if (index.parent().isValid() && currentPortMap &&
+        index.column() != PortMapsColumns::LOGICAL_PRESENCE && index.column() != PortMapsColumns::INVERT)
+    {
+        if (index.column() == PortMapsColumns::LOGICAL_PORT ||
             index.column() == PortMapsColumns::LOGICAL_LEFT || index.column() == PortMapsColumns::LOGICAL_RIGHT)
         {
-            if (portMapValidator_->hasValidLogicalPort(portMap))
+            if (portMapValidator_->hasValidLogicalPort(currentPortMap))
             {
                 if (index.column() == PortMapsColumns::LOGICAL_LEFT || 
                     index.column() == PortMapsColumns::LOGICAL_RIGHT)
                 {
-                    return portMapValidator_->connectedPortsHaveSameRange(portMap);
+                    return portMapValidator_->connectedPortsHaveSameRange(currentPortMap);
                 }
             }
             else
@@ -1054,25 +1077,37 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
                 return false;
             }
         }
-        else if ((index.column() == PortMapsColumns::PHYSICAL_PORT ||
-            index.column() == PortMapsColumns::PHYSICAL_LEFT ||
-            index.column() == PortMapsColumns::PHYSICAL_RIGHT) && portMap && portMap->getPhysicalPort())
+        else
         {
-            QSharedPointer<Port> physicalPort = component_->getPort(portMap->getPhysicalPort()->name_);
-            if (portMapValidator_->hasValidPhysicalPort(portMap, physicalPort))
-            {
-                if (index.column() == PortMapsColumns::PHYSICAL_LEFT ||
-                    index.column() == PortMapsColumns::PHYSICAL_RIGHT)
-                {
-                    return portMapValidator_->connectedPortsHaveSameRange(portMap);
-                }
-            }
-            else
+            if (currentPortMap->getPhysicalPort() && !currentPortMap->getLogicalTieOff().isEmpty())
             {
                 return false;
+            }
+
+            if (index.column() == PortMapsColumns::TIEOFF)
+            {
+                return portMapValidator_->hasValidTieOff(currentPortMap);
+            }
+
+            if (currentPortMap->getPhysicalPort())
+            {
+                QSharedPointer<Port> physicalPort = component_->getPort(currentPortMap->getPhysicalPort()->name_);
+                if (portMapValidator_->hasValidPhysicalPort(currentPortMap, physicalPort))
+                {
+                    if (index.column() == PortMapsColumns::PHYSICAL_LEFT ||
+                        index.column() == PortMapsColumns::PHYSICAL_RIGHT)
+                    {
+                        return portMapValidator_->connectedPortsHaveSameRange(currentPortMap);
+                    }
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
     }
+
     else
     {
         QSharedPointer<PortAbstraction> logicalPort = portMappings_.at(index.row()).logicalPort_;
