@@ -13,10 +13,7 @@ B) Manually downloading and installing from http://qt-project.org/downloads
 
 However, when using manually installed Qt5, you need to make sure that Kactus2 is installed
 using its files. Open file configure and set the binary path of Qt5 as the value of variable QTBIN_PATH.
-Notice that you need to add a slash at the end of the path.
-
-WARNING: If you run file configure with wrong Qt binaries, you will have to delete the generated
-makefiles before configuring again!
+Notice that you need to have a slash at the end of the path.
 
 After successful installation of Qt5, change to directory of Kactus2.
 There are two ways to build:
@@ -32,6 +29,9 @@ Open file .qmake.conf and set the installation directory as the value of variabl
 make
 make install
 
+WARNING: If you run file configure with wrong Qt binaries, you will have to delete the generated
+makefiles before configuring again!
+
 There are three ways to run Kactus2:
 
 A) An installation shared between users:
@@ -45,5 +45,11 @@ C) In some systems, a link to the executable may appear if Kactus2 was installed
 Success reports
 ---------------
 
-Tested on Ubuntu 16.04 64-bit with Qt 5.5.1 on 16th Jun 2016 for Kactus2 3.0.193
+Tested on Ubuntu 16.04 64-bit on 20th Jun 2016
+	Locally installed Qt 5.7.0
+	Locally installed Kactus2 3.1.0
+	Required installation of package libglu1-mesa-dev with admin privileges
+Tested on Ubuntu 16.04 64-bit on 16th Jun 2016
+	Installed Qt 5.5.1 from packages
+	Installed Kactus2 3.0.193 for all users
 
