@@ -206,4 +206,6 @@ private:
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 };
 
+Q_DECLARE_METATYPE(QSharedPointer<AddressSpace>);
+
 #endif // ADDRESSSPACE_H

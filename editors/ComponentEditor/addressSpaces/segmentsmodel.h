@@ -21,6 +21,8 @@
 class ExpressionFormatter;
 class AddressSpace;
 class Segment;
+class ReferenceCalculator;
+
 //-----------------------------------------------------------------------------
 //! The model that can be used to display the segments to be edited.
 //-----------------------------------------------------------------------------
@@ -111,6 +113,13 @@ public:
 	 *      @return True if all items in model are valid.
 	 */
 	bool isValid() const;
+    
+    /*!
+     *  Get the list of acceptable mime types.
+     *
+     *      @return The list of acceptable mime types.
+     */
+    virtual QStringList mimeTypes() const;
 
 public slots:
 
@@ -127,6 +136,18 @@ public slots:
 	 *      @param [in] index Identifies the item that should be removed.
 	 */
 	void onRemoveItem(const QModelIndex& index);
+    
+    /*!
+     *  Copy the items in the selected rows.
+     *
+     *      @param [in] indexList   List of indexes pointing to the selected rows.
+     */
+    void onCopyRows(QModelIndexList indexList);
+
+    /*!
+     *  Paste the copied items.
+     */
+    void onPasteRows();
 
 protected:
  
@@ -204,6 +225,22 @@ private:
 	 *      @return The last address contained in a segment.
 	*/
 	quint64 getLastSegmentedAddress() const;
+
+    /*!
+     *  Get the names of the contained address blocks.
+     *
+     *      @return The names of the contained address blocks.
+     */
+    QStringList getCurrentItemNames();
+
+    /*!
+     *  Increase the number of references made in the copied address space segment.
+     *
+     *      @param [in] pastedSegment           The copied address space segment.
+     *      @param [in] referenceCalculator     The reference calculator.
+     */
+    void increaseReferencesInPastedSegment(QSharedPointer<Segment> pastedSegment,
+        ReferenceCalculator& referenceCalculator);
 
     //-----------------------------------------------------------------------------
     // Data.

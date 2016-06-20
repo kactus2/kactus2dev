@@ -99,6 +99,7 @@ handler_(handler)
 	view_->setItemsDraggable(false);
     view_->setItemDelegate(new MemoryMapDelegate(parameterCompleter, parameterFinder, this));
 	view_->setSortingEnabled(true);
+    view_->setAllowElementCopying(true);
 
 	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
 
@@ -127,6 +128,12 @@ handler_(handler)
 
     connect(model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(model_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(view_, SIGNAL(copyRows(QModelIndexList)),
+        model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(pasteRows()), model_, SLOT(onPasteRows()), Qt::UniqueConnection);
 
     connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
         model_, SLOT(addressUnitBitsUpdated(QString const&)), Qt::UniqueConnection);

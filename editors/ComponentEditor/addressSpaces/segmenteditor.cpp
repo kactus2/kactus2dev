@@ -65,6 +65,7 @@ component_(component)
 
 	view_.setSortingEnabled(true);
 	view_.setItemsDraggable(false);
+    view_.setAllowElementCopying(true);
 
     ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
     completionModel->setExpressionParser(expressionParser);
@@ -93,6 +94,12 @@ component_(component)
 
     connect(&model_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(&view_, SIGNAL(copyRows(QModelIndexList)),
+        &model_, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(pasteRows()), &model_, SLOT(onPasteRows()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

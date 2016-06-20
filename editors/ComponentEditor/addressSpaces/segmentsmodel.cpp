@@ -19,6 +19,9 @@
 #include <IPXACTmodels/Component/Segment.h>
 
 #include <QColor>
+#include <QApplication>
+#include <QClipboard>
+#include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: SegmentsModel::SegmentsModel()
@@ -397,4 +400,115 @@ quint64 SegmentsModel::getLastSegmentedAddress() const
     }
 
     return lastAddress;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SegmentsModel::onCopyRows()
+//-----------------------------------------------------------------------------
+void SegmentsModel::onCopyRows(QModelIndexList indexList)
+{
+    QList<QSharedPointer<Segment> > copiedSegments;
+    foreach (QModelIndex index, indexList)
+    {
+        QSharedPointer<Segment> segment = segments_->at(index.row());
+        copiedSegments.append(segment);
+    }
+
+    QVariant addressSpaceVariant;
+    addressSpaceVariant.setValue(copiedSegments);
+
+    QMimeData* newMimeData = new QMimeData();
+    newMimeData->setData("text/xml/ipxact:segment", QByteArray());
+    newMimeData->setImageData(addressSpaceVariant);
+
+    QApplication::clipboard()->setMimeData(newMimeData);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SegmentsModel::onPasteRows()
+//-----------------------------------------------------------------------------
+void SegmentsModel::onPasteRows()
+{
+    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+
+    if (pasteData->hasImage())
+    {
+        QVariant pasteVariant = pasteData->imageData();
+        if (pasteVariant.canConvert<QList<QSharedPointer<Segment> > >())
+        {
+            ReferenceCalculator referenceCalculator(getParameterFinder());
+
+            QList<QSharedPointer<Segment> > newSegments = pasteVariant.value<QList<QSharedPointer<Segment> > >();
+
+            int rowBegin = segments_->size();
+            int rowEnd = rowBegin + newSegments.size() - 1;
+
+            beginInsertRows(QModelIndex(), rowBegin, rowEnd);
+
+            foreach(QSharedPointer<Segment> copySegment, newSegments)
+            {
+                QSharedPointer<Segment> newSegment (new Segment(*copySegment.data()));
+                newSegment->setName(getUniqueName(newSegment->name(), getCurrentItemNames()));
+
+                segments_->append(newSegment);
+
+                increaseReferencesInPastedSegment(newSegment, referenceCalculator);
+
+                emit segmentAdded(newSegment);
+            }
+
+            endInsertRows();
+
+            emit contentChanged();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SegmentsModel::getCurrentItemNames()
+//-----------------------------------------------------------------------------
+QStringList SegmentsModel::getCurrentItemNames()
+{
+    QStringList names;
+    foreach (QSharedPointer<Segment> segment, *segments_)
+    {
+        names.append(segment->name());
+    }
+
+    return names;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SegmentsModel::increaseReferencesInPastedSegment()
+//-----------------------------------------------------------------------------
+void SegmentsModel::increaseReferencesInPastedSegment(QSharedPointer<Segment> pastedSegment,
+    ReferenceCalculator& referenceCalculator)
+{
+    QStringList segmentExpressions;
+    segmentExpressions.append(pastedSegment->getAddressOffset());
+    segmentExpressions.append(pastedSegment->getRange());
+
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(segmentExpressions);
+
+    QMapIterator<QString, int> refParameterIterator (referencedParameters);
+    while (refParameterIterator.hasNext())
+    {
+        refParameterIterator.next();
+        for (int i = 0; i < refParameterIterator.value(); ++i)
+        {
+            emit increaseReferences(refParameterIterator.key());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SegmentsModel::mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList SegmentsModel::mimeTypes() const
+{
+    QStringList types(QAbstractItemModel::mimeTypes());
+
+    types << "text/xml/ipxact:segment";
+
+    return types;
 }

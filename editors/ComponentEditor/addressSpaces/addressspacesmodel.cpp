@@ -25,6 +25,9 @@
 
 #include <QColor>
 #include <QRegularExpression>
+#include <QApplication>
+#include <QClipboard>
+#include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpacesModel::AddressSpacesModel()
@@ -426,4 +429,115 @@ void AddressSpacesModel::decreaseReferencesWithRemovedAddressSpace(
             emit decreaseReferences(referencedId);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::onCopyRows()
+//-----------------------------------------------------------------------------
+void AddressSpacesModel::onCopyRows(QModelIndexList indexList)
+{
+    QList<QSharedPointer<AddressSpace> > copiedSpaces;
+    foreach (QModelIndex index, indexList)
+    {
+        QSharedPointer<AddressSpace> space = addressSpaces_->at(index.row());
+        copiedSpaces.append(space);
+    }
+
+    QVariant addressSpaceVariant;
+    addressSpaceVariant.setValue(copiedSpaces);
+
+    QMimeData* newMimeData = new QMimeData();
+    newMimeData->setData("text/xml/ipxact:addressSpace", QByteArray());
+    newMimeData->setImageData(addressSpaceVariant);
+
+    QApplication::clipboard()->setMimeData(newMimeData);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::onPasteRows()
+//-----------------------------------------------------------------------------
+void AddressSpacesModel::onPasteRows()
+{
+    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+
+    if (pasteData->hasImage())
+    {
+        QVariant pasteVariant = pasteData->imageData();
+        if (pasteVariant.canConvert<QList<QSharedPointer<AddressSpace> > >())
+        {
+            AddressSpaceExpressionGatherer gatherer;
+            ReferenceCalculator referenceCalculator(getParameterFinder());
+
+            QList<QSharedPointer<AddressSpace> > newAddressSpaces =
+                pasteVariant.value<QList<QSharedPointer<AddressSpace> > >();
+
+            int rowBegin = addressSpaces_->size();
+            int rowEnd = rowBegin + newAddressSpaces.size() - 1;
+
+            beginInsertRows(QModelIndex(), rowBegin, rowEnd);
+
+            foreach(QSharedPointer<AddressSpace> copySpace, newAddressSpaces)
+            {
+                QSharedPointer<AddressSpace> newSpace (new AddressSpace(*copySpace.data()));
+                newSpace->setName(getUniqueName(newSpace->name(), getCurrentItemNames()));
+                
+                addressSpaces_->append(newSpace);
+                
+                increaseReferencesInPastedAddressSpace(newSpace, gatherer, referenceCalculator);
+                
+                emit addrSpaceAdded(rowBegin);
+            }
+
+            endInsertRows();
+
+            emit contentChanged();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::getCurrentItemNames()
+//-----------------------------------------------------------------------------
+QStringList AddressSpacesModel::getCurrentItemNames()
+{
+    QStringList names;
+    foreach (QSharedPointer<AddressSpace> space, *addressSpaces_)
+    {
+        names.append(space->name());
+    }
+
+    return names;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::increaseReferencesInPastedAddressBlock()
+//-----------------------------------------------------------------------------
+void AddressSpacesModel::increaseReferencesInPastedAddressSpace(QSharedPointer<AddressSpace> pastedSpace,
+    AddressSpaceExpressionGatherer& gatherer, ReferenceCalculator& referenceCalculator)
+{
+    QStringList spaceExpressions = gatherer.getExpressions(pastedSpace);
+
+    QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(spaceExpressions);
+
+    QMapIterator<QString, int> refParameterIterator (referencedParameters);
+    while (refParameterIterator.hasNext())
+    {
+        refParameterIterator.next();
+        for (int i = 0; i < refParameterIterator.value(); ++i)
+        {
+            emit increaseReferences(refParameterIterator.key());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpacesModel::mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList AddressSpacesModel::mimeTypes() const
+{
+    QStringList types(QAbstractItemModel::mimeTypes());
+
+    types << "text/xml/ipxact:addressSpace";
+
+    return types;
 }

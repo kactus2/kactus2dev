@@ -135,4 +135,6 @@ private:
 	QMap<QString, QString> rangeAttributes_;
 };
 
+Q_DECLARE_METATYPE(QSharedPointer<Segment>);
+
 #endif // SEGMENT_H

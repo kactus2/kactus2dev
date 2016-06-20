@@ -20,8 +20,9 @@
 class ExpressionFormatter;
 class Component;
 class AddressSpace;
-
 class AddressSpaceValidator;
+class AddressSpaceExpressionGatherer;
+class ReferenceCalculator;
 //-----------------------------------------------------------------------------
 //! The model class to manage the objects for address spaces editor.
 //-----------------------------------------------------------------------------
@@ -108,6 +109,13 @@ public:
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
+    /*!
+     *  Get the list of acceptable mime types.
+     *
+     *      @return The list of acceptable mime types.
+     */
+    virtual QStringList mimeTypes() const;
+
 public slots:
 
 	/*!
@@ -123,6 +131,18 @@ public slots:
 	 *      @param [in] index The index identifying the item to remove.
 	 */
 	virtual void onRemoveItem(const QModelIndex& index);
+    
+    /*!
+     *  Copy the items in the selected rows.
+     *
+     *      @param [in] indexList   List of indexes pointing to the selected rows.
+     */
+    void onCopyRows(QModelIndexList indexList);
+
+    /*!
+     *  Paste the copied items.
+     */
+    void onPasteRows();
 
 signals:
 
@@ -197,6 +217,27 @@ private:
      *      @param [in] removedAddressSpace     The removed address space.
      */
     void decreaseReferencesWithRemovedAddressSpace(QSharedPointer<AddressSpace> removedAddressSpace);
+    
+    /*!
+     *  Get the names of the contained address blocks.
+     *
+     *      @return The names of the contained address blocks.
+     */
+    QStringList getCurrentItemNames();
+
+    /*!
+     *  Increase the number of references made in the copied address space.
+     *
+     *      @param [in] pastedSpace             The copied address space.
+     *      @param [in] gatherer                Address space expressions gatherer.
+     *      @param [in] referenceCalculator     The reference calculator.
+     */
+    void increaseReferencesInPastedAddressSpace(QSharedPointer<AddressSpace> pastedSpace,
+        AddressSpaceExpressionGatherer& gatherer, ReferenceCalculator& referenceCalculator);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! No copying
 	AddressSpacesModel(const AddressSpacesModel& other);
