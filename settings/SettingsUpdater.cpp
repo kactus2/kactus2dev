@@ -154,6 +154,11 @@ namespace SettingsUpdater
         QFile file(QCoreApplication::applicationDirPath() + QString("/upgrade.cfg"));
 #else
         QFile file("./upgrade.cfg");
+        
+        if (!file.exists())
+        {
+            file.setFileName("/usr/share/kactus2/upgrade.cfg");
+        }
 #endif
 
         if (!file.open(QIODevice::ReadOnly))
