@@ -13,6 +13,10 @@ B) Manually downloading and installing from http://qt-project.org/downloads
 
 However, when using manually installed Qt5, you need to make sure that Kactus2 is installed
 using its files. Open file configure and set the binary path of Qt5 as the value of variable QTBIN_PATH.
+Notice that you need to add a slash at the end of the path.
+
+WARNING: If you run file configure with wrong Qt binaries, you will have to delete the generated
+makefiles before configuring again!
 
 After successful installation of Qt5, change to directory of Kactus2.
 There are two ways to build:
