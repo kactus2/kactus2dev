@@ -82,7 +82,18 @@ void ViewReader::parseEnvIdentifiers(QDomNode const& viewNode, QSharedPointer<Vi
 
         for (int i = 0; i < envIdentifierNodes.count(); ++i)
         {
-            QString identifier = envIdentifierNodes.at(i).firstChild().nodeValue();
+			QString identifier = envIdentifierNodes.at(i).firstChild().nodeValue();
+
+			if ( identifier.count(":") < 1 )
+			{
+				identifier += ":";
+			}
+
+			if ( identifier.count(":") < 2 )
+			{
+				identifier += ":";
+			}
+
             newView->addEnvIdentifier(identifier);
         }
     }

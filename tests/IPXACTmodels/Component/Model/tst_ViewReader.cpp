@@ -24,8 +24,10 @@ public:
 private slots:
 
     void testReadSimpleView();
-    void testReadIsPresent();
-    void testReadEnvIdentifiers();
+	void testReadIsPresent();
+	void testReadEnvIdentifiers();
+	void testReadMalformedEnvIdentifiers();
+	void testReadMalformedEnvIdentifiers2();
     void testReadComponentInstantiationRef();
     void testReadDesignInstantiationRef();
     void testReadDesignConfigurationInstantiationRef();
@@ -99,8 +101,8 @@ void tst_ViewReader::testReadEnvIdentifiers()
     QString documentContent(
         "<ipxact:view>"
             "<ipxact:name>testView</ipxact:name>"
-            "<ipxact:envIdentifier>environmentIdentifier</ipxact:envIdentifier>"
-            "<ipxact:envIdentifier>otherEnvironment</ipxact:envIdentifier>"
+			"<ipxact:envIdentifier>environmentIdentifier:tool:vendoX</ipxact:envIdentifier>"
+            "<ipxact:envIdentifier>otherEnvironment:otherTool:vendorY</ipxact:envIdentifier>"
         "</ipxact:view>"
         );
 
@@ -116,8 +118,66 @@ void tst_ViewReader::testReadEnvIdentifiers()
     QCOMPARE(testView->name(), QString("testView"));
 
     QCOMPARE(testView->getEnvIdentifiers().size(), 2);
-    QCOMPARE(testView->getEnvIdentifiers().first(), QString("environmentIdentifier"));
-    QCOMPARE(testView->getEnvIdentifiers().last(), QString("otherEnvironment"));
+    QCOMPARE(testView->getEnvIdentifiers().first(), QString("environmentIdentifier:tool:vendoX"));
+    QCOMPARE(testView->getEnvIdentifiers().last(), QString("otherEnvironment:otherTool:vendorY"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ViewReader::testReadMalformedEnvIdentifiers()
+//-----------------------------------------------------------------------------
+void tst_ViewReader::testReadMalformedEnvIdentifiers()
+{
+	QString documentContent(
+		"<ipxact:view>"
+		"<ipxact:name>testView</ipxact:name>"
+		"<ipxact:envIdentifier>environmentIdentifier</ipxact:envIdentifier>"
+		"<ipxact:envIdentifier>otherEnvironment</ipxact:envIdentifier>"
+		"</ipxact:view>"
+		);
+
+
+	QDomDocument document;
+	document.setContent(documentContent);
+
+	QDomNode viewNode = document.firstChildElement("ipxact:view");
+
+	ViewReader viewReader;
+	QSharedPointer<View> testView = viewReader.createViewFrom(viewNode);
+
+	QCOMPARE(testView->name(), QString("testView"));
+
+	QCOMPARE(testView->getEnvIdentifiers().size(), 2);
+	QCOMPARE(testView->getEnvIdentifiers().first(), QString("environmentIdentifier::"));
+	QCOMPARE(testView->getEnvIdentifiers().last(), QString("otherEnvironment::"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ViewReader::testReadMalformedEnvIdentifiers2()
+//-----------------------------------------------------------------------------
+void tst_ViewReader::testReadMalformedEnvIdentifiers2()
+{
+	QString documentContent(
+		"<ipxact:view>"
+		"<ipxact:name>testView</ipxact:name>"
+		"<ipxact:envIdentifier>environmentIdentifier:tool</ipxact:envIdentifier>"
+		"<ipxact:envIdentifier>otherEnvironment:otherTool</ipxact:envIdentifier>"
+		"</ipxact:view>"
+		);
+
+
+	QDomDocument document;
+	document.setContent(documentContent);
+
+	QDomNode viewNode = document.firstChildElement("ipxact:view");
+
+	ViewReader viewReader;
+	QSharedPointer<View> testView = viewReader.createViewFrom(viewNode);
+
+	QCOMPARE(testView->name(), QString("testView"));
+
+	QCOMPARE(testView->getEnvIdentifiers().size(), 2);
+	QCOMPARE(testView->getEnvIdentifiers().first(), QString("environmentIdentifier:tool:"));
+	QCOMPARE(testView->getEnvIdentifiers().last(), QString("otherEnvironment:otherTool:"));
 }
 
 //-----------------------------------------------------------------------------
