@@ -16,7 +16,7 @@
 #include <QStringList>
 #include <QSharedPointer>
 
-class View;
+#include <IPXACTmodels/Component/View.h>
 
 //-----------------------------------------------------------------------------
 //! Model that contains the environment identifiers to be displayed to user.
@@ -143,7 +143,7 @@ private:
 	QSharedPointer<View> view_;
 
 	//! Contains the environment identifiers being edited.
-    QStringList table_;
+    QSharedPointer<QList<QSharedPointer<View::EnvironmentIdentifier> > > table_;
 };
 
 #endif // ENVIDENTIFIERSMODEL_H

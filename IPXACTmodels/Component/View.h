@@ -23,9 +23,26 @@
 //-----------------------------------------------------------------------------
 //! Represents the ipxact:view element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT View : public NameGroup {
-
+class IPXACTMODELS_EXPORT View : public NameGroup
+{
 public:
+
+	// Represents the ipxact:envIdentifier element, broken down to separate fields.
+	struct EnvironmentIdentifier
+	{
+		// The fields of ipxact:environment element.
+		QString language;
+		QString tool;
+		QString vendorSpecific;
+		
+		/*!
+		 *  Returns the environment identifier in its ipxact format: language:tool:vendorSpecific.
+		 */
+		QString toString()
+		{
+			return language + ":" + tool + ":" + vendorSpecific;
+		}
+	};
 
 	/*!
 	 *  The constructor.
@@ -57,21 +74,19 @@ public:
 	 *
      *      @return A list containing the envIdentifiers.
 	 */
-	QStringList getEnvIdentifiers() const;
-
-	/*!
-	 *  Set the envIdentifiers.
-	 *
-	 *      @param [in] envIdentifiers  The new envIdentifiers.
-	 */
-	void setEnvIdentifiers(QStringList const& envIdentifiers);
+	QSharedPointer<QList<QSharedPointer<EnvironmentIdentifier> > > getEnvIdentifiers() const;
 
 	/*!
 	 *  Add a new envIdentifier for this view.
 	 *
 	 *      @param [in] envIdentifier   The envIdentifier to add.
 	 */
-	void addEnvIdentifier(QString const& envIdentifier);
+	void addEnvIdentifier(QSharedPointer<EnvironmentIdentifier> envIdentifier);
+	
+    /*!
+     *  Returns true, if an identifier with the exactly same fields exists within the view.
+     */
+    bool hasEnvIdentifier(QSharedPointer<EnvironmentIdentifier> envIdentifier) const;
 
     /*!
      *  Gets the presence.
@@ -146,7 +161,7 @@ private:
     QString isPresent_;
 
     //! Designates and qualifies information of deployment in a particular tool environment.
-	QStringList envIdentifiers_;
+	QSharedPointer<QList<QSharedPointer<EnvironmentIdentifier> > > envIdentifiers_;
 
     //! Name of the referenced component instantiation.
     QString componentInstantiationRef_;

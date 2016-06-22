@@ -82,18 +82,29 @@ void ViewReader::parseEnvIdentifiers(QDomNode const& viewNode, QSharedPointer<Vi
 
         for (int i = 0; i < envIdentifierNodes.count(); ++i)
         {
-			QString identifier = envIdentifierNodes.at(i).firstChild().nodeValue();
+			// Read an environment identifier, identify its parts by the separator.
+			QString idString = envIdentifierNodes.at(i).firstChild().nodeValue();
+			QStringList idTuple = idString.split(":");
 
-			if ( identifier.count(":") < 1 )
+			// Assign the parts to a struct.
+			QSharedPointer<View::EnvironmentIdentifier> identifier( new View::EnvironmentIdentifier );
+
+			if ( idTuple.size() > 0 )
 			{
-				identifier += ":";
+				identifier->language = idTuple.at(0);
 			}
 
-			if ( identifier.count(":") < 2 )
+			if ( idTuple.size() > 1 )
 			{
-				identifier += ":";
+				identifier->tool = idTuple.at(1);
 			}
 
+			if ( idTuple.size() > 2 )
+			{
+				identifier->vendorSpecific = idTuple.at(2);
+			}
+
+			// Append to the view.
             newView->addEnvIdentifier(identifier);
         }
     }

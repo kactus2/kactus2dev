@@ -394,7 +394,10 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName )
 
 	// add the spirit:envIdentifier. Only language is defined, not tool
 	// specific settings
-	rtlView->addEnvIdentifier(QString("VHDL:Kactus2:"));
+	QSharedPointer<View::EnvironmentIdentifier> envId( new View::EnvironmentIdentifier );
+	envId->language = "VHDL";
+	envId->tool = "Kactus2";
+	rtlView->addEnvIdentifier(envId);
 
 	QSharedPointer<ComponentInstantiation> componentInstantiation(new ComponentInstantiation);
 

@@ -627,8 +627,6 @@ void SystemDesignDiagram::onAddToLibraryAction()
 					}
 				}
 
-				newView->addEnvIdentifier(QString("::"));
-
 				comp->componentModel()->getModel()->getViews()->append(newView);
             }
 

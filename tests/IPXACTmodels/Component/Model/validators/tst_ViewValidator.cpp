@@ -113,16 +113,25 @@ void tst_ViewValidator::envId()
 	view->setName("esa");
 
 	QStringList envIds;
-	envIds.append("1:2:3");
-	envIds.append("joq");
-	envIds.append("ega");
-	view->setEnvIdentifiers(envIds);
+	QSharedPointer<View::EnvironmentIdentifier> identifier1( new View::EnvironmentIdentifier );
+	identifier1->language = "1";
+	identifier1->tool = "2";
+	identifier1->vendorSpecific = "3";
+	view->addEnvIdentifier(identifier1);
+	QSharedPointer<View::EnvironmentIdentifier> identifier2( new View::EnvironmentIdentifier );
+	identifier2->language = "[]";
+	identifier2->tool = "2";
+	identifier2->vendorSpecific = "3";
+	view->addEnvIdentifier(identifier2);
+	QSharedPointer<View::EnvironmentIdentifier> identifier3( new View::EnvironmentIdentifier );
+	identifier3->language = "%";
+	view->addEnvIdentifier(identifier3);
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, view, "test");
 
-	QCOMPARE( errorList.size(), 2 );
-	QVERIFY( !validator.validate(view) );
+	QCOMPARE( errorList.size(), 0 );
+	QVERIFY( validator.validate(view) );
 }
 
 //-----------------------------------------------------------------------------

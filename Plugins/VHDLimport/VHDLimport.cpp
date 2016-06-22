@@ -345,7 +345,6 @@ QSharedPointer<View> VHDLimport::findOrCreateFlatView() const
 		// create new view
 		QSharedPointer<View> newView( new View() );
 		newView->setName("flat");
-		newView->addEnvIdentifier(QString("::"));
 		targetComponent_->getViews()->append(newView);
 
 		flatViews = targetComponent_->getFlatViews();
@@ -361,20 +360,15 @@ QSharedPointer<ComponentInstantiation> VHDLimport::setLanguageAndEnvironmentalId
 {
     QSharedPointer<View> rtlView = findOrCreateFlatView();
 
-    QString createdEnvIdentifier = "VHDL:Kactus2:";
+	// Create environment identifiers for the view as needed.
+	QSharedPointer<View::EnvironmentIdentifier> envIdentifierForImport(new View::EnvironmentIdentifier);
+	envIdentifierForImport->language = "VHDL";
+	envIdentifierForImport->tool = "Kactus2";
 
-    QStringList envIdentifiers = rtlView->getEnvIdentifiers();
-
-    if (envIdentifiers.contains("::"))
-    {
-        envIdentifiers.replace(envIdentifiers.indexOf("::"), createdEnvIdentifier);
-    }
-    else if (!envIdentifiers.contains(createdEnvIdentifier, Qt::CaseInsensitive))
-    {
-        envIdentifiers.append(createdEnvIdentifier);
-    }
-
-	rtlView->setEnvIdentifiers(envIdentifiers);    
+	if (!rtlView->hasEnvIdentifier(envIdentifierForImport))
+	{
+		rtlView->getEnvIdentifiers()->append(envIdentifierForImport);
+	}
 
 	// Must have a component instantiation for module parameters.
 	QString instaName = NameGenerationPolicy::vhdlComponentInstantiationName( rtlView->name() );

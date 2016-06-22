@@ -101,7 +101,7 @@ void tst_ViewReader::testReadEnvIdentifiers()
     QString documentContent(
         "<ipxact:view>"
             "<ipxact:name>testView</ipxact:name>"
-			"<ipxact:envIdentifier>environmentIdentifier:tool:vendoX</ipxact:envIdentifier>"
+			"<ipxact:envIdentifier>environmentIdentifier:tool:vendorX</ipxact:envIdentifier>"
             "<ipxact:envIdentifier>otherEnvironment:otherTool:vendorY</ipxact:envIdentifier>"
         "</ipxact:view>"
         );
@@ -117,9 +117,9 @@ void tst_ViewReader::testReadEnvIdentifiers()
 
     QCOMPARE(testView->name(), QString("testView"));
 
-    QCOMPARE(testView->getEnvIdentifiers().size(), 2);
-    QCOMPARE(testView->getEnvIdentifiers().first(), QString("environmentIdentifier:tool:vendoX"));
-    QCOMPARE(testView->getEnvIdentifiers().last(), QString("otherEnvironment:otherTool:vendorY"));
+    QCOMPARE(testView->getEnvIdentifiers()->size(), 2);
+    QCOMPARE(testView->getEnvIdentifiers()->first()->toString(), QString("environmentIdentifier:tool:vendorX"));
+    QCOMPARE(testView->getEnvIdentifiers()->last()->toString(), QString("otherEnvironment:otherTool:vendorY"));
 }
 
 //-----------------------------------------------------------------------------
@@ -146,9 +146,9 @@ void tst_ViewReader::testReadMalformedEnvIdentifiers()
 
 	QCOMPARE(testView->name(), QString("testView"));
 
-	QCOMPARE(testView->getEnvIdentifiers().size(), 2);
-	QCOMPARE(testView->getEnvIdentifiers().first(), QString("environmentIdentifier::"));
-	QCOMPARE(testView->getEnvIdentifiers().last(), QString("otherEnvironment::"));
+	QCOMPARE(testView->getEnvIdentifiers()->size(), 2);
+	QCOMPARE(testView->getEnvIdentifiers()->first()->toString(), QString("environmentIdentifier::"));
+	QCOMPARE(testView->getEnvIdentifiers()->last()->toString(), QString("otherEnvironment::"));
 }
 
 //-----------------------------------------------------------------------------
@@ -175,9 +175,9 @@ void tst_ViewReader::testReadMalformedEnvIdentifiers2()
 
 	QCOMPARE(testView->name(), QString("testView"));
 
-	QCOMPARE(testView->getEnvIdentifiers().size(), 2);
-	QCOMPARE(testView->getEnvIdentifiers().first(), QString("environmentIdentifier:tool:"));
-	QCOMPARE(testView->getEnvIdentifiers().last(), QString("otherEnvironment:otherTool:"));
+	QCOMPARE(testView->getEnvIdentifiers()->size(), 2);
+	QCOMPARE(testView->getEnvIdentifiers()->first()->toString(), QString("environmentIdentifier:tool:"));
+	QCOMPARE(testView->getEnvIdentifiers()->last()->toString(), QString("otherEnvironment:otherTool:"));
 }
 
 //-----------------------------------------------------------------------------

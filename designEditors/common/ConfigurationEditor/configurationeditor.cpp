@@ -172,8 +172,6 @@ void ConfigurationEditor::onAdd()
             (new DesignConfigurationInstantiation(viewName));
         instantiation->setDesignConfigurationReference(configurationReference);
 
-        view->addEnvIdentifier(QString(""));
-
 		component_->getDesignConfigurationInstantiations()->append(instantiation);
         component_->getViews()->append(view);
     }

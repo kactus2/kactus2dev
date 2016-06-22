@@ -18,7 +18,7 @@ View::View(QString const& name /* = QString() */, QString const& displayName /* 
     QString const& description /* = QString() */) :
 NameGroup(name, displayName, description),
 isPresent_(),
-envIdentifiers_(),
+envIdentifiers_(new QList<QSharedPointer<EnvironmentIdentifier> >),
 componentInstantiationRef_(),
 designInstantiationRef_(),
 designConfigurationInstantiationRef_()
@@ -67,17 +67,9 @@ View::~View()
 }
 
 //-----------------------------------------------------------------------------
-// Function: View::setEnvIdentifiers()
-//-----------------------------------------------------------------------------
-void View::setEnvIdentifiers( const QStringList& envIdentifiers )
-{
-	envIdentifiers_ = envIdentifiers;
-}
-
-//-----------------------------------------------------------------------------
 // Function: View::getEnvIdentifiers()
 //-----------------------------------------------------------------------------
-QStringList View::getEnvIdentifiers() const
+QSharedPointer<QList<QSharedPointer<View::EnvironmentIdentifier> > > View::getEnvIdentifiers() const
 {
 	return envIdentifiers_;
 }
@@ -85,9 +77,27 @@ QStringList View::getEnvIdentifiers() const
 //-----------------------------------------------------------------------------
 // Function: View::addEnvIdentifier()
 //-----------------------------------------------------------------------------
-void View::addEnvIdentifier(QString const& envIdentifier)
+void View::addEnvIdentifier(QSharedPointer<View::EnvironmentIdentifier> envIdentifier)
 {
-	envIdentifiers_.append(envIdentifier);
+	envIdentifiers_->append(envIdentifier);
+}
+
+//-----------------------------------------------------------------------------
+// Function: View::hasEnvIdentifier()
+//-----------------------------------------------------------------------------
+bool View::hasEnvIdentifier(QSharedPointer<View::EnvironmentIdentifier> envIdentifier) const
+{
+	foreach(QSharedPointer<View::EnvironmentIdentifier> identifier, *envIdentifiers_)
+	{
+		if (identifier->language == envIdentifier->language &&
+			identifier->tool == envIdentifier->tool &&
+			identifier->vendorSpecific == identifier->vendorSpecific)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 //-----------------------------------------------------------------------------

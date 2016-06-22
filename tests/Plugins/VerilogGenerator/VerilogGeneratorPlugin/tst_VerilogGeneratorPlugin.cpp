@@ -335,7 +335,8 @@ void tst_VerilogGenerator::verifyRTLView(QSharedPointer<View> rtlView, QSharedPo
 {
     QCOMPARE(cimp->getLanguage(), QString("verilog"));
     QCOMPARE(cimp->getFileSetReferences()->first(), QString("verilogSource"));
-    QCOMPARE(rtlView->getEnvIdentifiers().first(), QString("verilog:Kactus2:"));
+	QCOMPARE(rtlView->getEnvIdentifiers()->first()->language, QString("verilog"));
+	QCOMPARE(rtlView->getEnvIdentifiers()->first()->tool, QString("Kactus2"));
 }
 
 //-----------------------------------------------------------------------------
@@ -345,8 +346,9 @@ void tst_VerilogGenerator::verifyHierarchicalView(QSharedPointer<View> hierView,
 	QSharedPointer<ComponentInstantiation> cimp)
 {
     QCOMPARE(cimp->getLanguage(), QString("verilog"));
-    QCOMPARE(cimp->getFileSetReferences()->first(), QString(viewName + "_verilogSource"));
-    QCOMPARE(hierView->getEnvIdentifiers().first(), QString("verilog:Kactus2:"));
+	QCOMPARE(cimp->getFileSetReferences()->first(), QString(viewName + "_verilogSource"));
+	QCOMPARE(hierView->getEnvIdentifiers()->first()->language, QString("verilog"));
+	QCOMPARE(hierView->getEnvIdentifiers()->first()->tool, QString("Kactus2"));
 }
 
 QTEST_MAIN(tst_VerilogGenerator)

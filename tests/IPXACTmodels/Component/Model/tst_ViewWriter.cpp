@@ -160,10 +160,17 @@ void tst_ViewWriter::testWriteEnvIdentifiers()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QStringList envIdentifiers;
-    envIdentifiers.append("language:tool:vendor");
-    envIdentifiers.append("otherLanguage:otherTool:otherVendor");
-    testView_->setEnvIdentifiers(envIdentifiers);
+	QSharedPointer<View::EnvironmentIdentifier> identifier1( new View::EnvironmentIdentifier );
+	identifier1->language = "language";
+	identifier1->tool = "tool";
+	identifier1->vendorSpecific = "vendor";
+	testView_->addEnvIdentifier(identifier1);
+
+	QSharedPointer<View::EnvironmentIdentifier> identifier2( new View::EnvironmentIdentifier );
+	identifier2->language = "otherLanguage";
+	identifier2->tool = "otherTool";
+	identifier2->vendorSpecific = "otherVendor";
+	testView_->addEnvIdentifier(identifier2);
 
     QString expectedOutput(
         "<ipxact:view>"

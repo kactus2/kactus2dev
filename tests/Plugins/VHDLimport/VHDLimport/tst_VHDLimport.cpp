@@ -832,7 +832,8 @@ void tst_VHDLimport::testModelNameAndEnvironmentIsImportedToView()
 
     QCOMPARE(cimp->getModuleName(), QString("testbench(structural)"));
     QCOMPARE(cimp->getLanguage(), QString("vhdl"));
-    QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers().first(), QString("VHDL:Kactus2:"));
+	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->language, QString("VHDL"));
+	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->tool, QString("Kactus2"));
 
     QString architecture = "ARCHITECTURE structural OF testbench";
     QString modelNameSection = "structural OF testbench";

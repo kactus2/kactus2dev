@@ -11,7 +11,6 @@
 
 #include "ViewValidator.h"
 
-#include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Model.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
@@ -98,7 +97,7 @@ bool ViewValidator::hasValidIsPresent(QSharedPointer<View> view) const
 //-----------------------------------------------------------------------------
 bool ViewValidator::hasValidEnvironmentIdentifiers(QSharedPointer<View> view) const
 {
-    foreach( QString envId, view->getEnvIdentifiers() )
+    foreach( QSharedPointer<View::EnvironmentIdentifier> envId, *view->getEnvIdentifiers() )
     {
         if ( !isValidEnvId( envId ) )
         {
@@ -107,20 +106,32 @@ bool ViewValidator::hasValidEnvironmentIdentifiers(QSharedPointer<View> view) co
     }
     return true;
 }
-
+#include <QDebug>
 //-----------------------------------------------------------------------------
 // Function: ViewValidator::isValidEnvId()
 //-----------------------------------------------------------------------------
-bool ViewValidator::isValidEnvId(QString const& envId) const
+bool ViewValidator::isValidEnvId(QSharedPointer<View::EnvironmentIdentifier> envId) const
 {
     QRegularExpression envIdExpression;
-    envIdExpression.setPattern("[A-Za-z0-9_+\\*\\.]*:[A-Za-z0-9_+\\*\\.]*:[A-Za-z0-9_+\\*\\.]*");
-    QRegularExpressionMatch envIdMatch = envIdExpression.match(envId);
+	envIdExpression.setPattern("[A-Za-z0-9_+\\*\\.]*");
+	QRegularExpressionMatch envIdMatchLanguage = envIdExpression.match(envId->language);
+	QRegularExpressionMatch envIdMatchTool = envIdExpression.match(envId->tool);
+	QRegularExpressionMatch envIdMatchVendor = envIdExpression.match(envId->vendorSpecific);
 
-    if ( !envId.isEmpty() && !envIdMatch.hasMatch() )
+    if ( !envId->language.isEmpty() && !envIdMatchLanguage.hasMatch() )
     {
         return false;
-    }
+	}
+
+	if ( !envId->tool.isEmpty() && !envIdMatchTool.hasMatch() )
+	{
+		return false;
+	}
+
+	if ( !envId->vendorSpecific.isEmpty() && !envIdMatchVendor.hasMatch() )
+	{
+		return false;
+	}
 
     return true;
 }
@@ -183,11 +194,11 @@ void ViewValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<View> 
             .arg(view->getIsPresent()).arg(view->name()));
 	}
 
-	foreach( QString envId, view->getEnvIdentifiers() )
+	foreach( QSharedPointer<View::EnvironmentIdentifier> envId, *view->getEnvIdentifiers() )
 	{
 		if ( !isValidEnvId( envId ) )
 		{
-			errors.append(QObject::tr("The env identifier %1 is invalid in view %2").arg(envId).arg(view->name()));
+			errors.append(QObject::tr("The env identifier %1 is invalid in view %2").arg(envId->toString()).arg(view->name()));
 		}
 	}
 

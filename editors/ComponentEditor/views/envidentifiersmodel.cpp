@@ -12,8 +12,6 @@
 #include "envidentifiersmodel.h"
 #include "EnvIdentifiersColumns.h"
 
-#include <IPXACTmodels/Component/View.h>
-
 //-----------------------------------------------------------------------------
 // Function: envidentifiersmodel::EnvIdentifiersModel()
 //-----------------------------------------------------------------------------
@@ -43,7 +41,7 @@ int EnvIdentifiersModel::rowCount(QModelIndex const& parent) const
 		return 0;
     }
 
-	return table_.size();
+	return table_->size();
 }
 
 //-----------------------------------------------------------------------------
@@ -64,14 +62,26 @@ int EnvIdentifiersModel::columnCount(QModelIndex const& parent) const
 //-----------------------------------------------------------------------------
 QVariant EnvIdentifiersModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= table_->size())
     {
 		return QVariant();
     }
 	else if (role == Qt::DisplayRole || role == Qt::EditRole)
-    {
-		QStringList fields = table_.at(index.row()).split(":");
-		return fields.value(index.column());
+	{
+		if ( index.column() == 0 )
+		{
+			return table_->at(index.row())->language;
+		}
+		else if ( index.column() == 1 )
+		{
+			return table_->at(index.row())->tool;
+		}
+		else if ( index.column() == 2 )
+		{
+			return table_->at(index.row())->vendorSpecific;
+		}
+
+		return "";
 	}
 	// if unsupported role
 	else
@@ -113,17 +123,28 @@ QVariant EnvIdentifiersModel::headerData(int section, Qt::Orientation orientatio
 //-----------------------------------------------------------------------------
 bool EnvIdentifiersModel::setData(QModelIndex const& index, const QVariant& value, int role)
 {
-	if (!index.isValid() ||index.row() < 0 || index.row() >= table_.size())
+	if (!index.isValid() ||index.row() < 0 || index.row() >= table_->size())
     {
         return false;
     }
 	else if (role == Qt::EditRole)
     {
-		QStringList identifier = table_.at(index.row()).split(":");
-		identifier.replace(index.column(), value.toString());
-		table_.replace(index.row(), identifier.join(':'));
-		
-        view_->setEnvIdentifiers(table_);
+		int row = index.row();
+
+		QSharedPointer<View::EnvironmentIdentifier> envId = table_->at(row);
+
+		if ( index.column() == 0 )
+		{
+			envId->language = value.toString();
+		}
+		else if ( index.column() == 1 )
+		{
+			envId->tool = value.toString();
+		}
+		else if ( index.column() == 2 )
+		{
+			envId->vendorSpecific = value.toString();
+		}
 
 		emit dataChanged(index, index);
 		emit contentChanged();
@@ -154,8 +175,7 @@ Qt::ItemFlags EnvIdentifiersModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool EnvIdentifiersModel::isValid() const
 {
-	// at least one has to be specified.
-	return !table_.isEmpty();
+	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -164,15 +184,14 @@ bool EnvIdentifiersModel::isValid() const
 void EnvIdentifiersModel::onRemoveItem( QModelIndex const& index )
 {
 	// don't remove anything if index is invalid
-	if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
+	if (!index.isValid() || index.row() < 0 || index.row() >= table_->size())
     {
 		return;
 	}
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
-	table_.removeAt(index.row());
-    view_->setEnvIdentifiers(table_);
+	table_->removeAt(index.row());
 	endRemoveRows();
 
 	// tell also parent widget that contents have been changed
@@ -184,7 +203,7 @@ void EnvIdentifiersModel::onRemoveItem( QModelIndex const& index )
 //-----------------------------------------------------------------------------
 void EnvIdentifiersModel::onAddItem( QModelIndex const& index )
 {
-	int row = table_.size();
+	int row = table_->size();
 
 	// if the index is valid then add the item to the correct position
 	if (index.isValid())
@@ -193,8 +212,8 @@ void EnvIdentifiersModel::onAddItem( QModelIndex const& index )
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	table_.insert(row, QString("::"));
-    view_->setEnvIdentifiers(table_);
+	QSharedPointer<View::EnvironmentIdentifier> envId(new View::EnvironmentIdentifier);
+	table_->insert(row, envId);
 	endInsertRows();
 
 	// tell also parent widget that contents have been changed

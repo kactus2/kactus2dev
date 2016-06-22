@@ -250,16 +250,14 @@ void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Comp
     QSharedPointer<View> flatView = findOrCreateFlatView(targetComponent);
 
 	// Create environment identifiers for the view as needed.
-    QString envIdentifierForImport = "verilog:Kactus2:";
+    QSharedPointer<View::EnvironmentIdentifier> envIdentifierForImport(new View::EnvironmentIdentifier);
+	envIdentifierForImport->language = "verilog";
+	envIdentifierForImport->tool = "Kactus2";
 
-    QStringList envIdentifiers = flatView->getEnvIdentifiers();
-
-    if (!envIdentifiers.contains(envIdentifierForImport, Qt::CaseInsensitive))
+    if (!flatView->hasEnvIdentifier(envIdentifierForImport))
     {
-        envIdentifiers.append(envIdentifierForImport);
+        flatView->getEnvIdentifiers()->append(envIdentifierForImport);
     }
-
-	flatView->setEnvIdentifiers(envIdentifiers);
 
 	// Must have a component instantiation for module parameters.
 	targetComponentInstantiation = targetComponent->getModel()->

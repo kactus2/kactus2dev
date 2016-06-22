@@ -2351,7 +2351,6 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
 	hierarchyInstantiation->setDesignConfigurationReference(
 		QSharedPointer<ConfigurableVLNVReference>( new ConfigurableVLNVReference( designConfigVLNV ) ) );
 
-    view->addEnvIdentifier("::");
     view->setDesignConfigurationInstantiationRef(hierarchyInstantiation->name());
 
     component->getViews()->append(view);

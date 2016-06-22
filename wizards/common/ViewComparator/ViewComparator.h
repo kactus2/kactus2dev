@@ -15,7 +15,8 @@
 #include <wizards/common/ListComparator.h>
 #include <wizards/common/IPXactDiff.h>
 
-class View;
+#include <IPXACTmodels/Component/View.h>
+
 //-----------------------------------------------------------------------------
 //! Comparator for finding differences in views.
 //-----------------------------------------------------------------------------
@@ -109,7 +110,8 @@ private:
      *
      *      @return True, if the lists contain the same strings in any order, otherwise false.
      */
-    bool compareLists(QStringList first, QStringList second) const;
+    bool compareLists(QSharedPointer<QList<QSharedPointer<View::EnvironmentIdentifier> > > first,
+		QSharedPointer<QList<QSharedPointer<View::EnvironmentIdentifier> > > second) const;
 
     /*!
      *  Gets the type for a given view.

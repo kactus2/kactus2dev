@@ -73,13 +73,10 @@ void ViewWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<View> v
 //-----------------------------------------------------------------------------
 void ViewWriter::writeEnvIdentifiers(QXmlStreamWriter& writer, QSharedPointer<View> view) const
 {
-    if (!view->getEnvIdentifiers().isEmpty())
-    {
-        foreach (QString identifier, view->getEnvIdentifiers())
-        {
-            writer.writeTextElement("ipxact:envIdentifier", identifier);
-        }
-    }
+	foreach (QSharedPointer<View::EnvironmentIdentifier> identifier, *view->getEnvIdentifiers())
+	{
+		writer.writeTextElement("ipxact:envIdentifier", identifier->toString());
+	}
 }
 
 //-----------------------------------------------------------------------------

@@ -11,8 +11,6 @@
 
 #include "ViewComparator.h"
 
-#include <IPXACTmodels/Component/View.h>
-
 //-----------------------------------------------------------------------------
 // Function: ViewComparator::ViewComparator()
 //-----------------------------------------------------------------------------
@@ -77,8 +75,20 @@ QList<QSharedPointer<IPXactDiff> > ViewComparator::diffFields(QSharedPointer<con
     QSharedPointer<IPXactDiff> add(new IPXactDiff(elementType(), reference->name()));
     add->setChangeType(IPXactDiff::MODIFICATION);
 
-    add->checkForChange("environment identifiers", reference->getEnvIdentifiers().join(", "), 
-        subject->getEnvIdentifiers().join(", "));
+	QString refIds;
+	QString subIds;
+
+	foreach (QSharedPointer<View::EnvironmentIdentifier> identifier, *reference->getEnvIdentifiers())
+	{
+		refIds += identifier->toString() + ", ";
+	}
+
+	foreach (QSharedPointer<View::EnvironmentIdentifier> identifier, *subject->getEnvIdentifiers())
+	{
+		subIds += identifier->toString() + ", ";
+	}
+
+    add->checkForChange("environment identifiers", refIds, subIds );
     add->checkForChange("component instantiation reference", reference->getComponentInstantiationRef(),
         subject->getComponentInstantiationRef());
 
@@ -106,20 +116,26 @@ QList<QSharedPointer<IPXactDiff> > ViewComparator::diff(QList<QSharedPointer<Vie
 //-----------------------------------------------------------------------------
 // Function: ViewComparator::compareLists()
 //-----------------------------------------------------------------------------
-bool ViewComparator::compareLists(QStringList firstList, QStringList secondList) const
+bool ViewComparator::compareLists(QSharedPointer<QList<QSharedPointer<View::EnvironmentIdentifier> > > first,
+	QSharedPointer<QList<QSharedPointer<View::EnvironmentIdentifier> > > second) const
 {
-    if (firstList.count() != secondList.count())
+    if (first->size() != second->size())
     {
         return false;
     }
 
-    foreach(QString const& item, firstList)
-    {
-        if (!secondList.contains(item))
-        {
-            return false;
-        }
-    }
+	for (int i = 0; i < first->size(); ++i)
+	{
+		QSharedPointer<View::EnvironmentIdentifier> item1 = first->at(i);
+		QSharedPointer<View::EnvironmentIdentifier> item2 = first->at(i);
+
+		if ( item1->language != item2->language ||
+			item1->tool != item2->tool ||
+			item1->vendorSpecific != item2->vendorSpecific )
+		{
+			return false;
+		}
+	}
 
     return true;
 }

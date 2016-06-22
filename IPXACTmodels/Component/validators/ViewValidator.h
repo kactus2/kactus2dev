@@ -13,13 +13,13 @@
 #define ViewVALIDATOR_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/Component/View.h>
 
 #include <QString>
 #include <QVector>
 #include <QSharedPointer>
 
 class ExpressionParser;
-class View;
 class Model;
 class ComponentInstantiation;
 class DesignInstantiation;
@@ -120,7 +120,7 @@ public:
      *
      *      @return True, if the environment identifier is valid, otherwise false.
      */
-	bool isValidEnvId( QString const& envId ) const;
+	bool isValidEnvId( QSharedPointer<View::EnvironmentIdentifier> envId ) const;
 
     /*!
      *  Finds possible errors in a View and creates a list of them.
