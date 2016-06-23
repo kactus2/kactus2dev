@@ -52,9 +52,9 @@ public:
 	 *  Parse the files associated with the given view in the selected component.
 	 *
 	 *      @param [in] component   Pointer to the selected component.
-	 *      @param [in] viewName    Name of the view to parse file set references from.
+	 *      @param [in] view		The view to parse file set references from.
 	 */
-	void parseFiles(QSharedPointer<Component> component, const QString& viewName);
+	void parseFiles(QSharedPointer<Component> component, QSharedPointer<View> view);
 
 	/*! \brief Generate the Quartus project files (.qpf .qsf)
 	 *

@@ -273,22 +273,11 @@ void QuartusGenerator::writeHeader(QTextStream& stream, QString const& generator
 //-----------------------------------------------------------------------------
 // Function: QuartusGenerator::parseFiles()
 //-----------------------------------------------------------------------------
-void QuartusGenerator::parseFiles(QSharedPointer<Component> component, const QString& viewName)
+void QuartusGenerator::parseFiles(QSharedPointer<Component> component, QSharedPointer<View> view)
 {
 	Q_ASSERT_X(component, "QuartusGenerator::parseFiles", "Null component-pointer given as parameter");
 
-    utility_->printInfo(tr("Processing view %1 of component %2").arg(viewName, component->getVlnv().toString()));
-
-	QSharedPointer<View> view;
-
-	foreach (QSharedPointer<View> currentView, *component->getViews() )
-	{
-		if ( currentView->name() == viewName )
-		{
-			view = currentView;
-			break;
-		}
-	}
+    utility_->printInfo(tr("Processing view %1 of component %2").arg(view->name(), component->getVlnv().toString()));
 
 	if (!view)
     {
@@ -299,7 +288,7 @@ void QuartusGenerator::parseFiles(QSharedPointer<Component> component, const QSt
         return;
 	}
 
-	if (view && !view->isHierarchical())
+	if (!view->isHierarchical())
 	{
 		QSharedPointer<QStringList> fileSets( new QStringList );
 
@@ -314,8 +303,7 @@ void QuartusGenerator::parseFiles(QSharedPointer<Component> component, const QSt
 
 		parseFileSets(component, fileSets);
 	}
-
-	else if (view && view->isHierarchical())
+	else
     {
         parseFilesFromHierarchicalView(view, component);
 	}
@@ -437,28 +425,22 @@ void QuartusGenerator::parseFilesFromHierarchicalView(QSharedPointer<View> view,
 
 	VLNV vlnv;
 
-	foreach (QSharedPointer<View> currentView, *component->getViews())
+	foreach (QSharedPointer<DesignInstantiation> insta, *component->getDesignInstantiations() )
 	{
-		foreach (QSharedPointer<DesignInstantiation> insta, *component->getDesignInstantiations() )
+		if ( view->getDesignInstantiationRef() == insta->name() )
 		{
-			if ( currentView->getDesignInstantiationRef() == insta->name() )
-			{
-				vlnv = (*insta->getDesignReference());
-				break;
-			}
+			vlnv = (*insta->getDesignReference());
+			break;
 		}
 	}
 
-	foreach (QSharedPointer<View> currentView, *component->getViews())
+	foreach ( QSharedPointer<DesignConfigurationInstantiation> insta,
+		*component->getDesignConfigurationInstantiations() )
 	{
-		foreach ( QSharedPointer<DesignConfigurationInstantiation> insta,
-			*component->getDesignConfigurationInstantiations() )
+		if ( view->getDesignConfigurationInstantiationRef() == insta->name() )
 		{
-			if ( currentView->getDesignConfigurationInstantiationRef() == insta->name() )
-			{
-				vlnv = (*insta->getDesignConfigurationReference());
-				break;
-			}
+			vlnv = (*insta->getDesignConfigurationReference());
+			break;
 		}
 	}
 
@@ -548,13 +530,15 @@ void QuartusGenerator::readDesign(const QSharedPointer<Design> design,
 			continue;
 		}
 
-		QString viewName;
+		QSharedPointer<View> view;
 
 		if (desConf && desConf->hasActiveView(instance->getInstanceName()))
         {
             QMap<QString, QString> viewOverrides = desConf->getKactus2ViewOverrides();
 
-            viewName = viewOverrides.value(instance->getUuid(), desConf->getActiveView(instance->getInstanceName()));
+            QString viewName =
+				viewOverrides.value(instance->getUuid(), desConf->getActiveView(instance->getInstanceName()));
+			view = component->getModel()->findView(viewName);
 		}
 		// if design configuration is not used or view was not found
 		else
@@ -563,7 +547,7 @@ void QuartusGenerator::readDesign(const QSharedPointer<Design> design,
                 arg(instance->getInstanceName(), vlnv.toString()));
 		}
 
-		parseFiles(component, viewName);
+		parseFiles(component, view);
 	}
 }
 

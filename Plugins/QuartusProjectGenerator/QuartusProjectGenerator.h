@@ -26,6 +26,8 @@
 #include <QSettings>
 
 class IPluginUtility;
+class Design;
+class DesignConfiguration;
 
 //-----------------------------------------------------------------------------
 // !The plugin for generating quartus projects containing quartus project files and quartus settings files.
@@ -163,16 +165,16 @@ private:
 	QuartusProjectGenerator& operator=(const QuartusProjectGenerator& other);
 
     /*!
-     *  Gets the view name of the current design or design configuration.
+     *  Gets the view of the current design or design configuration.
+	 *
+	 *      @param [in] component   The component for which this plugin is run for.
+     *      @param [in] desConf		The design configuration object of a hierarchical component.
+     *      @param [in] design      The design object of a hierarchical component.
      *
-     *      @param [in] libDesConf  The design configuration object of a hierarchical component.
-     *      @param [in] libDes      The design object of a hierarchical component.
-     *      @param [in] component   The component for which this plugin is run for.
-     *
-     *      @return The name of the view referencing to the open design.
+     *      @return The view referencing to the open design.
      */
-    QString getOpenViewName(QSharedPointer<Document> libDesConf, QSharedPointer<Document> libDes,
-        QSharedPointer<Component> component);
+	QSharedPointer<View> getOpenView(QSharedPointer<Component> component,
+		QSharedPointer<DesignConfiguration> desConf, QSharedPointer<Design> design);
 
 	//! The plugin utility.
 	IPluginUtility* utility_;

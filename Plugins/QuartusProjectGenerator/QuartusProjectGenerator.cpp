@@ -156,35 +156,36 @@ void QuartusProjectGenerator::runGenerator(IPluginUtility* utility,
 
     utility_ = utility;
 
-    QSharedPointer<Component> component = libComp.staticCast<Component>();
+	QSharedPointer<Component> component = libComp.staticCast<Component>();
+	QSharedPointer<DesignConfiguration> desConf = libDesConf.staticCast<DesignConfiguration>();
+	QSharedPointer<Design> design = libDes.staticCast<Design>();
 
     QString path = QFileDialog::getExistingDirectory(utility->getParentWidget(),
         tr("Set the directory where the Quartus project is created to"),
         utility->getLibraryInterface()->getPath(component->getVlnv()));
 
-    if (!path.isEmpty())
-    {
-        QString openViewName = getOpenViewName(libDesConf, libDes, component);
+	if (path.isEmpty())
+	{
+		utility->printInfo(tr("Generation aborted: No path given."));
+		return;
+	}
 
-        QuartusGenerator quartusGenerator(path, utility);
+	QSharedPointer<View> openView = getOpenView(component, desConf, design);
 
-        connect(&quartusGenerator, SIGNAL(errorMessage(QString const&)),
-            this, SLOT(onErrorMessage(QString const&)), Qt::UniqueConnection);
-        connect(&quartusGenerator, SIGNAL(noticeMessage(QString const&)),
-            this, SLOT(onNoticeMessage(QString const&)), Qt::UniqueConnection);
+	QuartusGenerator quartusGenerator(path, utility);
 
-        QString generatorInformation = getName() + " " + getVersion();
+	connect(&quartusGenerator, SIGNAL(errorMessage(QString const&)),
+		this, SLOT(onErrorMessage(QString const&)), Qt::UniqueConnection);
+	connect(&quartusGenerator, SIGNAL(noticeMessage(QString const&)),
+		this, SLOT(onNoticeMessage(QString const&)), Qt::UniqueConnection);
 
-        quartusGenerator.readExistingPinMap(component);
-        quartusGenerator.parseFiles(component, openViewName);
-        quartusGenerator.generateProject(component->getVlnv().getName(), generatorInformation);
+	QString generatorInformation = getName() + " " + getVersion();
 
-        utility->printInfo(tr("Quartus project generation complete."));
-    }
-    else
-    {
-        utility->printInfo(tr("Generation aborted."));
-    }
+	quartusGenerator.readExistingPinMap(component);
+	quartusGenerator.parseFiles(component, openView);
+	quartusGenerator.generateProject(component->getVlnv().getName(), generatorInformation);
+
+	utility->printInfo(tr("Quartus project generation complete."));
 }
 
 //-----------------------------------------------------------------------------
@@ -212,14 +213,11 @@ void QuartusProjectGenerator::onNoticeMessage(QString const& message)
 }
 
 //-----------------------------------------------------------------------------
-// Function: QuartusProjectGenerator::getOpenViewName()
+// Function: QuartusProjectGenerator::getOpenView()
 //-----------------------------------------------------------------------------
-QString QuartusProjectGenerator::getOpenViewName(QSharedPointer<Document> libDesConf,
-    QSharedPointer<Document> libDes, QSharedPointer<Component> component)
+QSharedPointer<View> QuartusProjectGenerator::getOpenView(QSharedPointer<Component> component,
+	QSharedPointer<DesignConfiguration> desConf, QSharedPointer<Design> design)
 {
-    QSharedPointer<DesignConfiguration> desConf = libDesConf.staticCast<DesignConfiguration>();
-    QSharedPointer<Design> design = libDes.staticCast<Design>();
-
     foreach (QSharedPointer<View> currentView, *component->getViews())
     {
 		if ( desConf )
@@ -227,9 +225,10 @@ QString QuartusProjectGenerator::getOpenViewName(QSharedPointer<Document> libDes
 			foreach ( QSharedPointer<DesignConfigurationInstantiation> insta,
 				*component->getDesignConfigurationInstantiations() )
 			{
-				if ( (*insta->getDesignConfigurationReference()) == desConf->getVlnv() )
+				if ( (*insta->getDesignConfigurationReference()) == desConf->getVlnv()
+					&& currentView->getDesignConfigurationInstantiationRef() == insta->name() )
 				{
-					return currentView->name();
+					return currentView;
 				}
 			}
 		}
@@ -238,13 +237,14 @@ QString QuartusProjectGenerator::getOpenViewName(QSharedPointer<Document> libDes
 		{
 			foreach (QSharedPointer<DesignInstantiation> insta, *component->getDesignInstantiations() )
 			{
-				if ( (*insta->getDesignReference()) == design->getVlnv() )
+				if ( (*insta->getDesignReference()) == design->getVlnv()
+					&& currentView->getDesignInstantiationRef() == insta->name() )
 				{
-					return currentView->name();
+					return currentView;
 				}
 			}
 		}
     }
 
-    return QString("");
+    return QSharedPointer<View>();
 }
