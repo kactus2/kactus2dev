@@ -1788,9 +1788,19 @@ void MainWindow::runGeneratorPlugin(QAction* action)
 
     // Retrieve the plugin pointer from the action.
     IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
-    Q_ASSERT(plugin != 0);
+	Q_ASSERT(plugin != 0);
 
-    PluginUtilityAdapter adapter(libraryHandler_, this);
+#if defined (_WIN64) || (__LP64__) || (_LP64)
+	int bits = 64;
+#else
+	int bits = 32;
+#endif
+
+	PluginUtilityAdapter adapter(libraryHandler_, this,
+		tr("%1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
+		QString::number(VERSION_MINOR),
+		QString::number(VERSION_BUILDNO),
+		QString::number(bits)));
 
     connect(&adapter, SIGNAL(errorMessage(QString const&)), 
         this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);

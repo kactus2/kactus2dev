@@ -67,11 +67,14 @@ public:
     /*!
      *  Generates the component Verilog to a given file.
      *
-     *      @param [in] outputPath   The path to the output file.
+	 *      @param [in] outputPath			The path to the output file.
+	 *      @param [in] kactusVersion		The version of the current Kactus build.
+	 *      @param [in] generatorVersion	The current version of the generator.
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
-	void generate(QString const& outputPath) const;
+	void generate(QString const& outputPath, QString const& generatorVersion = "",
+		QString const& kactusVersion = "") const;
 	
     /*!
      *  Parses the module implementation out of verilog file given as output, if it already exists.

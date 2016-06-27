@@ -16,10 +16,11 @@
 // Function: PluginUtilityAdapter::PluginUtilityAdapter()
 //-----------------------------------------------------------------------------
 PluginUtilityAdapter::PluginUtilityAdapter(LibraryInterface* libraryInterface, QWidget* parentWidget, 
-    QObject* parent) : 
-      QObject(parent),
-      libraryInterface_(libraryInterface),
-      parentWidget_(parentWidget)
+    QString versionString, QObject* parent) : 
+	libraryInterface_(libraryInterface),
+	parentWidget_(parentWidget),
+	versionString_(versionString),
+	QObject(parent)
 {
 
 }
@@ -62,4 +63,12 @@ LibraryInterface* PluginUtilityAdapter::getLibraryInterface()
 QWidget* PluginUtilityAdapter::getParentWidget()
 {
     return parentWidget_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PluginUtilityAdapter::getKactusVersion()
+//-----------------------------------------------------------------------------
+QString PluginUtilityAdapter::getKactusVersion() const
+{
+	return versionString_;
 }

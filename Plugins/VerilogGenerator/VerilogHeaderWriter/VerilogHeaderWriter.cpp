@@ -33,15 +33,15 @@ VerilogHeaderWriter::~VerilogHeaderWriter()
 //-----------------------------------------------------------------------------
 // Function: VerilogHeaderWriter::write()
 //-----------------------------------------------------------------------------
-void VerilogHeaderWriter::write(QTextStream& outputStream, QString const& fileName, QString const& description, 
-    QDateTime const& generationTime) const
+void VerilogHeaderWriter::write(QTextStream& outputStream, QString const& fileName, QString const& generatorVersion,
+	QString const& kactusVersion, QString const& description, QDateTime const& generationTime) const
 {
     QStringList descriptionLines = description.split("\n");
 
     outputStream << "//-----------------------------------------------------------------------------" << endl;
     outputStream << "// File          : " << fileName << endl;
     outputStream << "// Creation date : " << generationTime.date().toString("dd.MM.yyyy") << endl;
-    outputStream << "// Creation time : " << generationTime.time().toString("hh:mm:ss") << endl;
+	outputStream << "// Creation time : " << generationTime.time().toString("hh:mm:ss") << endl;
     outputStream << "// Description   : " << descriptionLines.first() << endl;
 
     for (int i = 1; i < descriptionLines.count(); i++)
@@ -50,7 +50,8 @@ void VerilogHeaderWriter::write(QTextStream& outputStream, QString const& fileNa
     }
 
     outputStream << "// Created by    : " << author_ << endl;
-    outputStream << "// This file was generated with Kactus2 verilog generator" << endl;
+	outputStream << "// This file was generated with Kactus2 verilog generator version " << generatorVersion << endl;
+	outputStream << "// Kactus2 version : " << kactusVersion << endl;
     outputStream << "// based on IP-XACT component " << vlnv_.toString() << endl;
     outputStream << "// whose XML file is " << xmlPath_ << endl;
     outputStream << "//-----------------------------------------------------------------------------" << endl;

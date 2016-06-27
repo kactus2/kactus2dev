@@ -31,8 +31,10 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] parent   The parent object.
+	 *      @param [in] versionString   Returns the current version of the Kactus2 build.
 	 */
-	PluginUtilityAdapter(LibraryInterface* libraryInterface, QWidget* parentWidget, QObject* parent = 0);
+	PluginUtilityAdapter(LibraryInterface* libraryInterface, QWidget* parentWidget, QString versionString,
+		QObject* parent = 0);
 
 	/*!
 	 *  The destructor.
@@ -63,6 +65,9 @@ public:
     //! Returns the parent widget to be used for e.g. dialogs.
     virtual QWidget* getParentWidget();
 
+	//! Returns the current version of the Kactus2 build.
+	virtual QString getKactusVersion() const;
+
 signals:
 
     //! Emitted when an error message should be printed.
@@ -83,9 +88,12 @@ private:
 	//-----------------------------------------------------------------------------
 
     //! The library interface to use.
-    LibraryInterface* libraryInterface_;
+	LibraryInterface* libraryInterface_;
 
-    //! The parent widget to use.
-    QWidget* parentWidget_;
+	//! The parent widget to use.
+	QWidget* parentWidget_;
+
+	//! The string denoting the current Kactus version.
+	QString versionString_;
 };
 #endif // PLUGINUTILITYADAPTER_H

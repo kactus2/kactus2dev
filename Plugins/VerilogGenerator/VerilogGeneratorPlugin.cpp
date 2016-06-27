@@ -145,18 +145,6 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
-	// Create a map of instantiations.
-	QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > > instantiations =
-		QSharedPointer<QMap<QString,QSharedPointer<ComponentInstantiation> > >
-		( new QMap<QString,QSharedPointer<ComponentInstantiation> > );
-
-	// Populate it with all component instantiations within the top component, keyed by their names.
-	foreach ( QSharedPointer<ComponentInstantiation> cimp,
-		*topComponent_->getComponentInstantiations() )
-	{
-		instantiations->insert(cimp->name(), cimp);
-	}
-
 	// Try to configure the generation, giving possible views and instantiations as parameters.
     if (couldConfigure(findPossibleViews(libComp, libDes, libDesConf),
 		topComponent_->getComponentInstantiations()))
@@ -173,7 +161,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 		connect(&generator, SIGNAL(reportError(const QString&)), 
 			this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
         generator.parse(topComponent_, configuration->getActiveView()->name(), outputFile_, libDes.dynamicCast<Design>());
-		generator.generate(outputFile_);
+		generator.generate(outputFile_, getVersion(), utility_->getKactusVersion());
 
         utility_->printInfo(tr("Finished writing file %1.").arg(outputFile_));
 

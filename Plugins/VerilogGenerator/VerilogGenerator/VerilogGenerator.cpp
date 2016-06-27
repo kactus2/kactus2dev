@@ -122,7 +122,8 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QString topCom
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::generate()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::generate(QString const& outputPath) const
+void VerilogGenerator::generate(QString const& outputPath, QString const& generatorVersion /*= ""*/,
+	QString const& kactusVersion /*= ""*/) const
 {
     if (nothingToWrite())
 	{
@@ -141,7 +142,8 @@ void VerilogGenerator::generate(QString const& outputPath) const
 
     QString fileName = QFileInfo(outputPath).fileName();
 
-    headerWriter_->write(outputStream, fileName, topComponent_->getDescription(), QDateTime::currentDateTime());
+    headerWriter_->write(outputStream, fileName, generatorVersion, kactusVersion,
+		topComponent_->getDescription(), QDateTime::currentDateTime());
     topWriter_->write(outputStream);
 
     outputFile.close();

@@ -42,12 +42,14 @@ public:
     /*!
      *  Writes a header to the given output.
      *
-     *      @param [in] outputStream    The output to write to.
-     *      @param [in] description     The file description.
-     *      @param [in] generationTime  Time of the generation.
+	 *      @param [in] outputStream		The output to write to.
+	 *      @param [in] kactusVersion		The version of the current Kactus build.
+	 *      @param [in] generatorVersion	The current version of the generator.
+	 *      @param [in] description			The file description.
+     *      @param [in] generationTime		Time of the generation.
      */
-    void write(QTextStream& outputStream, QString const& fileName, QString const& description, 
-        QDateTime const& generationTime) const;
+    void write(QTextStream& outputStream, QString const& fileName, QString const& generatorVersion,
+		QString const& kactusVersion, QString const& description, QDateTime const& generationTime) const;
 
 private:
 

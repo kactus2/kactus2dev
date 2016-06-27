@@ -48,7 +48,10 @@ public:
     /*!
      *  Returns the parent widget to be used for e.g. dialogs.
      */
-    virtual QWidget* getParentWidget() = 0;
+	virtual QWidget* getParentWidget() = 0;
+
+	//! Returns the current version of the Kactus2 build.
+	virtual QString getKactusVersion() const = 0;
 };
 
 //-----------------------------------------------------------------------------
