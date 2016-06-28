@@ -16,7 +16,7 @@
 #include <QRadioButton>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
-#include <editors/BusEditor/buseditor.h>
+#include <editors/BusDefinitionEditor/BusDefinitionEditor.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
 class LibraryInterface;

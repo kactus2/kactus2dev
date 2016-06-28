@@ -473,12 +473,6 @@
     <Filter Include="Header Files\editors">
       <UniqueIdentifier>{f023e626-bcd3-4d6b-8588-36fb28c685d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors\BusEditor">
-      <UniqueIdentifier>{259357d4-028a-437b-b212-8514a8af1434}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\BusEditor">
-      <UniqueIdentifier>{cde09ff6-5bc5-4b7e-9974-552b151c81b8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\designEditors">
       <UniqueIdentifier>{6f9d67dc-78bc-460a-af2d-1841cec81312}</UniqueIdentifier>
     </Filter>
@@ -949,6 +943,12 @@
     </Filter>
     <Filter Include="Source Files\designEditors\HWDesign\AdhocEditor">
       <UniqueIdentifier>{5367a917-9157-4218-9be2-292e41d3556f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\BusDefintionEditor">
+      <UniqueIdentifier>{cde09ff6-5bc5-4b7e-9974-552b151c81b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\BusDefinitionEditor">
+      <UniqueIdentifier>{259357d4-028a-437b-b212-8514a8af1434}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1693,9 +1693,6 @@
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardPortMapPage.cpp">
       <Filter>Source Files\wizards\BusInterfaceWizard</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardBusDefinitionPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardConclusionPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1703,42 +1700,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardPortMapPage.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusEditor\absdefgroup.cpp">
-      <Filter>Source Files\editors\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusEditor\busdefgroup.cpp">
-      <Filter>Source Files\editors\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusEditor\buseditor.cpp">
-      <Filter>Source Files\editors\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusEditor\busportsdelegate.cpp">
-      <Filter>Source Files\editors\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusEditor\busportsmodel.cpp">
-      <Filter>Source Files\editors\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\BusEditor\busportsview.cpp">
-      <Filter>Source Files\editors\BusEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_absdefgroup.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busdefgroup.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_buseditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busportsview.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AdHocPortItem.cpp">
@@ -3868,9 +3829,6 @@
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardGeneralOptionsPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizard.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="wizards\common\ModuleParameterComparator\ModuleParameterComparator.cpp">
       <Filter>Source Files\wizards\common\ModuleParameterComparator</Filter>
     </ClCompile>
@@ -4288,6 +4246,48 @@
     <ClCompile Include="editors\ComponentEditor\fileSet\groupmanagerdelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\general</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_absdefgroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busdefgroup.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusDefinitionEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busportsdelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busportsmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busportsview.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\absdefgroup.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\busdefgroup.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\BusDefinitionEditor.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\busportsdelegate.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\busportsmodel.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\busportsview.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardBusDefinitionPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizard.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4650,9 +4650,6 @@
     <CustomBuild Include="library\LibraryManager\VLNVDialer\vlnvdialer.h">
       <Filter>Header Files\library\LibraryManager\VLNVDialer</Filter>
     </CustomBuild>
-    <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
-      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
-    </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardConclusionPage.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </CustomBuild>
@@ -4661,24 +4658,6 @@
     </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardPortMapPage.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusEditor\absdefgroup.h">
-      <Filter>Header Files\editors\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusEditor\busdefgroup.h">
-      <Filter>Header Files\editors\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusEditor\buseditor.h">
-      <Filter>Header Files\editors\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusEditor\busportsdelegate.h">
-      <Filter>Header Files\editors\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusEditor\busportsmodel.h">
-      <Filter>Header Files\editors\BusEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\BusEditor\busportsview.h">
-      <Filter>Header Files\editors\BusEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\AdHocInterfaceItem.h">
       <Filter>Header Files\designEditors\HWDesign</Filter>
@@ -5718,9 +5697,6 @@
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardGeneralOptionsPage.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </CustomBuild>
-    <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">
-      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\software\swView\cpuselector.h">
       <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
     </CustomBuild>
@@ -5891,6 +5867,30 @@
     </CustomBuild>
     <CustomBuild Include="mainwindow\NewPages\NewBusDefinitionPage.h">
       <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\absdefgroup.h">
+      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\busdefgroup.h">
+      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\BusDefinitionEditor.h">
+      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\busportsdelegate.h">
+      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\busportsmodel.h">
+      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\BusDefinitionEditor\busportsview.h">
+      <Filter>Header Files\editors\BusDefintionEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.h">
+      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">
+      <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -6269,9 +6269,6 @@
     <ClInclude Include="editors\ComponentEditor\busInterfaces\BusInterfaceColumns.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClInclude>
-    <ClInclude Include="editors\BusEditor\LogicalPortColumns.h">
-      <Filter>Header Files\editors\BusEditor</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComDefinitionEditor\ComPropertyColumns.h">
       <Filter>Header Files\editors\ComDefinitionEditor</Filter>
     </ClInclude>
@@ -6418,6 +6415,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapHeaderView.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\BusDefinitionEditor\LogicalPortColumns.h">
+      <Filter>Header Files\editors\BusDefintionEditor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,15 +1,15 @@
 //-----------------------------------------------------------------------------
-// File: buseditor.cpp
+// File: BusDefinitionEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Antti Kamppi
 // Date: 20.6.2011
 //
 // Description:
-// Bus Editor is an editor for Bus- and Abstraction definitions.
+// Bus defition editor is an editor for Bus- and Abstraction definitions.
 //-----------------------------------------------------------------------------
 
-#include "buseditor.h"
+#include "BusDefinitionEditor.h"
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 
@@ -30,9 +30,9 @@
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::BusEditor()
+// Function: BusDefinitionEditor::BusDefinitionEditor()
 //-----------------------------------------------------------------------------
-BusEditor::BusEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<BusDefinition> busDef, 
+BusDefinitionEditor::BusDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<BusDefinition> busDef, 
     QSharedPointer<AbstractionDefinition> absDef, bool disableBusDef):
 TabDocument(parent, DOC_PROTECTION_SUPPORT), 
     libHandler_(libHandler),
@@ -61,7 +61,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     
 	busDefGroup_.setDisabled(!busDef_ || disableBusDef);
 
-    setDocumentType(tr("Bus"));
+    setDocumentType(tr("Bus Definition"));
 
     if (busDef_)
     {
@@ -92,25 +92,25 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::~BusEditor()
+// Function: BusDefinitionEditor::~BusDefinitionEditor()
 //-----------------------------------------------------------------------------
-BusEditor::~BusEditor()
+BusDefinitionEditor::~BusDefinitionEditor()
 {
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::getIdentifyingVLNV()
+// Function: BusDefinitionEditor::getIdentifyingVLNV()
 //-----------------------------------------------------------------------------
-VLNV BusEditor::getIdentifyingVLNV() const
+VLNV BusDefinitionEditor::getIdentifyingVLNV() const
 {
     return getDocumentVLNV();
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::refresh()
+// Function: BusDefinitionEditor::refresh()
 //-----------------------------------------------------------------------------
-void BusEditor::refresh()
+void BusDefinitionEditor::refresh()
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -137,16 +137,16 @@ void BusEditor::refresh()
 //-----------------------------------------------------------------------------
 // Function: setProtection()
 //-----------------------------------------------------------------------------
-void BusEditor::setProtection(bool locked)
+void BusDefinitionEditor::setProtection(bool locked)
 {
     TabDocument::setProtection(locked);
     setEnabled(!locked);
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::getDocumentVLNV()
+// Function: BusDefinitionEditor::getDocumentVLNV()
 //-----------------------------------------------------------------------------
-VLNV BusEditor::getDocumentVLNV() const
+VLNV BusDefinitionEditor::getDocumentVLNV() const
 {
     // If abstraction definition is being edited then use it as the identifier.
     if (absDef_)
@@ -165,11 +165,11 @@ VLNV BusEditor::getDocumentVLNV() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::setBusDef()
+// Function: BusDefinitionEditor::setBusDef()
 //-----------------------------------------------------------------------------
-void BusEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
+void BusDefinitionEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
 {
-    Q_ASSERT_X(busDef, "BusEditor setBusDef", "Null Bus Definition pointer given as parameter");
+    Q_ASSERT_X(busDef, "BusDefinitionEditor setBusDef", "Null Bus Definition pointer given as parameter");
 
     busDef_ = busDef;
 
@@ -182,9 +182,9 @@ void BusEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::setAbsDef()
+// Function: BusDefinitionEditor::setAbsDef()
 //-----------------------------------------------------------------------------
-void BusEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
+void BusDefinitionEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 {
     absDef_ = absDef;
 
@@ -197,9 +197,9 @@ void BusEditor::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::validate()
+// Function: BusDefinitionEditor::validate()
 //-----------------------------------------------------------------------------
-bool BusEditor::validate(QVector<QString>& errorList)
+bool BusDefinitionEditor::validate(QVector<QString>& errorList)
 {    
     // if abstraction definition is being edited
     if (absDefGroup_.isEnabled())
@@ -217,9 +217,9 @@ bool BusEditor::validate(QVector<QString>& errorList)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::save()
+// Function: BusDefinitionEditor::save()
 //-----------------------------------------------------------------------------
-bool BusEditor::save()
+bool BusDefinitionEditor::save()
 {
 	// If abstraction definition is being edited, save it.
 	if (absDefGroup_.isEnabled())
@@ -238,9 +238,9 @@ bool BusEditor::save()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::saveAs()
+// Function: BusDefinitionEditor::saveAs()
 //-----------------------------------------------------------------------------
-bool BusEditor::saveAs()
+bool BusDefinitionEditor::saveAs()
 {
     // Ask the user for a new VLNV along with the directory.
     VLNV vlnv;
@@ -337,18 +337,18 @@ bool BusEditor::saveAs()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::showEvent()
+// Function: BusDefinitionEditor::showEvent()
 //-----------------------------------------------------------------------------
-void BusEditor::showEvent(QShowEvent* event)
+void BusDefinitionEditor::showEvent(QShowEvent* event)
 {
     TabDocument::showEvent(event);
     emit helpUrlRequested("definitions/busdefinition.html");
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusEditor::setupLayout()
+// Function: BusDefinitionEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void BusEditor::setupLayout()
+void BusDefinitionEditor::setupLayout()
 {    
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);

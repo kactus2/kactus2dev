@@ -13,8 +13,8 @@
 
 #include "BusInterfaceWizard.h"
 
-#include <editors/BusEditor/absdefgroup.h>
-#include <editors/BusEditor/busdefgroup.h>
+#include <editors/BusDefinitionEditor/absdefgroup.h>
+#include <editors/BusDefinitionEditor/busdefgroup.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
@@ -40,7 +40,7 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardBusDefinitionPage::BusInterfaceWizardBusDefinitionPage()
 //-----------------------------------------------------------------------------
-BusInterfaceWizardBusEditorPage::BusInterfaceWizardBusEditorPage(QSharedPointer<Component> component,
+BusInterfaceWizardBusDefinitionEditorPage::BusInterfaceWizardBusDefinitionEditorPage(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, LibraryInterface* lh, QStringList physicalPorts,
     BusInterfaceWizard* parent, VLNV& absDefVLNV, QSharedPointer<ExpressionParser> expressionParser,
     SignalNamingPolicy namingPolicy /* = NAME */):
@@ -72,7 +72,7 @@ QWizardPage(parent),
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardBusDefinitionPage::~BusInterfaceWizardBusDefinitionPage()
 //-----------------------------------------------------------------------------
-BusInterfaceWizardBusEditorPage::~BusInterfaceWizardBusEditorPage()
+BusInterfaceWizardBusDefinitionEditorPage::~BusInterfaceWizardBusDefinitionEditorPage()
 {
 
 }
@@ -80,7 +80,7 @@ BusInterfaceWizardBusEditorPage::~BusInterfaceWizardBusEditorPage()
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardBusDefinitionPage::nextId()
 //-----------------------------------------------------------------------------
-int BusInterfaceWizardBusEditorPage::nextId() const
+int BusInterfaceWizardBusDefinitionEditorPage::nextId() const
 {
     return BusInterfaceWizard::PAGE_PORTMAPS;
 }
@@ -88,7 +88,7 @@ int BusInterfaceWizardBusEditorPage::nextId() const
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardBusDefinitionPage::initializePage()
 //-----------------------------------------------------------------------------
-void BusInterfaceWizardBusEditorPage::initializePage()
+void BusInterfaceWizardBusDefinitionEditorPage::initializePage()
 {   
     QSharedPointer<Document> abstractionDocument =
         handler_->getModel(*busIf_->getAbstractionTypes()->first()->getAbstractionRef());
@@ -123,7 +123,7 @@ void BusInterfaceWizardBusEditorPage::initializePage()
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardBusDefinitionPage::validatePage()
 //-----------------------------------------------------------------------------
-bool BusInterfaceWizardBusEditorPage::validatePage()
+bool BusInterfaceWizardBusDefinitionEditorPage::validatePage()
 {    
     QVector<QString> errors;
     bool valid = editor_.validate(errors);
@@ -151,9 +151,9 @@ bool BusInterfaceWizardBusEditorPage::validatePage()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusEditorPage::portRenamed()
+// Function: BusInterfaceWizardBusDefinitionEditorPage::portRenamed()
 //-----------------------------------------------------------------------------
-void BusInterfaceWizardBusEditorPage::portRenamed(QString const& oldName, QString const& newName)
+void BusInterfaceWizardBusDefinitionEditorPage::portRenamed(QString const& oldName, QString const& newName)
 {
     for (QMap<QString, QString>::iterator i = portMappings_.begin(); i != portMappings_.end(); i++)
     {
@@ -165,9 +165,9 @@ void BusInterfaceWizardBusEditorPage::portRenamed(QString const& oldName, QStrin
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusEditorPage::portRemoved()
+// Function: BusInterfaceWizardBusDefinitionEditorPage::portRemoved()
 //-----------------------------------------------------------------------------
-void BusInterfaceWizardBusEditorPage::portRemoved(QString const& portName, const General::InterfaceMode mode)
+void BusInterfaceWizardBusDefinitionEditorPage::portRemoved(QString const& portName, const General::InterfaceMode mode)
 {
     if (mode == busIf_->getInterfaceMode() || mode == General::INTERFACE_MODE_COUNT)
     {
@@ -190,7 +190,7 @@ void BusInterfaceWizardBusEditorPage::portRemoved(QString const& portName, const
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardBusDefinitionPage::setupLayout()
 //-----------------------------------------------------------------------------
-void BusInterfaceWizardBusEditorPage::setupLayout()
+void BusInterfaceWizardBusDefinitionEditorPage::setupLayout()
 {
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(&editor_);
@@ -199,7 +199,7 @@ void BusInterfaceWizardBusEditorPage::setupLayout()
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardBusDefinitionPage::createLogicalPortsAndMappings()
 //-----------------------------------------------------------------------------
-void BusInterfaceWizardBusEditorPage::createLogicalPortsAndMappings(QStringList const& physPorts, 
+void BusInterfaceWizardBusDefinitionEditorPage::createLogicalPortsAndMappings(QStringList const& physPorts, 
     QSharedPointer<AbstractionDefinition> absDef)
 {
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > logicalPorts = absDef->getLogicalPorts(); 
@@ -244,9 +244,9 @@ void BusInterfaceWizardBusEditorPage::createLogicalPortsAndMappings(QStringList 
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusEditorPage::createLogicalMappings()
+// Function: BusInterfaceWizardBusDefinitionEditorPage::createLogicalMappings()
 //-----------------------------------------------------------------------------
-void BusInterfaceWizardBusEditorPage::createLogicalMappings(QStringList const& physPorts, 
+void BusInterfaceWizardBusDefinitionEditorPage::createLogicalMappings(QStringList const& physPorts, 
     QString const& logicalPort, DirectionTypes::Direction logicalDirection)
 {
     foreach(QString const& physPort, physPorts)
@@ -261,9 +261,9 @@ void BusInterfaceWizardBusEditorPage::createLogicalMappings(QStringList const& p
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusEditorPage::createPortMaps()
+// Function: BusInterfaceWizardBusDefinitionEditorPage::createPortMaps()
 //-----------------------------------------------------------------------------
-void BusInterfaceWizardBusEditorPage::createPortMaps()
+void BusInterfaceWizardBusDefinitionEditorPage::createPortMaps()
 {
     QList<QSharedPointer<PortMap> > portMaps;            
     if (mappingMode_ != NO_GENERATION)
@@ -340,9 +340,9 @@ void BusInterfaceWizardBusEditorPage::createPortMaps()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusEditorPage::createAbsPort()
+// Function: BusInterfaceWizardBusDefinitionEditorPage::createAbsPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<PortAbstraction> BusInterfaceWizardBusEditorPage::createAbsPort(QString const& portName, 
+QSharedPointer<PortAbstraction> BusInterfaceWizardBusDefinitionEditorPage::createAbsPort(QString const& portName, 
     DirectionTypes::Direction portDirection, int portWidth)
 {
     QSharedPointer<PortAbstraction> absPort(new PortAbstraction());
@@ -401,9 +401,9 @@ QSharedPointer<PortAbstraction> BusInterfaceWizardBusEditorPage::createAbsPort(Q
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardBusEditorPage::findPortByName()
+// Function: BusInterfaceWizardBusDefinitionEditorPage::findPortByName()
 //-----------------------------------------------------------------------------
-QSharedPointer<PortAbstraction> BusInterfaceWizardBusEditorPage::findPortByName(QString const& portName, 
+QSharedPointer<PortAbstraction> BusInterfaceWizardBusDefinitionEditorPage::findPortByName(QString const& portName, 
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports)
 {
     foreach (QSharedPointer<PortAbstraction> port, *ports)
@@ -419,7 +419,7 @@ QSharedPointer<PortAbstraction> BusInterfaceWizardBusEditorPage::findPortByName(
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardBusDefinitionPage::getPortSize()
 //-----------------------------------------------------------------------------
-int BusInterfaceWizardBusEditorPage::getPortSize(QSharedPointer<Port> targetPort) const
+int BusInterfaceWizardBusDefinitionEditorPage::getPortSize(QSharedPointer<Port> targetPort) const
 {
     int portLeftBound = expressionParser_->parseExpression(targetPort->getLeftBound()).toInt();
     int portRightBound = expressionParser_->parseExpression(targetPort->getRightBound()).toInt();

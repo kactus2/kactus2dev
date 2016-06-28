@@ -21,8 +21,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <editors/BusEditor/absdefgroup.h>
-#include <editors/BusEditor/busdefgroup.h>
+#include <editors/BusDefinitionEditor/absdefgroup.h>
+#include <editors/BusDefinitionEditor/busdefgroup.h>
 
 #include <QVBoxLayout>
 #include <QGroupBox>

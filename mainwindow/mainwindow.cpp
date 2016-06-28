@@ -63,7 +63,7 @@
 #include <designEditors/common/DesignWidgetFactoryImplementation.h>
 
 #include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>
-#include <editors/BusEditor/buseditor.h>
+#include <editors/BusDefinitionEditor/BusDefinitionEditor.h>
 #include <editors/ComDefinitionEditor/ComDefinitionEditor.h>
 #include <editors/ComponentEditor/componenteditor.h>
 #include <editors/CSourceEditor/CSourceWidget.h>
@@ -3040,7 +3040,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
     {
 		for (int i = 0; i < designTabs_->count(); i++)
         {
-			BusEditor* editor = dynamic_cast<BusEditor*>(designTabs_->widget(i));
+			BusDefinitionEditor* editor = dynamic_cast<BusDefinitionEditor*>(designTabs_->widget(i));
 
 			// if the abstraction definition matches
 			if (editor && absDefVLNV.isValid() && editor->getDocumentVLNV() == absDefVLNV)
@@ -3080,7 +3080,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 	}
 
 	// pointer to the bus editor
-	BusEditor* editor = 0;
+	BusDefinitionEditor* editor = 0;
 
 	// if abstraction definition has been specified
 	if (absDefVLNV.isValid())
@@ -3092,7 +3092,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 				QSharedPointer<Document> libComp = libraryHandler_->getModel(absDefVLNV);
 				absDef = libComp.staticCast<AbstractionDefinition>();
 
-				editor = new BusEditor(this, libraryHandler_, busDef, absDef, disableBusDef);
+				editor = new BusDefinitionEditor(this, libraryHandler_, busDef, absDef, disableBusDef);
 		}
 		else
         {
@@ -3105,7 +3105,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 	// if no abstraction definition has been specified.
 	else
     {
-		editor = new BusEditor(this, libraryHandler_, busDef);
+		editor = new BusDefinitionEditor(this, libraryHandler_, busDef);
 	}
 
     designTabs_->addAndOpenDocument(editor, forceUnlocked);

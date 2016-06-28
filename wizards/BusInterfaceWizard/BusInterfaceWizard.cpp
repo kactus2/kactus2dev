@@ -48,10 +48,10 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    BusInterfaceWizardBusEditorPage::SignalNamingPolicy namingPolicy = BusInterfaceWizardBusEditorPage::NAME;
+    BusInterfaceWizardBusDefinitionEditorPage::SignalNamingPolicy namingPolicy = BusInterfaceWizardBusDefinitionEditorPage::NAME;
     if (descriptionAsLogicalName)
     {
-        namingPolicy = BusInterfaceWizardBusEditorPage::DESCRIPTION;
+        namingPolicy = BusInterfaceWizardBusDefinitionEditorPage::DESCRIPTION;
     }
 
     QSharedPointer<BusInterfaceValidator> validator =
@@ -67,7 +67,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
 
     setPage(PAGE_INTRO, new BusInterfaceWizardIntroPage(this));
     setPage(PAGE_GENERALOPTIONS, optionsPage);
-    setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusEditorPage(component, busIf, handler, portNames, 
+    setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusDefinitionEditorPage(component, busIf, handler, portNames, 
         this, absDefVLNV, expressionParser, namingPolicy));
     setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
         expressionParser, expressionFormatter, parameterFinder, validator, this));

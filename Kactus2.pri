@@ -223,13 +223,13 @@ HEADERS += ./common/Global.h \
     ./library/LibraryManager/HierarchyView/hierarchymodel.h \
     ./library/LibraryManager/HierarchyView/hierarchywidget.h \
     ./library/LibraryManager/HierarchyView/hierarchyview.h \
-    ./editors/BusEditor/LogicalPortColumns.h \
-    ./editors/BusEditor/absdefgroup.h \
-    ./editors/BusEditor/busdefgroup.h \
-    ./editors/BusEditor/buseditor.h \
-    ./editors/BusEditor/busportsdelegate.h \
-    ./editors/BusEditor/busportsmodel.h \
-    ./editors/BusEditor/busportsview.h \
+    ./editors/BusDefinitionEditor/LogicalPortColumns.h \
+    ./editors/BusDefinitionEditor/absdefgroup.h \
+    ./editors/BusDefinitionEditor/busdefgroup.h \
+    ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
+    ./editors/BusDefinitionEditor/busportsdelegate.h \
+    ./editors/BusDefinitionEditor/busportsmodel.h \
+    ./editors/BusDefinitionEditor/busportsview.h \
     ./editors/ApiDefinitionEditor/ApiFunctionColumns.h \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.h \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.h \
@@ -881,12 +881,12 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./library/LibraryManager/HierarchyView/hierarchymodel.cpp \
     ./library/LibraryManager/HierarchyView/hierarchyview.cpp \
     ./library/LibraryManager/HierarchyView/hierarchywidget.cpp \
-    ./editors/BusEditor/absdefgroup.cpp \
-    ./editors/BusEditor/busdefgroup.cpp \
-    ./editors/BusEditor/buseditor.cpp \
-    ./editors/BusEditor/busportsdelegate.cpp \
-    ./editors/BusEditor/busportsmodel.cpp \
-    ./editors/BusEditor/busportsview.cpp \
+    ./editors/BusDefinitionEditor/absdefgroup.cpp \
+    ./editors/BusDefinitionEditor/busdefgroup.cpp \
+    ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
+    ./editors/BusDefinitionEditor/busportsdelegate.cpp \
+    ./editors/BusDefinitionEditor/busportsmodel.cpp \
+    ./editors/BusDefinitionEditor/busportsview.cpp \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.cpp \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.cpp \
     ./editors/ApiDefinitionEditor/ApiFunctionModel.cpp \

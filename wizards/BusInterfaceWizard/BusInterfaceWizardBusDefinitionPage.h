@@ -12,7 +12,7 @@
 #ifndef BUSINTERFACEWIZARDBUSDEFINITIONPAGE_H
 #define BUSINTERFACEWIZARDBUSDEFINITIONPAGE_H
 
-#include <editors/BusEditor/buseditor.h>
+#include <editors/BusDefinitionEditor/BusDefinitionEditor.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -34,7 +34,7 @@ class VLNV;
 //-----------------------------------------------------------------------------
 //! Bus editor page for the interface wizard.
 //-----------------------------------------------------------------------------
-class BusInterfaceWizardBusEditorPage : public QWizardPage
+class BusInterfaceWizardBusDefinitionEditorPage : public QWizardPage
 {
     Q_OBJECT
 public:
@@ -57,7 +57,7 @@ public:
      *      @param [in] absDefVLNV      VLNV of the editable abstraction defintion.
      *      @param [in] namingPolicy    Policy for naming generated logical signals.
      */
-    BusInterfaceWizardBusEditorPage(QSharedPointer<Component> component,
+    BusInterfaceWizardBusDefinitionEditorPage(QSharedPointer<Component> component,
         QSharedPointer<BusInterface> busIf, LibraryInterface* lh, 
         QStringList physicalPorts,
         BusInterfaceWizard* parent,
@@ -68,7 +68,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~BusInterfaceWizardBusEditorPage();
+    ~BusInterfaceWizardBusDefinitionEditorPage();
 
     /*!
      *  Returns the ID of the next page.
@@ -95,8 +95,8 @@ public slots:
 
 private:
     // Disable copying.
-    BusInterfaceWizardBusEditorPage(BusInterfaceWizardBusEditorPage const& rhs);
-    BusInterfaceWizardBusEditorPage& operator=(BusInterfaceWizardBusEditorPage const& rhs);
+    BusInterfaceWizardBusDefinitionEditorPage(BusInterfaceWizardBusDefinitionEditorPage const& rhs);
+    BusInterfaceWizardBusDefinitionEditorPage& operator=(BusInterfaceWizardBusDefinitionEditorPage const& rhs);
 
     /*!
     *  Sets the page layout.
@@ -180,7 +180,7 @@ private:
     QStringList physicalPorts_;
 
     //! The editor for bus and abstraction definition.
-    BusEditor editor_;
+    BusDefinitionEditor editor_;
 
     //! The source for logical signal names.
     SignalNamingPolicy portNamesPolicy_;

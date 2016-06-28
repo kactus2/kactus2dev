@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: buseditor.h
+// File: BusDefinitionEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Antti Kamppi
 // Date: 20.6.2011
 //
 // Description:
-// Bus Editor is an editor for Bus- and Abstraction definitions.
+// Bus defition editor is an editor for Bus- and Abstraction definitions.
 //-----------------------------------------------------------------------------
 
-#ifndef BUSEDITOR_H
-#define BUSEDITOR_H
+#ifndef BUSDEFINITIONEDITOR_H
+#define BUSDEFINITIONEDITOR_H
 
 #include <common/widgets/tabDocument/TabDocument.h>
 
@@ -30,7 +30,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Bus Editor is editor for Bus- and Abstraction definition.
 //-----------------------------------------------------------------------------
-class BusEditor : public TabDocument
+class BusDefinitionEditor : public TabDocument
 {
 	Q_OBJECT
 
@@ -44,13 +44,13 @@ public:
 	 *      @param [in] absDef          The abstraction definition to edit.
 	 *      @param [in] disableBusDef If true then the BusDefGroup is disabled.
 	*/
-	BusEditor(QWidget *parent, LibraryInterface* libHandler,
+	BusDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
         QSharedPointer<BusDefinition> busDef,
 		QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(),
 		bool disableBusDef = false);
 	
 	//! The destructor
-	virtual ~BusEditor();
+	virtual ~BusDefinitionEditor();
 
 	/*! Get the VLNV that can be used to identify the Bus.
 	 *
@@ -117,10 +117,10 @@ protected:
 
 private:
 	//! No copying
-	BusEditor(const BusEditor& other);
+	BusDefinitionEditor(const BusDefinitionEditor& other);
 
 	//! No assignment
-	BusEditor& operator=(const BusEditor& other);
+	BusDefinitionEditor& operator=(const BusDefinitionEditor& other);
 
 	//! Set the layout of the widget
 	void setupLayout();
@@ -151,4 +151,4 @@ private:
 
 };
 
-#endif // BUSEDITOR_H
+#endif // BUSDEFINITIONEDITOR_H

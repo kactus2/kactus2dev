@@ -950,8 +950,8 @@ QString VerilogGenerator::getConnectionTieOffValue(QSharedPointer<AdHocConnectio
     if (containingComponent)
     {
         QSharedPointer<Port> referencedPort = containingComponent->getPort(portReference->getPortRef());
-        if (referencedPort && referencedPort->getDirection() == requiredDirection ||
-            referencedPort->getDirection() == DirectionTypes::INOUT)
+        if (referencedPort && ( referencedPort->getDirection() == requiredDirection ||
+            referencedPort->getDirection() == DirectionTypes::INOUT ))
         {
             tieOffValue = adHocConnection->getTiedValue();
             if (QString::compare(tieOffValue, "default", Qt::CaseInsensitive) == 0)
