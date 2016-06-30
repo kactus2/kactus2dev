@@ -95,6 +95,22 @@ QSharedPointer<Document> Design::clone() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Design::findComponentInstance()
+//-----------------------------------------------------------------------------
+QSharedPointer<ComponentInstance> Design::findComponentInstance(QString const& instanceName) const
+{
+	foreach(QSharedPointer<ComponentInstance> instance, *componentInstances_ )
+	{
+		if (instance->getInstanceName() == instanceName)
+		{
+			return instance;
+		}
+	}
+
+	return QSharedPointer<ComponentInstance>();
+}
+
+//-----------------------------------------------------------------------------
 // Function: Design::getComponentInstances()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<ComponentInstance> > > Design::getComponentInstances() const

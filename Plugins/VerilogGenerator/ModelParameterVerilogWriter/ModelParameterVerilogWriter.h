@@ -15,7 +15,7 @@
 #include "../veriloggeneratorplugin_global.h"
 #include "../common/Writer.h"
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <QString>
 #include <QSharedPointer>
@@ -38,7 +38,7 @@ public:
 	 *      @param [in] formatter       The expression formatter.
 	 */
 	ModuleParameterVerilogWriter(QSharedPointer<ModuleParameter> ModuleParameter,
-        QSharedPointer<ExpressionFormatter> formatter);
+        QSharedPointer<ExpressionParser> parser);
 	
 	//! The destructor
 	~ModuleParameterVerilogWriter();
@@ -93,7 +93,7 @@ private:
     QSharedPointer<ModuleParameter> moduleParameter_;
 
     //! The expresion formatter, used to change ids from expressions to names of references.
-    QSharedPointer<ExpressionFormatter> formatter_;
+	QSharedPointer<ExpressionParser> parser_;
 };
 
 #endif // ModuleParameterVerilogWriter_H

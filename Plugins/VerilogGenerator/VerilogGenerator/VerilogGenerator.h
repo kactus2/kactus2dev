@@ -15,6 +15,7 @@
 #include "../veriloggeneratorplugin_global.h"
 
 #include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/generaldeclarations.h>
@@ -57,12 +58,13 @@ public:
      *      @param [in] component           The component to parse for generation.
      *      @param [in] topComponentView    The component view to parse for generation.
 	 *      @param [in] design              The design to parse for generation.
-	 *      @param [in] implementation	The implementation within the module, which will be written back to the file.
+	 *      @param [in] designConf              The design configuration to parse for generation.
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
     void parse(QSharedPointer<Component> component, QString topComponentView, 
-        QString const& outputPath = QString(""), QSharedPointer<Design> design = QSharedPointer<Design>() );
+        QString const& outputPath = QString(""), QSharedPointer<Design> design = QSharedPointer<Design>(),
+		QSharedPointer<DesignConfiguration> designConf = QSharedPointer<DesignConfiguration>());
     
     /*!
      *  Generates the component Verilog to a given file.
@@ -114,6 +116,15 @@ private:
      *      @return Expression formatter for the component.
      */
     QSharedPointer<ExpressionFormatter> createFormatterForComponent(QSharedPointer<Component> targetComponent);
+
+    /*!
+     *  Creates an expression parser for the given component.
+     *
+     *      @param [in] targetComponent   The component for which to create the parser.
+     *
+     *      @return Expression parser for the component.
+     */
+    QSharedPointer<ExpressionParser> createParserForComponent(QSharedPointer<Component> targetComponent);
 
     /*!
     *  Checks if the generator should write nothing.
@@ -522,7 +533,10 @@ private:
      QSharedPointer<Component> topComponent_;
 
      //! The design to parse.
-     QSharedPointer<Design> design_;
+	 QSharedPointer<Design> design_;
+
+	 //! The design configuration to parse.
+	 QSharedPointer<DesignConfiguration> designConf_;
 
      //! The active view for top component.
      QString topComponentView_;

@@ -11,14 +11,14 @@
 
 #include "VerilogTiedValueWriter.h"
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogTiedValueWriter::VerilogTiedValueWriter()
 //-----------------------------------------------------------------------------
-VerilogTiedValueWriter::VerilogTiedValueWriter(QSharedPointer<ExpressionFormatter> formatter):
+VerilogTiedValueWriter::VerilogTiedValueWriter(QSharedPointer<ExpressionParser> parser):
 portTiedValues_(),
-formatter_(formatter)
+parser_(parser)
 {
 
 }
@@ -36,7 +36,7 @@ VerilogTiedValueWriter::~VerilogTiedValueWriter()
 //-----------------------------------------------------------------------------
 void VerilogTiedValueWriter::addPortTiedValue(QString const& portName, QString const& tiedValue)
 {
-    QString formattedTiedValue = formatter_->formatReferringExpression(tiedValue);
+    QString formattedTiedValue = parser_->parseExpression(tiedValue);
 
     portTiedValues_.insert(portName, formattedTiedValue);
 }

@@ -15,6 +15,7 @@
 #include "ParameterFinder.h"
 
 class Component;
+class ConfigurableElementValue;
 
 //-----------------------------------------------------------------------------
 //! The implementation for finding parameters with the correct ID.
@@ -27,9 +28,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] component   The component which parameters are being searched for.
+	 *      @param [in] component		The component which parameters are being searched for.
+	 *      @param [in] activeViewName  The currently active view, if applicable.
      */
-    ComponentParameterFinder(QSharedPointer<Component> component);
+    ComponentParameterFinder(QSharedPointer<Component> component, QString activeViewName = "");
 
     /*!
      *  Destructor.
@@ -98,12 +100,29 @@ public:
      */
     virtual void setComponent(QSharedPointer<Component> component);
 
+    /*!
+     *  Sets the active view to use for the component.
+     *
+     *      @param [in] view   The name of the active view.
+     */
+    void setActiveView(QString const& view);
+
+    /*!
+     *  Sets the configurable element values, which may replace values.
+     */
+    void setCEVs(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > values);
+
 private:
 
 	//! No copying
     ComponentParameterFinder(const ComponentParameterFinder& other);
 	//! No assignment
     ComponentParameterFinder& operator=(const ComponentParameterFinder& other);
+
+	/*!
+	 *  Returns a parameter corresponding given id, if any exists.
+	*/
+	QSharedPointer<Parameter> searchParameter(QString const& parameterId) const;
 
     /*!
      *  Finds all the parameters in component views.
@@ -132,6 +151,12 @@ private:
 
     //! The parameters are searched from this component.
     QSharedPointer<Component> component_;
+
+	//! The name of the currently active view of the component, if applicable.
+	QString activeViewName_;
+	
+	//! The used configurable element values. If not null, the values may be used to replace parameter values.
+	QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs_;
 };
 
 #endif // COMPONENTPARAMETERFINDER_H

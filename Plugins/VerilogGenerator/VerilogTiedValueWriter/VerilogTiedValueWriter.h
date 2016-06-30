@@ -17,7 +17,7 @@
 
 #include <QSharedPointer>
 
-class ExpressionFormatter;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Class for writing a Verilog port tied value declaration.
@@ -29,7 +29,7 @@ public:
 	/*!
      *  The constructor.
      */
-    VerilogTiedValueWriter(QSharedPointer<ExpressionFormatter> formatter);
+    VerilogTiedValueWriter(QSharedPointer<ExpressionParser> parser);
 
 	/*!
      *  The destructor.
@@ -65,7 +65,7 @@ private:
     QMap<QString, QString> portTiedValues_;
 
     //! The used expression formatter.
-    QSharedPointer<ExpressionFormatter> formatter_;
+    QSharedPointer<ExpressionParser> parser_;
 };
 
 #endif // VERILOGTIEDVALUEWRITER_H

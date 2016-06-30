@@ -28,6 +28,7 @@
 #include <QTextStream>
 #include <QList>
 
+class ExpressionParser;
 class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
@@ -43,10 +44,12 @@ public:
 	 *      @param [in] component               The component to write to Verilog.
      *      @param [in] activeView              The active view name for the component.
 	 *      @param [in] sorter                  Sorter for the ports in the component.
+     *      @param [in] expressionParser		Parser for writing expressions.
      *      @param [in] expressionFormatter     Formatter for writing expressions.
 	 */
 	ComponentVerilogWriter(QSharedPointer<Component> component, QString const& activeView,
         QSharedPointer<const PortSorter> sorter,
+        QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter);
 
 	//! The destructor.
@@ -177,6 +180,9 @@ private:
 
     //! Writers for the inner elements e.g. wires and subcomponent instances.
     QList<QSharedPointer<Writer> > childWriters_;
+
+    //! The parser for expressions.
+	QSharedPointer<ExpressionParser> parser_;
 
     //! The formatter for expressions.
 	QSharedPointer<ExpressionFormatter> formatter_;

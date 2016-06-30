@@ -160,7 +160,8 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 		VerilogGenerator generator(utility->getLibraryInterface());
 		connect(&generator, SIGNAL(reportError(const QString&)), 
 			this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
-        generator.parse(topComponent_, configuration->getActiveView()->name(), outputFile_, libDes.dynamicCast<Design>());
+        generator.parse(topComponent_, configuration->getActiveView()->name(), outputFile_,
+			libDes.dynamicCast<Design>(), libDesConf.dynamicCast<DesignConfiguration>());
 		generator.generate(outputFile_, getVersion(), utility_->getKactusVersion());
 
         utility_->printInfo(tr("Finished writing file %1.").arg(outputFile_));

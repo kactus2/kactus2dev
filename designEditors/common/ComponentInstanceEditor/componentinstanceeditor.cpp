@@ -109,7 +109,7 @@ ComponentInstanceEditor::~ComponentInstanceEditor()
 // Function: ComponentInstanceEditor::setComponentInstance()
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::setComponentInstance(ComponentItem* component,
-    QSharedPointer<IEditProvider> editProvider, QSharedPointer<Design> design)
+    QSharedPointer<IEditProvider> editProvider, QSharedPointer<Design> design, QString& const activeViewName)
 {
 	Q_ASSERT(component);
 
@@ -129,7 +129,8 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component,
 
     containingDesign_ = design;
 	component_ = component;
-    instanceFinder_->setComponent(component->componentModel());
+	instanceFinder_->setComponent(component->componentModel());
+	instanceFinder_->setActiveView(activeViewName);
 
 	// set the vlnv of the component to be displayed
 	vlnvDisplayer_->setVLNV(component->componentModel()->getVlnv(), true);
@@ -235,7 +236,7 @@ void ComponentInstanceEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::setTopComponentActiveView(QString const& activeView)
 {
-    topFinder_->setActiveView(activeView);
+	topFinder_->setActiveView(activeView);
 }
 
 //-----------------------------------------------------------------------------

@@ -1441,7 +1441,7 @@ void MainWindow::onComponentSelected(ComponentItem* component)
     QSharedPointer<Design> containingDesign = designWidget->getDiagram()->getDesign();
 	
     // Update the instance and ad-hoc visibility editors.
-	instanceEditor_->setComponentInstance(component, designWidget->getEditProvider(), containingDesign);
+	instanceEditor_->setComponentInstance(component, designWidget->getEditProvider(), containingDesign, designWidget->getOpenViewName());
 
     HWComponentItem* hwComponent = dynamic_cast<HWComponentItem*>(component);
     if (hwComponent != 0)

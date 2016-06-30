@@ -23,6 +23,7 @@
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <QSharedPointer>
+#include "editors/ComponentEditor/common/ExpressionParser.h"
 #include "IPXACTmodels/Component/View.h"
 #include "IPXACTmodels/Component/ComponentInstantiation.h"
 
@@ -32,11 +33,13 @@
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
 ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<Component> component, QString const& activeView,
-    QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionFormatter> expressionFormatter) :
+    QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionParser> expressionParser,
+QSharedPointer<ExpressionFormatter> expressionFormatter) :
 component_(component),
 activeView_(activeView),
 sorter_(sorter),
 childWriters_(),
+parser_(expressionParser),
 formatter_(expressionFormatter)
 {
 
@@ -115,35 +118,37 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
 {
 	QSharedPointer<View> view = component_->getModel()->findView(activeView_);
 
-	if (view)
+	if (!view)
 	{
-		foreach(QSharedPointer<ComponentInstantiation> currentInsta, *component_->getComponentInstantiations())
-		{
-			if (currentInsta->name() == view->getComponentInstantiationRef())
-			{
-				// Take copy the parameters of the component instantiation.
-				QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite
-					(new QList<QSharedPointer<ModuleParameter> >);
-				parametersToWrite->append(*(currentInsta->getModuleParameters()));
+		return;
+	}
+
+	QSharedPointer<ComponentInstantiation> currentInsta =
+		component_->getModel()->findComponentInstantiation(view->getComponentInstantiationRef());
+
+	if (!currentInsta)
+	{
+		return;
+	}
+
+	// Take copy the parameters of the component instantiation.
+	QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite
+		(new QList<QSharedPointer<ModuleParameter> >);
+	parametersToWrite->append(*(currentInsta->getModuleParameters()));
 				
-				sortModuleParameters(currentInsta, parametersToWrite);
+	sortModuleParameters(currentInsta, parametersToWrite);
 
-				if (!parametersToWrite->isEmpty())
-				{
-					outputStream << " #(" << endl;
+	if (!parametersToWrite->isEmpty())
+	{
+		outputStream << " #(" << endl;
 
-					foreach(QSharedPointer<ModuleParameter> parameter, *parametersToWrite)
-					{
-						bool isLastParameter = parameter == parametersToWrite->last();
-						writeParameter(outputStream, parameter, isLastParameter);
-					}
-
-					outputStream << ") ";
-				}
-
-				break;
-			}
+		foreach(QSharedPointer<ModuleParameter> parameter, *parametersToWrite)
+		{
+			bool isLastParameter = parameter == parametersToWrite->last();
+			writeParameter(outputStream, parameter, isLastParameter);
 		}
+
+		outputStream << ") ";
 	}
 }
 
@@ -163,8 +168,7 @@ void ComponentVerilogWriter::sortModuleParameters(QSharedPointer<ComponentInstan
 			parametersToWrite->begin();
 
 		// Resolve the value of the inspected parameter.
-		QString addFormatted = formatter_->
-			formatReferringExpression((*parameterAdd)->getValue());
+		QString addFormatted = parser_->parseExpression((*parameterAdd)->getValue());
 
 		// First pass: Detect if the parameter depends on another parameter.
 		for (QList<QSharedPointer<ModuleParameter> >::Iterator parameterCmp =
@@ -189,8 +193,7 @@ void ComponentVerilogWriter::sortModuleParameters(QSharedPointer<ComponentInstan
 			parameterCmp != parametersToWrite->end(); ++parameterCmp)
 		{
 			// Resolve the value of the the compared parameter.
-			QString formatted = this->formatter_->
-				formatReferringExpression((*parameterCmp)->getValue());
+			QString formatted = parser_->parseExpression((*parameterCmp)->getValue());
 
 			// Check if it contains a reference to the inspected parameter.
 			if (formatted.contains((*parameterAdd)->name()))
@@ -225,7 +228,7 @@ void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPo
     bool isLast) const
 {
     outputStream << indentation();
-    ModuleParameterVerilogWriter parameterWriter(parameter, formatter_);
+    ModuleParameterVerilogWriter parameterWriter(parameter, parser_);
     parameterWriter.write(outputStream);
 
     if (!isLast)

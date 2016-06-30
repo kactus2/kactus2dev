@@ -92,6 +92,11 @@ public:
 	 */
 	virtual void setVlnv(VLNV const& vlnv);
 
+	/*
+	*  Get the component instance by name.
+	*/
+	QSharedPointer<ComponentInstance> findComponentInstance(QString const& instanceName) const;
+
     /*!
      *  Get the component instances.
      *
