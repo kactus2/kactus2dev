@@ -180,6 +180,13 @@ private:
      */
     virtual QPolygonF getOutPortShape(const int squareSize) const;
 
+    /*!
+     *  Check whether the label should be drawn on the left side of the interface.
+     *
+     *      @return True, if the label should be drawn to the left side.
+     */
+    virtual bool labelShouldBeDrawnLeft() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

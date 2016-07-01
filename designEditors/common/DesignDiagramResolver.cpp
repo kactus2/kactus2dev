@@ -13,6 +13,7 @@
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/HWComponentItem.h>
@@ -25,7 +26,9 @@
 //-----------------------------------------------------------------------------
 DesignDiagramResolver::DesignDiagramResolver():
 componentFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
-expressionParser_(new IPXactSystemVerilogParser(componentFinder_))
+expressionParser_(new IPXactSystemVerilogParser(componentFinder_)),
+expressionFormatter_(new ExpressionFormatter(componentFinder_)),
+valueFormatter_()
 {
 
 }
@@ -51,24 +54,17 @@ void DesignDiagramResolver::resolveAdhocTieOff(QString const& tieOff, AdHocItem*
         QString parsedTieOff = getParsedTieOffValue(tieOff, ownerComponent, tieOffPort);
 
         bool canConvertToInt = true; 
-        int tieOffInInt = parsedTieOff.toInt(&canConvertToInt);
+        parsedTieOff.toInt(&canConvertToInt);
 
-        if (!canConvertToInt)
+        int expressionBase = expressionParser_->baseForExpression(tieOff);
+        QString tieOffForBase = valueFormatter_.format(parsedTieOff, expressionBase);
+        if (tieOffForBase.isEmpty())
         {
-            tieOffPort->createNonResolvableTieOff();
+            tieOffForBase = tieOff;
         }
-        else if (tieOffInInt == 1)
-        {
-            tieOffPort->createHighTieOff();
-        }
-        else if (tieOffInInt == 0)
-        {
-            tieOffPort->createLowTieOff();
-        }
-        else
-        {
-            tieOffPort->createNumberedTieOff();
-        }
+
+        tieOffPort->changeTieOffLabel(
+            expressionFormatter_->formatReferringExpression(tieOff), tieOffForBase, canConvertToInt);
     }
 }
 

@@ -23,6 +23,7 @@ class AdHocConnection;
 class AdHocItem;
 class IEditProvider;
 class HWDesignDiagram;
+class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of an Ad hoc port in designAd-hoc editor.
@@ -146,6 +147,9 @@ private:
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Used to format the referenced parameter UUIDs to parameter names.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
     //! Label containing the name of the ad hoc port.
     QLabel* portName_;

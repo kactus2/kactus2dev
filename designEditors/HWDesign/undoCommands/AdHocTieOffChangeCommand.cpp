@@ -24,7 +24,8 @@
 // Function: AdHocTieOffChangeCommand::AdHocTieOffChangeCommand()
 //-----------------------------------------------------------------------------
 AdHocTieOffChangeCommand::AdHocTieOffChangeCommand(AdHocItem* portItem, QSharedPointer<AdHocConnection> connection,
-    QString const& newTieOffValue, QString newParsedTieOff, QString const& oldTieOffValue, QString oldParsedTieOff,
+    QString const& newTieOffValue, QString newParsedTieOff, QString newFormattedTieOff, int newBase,
+    QString const& oldTieOffValue, QString oldParsedTieOff, QString oldFormattedTieOff, int oldBase,
     HWDesignDiagram* designDiagram, QUndoCommand* parent):
 QUndoCommand(parent),
 tieOffConnection_(connection),
@@ -32,8 +33,13 @@ containingDiagram_(designDiagram),
 containingDesign_(containingDiagram_->getDesign()),
 oldTieOff_(oldTieOffValue),
 parsedOldTieOff_(oldParsedTieOff),
+formattedOldTieOff_(oldFormattedTieOff),
+oldBase_(oldBase),
 newTieOff_(newTieOffValue),
-parsedNewTieOff_(newParsedTieOff)
+parsedNewTieOff_(newParsedTieOff),
+formattedNewTieOff_(newFormattedTieOff),
+newBase_(newBase),
+valueFormatter_()
 {
     if (!tieOffConnection_ && !newTieOff_.isEmpty())
     {
@@ -107,7 +113,7 @@ void AdHocTieOffChangeCommand::undo()
     {
         tieOffConnection_->setTiedValue(oldTieOff_);
 
-        changeTieOffSymbolsInConnectedPorts(oldTieOff_, parsedOldTieOff_);
+        changeTieOffSymbolsInConnectedPorts(oldTieOff_, parsedOldTieOff_, formattedOldTieOff_, oldBase_);
 
         addOrRemoveConnection(oldTieOff_);
     }
@@ -122,7 +128,7 @@ void AdHocTieOffChangeCommand::redo()
     {
         tieOffConnection_->setTiedValue(newTieOff_);
 
-        changeTieOffSymbolsInConnectedPorts(newTieOff_, parsedNewTieOff_);
+        changeTieOffSymbolsInConnectedPorts(newTieOff_, parsedNewTieOff_, formattedNewTieOff_, newBase_);
 
         addOrRemoveConnection(newTieOff_);
     }
@@ -134,7 +140,7 @@ void AdHocTieOffChangeCommand::redo()
 // Function: AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts()
 //-----------------------------------------------------------------------------
 void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const& tieOffValue,
-    QString const& parsedTieOff) const
+    QString const& parsedTieOff, QString const& formattedTieOff, int tieOffBase) const
 {
     if (!tieOffConnection_->getInternalPortReferences()->isEmpty())
     {
@@ -149,7 +155,7 @@ void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const
 
                 if (portItem)
                 {
-                    drawTieOffSymbol(portItem, tieOffValue, parsedTieOff);
+                    drawTieOffSymbol(portItem, tieOffValue, parsedTieOff, formattedTieOff, tieOffBase);
                 }
             }
         }
@@ -166,7 +172,7 @@ void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const
                 AdHocItem* portItem = dynamic_cast<AdHocItem*>(endPoint);
                 if (portItem)
                 {
-                    drawTieOffSymbol(portItem, tieOffValue, parsedTieOff);
+                    drawTieOffSymbol(portItem, tieOffValue, parsedTieOff, formattedTieOff, tieOffBase);
                 }
             }
         }
@@ -177,30 +183,20 @@ void AdHocTieOffChangeCommand::changeTieOffSymbolsInConnectedPorts(QString const
 // Function: AdHocTieOffChangeCommand::drawTieOffSymbol()
 //-----------------------------------------------------------------------------
 void AdHocTieOffChangeCommand::drawTieOffSymbol(AdHocItem* portItem, QString const& tieOffValue,
-    QString const& parsedTieOff) const
+    QString parsedTieOff, QString formattedTieOff, int tieOffBase) const
 {
     bool canConvertTieOffToInt = true;
-    int intTieOff = parsedTieOff.toInt(&canConvertTieOffToInt);
+    parsedTieOff.toInt(&canConvertTieOffToInt);
 
     if (tieOffValue.isEmpty())
     {
         portItem->removeTieOffItem();
     }
-    else if (!canConvertTieOffToInt)
-    {
-        portItem->createNonResolvableTieOff();
-    }
-    else if (intTieOff == 1)
-    {
-        portItem->createHighTieOff();
-    }
-    else if (intTieOff == 0)
-    {
-        portItem->createLowTieOff();
-    }
     else
     {
-        portItem->createNumberedTieOff();
+        QString tieOffWithBase = valueFormatter_.format(parsedTieOff, tieOffBase);
+
+        portItem->changeTieOffLabel(formattedTieOff, tieOffWithBase, canConvertTieOffToInt);
     }
 }
 

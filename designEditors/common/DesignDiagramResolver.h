@@ -12,12 +12,15 @@
 #ifndef DESIGNDIAGRAMRESOLVER_H
 #define DESIGNDIAGRAMRESOLVER_H
 
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
+
 #include <QSharedPointer>
 
 class ExpressionParser;
 class ComponentParameterFinder;
 class AdHocItem;
 class Component;
+class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
 //! Resolver class containing functionality for calculating expressions within design diagrams.
@@ -72,6 +75,12 @@ private:
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Used to format expressions from using referenced UUIDs to using referenced parameter names.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! Formats the value to the base number of the expression.
+    ValueFormatter valueFormatter_;
 };
 
 #endif // DESIGNDIAGRAMRESOLVER_H

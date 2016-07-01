@@ -28,7 +28,8 @@ HWConnectionEndpoint(parent, dir),
 nameLabel_("", this),
 port_(port),
 offPageConnector_(),
-tieoffItem_()
+tieOffLabel_(0),
+tieOffPath_(0)
 {
     Q_ASSERT_X(port, "AdHocPortItem constructor", "Null Port pointer given as parameter");
 
@@ -54,6 +55,8 @@ tieoffItem_()
     offPageConnector_->setPos(0.0, -GridSize * 3);
     offPageConnector_->setFlag(ItemStacksBehindParent);
     offPageConnector_->setVisible(false);
+
+    this->setHandlesChildEvents(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -209,93 +212,94 @@ ConnectionEndpoint* AdHocItem::getOffPageConnector()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocItem::createNonResolvableTieOff()
+// Function: AdHocItem::changeTieOffLabel()
 //-----------------------------------------------------------------------------
-void AdHocItem::createNonResolvableTieOff()
+void AdHocItem::changeTieOffLabel(QString const& tieOffExpression, QString const& tieOffValue,
+    bool tieOffIsSupported)
 {
-    removeTieOffItem();
+    if (tieOffLabel_ == 0)
+    {
+        createTieOffLabel();
+    }
 
-    QPainterPath path;
+    QString textColour = "#000000";
+    QString tieOffText = tieOffValue;
+    if (!tieOffIsSupported && tieOffExpression.compare("open", Qt::CaseInsensitive) != 0)
+    {
+        tieOffText = "n/a";
+        textColour = "#FF0000";
+    }
 
-    path.addRect(0, -TIEOFFITEM_DISTANCE, 1, TIEOFFITEM_DISTANCE);
+    if (tieOffText.size() > 4)
+    {
+        tieOffText = tieOffValue.left(4) + "...";
+    }
 
-    tieoffItem_ = new QGraphicsPathItem(path, this);
+    tieOffLabel_->setPlainText(tieOffText);
+    tieOffLabel_->setToolTip(tieOffExpression);
 
-    QRectF rectangle(-4, -(TIEOFFITEM_DISTANCE + 4), 8, 8);
+    setTieOffLabelPosition();
 
-    QPen usedPen;
-    usedPen.setWidth(2);
-
-    QBrush usedBrush(Qt::white);
-
-    QGraphicsEllipseItem* ellipse = new QGraphicsEllipseItem(rectangle, tieoffItem_);
-    ellipse->setPen(usedPen);
-    ellipse->setBrush(usedBrush);
+    tieOffLabel_->setHtml(
+        "<div style=\"color:" + textColour + "; background-color:#eeeeee; border-style:solid; border-width: 1px\">"
+        + tieOffText + "</div>");
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocItem::createNumberedTieOff()
+// Function: AdHocItem::createTieOffLabel()
 //-----------------------------------------------------------------------------
-void AdHocItem::createNumberedTieOff()
+void AdHocItem::createTieOffLabel()
 {
-    removeTieOffItem();
+    tieOffLabel_ = new QGraphicsTextItem("", this);
 
-    QPainterPath path;
+    QFont font = tieOffLabel_->font();
+    font.setPointSize(8);
+    tieOffLabel_->setFont(font);
 
-    path.addRect(0, -TIEOFFITEM_DISTANCE, 1, TIEOFFITEM_DISTANCE);
+    QGraphicsDropShadowEffect* shadow = new QGraphicsDropShadowEffect();
+    shadow->setXOffset(0);
+    shadow->setYOffset(0);
+    shadow->setBlurRadius(5);
+    tieOffLabel_->setGraphicsEffect(shadow);
 
-    tieoffItem_ = new QGraphicsPathItem(path, this);
+    tieOffLabel_->setRotation(-rotation());
 
-    QPolygonF blackArrow;
-    blackArrow << QPointF(6, -TIEOFFITEM_DISTANCE)
-        << QPointF(0, -(TIEOFFITEM_DISTANCE + 6))
-        << QPointF(-6, -TIEOFFITEM_DISTANCE);
-
-    QBrush arrowBrush (Qt::black);
-
-    QGraphicsPolygonItem* arrowItem =  new QGraphicsPolygonItem(blackArrow, tieoffItem_);
-    arrowItem->setBrush(arrowBrush);
+    createTieOffPath();
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocItem::createHighTieOff()
+// Function: AdHocItem::createTieOffPath()
 //-----------------------------------------------------------------------------
-void AdHocItem::createHighTieOff()
+void AdHocItem::createTieOffPath()
 {
-    removeTieOffItem();
-
-    QPainterPath path;
-
-    path.addRect(0, -TIEOFFITEM_DISTANCE, 1, TIEOFFITEM_DISTANCE);
-
-    tieoffItem_ = new QGraphicsPathItem(path, this);
-
-    QPolygonF arrow;
-    arrow << QPointF(6, -TIEOFFITEM_DISTANCE)
-        << QPointF(0, -(TIEOFFITEM_DISTANCE + 6))
-        << QPointF(-6, -TIEOFFITEM_DISTANCE);
-
-    QBrush arrowBrush (Qt::black);
-
-    QGraphicsPolygonItem* arrowItem =  new QGraphicsPolygonItem(arrow, tieoffItem_);
-    arrowItem->setBrush(arrowBrush);
+    if (tieOffPath_ == 0)
+    {
+        QPainterPath pathToTieOff;
+        pathToTieOff.addRect(0, -TIEOFFITEM_DISTANCE, 1, TIEOFFITEM_DISTANCE);
+        tieOffPath_ = new QGraphicsPathItem(pathToTieOff, this);
+        tieOffPath_->setFlag(ItemStacksBehindParent);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: AdHocItem::createLowTieOff()
+// Function: AdHocItem::setTieOffLabelPosition()
 //-----------------------------------------------------------------------------
-void AdHocItem::createLowTieOff()
+void AdHocItem::setTieOffLabelPosition()
 {
-    removeTieOffItem();
+    if (tieOffLabel_ != 0)
+    {
+        qreal labelHeight = tieOffLabel_->boundingRect().height();
+        qreal labelWidth = tieOffLabel_->boundingRect().width();
 
-    QPainterPath path;
-
-    path.addRect(9, -TIEOFFITEM_DISTANCE, -18, 1);
-    path.addRect(6, -(TIEOFFITEM_DISTANCE + 3), -12, 1);
-    path.addRect(3, -(TIEOFFITEM_DISTANCE + 6), -6, 1);
-    path.addRect(0, -TIEOFFITEM_DISTANCE, 1, TIEOFFITEM_DISTANCE);
-
-    tieoffItem_ = new QGraphicsPathItem(path, this);
+        if (labelShouldBeDrawnLeft())
+        {
+            tieOffLabel_->setPos(labelHeight / 2, -(TIEOFFITEM_DISTANCE-5) - labelWidth);
+        }
+        else
+        {
+            tieOffLabel_->setPos( -labelHeight / 2, -(TIEOFFITEM_DISTANCE-5));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -303,12 +307,16 @@ void AdHocItem::createLowTieOff()
 //-----------------------------------------------------------------------------
 void AdHocItem::removeTieOffItem()
 {
-    if (tieoffItem_)
+    if (tieOffPath_ != nullptr)
     {
-        childItems().removeAll(tieoffItem_);
+        delete tieOffPath_;
+        tieOffPath_ = 0;
+    }
 
-        delete tieoffItem_;
-        tieoffItem_ = 0;
+    if (tieOffLabel_ != nullptr)
+    {
+        delete tieOffLabel_;
+        tieOffLabel_ = 0;
     }
 }
 
@@ -318,4 +326,12 @@ void AdHocItem::removeTieOffItem()
 QGraphicsTextItem& AdHocItem::getNameLabel()
 {
     return nameLabel_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocItem::getTieOffLabel()
+//-----------------------------------------------------------------------------
+QGraphicsTextItem* AdHocItem::getTieOffLabel()
+{
+    return tieOffLabel_;
 }

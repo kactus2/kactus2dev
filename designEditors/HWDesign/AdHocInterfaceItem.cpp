@@ -121,6 +121,7 @@ void AdHocInterfaceItem::updateInterface()
         "<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + getPort()->name() + "</div>");
 
     setLabelPosition();
+    setTieOffLabelPosition();
 
     getOffPageConnector()->updateInterface();
 }
@@ -188,6 +189,7 @@ void AdHocInterfaceItem::setDirection(QVector2D const& dir)
 {
     HWConnectionEndpoint::setDirection(dir);
     setLabelPosition();
+    setTieOffLabelPosition();
 }
 
 //-----------------------------------------------------------------------------
@@ -229,6 +231,10 @@ QVariant AdHocInterfaceItem::itemChange(GraphicsItemChange change, QVariant cons
     else if (change == ItemRotationHasChanged)
     {
         getNameLabel().setRotation(-rotation());
+        if (getTieOffLabel() != nullptr)
+        {
+            getTieOffLabel()->setRotation(-rotation());
+        }
     }
     else if (change == ItemScenePositionHasChanged)
     {
@@ -359,4 +365,12 @@ void AdHocInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 QSharedPointer<Kactus2Placeholder> AdHocInterfaceItem::getDataGroup() const
 {
     return dataGroup_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocInterfaceItem::labelShouldBeDrawnLeft()
+//-----------------------------------------------------------------------------
+bool AdHocInterfaceItem::labelShouldBeDrawnLeft() const
+{
+    return getDirection().x() < 0;
 }

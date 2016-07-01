@@ -12,6 +12,8 @@
 #ifndef ADHOCTIEOFFCHANGECOMMAND_H
 #define ADHOCTIEOFFCHANGECOMMAND_H
 
+#include <IPXACTmodels/common/validators/ValueFormatter.h>
+
 #include <QUndoCommand>
 #include <QSharedPointer>
 
@@ -34,14 +36,19 @@ public:
      *      @param [in] connection          The tie off connection.
      *      @param [in] newTieOffValue      A new value for tie off.
      *      @param [in] newParsedTieOff     Parsed value of the new tie off.
+     *      @param [in] newFormattedTieOff  New tie off with the referenced parameter UUIDs changed into names.
+     *      @param [in] newBase             The base number of the parsed new tie off.
      *      @param [in] oldTieOffValue      The old value for the tie off.
      *      @param [in] oldParsedTieOff     Parsed value of the old tie off.
+     *      @param [in] oldFormattedTieOff  Old tie off with the referenced parameter UUIDs changed into names.
+     *      @param [in] oldBase             The base number of the parsed old tie off.
      *      @param [in] design              The containing design.
      *      @param [in] parent              Parent command.
      */
     AdHocTieOffChangeCommand(AdHocItem* portItem, QSharedPointer<AdHocConnection> connection,
-        QString const& newTieOffValue, QString newParsedTieOff, QString const& oldTieOffValue,
-        QString oldParsedTieOff, HWDesignDiagram* designDiagram, QUndoCommand* parent = 0);
+        QString const& newTieOffValue, QString newParsedTieOff, QString newFormattedTieOff, int newBase,
+        QString const& oldTieOffValue, QString oldParsedTieOff, QString oldFormattedTieOff, int oldBase,
+        HWDesignDiagram* designDiagram, QUndoCommand* parent = 0);
 
     /*!
      *  The destructor.
@@ -85,19 +92,25 @@ private:
     /*!
      *  Change the tie off symbols in the connected ports.
      *
-     *      @param [in] tieOffValue     The tie off value.
-     *      @param [in] parsedTieOff    The parsed tie off value.
+     *      @param [in] tieOffValue         The tie off value.
+     *      @param [in] parsedTieOff        The parsed tie off value.
+     *      @param [in] formattedTieOff     The tie off with referenced parameter UUIDs changed to names.
+     *      @param [in] tieOffBase          The base number of the tie off.
      */
-    void changeTieOffSymbolsInConnectedPorts(QString const& tieOffValue, QString const& parsedTieOff) const;
+    void changeTieOffSymbolsInConnectedPorts(QString const& tieOffValue, QString const& parsedTieOff,
+        QString const& formattedTieOff, int tieOffBase) const;
 
     /*!
      *  Draw a tie off symbol matching the given value.
      *
-     *      @param [in] portItem        The port item whose symbol is being redrawn.
-     *      @param [in] tieOffValue     The tie off expression.
-     *      @param [in] parsedTieOff    The parsed tie off value.
+     *      @param [in] portItem            The port item whose symbol is being redrawn.
+     *      @param [in] tieOffValue         The tie off expression.
+     *      @param [in] parsedTieOff        The parsed tie off value.
+     *      @param [in] formattedTieOff     The tie off with the referenced parameter UUIDs changed to names.
+     *      @param [in] tieOffBase          The base number of the tie off.
      */
-    void drawTieOffSymbol(AdHocItem* portItem, QString const& tieOffValue, QString const& parsedTieOff) const;
+    void drawTieOffSymbol(AdHocItem* portItem, QString const& tieOffValue, QString parsedTieOff,
+        QString formattedTieOff, int tieOffBase) const;
 
     /*!
      *  Add or remove the ad hoc connection containing the tie off value from the design.
@@ -125,11 +138,26 @@ private:
     //! Parsed value of the old tie off.
     QString parsedOldTieOff_;
 
+    //! Old tie off with the referenced parameter UUIDs changed to parameter names.
+    QString formattedOldTieOff_;
+
+    //! The base number of the old tie off.
+    int oldBase_;
+
     //! A new value for tie off.
     QString newTieOff_;
 
     //! Parsed value of the new tie off.
     QString parsedNewTieOff_;
+
+    //! New tie off with the referenced parameter UUIDs changed to parameter names.
+    QString formattedNewTieOff_;
+
+    //! The base number of the new tie off.
+    int newBase_;
+
+    //! Formats values to the base number of the expression.
+    ValueFormatter valueFormatter_;
 };
 
 #endif // ADHOCTIEOFFCHANGECOMMAND_H

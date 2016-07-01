@@ -152,24 +152,13 @@ public:
     virtual ConnectionEndpoint* getOffPageConnector();
 
     /*!
-     *  Create a symbol for a non resolvable tie off value.
+     *  Create or change the current tie off label.
+     *
+     *      @param [in] tieOffExpression    The expression containing the tie off.
+     *      @param [in] tieOffValue         The formatted tie off value.
+     *      @param [in] tieOffIsSupported   Flag for determining whether the tie off is supported or not.
      */
-    void createNonResolvableTieOff();
-
-    /*!
-     *  Create a symbol for a numbered tie off value.
-     */
-    void createNumberedTieOff();
-
-    /*!
-     *  Create a symbol for a tie off value of 1.
-     */
-    void createHighTieOff();
-
-    /*!
-     *  Create a symbol for a tie off value of 0.
-     */
-    void createLowTieOff();
+    void changeTieOffLabel(QString const& tieOffExpression, QString const& tieOffValue, bool tieOffIsSupported);
 
     /*!
      *  Remove the tie off symbol.
@@ -192,6 +181,18 @@ protected:
      */
     QPolygonF getPortShape();
 
+    /*!
+     *  Get the tie off label of the item.
+     *
+     *      @return The text item containing the current tie off.
+     */
+    QGraphicsTextItem* getTieOffLabel();
+
+    /*!
+     *  Set the position for the tie off label.
+     */
+    void setTieOffLabelPosition();
+
 private:
 
     /*!
@@ -212,6 +213,23 @@ private:
      */
     virtual QPolygonF getOutPortShape(const int squareSize) const = 0;
 
+    /*!
+     *  Create the tie off label.
+     */
+    void createTieOffLabel();
+
+    /*!
+     *  Create the graphical path connecting the tie off to the selected port.
+     */
+    void createTieOffPath();
+
+    /*!
+     *  Check whether the label should be drawn on the left side of the interface.
+     *
+     *      @return True, if the label should be drawn to the left side.
+     */
+    virtual bool labelShouldBeDrawnLeft() const = 0;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -225,8 +243,11 @@ private:
     //! The off-page connector.
     OffPageConnectorItem* offPageConnector_;
 
-    //! The symbol for the tie off.
-    QGraphicsItem* tieoffItem_;
+    //! The tie off label.
+    QGraphicsTextItem* tieOffLabel_;
+
+    //! The path connecting the tie off label to this item.
+    QGraphicsItem* tieOffPath_;
 };
 
 //-----------------------------------------------------------------------------

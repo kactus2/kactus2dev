@@ -18,6 +18,7 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <designEditors/HWDesign/AdHocItem.h>
@@ -38,6 +39,7 @@ AdHocEditor::AdHocEditor(QWidget* parent):
 QWidget(parent),
 componentFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
 expressionParser_(new IPXactSystemVerilogParser(componentFinder_)),
+expressionFormatter_(new ExpressionFormatter(componentFinder_)),
 portName_(new QLabel(this)),
 portDirection_(new QLabel(this)),
 leftBoundValue_(new QLabel(this)),
@@ -307,8 +309,16 @@ void AdHocEditor::createTieOffChangeCommand(QString const& newTiedValue)
 
     if (newTiedValue != oldTieOffValue)
     {
+        QString formattedOldTieOff = expressionFormatter_->formatReferringExpression(oldTieOffValue);
+        QString formattedNewTieOff = expressionFormatter_->formatReferringExpression(newTiedValue);
+
+        int oldBase = expressionParser_->baseForExpression(oldTieOffValue);
+        int newBase = expressionParser_->baseForExpression(newTiedValue);
+
         QSharedPointer<QUndoCommand> tieOffUndoCommand(new AdHocTieOffChangeCommand(containedPortItem_, connection,
-            newTiedValue, parsedNewTieOff, oldTieOffValue, parsedOldTieOff, designDiagram_));
+            newTiedValue, parsedNewTieOff, formattedNewTieOff, newBase, oldTieOffValue, parsedOldTieOff,
+            formattedOldTieOff, oldBase, designDiagram_));
+
         editProvider_->addCommand(tieOffUndoCommand);
         tieOffUndoCommand->redo();
 

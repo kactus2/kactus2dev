@@ -109,6 +109,7 @@ void AdHocPortItem::updateInterface()
         "<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + getPort()->name() + "</div>");
 
 	setLabelPosition();
+    setTieOffLabelPosition();
 
     getOffPageConnector()->updateInterface();
 }
@@ -212,10 +213,15 @@ QVariant AdHocPortItem::itemChange(GraphicsItemChange change, QVariant const& va
     {
         checkDirection();
         setLabelPosition();
+        setTieOffLabelPosition();
     }
     else if (change == ItemRotationHasChanged)
     {
         getNameLabel().setRotation(-rotation());
+        if (getTieOffLabel() != nullptr)
+        {
+            getTieOffLabel()->setRotation(-rotation());
+        }
     }
     else if (change == ItemScenePositionHasChanged)
     {
@@ -405,4 +411,12 @@ void AdHocPortItem::shortenNameLabel( qreal width )
         "<div style=\"background-color:#eeeeee; padding:10px 10px;\">" + nameLabelText + "</div>");
 
 	setLabelPosition();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocPortItem::tieOffLabelShouldBeDrawnLeft()
+//-----------------------------------------------------------------------------
+bool AdHocPortItem::labelShouldBeDrawnLeft() const
+{
+    return pos().x() < 0;
 }
