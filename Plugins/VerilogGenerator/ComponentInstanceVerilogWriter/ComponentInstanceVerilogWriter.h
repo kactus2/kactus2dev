@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
+#include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
@@ -38,11 +39,13 @@ public:
 	 *      @param [in] instance                The component instance to write to Verilog.
 	 *      @param [in] referencedComponent     The component instantiated by the instance.
 	 *      @param [in] sorter                  Sorter for the ports in the component.
+     *      @param [in] expressionParser     	The expression parser.
      *      @param [in] expressionFormatter     The expression formatter.
 	 */
 	ComponentInstanceVerilogWriter(QSharedPointer<const ComponentInstance> instance,
         QSharedPointer<Component> referencedComponent,
         QSharedPointer<const PortSorter> sorter,
+        QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter);
 
 	//! The destructor.
@@ -196,6 +199,9 @@ private:
 
     //! The assigned tie off values.
     QMap<QString, QString> tieOffAssignments_;
+
+    //! The assigned expression formatter.
+    QSharedPointer<ExpressionParser> expressionParser_;
 
     //! The assigned expression formatter.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

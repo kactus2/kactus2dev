@@ -49,10 +49,10 @@ void VerilogHeaderWriter::write(QTextStream& outputStream, QString const& fileNa
         outputStream << "//                 " << descriptionLines.at(i) << endl;
     }
 
-    outputStream << "// Created by    : " << author_ << endl;
-	outputStream << "// This file was generated with Kactus2 verilog generator version " << generatorVersion << endl;
-	outputStream << "// Kactus2 version : " << kactusVersion << endl;
-    outputStream << "// based on IP-XACT component " << vlnv_.toString() << endl;
+	outputStream << "// Created by    : " << author_ << endl;
+	outputStream << "// Tool : Kactus2 " << kactusVersion << endl;
+	outputStream << "// Plugin : Verilog generator " << generatorVersion << endl;
+	outputStream << "// This file was generated based on IP-XACT component " << vlnv_.toString() << endl;
     outputStream << "// whose XML file is " << xmlPath_ << endl;
     outputStream << "//-----------------------------------------------------------------------------" << endl;
     outputStream << endl;

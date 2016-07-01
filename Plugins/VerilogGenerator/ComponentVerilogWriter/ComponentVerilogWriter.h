@@ -47,10 +47,7 @@ public:
      *      @param [in] expressionParser		Parser for writing expressions.
      *      @param [in] expressionFormatter     Formatter for writing expressions.
 	 */
-	ComponentVerilogWriter(QSharedPointer<Component> component, QString const& activeView,
-        QSharedPointer<const PortSorter> sorter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter);
+	ComponentVerilogWriter(QSharedPointer<Component> component, QString const& activeView, QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
 	~ComponentVerilogWriter();
@@ -183,9 +180,6 @@ private:
 
     //! The parser for expressions.
 	QSharedPointer<ExpressionParser> parser_;
-
-    //! The formatter for expressions.
-	QSharedPointer<ExpressionFormatter> formatter_;
 
 	//! The extra stuff that comes after the written module.
 	QSharedPointer<TextBodyWriter> postModule_;

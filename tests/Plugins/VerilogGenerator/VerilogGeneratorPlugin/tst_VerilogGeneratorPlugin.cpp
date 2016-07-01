@@ -86,8 +86,8 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::tst_VerilogGenerator()
 //-----------------------------------------------------------------------------
-tst_VerilogGenerator::tst_VerilogGenerator(): library_(this), 
-    utilityMock_(&library_, 0, this), plugin_(), activeWindow_(0), configuration_(new GeneratorConfiguration())
+tst_VerilogGenerator::tst_VerilogGenerator(): library_(this), utilityMock_(&library_, 0, "", this), plugin_(),
+	activeWindow_(0), configuration_(new GeneratorConfiguration())
 {
 
 }

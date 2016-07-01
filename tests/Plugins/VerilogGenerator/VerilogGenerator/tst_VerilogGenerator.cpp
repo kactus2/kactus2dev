@@ -87,9 +87,6 @@ private slots:
 
 	void testParameterPropagationFromTop();
 
-	void testModuleParametersAreInOrder();
-	void testModuleParametersAreInOrder2();
-
 	void testImplementationSelection();
 	void testImplementationSelectionWithTag();
 	void testImplementationSelectionWithoutParameters();
@@ -116,7 +113,7 @@ private:
 
     void addTestComponentToLibrary(VLNV vlnv);
 
-    void addInstanceToDesign(QString instanceName, VLNV instanceVlnv);
+    void addInstanceToDesign(QString instanceName, VLNV instanceVlnv, QString activeViewName = "");
 
     void mapPortToInterface(QString const& portName, QString const& logicalName, 
         QString const& interfaceName, QSharedPointer<Component> component);
@@ -157,6 +154,9 @@ private:
     //! The design for which the generator is run.
     QSharedPointer<Design> design_;
 
+	//! The design configuration for which the generator is run.
+	QSharedPointer<DesignConfiguration> designConf_;
+
     //! The generator output as a string.
     QString output_;
     
@@ -170,7 +170,8 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::tst_VerilogGenerator()
 //-----------------------------------------------------------------------------
-tst_VerilogGenerator::tst_VerilogGenerator(): topComponent_(), design_(), output_(), generationTime_(), library_(this)
+tst_VerilogGenerator::tst_VerilogGenerator(): topComponent_(), design_(), designConf_(), output_(),
+	generationTime_(), library_(this)
 {
 
 }
@@ -200,7 +201,11 @@ void tst_VerilogGenerator::init()
     topComponent_ = QSharedPointer<Component>(new Component(vlnv));
 
     VLNV designVlnv(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0");
-    design_ = QSharedPointer<Design>(new Design(designVlnv));
+	design_ = QSharedPointer<Design>(new Design(designVlnv));
+
+	VLNV designConfVlnv(VLNV::DESIGNCONFIGURATION, "Test", "TestLibrary", "TestDesignConfiguration", "1.0");
+	designConf_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(designConfVlnv));
+	designConf_->setDesignRef(designVlnv);
 
     library_.clear();
 
@@ -271,7 +276,7 @@ void tst_VerilogGenerator::testTopLevelComponentExpressions()
         "    parameter                              module           = 10\n"
         ") (\n"
         "    // These ports are not in any interface\n"
-        "    input          [module*2:2+5]       clk\n"
+        "    input          [10*2:2+5]           clk\n"
         ");\n"
         "\n"
 		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
@@ -329,7 +334,7 @@ void tst_VerilogGenerator::runGenerator(bool useDesign, QString const& activeVie
 
 	if ( useDesign )
 	{
-		generator.parse(topComponent_, activeView, "", design_);
+		generator.parse(topComponent_, activeView, "", design_, designConf_);
 	}
 	else
 	{
@@ -364,9 +369,10 @@ void tst_VerilogGenerator::testFileHeaderIsPrinted()
         "// Description   : Component description\n"
         "//                 spanning multiple\n"
         "//                 lines.\n"
-        "// Created by    : testUser\n"
-        "// This file was generated with Kactus2 verilog generator\n"
-        "// based on IP-XACT component Test:TestLibrary:TestComponent:1.0\n"
+		"// Created by    : testUser\n"
+		"// Tool : Kactus2 \n"
+		"// Plugin : Verilog generator \n"
+		"// This file was generated based on IP-XACT component Test:TestLibrary:TestComponent:1.0\n"
         "// whose XML file is C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml\n"
         "//-----------------------------------------------------------------------------\n"));
 }
@@ -484,21 +490,14 @@ void tst_VerilogGenerator::testHierarchicalConnectionsWithExpressions()
 
     QSharedPointer<Component> instanceComponent(new Component(instanceVlnv));
 
-    QSharedPointer<ModuleParameter> instanceParameter (new ModuleParameter());
-    instanceParameter->setName("instanceParameter");
-    instanceParameter->setValue("1");
-    instanceParameter->setValueId("instant_ID");
-
-    QSharedPointer<ComponentInstantiation> instanceInstantiation (new ComponentInstantiation("instanceInstant"));
-    instanceInstantiation->getModuleParameters()->append(instanceParameter);
-    instanceComponent->getComponentInstantiations()->append(instanceInstantiation);
-
-    QSharedPointer<View> instanceView (new View("instanceView"));
-    instanceView->setComponentInstantiationRef(instanceInstantiation->name());
-    instanceComponent->getViews()->append(instanceView);
+    QSharedPointer<Parameter> componentParameter (new Parameter());
+    componentParameter->setName("componentParameter");
+    componentParameter->setValue("1");
+	componentParameter->setValueId("instant_ID");
+	instanceComponent->getParameters()->append(componentParameter);
 
     QSharedPointer<Port> instanceClkPort (new Port("instance_clk", DirectionTypes::IN));
-    instanceClkPort->setLeftBound(instanceParameter->getValueId() + "*2");
+    instanceClkPort->setLeftBound(componentParameter->getValueId() + "*2");
     instanceClkPort->setRightBound("4-2*2");
     instanceComponent->getPorts()->append(instanceClkPort);
 
@@ -701,12 +700,13 @@ void tst_VerilogGenerator::addTestComponentToLibrary(VLNV vlnv)
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::addInstanceToDesign()
 //-----------------------------------------------------------------------------
-void tst_VerilogGenerator::addInstanceToDesign(QString instanceName, VLNV instanceVlnv)
+void tst_VerilogGenerator::addInstanceToDesign(QString instanceName, VLNV instanceVlnv, QString activeViewName)
 {
     QSharedPointer<ConfigurableVLNVReference> componentVLNV (new ConfigurableVLNVReference(instanceVlnv));
     QSharedPointer<ComponentInstance> instance (new ComponentInstance(instanceName, componentVLNV));
 
     design_->getComponentInstances()->append(instance);
+	designConf_->addViewConfiguration(instanceName,activeViewName);
 }
 
 //-----------------------------------------------------------------------------
@@ -1281,7 +1281,7 @@ void tst_VerilogGenerator::testAdhocTieOffInComponentInstance()
     QSharedPointer<Parameter> expressionParameter (new Parameter());
     expressionParameter->setName("expName");
     expressionParameter->setValueId("expID");
-    expressionParameter->setValue("4");
+    expressionParameter->setValue("5");
     tieOffComponent->getParameters()->append(expressionParameter);
 
     addTieOffAdhocConnectionToInstancePort("0", instanceName, zeroName, "zero_connection");
@@ -1301,7 +1301,7 @@ void tst_VerilogGenerator::testAdhocTieOffInComponentInstance()
         "    TestTieOff tieOffer(\n"
         "        // These ports are not in any interface\n"
         "        .defaultTieOff       (20),\n"
-        "        .expressionTieOff    (expName - 4),\n"
+        "        .expressionTieOff    (1),\n"
         "        .n/aTieOff           (abc),\n"
         "        .numberedTieOff      (12),\n"
         "        .oneTieOff           (1),\n"
@@ -1541,7 +1541,7 @@ void tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
     QSharedPointer<Parameter> expressionParameter (new Parameter());
     expressionParameter->setName("expName");
     expressionParameter->setValueId("expID");
-    expressionParameter->setValue("4");
+    expressionParameter->setValue("6");
     topComponent_->getParameters()->append(expressionParameter);
 
     addTieOffConnectionToTopComponentPort("0", zeroName, "zero_connection");
@@ -1559,7 +1559,7 @@ void tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
     verifyOutputContains(
         "    // Tie off values for the ports of the encompassing component\n"
         "    assign defaultTieOff = 20;\n"
-        "    assign expressionTieOff = expName - 4;\n"
+        "    assign expressionTieOff = 2;\n"
         "    assign inOutTieOff = 1;\n"
         "    assign n/aTieOff = abc;\n"
         "    assign numberedTieOff = 12;\n"
@@ -1754,7 +1754,7 @@ void tst_VerilogGenerator::testInstanceModuleParametersAreWritten()
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");    
     QSharedPointer<Component> senderComponent(new Component(senderVLNV));
     library_.addComponent(senderComponent);
-    addInstanceToDesign("sender", senderVLNV);
+    addInstanceToDesign("sender", senderVLNV, "rtl");
 
     QSharedPointer<View> activeView(new View());
     activeView->setName("rtl");
@@ -1799,7 +1799,7 @@ void tst_VerilogGenerator::testParameterPropagationFromTop()
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");    
     QSharedPointer<Component> senderComponent(new Component(senderVLNV));
     library_.addComponent(senderComponent);
-    addInstanceToDesign("sender", senderVLNV);
+    addInstanceToDesign("sender", senderVLNV, "rtl");
 
     QSharedPointer<View> activeView(new View());
     activeView->setName("rtl");
@@ -1828,99 +1828,8 @@ void tst_VerilogGenerator::testParameterPropagationFromTop()
 
     verifyOutputContains(
         "    TestSender #(\n"
-        "        .moduleParameter     (topParameter))\n"
+        "        .moduleParameter     (10))\n"
         "    sender();");
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testTopLevelModuleParametersAreInOrder()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testModuleParametersAreInOrder()
-{
-	QSharedPointer<View> activeView(new View());
-	activeView->setName("rtl");
-	activeView->setComponentInstantiationRef("instance1");
-
-	QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
-	moduleParameterFirst->setName("moduleParameterFirst");
-	moduleParameterFirst->setValue("1");
-	moduleParameterFirst->setValueId("firstParameter");
-
-	QSharedPointer<ModuleParameter> moduleParameterSecond(new ModuleParameter());
-	moduleParameterSecond->setName("moduleParameterSecond");
-	moduleParameterSecond->setValue("firstParameter");
-	moduleParameterSecond->setValueId("secondParameter");
-
-	QSharedPointer<ModuleParameter> moduleParameterThird(new ModuleParameter());
-	moduleParameterThird->setName("moduleParameterThird");
-	moduleParameterThird->setValue("secondParameter");
-
-	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
-	instantiation->getModuleParameters()->append(moduleParameterThird);
-	instantiation->getModuleParameters()->append(moduleParameterFirst);
-	instantiation->getModuleParameters()->append(moduleParameterSecond);
-
-	topComponent_->getComponentInstantiations()->append(instantiation);
-	topComponent_->getViews()->append(activeView);
-
-	runGenerator(false,"rtl");
-
-	verifyOutputContains(QString(
-		"module TestComponent #(\n"
-		"    parameter                              moduleParameterFirst = 1,\n"
-		"    parameter                              moduleParameterSecond = moduleParameterFirst,\n"
-		"    parameter                              moduleParameterThird = moduleParameterSecond\n"
-		") ();"
-		));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_VerilogGenerator::testTopLevelModuleParametersAreInOrder2()
-//-----------------------------------------------------------------------------
-void tst_VerilogGenerator::testModuleParametersAreInOrder2()
-{
-	QSharedPointer<View> activeView(new View());
-	activeView->setName("rtl");
-	activeView->setComponentInstantiationRef("instance1");
-
-	QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
-	moduleParameterFirst->setName("moduleParameterFirst");
-	moduleParameterFirst->setValue("1");
-	moduleParameterFirst->setValueId("firstParameter");
-
-	QSharedPointer<ModuleParameter> moduleParameterSecond(new ModuleParameter());
-	moduleParameterSecond->setName("moduleParameterSecond");
-	moduleParameterSecond->setValue("firstParameter + fourthParameter");
-	moduleParameterSecond->setValueId("secondParameter");
-
-	QSharedPointer<ModuleParameter> moduleParameterThird(new ModuleParameter());
-	moduleParameterThird->setName("moduleParameterThird");
-	moduleParameterThird->setValue("secondParameter");
-
-	QSharedPointer<ModuleParameter> moduleParameterFourth(new ModuleParameter());
-	moduleParameterFourth->setName("moduleParameterFourth");
-	moduleParameterFourth->setValue("4");
-	moduleParameterFourth->setValueId("fourthParameter");
-
-	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
-	instantiation->getModuleParameters()->append(moduleParameterSecond);
-	instantiation->getModuleParameters()->append(moduleParameterThird);
-	instantiation->getModuleParameters()->append(moduleParameterFourth);
-	instantiation->getModuleParameters()->append(moduleParameterFirst);
-
-	topComponent_->getComponentInstantiations()->append(instantiation);
-	topComponent_->getViews()->append(activeView);
-
-	runGenerator(false,"rtl");
-
-	verifyOutputContains(QString(
-		"module TestComponent #(\n"
-		"    parameter                              moduleParameterFourth = 4,\n"
-		"    parameter                              moduleParameterFirst = 1,\n"
-		"    parameter                              moduleParameterSecond = moduleParameterFirst+moduleParameterFourth,\n"
-		"    parameter                              moduleParameterThird = moduleParameterSecond\n"
-		") ();"
-		));
 }
 
 //-----------------------------------------------------------------------------

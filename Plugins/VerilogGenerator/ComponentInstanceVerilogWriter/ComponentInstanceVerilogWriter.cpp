@@ -25,10 +25,12 @@ namespace
 //-----------------------------------------------------------------------------
 ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(QSharedPointer<const ComponentInstance> instance,
     QSharedPointer<Component> referencedComponent, QSharedPointer<const PortSorter> sorter,
+    QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ExpressionFormatter> expressionFormatter) :
 componentInstance_(instance), 
 referencedComponent_(referencedComponent), 
 sorter_(sorter),
+expressionParser_(expressionParser),
 expressionFormatter_(expressionFormatter)
 {
 
@@ -143,7 +145,7 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
         assignment.replace("<parameter>", 
             expressionFormatter_->formatReferringExpression(parameter->getReferenceId()).leftJustified(20));
         assignment.replace("<value>", 
-            expressionFormatter_->formatReferringExpression(parameter->getConfigurableValue()));
+            expressionParser_->parseExpression(parameter->getConfigurableValue()));
         assignments.append(assignment);
     }
 
@@ -243,7 +245,7 @@ QString ComponentInstanceVerilogWriter::connectionForPort(QString portName) cons
 
     if (tieOffAssignments_.contains(portName))
     {
-        assignment = expressionFormatter_->formatReferringExpression(tieOffAssignments_.value(portName));
+        assignment = expressionParser_->parseExpression(tieOffAssignments_.value(portName));
         if (assignment.isEmpty())
         {
             assignment = " ";
@@ -293,7 +295,7 @@ QString ComponentInstanceVerilogWriter::portDefaultValue(QString const& portName
     QSharedPointer<Port> port =  referencedComponent_->getPort(portName);
     if (port->getDirection() == DirectionTypes::IN && !port->getDefaultValue().isEmpty())
     {
-        defaultValue = expressionFormatter_->formatReferringExpression(port->getDefaultValue());
+        defaultValue = expressionParser_->parseExpression(port->getDefaultValue());
     }
     return defaultValue;
 }

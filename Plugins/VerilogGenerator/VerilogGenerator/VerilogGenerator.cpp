@@ -248,11 +248,10 @@ void VerilogGenerator::initializeWriters()
     headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent_->getVlnv(), 
         componentXmlPath, currentUser));
 
-    QSharedPointer<ExpressionParser> topParser = createParserForComponent(topComponent_);
-    QSharedPointer<ExpressionFormatter> topFormatter = createFormatterForComponent(topComponent_);
+    QSharedPointer<ExpressionParser> topParser = createParserForComponent(topComponent_, topComponentView_);
 
     topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_,
-		topComponentView_, sorter_, topParser, topFormatter));
+		topComponentView_, sorter_, topParser));
 
     instanceWriters_.clear();
 
@@ -264,7 +263,8 @@ void VerilogGenerator::initializeWriters()
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::createFormatterForComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<ExpressionFormatter> VerilogGenerator::createFormatterForComponent(QSharedPointer<Component> targetComponent)
+QSharedPointer<ExpressionFormatter> VerilogGenerator::createFormatterForComponent(QSharedPointer<Component> targetComponent,
+	QString targetView)
 {    
     if (targetComponent != topComponent_)
     {
@@ -273,12 +273,12 @@ QSharedPointer<ExpressionFormatter> VerilogGenerator::createFormatterForComponen
         QSharedPointer<TopComponentParameterFinder> topFinder(new TopComponentParameterFinder(topComponent_));
         topFinder->setActiveView(topComponentView_);
         finder->addFinder(topFinder);
-        finder->addFinder(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(targetComponent)));
+        finder->addFinder(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(targetComponent,targetView)));
         return QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(finder));
     }
     else
     {
-        QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent));
+        QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent,topComponentView_));
         return QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
     }    
 }
@@ -286,7 +286,8 @@ QSharedPointer<ExpressionFormatter> VerilogGenerator::createFormatterForComponen
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::createParserForComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<ExpressionParser> VerilogGenerator::createParserForComponent(QSharedPointer<Component> targetComponent)
+QSharedPointer<ExpressionParser> VerilogGenerator::createParserForComponent(QSharedPointer<Component> targetComponent,
+	QString targetView)
 {    
     if (targetComponent != topComponent_)
     {
@@ -295,12 +296,12 @@ QSharedPointer<ExpressionParser> VerilogGenerator::createParserForComponent(QSha
         QSharedPointer<TopComponentParameterFinder> topFinder(new TopComponentParameterFinder(topComponent_));
         topFinder->setActiveView(topComponentView_);
         finder->addFinder(topFinder);
-        finder->addFinder(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(targetComponent)));
+        finder->addFinder(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(targetComponent,targetView)));
         return QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(finder));
     }
     else
     {
-        QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent));
+		QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent,topComponentView_));
         return QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(parameterFinder));
     }    
 }
@@ -733,7 +734,9 @@ void VerilogGenerator::createWritersForComponentInstances()
         if (component)
         {
             QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter(new ComponentInstanceVerilogWriter(
-                instance, component, sorter_, createFormatterForComponent(component)));
+                instance, component, sorter_, createParserForComponent(component,
+				designConf_->getActiveView(instance->getInstanceName())),
+				createFormatterForComponent(component, designConf_->getActiveView(instance->getInstanceName()))));
             instanceWriters_.insert(instance->getInstanceName(), instanceWriter);            
         }
     }

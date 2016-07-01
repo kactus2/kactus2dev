@@ -33,14 +33,12 @@
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
 ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<Component> component, QString const& activeView,
-    QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionParser> expressionParser,
-QSharedPointer<ExpressionFormatter> expressionFormatter) :
+    QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionParser> expressionParser) :
 component_(component),
 activeView_(activeView),
 sorter_(sorter),
 childWriters_(),
-parser_(expressionParser),
-formatter_(expressionFormatter)
+parser_(expressionParser)
 {
 
 }
@@ -132,11 +130,8 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
 	}
 
 	// Take copy the parameters of the component instantiation.
-	QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite
-		(new QList<QSharedPointer<ModuleParameter> >);
-	parametersToWrite->append(*(currentInsta->getModuleParameters()));
-				
-	sortModuleParameters(currentInsta, parametersToWrite);
+	QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite =
+		currentInsta->getModuleParameters();
 
 	if (!parametersToWrite->isEmpty())
 	{
@@ -149,75 +144,6 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
 		}
 
 		outputStream << ") ";
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentVerilogWriter::sortModuleParameters()
-//-----------------------------------------------------------------------------
-void ComponentVerilogWriter::sortModuleParameters(QSharedPointer<ComponentInstantiation> currentInsta,
-	QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite) const
-{
-	// Go through existing ones on the instance.
-	for (QList<QSharedPointer<ModuleParameter> >::Iterator parameterAdd =
-		currentInsta->getModuleParameters()->begin();
-		parameterAdd != currentInsta->getModuleParameters()->end(); ++parameterAdd)
-	{
-		// The first position for the second pass.
-		QList<QSharedPointer<ModuleParameter> >::Iterator minPos =
-			parametersToWrite->begin();
-
-		// Resolve the value of the inspected parameter.
-		QString addFormatted = parser_->parseExpression((*parameterAdd)->getValue());
-
-		// First pass: Detect if the parameter depends on another parameter.
-		for (QList<QSharedPointer<ModuleParameter> >::Iterator parameterCmp =
-			parametersToWrite->begin();
-			parameterCmp != parametersToWrite->end(); ++parameterCmp)
-		{
-			if (addFormatted.contains((*parameterCmp)->name()))
-			{
-				// A match found: The parameter must be positioned after this one!
-				minPos = ++parameterCmp;
-
-				// The first one needed is the relevant one, so break here.
-				break;
-			}
-		}
-
-		// If true, the parameter will be appended to the end of the list.
-		bool append = true;
-
-		// The second pass: Find the actual position before the parameter is referred.
-		for (QList<QSharedPointer<ModuleParameter> >::Iterator parameterCmp = minPos;
-			parameterCmp != parametersToWrite->end(); ++parameterCmp)
-		{
-			// Resolve the value of the the compared parameter.
-			QString formatted = parser_->parseExpression((*parameterCmp)->getValue());
-
-			// Check if it contains a reference to the inspected parameter.
-			if (formatted.contains((*parameterAdd)->name()))
-			{
-				// Remove the inspected parameter from the previous place.
-				parametersToWrite->removeOne(*parameterAdd);
-
-				// Then the inspected parameter comes before it is referred.
-				parametersToWrite->insert(parameterCmp, *parameterAdd);
-
-				// It will not be inserted twice, so break here.
-				append = false;
-				break;
-			}
-		}
-
-		// If there was no match in the second pass, or no second pass at all, at to then end.
-		if (append)
-		{
-			// Remove the inspected parameter from the previous place.
-			parametersToWrite->removeOne(*parameterAdd);
-			// Append at the end of the list.
-			parametersToWrite->append(*parameterAdd);
-		}
 	}
 }
 
@@ -327,7 +253,7 @@ void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer
 {
     outputStream << indentation();
 
-    PortVerilogWriter writer(port, formatter_);
+    PortVerilogWriter writer(port, parser_);
     writer.write(outputStream);
 
     if (!isLast)

@@ -19,7 +19,7 @@
 
 #include <QTextStream>
 
-class ExpressionFormatter;
+class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 // Class for writing port declarations in Verilog.
@@ -31,9 +31,9 @@ public:
      *  The constructor.
      *
      *      @param [in] port                    The port to write to Verilog.
-     *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] expressionParser		Parser for expressions.
      */
-    PortVerilogWriter(QSharedPointer<const Port> port, QSharedPointer<ExpressionFormatter> expressionFormatter);
+    PortVerilogWriter(QSharedPointer<const Port> port, QSharedPointer<ExpressionParser> expressionParser);
 
     //! The destructor.
     ~PortVerilogWriter();
@@ -88,7 +88,7 @@ private:
     QSharedPointer<const Port> port_;
 
     //! The formatter to use for expressions.
-    QSharedPointer<ExpressionFormatter> formatter_;
+    QSharedPointer<ExpressionParser> parser_;
 };
 
 #endif // PORTVERILOGWRITER_H

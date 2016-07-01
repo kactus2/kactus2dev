@@ -115,7 +115,7 @@ private:
      *
      *      @return Expression formatter for the component.
      */
-    QSharedPointer<ExpressionFormatter> createFormatterForComponent(QSharedPointer<Component> targetComponent);
+    QSharedPointer<ExpressionFormatter> createFormatterForComponent(QSharedPointer<Component> targetComponent, QString targetView);
 
     /*!
      *  Creates an expression parser for the given component.
@@ -124,7 +124,8 @@ private:
      *
      *      @return Expression parser for the component.
      */
-    QSharedPointer<ExpressionParser> createParserForComponent(QSharedPointer<Component> targetComponent);
+    QSharedPointer<ExpressionParser> createParserForComponent(QSharedPointer<Component> targetComponent,
+		QString targetView);
 
     /*!
     *  Checks if the generator should write nothing.
