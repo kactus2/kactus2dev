@@ -61,7 +61,7 @@ public:
      *      @param [in] design          Design containing the component instance.
 	 */
     void setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider,
-        QSharedPointer<Design> design, QString& const activeViewName);
+        QSharedPointer<Design> design, QString const& activeViewName);
 
     /*!
      *  Sets the top component for the instances.

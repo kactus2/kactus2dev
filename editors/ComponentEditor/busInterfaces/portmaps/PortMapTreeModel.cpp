@@ -322,7 +322,7 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
         }
         else
         {
-            return QString("");
+            return data(index, Qt::DisplayRole);
         }
     }
     else if (role == Qt::ForegroundRole)
@@ -903,36 +903,39 @@ void PortMapTreeModel::reset()
         }
     }
 
-    foreach (QSharedPointer<PortMap> currentMap, *containingBusInterface_->getPortMaps())
+    if (containingBusInterface_->getPortMaps())
     {
-        bool logicalPortFound = false;
-
-        for (int mappingIndex = 0; mappingIndex< portMappings_.size(); ++mappingIndex)
+        foreach (QSharedPointer<PortMap> currentMap, *containingBusInterface_->getPortMaps())
         {
-            if (portMappings_.at(mappingIndex).logicalPort_->name() == currentMap->getLogicalPort()->name_)
+            bool logicalPortFound = false;
+
+            for (int mappingIndex = 0; mappingIndex< portMappings_.size(); ++mappingIndex)
             {
-                portMappings_[mappingIndex].portMaps_.append(currentMap);
-                logicalPortFound = true;
-                break;;
+                if (portMappings_.at(mappingIndex).logicalPort_->name() == currentMap->getLogicalPort()->name_)
+                {
+                    portMappings_[mappingIndex].portMaps_.append(currentMap);
+                    logicalPortFound = true;
+                    break;;
+                }
             }
-        }
 
-        if (!logicalPortFound)
-        {
-            if (currentMap->getLogicalPort() && !currentMap->getLogicalPort()->name_.isEmpty())
+            if (!logicalPortFound)
             {
-                QSharedPointer<PortAbstraction> newAbstractionPort (new PortAbstraction());
-                newAbstractionPort->setLogicalName(currentMap->getLogicalPort()->name_);
+                if (currentMap->getLogicalPort() && !currentMap->getLogicalPort()->name_.isEmpty())
+                {
+                    QSharedPointer<PortAbstraction> newAbstractionPort (new PortAbstraction());
+                    newAbstractionPort->setLogicalName(currentMap->getLogicalPort()->name_);
 
-                PortMapping newMapping;
-                newMapping.logicalPort_ = newAbstractionPort;
-                newMapping.portMaps_.append(currentMap);
+                    PortMapping newMapping;
+                    newMapping.logicalPort_ = newAbstractionPort;
+                    newMapping.portMaps_.append(currentMap);
 
-                portMappings_.append(newMapping);
-            }
-            else
-            {
-                unconnectedMapping.portMaps_.append(currentMap);
+                    portMappings_.append(newMapping);
+                }
+                else
+                {
+                    unconnectedMapping.portMaps_.append(currentMap);
+                }
             }
         }
     }
@@ -1026,6 +1029,11 @@ QVariant PortMapTreeModel::expressionOrValueForIndex(QModelIndex const& index) c
 //-----------------------------------------------------------------------------
 bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
 {
+    if (!absDef_)
+    {
+        return false;
+    }
+
     QModelIndex logicalIndex = index;
     QSharedPointer<PortMap> currentPortMap;
     if (index.parent().isValid())
@@ -1052,7 +1060,10 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
     {
         DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_);
         DirectionTypes::Direction physicalDirection = physicalPort->getDirection();
-        if (logicalDirection != physicalDirection)
+        if ((logicalDirection != DirectionTypes::INOUT && physicalDirection != DirectionTypes::INOUT &&
+            logicalDirection != physicalDirection) ||
+            logicalDirection == DirectionTypes::DIRECTION_INVALID ||
+            physicalDirection == DirectionTypes::DIRECTION_INVALID)
         {
             return false;
         }

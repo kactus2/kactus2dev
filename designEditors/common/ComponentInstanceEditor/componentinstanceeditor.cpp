@@ -109,7 +109,7 @@ ComponentInstanceEditor::~ComponentInstanceEditor()
 // Function: ComponentInstanceEditor::setComponentInstance()
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::setComponentInstance(ComponentItem* component,
-    QSharedPointer<IEditProvider> editProvider, QSharedPointer<Design> design, QString& const activeViewName)
+    QSharedPointer<IEditProvider> editProvider, QSharedPointer<Design> design, QString const& activeViewName)
 {
 	Q_ASSERT(component);
 
