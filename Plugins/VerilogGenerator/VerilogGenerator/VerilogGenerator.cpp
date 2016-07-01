@@ -283,6 +283,10 @@ QSharedPointer<ExpressionParser> VerilogGenerator::createParserForComponent(QSha
 	QSharedPointer<ComponentParameterFinder> instanceFinder(new ComponentParameterFinder(targetComponent,targetView));
 	finder->addFinder(instanceFinder);
 
+	QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cev =
+		design_->findComponentInstance(instanceName)->getConfigurableElementValues();
+	instanceFinder->setCEVs(cev);
+
 	return QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(finder)); 
 }
 
