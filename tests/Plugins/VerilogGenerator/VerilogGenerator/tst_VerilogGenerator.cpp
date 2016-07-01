@@ -84,6 +84,8 @@ private slots:
 
     void testTopLevelModuleParametersAreWritten();
     void testInstanceModuleParametersAreWritten();
+	void testTopComponentParametersAreUtilized();
+	void testInstanceComponentParametersAreUtilized();
 
 	void testParameterPropagationFromTop();
 
@@ -1785,6 +1787,101 @@ void tst_VerilogGenerator::testInstanceModuleParametersAreWritten()
         "        .moduleParameter     (2))\n"
         "    sender();");
 }
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testTopComponentParametersAreUtilized()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testTopComponentParametersAreUtilized()
+{
+	VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");    
+	QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+	library_.addComponent(senderComponent);
+	addInstanceToDesign("sender", senderVLNV, "rtl");
+
+	QSharedPointer<Parameter> componentParameter(new Parameter());
+	componentParameter->setValueId("componentParameterId");
+	componentParameter->setName("componentParameter");
+	componentParameter->setValue("1337");
+
+	topComponent_->getParameters()->append(componentParameter);
+
+	QSharedPointer<View> activeView(new View());
+	activeView->setName("rtl");
+	activeView->setComponentInstantiationRef("instance1");
+
+	QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
+	moduleParameter->setValueId("parameterId");
+	moduleParameter->setName("moduleParameter");
+	moduleParameter->setValue("1");
+
+	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
+	instantiation->getModuleParameters()->append(moduleParameter);
+
+	senderComponent->getComponentInstantiations()->append(instantiation);
+	senderComponent->getViews()->append(activeView);
+
+	QSharedPointer<ComponentInstance> senderInstance = design_->getComponentInstances()->first();
+
+	QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
+	parameterOverride->setReferenceId("parameterId");
+	parameterOverride->setConfigurableValue("componentParameterId");
+	senderInstance->getConfigurableElementValues()->append(parameterOverride);
+
+	runGenerator(true);
+
+	verifyOutputContains(
+		"    TestSender #(\n"
+		"        .moduleParameter     (1337))\n"
+		"    sender();");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testInstanceComponentParametersAreUtilized()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testInstanceComponentParametersAreUtilized()
+{
+	VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");    
+	QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+	library_.addComponent(senderComponent);
+	addInstanceToDesign("sender", senderVLNV, "rtl");
+
+	QSharedPointer<Parameter> componentParameter(new Parameter());
+	componentParameter->setValueId("componentParameterId");
+	componentParameter->setName("componentParameter");
+	componentParameter->setValue("55");
+
+	senderComponent->getParameters()->append(componentParameter);
+
+	QSharedPointer<View> activeView(new View());
+	activeView->setName("rtl");
+	activeView->setComponentInstantiationRef("instance1");
+
+	QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
+	moduleParameter->setValueId("parameterId");
+	moduleParameter->setName("moduleParameter");
+	moduleParameter->setValue("1");
+
+	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
+	instantiation->getModuleParameters()->append(moduleParameter);
+
+	senderComponent->getComponentInstantiations()->append(instantiation);
+	senderComponent->getViews()->append(activeView);
+
+	QSharedPointer<ComponentInstance> senderInstance = design_->getComponentInstances()->first();
+
+	QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
+	parameterOverride->setReferenceId("parameterId");
+	parameterOverride->setConfigurableValue("componentParameterId");
+	senderInstance->getConfigurableElementValues()->append(parameterOverride);
+
+	runGenerator(true);
+
+	verifyOutputContains(
+		"    TestSender #(\n"
+		"        .moduleParameter     (55))\n"
+		"    sender();");
+}
+
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::testParameterPropagationFromTop()
 //-----------------------------------------------------------------------------

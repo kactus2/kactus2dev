@@ -36,17 +36,17 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] instance                The component instance to write to Verilog.
+	 *      @param [in] instance                The component instance to write to Verilog
+	 *      @param [in] instantiation           The component instantiation corresponding the active view.
 	 *      @param [in] referencedComponent     The component instantiated by the instance.
 	 *      @param [in] sorter                  Sorter for the ports in the component.
      *      @param [in] expressionParser     	The expression parser.
-     *      @param [in] expressionFormatter     The expression formatter.
 	 */
 	ComponentInstanceVerilogWriter(QSharedPointer<const ComponentInstance> instance,
-        QSharedPointer<Component> referencedComponent,
-        QSharedPointer<const PortSorter> sorter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter);
+		QSharedPointer<const ComponentInstantiation> instantiation,
+		QSharedPointer<Component> referencedComponent,
+		QSharedPointer<const PortSorter> sorter,
+		QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
 	~ComponentInstanceVerilogWriter();
@@ -186,7 +186,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The component instance to write to Verilog.
-    QSharedPointer<const ComponentInstance> componentInstance_;
+	QSharedPointer<const ComponentInstance> componentInstance_;
+
+	//! The component instantiation corresponding the active view.
+	QSharedPointer<const ComponentInstantiation> componentInstantiation_;
 
     //! The component referenced by the instance.
     QSharedPointer<Component> referencedComponent_;
@@ -202,9 +205,6 @@ private:
 
     //! The assigned expression formatter.
     QSharedPointer<ExpressionParser> expressionParser_;
-
-    //! The assigned expression formatter.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // COMPONENTINSTANCEVERILOGWRITER_H

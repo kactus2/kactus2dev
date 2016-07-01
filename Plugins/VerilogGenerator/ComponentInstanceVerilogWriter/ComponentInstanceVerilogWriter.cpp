@@ -24,14 +24,14 @@ namespace
 // Function: ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter()
 //-----------------------------------------------------------------------------
 ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(QSharedPointer<const ComponentInstance> instance,
+	QSharedPointer<const ComponentInstantiation> instantiation,
     QSharedPointer<Component> referencedComponent, QSharedPointer<const PortSorter> sorter,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ExpressionFormatter> expressionFormatter) :
+    QSharedPointer<ExpressionParser> expressionParser) :
 componentInstance_(instance), 
+componentInstantiation_(instantiation),
 referencedComponent_(referencedComponent), 
 sorter_(sorter),
-expressionParser_(expressionParser),
-expressionFormatter_(expressionFormatter)
+expressionParser_(expressionParser)
 {
 
 }
@@ -131,23 +131,35 @@ QString ComponentInstanceVerilogWriter::indentation() const
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::parameterAssignments() const
 {
-    if (componentInstance_->getConfigurableElementValues()->isEmpty())
+    if (!componentInstantiation_)
     {
         return "";
-    }
+	}
 
-    QString instanceParameters("#(\n<namesAndValues>)\n");
+	QString instanceParameters("#(\n<namesAndValues>)\n");
 
-    QStringList assignments;
-    foreach(QSharedPointer<ConfigurableElementValue> parameter, *componentInstance_->getConfigurableElementValues())
-    {
-        QString assignment(indentation().repeated(2) + ".<parameter>(<value>)");
-        assignment.replace("<parameter>", 
-            expressionFormatter_->formatReferringExpression(parameter->getReferenceId()).leftJustified(20));
-        assignment.replace("<value>", 
-            expressionParser_->parseExpression(parameter->getConfigurableValue()));
-        assignments.append(assignment);
-    }
+	QStringList assignments;
+
+	foreach(QSharedPointer<ModuleParameter> parameter, *componentInstantiation_->getModuleParameters())
+	{
+		QString paraValue = parameter->getValue();
+
+		foreach(QSharedPointer<ConfigurableElementValue> cev, *componentInstance_->getConfigurableElementValues())
+		{
+			if (cev->getReferenceId() == parameter->getValueId())
+			{
+				paraValue = cev->getConfigurableValue();
+				break;
+			}
+		}
+
+		QString assignment(indentation().repeated(2) + ".<parameter>(<value>)");
+		assignment.replace("<parameter>", 
+			expressionParser_->parseExpression(parameter->name()).leftJustified(20));
+		assignment.replace("<value>", 
+			expressionParser_->parseExpression(paraValue));
+		assignments.append(assignment);
+	}
 
     instanceParameters.replace("<namesAndValues>", assignments.join(",\n"));
     return instanceParameters;
