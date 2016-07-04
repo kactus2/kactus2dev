@@ -226,15 +226,32 @@ QSharedPointer<Parameter> ComponentParameterFinder::searchParameter(QString cons
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allViewParameters() const
 {
+	// The parameters found in views.
 	QList<QSharedPointer<Parameter> > viewParameters;
 
-	QSharedPointer<View> view = component_->getModel()->findView(activeViewName_);
+	// The list of views to go through.
+	QSharedPointer<QList<QSharedPointer<View> > > views(new QList<QSharedPointer<View> >);
 
-	if (view)
+	// The active view set for searching.
+	QSharedPointer<View> activeView = component_->getModel()->findView(activeViewName_);
+
+	// If an active views is set, use it only. Otherwise use all views in the component.
+	if (activeView)
+	{
+		views->append(activeView);
+	}
+	else
+	{
+		views = component_->getViews();
+	}
+
+	// Go through the specified views.
+	foreach (QSharedPointer<View> view, *views)
 	{
 		QSharedPointer<ComponentInstantiation> instantiation = component_->getModel()->
 			findComponentInstantiation(view->getComponentInstantiationRef());
 
+		// If an instantiation exists, append its module parameters as well as parameters.
 		if (instantiation)
 		{
 			foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
