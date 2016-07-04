@@ -471,7 +471,12 @@ void ConnectionEditor::setPortMaps()
                 {
 					if (map2->getLogicalPort()->name_ == logicalPort)
                     {
-						addMap(row, invalid, map1, comp1, map2, comp2);
+                        //! To do: add checking for mapped tied values.
+                        if (map1->getLogicalPort() && map1->getPhysicalPort() &&
+                            map2->getLogicalPort() && map2->getPhysicalPort())
+                        {
+                            addMap(row, invalid, map1, comp1, map2, comp2);
+                        }
 					}
 				}
 			}
