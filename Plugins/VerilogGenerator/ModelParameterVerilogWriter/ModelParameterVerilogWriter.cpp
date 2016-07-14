@@ -11,16 +11,16 @@
 
 #include "ModelParameterVerilogWriter.h"
 
-#include <IPXACTmodels/common/ModuleParameter.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterVerilogWriter::ModuleParameterVerilogWriter()
 //-----------------------------------------------------------------------------
-ModuleParameterVerilogWriter::ModuleParameterVerilogWriter(QSharedPointer<ModuleParameter> ModuleParameter,
+ModuleParameterVerilogWriter::ModuleParameterVerilogWriter(QSharedPointer<Parameter> parameter,
     QSharedPointer<ExpressionParser> parser) :
-moduleParameter_(ModuleParameter),
+parameter_(parameter),
 parser_(parser)
 {
 
@@ -52,7 +52,7 @@ void ModuleParameterVerilogWriter::write(QTextStream& output) const
 //-----------------------------------------------------------------------------
 bool ModuleParameterVerilogWriter::nothingToWrite() const
 {
-    return moduleParameter_.isNull() || moduleParameter_->name().isEmpty();
+    return parameter_.isNull() || parameter_->name().isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -62,13 +62,13 @@ QString ModuleParameterVerilogWriter::createDeclaration() const
 {
     QString parameterDeclaration("parameter <type> <arrayBounds> <name> = <default>");
 
-    parameterDeclaration.replace("<type>", moduleParameter_->getDataType().leftJustified(7));
+    parameterDeclaration.replace("<type>", parameter_->getType().leftJustified(7));
     parameterDeclaration.replace("<arrayBounds>", arrayBounds().leftJustified(20));
     //parameterDeclaration.replace("<vectorBounds>", vectorBounds());
-    parameterDeclaration.replace("<name>", moduleParameter_->name().leftJustified(16));
+    parameterDeclaration.replace("<name>", parameter_->name().leftJustified(16));
     parameterDeclaration.replace("<default>", formattedValue());
 
-    if (moduleParameter_->getValue().isEmpty())
+    if (parameter_->getValue().isEmpty())
     {
         parameterDeclaration.remove(" = ");
     }
@@ -81,8 +81,8 @@ QString ModuleParameterVerilogWriter::createDeclaration() const
 //-----------------------------------------------------------------------------
 QString ModuleParameterVerilogWriter::arrayBounds() const
 {
-    QString arrayLeft = moduleParameter_->getAttribute("kactus2:arrayLeft");
-    QString arrayRight = moduleParameter_->getAttribute("kactus2:arrayRight");
+    QString arrayLeft = parameter_->getAttribute("kactus2:arrayLeft");
+    QString arrayRight = parameter_->getAttribute("kactus2:arrayRight");
 
     QString arrayDefinition = "[" + arrayLeft + ":" + arrayRight + "]";
     arrayDefinition.remove(" ");
@@ -92,8 +92,8 @@ QString ModuleParameterVerilogWriter::arrayBounds() const
         arrayDefinition.clear();
     }
 
-    QString vectorLeft = moduleParameter_->getVectorLeft();
-    QString vectorRight = moduleParameter_->getVectorRight();
+    QString vectorLeft = parameter_->getVectorLeft();
+    QString vectorRight = parameter_->getVectorRight();
 
     QString vectorDefinition = "[" + vectorLeft + ":" + vectorRight + "]";
     vectorDefinition.remove(" ");
@@ -111,9 +111,9 @@ QString ModuleParameterVerilogWriter::arrayBounds() const
 //-----------------------------------------------------------------------------
 QString ModuleParameterVerilogWriter::formattedValue() const
 {
-    QString value = moduleParameter_->getValue();
+    QString value = parameter_->getValue();
 
-    if (QString::compare(moduleParameter_->getDataType(), "string") == 0)
+    if (QString::compare(parameter_->getType(), "string") == 0)
     {
         QRegularExpression expression("\".*\"");
         QRegularExpressionMatch expressionMatch = expression.match(value);

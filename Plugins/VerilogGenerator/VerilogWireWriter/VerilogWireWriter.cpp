@@ -14,8 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogWireWriter::InterconnectionVerilogWriter()
 //-----------------------------------------------------------------------------
-VerilogWireWriter::VerilogWireWriter(QString connectionName, int size) :
-name_(connectionName), size_(size)
+VerilogWireWriter::VerilogWireWriter(QSharedPointer<GenerationWire> wire) : wire_(wire)
 {
 
 }
@@ -43,7 +42,7 @@ QString VerilogWireWriter::createDeclaration() const
 {
     QString declaration("wire <size> <name>;");    
     declaration.replace("<size>", formattedSize().leftJustified(6));
-    declaration.replace("<name>", name_);
+    declaration.replace("<name>", wire_->name);
 
     return declaration;
 }
@@ -53,11 +52,7 @@ QString VerilogWireWriter::createDeclaration() const
 //-----------------------------------------------------------------------------
 QString VerilogWireWriter::formattedSize() const
 {
-    QString sizeString = "";
-    if (size_ > 1)
-    {
-        sizeString = "[" + QString::number(size_ - 1) + ":0]";
-    }
+    QString sizeString = "[" + wire_->bounds.first + ":" + wire_->bounds.second + "]";
 
     return sizeString;
 }

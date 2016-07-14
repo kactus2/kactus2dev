@@ -15,7 +15,7 @@
 #include "ParameterFinder.h"
 
 class Component;
-class ConfigurableElementValue;
+class View;
 
 //-----------------------------------------------------------------------------
 //! The implementation for finding parameters with the correct ID.
@@ -29,9 +29,8 @@ public:
      *  Constructor.
      *
 	 *      @param [in] component		The component which parameters are being searched for.
-	 *      @param [in] activeViewName  The currently active view, if applicable.
      */
-    ComponentParameterFinder(QSharedPointer<Component> component, QString activeViewName = "");
+    ComponentParameterFinder(QSharedPointer<Component> component);
 
     /*!
      *  Destructor.
@@ -103,14 +102,16 @@ public:
     /*!
      *  Sets the active view to use for the component.
      *
-     *      @param [in] view   The name of the active view.
+     *      @param [in] view   The active view.
      */
-    void setActiveView(QString const& view);
+    void setActiveView(QSharedPointer<View> view);
 
     /*!
-     *  Sets the configurable element values, which may replace values.
+     *  Sets the active view to use for the component.
+     *
+     *      @param [in] viewName   The name of the active view.
      */
-    void setCEVs(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > values);
+    void setActiveView(QString const& viewName);
 
 private:
 
@@ -152,11 +153,8 @@ private:
     //! The parameters are searched from this component.
     QSharedPointer<Component> component_;
 
-	//! The name of the currently active view of the component, if applicable.
-	QString activeViewName_;
-	
-	//! The used configurable element values. If not null, the values may be used to replace parameter values.
-	QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs_;
+	//! The currently active view of the component, if applicable.
+	QSharedPointer<View> activeView_;
 };
 
 #endif // COMPONENTPARAMETERFINDER_H

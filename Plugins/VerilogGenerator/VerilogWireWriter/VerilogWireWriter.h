@@ -14,6 +14,7 @@
 
 #include <Plugins/VerilogGenerator/common/Writer.h>
 #include "../veriloggeneratorplugin_global.h"
+#include <Plugins/common/HDLParser/HDLParserCommon.h>
 
 //-----------------------------------------------------------------------------
 //! Class for writing a Verilog wire declaration.
@@ -23,7 +24,7 @@ class VERILOGGENERATORPLUGIN_EXPORT VerilogWireWriter : public Writer
 public:
 
 	//! The constructor.
-	VerilogWireWriter(QString connectionName, int size);
+	VerilogWireWriter(QSharedPointer<GenerationWire> wire);
 
 	//! The destructor.
 	virtual ~VerilogWireWriter();
@@ -55,11 +56,8 @@ private:
      */
     QString formattedSize() const;
 
-    //! The name of the wire.
-    QString name_;
-
-    //! The size of the wire.
-    int size_;
+    //! The wire.
+    QSharedPointer<GenerationWire> wire_;
 };
 
 #endif // VERILOGWIREWRITER_H

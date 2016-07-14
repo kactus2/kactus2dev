@@ -15,6 +15,7 @@
 #include "../veriloggeneratorplugin_global.h"
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Port.h>
 
 #include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
@@ -47,7 +48,9 @@ public:
      *      @param [in] expressionParser		Parser for writing expressions.
      *      @param [in] expressionFormatter     Formatter for writing expressions.
 	 */
-	ComponentVerilogWriter(QSharedPointer<Component> component, QString const& activeView, QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionParser> expressionParser);
+	ComponentVerilogWriter(QSharedPointer<Component> component, QSharedPointer<View> activeView,
+		QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionParser> expressionParser,
+		QSharedPointer<ExpressionFormatter> expressionFormatte);
 
 	//! The destructor.
 	~ComponentVerilogWriter();
@@ -113,7 +116,7 @@ private:
      *      @param [in] parameter       The parameter to write.
      *      @param [in] isLast          Indicates if the parameter is the last to write.
      */
-    void writeParameter(QTextStream& outputStream, QSharedPointer<ModuleParameter> parameter, bool isLast) const;
+    void writeParameter(QTextStream& outputStream, QSharedPointer<Parameter> parameter, bool isLast) const;
 
     /*!
      *  Writes the module port declaration.
@@ -170,7 +173,7 @@ private:
     QSharedPointer<Component> component_;
 
     //! The component active view.
-    QString activeView_;
+    QSharedPointer<View> activeView_;
 
     //! Sorter for the ports of the component.
     QSharedPointer<const PortSorter> sorter_;
@@ -180,6 +183,9 @@ private:
 
     //! The parser for expressions.
 	QSharedPointer<ExpressionParser> parser_;
+
+    //! The formatter for expressions.
+	QSharedPointer<ExpressionFormatter> formatter_;
 
 	//! The extra stuff that comes after the written module.
 	QSharedPointer<TextBodyWriter> postModule_;

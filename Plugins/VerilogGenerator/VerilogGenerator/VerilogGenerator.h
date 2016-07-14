@@ -18,11 +18,13 @@
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <IPXACTmodels/Component/PortMap.h>
 
 #include <QTextStream>
+#include <Plugins/common/HDLParser/HDLParserCommon.h>
 
 class ComponentVerilogWriter;
 class ComponentInstanceVerilogWriter;
@@ -34,6 +36,7 @@ class VerilogHeaderWriter;
 class VerilogWireWriter;
 class Writer;
 class WriterGroup;
+class AbstractionType;
 
 class ExpressionParser;
 class PortAlignment;
@@ -62,7 +65,7 @@ public:
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
-    void parse(QSharedPointer<Component> component, QString topComponentView, 
+    void parse(QSharedPointer<Component> component, QSharedPointer<View> topComponentView, 
         QString const& outputPath = QString(""), QSharedPointer<Design> design = QSharedPointer<Design>(),
 		QSharedPointer<DesignConfiguration> designConf = QSharedPointer<DesignConfiguration>());
     
@@ -109,27 +112,6 @@ private:
 	void initializeWriters();
 
     /*!
-     *  Creates an expression formatter for the given component.
-     *
-     *      @param [in] targetComponent   The component for which to create the formatter.
-     *
-     *      @return Expression formatter for the component.
-     */
-    //QSharedPointer<ExpressionFormatter> createFormatterForComponent(QSharedPointer<Component> targetComponent, QString targetView);
-
-    /*!
-     *  Creates an expression parser for the given component.
-     *
-     *      @param [in] targetComponent   The component for which to create the parser.
-     *
-     *      @return Expression parser for the component.
-     */
-    QSharedPointer<ExpressionParser> createParserForComponent();
-
-	QSharedPointer<ExpressionParser> createParserForComponent(QSharedPointer<Component> targetComponent,
-		QString targetView, QString instanceName);
-
-    /*!
     *  Checks if the generator should write nothing.
     *
     *      @return True, if the generator has nothing to write, otherwise false.
@@ -148,21 +130,13 @@ private:
      */
     void createWiresForInterface(QSharedPointer<ActiveInterface> interface);
 
-        /*!
-     *  Creates wires for a given logical signal in a given interface.
-     *
-     *      @param [in] logicalSignal   The logical signal for which to create wires.
-     *      @param [in] interface       The interface for which to create wires.
-     */
-    void createWireForLogicalSignalInInterface(QString const& logicalSignal, QSharedPointer<ActiveInterface> interface);
-
     /*!
      *  Gets the primary side interfaces in all interconnections. A primary interface e.g. master is potentially 
      *  connected to multiple secondary sides e.g. slave.
      *
      *      @return All primary side interfaces.
      */
-    QList<QSharedPointer<ActiveInterface> > getPrimaryInterfacesForInterconnections();
+    QMap<QString,QSharedPointer<ActiveInterface> > getPrimaryInterfacesForInterconnections();
 
     /*!
      *  Check if the selected primary interface is unique.
@@ -200,7 +174,7 @@ private:
      *
      *      @return The size for the wire.
      */
-    int findWireSize(QSharedPointer<ActiveInterface> primaryInterface, QString const& logicalName);
+    QPair<QString, QString> findWireSize(QSharedPointer<ActiveInterface> primaryInterface, QString const& logicalName);
     
     /*!
      *  Find the list of interfaces connected to the selected primary interface.
@@ -239,7 +213,17 @@ private:
      *
      *      @return The port bounds for the port map in an instance.
      */
-    QPair<int, int> logicalBoundsInInstance(QString const& instanceName, QSharedPointer<PortMap> portMap) const;
+    QPair<QString, QString> logicalPortBoundsInInstance(QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<PortMap> portMap) const;
+
+    /*!
+     *  Finds the physical bounds for a port map in an instance.
+     *
+     *      @param [in] instanceName    The name of the instance.
+     *      @param [in] port			The port for the which to find the physicalbounds.
+     *
+     *      @return The port bounds for the port map in an instance.
+     */
+    QPair<QString, QString> physicalPortBoundsInInstance(QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<Port> port) const;
 
     /*!
      *  Finds the component referenced in the design by a given name.
@@ -270,7 +254,7 @@ private:
      *      @param [in] wireSize        The size of the wire to map.
      */
     void connectPortsInConnectedInstancesToWire(QSharedPointer<ActiveInterface> startInterface, QString const& logicalPort, 
-        QString const& wireName, int const& wireSize);
+        QString const& wireName, QPair<QString, QString> wireBounds);
 
     /*!
      *  Connects all ports mapped to a given logical signal in an interface to a given wire.
@@ -283,7 +267,7 @@ private:
      *      @return <Description>.
      */
     void connectPortsInInterfaceToWire(QSharedPointer<ActiveInterface> interface, QString const& logicalPort,
-        QString const& wireName, int const& wireSize);
+        QString const& wireName, QPair<QString, QString> wireBounds);
 
     /*!
      *  Connects a port in an component instance to given wire.
@@ -294,15 +278,15 @@ private:
      *      @param [in] wireSize        The size of the wire to map to.
      */
     void connectInstancePortToWire(QString const& instanceName, QSharedPointer<PortMap> portMap, 
-        QString const& wireName, int const& wireSize);
+        QString const& wireName, QPair<QString, QString> wireBounds);
 
     /*!
      *  Adds a writer for a wire with the given name and size.
      *
-     *      @param [in] wireName   The name of the wire.
-     *      @param [in] wireSize   The size of the wire.
+     *      @param [in] wireName	The name of the wire.
+     *      @param [in] wireBounds	The bounds the wire.
      */
-    void addWriterForWire(QString wireName, int wireSize);
+    void addWriterForWire(QString wireName, QPair<QString, QString> wireBounds);
 
     /*!
      *  Finds the interface mode in the component instance and bus interface described by an interface.
@@ -325,7 +309,7 @@ private:
     /*!
      *  Parses all the component instances in the design.
      */
-    void createWritersForComponentInstances();
+    void parseComponentInstances();
 
     /*!
      *  Parses all the hierarchical connections for a component instance in the design and connects
@@ -485,7 +469,7 @@ private:
       *
       *      @return <Description>.
       */
-     void connectPortToWire(QSharedPointer<PortReference> port, QString const& wireName, int wireSize);
+     void connectPortToWire(QSharedPointer<PortReference> port, QString const& wireName, QPair<QString, QString>  wireBounds);
 
     /*!
      *  Checks if a wire should be created to represent the given ad-hoc connection.
@@ -503,7 +487,7 @@ private:
      *
      *      @return The size of the wire required to represent the ad-hoc connection.
      */
-    int findWireSizeForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection) const;
+    QPair<QString, QString> findWireSizeForAdHocConnection(QSharedPointer<AdHocConnection> adHocConnection) const;
    
      /*!
       *  Adds the generated writers to the top writer in correct order.            
@@ -542,7 +526,7 @@ private:
 	 QSharedPointer<DesignConfiguration> designConf_;
 
      //! The active view for top component.
-     QString topComponentView_;
+     QSharedPointer<View> topComponentView_;
 
      //! Writers for Verilog wires.
      QSharedPointer<WriterGroup> wireWriters_;
@@ -550,8 +534,8 @@ private:
      //! Writer for ad hoc tied values.
      QSharedPointer<VerilogTiedValueWriter> tiedValueWriter_;
 
-     //! Writers for Verilog instances.
-     QMap<QString, QSharedPointer<ComponentInstanceVerilogWriter> > instanceWriters_;
+	 //! Writers for Verilog instances.
+	 QMap<QString, QSharedPointer<ComponentInstanceVerilogWriter> > instanceWriters_;
 
      //! Sorter for component ports.
      QSharedPointer<PortSorter> sorter_;

@@ -32,13 +32,16 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
-ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<Component> component, QString const& activeView,
-    QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionParser> expressionParser) :
+ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<Component> component,
+	QSharedPointer<View> activeView, QSharedPointer<const PortSorter> sorter,
+	QSharedPointer<ExpressionParser> expressionParser,
+	QSharedPointer<ExpressionFormatter> expressionFormatte) :
 component_(component),
 activeView_(activeView),
 sorter_(sorter),
 childWriters_(),
-parser_(expressionParser)
+parser_(expressionParser),
+formatter_(expressionFormatte)
 {
 
 }
@@ -114,32 +117,34 @@ QString ComponentVerilogWriter::portNames() const
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStream) const
 {
-	QSharedPointer<View> view = component_->getModel()->findView(activeView_);
-
-	if (!view)
+	if (!activeView_)
 	{
 		return;
 	}
 
 	QSharedPointer<ComponentInstantiation> currentInsta =
-		component_->getModel()->findComponentInstantiation(view->getComponentInstantiationRef());
+		component_->getModel()->findComponentInstantiation(activeView_->getComponentInstantiationRef());
 
-	if (!currentInsta)
+	// Take copy the parameters of the component instantiation as well as the component.
+	QList<QSharedPointer<Parameter> > parameters = QList<QSharedPointer<Parameter> >(*component_->getParameters());
+
+	if (currentInsta)
 	{
-		return;
+		parameters.append(*currentInsta->getParameters());
+
+		foreach(QSharedPointer<ModuleParameter> parameter, *currentInsta->getModuleParameters())
+		{
+			parameters.append(parameter);
+		}
 	}
 
-	// Take copy the parameters of the component instantiation.
-	QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite =
-		currentInsta->getModuleParameters();
-
-	if (!parametersToWrite->isEmpty())
+	if (!parameters.isEmpty())
 	{
 		outputStream << " #(" << endl;
 
-		foreach(QSharedPointer<ModuleParameter> parameter, *parametersToWrite)
+		foreach(QSharedPointer<Parameter> parameter, parameters)
 		{
-			bool isLastParameter = parameter == parametersToWrite->last();
+			bool isLastParameter = parameter == parameters.last();
 			writeParameter(outputStream, parameter, isLastParameter);
 		}
 
@@ -150,7 +155,7 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::writeParameter()
 //-----------------------------------------------------------------------------
-void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPointer<ModuleParameter> parameter,
+void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPointer<Parameter> parameter,
     bool isLast) const
 {
     outputStream << indentation();
@@ -253,7 +258,7 @@ void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer
 {
     outputStream << indentation();
 
-    PortVerilogWriter writer(port, parser_);
+    PortVerilogWriter writer(port, formatter_);
     writer.write(outputStream);
 
     if (!isLast)

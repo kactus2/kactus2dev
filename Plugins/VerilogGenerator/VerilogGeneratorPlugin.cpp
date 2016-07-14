@@ -63,7 +63,8 @@ QString VerilogGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVersion() const
 {
-    return "1.3";}
+    return "1.4";
+}
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getDescription()

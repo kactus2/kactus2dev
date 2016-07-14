@@ -98,11 +98,11 @@ public:
      *  Checks if the abstraction definition has a definition for a port in a given mode.
      *
      *      @param [in] portName    The name of the port to check.
-     *      @param [in] mode        The mode to check for.
+     *      @param [in] mode        The mode to check for. Is undefined by default, matching any port with a wire.
      *
      *      @return True, if the port definition is found, otherwise false.
      */
-    bool hasPort(QString const& portName, General::InterfaceMode mode);
+    bool hasPort(QString const& portName, General::InterfaceMode mode=General::INTERFACE_MODE_COUNT);
 
     /*!
      *  Gets the names of the ports defined in the abstraction definition.
@@ -130,7 +130,7 @@ public:
      *
      *      @return The port with the given name.
      */
-    QSharedPointer<PortAbstraction> getPort(QString const& portName);
+    QSharedPointer<PortAbstraction> getPort(QString const& portName, General::InterfaceMode mode);
 
     /*!
      *  Gets the logical ports in the abstraction description.

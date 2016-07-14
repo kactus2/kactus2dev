@@ -159,10 +159,21 @@ QStringList AbstractionDefinition::getDependentFiles() const
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinition::hasPort()
 //-----------------------------------------------------------------------------
-bool AbstractionDefinition::hasPort(QString const& portName, General::InterfaceMode mode)
+bool AbstractionDefinition::hasPort(QString const& portName, General::InterfaceMode mode/*=General::INTERFACE_MODE_COUNT*/)
 {
     if (logicalPorts_)
     {
+		if (mode == General::INTERFACE_MODE_COUNT)
+		{
+			foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
+			{
+				if (port->getLogicalName() == portName && port->hasWire())
+				{
+					return true;
+				}
+			}
+		}
+
         foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
         {
             if (port->getLogicalName() == portName && port->hasWire())
@@ -241,13 +252,13 @@ DirectionTypes::Direction AbstractionDefinition::getPortDirection(QString const&
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinition::getPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<PortAbstraction> AbstractionDefinition::getPort(QString const& portName)
+QSharedPointer<PortAbstraction> AbstractionDefinition::getPort(QString const& portName, General::InterfaceMode mode)
 {
     if (logicalPorts_)
     {
         foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
         {
-            if (port->getLogicalName() == portName)
+            if (port->getLogicalName() == portName && port->getWire() && port->getWire()->hasMode(mode))
             {
                 return port;            
             } 

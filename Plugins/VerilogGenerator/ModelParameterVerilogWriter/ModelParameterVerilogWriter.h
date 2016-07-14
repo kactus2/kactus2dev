@@ -21,7 +21,7 @@
 #include <QSharedPointer>
 #include <QTextStream>
 
-class ModuleParameter;
+class Parameter;
 
 //-----------------------------------------------------------------------------
 //! Class for writing model parameter declarations in Verilog.
@@ -37,7 +37,7 @@ public:
 	 *      @param [in] ModuleParameter  The model parameter represented by this object.
 	 *      @param [in] formatter       The expression formatter.
 	 */
-	ModuleParameterVerilogWriter(QSharedPointer<ModuleParameter> ModuleParameter,
+	ModuleParameterVerilogWriter(QSharedPointer<Parameter> parameter,
         QSharedPointer<ExpressionParser> parser);
 	
 	//! The destructor
@@ -90,7 +90,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The model parameter to write to Verilog.
-    QSharedPointer<ModuleParameter> moduleParameter_;
+    QSharedPointer<Parameter> parameter_;
 
     //! The expresion formatter, used to change ids from expressions to names of references.
 	QSharedPointer<ExpressionParser> parser_;

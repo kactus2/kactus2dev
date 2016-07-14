@@ -25,6 +25,7 @@
 
 #include <QTextStream>
 #include <QSharedPointer>
+#include <Plugins/common/HDLParser/HDLParserCommon.h>
 
 //-----------------------------------------------------------------------------
 //! Class for writing a component instance as a Verilog instance.
@@ -42,11 +43,10 @@ public:
 	 *      @param [in] sorter                  Sorter for the ports in the component.
      *      @param [in] expressionParser     	The expression parser.
 	 */
-	ComponentInstanceVerilogWriter(QSharedPointer<const ComponentInstance> instance,
-		QSharedPointer<const ComponentInstantiation> instantiation,
-		QSharedPointer<Component> referencedComponent,
+	ComponentInstanceVerilogWriter(QSharedPointer<GenerationInstance> instance,
 		QSharedPointer<const PortSorter> sorter,
-		QSharedPointer<ExpressionParser> expressionParser);
+		QSharedPointer<ExpressionParser> expressionParser,
+		QSharedPointer<ExpressionFormatter> expressionFormatter);
 
 	//! The destructor.
 	~ComponentInstanceVerilogWriter();
@@ -75,7 +75,7 @@ public:
      *      @param [in] rightBound          The right bound of the connection to assign.
      */
     void assignPortForRange(QString const& instancePortName, QString const& assignedConnection, 
-        int leftBound, int rightBound);
+        QPair<QString, QString> wireBounds);
 
     /*!
      *  Assigns a port tie off value for the instance writer.
@@ -143,7 +143,7 @@ private:
     *
     *      @return The Verilog description of the instance port connection assignment.
     */
-    QString connectionForPort(QString portName) const;
+    QString assignmentForPort(QString portName) const;
 
     /*!
     *  Checks if a given port is not connected.
@@ -185,26 +185,16 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The component instance to write to Verilog.
-	QSharedPointer<const ComponentInstance> componentInstance_;
+	QSharedPointer<GenerationInstance> instance_;
 
-	//! The component instantiation corresponding the active view.
-	QSharedPointer<const ComponentInstantiation> componentInstantiation_;
+	//! The assigned expression formatter.
+	QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! The component referenced by the instance.
-    QSharedPointer<Component> referencedComponent_;
+	//! Sorter for the ports of the component.
+	QSharedPointer<const PortSorter> sorter_;
 
-    //! Sorter for the ports of the component.
-    QSharedPointer<const PortSorter> sorter_;
-
-    //! The assigned port connections.
-    QMap<QString, General::PortBounds> portAssignments_;
-
-    //! The assigned tie off values.
-    QMap<QString, QString> tieOffAssignments_;
-
-    //! The assigned expression formatter.
-    QSharedPointer<ExpressionParser> expressionParser_;
+	//! The assigned expression formatter.
+	QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // COMPONENTINSTANCEVERILOGWRITER_H

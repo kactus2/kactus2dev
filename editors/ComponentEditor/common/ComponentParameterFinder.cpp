@@ -20,15 +20,12 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/common/ConfigurableElementValue.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::ComponentParameterFinder()
 //-----------------------------------------------------------------------------
-ComponentParameterFinder::ComponentParameterFinder(QSharedPointer<Component> component,
-	QString activeViewName):component_(component), activeViewName_(activeViewName)
+ComponentParameterFinder::ComponentParameterFinder(QSharedPointer<Component> component) : component_(component)
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -55,28 +52,6 @@ QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString c
 	// First, search for the parameter corresponding the id.
 	QSharedPointer<Parameter> parameter = searchParameter(parameterId);
 
-    if (parameter)
-	{
-		// If parameter was found, provide a copy of it.
-		QSharedPointer<Parameter> returnParameter = QSharedPointer<Parameter>(parameter);
-
-		if ( cevs_ )
-		{
-			// If any configurable element values are defined, try to value referring to the parameter.
-			foreach ( QSharedPointer<ConfigurableElementValue> cev, *cevs_ )
-			{
-				if (cev->getReferenceId() == parameterId)
-				{
-					// If a matching value was found, its value will become the value of the copy.
-					returnParameter->setValue(cev->getConfigurableValue());
-					break;
-				}
-			}
-		}
-
-		return returnParameter;
-	}
-
 	return parameter;
 }
 
@@ -98,9 +73,14 @@ bool ComponentParameterFinder::hasId(QString const& id) const
 //-----------------------------------------------------------------------------
 QString ComponentParameterFinder::nameForId(QString const& id) const
 {
-    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
+	QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
 
-    return targetParameter->name();
+	if (targetParameter)
+	{
+		return targetParameter->name();
+	}
+
+    return "";
 }
 
 //-----------------------------------------------------------------------------
@@ -108,9 +88,14 @@ QString ComponentParameterFinder::nameForId(QString const& id) const
 //-----------------------------------------------------------------------------
 QString ComponentParameterFinder::valueForId(QString const& id) const
 {
-    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
+    QSharedPointer<Parameter> targetParameter = getParameterWithID(id);
 
-    return targetParameter->getValue();
+	if (targetParameter)
+	{
+		return targetParameter->getValue();
+	}
+
+    return "";
 }
 
 //-----------------------------------------------------------------------------
@@ -168,17 +153,24 @@ void ComponentParameterFinder::setComponent(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::setActiveView()
 //-----------------------------------------------------------------------------
-void ComponentParameterFinder::setActiveView(QString const& view)
+void ComponentParameterFinder::setActiveView(QSharedPointer<View> view)
 {
-	activeViewName_ = view;
+	activeView_ = view;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentParameterFinder::setCEVs()
+// Function: ComponentParameterFinder::setActiveView()
 //-----------------------------------------------------------------------------
-void ComponentParameterFinder::setCEVs(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > values)
+void ComponentParameterFinder::setActiveView(QString const& viewName)
 {
-	cevs_ = values;
+	if (component_)
+	{
+		activeView_ = component_->getModel()->findView(viewName);
+	}
+	else
+	{
+		activeView_ = QSharedPointer<View>();
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -232,13 +224,10 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allViewParameters() 
 	// The list of views to go through.
 	QSharedPointer<QList<QSharedPointer<View> > > views(new QList<QSharedPointer<View> >);
 
-	// The active view set for searching.
-	QSharedPointer<View> activeView = component_->getModel()->findView(activeViewName_);
-
 	// If an active views is set, use it only. Otherwise use all views in the component.
-	if (activeView)
+	if (activeView_)
 	{
-		views->append(activeView);
+		views->append(activeView_);
 	}
 	else
 	{

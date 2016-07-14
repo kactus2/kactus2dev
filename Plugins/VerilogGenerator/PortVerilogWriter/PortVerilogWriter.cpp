@@ -11,13 +11,14 @@
 
 #include "PortVerilogWriter.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortVerilogWriter::PortVerilogWriter()
 //-----------------------------------------------------------------------------
 PortVerilogWriter::PortVerilogWriter(QSharedPointer<const Port> port, 
-    QSharedPointer<ExpressionParser> expressionParser) : port_(port), parser_(expressionParser)
+    QSharedPointer<ExpressionFormatter> expressionFormatter)
+    : port_(port), formatter_(expressionFormatter)
 {
 
 }
@@ -110,6 +111,6 @@ QString PortVerilogWriter::arrayAndVectorBounds() const
     {
         vectorDefinition.clear();
     }
-
-    return parser_->parseExpression(arrayDefinition + vectorDefinition);
+	
+    return formatter_->formatReferringExpression(arrayDefinition + vectorDefinition);
 }
