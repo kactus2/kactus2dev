@@ -138,6 +138,23 @@
 class LibraryItem;
 
 //-----------------------------------------------------------------------------
+// Function: createVersionString()
+//-----------------------------------------------------------------------------
+QString createVersionString()
+{
+#if defined (_WIN64) || (__LP64__) || (_LP64)
+	int bits = 64;
+#else
+	int bits = 32;
+#endif
+
+	return QString("%1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
+		QString::number(VERSION_MINOR),
+		QString::number(VERSION_BUILDNO),
+		QString::number(bits));
+}
+
+//-----------------------------------------------------------------------------
 // Function: mainwindow::MainWindow()
 //-----------------------------------------------------------------------------
 MainWindow::MainWindow(QWidget *parent):
@@ -1790,17 +1807,7 @@ void MainWindow::runGeneratorPlugin(QAction* action)
     IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
 	Q_ASSERT(plugin != 0);
 
-#if defined (_WIN64) || (__LP64__) || (_LP64)
-	int bits = 64;
-#else
-	int bits = 32;
-#endif
-
-	PluginUtilityAdapter adapter(libraryHandler_, this,
-		tr("%1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
-		QString::number(VERSION_MINOR),
-		QString::number(VERSION_BUILDNO),
-		QString::number(bits)));
+	PluginUtilityAdapter adapter(libraryHandler_, this, createVersionString());
 
     connect(&adapter, SIGNAL(errorMessage(QString const&)), 
         this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
@@ -4055,7 +4062,7 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
 //-----------------------------------------------------------------------------
 void MainWindow::showAbout()
 {
-	SplashScreen* splash = new SplashScreen(this);
+	SplashScreen* splash = new SplashScreen(createVersionString(), this);
 	splash->setAttribute(Qt::WA_DeleteOnClose);
 	splash->setWindowFlags(splash->windowFlags() & ~(Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint));
 	splash->move(this->mapToGlobal(this->rect().center() - splash->rect().center()));

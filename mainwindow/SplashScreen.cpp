@@ -11,7 +11,6 @@
 
 #include "SplashScreen.h"
 
-#include <version.h>
 #include <QPainter>
 #include <QLabel>
 #include <QBitmap>
@@ -19,7 +18,8 @@
 //-----------------------------------------------------------------------------
 // Function: SplashScreen()
 //-----------------------------------------------------------------------------
-SplashScreen::SplashScreen(QWidget* parent) : QSplashScreen(parent, QPixmap(":/common/graphics/splash.png"))
+SplashScreen::SplashScreen(QString versionString, QWidget* parent /*= 0*/) : 
+versionString_(versionString), QSplashScreen(parent, QPixmap(":/common/graphics/splash.png"))
 {
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 }
@@ -40,21 +40,15 @@ void SplashScreen::drawContents(QPainter *painter)
     // Draw the version text.
     painter->setPen(QPen(Qt::black, 1));
 
-#if defined (_WIN64) || (__LP64__) || (_LP64)
-    int bits = 64;
-#else
-    int bits = 32;
-#endif
-
     QFont font = painter->font();
     font.setPixelSize(14);
     font.setBold(true);
     painter->setFont(font);
 
-    painter->drawText(240, 240, tr("Version %1.%2.%3 %4-bit").arg(QString::number(VERSION_MAJOR),
-                                                                  QString::number(VERSION_MINOR),
-                                                                  QString::number(VERSION_BUILDNO),
-                                                                  QString::number(bits)));
+    painter->drawText(QRectF(5, 220, 590, 35), Qt::AlignCenter,
+		tr("Version %1\nQt version %2")
+		.arg(versionString_, qVersion()));
+
     // Draw the other information.
     font.setPixelSize(12);
     font.setBold(false);

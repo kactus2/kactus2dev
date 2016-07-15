@@ -25,7 +25,7 @@ public:
     /*!
      *  Constructor.
      */
-    SplashScreen(QWidget* parent = 0);
+    SplashScreen(QString versionString, QWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -46,6 +46,8 @@ private:
     // Disable copying.
     SplashScreen(SplashScreen const& rhs);
     SplashScreen& operator=(SplashScreen const& rhs);
+
+	QString versionString_;
 };
 
 //-----------------------------------------------------------------------------

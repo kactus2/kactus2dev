@@ -11,14 +11,14 @@
 
 #include "VerilogTiedValueWriter.h"
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogTiedValueWriter::VerilogTiedValueWriter()
 //-----------------------------------------------------------------------------
-VerilogTiedValueWriter::VerilogTiedValueWriter(QSharedPointer<ExpressionParser> parser):
+VerilogTiedValueWriter::VerilogTiedValueWriter(QSharedPointer<ExpressionFormatter> formatter):
 portTiedValues_(),
-parser_(parser)
+formatter_(formatter)
 {
 
 }
@@ -36,7 +36,7 @@ VerilogTiedValueWriter::~VerilogTiedValueWriter()
 //-----------------------------------------------------------------------------
 void VerilogTiedValueWriter::addPortTiedValue(QString const& portName, QString const& tiedValue)
 {
-    QString formattedTiedValue = parser_->parseExpression(tiedValue);
+    QString formattedTiedValue = formatter_->formatReferringExpression(tiedValue);
 
     portTiedValues_.insert(portName, formattedTiedValue);
 }
@@ -56,9 +56,13 @@ void VerilogTiedValueWriter::write(QTextStream& output) const
         while (tieInterceptor.hasNext())
         {
             tieInterceptor.next();
-            QString outputLine = "    assign " + tieInterceptor.key() + " = " + tieInterceptor.value() + ";";
 
-            output << outputLine << endl;
+			if (!tieInterceptor.value().isEmpty())
+			{
+				QString outputLine = "    assign " + tieInterceptor.key() + " = " + tieInterceptor.value() + ";";
+
+				output << outputLine << endl;
+			}
         }
 
         output << endl;

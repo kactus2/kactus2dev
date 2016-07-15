@@ -10,6 +10,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 HEADERS += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ./veriloggeneratorplugin_global.h \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
+    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
     ./VerilogGeneratorPlugin.h \
     ./VerilogGenerator/VerilogGenerator.h \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
@@ -33,9 +34,11 @@ HEADERS += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ../../designEditors/common/TopComponentParameterFinder.h \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.h \
     ./TextBodyWriter/TextBodyWriter.h \
-    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h
+    ../common/HDLParser/HDLParser.h \
+    ../common/HDLParser/HDLParserCommon.h
 SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
+    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ./VerilogGeneratorPlugin.cpp \
     ./VerilogGenerator/VerilogGenerator.cpp \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
@@ -56,5 +59,5 @@ SOURCES += ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../../designEditors/common/TopComponentParameterFinder.cpp \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ./TextBodyWriter/TextBodyWriter.cpp \
-    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp
+    ../common/HDLParser/HDLParser.cpp
 RESOURCES += VerilogGenerator.qrc

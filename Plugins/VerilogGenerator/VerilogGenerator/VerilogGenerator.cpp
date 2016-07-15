@@ -105,19 +105,15 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 		}
 
 		QList<QSharedPointer<GenerationInterconnection> > usedGic;
-		QMap<QSharedPointer<Interconnection>, QSharedPointer<GenerationInterconnection> >::iterator iter = parser.interConnections_.begin();
-		QMap<QSharedPointer<Interconnection>, QSharedPointer<GenerationInterconnection> >::iterator end = parser.interConnections_.end();
-		for (;iter != end; ++iter)
+		foreach (QSharedPointer<GenerationInterconnection> gic, parser.interConnections_)
 		{
-			QSharedPointer<GenerationInterconnection> gw = *iter;
-
-			if (usedGic.contains(gw))
+			if (usedGic.contains(gic))
 			{
 				continue;
 			}
 
-			QMap<QString, QSharedPointer<GenerationWire> >::iterator iter = gw->wires_.begin();
-			QMap<QString, QSharedPointer<GenerationWire> >::iterator end = gw->wires_.end();
+			QMap<QString, QSharedPointer<GenerationWire> >::iterator iter = gic->wires_.begin();
+			QMap<QString, QSharedPointer<GenerationWire> >::iterator end = gic->wires_.end();
 			for (;iter != end; ++iter)
 			{
 				QSharedPointer<GenerationWire> gw = *iter;
@@ -128,7 +124,7 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 				}
 			}
 
-			usedGic.append(gw);
+			usedGic.append(gic);
 		}
 
 		QList<QSharedPointer<GenerationWire> > usedWire;
@@ -147,6 +143,14 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 			}
 
 			usedWire.append(gw);
+		}
+
+
+		QMap<QString,QString>::iterator iter2 = parser.portTiedValues_.begin();
+		QMap<QString,QString>::iterator end2 = parser.portTiedValues_.end();
+		for (;iter2 != end2; ++iter2)
+		{
+			tiedValueWriter_->addPortTiedValue(iter2.key(), iter2.value());
 		}
 
 		addWritersToTopInDesiredOrder();       
@@ -317,7 +321,7 @@ void VerilogGenerator::initializeWriters()
 
     wireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
 
-    tiedValueWriter_ = QSharedPointer<VerilogTiedValueWriter>(new VerilogTiedValueWriter(parser));
+    tiedValueWriter_ = QSharedPointer<VerilogTiedValueWriter>(new VerilogTiedValueWriter(formatter));
 }
 
 //-----------------------------------------------------------------------------

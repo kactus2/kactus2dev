@@ -38,10 +38,12 @@ struct GenerationAdHoc
 	QList<QPair<QString,QString> > ports;
 	QSharedPointer<GenerationWire> wire;
 	QString name;
+	QString tieOff;
 };
 
 struct GenerationInterconnection
 {
+	QList<QPair<QString,QString> > interfaces;
 	QMap<QString,QSharedPointer<GenerationWire> > wires_;
 	QSharedPointer<BusInterface> topInterface_;
 	QString name;

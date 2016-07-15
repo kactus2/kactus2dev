@@ -7,36 +7,37 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
-    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
+HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
-    ../../../../Plugins/VerilogImport/VerilogSyntax.h \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h \
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h \
+    ../../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../../../../Plugins/common/NameGenerationPolicy.h \
     ../../../../Plugins/VerilogGenerator/PortSorter/PortSorter.h \
     ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h \
     ../../../../designEditors/common/TopComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h \
+    ../../../../Plugins/VerilogImport/VerilogSyntax.h \
     ../../../../Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.h \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
-    ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
     ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
+    ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
     ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.h \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
-    ../../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h
-SOURCES += ../../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
-    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
+    ../../../../Plugins/common/HDLParser/HDLParser.h \
+    ../../../../Plugins/common/HDLParser/HDLParserCommon.h
+SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
@@ -45,19 +46,21 @@ SOURCES += ../../../../editors/ComponentEditor/common/MultipleParameterFinder.cp
     ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.cpp \
-    ../../../../Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ../../../MockObjects/LibraryMock.cpp \
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
+    ../../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../../../Plugins/common/NameGenerationPolicy.cpp \
     ../../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
     ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.cpp \
     ../../../../designEditors/common/TopComponentParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.cpp \
+    ../../../../Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
     ./tst_VerilogGeneratorPlugin.cpp \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
-    ../../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.cpp
+    ../../../../Plugins/common/HDLParser/HDLParser.cpp

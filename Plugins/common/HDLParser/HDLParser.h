@@ -83,9 +83,18 @@ public:
      */
     void parseComponentInstances();
 
+	void parseHierarchicallAdhocs();
+
+	bool connectTieOff(QString tieOff, QSharedPointer<Port> port, DirectionTypes::Direction requiredDirection, QMap<QString, QString>& tiedValuesMap);
+
+	void assignInternalAdHocs(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance, QSharedPointer<GenerationInstance> gi);
+
+	void findInternalAdhocs();
+
 	QList<QSharedPointer<GenerationInstance> > instances_;
-	QMap<QSharedPointer<Interconnection>, QSharedPointer<GenerationInterconnection> > interConnections_;
+	QList<QSharedPointer<GenerationInterconnection> > interConnections_;
 	QList<QSharedPointer<GenerationAdHoc> > adHocs_;
+	QMap<QString, QString> portTiedValues_;
 
 signals:
 	

@@ -77,7 +77,7 @@ private slots:
     void testMultipleAdhocConnectionsBetweenComponentInstances();
     void testAdHocConnectionBetweenComponentInstancesWithExpressions();
     void testHierarchicalAdhocConnection();
-    //void testHierarchicalAdHocTieOffValues();
+    void testHierarchicalAdHocTieOffValues();
     void testAdHocConnectionToUnknownInstanceIsNotWritten();
     void testAdHocConnectionBetweenMultipleComponentInstances();
     
@@ -1411,8 +1411,6 @@ void tst_VerilogGenerator::testAdhocTieOffInComponentInstance()
     runGenerator(true);
 
     verifyOutputContains(
-        "    // IP-XACT VLNV: Test:TestLibrary:TestTieOff:1.0\n"
-        "    TestTieOff tieOffer(\n"
         "        // These ports are not in any interface\n"
         "        .defaultTieOff       (20),\n"
         "        .expressionTieOff    (1),\n"
@@ -1641,7 +1639,7 @@ void tst_VerilogGenerator::addHierAdhocConnection(QString const& topPort,
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
 //-----------------------------------------------------------------------------
-/*void tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
+void tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
 {
     QString zeroName = "zeroTieOff";
     QString oneName = "oneTieOff";
@@ -1687,14 +1685,14 @@ void tst_VerilogGenerator::addHierAdhocConnection(QString const& topPort,
     verifyOutputContains(
         "    // Tie off values for the ports of the encompassing component\n"
         "    assign defaultTieOff = 20;\n"
-        "    assign expressionTieOff = 2;\n"
+        "    assign expressionTieOff = expName - 4;\n"
         "    assign inOutTieOff = 1;\n"
         "    assign n/aTieOff = abc;\n"
         "    assign numberedTieOff = 12;\n"
         "    assign oneTieOff = 1;\n"
         "    assign zeroTieOff = 0;\n"
         );
-}*/
+}
 
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::addTieOffConnectionToTopComponentPort()
