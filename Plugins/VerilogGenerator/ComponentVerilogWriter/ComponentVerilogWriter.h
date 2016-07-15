@@ -106,8 +106,8 @@ private:
      *      @param [in] currentInsta			The component instantiation, which module parameters are referred.
      *      @param [out] parametersToWrite      The list containing parameters, that will be sorted.
      */
-	void sortModuleParameters(QSharedPointer<ComponentInstantiation> currentInsta,
-		QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parametersToWrite) const;
+	void sortParameters(QList<QSharedPointer<Parameter> >& parameters,
+		QList<QSharedPointer<Parameter> >& parametersToWrite) const;
 
     /*!
      *  Writes a single parameter declaration.

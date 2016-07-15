@@ -92,6 +92,9 @@ private slots:
 	void testParameterPropagationFromTop();
 	void testParameterPropagationFromTop2();
 
+	void testParametersAreInOrder();
+	void testParametersAreInOrder2();
+
 	void testImplementationSelection();
 	void testImplementationSelectionWithTag();
 	void testImplementationSelectionWithoutParameters();
@@ -500,6 +503,7 @@ void tst_VerilogGenerator::testHierarchicalConnectionsWithExpressions()
     componentParameter->setName("componentParameter");
     componentParameter->setValue("1");
 	componentParameter->setValueId("instant_ID");
+	componentParameter->setValueResolve("user");
 	instanceComponent->getParameters()->append(componentParameter);
 
     QSharedPointer<Port> instanceClkPort (new Port("instance_clk", DirectionTypes::IN));
@@ -1898,6 +1902,7 @@ void tst_VerilogGenerator::testInstanceModuleParametersAreWritten()
     moduleParameter->setValueId("parameterId");
     moduleParameter->setName("moduleParameter");
     moduleParameter->setValue("1");
+	moduleParameter->setValueResolve("user");
 
     QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
     instantiation->getModuleParameters()->append(moduleParameter);
@@ -1937,6 +1942,7 @@ void tst_VerilogGenerator::testTopComponentParametersAreUtilized()
 	componentParameter->setValueId("componentParameterId");
 	componentParameter->setName("componentParameter");
 	componentParameter->setValue("1337");
+	componentParameter->setValueResolve("user");
 
 	topComponent_->getParameters()->append(componentParameter);
 
@@ -1944,6 +1950,7 @@ void tst_VerilogGenerator::testTopComponentParametersAreUtilized()
 	moduleParameter->setValueId("parameterId");
 	moduleParameter->setName("moduleParameter");
 	moduleParameter->setValue("1");
+	moduleParameter->setValueResolve("user");
 
 	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
 	instantiation->getModuleParameters()->append(moduleParameter);
@@ -1990,6 +1997,7 @@ void tst_VerilogGenerator::testInstanceComponentParametersAreUtilized()
 	componentParameter->setValueId("componentParameterId");
 	componentParameter->setName("componentParameter");
 	componentParameter->setValue("55");
+	componentParameter->setValueResolve("user");
 
 	senderComponent->getParameters()->append(componentParameter);
 
@@ -1997,6 +2005,7 @@ void tst_VerilogGenerator::testInstanceComponentParametersAreUtilized()
 	moduleParameter->setValueId("parameterId");
 	moduleParameter->setName("moduleParameter");
 	moduleParameter->setValue("1");
+	moduleParameter->setValueResolve("user");
 
 	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
 	instantiation->getModuleParameters()->append(moduleParameter);
@@ -2042,7 +2051,7 @@ void tst_VerilogGenerator::testParameterPropagationFromTop()
     QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
     moduleParameter->setValueId("parameterId");
     moduleParameter->setName("moduleParameter");
-    moduleParameter->setValueResolve("User");
+    moduleParameter->setValueResolve("user");
     moduleParameter->setValue("1");
 
     QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
@@ -2090,12 +2099,13 @@ void tst_VerilogGenerator::testParameterPropagationFromTop2()
 	senderParameter->setName("senderParameter");
 	senderParameter->setValueId("senderID");
 	senderParameter->setValue("47");
+	senderParameter->setValueResolve("user");
 	senderComponent->getParameters()->append(senderParameter);
 
 	QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
 	moduleParameter->setValueId("parameterId");
 	moduleParameter->setName("moduleParameter");
-	moduleParameter->setValueResolve("User");
+	moduleParameter->setValueResolve("user");
 	moduleParameter->setValue("senderID");
 
 	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
@@ -2118,6 +2128,103 @@ void tst_VerilogGenerator::testParameterPropagationFromTop2()
 		"        .senderParameter     (47),\n"
 		"        .moduleParameter     (senderParameter))\n"
 		"    sender();");
+}
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testTopLevelParametersAreInOrder()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testParametersAreInOrder()
+{
+	topView_->setComponentInstantiationRef("instance1");
+
+	QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
+	moduleParameterFirst->setName("moduleParameterFirst");
+	moduleParameterFirst->setValue("1");
+	moduleParameterFirst->setValueId("firstParameter");
+	moduleParameterFirst->setValueResolve("user");
+
+	QSharedPointer<ModuleParameter> moduleParameterSecond(new ModuleParameter());
+	moduleParameterSecond->setName("moduleParameterSecond");
+	moduleParameterSecond->setValue("firstParameter");
+	moduleParameterSecond->setValueId("secondParameter");
+	moduleParameterSecond->setValueResolve("user");
+
+	QSharedPointer<ModuleParameter> moduleParameterThird(new ModuleParameter());
+	moduleParameterThird->setName("moduleParameterThird");
+	moduleParameterThird->setValue("secondParameter");
+	moduleParameterThird->setValueResolve("user");
+
+	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
+	instantiation->getModuleParameters()->append(moduleParameterThird);
+	instantiation->getModuleParameters()->append(moduleParameterFirst);
+	instantiation->getModuleParameters()->append(moduleParameterSecond);
+
+	topComponent_->getComponentInstantiations()->append(instantiation);
+
+	runGenerator("rtl");
+
+	verifyOutputContains(QString(
+		"module TestComponent #(\n"
+		"    parameter                              moduleParameterFirst = 1,\n"
+		"    parameter                              moduleParameterSecond = moduleParameterFirst,\n"
+		"    parameter                              moduleParameterThird = moduleParameterSecond\n"
+		") ();\n"
+		"\n"
+		"\n"
+		"endmodule\n"
+		));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testTopLevelParametersAreInOrder2()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testParametersAreInOrder2()
+{
+	topView_->setComponentInstantiationRef("instance1");
+
+	QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
+	moduleParameterFirst->setName("moduleParameterFirst");
+	moduleParameterFirst->setValue("1");
+	moduleParameterFirst->setValueId("firstParameter");
+	moduleParameterFirst->setValueResolve("user");
+
+	QSharedPointer<ModuleParameter> moduleParameterSecond(new ModuleParameter());
+	moduleParameterSecond->setName("moduleParameterSecond");
+	moduleParameterSecond->setValue("firstParameter + fourthParameter");
+	moduleParameterSecond->setValueId("secondParameter");
+	moduleParameterSecond->setValueResolve("user");
+
+	QSharedPointer<ModuleParameter> moduleParameterThird(new ModuleParameter());
+	moduleParameterThird->setName("moduleParameterThird");
+	moduleParameterThird->setValue("secondParameter");
+	moduleParameterThird->setValueResolve("user");
+
+	QSharedPointer<ModuleParameter> moduleParameterFourth(new ModuleParameter());
+	moduleParameterFourth->setName("moduleParameterFourth");
+	moduleParameterFourth->setValue("4");
+	moduleParameterFourth->setValueId("fourthParameter");
+	moduleParameterFourth->setValueResolve("user");
+
+	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
+	instantiation->getModuleParameters()->append(moduleParameterSecond);
+	instantiation->getModuleParameters()->append(moduleParameterThird);
+	instantiation->getModuleParameters()->append(moduleParameterFourth);
+	instantiation->getModuleParameters()->append(moduleParameterFirst);
+
+	topComponent_->getComponentInstantiations()->append(instantiation);
+
+	runGenerator("rtl");
+
+	verifyOutputContains(QString(
+		"module TestComponent #(\n"
+		"    parameter                              moduleParameterFourth = 4,\n"
+		"    parameter                              moduleParameterFirst = 1,\n"
+		"    parameter                              moduleParameterSecond = moduleParameterFirst+moduleParameterFourth,\n"
+		"    parameter                              moduleParameterThird = moduleParameterSecond\n"
+		") ();\n"
+		"\n"
+		"\n"
+		"endmodule\n"
+		));
 }
 
 //-----------------------------------------------------------------------------

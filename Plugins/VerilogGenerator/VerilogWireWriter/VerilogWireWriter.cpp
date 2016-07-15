@@ -52,7 +52,12 @@ QString VerilogWireWriter::createDeclaration() const
 //-----------------------------------------------------------------------------
 QString VerilogWireWriter::formattedSize() const
 {
-    QString sizeString = "[" + wire_->bounds.first + ":" + wire_->bounds.second + "]";
+	QString sizeString;
+
+	if (!wire_->bounds.first.isEmpty() && !wire_->bounds.second.isEmpty())
+	{
+		sizeString = "[" + wire_->bounds.first + ":" + wire_->bounds.second + "]";
+	}
 
     return sizeString;
 }

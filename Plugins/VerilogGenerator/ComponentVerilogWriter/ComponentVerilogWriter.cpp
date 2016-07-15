@@ -138,17 +138,92 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
 		}
 	}
 
-	if (!parameters.isEmpty())
+	// Create a new list of module parameters.
+	QList<QSharedPointer<Parameter> > parametersToWrite(parameters);
+
+	sortParameters(parameters, parametersToWrite);
+
+	if (!parametersToWrite.isEmpty())
 	{
 		outputStream << " #(" << endl;
 
-		foreach(QSharedPointer<Parameter> parameter, parameters)
+		foreach(QSharedPointer<Parameter> parameter, parametersToWrite)
 		{
-			bool isLastParameter = parameter == parameters.last();
+			bool isLastParameter = parameter == parametersToWrite.last();
 			writeParameter(outputStream, parameter, isLastParameter);
 		}
 
 		outputStream << ") ";
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter::sortModuleParameters()
+//-----------------------------------------------------------------------------
+void ComponentVerilogWriter::sortParameters(QList<QSharedPointer<Parameter> >& parameters,
+	QList<QSharedPointer<Parameter> >& parametersToWrite) const
+{
+	// Go through existing ones on the instance.
+	for (QList<QSharedPointer<Parameter> >::Iterator parameterAdd =
+		parameters.begin(); parameterAdd != parameters.end(); ++parameterAdd)
+	{
+		// The first position for the second pass.
+		QList<QSharedPointer<Parameter> >::Iterator minPos =
+			parametersToWrite.begin();
+
+		// Resolve the value of the inspected parameter.
+		QString addFormatted = formatter_->
+			formatReferringExpression((*parameterAdd)->getValue());
+
+		// First pass: Detect if the parameter depends on another parameter.
+		for (QList<QSharedPointer<Parameter> >::Iterator parameterCmp =
+			parametersToWrite.begin();
+			parameterCmp != parametersToWrite.end(); ++parameterCmp)
+		{
+			if (addFormatted.contains((*parameterCmp)->name()))
+			{
+				// A match found: The parameter must be positioned after this one!
+				minPos = ++parameterCmp;
+
+				// The first one needed is the relevant one, so break here.
+				break;
+			}
+		}
+
+		// If true, the parameter will be appended to the end of the list.
+		bool append = true;
+
+		// The second pass: Find the actual position before the parameter is referred.
+		for (QList<QSharedPointer<Parameter> >::Iterator parameterCmp = minPos;
+			parameterCmp != parametersToWrite.end(); ++parameterCmp)
+		{
+			// Resolve the value of the the compared parameter.
+			QString formatted = this->formatter_->
+				formatReferringExpression((*parameterCmp)->getValue());
+
+			// Check if it contains a reference to the inspected parameter.
+			if (formatted.contains((*parameterAdd)->name()))
+			{
+				// Remove the inspected parameter from the previous place.
+				parametersToWrite.removeOne(*parameterAdd);
+
+				// Then the inspected parameter comes before it is referred.
+				parametersToWrite.insert(parameterCmp, *parameterAdd);
+
+				// It will not be inserted twice, so break here.
+				append = false;
+				break;
+			}
+		}
+
+		// If there was no match in the second pass, or no second pass at all, at to then end.
+		if (append)
+		{
+			// Remove the inspected parameter from the previous place.
+			parametersToWrite.removeOne(*parameterAdd);
+			// Append at the end of the list.
+			parametersToWrite.append(*parameterAdd);
+		}
 	}
 }
 
@@ -159,7 +234,7 @@ void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPo
     bool isLast) const
 {
     outputStream << indentation();
-    ModuleParameterVerilogWriter parameterWriter(parameter, parser_);
+    ModuleParameterVerilogWriter parameterWriter(parameter, formatter_);
     parameterWriter.write(outputStream);
 
     if (!isLast)

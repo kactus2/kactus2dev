@@ -117,6 +117,11 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
 
 	foreach(QSharedPointer<Parameter> parameter, parameters)
 	{
+		if (parameter->getValueResolve() != "user")
+		{
+			continue;
+		}
+
 		QString paraValue = parameter->getValue();
 
 		foreach(QSharedPointer<ConfigurableElementValue> cev, *instance_->componentInstance_->getConfigurableElementValues())
@@ -245,6 +250,16 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QString portName) cons
 
 			QPair<QString,QString> connectionBounds = gab->bounds;
 
+			if (connectionBounds.first.isEmpty() || connectionBounds.second.isEmpty())
+			{
+				assignment = "<signalName>";
+			}
+			else
+			{
+				assignment.replace("<left>", connectionBounds.first);
+				assignment.replace("<right>", connectionBounds.second);
+			}
+
 			if (gab->wire)
 			{
 				if (gab->wire->ports.size() > 1)
@@ -260,9 +275,6 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QString portName) cons
 			{
 				assignment.replace("<signalName>", gab->otherName);
 			}
-
-			assignment.replace("<left>", connectionBounds.first);
-			assignment.replace("<right>", connectionBounds.second);
 		}
     }
 

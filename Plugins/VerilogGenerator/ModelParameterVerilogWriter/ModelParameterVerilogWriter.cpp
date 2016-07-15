@@ -19,9 +19,9 @@
 // Function: ModuleParameterVerilogWriter::ModuleParameterVerilogWriter()
 //-----------------------------------------------------------------------------
 ModuleParameterVerilogWriter::ModuleParameterVerilogWriter(QSharedPointer<Parameter> parameter,
-    QSharedPointer<ExpressionParser> parser) :
+    QSharedPointer<ExpressionFormatter> formatter) :
 parameter_(parameter),
-parser_(parser)
+formatter_(formatter)
 {
 
 }
@@ -103,7 +103,7 @@ QString ModuleParameterVerilogWriter::arrayBounds() const
         vectorDefinition.clear();
     }
 
-    return parser_->parseExpression(arrayDefinition + vectorDefinition);
+    return formatter_->formatReferringExpression(arrayDefinition + vectorDefinition);
 }
 
 //-----------------------------------------------------------------------------
@@ -139,7 +139,7 @@ QString ModuleParameterVerilogWriter::formattedValue() const
         value.remove(" ");
     }
 
-    QString formatted = parser_->parseExpression(value);
+    QString formatted = formatter_->formatReferringExpression(value);
 
     return formatted;
 }
