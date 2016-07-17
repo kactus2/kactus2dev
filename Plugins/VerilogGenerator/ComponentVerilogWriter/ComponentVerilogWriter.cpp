@@ -130,8 +130,6 @@ void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStrea
 
 	if (currentInsta)
 	{
-		parameters.append(*currentInsta->getParameters());
-
 		foreach(QSharedPointer<ModuleParameter> parameter, *currentInsta->getModuleParameters())
 		{
 			parameters.append(parameter);

@@ -102,42 +102,18 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
 
 	QStringList assignments;
 
-	QList<QSharedPointer<Parameter> > parameters = QList<QSharedPointer<Parameter> >(*instance_->referencedComponent_->getParameters());
-	parameters.append(*instance_->componentInstantiation_->getParameters());
-
-	foreach(QSharedPointer<ModuleParameter> parameter, *instance_->componentInstantiation_->getModuleParameters())
-	{
-		parameters.append(parameter);
-	}
-
-	if (parameters.count() < 1)
+	if (instance_->parameters.count() < 1)
 	{
 		return "";
 	}
 
-	foreach(QSharedPointer<Parameter> parameter, parameters)
+	foreach(QSharedPointer<Parameter> parameter, instance_->parameters)
 	{
-		if (parameter->getValueResolve() != "user")
-		{
-			continue;
-		}
-
-		QString paraValue = parameter->getValue();
-
-		foreach(QSharedPointer<ConfigurableElementValue> cev, *instance_->componentInstance_->getConfigurableElementValues())
-		{
-			if (cev->getReferenceId() == parameter->getValueId())
-			{
-				paraValue = cev->getConfigurableValue();
-				break;
-			}
-		}
-
 		QString assignment(indentation().repeated(2) + ".<parameter>(<value>)");
 		assignment.replace("<parameter>", 
 			expressionParser_->parseExpression(parameter->name()).leftJustified(20));
 		assignment.replace("<value>", 
-			expressionFormatter_->formatReferringExpression(paraValue));
+			expressionFormatter_->formatReferringExpression(parameter->getValue()));
 		assignments.append(assignment);
 	}
 
@@ -232,9 +208,11 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QString portName) cons
 {
     QString assignment;
 
+	// If an tied value is assigned to a physical port, it shall be used.
     if (instance_->tieOffAssignments_.contains(portName))
     {
-        assignment = expressionParser_->parseExpression(instance_->tieOffAssignments_.value(portName));
+		// Format its value as needed.
+        assignment = expressionFormatter_->formatReferringExpression(instance_->tieOffAssignments_.value(portName));
         if (assignment.isEmpty())
         {
             assignment = " ";
@@ -242,39 +220,43 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QString portName) cons
     }
     else
     {
+		// If there is no tied value for the port, seek for a port assignment.
 		QSharedPointer<GenerationPortAssignMent> gab = instance_->portAssignments_.value(portName);
 		
-		if (gab)
+		// If none found, return empty.
+		if (!gab)
 		{
-			assignment = "<signalName>[<left>:<right>]";
+			return "";
+		}
 
-			QPair<QString,QString> connectionBounds = gab->bounds;
+		assignment = "<signalName>[<left>:<right>]";
 
-			if (connectionBounds.first.isEmpty() || connectionBounds.second.isEmpty())
-			{
-				assignment = "<signalName>";
-			}
-			else
-			{
-				assignment.replace("<left>", connectionBounds.first);
-				assignment.replace("<right>", connectionBounds.second);
-			}
+		QPair<QString,QString> connectionBounds = gab->bounds;
 
-			if (gab->wire)
-			{
-				if (gab->wire->ports.size() > 1)
-				{
-					assignment.replace("<signalName>", gab->wire->name);
-				}
-				else
-				{
-					return "";
-				}
-			}
-			else
-			{
-				assignment.replace("<signalName>", gab->otherName);
-			}
+		// Use bounds only if neither of them is empty.
+		if (connectionBounds.first.isEmpty() || connectionBounds.second.isEmpty())
+		{
+			assignment = "<signalName>";
+		}
+		else
+		{
+			assignment.replace("<left>", connectionBounds.first);
+			assignment.replace("<right>", connectionBounds.second);
+		}
+
+		// Connect the physical port to either corresponding top port or a wire.
+		// If neither is available, return empty.
+		if (!gab->topPortName.isEmpty())
+		{
+			assignment.replace("<signalName>", gab->topPortName);
+		}
+		else if (gab->wire && gab->wire->ports.size() > 1)
+		{
+			assignment.replace("<signalName>", gab->wire->name);
+		}
+		else
+		{
+			return "";
 		}
     }
 

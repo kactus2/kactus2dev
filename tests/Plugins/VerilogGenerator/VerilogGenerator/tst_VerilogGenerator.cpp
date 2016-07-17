@@ -1417,7 +1417,7 @@ void tst_VerilogGenerator::testAdhocTieOffInComponentInstance()
     verifyOutputContains(
         "        // These ports are not in any interface\n"
         "        .defaultTieOff       (20),\n"
-        "        .expressionTieOff    (1),\n"
+        "        .expressionTieOff    (expName - 4),\n"
         "        .n/aTieOff           (abc),\n"
         "        .numberedTieOff      (12),\n"
         "        .oneTieOff           (1),\n"

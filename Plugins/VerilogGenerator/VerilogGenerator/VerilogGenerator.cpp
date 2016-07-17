@@ -84,12 +84,13 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 
     initializeWriters();
 
-	HDLParser parser(library_,component,topComponentView,design,designConf);
-
     if (design_ && designConf_)
     {
-		parser.parseComponentInstances();
+		// Parse the design, using the provided configuration and the top component.
+		HDLParser parser(library_,component,topComponentView,design,designConf);
+		parser.parseDesign();
 
+		// Create instance writers for the instances, complete with expression parsers and formatters.
 		foreach(QSharedPointer<GenerationInstance> gi, parser.instances_)
 		{
 			QSharedPointer<ComponentInstance> instance = gi->componentInstance_;
@@ -104,6 +105,7 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 			instanceWriters_.insert(instance->getInstanceName(), instanceWriter);
 		}
 
+		// Create wire writers for the interconnections
 		QList<QSharedPointer<GenerationInterconnection> > usedGic;
 		foreach (QSharedPointer<GenerationInterconnection> gic, parser.interConnections_)
 		{
@@ -127,6 +129,7 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 			usedGic.append(gic);
 		}
 
+		// Create wire writers for the ad hoc connections as well.
 		QList<QSharedPointer<GenerationWire> > usedWire;
 		foreach (QSharedPointer<GenerationAdHoc> adHoc, parser.adHocs_)
 		{
@@ -145,7 +148,7 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 			usedWire.append(gw);
 		}
 
-
+		// Create tied value writers for hierarchical tied values,
 		QMap<QString,QString>::iterator iter2 = parser.portTiedValues_.begin();
 		QMap<QString,QString>::iterator end2 = parser.portTiedValues_.end();
 		for (;iter2 != end2; ++iter2)
@@ -153,6 +156,7 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 			tiedValueWriter_->addPortTiedValue(iter2.key(), iter2.value());
 		}
 
+		// Finally, add them to the top writer in desired order.
 		addWritersToTopInDesiredOrder();       
     }
 	else

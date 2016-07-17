@@ -20,15 +20,12 @@ class ComponentInstance;
 class ComponentInstantiation;
 class View;
 class BusInterface;
-
-struct GenerationPort
-{
-	//QPair<QString,QString> bounds;
-};
+class Port;
+class Parameter;
 
 struct GenerationWire
 {
-	QList<QSharedPointer<GenerationPort> > ports;
+	QList<QSharedPointer<Port> > ports;
 	QPair<QString,QString> bounds;
 	QString name;
 };
@@ -51,10 +48,10 @@ struct GenerationInterconnection
 
 struct GenerationPortAssignMent
 {
-	QSharedPointer<GenerationPort> port;
+	QSharedPointer<Port> port;
 	QPair<QString,QString> bounds;
 	QSharedPointer<GenerationWire> wire;
-	QString otherName;
+	QString topPortName;
 };
 
 struct GenerationInstance
@@ -79,6 +76,8 @@ struct GenerationInstance
 	QMap<QString,QString> tieOffAssignments_;
 
 	QSharedPointer<View> activeView_;
+
+	QList<QSharedPointer<Parameter> > parameters;
 };
 
 #endif // VERILOGGENERATORCOMMON_H

@@ -45,20 +45,6 @@ public:
 
     //! The destructor.
     ~HDLParser();
-
-    /*!
-     *  Parses a given component for generation.
-     *
-     *      @param [in] component           The component to parse for generation.
-     *      @param [in] topComponentView    The component view to parse for generation.
-	 *      @param [in] design              The design to parse for generation.
-	 *      @param [in] designConf              The design configuration to parse for generation.
-     *
-     *      @remark If parse() is not called before generate(), nothing is generated.
-     */
-    /*QList<QSharedPointer<GenerationInstance> > parse(QSharedPointer<Component> component, QSharedPointer<View> topComponentView, 
-        QString const& outputPath = QString(""), QSharedPointer<Design> design = QSharedPointer<Design>(),
-		QSharedPointer<DesignConfiguration> designConf = QSharedPointer<DesignConfiguration>());*/
 	
     /*!
 	*   Returns an expression parser for the given top component.
@@ -78,18 +64,7 @@ public:
 	QSharedPointer<ExpressionParser> createParserForComponent(QSharedPointer<Component> targetComponent,
 		QSharedPointer<View> targetView, QString instanceName);
 
-    /*!
-     *  Parses all the component instances in the design.
-     */
-    void parseComponentInstances();
-
-	void parseHierarchicallAdhocs();
-
-	bool connectTieOff(QString tieOff, QSharedPointer<Port> port, DirectionTypes::Direction requiredDirection, QMap<QString, QString>& tiedValuesMap);
-
-	void assignInternalAdHocs(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance, QSharedPointer<GenerationInstance> gi);
-
-	void findInternalAdhocs();
+	void parseDesign();
 
 	QList<QSharedPointer<GenerationInstance> > instances_;
 	QList<QSharedPointer<GenerationInterconnection> > interConnections_;
@@ -110,19 +85,19 @@ private:
     HDLParser& operator=(HDLParser const& rhs);
 
     /*!
-     *  Initializes writers for parsing.
+     *  Parses all the component instances in the design.
      */
-	void initializeWriters();
+    void parseComponentInstances();
 
-    /*!
-     *  Finds the logical bounds for a port map in an instance.
-     *
-     *      @param [in] instanceName    The name of the instance.
-     *      @param [in] portMap         The port map for the which to find the logical bounds.
-     *
-     *      @return The port bounds for the port map in an instance.
-     */
-    QPair<QString, QString> logicalPortBoundsInInstance(QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<PortMap> portMap) const;
+	void findInterconnections();
+
+	void assignInterconnections();
+
+	void findInternalAdhocs();
+
+	void assignInternalAdHocs();
+
+	void parseHierarchicallAdhocs();
 
     /*!
      *  Finds the physical bounds for a port map in an instance.
@@ -135,13 +110,16 @@ private:
     QPair<QString, QString> physicalPortBoundsInInstance(QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<Port> port) const;
 
     /*!
-     *  Finds the component referenced in the design by a given name.
+     *  Finds the logical bounds for a port map in an instance.
      *
-     *      @param [in] instanceName   The name of the instance referencing a component.
+     *      @param [in] instanceName    The name of the instance.
+     *      @param [in] portMap         The port map for the which to find the logical bounds.
      *
-     *      @return The component referenced by the instance.
+     *      @return The port bounds for the port map in an instance.
      */
-    QSharedPointer<Component> getComponentForInstance(QString const& instanceName) const;
+	QPair<QString, QString> logicalPortBoundsInInstance(QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<PortMap> portMap) const;
+
+	bool connectTieOff(QString tieOff, QSharedPointer<Port> port, DirectionTypes::Direction requiredDirection, QMap<QString, QString>& tiedValuesMap);
 
     //-----------------------------------------------------------------------------
     // Data.
