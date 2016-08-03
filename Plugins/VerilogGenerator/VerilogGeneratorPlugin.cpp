@@ -226,10 +226,14 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossib
 bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
 	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const
 {
-    if (!possibleViews->isEmpty())
-    {
-        configuration_->setActiveView(possibleViews->first());
+    if (possibleViews->isEmpty())
+	{
+		utility_->printError(tr("No usable views in the component for the generation: Hierarchical views"
+			" are only usable for design generation and flat views for component generation."));
+		return false;
 	}
+
+	configuration_->setActiveView(possibleViews->first());
 
     configuration_->setOutputPath(defaultOutputPath());
     configuration_->setSaveToFileset(outputFileAndViewShouldBeAddedToTopComponent());
