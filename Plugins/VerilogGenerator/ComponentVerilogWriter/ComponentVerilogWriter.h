@@ -63,6 +63,11 @@ public:
     virtual void write(QTextStream& outputStream) const;
 	
 	/*! 
+	 *      Sets implementation module writer that will write the module implementation.
+	 */
+	void setImplementation( QSharedPointer<TextBodyWriter> implementation );
+	
+	/*! 
 	 *      Sets post module writer that will write the post module.
 	 */
 	void setPostModule( QSharedPointer<TextBodyWriter> postModule );
@@ -186,6 +191,9 @@ private:
 
     //! The formatter for expressions.
 	QSharedPointer<ExpressionFormatter> formatter_;
+
+	//! The implementation, which is essentially the user-written things in the module.
+	QSharedPointer<TextBodyWriter> implementation_;
 
 	//! The extra stuff that comes after the written module.
 	QSharedPointer<TextBodyWriter> postModule_;

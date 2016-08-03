@@ -67,6 +67,14 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
     writeModuleDeclaration(outputStream);
 
     writeInternalWiresAndComponentInstances(outputStream);
+
+	if ( implementation_ )
+	{
+		// If an implementation exists, there must be a warning about overwriting as well.
+		outputStream << "// " << VerilogSyntax::TAG_OVERRIDE << endl;
+
+		implementation_->write(outputStream);
+	}
 		
 	writeModuleEnd(outputStream);
 
@@ -74,6 +82,14 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 	{
 		postModule_->write(outputStream);
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter::setImplementation
+//-----------------------------------------------------------------------------
+void ComponentVerilogWriter::setImplementation( QSharedPointer<TextBodyWriter> implementation )
+{
+	implementation_ = implementation;
 }
 
 //-----------------------------------------------------------------------------

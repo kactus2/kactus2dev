@@ -107,6 +107,8 @@ private slots:
 	void testImplementationSelectionWithNoModuleEnd();
 
 	void testGenerationWithImplementation();
+	void testGenerationWithImplementationWithTag();
+	void testGenerationWithImplementationWithPostModule();
 
 private:
 
@@ -265,7 +267,6 @@ void tst_VerilogGenerator::testTopLevelComponent()
         ");\n"
         "\n"
 		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
-		"\n"
         "endmodule\n"
         ));
 }
@@ -294,7 +295,6 @@ void tst_VerilogGenerator::testTopLevelComponentExpressions()
         ");\n"
         "\n"
 		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
-		"\n"
         "endmodule\n"
         ));
 }
@@ -405,7 +405,6 @@ void tst_VerilogGenerator::testConsecutiveParseCalls()
     verifyOutputContains(QString("module Override();\n"
         "\n"
 		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
-		"\n"
         "endmodule\n"));
     QVERIFY(!output_.contains("module TestComponent"));
 }
@@ -2669,6 +2668,66 @@ void tst_VerilogGenerator::testImplementationSelectionWithNoModuleEnd()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testGenerationWithImplementation()
 {
+	QString contentBefore(
+		"module TestComponent #(\n"
+		"    parameter                              dataWidth        = 8,\n"
+		"    parameter                              freq             = 100000\n"
+		") (\n"
+		"    // These ports are not in any interface\n"         
+		"    input                               clk,\n"
+		"    input          [7:0]                dataIn,\n"
+		"    input                               rst_n,\n"
+		"    output         [7:0]                dataOut\n"
+		");\n"
+		"assign adr_slave_1 = adr_master;\n"
+		"assign cyc_slave_1 = cyc_master;\n"
+		"endmodule\n"
+		);
+
+	QFile existingFile("./generatorOutput.v");
+
+	existingFile.open(QIODevice::WriteOnly);
+	QTextStream outputStream(&existingFile);
+
+	outputStream << contentBefore;
+
+	existingFile.close();
+
+	addPort("clk", 1, DirectionTypes::IN, topComponent_);
+	addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
+	addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
+	addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
+	addModuleParameter("dataWidth", "8");
+	addModuleParameter("freq", "100000");
+
+	runGenerator(false);
+
+	QString contentAfter(
+		"module TestComponent #(\n"
+		"    parameter                              dataWidth        = 8,\n"
+		"    parameter                              freq             = 100000\n"
+		") (\n"
+		"    // These ports are not in any interface\n"         
+		"    input                               clk,\n"
+		"    input          [7:0]                dataIn,\n"
+		"    input                               rst_n,\n"
+		"    output         [7:0]                dataOut\n"
+		");\n"
+		"\n"
+		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
+		"assign adr_slave_1 = adr_master;\n"
+		"assign cyc_slave_1 = cyc_master;\n"
+		"endmodule\n"
+		);
+
+	verifyOutputContains(contentAfter);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testGenerationWithImplementationWithTag()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testGenerationWithImplementationWithTag()
+{
 	QString content(
 		"module TestComponent #(\n"
 		"    parameter                              dataWidth        = 8,\n"
@@ -2685,6 +2744,52 @@ void tst_VerilogGenerator::testGenerationWithImplementation()
 		"foo\n"
 		"bar\n"
 		"endmodule\n"
+		);
+
+	QFile existingFile("./generatorOutput.v");
+
+	existingFile.open(QIODevice::WriteOnly);
+	QTextStream outputStream(&existingFile);
+
+	outputStream << content;
+
+	existingFile.close();
+
+	addPort("clk", 1, DirectionTypes::IN, topComponent_);
+	addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
+	addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
+	addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
+	addModuleParameter("dataWidth", "8");
+	addModuleParameter("freq", "100000");
+
+	runGenerator(false);
+
+	verifyOutputContains(content);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testGenerationWithImplementationWithPostModule()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testGenerationWithImplementationWithPostModule()
+{
+	QString content(
+		"module TestComponent #(\n"
+		"    parameter                              dataWidth        = 8,\n"
+		"    parameter                              freq             = 100000\n"
+		") (\n"
+		"    // These ports are not in any interface\n"         
+		"    input                               clk,\n"
+		"    input          [7:0]                dataIn,\n"
+		"    input                               rst_n,\n"
+		"    output         [7:0]                dataOut\n"
+		");\n"
+		"\n"
+		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
+		"foo\n"
+		"bar\n"
+		"endmodule\n"
+		"additional stuff\n"
+		"more stuff"
 		);
 
 	QFile existingFile("./generatorOutput.v");

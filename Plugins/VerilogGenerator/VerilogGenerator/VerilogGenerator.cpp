@@ -171,13 +171,9 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 			return;
 		}
 
-		// Must add a warning before the existing implementation.
-		QSharedPointer<CommentWriter> tagWriter(new CommentWriter(VerilogSyntax::TAG_OVERRIDE));
-		topWriter_->add(tagWriter);
-
 		// Next comes the implementation.
 		QSharedPointer<TextBodyWriter> implementationWriter(new TextBodyWriter(implementation));
-		topWriter_->add(implementationWriter);
+		topWriter_->setImplementation(implementationWriter);
 
 		// Also write any stuff that comes after the actual module.
 		QSharedPointer<TextBodyWriter> postModuleWriter(new TextBodyWriter(postModule));
@@ -203,7 +199,7 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 	// Must be able to open it for reading.
 	if (!outputFile.open(QIODevice::ReadOnly))
 	{
-		emit reportError(tr("Could not open output file for reading: %1").arg(outputPath));
+		emit reportError(tr("The output file exists, but could not open it for reading. The path: %1").arg(outputPath));
 		return false;
 	}
 
@@ -224,7 +220,7 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 	// Must have it to proceed.
 	if (moduleDeclarationBeginIndex == -1)
 	{
-		emit reportError(tr("Could not find module header start from the output file!"));
+		emit reportError(tr("Could not find module header start from the output file."));
 		return false;
 	}
 
@@ -234,12 +230,25 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 	// Must have it to proceed.
 	if (moduleDeclarationEndIndex == -1)
 	{
-		emit reportError(tr("Could not find module header end from the output file!"));
+		emit reportError(tr("Could not find module header end from the output file!"));;
 		return false;
 	}
 
-	// End of the header is the beginning of the implementation.
-	int implementationStart = moduleDeclarationEndIndex + 2;
+	// The end of the override tag line is the beginning of the implementation.
+	int implementationStart = fileContent.indexOf(VerilogSyntax::TAG_OVERRIDE);
+
+	if (implementationStart == -1)
+	{
+		// If does not exist, the end of the header is the beginning of the implementation.
+		implementationStart = moduleDeclarationEndIndex + 3;
+	}
+	else
+	{
+		// Else we should seek the position where tag line ends.
+		implementationStart += VerilogSyntax::TAG_OVERRIDE.size() + 1;
+	}
+
+	// The end of the module is the end of the implementation.
 	int implementationEnd = fileContent.indexOf(VerilogSyntax::MODULE_END);
 
 	// The module must end some where.
@@ -252,12 +261,6 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 	// Rip the implementation once detected.
 	int implementationLength = implementationEnd - implementationStart;
 	implementation = fileContent.mid(implementationStart,implementationLength);
-
-	// Remove the tag, if it exists.
-	implementation.remove("// " + VerilogSyntax::TAG_OVERRIDE);
-
-	// Also trim away extra white space.
-	implementation = implementation.trimmed();
 
 	// Then take all the text that comes after the module, just in case.
 	int postStart = implementationEnd + 9;
