@@ -54,7 +54,8 @@ private slots:
 protected:
 
 	virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
-		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const;
+		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
+		QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets);
 
     virtual QSharedPointer<GeneratorConfiguration> getConfiguration();
 
@@ -87,7 +88,7 @@ private:
 // Function: tst_VerilogGenerator::tst_VerilogGenerator()
 //-----------------------------------------------------------------------------
 tst_VerilogGenerator::tst_VerilogGenerator(): library_(this), utilityMock_(&library_, 0, "", this), plugin_(),
-	activeWindow_(0), configuration_(new GeneratorConfiguration())
+	activeWindow_(0)
 {
 
 }
@@ -114,7 +115,6 @@ void tst_VerilogGenerator::cleanupTestCase()
 void tst_VerilogGenerator::init()
 {
     library_.clear();
-    configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration());
 }
 
 //-----------------------------------------------------------------------------
@@ -278,12 +278,16 @@ void tst_VerilogGenerator::testRefenecedDesignConfigurationViewIsPossible()
 // Function: tst_VerilogGenerator::couldConfigure()
 //-----------------------------------------------------------------------------
 bool tst_VerilogGenerator::couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
-	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const
+	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
+	QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets)
 {
-    if (!possibleViews->isEmpty())
-    {
-        configuration_->setActiveView(possibleViews->first());
-    }
+	configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration(
+		possibleViews,possibleInstantiations,possibleFileSets));
+
+	if (!possibleViews->isEmpty())
+	{
+		configuration_->setView(possibleViews->first());
+	}
 
     return true;
 }
@@ -295,8 +299,8 @@ QSharedPointer<GeneratorConfiguration> tst_VerilogGenerator::getConfiguration()
 {
     configuration_->setSaveToFileset(true);
 	configuration_->setOutputPath("test.v");
-	configuration_->setFileSetRef("testFileSet");
-	configuration_->setInstantiation(QSharedPointer<ComponentInstantiation>(new ComponentInstantiation));
+	configuration_->setFileSet("testFileSet");
+	configuration_->setInstantiation("testInstantiation");
 
     return configuration_;
 }

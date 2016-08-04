@@ -28,13 +28,12 @@ class ViewSelectionWidget : public QWidget
 public:
 
 	//! The constructor.
-	ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> configuration,
-		QSharedPointer<QList<QSharedPointer<View> > > views, 
-		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations);
+	ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> configuration, QString targetLanguage);
 
 	//! The destructor.
 	~ViewSelectionWidget();
 
+	// Returns true, if the selections are fine by this widget. Will also update texts if needed.
 	bool validSelections() const;
 
 private slots:
@@ -46,6 +45,8 @@ private slots:
 	void onInstantiationInserted(QString const& selectedInstantiationName);
 
 	void onInstantiationChanged(QString const& selectedInstantiationName);
+
+	void setLanguage(QString selectedLanguage);
 
 	void onFileSetChanged(QString const& fileSetName);
 
@@ -60,22 +61,31 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+	// The "model" for the widget.
 	QSharedPointer<GeneratorConfiguration> configuration_;
 
-	QMap<QString,QSharedPointer<View> > views_;
+	// The desired language for the component instantiation.
+	QString targetLanguage_;
 
-	QMap<QString,QSharedPointer<ComponentInstantiation> > instantiations_;
-
+	// The combobox to select the desired view.
 	QComboBox* viewSelection_;
 
+	// The group box for file set selection
 	QGroupBox* addToFileset_;
 
+	// The combobox to select the desired component instantiation.
 	QComboBox* instantiationSelection_;
 
+	// The label informing the known language of the currently select instantiation.
+	QLabel* instantiationLanguage_;
+
+	// The combobox to select the desired component instantiation.
 	QComboBox* fileSetSelection_;
 
+	// The label to give warnings about instantiation selection.
 	QLabel* instantiationWarningLabel_;
 
+	// The label to give warnings about file set selection.
 	QLabel* fileSetWarningLabel_;
 };
 

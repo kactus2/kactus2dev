@@ -28,6 +28,7 @@ class GeneratorConfiguration;
 class Document;
 class View;
 class ComponentInstantiation;
+class FileSet;
 
 //-----------------------------------------------------------------------------
 //! Plugin for structural verilog generation.
@@ -142,7 +143,8 @@ protected:
      *      @return True, if configuration was successful, otherwise false.
      */
     virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
-		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const;
+		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
+		QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets);
 
     /*!
      *  Gets the configuration for the generation.
@@ -197,8 +199,7 @@ private:
 	 *      @param [in] fileSetName		The name of the file set, where the file will be appended to.
      *
      */
-    void addGeneratedFileToFileSet(QSharedPointer<View> activeView,
-		QSharedPointer<ComponentInstantiation> instantiation, QString fileSetName) const;
+    void addGeneratedFileToFileSet(QSharedPointer<GeneratorConfiguration> configuration) const;
 
     //! Saves the changes made to the top component.
     void saveChanges() const;

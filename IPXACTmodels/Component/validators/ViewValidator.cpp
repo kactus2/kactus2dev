@@ -106,7 +106,7 @@ bool ViewValidator::hasValidEnvironmentIdentifiers(QSharedPointer<View> view) co
     }
     return true;
 }
-#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: ViewValidator::isValidEnvId()
 //-----------------------------------------------------------------------------

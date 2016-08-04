@@ -36,10 +36,8 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::VerilogGeneratorPlugin()
 //-----------------------------------------------------------------------------
-VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0), utility_(0), topComponent_(0), outputFile_(),
-    configuration_(new GeneratorConfiguration())
+VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0), utility_(0), topComponent_(0), outputFile_()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -47,7 +45,6 @@ VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0), utility_(0), topCo
 //-----------------------------------------------------------------------------
 VerilogGeneratorPlugin::~VerilogGeneratorPlugin()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -148,7 +145,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
 	// Try to configure the generation, giving possible views and instantiations as parameters.
     if (couldConfigure(findPossibleViews(libComp, libDes, libDesConf),
-		topComponent_->getComponentInstantiations()))
+		topComponent_->getComponentInstantiations(), topComponent_->getFileSets()))
     {
 		// Get the resulting configuration, it is obtained with this way to make it compatible with the tests.
         QSharedPointer<GeneratorConfiguration> configuration = getConfiguration();
@@ -161,8 +158,10 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 		VerilogGenerator generator(utility->getLibraryInterface());
 		connect(&generator, SIGNAL(reportError(const QString&)), 
 			this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
-        generator.parse(topComponent_, configuration->getActiveView(), outputFile_,
+
+        generator.parse(topComponent_, configuration->getView(), outputFile_,
 			libDes.dynamicCast<Design>(), libDesConf.dynamicCast<DesignConfiguration>());
+
 		generator.generate(outputFile_, getVersion(), utility_->getKactusVersion());
 
         utility_->printInfo(tr("Finished writing file %1.").arg(outputFile_));
@@ -170,8 +169,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 		// If so desired in the configuration, the resulting file will be added to the file set.
         if (configuration->getSaveToFileset())
         {
-            addGeneratedFileToFileSet(configuration->getActiveView(), configuration->getInstantiation(), 
-				configuration->getFileSetRef());
+            addGeneratedFileToFileSet(configuration);
             saveChanges();
         }
 
@@ -192,7 +190,7 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossib
     QSharedPointer<Component> topComponent = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration> designConfig = libDesConf.dynamicCast<DesignConfiguration>();
 
-    QStringList viewNames;
+	// If the generation is targeted to a design, return views referring to the design or a design configuration.
     if (designConfig && libDes && designConfig->getDesignRef() == libDes->getVlnv())
     {
         return findReferencingViews(topComponent, designConfig->getVlnv());
@@ -201,14 +199,12 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossib
     {
         return findReferencingViews(topComponent, libDes->getVlnv());
     }
-    else
-    {
-        viewNames = topComponent->getFlatViews();
-	}
 
+	// If the generation is targeted to a component, return the flat views of the component.
 	QSharedPointer<QList<QSharedPointer<View> > > views = QSharedPointer<QList<QSharedPointer<View> > >
 		(new QList<QSharedPointer<View> >);
 
+	// In practice, go through each view, and if it is not hierarchical, append to the list.
 	foreach (QSharedPointer<View> view, *topComponent->getViews())
 	{
 		if (!view->isHierarchical())
@@ -224,7 +220,8 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossib
 // Function: VerilogGeneratorPlugin::couldConfigure()
 //-----------------------------------------------------------------------------
 bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
-	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations) const
+	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
+	QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets)
 {
     if (possibleViews->isEmpty())
 	{
@@ -233,12 +230,15 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 		return false;
 	}
 
-	configuration_->setActiveView(possibleViews->first());
+	configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration(
+		possibleViews,possibleInstantiations,possibleFileSets));
+
+	configuration_->setView(possibleViews->first());
 
     configuration_->setOutputPath(defaultOutputPath());
     configuration_->setSaveToFileset(outputFileAndViewShouldBeAddedToTopComponent());
 
-    GeneratorConfigurationDialog dialog(configuration_, possibleViews, possibleInstantiations, utility_->getParentWidget());
+    GeneratorConfigurationDialog dialog(configuration_, "verilog", utility_->getParentWidget());
     return dialog.exec() == QDialog::Accepted;
 }
 
@@ -293,51 +293,45 @@ QString VerilogGeneratorPlugin::relativePathFromXmlToFile(QString const& filePat
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::addFileToFileSet()
 //-----------------------------------------------------------------------------
-void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<View> activeView,
-	QSharedPointer<ComponentInstantiation> instantiation,
-	QString fileSetName) const
+void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<GeneratorConfiguration> configuration) const
 {
-	// Must have name for the file set.
-	if (fileSetName.isEmpty())
+	// The view and the names of the instantiation and file set are assumed to exist.
+	Q_ASSERT (configuration->getView() && !configuration->getFileSetName().isEmpty() && 
+		!configuration->getInstantiationName().isEmpty());
+
+	QSharedPointer<View> activeView = configuration->getView();
+	QSharedPointer<ComponentInstantiation> instantiation = configuration->getInstantiation();
+	QSharedPointer<FileSet> fileSet = configuration->getFileSet();
+	
+	// If the component instantiation does not exist, create a new one with the same name.
+	if (!instantiation)
 	{
-		utility_->printError("Tried to add generated verilog file to a file set with no name!");
-		return;
+		instantiation = QSharedPointer<ComponentInstantiation>(new ComponentInstantiation);
+		instantiation->setName(configuration->getInstantiationName());
+		topComponent_->getComponentInstantiations()->append(instantiation);
 	}
 
-	// The view and the instantiation are assumed to exist.
-	Q_ASSERT (activeView && instantiation);
-
-	// Need path for the file.
-	QString filePath = relativePathFromXmlToFile(outputFile_);
-
-	// Connect the file set name to an existing file set.
-	QSharedPointer<FileSet> fileSet = topComponent_->getFileSet(fileSetName);
-
-	// If none exist, create a new one with the same name.
+	// If the file set does not exist, create a new one with the same name.
 	if (!fileSet)
 	{
 		fileSet = QSharedPointer<FileSet>(new FileSet);
-		fileSet->setName(fileSetName);
+		fileSet->setName(configuration->getFileSetName());
 		topComponent_->getFileSets()->append(fileSet);
 	}
 
-	// Add file to the file set.
+	// Need path for the file.
+	QString filePath = relativePathFromXmlToFile(outputFile_);
+	// Add the new file to the file set.
 	QSettings settings;
 	fileSet->addFile(filePath, settings);
 
-	// Make sure that the language is verilog.
+	// Make sure that the instantiation language is verilog.
 	instantiation->setLanguage("verilog");
 
 	// Make sure that the instantiation refers to the file set.
 	if (!instantiation->getFileSetReferences()->contains(fileSet->name()))
 	{
 		instantiation->getFileSetReferences()->append(fileSet->name());
-	}
-
-	// Make sure that the instantiation is within the component.
-	if (!topComponent_->getComponentInstantiations()->contains(instantiation))
-	{
-		topComponent_->getComponentInstantiations()->append(instantiation);
 	}
 
 	// Make sure that the view refers to component instantiation.

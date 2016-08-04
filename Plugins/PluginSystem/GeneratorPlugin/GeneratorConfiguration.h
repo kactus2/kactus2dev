@@ -13,10 +13,12 @@
 #define GENERATORCONFIGURATION_H
 
 #include <QString>
+#include <QMap>
 #include <QSharedPointer>
 
 class View;
 class ComponentInstantiation;
+class FileSet;
 
 //-----------------------------------------------------------------------------
 //! Container class for generator configuration.
@@ -26,52 +28,89 @@ class GeneratorConfiguration
 public:
 
 	//! The constructor.
-	GeneratorConfiguration();
+	GeneratorConfiguration(
+		QSharedPointer<QList<QSharedPointer<View> > > views, 
+		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, 
+		QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets);
 
 	//! The destructor.
 	~GeneratorConfiguration();
-    
+	
     /*!
-     *  Sets the active view for the top component in generation.
+     *  Gets the names of the possible views .
+     */
+	QStringList viewNames() const;
+	
+    /*!
+     *  Gets the names of the possible component instantiations.
+     */
+	QStringList instantiationNames() const;
+	
+    /*!
+     *  Gets the names of the file sets.
+     */
+	QSharedPointer<QStringList> fileSetNames() const;
+
+    /*!
+     *  Sets the view for the top component in generation.
      *
      *      @param [in] view   The active view.
-     */
-    void setActiveView(QSharedPointer<View> view);
+	 */
+	void setView(QSharedPointer<View> view);
+
+    /*!
+     *  Sets the view for the top component in generation, if it exists.
+     *
+	 *      @param [in] viewName   The name of the active view.
+	 *
+	 *      @return The view, if a view by name viewName exists, else null.
+	 */
+    QSharedPointer<View> setView(QString viewName);
 
     /*!
      *  Gets the active view for the top component.
      *
      *      @return The active view.
      */
-	QSharedPointer<View> getActiveView() const;
+	QSharedPointer<View> getView() const;
 	
     /*!
      *  Sets the component instantiation for the active view.
      *
-     *      @param [in] instantiation   The ComponentInstantiation.
-     */
-	void setInstantiation(QSharedPointer<ComponentInstantiation> instantiation);
+	 *      @param [in] instantiation   The ComponentInstantiation.
+
+	 *      @return True, if the instantiation exists, else false.
+	 */
+	bool setInstantiation(QString name);
 	
     /*!
-     *  Gets the component instantiation for the active view.
-     *
-     *      @return The ComponentInstantiation.
+     *  Gets the selected component instantiation.
      */
 	QSharedPointer<ComponentInstantiation> getInstantiation() const;
+
+    /*!
+     *  Gets the name of the selected instantiation, even if it does not exist.
+     */
+	QString getInstantiationName() const;
 
     /*!
      *  Sets the file set referred by the instantiation.
      *
      *      @param [in] fileSetRef   The fileSetRef to set.
      */
-    void setFileSetRef(QString const& fileSetRef);
-
+    bool setFileSet(QString const& fileSetRef);
+	
     /*!
      *  Gets the file set referred by the instantiation.
      *
      *      @return The fileSetRef.
      */
-    QString getFileSetRef() const;
+	QSharedPointer<FileSet> getFileSet() const;
+	
+    /*!
+     *  Gets the name of the selected file set, even if it does not exist.
+     */
+    QString getFileSetName() const;
 
     /*!
      *  Sets whether the output file should be added to top component file sets or not.
@@ -100,6 +139,11 @@ public:
      *      @return The path to output file.
      */
     QString getOutputPath() const;
+	
+    /*!
+     *  Gets the language of the selected instantiation, or empty string if none exists.
+     */
+	QString getCurrentLanguage() const;
 
 private:
 
@@ -110,14 +154,22 @@ private:
     //! The path for output file.
     QString outputPath_;
 
-    //! The active view of the top component.
-	QSharedPointer<View> activeView_;
+    //! The selected view.
+	QSharedPointer<View> view_;
+	//! The possible views, indexed by their names.
+	QMap<QString,QSharedPointer<View> > views_;
 
-	//! The component instantiation of the active view
+	//! The selected component instantiation and its name.
 	QSharedPointer<ComponentInstantiation> instantiation_;
+	QString instantiationName_;
+	//! The possible component instantiations, indexed by their names.
+	QMap<QString,QSharedPointer<ComponentInstantiation> > instantiations_;
 
-	//! Tthe file set referred by the instantiation.
+	//! The selected file set and its name.
+	QSharedPointer<FileSet> fileSet_;
 	QString fileSetRef_;
+	//! The possible file sets, indexed by their names.
+	QMap<QString,QSharedPointer<FileSet> > fileSets_;
 
     //! Flag for indicating if the output file should be saved to top component file sets.
     bool saveToFileset_;

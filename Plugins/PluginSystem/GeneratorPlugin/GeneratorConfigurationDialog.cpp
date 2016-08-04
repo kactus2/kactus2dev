@@ -28,15 +28,14 @@
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
 //-----------------------------------------------------------------------------
 GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration,
-	QSharedPointer<QList<QSharedPointer<View> > > views, 
-	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, QWidget *parent) : 
+	QString language, QWidget *parent) : 
 	QDialog(parent), 
     configuration_(configuration),
 	pathEditor_(new QLineEdit(this)),
-	viewSelection_(new ViewSelectionWidget(configuration, views, instantiations)),
+	viewSelection_(new ViewSelectionWidget(configuration, language)),
     generalWarningLabel_(new QLabel)
 {    
-    setWindowTitle(tr("Configure file generation"));
+    setWindowTitle(tr("Configure file generation for %1.").arg(language));
 
 	// Layout for path selection widgets.
     QHBoxLayout* pathSelectionLayout = new QHBoxLayout();
@@ -92,7 +91,7 @@ GeneratorConfigurationDialog::~GeneratorConfigurationDialog()
 void GeneratorConfigurationDialog::accept()
 {
 	// Must have path for a file. 
-    if (pathEditor_->text().isEmpty())
+    if (configuration_->getOutputPath().isEmpty())
 	{
 		generalWarningLabel_->setText("File path must be defined!");
 		return;
@@ -143,6 +142,5 @@ void GeneratorConfigurationDialog::onBrowse()
     if (!selectedPath.isEmpty())
     {
         pathEditor_->setText(selectedPath);
-        configuration_->setOutputPath(selectedPath);
     }
 }

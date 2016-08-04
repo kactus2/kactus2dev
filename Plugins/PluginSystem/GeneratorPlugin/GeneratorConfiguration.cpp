@@ -13,13 +13,33 @@
 
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
-GeneratorConfiguration::GeneratorConfiguration() : outputPath_(), activeView_(), saveToFileset_(false)
+GeneratorConfiguration::GeneratorConfiguration(
+	QSharedPointer<QList<QSharedPointer<View> > > views, 
+	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, 
+	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) :
+	outputPath_(), view_(), saveToFileset_(false)
 {
+	// Set names as the of views as items, but also track the view objects.
+	foreach (QSharedPointer<View> currentView, *views)
+	{
+		views_[currentView->name()] = currentView;
+	}
 
+	// Set names as the of instantiations as items, but also track the instantiation objects.
+	foreach (QSharedPointer<ComponentInstantiation> cimp, *instantiations)
+	{
+		instantiations_[cimp->name()] = cimp;
+	}
+
+	foreach (QSharedPointer<FileSet> fileSet, *fileSets)
+	{
+		fileSets_[fileSet->name()] = fileSet;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -27,53 +47,123 @@ GeneratorConfiguration::GeneratorConfiguration() : outputPath_(), activeView_(),
 //-----------------------------------------------------------------------------
 GeneratorConfiguration::~GeneratorConfiguration()
 {
+}
 
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::viewNames()
+//-----------------------------------------------------------------------------
+QStringList GeneratorConfiguration::viewNames() const
+{
+	return QStringList(views_.keys());
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::instantiationNames()
+//-----------------------------------------------------------------------------
+QStringList GeneratorConfiguration::instantiationNames() const
+{
+	return QStringList(instantiations_.keys());
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::fileSetNames()
+//-----------------------------------------------------------------------------
+QSharedPointer<QStringList> GeneratorConfiguration::fileSetNames() const
+{
+	if (instantiation_)
+	{
+		return instantiation_->getFileSetReferences();
+	}
+
+	return QSharedPointer<QStringList>(new QStringList);
 }
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::setActiveView()
 //-----------------------------------------------------------------------------
-void GeneratorConfiguration::setActiveView(QSharedPointer<View> view)
+void GeneratorConfiguration::setView(QSharedPointer<View> view)
 {
-    activeView_ = view;
-}
-
-//-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::getActiveView()
-//-----------------------------------------------------------------------------
-QSharedPointer<View> GeneratorConfiguration::getActiveView() const
-{
-    return activeView_;
+	view_ = view;
 }
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::setActiveView()
 //-----------------------------------------------------------------------------
-void GeneratorConfiguration::setInstantiation(QSharedPointer<ComponentInstantiation> instantiation)
+QSharedPointer<View> GeneratorConfiguration::setView(QString viewName)
 {
-	instantiation_ = instantiation;
+    view_ = views_[viewName];
+
+	return view_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::getActiveView()
+//-----------------------------------------------------------------------------
+QSharedPointer<View> GeneratorConfiguration::getView() const
+{
+    return view_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::setInstantiation()
+//-----------------------------------------------------------------------------
+bool GeneratorConfiguration::setInstantiation(QString name)
+{
+	instantiationName_ = name;
+
+	instantiation_ = instantiations_.value(name);
+
+	if (instantiation_)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getInstantiation()
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstantiation> GeneratorConfiguration::getInstantiation() const
 {
 	return instantiation_;
 }
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getInstantiationName()
+//-----------------------------------------------------------------------------
+QString GeneratorConfiguration::getInstantiationName() const
+{
+	return instantiationName_;
+}
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::setFileSetRef()
 //-----------------------------------------------------------------------------
-void GeneratorConfiguration::setFileSetRef(QString const& fileSetRef)
+bool GeneratorConfiguration::setFileSet(QString const& fileSetRef)
 {
+	fileSet_ = fileSets_[fileSetRef];
 	fileSetRef_ = fileSetRef;
+
+	if (fileSet_)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getFileSet()
+//-----------------------------------------------------------------------------
+QSharedPointer<FileSet> GeneratorConfiguration::getFileSet() const
+{
+	return fileSet_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::getFileSetRef()
 //-----------------------------------------------------------------------------
-QString GeneratorConfiguration::getFileSetRef() const
+QString GeneratorConfiguration::getFileSetName() const
 {
 	return fileSetRef_;
 }
@@ -108,4 +198,17 @@ void GeneratorConfiguration::setOutputPath(QString const& path)
 QString GeneratorConfiguration::getOutputPath() const
 {
     return outputPath_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getCurrentLanguage()
+//-----------------------------------------------------------------------------
+QString GeneratorConfiguration::getCurrentLanguage() const
+{
+	if (instantiation_)
+	{
+		return instantiation_->getLanguage();
+	}
+
+	return "";
 }

@@ -27,13 +27,14 @@
 //-----------------------------------------------------------------------------
 // Function: ViewSelectionWidget::ViewSelectionWidget()
 //-----------------------------------------------------------------------------
-ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> configuration,
-	QSharedPointer<QList<QSharedPointer<View> > > views, 
-	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations) : 
+ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> configuration, 
+	QString language) : 
 	configuration_(configuration),
+	targetLanguage_(language),
     viewSelection_(new QComboBox(this)),
     addToFileset_(new QGroupBox(tr("Add file to fileset"))),
-    instantiationSelection_(new QComboBox(this)),
+	instantiationSelection_(new QComboBox(this)),
+	instantiationLanguage_(new QLabel),
     fileSetSelection_(new QComboBox(this)),
     instantiationWarningLabel_(new QLabel),
     fileSetWarningLabel_(new QLabel)
@@ -42,36 +43,31 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> 
 	QFormLayout* viewSelectionLayout = new QFormLayout();
 	viewSelectionLayout->addRow(tr("Select view:"), viewSelection_);
 
-	// Set names as the of views as items, but also track the view objects.
-	foreach (QSharedPointer<View> currentView, *views)
-	{
-		views_[currentView->name()] = currentView;
-		viewSelection_->addItem(currentView->name());
-	}
+	// The names of available views are the view selection items.
+	viewSelection_->addItems(configuration_->viewNames());
 
 	// Checkable group box used to include generated file in the IP-XACT component.
 	addToFileset_->setCheckable(true);
 	addToFileset_->setChecked(configuration->getSaveToFileset() != 0);
 
 	// It will have its own sub layout.
-	QFormLayout* filesetLayout = new QFormLayout();
+	QVBoxLayout* filesetLayout = new QVBoxLayout();
 	addToFileset_->setLayout(filesetLayout);
 
-	// Widgets for choosing configuration instantiation and the file set.
-	filesetLayout->addRow(tr("Select component instantiation:"), instantiationSelection_);
-	filesetLayout->addRow(tr("Select file set:"), fileSetSelection_);
+	// Widgets for choosing the component instantiation and the file set.
+	QFormLayout* selectionLayout = new QFormLayout();
+	filesetLayout->addLayout(selectionLayout);
+	selectionLayout->addRow(tr("Select component instantiation:"), instantiationSelection_);
+	selectionLayout->addRow(tr("Language of the instantiation:"), instantiationLanguage_);
+	selectionLayout->addRow(tr("Select file set:"), fileSetSelection_);
 	// Both are editable, in case a custom entry is desired.
 	instantiationSelection_->setEditable(true);
 	fileSetSelection_->setEditable(true);
 
-	// Set names as the of instantiations as items, but also track the instantiation objects.
-	foreach (QSharedPointer<ComponentInstantiation> cimp, *instantiations)
-	{
-		instantiations_[cimp->name()] = cimp;
-		instantiationSelection_->addItem(cimp->name());
-	}
+	// The names of available component instantiations are items.
+	instantiationSelection_->addItems(configuration_->instantiationNames());
 
-	// Widgets for warning messages
+	// Widgets for warning messages.
 	filesetLayout->addWidget(instantiationWarningLabel_);
 	filesetLayout->addWidget(fileSetWarningLabel_);
 
@@ -99,6 +95,7 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> 
 
 	// Finally, evaluate the fields.
 	onViewChanged(viewSelection_->currentText());
+	onInstantiationInserted(instantiationSelection_->currentText());
 	onInstantiationChanged(instantiationSelection_->currentText());
 }
 
@@ -107,7 +104,6 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> 
 //-----------------------------------------------------------------------------
 ViewSelectionWidget::~ViewSelectionWidget()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -115,15 +111,18 @@ ViewSelectionWidget::~ViewSelectionWidget()
 //-----------------------------------------------------------------------------
 bool ViewSelectionWidget::validSelections() const
 {
+	// If the file is not saved to a file set, no selections needed.
 	if (configuration_->getSaveToFileset())
 	{
-		if (!configuration_->getInstantiation() || instantiationSelection_->currentText().isEmpty())
+		// If the configuration is clueless about the instantiation name, that is bad.
+		if (configuration_->getInstantiationName().isEmpty())
 		{
 			instantiationWarningLabel_->setText("Please define a component instantiation.");
 			return false;
 		}
 
-		if (fileSetSelection_->currentText().isEmpty())
+		// Must have a file set as well.
+		if (configuration_->getFileSetName().isEmpty())
 		{
 			fileSetWarningLabel_->setText("Please define a file set.");
 			return false;
@@ -147,20 +146,18 @@ void ViewSelectionWidget::onFileSetStateChanged(bool on)
 void ViewSelectionWidget::onViewChanged(QString const& selectedViewName)
 {
 	// Get matching view from the list.
-	QSharedPointer<View> selectedView = views_[selectedViewName];
+	QSharedPointer<View> selectedView = configuration_->setView(selectedViewName);
 
 	// Should exist.
 	if (selectedView)
 	{
-		// Set to the configuration.
-		configuration_->setActiveView(selectedView);
-
-		// For convenience, set the matching component instantiation as the default choice.
+		// For convenience, set the referred component instantiation as the default choice.
 		int index = instantiationSelection_->findText(selectedView->getComponentInstantiationRef());
 
 		if (index != -1)
 		{
 			instantiationSelection_->setCurrentIndex(index);
+			instantiationSelection_->setItemData(index, QColor(Qt::green), Qt::BackgroundRole);
 		}
 	}
 }
@@ -170,27 +167,20 @@ void ViewSelectionWidget::onViewChanged(QString const& selectedViewName)
 //-----------------------------------------------------------------------------
 void ViewSelectionWidget::onInstantiationInserted(QString const& selectedInstantiationName)
 {
-	// Get matching instantiation from the list.
-	QSharedPointer<ComponentInstantiation> selectedInstantiation =
-		instantiations_.value(selectedInstantiationName);
-
-	if (!selectedInstantiation && !selectedInstantiationName.isEmpty())
+	if (!configuration_->setInstantiation(selectedInstantiationName) && !selectedInstantiationName.isEmpty())
 	{
-		// Create a new one if does not exist.
-		selectedInstantiation = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
-		selectedInstantiation->setName(selectedInstantiationName);
-
-		// Set it as the selected instantiation.
-		configuration_->setInstantiation(selectedInstantiation);
-
 		// Warn user that a new instantiation will be created.
 		instantiationWarningLabel_->setText(tr("New component instantiation '%1' will be created.").arg(
             selectedInstantiationName));
 	}
 	else
 	{
+		// Clear the warning.
 		instantiationWarningLabel_->setText("");
 	}
+
+	// Update the language.
+	setLanguage(configuration_->getCurrentLanguage());
 }
 
 //-----------------------------------------------------------------------------
@@ -198,20 +188,27 @@ void ViewSelectionWidget::onInstantiationInserted(QString const& selectedInstant
 //-----------------------------------------------------------------------------
 void ViewSelectionWidget::onInstantiationChanged(QString const& selectedInstantiationName)
 {
-	// Get matching instantiation from the list.
-	QSharedPointer<ComponentInstantiation> selectedInstantiation =
-		instantiations_.value(selectedInstantiationName);
+	// Affects the available file sets.
+	fileSetSelection_->clear();
+	fileSetSelection_->addItems(*(configuration_->fileSetNames()));
+	fileSetSelection_->setCurrentIndex(0);
+}
 
-	if (selectedInstantiation)
+//-----------------------------------------------------------------------------
+// Function: ViewSelectionWidget::setLanguage()
+//-----------------------------------------------------------------------------
+void ViewSelectionWidget::setLanguage(QString selectedLanguage)
+{
+	instantiationLanguage_->setText(selectedLanguage);
+
+	// Select color depending on match.
+	if (!targetLanguage_.isEmpty() && selectedLanguage == targetLanguage_)
 	{
-		// Set to the configuration.
-		configuration_->setInstantiation(selectedInstantiation);
-
-		// Affects the available file sets.
-		fileSetSelection_->clear();
-		fileSetSelection_->addItems(*(selectedInstantiation->getFileSetReferences()));
-		fileSetSelection_->setCurrentIndex(0);
-		onFileSetChanged(fileSetSelection_->currentText());
+		instantiationLanguage_->setStyleSheet("QLabel { color : green; }");
+	}
+	else
+	{
+		instantiationLanguage_->setStyleSheet("QLabel { color : red; }");
 	}
 }
 
@@ -221,10 +218,7 @@ void ViewSelectionWidget::onInstantiationChanged(QString const& selectedInstanti
 void ViewSelectionWidget::onFileSetChanged(QString const& fileSetName)
 {
 	// Set to the configuration.
-	configuration_->setFileSetRef(fileSetName);
-
-	if (!fileSetName.isEmpty() && ( !configuration_->getInstantiation() ||
-		!configuration_->getInstantiation()->getFileSetReferences()->contains(fileSetName)))
+	if (!fileSetName.isEmpty() && !configuration_->setFileSet(fileSetName))
 	{
 		// Warn user that a new file set will be created.
 		fileSetWarningLabel_->setText(tr("New file set '%1' will be created.").arg(fileSetName));

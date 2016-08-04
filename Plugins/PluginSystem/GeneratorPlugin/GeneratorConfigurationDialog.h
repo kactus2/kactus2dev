@@ -35,8 +35,7 @@ public:
 
 	//! The constructor.
 	GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration,
-		QSharedPointer<QList<QSharedPointer<View> > > views, 
-		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, QWidget *parent);
+		QString language, QWidget *parent);
 
 	//! The destructor.
 	~GeneratorConfigurationDialog();
@@ -62,12 +61,16 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+	// The "model" for the dialog.
 	QSharedPointer<GeneratorConfiguration> configuration_;
 
+	// Editor for the path of the generated file.
 	QLineEdit* pathEditor_;
 
+	// Widget for selecting view-component instantiation-file set -tuple.
 	ViewSelectionWidget* viewSelection_;
 
+	// Warning is display here, namely for an existing file being overwritten.
 	QLabel* generalWarningLabel_;
 };
 
