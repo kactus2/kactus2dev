@@ -158,8 +158,8 @@ HEADERS += ./common/Global.h \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.h \
     ./wizards/ComponentWizard/ImportEditor/ImportEditor.h \
     ./wizards/ComponentWizard/ImportEditor/ImportHighlighter.h \
-    ./wizards/BusInterfaceWizard/BusInterfaceWizard.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardBusDefinitionPage.h \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizard.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardConclusionPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardGeneralOptionsPage.h \
     ./wizards/BusInterfaceWizard/BusInterfaceWizardIntroPage.h \
@@ -223,13 +223,6 @@ HEADERS += ./common/Global.h \
     ./library/LibraryManager/HierarchyView/hierarchymodel.h \
     ./library/LibraryManager/HierarchyView/hierarchywidget.h \
     ./library/LibraryManager/HierarchyView/hierarchyview.h \
-    ./editors/BusDefinitionEditor/LogicalPortColumns.h \
-    ./editors/BusDefinitionEditor/absdefgroup.h \
-    ./editors/BusDefinitionEditor/busdefgroup.h \
-    ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
-    ./editors/BusDefinitionEditor/busportsdelegate.h \
-    ./editors/BusDefinitionEditor/busportsmodel.h \
-    ./editors/BusDefinitionEditor/busportsview.h \
     ./editors/ApiDefinitionEditor/ApiFunctionColumns.h \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.h \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.h \
@@ -553,6 +546,13 @@ HEADERS += ./common/Global.h \
     ./editors/ConfigurationTools/ViewConfigurerColumns.h \
     ./editors/ConfigurationTools/ViewConfigurer.h \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.h \
+    ./editors/BusDefinitionEditor/LogicalPortColumns.h \
+    ./editors/BusDefinitionEditor/absdefgroup.h \
+    ./editors/BusDefinitionEditor/busdefgroup.h \
+    ./editors/BusDefinitionEditor/BusDefinitionEditor.h \
+    ./editors/BusDefinitionEditor/busportsdelegate.h \
+    ./editors/BusDefinitionEditor/busportsmodel.h \
+    ./editors/BusDefinitionEditor/busportsview.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/ComGraphicsConnection.h \
     ./designEditors/SystemDesign/ApiGraphicsConnection.h \
@@ -587,6 +587,7 @@ HEADERS += ./common/Global.h \
     ./designEditors/SystemDesign/UndoCommands/SystemChangeCommands.h \
     ./designEditors/MemoryDesigner/AddressBlockItem.h \
     ./designEditors/MemoryDesigner/SegmentItem.h \
+    ./designEditors/MemoryDesigner/ComponentInstanceLocator.h \
     ./designEditors/MemoryDesigner/AddressSectionItem.h \
     ./designEditors/MemoryDesigner/AddressSpaceItem.h \
     ./designEditors/MemoryDesigner/AddressSubsection.h \
@@ -881,12 +882,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./library/LibraryManager/HierarchyView/hierarchymodel.cpp \
     ./library/LibraryManager/HierarchyView/hierarchyview.cpp \
     ./library/LibraryManager/HierarchyView/hierarchywidget.cpp \
-    ./editors/BusDefinitionEditor/absdefgroup.cpp \
-    ./editors/BusDefinitionEditor/busdefgroup.cpp \
-    ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
-    ./editors/BusDefinitionEditor/busportsdelegate.cpp \
-    ./editors/BusDefinitionEditor/busportsmodel.cpp \
-    ./editors/BusDefinitionEditor/busportsview.cpp \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.cpp \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.cpp \
     ./editors/ApiDefinitionEditor/ApiFunctionModel.cpp \
@@ -939,7 +934,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/fileSet/filesetseditor.cpp \
     ./editors/ComponentEditor/fileSet/filesetsmodel.cpp \
     ./editors/ComponentEditor/fileSet/groupmanager.cpp \
-    ./editors/ComponentEditor/fileSet/groupmanagerdelegate.cpp \
     ./editors/ComponentEditor/fileSet/file/filebuildcommand.cpp \
     ./editors/ComponentEditor/fileSet/file/filedefinemodel.cpp \
     ./editors/ComponentEditor/fileSet/file/filedefineview.cpp \
@@ -963,6 +957,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySortFilter.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.cpp \
+    ./editors/ComponentEditor/fileSet/groupmanagerdelegate.cpp \
     ./editors/ComponentEditor/general/desceditor.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
@@ -1171,6 +1166,12 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/CSourceEditor/CSourceWidget.cpp \
     ./editors/ConfigurationTools/ViewConfigurer.cpp \
     ./editors/ConfigurationTools/ViewConfigurerDelegate.cpp \
+    ./editors/BusDefinitionEditor/absdefgroup.cpp \
+    ./editors/BusDefinitionEditor/busdefgroup.cpp \
+    ./editors/BusDefinitionEditor/BusDefinitionEditor.cpp \
+    ./editors/BusDefinitionEditor/busportsdelegate.cpp \
+    ./editors/BusDefinitionEditor/busportsmodel.cpp \
+    ./editors/BusDefinitionEditor/busportsview.cpp \
     ./designEditors/HWDesign/AdHocConnectionItem.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
     ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
@@ -1224,6 +1225,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/MemoryDesigner/AddressSectionItem.cpp \
     ./designEditors/MemoryDesigner/AddressSpaceItem.cpp \
     ./designEditors/MemoryDesigner/AddressSubsection.cpp \
+    ./designEditors/MemoryDesigner/ComponentInstanceLocator.cpp \
     ./designEditors/MemoryDesigner/MemoryBaseItem.cpp \
     ./designEditors/MemoryDesigner/MemoryColumn.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignDiagram.cpp \

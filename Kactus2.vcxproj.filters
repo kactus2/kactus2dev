@@ -4282,10 +4282,13 @@
     <ClCompile Include="editors\BusDefinitionEditor\busportsview.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardBusDefinitionPage.cpp">
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizard.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizard.cpp">
+    <ClCompile Include="designEditors\MemoryDesigner\ComponentInstanceLocator.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardBusDefinitionPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5891,6 +5894,9 @@
     </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\ComponentInstanceLocator.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
