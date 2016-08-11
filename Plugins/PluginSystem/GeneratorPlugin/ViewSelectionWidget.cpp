@@ -22,7 +22,6 @@
 #include <QVBoxLayout>
 
 #include <IPXACTmodels/Component/View.h>
-#include <IPXACTmodels/Component/ComponentInstantiation.h>
 
 //-----------------------------------------------------------------------------
 // Function: ViewSelectionWidget::ViewSelectionWidget()

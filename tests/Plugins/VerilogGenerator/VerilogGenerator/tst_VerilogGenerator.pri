@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
+HEADERS += ../../../../Plugins/common/HDLParser/HDLParserCommon.h \
+    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
@@ -28,11 +29,11 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
+    ../../../../Plugins/common/HDLParser/HDLDesignParser.h \
     ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
-    ../../../../Plugins/common/HDLParser/HDLParser.h \
-    ../../../../Plugins/common/HDLParser/HDLParserCommon.h
-SOURCES += ../../../../Plugins/common/HDLParser/HDLParser.cpp \
+    ../../../../Plugins/common/HDLParser/HDLComponentParser.h
+SOURCES += ../../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
     ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
@@ -52,4 +53,5 @@ SOURCES += ../../../../Plugins/common/HDLParser/HDLParser.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
-    ./tst_VerilogGenerator.cpp
+    ./tst_VerilogGenerator.cpp \
+    ../../../../Plugins/common/HDLParser/HDLComponentParser.cpp

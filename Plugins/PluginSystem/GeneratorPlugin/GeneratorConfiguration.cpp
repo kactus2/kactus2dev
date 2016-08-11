@@ -24,18 +24,19 @@ GeneratorConfiguration::GeneratorConfiguration(
 	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) :
 	outputPath_(), view_(), saveToFileset_(false)
 {
-	// Set names as the of views as items, but also track the view objects.
+	// Track the views by name.
 	foreach (QSharedPointer<View> currentView, *views)
 	{
 		views_[currentView->name()] = currentView;
 	}
 
-	// Set names as the of instantiations as items, but also track the instantiation objects.
+	// Track the instantiations by name.
 	foreach (QSharedPointer<ComponentInstantiation> cimp, *instantiations)
 	{
 		instantiations_[cimp->name()] = cimp;
 	}
 
+	// Track the file sets by name.
 	foreach (QSharedPointer<FileSet> fileSet, *fileSets)
 	{
 		fileSets_[fileSet->name()] = fileSet;

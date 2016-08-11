@@ -223,14 +223,14 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\HDLParser\HDLParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_HDLParser.cpp">
+    <ClCompile Include="GeneratedFiles\Debug\moc_HDLDesignParser.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_HDLParser.cpp">
+    <ClCompile Include="GeneratedFiles\Release\moc_HDLDesignParser.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\HDLDesignParser.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -323,7 +323,7 @@
     <CustomBuild Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\common\HDLParser\HDLParser.h">
+    <CustomBuild Include="..\common\HDLParser\HDLDesignParser.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

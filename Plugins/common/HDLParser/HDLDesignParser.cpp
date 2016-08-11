@@ -1,15 +1,15 @@
 //-----------------------------------------------------------------------------
-// File: HDLParser.cpp
+// File: HDLDesignParser.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
 // Date: 06.07.2016
 //
 // Description:
-// Preliminary parsing for HDL generation.
+// Preliminary design parsing for HDL generation.
 //-----------------------------------------------------------------------------
 
-#include "HDLParser.h"
+#include "HDLDesignParser.h"
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -36,9 +36,9 @@
 #include <QFileInfo>
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::HDLParser()
+// Function: HDLDesignParser::HDLParser()
 //-----------------------------------------------------------------------------
-HDLParser::HDLParser(LibraryInterface* library, QSharedPointer<Component> component, QSharedPointer<View> topComponentView, 
+HDLDesignParser::HDLDesignParser(LibraryInterface* library, QSharedPointer<Component> component, QSharedPointer<View> topComponentView, 
 	QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) : QObject(0), 
 library_(library),
 topComponent_(component),
@@ -48,16 +48,16 @@ designConf_(designConf)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::~HDLParser()
+// Function: HDLDesignParser::~HDLParser()
 //-----------------------------------------------------------------------------
-HDLParser::~HDLParser()
+HDLDesignParser::~HDLDesignParser()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::createParserForComponent()
+// Function: HDLDesignParser::createParserForComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<ExpressionFormatter> HDLParser::createFormatterForComponent(QSharedPointer<Component> targetComponent,
+QSharedPointer<ExpressionFormatter> HDLDesignParser::createFormatterForComponent(QSharedPointer<Component> targetComponent,
 	QSharedPointer<View> targetView, QString instanceName)
 {    
 	QSharedPointer<MultipleParameterFinder> finder(new MultipleParameterFinder());
@@ -73,9 +73,9 @@ QSharedPointer<ExpressionFormatter> HDLParser::createFormatterForComponent(QShar
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::createParserForComponent()
+// Function: HDLDesignParser::createParserForComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<ExpressionParser> HDLParser::createParserForComponent(QSharedPointer<Component> targetComponent,
+QSharedPointer<ExpressionParser> HDLDesignParser::createParserForComponent(QSharedPointer<Component> targetComponent,
 	QSharedPointer<View> targetView, QString instanceName)
 {    
 	QSharedPointer<MultipleParameterFinder> finder(new MultipleParameterFinder());
@@ -91,9 +91,9 @@ QSharedPointer<ExpressionParser> HDLParser::createParserForComponent(QSharedPoin
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::parseComponentInstances()
+// Function: HDLDesignParser::parseComponentInstances()
 //-----------------------------------------------------------------------------
-void HDLParser::parseDesign()
+void HDLDesignParser::parseDesign()
 {
 	parseComponentInstances();
 
@@ -107,9 +107,9 @@ void HDLParser::parseDesign()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::parseComponentInstances()
+// Function: HDLDesignParser::parseComponentInstances()
 //-----------------------------------------------------------------------------
-void HDLParser::parseComponentInstances()
+void HDLDesignParser::parseComponentInstances()
 {
 	// Go through each component instance in the design.
 	foreach(QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
@@ -194,9 +194,9 @@ void HDLParser::parseComponentInstances()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::findInterconnections()
+// Function: HDLDesignParser::findInterconnections()
 //-----------------------------------------------------------------------------
-void HDLParser::findInterconnections()
+void HDLDesignParser::findInterconnections()
 {
 	// Go through each non-ad-hoc interconnection in the design.
 	foreach (QSharedPointer<Interconnection> connection, *design_->getInterconnections())
@@ -269,9 +269,9 @@ void HDLParser::findInterconnections()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::assignInterconnections()
+// Function: HDLDesignParser::assignInterconnections()
 //-----------------------------------------------------------------------------
-void HDLParser::assignInterconnections()
+void HDLDesignParser::assignInterconnections()
 {
 	// Go through detected instances.
 	foreach (QSharedPointer<GenerationInstance> gi, instances_)
@@ -423,9 +423,9 @@ void HDLParser::assignInterconnections()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::findInternalAdhocs()
+// Function: HDLDesignParser::findInternalAdhocs()
 //-----------------------------------------------------------------------------
-void HDLParser::findInternalAdhocs()
+void HDLDesignParser::findInternalAdhocs()
 {
 	// Go through the ad hoc connections within the design.
 	foreach(QSharedPointer<AdHocConnection> adHocConnection, *design_->getAdHocConnections())
@@ -495,9 +495,9 @@ void HDLParser::findInternalAdhocs()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::assignInternalAdHocs()
+// Function: HDLDesignParser::assignInternalAdHocs()
 //-----------------------------------------------------------------------------
-void HDLParser::assignInternalAdHocs()
+void HDLDesignParser::assignInternalAdHocs()
 {
 	// Go through each instance.
 	foreach (QSharedPointer<GenerationInstance> gi, instances_)
@@ -565,9 +565,9 @@ void HDLParser::assignInternalAdHocs()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::parseHierarchicallAdhocs()
+// Function: HDLDesignParser::parseHierarchicallAdhocs()
 //-----------------------------------------------------------------------------
-void HDLParser::parseHierarchicallAdhocs()
+void HDLDesignParser::parseHierarchicallAdhocs()
 {
 	// For each ad-hoc connection in design...
 	foreach(QSharedPointer<AdHocConnection> adHocConnection, *design_->getAdHocConnections())
@@ -629,9 +629,9 @@ void HDLParser::parseHierarchicallAdhocs()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::physicalBoundsInInstance()
+// Function: HDLDesignParser::physicalBoundsInInstance()
 //-----------------------------------------------------------------------------
-QPair<QString, QString> HDLParser::physicalPortBoundsInInstance(QSharedPointer<View> activeView,
+QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPointer<View> activeView,
 	QSharedPointer<Component> component, QSharedPointer<Port> port) const
 {
 	QPair<QString, QString> bounds("", "");
@@ -663,9 +663,9 @@ QPair<QString, QString> HDLParser::physicalPortBoundsInInstance(QSharedPointer<V
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::logicalBoundsInInstance()
+// Function: HDLDesignParser::logicalBoundsInInstance()
 //-----------------------------------------------------------------------------
-QPair<QString, QString> HDLParser::logicalPortBoundsInInstance(QSharedPointer<View> activeView,
+QPair<QString, QString> HDLDesignParser::logicalPortBoundsInInstance(QSharedPointer<View> activeView,
 	QSharedPointer<Component> component, QSharedPointer<PortMap> portMap) const
 {
     QPair<QString, QString> bounds("", "");
@@ -701,9 +701,9 @@ QPair<QString, QString> HDLParser::logicalPortBoundsInInstance(QSharedPointer<Vi
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLParser::connectTieOff()
+// Function: HDLDesignParser::connectTieOff()
 //-----------------------------------------------------------------------------
-bool HDLParser::connectTieOff(QString tieOff, QSharedPointer<Port> port,
+bool HDLDesignParser::connectTieOff(QString tieOff, QSharedPointer<Port> port,
 	DirectionTypes::Direction requiredDirection, QMap<QString, QString>& tiedValuesMap)
 {
 	QString tieOffValue = tieOff;

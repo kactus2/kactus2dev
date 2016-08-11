@@ -1,18 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: ComponentVerilogWriter.h
+// File: HDLComponentParser.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
-// Author: Esko Pekkarinen
-// Date: 01.08.2014
+// Project: Kactus2
+// Author: Janne Virtanen
+// Date: 11.08.2016
 //
 // Description:
-// Class for writing a component as a Verilog module.
+// Class used to parse relevant information from IP-XACT component for HDL generation.
 //-----------------------------------------------------------------------------
 
-#ifndef COMPONENTVERILOGWRITER_H
-#define COMPONENTVERILOGWRITER_H
-
-#include "../veriloggeneratorplugin_global.h"
+#ifndef HDLCOMPONENTPARSER_H
+#define HDLCOMPONENTPARSER_H
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
@@ -24,19 +22,19 @@
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>
 
 #include <Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h>
-
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
 
 #include <QSharedPointer>
 #include <QTextStream>
 #include <QList>
 
+class ExpressionParser;
 class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
 //! Class for writing a component as a Verilog module.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT ComponentVerilogWriter : public WriterGroup
+class HDLComponentParser
 {
 public:
 
@@ -44,56 +42,39 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] component               The component to write to Verilog.
+     *      @param [in] activeView              The active view name for the component.
+	 *      @param [in] sorter                  Sorter for the ports in the component.
+     *      @param [in] expressionParser		Parser for writing expressions.
      *      @param [in] expressionFormatter     Formatter for writing expressions.
 	 */
-	ComponentVerilogWriter(QSharedPointer<GenerationComponent> component,
-		QSharedPointer<ExpressionFormatter> expressionFormatter);
+	HDLComponentParser(QSharedPointer<Component> component, QSharedPointer<View> activeView,
+		QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionFormatter> expressionFormatter);
 
 	//! The destructor.
-	~ComponentVerilogWriter();
+	~HDLComponentParser();
 
-	/*! Writes the Verilog module into a text stream.
-	 *
-	 *      @param [in] output			The text stream to write the module into.
-	 *      @param [in] output			Any text in the file that comes after the module declaration.
-	 */
-    virtual void write(QTextStream& outputStream) const;
-	
-	/*! 
-	 *      Sets implementation module writer that will write the module implementation.
-	 */
-	void setImplementation( QSharedPointer<TextBodyWriter> implementation );
-	
-	/*! 
-	 *      Sets post module writer that will write the post module.
-	 */
-	void setPostModule( QSharedPointer<TextBodyWriter> postModule );
+    QSharedPointer<GenerationComponent> parseComponent() const;
 
 private:
 	// Disable copying.
-	ComponentVerilogWriter(ComponentVerilogWriter const& rhs);
-	ComponentVerilogWriter& operator=(ComponentVerilogWriter const& rhs);
+	HDLComponentParser(HDLComponentParser const& rhs);
+	HDLComponentParser& operator=(HDLComponentParser const& rhs);
+    
+	void parseRegisters(QSharedPointer<GenerationComponent> target) const;
 
      /*!
-      *  Checks if the writer should write nothing.
-      *
-      *      @return True, if the writer has nothing to write, otherwise false.
+      *  Culls parameter declarations for the module.
       */
-    bool nothingToWrite() const;
-
+    void parseParameterDeclarations(QSharedPointer<GenerationComponent> target) const;
+	
     /*!
-     *  Writes the module declaration.
+     *  Sorts list of module parameters based on their interdependencies.
      *
-     *      @param [in] outputStream   The output to write to.
+     *      @param [in] currentInsta			The component instantiation, which module parameters are referred.
+     *      @param [out] parametersToWrite      The list containing parameters, that will be sorted.
      */
-    void writeModuleDeclaration( QTextStream& outputStream ) const;
-
-     /*!
-      *  Writes the module parameter declaration.
-      *
-      *      @param [in] outputStream   The output to write to.
-      */
-    void writeParameterDeclarations(QTextStream& outputStream) const;
+	void sortParameters(QList<QSharedPointer<Parameter> >& parameters,
+		QList<QSharedPointer<Parameter> >& parametersToWrite) const;
 
     /*!
      *  Writes a single parameter declaration.
@@ -156,7 +137,13 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The component to write to Verilog module.
-    QSharedPointer<GenerationComponent> component_;
+    QSharedPointer<Component> component_;
+
+    //! The component active view.
+    QSharedPointer<View> activeView_;
+
+    //! Sorter for the ports of the component.
+    QSharedPointer<const PortSorter> sorter_;
 
     //! Writers for the inner elements e.g. wires and subcomponent instances.
     QList<QSharedPointer<Writer> > childWriters_;
@@ -168,7 +155,7 @@ private:
 	QSharedPointer<TextBodyWriter> implementation_;
 
 	//! The extra stuff that comes after the written module.
-	QSharedPointer<TextBodyWriter> postModule_;
+    QSharedPointer<TextBodyWriter> postModule_;
 };
 
-#endif // COMPONENTVERILOGWRITER_H
+#endif // HDLCOMPONENTPARSER_H

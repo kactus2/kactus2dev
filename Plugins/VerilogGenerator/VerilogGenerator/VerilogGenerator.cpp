@@ -40,10 +40,11 @@
 #include <Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.h>
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
-#include <Plugins/common/HDLParser/HDLParser.h>
+#include <Plugins/common/HDLParser/HDLDesignParser.h>
 
 #include <QDateTime>
 #include <QFileInfo>
+#include "../../common/HDLParser/HDLComponentParser.h"
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()
@@ -87,7 +88,7 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
     if (design_ && designConf_)
     {
 		// Parse the design, using the provided configuration and the top component.
-		HDLParser parser(library_,component,topComponentView,design,designConf);
+		HDLDesignParser parser(library_,component,topComponentView,design,designConf);
 		parser.parseDesign();
 
 		// Create instance writers for the instances, complete with expression parsers and formatters.
@@ -230,7 +231,7 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 	// Must have it to proceed.
 	if (moduleDeclarationEndIndex == -1)
 	{
-		emit reportError(tr("Could not find module header end from the output file!"));;
+		emit reportError(tr("Could not find module header end from the output file!"));
 		return false;
 	}
 
@@ -321,8 +322,9 @@ void VerilogGenerator::initializeWriters()
 	QSharedPointer<ExpressionParser> parser = QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(parameterFinder));
 	QSharedPointer<ExpressionFormatter> formatter = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
 
-    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent_,
-		topComponentView_, sorter_, parser, formatter));
+    HDLComponentParser pars(topComponent_,topComponentView_,sorter_,formatter);
+
+    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(pars.parseComponent(), formatter));
 
     instanceWriters_.clear();
 

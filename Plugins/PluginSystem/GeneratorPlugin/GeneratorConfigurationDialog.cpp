@@ -21,9 +21,6 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <IPXACTmodels/Component/View.h>
-#include <IPXACTmodels/Component/ComponentInstantiation.h>
-
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
 //-----------------------------------------------------------------------------

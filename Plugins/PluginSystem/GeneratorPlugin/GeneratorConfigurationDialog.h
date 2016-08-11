@@ -22,8 +22,6 @@
 #include "ViewSelectionWidget.h"
 
 class GeneratorConfiguration;
-class View;
-class ComponentInstantiation;
 
 //-----------------------------------------------------------------------------
 //! Dialog for setting file generation options.

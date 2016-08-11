@@ -6,7 +6,7 @@
 // Date: 06.07.2016
 //
 // Description:
-// Joku
+// The structures utilized as intermediate storage for data for HDL generation.
 //-----------------------------------------------------------------------------
 
 #ifndef VERILOGGENERATORCOMMON_H
@@ -22,6 +22,40 @@ class View;
 class BusInterface;
 class Port;
 class Parameter;
+
+struct GenerationField
+{
+	//! Describes the offset where this bit field starts.
+	QString bitOffset_;
+
+	//! Width of the field.
+	QString bitWidth_;
+};
+
+struct GenerationRegister
+{
+	//! Width of the field.
+    QString dimension_;
+
+    QString offset_;
+    QString size_;
+
+	QList<QSharedPointer<GenerationField> > fields;
+};
+
+struct GenerationAddressBlock
+{
+    QList<QSharedPointer<GenerationRegister> > registers;
+    QString baseAddress_;
+};
+
+struct GenerationComponent
+{
+    QSharedPointer<Component> component;
+    QList<QSharedPointer<GenerationAddressBlock> > blocks;
+    QList<QSharedPointer<Parameter> > parameters;
+    QStringList sortedPortNames;
+};
 
 struct GenerationWire
 {

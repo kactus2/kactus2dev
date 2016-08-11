@@ -19,8 +19,6 @@
 #include <QLabel>
 
 class GeneratorConfiguration;
-class View;
-class ComponentInstantiation;
 
 class ViewSelectionWidget : public QWidget
 {

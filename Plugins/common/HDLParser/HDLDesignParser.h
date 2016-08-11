@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: HDLParser.h
+// File: HDLDesignParser.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
 // Date: 06.07.2016
 //
 // Description:
-// Preliminary parsing for HDL generation.
+// Preliminary design parsing for HDL generation.
 //-----------------------------------------------------------------------------
 
-#ifndef HDLPARSER_H
-#define HDLPARSER_H
+#ifndef HDLDESIGNPARSER_H
+#define HDLDESIGNPARSER_H
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
@@ -34,17 +34,17 @@ class PortAlignment;
 //-----------------------------------------------------------------------------
 // Preliminary parsing for HDL generation.
 //-----------------------------------------------------------------------------
-class HDLParser : public QObject
+class HDLDesignParser : public QObject
 {
 	Q_OBJECT
 
 public:
     //! The constructor.
-	HDLParser(LibraryInterface* library, QSharedPointer<Component> component, QSharedPointer<View> topComponentView, 
+	HDLDesignParser(LibraryInterface* library, QSharedPointer<Component> component, QSharedPointer<View> topComponentView, 
 		QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf);
 
     //! The destructor.
-    ~HDLParser();
+    ~HDLDesignParser();
 	
     /*!
 	*   Returns an expression parser for the given top component.
@@ -81,8 +81,8 @@ signals:
 private:
 
     // Disable copying.
-    HDLParser(HDLParser const& rhs);
-    HDLParser& operator=(HDLParser const& rhs);
+    HDLDesignParser(HDLDesignParser const& rhs);
+    HDLDesignParser& operator=(HDLDesignParser const& rhs);
 
     /*!
      *  Parses all the component instances in the design.
@@ -142,4 +142,4 @@ private:
 
 };
 
-#endif // HDLPARSER_H
+#endif // HDLDESIGNPARSER_H
