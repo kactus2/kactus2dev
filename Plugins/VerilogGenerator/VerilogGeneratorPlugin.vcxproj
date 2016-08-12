@@ -133,6 +133,7 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
+    <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="..\common\HDLParser\HDLComponentParser.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h" />
+    <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ParameterFinder.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />

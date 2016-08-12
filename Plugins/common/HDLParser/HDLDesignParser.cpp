@@ -34,6 +34,7 @@
 
 #include <QDateTime>
 #include <QFileInfo>
+#include "editors/ComponentEditor/common/ListParameterFinder.h"
 
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::HDLParser()
@@ -341,7 +342,7 @@ void HDLDesignParser::assignInterconnections()
 						// If it does not exist, use the physical bounds instead.
 						if (portBounds.first.isEmpty() || portBounds.second.isEmpty())
 						{
-							portBounds = physicalPortBoundsInInstance(gi->activeView_, component, physicalPort);
+							portBounds = physicalPortBoundsInInstance(gi, gi->activeView_, component, physicalPort);
 						}
 
 						// Now create the port assignment, with the physical port as identifier, and the found port bounds.
@@ -548,7 +549,7 @@ void HDLDesignParser::assignInternalAdHocs()
 					gw->ports.append(ourPort);
 
 					// Since it is an ad-hoc connection, a physical connection is the only choice.
-					QPair<QString,QString> bounds = physicalPortBoundsInInstance(gi->activeView_, component, ourPort);
+					QPair<QString,QString> bounds = physicalPortBoundsInInstance(gi, gi->activeView_, component, ourPort);
 					gpa->bounds = bounds;
 
 					// Also, if no prior bounds in wire, use these.
@@ -620,7 +621,7 @@ void HDLDesignParser::parseHierarchicallAdhocs()
 					gpa->topPortName = externalPort->getPortRef();
 
 					// Since it is ad hoc, the physical bounds will be used.
-					QPair<QString,QString> bounds = physicalPortBoundsInInstance(gi->activeView_, component, ourPort);
+					QPair<QString,QString> bounds = physicalPortBoundsInInstance(gi, gi->activeView_, component, ourPort);
 					gpa->bounds = bounds;
 				}
 			}
@@ -631,8 +632,7 @@ void HDLDesignParser::parseHierarchicallAdhocs()
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::physicalBoundsInInstance()
 //-----------------------------------------------------------------------------
-QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPointer<View> activeView,
-	QSharedPointer<Component> component, QSharedPointer<Port> port) const
+QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance, QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<Port> port) const
 {
 	QPair<QString, QString> bounds("", "");
 
@@ -643,13 +643,17 @@ QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPoi
 	}
 
 	// Find parameters from both the component and the top component, as the component may refer to the top.
-	QSharedPointer<ComponentParameterFinder> instanceFinder(new ComponentParameterFinder(component));
-	instanceFinder->setActiveView(activeView->name());
+	QSharedPointer<ComponentParameterFinder> componentFinder(new ComponentParameterFinder(component));
+    componentFinder->setActiveView(activeView->name());
+    QSharedPointer<QList<QSharedPointer<Parameter> > > slist(new QList<QSharedPointer<Parameter> >(instance->parameters));
+    QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
+    instanceFinder->setParameterList(slist);
 	QSharedPointer<TopComponentParameterFinder> topFinder(new TopComponentParameterFinder(topComponent_));
 	topFinder->setActiveView(topComponentView_);
 
 	QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-	multiFinder->addFinder(instanceFinder);
+    multiFinder->addFinder(componentFinder);
+    multiFinder->addFinder(instanceFinder);
 	multiFinder->addFinder(topFinder);
 
 	// We settle for formatting the expressions.

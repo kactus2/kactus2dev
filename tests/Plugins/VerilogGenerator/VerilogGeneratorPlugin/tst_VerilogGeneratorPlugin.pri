@@ -37,7 +37,8 @@ HEADERS += ../../../../Plugins/common/HDLParser/HDLParserCommon.h \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
     ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.h \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
-    ../../../../Plugins/common/HDLParser/HDLComponentParser.h
+    ../../../../Plugins/common/HDLParser/HDLComponentParser.h \
+    ../../../../editors/ComponentEditor/common/ListParameterFinder.h
 SOURCES += ../../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
     ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
@@ -65,4 +66,5 @@ SOURCES += ../../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
     ./tst_VerilogGeneratorPlugin.cpp \
-    ../../../../Plugins/common/HDLParser/HDLComponentParser.cpp
+    ../../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
+    ../../../../editors/ComponentEditor/common/ListParameterFinder.cpp

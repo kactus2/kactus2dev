@@ -32,7 +32,8 @@ HEADERS += ../../../../Plugins/common/HDLParser/HDLParserCommon.h \
     ../../../../Plugins/common/HDLParser/HDLDesignParser.h \
     ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
-    ../../../../Plugins/common/HDLParser/HDLComponentParser.h
+    ../../../../Plugins/common/HDLParser/HDLComponentParser.h \
+    ../../../../editors/ComponentEditor/common/ListParameterFinder.h
 SOURCES += ../../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
     ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
@@ -54,4 +55,5 @@ SOURCES += ../../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
     ./tst_VerilogGenerator.cpp \
-    ../../../../Plugins/common/HDLParser/HDLComponentParser.cpp
+    ../../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
+    ../../../../editors/ComponentEditor/common/ListParameterFinder.cpp

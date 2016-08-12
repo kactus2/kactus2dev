@@ -107,7 +107,7 @@ private:
      *
      *      @return The port bounds for the port map in an instance.
      */
-    QPair<QString, QString> physicalPortBoundsInInstance(QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<Port> port) const;
+    QPair<QString, QString> physicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance, QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<Port> port) const;
 
     /*!
      *  Finds the logical bounds for a port map in an instance.
