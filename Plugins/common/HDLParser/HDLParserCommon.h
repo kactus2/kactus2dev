@@ -29,7 +29,8 @@ struct GenerationField
 	QString bitOffset_;
 
 	//! Width of the field.
-	QString bitWidth_;
+    QString bitWidth_;
+    QString name;
 };
 
 struct GenerationRegister
@@ -40,21 +41,31 @@ struct GenerationRegister
     QString offset_;
     QString size_;
 
-	QList<QSharedPointer<GenerationField> > fields;
+    QList<QSharedPointer<GenerationField> > fields;
+    QString name;
 };
 
 struct GenerationAddressBlock
 {
     QList<QSharedPointer<GenerationRegister> > registers;
     QString baseAddress_;
+    QString name;
+};
+
+struct GenerationRemap
+{
+    QList<QSharedPointer<GenerationAddressBlock> > blocks;
+    QString name;
 };
 
 struct GenerationComponent
 {
     QSharedPointer<Component> component;
-    QList<QSharedPointer<GenerationAddressBlock> > blocks;
+    QList<QSharedPointer<GenerationRemap> > remaps;
     QList<QSharedPointer<Parameter> > parameters;
     QStringList sortedPortNames;
+    QString aub;
+    QString totalRange;
 };
 
 struct GenerationWire

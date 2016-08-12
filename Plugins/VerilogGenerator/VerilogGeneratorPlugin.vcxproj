@@ -135,6 +135,7 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="..\common\HDLParser\HDLComponentParser.cpp" />
     <ClCompile Include="..\common\HDLParser\HDLDesignParser.cpp" />
     <ClCompile Include="..\common\NameGenerationPolicy.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.cpp" />
@@ -230,6 +231,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DVERILOGGENERATORPLUGIN_LIB -DQT_WIDGETS_LIB -DQT_XML_LIB -D_WINDLL "-I.\GeneratedFiles" "-I.\..\.." "-I." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWidgets" "-I$(QTDIR)\include\QtXml"</Command>
     </CustomBuild>
+    <ClInclude Include="..\common\HDLParser\HDLComponentParser.h" />
     <ClInclude Include="..\common\HDLParser\HDLParserCommon.h" />
     <ClInclude Include="..\common\NameGenerationPolicy.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.h" />

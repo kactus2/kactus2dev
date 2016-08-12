@@ -30,9 +30,10 @@
 
 class ExpressionParser;
 class ExpressionFormatter;
+class AddressBlock;
 
 //-----------------------------------------------------------------------------
-//! Class for writing a component as a Verilog module.
+// Class used to parse relevant information from IP-XACT component for HDL generation.
 //-----------------------------------------------------------------------------
 class HDLComponentParser
 {
@@ -61,6 +62,8 @@ private:
 	HDLComponentParser& operator=(HDLComponentParser const& rhs);
     
 	void parseRegisters(QSharedPointer<GenerationComponent> target) const;
+
+    void parseAddressBlock(QSharedPointer<AddressBlock> ab, QSharedPointer<GenerationRemap> target) const;
 
      /*!
       *  Culls parameter declarations for the module.

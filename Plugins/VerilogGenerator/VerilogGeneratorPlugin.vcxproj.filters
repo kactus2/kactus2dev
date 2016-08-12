@@ -232,6 +232,9 @@
     <ClCompile Include="..\common\HDLParser\HDLDesignParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\HDLParser\HDLComponentParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="veriloggeneratorplugin_global.h">
@@ -304,6 +307,9 @@
       <Filter>Header Files\TextBodyWrite</Filter>
     </ClInclude>
     <ClInclude Include="..\common\HDLParser\HDLParserCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\HDLComponentParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

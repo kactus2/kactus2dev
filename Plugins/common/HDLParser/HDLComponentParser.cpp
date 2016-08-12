@@ -82,15 +82,12 @@ void HDLComponentParser::parseRegisters(QSharedPointer<GenerationComponent> targ
 	QSharedPointer<MemoryMap> memmap = component_->getMemoryMaps()->first();
 
 	// The AUB is shared between all remap states.
-	QString aub = memmap->getAddressUnitBits();
+	target->aub = memmap->getAddressUnitBits();
 
-	// The default map defines the size. We assume that any remaps respect there boundaries.
-	QString totalRange;
+    QSharedPointer<GenerationRemap> defaultRemap(new GenerationRemap);
+    target->remaps.append(defaultRemap);
+    defaultRemap->name = memmap->name() + "_default";
 
-	// List of the address blocks to go through.
-	QList<QSharedPointer<AddressBlock> > blocks;
-
-	// Get the total sum of ranges.
 	foreach (QSharedPointer<MemoryBlockBase> mbb, *memmap->getMemoryBlocks())
 	{
 		QSharedPointer<AddressBlock> ab = mbb.dynamicCast<AddressBlock>();
@@ -101,13 +98,21 @@ void HDLComponentParser::parseRegisters(QSharedPointer<GenerationComponent> targ
 			continue;
 		}
 
-		totalRange += ab->getRange();
+        // Get the total sum of ranges.
+		target->totalRange += ab->getRange();
 
-		blocks.append(ab);
+        parseAddressBlock(ab, defaultRemap);
 	}
 
+    // The default map defines the size. We assume that any remaps respect there boundaries.
+    target->totalRange = formatter_->formatReferringExpression(target->totalRange);
+
 	foreach (QSharedPointer<MemoryRemap> remap, *memmap->getMemoryRemaps())
-	{
+    {
+        QSharedPointer<GenerationRemap> rm(new GenerationRemap);
+        rm->name = remap->name();
+        target->remaps.append(rm);
+
 		foreach (QSharedPointer<MemoryBlockBase> mbb, *remap->getMemoryBlocks())
 	    {
 			QSharedPointer<AddressBlock> ab = mbb.dynamicCast<AddressBlock>();
@@ -118,45 +123,50 @@ void HDLComponentParser::parseRegisters(QSharedPointer<GenerationComponent> targ
 				continue;
 			}
 
-			blocks.append(ab);
+            parseAddressBlock(ab, rm);
 		}
 	}
+}
 
-	foreach (QSharedPointer<AddressBlock> ab, blocks)
+void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSharedPointer<GenerationRemap> target) const
+{
+    QSharedPointer<GenerationAddressBlock> gab(new GenerationAddressBlock);
+
+    gab->baseAddress_ = formatter_->formatReferringExpression(ab->getBaseAddress());
+    gab->name = ab->name();
+
+    target->blocks.append(gab);
+
+    foreach (QSharedPointer<RegisterBase> rb, *ab->getRegisterData())
     {
-        QSharedPointer<GenerationAddressBlock> gab(new GenerationAddressBlock);
+        QSharedPointer<Register> r = rb.dynamicCast<Register>();
 
-        gab->baseAddress_ = ab->getBaseAddress();
-
-        target->blocks.append(gab);
-
-        foreach (QSharedPointer<RegisterBase> rb, *ab->getRegisterData())
+        // Skip if does not convert to correct type.
+        if (!r)
         {
-            QSharedPointer<Register> r = rb.dynamicCast<Register>();
-
-            // Skip if does not convert to correct type.
-            if (!r)
-            {
-                continue;
-            }
-
-		    QSharedPointer<GenerationRegister> gr(new GenerationRegister);
-
-            gr->dimension_ = r->getDimension();
-            gr->offset_ = r->getAddressOffset();
-            gr->size_ = r->getSize();
-
-            gab->registers.append(gr);
-
-            foreach (QSharedPointer<Field> f, *r->getFields())
-            {
-                QSharedPointer<GenerationField> gf(new GenerationField);
-
-                gf->bitOffset_ = f->getBitOffset();
-                gf->bitWidth_ = f->getBitWidth();
-            }
+            continue;
         }
-	}
+
+        QSharedPointer<GenerationRegister> gr(new GenerationRegister);
+
+        gr->dimension_ = formatter_->formatReferringExpression(r->getDimension());
+        gr->offset_ = formatter_->formatReferringExpression(r->getAddressOffset());
+        gr->size_ = formatter_->formatReferringExpression(r->getSize());
+        gr->name = r->name();
+
+        gab->registers.append(gr);
+
+        foreach (QSharedPointer<Field> f, *r->getFields())
+        {
+            QSharedPointer<GenerationField> gf(new GenerationField);
+
+            gf->bitOffset_ = formatter_->formatReferringExpression(f->getBitOffset());
+            gf->bitWidth_ = formatter_->formatReferringExpression(f->getBitWidth());
+            gf->name = f->name();
+
+            gr->fields.append(gf);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -65,6 +65,9 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 
 	if ( implementation_ )
 	{
+        // Implementing -> may need registers.
+        writeRegisters(outputStream);
+
 		// If an implementation exists, there must be a warning about overwriting as well.
 		outputStream << "// " << VerilogSyntax::TAG_OVERRIDE << endl;
 
@@ -267,6 +270,50 @@ void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream
     outputStream << endl;
 
     WriterGroup::write(outputStream);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter::writeRegisters()
+//-----------------------------------------------------------------------------
+void ComponentVerilogWriter::writeRegisters(QTextStream& outputStream) const
+{
+    if ( component_->remaps.size() < 1 )
+    {
+        return;
+    }
+
+    outputStream << indentation() << "localparam memory_size = " << component_->totalRange << ";" << endl;
+    outputStream << indentation() << "localparam AUB = " << component_->aub << ";" << endl;
+
+    foreach(QSharedPointer<GenerationRemap> grm, component_->remaps)
+    {
+        foreach(QSharedPointer<GenerationAddressBlock> gab, grm->blocks)
+        {
+            outputStream << endl;
+
+            outputStream << indentation() << "localparam " << grm->name << "_"  << gab->name << "_base = " << gab->baseAddress_ << ";" << endl;
+
+            foreach(QSharedPointer<GenerationRegister> gr, gab->registers)
+            {
+                outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_dim = " << gr->dimension_ << ";" << endl;
+                outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_offset = " << gr->offset_ << ";" << endl;
+                outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_width = " << gr->size_ << ";" << endl;
+                outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_AU_WIDTTH = $ceil($ceil(" << gr->size_ << ")/AUB);" << endl;
+
+                outputStream << endl;
+
+                foreach(QSharedPointer<GenerationField> gf, gr->fields)
+                {
+                    outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_" << gf->name << "_width = " << gf->bitWidth_ << ";" << endl;
+                    outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_" << gf->name << "_offset = " << gf->bitOffset_ << ";" << endl;
+                }
+
+                outputStream << endl;
+            }
+        }
+    }
+
+    outputStream << endl;
 }
 
 //-----------------------------------------------------------------------------
