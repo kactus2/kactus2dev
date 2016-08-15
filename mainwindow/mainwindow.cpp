@@ -2022,7 +2022,7 @@ void MainWindow::onDocumentChanged(int index)
         {
             instanceEditor_->setContext(topComponent, designwidget->getDiagram()->getDesignConfiguration(),
                 designwidget->getDiagram()->getEditProvider());
-            instanceEditor_->setTopComponentActiveView(designwidget->getOpenViewName());
+            instanceEditor_->setTopComponentActiveView(topComponent->getModel()->findView(designwidget->getOpenViewName()));
             instanceEditor_->setProtection(designwidget->isProtected());
         }
 

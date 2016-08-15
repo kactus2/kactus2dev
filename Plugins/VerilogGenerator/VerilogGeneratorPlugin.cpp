@@ -225,7 +225,7 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 {
     if (possibleViews->isEmpty())
 	{
-		utility_->printError(tr("No usable views in the component for the generation: Hierarchical views"
+		utility_->printError(tr("No usable views in the component for generation: Hierarchical views"
 			" are only usable for design generation and flat views for component generation."));
 		return false;
 	}

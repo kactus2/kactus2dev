@@ -43,6 +43,7 @@ HDLDesignParser::HDLDesignParser(LibraryInterface* library, QSharedPointer<Compo
 	QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) : QObject(0), 
 library_(library),
 topComponent_(component),
+topComponentView_(topComponentView),
 design_(design),
 designConf_(designConf)
 {
@@ -112,6 +113,11 @@ void HDLDesignParser::parseDesign()
 //-----------------------------------------------------------------------------
 void HDLDesignParser::parseComponentInstances()
 {
+    QSharedPointer<TopComponentParameterFinder> topFinder(new TopComponentParameterFinder(topComponent_));
+    topFinder->setActiveView(topComponentView_);
+
+    ExpressionFormatter designFormatter(topFinder);
+
 	// Go through each component instance in the design.
 	foreach(QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
 	{
@@ -164,12 +170,6 @@ void HDLDesignParser::parseComponentInstances()
 		// Go through the culled parameters, find if any exists in CEVs.
 		foreach(QSharedPointer<Parameter> parameter, parameters)
 		{
-			// Only the use resolved parameters may be defined in a CEV.
-			if (parameter->getValueResolve() != "user")
-			{
-				continue;
-			}
-
 			// Get the existing value.
 			QString paraValue = parameter->getValue();
 
@@ -178,7 +178,8 @@ void HDLDesignParser::parseComponentInstances()
 				// If a CEV refers to the parameter, its value shall be the value of the parameter.
 				if (cev->getReferenceId() == parameter->getValueId())
 				{
-					paraValue = cev->getConfigurableValue();
+                    paraValue = cev->getConfigurableValue();
+                    paraValue = designFormatter.formatReferringExpression(paraValue);
 					break;
 				}
 			}
@@ -191,7 +192,25 @@ void HDLDesignParser::parseComponentInstances()
 			// Append to the list of the parameters which shall be used.
 			gi->parameters.append(parameterCopy);
 		}
-	}
+
+        QSharedPointer<QList<QSharedPointer<Parameter> > > slist(new QList<QSharedPointer<Parameter> >(gi->parameters));
+        QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
+        instanceFinder->setParameterList(slist);
+        ExpressionFormatter instanceFormatter(instanceFinder);
+
+        foreach(QSharedPointer<Parameter> parameter, gi->parameters)
+        {
+            parameter->setValue(instanceFormatter.formatReferringExpression(parameter->getValue()));
+        }
+
+        /*foreach(QSharedPointer<Parameter> parameter, gi->parameters)
+        {
+            foreach(QSharedPointer<Parameter> parameterSupplement, gi->parameters)
+            {
+                parameter->setValue(parameter->getValue().replace(parameterSupplement->name(), parameterSupplement->getValue()));
+            }
+        }*/
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -337,7 +356,7 @@ void HDLDesignParser::assignInterconnections()
 						QSharedPointer<Port> physicalPort = component->getPort(portMap->getPhysicalPort()->name_);
 
 						// Find the logical bounds of the port map.
-						portBounds = logicalPortBoundsInInstance(gi->activeView_, component, portMap);
+						portBounds = logicalPortBoundsInInstance(gi, gi->activeView_, component, portMap);
 
 						// If it does not exist, use the physical bounds instead.
 						if (portBounds.first.isEmpty() || portBounds.second.isEmpty())
@@ -632,12 +651,13 @@ void HDLDesignParser::parseHierarchicallAdhocs()
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::physicalBoundsInInstance()
 //-----------------------------------------------------------------------------
-QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance, QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<Port> port) const
+QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance,
+    QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<Port> port) const
 {
 	QPair<QString, QString> bounds("", "");
 
 	// Must have components, both the target and the top, as well as the target port.
-	if (!component || !topComponent_ || !port)
+	if (!instance || !component || !topComponent_ || !port)
 	{
 		return bounds;
 	}
@@ -652,7 +672,7 @@ QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPoi
 	topFinder->setActiveView(topComponentView_);
 
 	QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-    multiFinder->addFinder(componentFinder);
+    //multiFinder->addFinder(componentFinder);
     multiFinder->addFinder(instanceFinder);
 	multiFinder->addFinder(topFinder);
 
@@ -663,31 +683,45 @@ QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPoi
 	bounds.first = instanceFormatter.formatReferringExpression(port->getLeftBound());
 	bounds.second = instanceFormatter.formatReferringExpression(port->getRightBound());
 
+    QStringList ids = instanceFinder->getAllParameterIds();
+
+    foreach (QString id, ids)
+    {
+        QSharedPointer<Parameter> parameter = instanceFinder->getParameterWithID(id);
+
+        bounds.first.replace(parameter->name(), parameter->getValue());
+        bounds.second.replace(parameter->name(), parameter->getValue());
+    }
+
 	return bounds;
 }
 
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::logicalBoundsInInstance()
 //-----------------------------------------------------------------------------
-QPair<QString, QString> HDLDesignParser::logicalPortBoundsInInstance(QSharedPointer<View> activeView,
-	QSharedPointer<Component> component, QSharedPointer<PortMap> portMap) const
+QPair<QString, QString> HDLDesignParser::logicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance,
+    QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<PortMap> portMap) const
 {
     QPair<QString, QString> bounds("", "");
 
 	// Must have components, both the target and the top, as well as the target port map.
-	if (!component || !topComponent_ || !portMap)
+	if (!instance || !component || !topComponent_ || !portMap)
 	{
 		return bounds;
 	}
 
 	// Find parameters from both the component and the top component, as the component may refer to the top.
-	QSharedPointer<ComponentParameterFinder> instanceFinder(new ComponentParameterFinder(component));
-	instanceFinder->setActiveView(activeView->name());
+	QSharedPointer<ComponentParameterFinder> componentFinder(new ComponentParameterFinder(component));
+    componentFinder->setActiveView(activeView->name());
+    QSharedPointer<QList<QSharedPointer<Parameter> > > slist(new QList<QSharedPointer<Parameter> >(instance->parameters));
+    QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
+    instanceFinder->setParameterList(slist);
 	QSharedPointer<TopComponentParameterFinder> topFinder(new TopComponentParameterFinder(topComponent_));
 	topFinder->setActiveView(topComponentView_);
 
 	QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-	multiFinder->addFinder(instanceFinder);
+    //multiFinder->addFinder(componentFinder);
+    multiFinder->addFinder(instanceFinder);
 	multiFinder->addFinder(topFinder);
 
 	// We settle for formatting the expressions.
@@ -698,8 +732,18 @@ QPair<QString, QString> HDLDesignParser::logicalPortBoundsInInstance(QSharedPoin
 	{
 		// Pick the range expressions as the logical bounds.
 		bounds.first = instanceFormatter.formatReferringExpression(portMap->getLogicalPort()->range_->getLeft());
-		bounds.second = instanceFormatter.formatReferringExpression(portMap->getLogicalPort()->range_->getRight());
-	}
+        bounds.second = instanceFormatter.formatReferringExpression(portMap->getLogicalPort()->range_->getRight());
+
+        QStringList ids = instanceFinder->getAllParameterIds();
+
+        foreach (QString id, ids)
+        {
+            QSharedPointer<Parameter> parameter = instanceFinder->getParameterWithID(id);
+
+            bounds.first.replace(parameter->name(), parameter->getValue());
+            bounds.second.replace(parameter->name(), parameter->getValue());
+        }
+    }
 
     return bounds;
 }

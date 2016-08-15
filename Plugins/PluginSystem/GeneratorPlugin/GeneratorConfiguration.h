@@ -63,9 +63,9 @@ public:
      *
 	 *      @param [in] viewName   The name of the active view.
 	 *
-	 *      @return The view, if a view by name viewName exists, else null.
+	 *      @return The component instantiation reference of the view, if the ciew exists.
 	 */
-    QSharedPointer<View> setView(QString viewName);
+    QString setView(QString viewName);
 
     /*!
      *  Gets the active view for the top component.

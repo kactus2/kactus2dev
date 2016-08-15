@@ -87,7 +87,7 @@ public slots:
      *
      *      @param [in] activeView   The name of the active view.
      */
-    void setTopComponentActiveView(QString const& activeView);
+    void setTopComponentActiveView(QSharedPointer<View> activeView);
 
     /*!
      *  Change the used design configuration.

@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
 class Component;
+class View;
 
 //-----------------------------------------------------------------------------
 //! Parameter finder for design top component.
@@ -95,7 +96,7 @@ public:
      *
      *      @param [in] view   The name of the active view.
      */
-    void setActiveView(QString const& view);
+    void setActiveView(QSharedPointer<View> view);
 
 private:
 
@@ -120,7 +121,7 @@ private:
     QSharedPointer<Component> component_;
 
     //! The active view of the component.
-    QString activeView_;
+    QSharedPointer<View> activeView_;
 };
 
 #endif // TOPCOMPONENTPARAMETERFINDER_H

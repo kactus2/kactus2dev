@@ -234,7 +234,7 @@ void ComponentInstanceEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::setTopComponentActiveView()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::setTopComponentActiveView(QString const& activeView)
+void ComponentInstanceEditor::setTopComponentActiveView(QSharedPointer<View> activeView)
 {
 	topFinder_->setActiveView(activeView);
 }

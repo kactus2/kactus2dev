@@ -40,8 +40,6 @@ private slots:
 
 	void onViewChanged(QString const& selectedViewName);
 
-	void onInstantiationInserted(QString const& selectedInstantiationName);
-
 	void onInstantiationChanged(QString const& selectedInstantiationName);
 
 	void setLanguage(QString selectedLanguage);

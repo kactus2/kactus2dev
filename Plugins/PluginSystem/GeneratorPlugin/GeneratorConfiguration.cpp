@@ -90,11 +90,16 @@ void GeneratorConfiguration::setView(QSharedPointer<View> view)
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::setActiveView()
 //-----------------------------------------------------------------------------
-QSharedPointer<View> GeneratorConfiguration::setView(QString viewName)
+QString GeneratorConfiguration::setView(QString viewName)
 {
     view_ = views_[viewName];
 
-	return view_;
+    if (view_)
+    {
+        return view_->getComponentInstantiationRef();
+    }
+
+	return "";
 }
 
 //-----------------------------------------------------------------------------
@@ -129,6 +134,7 @@ QSharedPointer<ComponentInstantiation> GeneratorConfiguration::getInstantiation(
 {
 	return instantiation_;
 }
+
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::getInstantiationName()
 //-----------------------------------------------------------------------------

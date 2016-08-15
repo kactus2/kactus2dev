@@ -21,8 +21,6 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
-#include <IPXACTmodels/Component/View.h>
-
 //-----------------------------------------------------------------------------
 // Function: ViewSelectionWidget::ViewSelectionWidget()
 //-----------------------------------------------------------------------------
@@ -81,7 +79,7 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> 
     connect(viewSelection_, SIGNAL(currentIndexChanged(QString const&)),
 		this, SLOT(onViewChanged(QString const&)), Qt::UniqueConnection);
 	connect(instantiationSelection_, SIGNAL(currentTextChanged(QString const&)),
-		this, SLOT(onInstantiationInserted(QString const&)), Qt::UniqueConnection);
+		this, SLOT(onInstantiationChanged(QString const&)), Qt::UniqueConnection);
 	connect(instantiationSelection_, SIGNAL(currentIndexChanged(QString const&)),
 		this, SLOT(onInstantiationChanged(QString const&)), Qt::UniqueConnection);
 	connect(fileSetSelection_, SIGNAL(currentIndexChanged(QString const&)),
@@ -94,7 +92,6 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> 
 
 	// Finally, evaluate the fields.
 	onViewChanged(viewSelection_->currentText());
-	onInstantiationInserted(instantiationSelection_->currentText());
 	onInstantiationChanged(instantiationSelection_->currentText());
 }
 
@@ -144,42 +141,19 @@ void ViewSelectionWidget::onFileSetStateChanged(bool on)
 //-----------------------------------------------------------------------------
 void ViewSelectionWidget::onViewChanged(QString const& selectedViewName)
 {
-	// Get matching view from the list.
-	QSharedPointer<View> selectedView = configuration_->setView(selectedViewName);
+	// Pass the selection to model, get the component instantiation reference.
+	QString cimpRef = configuration_->setView(selectedViewName);
 
-	// Should exist.
-	if (selectedView)
-	{
-		// For convenience, set the referred component instantiation as the default choice.
-		int index = instantiationSelection_->findText(selectedView->getComponentInstantiationRef());
+	// For convenience, set the referred component instantiation as the default choice.
+	int index = instantiationSelection_->findText(cimpRef);
 
-		if (index != -1)
-		{
-			instantiationSelection_->setCurrentIndex(index);
-			instantiationSelection_->setItemData(index, QColor(Qt::green), Qt::BackgroundRole);
-		}
+	if (index != -1)
+    {
+        instantiationSelection_->setItemData(instantiationSelection_->currentIndex(),
+            QColor(Qt::GlobalColor::white), Qt::BackgroundRole);
+		instantiationSelection_->setCurrentIndex(index);
+		instantiationSelection_->setItemData(index, QColor(Qt::green), Qt::BackgroundRole);
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewSelectionWidget::onInstantiationInserted()
-//-----------------------------------------------------------------------------
-void ViewSelectionWidget::onInstantiationInserted(QString const& selectedInstantiationName)
-{
-	if (!configuration_->setInstantiation(selectedInstantiationName) && !selectedInstantiationName.isEmpty())
-	{
-		// Warn user that a new instantiation will be created.
-		instantiationWarningLabel_->setText(tr("New component instantiation '%1' will be created.").arg(
-            selectedInstantiationName));
-	}
-	else
-	{
-		// Clear the warning.
-		instantiationWarningLabel_->setText("");
-	}
-
-	// Update the language.
-	setLanguage(configuration_->getCurrentLanguage());
 }
 
 //-----------------------------------------------------------------------------
@@ -187,6 +161,21 @@ void ViewSelectionWidget::onInstantiationInserted(QString const& selectedInstant
 //-----------------------------------------------------------------------------
 void ViewSelectionWidget::onInstantiationChanged(QString const& selectedInstantiationName)
 {
+    if (!configuration_->setInstantiation(selectedInstantiationName) && !selectedInstantiationName.isEmpty())
+    {
+        // Warn user that a new instantiation will be created.
+        instantiationWarningLabel_->setText(tr("New component instantiation '%1' will be created.").arg(
+            selectedInstantiationName));
+    }
+    else
+    {
+        // Clear the warning.
+        instantiationWarningLabel_->setText("");
+    }
+
+    // Update the language.
+    setLanguage(configuration_->getCurrentLanguage());
+
 	// Affects the available file sets.
 	fileSetSelection_->clear();
 	fileSetSelection_->addItems(*(configuration_->fileSetNames()));
@@ -198,10 +187,17 @@ void ViewSelectionWidget::onInstantiationChanged(QString const& selectedInstanti
 //-----------------------------------------------------------------------------
 void ViewSelectionWidget::setLanguage(QString selectedLanguage)
 {
+    // Inform the language setting to user.
 	instantiationLanguage_->setText(selectedLanguage);
 
+    // No target language means no further reaction.
+    if (targetLanguage_.isEmpty())
+    {
+        return;
+    }
+
 	// Select color depending on match.
-	if (!targetLanguage_.isEmpty() && selectedLanguage == targetLanguage_)
+	if (selectedLanguage == targetLanguage_)
 	{
 		instantiationLanguage_->setStyleSheet("QLabel { color : green; }");
 	}

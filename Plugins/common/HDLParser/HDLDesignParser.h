@@ -117,7 +117,7 @@ private:
      *
      *      @return The port bounds for the port map in an instance.
      */
-	QPair<QString, QString> logicalPortBoundsInInstance(QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<PortMap> portMap) const;
+	QPair<QString, QString> logicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance, QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<PortMap> portMap) const;
 
 	bool connectTieOff(QString tieOff, QSharedPointer<Port> port, DirectionTypes::Direction requiredDirection, QMap<QString, QString>& tiedValuesMap);
 
@@ -138,7 +138,7 @@ private:
 	 QSharedPointer<DesignConfiguration> designConf_;
 
      //! The active view for top component.
-     QString topComponentView_;
+     QSharedPointer<View> topComponentView_;
 
 };
 

@@ -149,7 +149,7 @@ void TopComponentParameterFinder::setComponent(QSharedPointer<Component> compone
 //-----------------------------------------------------------------------------
 // Function: TopComponentParameterFinder::setActiveView()
 //-----------------------------------------------------------------------------
-void TopComponentParameterFinder::setActiveView(QString const& view)
+void TopComponentParameterFinder::setActiveView(QSharedPointer<View> view)
 {
     activeView_ = view;
 }
@@ -160,31 +160,25 @@ void TopComponentParameterFinder::setActiveView(QString const& view)
 QList<QSharedPointer<Parameter> > TopComponentParameterFinder::activeViewParameters() const
 {
     QList<QSharedPointer<Parameter> > viewParameters;
-    
-    foreach (QSharedPointer<View> view, *component_->getViews())
+
+    if (!activeView_)
     {
-        if (view->name() == activeView_)
-        {
-            if (!view->getComponentInstantiationRef().isEmpty())
-            {
-                foreach (QSharedPointer<ComponentInstantiation> instantiation,
-                    *component_->getComponentInstantiations())
-                {
-                    if (instantiation->name() == view->getComponentInstantiationRef())
-                    {
-                        viewParameters.append(*instantiation->getParameters());
+        return viewParameters;
+    }
 
-                        foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
-                        {
-                            viewParameters.append(parameter);
-                        }
+    QSharedPointer<ComponentInstantiation> instantiation = component_->getModel()->
+        findComponentInstantiation(activeView_->getComponentInstantiationRef());
 
-                        break;
-                    }
-                }
-            }
-            break;
-        }
+    if (!instantiation)
+    {
+        return viewParameters;
+    }
+
+    viewParameters.append(*instantiation->getParameters());
+
+    foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
+    {
+        viewParameters.append(parameter);
     }
 
     return viewParameters;

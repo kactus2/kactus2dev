@@ -537,7 +537,7 @@ void tst_VerilogGenerator::testHierarchicalConnectionsWithExpressions()
 		"        .componentParameter  (1))\n"
 		"instance1(\n"
         "        // Interface: instanceInterface\n"
-        "        .instance_clk        (top_clk[componentParameter*2:4-2*2]));\n"
+        "        .instance_clk        (top_clk[1*2:4-2*2]));\n"
         "\n"
         "\n"
         "endmodule\n"));
@@ -1993,7 +1993,7 @@ void tst_VerilogGenerator::testInstanceComponentParametersAreUtilized()
 	senderComponent->getViews()->append(activeView);
 
 	QSharedPointer<Parameter> componentParameter(new Parameter());
-	componentParameter->setValueId("componentParameterId");
+	componentParameter->setValueId("cpId");
 	componentParameter->setName("componentParameter");
 	componentParameter->setValue("55");
 	componentParameter->setValueResolve("user");
@@ -2015,7 +2015,7 @@ void tst_VerilogGenerator::testInstanceComponentParametersAreUtilized()
 
 	QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
 	parameterOverride->setReferenceId("parameterId");
-	parameterOverride->setConfigurableValue("componentParameterId");
+	parameterOverride->setConfigurableValue("cpId");
 	senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
 	runGenerator(true);
