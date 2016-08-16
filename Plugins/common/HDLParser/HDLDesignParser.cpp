@@ -203,13 +203,13 @@ void HDLDesignParser::parseComponentInstances()
             parameter->setValue(instanceFormatter.formatReferringExpression(parameter->getValue()));
         }
 
-        /*foreach(QSharedPointer<Parameter> parameter, gi->parameters)
+        foreach(QSharedPointer<Parameter> parameter, gi->parameters)
         {
             foreach(QSharedPointer<Parameter> parameterSupplement, gi->parameters)
             {
                 parameter->setValue(parameter->getValue().replace(parameterSupplement->name(), parameterSupplement->getValue()));
             }
-        }*/
+        }
     }
 }
 

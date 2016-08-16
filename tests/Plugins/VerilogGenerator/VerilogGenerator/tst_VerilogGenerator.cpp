@@ -90,7 +90,8 @@ private slots:
 	void testInstanceComponentParametersAreUtilized();
 
 	void testParameterPropagationFromTop();
-	void testParameterPropagationFromTop2();
+    void testParameterPropagationFromTop2();
+    void testParameterPropagationFromTopWire();
 
 	void testParametersAreInOrder();
 	void testParametersAreInOrder2();
@@ -2023,7 +2024,7 @@ void tst_VerilogGenerator::testInstanceComponentParametersAreUtilized()
 	verifyOutputContains(
 		"    TestSender #(\n"
 		"        .componentParameter  (55),\n"
-		"        .moduleParameter     (componentParameter))\n"
+		"        .moduleParameter     (55))\n"
 		"    sender();");
 }
 
@@ -2104,7 +2105,7 @@ void tst_VerilogGenerator::testParameterPropagationFromTop2()
 	QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
 	moduleParameter->setValueId("parameterId");
 	moduleParameter->setName("moduleParameter");
-	moduleParameter->setValueResolve("user");
+	moduleParameter->setValueResolve("generated");
 	moduleParameter->setValue("senderID");
 
 	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
@@ -2116,7 +2117,7 @@ void tst_VerilogGenerator::testParameterPropagationFromTop2()
 	QSharedPointer<ComponentInstance> senderInstance = design_->getComponentInstances()->first();
 
 	QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
-	parameterOverride->setReferenceId("senderId");
+	parameterOverride->setReferenceId("senderID");
 	parameterOverride->setConfigurableValue("topID");
 	senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
@@ -2124,10 +2125,115 @@ void tst_VerilogGenerator::testParameterPropagationFromTop2()
 
 	verifyOutputContains(
 		"    TestSender #(\n"
-		"        .senderParameter     (47),\n"
-		"        .moduleParameter     (senderParameter))\n"
+		"        .senderParameter     (topParameter),\n"
+		"        .moduleParameter     (topParameter))\n"
 		"    sender();");
 }
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testParameterPropagationFromTopWire()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testParameterPropagationFromTopWire()
+{
+    QSharedPointer<Parameter> topParameter(new Parameter());
+    topParameter->setName("topParameter");
+    topParameter->setValueId("topID");
+    topParameter->setValue("10");
+    topComponent_->getParameters()->append(topParameter);
+
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+
+    QSharedPointer<View> senderView(new View("view"));
+    senderComponent->getViews()->append(senderView);
+
+    QSharedPointer<ComponentInstantiation> sendCimp(new ComponentInstantiation("senderCimp"));
+    senderView->setComponentInstantiationRef(sendCimp->name());
+    senderComponent->getComponentInstantiations()->append(sendCimp);
+
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
+    senderPort->setLeftBound("20-2");
+    senderPort->setRightBound("0");
+    senderComponent->getPorts()->append(senderPort);
+
+    QSharedPointer<Parameter> senderParameter(new Parameter());
+    senderParameter->setName("senderParameter");
+    senderParameter->setValueId("senderID");
+    senderParameter->setValue("47");
+    senderParameter->setValueResolve("user");
+    senderComponent->getParameters()->append(senderParameter);
+
+    QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
+    moduleParameter->setValueId("parameterId");
+    moduleParameter->setName("moduleParameter");
+    moduleParameter->setValueResolve("user");
+    moduleParameter->setValue("senderID");
+
+    sendCimp->getModuleParameters()->append(moduleParameter);
+
+    addInterfaceToComponent("data_bus", senderComponent);
+    senderComponent->getBusInterface("data_bus")->setInterfaceMode(General::MASTER);
+
+    mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
+    QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
+    QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
+    logPort->range_ = QSharedPointer<Range>( new Range("7*senderID","0") );
+
+    library_.addComponent(senderComponent);
+    QSharedPointer<ComponentInstance> senderInstance = addInstanceToDesign("sender", senderVLNV, senderView);
+
+    QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
+    parameterOverride->setReferenceId("senderID");
+    parameterOverride->setConfigurableValue("topID");
+    senderInstance->getConfigurableElementValues()->append(parameterOverride);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+
+    QSharedPointer<View> receiverView(new View("view"));
+    receiverComponent->getViews()->append(receiverView);
+
+    QSharedPointer<ComponentInstantiation> recvCimp(new ComponentInstantiation("recvCimp"));
+    receiverView->setComponentInstantiationRef(recvCimp->name());
+    receiverComponent->getComponentInstantiations()->append(recvCimp);
+
+    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in", DirectionTypes::IN));
+    receiverPort->setLeftBound("7+1");
+    receiverPort->setRightBound("0");
+    receiverComponent->getPorts()->append(receiverPort);
+
+    addInterfaceToComponent("data_bus", receiverComponent);
+    receiverComponent->getBusInterface("data_bus")->setInterfaceMode(General::SLAVE);
+    mapPortToInterface("data_in", "DATA", "data_bus", receiverComponent);
+
+    library_.addComponent(receiverComponent);
+    addInstanceToDesign("receiver", receiverVLNV, receiverView);
+
+    addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
+
+    runGenerator(true);
+
+    verifyOutputContains(
+        "module TestComponent #(\n"
+        "    parameter                              topParameter     = 10\n"
+        ") ();\n"
+        "\n"
+        "    wire [7*topParameter:0] sender_to_receiver_DATA;\n"
+        "\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
+        "    TestReceiver receiver(\n"
+        "        // Interface: data_bus\n"
+        "        .data_in             (sender_to_receiver_DATA[7+1:0]));\n"
+        "\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
+        "    TestSender #(\n"
+        "        .senderParameter     (topParameter),\n"
+        "        .moduleParameter     (topParameter))\n"
+        "    sender(\n"
+        "        // Interface: data_bus\n"
+        "        .data_out            (sender_to_receiver_DATA[7*topParameter:0]));");
+}
+
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::testTopLevelParametersAreInOrder()
 //-----------------------------------------------------------------------------
@@ -2209,9 +2315,11 @@ void tst_VerilogGenerator::testParametersAreInOrder2()
 	instantiation->getModuleParameters()->append(moduleParameterFourth);
 	instantiation->getModuleParameters()->append(moduleParameterFirst);
 
-	topComponent_->getComponentInstantiations()->append(instantiation);
+    topComponent_->getComponentInstantiations()->append(instantiation);
 
-	runGenerator("rtl");
+    addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
+
+    runGenerator("rtl");
 
 	verifyOutputContains(QString(
 		"module TestComponent #(\n"
