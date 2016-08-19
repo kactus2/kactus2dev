@@ -167,9 +167,11 @@ void ComponentVerilogWriter::writeParameter(QTextStream& outputStream, QSharedPo
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::indentation()
 //-----------------------------------------------------------------------------
-QString ComponentVerilogWriter::indentation() const
+QString ComponentVerilogWriter::indentation(int depth /*= 1*/) const
 {
-    return "    ";
+    QString indent = "    ";
+
+    return indent.repeated(depth);
 }
 
 //-----------------------------------------------------------------------------
@@ -282,33 +284,65 @@ void ComponentVerilogWriter::writeRegisters(QTextStream& outputStream) const
         return;
     }
 
-    outputStream << indentation() << "localparam memory_size = " << component_->totalRange << ";" << endl;
+    outputStream << indentation() << "localparam MEMORY_SIZE = " << component_->totalRange << ";" << endl;
     outputStream << indentation() << "localparam AUB = " << component_->aub << ";" << endl;
+    outputStream << indentation() << "reg [AUB-1:0] dat [0:MEMORY_SIZE-1];" << endl;
+
+    outputStream << indentation() << "genvar gen_iterator1;" << endl;
+    outputStream << indentation() << "genvar gen_iterator2;" << endl;
 
     foreach(QSharedPointer<GenerationRemap> grm, component_->remaps)
     {
         foreach(QSharedPointer<GenerationAddressBlock> gab, grm->blocks)
         {
+            QString abName = grm->name + "_" + gab->name;
+
             outputStream << endl;
 
-            outputStream << indentation() << "localparam " << grm->name << "_"  << gab->name << "_base = " << gab->baseAddress_ << ";" << endl;
+            outputStream << indentation() << "localparam " << abName << "_BASE = " << gab->baseAddress_ << ";" << endl;
 
             foreach(QSharedPointer<GenerationRegister> gr, gab->registers)
             {
-                outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_dim = " << gr->dimension_ << ";" << endl;
-                outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_offset = " << gr->offset_ << ";" << endl;
-                outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_width = " << gr->size_ << ";" << endl;
-                outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_AU_WIDTTH = $ceil($ceil(" << gr->size_ << ")/AUB);" << endl;
+               QString regName = abName + "_" + gr->name;
+
+                outputStream << indentation(2) << "localparam " << regName << "_DIM = " << gr->dimension_ << ";" << endl;
+                outputStream << indentation(2) << "localparam " << regName << "_OFFSET = " << gr->offset_ << ";" << endl;
+                outputStream << indentation(2) << "localparam " << regName << "_WIDTH = " << gr->size_ << ";" << endl;
+                outputStream << indentation(2) << "localparam " << regName << "_AU_WIDTH = $ceil($ceil(" << gr->size_ << ")/AUB);" << endl;
+                outputStream << indentation(2) << "wire [" << regName << "_WIDTH-1:0] " << regName << " [0:" << regName << "_DIM-1];" << endl;
+
+                outputStream << endl;
+
+                outputStream << indentation() << "generate" << endl;
+                outputStream << indentation() << "for (gen_iterator1= 0; gen_iterator1 < " << regName << "_DIM; gen_iterator1 = gen_iterator1 + 1)" << endl;
+                outputStream << indentation() << "begin" << endl;
+                outputStream << indentation(2) << "for (gen_iterator2 = 0; gen_iterator2 < " << regName << "_AU_WIDTH; gen_iterator2 = gen_iterator2 + 1)" << endl;
+                outputStream << indentation(2) << "begin" << endl;
+                outputStream << indentation(3) << indentation() << "assign " << regName << "[gen_iterator1][(gen_iterator2*AUB)+:AUB] = dat[gen_iterator1*" << regName << "_AU_WIDTH+gen_iterator2];" << endl;
+                outputStream << indentation(2) << "end" << endl;
+                outputStream << indentation() << "end" << endl;
+                outputStream << indentation() << "endgenerate" << endl;
 
                 outputStream << endl;
 
                 foreach(QSharedPointer<GenerationField> gf, gr->fields)
                 {
-                    outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_" << gf->name << "_width = " << gf->bitWidth_ << ";" << endl;
-                    outputStream << indentation() << indentation() << "localparam " << grm->name << "_" << gab->name << "_" << gr->name << "_" << gf->name << "_offset = " << gf->bitOffset_ << ";" << endl;
-                }
+                    QString fieldName = regName + "_" + gf->name;
+                    outputStream << indentation(2) << "localparam " << fieldName << "_WIDTH = " << gf->bitWidth_ << ";" << endl;
+                    outputStream << indentation(2) << "localparam " << fieldName << "_OFFSET = " << gf->bitOffset_ << ";" << endl;
+                    outputStream << indentation(2) << "wire [" << fieldName << "_WIDTH-1:0] " << fieldName << " [0:" << regName << "_DIM-1];" << endl;
 
-                outputStream << endl;
+                    outputStream << endl;
+
+                    outputStream << indentation(2) << "generate" << endl;
+                    outputStream << indentation(2) << "for (gen_iterator1= 0; gen_iterator1 < " << regName << "_DIM; gen_iterator1 = gen_iterator1 + 1)" << endl;
+                    outputStream << indentation(2) << "begin" << endl;
+                    outputStream << indentation(3) << "assign " << fieldName << "[gen_iterator1] = " << regName << "[gen_iterator1] >> " << fieldName << "_OFFSET;" << endl;
+                    outputStream << indentation(2) << "end" << endl;
+                    outputStream << indentation(2) << "endgenerate" << endl;
+
+                    outputStream << endl;
+                }
             }
         }
     }

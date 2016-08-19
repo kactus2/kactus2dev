@@ -156,7 +156,7 @@ private:
      *
      *      @return The indentation to use.
      */
-    QString indentation() const;
+    QString indentation(int depth = 1) const;
 
     //-----------------------------------------------------------------------------
     // Data.

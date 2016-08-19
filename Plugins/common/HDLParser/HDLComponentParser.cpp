@@ -149,7 +149,15 @@ void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSha
 
         QSharedPointer<GenerationRegister> gr(new GenerationRegister);
 
-        gr->dimension_ = formatter_->formatReferringExpression(r->getDimension());
+        if (r->getDimension().isEmpty())
+        {
+            gr->dimension_ = "1";
+        }
+        else
+        {
+            gr->dimension_ = formatter_->formatReferringExpression(r->getDimension());
+        }
+
         gr->offset_ = formatter_->formatReferringExpression(r->getAddressOffset());
         gr->size_ = formatter_->formatReferringExpression(r->getSize());
         gr->name = r->name();
