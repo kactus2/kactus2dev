@@ -1,251 +1,172 @@
 //-----------------------------------------------------------------------------
 // File: MemoryItem.h
 //-----------------------------------------------------------------------------
-// Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
-// Date: 17.9.2012
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 03.08.2016
 //
 // Description:
-// Declares the memory map item class.
+// A memory in a connectivity graph.
 //-----------------------------------------------------------------------------
 
 #ifndef MEMORYITEM_H
 #define MEMORYITEM_H
 
-#include "MemoryBaseItem.h"
-
-#include <designEditors/common/diagramgrid.h>
-#include <common/graphicsItems/GraphicsItemTypes.h>
-#include <common/graphicsItems/IGraphicsItemStack.h>
-#include <common/layouts/IVGraphicsLayout.h>
-
-#include <QGraphicsRectItem>
+#include <QString>
 #include <QSharedPointer>
-
-class AddressBlock;
-class Component;
-class MemoryMap;
-class LibraryInterface;
-class IGraphicsItemStack;
-class AddressSectionItem;
-class MemoryColumn;
+#include <QVector>
 
 //-----------------------------------------------------------------------------
-//! MemoryItem class.
+//! A memory in a connectivity graph.
 //-----------------------------------------------------------------------------
-class MemoryItem : public MemoryBaseItem, public IGraphicsItemStack
+class MemoryItem 
 {
-    Q_OBJECT 
-
 public:
-    enum { Type = GFX_TYPE_MEMORY_ITEM };
-
-    /*!
-     *  Constructor.
-     *  
-     *      @param [in] libInterface    The library interface.
-     *      @param [in] instanceName    The name of the component instance containing the memory map.
-     *      @param [in] component       The component.
-     *      @param [in] memoryMap       The memory map.
-     *      @param [in] parent          The parent graphics item.
-     */
-    MemoryItem(LibraryInterface* libInterface, QString const& instanceName,
-               QSharedPointer<Component> component,
-               QSharedPointer<MemoryMap> memoryMap, QGraphicsItem *parent = 0);
 
 	/*!
-     *  Destructor.
-     */
-	virtual ~MemoryItem();
+	 *  The constructor.
+	 *
+	 *      @param [in] name   The name of the memory.
+	 */
+	MemoryItem(QString const& name);
+
+	//! The destructor.
+	~MemoryItem();
 
     /*!
-     *  Updates the component item to reflect the current state of the component model.
-     */
-    virtual void updateVisuals();
-
-    /*!
-     *  Converts the given address to this address space.
+     *  Gets the name of the memory.
      *
-     *      @param [in] address The original address to convert.
-     *      @param [in] source  The source for the original address.
+     *      @return The name of the memory.
      */
-    virtual quint64 convertAddress(quint64 address, MemoryBaseItem* source) const;
+    QString getName() const;
 
     /*!
-     *  Returns the name of the component instance.
-     */
-    QString const& getInstanceName() const;
-
-    /*!
-     *  Returns the parent component.
-     */
-    QSharedPointer<Component const> getComponent() const;
-
-    /*!
-     *  Returns the actual memory map.
-     */
-    QSharedPointer<MemoryMap> getMemoryMap();
-
-    /*!
-     *  Returns the actual memory map.
-     */
-    QSharedPointer<MemoryMap const> getMemoryMap() const;
-
-    /*!
-     *  Returns the library interface.
-     */
-    LibraryInterface* getLibraryInterface();
-
-    /*!
-     *  Returns the parent graphics item stack.
-     */
-    IGraphicsItemStack* getParentStack();
-
-    /*!
-     *  Returns the list of address block sections.
-     */
-    virtual QList<AddressSectionItem*> const& getSections() const;
-
-    int type() const { return Type; }
-
-    //-----------------------------------------------------------------------------
-    // IGraphicsItemStack implementation.
-    //-----------------------------------------------------------------------------
-
-    /*!
-     *  Adds an item to the system column.
+     *  Sets an identifier for the memory.
      *
-     *      @param [in] item  The item to add.
-     *      @param [in] load  If true, the item is being loaded from a design.
+     *      @param [in] identifier   The identifier to set.
      */
-    void addItem(QGraphicsItem* item, bool load = false);
-
+    void setIdentifier(QString const& identifier);
+    
     /*!
-     *  Removes an item from the system column.
+     *  Gets the memory identifier.
      *
-     *      @param [in] item the item to remove.
+     *      @return The identifier for the memory.
      */
-    void removeItem(QGraphicsItem* item);
+    QString getIdentifier() const;
 
     /*!
-     *  Called when an item is moved within the column.
+     *  Sets the address for the memory.
      *
-     *      @param [in] item       The item that has been moved.
+     *      @param [in] address   The memory address to set.
      */
-    void onMoveItem(QGraphicsItem* item);
+    void setAddress(QString const& address);
 
     /*!
-     *  Called when an item is released from being moved by mouse.
+     *  Gets the memory address.
      *
-     *      @param [in] item The item that has been released.
+     *      @return The address for the memory.
      */
-    void onReleaseItem(QGraphicsItem* item);
+    QString getAddress() const;
 
     /*!
-     *  Updates the item positions so that there are no violations of the stacking rule.
-     */
-    void updateItemPositions();
-
-    /*!
-     *  Maps the given local position to scene coordinates.
-     */
-    QPointF mapStackToScene(QPointF const& pos) const;
-
-    /*!
-     *  Maps the given scene position to local coordinates.
-     */
-    QPointF mapStackFromScene(QPointF const& pos) const;
-
-    /*!
-     *  Returns true if the stack is allowed to contain the given item.
+     * Sets the range for the memory.
      *
-     *      @param [in] item The item to test for.
+     *      @param [in] range   The range to set.
      */
-    bool isItemAllowed(QGraphicsItem* item) const;
+    void setRange(QString const& range);
 
     /*!
-     *  Returns the content type.
-     */
-    ColumnTypes::ColumnContentType getContentType() const;
-
-protected:
-    QVariant itemChange(GraphicsItemChange change, const QVariant &value);
-
-    // Called when the user presses the mouse button.
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
-    //! Called when the user moves the column with the mouse.
-    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
-
-    //! Called when the user release the mouse.
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
-
-    /*!
-     *  Updates the name label with the given text.
+     *  Gets the range for the memory.
      *
-     *      @param [in] text The text to display in the label.
+     *      @return The range for the memory.
      */
-    virtual void updateNameLabel(QString const& text);
+    QString getRange() const;
 
     /*!
-     *  Gets the height.
-     *  
-     *      @return The height.
+     *  Sets the width for the memory.
+     *
+     *      @param [in] width   The memory width to set.
      */
-    qreal getHeight() const;
+    void setWidth(QString const& width);
 
     /*!
-     *  Updates the size.
+     *  Gets the memory width in bits.
+     *
+     *      @return The width of the memory.
      */
-    void updateSize();
+    QString getWidth() const;
+
+    /*!
+     *  Sets the size for the memory.
+     *
+     *      @param [in] size    The size to set.
+     */
+    void setSize(QString const& size);
+
+    /*!
+     *  Gets the size for the memory.
+     *
+     *      @return The memory size.
+     */
+    QString getSize() const;
+
+    /*!
+     *  Sets the offset for the memory.
+     *
+     *      @param [in] offset   The offset to set.
+     */
+    void setOffset(QString const& offset);
+
+    /*!
+     *  Gets the offset for the memory.
+     *
+     *      @return The memory offset.
+     */
+    QString getOffset() const;
+
+    /*!
+     *  Adds a sub-element for the memory.
+     *
+     *      @param [in] child   The sub-element to add.
+     */
+    void addChild(QSharedPointer<MemoryItem> child);
+
+    /*!
+     *  Gets the sub-elements for the memory.
+     *
+     *      @return The sub-elements for the memory.
+     */
+    QVector<QSharedPointer<MemoryItem> > getChildItems();
 
 private:
-    // Disable copying.
-    MemoryItem(MemoryItem const& rhs);
-    MemoryItem& operator=(MemoryItem const& rhs);
 
-    enum
-    {
-        WIDTH = 160,
-        NAME_COLUMN_WIDTH = 40,
-        MIN_HEIGHT = 120,
-        SPACING = 10,
-        SECTION_X = NAME_COLUMN_WIDTH / 2
-    };
+	// Disable copying.
+	MemoryItem(MemoryItem const& rhs);
+	MemoryItem& operator=(MemoryItem const& rhs);
 
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
+    //! The name of the memory element.
+    QString name_;
 
-    //! The library interface.
-    LibraryInterface* libInterface_;
+    //! The identifier for the memory.
+    QString identifier_;
 
-    //! The name of the component instance containing the memory map.
-    QString instanceName_;
+    //! The address for the memory.
+    QString address_;
 
-    //! The component which contains the memory map.
-    QSharedPointer<Component> component_;
+    //! The range for the memory.
+    QString range_;
 
-    //! The memory map.
-    QSharedPointer<MemoryMap> memoryMap_;
+    //! The bit width for the memory.
+    QString width_;
 
-    //! The name label.
-    QGraphicsTextItem* nameLabel_;
+    //! The size of the memory.
+    QString size_;
 
-    //! AUB label.
-    QGraphicsTextItem* aubLabel_;
+    //! The offset of the memory.
+    QString offset_;
 
-    //! The layout for the sections.
-    QSharedPointer< IVGraphicsLayout<AddressSectionItem> > sectionLayout_;
-
-    //! The address sections for the address blocks.
-    QList<AddressSectionItem*> sections_;
-
-    //! The old column from where the mouse drag event began.
-    MemoryColumn* oldColumn_;
-    QPointF oldPos_;
+    //! The sub-elements of the memory.
+    QVector<QSharedPointer<MemoryItem> > childItems_;
 };
-
-//-----------------------------------------------------------------------------
 
 #endif // MEMORYITEM_H

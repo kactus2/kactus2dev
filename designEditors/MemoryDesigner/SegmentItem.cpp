@@ -49,15 +49,19 @@ SegmentItem::SegmentItem(QSharedPointer<Component> component,
     // First sort address blocks based on their base address.
     QList< QSharedPointer<AddressBlock> > blocks;
 
-    foreach (QSharedPointer<MemoryBlockBase> item, *addressSpace_->getLocalMemoryMap()->getMemoryBlocks())
+    if (addressSpace_->getLocalMemoryMap())
     {
-        QSharedPointer<AddressBlock> block = item.dynamicCast<AddressBlock>();
-
-        if (block != 0)
+        foreach (QSharedPointer<MemoryBlockBase> item, *addressSpace_->getLocalMemoryMap()->getMemoryBlocks())
         {
-            blocks.append(block);
+            QSharedPointer<AddressBlock> block = item.dynamicCast<AddressBlock>();
+
+            if (block != 0)
+            {
+                blocks.append(block);
+            }
         }
     }
+
 
     if (!blocks.empty())
     {

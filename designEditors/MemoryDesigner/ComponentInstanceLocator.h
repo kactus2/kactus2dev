@@ -14,13 +14,26 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+class ActiveInterface;
+class AddressBlock;
+class BusInterface;
 class LibraryInterface;
 class ConfigurableVLNVReference;
-class Design;
-class DesignConfiguration;
 class ComponentInstance;
 class Component;
+class Design;
+class DesignConfiguration;
+class Field;
+class MemoryMap;
+class Register;
 class View;
+
+class ConnectivityConnection;
+class ConnectivityGraph;
+class ExpressionParser;
+class ConnectivityComponent;
+class ConnectivityInterface;
+class MemoryItem;
 
 #include <QString>
 #include <QSharedPointer>
@@ -33,45 +46,26 @@ class ComponentInstanceLocator
 
 public:
 
-    //! The target instance data.
-    struct MatchingInstance
-    {
-        //! Name of the component instance.
-        QString instanceName_;
-
-        //! Unique ID of the component instance.
-        QString instanceUUID_;
-
-        //! The selected active view of the component instance.
-        QString activeView_;
-
-        //! The VLNV reference to the instantiated component.
-        QSharedPointer<ConfigurableVLNVReference> componentVLNV_;
-    };
-
     /*!
-     *  Constructor.
+     *  The constructor.
      *
      *      @param [in] library     The library interface.
      */    
     ComponentInstanceLocator(LibraryInterface* library);
 
-    /*!
-     *  Destructor.
-     */
+    //! The destructor.
     ~ComponentInstanceLocator();
-
+   
     /*!
-     *  Finds the component instances from a given design and its design configuration. Includes component
-     *  instances from hierarchical designs.
+     *  Creates a connectivity graph from the given design and its underlying hierarchy.
      *
      *      @param [in] design                  The selected design.
      *      @param [in] designConfiguration     The selected design configuration.
      *
-     *      @return A list of instance data.
+     *      @return Connectivity graph for the design hierarchy.
      */
-    QList<MatchingInstance> getMatchingInstances(QSharedPointer<Design> design,
-        QSharedPointer<const DesignConfiguration> designConfiguration) const;
+    QSharedPointer<ConnectivityGraph> createConnectivityGraph(QSharedPointer<const Design> design, 
+        QSharedPointer<const DesignConfiguration> designConfiguration);
 
 private:
     // Disable copying.
@@ -79,16 +73,127 @@ private:
     ComponentInstanceLocator& operator=(ComponentInstanceLocator const& rhs);
 
     /*!
-     *  Get the required data from a given component instance.
+     *  Creates graph elements from the given design and configuration.
      *
-     *      @param [in] instance                The selected component instance.
-     *      @param [in] designConfiguration     The design configuration of the design containing the component
-     *                                          instance.
-     *
-     *      @return Instance data from the selected component instance.
+     *      @param [in] design                  The design to analyze and transform into graph.
+     *      @param [in] designConfiguration     The design configuration to analyze and transform into graph.
+     *      @param [in] topInstance             The name of the top component instance.
+     *      @param [in/out] graph               The graph to add elements into.
      */
-    MatchingInstance getInstanceData(QSharedPointer<ComponentInstance> instance,
-        QSharedPointer<const DesignConfiguration> designConfiguration) const;
+    void analyzeDesign(QSharedPointer<const Design> design, 
+        QSharedPointer<const DesignConfiguration> designConfiguration, QString const& topInstance, 
+        QSharedPointer<ConnectivityGraph> graph);
+       
+    /*!
+     *  Creates instances and interfaces from the given design and adds them into the graph.
+     *
+     *      @param [in] design                  The design to analyze and transform into graph.
+     *      @param [in] designConfiguration     The design configuration to analyze and transform into graph.
+     *      @param [in/out] graph               The graph to add elements into.
+     */
+    void addInstancesAndInterfaces(QSharedPointer<const Design> design,
+        QSharedPointer<const DesignConfiguration> designConfiguration, QSharedPointer<ConnectivityGraph> graph);
+         
+    /*!
+     *  Creates an interface representation for a bus interface.
+     *
+     *      @param [in] busInterface   The bus interface to transform into the graph.
+     *      @param [in] instanceNode   The instance containing the interface.
+     *
+     *      @return The graph representation for the interface.
+     */
+    QSharedPointer<ConnectivityInterface> createInterfaceData(QSharedPointer<BusInterface> busInterface,
+        QSharedPointer<ConnectivityComponent> instanceNode);
+
+    /*!
+     *  Creates a component instance representation for a component instance.
+     *
+     *      @param [in] instance      The component instance to transform into the graph.
+     *      @param [in] component     The component for the instance.
+     *      @param [in] activeView    The active view for the instance.
+     *
+     *      @return The graph representation for the component instance.
+     */
+    QSharedPointer<ConnectivityComponent> createInstanceData(QSharedPointer<ComponentInstance> instance,
+        QSharedPointer<const Component> component, QString const& activeView) const;
+    
+    /*!
+     *  Adds all address spaces to a component instance in the graph.
+     *
+     *      @param [in/out] instance    The component instance to add the address spaces into.
+     *      @param [in] component       The component for the instance.
+     */
+    void addAddressSpaceMemories(QSharedPointer<ConnectivityComponent> instance,
+        QSharedPointer<const Component> component) const;
+
+    /*!
+     *  Adds all memory maps to a component instance in the graph.
+     *
+     *      @param [in] instanceData    The component instance representation to add memory maps into.
+     *      @param [in] component       The component for the instance.     
+     */
+    void addMemoryMapMemories(QSharedPointer<ConnectivityComponent> instanceData,
+        QSharedPointer<const Component> component) const;
+
+    /*!
+     *  Creates a representation for a memory map in a component instance.
+     *
+     *      @param [in] map                     The memory map to transform into the graph.
+     *      @param [in] addressableUnitBits     The number of addressable unit bits in the memory map.
+     *      @param [in] containingInstance      The component instance containing the memory map.
+     *
+     *      @return Representation for the memory map.
+     */
+    QSharedPointer<MemoryItem> createMemoryMapData(QSharedPointer<MemoryMap> map, int addressableUnitBits, 
+        QSharedPointer<ConnectivityComponent> containingInstance) const;
+
+    /*!
+     *  Adds a all memory remap representations into a component instance representation.
+     *
+     *      @param [in] map                     The memory map containing the memory remaps.
+     *      @param [in] mapItem                 The memory map representation for the memory map.
+     *      @param [in] addressableUnitBits     The number of addressable unit bits in the memory map.
+     *      @param [in] containingInstance      The component instance containing the memory map and remaps.
+     */
+    void addMemoryRemapData(QSharedPointer<MemoryMap> map, QSharedPointer<MemoryItem> mapItem, 
+        int addressableUnitBits, QSharedPointer<ConnectivityComponent> containingInstance) const;
+
+    /*!
+     *  Creates a representation for an address block.
+     *
+     *      @param [in] block                   The address block to transform into the graph.
+     *      @param [in] mapIdentifier           Identifier for the containing memory map.
+     *      @param [in] addressableUnitBits     The number of addressable unit bits in the memory map.
+     *
+     *      @return Representation for the address block.
+     */
+    QSharedPointer<MemoryItem> createMemoryBlock(QSharedPointer<AddressBlock> block, QString const& mapIdentifier,
+        int addressableUnitBits) const;
+
+    /*!
+     *  Adds a register representations into an address block representation.
+     *
+     *      @param [in] reg                     The register to add.
+     *      @param [in] baseAddress             The base address for the address block.
+     *      @param [in] addressableUnitBits     The number of addressable unit bits in the memory map.
+     *      @param [in] blockIdentifier         Identifier for the containing address block.
+     *      @param [in/out] blockItem           The address block to the add register into.
+     */
+    void addRegisterData(QSharedPointer<Register> reg, int baseAddress, int addressableUnitBits,
+        QString const& blockIdentifier, QSharedPointer<MemoryItem> blockItem) const;
+
+    /*!
+     *  Creates a representation for a field within a register.
+     *
+     *      @param [in] field                   The field to transform into the graph.
+     *      @param [in] registerIdentifier      Identifier for the containing register.
+     *      @param [in] regAddress              The base address for the containing register.
+     *      @param [in] addressableUnitBits     The number of addressable unit bits in the memory map.
+     *
+     *      @return Representation for the field.
+     */
+    QSharedPointer<MemoryItem> createField(QSharedPointer<Field> field, QString const& registerIdentifier,
+        int regAddress, int addressableUnitBits) const;
 
     /*!
      *  Get the child instances of a hierarchical component instance.
@@ -97,12 +202,11 @@ private:
      *      @param [in] instancedComponent      The instanced component.
      *      @param [in] designConfiguration     Design configuration of the design containing the component
      *                                          instance.
-     *
-     *      @return A list of instance data.
      */
-    QList<MatchingInstance> getChildInstancesFromComponent(QSharedPointer<ComponentInstance> instance,
-        QSharedPointer<const Component> instancedComponent,
-        QSharedPointer<const DesignConfiguration> designConfiguration) const;
+    void addSubInstances(QSharedPointer<ConnectivityComponent> topInstance,
+        QSharedPointer<const Component> topComponent,
+        QSharedPointer<const DesignConfiguration> designConfiguration,
+        QSharedPointer<ConnectivityGraph> graph);
 
     /*!
      *  Get the design configuration from the selected view.
@@ -124,29 +228,39 @@ private:
      *
      *      @return The design referenced by the selected view.
      */
-    QSharedPointer<Design> getHierarchicalDesign(QSharedPointer<const Component> component,
-        QSharedPointer<View> hierarchicalView, QSharedPointer<const DesignConfiguration> designConfiguration)
-        const;
+    QSharedPointer<const Design> getHierarchicalDesign(QSharedPointer<const Component> component,
+        QSharedPointer<View> hierarchicalView, QSharedPointer<const DesignConfiguration> designConfiguration) const;
 
     /*!
      *  Gets the VLNV of the design referenced by the selected view.
      *
      *      @param [in] component               Component containing the selected view.
      *      @param [in] hierarchicalView        The selected view.
-     *      @param [in] designConfiguration     Design configuration referenced by the selected view.
      *
      *      @return The VLNV of the design referenced by the selected view.
      */
     VLNV getHierarchicalDesignVLNV(QSharedPointer<const Component> component,
-        QSharedPointer<View> hierarchicalView, QSharedPointer<const DesignConfiguration> designConfiguration)
-        const;
+        QSharedPointer<View> hierarchicalView) const;
+    
+    /*!
+     *  Creates connections from the given design and adds them into the graph.
+     *
+     *      @param [in] design              The design to analyze and transform into graph.
+     *      @param [in] topInstanceName     The name of the top component instance.
+     *      @param [in/out] graph           The graph to add elements into.
+     */
+    void addConnections(QSharedPointer<const Design> design, QString const& topInstanceName,
+        QSharedPointer<ConnectivityGraph> graph);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The library interface.
-    LibraryInterface* libraryHandler_;
+    LibraryInterface* library_;
+
+    //! Parser for resolving expressions.
+    ExpressionParser* expressionParser_;
 };
 
 //-----------------------------------------------------------------------------

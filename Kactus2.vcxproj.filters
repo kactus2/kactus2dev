@@ -1846,9 +1846,6 @@
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignWidget.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\MemoryItem.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\MemoryDesigner\SegmentItem.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
@@ -1871,9 +1868,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_MemoryDesignWidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MemoryItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SWComponentItem.cpp">
@@ -4291,6 +4285,21 @@
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardBusDefinitionPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\ConnectivityGraph.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\ConnectivityConnection.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\ConnectivityInterface.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\ConnectivityComponent.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4738,9 +4747,6 @@
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\MemoryDesigner\MemoryDesignWidget.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\MemoryDesigner\MemoryItem.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\SWComponentItem.h">
@@ -6424,6 +6430,21 @@
     </ClInclude>
     <ClInclude Include="editors\BusDefinitionEditor\LogicalPortColumns.h">
       <Filter>Header Files\editors\BusDefintionEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\ConnectivityGraph.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\MemoryItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\ConnectivityConnection.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\ConnectivityInterface.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\ConnectivityComponent.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

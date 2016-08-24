@@ -1,561 +1,149 @@
 //-----------------------------------------------------------------------------
 // File: MemoryItem.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus2
-// Author: Joni-Matti M‰‰tt‰
-// Date: 17.9.2012
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 03.08.2016
 //
 // Description:
-// Implements the memory map item class.
+// A memory in a connectivity graph.
 //-----------------------------------------------------------------------------
 
 #include "MemoryItem.h"
 
-#include "AddressSectionItem.h"
-#include "AddressBlockItem.h"
-#include "AddressSpaceItem.h"
-#include "MemoryColumn.h"
-#include "MemoryDesignDiagram.h"
-
-#include <IPXACTmodels/common/VLNV.h>
-
-#include <common/utils.h>
-#include <designEditors/common/DesignDiagram.h>
-#include <common/KactusColors.h>
-#include <common/layouts/VStackedLayout.h>
-
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/MemoryMap.h>
-#include <IPXACTmodels/Component/AddressBlock.h>
-
-#include <QFont>
-#include <QTextDocument>
-#include <QPainter>
-
-namespace
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::MemoryItem()
+//-----------------------------------------------------------------------------
+MemoryItem::MemoryItem(QString const& name): name_(name), identifier_(), address_(), range_(), width_(), size_(),
+    offset_(), childItems_()
 {
-    /*!
-     *  Sorting operator for sorting address blocks to ascending base address.
-     */
-    bool addressBlockSortOp(QSharedPointer<AddressBlock const> lhs, QSharedPointer<AddressBlock const> rhs)
-    {
-        return Utils::str2Uint(lhs->getBaseAddress()) < Utils::str2Uint(rhs->getBaseAddress());
-    }
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem()
-//-----------------------------------------------------------------------------
-MemoryItem::MemoryItem(LibraryInterface* libInterface, QString const& instanceName,
-                       QSharedPointer<Component> component,
-                       QSharedPointer<MemoryMap> memoryMap, QGraphicsItem *parent)
-    : MemoryBaseItem(parent),
-      libInterface_(libInterface),
-      instanceName_(instanceName),
-      component_(component),
-      memoryMap_(memoryMap),
-      nameLabel_(0),
-      aubLabel_(),
-      sectionLayout_(new VStackedLayout<AddressSectionItem>(SPACING)),
-      sections_(),
-      oldColumn_(0),
-      oldPos_()
-{
-    Q_ASSERT_X(component, "MemoryItem constructor",
-        "Null component-pointer given as parameter");
-
-    setFlag(ItemSendsGeometryChanges);
-    setFlag(ItemIsSelectable);
-    setFlag(ItemIsMovable);
-    setRect(QRectF(-WIDTH / 2, 0, NAME_COLUMN_WIDTH, 80));
-
-    // Create the name label.
-    nameLabel_ = new QGraphicsTextItem(memoryMap->name(), this);
-    QFont font = nameLabel_->font();
-    font.setStyleStrategy(QFont::NoAntialias);
-    font.setWeight(QFont::Bold);
-    nameLabel_->setFont(font);
-    nameLabel_->setRotation(-90.0);
-
-    // Create the AUB label.
-    aubLabel_ = new QGraphicsTextItem(this);
-    font = aubLabel_->font();
-    font.setPixelSize(9);
-    font.setWeight(QFont::Bold);
-    aubLabel_->setFont(font);
-    aubLabel_->setTextWidth(NAME_COLUMN_WIDTH + 2);
-    aubLabel_->setPos(-WIDTH / 2, 0.0);
-    aubLabel_->setHtml("<center>AUB<br>" + memoryMap->getAddressUnitBits() + "</center>");
-    
-    // Parse address blocks and add a section for each of them.
-    // "Holes" are visualized as 'no memory'.
-
-    // First sort address blocks based on their base address.
-    QList< QSharedPointer<AddressBlock> > blocks;
-    
-    foreach (QSharedPointer<MemoryBlockBase> item, *memoryMap->getMemoryBlocks())
-    {
-        QSharedPointer<AddressBlock> block = item.dynamicCast<AddressBlock>();
-
-        if (block != 0)
-        {
-            blocks.append(block);
-        }
-    }
-
-    if (!blocks.empty())
-    {
-        qSort(blocks.begin(), blocks.end(), &addressBlockSortOp);
-        quint64 curAddress = Utils::str2Uint(blocks.first()->getBaseAddress());
-
-        foreach (QSharedPointer<AddressBlock> block, blocks)
-        {
-            quint64 startAddress = Utils::str2Uint(block->getBaseAddress());
-            quint64 range = Utils::str2Uint(block->getRange());
-
-            // Check if there is a hole in the memory before the next address block.
-            if (startAddress > curAddress)
-            {
-                AddressSectionItem* section = new AddressBlockItem(component_, memoryMap_,
-                                                                   tr("no memory"), curAddress, 
-                                                                   startAddress - curAddress, this);
-                section->setColor(KactusColors::ADDRESS_SEGMENT_UNSEGMENTED);
-                section->setPos(0.0, getHeight());
-                addItem(section);
-            }
-
-            AddressSectionItem* section = new AddressBlockItem(component_, memoryMap_,
-                                                               block->name(), startAddress, range, this);
-            section->setColor(KactusColors::MEMORY_BLOCK);
-            section->setPos(0.0, getHeight());
-
-            if (block->getUsage() == General::MEMORY)
-            {
-                switch (block->getAccess())
-                {
-                case AccessTypes::READ_ONLY:
-                    {
-                        section->setUsageType(AddressSectionItem::USAGE_READ_ONLY);
-                        break;
-                    }
-
-                case AccessTypes::READ_WRITE:
-                    {
-                        section->setUsageType(AddressSectionItem::USAGE_READ_WRITE);
-                        break;
-                    }
-
-                case AccessTypes::READ_WRITEONCE:
-                    {
-                        section->setUsageType(AddressSectionItem::USAGE_READ_WRITE_ONCE);
-                        break;
-                    }
-
-                default:
-                    {
-                        section->setUsageType(AddressSectionItem::USAGE_UNSPECIFIED);
-                        break;
-                    }
-                }
-            }
-            else if (block->getUsage() == General::REGISTER)
-            {
-                section->setUsageType(AddressSectionItem::USAGE_REGISTERS);
-            }
-
-            addItem(section);
-
-            curAddress = startAddress + range;
-        }
-    }
-
-    updateNameLabel(component->getVlnv().getName() + "<br>" + memoryMap->name());
-    updateVisuals();
-    updateSize();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~MemoryItem()
+// Function: MemoryItem::~MemoryItem()
 //-----------------------------------------------------------------------------
 MemoryItem::~MemoryItem()
 {
-    emit destroyed(this);
+
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateComponent()
+// Function: MemoryItem::getName()
 //-----------------------------------------------------------------------------
-void MemoryItem::updateVisuals()
+QString MemoryItem::getName() const
 {
-//     VLNV* vlnv = component_->getVlnv();
-//     QString toolTipText = "";
-//     setToolTip(toolTipText);
-
-    if (component_->isBus())
-    {
-        setBrush(QBrush(KactusColors::HW_BUS_COMPONENT)); 
-    }
-    else
-    {
-        setBrush(QBrush(KactusColors::HW_COMPONENT));
-    }
+    return name_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: itemChange()
+// Function: MemoryItem::setIdentifier()
 //-----------------------------------------------------------------------------
-QVariant MemoryItem::itemChange(GraphicsItemChange change, const QVariant &value)
+void MemoryItem::setIdentifier(QString const& identifier)
 {
-    if (change == ItemPositionChange)
-    {
-        QPointF newPos = value.toPointF();
-        return snapPointToGrid(newPos);
-    }
-
-    return QGraphicsItem::itemChange(change, value);
+    identifier_ = identifier;
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateNameLabel()
+// Function: MemoryItem::getIdentifier()
 //-----------------------------------------------------------------------------
-void MemoryItem::updateNameLabel(QString const& text)
+QString MemoryItem::getIdentifier() const
 {
-    nameLabel_->setHtml("<center>" + text + "</center>");
+    return identifier_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::getLibraryInterface()
+// Function: MemoryItem::setAddress()
 //-----------------------------------------------------------------------------
-LibraryInterface* MemoryItem::getLibraryInterface()
+void MemoryItem::setAddress(QString const& address)
 {
-    return libInterface_;
+    address_ = address;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::getMemoryMap()
+// Function: MemoryItem::getAddress()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryMap> MemoryItem::getMemoryMap()
+QString MemoryItem::getAddress() const
 {
-    return memoryMap_;
+    return address_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::getMemoryMap()
+// Function: MemoryItem::setRange()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryMap const> MemoryItem::getMemoryMap() const
+void MemoryItem::setRange(QString const& range)
 {
-    return memoryMap_;
+    range_ = range;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::getParentStack()
+// Function: MemoryItem::getRange()
 //-----------------------------------------------------------------------------
-IGraphicsItemStack* MemoryItem::getParentStack()
+QString MemoryItem::getRange() const
 {
-    return dynamic_cast<IGraphicsItemStack*>(parentItem());
+    return range_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::addItem()
+// Function: MemoryItem::setWidth()
 //-----------------------------------------------------------------------------
-void MemoryItem::addItem(QGraphicsItem* item, bool /*load*/)
+void MemoryItem::setWidth(QString const& width)
 {
-    // Map the position to the column's local coordinate system
-    // and constrain the item to the horizontal center of the column.
-    QPointF pos = mapFromScene(item->scenePos());
-    pos.setX(0.0);
-
-    item->setParentItem(this);
-    item->setPos(pos);
-
-    item->setFlag(ItemStacksBehindParent, false);
-
-    AddressSectionItem* section = static_cast<AddressSectionItem*>(item);
-
-//     if (load)
-//     {
-//         // Place the item at the correct index in the items list.
-//         for (int i = 0; i < sections_.size(); ++i)
-//         {
-//             if (item->y() < sections_.at(i)->y())
-//             {
-//                 sections_.insert(i, compItem);
-// 
-//                 offsetPortPositions(getHeight() + SPACING);
-//                 updateSize();
-//                 return;
-//             }
-//         }
-// 
-//         // If we got here, the item must be placed at the end of the list.
-//         sections_.append(compItem);
-// 
-//         offsetPortPositions(getHeight() + SPACING);
-//         updateSize();
-//     }
-//     else
-    {
-        sections_.append(section);
-        sectionLayout_->updateItemMove(sections_, section, 0.0);
-        sectionLayout_->setItemPos(sections_, section, SECTION_X, 0.0);
-        updateItemPositions();
-    }
+    width_ = width;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::removeItem()
+// Function: MemoryItem::getWidth()
 //-----------------------------------------------------------------------------
-void MemoryItem::removeItem(QGraphicsItem* item)
+QString MemoryItem::getWidth() const
 {
-    sections_.removeAll(static_cast<AddressSectionItem*>(item));
-    item->setParentItem(0);
-    updateItemPositions();
+    return width_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::onMoveItem()
+// Function: MemoryItem::setSize()
 //-----------------------------------------------------------------------------
-void MemoryItem::onMoveItem(QGraphicsItem* item)
+void MemoryItem::setSize(QString const& size)
 {
-    AddressSectionItem* section = static_cast<AddressSectionItem*>(item);
-
-    sectionLayout_->updateItemMove(sections_, section, 0.0);
-    updateSize();
-
-    // Check if the item is not overlapping the HW mapping item enough.
-//     QRectF intersection = sceneBoundingRect().intersected(item->sceneBoundingRect());
-// 
-//     // Only non-imported SW components can be moved out of the HW mapping item.
-//     if (!static_cast<SystemAddressSectionItem*>(compItem)->isImported() &&
-//         compItem->rect().height() - intersection.height() >= 3 * GridSize)
-//     {
-//         sections_.removeAll(compItem);
-// 
-//         // Let the parent component stack handle the mouse move.
-//         IGraphicsItemStack* parentStack = dynamic_cast<IGraphicsItemStack*>(parentItem());
-//         Q_ASSERT(parentStack != 0);
-// 
-//         QPointF newPos = parentStack->mapStackFromScene(compItem->scenePos());
-//         compItem->setParentItem(parentItem());
-//         compItem->setPos(newPos);
-//         compItem->setFlag(ItemStacksBehindParent);
-// 
-//         updateItemPositions();
-//         setZValue(0.0);
-// 
-//         parentStack->onMoveItem(compItem);
-//         return;
-//     }
-
-    setZValue(1001.0);
+    size_ = size;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::onReleaseItem()
+// Function: MemoryItem::getSize()
 //-----------------------------------------------------------------------------
-void MemoryItem::onReleaseItem(QGraphicsItem* item)
+QString MemoryItem::getSize() const
 {
-    setZValue(0.0);
-    sectionLayout_->setItemPos(sections_, static_cast<AddressSectionItem*>(item), SECTION_X, 0.0);
+    return size_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::updateItemPositions()
+// Function: MemoryItem::setOffset()
 //-----------------------------------------------------------------------------
-void MemoryItem::updateItemPositions()
+void MemoryItem::setOffset(QString const& offset)
 {
-    // Just update the item positions.
-    sectionLayout_->updateItemPositions(sections_, SECTION_X, 0.0);
-    updateSize();
+    offset_ = offset;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::mapStackToScene()
+// Function: MemoryItem::getOffset()
 //-----------------------------------------------------------------------------
-QPointF MemoryItem::mapStackToScene(QPointF const& pos) const
+QString MemoryItem::getOffset() const
 {
-    return mapToScene(pos);
+    return offset_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::mapStackFromScene()
+// Function: MemoryItem::addChild()
 //-----------------------------------------------------------------------------
-QPointF MemoryItem::mapStackFromScene(QPointF const& pos) const
+void MemoryItem::addChild(QSharedPointer<MemoryItem> child)
 {
-    return mapFromScene(pos);
+    childItems_.append(child);
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryItem::isItemAllowed()
+// Function: MemoryItem::getChildItems()
 //-----------------------------------------------------------------------------
-bool MemoryItem::isItemAllowed(QGraphicsItem* item) const
+QVector<QSharedPointer<MemoryItem> > MemoryItem::getChildItems()
 {
-    return (item->type() == AddressSectionItem::Type);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryItem::getComponentStackHeight()
-//-----------------------------------------------------------------------------
-qreal MemoryItem::getHeight() const
-{
-    if (sections_.empty())
-    {
-        return MIN_HEIGHT;
-    }
-
-    qreal stackHeight = 0;
-
-    foreach (AddressSectionItem* item, sections_)
-    {
-        stackHeight += item->boundingRect().height();
-    }
-
-    stackHeight += (sections_.size() - 1) * SPACING;
-    return stackHeight;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryItem::getContentType()
-//-----------------------------------------------------------------------------
-ColumnTypes::ColumnContentType MemoryItem::getContentType() const
-{
-    return ColumnTypes::COMPONENTS;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryItem::updateSize()
-//-----------------------------------------------------------------------------
-void MemoryItem::updateSize()
-{
-    QRectF oldRect = rect();
-    oldRect.setHeight(getHeight());
-
-    setRect(oldRect);
-
-    IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
-
-    if (stack != 0)
-    {
-        stack->updateItemPositions();
-    }
-
-    nameLabel_->setTextWidth(getHeight());
-    nameLabel_->setPos(-WIDTH / 2 + 3, getHeight());
-}
-
-//-----------------------------------------------------------------------------
-// Function: mouseMoveEvent()
-//-----------------------------------------------------------------------------
-void MemoryItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
-{
-    // Discard movement if the diagram is protected.
-    if (static_cast<DesignDiagram*>(scene())->isProtected())
-    {
-        return;
-    }
-
-    QGraphicsRectItem::mouseMoveEvent(event);
-
-    if (oldColumn_ != 0)
-    {
-        setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
-
-        MemoryColumn* column = dynamic_cast<MemoryColumn*>(parentItem());
-        Q_ASSERT(column != 0);
-        column->onMoveItem(this);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mouseReleaseEvent()
-//-----------------------------------------------------------------------------
-void MemoryItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
-{
-    QGraphicsRectItem::mouseReleaseEvent(event);
-    setZValue(0.0);
-
-    if (oldColumn_ != 0)
-    {
-        MemoryColumn* column = dynamic_cast<MemoryColumn*>(parentItem());
-        Q_ASSERT(column != 0);
-        column->onReleaseItem(this);
-
-        //         QSharedPointer<QUndoCommand> cmd;
-        // 
-        //         if (scenePos() != oldPos_)
-        //         {
-        //             cmd = QSharedPointer<QUndoCommand>(new ItemMoveCommand(this, oldPos_, oldColumn_));
-        //         }
-        //         else
-        //         {
-        //             cmd = QSharedPointer<QUndoCommand>(new QUndoCommand());
-        //         }
-        // 
-        //         // Add the undo command to the edit stack only if it has at least some real changes.
-        //         if (scenePos() != oldPos_)
-        //         {
-        //             static_cast<DesignDiagram*>(scene())->getEditProvider().addCommand(cmd);
-        //         }
-
-        oldColumn_ = 0;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: mousePressEvent()
-//-----------------------------------------------------------------------------
-void MemoryItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    QGraphicsRectItem::mousePressEvent(event);
-    setZValue(1001.0);
-
-    oldPos_ = scenePos();
-    oldColumn_ = dynamic_cast<MemoryColumn*>(parentItem());
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryItem::getAddressBlockSections()
-//-----------------------------------------------------------------------------
-QList<AddressSectionItem*> const& MemoryItem::getSections() const
-{
-    return sections_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryItem::convertAddress()
-//-----------------------------------------------------------------------------
-quint64 MemoryItem::convertAddress(quint64 address, MemoryBaseItem* source) const
-{
-    // Conversion is possible only if the source is an address base.
-    AddressSpaceItem* addrSpaceItem = dynamic_cast<AddressSpaceItem*>(source);
-
-    if (addrSpaceItem == 0)
-    {
-        return address;
-    }
-
-    quint64 addressOffset = 0;
-
-    if (!static_cast<MemoryDesignDiagram*>(scene())->isConnected(addrSpaceItem, this, &addressOffset))
-    {
-        return address;
-    }
-
-    return address - addressOffset;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryItem::getComponent()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component const> MemoryItem::getComponent() const
-{
-    return component_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryItem::getInstanceName()
-//-----------------------------------------------------------------------------
-QString const& MemoryItem::getInstanceName() const
-{
-    return instanceName_;
+    return childItems_;         
 }

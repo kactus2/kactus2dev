@@ -51,10 +51,10 @@ bool MemoryColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems)
 {
     switch (item->type())
     {
-    case MemoryItem::Type:
+    /*case MemoryItem::Type:
         {
             return (allowedItems & ColumnTypes::BRIDGE);
-        }
+        }*/
 
     case AddressSpaceItem::Type:
         {

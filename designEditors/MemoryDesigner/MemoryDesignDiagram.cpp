@@ -117,9 +117,9 @@ void MemoryDesignDiagram::loadDesign(QSharedPointer<Design> design)
 
         foreach (QSharedPointer<MemoryMap> map, *component->getMemoryMaps())
         {
-            MemoryItem* item = new MemoryItem(getLibraryInterface(), instance->getInstanceName(),
+           /* MemoryItem* item = new MemoryItem(getLibraryInterface(), instance->getInstanceName(),
                                               component, map, 0);
-            getLayout()->addItem(item);
+            getLayout()->addItem(item);*/
         }
 
         foreach (QSharedPointer<AddressSpace> addressSpace, *component->getAddressSpaces())
@@ -387,7 +387,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
         }
     }
 
-    foreach (QGraphicsItem* item, memoryColumn->getItems())
+    /*foreach (QGraphicsItem* item, memoryColumn->getItems())
     {
         MemoryItem* memItem = static_cast<MemoryItem*>(item);
 
@@ -424,7 +424,7 @@ void MemoryDesignDiagram::drawMemoryDividers(QPainter* painter, QRectF const& re
                 }
             }
         }
-    }
+    }*/
 
     foreach (GraphicsColumn* column, getLayout()->getColumns())
     {
@@ -485,11 +485,11 @@ bool MemoryDesignDiagram::isConnected(AddressSpaceItem const* addrSpaceItem, Mem
         {
             quint64 addressOffsetTemp = 0;
 
-            if (findRoute(addrSpaceItem->getInstanceName(), busIf, memoryItem, addressOffsetTemp))
+          /*  if (findRoute(addrSpaceItem->getInstanceName(), busIf, memoryItem, addressOffsetTemp))
             {
                 *addressOffset = addressOffsetTemp;
                 return true;
-            }
+            }*/
         }
     }
 
@@ -540,8 +540,8 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                     {
                         // If the other bus interface is slave, we either have a connection to the correct
                         // component or then this was a wrong route.
-                        if (otherBusIf->getInterfaceMode() == General::SLAVE &&
-                            connectionComponentInstance == memoryItem->getInstanceName())
+                        if (otherBusIf->getInterfaceMode() == General::SLAVE /*&&
+                            connectionComponentInstance == memoryItem->getInstanceName()*/)
                         {
                             addressOffset = Utils::str2Uint(busIf->getMaster()->getBaseAddress());
                             return true;
@@ -585,11 +585,11 @@ bool MemoryDesignDiagram::findRoute(QString const& instanceName, QSharedPointer<
                              otherBusIf->getInterfaceMode() == General::SLAVE)
                     {
                         // Check if we ended up in the correct component.
-                        if (connectionComponentInstance == memoryItem->getInstanceName())
+                       /* if (connectionComponentInstance == memoryItem->getInstanceName())
                         {
                             addressOffset = Utils::str2Uint(busIf->getMirroredSlave()->getRemapAddresses()->first()->remapAddress_);
                             return true;
-                        }
+                        }*/
 
                         // Otherwise check if the route continues through bridges.
                         foreach (QSharedPointer<SlaveInterface::Bridge const> bridge, 
@@ -627,12 +627,12 @@ QSharedPointer<Component const> MemoryDesignDiagram::getComponentByInstanceName(
 {
     foreach (QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
     {
-        if (instance->getInstanceName() == componentRef)
+      /*  if (instance->getInstanceName() == componentRef)
         {
             QSharedPointer<Document const> libComp =
                 getLibraryInterface()->getModelReadOnly(*instance->getComponentRef());
             return libComp.dynamicCast<Component const>();
-        }
+        }*/
     }
 
     return QSharedPointer<Component const>();
