@@ -124,8 +124,7 @@ bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> 
                     {
                         return false;
                     }
-                    if (!addressUnitBits.isEmpty() &&
-                        !addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock))
+                    if (!addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock))
                     {
                         return false;
                     }
@@ -145,7 +144,13 @@ bool MemoryMapBaseValidator::addressBlockWidthIsMultiplicationOfAUB(QString cons
 {
     bool aubToIntOk = true;
     bool widthToIntOk = true;
-    int addressUnitBitsInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubToIntOk);
+    
+    int addressUnitBitsInt = 8;
+    if (!addressUnitBits.isEmpty())
+    {
+        addressUnitBitsInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubToIntOk);
+    }
+    
     int addressBlockWidth = expressionParser_->parseExpression(addressBlock->getWidth()).toInt(&widthToIntOk);
 
     return aubToIntOk && widthToIntOk && addressUnitBitsInt != 0 && addressBlockWidth % addressUnitBitsInt == 0;
@@ -262,8 +267,7 @@ void MemoryMapBaseValidator::findErrorsInAddressBlocks(QVector<QString>& errors,
 
             findErrorsInOverlappingBlocks(errors, memoryMapBase, addressBlock, blockIndex, context);
 
-            if (!addressUnitBits.isEmpty() &&
-                !addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock))
+            if (!addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock))
             {
                 errors.append(QObject::tr("Width of address block %1 is not a multiple of the address unit bits "
                     "of %2 %3")

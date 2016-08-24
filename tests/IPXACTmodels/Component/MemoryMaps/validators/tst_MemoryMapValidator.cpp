@@ -241,6 +241,8 @@ void tst_MemoryMapValidator::testAddressBlockWidthIsMultipleOfAddressUnitBits_da
     QTest::newRow("AddressUnitBits: 16, addressBlock width: 16 is valid") << "16" << "16" << true;
     QTest::newRow("AddressUnitBits: 16, addressBlock width: 21 is invalid") << "16" << "21" << false;
     QTest::newRow("AddressUnitBits: 16, addressBlock width: 8 is invalid") << "16" << "8" << false;
+    QTest::newRow("AddressUnitBits not defined, addressBlock width: 8 is valid") << "" << "8" << true;
+    QTest::newRow("AddressUnitBits not defined, addressBlock width: 2 is invalid") << "" << "2" << false;
 }
 
 //-----------------------------------------------------------------------------
