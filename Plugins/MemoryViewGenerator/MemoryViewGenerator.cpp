@@ -17,8 +17,9 @@
 
 #include <designEditors/MemoryDesigner/ConnectivityConnection.h>
 #include <designEditors/MemoryDesigner/ConnectivityGraph.h>
-#include <designEditors/MemoryDesigner/ComponentInstanceLocator.h>
+#include <designEditors/MemoryDesigner/ConnectivityGraphFactory.h>
 #include <designEditors/MemoryDesigner/ConnectivityInterface.h>
+#include <designEditors/MemoryDesigner/MasterSlavePathSearch.h>
 #include <designEditors/MemoryDesigner/MemoryItem.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -32,7 +33,7 @@
 // Function: MemoryViewGenerator::MemoryViewGenerator()
 //-----------------------------------------------------------------------------
 MemoryViewGenerator::MemoryViewGenerator(LibraryInterface* library): library_(library),
-    expressionParser_(new SystemVerilogExpressionParser()), locator_(library), masterPaths_()
+    expressionParser_(new SystemVerilogExpressionParser()), locator_(library)
 {
 
 }
@@ -51,33 +52,30 @@ MemoryViewGenerator::~MemoryViewGenerator()
 //-----------------------------------------------------------------------------
 void MemoryViewGenerator::generate(QSharedPointer<Component> topComponent, QString const& outputPath)
 {
+    QVector<QVector<QSharedPointer<ConnectivityInterface> > > masterRoutes;
+
     foreach (VLNV const& designReference, getConfigurationsAndDesigns(topComponent))
     {
-        QSharedPointer<DesignConfiguration> designConfiguration(0);
-        QSharedPointer<Design> design(0);
+        QSharedPointer<const DesignConfiguration> designConfiguration(0);
+        QSharedPointer<const Design> design(0);
 
         VLNV::IPXactType documentType = library_->getDocumentType(designReference);
 
         if (documentType == VLNV::DESIGNCONFIGURATION)
         {
-            designConfiguration = library_->getModel(designReference).dynamicCast<DesignConfiguration>();
-            design = library_->getDesign(designConfiguration->getDesignRef());
+            designConfiguration = library_->getModelReadOnly(designReference).dynamicCast<const DesignConfiguration>();
+            design = library_->getModelReadOnly(designConfiguration->getDesignRef()).dynamicCast<const Design>();
         }
         else if (documentType == VLNV::DESIGN)
         {
-            design = library_->getDesign(designReference);
+            design = library_->getModelReadOnly(designReference).dynamicCast<const Design>();
         }
 
         QSharedPointer<ConnectivityGraph> graph = locator_.createConnectivityGraph(design, designConfiguration);
-
-        foreach (QSharedPointer<ConnectivityInterface> masterInterface, getMasterInterfaces(graph))
-        {       
-            findPaths(masterInterface, QSharedPointer<ConnectivityConnection>(0), 
-                QVector<QSharedPointer<ConnectivityInterface> >(), graph);          
-        }
+        MasterSlavePathSearch searchAlgorithm;
+  
+        writeFile(outputPath, searchAlgorithm.findMasterSlavePaths(graph));
     }
-
-    writeFile(outputPath);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,8 +89,8 @@ QVector<VLNV> MemoryViewGenerator::getConfigurationsAndDesigns(QSharedPointer<Co
     {
         if (library_->getDocumentType(hierarchyReference) == VLNV::DESIGNCONFIGURATION)
         {
-            QSharedPointer<DesignConfiguration> designConfiguration = 
-                library_->getModel(hierarchyReference).dynamicCast<DesignConfiguration>();
+            QSharedPointer<const DesignConfiguration> designConfiguration = 
+                library_->getModelReadOnly(hierarchyReference).dynamicCast<const DesignConfiguration>();
 
             if (references.contains(designConfiguration->getDesignRef()))
             {
@@ -105,64 +103,9 @@ QVector<VLNV> MemoryViewGenerator::getConfigurationsAndDesigns(QSharedPointer<Co
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryViewGenerator::getMasterInterfaces()
-//-----------------------------------------------------------------------------
-QVector<QSharedPointer<ConnectivityInterface> > MemoryViewGenerator::getMasterInterfaces(
-    QSharedPointer<ConnectivityGraph> graph) const
-{
-    QVector<QSharedPointer<ConnectivityInterface> > masterInterfaces;
-
-    foreach (QSharedPointer<ConnectivityInterface> vertex, graph->getInterfaces())
-    {
-        if (vertex->getMode() == "master" && graph->getConnectionsFor(vertex).count() == 1)
-        {
-            masterInterfaces.append(vertex);
-        }
-    }
-
-    return masterInterfaces;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryViewGenerator::findPaths()
-//-----------------------------------------------------------------------------
-void MemoryViewGenerator::findPaths(QSharedPointer<ConnectivityInterface> startVertex, 
-    QSharedPointer<ConnectivityConnection> previousEdge, 
-    QVector<QSharedPointer<ConnectivityInterface> > existingPath, QSharedPointer<ConnectivityGraph> graph)
-{
-    existingPath.append(startVertex);
-
-    QVector<QSharedPointer<ConnectivityConnection> > connections = graph->getConnectionsFor(startVertex);
-
-    if (connections.contains(previousEdge))
-    {
-        connections.remove(connections.indexOf(previousEdge));
-    }
-   
-    if (connections.isEmpty())
-    {
-        masterPaths_.append(existingPath);
-    }
-    else
-    {
-        foreach (QSharedPointer<ConnectivityConnection> nextEdge, connections)
-        {
-            if (!existingPath.contains(nextEdge->getFirstInterface()))
-            {
-                findPaths(nextEdge->getFirstInterface(), nextEdge, existingPath, graph);
-            }
-            else if (!existingPath.contains(nextEdge->getSecondInterface()))
-            {
-                findPaths(nextEdge->getSecondInterface(), nextEdge, existingPath, graph);
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryViewGenerator::writeFile()
 //-----------------------------------------------------------------------------
-void MemoryViewGenerator::writeFile(QString const& outputPath)
+void MemoryViewGenerator::writeFile(QString const& outputPath, QVector<QVector<QSharedPointer<ConnectivityInterface> > > masterRoutes)
 {
     QFile outputFile(outputPath); 
     if (!outputFile.open(QIODevice::WriteOnly))
@@ -174,7 +117,7 @@ void MemoryViewGenerator::writeFile(QString const& outputPath)
 
     outputStream << "Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);" << endl;
 
-    foreach (QVector<QSharedPointer<ConnectivityInterface> > path, masterPaths_)
+    foreach (QVector<QSharedPointer<ConnectivityInterface> > path, masterRoutes)
     {        
         int addressOffset = path.first()->getBaseAddress().toInt();
         foreach (QSharedPointer<ConnectivityInterface> inter, path)

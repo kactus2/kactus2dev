@@ -4279,9 +4279,6 @@
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizard.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\ComponentInstanceLocator.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_BusInterfaceWizardBusDefinitionPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4298,6 +4295,12 @@
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\MemoryDesigner\ConnectivityComponent.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MasterSlavePathSearch.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\ConnectivityGraphFactory.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5901,9 +5904,6 @@
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </CustomBuild>
-    <CustomBuild Include="designEditors\MemoryDesigner\ComponentInstanceLocator.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
-    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6444,6 +6444,12 @@
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\MemoryDesigner\ConnectivityComponent.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\MasterSlavePathSearch.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\ConnectivityGraphFactory.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
   </ItemGroup>

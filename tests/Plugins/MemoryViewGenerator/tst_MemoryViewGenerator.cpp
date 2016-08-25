@@ -184,6 +184,7 @@ void tst_MemoryViewGenerator::testMultipleReferencesToSameDesign()
 
     QSharedPointer<DesignConfiguration> designConfiguration(new DesignConfiguration(configVLNV));
     designConfiguration->setDesignRef(design_->getVlnv());
+    library_->addComponent(designConfiguration);
 
     QSharedPointer<DesignConfigurationInstantiation> configInstantiation(
         new DesignConfigurationInstantiation("config"));

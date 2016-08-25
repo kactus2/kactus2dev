@@ -18,7 +18,7 @@
 
 #include "memoryviewgenerator_global.h"
 
-#include <designEditors/MemoryDesigner/ComponentInstanceLocator.h>
+#include <designEditors/MemoryDesigner/ConnectivityGraphFactory.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 
@@ -59,10 +59,7 @@ public:
      *      @param [in] outputPath      Path to the output file.
      */
     void generate(QSharedPointer<Component> topComponent, QString const& outputPath);
-
-    void findPaths(QSharedPointer<ConnectivityInterface> startVertex, QSharedPointer<ConnectivityConnection> previousEdge, 
-        QVector<QSharedPointer<ConnectivityInterface> > existingPath, QSharedPointer<ConnectivityGraph> graph);
-
+  
 private:
 
     // Disable copying.
@@ -71,14 +68,13 @@ private:
 
     QVector<VLNV> getConfigurationsAndDesigns(QSharedPointer<Component> component);
 
-    QVector<QSharedPointer<ConnectivityInterface> > getMasterInterfaces(QSharedPointer<ConnectivityGraph> graph) const;
-        
+  
     /*!
      *  Writes the listing into a given file.
      *
      *      @param [in] outputPath   The path to the output file.
      */
-    void writeFile(QString const& outputPath);
+    void writeFile(QString const& outputPath, QVector<QVector<QSharedPointer<ConnectivityInterface> > >  masterRoutes);
 
     /*!
      *  Writes the given memory element into output.
@@ -97,10 +93,7 @@ private:
     LibraryInterface* library_;
 
     //!
-    ComponentInstanceLocator locator_;
-
-    //! Connection paths from master interfaces.
-    QVector<QVector<QSharedPointer<ConnectivityInterface> > > masterPaths_;
+    ConnectivityGraphFactory locator_;
 
     //! Parser for resolving expressions.
     ExpressionParser* expressionParser_;

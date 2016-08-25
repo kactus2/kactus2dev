@@ -111,11 +111,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\designEditors\MemoryDesigner\ComponentInstanceLocator.cpp" />
     <ClCompile Include="..\..\designEditors\MemoryDesigner\ConnectivityComponent.cpp" />
     <ClCompile Include="..\..\designEditors\MemoryDesigner\ConnectivityConnection.cpp" />
     <ClCompile Include="..\..\designEditors\MemoryDesigner\ConnectivityGraph.cpp" />
+    <ClCompile Include="..\..\designEditors\MemoryDesigner\ConnectivityGraphFactory.cpp" />
     <ClCompile Include="..\..\designEditors\MemoryDesigner\ConnectivityInterface.cpp" />
+    <ClCompile Include="..\..\designEditors\MemoryDesigner\MasterSlavePathSearch.cpp" />
     <ClCompile Include="..\..\designEditors\MemoryDesigner\MemoryItem.cpp" />
     <ClCompile Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.cpp" />
     <ClCompile Include="GeneratedFiles\Debug\moc_MemoryViewGeneratorPlugin.cpp">
@@ -140,11 +141,12 @@
     <ClCompile Include="MemoryViewGeneratorPlugin.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\designEditors\MemoryDesigner\ComponentInstanceLocator.h" />
     <ClInclude Include="..\..\designEditors\MemoryDesigner\ConnectivityComponent.h" />
     <ClInclude Include="..\..\designEditors\MemoryDesigner\ConnectivityConnection.h" />
     <ClInclude Include="..\..\designEditors\MemoryDesigner\ConnectivityGraph.h" />
+    <ClInclude Include="..\..\designEditors\MemoryDesigner\ConnectivityGraphFactory.h" />
     <ClInclude Include="..\..\designEditors\MemoryDesigner\ConnectivityInterface.h" />
+    <ClInclude Include="..\..\designEditors\MemoryDesigner\MasterSlavePathSearch.h" />
     <ClInclude Include="..\..\designEditors\MemoryDesigner\MemoryItem.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h" />
     <ClInclude Include="..\..\editors\ComponentEditor\common\SystemVerilogExpressionParser.h" />
