@@ -64,7 +64,28 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
     writeInternalWiresAndComponentInstances(outputStream);
 
 	if ( implementation_ )
-	{
+    {
+        // Implementing -> may need remap states.
+        foreach (QSharedPointer<GenerationRemapState> grms, component_->remapStates)
+        {
+            QString condition;
+            
+            QSharedPointer<QPair<QSharedPointer<Port>, QString> > parsedPort;
+            foreach (parsedPort, grms->ports)
+            {
+                condition += "(" + parsedPort->first->name() + " == " + parsedPort->second + ")";
+
+                if (parsedPort != grms->ports.last())
+                {
+                     condition += " && ";
+                }
+            }
+
+            outputStream << indentation() << "`define " << grms->stateName << " " << condition << endl;
+        }
+
+        outputStream << endl;
+
         // Implementing -> may need registers.
         writeRegisters(outputStream);
 
@@ -286,7 +307,7 @@ void ComponentVerilogWriter::writeRegisters(QTextStream& outputStream) const
 
     outputStream << indentation() << "localparam MEMORY_SIZE = " << component_->totalRange << ";" << endl;
     outputStream << indentation() << "localparam AUB = " << component_->aub << ";" << endl;
-    outputStream << indentation() << "reg [AUB-1:0] dat [0:MEMORY_SIZE-1];" << endl;
+    outputStream << indentation() << "reg [0:AUB-1] dat [0:MEMORY_SIZE-1];" << endl;
 
     outputStream << indentation() << "genvar gen_iterator1;" << endl;
     outputStream << indentation() << "genvar gen_iterator2;" << endl;
@@ -309,19 +330,19 @@ void ComponentVerilogWriter::writeRegisters(QTextStream& outputStream) const
                 outputStream << indentation(2) << "localparam " << regName << "_OFFSET = " << gr->offset_ << ";" << endl;
                 outputStream << indentation(2) << "localparam " << regName << "_WIDTH = " << gr->size_ << ";" << endl;
                 outputStream << indentation(2) << "localparam " << regName << "_AU_WIDTH = $ceil($ceil(" << gr->size_ << ")/AUB);" << endl;
-                outputStream << indentation(2) << "wire [" << regName << "_WIDTH-1:0] " << regName << " [0:" << regName << "_DIM-1];" << endl;
+                outputStream << indentation(2) << "wire [0:" << regName << "_WIDTH-1] " << regName << " [0:" << regName << "_DIM-1];" << endl;
 
                 outputStream << endl;
 
-                outputStream << indentation() << "generate" << endl;
-                outputStream << indentation() << "for (gen_iterator1= 0; gen_iterator1 < " << regName << "_DIM; gen_iterator1 = gen_iterator1 + 1)" << endl;
-                outputStream << indentation() << "begin" << endl;
-                outputStream << indentation(2) << "for (gen_iterator2 = 0; gen_iterator2 < " << regName << "_AU_WIDTH; gen_iterator2 = gen_iterator2 + 1)" << endl;
+                outputStream << indentation(2) << "generate" << endl;
+                outputStream << indentation(2) << "for (gen_iterator1= 0; gen_iterator1 < " << regName << "_DIM; gen_iterator1 = gen_iterator1 + 1)" << endl;
                 outputStream << indentation(2) << "begin" << endl;
-                outputStream << indentation(3) << indentation() << "assign " << regName << "[gen_iterator1][(gen_iterator2*AUB)+:AUB] = dat[gen_iterator1*" << regName << "_AU_WIDTH+gen_iterator2];" << endl;
+                outputStream << indentation(3) << "for (gen_iterator2 = 0; gen_iterator2 < " << regName << "_AU_WIDTH; gen_iterator2 = gen_iterator2 + 1)" << endl;
+                outputStream << indentation(3) << "begin" << endl;
+                outputStream << indentation(4) << "assign " << regName << "[gen_iterator1][(gen_iterator2*AUB)+:AUB] = dat[gen_iterator1*" << regName << "_AU_WIDTH+gen_iterator2];" << endl;
+                outputStream << indentation(3) << "end" << endl;
                 outputStream << indentation(2) << "end" << endl;
-                outputStream << indentation() << "end" << endl;
-                outputStream << indentation() << "endgenerate" << endl;
+                outputStream << indentation(2) << "endgenerate" << endl;
 
                 outputStream << endl;
 
@@ -329,17 +350,7 @@ void ComponentVerilogWriter::writeRegisters(QTextStream& outputStream) const
                 {
                     QString fieldName = regName + "_" + gf->name;
                     outputStream << indentation(2) << "localparam " << fieldName << "_WIDTH = " << gf->bitWidth_ << ";" << endl;
-                    outputStream << indentation(2) << "localparam " << fieldName << "_OFFSET = " << gf->bitOffset_ << ";" << endl;
-                    outputStream << indentation(2) << "wire [" << fieldName << "_WIDTH-1:0] " << fieldName << " [0:" << regName << "_DIM-1];" << endl;
-
-                    outputStream << endl;
-
-                    outputStream << indentation(2) << "generate" << endl;
-                    outputStream << indentation(2) << "for (gen_iterator1= 0; gen_iterator1 < " << regName << "_DIM; gen_iterator1 = gen_iterator1 + 1)" << endl;
-                    outputStream << indentation(2) << "begin" << endl;
-                    outputStream << indentation(3) << "assign " << fieldName << "[gen_iterator1] = " << regName << "[gen_iterator1] >> " << fieldName << "_OFFSET;" << endl;
-                    outputStream << indentation(2) << "end" << endl;
-                    outputStream << indentation(2) << "endgenerate" << endl;
+                    outputStream << indentation(2) << "localparam " << fieldName << "_OFFSET = " << gf->bitOffset_ << ";" << endl;;
 
                     outputStream << endl;
                 }

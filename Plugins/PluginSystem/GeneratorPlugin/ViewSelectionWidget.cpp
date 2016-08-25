@@ -88,7 +88,16 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> 
 		this, SLOT(onFileSetChanged(QString const&)), Qt::UniqueConnection);
 
 	// Initially at the top of the list.
-	viewSelection_->setCurrentIndex(0);
+    QString defaultView = configuration_->getDefaultView();
+
+    if (defaultView.isEmpty())
+    {
+	    viewSelection_->setCurrentIndex(0);
+    }
+    else
+    {
+        viewSelection_->setCurrentIndex(viewSelection_->findText(defaultView));
+    }
 
 	// Finally, evaluate the fields.
 	onViewChanged(viewSelection_->currentText());

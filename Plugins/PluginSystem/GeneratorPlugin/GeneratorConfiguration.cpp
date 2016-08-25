@@ -18,11 +18,11 @@
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
-GeneratorConfiguration::GeneratorConfiguration(
+GeneratorConfiguration::GeneratorConfiguration( QString targetLanguage,
 	QSharedPointer<QList<QSharedPointer<View> > > views, 
 	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, 
 	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) :
-	outputPath_(), view_(), saveToFileset_(false)
+	targetLanguage_(targetLanguage), outputPath_(), view_(), saveToFileset_(false)
 {
 	// Track the views by name.
 	foreach (QSharedPointer<View> currentView, *views)
@@ -80,7 +80,25 @@ QSharedPointer<QStringList> GeneratorConfiguration::fileSetNames() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::setActiveView()
+// Function: GeneratorConfiguration::getDefaultView()
+//-----------------------------------------------------------------------------
+QString GeneratorConfiguration::getDefaultView()
+{
+   foreach(QSharedPointer<View> view, views_)
+   {
+       QSharedPointer<ComponentInstantiation> cimp = instantiations_[view->getComponentInstantiationRef()];
+
+       if (cimp && cimp->getLanguage() == targetLanguage_)
+       {
+            return view->name();
+       }
+   }
+
+   return "";
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::setView()
 //-----------------------------------------------------------------------------
 void GeneratorConfiguration::setView(QSharedPointer<View> view)
 {

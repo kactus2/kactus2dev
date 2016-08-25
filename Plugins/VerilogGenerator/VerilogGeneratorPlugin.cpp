@@ -231,7 +231,7 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 	}
 
 	configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration(
-		possibleViews,possibleInstantiations,possibleFileSets));
+		"verilog", possibleViews,possibleInstantiations,possibleFileSets));
 
 	configuration_->setView(possibleViews->first());
 

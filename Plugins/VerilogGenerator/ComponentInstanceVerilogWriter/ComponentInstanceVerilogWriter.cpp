@@ -109,6 +109,12 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
 
 	foreach(QSharedPointer<Parameter> parameter, instance_->parameters)
 	{
+        // If the parameters are not user resolved nor generated, then there cannot be any override by the design.
+        if (parameter->getValueResolve() != "user" && parameter->getValueResolve() != "generated")
+        {
+            continue;
+        }
+
 		QString assignment(indentation().repeated(2) + ".<parameter>(<value>)");
 		assignment.replace("<parameter>", 
 			expressionParser_->parseExpression(parameter->name()).leftJustified(20));

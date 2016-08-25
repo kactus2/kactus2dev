@@ -28,7 +28,7 @@ class GeneratorConfiguration
 public:
 
 	//! The constructor.
-	GeneratorConfiguration(
+	GeneratorConfiguration( QString targetLanguage,
 		QSharedPointer<QList<QSharedPointer<View> > > views, 
 		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, 
 		QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets);
@@ -50,6 +50,14 @@ public:
      *  Gets the names of the file sets.
      */
 	QSharedPointer<QStringList> fileSetNames() const;
+
+    /*!
+     *  Returns the name of default view for the top component in generation, based on the target language.
+     *  If there is no suitable view with suitable component instantiation, return empty string.
+     *
+     *       @return The name of the view.
+	 */
+	QString getDefaultView();
 
     /*!
      *  Sets the view for the top component in generation.
@@ -151,25 +159,28 @@ private:
 	GeneratorConfiguration(GeneratorConfiguration const& rhs);
 	GeneratorConfiguration& operator=(GeneratorConfiguration const& rhs);
 
+    //! The language for generation.
+    QString targetLanguage_;
+    //! The possible views, indexed by their names.
+    QMap<QString,QSharedPointer<View> > views_;
+    //! The possible component instantiations, indexed by their names.
+    QMap<QString,QSharedPointer<ComponentInstantiation> > instantiations_;
+    //! The possible file sets, indexed by their names.
+    QMap<QString,QSharedPointer<FileSet> > fileSets_;
+
     //! The path for output file.
     QString outputPath_;
 
     //! The selected view.
 	QSharedPointer<View> view_;
-	//! The possible views, indexed by their names.
-	QMap<QString,QSharedPointer<View> > views_;
 
 	//! The selected component instantiation and its name.
 	QSharedPointer<ComponentInstantiation> instantiation_;
 	QString instantiationName_;
-	//! The possible component instantiations, indexed by their names.
-	QMap<QString,QSharedPointer<ComponentInstantiation> > instantiations_;
 
 	//! The selected file set and its name.
 	QSharedPointer<FileSet> fileSet_;
 	QString fileSetRef_;
-	//! The possible file sets, indexed by their names.
-	QMap<QString,QSharedPointer<FileSet> > fileSets_;
 
     //! Flag for indicating if the output file should be saved to top component file sets.
     bool saveToFileset_;

@@ -207,6 +207,11 @@ void HDLDesignParser::parseComponentInstances()
         {
             foreach(QSharedPointer<Parameter> parameterSupplement, gi->parameters)
             {
+                if (parameterSupplement == parameter)
+                {
+                    continue;
+                }
+
                 parameter->setValue(parameter->getValue().replace(parameterSupplement->name(), parameterSupplement->getValue()));
             }
         }

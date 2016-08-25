@@ -16,11 +16,13 @@
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 
+#include <IPXACTmodels/common/ModuleParameter.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Port.h>
-#include <IPXACTmodels/common/ModuleParameter.h>
-#include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/ComponentInstantiation.h>
 
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
@@ -28,11 +30,10 @@
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/RemapState.h>
+#include <IPXACTmodels/Component/RemapPort.h>
 
-#include <QSharedPointer>
 #include "editors/ComponentEditor/common/ExpressionParser.h"
-#include "IPXACTmodels/Component/View.h"
-#include "IPXACTmodels/Component/ComponentInstantiation.h"
 
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::HDLComponentParser
@@ -64,6 +65,7 @@ QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent() const
     parseRegisters(retval);
     parseParameterDeclarations(retval);
     retval->sortedPortNames = sorter_->sortedPortNames(component_);
+    parseRemapStates(retval);
 
     return retval;
 }
@@ -221,16 +223,15 @@ void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& param
 		QList<QSharedPointer<Parameter> >::Iterator minPos =
 			parametersToWrite.begin();
 
-		// Resolve the value of the inspected parameter.
-		QString addFormatted = formatter_->
-			formatReferringExpression((*parameterAdd)->getValue());
+		// The value of the inspected parameter.
+		QString valueAdd = (*parameterAdd)->getValue();
 
 		// First pass: Detect if the parameter depends on another parameter.
 		for (QList<QSharedPointer<Parameter> >::Iterator parameterCmp =
 			parametersToWrite.begin();
 			parameterCmp != parametersToWrite.end(); ++parameterCmp)
 		{
-			if (addFormatted.contains((*parameterCmp)->name()))
+			if (valueAdd.contains((*parameterCmp)->getValueId()))
 			{
 				// A match found: The parameter must be positioned after this one!
 				minPos = ++parameterCmp;
@@ -247,17 +248,23 @@ void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& param
 		for (QList<QSharedPointer<Parameter> >::Iterator parameterCmp = minPos;
 			parameterCmp != parametersToWrite.end(); ++parameterCmp)
 		{
-			// Resolve the value of the the compared parameter.
-			QString formatted = formatter_->formatReferringExpression((*parameterCmp)->getValue());
+			// The value of the the compared parameter.
+			QString valueCmp = (*parameterCmp)->getValue();
 
 			// Check if it contains a reference to the inspected parameter.
-			if (formatted.contains((*parameterAdd)->name()))
+			if (valueCmp.contains((*parameterAdd)->getValueId()))
 			{
+                // Take a direct shared pointer to the referring parameter.
+                QSharedPointer<Parameter> parameterRef = *parameterCmp;
+
 				// Remove the inspected parameter from the previous place.
-				parametersToWrite.removeOne(*parameterAdd);
+                parametersToWrite.removeOne(*parameterAdd);
+
+                // See where the referring parameter is located now.
+                int cmpLoc = parametersToWrite.indexOf(*parameterCmp);
 
 				// Then the inspected parameter comes before it is referred.
-				parametersToWrite.insert(parameterCmp, *parameterAdd);
+                parametersToWrite.insert(cmpLoc, *parameterAdd);
 
 				// It will not be inserted twice, so break here.
 				append = false;
@@ -272,6 +279,55 @@ void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& param
 			parametersToWrite.removeOne(*parameterAdd);
 			// Append at the end of the list.
 			parametersToWrite.append(*parameterAdd);
-		}
-	}
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLComponentParser::parseRemapStates
+//-----------------------------------------------------------------------------
+void HDLComponentParser::parseRemapStates(QSharedPointer<GenerationComponent> target) const
+{
+    // TODO: replace with a foreach structure
+    if (component_->getMemoryMaps()->size() < 1)
+    {
+        return;
+    }
+
+    QSharedPointer<MemoryMap> memmap = component_->getMemoryMaps()->first();
+
+    foreach (QSharedPointer<MemoryRemap> remap, *memmap->getMemoryRemaps())
+    {
+        QString stateName = remap->getRemapState();
+
+        QSharedPointer<RemapState> state;
+        
+        foreach(QSharedPointer<RemapState> currentState, *component_->getRemapStates())
+        {
+            if (currentState->name() == stateName)
+            {
+                state = currentState;
+                break;
+            }
+        }
+
+        if (!state)
+        {
+            continue;
+        }
+
+        QSharedPointer<GenerationRemapState> grms(new GenerationRemapState);
+        grms->stateName = stateName;
+        target->remapStates.append(grms);
+
+        foreach(QSharedPointer<RemapPort> rmport, *state->getRemapPorts())
+        {
+           QSharedPointer<QPair<QSharedPointer<Port>,QString> > parsedPort(new QPair<QSharedPointer<Port>,QString>);
+           
+           parsedPort->first = component_->getPort(rmport->getPortNameRef());
+           parsedPort->second = formatter_->formatReferringExpression(rmport->getValue());
+
+           grms->ports.append(parsedPort);
+        }
+    }
 }

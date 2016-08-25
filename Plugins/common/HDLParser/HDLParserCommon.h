@@ -58,6 +58,12 @@ struct GenerationRemap
     QString name;
 };
 
+struct GenerationRemapState
+{
+    QList<QSharedPointer<QPair<QSharedPointer<Port>, QString> > > ports;
+    QString stateName;
+};
+
 struct GenerationComponent
 {
     QSharedPointer<Component> component;
@@ -66,6 +72,7 @@ struct GenerationComponent
     QStringList sortedPortNames;
     QString aub;
     QString totalRange;
+    QList<QSharedPointer<GenerationRemapState> > remapStates;
 };
 
 struct GenerationWire
