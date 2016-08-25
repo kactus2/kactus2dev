@@ -27,8 +27,9 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] name   The name of the memory.
+     *      @param [in] type   The type of the memory.
 	 */
-	MemoryItem(QString const& name);
+	MemoryItem(QString const& name, QString const& type);
 
 	//! The destructor.
 	~MemoryItem();
@@ -39,6 +40,13 @@ public:
      *      @return The name of the memory.
      */
     QString getName() const;
+
+    /*!
+     *  Gets the type of the memory e.g. address space or register.
+     *
+     *      @return The type of the memory.
+     */
+    QString getType() const;
 
     /*!
      *  Sets an identifier for the memory.
@@ -53,6 +61,20 @@ public:
      *      @return The identifier for the memory.
      */
     QString getIdentifier() const;
+
+    /*!
+     *  Gets the number of addressable unit bits in the memory.
+     *
+     *      @return The number addressable unit bits in the memory.
+     */
+    QString getAUB() const;
+
+    /*!
+     *  Sets the number of addressable unit bits in the memory.
+     *
+     *      @param [in] aub   The number of bits in an addressable unit.
+     */
+    void setAUB(QString const& aub);
 
     /*!
      *  Sets the address for the memory.
@@ -147,8 +169,14 @@ private:
     //! The name of the memory element.
     QString name_;
 
+    //! The type of the memory element.
+    QString type_;
+
     //! The identifier for the memory.
     QString identifier_;
+
+    //! The number of addressable unit bits in the memory.
+    QString aub_;
 
     //! The address for the memory.
     QString address_;

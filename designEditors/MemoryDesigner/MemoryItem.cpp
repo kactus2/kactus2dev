@@ -14,8 +14,8 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryItem::MemoryItem()
 //-----------------------------------------------------------------------------
-MemoryItem::MemoryItem(QString const& name): name_(name), identifier_(), address_(), range_(), width_(), size_(),
-    offset_(), childItems_()
+MemoryItem::MemoryItem(QString const& name, QString const& type): name_(name), type_(type), identifier_(), 
+    address_(), range_(), width_(), size_(), offset_(), childItems_()
 {
 
 }
@@ -37,6 +37,14 @@ QString MemoryItem::getName() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryItem::getType()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getType() const
+{
+    return type_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryItem::setIdentifier()
 //-----------------------------------------------------------------------------
 void MemoryItem::setIdentifier(QString const& identifier)
@@ -50,6 +58,22 @@ void MemoryItem::setIdentifier(QString const& identifier)
 QString MemoryItem::getIdentifier() const
 {
     return identifier_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setAUB()
+//-----------------------------------------------------------------------------
+void MemoryItem::setAUB(QString const& aub)
+{
+    aub_ = aub;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getAUB()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getAUB() const
+{
+    return aub_;
 }
 
 //-----------------------------------------------------------------------------

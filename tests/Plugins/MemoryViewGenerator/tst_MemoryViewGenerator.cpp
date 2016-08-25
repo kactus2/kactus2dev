@@ -166,10 +166,10 @@ void tst_MemoryViewGenerator::testConnectedSlaveAddressBlocksAreWritten()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;0;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.firstBlock;0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.secondBlock;8;4;32;;;\n"));
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.firstBlock;addressBlock;0;8;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.secondBlock;addressBlock;8;4;32;;;\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -211,10 +211,10 @@ void tst_MemoryViewGenerator::testMultipleReferencesToSameDesign()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;0;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.firstBlock;0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.secondBlock;8;4;32;;;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.firstBlock;addressBlock;0;8;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.secondBlock;addressBlock;8;4;32;;;\n"
     ));
 }
 
@@ -257,13 +257,13 @@ void tst_MemoryViewGenerator::testConnectedSlaveRegistersAndFieldsAreWritten()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;0;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;0;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister;2;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.firstField;2;;16;;1;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.secondField;2;;1;;0;\n"));
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0;8;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister;register;2;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.firstField;field;2;;16;;1;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.secondField;field;2;;1;;0;\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -299,13 +299,13 @@ void tst_MemoryViewGenerator::testConnectedRegisterDimensionsAreWritten()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;0;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0];0;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0].firstField;0;;16;;1;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1];1;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1].firstField;1;;16;;1;\n"));
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0;8;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0];register;0;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0].firstField;field;0;;16;;1;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1];register;1;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1].firstField;field;1;;16;;1;\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -342,11 +342,11 @@ void tst_MemoryViewGenerator::testMasterOffsetIsCalculated()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;300;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;316;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;324;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.firstField;324;;16;;0;\n"));
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;300;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;316;8;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;324;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.firstField;field;324;;16;;0;\n"));
 }
 
 //-----------------------------------------------------------------------------
@@ -395,15 +395,15 @@ void tst_MemoryViewGenerator::testRegisterWithLongFields()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;0;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;0;8;16;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0];0;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1];2;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister;4;;;64;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.firstField;4;;16;;0;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.secondField;5;;16;;0;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.thirdField;6;;4;;8;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0;8;16;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[0];register;0;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister[1];register;2;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister;register;4;;;64;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.firstField;field;4;;16;;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.secondField;field;5;;16;;0;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister.thirdField;field;6;;4;;8;\n"
     ));
 }
 
@@ -442,13 +442,13 @@ void tst_MemoryViewGenerator::testExpressionsWithoutReferences()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;0;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;4;12;16;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;6;;;16;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.firstField;6;;16;;3;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister[0];8;;;16;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister[1];10;;;16;;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;4;12;16;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;6;;;16;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.firstField;field;6;;16;;3;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister[0];register;8;;;16;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.secondRegister[1];register;10;;;16;;\n"
     ));
 }
 
@@ -490,10 +490,10 @@ void tst_MemoryViewGenerator::testIsPresent()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;0;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;0;;;32;;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0;8;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0;;;32;;\n"
     ));
 }
 
@@ -546,9 +546,9 @@ void tst_MemoryViewGenerator::testRemapOnBusComponent()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;20;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;20;8;32;;;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;20;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;20;8;32;;;\n"
     ));
 }
 
@@ -611,11 +611,11 @@ void tst_MemoryViewGenerator::testMultipleChannels()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;16;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;16;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.duplicateID.duplicateSlave.slaveMemoryMap;24;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.duplicateID.duplicateSlave.slaveMemoryMap.slaveBlock;24;8;32;;;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;16;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;16;8;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.duplicateID.duplicateSlave.slaveMemoryMap;memoryMap;24;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.duplicateID.duplicateSlave.slaveMemoryMap.slaveBlock;addressBlock;24;8;32;;;\n"
         ));
 }
 
@@ -669,9 +669,9 @@ void tst_MemoryViewGenerator::testHierarchicalDesign()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;2;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;2;8;32;;;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;2;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;2;8;32;;;\n"
     ));
 }
 
@@ -751,17 +751,17 @@ void tst_MemoryViewGenerator::testActiveViewConfiguration()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;0;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;0;8;32;;;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0;8;32;;;\n"
         ));
 
     activeView->setViewReference("flat");
     output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.HierarchicalSlave.1.0.hierarchyID.hierarchicalInstance.hierarchicalMemoryMap;0;;;;;\n"
-        "tut.fi.TestLib.HierarchicalSlave.1.0.hierarchyID.hierarchicalInstance.hierarchicalMemoryMap.hierarchicalBlock;8;16;32;;;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.HierarchicalSlave.1.0.hierarchyID.hierarchicalInstance.hierarchicalMemoryMap;memoryMap;0;;;;;\n"
+        "tut.fi.TestLib.HierarchicalSlave.1.0.hierarchyID.hierarchicalInstance.hierarchicalMemoryMap.hierarchicalBlock;addressBlock;8;16;32;;;\n"
         ));
 }
 
@@ -828,9 +828,9 @@ void tst_MemoryViewGenerator::testMasterInHierarchy()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;2;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;10;8;32;;;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;2;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;10;8;32;;;\n"
     ));
 }
 
@@ -876,12 +876,12 @@ void tst_MemoryViewGenerator::testRemapStatesOnSlave()
 
     QString output = runGenerator();
 
-    QCOMPARE(output, QString("Identifier;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;0;;;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;0;8;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;0;;;32;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.testRemap.remapAddressBlock;16;4;32;;;\n"
-        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.testRemap.remapAddressBlock.remapRegister;16;;;32;;\n"
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0;8;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.testRemap.remapAddressBlock;addressBlock;16;4;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.testRemap.remapAddressBlock.remapRegister;register;16;;;32;;\n"
     ));
 }
 

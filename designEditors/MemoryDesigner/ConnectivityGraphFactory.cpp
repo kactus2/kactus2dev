@@ -38,7 +38,7 @@
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::ComponentInstanceLocator()
+// Function: ConnectivityGraphFactory::ConnectivityGraphFactory()
 //-----------------------------------------------------------------------------
 ConnectivityGraphFactory::ConnectivityGraphFactory(LibraryInterface* library):
 library_(library), expressionParser_(new SystemVerilogExpressionParser())
@@ -47,7 +47,7 @@ library_(library), expressionParser_(new SystemVerilogExpressionParser())
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::~ComponentInstanceLocator()
+// Function: ConnectivityGraphFactory::~ConnectivityGraphFactory()
 //-----------------------------------------------------------------------------
 ConnectivityGraphFactory::~ConnectivityGraphFactory()
 {
@@ -55,7 +55,7 @@ ConnectivityGraphFactory::~ConnectivityGraphFactory()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::createConnectivityGraph()
+// Function: ConnectivityGraphFactory::createConnectivityGraph()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConnectivityGraph> ConnectivityGraphFactory::createConnectivityGraph(
     QSharedPointer<const Design> design, QSharedPointer<const DesignConfiguration> designConfiguration)
@@ -71,7 +71,7 @@ QSharedPointer<ConnectivityGraph> ConnectivityGraphFactory::createConnectivityGr
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::analyzeDesign()
+// Function: ConnectivityGraphFactory::analyzeDesign()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design,
     QSharedPointer<const DesignConfiguration> designConfiguration, QString const& topInstance, 
@@ -83,7 +83,7 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::addInstancesAndInterfaces()
+// Function: ConnectivityGraphFactory::addInstancesAndInterfaces()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::addInstancesAndInterfaces(QSharedPointer<const Design> design, 
     QSharedPointer<const DesignConfiguration> designConfiguration, QSharedPointer<ConnectivityGraph> graph)
@@ -132,7 +132,7 @@ void ConnectivityGraphFactory::addInstancesAndInterfaces(QSharedPointer<const De
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::getInstanceData()
+// Function: ConnectivityGraphFactory::getInstanceData()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConnectivityComponent> ConnectivityGraphFactory::createInstanceData(QSharedPointer<ComponentInstance> instance,
     QSharedPointer<const Component> component, QString const& activeView) const
@@ -150,15 +150,16 @@ QSharedPointer<ConnectivityComponent> ConnectivityGraphFactory::createInstanceDa
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::addAddressSpaceMemories()
+// Function: ConnectivityGraphFactory::addAddressSpaceMemories()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<ConnectivityComponent> newInstance, 
     QSharedPointer<const Component> component) const
 {
     foreach (QSharedPointer<AddressSpace> space, *component->getAddressSpaces())
     {
-        QSharedPointer<MemoryItem> spaceItem(new MemoryItem(space->name()));
-        spaceItem->setAddress("0");
+        QSharedPointer<MemoryItem> spaceItem(new MemoryItem(space->name(), "addressSpace"));
+        spaceItem->setAUB(space->getAddressUnitBits());
+        spaceItem->setAddress("0");        
         spaceItem->setRange(space->getRange());
         spaceItem->setWidth(space->getWidth());
 
@@ -169,7 +170,7 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::addMemoryMapMemories()
+// Function: ConnectivityGraphFactory::addMemoryMapMemories()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::addMemoryMapMemories(QSharedPointer<ConnectivityComponent> instanceData,
     QSharedPointer<const Component> component) const
@@ -190,7 +191,7 @@ void ConnectivityGraphFactory::addMemoryMapMemories(QSharedPointer<ConnectivityC
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::createMemoryMapData()
+// Function: ConnectivityGraphFactory::createMemoryMapData()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QSharedPointer<MemoryMap> map,
     int addressableUnitBits, QSharedPointer<ConnectivityComponent> containingInstance) const
@@ -198,8 +199,9 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
     QString mapIdentifier = containingInstance->getVlnv().replace(':', '.') + "." + 
         containingInstance->getInstanceUuid() + "." + containingInstance->getName() + "." + map->name();
 
-    QSharedPointer<MemoryItem> mapItem(new MemoryItem(map->name()));
+    QSharedPointer<MemoryItem> mapItem(new MemoryItem(map->name(), "memoryMap"));
     mapItem->setIdentifier(mapIdentifier);
+    mapItem->setAUB(QString::number(addressableUnitBits));
 
     foreach (QSharedPointer<MemoryBlockBase> block, *map->getMemoryBlocks())
     {
@@ -217,7 +219,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::createMemoryBlock()
+// Function: ConnectivityGraphFactory::createMemoryBlock()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(QSharedPointer<AddressBlock> addressBlock,
     QString const& mapIdentifier, int addressableUnitBits) const
@@ -225,8 +227,9 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(QSharedPo
     QString blockIdentifier = mapIdentifier + "." + addressBlock->name();
     int baseAddress = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toInt();
 
-    QSharedPointer<MemoryItem> blockItem(new MemoryItem(addressBlock->name()));
+    QSharedPointer<MemoryItem> blockItem(new MemoryItem(addressBlock->name(), "addressBlock"));
     blockItem->setIdentifier(blockIdentifier);
+    blockItem->setAUB(QString::number(addressableUnitBits));
     blockItem->setAddress(QString::number(baseAddress));
     blockItem->setRange(expressionParser_->parseExpression(addressBlock->getRange()));
     blockItem->setWidth(expressionParser_->parseExpression(addressBlock->getWidth()));
@@ -246,7 +249,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(QSharedPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::addRegisterData()
+// Function: ConnectivityGraphFactory::addRegisterData()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::addRegisterData(QSharedPointer<Register> reg, int baseAddress, 
     int addressableUnitBits, QString const& blockIdentifier, QSharedPointer<MemoryItem> blockItem) const
@@ -263,8 +266,9 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<Register> reg, int
             registerIdentifier.append(QString("[%1]").arg(i));
         }
 
-        QSharedPointer<MemoryItem> regItem(new MemoryItem(reg->name()));
+        QSharedPointer<MemoryItem> regItem(new MemoryItem(reg->name(), "register"));
         regItem->setIdentifier(registerIdentifier);
+        regItem->setAUB(QString::number(addressableUnitBits));
         regItem->setAddress(QString::number(registerAddress));
         regItem->setSize(expressionParser_->parseExpression(reg->getSize()));
 
@@ -284,7 +288,7 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<Register> reg, int
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::createField()
+// Function: ConnectivityGraphFactory::createField()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<Field> field, 
     QString const& registerIdentifier, int regAddress, int addressableUnitBits) const
@@ -292,8 +296,9 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<
     QString fieldIdentifier = registerIdentifier + "." + field->name();
     int bitOffset = expressionParser_->parseExpression(field->getBitOffset()).toInt();
    
-    QSharedPointer<MemoryItem> fieldItem(new MemoryItem(field->name()));
+    QSharedPointer<MemoryItem> fieldItem(new MemoryItem(field->name(), "field"));
     fieldItem->setIdentifier(fieldIdentifier);
+    fieldItem->setAUB(QString::number(addressableUnitBits));
     fieldItem->setWidth(expressionParser_->parseExpression(field->getBitWidth()));
     fieldItem->setAddress(QString::number(regAddress + bitOffset/addressableUnitBits));
     fieldItem->setOffset(QString::number(bitOffset % addressableUnitBits));
@@ -302,10 +307,11 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::addMemoryRemapData()
+// Function: ConnectivityGraphFactory::addMemoryRemapData()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<MemoryMap> map, 
-    QSharedPointer<MemoryItem> mapItem, int addressableUnitBits, QSharedPointer<ConnectivityComponent> containingInstance) const
+    QSharedPointer<MemoryItem> mapItem, int addressableUnitBits, 
+    QSharedPointer<ConnectivityComponent> containingInstance) const
 {
     foreach (QSharedPointer<MemoryRemap> remap, *map->getMemoryRemaps())
     {
@@ -326,7 +332,7 @@ void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<MemoryMap> map,
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::addSubInstances()
+// Function: ConnectivityGraphFactory::addSubInstances()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::addSubInstances(QSharedPointer<ConnectivityComponent> topInstance, 
     QSharedPointer<const Component> topComponent,
@@ -361,7 +367,7 @@ void ConnectivityGraphFactory::addSubInstances(QSharedPointer<ConnectivityCompon
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::getHierarchicalDesignConfiguration()
+// Function: ConnectivityGraphFactory::getHierarchicalDesignConfiguration()
 //-----------------------------------------------------------------------------
 QSharedPointer<const DesignConfiguration> ConnectivityGraphFactory::getHierarchicalDesignConfiguration(
     QSharedPointer<const Component> component, QSharedPointer<View> hierarchicalView) const
@@ -389,7 +395,7 @@ QSharedPointer<const DesignConfiguration> ConnectivityGraphFactory::getHierarchi
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::getHierarchicalDesign()
+// Function: ConnectivityGraphFactory::getHierarchicalDesign()
 //-----------------------------------------------------------------------------
 QSharedPointer<const Design> ConnectivityGraphFactory::getHierarchicalDesign(QSharedPointer<const Component> component,
     QSharedPointer<View> hierarchicalView, QSharedPointer<const DesignConfiguration> designConfiguration) const
@@ -410,7 +416,7 @@ QSharedPointer<const Design> ConnectivityGraphFactory::getHierarchicalDesign(QSh
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::getHierarchicalDesignVLNV()
+// Function: ConnectivityGraphFactory::getHierarchicalDesignVLNV()
 //-----------------------------------------------------------------------------
 VLNV ConnectivityGraphFactory::getHierarchicalDesignVLNV(QSharedPointer<const Component> component,
     QSharedPointer<View> hierarchicalView) const
@@ -432,7 +438,7 @@ VLNV ConnectivityGraphFactory::getHierarchicalDesignVLNV(QSharedPointer<const Co
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::createInterfaceData()
+// Function: ConnectivityGraphFactory::createInterfaceData()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceData(QSharedPointer<BusInterface> busInterface,
     QSharedPointer<ConnectivityComponent> instanceNode)
@@ -474,7 +480,7 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceLocator::addConnections()
+// Function: ConnectivityGraphFactory::addConnections()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::addConnections(QSharedPointer<const Design> design,
     QString const& topInstanceName, QSharedPointer<ConnectivityGraph> graph)
