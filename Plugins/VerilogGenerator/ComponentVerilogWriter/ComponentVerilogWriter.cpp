@@ -84,7 +84,10 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
             outputStream << indentation() << "`define " << grms->stateName << " " << condition << endl;
         }
 
-        outputStream << endl;
+        if (component_->remapStates.count() > 0)
+        {
+            outputStream << endl;
+        }
 
         // Implementing -> may need registers.
         writeRegisters(outputStream);

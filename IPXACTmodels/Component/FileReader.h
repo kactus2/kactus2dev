@@ -169,6 +169,14 @@ private:
      *      @param [in] newFile         The new file item.
      */
     void parseImageTypes(QDomElement const& fileElement, QSharedPointer<File> newFile) const;
+    
+    /*!
+     *  Parses the description.
+     *
+     *      @param [in] fileElement     XML description of the file.
+     *      @param [in] newFile         The new file item.
+     */
+    void parseDescription(QDomElement const& fileElement, QSharedPointer<File> newFile) const;
 
     /*!
      *  Parses the file vendor extensions.

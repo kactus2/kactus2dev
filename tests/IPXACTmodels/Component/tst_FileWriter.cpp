@@ -43,6 +43,7 @@ private slots:
     void writeDependencies();
     void writeDefines();
     void writeImageTypes();
+    void writeDescription();
 
     void writeHashExtensions();
     void writeVendorExtensions();
@@ -458,6 +459,29 @@ void tst_FileWriter::writeImageTypes()
             "<ipxact:fileType>vhdlSource</ipxact:fileType>"
             "<ipxact:imageType>jpg</ipxact:imageType>"
             "<ipxact:imageType>png</ipxact:imageType>"
+        "</ipxact:file>"
+        );
+
+    FileWriter fileWriter;
+    fileWriter.writeFile(xmlStreamWriter, testFile_);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FileWriter::writeDescription()
+//-----------------------------------------------------------------------------
+void tst_FileWriter::writeDescription()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    testFile_->setDescription("This is an important file.");
+
+    QString expectedOutput(
+        "<ipxact:file>"
+        "<ipxact:name>./testFile</ipxact:name>"
+        "<ipxact:fileType>vhdlSource</ipxact:fileType>"
+        "<ipxact:description>This is an important file.</ipxact:description>"
         "</ipxact:file>"
         );
 

@@ -123,15 +123,20 @@ public:
 protected:
 
     /*!
+     *  Inserts description to the generated file..
+     */
+    void insertFileDescription();
+
+    /*!
      *  Finds the possible views for generation.
      *
-     *      @param [in,out]	    libComp			The library component for which the generator is run.
+     *      @param [in,out]	    targetComponent	The component for which the generator is run.
      *      @param [in]	        libDes   		The design which the generator is run.
      *      @param [in]	        libDesConf      The design configuration object for which the generator is run.
      *
      *      @return List of possible view names for which to run the generation.
      */
-    QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<Document> libComp, 
+    QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<Component> targetComponent,
         QSharedPointer<Document> libDes, QSharedPointer<Document> libDesConf) const;
 
     /*!

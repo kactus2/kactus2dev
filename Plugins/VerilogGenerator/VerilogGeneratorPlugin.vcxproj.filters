@@ -130,9 +130,6 @@
     <ClCompile Include="VerilogGenerator\VerilogGenerator.cpp">
       <Filter>Source Files\VerilogGenerator</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.cpp">
-      <Filter>Source Files\ComponentInstanceVerilogWriter</Filter>
-    </ClCompile>
     <ClCompile Include="ComponentVerilogWriter\ComponentVerilogWriter.cpp">
       <Filter>Source Files\ComponentVerilogWriter</Filter>
     </ClCompile>
@@ -237,6 +234,9 @@
     </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.cpp">
+      <Filter>Source Files\editors</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -62,6 +62,8 @@ QSharedPointer<File> FileReader::createFileFrom(QDomNode const& fileNode) const
 
     parseImageTypes(fileElement, newFile);
 
+    parseDescription(fileElement, newFile);
+
     parseFileExtensions(fileElement, newFile);
 
     return newFile;
@@ -330,6 +332,20 @@ void FileReader::parseImageTypes(QDomElement const& fileElement, QSharedPointer<
     {
         QString imageType = imagetTypeNodeList.at(imageTypeIndex).firstChild().nodeValue();
         newFile->getImageTypes()->append(imageType);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileReader::parseDescription()
+//-----------------------------------------------------------------------------
+void FileReader::parseDescription(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+{
+    QDomElement descriptionNameElement = fileElement.firstChildElement("ipxact:description");
+
+    if (!descriptionNameElement.isNull())
+    {
+        QString description = descriptionNameElement.firstChild().nodeValue();
+        newFile->setDescription(description);
     }
 }
 

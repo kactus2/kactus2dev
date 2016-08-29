@@ -143,8 +143,13 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
+    if (!topComponent_)
+    {
+        utility->printInfo(tr("Could not cast the top component to the proper type!"));
+    }
+
 	// Try to configure the generation, giving possible views and instantiations as parameters.
-    if (couldConfigure(findPossibleViews(libComp, libDes, libDesConf),
+    if (couldConfigure(findPossibleViews(topComponent_, libDes, libDesConf),
 		topComponent_->getComponentInstantiations(), topComponent_->getFileSets()))
     {
 		// Get the resulting configuration, it is obtained with this way to make it compatible with the tests.
@@ -170,8 +175,12 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         if (configuration->getSaveToFileset())
         {
             addGeneratedFileToFileSet(configuration);
-            saveChanges();
         }
+
+        insertFileDescription();
+
+
+        saveChanges();
 
         utility_->printInfo(tr("Generation complete."));
     }    
@@ -182,22 +191,46 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogGeneratorPlugin::insertFileDescription()
+//-----------------------------------------------------------------------------
+void VerilogGeneratorPlugin::insertFileDescription()
+{
+    QList<QSharedPointer<File> > filecands = topComponent_->getFiles(relativePathFromXmlToFile(outputFile_));
+
+    if (filecands.size() > 0)
+    {
+        QSharedPointer<File> file = filecands.first();
+
+        QString desc = file->getDescription();
+
+        QRegularExpression regExp = QRegularExpression("(Generated at).+(by Kactus2. *)");
+        QDateTime generationTime = QDateTime::currentDateTime();
+
+        QRegularExpressionMatch match = regExp.match(desc);
+        desc = desc.remove(match.capturedStart(), match.capturedLength());
+        QString date = generationTime.date().toString("dd.MM.yyyy");
+        QString time = generationTime.time().toString("hh:mm:ss");
+
+        file->setDescription("Generated at " + time + " on " + date + " by Kactus2. " + desc);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::findPossibleViews()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossibleViews(
-	QSharedPointer<Document> libComp, QSharedPointer<Document> libDes, QSharedPointer<Document> libDesConf) const
+	QSharedPointer<Component> targetComponent, QSharedPointer<Document> libDes, QSharedPointer<Document> libDesConf) const
 {
-    QSharedPointer<Component> topComponent = libComp.dynamicCast<Component>();
     QSharedPointer<DesignConfiguration> designConfig = libDesConf.dynamicCast<DesignConfiguration>();
 
 	// If the generation is targeted to a design, return views referring to the design or a design configuration.
     if (designConfig && libDes && designConfig->getDesignRef() == libDes->getVlnv())
     {
-        return findReferencingViews(topComponent, designConfig->getVlnv());
+        return findReferencingViews(targetComponent, designConfig->getVlnv());
     }
     else if (libDes)
     {
-        return findReferencingViews(topComponent, libDes->getVlnv());
+        return findReferencingViews(targetComponent, libDes->getVlnv());
     }
 
 	// If the generation is targeted to a component, return the flat views of the component.
@@ -205,7 +238,7 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossib
 		(new QList<QSharedPointer<View> >);
 
 	// In practice, go through each view, and if it is not hierarchical, append to the list.
-	foreach (QSharedPointer<View> view, *topComponent->getViews())
+	foreach (QSharedPointer<View> view, *targetComponent->getViews())
 	{
 		if (!view->isHierarchical())
 		{

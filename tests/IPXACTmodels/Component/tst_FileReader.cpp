@@ -39,6 +39,7 @@ private slots:
 
     void readHashExtension();
     void readVendorExtensions();
+    void readDescription();
 };
 
 //-----------------------------------------------------------------------------
@@ -451,6 +452,30 @@ void tst_FileReader::readHashExtension()
 
     QCOMPARE(testFile->getVendorExtensions()->size(), 1);
     QCOMPARE(testFile->getLastHash(), QString("hash"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FileReader::readDescription()
+//-----------------------------------------------------------------------------
+void tst_FileReader::readDescription()
+{
+    QString documentContent(
+        "<ipxact:file>"
+        "<ipxact:name>./testFile</ipxact:name>"
+        "<ipxact:fileType>cppSource</ipxact:fileType>"
+        "<ipxact:description>This is an important file.</ipxact:description>"
+        "</ipxact:file>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fileNode = document.firstChildElement("ipxact:file");
+
+    FileReader fileReader;
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+
+    QCOMPARE(testFile->getDescription(), QString("This is an important file."));
 }
 
 //-----------------------------------------------------------------------------
