@@ -58,7 +58,7 @@ QVector<QSharedPointer<ConnectivityInterface> > MasterSlavePathSearch::findIniti
 
     foreach (QSharedPointer<ConnectivityInterface> vertex, graph->getInterfaces())
     {
-        if (vertex->getMode() == "master" && graph->getConnectionsFor(vertex).count() == 1)
+        if (vertex->getMode() == "master" && graph->getConnectionsFor(vertex).count() <= 1)
         {
             masterInterfaces.append(vertex);
         }

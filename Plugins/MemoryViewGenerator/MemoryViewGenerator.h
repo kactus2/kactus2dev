@@ -58,7 +58,7 @@ public:
      *      @param [in] topComponent    The top component in the hierarchy to generate listing for.
      *      @param [in] outputPath      Path to the output file.
      */
-    void generate(QSharedPointer<Component> topComponent, QString const& outputPath);
+    void generate(QSharedPointer<Component> topComponent, QString const& activeView, QString const& outputPath);
   
 private:
 
@@ -66,7 +66,7 @@ private:
     MemoryViewGenerator(MemoryViewGenerator const& rhs);
     MemoryViewGenerator& operator=(MemoryViewGenerator const& rhs);
 
-    QVector<VLNV> getConfigurationsAndDesigns(QSharedPointer<Component> component);
+    VLNV getConfigurationOrDesign(QSharedPointer<Component> component, QString const& activeView);
 
   
     /*!

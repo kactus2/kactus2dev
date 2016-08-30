@@ -50,56 +50,75 @@ MemoryViewGenerator::~MemoryViewGenerator()
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGenerator::generate()
 //-----------------------------------------------------------------------------
-void MemoryViewGenerator::generate(QSharedPointer<Component> topComponent, QString const& outputPath)
+void MemoryViewGenerator::generate(QSharedPointer<Component> topComponent, QString const& activeView, QString const& outputPath)
 {
     QVector<QVector<QSharedPointer<ConnectivityInterface> > > masterRoutes;
 
-    foreach (VLNV const& designReference, getConfigurationsAndDesigns(topComponent))
+    VLNV designReference = getConfigurationOrDesign(topComponent, activeView);
+
+    QSharedPointer<const DesignConfiguration> designConfiguration(0);
+    QSharedPointer<const Design> design(0);
+
+    VLNV::IPXactType documentType = library_->getDocumentType(designReference);
+
+    if (documentType == VLNV::DESIGNCONFIGURATION)
     {
-        QSharedPointer<const DesignConfiguration> designConfiguration(0);
-        QSharedPointer<const Design> design(0);
-
-        VLNV::IPXactType documentType = library_->getDocumentType(designReference);
-
-        if (documentType == VLNV::DESIGNCONFIGURATION)
-        {
-            designConfiguration = library_->getModelReadOnly(designReference).dynamicCast<const DesignConfiguration>();
-            design = library_->getModelReadOnly(designConfiguration->getDesignRef()).dynamicCast<const Design>();
-        }
-        else if (documentType == VLNV::DESIGN)
-        {
-            design = library_->getModelReadOnly(designReference).dynamicCast<const Design>();
-        }
-
-        QSharedPointer<ConnectivityGraph> graph = locator_.createConnectivityGraph(design, designConfiguration);
-        MasterSlavePathSearch searchAlgorithm;
-  
-        writeFile(outputPath, searchAlgorithm.findMasterSlavePaths(graph));
+        designConfiguration = library_->getModelReadOnly(designReference).dynamicCast<const DesignConfiguration>();
+        design = library_->getModelReadOnly(designConfiguration->getDesignRef()).dynamicCast<const Design>();
     }
+    else if (documentType == VLNV::DESIGN)
+    {
+        design = library_->getModelReadOnly(designReference).dynamicCast<const Design>();
+    }
+
+    QSharedPointer<ConnectivityGraph> graph = locator_.createConnectivityGraph(design, designConfiguration);
+    MasterSlavePathSearch searchAlgorithm;
+
+    writeFile(outputPath, searchAlgorithm.findMasterSlavePaths(graph));
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryViewGenerator::getConfigurationsAndDesigns()
+// Function: MemoryViewGenerator::getConfigurationOrDesign()
 //-----------------------------------------------------------------------------
-QVector<VLNV> MemoryViewGenerator::getConfigurationsAndDesigns(QSharedPointer<Component> component)
+VLNV MemoryViewGenerator::getConfigurationOrDesign(QSharedPointer<Component> component, QString const& activeView)
 {
-    QVector<VLNV> references = component->getHierRefs().toVector();
-
-    foreach (VLNV const& hierarchyReference, references)
+    QSharedPointer<View> view = component->getModel()->findView(activeView);
+    if (view)
     {
-        if (library_->getDocumentType(hierarchyReference) == VLNV::DESIGNCONFIGURATION)
+        if (!view->getDesignConfigurationInstantiationRef().isEmpty())
         {
-            QSharedPointer<const DesignConfiguration> designConfiguration = 
-                library_->getModelReadOnly(hierarchyReference).dynamicCast<const DesignConfiguration>();
+            QSharedPointer<DesignConfigurationInstantiation> instantiation = 
+                component->getModel()->findDesignConfigurationInstantiation(
+                view->getDesignConfigurationInstantiationRef());
 
-            if (references.contains(designConfiguration->getDesignRef()))
+            if (instantiation)
             {
-                references.removeAt(references.indexOf(designConfiguration->getDesignRef()));
+                return *instantiation->getDesignConfigurationReference();
+            }
+        }
+        else if (!view->getDesignInstantiationRef().isEmpty())
+        {
+            QSharedPointer<DesignInstantiation> instantiation = component->getModel()->findDesignInstantiation(
+                view->getDesignInstantiationRef());
+
+            if (instantiation)
+            {
+                return *instantiation->getDesignReference();
             }
         }
     }
+    
+    if (component->getDesignConfigurationInstantiations()->count() == 1)
+    {
+        return *component->getDesignConfigurationInstantiations()->first()->getDesignConfigurationReference();
+    }
 
-    return references;
+    if (component->getDesignInstantiations()->count() == 1)
+    {
+        return *component->getDesignInstantiations()->first()->getDesignReference();
+    }
+
+    return VLNV();
 }
 
 //-----------------------------------------------------------------------------
@@ -128,7 +147,11 @@ void MemoryViewGenerator::writeFile(QString const& outputPath, QVector<QVector<Q
             }
         }
 
-        writeItem(path.last()->getConnectedMemory(), addressOffset, outputStream);
+        writeItem(path.first()->getConnectedMemory(), addressOffset, outputStream);
+        if (path.first() != path.last())
+        {
+            writeItem(path.last()->getConnectedMemory(), addressOffset, outputStream);
+        }
     }
 
     outputFile.close();
@@ -142,7 +165,7 @@ void MemoryViewGenerator::writeItem(QSharedPointer<MemoryItem> item, int address
     if (item)
     {
         outputStream << item->getIdentifier() << ";" << item->getType() << ";" <<
-            addressOffset + item->getAddress().toInt() << ";" << 
+            "0x" + QString::number(addressOffset + item->getAddress().toInt(), 16) << ";" << 
             item->getRange() << ";" << item->getWidth() << ";" << item->getSize() << ";" <<
             item->getOffset() << ";" << endl;
 

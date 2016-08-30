@@ -112,7 +112,7 @@ bool MemoryViewGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Document co
     QSharedPointer<Document const> libDesConf, 
     QSharedPointer<Document const> libDes) const
 {
-    return true;
+    return libDesConf || libDes;
 }
 
 //-----------------------------------------------------------------------------
@@ -124,5 +124,5 @@ void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPoi
 {
     MemoryViewGenerator generator(utility->getLibraryInterface());
 
-    generator.generate(libComp.dynamicCast<Component>(), "output.csv");
+    generator.generate(libComp.dynamicCast<Component>(), "", "output.csv");
 }

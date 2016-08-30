@@ -155,9 +155,14 @@ QSharedPointer<ConnectivityComponent> ConnectivityGraphFactory::createInstanceDa
 void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<ConnectivityComponent> newInstance, 
     QSharedPointer<const Component> component) const
 {
+    QString instanceIdentifier = newInstance->getVlnv().replace(':', '.') + "." + newInstance->getInstanceUuid() +
+        "." + newInstance->getName();
+
     foreach (QSharedPointer<AddressSpace> space, *component->getAddressSpaces())
     {
+        QString spaceIdentifier = instanceIdentifier + "." + space->name();
         QSharedPointer<MemoryItem> spaceItem(new MemoryItem(space->name(), "addressSpace"));
+        spaceItem->setIdentifier(spaceIdentifier);
         spaceItem->setAUB(space->getAddressUnitBits());
         spaceItem->setAddress("0");        
         spaceItem->setRange(space->getRange());
@@ -165,7 +170,19 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
 
         newInstance->addMemory(spaceItem);
 
-        //addSegmentMemories();
+        foreach(QSharedPointer<Segment> segment, *space->getSegments())
+        {
+            if (segment->getIsPresent().isEmpty() ||
+                expressionParser_->parseExpression(segment->getIsPresent()).toInt() == 1)
+            {
+                QSharedPointer<MemoryItem> segmentItem(new MemoryItem(segment->name(), "segment"));
+                segmentItem->setIdentifier(spaceIdentifier + '.' + segment->name());
+                segmentItem->setRange(segment->getRange());
+                segmentItem->setOffset(segment->getAddressOffset());
+
+                spaceItem->addChild(segmentItem);
+            }
+        }
     }
 }
 
@@ -318,6 +335,12 @@ void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<MemoryMap> map,
         QString remapIdentifier =  containingInstance->getVlnv().replace(':', '.') + "." + 
             containingInstance->getInstanceUuid() + "." + containingInstance->getName() + "." + remap->name();
 
+        QSharedPointer<MemoryItem> remapItem(new MemoryItem(remap->name(), "memoryRemap"));
+        remapItem->setIdentifier(remapIdentifier);
+        remapItem->setAUB(QString::number(addressableUnitBits));
+
+        mapItem->addChild(remapItem);
+
         foreach (QSharedPointer<MemoryBlockBase> block, *remap->getMemoryBlocks())
         {
             if (block->getIsPresent().isEmpty() ||
@@ -325,7 +348,7 @@ void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<MemoryMap> map,
             {
                 QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
 
-                mapItem->addChild(createMemoryBlock(addressBlock, remapIdentifier, addressableUnitBits));
+                remapItem->addChild(createMemoryBlock(addressBlock, remapIdentifier, addressableUnitBits));
             }
         }
     }
@@ -449,14 +472,15 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
 
     if (busInterface->getInterfaceMode() == General::MASTER)
     {
-        interfaceNode->setBaseAddress(busInterface->getMaster()->getBaseAddress());
+        interfaceNode->setBaseAddress(expressionParser_->parseExpression(
+            busInterface->getMaster()->getBaseAddress()));
     }
 
     if (busInterface->getInterfaceMode() == General::MIRROREDSLAVE && 
          !busInterface->getMirroredSlave()->getRemapAddresses()->isEmpty())
     {
-        interfaceNode->setRemapAddress(
-            busInterface->getMirroredSlave()->getRemapAddresses()->first()->remapAddress_);
+        interfaceNode->setRemapAddress(expressionParser_->parseExpression(
+            busInterface->getMirroredSlave()->getRemapAddresses()->first()->remapAddress_));
     }
 
     QString memoryReference = busInterface->getAddressSpaceRef();
