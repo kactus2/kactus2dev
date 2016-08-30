@@ -555,6 +555,7 @@ void tst_ExpressionEditor::testCompleteChangesInAllValuesWithMouseNavigation()
 void tst_ExpressionEditor::testCutCopyPasteIsDisabled()
 {
     QFETCH(Qt::Key, keyForCopying);
+    QFETCH(QString, expectedValue);
 
     ExpressionEditor* editor = createEditorWithoutFinder();
     editor->show();
@@ -565,7 +566,7 @@ void tst_ExpressionEditor::testCutCopyPasteIsDisabled()
 
     QTest::keyClick(editor, Qt::Key_Home);
     QTest::keyClick(editor, Qt::Key_Right);
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < 4; i++)
     {
         QTest::keyClick(editor, Qt::Key_Right, Qt::ShiftModifier);
     }
@@ -575,8 +576,6 @@ void tst_ExpressionEditor::testCutCopyPasteIsDisabled()
     QTest::keyClick(editor, Qt::Key_V, Qt::ControlModifier);
 
     editor->finishEditingCurrentWord();
-
-    QString expectedValue("1+2+2+1");
 
     QCOMPARE(editor->toPlainText(), expectedValue);
     QCOMPARE(editor->getExpression(), expectedValue);
@@ -590,9 +589,10 @@ void tst_ExpressionEditor::testCutCopyPasteIsDisabled()
 void tst_ExpressionEditor::testCutCopyPasteIsDisabled_data()
 {
     QTest::addColumn<Qt::Key>("keyForCopying");
+    QTest::addColumn<QString>("expectedValue");
 
-    QTest::newRow("Copying is disabled inside the editor") << Qt::Key_C;
-    QTest::newRow("Cutting is disabled inside the editor") << Qt::Key_X;
+    QTest::newRow("Copying is disabled inside the editor") << Qt::Key_C << "1+2+2+1+2+2";
+    QTest::newRow("Cutting is disabled inside the editor") << Qt::Key_X << "1+1+2+2";
 }
 
 //-----------------------------------------------------------------------------

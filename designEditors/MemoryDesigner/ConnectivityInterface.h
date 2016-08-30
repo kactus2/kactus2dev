@@ -86,6 +86,20 @@ public:
     QString getRemapAddress() const;
 
     /*!
+     *  Sets the remap range for the memories connected to the interface.
+     *
+     *      @param [in] range   The range to set.
+     */
+    void setRemapRange(QString const& range);
+
+    /*!
+     *   Gets the remap range for the memories connected to the interface.
+     *
+     *      @return The remap range.
+     */
+    QString getRemapRange() const;
+
+    /*!
      *  Sets the instance the interface is a part of.
      *
      *      @param [in] instance   The instance to set.
@@ -123,8 +137,8 @@ public:
 private:
 
 	// Disable copying.
-	ConnectivityInterface(ConnectivityInterface const& rhs);
-	ConnectivityInterface& operator=(ConnectivityInterface const& rhs);
+    ConnectivityInterface(ConnectivityInterface const& rhs);
+    ConnectivityInterface& operator=(ConnectivityInterface const& rhs);
 
     //! The name of the interface.
     QString name_;
@@ -137,6 +151,9 @@ private:
 
     //! The remap address for the associated memories. Applicable for mirrored slave interfaces.
     QString remapAddress_;
+
+    //! The remap range for the associated memories. Applicable for mirrored slave interfaces.
+    QString range_;
 
     //! The instance containing the interface.
     QSharedPointer<ConnectivityComponent> instance_;

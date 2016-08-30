@@ -481,6 +481,9 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
     {
         interfaceNode->setRemapAddress(expressionParser_->parseExpression(
             busInterface->getMirroredSlave()->getRemapAddresses()->first()->remapAddress_));
+
+        interfaceNode->setRemapRange(expressionParser_->parseExpression(
+            busInterface->getMirroredSlave()->getRange()));
     }
 
     QString memoryReference = busInterface->getAddressSpaceRef();

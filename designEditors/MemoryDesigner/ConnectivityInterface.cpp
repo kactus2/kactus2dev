@@ -85,6 +85,22 @@ QString ConnectivityInterface::getRemapAddress() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::setRemapRange()
+//-----------------------------------------------------------------------------
+void ConnectivityInterface::setRemapRange(QString const& range)
+{
+    range_ = range;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::getRemapRange()
+//-----------------------------------------------------------------------------
+QString ConnectivityInterface::getRemapRange() const
+{
+    return range_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectivityInterface::setInstance()
 //-----------------------------------------------------------------------------
 void ConnectivityInterface::setInstance(QSharedPointer<ConnectivityComponent> instance)
