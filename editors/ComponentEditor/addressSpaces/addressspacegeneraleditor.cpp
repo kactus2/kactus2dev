@@ -23,6 +23,7 @@
 
 #include <IPXACTmodels/Component/AddressSpace.h>
 
+#include <QIntValidator>
 #include <QFormLayout>
 #include <QLabel>
 
@@ -44,6 +45,7 @@ masterInterfaceBindingLabel_(new QLabel(this))
 {
 	Q_ASSERT(addrSpace_);
 
+    addrUnitEditor_.setValidator(new QIntValidator(this));
     addrUnitEditor_.setPlaceholderText("8");
     
     rangeEditor_->setFixedHeight(20);

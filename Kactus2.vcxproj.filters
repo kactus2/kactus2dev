@@ -74,9 +74,6 @@
     <Filter Include="Source Files\common\widgets\tabDocument">
       <UniqueIdentifier>{1dd8f03d-6a4c-479f-a374-c8627b2b14e0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\widgets\dirLineEdit">
-      <UniqueIdentifier>{b76710d8-a1f6-48c9-9468-58a8bc0caa5c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\widgets\booleanComboBox">
       <UniqueIdentifier>{996434f3-7697-4fb2-9356-3df1f317ec3b}</UniqueIdentifier>
     </Filter>
@@ -85,9 +82,6 @@
     </Filter>
     <Filter Include="Source Files\common\widgets\ParameterGroupBox">
       <UniqueIdentifier>{ad13bc80-2bc0-4bec-96bc-d47541c21bde}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\NumberLineEdit">
-      <UniqueIdentifier>{bb16b652-d511-4c19-94c5-981e698eb1f6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\nameGroupEditor">
       <UniqueIdentifier>{7bd57c00-0edd-431f-b688-641e72257559}</UniqueIdentifier>
@@ -195,17 +189,11 @@
     <Filter Include="Header Files\common\widgets\componentPreviewBox">
       <UniqueIdentifier>{b5d5c333-036b-4276-a7ef-a400082b82be}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\common\widgets\dirLineEdit">
-      <UniqueIdentifier>{cf147f6a-cb8b-4b72-88da-9df71d960032}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\common\widgets\ScanProgressWidget">
       <UniqueIdentifier>{2dce8bcc-4b84-4cbc-a486-4180e81a598a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\ParameterGroupBox">
       <UniqueIdentifier>{84b4b9a9-cae5-43bc-bac4-f574ebe3ece8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\NumberLineEdit">
-      <UniqueIdentifier>{621089b8-04fc-4b7d-af35-856e86545aa6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\nameGroupEditor">
       <UniqueIdentifier>{dd95d98f-650f-4006-948c-7b6c4ea8ec8f}</UniqueIdentifier>
@@ -221,9 +209,6 @@
     </Filter>
     <Filter Include="Header Files\common\widgets\LineEditEx">
       <UniqueIdentifier>{7ca967c2-4ac3-4cd5-b437-e1ecef333f23}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\ComboBoxEx">
-      <UniqueIdentifier>{87ed62a2-4968-42fb-b018-be698ca589db}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\SnippetTextEdit">
       <UniqueIdentifier>{16679fa2-a994-4220-b63f-52219810726e}</UniqueIdentifier>
@@ -326,23 +311,11 @@
     <Filter Include="Header Files\common\dialogs\createConfigurationDialog">
       <UniqueIdentifier>{4595fd3d-b102-46cb-8a5a-006537a68009}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\common\widgets\parameterComboBox">
-      <UniqueIdentifier>{c7cedda4-5c7b-4240-95b6-88f38d3da294}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\parameterComboBox">
-      <UniqueIdentifier>{ec9b633a-0c5a-4f14-9ec6-325d9e084b61}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\common\widgets\viewSelector">
       <UniqueIdentifier>{64bfed55-d553-4a9b-a952-2e3d75498098}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\common\widgets\viewSelector">
       <UniqueIdentifier>{c5987bbc-cec0-4224-b130-741ebd52633c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\cpuSelector">
-      <UniqueIdentifier>{07c5b06b-c130-4e58-b238-544e342592d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\cpuSelector">
-      <UniqueIdentifier>{36db071e-b47e-4623-a140-e146bbf5febe}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\common\widgets\fileTypeSelector">
       <UniqueIdentifier>{aa88d710-14c3-4611-ac07-75de94c2ea04}</UniqueIdentifier>
@@ -361,12 +334,6 @@
     </Filter>
     <Filter Include="Source Files\common\widgets\FileSelector">
       <UniqueIdentifier>{4fd994f9-e99b-4608-a6c2-0fbc6df9d786}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\widgets\fileViewer">
-      <UniqueIdentifier>{aaa49640-80b3-474a-8b0e-d08bf87911ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\common\widgets\fileViewer">
-      <UniqueIdentifier>{f1482c4f-32eb-4070-abb8-4d5a2398e80e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\mainwindow\NewPages">
       <UniqueIdentifier>{c5f861cd-161d-40dd-85cf-5c9af8ab6f37}</UniqueIdentifier>
@@ -1060,20 +1027,11 @@
     <ClCompile Include="common\widgets\tabDocument\TabDocument.cpp">
       <Filter>Source Files\common\widgets\tabDocument</Filter>
     </ClCompile>
-    <ClCompile Include="common\widgets\dirLineEdit\dirlineedit.cpp">
-      <Filter>Source Files\common\widgets\dirLineEdit</Filter>
-    </ClCompile>
     <ClCompile Include="common\widgets\booleanComboBox\booleancombobox.cpp">
       <Filter>Source Files\common\widgets\booleanComboBox</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\ScanProgressWidget\scanprogresswidget.cpp">
       <Filter>Source Files\common\widgets\ScanProgressWidget</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\ParameterGroupBox\parametergroupbox.cpp">
-      <Filter>Source Files\common\widgets\ParameterGroupBox</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\NumberLineEdit\numberlineedit.cpp">
-      <Filter>Source Files\common\widgets\NumberLineEdit</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\nameGroupEditor\namegroupeditor.cpp">
       <Filter>Source Files\common\widgets\nameGroupEditor</Filter>
@@ -1237,16 +1195,10 @@
     <ClCompile Include="GeneratedFiles\moc_PropertyPageDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_parametergroupbox.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_objectremovemodel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_objectremovedialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_numberlineedit.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_NewWorkspaceDialog.cpp">
@@ -1342,9 +1294,6 @@
     <ClCompile Include="GeneratedFiles\moc_dirlistmanager.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_dirlineedit.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_DeleteWorkspaceDialog.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1414,12 +1363,6 @@
     <ClCompile Include="GeneratedFiles\moc_FileTypesDelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_parametercombobox.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\parameterComboBox\parametercombobox.cpp">
-      <Filter>Source Files\common\widgets\parameterComboBox</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_viewselector.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -1467,12 +1410,6 @@
     </ClCompile>
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp">
       <Filter>Source Files\common\widgets\FileSelector</Filter>
-    </ClCompile>
-    <ClCompile Include="common\widgets\fileViewer\FileViewer.cpp">
-      <Filter>Source Files\common\widgets\fileViewer</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_FileViewer.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.cpp">
       <Filter>Source Files\common\widgets\LibrarySelectorWidget</Filter>
@@ -4303,6 +4240,12 @@
     <ClCompile Include="designEditors\MemoryDesigner\ConnectivityGraphFactory.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_parametergroupbox.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\ParameterGroupBox\parametergroupbox.cpp">
+      <Filter>Source Files\common\widgets\ParameterGroupBox</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4434,9 +4377,6 @@
     <CustomBuild Include="common\widgets\componentPreviewBox\ComponentPreviewBox.h">
       <Filter>Header Files\common\widgets\componentPreviewBox</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\widgets\dirLineEdit\dirlineedit.h">
-      <Filter>Header Files\common\widgets\dirLineEdit</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\widgets\interfaceModeSelector\interfacemodeselector.h">
       <Filter>Header Files\common\widgets\interfaceModeSelector</Filter>
     </CustomBuild>
@@ -4472,12 +4412,6 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\nameGroupEditor\namegroupeditor.h">
       <Filter>Header Files\common\widgets\nameGroupEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\NumberLineEdit\numberlineedit.h">
-      <Filter>Header Files\common\widgets\NumberLineEdit</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\ParameterGroupBox\parametergroupbox.h">
-      <Filter>Header Files\common\widgets\ParameterGroupBox</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\readActionComboBox\readactioncombobox.h">
       <Filter>Header Files\common\widgets\readActionComboBox</Filter>
@@ -4548,9 +4482,6 @@
     <CustomBuild Include="settings\FileTypesDelegate.h">
       <Filter>Header Files\settings</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\widgets\parameterComboBox\parametercombobox.h">
-      <Filter>Header Files\common\widgets\parameterComboBox</Filter>
-    </CustomBuild>
     <CustomBuild Include="common\widgets\viewSelector\viewselector.h">
       <Filter>Header Files\common\widgets\viewSelector</Filter>
     </CustomBuild>
@@ -4571,9 +4502,6 @@
     </CustomBuild>
     <CustomBuild Include="common\widgets\FileSelector\fileselector.h">
       <Filter>Header Files\common\widgets\FileSelector</Filter>
-    </CustomBuild>
-    <CustomBuild Include="common\widgets\fileViewer\FileViewer.h">
-      <Filter>Header Files\common\widgets\fileViewer</Filter>
     </CustomBuild>
     <CustomBuild Include="common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.h">
       <Filter>Header Files\common\widgets\LibrarySelectorWidget</Filter>
@@ -5903,6 +5831,9 @@
     </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizard.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
+    </CustomBuild>
+    <CustomBuild Include="common\widgets\ParameterGroupBox\parametergroupbox.h">
+      <Filter>Header Files\common\widgets\ParameterGroupBox</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

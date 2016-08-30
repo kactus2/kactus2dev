@@ -12,11 +12,10 @@
 #ifndef ADDRESSSPACEGENERALEDITOR_H
 #define ADDRESSSPACEGENERALEDITOR_H
 
-#include <common/widgets/NumberLineEdit/numberlineedit.h>
-
 #include <QGroupBox>
 #include <QSharedPointer>
 #include <QLabel>
+#include <QLineEdit>
 
 class ExpressionEditor;
 class ExpressionParser;
@@ -147,7 +146,7 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 
 	//! Editor to set the size of an addressable unit.
-	NumberLineEdit addrUnitEditor_;
+	QLineEdit addrUnitEditor_;
 
     //! Editor to set the range of the address space.
     ExpressionEditor* rangeEditor_;
