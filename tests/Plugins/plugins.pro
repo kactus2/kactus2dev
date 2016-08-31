@@ -20,4 +20,5 @@ SUBDIRS += VerilogGenerator/VerilogGenerator.pro \
 		    VerilogIncludeImport/tst_VerilogIncludeImport.pro \
 			VerilogSourceAnalyzer/tst_VerilogSourceAnalyzer.pro \
 			MemoryMapHeaderGenerator/tst_MemoryMapHeaderGenerator.pro \
+			HDLParser/tst_HDLParser.pro \
 			MemoryViewGenerator/tst_MemoryViewGenerator.pro

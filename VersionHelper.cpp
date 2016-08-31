@@ -3,10 +3,10 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
-// Date: 31.08.2016
+// Date: 31.8.2016
 //
 // Description:
-// A module that returns variations version number as QStrings.
+// A module that returns variations of version number as QStrings.
 //-----------------------------------------------------------------------------
 
 #include "version.h"

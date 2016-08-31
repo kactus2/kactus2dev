@@ -12,8 +12,6 @@
 #ifndef PORTSORTER_H
 #define PORTSORTER_H
 
-#include "../veriloggeneratorplugin_global.h"
-
 #include <QSharedPointer>
 
 class Component;
@@ -21,7 +19,7 @@ class Component;
 //-----------------------------------------------------------------------------
 //! Interface for component port name sorter.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT PortSorter 
+class PortSorter 
 {
 public:
 

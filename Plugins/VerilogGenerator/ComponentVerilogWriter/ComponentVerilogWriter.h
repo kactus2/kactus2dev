@@ -18,7 +18,7 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Port.h>
 
-#include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
+#include <Plugins/common/PortSorter/PortSorter.h>
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
 #include <Plugins/VerilogGenerator/common/Writer.h>
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>

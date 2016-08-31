@@ -20,7 +20,7 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
+#include <Plugins/common/PortSorter/PortSorter.h>
 #include <Plugins/VerilogGenerator/common/Writer.h>
 
 #include <QTextStream>

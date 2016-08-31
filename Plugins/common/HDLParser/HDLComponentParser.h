@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Port.h>
 
-#include <Plugins/VerilogGenerator/PortSorter/PortSorter.h>
+#include <Plugins/common/PortSorter/PortSorter.h>
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
 #include <Plugins/VerilogGenerator/common/Writer.h>
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>
@@ -28,7 +28,6 @@
 #include <QTextStream>
 #include <QList>
 
-class ExpressionParser;
 class ExpressionFormatter;
 class AddressBlock;
 
@@ -44,12 +43,8 @@ public:
 	 *
 	 *      @param [in] component               The component to write to Verilog.
      *      @param [in] activeView              The active view name for the component.
-	 *      @param [in] sorter                  Sorter for the ports in the component.
-     *      @param [in] expressionParser		Parser for writing expressions.
-     *      @param [in] expressionFormatter     Formatter for writing expressions.
 	 */
-	HDLComponentParser(QSharedPointer<Component> component, QSharedPointer<View> activeView,
-		QSharedPointer<const PortSorter> sorter, QSharedPointer<ExpressionFormatter> expressionFormatter);
+	HDLComponentParser(QSharedPointer<Component> component, QSharedPointer<View> activeView);
 
 	//! The destructor.
 	~HDLComponentParser();
@@ -94,11 +89,11 @@ private:
     //! Sorter for the ports of the component.
     QSharedPointer<const PortSorter> sorter_;
 
+    //! The formatter for expressions.
+    QSharedPointer<ExpressionFormatter> formatter_;
+
     //! Writers for the inner elements e.g. wires and subcomponent instances.
     QList<QSharedPointer<Writer> > childWriters_;
-
-    //! The formatter for expressions.
-	QSharedPointer<ExpressionFormatter> formatter_;
 
 	//! The implementation, which is essentially the user-written things in the module.
 	QSharedPointer<TextBodyWriter> implementation_;

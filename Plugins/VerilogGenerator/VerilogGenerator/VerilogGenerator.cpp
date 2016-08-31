@@ -34,7 +34,7 @@
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
 #include <Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h>
-#include <Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h>
+#include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 #include <Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h>
 #include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
 #include <Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.h>
@@ -319,10 +319,9 @@ void VerilogGenerator::initializeWriters()
 	QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(topComponent_));
 	parameterFinder->setActiveView(topComponentView_);
 
-	QSharedPointer<ExpressionParser> parser = QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(parameterFinder));
 	QSharedPointer<ExpressionFormatter> formatter = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
 
-    HDLComponentParser pars(topComponent_,topComponentView_,sorter_,formatter);
+    HDLComponentParser pars(topComponent_,topComponentView_);
 
     topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(pars.parseComponent(), formatter));
 

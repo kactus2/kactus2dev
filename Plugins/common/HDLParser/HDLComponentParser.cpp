@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "HDLComponentParser.h"
+#include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
 #include <Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h>
@@ -33,19 +34,20 @@
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 
-#include "editors/ComponentEditor/common/ExpressionParser.h"
+#include "editors/ComponentEditor/common/ComponentParameterFinder.h"
+#include "editors/ComponentEditor/common/ExpressionFormatter.h"
 
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::HDLComponentParser
 //-----------------------------------------------------------------------------
-HDLComponentParser::HDLComponentParser(QSharedPointer<Component> component,
-	QSharedPointer<View> activeView, QSharedPointer<const PortSorter> sorter,
-	QSharedPointer<ExpressionFormatter> expressionFormatter) :
+HDLComponentParser::HDLComponentParser(QSharedPointer<Component> component, QSharedPointer<View> activeView) :
 component_(component),
 activeView_(activeView),
-sorter_(sorter),
-formatter_(expressionFormatter)
+sorter_(new InterfaceDirectionNameSorter)
 {
+    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(component));
+    parameterFinder->setActiveView(activeView);
+    formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
 }
 
 //-----------------------------------------------------------------------------
