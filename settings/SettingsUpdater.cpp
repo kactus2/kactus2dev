@@ -12,7 +12,7 @@
 
 #include "SettingsUpdater.h"
 
-#include <version.h>
+#include <VersionHelper.h>
 #include <common/widgets/assistedTextEdit/HighlightStyleDesc.h>
 
 #include <QString>
@@ -23,9 +23,6 @@
 #include <QMessageBox>
 #include <QCoreApplication>
 #include <QVariant>
-
-#define STRINGIFY(str) TOSTRING(str)
-#define TOSTRING(str) #str
 
 //-----------------------------------------------------------------------------
 
@@ -143,7 +140,7 @@ namespace SettingsUpdater
         // Retrieve the version number of the settings file and check if it is not up-to-date.
         QString settingsVersion = settings.value("Platform/Version", "1.5.0.0").toString();
         
-        if (!isVersionOlder(settingsVersion, STRINGIFY(VERSION_FULL)))
+        if (!isVersionOlder(settingsVersion, versionFull()))
         {
             // Already up-to-date.
             return;
@@ -244,6 +241,6 @@ namespace SettingsUpdater
         }
 
         // Finally update the settings version.
-        settings.setValue("Platform/Version", QString(STRINGIFY(VERSION_FULL)));
+        settings.setValue("Platform/Version", versionFull());
     }
 }

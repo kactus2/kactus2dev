@@ -11,10 +11,20 @@
         <filterAttribute>2.0</filterAttribute>
         <toc>
             <section title="Kactus2 Manual" ref="index.html">
+			    <section title="Getting Started">
+					<section title="Configuring Library" ref="gettingStarted/configureLibrary.html">
+                    </section>
+					<section title="Accessing Documents" ref="gettingStarted/accessingDocuments.html">
+                    </section>
+				</section>
 			    <section title="General help" ref="general/general.html">
+					<section title="Default Application" ref="general/defaultApplication.html">
+                    </section>
+					<section title="Workspace" ref="general/workSpace.html">
+                    </section>
 					<section title="Toolbar" ref="general/ribbon.html">
-          </section>
-				  </section>
+                    </section>
+				</section>
           <section title="Bus Editor" ref="definitions/busdefinition.html">
           </section>
           <section title="Component Editor" ref="componenteditor/componenteditor.html">
@@ -107,6 +117,7 @@
             <file>definitions/*.html</file>
             <file>hwdesign/*.html</file>
             <file>swsysdesign/*.html</file>
+            <file>gettingStarted/*.html</file>
 			<file>images/*.png</file>
         </files>
     </filterSection>

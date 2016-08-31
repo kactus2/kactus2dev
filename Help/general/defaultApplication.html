@@ -1,0 +1,35 @@
+<!DOCTYPE html> 
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Default Application</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<h2>Default Application</h2>
+
+<p>You may select the default application for each file type within Kactus2. For instance, this could be the default text editor for makefiles.</p>
+
+<ol>
+<li>Open settings.</li>
+<li>Select <i>Environment variables</i>.</li>
+<li>Double click to create a new row, set the name for the new variable, and set field <i>value</i> as the path to the program.</li>
+</ol>
+
+<p>
+
+<img src="../images/EnvironmentVariables.png">
+
+<ol>
+<li>Select <i>File Types</i>.</li>
+<li>Go to the row of the desired file type. Set field <i>Executed with</i> as the variable in format <i>$(VARIABLE_NAME)</i>.</li>
+<li>You may also opt to edit the file type within the built-in text editor of Kactus2, although this should be considered mostly as a fall-back.</li>
+</ol>
+
+<p>
+
+<img src="../images/FileTypes.png">
+
+</body>
+</html>

@@ -26,6 +26,8 @@ int main(int argc, char *argv[])
     palette.setColor(QPalette::Active, QPalette::Highlight, QColor(33, 135, 237));
     palette.setColor(QPalette::Disabled, QPalette::Highlight, QColor(166, 200, 234));
     palette.setColor(QPalette::Inactive, QPalette::Highlight, QColor(166, 200, 234));
+    //palette.setColor(QPalette::Active, QPalette::Base, QColor(226, 226, 226));
+    //palette.setColor(QPalette::Inactive, QPalette::Base, QColor(226, 226, 226));
     a.setPalette(palette);
 
 	// Create the main window and close the splash after 1.5 seconds.

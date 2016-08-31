@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./common/Global.h \
+HEADERS += ./VersionHelper.h \
+    ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/utils.h \
@@ -38,10 +39,8 @@ HEADERS += ./common/Global.h \
     ./common/widgets/colorBox/ColorBox.h \
     ./common/widgets/kactusAttributeEditor/KactusAttributeEditor.h \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.h \
-    ./common/widgets/dirLineEdit/dirlineedit.h \
     ./common/widgets/ScanProgressWidget/scanprogresswidget.h \
     ./common/widgets/ParameterGroupBox/parametergroupbox.h \
-    ./common/widgets/NumberLineEdit/numberlineedit.h \
     ./common/widgets/nameGroupEditor/namegroupeditor.h \
     ./common/widgets/summaryLabel/summarylabel.h \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.h \
@@ -54,12 +53,10 @@ HEADERS += ./common/Global.h \
     ./common/widgets/modWriteComboBox/modwritecombobox.h \
     ./common/widgets/readActionComboBox/readactioncombobox.h \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.h \
-    ./common/widgets/parameterComboBox/parametercombobox.h \
     ./common/widgets/viewSelector/viewselector.h \
     ./common/widgets/fileTypeSelector/filetypeselector.h \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
     ./common/widgets/FileSelector/fileselector.h \
-    ./common/widgets/fileViewer/FileViewer.h \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.h \
@@ -585,9 +582,15 @@ HEADERS += ./common/Global.h \
     ./designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h \
     ./designEditors/SystemDesign/UndoCommands/SystemComponentAddCommand.h \
     ./designEditors/SystemDesign/UndoCommands/SystemChangeCommands.h \
+    ./designEditors/MemoryDesigner/ConnectivityComponent.h \
+    ./designEditors/MemoryDesigner/ConnectivityConnection.h \
+    ./designEditors/MemoryDesigner/ConnectivityGraph.h \
+    ./designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
+    ./designEditors/MemoryDesigner/ConnectivityInterface.h \
+    ./designEditors/MemoryDesigner/MasterSlavePathSearch.h \
+    ./designEditors/MemoryDesigner/MemoryItem.h \
     ./designEditors/MemoryDesigner/AddressBlockItem.h \
     ./designEditors/MemoryDesigner/SegmentItem.h \
-    ./designEditors/MemoryDesigner/ComponentInstanceLocator.h \
     ./designEditors/MemoryDesigner/AddressSectionItem.h \
     ./designEditors/MemoryDesigner/AddressSpaceItem.h \
     ./designEditors/MemoryDesigner/AddressSubsection.h \
@@ -595,7 +598,6 @@ HEADERS += ./common/Global.h \
     ./designEditors/MemoryDesigner/MemoryColumn.h \
     ./designEditors/MemoryDesigner/MemoryDesignDiagram.h \
     ./designEditors/MemoryDesigner/MemoryDesignWidget.h \
-    ./designEditors/MemoryDesigner/MemoryItem.h \
     ./designEditors/HWDesign/AdHocEnabled.h \
     ./designEditors/HWDesign/HWAddCommands.h \
     ./designEditors/HWDesign/HWMoveCommands.h \
@@ -700,7 +702,8 @@ HEADERS += ./common/Global.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h
-SOURCES += ./common/GenericEditProvider.cpp \
+SOURCES += ./VersionHelper.cpp \
+    ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
     ./common/dialogs/comboSelector/comboselector.cpp \
@@ -738,11 +741,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/kactusAttributeEditor/KactusAttributeEditor.cpp \
     ./common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
     ./common/widgets/tabDocument/TabDocument.cpp \
-    ./common/widgets/dirLineEdit/dirlineedit.cpp \
     ./common/widgets/booleanComboBox/booleancombobox.cpp \
     ./common/widgets/ScanProgressWidget/scanprogresswidget.cpp \
     ./common/widgets/ParameterGroupBox/parametergroupbox.cpp \
-    ./common/widgets/NumberLineEdit/numberlineedit.cpp \
     ./common/widgets/nameGroupEditor/namegroupeditor.cpp \
     ./common/widgets/summaryLabel/summarylabel.cpp \
     ./common/widgets/interfaceModeSelector/interfacemodeselector.cpp \
@@ -755,12 +756,10 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./common/widgets/modWriteComboBox/modwritecombobox.cpp \
     ./common/widgets/readActionComboBox/readactioncombobox.cpp \
     ./common/widgets/testConstraintComboBox/testconstraintcombobox.cpp \
-    ./common/widgets/parameterComboBox/parametercombobox.cpp \
     ./common/widgets/viewSelector/viewselector.cpp \
     ./common/widgets/fileTypeSelector/filetypeselector.cpp \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
     ./common/widgets/FileSelector/fileselector.cpp \
-    ./common/widgets/fileViewer/FileViewer.cpp \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathSelector/librarypathselector.cpp \
@@ -1225,7 +1224,12 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./designEditors/MemoryDesigner/AddressSectionItem.cpp \
     ./designEditors/MemoryDesigner/AddressSpaceItem.cpp \
     ./designEditors/MemoryDesigner/AddressSubsection.cpp \
-    ./designEditors/MemoryDesigner/ComponentInstanceLocator.cpp \
+    ./designEditors/MemoryDesigner/ConnectivityComponent.cpp \
+    ./designEditors/MemoryDesigner/ConnectivityConnection.cpp \
+    ./designEditors/MemoryDesigner/ConnectivityGraph.cpp \
+    ./designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
+    ./designEditors/MemoryDesigner/ConnectivityInterface.cpp \
+    ./designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
     ./designEditors/MemoryDesigner/MemoryBaseItem.cpp \
     ./designEditors/MemoryDesigner/MemoryColumn.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignDiagram.cpp \

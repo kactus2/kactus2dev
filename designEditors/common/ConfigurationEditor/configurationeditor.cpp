@@ -11,7 +11,7 @@
 
 #include "configurationeditor.h"
 
-#include <version.h>
+#include <VersionHelper.h>
 
 #include <designEditors/common/DesignWidget.h>
 #include <designEditors/common/DesignDiagram.h>
@@ -128,7 +128,7 @@ void ConfigurationEditor::onAdd()
 	// create the configuration
 	QSharedPointer<DesignConfiguration> desConf(new DesignConfiguration(configVLNV));
     desConf->setDesignConfigImplementation(KactusAttribute::HW);
-    desConf->setVersion(VERSION_FILESTR);
+    desConf->setVersion(versionFileStr());
     
     if (dialog.designSelection() == CreateConfigurationDialog::USE_EXISTING)
     {
