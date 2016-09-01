@@ -214,11 +214,20 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QString portName) cons
 {
     QString assignment;
 
+    // Seek for a port assignment.
+    QSharedPointer<GenerationPortAssignMent> gab = instance_->portAssignments_.value(portName);
+
+    // If none found, return empty.
+    if (!gab)
+    {
+        return "";
+    }
+
 	// If an tied value is assigned to a physical port, it shall be used.
-    if (instance_->tieOffAssignments_.contains(portName))
+    if (!gab->tieOff.isEmpty())
     {
 		// Format its value as needed.
-        assignment = expressionFormatter_->formatReferringExpression(instance_->tieOffAssignments_.value(portName));
+        assignment = expressionFormatter_->formatReferringExpression(gab->tieOff);
         if (assignment.isEmpty())
         {
             assignment = " ";
@@ -226,15 +235,6 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QString portName) cons
     }
     else
     {
-		// If there is no tied value for the port, seek for a port assignment.
-		QSharedPointer<GenerationPortAssignMent> gab = instance_->portAssignments_.value(portName);
-		
-		// If none found, return empty.
-		if (!gab)
-		{
-			return "";
-		}
-
 		assignment = "<signalName>[<left>:<right>]";
 
 		QPair<QString,QString> connectionBounds = gab->bounds;

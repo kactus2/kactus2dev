@@ -563,7 +563,7 @@ void HDLDesignParser::assignInternalAdHocs()
 				}
 
 				// If no tie-off connection cannot be applied...
-				if (!connectTieOff(existing->tieOff, ourPort, DirectionTypes::IN, gi->tieOffAssignments_))
+				if (!connectTieOff(existing->tieOff, ourPort, DirectionTypes::IN, gpa->tieOff))
 				{
 					// ...then the wire is used.
 					QSharedPointer<GenerationWire> gw = existing->wire;
@@ -611,7 +611,9 @@ void HDLDesignParser::parseHierarchicallAdhocs()
 			// No internal port references means direct tie-off without instance, if any tie-off exists.
 			if (adHocConnection->getInternalPortReferences()->size() < 1)
 			{
-				connectTieOff(adHocConnection->getTiedValue(), topPort, DirectionTypes::OUT, portTiedValues_);
+                QString value;
+				connectTieOff(adHocConnection->getTiedValue(), topPort, DirectionTypes::OUT, value);
+                portTiedValues_.insert(topPort->name(), value);
 			}
 
 			// Find connected instances.
@@ -757,7 +759,7 @@ QPair<QString, QString> HDLDesignParser::logicalPortBoundsInInstance(QSharedPoin
 // Function: HDLDesignParser::connectTieOff()
 //-----------------------------------------------------------------------------
 bool HDLDesignParser::connectTieOff(QString tieOff, QSharedPointer<Port> port,
-	DirectionTypes::Direction requiredDirection, QMap<QString, QString>& tiedValuesMap)
+	DirectionTypes::Direction requiredDirection, QString& value)
 {
 	QString tieOffValue = tieOff;
 
@@ -786,7 +788,7 @@ bool HDLDesignParser::connectTieOff(QString tieOff, QSharedPointer<Port> port,
 		}
 
 		// Finally, assign it to the map.
-		tiedValuesMap.insert(port->name(), tieOffValue);
+        value = tieOffValue;
 
 		// Tie-off found and logged.
 		return true;

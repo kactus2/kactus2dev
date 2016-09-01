@@ -37,11 +37,6 @@
 #include <Plugins/common/HDLParser/HDLDesignParser.h>
 
 
-
-#include <Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h>
-#include <Plugins/VerilogImport/VerilogSyntax.h>
-
-
 class tst_HDLParser : public QObject
 {
     Q_OBJECT
@@ -59,14 +54,9 @@ private slots:
     void testTopLevelComponent();
     void testTopLevelComponentExpressions();
 
-    void testConsecutiveParseCalls();
-
-    void testFileHeaderIsPrinted();
-
     void testHierarchicalConnections();
     void testHierarchicalConnectionsWithExpressions();
     void testSlicedHierarchicalConnection();
-    void testUnknownInstanceIsNotWritten();
 
     void testMasterToSlaveInterconnection();
     void testMasterToSlaveInterconnectionWithExpressions();
@@ -83,14 +73,9 @@ private slots:
     void testAdHocConnectionBetweenComponentInstancesWithExpressions();
     void testHierarchicalAdhocConnection();
     void testHierarchicalAdHocTieOffValues();
-    void testAdHocConnectionToUnknownInstanceIsNotWritten();
     void testAdHocConnectionBetweenMultipleComponentInstances();
-    
-    void testDescriptionAndVLNVIsPrintedAboveInstance();
-    void testDescriptionAndVLNVIsPrintedAboveInstance_data();
 
-    void testTopLevelModuleParametersAreWritten();
-    void testInstanceModuleParametersAreWritten();
+    void testInstanceParametersAreCulled();
 	void testTopComponentParametersAreUtilized();
 	void testInstanceComponentParametersAreUtilized();
 
@@ -98,24 +83,9 @@ private slots:
     void testParameterPropagationFromTop2();
     void testParameterPropagationFromTopWire();
 
-	void testParametersAreInOrder();
-    void testParametersAreInOrder2();
-    void testParametersAreInOrder3();
-
-	void testImplementationSelection();
-	void testImplementationSelectionWithTag();
-	void testImplementationSelectionWithoutParameters();
-	void testImplementationSelectionWithoutPorts();
-	void testImplementationSelectionWithInstantiation();
-	void testImplementationSelectionWithPostModule();
-	void testImplementationSelectionWithTooManyModules();
-	void testImplementationSelectionWithNoModuleHeaderStart();
-	void testImplementationSelectionWithNoModuleHeaderEnd();
-	void testImplementationSelectionWithNoModuleEnd();
-
-	void testGenerationWithImplementation();
-	void testGenerationWithImplementationWithTag();
-	void testGenerationWithImplementationWithPostModule();
+	void testParameterSorting();
+    void testParameterSorting2();
+    void testParameterSorting3();
 
 private:
 
@@ -123,8 +93,6 @@ private:
         QSharedPointer<Component> component);
 
     void addModuleParameter( QString const& name, QString const& value );
-
-    void runGenerator(bool useDesign);
 
     void createHierarchicalConnection(QString const& topInterfaceRef, QString const& instanceInterfaceRef);
 
@@ -158,12 +126,6 @@ private:
         QString const& connectionName);
 
     void addHierAdhocConnection(QString const& topPort, QString const& targetInstance, QString const& targetPort);
-
-    void verifyOutputContains(QString const& expectedOutput);
-
-    void compareOutputTo(QString const& expectedOutput);
-
-    void readOutputFile();   
    
     //! The top level component for which the generator is run.
     QSharedPointer<Component> topComponent_;
@@ -267,12 +229,22 @@ void tst_HDLParser::testTopLevelComponent()
     QCOMPARE( parsed->parameters.at(1)->name(), QString("freq") );
     QCOMPARE( parsed->parameters.at(1)->getValue(), QString("100000") );
 
-    // TODO: Widths?!?
-    QCOMPARE( parsed->sortedPortNames.size(), 4 );
-    QCOMPARE( parsed->sortedPortNames.at(0), QString("clk") );
-    QCOMPARE( parsed->sortedPortNames.at(1), QString("dataIn") );
-    QCOMPARE( parsed->sortedPortNames.at(2), QString("rst_n") );
-    QCOMPARE( parsed->sortedPortNames.at(3), QString("dataOut") );
+    QCOMPARE( parsed->ports.size(), 4 );
+    QCOMPARE( parsed->ports.at(0)->name, QString("clk") );
+    QCOMPARE( parsed->ports.at(0)->direction, DirectionTypes::IN );
+
+    QCOMPARE( parsed->ports.at(1)->name, QString("dataIn") );
+    QCOMPARE( parsed->ports.at(1)->direction, DirectionTypes::IN );
+    QCOMPARE( parsed->ports.at(1)->vectorBounds.first, QString("7") );
+    QCOMPARE( parsed->ports.at(1)->vectorBounds.second, QString("0") );
+
+    QCOMPARE( parsed->ports.at(2)->name, QString("rst_n") );
+    QCOMPARE( parsed->ports.at(2)->direction, DirectionTypes::IN );
+
+    QCOMPARE( parsed->ports.at(3)->name, QString("dataOut") );
+    QCOMPARE( parsed->ports.at(3)->direction, DirectionTypes::OUT );
+    QCOMPARE( parsed->ports.at(3)->vectorBounds.first, QString("7") );
+    QCOMPARE( parsed->ports.at(3)->vectorBounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -296,21 +268,11 @@ void tst_HDLParser::testTopLevelComponentExpressions()
     QCOMPARE( parsed->parameters.at(0)->name(), QString("module") );
     QCOMPARE( parsed->parameters.at(0)->getValue(), QString("10") );
 
-    QCOMPARE( parsed->sortedPortNames.size(), 1 );
-    QCOMPARE( parsed->sortedPortNames.at(0), QString("clk") );
-    runGenerator(false);
-
-    verifyOutputContains(QString(
-        "module TestComponent #(\n"
-        "    parameter                              module           = 10\n"
-        ") (\n"
-        "    // These ports are not in any interface\n"
-        "    input          [module*2:2+5]       clk\n"
-        ");\n"
-        "\n"
-		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
-        "endmodule\n"
-        ));
+    QCOMPARE( parsed->ports.size(), 1 );
+    QCOMPARE( parsed->ports.at(0)->name, QString("clk") );
+    QCOMPARE( parsed->ports.at(0)->direction, DirectionTypes::IN );
+    QCOMPARE( parsed->ports.at(0)->vectorBounds.first, QString("module*2") );
+    QCOMPARE( parsed->ports.at(0)->vectorBounds.second, QString("2+5") );
 }
 
 //-----------------------------------------------------------------------------
@@ -348,82 +310,6 @@ void tst_HDLParser::addModuleParameter( QString const& name, QString const& valu
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_HDLParser::runGenerator()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::runGenerator(bool useDesign)
-{
-    VerilogGenerator generator(&library_);
-	QString outputPath = "./generatorOutput.v";
-
-	if ( useDesign )
-	{
-		generator.parse(topComponent_, topView_, "", design_, designConf_);
-	}
-	else
-	{
-		generator.parse(topComponent_, topView_, outputPath);
-	}
-
-    generationTime_ =  QDateTime::currentDateTime();
-
-    generator.generate(outputPath);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testFileHeaderIsPrinted()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testFileHeaderIsPrinted()
-{    
-    topComponent_->setDescription("Component description\nspanning multiple\nlines.");
-    library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml", topComponent_);
-    	
-    QCoreApplication::setOrganizationName("TUT");
-    QCoreApplication::setApplicationName("TestRunner");
-    QSettings settings;
-    settings.setValue("General/Username", "testUser");
-
-    runGenerator(false);
-    
-    verifyOutputContains(QString(
-        "//-----------------------------------------------------------------------------\n"
-        "// File          : generatorOutput.v\n"
-        "// Creation date : " + generationTime_.date().toString("dd.MM.yyyy") + "\n"
-        "// Creation time : " + generationTime_.time().toString("hh:mm:ss") + "\n"
-        "// Description   : Component description\n"
-        "//                 spanning multiple\n"
-        "//                 lines.\n"
-		"// Created by    : testUser\n"
-		"// Tool : Kactus2 \n"
-		"// Plugin : Verilog generator \n"
-		"// This file was generated based on IP-XACT component Test:TestLibrary:TestComponent:1.0\n"
-        "// whose XML file is C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml\n"
-        "//-----------------------------------------------------------------------------\n"));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testConsecutiveParseCalls()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testConsecutiveParseCalls()
-{
-    VLNV secondVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "Override", "1.0");
-    QSharedPointer<Component> secondComponent = QSharedPointer<Component>(new Component());
-    secondComponent->setVlnv(secondVlnv);
-
-    VerilogGenerator generator(&library_);
-
-    generator.parse(topComponent_, QSharedPointer<View>());
-    generator.parse(secondComponent, QSharedPointer<View>());
-
-    generator.generate("./generatorOutput.v");
-    
-    verifyOutputContains(QString("module Override();\n"
-        "\n"
-		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
-        "endmodule\n"));
-    QVERIFY(!output_.contains("module TestComponent"));
-}
-
-//-----------------------------------------------------------------------------
 // Function: tst_HDLParser::testHierarchicalConnections()
 //-----------------------------------------------------------------------------
 void tst_HDLParser::testHierarchicalConnections()
@@ -448,32 +334,35 @@ void tst_HDLParser::testHierarchicalConnections()
     QSharedPointer<View> activeView = addTestComponentToLibrary(instanceVlnv);
     addInstanceToDesign("instance1", instanceVlnv, activeView);
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(QString(
-        "module TestComponent(\n"
-        "    // Interface: clk_if\n"
-        "    input                               top_clk,\n"
-        "\n"
-        "    // Interface: data_bus\n"     
-        "    input          [7:0]                data_to_instance,\n"
-        "    input                               enable_to_instance,\n"
-        "    output                              full_from_instance\n"
-        ");\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
-        "    TestInstance instance1(\n"
-        "        // Interface: clk\n"
-        "        .clk                 (top_clk[0:0]),\n"
-        "        // Interface: data\n"
-        "        .data_in             (data_to_instance[7:0]),\n"
-        "        .enable              (enable_to_instance[0:0]),\n"
-        "        .full                (full_from_instance[0:0]),\n"
-        "        // These ports are not in any interface\n"
-        "        .data_out            ());\n"
-        "\n"
-        "\n"
-        "endmodule\n"));
+    QCOMPARE( parser.instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi = parser.instances_.at(0);
+
+    QCOMPARE( gi->componentInstance_->getInstanceName(), QString("instance1") );
+    QCOMPARE( gi->portAssignments_.size(), 4 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_["clk"];
+    QCOMPARE( gpa->topPortName, QString("top_clk") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi->portAssignments_["data_in"];
+    QCOMPARE( gpa->topPortName, QString("data_to_instance") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi->portAssignments_["enable"];
+    QCOMPARE( gpa->topPortName, QString("enable_to_instance") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi->portAssignments_["full"];
+    QCOMPARE( gpa->topPortName, QString("full_from_instance") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -538,23 +427,24 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
 
     addInstanceToDesign("instance1", instanceVlnv, activeView);
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(QString(
-        "module TestComponent(\n"
-        "    // Interface: clk_if\n"
-        "    input          [2+2:0]              top_clk\n"
-        ");\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
-		"    TestInstance #(\n"
-		"        .componentParameter  (1))\n"
-		"instance1(\n"
-        "        // Interface: instanceInterface\n"
-        "        .instance_clk        (top_clk[1*2:4-2*2]));\n"
-        "\n"
-        "\n"
-        "endmodule\n"));
+    QCOMPARE( parser.instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi = parser.instances_.at(0);
+
+    QCOMPARE( gi->componentInstance_->getInstanceName(), QString("instance1") );
+    QCOMPARE( gi->parameters.size(), 1 );
+    QCOMPARE( gi->portAssignments_.size(), 1 );
+
+    QCOMPARE( gi->parameters.at(0)->name(), QString("componentParameter") );
+    QCOMPARE( gi->parameters.at(0)->getValue(), QString("1") );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_["instance_clk"];
+    QCOMPARE( gpa->topPortName, QString("top_clk") );
+    QCOMPARE( gpa->bounds.first, QString("1*2") );
+    QCOMPARE( gpa->bounds.second, QString("4-2*2") );
 }
 
 //-----------------------------------------------------------------------------
@@ -577,35 +467,29 @@ void tst_HDLParser::testSlicedHierarchicalConnection()
     QSharedPointer<View> activeView = addTestComponentToLibrary(instanceVlnv);
     addInstanceToDesign("instance1", instanceVlnv, activeView);
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(QString(
-        "    TestInstance instance1(\n"
-        "        // Interface: clk\n"
-        "        .clk                 (),\n"
-        "        // Interface: data\n"
-        "        .data_in             (data_to_instance[7:0]),\n"
-        "        .enable              (enable_to_instance[0:0]),\n"
-        "        .full                (full_from_instance[0:0]),\n"
-        "        // These ports are not in any interface\n"
-        "        .data_out            ());"));
-}
+    QCOMPARE( parser.instances_.size(), 1 );
 
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testUnknownInstanceIsNotWritten()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testUnknownInstanceIsNotWritten()
-{
-    VLNV nonLibraryComponent(VLNV::COMPONENT, "Test", "TestLibrary", "Unknown", "1.0");
-    addInstanceToDesign("unknown", nonLibraryComponent, QSharedPointer<View>());
+    QSharedPointer<GenerationInstance> gi = parser.instances_.at(0);
 
-    runGenerator(true);
+    QCOMPARE( gi->portAssignments_.size(), 4 );
 
-    verifyOutputContains(
-        "module TestComponent();\n"
-        "\n"
-		"\n"
-        "endmodule");
+    QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_["data_in"];
+    QCOMPARE( gpa->topPortName, QString("data_to_instance") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi->portAssignments_["enable"];
+    QCOMPARE( gpa->topPortName, QString("enable_to_instance") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi->portAssignments_["full"];
+    QCOMPARE( gpa->topPortName, QString("full_from_instance") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -772,23 +656,46 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(
-    "    wire [7:0]  sender_to_receiver_DATA;\n"
-    "    wire [0:0]  sender_to_receiver_ENABLE;\n"
-    "\n"
-    "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
-    "    TestReceiver receiver(\n"
-    "        // Interface: data_bus\n"
-    "        .data_in             (sender_to_receiver_DATA[7:0]),\n"
-    "        .enable_in           (sender_to_receiver_ENABLE[0:0]));\n"   
-    "\n"
-    "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
-    "    TestSender sender(\n"
-    "        // Interface: data_bus\n"
-    "        .data_out            (sender_to_receiver_DATA[7:0]),\n"
-    "        .enable_out          (sender_to_receiver_ENABLE[0:0]));");
+    QCOMPARE( parser.interConnections_.size(), 1 );
+    QCOMPARE( parser.interConnections_.at(0)->wires_.size(), 2 );
+
+    QSharedPointer<GenerationWire> gw0 = parser.interConnections_.at(0)->wires_.first();
+    QSharedPointer<GenerationWire> gw1 = parser.interConnections_.at(0)->wires_.last();
+
+    QCOMPARE( gw0->bounds.first, QString("7") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
+
+    QCOMPARE( gw1->bounds.first, QString("0") );
+    QCOMPARE( gw1->bounds.second, QString("0") );
+
+    QCOMPARE( parser.instances_.size(), 2 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(0);
+
+    QCOMPARE( gi0->portAssignments_.size(), 2 );
+    QCOMPARE( gi1->portAssignments_.size(), 2 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi0->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi1->portAssignments_["data_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi1->portAssignments_["enable_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -846,20 +753,34 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(
-        "    wire [7*2:0] sender_to_receiver_DATA;\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
-        "    TestReceiver receiver(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (sender_to_receiver_DATA[7+1:0]));\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (sender_to_receiver_DATA[7*2:0]));");
+    QCOMPARE( parser.interConnections_.size(), 1 );
+    QCOMPARE( parser.interConnections_.at(0)->wires_.size(), 1 );
+
+    QSharedPointer<GenerationWire> gw0 = parser.interConnections_.at(0)->wires_.first();
+
+    QCOMPARE( gw0->bounds.first, QString("7*2") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
+
+    QCOMPARE( parser.instances_.size(), 2 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(0);
+
+    QCOMPARE( gi0->portAssignments_.size(), 1 );
+    QCOMPARE( gi1->portAssignments_.size(), 1 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7+1") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi1->portAssignments_["data_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7*2") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -954,25 +875,57 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     addConnectionToDesign("sender", "data_bus", "receiver1", "data_bus");
     addConnectionToDesign("sender", "data_bus", "receiver2", "data_bus");    
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains("wire [0:0]  sender_to_receiver1_ENABLE;");
-    verifyOutputContains("wire [7:0]  sender_to_receiver1_DATA;");
+    QCOMPARE( parser.interConnections_.size(), 1 );
+    QCOMPARE( parser.interConnections_.at(0)->wires_.size(), 2 );
 
-    verifyOutputContains("TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (sender_to_receiver1_DATA[7:0]),\n"
-        "        .enable_out          (sender_to_receiver1_ENABLE[0:0])");
+    QSharedPointer<GenerationWire> gw0 = parser.interConnections_.at(0)->wires_.last();
+    QSharedPointer<GenerationWire> gw1 = parser.interConnections_.at(0)->wires_.first();
 
-    verifyOutputContains("TestReceiver receiver1(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (sender_to_receiver1_DATA[7:0]),\n"
-        "        .enable_in           (sender_to_receiver1_ENABLE[0:0])");
+    QCOMPARE( gw0->bounds.first, QString("0") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
 
-    verifyOutputContains("TestReceiver receiver2(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (sender_to_receiver1_DATA[7:0]),\n"
-        "        .enable_in           (sender_to_receiver1_ENABLE[0:0])");
+    QCOMPARE( gw1->bounds.first, QString("7") );
+    QCOMPARE( gw1->bounds.second, QString("0") );
+
+    QCOMPARE( parser.instances_.size(), 3 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = parser.instances_.at(2);
+
+    QCOMPARE( gi0->portAssignments_.size(), 2 );
+    QCOMPARE( gi1->portAssignments_.size(), 2 );
+    QCOMPARE( gi2->portAssignments_.size(), 2 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi0->portAssignments_["enable_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi1->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi1->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi2->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi2->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1057,7 +1010,7 @@ void tst_HDLParser::setReceiverComponentDataWidth(VLNV receiverVLNV, int dataWid
 
 	dataMap->setLogicalPort(logPort);
 }
-#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::testSlicedInterconnection()
 //-----------------------------------------------------------------------------
@@ -1145,22 +1098,38 @@ void tst_HDLParser::testSlicedInterconnection()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains("wire [2-1:0] sender_to_receiver_ENABLE;");
+    QCOMPARE( parser.interConnections_.size(), 1 );
+    QCOMPARE( parser.interConnections_.at(0)->wires_.size(), 2 );
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-		"        .enable_out_high     (sender_to_receiver_ENABLE[1:1]),\n"
-        "        .enable_out_low      (sender_to_receiver_ENABLE[0:0]));");
+    QSharedPointer<GenerationWire> gw0 = parser.interConnections_.at(0)->wires_.last();
 
-    verifyOutputContains(
-        "    TestReceiver receiver(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (),\n"
-        "        .enable_in           (sender_to_receiver_ENABLE[0:0]));");
+    QCOMPARE( gw0->bounds.first, QString("2-1") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
 
+    QCOMPARE( parser.instances_.size(), 2 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(1);
+
+    QCOMPARE( gi0->portAssignments_.size(), 2 );
+    QCOMPARE( gi1->portAssignments_.size(), 2 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["enable_out_high"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("1") );
+    QCOMPARE( gpa->bounds.second, QString("1") );
+    gpa = gi0->portAssignments_["enable_out_low"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi1->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1178,22 +1147,46 @@ void tst_HDLParser::testMasterInterconnectionToMirroredMaster()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains("wire [7:0]  sender_to_receiver_DATA;");
-    verifyOutputContains("wire [0:0]  sender_to_receiver_ENABLE;");    
+    QCOMPARE( parser.interConnections_.size(), 1 );
+    QCOMPARE( parser.interConnections_.at(0)->wires_.size(), 2 );
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (sender_to_receiver_DATA[7:0]),\n"
-        "        .enable_out          (sender_to_receiver_ENABLE[0:0])");
+    QSharedPointer<GenerationWire> gw0 = parser.interConnections_.at(0)->wires_.first();
+    QSharedPointer<GenerationWire> gw1 = parser.interConnections_.at(0)->wires_.last();
 
-    verifyOutputContains(
-        "    BusComponent receiver(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (sender_to_receiver_DATA[7:0]),\n"
-        "        .enable_in           (sender_to_receiver_ENABLE[0:0])");
+    QCOMPARE( gw0->bounds.first, QString("7") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
+
+    QCOMPARE( gw1->bounds.first, QString("0") );
+    QCOMPARE( gw1->bounds.second, QString("0") );
+
+    QCOMPARE( parser.instances_.size(), 2 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(1);
+
+    QCOMPARE( gi0->portAssignments_.size(), 2 );
+    QCOMPARE( gi1->portAssignments_.size(), 2 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi0->portAssignments_["enable_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi1->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi1->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1213,22 +1206,45 @@ void tst_HDLParser::testMirroredSlaveInterconnectionToSlaves()
     addConnectionToDesign("sender", "data_bus", "bus1", "data_bus");
     addConnectionToDesign("sender", "data_bus", "bus2", "data_bus");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains("wire [7:0]  sender_to_bus1_DATA;");
-    verifyOutputContains("wire [0:0]  sender_to_bus1_ENABLE;");    
+    QCOMPARE( parser.interConnections_.size(), 1 );
+    QCOMPARE( parser.interConnections_.at(0)->wires_.size(), 2 );
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (sender_to_bus1_DATA[7:0]),\n"
-        "        .enable_out          (sender_to_bus1_ENABLE[0:0])");
+    QSharedPointer<GenerationWire> gw0 = parser.interConnections_.at(0)->wires_.first();
+    QSharedPointer<GenerationWire> gw1 = parser.interConnections_.at(0)->wires_.last();
 
-    verifyOutputContains(
-        "    BusComponent bus1(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (sender_to_bus1_DATA[7:0]),\n"
-        "        .enable_in           (sender_to_bus1_ENABLE[0:0])");
+    QCOMPARE( gw0->bounds.first, QString("7") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
+
+    QCOMPARE( gw1->bounds.first, QString("0") );
+    QCOMPARE( gw1->bounds.second, QString("0") );
+
+    QCOMPARE( parser.instances_.size(), 3 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(1);
+
+    QCOMPARE( gi0->portAssignments_.size(), 2 );
+    QCOMPARE( gi1->portAssignments_.size(), 2 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_bus1_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi0->portAssignments_["enable_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_bus1_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi1->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_bus1_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi1->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_bus1_ENABLE") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1308,19 +1324,34 @@ void tst_HDLParser::testPortMapsWithoutBoundsInInterconnection()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains("wire [7:0]  sender_to_receiver_DATA;");
+    QCOMPARE( parser.interConnections_.size(), 1 );
+    QCOMPARE( parser.interConnections_.at(0)->wires_.size(), 1 );
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (sender_to_receiver_DATA[7:0]));\n");
+    QSharedPointer<GenerationWire> gw0 = parser.interConnections_.at(0)->wires_.first();
 
-    verifyOutputContains(
-        "    BusComponent receiver(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (sender_to_receiver_DATA[7:0]));\n");
+    QCOMPARE( gw0->bounds.first, QString("7") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
+
+    QCOMPARE( parser.instances_.size(), 2 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(1);
+
+    QCOMPARE( gi0->portAssignments_.size(), 1 );
+    QCOMPARE( gi1->portAssignments_.size(), 1 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi1->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1341,28 +1372,52 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
     addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver2", "enable_in");
     addAdhocConnection("dataAdHoc", "sender", "data_out", "receiver1", "data_in");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains("wire [0:0]  enableAdHoc;");
-    verifyOutputContains("wire [7:0]  dataAdHoc;");
+    QCOMPARE( parser.adHocs_.size(), 2 );
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (dataAdHoc[7:0]),\n"
-        "        .enable_out          (enableAdHoc[0:0])");
+    QSharedPointer<GenerationWire> gw0 = parser.adHocs_.at(0)->wire;
+    QSharedPointer<GenerationWire> gw1 = parser.adHocs_.at(1)->wire;
 
-    verifyOutputContains(
-        "    TestReceiver receiver1(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (dataAdHoc[7:0]),\n"
-        "        .enable_in           (enableAdHoc[0:0])");
+    QCOMPARE( gw0->bounds.first, QString("0") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
 
-    verifyOutputContains(
-        "    TestReceiver receiver2(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (),\n"
-        "        .enable_in           (enableAdHoc[0:0])");
+    QCOMPARE( gw1->bounds.first, QString("7") );
+    QCOMPARE( gw1->bounds.second, QString("0") );
+
+    QCOMPARE( parser.instances_.size(), 3 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = parser.instances_.at(2);
+
+    QCOMPARE( gi0->portAssignments_.size(), 2 );
+    QCOMPARE( gi1->portAssignments_.size(), 2 );
+    QCOMPARE( gi2->portAssignments_.size(), 1 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
+    QCOMPARE( gpa->wire->name, QString("dataAdHoc") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi0->portAssignments_["enable_out"];
+    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi1->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("dataAdHoc") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi1->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi2->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1425,19 +1480,33 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     addTieOffAdhocConnectionToInstancePort("open", instanceName, openName, "open_connection");
     addTieOffAdhocConnectionToInstancePort("expID - 4", instanceName, expressionName, "expression_connection");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(
-        "        // These ports are not in any interface\n"
-        "        .defaultTieOff       (20),\n"
-        "        .expressionTieOff    (expName - 4),\n"
-        "        .n/aTieOff           (abc),\n"
-        "        .numberedTieOff      (12),\n"
-        "        .oneTieOff           (1),\n"
-        "        .openTieOff          ( ),\n"
-        "        .zeroTieOff          (0),\n"
-        "        .tieOffOut           ( ),\n"
-        "        .tieOffInOut         (1));");
+    QCOMPARE( parser.instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+
+    QCOMPARE( gi0->portAssignments_.size(), 9 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["defaultTieOff"];
+    QCOMPARE( gpa->tieOff, QString("20") );
+    gpa = gi0->portAssignments_["expressionTieOff"];
+    QCOMPARE( gpa->tieOff, QString("expID - 4") );
+    gpa = gi0->portAssignments_["n/aTieOff"];
+    QCOMPARE( gpa->tieOff, QString("abc") );
+    gpa = gi0->portAssignments_["numberedTieOff"];
+    QCOMPARE( gpa->tieOff, QString("12") );
+    gpa = gi0->portAssignments_["oneTieOff"];
+    QCOMPARE( gpa->tieOff, QString("1") );
+    gpa = gi0->portAssignments_["openTieOff"];
+    QCOMPARE( gpa->tieOff, QString("") );
+    gpa = gi0->portAssignments_["zeroTieOff"];
+    QCOMPARE( gpa->tieOff, QString("0") );
+    gpa = gi0->portAssignments_["tieOffOut"];
+    QCOMPARE( gpa->tieOff, QString("") );
+    gpa = gi0->portAssignments_["tieOffInOut"];
+    QCOMPARE( gpa->tieOff, QString("1") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1455,29 +1524,43 @@ void tst_HDLParser::testMultipleAdhocConnectionsBetweenComponentInstances()
     addInstanceToDesign("receiver2", receiverVLNV, recvView);
 
     addAdhocConnection("sender_enable_to_receiver1_enable", "sender", "enable_out", "receiver1", "enable_in");
-    addAdhocConnection("sender_enable_to_receiver2_enable", "sender", "enable_out", "receiver2", "enable_in");
+    addAdhocConnection("sender_enable_to_receiver2_enable", "sender", "enable_out", "receiver2", "enable_in");  
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains("wire [0:0]  sender_enable_to_receiver1_enable;");
+    QCOMPARE( parser.adHocs_.size(), 1 );
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (),\n"
-        "        .enable_out          (sender_enable_to_receiver1_enable[0:0])");
+    QSharedPointer<GenerationWire> gw0 = parser.adHocs_.at(0)->wire;
 
-    verifyOutputContains(
-        "    TestReceiver receiver1(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (),\n"
-        "        .enable_in           (sender_enable_to_receiver1_enable[0:0])");
+    QCOMPARE( gw0->bounds.first, QString("0") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
 
-    verifyOutputContains(
-        "    TestReceiver receiver2(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (),\n"
-        "        .enable_in           (sender_enable_to_receiver1_enable[0:0])");
+    QCOMPARE( parser.instances_.size(), 3 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = parser.instances_.at(2);
+
+    QCOMPARE( gi0->portAssignments_.size(), 1 );
+    QCOMPARE( gi1->portAssignments_.size(), 1 );
+    QCOMPARE( gi2->portAssignments_.size(), 1 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa;
+    gpa = gi0->portAssignments_["enable_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_enable_to_receiver1_enable") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi1->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_enable_to_receiver1_enable") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi2->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_enable_to_receiver1_enable") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1537,24 +1620,41 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
     addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver1", "enable_in");
     addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver2", "enable_in");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains("wire [10*2-8:2] enableAdHoc;");
+    QCOMPARE( parser.adHocs_.size(), 1 );
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .enable_out          (enableAdHoc[10*2-8:2])");
+    QSharedPointer<GenerationWire> gw0 = parser.adHocs_.at(0)->wire;
 
-    verifyOutputContains(
-        "    TestReceiver receiver1(\n"
-        "        // Interface: data_bus\n"
-        "        .enable_in           (enableAdHoc[2+2:0]));\n");
+    QCOMPARE( gw0->bounds.first, QString("10*2-8") );
+    QCOMPARE( gw0->bounds.second, QString("2") );
 
-    verifyOutputContains(
-        "    TestReceiver receiver2(\n"
-        "        // Interface: data_bus\n"
-        "        .enable_in           (enableAdHoc[2+2:0]));\n");
+    QCOMPARE( parser.instances_.size(), 3 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = parser.instances_.at(2);
+
+    QCOMPARE( gi0->portAssignments_.size(), 1 );
+    QCOMPARE( gi1->portAssignments_.size(), 1 );
+    QCOMPARE( gi2->portAssignments_.size(), 1 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa;
+    gpa = gi0->portAssignments_["enable_out"];
+    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds.first, QString("10*2-8") );
+    QCOMPARE( gpa->bounds.second, QString("2") );
+
+    gpa = gi1->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds.first, QString("2+2") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi2->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds.first, QString("2+2") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1623,17 +1723,24 @@ void tst_HDLParser::testHierarchicalAdhocConnection()
     addHierAdhocConnection("enable_from_sender", "sender", "enable_out");
     addHierAdhocConnection("data_from_sender", "sender", "data_out");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    readOutputFile();
+    QCOMPARE( parser.instances_.size(), 1 );
 
-    QStringList outputList = output_.split("\n");
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (data_from_sender[7:0]),\n"
-        "        .enable_out          (enable_from_sender[0:0])");
+    QCOMPARE( gi0->portAssignments_.size(), 2 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
+    QCOMPARE( gpa->topPortName, QString("data_from_sender") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi0->portAssignments_["enable_out"];
+    QCOMPARE( gpa->topPortName, QString("enable_from_sender") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1697,18 +1804,20 @@ void tst_HDLParser::testHierarchicalAdHocTieOffValues()
     addTieOffConnectionToTopComponentPort("open", openName, "open_connection");
     addTieOffConnectionToTopComponentPort("expID - 4", expressionName, "expression_connection");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(
-        "    // Tie off values for the ports of the encompassing component\n"
-        "    assign defaultTieOff = 20;\n"
-        "    assign expressionTieOff = expName - 4;\n"
-        "    assign inOutTieOff = 1;\n"
-        "    assign n/aTieOff = abc;\n"
-        "    assign numberedTieOff = 12;\n"
-        "    assign oneTieOff = 1;\n"
-        "    assign zeroTieOff = 0;\n"
-        );
+    QCOMPARE( parser.instances_.size(), 0 );
+
+    QCOMPARE( parser.portTiedValues_.size(), 9 );
+
+    QCOMPARE( parser.portTiedValues_["defaultTieOff"], QString("20") );
+    QCOMPARE( parser.portTiedValues_["expressionTieOff"], QString("expID - 4") );
+    QCOMPARE( parser.portTiedValues_["inOutTieOff"], QString("1") );
+    QCOMPARE( parser.portTiedValues_["n/aTieOff"], QString("abc") );
+    QCOMPARE( parser.portTiedValues_["numberedTieOff"], QString("12") );
+    QCOMPARE( parser.portTiedValues_["oneTieOff"], QString("1") );
+    QCOMPARE( parser.portTiedValues_["zeroTieOff"], QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1724,23 +1833,6 @@ void tst_HDLParser::addTieOffConnectionToTopComponentPort(QString const& tieOffV
     newConnection->getExternalPortReferences()->append(newPortReference);
 
     design_->getAdHocConnections()->append(newConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testAdHocConnectionToUnknownInstanceIsNotWritten()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testAdHocConnectionToUnknownInstanceIsNotWritten()
-{
-    addAdhocConnection("notConnected", "unknownInstance", "emptyPort", "unknownInstance", "emptyPort" );
-    addHierAdhocConnection("top_clk", "unknownInstance", "clk");
-
-    runGenerator(true);
-
-    verifyOutputContains(
-        "module TestComponent();\n"
-        "\n"
-		"\n"
-        "endmodule");
 }
 
 //-----------------------------------------------------------------------------
@@ -1805,103 +1897,42 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
 
     design_->getAdHocConnections()->append(multiConnection);
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (data_from_sender[7:0])");
+    QCOMPARE( parser.adHocs_.size(), 1 );
 
-    verifyOutputContains(
-        "    TestReceiver receiver1(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (data_from_sender[7:0])");
+    QCOMPARE( parser.instances_.size(), 3 );
 
-    verifyOutputContains(
-        "    TestReceiver receiver2(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (data_from_sender[7:0])");
-}
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = parser.instances_.at(2);
 
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentInstanceVerilogWriter::testDescriptionAndVLNVIsPrintedAboveInstance()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testDescriptionAndVLNVIsPrintedAboveInstance()
-{
-    QFETCH(QString, description);
-    QFETCH(QString, expectedOutput);
-    
-    QSharedPointer<ConfigurableVLNVReference> instanceVLNV(
-		new ConfigurableVLNVReference(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0"));
+    QCOMPARE( gi0->portAssignments_.size(), 1 );
+    QCOMPARE( gi1->portAssignments_.size(), 1 );
+    QCOMPARE( gi2->portAssignments_.size(), 1 );
 
-	QSharedPointer<View> activeView = addTestComponentToLibrary(*instanceVLNV);
+    QSharedPointer<GenerationPortAssignMent> gpa;
+    gpa = gi0->portAssignments_["data_out"];
+    QCOMPARE( gpa->wire->name, QString("data_from_sender") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 
-    QSharedPointer<ComponentInstance> instance = addInstanceToDesign("instance1", *instanceVLNV, activeView);
-    instance->setDescription(description);
+    gpa = gi1->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("data_from_sender") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 
-    design_->getComponentInstances()->append(instance);
-
-    runGenerator(true);
-
-    verifyOutputContains(expectedOutput);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentInstanceVerilogWriter::testDescriptionAndVLNVIsPrintedAboveInstance_data()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testDescriptionAndVLNVIsPrintedAboveInstance_data()
-{
-    QTest::addColumn<QString>("description");
-    QTest::addColumn<QString>("expectedOutput");
-
-    QTest::newRow("empty description") << "" <<
-        "    // IP-XACT VLNV: Test:TestLibrary:TestComponent:1.0\n"
-        "    TestComponent instance1(";
-    QTest::newRow("one line description") << "Instance description." << 
-        "    // Instance description.\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestComponent:1.0\n"
-        "    TestComponent instance1(";
-
-    QTest::newRow("multiline description") << 
-        "Description on\n" 
-        "multiple\n" 
-        "lines." 
-        << 
-        "    // Description on\n"
-        "    // multiple\n"
-        "    // lines.\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestComponent:1.0\n"
-        "    TestComponent instance1(";
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testTopLevelModuleParametersAreWritten()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testTopLevelModuleParametersAreWritten()
-{
-    QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
-    moduleParameter->setName("moduleParameter");
-    moduleParameter->setValue("1");
-
-	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
-	instantiation->getModuleParameters()->append(moduleParameter);
-
-	topComponent_->getComponentInstantiations()->append(instantiation);
-    topView_->setComponentInstantiationRef(instantiation->name());
-
-    runGenerator(false);
-
-    verifyOutputContains(QString(
-        "module TestComponent #(\n"
-        "    parameter                              moduleParameter  = 1\n"
-        ") ();"
-        ));
+    gpa = gi2->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("data_from_sender") );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::testInstanceModuleParametersAreWritten()
 //-----------------------------------------------------------------------------
-void tst_HDLParser::testInstanceModuleParametersAreWritten()
+void tst_HDLParser::testInstanceParametersAreCulled()
 {
 	QSharedPointer<View> activeView(new View("rtl"));
 	activeView->setComponentInstantiationRef("instance1");
@@ -1911,11 +1942,19 @@ void tst_HDLParser::testInstanceModuleParametersAreWritten()
     library_.addComponent(senderComponent);
     addInstanceToDesign("sender", senderVLNV, activeView);
 
+    QSharedPointer<Parameter> componentParameter(new Parameter());
+    componentParameter->setValueId("parameterId2");
+    componentParameter->setName("componentParameter");
+    componentParameter->setValue("3");
+    componentParameter->setValueResolve("user");
+
+    senderComponent->getParameters()->append(componentParameter);
+
     QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
     moduleParameter->setValueId("parameterId");
     moduleParameter->setName("moduleParameter");
     moduleParameter->setValue("1");
-	moduleParameter->setValueResolve("user");
+    moduleParameter->setValueResolve("user");
 
     QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
     instantiation->getModuleParameters()->append(moduleParameter);
@@ -1930,12 +1969,19 @@ void tst_HDLParser::testInstanceModuleParametersAreWritten()
     parameterOverride->setConfigurableValue("2");
     senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(
-        "    TestSender #(\n"
-        "        .moduleParameter     (2))\n"
-        "    sender();");
+    QCOMPARE( parser.instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+
+    QCOMPARE( gi0->parameters.size(), 2 );
+
+    QCOMPARE( gi0->parameters.at(0)->name(), QString("componentParameter") );
+    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("3") );
+    QCOMPARE( gi0->parameters.at(1)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters.at(1)->getValue(), QString("2") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1976,19 +2022,19 @@ void tst_HDLParser::testTopComponentParametersAreUtilized()
 	QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
 	parameterOverride->setReferenceId("parameterId");
 	parameterOverride->setConfigurableValue("componentParameterId");
-	senderInstance->getConfigurableElementValues()->append(parameterOverride);
+    senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
-	runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-	verifyOutputContains(
-		"module TestComponent #(\n"
-		"    parameter                              componentParameter = 1337\n"
-		") ();");
+    QCOMPARE( parser.instances_.size(), 1 );
 
-	verifyOutputContains(
-		"    TestSender #(\n"
-		"        .moduleParameter     (componentParameter))\n"
-		"    sender();");
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+
+    QCOMPARE( gi0->parameters.size(), 1 );
+
+    QCOMPARE( gi0->parameters.at(0)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("componentParameter") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2030,15 +2076,21 @@ void tst_HDLParser::testInstanceComponentParametersAreUtilized()
 	QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
 	parameterOverride->setReferenceId("parameterId");
 	parameterOverride->setConfigurableValue("cpId");
-	senderInstance->getConfigurableElementValues()->append(parameterOverride);
+    senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
-	runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-	verifyOutputContains(
-		"    TestSender #(\n"
-		"        .componentParameter  (55),\n"
-		"        .moduleParameter     (55))\n"
-		"    sender();");
+    QCOMPARE( parser.instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+
+    QCOMPARE( gi0->parameters.size(), 2 );
+
+    QCOMPARE( gi0->parameters.at(0)->name(), QString("componentParameter") );
+    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("55") );
+    QCOMPARE( gi0->parameters.at(1)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters.at(1)->getValue(), QString("55") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2080,12 +2132,17 @@ void tst_HDLParser::testParameterPropagationFromTop()
     parameterOverride->setConfigurableValue("topID");
     senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(
-        "    TestSender #(\n"
-        "        .moduleParameter     (topParameter))\n"
-        "    sender();");
+    QCOMPARE( parser.instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+
+    QCOMPARE( gi0->parameters.size(), 1 );
+
+    QCOMPARE( gi0->parameters.at(0)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("topParameter") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2132,15 +2189,21 @@ void tst_HDLParser::testParameterPropagationFromTop2()
 	QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
 	parameterOverride->setReferenceId("senderID");
 	parameterOverride->setConfigurableValue("topID");
-	senderInstance->getConfigurableElementValues()->append(parameterOverride);
+    senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
-	runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-	verifyOutputContains(
-		"    TestSender #(\n"
-		"        .senderParameter     (topParameter),\n"
-		"        .moduleParameter     (topParameter))\n"
-		"    sender();");
+    QCOMPARE( parser.instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(0);
+
+    QCOMPARE( gi0->parameters.size(), 2 );
+
+    QCOMPARE( gi0->parameters.at(0)->name(), QString("senderParameter") );
+    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("topParameter") );
+    QCOMPARE( gi0->parameters.at(1)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters.at(1)->getValue(), QString("topParameter") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2224,36 +2287,47 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    runGenerator(true);
+    HDLDesignParser parser(&library_, topComponent_, topView_, design_, designConf_);
+    parser.parseDesign();
 
-    verifyOutputContains(
-        "module TestComponent #(\n"
-        "    parameter                              topParameter     = 10\n"
-        ") ();\n"
-        "\n"
-        "    wire [7*topParameter:0] sender_to_receiver_DATA;\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
-        "    TestReceiver receiver(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (sender_to_receiver_DATA[7+1:0]));\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
-        "    TestSender #(\n"
-        "        .senderParameter     (topParameter),\n"
-        "        .moduleParameter     (topParameter))\n"
-        "    sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (sender_to_receiver_DATA[7*topParameter:0]));");
+    QCOMPARE( parser.interConnections_.size(), 1 );
+    QCOMPARE( parser.interConnections_.at(0)->wires_.size(), 1 );
+
+    QSharedPointer<GenerationWire> gw0 = parser.interConnections_.at(0)->wires_.first();
+
+    QCOMPARE( gw0->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gw0->bounds.first, QString("7*topParameter") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
+
+    QCOMPARE( parser.instances_.size(), 2 );
+
+    QSharedPointer<GenerationInstance> gi0 = parser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi1 = parser.instances_.at(0);
+
+    QSharedPointer<GenerationPortAssignMent> gpa;
+    gpa = gi0->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7+1") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    QCOMPARE( gi1->parameters.size(), 2 );
+
+    QCOMPARE( gi1->parameters.at(0)->name(), QString("senderParameter") );
+    QCOMPARE( gi1->parameters.at(0)->getValue(), QString("topParameter") );
+    QCOMPARE( gi1->parameters.at(1)->name(), QString("moduleParameter") );
+    QCOMPARE( gi1->parameters.at(1)->getValue(), QString("topParameter") );
+
+    gpa = gi1->portAssignments_["data_out"];
+    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds.first, QString("7*topParameter") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testTopLevelParametersAreInOrder()
+// Function: tst_HDLParser::testParameterSorting()
 //-----------------------------------------------------------------------------
-void tst_HDLParser::testParametersAreInOrder()
+void tst_HDLParser::testParameterSorting()
 {
-	topView_->setComponentInstantiationRef("instance1");
-
 	QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
 	moduleParameterFirst->setName("moduleParameterFirst");
 	moduleParameterFirst->setValue("1");
@@ -2272,34 +2346,30 @@ void tst_HDLParser::testParametersAreInOrder()
     moduleParameterThird->setValueId("thirdParameter");
 	moduleParameterThird->setValueResolve("user");
 
-	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
-	instantiation->getModuleParameters()->append(moduleParameterThird);
-	instantiation->getModuleParameters()->append(moduleParameterFirst);
-	instantiation->getModuleParameters()->append(moduleParameterSecond);
+	QList<QSharedPointer<Parameter> > parameters;
+	parameters.append(moduleParameterThird);
+	parameters.append(moduleParameterFirst);
+	parameters.append(moduleParameterSecond);
 
-	topComponent_->getComponentInstantiations()->append(instantiation);
+    QList<QSharedPointer<Parameter> > sortedParameters(parameters);
+	
+    HDLComponentParser::sortParameters(parameters,sortedParameters);
 
-	runGenerator("rtl");
+    QCOMPARE( sortedParameters.size(), 3 );
 
-	verifyOutputContains(QString(
-		"module TestComponent #(\n"
-		"    parameter                              moduleParameterFirst = 1,\n"
-		"    parameter                              moduleParameterSecond = moduleParameterFirst,\n"
-		"    parameter                              moduleParameterThird = moduleParameterSecond\n"
-		") ();\n"
-		"\n"
-		"\n"
-		"endmodule\n"
-		));
+    QCOMPARE( sortedParameters.at(0)->name(), QString("moduleParameterFirst") );
+    QCOMPARE( sortedParameters.at(0)->getValue(), QString("1") );
+    QCOMPARE( sortedParameters.at(1)->name(), QString("moduleParameterSecond") );
+    QCOMPARE( sortedParameters.at(1)->getValue(), QString("firstParameter") );
+    QCOMPARE( sortedParameters.at(2)->name(), QString("moduleParameterThird") );
+    QCOMPARE( sortedParameters.at(2)->getValue(), QString("secondParameter") );
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testTopLevelParametersAreInOrder2()
+// Function: tst_HDLParser::testParameterSorting2()
 //-----------------------------------------------------------------------------
-void tst_HDLParser::testParametersAreInOrder2()
+void tst_HDLParser::testParameterSorting2()
 {
-	topView_->setComponentInstantiationRef("instance1");
-
 	QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
 	moduleParameterFirst->setName("moduleParameterFirst");
 	moduleParameterFirst->setValue("secondParameter + fourthParameter");
@@ -2324,38 +2394,33 @@ void tst_HDLParser::testParametersAreInOrder2()
 	moduleParameterFourth->setValueId("fourthParameter");
 	moduleParameterFourth->setValueResolve("user");
 
-    QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
-    instantiation->getModuleParameters()->append(moduleParameterFirst);
-	instantiation->getModuleParameters()->append(moduleParameterSecond);
-	instantiation->getModuleParameters()->append(moduleParameterThird);
-	instantiation->getModuleParameters()->append(moduleParameterFourth);
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(moduleParameterFirst);
+    parameters.append(moduleParameterSecond);
+    parameters.append(moduleParameterThird);
+    parameters.append(moduleParameterFourth);
 
-    topComponent_->getComponentInstantiations()->append(instantiation);
+    QList<QSharedPointer<Parameter> > sortedParameters(parameters);
 
-    addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
+    HDLComponentParser::sortParameters(parameters,sortedParameters);
 
-    runGenerator("rtl");
+    QCOMPARE( sortedParameters.size(), 4 );
 
-	verifyOutputContains(QString(
-        "module TestComponent #(\n"
-        "    parameter                              moduleParameterSecond = 1,\n"
-		"    parameter                              moduleParameterFourth = 4,\n"
-		"    parameter                              moduleParameterFirst = moduleParameterSecond+moduleParameterFourth,\n"
-		"    parameter                              moduleParameterThird = moduleParameterFirst\n"
-		") ();\n"
-		"\n"
-		"\n"
-		"endmodule\n"
-		));
+    QCOMPARE( sortedParameters.at(0)->name(), QString("moduleParameterSecond") );
+    QCOMPARE( sortedParameters.at(0)->getValue(), QString("1") );
+    QCOMPARE( sortedParameters.at(1)->name(), QString("moduleParameterFourth") );
+    QCOMPARE( sortedParameters.at(1)->getValue(), QString("4") );
+    QCOMPARE( sortedParameters.at(2)->name(), QString("moduleParameterFirst") );
+    QCOMPARE( sortedParameters.at(2)->getValue(), QString("secondParameter + fourthParameter") );
+    QCOMPARE( sortedParameters.at(3)->name(), QString("moduleParameterThird") );
+    QCOMPARE( sortedParameters.at(3)->getValue(), QString("firstParameter") );
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testTopLevelParametersAreInOrder3()
+// Function: tst_HDLParser::testParameterSorting3()
 //-----------------------------------------------------------------------------
-void tst_HDLParser::testParametersAreInOrder3()
+void tst_HDLParser::testParameterSorting3()
 {
-    topView_->setComponentInstantiationRef("instance1");
-
     QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
     moduleParameterFirst->setName("moduleParameterFirst");
     moduleParameterFirst->setValue("1");
@@ -2386,677 +2451,29 @@ void tst_HDLParser::testParametersAreInOrder3()
     moduleParameterFifth->setValueId("fifthParameter");
     moduleParameterFifth->setValueResolve("user");
 
-    QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
-    instantiation->getModuleParameters()->append(moduleParameterFirst);
-    instantiation->getModuleParameters()->append(moduleParameterSecond);
-    instantiation->getModuleParameters()->append(moduleParameterThird);
-    instantiation->getModuleParameters()->append(moduleParameterFourth);
-    instantiation->getModuleParameters()->append(moduleParameterFifth);
-
-    topComponent_->getComponentInstantiations()->append(instantiation);
-
-    addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
-
-    runGenerator("rtl");
-
-    verifyOutputContains(QString(
-        "module TestComponent #(\n"
-        "    parameter                              moduleParameterSecond = 55,\n"
-        "    parameter                              moduleParameterFirst = 1,\n"
-        "    parameter                              moduleParameterFourth = 12,\n"
-        "    parameter                              moduleParameterFifth = moduleParameterFourth-moduleParameterFirst,\n"
-        "    parameter                              moduleParameterThird = moduleParameterFifth+moduleParameterSecond\n"
-        ") ();\n"
-        "\n"
-        "\n"
-        "endmodule\n"
-        ));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testImplementationSelection()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testImplementationSelection()
-{
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	QString content = QString(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n"
-		"foo\n"
-		"bar\n"
-		"endmodule\n"
-		); 
-
-	outputStream << content;
-
-	existingFile.close();
-
-	VerilogGenerator generator(&library_);
-
-	QString implementation;
-	QString postModule;
-
-	generator.selectImplementation("./generatorOutput.v", implementation, postModule);
-
-	implementation = implementation.trimmed();
-
-	QCOMPARE(implementation,QString("foo\nbar"));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testImplementationSelectionWithTag()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testImplementationSelectionWithTag()
-{
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	QString content = QString(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n" 
-		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
-		"foo\n"
-		"bar\n"
-		"endmodule\n"
-		); 
-
-	outputStream << content;
-
-	existingFile.close();
-
-	VerilogGenerator generator(&library_);
-
-	QString implementation;
-	QString postModule;
-
-	generator.selectImplementation("./generatorOutput.v", implementation, postModule);
-
-	implementation = implementation.trimmed();
-
-	QCOMPARE(implementation,QString("foo\nbar"));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testImplementationSelectionWithoutParameters()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testImplementationSelectionWithoutParameters()
-{
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	QString content = QString(
-		"module TestComponent(\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n"
-		"dataOut <= rst_n & clk\n"
-		"bar\n"
-		"baz\n"
-		"endmodule\n"
-		); 
-
-	outputStream << content;
-
-	existingFile.close();
-
-	VerilogGenerator generator(&library_);
-
-	QString implementation;
-	QString postModule;
-
-	generator.selectImplementation("./generatorOutput.v", implementation, postModule);
-
-	implementation = implementation.trimmed();
-
-	QCOMPARE(implementation,QString("dataOut <= rst_n & clk\nbar\nbaz"));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testImplementationSelectionWithoutPorts()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testImplementationSelectionWithoutPorts()
-{
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	QString content = QString(
-		"module TestComponent();\n"
-		"dataOut <= rst_n & clk\n"
-		"endmodule\n"
-		); 
-
-	outputStream << content;
-
-	existingFile.close();
-
-	VerilogGenerator generator(&library_);
-
-	QString implementation;
-	QString postModule;
-
-	generator.selectImplementation("./generatorOutput.v", implementation, postModule);
-
-	implementation = implementation.trimmed();
-
-	QCOMPARE(implementation,QString("dataOut <= rst_n & clk"));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testImplementationSelectionWithInstantiation()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testImplementationSelectionWithInstantiation()
-{
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	QString content = QString(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n");
-
-	QString expectedImplementation = QString(
-		"foo\n"
-		"bar\n"
-		"\n"
-		"// IP-XACT VLNV: tut.fi:ip.hw:TestIntitializer:1.0\n"
-		"TestIntitializer #(\n"
-		".WAIT_TIME           (2100))\n"
-		"TestIntitializer_0(\n"
-		"// These ports are not in any interface\n"
-		".done                (SampleHW_0_done_to_TestIntitializer_0_done),\n"
-		".clk                 (TestIntitializer_0_clk_to_SampleHW_0_clk),\n"
-		".rst                 (SampleHW_0_rst_to_TestIntitializer_0_rst),\n"
-		".start\n"
-		");");
-
-	outputStream << content << expectedImplementation << "endmodule";
-
-	existingFile.close();
-
-	VerilogGenerator generator(&library_);
-
-	QString actualImplementation;
-	QString postModule;
-
-	generator.selectImplementation("./generatorOutput.v", actualImplementation, postModule);
-
-	actualImplementation = actualImplementation.trimmed();
-
-	QCOMPARE(actualImplementation,expectedImplementation);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testImplementationSelectionWithPostModule()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testImplementationSelectionWithPostModule()
-{
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	QString content = QString(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n"
-		"foo\n"
-		"bar\n"
-		"endmodule"
-		); 
-
-	QString expectedPostModule = QString(
-		"lrem ipsum\n"
-		"    parameter                              bbb        = 64,\n"
-		"    parameter                              two        = bbb * 2 \n"
-		"// Bogus copy paste stuff\n"
-		"foo\n"
-		"bar"
-		); 
-
-	outputStream << content << endl << expectedPostModule;
-
-	existingFile.close();
-
-	VerilogGenerator generator(&library_);
-
-	QString implementation;
-	QString actualPostModule;
-
-	generator.selectImplementation("./generatorOutput.v", implementation, actualPostModule);
-
-	implementation = implementation.trimmed();
-	actualPostModule = actualPostModule.trimmed();
-
-	QCOMPARE(implementation,QString("foo\nbar"));
-	QCOMPARE(actualPostModule,expectedPostModule);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testImplementationSelectionWithTooManyModules()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testImplementationSelectionWithTooManyModules()
-{
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	QString content = QString(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n"
-		"foo\n"
-		"bar\n"
-		"endmodule"
-		); 
-
-	QString extraModule = QString(
-		"module MasterComponent #(\n"
-		"    parameter                              bbb        = 64,\n"
-		"    parameter                              two        = bbb * 2 \n"
-		") (\n"        
-		"    input          [7:0]                iii,\n"
-		"    output         [7:0]                aaa\n"
-		");\n"
-		"foo\n"
-		"bar\n"
-		"endmodule"
-		); 
-
-	outputStream << content << endl << extraModule;
-
-	existingFile.close();
-
-	VerilogGenerator generator(&library_);
-
-	QString implementation;
-	QString postModule;
-
-	bool success = generator.selectImplementation("./generatorOutput.v", implementation, postModule);
-
-	QVERIFY(!success);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testImplementationSelectionWithNoModuleHeaderStart()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testImplementationSelectionWithNoModuleHeaderStart()
-{
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	QString content = QString(
-		"TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n"
-		"foo\n"
-		"bar\n"
-		"endmodule\n"
-		); 
-
-	outputStream << content;
-
-	existingFile.close();
-
-	VerilogGenerator generator(&library_);
-
-	QString implementation;
-	QString postModule;
-
-	bool success = generator.selectImplementation("./generatorOutput.v", implementation, postModule);
-
-	QVERIFY(!success);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testImplementationSelectionWithNoModuleHeaderEnd()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testImplementationSelectionWithNoModuleHeaderEnd()
-{
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	QString content = QString(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		"\n"
-		"foo\n"
-		"bar\n"
-		"endmodule\n"
-		); 
-
-	outputStream << content;
-
-	existingFile.close();
-
-	VerilogGenerator generator(&library_);
-
-	QString implementation;
-	QString postModule;
-
-	bool success = generator.selectImplementation("./generatorOutput.v", implementation, postModule);
-
-	QVERIFY(!success);
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testImplementationSelectionWithNoModuleEnd()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testImplementationSelectionWithNoModuleEnd()
-{
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	QString content = QString(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n"
-		"\n"
-		"foo\n"
-		"bar\n"
-		); 
-
-	outputStream << content;
-
-	existingFile.close();
-
-	VerilogGenerator generator(&library_);
-
-	QString implementation;
-	QString postModule;
-
-	bool success = generator.selectImplementation("./generatorOutput.v", implementation, postModule);
-
-	QVERIFY(!success);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testGenerationWithImplementation()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testGenerationWithImplementation()
-{
-	QString contentBefore(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n"
-		"assign adr_slave_1 = adr_master;\n"
-		"assign cyc_slave_1 = cyc_master;\n"
-		"endmodule\n"
-		);
-
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	outputStream << contentBefore;
-
-	existingFile.close();
-
-	addPort("clk", 1, DirectionTypes::IN, topComponent_);
-	addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
-	addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
-	addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
-	addModuleParameter("dataWidth", "8");
-	addModuleParameter("freq", "100000");
-
-	runGenerator(false);
-
-	QString contentAfter(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n"
-		"\n"
-		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
-		"assign adr_slave_1 = adr_master;\n"
-		"assign cyc_slave_1 = cyc_master;\n"
-		"endmodule\n"
-		);
-
-	verifyOutputContains(contentAfter);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testGenerationWithImplementationWithTag()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testGenerationWithImplementationWithTag()
-{
-	QString content(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n"
-		"\n"
-		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
-		"foo\n"
-		"bar\n"
-		"endmodule\n"
-		);
-
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	outputStream << content;
-
-	existingFile.close();
-
-	addPort("clk", 1, DirectionTypes::IN, topComponent_);
-	addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
-	addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
-	addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
-	addModuleParameter("dataWidth", "8");
-	addModuleParameter("freq", "100000");
-
-	runGenerator(false);
-
-	verifyOutputContains(content);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testGenerationWithImplementationWithPostModule()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testGenerationWithImplementationWithPostModule()
-{
-	QString content(
-		"module TestComponent #(\n"
-		"    parameter                              dataWidth        = 8,\n"
-		"    parameter                              freq             = 100000\n"
-		") (\n"
-		"    // These ports are not in any interface\n"         
-		"    input                               clk,\n"
-		"    input          [7:0]                dataIn,\n"
-		"    input                               rst_n,\n"
-		"    output         [7:0]                dataOut\n"
-		");\n"
-		"\n"
-		"// " + VerilogSyntax::TAG_OVERRIDE + "\n"
-		"foo\n"
-		"bar\n"
-		"endmodule\n"
-		"additional stuff\n"
-		"more stuff"
-		);
-
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
-	outputStream << content;
-
-	existingFile.close();
-
-	addPort("clk", 1, DirectionTypes::IN, topComponent_);
-	addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
-	addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
-	addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
-	addModuleParameter("dataWidth", "8");
-	addModuleParameter("freq", "100000");
-
-	runGenerator(false);
-
-	verifyOutputContains(content);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::verifyOutputContains()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::verifyOutputContains(QString const& expectedOutput)
-{
-    readOutputFile();
-
-    if (!output_.contains(expectedOutput))
-    {
-        QStringList outputLines = output_.split("\n");
-        QStringList expectedLines = expectedOutput.split("\n");
-
-        QVERIFY(outputLines.count() >= expectedLines.count());
-
-        int lineOffset = outputLines.indexOf(expectedLines.first());
-
-        if (lineOffset == -1)
-        {
-            compareOutputTo(expectedOutput);
-        }
-        else
-        {
-            int lineCount = expectedLines.count();
-            for (int i = 0; i < lineCount; i++)
-            {
-                QCOMPARE(outputLines.at(i + lineOffset), expectedLines.at(i));
-            }
-        }
-    }
-    else if(output_.count(expectedOutput) != 1)
-    {
-        QVERIFY2(false, QString(expectedOutput + " was found " + QString::number(output_.count(expectedOutput))
-            + " times in output.").toLocal8Bit());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::compareLineByLine()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::compareOutputTo(QString const& expectedOutput)
-{
-    readOutputFile();
-
-    QCOMPARE(output_, expectedOutput);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::readOutputFile()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::readOutputFile()
-{
-    QFile outputFile("./generatorOutput.v");
-
-    QVERIFY(outputFile.open(QIODevice::ReadOnly));
-
-    output_ = outputFile.readAll();
-    outputFile.close();
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(moduleParameterFirst);
+    parameters.append(moduleParameterSecond);
+    parameters.append(moduleParameterThird);
+    parameters.append(moduleParameterFourth);
+    parameters.append(moduleParameterFifth);
+
+    QList<QSharedPointer<Parameter> > sortedParameters(parameters);
+
+    HDLComponentParser::sortParameters(parameters,sortedParameters);
+
+    QCOMPARE( sortedParameters.size(), 5 );
+
+    QCOMPARE( sortedParameters.at(0)->name(), QString("moduleParameterSecond") );
+    QCOMPARE( sortedParameters.at(0)->getValue(), QString("55") );
+    QCOMPARE( sortedParameters.at(1)->name(), QString("moduleParameterFirst") );
+    QCOMPARE( sortedParameters.at(1)->getValue(), QString("1") );
+    QCOMPARE( sortedParameters.at(2)->name(), QString("moduleParameterFourth") );
+    QCOMPARE( sortedParameters.at(2)->getValue(), QString("12") );
+    QCOMPARE( sortedParameters.at(3)->name(), QString("moduleParameterFifth") );
+    QCOMPARE( sortedParameters.at(3)->getValue(), QString("fourthParameter - firstParameter") );
+    QCOMPARE( sortedParameters.at(4)->name(), QString("moduleParameterThird") );
+    QCOMPARE( sortedParameters.at(4)->getValue(), QString("fifthParameter + secondParameter") );
 }
 
 QTEST_APPLESS_MAIN(tst_HDLParser)

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: PortVerilogWriter.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 28.7.2014
 //
@@ -15,11 +15,9 @@
 #include "../veriloggeneratorplugin_global.h"
 #include "../common/Writer.h"
 
-#include <IPXACTmodels/Component/Port.h>
+#include <Plugins/common/HDLParser/HDLParserCommon.h>
 
 #include <QTextStream>
-
-class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
 // Class for writing port declarations in Verilog.
@@ -31,9 +29,8 @@ public:
      *  The constructor.
      *
      *      @param [in] port                    The port to write to Verilog.
-     *      @param [in] expressionFormatter     Formatter for expressions.
      */
-    PortVerilogWriter(QSharedPointer<const Port> port, QSharedPointer<ExpressionFormatter> expressionFormatter);
+    PortVerilogWriter(QSharedPointer<GenerationPort> port);
 
     //! The destructor.
     ~PortVerilogWriter();
@@ -85,10 +82,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The port to write to Verilog.
-    QSharedPointer<const Port> port_;
-
-    //! The formatter to use for expressions.
-    QSharedPointer<ExpressionFormatter> formatter_;
+    QSharedPointer<const GenerationPort> port_;
 };
 
 #endif // PORTVERILOGWRITER_H

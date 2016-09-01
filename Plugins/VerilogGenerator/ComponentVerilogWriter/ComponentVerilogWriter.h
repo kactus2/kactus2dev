@@ -118,7 +118,7 @@ private:
      *      @param [in] port            The port to write.
      *      @param [in] isLast          Indicates if the port is the last to write.
      */
-    void writePort(QTextStream& outputStream, QSharedPointer<Port> port, bool isLast) const;
+    void writePort(QTextStream& outputStream, QSharedPointer<GenerationPort> port, bool isLast) const;
 
     /*!
      *  Writes a bus interface introduction.

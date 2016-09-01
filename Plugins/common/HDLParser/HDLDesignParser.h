@@ -119,7 +119,7 @@ private:
      */
 	QPair<QString, QString> logicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance, QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<PortMap> portMap) const;
 
-	bool connectTieOff(QString tieOff, QSharedPointer<Port> port, DirectionTypes::Direction requiredDirection, QMap<QString, QString>& tiedValuesMap);
+	bool connectTieOff(QString tieOff, QSharedPointer<Port> port, DirectionTypes::Direction requiredDirection, QString& value);
 
     //-----------------------------------------------------------------------------
     // Data.

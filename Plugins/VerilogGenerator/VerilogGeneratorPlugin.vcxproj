@@ -139,6 +139,7 @@
     <ClCompile Include="..\common\HDLParser\HDLComponentParser.cpp" />
     <ClCompile Include="..\common\HDLParser\HDLDesignParser.cpp" />
     <ClCompile Include="..\common\NameGenerationPolicy.cpp" />
+    <ClCompile Include="..\common\PortSorter\InterfaceDirectionNameSorter.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GeneratorConfigurationDialog.cpp" />
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp" />
@@ -197,7 +198,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.cpp" />
-    <ClCompile Include="PortSorter\InterfaceDirectionNameSorter.cpp" />
     <ClCompile Include="PortVerilogWriter\PortVerilogWriter.cpp" />
     <ClCompile Include="TextBodyWriter\TextBodyWriter.cpp" />
     <ClCompile Include="VerilogGeneratorPlugin.cpp" />
@@ -236,6 +236,8 @@
     <ClInclude Include="..\common\HDLParser\HDLComponentParser.h" />
     <ClInclude Include="..\common\HDLParser\HDLParserCommon.h" />
     <ClInclude Include="..\common\NameGenerationPolicy.h" />
+    <ClInclude Include="..\common\PortSorter\InterfaceDirectionNameSorter.h" />
+    <ClInclude Include="..\common\PortSorter\PortSorter.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.h" />
     <CustomBuild Include="..\PluginSystem\GeneratorPlugin\GeneratorConfigurationDialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -279,8 +281,6 @@
     <ClInclude Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.h" />
     <ClInclude Include="ComponentVerilogWriter\ComponentVerilogWriter.h" />
     <ClInclude Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.h" />
-    <ClInclude Include="PortSorter\InterfaceDirectionNameSorter.h" />
-    <ClInclude Include="PortSorter\PortSorter.h" />
     <ClInclude Include="PortVerilogWriter\PortVerilogWriter.h" />
     <CustomBuild Include="VerilogGeneratorPlugin.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

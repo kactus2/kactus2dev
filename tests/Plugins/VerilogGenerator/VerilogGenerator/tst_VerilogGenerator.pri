@@ -7,18 +7,18 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../Plugins/common/HDLParser/HDLParserCommon.h \
-    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
+HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.h \
+    ../../../../Plugins/common/HDLParser/HDLComponentParser.h \
+    ../../../../Plugins/common/HDLParser/HDLParserCommon.h \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h \
+    ../../../../editors/ComponentEditor/common/ListParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../../../../editors/ComponentEditor/common/ParameterFinder.h \
-    ../../../../Plugins/VerilogGenerator/PortSorter/PortSorter.h \
     ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h \
@@ -32,17 +32,18 @@ HEADERS += ../../../../Plugins/common/HDLParser/HDLParserCommon.h \
     ../../../../Plugins/common/HDLParser/HDLDesignParser.h \
     ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
-    ../../../../Plugins/common/HDLParser/HDLComponentParser.h \
-    ../../../../editors/ComponentEditor/common/ListParameterFinder.h
-SOURCES += ../../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
-    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
+    ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.h \
+    ../../../../Plugins/common/PortSorter/PortSorter.h
+SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
+    ../../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../../../Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.cpp \
     ../../../MockObjects/LibraryMock.cpp \
+    ../../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.cpp \
@@ -55,5 +56,4 @@ SOURCES += ../../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
     ./tst_VerilogGenerator.cpp \
-    ../../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
-    ../../../../editors/ComponentEditor/common/ListParameterFinder.cpp
+    ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.cpp

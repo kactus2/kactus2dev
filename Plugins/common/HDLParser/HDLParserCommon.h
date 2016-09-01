@@ -14,6 +14,7 @@
 
 #include <QSharedPointer>
 #include <QString>
+#include <IPXACTmodels\common\DirectionTypes.h>
 
 class Component;
 class ComponentInstance;
@@ -64,12 +65,22 @@ struct GenerationRemapState
     QString stateName;
 };
 
+struct GenerationPort
+{
+    QString name;
+    QString typeName;
+    QString description;
+    DirectionTypes::Direction direction;
+    QPair<QString,QString> vectorBounds;
+    QPair<QString,QString> arrayBounds;
+};
+
 struct GenerationComponent
 {
     QSharedPointer<Component> component;
     QList<QSharedPointer<GenerationRemap> > remaps;
     QList<QSharedPointer<Parameter> > parameters;
-    QStringList sortedPortNames;
+    QList<QSharedPointer<GenerationPort> > ports;
     QString aub;
     QString totalRange;
     QList<QSharedPointer<GenerationRemapState> > remapStates;
@@ -77,8 +88,8 @@ struct GenerationComponent
 
 struct GenerationWire
 {
-	QList<QSharedPointer<Port> > ports;
-	QPair<QString,QString> bounds;
+    QList<QSharedPointer<Port> > ports;
+    QPair<QString,QString> bounds;
 	QString name;
 };
 
@@ -104,6 +115,7 @@ struct GenerationPortAssignMent
 	QPair<QString,QString> bounds;
 	QSharedPointer<GenerationWire> wire;
 	QString topPortName;
+    QString tieOff;
 };
 
 struct GenerationInstance
@@ -123,9 +135,6 @@ struct GenerationInstance
 	QMap<QString,QSharedPointer<GenerationPortAssignMent> > portAssignments_;
 
 	QMap<QSharedPointer<BusInterface>,QSharedPointer<GenerationInterconnection> > interfaces_;
-
-	//! The assigned tie off values.
-	QMap<QString,QString> tieOffAssignments_;
 
 	QSharedPointer<View> activeView_;
 

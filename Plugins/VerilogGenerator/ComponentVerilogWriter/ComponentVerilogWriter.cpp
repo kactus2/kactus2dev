@@ -23,7 +23,6 @@
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <QSharedPointer>
-#include "editors/ComponentEditor/common/ExpressionParser.h"
 #include "IPXACTmodels/Component/View.h"
 #include "IPXACTmodels/Component/ComponentInstantiation.h"
 
@@ -207,10 +206,10 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 
     outputStream << "(";
 
-    foreach(QString portName, component_->sortedPortNames)
+    foreach(QSharedPointer<GenerationPort> port, component_->ports)
 	{    
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-            component_->component->getInterfacesUsedByPort(portName);
+            component_->component->getInterfacesUsedByPort(port->name);
 
         if (busInterfaces->size() == 1)
 		{
@@ -225,8 +224,8 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 			writeInterfaceIntroduction("none", previousInterfaceName, outputStream);
 		}
 
-        bool lastPortToWrite = portName == component_->sortedPortNames.last();
-        writePort(outputStream, component_->component->getPort(portName), lastPortToWrite);
+        bool lastPortToWrite = port == component_->ports.last();
+        writePort(outputStream, port, lastPortToWrite);
     }
     
     outputStream << ");" << endl;
@@ -266,11 +265,11 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::writePort()
 //-----------------------------------------------------------------------------
-void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer<Port> port, bool isLast) const
+void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer<GenerationPort> port, bool isLast) const
 {
     outputStream << indentation();
 
-    PortVerilogWriter writer(port, formatter_);
+    PortVerilogWriter writer(port);
     writer.write(outputStream);
 
     if (!isLast)
@@ -278,11 +277,11 @@ void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer
         outputStream << ",";
     }
 
-    CommentWriter descriptionWriter(port->description());
+    CommentWriter descriptionWriter(port->description);
     descriptionWriter.setIndent(4);
     descriptionWriter.write(outputStream);
 
-    if (port->description().isEmpty())
+    if (port->description.isEmpty())
     {
         outputStream << endl;
     }

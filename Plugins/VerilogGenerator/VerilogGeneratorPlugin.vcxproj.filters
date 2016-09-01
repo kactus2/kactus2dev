@@ -136,9 +136,6 @@
     <ClCompile Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.cpp">
       <Filter>Source Files\ModelParameterVerilogWriter</Filter>
     </ClCompile>
-    <ClCompile Include="PortSorter\InterfaceDirectionNameSorter.cpp">
-      <Filter>Source Files\PortSorter</Filter>
-    </ClCompile>
     <ClCompile Include="PortVerilogWriter\PortVerilogWriter.cpp">
       <Filter>Source Files\PortVerilogWriter</Filter>
     </ClCompile>
@@ -238,6 +235,9 @@
     <ClCompile Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.cpp">
       <Filter>Source Files\editors</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\PortSorter\InterfaceDirectionNameSorter.cpp">
+      <Filter>Source Files\PortSorter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="veriloggeneratorplugin_global.h">
@@ -254,12 +254,6 @@
     </ClInclude>
     <ClInclude Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.h">
       <Filter>Header Files\ModelParameterVerilogWriter</Filter>
-    </ClInclude>
-    <ClInclude Include="PortSorter\InterfaceDirectionNameSorter.h">
-      <Filter>Header Files\PortSorter</Filter>
-    </ClInclude>
-    <ClInclude Include="PortSorter\PortSorter.h">
-      <Filter>Header Files\PortSorter</Filter>
     </ClInclude>
     <ClInclude Include="PortVerilogWriter\PortVerilogWriter.h">
       <Filter>Header Files\PortVerilogWriter</Filter>
@@ -317,6 +311,12 @@
     </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\PortSorter\InterfaceDirectionNameSorter.h">
+      <Filter>Header Files\PortSorter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\PortSorter\PortSorter.h">
+      <Filter>Header Files\PortSorter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

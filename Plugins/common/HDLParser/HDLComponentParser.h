@@ -50,6 +50,15 @@ public:
 	~HDLComponentParser();
 
     QSharedPointer<GenerationComponent> parseComponent() const;
+	
+    /*!
+     *  Sorts list of module parameters based on their interdependencies.
+     *
+     *      @param [in] currentInsta			The component instantiation, which module parameters are referred.
+     *      @param [out] parametersToWrite      The list containing parameters, that will be sorted.
+     */
+	static void sortParameters(QList<QSharedPointer<Parameter> >& parameters,
+		QList<QSharedPointer<Parameter> >& parametersToWrite);
 
 private:
 	// Disable copying.
@@ -64,15 +73,6 @@ private:
       *  Culls parameter declarations for the module.
       */
     void parseParameterDeclarations(QSharedPointer<GenerationComponent> target) const;
-	
-    /*!
-     *  Sorts list of module parameters based on their interdependencies.
-     *
-     *      @param [in] currentInsta			The component instantiation, which module parameters are referred.
-     *      @param [out] parametersToWrite      The list containing parameters, that will be sorted.
-     */
-	void sortParameters(QList<QSharedPointer<Parameter> >& parameters,
-		QList<QSharedPointer<Parameter> >& parametersToWrite) const;
 
     void parseRemapStates(QSharedPointer<GenerationComponent> target) const;
 

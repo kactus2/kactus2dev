@@ -1422,9 +1422,9 @@ void tst_VerilogGenerator::testAdhocTieOffInComponentInstance()
         "        .n/aTieOff           (abc),\n"
         "        .numberedTieOff      (12),\n"
         "        .oneTieOff           (1),\n"
-        "        .openTieOff          ( ),\n"
+        "        .openTieOff          (),\n"
         "        .zeroTieOff          (0),\n"
-        "        .tieOffOut           ( ),\n"
+        "        .tieOffOut           (),\n"
         "        .tieOffInOut         (1));");
 }
 
