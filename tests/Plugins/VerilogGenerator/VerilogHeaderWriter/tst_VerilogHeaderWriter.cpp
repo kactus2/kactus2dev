@@ -74,7 +74,7 @@ void tst_VerilogHeaderWriter::testVlnv()
     QDateTime generationTime(QDate(2014, 4, 1), QTime(14,14,14));
 
     VerilogHeaderWriter writer(vlnv, "", "");
-    writer.write(outputStream_, "output.v", "", generationTime);
+    writer.write(outputStream_, "output.v", "", "", "", generationTime);
 
     compareLineByLine(QString(
         "//-----------------------------------------------------------------------------\n"
@@ -83,8 +83,10 @@ void tst_VerilogHeaderWriter::testVlnv()
         "// Creation time : 14:14:14\n"
         "// Description   : \n"
         "// Created by    : \n"
-        "// This file was generated with Kactus2 verilog generator\n"
-        "// based on IP-XACT component " + vendor + ":" + library + ":" + name + ":" + version + "\n"
+        "// Tool : Kactus2 \n"
+        "// Plugin : Verilog generator \n"
+        "// This file was generated based on IP-XACT component " + vendor + ":" + library + ":" + name + ":"
+        + version + "\n"
         "// whose XML file is \n"
         "//-----------------------------------------------------------------------------\n"));
 }
@@ -114,7 +116,7 @@ void tst_VerilogHeaderWriter::testGenerationTime()
     QDateTime generationTime(QDate(2014, 1, 14), QTime(12, 0, 40));
 
     VerilogHeaderWriter writer(vlnv, "", "");
-    writer.write(outputStream_, "TestComponent.v", "", generationTime);       
+    writer.write(outputStream_, "TestComponent.v", "", "", "", generationTime);       
 
     compareLineByLine(QString(
         "//-----------------------------------------------------------------------------\n"
@@ -123,8 +125,9 @@ void tst_VerilogHeaderWriter::testGenerationTime()
         "// Creation time : 12:00:40\n"
         "// Description   : \n"
         "// Created by    : \n"
-        "// This file was generated with Kactus2 verilog generator\n"
-        "// based on IP-XACT component Tester:TestLibrary:TestComponent:0.1\n"
+        "// Tool : Kactus2 \n"
+        "// Plugin : Verilog generator \n"
+        "// This file was generated based on IP-XACT component Tester:TestLibrary:TestComponent:0.1\n"
         "// whose XML file is \n"
         "//-----------------------------------------------------------------------------\n"));
 }
@@ -142,7 +145,7 @@ void tst_VerilogHeaderWriter::testDescription()
     QDateTime generationTime(QDate(2014, 4, 14), QTime(14, 14, 14));
 
     VerilogHeaderWriter writer(vlnv, "", "");
-    writer.write(outputStream_, "TestComponent.v", description, generationTime);       
+    writer.write(outputStream_, "TestComponent.v", "", "", description, generationTime);       
 
     compareLineByLine(expectedOutput);
 }
@@ -163,8 +166,9 @@ void tst_VerilogHeaderWriter::testDescription_data()
         "// Creation time : 14:14:14\n"
         "// Description   : \n"
         "// Created by    : \n"
-        "// This file was generated with Kactus2 verilog generator\n"
-        "// based on IP-XACT component Tester:TestLibrary:TestComponent:0.1\n"
+        "// Tool : Kactus2 \n"
+        "// Plugin : Verilog generator \n"
+        "// This file was generated based on IP-XACT component Tester:TestLibrary:TestComponent:0.1\n"
         "// whose XML file is \n"
         "//-----------------------------------------------------------------------------\n";
 
@@ -176,8 +180,9 @@ void tst_VerilogHeaderWriter::testDescription_data()
         "// Creation time : 14:14:14\n"
         "// Description   : Component description.\n"
         "// Created by    : \n"
-        "// This file was generated with Kactus2 verilog generator\n"
-        "// based on IP-XACT component Tester:TestLibrary:TestComponent:0.1\n"
+        "// Tool : Kactus2 \n"
+        "// Plugin : Verilog generator \n"
+        "// This file was generated based on IP-XACT component Tester:TestLibrary:TestComponent:0.1\n"
         "// whose XML file is \n"
         "//-----------------------------------------------------------------------------\n";
 
@@ -195,8 +200,9 @@ void tst_VerilogHeaderWriter::testDescription_data()
         "//                 separate\n"
         "//                 lines.\n"
         "// Created by    : \n"
-        "// This file was generated with Kactus2 verilog generator\n"
-        "// based on IP-XACT component Tester:TestLibrary:TestComponent:0.1\n"
+        "// Tool : Kactus2 \n"
+        "// Plugin : Verilog generator \n"
+        "// This file was generated based on IP-XACT component Tester:TestLibrary:TestComponent:0.1\n"
         "// whose XML file is \n"
         "//-----------------------------------------------------------------------------\n";
 }

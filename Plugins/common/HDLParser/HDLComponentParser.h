@@ -50,7 +50,7 @@ public:
 	~HDLComponentParser();
 
     QSharedPointer<GenerationComponent> parseComponent() const;
-	
+
     /*!
      *  Sorts list of module parameters based on their interdependencies.
      *
@@ -63,7 +63,9 @@ public:
 private:
 	// Disable copying.
 	HDLComponentParser(HDLComponentParser const& rhs);
-	HDLComponentParser& operator=(HDLComponentParser const& rhs);
+    HDLComponentParser& operator=(HDLComponentParser const& rhs);
+
+    void parsePorts(QSharedPointer<GenerationComponent> retval) const;
     
 	void parseRegisters(QSharedPointer<GenerationComponent> target) const;
 

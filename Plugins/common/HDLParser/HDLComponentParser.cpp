@@ -64,36 +64,10 @@ QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent() const
 {
     QSharedPointer<GenerationComponent> retval(new GenerationComponent);
     retval->component = component_;
+
+    parsePorts(retval);
     parseRegisters(retval);
     parseParameterDeclarations(retval);
-
-    QStringList portNames = sorter_->sortedPortNames(component_);
-
-    foreach (QString name, portNames)
-    {
-        QSharedPointer<Port> cport = component_->getPort(name);
-        
-        if (!cport)
-        {
-            continue;
-        }
-
-        QSharedPointer<GenerationPort> gport(new GenerationPort);
-
-        gport->name = name;
-        gport->typeName = cport->getTypeName();
-        gport->description = cport->description();
-        gport->direction = cport->getDirection();
-
-        gport->arrayBounds.first = formatter_->formatReferringExpression(cport->getArrayLeft());
-        gport->arrayBounds.second = formatter_->formatReferringExpression(cport->getArrayRight());
-
-        gport->vectorBounds.first = formatter_->formatReferringExpression(cport->getLeftBound());
-        gport->vectorBounds.second = formatter_->formatReferringExpression(cport->getRightBound());
-
-        retval->ports.append(gport);
-    }
-
     parseRemapStates(retval);
 
     return retval;
@@ -170,6 +144,39 @@ void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& param
             // Append at the end of the list.
             parametersToWrite.append(*parameterAdd);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLComponentParser::parsePorts()
+//-----------------------------------------------------------------------------
+void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval) const
+{
+    QStringList portNames = sorter_->sortedPortNames(component_);
+
+    foreach (QString name, portNames)
+    {
+        QSharedPointer<Port> cport = component_->getPort(name);
+
+        if (!cport)
+        {
+            continue;
+        }
+
+        QSharedPointer<GenerationPort> gport(new GenerationPort);
+
+        gport->name = name;
+        gport->typeName = cport->getTypeName();
+        gport->description = cport->description();
+        gport->direction = cport->getDirection();
+
+        gport->arrayBounds.first = formatter_->formatReferringExpression(cport->getArrayLeft());
+        gport->arrayBounds.second = formatter_->formatReferringExpression(cport->getArrayRight());
+
+        gport->vectorBounds.first = formatter_->formatReferringExpression(cport->getLeftBound());
+        gport->vectorBounds.second = formatter_->formatReferringExpression(cport->getRightBound());
+
+        retval->ports.append(gport);
     }
 }
 
