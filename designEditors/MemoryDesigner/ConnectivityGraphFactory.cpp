@@ -177,8 +177,8 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
             {
                 QSharedPointer<MemoryItem> segmentItem(new MemoryItem(segment->name(), "segment"));
                 segmentItem->setIdentifier(spaceIdentifier + '.' + segment->name());
-                segmentItem->setRange(segment->getRange());
-                segmentItem->setOffset(segment->getAddressOffset());
+                segmentItem->setRange(expressionParser_->parseExpression(segment->getRange()));
+                segmentItem->setOffset(expressionParser_->parseExpression(segment->getAddressOffset()));
 
                 spaceItem->addChild(segmentItem);
             }
@@ -525,8 +525,9 @@ void ConnectivityGraphFactory::addConnections(QSharedPointer<const Design> desig
             {
                 QSharedPointer<ConnectivityInterface> target = graph->getInterface(topInstanceName,  
                     hierInterface->getBusReference());
+                target->setHierarchical();
 
-                 graph->addConnection(interconnection->name(), startInterface, target);
+                graph->addConnection(interconnection->name(), startInterface, target);
             }
 
             foreach (QSharedPointer<ActiveInterface> activeInterface, *interconnection->getActiveInterfaces())

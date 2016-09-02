@@ -134,6 +134,16 @@ public:
      */
     QSharedPointer<MemoryItem> getConnectedMemory() const;
 
+    //! Marks the interface as hierarchical.     
+    void setHierarchical();
+
+    /*!
+     *  Checks if the interface is hierarchical.
+     *
+     *      @return True, if the interface is hierarchical, otherwise false.
+     */
+    bool isHierarchical() const;
+
 private:
 
 	// Disable copying.
@@ -160,6 +170,9 @@ private:
 
     //! The associated memory for the interface.
     QSharedPointer<MemoryItem> memory_;
+
+    //! Whether the interface is hierarchical or not.
+    bool hierarchical_;
 };
 
 #endif // INTERFACE_H

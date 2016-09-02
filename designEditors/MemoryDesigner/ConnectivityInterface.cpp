@@ -15,7 +15,7 @@
 // Function: ConnectivityInterface::ConnectivityInterface()
 //-----------------------------------------------------------------------------
 ConnectivityInterface::ConnectivityInterface(QString const& name): name_(name), mode_(), baseAddress_(),
-    remapAddress_(), instance_(), memory_()
+    remapAddress_(), instance_(), memory_(), hierarchical_(false)
 {
 
 }
@@ -138,4 +138,20 @@ void ConnectivityInterface::setConnectedMemory(QSharedPointer<MemoryItem> item)
 QSharedPointer<MemoryItem> ConnectivityInterface::getConnectedMemory() const
 {
     return memory_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::setHierarchical()
+//-----------------------------------------------------------------------------
+void ConnectivityInterface::setHierarchical()
+{
+    hierarchical_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::isHierarchical()
+//-----------------------------------------------------------------------------
+bool ConnectivityInterface::isHierarchical() const
+{
+    return hierarchical_;
 }
