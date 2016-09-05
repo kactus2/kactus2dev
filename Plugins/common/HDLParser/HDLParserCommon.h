@@ -65,11 +65,20 @@ struct GenerationRemapState
     QString stateName;
 };
 
+struct GenerationInterface
+{
+    QString name;
+    QString typeName;
+    QString mode;
+    QString description;
+};
+
 struct GenerationPort
 {
     QString name;
     QString typeName;
     QString description;
+    QList<QSharedPointer<GenerationInterface> > interfaces;
     DirectionTypes::Direction direction;
     QPair<QString,QString> vectorBounds;
     QPair<QString,QString> arrayBounds;
@@ -81,6 +90,7 @@ struct GenerationComponent
     QList<QSharedPointer<GenerationRemap> > remaps;
     QList<QSharedPointer<Parameter> > parameters;
     QList<QSharedPointer<GenerationPort> > ports;
+    QList<QSharedPointer<GenerationInterface> > interfaces;
     QString aub;
     QString totalRange;
     QList<QSharedPointer<GenerationRemapState> > remapStates;

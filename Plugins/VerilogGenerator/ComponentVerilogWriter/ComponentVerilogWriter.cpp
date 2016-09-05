@@ -34,8 +34,9 @@
 ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<GenerationComponent> component,
 	QSharedPointer<ExpressionFormatter> expressionFormatter) :
 component_(component),
-childWriters_(),
-formatter_(expressionFormatter)
+formatter_(expressionFormatter),
+useInterfaces_(true),
+childWriters_()
 {
 
 }
@@ -138,6 +139,11 @@ void ComponentVerilogWriter::writeModuleDeclaration(QTextStream& outputStream) c
     
     writeParameterDeclarations(outputStream);
 
+    foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces)
+    {
+         outputStream << gif->typeName << "." << gif->mode << " " << gif->name << endl;
+    }
+
     writePortDeclarations(outputStream);     
 }
 
@@ -207,22 +213,30 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
     outputStream << "(";
 
     foreach(QSharedPointer<GenerationPort> port, component_->ports)
-	{    
-        QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-            component_->component->getInterfacesUsedByPort(port->name);
+    {   
+        QString interfaceName;
 
-        if (busInterfaces->size() == 1)
-		{
-            writeInterfaceIntroduction(busInterfaces->first()->name(), previousInterfaceName, outputStream);
-		}
-        else if (!busInterfaces->isEmpty())
+        if (port->interfaces.count() < 1 )
         {
-            writeInterfaceIntroduction("several", previousInterfaceName, outputStream);
+            interfaceName = "none";
         }
-		else
-		{
-			writeInterfaceIntroduction("none", previousInterfaceName, outputStream);
-		}
+        else if (useInterfaces_)
+        {
+            continue;
+        }
+        else
+        {
+            if (port->interfaces.count() == 1)
+            {
+                interfaceName  = port->interfaces.first()->name;
+            }
+            else
+            {
+                interfaceName = "several";
+            }
+        }
+
+        writeInterfaceIntroduction(interfaceName, port->description, previousInterfaceName, outputStream);
 
         bool lastPortToWrite = port == component_->ports.last();
         writePort(outputStream, port, lastPortToWrite);
@@ -234,8 +248,8 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::writeInterfaceIntroduction()
 //-----------------------------------------------------------------------------
-void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interfaceName, QString& previousInterfaceName,
-    QTextStream& outputStream) const
+void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interfaceName, QString const& interfaceDescription,
+    QString& previousInterfaceName, QTextStream& outputStream) const
 {
     if (previousInterfaceName.compare(interfaceName) != 0)
     {
@@ -253,8 +267,7 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
         {
             outputStream << indentation() << "// Interface: " << interfaceName << endl;
 
-            QSharedPointer<const BusInterface> busInterface = component_->component->getBusInterface(interfaceName);
-            CommentWriter descriptionWriter(busInterface->description());
+            CommentWriter descriptionWriter(interfaceDescription);
             descriptionWriter.setIndent(4);
             descriptionWriter.write(outputStream);
         }        

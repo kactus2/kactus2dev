@@ -49,7 +49,7 @@ public:
 	//! The destructor.
 	~HDLComponentParser();
 
-    QSharedPointer<GenerationComponent> parseComponent() const;
+    QSharedPointer<GenerationComponent> parseComponent();
 
     /*!
      *  Sorts list of module parameters based on their interdependencies.
@@ -65,7 +65,7 @@ private:
 	HDLComponentParser(HDLComponentParser const& rhs);
     HDLComponentParser& operator=(HDLComponentParser const& rhs);
 
-    void parsePorts(QSharedPointer<GenerationComponent> retval) const;
+    void parsePorts(QSharedPointer<GenerationComponent> retval);
     
 	void parseRegisters(QSharedPointer<GenerationComponent> target) const;
 
@@ -102,6 +102,8 @@ private:
 
 	//! The extra stuff that comes after the written module.
     QSharedPointer<TextBodyWriter> postModule_;
+
+    QMap<QSharedPointer<BusInterface>, QSharedPointer<GenerationInterface> > interfaces_;
 };
 
 #endif // HDLCOMPONENTPARSER_H

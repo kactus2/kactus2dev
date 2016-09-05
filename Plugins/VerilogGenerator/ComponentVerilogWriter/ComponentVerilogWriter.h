@@ -127,7 +127,7 @@ private:
      *      @param [in] previousInterfaceName   The name of the previously introduced bus interface.
      *      @param [in] outputStream            The output to write to.
      */
-    void writeInterfaceIntroduction(QString const& interfaceName, QString& previousInterfaceName,
+    void writeInterfaceIntroduction(QString const& interfaceName, QString const& interfaceDescription, QString& previousInterfaceName,
         QTextStream& outputStream ) const;
 
     /*!
@@ -165,11 +165,14 @@ private:
     //! The component to write to Verilog module.
     QSharedPointer<GenerationComponent> component_;
 
-    //! Writers for the inner elements e.g. wires and subcomponent instances.
-    QList<QSharedPointer<Writer> > childWriters_;
+    //! True, if interfaces are utilized separately from physical ports, else false.
+    bool useInterfaces_;
 
     //! The formatter for expressions.
-	QSharedPointer<ExpressionFormatter> formatter_;
+    QSharedPointer<ExpressionFormatter> formatter_;
+
+    //! Writers for the inner elements e.g. wires and subcomponent instances.
+    QList<QSharedPointer<Writer> > childWriters_;
 
 	//! The implementation, which is essentially the user-written things in the module.
 	QSharedPointer<TextBodyWriter> implementation_;

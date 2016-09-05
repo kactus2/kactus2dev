@@ -60,10 +60,31 @@ HDLComponentParser::~HDLComponentParser()
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::parseComponent
 //-----------------------------------------------------------------------------
-QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent() const
+QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent()
 {
     QSharedPointer<GenerationComponent> retval(new GenerationComponent);
     retval->component = component_;
+
+    foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
+    {
+        QSharedPointer<GenerationInterface> gif(new GenerationInterface);
+        gif->description = busInterface->description();
+        gif->mode = interfaceMode2Str(busInterface->getInterfaceMode());
+        gif->name = busInterface->name();
+ 
+        if (busInterface->getAbstractionTypes()->count() > 0)
+        {
+            QSharedPointer<ConfigurableVLNVReference> absRef = busInterface->getAbstractionTypes()->first()->getAbstractionRef();
+
+            if (absRef)
+            {
+                gif->typeName = absRef->toString("_");
+            }
+        }
+
+        interfaces_.insert(busInterface, gif);
+        retval->interfaces.append(gif);
+    }
 
     parsePorts(retval);
     parseRegisters(retval);
@@ -150,7 +171,7 @@ void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& param
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::parsePorts()
 //-----------------------------------------------------------------------------
-void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval) const
+void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval)
 {
     QStringList portNames = sorter_->sortedPortNames(component_);
 
@@ -164,6 +185,19 @@ void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval) 
         }
 
         QSharedPointer<GenerationPort> gport(new GenerationPort);
+
+        QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
+            component_->getInterfacesUsedByPort(name);
+
+        foreach (QSharedPointer<BusInterface> busInterface, *busInterfaces)
+        {
+            QSharedPointer<GenerationInterface> gif = interfaces_[busInterface];
+
+            if (gif)
+            {
+                gport->interfaces.append(gif);
+            }
+        }
 
         gport->name = name;
         gport->typeName = cport->getTypeName();
