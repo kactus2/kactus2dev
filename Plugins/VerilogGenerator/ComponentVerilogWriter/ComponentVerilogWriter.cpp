@@ -59,9 +59,18 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
         return;
     }
 
+    QStringList fileNames;
+
     foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces)
     {
-        outputStream << "`include \"" << gif->fileName << "\"" <<  endl;
+        fileNames.append(gif->fileName);
+    }
+
+    fileNames.removeDuplicates();
+
+    foreach(QString name, fileNames)
+    {
+        outputStream << "`include \"" << name << "\"" <<  endl;
     }
 
     writeModuleDeclaration(outputStream);

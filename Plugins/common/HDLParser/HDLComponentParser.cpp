@@ -19,6 +19,8 @@
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+
 #include <IPXACTmodels/common/ModuleParameter.h>
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -38,7 +40,7 @@
 
 #include "editors/ComponentEditor/common/ComponentParameterFinder.h"
 #include "editors/ComponentEditor/common/ExpressionFormatter.h"
-#include "IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h"
+#include "QFileInfo"
 
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::HDLComponentParser
@@ -70,13 +72,19 @@ QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent()
     QSharedPointer<GenerationComponent> retval(new GenerationComponent);
     retval->component = component_;
 
+    QFileInfo componentQfi = QFileInfo(library_->getPath(component_->getVlnv()));
+    QString componentPath = componentQfi.absolutePath() + "/";
+
     foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
     {
         QSharedPointer<GenerationInterface> gif(new GenerationInterface);
         gif->description = busInterface->description();
         gif->mode = interfaceMode2Str(busInterface->getInterfaceMode());
         gif->name = busInterface->name();
- 
+
+        ConfigurableVLNVReference busRef = busInterface->getBusType();
+        gif->typeName = busRef.getName();
+
         if (busInterface->getAbstractionTypes()->count() > 0)
         {
             QSharedPointer<ConfigurableVLNVReference> absRef = busInterface->getAbstractionTypes()->first()->getAbstractionRef();
@@ -84,13 +92,13 @@ QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent()
 
             if (absRef)
             {
-                gif->typeName = absRef->getName();
                 QSharedPointer<Document> docAbsDef = library_->getModel(*absRef);
 
                 if (docAbsDef)
                 {
                     absDef = docAbsDef.dynamicCast<AbstractionDefinition>();
-                    gif->fileName = absDef->getFileName();
+                    QFileInfo absDefQfi = QFileInfo(library_->getPath(*absRef));
+                    gif->fileName = General::getRelativePath(componentPath,absDefQfi.absolutePath()+ "/" + absDef->getFileName());
                 }
             }
         }
