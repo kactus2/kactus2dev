@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: AbstractionDefinitionReader.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 14.08.2015
 //
@@ -103,6 +103,15 @@ private:
      *      @param [in/out] port        The logical port definition to insert the transactional into.
      */
     void parseTransactional(QDomNode const& portNode, QSharedPointer<PortAbstraction> port) const;
+
+    /*!
+     *  Parses the abstraction definition vendor extensions.
+     *
+     *      @param [in] absDefNode     XML description of the abstraction definition.
+     *      @param [in] absDef         The new abstraction definition  item.
+     */
+    void parseAbstractionDefinitionExtensions(QDomNode const& absDefNode,
+        QSharedPointer<AbstractionDefinition> absDef) const;
 };
 
 #endif // ABSTRACTIONDEFINITIONREADER_H

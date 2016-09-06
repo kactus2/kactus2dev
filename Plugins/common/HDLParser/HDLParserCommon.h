@@ -71,6 +71,7 @@ struct GenerationInterface
     QString typeName;
     QString mode;
     QString description;
+    QString fileName;
 };
 
 struct GenerationPort

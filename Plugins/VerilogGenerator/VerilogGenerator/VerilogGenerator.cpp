@@ -321,7 +321,7 @@ void VerilogGenerator::initializeWriters()
 
 	QSharedPointer<ExpressionFormatter> formatter = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
 
-    HDLComponentParser pars(topComponent_,topComponentView_);
+    HDLComponentParser pars(library_, topComponent_,topComponentView_);
 
     topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(pars.parseComponent(), formatter));
 

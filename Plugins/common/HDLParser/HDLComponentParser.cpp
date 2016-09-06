@@ -10,6 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include "HDLComponentParser.h"
+
+#include <library/LibraryManager/libraryinterface.h>
 #include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 
 #include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
@@ -36,11 +38,14 @@
 
 #include "editors/ComponentEditor/common/ComponentParameterFinder.h"
 #include "editors/ComponentEditor/common/ExpressionFormatter.h"
+#include "IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h"
 
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::HDLComponentParser
 //-----------------------------------------------------------------------------
-HDLComponentParser::HDLComponentParser(QSharedPointer<Component> component, QSharedPointer<View> activeView) :
+HDLComponentParser::HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component,
+    QSharedPointer<View> activeView) :
+library_(library),
 component_(component),
 activeView_(activeView),
 sorter_(new InterfaceDirectionNameSorter)
@@ -75,10 +80,18 @@ QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent()
         if (busInterface->getAbstractionTypes()->count() > 0)
         {
             QSharedPointer<ConfigurableVLNVReference> absRef = busInterface->getAbstractionTypes()->first()->getAbstractionRef();
+            QSharedPointer<AbstractionDefinition> absDef;
 
             if (absRef)
             {
-                gif->typeName = absRef->toString("_");
+                gif->typeName = absRef->getName();
+                QSharedPointer<Document> docAbsDef = library_->getModel(*absRef);
+
+                if (docAbsDef)
+                {
+                    absDef = docAbsDef.dynamicCast<AbstractionDefinition>();
+                    gif->fileName = absDef->getFileName();
+                }
             }
         }
 

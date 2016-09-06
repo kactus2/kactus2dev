@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: AbstractionDefinitionReader.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 14.08.2015
 //
@@ -63,6 +63,8 @@ QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstrac
     parseAssertions(definitionNode, abstractionDefinion);
 
     parseKactusAndVendorExtensions(definitionNode, abstractionDefinion);
+
+    parseAbstractionDefinitionExtensions(definitionNode, abstractionDefinion);
 
     return abstractionDefinion;
 }
@@ -159,5 +161,21 @@ void AbstractionDefinitionReader::parseTransactional(QDomNode const& portNode,
             transactionalReader.createTransactionalAbstractionFrom(transactionalNode);
 
         port->setTransactional(transactional);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileReader::parseAbstractionDefinitionExtensions()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionReader::parseAbstractionDefinitionExtensions(QDomNode const& absDefNode,
+    QSharedPointer<AbstractionDefinition> absDef) const
+{
+    QDomElement extensionsElement = absDefNode.firstChildElement("ipxact:vendorExtensions");
+
+    QDomElement fileExtension = extensionsElement.firstChildElement("kactus2:definitionFile");
+    if (!fileExtension.isNull())
+    {
+        QString file = fileExtension.firstChild().nodeValue();
+        absDef->setFilename(file);
     }
 }

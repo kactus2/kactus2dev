@@ -39,8 +39,9 @@
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::HDLParser()
 //-----------------------------------------------------------------------------
-HDLDesignParser::HDLDesignParser(LibraryInterface* library, QSharedPointer<Component> component, QSharedPointer<View> topComponentView, 
-	QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) : QObject(0), 
+HDLDesignParser::HDLDesignParser(LibraryInterface* library, QSharedPointer<Component> component,
+    QSharedPointer<View> topComponentView,  QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConf) : QObject(0), 
 library_(library),
 topComponent_(component),
 topComponentView_(topComponentView),

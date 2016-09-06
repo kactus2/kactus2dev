@@ -30,6 +30,7 @@
 
 class ExpressionFormatter;
 class AddressBlock;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 // Class used to parse relevant information from IP-XACT component for HDL generation.
@@ -44,7 +45,7 @@ public:
 	 *      @param [in] component               The component to write to Verilog.
      *      @param [in] activeView              The active view name for the component.
 	 */
-	HDLComponentParser(QSharedPointer<Component> component, QSharedPointer<View> activeView);
+	HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component, QSharedPointer<View> activeView);
 
 	//! The destructor.
 	~HDLComponentParser();
@@ -81,6 +82,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The component library.
+    LibraryInterface* library_;
 
     //! The component to write to Verilog module.
     QSharedPointer<Component> component_;

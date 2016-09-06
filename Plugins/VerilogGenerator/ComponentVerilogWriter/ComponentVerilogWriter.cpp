@@ -59,6 +59,11 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
         return;
     }
 
+    foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces)
+    {
+        outputStream << "`include \"" << gif->fileName << "\"" <<  endl;
+    }
+
     writeModuleDeclaration(outputStream);
 
     writeInternalWiresAndComponentInstances(outputStream);
@@ -139,11 +144,6 @@ void ComponentVerilogWriter::writeModuleDeclaration(QTextStream& outputStream) c
     
     writeParameterDeclarations(outputStream);
 
-    foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces)
-    {
-         outputStream << gif->typeName << "." << gif->mode << " " << gif->name << endl;
-    }
-
     writePortDeclarations(outputStream);     
 }
 
@@ -211,6 +211,11 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
     QString previousInterfaceName = "";
 
     outputStream << "(";
+
+    foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces)
+    {
+        outputStream  <<  endl << gif->typeName.replace('.',"_") << "." << gif->mode << " " << gif->name << ",";
+    }
 
     foreach(QSharedPointer<GenerationPort> port, component_->ports)
     {   

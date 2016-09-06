@@ -275,3 +275,49 @@ QSharedPointer<QList<QSharedPointer<PortAbstraction> > > AbstractionDefinition::
 {
     return logicalPorts_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::getLastHash()
+//-----------------------------------------------------------------------------
+QString AbstractionDefinition::getFileName() const
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:definitionFile")
+        {
+            QSharedPointer<Kactus2Value> hashExtension = extension.dynamicCast<Kactus2Value>();
+            return hashExtension->value();
+        }
+    }
+
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::setLastHash()
+//-----------------------------------------------------------------------------
+void AbstractionDefinition::setFilename(QString const& fileName)
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == "kactus2:definitionFile")
+        {
+            if (fileName.isEmpty())
+            {
+                getVendorExtensions()->removeAll(extension);
+            }
+            else
+            {
+                QSharedPointer<Kactus2Value> hashExtension = extension.dynamicCast<Kactus2Value>();
+                hashExtension->setValue(fileName);
+            }
+            return;
+        }
+    }
+
+    if (!fileName.isEmpty())
+    {
+        QSharedPointer<Kactus2Value> hashExtension (new Kactus2Value("kactus2:definitionFile", fileName));
+        getVendorExtensions()->append(hashExtension);
+    }
+}
