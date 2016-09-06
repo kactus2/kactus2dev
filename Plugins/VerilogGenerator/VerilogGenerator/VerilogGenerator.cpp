@@ -70,7 +70,7 @@ VerilogGenerator::~VerilogGenerator()
 {
 
 }
-
+ QSharedPointer<GenerationComponent> joq;
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::parse()
 //-----------------------------------------------------------------------------
@@ -82,6 +82,9 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
     topComponentView_ = topComponentView;
     design_ = design;
 	designConf_ = designConf;
+
+    HDLComponentParser pars(library_, topComponent_,topComponentView_);
+    joq = pars.parseComponent(outputPath);
 
     initializeWriters();
 
@@ -321,9 +324,7 @@ void VerilogGenerator::initializeWriters()
 
 	QSharedPointer<ExpressionFormatter> formatter = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
 
-    HDLComponentParser pars(library_, topComponent_,topComponentView_);
-
-    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(pars.parseComponent(), formatter));
+    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(joq, formatter));
 
     instanceWriters_.clear();
 

@@ -50,7 +50,7 @@ public:
 	//! The destructor.
 	~HDLComponentParser();
 
-    QSharedPointer<GenerationComponent> parseComponent();
+    QSharedPointer<GenerationComponent> parseComponent(QString outputPath);
 
     /*!
      *  Sorts list of module parameters based on their interdependencies.

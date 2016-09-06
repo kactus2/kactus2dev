@@ -67,12 +67,12 @@ HDLComponentParser::~HDLComponentParser()
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::parseComponent
 //-----------------------------------------------------------------------------
-QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent()
+QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent(QString outputPath)
 {
     QSharedPointer<GenerationComponent> retval(new GenerationComponent);
     retval->component = component_;
 
-    QFileInfo componentQfi = QFileInfo(library_->getPath(component_->getVlnv()));
+    QFileInfo componentQfi = QFileInfo(outputPath);
     QString componentPath = componentQfi.absolutePath() + "/";
 
     foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
