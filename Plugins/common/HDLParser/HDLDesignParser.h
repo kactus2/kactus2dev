@@ -27,6 +27,7 @@ class ExpressionFormatter;
 class LibraryInterface;
 class PortSorter;
 class AbstractionType;
+class AbstractionDefinition;
 
 class ExpressionParser;
 class PortAlignment;
@@ -92,6 +93,10 @@ private:
 	void findInterconnections();
 
 	void assignInterconnections();
+
+    void parsePortMaps(QSharedPointer<AbstractionType> absType, QSharedPointer<GenerationInstance> gi,
+        QSharedPointer<GenerationInterconnection> gic, QSharedPointer<AbstractionDefinition> absDef,
+        QSharedPointer<BusInterface> busInterface);
 
 	void findInternalAdhocs();
 

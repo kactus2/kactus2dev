@@ -22,7 +22,7 @@ GeneratorConfiguration::GeneratorConfiguration( QString targetLanguage,
 	QSharedPointer<QList<QSharedPointer<View> > > views, 
 	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, 
 	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) :
-	targetLanguage_(targetLanguage), outputPath_(), view_(), saveToFileset_(false)
+	targetLanguage_(targetLanguage), outputPath_(), view_(), saveToFileset_(false), generateInterface_(false)
 {
 	// Track the views by name.
 	foreach (QSharedPointer<View> currentView, *views)
@@ -207,6 +207,22 @@ bool GeneratorConfiguration::getSaveToFileset() const
 void GeneratorConfiguration::setSaveToFileset(bool shouldSave)
 {
    saveToFileset_ = shouldSave;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getInterfaceGeneration()
+//-----------------------------------------------------------------------------
+bool GeneratorConfiguration::getInterfaceGeneration() const
+{
+    return generateInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::setInterfaceGeneration()
+//-----------------------------------------------------------------------------
+void GeneratorConfiguration::setInterfaceGeneration(bool shouldGenerate)
+{
+    generateInterface_ = shouldGenerate;
 }
 
 //-----------------------------------------------------------------------------

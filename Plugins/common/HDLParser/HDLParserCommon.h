@@ -117,7 +117,14 @@ struct GenerationInterconnection
 	QList<QPair<QString,QString> > interfaces;
 	QMap<QString,QSharedPointer<GenerationWire> > wires_;
 	QSharedPointer<BusInterface> topInterface_;
-	QString name;
+    QString name;
+    QString typeName;
+};
+
+struct GenerationInterfaceAssignment
+{
+    QSharedPointer<GenerationInterconnection> interConnection_;
+    QString name;
 };
 
 struct GenerationPortAssignMent
@@ -127,6 +134,7 @@ struct GenerationPortAssignMent
 	QSharedPointer<GenerationWire> wire;
 	QString topPortName;
     QString tieOff;
+    bool adhoc;
 };
 
 struct GenerationInstance
@@ -143,7 +151,8 @@ struct GenerationInstance
 	QSharedPointer<Component> referencedComponent_;
 
 	//! The assigned port connections.
-	QMap<QString,QSharedPointer<GenerationPortAssignMent> > portAssignments_;
+    QMap<QString,QSharedPointer<GenerationPortAssignMent> > portAssignments_;
+    QList<QSharedPointer<GenerationInterfaceAssignment> > interfaceAssignments_;
 
 	QMap<QSharedPointer<BusInterface>,QSharedPointer<GenerationInterconnection> > interfaces_;
 

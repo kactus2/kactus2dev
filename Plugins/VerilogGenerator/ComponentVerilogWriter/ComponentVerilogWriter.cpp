@@ -32,10 +32,11 @@
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
 ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<GenerationComponent> component,
-	QSharedPointer<ExpressionFormatter> expressionFormatter) :
+	QSharedPointer<ExpressionFormatter> expressionFormatter,
+	bool useInterfaces) :
 component_(component),
 formatter_(expressionFormatter),
-useInterfaces_(true),
+useInterfaces_(useInterfaces),
 childWriters_()
 {
 
@@ -68,9 +69,12 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 
     fileNames.removeDuplicates();
 
-    foreach(QString name, fileNames)
+    if (useInterfaces_)
     {
-        outputStream << "`include \"" << name << "\"" <<  endl;
+        foreach(QString name, fileNames)
+        {
+            outputStream << "`include \"" << name << "\"" <<  endl;
+        }
     }
 
     writeModuleDeclaration(outputStream);
@@ -221,9 +225,12 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 
     outputStream << "(";
 
-    foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces)
+    if (useInterfaces_)
     {
-        outputStream  <<  endl << gif->typeName.replace('.',"_") << "." << gif->mode << " " << gif->name << ",";
+        foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces)
+        {
+            outputStream << endl << gif->typeName.replace('.',"_") << "." << gif->mode << " " << gif->name << ",";
+        }
     }
 
     foreach(QSharedPointer<GenerationPort> port, component_->ports)

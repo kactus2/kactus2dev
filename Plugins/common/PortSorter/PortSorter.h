@@ -13,8 +13,10 @@
 #define PORTSORTER_H
 
 #include <QSharedPointer>
+#include <QList>
 
 class Component;
+class Port;
 
 //-----------------------------------------------------------------------------
 //! Interface for component port name sorter.
@@ -35,6 +37,14 @@ public:
      */
     virtual QStringList sortedPortNames(QSharedPointer<Component> component) const = 0;
 
+    /*!
+     *  Gets the sorted ports of a component.
+     *
+     *      @param [in] component   The component whose ports to find.
+     *
+     *      @return The sorted ports of a given component.
+     */
+    virtual QList<QSharedPointer<Port> > sortedPorts(QSharedPointer<Component> component) const = 0;
 };
 
 #endif // PORTSORTER_H

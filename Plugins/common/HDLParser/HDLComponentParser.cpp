@@ -108,7 +108,7 @@ QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent(QString o
     }
 
     parsePorts(retval);
-    parseRegisters(retval);
+    parseMemoryMaps(retval);
     parseParameterDeclarations(retval);
     parseRemapStates(retval);
 
@@ -194,22 +194,17 @@ void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& param
 //-----------------------------------------------------------------------------
 void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval)
 {
-    QStringList portNames = sorter_->sortedPortNames(component_);
+    // Pick the ports in sorted order.
+    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(component_);
 
-    foreach (QString name, portNames)
+    foreach (QSharedPointer<Port> cport, ports)
     {
-        QSharedPointer<Port> cport = component_->getPort(name);
-
-        if (!cport)
-        {
-            continue;
-        }
-
         QSharedPointer<GenerationPort> gport(new GenerationPort);
 
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-            component_->getInterfacesUsedByPort(name);
+            component_->getInterfacesUsedByPort(cport->name());
 
+        // Cull all interfaces that utilize the port.
         foreach (QSharedPointer<BusInterface> busInterface, *busInterfaces)
         {
             QSharedPointer<GenerationInterface> gif = interfaces_[busInterface];
@@ -220,25 +215,28 @@ void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval)
             }
         }
 
-        gport->name = name;
+        // Pick the needed variables.
+        gport->name = cport->name();
         gport->typeName = cport->getTypeName();
         gport->description = cport->description();
         gport->direction = cport->getDirection();
 
+        // Both vector and array bounds may be needed.
         gport->arrayBounds.first = formatter_->formatReferringExpression(cport->getArrayLeft());
         gport->arrayBounds.second = formatter_->formatReferringExpression(cport->getArrayRight());
 
         gport->vectorBounds.first = formatter_->formatReferringExpression(cport->getLeftBound());
         gport->vectorBounds.second = formatter_->formatReferringExpression(cport->getRightBound());
 
+        // Add to the list.
         retval->ports.append(gport);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLComponentParser::parseRegisters
+// Function: HDLComponentParser::parseMemoryMaps
 //-----------------------------------------------------------------------------
-void HDLComponentParser::parseRegisters(QSharedPointer<GenerationComponent> target) const
+void HDLComponentParser::parseMemoryMaps(QSharedPointer<GenerationComponent> target) const
 {
     // TODO: replace with a foreach structure
     if (component_->getMemoryMaps()->size() < 1)
@@ -295,13 +293,19 @@ void HDLComponentParser::parseRegisters(QSharedPointer<GenerationComponent> targ
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: HDLComponentParser::parseAddressBlock
+//-----------------------------------------------------------------------------
 void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSharedPointer<GenerationRemap> target) const
 {
+    // Create a new address block for generation.
     QSharedPointer<GenerationAddressBlock> gab(new GenerationAddressBlock);
 
+    // Its base address and name are needed.
     gab->baseAddress_ = formatter_->formatReferringExpression(ab->getBaseAddress());
     gab->name = ab->name();
 
+    // Append to the list.
     target->blocks.append(gab);
 
     foreach (QSharedPointer<RegisterBase> rb, *ab->getRegisterData())
@@ -318,27 +322,33 @@ void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSha
 
         if (r->getDimension().isEmpty())
         {
+            // No dimension is interpreted as one.
             gr->dimension_ = "1";
         }
         else
         {
+            // Else take it via formatting.
             gr->dimension_ = formatter_->formatReferringExpression(r->getDimension());
         }
 
+        // Pick also other needed values via formatter, except the name.
         gr->offset_ = formatter_->formatReferringExpression(r->getAddressOffset());
         gr->size_ = formatter_->formatReferringExpression(r->getSize());
         gr->name = r->name();
 
+        // Append to the list.
         gab->registers.append(gr);
 
         foreach (QSharedPointer<Field> f, *r->getFields())
         {
             QSharedPointer<GenerationField> gf(new GenerationField);
 
+            // Pick also the values needed by a field via formatter, except the name.
             gf->bitOffset_ = formatter_->formatReferringExpression(f->getBitOffset());
             gf->bitWidth_ = formatter_->formatReferringExpression(f->getBitWidth());
             gf->name = f->name();
 
+            // Append to the list.
             gr->fields.append(gf);
         }
     }
@@ -387,12 +397,14 @@ void HDLComponentParser::parseRemapStates(QSharedPointer<GenerationComponent> ta
 
     QSharedPointer<MemoryMap> memmap = component_->getMemoryMaps()->first();
 
+    // Each remap is may have a remap state.
     foreach (QSharedPointer<MemoryRemap> remap, *memmap->getMemoryRemaps())
     {
         QString stateName = remap->getRemapState();
 
         QSharedPointer<RemapState> state;
         
+        // Try to match the remap state reference to a remap state within the component.
         foreach(QSharedPointer<RemapState> currentState, *component_->getRemapStates())
         {
             if (currentState->name() == stateName)
@@ -402,19 +414,23 @@ void HDLComponentParser::parseRemapStates(QSharedPointer<GenerationComponent> ta
             }
         }
 
+        // If there is none, skip.
         if (!state)
         {
             continue;
         }
 
+        // Create new remap state for the generation.
         QSharedPointer<GenerationRemapState> grms(new GenerationRemapState);
         grms->stateName = stateName;
         target->remapStates.append(grms);
 
+        // Each port referred by the state must be listed.
         foreach(QSharedPointer<RemapPort> rmport, *state->getRemapPorts())
         {
            QSharedPointer<QPair<QSharedPointer<Port>,QString> > parsedPort(new QPair<QSharedPointer<Port>,QString>);
            
+           // Pick the port name, and the value needed for it to remap state become effective.
            parsedPort->first = component_->getPort(rmport->getPortNameRef());
            parsedPort->second = formatter_->formatReferringExpression(rmport->getValue());
 

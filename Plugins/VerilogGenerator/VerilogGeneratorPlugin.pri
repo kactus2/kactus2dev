@@ -23,6 +23,8 @@ HEADERS += ../common/HDLParser/HDLComponentParser.h \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ./ComponentVerilogWriter/ComponentVerilogWriter.h \
     ./ModelParameterVerilogWriter/ModelParameterVerilogWriter.h \
+    ../common/PortSorter/InterfaceDirectionNameSorter.h \
+    ../common/PortSorter/PortSorter.h \
     ./PortVerilogWriter/PortVerilogWriter.h \
     ./VerilogHeaderWriter/VerilogHeaderWriter.h \
     ./VerilogWireWriter/VerilogWireWriter.h \
@@ -36,8 +38,7 @@ HEADERS += ../common/HDLParser/HDLComponentParser.h \
     ../../designEditors/common/TopComponentParameterFinder.h \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.h \
     ./TextBodyWriter/TextBodyWriter.h \
-    ../common/PortSorter/InterfaceDirectionNameSorter.h \
-    ../common/PortSorter/PortSorter.h
+    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h
 SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../common/HDLParser/HDLDesignParser.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
@@ -47,6 +48,7 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ./VerilogGenerator/VerilogGenerator.cpp \
     ./ComponentVerilogWriter/ComponentVerilogWriter.cpp \
     ./ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
+    ../common/PortSorter/InterfaceDirectionNameSorter.cpp \
     ./PortVerilogWriter/PortVerilogWriter.cpp \
     ./VerilogHeaderWriter/VerilogHeaderWriter.cpp \
     ./VerilogWireWriter/VerilogWireWriter.cpp \
@@ -63,5 +65,5 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../../designEditors/common/TopComponentParameterFinder.cpp \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ./TextBodyWriter/TextBodyWriter.cpp \
-    ../common/PortSorter/InterfaceDirectionNameSorter.cpp
+    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp
 RESOURCES += VerilogGenerator.qrc

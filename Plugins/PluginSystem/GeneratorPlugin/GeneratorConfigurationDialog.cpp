@@ -20,6 +20,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QCheckBox>
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
@@ -33,6 +34,10 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     generalWarningLabel_(new QLabel)
 {    
     setWindowTitle(tr("Configure file generation for %1.").arg(language));
+
+    QFormLayout* checkLayout = new QFormLayout();
+    QCheckBox* useInterfaces = new QCheckBox();
+    checkLayout->addRow(tr("Use interfaces:"), useInterfaces);
 
 	// Layout for path selection widgets.
     QHBoxLayout* pathSelectionLayout = new QHBoxLayout();
@@ -58,16 +63,19 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 
 	// Add everything it their proper position in the final layout.
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
-	topLayout->addWidget(viewSelection_);
+    topLayout->addWidget(viewSelection_);
+    topLayout->addLayout(checkLayout);
 	topLayout->addLayout(pathSelectionLayout);
-	topLayout->addStretch(1);
+    topLayout->addStretch(1);
 	topLayout->addLayout(bottomLayout);
 
 	// Use red to make it more warny.
 	generalWarningLabel_->setStyleSheet("QLabel { color : red; }");
 	onPathEdited("");
 
-	// Finally, connect the relevant events to their handler functions.
+    // Finally, connect the relevant events to their handler functions.
+    connect(useInterfaces, SIGNAL(stateChanged(int)), 
+        this, SLOT(onInterfaceGenerationStateChanged(int)), Qt::UniqueConnection);
     connect(pathEditor_, SIGNAL(textChanged(const QString &)), this,
 		SLOT(onPathEdited(const QString &)), Qt::UniqueConnection);
     connect(browseButton, SIGNAL(clicked(bool)), this, SLOT(onBrowse()), Qt::UniqueConnection);
@@ -101,6 +109,14 @@ void GeneratorConfigurationDialog::accept()
     }
 
     QDialog::accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfigurationDialog::onInterfaceGenerationStateChanged()
+//-----------------------------------------------------------------------------
+void GeneratorConfigurationDialog::onInterfaceGenerationStateChanged(int state)
+{
+    configuration_->setInterfaceGeneration(state == Qt::Checked);
 }
 
 //-----------------------------------------------------------------------------

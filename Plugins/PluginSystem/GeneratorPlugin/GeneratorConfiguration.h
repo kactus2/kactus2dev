@@ -135,6 +135,16 @@ public:
     bool getSaveToFileset() const;
 
     /*!
+     *  Sets true for generating, false for not generating.
+     */
+    void setInterfaceGeneration(bool shouldGenerate);
+
+    /*!
+     *  Returns true for generating, false for not generating.
+     */
+    bool getInterfaceGeneration() const;
+
+    /*!
      *  Sets the path for the output file for the generation.
      *
      *      @param [in] path   The path to set.
@@ -184,6 +194,9 @@ private:
 
     //! Flag for indicating if the output file should be saved to top component file sets.
     bool saveToFileset_;
+
+    //! Flag for indicating if the output file should be saved to top component file sets.
+    bool generateInterface_;
 };
 
 #endif // GENERATORCONFIGURATION_H

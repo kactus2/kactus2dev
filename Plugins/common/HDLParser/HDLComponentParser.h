@@ -50,7 +50,7 @@ public:
 	//! The destructor.
 	~HDLComponentParser();
 
-    QSharedPointer<GenerationComponent> parseComponent(QString outputPath);
+    QSharedPointer<GenerationComponent> parseComponent(QString outputPath = QString());
 
     /*!
      *  Sorts list of module parameters based on their interdependencies.
@@ -68,7 +68,7 @@ private:
 
     void parsePorts(QSharedPointer<GenerationComponent> retval);
     
-	void parseRegisters(QSharedPointer<GenerationComponent> target) const;
+	void parseMemoryMaps(QSharedPointer<GenerationComponent> target) const;
 
     void parseAddressBlock(QSharedPointer<AddressBlock> ab, QSharedPointer<GenerationRemap> target) const;
 

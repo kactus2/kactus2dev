@@ -159,7 +159,7 @@ void ViewSelectionWidget::onViewChanged(QString const& selectedViewName)
 	if (index != -1)
     {
         instantiationSelection_->setItemData(instantiationSelection_->currentIndex(),
-            QColor(Qt::GlobalColor::white), Qt::BackgroundRole);
+            QColor(Qt::white), Qt::BackgroundRole);
 		instantiationSelection_->setCurrentIndex(index);
 		instantiationSelection_->setItemData(index, QColor(Qt::green), Qt::BackgroundRole);
 	}

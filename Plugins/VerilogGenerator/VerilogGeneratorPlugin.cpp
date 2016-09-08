@@ -160,7 +160,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
         utility_->printInfo(tr("Generation started %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
         
-		VerilogGenerator generator(utility->getLibraryInterface());
+		VerilogGenerator generator(utility->getLibraryInterface(), configuration->getInterfaceGeneration());
 		connect(&generator, SIGNAL(reportError(const QString&)), 
 			this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
 

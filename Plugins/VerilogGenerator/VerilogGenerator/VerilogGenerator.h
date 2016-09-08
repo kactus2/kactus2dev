@@ -50,7 +50,7 @@ class VERILOGGENERATORPLUGIN_EXPORT VerilogGenerator : public QObject
 
 public:
     //! The constructor.
-    VerilogGenerator(LibraryInterface* library);
+    VerilogGenerator(LibraryInterface* library, bool useInterfaces);
 
     //! The destructor.
     ~VerilogGenerator();
@@ -508,7 +508,10 @@ private:
     //-----------------------------------------------------------------------------
 
      //! The component library.
-     LibraryInterface* library_;
+    LibraryInterface* library_;
+
+    //! True, if interfaces are utilized separately from physical ports, else false.
+    bool useInterfaces_;
 
      //! Writer for generating file header.
      QSharedPointer<VerilogHeaderWriter> headerWriter_;
@@ -528,6 +531,9 @@ private:
      //! The active view for top component.
      QSharedPointer<View> topComponentView_;
 
+     //! Writers for Verilog interconnections.
+     QSharedPointer<WriterGroup> interconnectionWriters_;
+
      //! Writers for Verilog wires.
      QSharedPointer<WriterGroup> wireWriters_;
 
@@ -539,7 +545,6 @@ private:
 
      //! Sorter for component ports.
      QSharedPointer<PortSorter> sorter_;
-
 };
 
 #endif // VERILOGGENERATOR_H

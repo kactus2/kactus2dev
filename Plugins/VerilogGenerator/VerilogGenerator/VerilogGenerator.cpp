@@ -26,10 +26,6 @@
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 
-#include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/PortMap.h>
-#include <IPXACTmodels/Component/Model.h>
-
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
@@ -38,6 +34,7 @@
 #include <Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h>
 #include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
 #include <Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.h>
+#include <Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.h>
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/common/HDLParser/HDLDesignParser.h>
@@ -49,12 +46,14 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()
 //-----------------------------------------------------------------------------
-VerilogGenerator::VerilogGenerator(LibraryInterface* library): QObject(0), 
+VerilogGenerator::VerilogGenerator(LibraryInterface* library, bool useInterfaces) : QObject(0), 
 library_(library),
+useInterfaces_(useInterfaces),
 headerWriter_(0),
 topWriter_(0), 
 topComponent_(),
 design_(),
+interconnectionWriters_(),
 wireWriters_(),
 tiedValueWriter_(),
 instanceWriters_(),
@@ -102,36 +101,56 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 			QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter(new ComponentInstanceVerilogWriter(
 				gi, sorter_,
 				parser.createParserForComponent(gi->component, gi->activeView_, instance->getInstanceName()),
-				parser.createFormatterForComponent(gi->component, gi->activeView_, instance->getInstanceName())
-				));
+				parser.createFormatterForComponent(gi->component, gi->activeView_, instance->getInstanceName()),
+				useInterfaces_));
 
 
 			instanceWriters_.insert(instance->getInstanceName(), instanceWriter);
 		}
 
-		// Create wire writers for the interconnections
-		QList<QSharedPointer<GenerationInterconnection> > usedGic;
-		foreach (QSharedPointer<GenerationInterconnection> gic, parser.interConnections_)
-		{
-			if (usedGic.contains(gic))
-			{
-				continue;
-			}
+        if (useInterfaces_)
+        {
+            // Create interconnection writers for the interconnections
+		    QList<QSharedPointer<GenerationInterconnection> > usedGic;
+		    foreach (QSharedPointer<GenerationInterconnection> gic, parser.interConnections_)
+		    {
+			    if (usedGic.contains(gic))
+			    {
+				    continue;
+			    }
 
-			QMap<QString, QSharedPointer<GenerationWire> >::iterator iter = gic->wires_.begin();
-			QMap<QString, QSharedPointer<GenerationWire> >::iterator end = gic->wires_.end();
-			for (;iter != end; ++iter)
-			{
-				QSharedPointer<GenerationWire> gw = *iter;
+				interconnectionWriters_->add(QSharedPointer<VerilogInterconnectionWriter>
+                    (new VerilogInterconnectionWriter(gic)));
 
-				if (gw->ports.size() > 1)
-				{
-					wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw)));
-				}
-			}
+			    usedGic.append(gic);
+            }
+        }
+        else
+        {
+            // Create wire writers for the interconnections
+            QList<QSharedPointer<GenerationInterconnection> > usedGic;
+            foreach (QSharedPointer<GenerationInterconnection> gic, parser.interConnections_)
+            {
+                if (usedGic.contains(gic))
+                {
+                    continue;
+                }
 
-			usedGic.append(gic);
-		}
+                QMap<QString, QSharedPointer<GenerationWire> >::iterator iter = gic->wires_.begin();
+                QMap<QString, QSharedPointer<GenerationWire> >::iterator end = gic->wires_.end();
+                for (;iter != end; ++iter)
+                {
+                    QSharedPointer<GenerationWire> gw = *iter;
+
+                    if (gw->ports.size() > 1)
+                    {
+                        wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw)));
+                    }
+                }
+
+                usedGic.append(gic);
+            }
+        }
 
 		// Create wire writers for the ad hoc connections as well.
 		QList<QSharedPointer<GenerationWire> > usedWire;
@@ -150,7 +169,7 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 			}
 
 			usedWire.append(gw);
-		}
+        }
 
 		// Create tied value writers for hierarchical tied values,
 		QMap<QString,QString>::iterator iter2 = parser.portTiedValues_.begin();
@@ -324,9 +343,11 @@ void VerilogGenerator::initializeWriters()
 
 	QSharedPointer<ExpressionFormatter> formatter = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
 
-    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(joq, formatter));
+    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(joq, formatter, useInterfaces_));
 
     instanceWriters_.clear();
+
+    interconnectionWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
 
     wireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
 
@@ -346,6 +367,8 @@ bool VerilogGenerator::nothingToWrite() const
 //-----------------------------------------------------------------------------
 void VerilogGenerator::addWritersToTopInDesiredOrder() const
 {
+    topWriter_->add(interconnectionWriters_);
+
     topWriter_->add(wireWriters_);
 
     topWriter_->add(tiedValueWriter_);

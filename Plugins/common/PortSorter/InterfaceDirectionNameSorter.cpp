@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: InterfaceDirectionNameSorter.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 05.08.2014
 //
@@ -30,37 +30,54 @@ InterfaceDirectionNameSorter::~InterfaceDirectionNameSorter()
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterfaceDirectionNameSorter::sortedPorts()
+// Function: InterfaceDirectionNameSorter::sortedPortsNames()
 //-----------------------------------------------------------------------------
 QStringList InterfaceDirectionNameSorter::sortedPortNames(QSharedPointer<Component> component) const
 {
-    if (component.isNull())
+    QStringList portNames;
+
+    QList<QSharedPointer<Port> > ports = sortedPorts(component);
+
+    foreach(QSharedPointer<Port> port, ports)
     {
-        return QStringList();
+        portNames.append(port->name());
     }
 
-    QMap<SortKey, QString> sortedPorts;
-    foreach(QString portName, component->getPortNames())
+    return portNames;
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterfaceDirectionNameSorter::sortedPorts()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<Port> > InterfaceDirectionNameSorter::sortedPorts(QSharedPointer<Component> component) const
+{
+    if (component.isNull())
+    {
+        return QList<QSharedPointer<Port> >();
+    }
+
+    QMap<SortKey, QSharedPointer<Port> > sortedPorts;
+    foreach(QSharedPointer<Port> port, *component->getPorts())
     {
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-            component->getInterfacesUsedByPort(portName);
+            component->getInterfacesUsedByPort(port->name());
 
         if (busInterfaces->size() == 1)
-		{
-            SortKey key(busInterfaces->first()->name(), component->getModel()->getPort(portName)->getDirection(),
-                portName);
-			sortedPorts.insert(key, portName);
-		}
+        {
+            SortKey key(busInterfaces->first()->name(), port->getDirection(),
+                port);
+            sortedPorts.insert(key, port);
+        }
         else if (!busInterfaces->isEmpty())
         {
-            SortKey key("several", component->getModel()->getPort(portName)->getDirection(), portName);
-            sortedPorts.insert(key, portName);
+            SortKey key("several", port->getDirection(), port);
+            sortedPorts.insert(key, port);
         }
-		else
-		{
-			SortKey key("none", component->getModel()->getPort(portName)->getDirection(), portName);
-			sortedPorts.insert(key, portName);
-		}
+        else
+        {
+            SortKey key("none", port->getDirection(), port);
+            sortedPorts.insert(key, port);
+        }
     }
 
     return sortedPorts.values();
@@ -100,5 +117,5 @@ bool InterfaceDirectionNameSorter::SortKey::operator<(SortKey const& other) cons
         return portDirection < other.portDirection;
     }
 
-    return portName.compare(other.portName, Qt::CaseInsensitive) <= 0;
+    return port->name().compare(other.port->name(), Qt::CaseInsensitive) <= 0;
 }

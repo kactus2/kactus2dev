@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ComponentInstanceVerilogWriter.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 04.08.2014
 //
@@ -38,15 +38,11 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] instance                The component instance to write to Verilog
-	 *      @param [in] instantiation           The component instantiation corresponding the active view.
-	 *      @param [in] referencedComponent     The component instantiated by the instance.
 	 *      @param [in] sorter                  Sorter for the ports in the component.
      *      @param [in] expressionParser     	The expression parser.
 	 */
-	ComponentInstanceVerilogWriter(QSharedPointer<GenerationInstance> instance,
-		QSharedPointer<const PortSorter> sorter,
-		QSharedPointer<ExpressionParser> expressionParser,
-		QSharedPointer<ExpressionFormatter> expressionFormatter);
+	ComponentInstanceVerilogWriter(QSharedPointer<GenerationInstance> instance, QSharedPointer<const PortSorter> sorter,
+        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter, bool useInterfaces);
 
 	//! The destructor.
 	~ComponentInstanceVerilogWriter();
@@ -143,7 +139,7 @@ private:
     *
     *      @return The Verilog description of the instance port connection assignment.
     */
-    QString assignmentForPort(QString portName) const;
+    QString assignmentForPort(QSharedPointer<GenerationPortAssignMent> gab) const;
 
     /*!
     *  Checks if a given port is not connected.
@@ -187,14 +183,17 @@ private:
 
 	QSharedPointer<GenerationInstance> instance_;
 
-	//! The assigned expression formatter.
-	QSharedPointer<ExpressionParser> expressionParser_;
-
 	//! Sorter for the ports of the component.
-	QSharedPointer<const PortSorter> sorter_;
+    QSharedPointer<const PortSorter> sorter_;
+
+    //! The assigned expression formatter.
+    QSharedPointer<ExpressionParser> expressionParser_;
 
 	//! The assigned expression formatter.
-	QSharedPointer<ExpressionFormatter> expressionFormatter_;
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! True, if interfaces are utilized separately from physical ports, else false.
+    bool useInterfaces_;
 };
 
 #endif // COMPONENTINSTANCEVERILOGWRITER_H

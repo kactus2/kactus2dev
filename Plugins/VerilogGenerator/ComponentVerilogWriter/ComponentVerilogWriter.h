@@ -47,7 +47,7 @@ public:
      *      @param [in] expressionFormatter     Formatter for writing expressions.
 	 */
 	ComponentVerilogWriter(QSharedPointer<GenerationComponent> component,
-		QSharedPointer<ExpressionFormatter> expressionFormatter);
+        QSharedPointer<ExpressionFormatter> expressionFormatter, bool useInterfaces);
 
 	//! The destructor.
 	~ComponentVerilogWriter();

@@ -219,7 +219,7 @@ void tst_HDLParser::testTopLevelComponent()
     addModuleParameter("dataWidth", "8");
     addModuleParameter("freq", "100000");
 
-    HDLComponentParser parser(topComponent_, topView_);
+    HDLComponentParser parser(&library_, topComponent_, topView_);
 
     QSharedPointer<GenerationComponent> parsed = parser.parseComponent();
 
@@ -260,7 +260,7 @@ void tst_HDLParser::testTopLevelComponentExpressions()
     port->setRightBound("2+5");
     topComponent_->getPorts()->append(port);
 
-    HDLComponentParser parser(topComponent_, topView_);
+    HDLComponentParser parser(&library_, topComponent_, topView_);
 
     QSharedPointer<GenerationComponent> parsed = parser.parseComponent();
 

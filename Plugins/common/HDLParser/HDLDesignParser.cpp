@@ -199,11 +199,13 @@ void HDLDesignParser::parseComponentInstances()
         instanceFinder->setParameterList(slist);
         ExpressionFormatter instanceFormatter(instanceFinder);
 
+        // Format the parameters.
         foreach(QSharedPointer<Parameter> parameter, gi->parameters)
         {
             parameter->setValue(instanceFormatter.formatReferringExpression(parameter->getValue()));
         }
 
+        // Replace those parameter names with their values, if they exists within the instance parameters.
         foreach(QSharedPointer<Parameter> parameter, gi->parameters)
         {
             foreach(QSharedPointer<Parameter> parameterSupplement, gi->parameters)
@@ -231,15 +233,6 @@ void HDLDesignParser::findInterconnections()
 		QList<QSharedPointer<ActiveInterface> > interfaces = *connection->getActiveInterfaces();
 		interfaces.append(connection->getStartInterface());
 
-		// Try to find a top bus interface.
-		QSharedPointer<BusInterface> topBusInterface;
-
-		if (!connection->getHierInterfaces()->isEmpty())
-		{
-			QSharedPointer<HierInterface> topInterface = connection->getHierInterfaces()->first();
-			topBusInterface = topComponent_->getBusInterface(topInterface->getBusReference());
-		}
-
 		// "Our" interconnection matching the interconnections.
 		QSharedPointer<GenerationInterconnection> gic;
 
@@ -261,10 +254,10 @@ void HDLDesignParser::findInterconnections()
 			{
 				// Go through their interfaces.
 				typedef QPair<QString, QString> customPair;
-				foreach(customPair theirPort, existing->interfaces)
+				foreach(customPair theirInterface, existing->interfaces)
 				{
 					// If any there is match for instance and interface, it means that we use it.
-					if (theirPort.first == interface.first && theirPort.second == interface.second)
+					if (theirInterface.first == interface.first && theirInterface.second == interface.second)
 					{
 						gic = existing;
 						break;
@@ -283,8 +276,14 @@ void HDLDesignParser::findInterconnections()
 		{
 			gic = QSharedPointer<GenerationInterconnection>(new GenerationInterconnection);
 			gic->name = connection->name();
-			// Remember the top interface: It marks this as a hierarchical interconnection.
-			gic->topInterface_ = topBusInterface;
+
+            // Remember the top interface: It marks this as a hierarchical interconnection.
+            if (!connection->getHierInterfaces()->isEmpty())
+            {
+                QSharedPointer<HierInterface> topInterface = connection->getHierInterfaces()->first();
+                gic->topInterface_ = topComponent_->getBusInterface(topInterface->getBusReference());
+            }
+
 			// Append to the pool of detected interconnections.
 			interConnections_.append(gic);
 		}
@@ -310,142 +309,173 @@ void HDLDesignParser::assignInterconnections()
 		{
 			// Go through interfaces detected for the interconnection.
 			typedef QPair<QString, QString> customPair;
-			foreach(customPair theirPort, gic->interfaces)
+			foreach(customPair theirInterface, gic->interfaces)
 			{
 				// If it does not refer to the instance, skip to the next.
-				if (theirPort.first != instance->getInstanceName())
+				if (theirInterface.first != instance->getInstanceName())
 				{
 					continue;
 				}
 
 				// The referred interface must be within the instantiated component.
-				QSharedPointer<BusInterface> busInterface = component->getBusInterface(theirPort.second);
+				QSharedPointer<BusInterface> busInterface = component->getBusInterface(theirInterface.second);
 
 				if (!busInterface)
 				{
 					continue;
 				}
 
-				// Go through the abstraction types within the interface.
-				foreach(QSharedPointer<AbstractionType> absType, *busInterface->getAbstractionTypes())
+                // Find correct abstraction type.
+                QSharedPointer<AbstractionType> absType = busInterface->getAbstractionTypes()->first();
+
+                if (busInterface->getAbstractionTypes()->size() > 0)
+                {
+                     absType = busInterface->getAbstractionTypes()->first();
+                }
+
+                // Must have an abstraction type, for else there cannot be a defined interface.
+                if (!absType)
+                {
+                    continue;
+                }
+
+				// Try to find and abstraction definition matching it.
+				QSharedPointer<AbstractionDefinition> absDef;
+
+				if (absType->getAbstractionRef())
 				{
-					// Try to find and abstraction definition matching it.
-					QSharedPointer<AbstractionDefinition> absDef;
-
-					if (absType->getAbstractionRef())
+					QSharedPointer<Document> docAbsDef = library_->getModel(*absType->getAbstractionRef());
+					if (docAbsDef)
 					{
-						QSharedPointer<Document> docAbsDef = library_->getModel(*absType->getAbstractionRef());
-						if (docAbsDef)
-						{
-							absDef = docAbsDef.dynamicCast<AbstractionDefinition>();
-						}
-					}
-
-					// Go through port maps within the abstraction type.
-					foreach(QSharedPointer<PortMap> portMap, *absType->getPortMaps())
-					{
-						// Detect the existing port assignment.
-						QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_[portMap->getPhysicalPort()->name_];
-
-						// No duplicates allowed.
-						if (gpa)
-						{
-							continue;
-						}
-
-						// Bounds for both the wire and the port must be found.
-						QPair<QString, QString> wireBounds;
-						QPair<QString, QString> portBounds;
-						QString absDefWidth;
-
-						// The port map ought to use some physical port.
-						QSharedPointer<Port> physicalPort = component->getPort(portMap->getPhysicalPort()->name_);
-
-						// Find the logical bounds of the port map.
-						portBounds = logicalPortBoundsInInstance(gi, gi->activeView_, component, portMap);
-
-						// If it does not exist, use the physical bounds instead.
-						if (portBounds.first.isEmpty() || portBounds.second.isEmpty())
-						{
-							portBounds = physicalPortBoundsInInstance(gi, gi->activeView_, component, physicalPort);
-						}
-
-						// Now create the port assignment, with the physical port as identifier, and the found port bounds.
-						gpa = QSharedPointer<GenerationPortAssignMent>(new GenerationPortAssignMent);
-						gpa->port = physicalPort;
-						gpa->bounds = portBounds;
-						gi->portAssignments_.insert(portMap->getPhysicalPort()->name_,gpa);
-
-						if (gic->topInterface_)
-						{
-							// A hierarchical interconnection detected: No wire is used, but the matching
-							// port from the connected top interface must be found.
-							QSharedPointer<PortMap> matchingTopPort;
-
-							foreach(QSharedPointer<PortMap> topPortMap, *gic->topInterface_->getPortMaps())
-							{
-								// The logical port is the one that must match.
-								if (topPortMap->getLogicalPort()->name_ == portMap->getLogicalPort()->name_)
-								{
-									matchingTopPort = topPortMap;
-									break;
-								}
-							}
-
-							// "Connect" the port assignment directly to the top port.
-							if (matchingTopPort)
-							{
-								gpa->topPortName = matchingTopPort->getPhysicalPort()->name_;
-							}
-						}
-						else if (!portMap->getLogicalPort()->name_.isEmpty())
-						{
-							// A non-hierarchical interconnection detected: A wire must be found or created.
-							QSharedPointer<GenerationWire> gw = gic->wires_[portMap->getLogicalPort()->name_];
-
-							if (!gw)
-							{
-								// Create a new one...
-								gw = QSharedPointer<GenerationWire>(new GenerationWire);
-								// ...and use the logical port name as the key.
-								gic->wires_[portMap->getLogicalPort()->name_] = gw;
-								// Form a name for the wire.
-								gw->name = gic->name + "_" + portMap->getLogicalPort()->name_;
-
-								// If abstraction definition was found, try find the width defined by it.
-								if (absDef)
-								{
-									QSharedPointer<PortAbstraction> portAbs = absDef->getPort(
-										portMap->getLogicalPort()->name_, busInterface->getInterfaceMode());
-
-									if (portAbs && portAbs->getWire())
-									{
-										absDefWidth = portAbs->getWire()->getWidth(busInterface->getInterfaceMode());
-									}
-								}
-
-								// If found, the width shall dictate wire bounds, else it is the same as port bounds.
-								if (!absDefWidth.isEmpty())
-								{
-									gw->bounds.first = absDefWidth + "-1";
-									gw->bounds.second = "0";
-								}
-								else
-								{
-									gw->bounds = portBounds;
-								}
-							}
-
-							// The wire shall be the wire of the port assignment.
-							gpa->wire = gw;
-							// A new physical port is identified for the wire.
-							gw->ports.append(physicalPort);
-						}
+						absDef = docAbsDef.dynamicCast<AbstractionDefinition>();
 					}
 				}
+
+                // Abstraction definition is mandatory.
+                if (!absDef)
+                {
+                    continue;
+                }
+
+                gic->typeName = busInterface->getBusType().getName();
+
+				// Go through port maps within the abstraction type.
+                parsePortMaps(absType, gi, gic, absDef, busInterface);
+
+                QSharedPointer<GenerationInterfaceAssignment> gifa(new GenerationInterfaceAssignment);
+                gifa->name = busInterface->name();
+                gifa->interConnection_ = gic;
+                gi->interfaceAssignments_.append(gifa);
 			}
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLDesignParser::parsePortMaps()
+//-----------------------------------------------------------------------------
+void HDLDesignParser::parsePortMaps(QSharedPointer<AbstractionType> absType,
+    QSharedPointer<GenerationInstance> gi, QSharedPointer<GenerationInterconnection> gic,
+    QSharedPointer<AbstractionDefinition> absDef, QSharedPointer<BusInterface> busInterface)
+{
+    foreach(QSharedPointer<PortMap> portMap, *absType->getPortMaps())
+    {
+        // Detect the existing port assignment.
+        QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_[portMap->getPhysicalPort()->name_];
+
+        // No duplicates allowed.
+        if (gpa)
+        {
+            continue;
+        }
+
+        // Bounds for both the wire and the port must be found.
+        QPair<QString, QString> wireBounds;
+        QPair<QString, QString> portBounds;
+        QString absDefWidth;
+
+        // The port map ought to use some physical port.
+        QSharedPointer<Port> physicalPort = gi->component->getPort(portMap->getPhysicalPort()->name_);
+
+        // Find the logical bounds of the port map.
+        portBounds = logicalPortBoundsInInstance(gi, gi->activeView_, gi->component, portMap);
+
+        // If it does not exist, use the physical bounds instead.
+        if (portBounds.first.isEmpty() || portBounds.second.isEmpty())
+        {
+            portBounds = physicalPortBoundsInInstance(gi, gi->activeView_, gi->component, physicalPort);
+        }
+
+        // Now create the port assignment, with the physical port as identifier, and the found port bounds.
+        gpa = QSharedPointer<GenerationPortAssignMent>(new GenerationPortAssignMent);
+        gpa->port = physicalPort;
+        gpa->bounds = portBounds;
+        gpa->adhoc = false;
+        gi->portAssignments_.insert(portMap->getPhysicalPort()->name_,gpa);
+
+        if (gic->topInterface_)
+        {
+            // A hierarchical interconnection detected: No wire is used, but the matching
+            // port from the connected top interface must be found.
+            QSharedPointer<PortMap> matchingTopPort;
+
+            foreach(QSharedPointer<PortMap> topPortMap, *gic->topInterface_->getPortMaps())
+            {
+                // The logical port is the one that must match.
+                if (topPortMap->getLogicalPort()->name_ == portMap->getLogicalPort()->name_)
+                {
+                    matchingTopPort = topPortMap;
+                    break;
+                }
+            }
+
+            // "Connect" the port assignment directly to the top port.
+            if (matchingTopPort)
+            {
+                gpa->topPortName = matchingTopPort->getPhysicalPort()->name_;
+            }
+        }
+        else if (!portMap->getLogicalPort()->name_.isEmpty())
+        {
+            // A non-hierarchical interconnection detected: A wire must be found or created.
+            QSharedPointer<GenerationWire> gw = gic->wires_[portMap->getLogicalPort()->name_];
+
+            if (!gw)
+            {
+                // Create a new one...
+                gw = QSharedPointer<GenerationWire>(new GenerationWire);
+                // ...and use the logical port name as the key.
+                gic->wires_[portMap->getLogicalPort()->name_] = gw;
+                // Form a name for the wire.
+                gw->name = gic->name + "_" + portMap->getLogicalPort()->name_;
+
+                // Try find the width defined by  abstraction definition.
+                QSharedPointer<PortAbstraction> portAbs = absDef->getPort(
+                    portMap->getLogicalPort()->name_, busInterface->getInterfaceMode());
+
+                if (portAbs && portAbs->getWire())
+                {
+                    absDefWidth = portAbs->getWire()->getWidth(busInterface->getInterfaceMode());
+                }
+
+                // If found, the width shall dictate wire bounds, else it is the same as port bounds.
+                if (!absDefWidth.isEmpty())
+                {
+                    gw->bounds.first = absDefWidth + "-1";
+                    gw->bounds.second = "0";
+                }
+                else
+                {
+                    gw->bounds = portBounds;
+                }
+            }
+
+            // The wire shall be the wire of the port assignment.
+            gpa->wire = gw;
+            // A new physical port is identified for the wire.
+            gw->ports.append(physicalPort);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -560,7 +590,8 @@ void HDLDesignParser::assignInternalAdHocs()
 				{
 					gpa = QSharedPointer<GenerationPortAssignMent>(new GenerationPortAssignMent);
 					gi->portAssignments_.insert(ourPort->name(),gpa);
-					gpa->port = ourPort;
+                    gpa->port = ourPort;
+                    gpa->adhoc = true;
 				}
 
 				// If no tie-off connection cannot be applied...
@@ -646,6 +677,7 @@ void HDLDesignParser::parseHierarchicallAdhocs()
 
 					// It will not have a wire, but reference to the top port.
 					gpa->topPortName = externalPort->getPortRef();
+                    gpa->adhoc = true;
 
 					// Since it is ad hoc, the physical bounds will be used.
 					QPair<QString,QString> bounds = physicalPortBoundsInInstance(gi, gi->activeView_, component, ourPort);

@@ -203,6 +203,7 @@
     <ClCompile Include="VerilogGeneratorPlugin.cpp" />
     <ClCompile Include="VerilogGenerator\VerilogGenerator.cpp" />
     <ClCompile Include="VerilogHeaderWriter\VerilogHeaderWriter.cpp" />
+    <ClCompile Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.cpp" />
     <ClCompile Include="VerilogTiedValueWriter\VerilogTiedValueWriter.cpp" />
     <ClCompile Include="VerilogWireWriter\VerilogWireWriter.cpp" />
   </ItemGroup>
@@ -320,6 +321,7 @@
     </CustomBuild>
     <ClInclude Include="TextBodyWriter\TextBodyWriter.h" />
     <ClInclude Include="VerilogHeaderWriter\VerilogHeaderWriter.h" />
+    <ClInclude Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.h" />
     <ClInclude Include="VerilogTiedValueWriter\VerilogTiedValueWriter.h" />
     <ClInclude Include="VerilogWireWriter\VerilogWireWriter.h" />
     <ClInclude Include="veriloggeneratorplugin_global.h" />

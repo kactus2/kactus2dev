@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ComponentInstanceVerilogWriter.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 04.08.2014
 //
@@ -26,11 +26,13 @@ namespace
 ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(QSharedPointer<GenerationInstance> instance,
 	QSharedPointer<const PortSorter> sorter,
 	QSharedPointer<ExpressionParser> expressionParser,
-	QSharedPointer<ExpressionFormatter> expressionFormatter) :
+	QSharedPointer<ExpressionFormatter> expressionFormatter,
+	bool useInterfaces) :
 instance_(instance), 
 sorter_(sorter),
 expressionParser_(expressionParser),
-expressionFormatter_(expressionFormatter)
+expressionFormatter_(expressionFormatter),
+useInterfaces_(useInterfaces)
 {
 
 }
@@ -140,8 +142,32 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 
 	QString previousInterfaceName = "";
 
+    if (useInterfaces_)
+    {
+        foreach(QSharedPointer<GenerationInterfaceAssignment> gifa, instance_->interfaceAssignments_)
+        {
+            if (gifa->interConnection_->topInterface_)
+            {
+                portAssignments.append( "." + gifa->name + "(" + gifa->interConnection_->topInterface_->name() + ")");
+            }
+            else
+            {
+                portAssignments.append( "." + gifa->name + "("+ gifa->interConnection_->name + ")");
+            }
+        }
+    }
+
 	foreach(QString portName, sorter_->sortedPortNames(instance_->referencedComponent_))
-	{
+    {
+        // Seek for a port assignment.
+        QSharedPointer<GenerationPortAssignMent> gab = instance_->portAssignments_.value(portName);
+
+        // If none found, or is not applicable, skip.
+        if (!gab || (useInterfaces_ && !gab->adhoc))
+        {
+            continue;
+        }
+
 		QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
 			instance_->referencedComponent_->getInterfacesUsedByPort(portName);
 		QString interfaceName;
@@ -164,7 +190,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 
 		QString portAssignment = interfaceSeparatorLine + indentation().repeated(2) + ".<port>(<connection>)";
 		portAssignment.replace("<port>", portName.leftJustified(20));
-		portAssignment.replace("<connection>", assignmentForPort(portName));
+		portAssignment.replace("<connection>", assignmentForPort(gab));
 
 		portAssignments.append(portAssignment);
 	}
@@ -210,18 +236,9 @@ QString ComponentInstanceVerilogWriter::createInterfaceSeparator(QString const& 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::assignmentForPort()
 //-----------------------------------------------------------------------------
-QString ComponentInstanceVerilogWriter::assignmentForPort(QString portName) const
+QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<GenerationPortAssignMent> gab) const
 {
     QString assignment;
-
-    // Seek for a port assignment.
-    QSharedPointer<GenerationPortAssignMent> gab = instance_->portAssignments_.value(portName);
-
-    // If none found, return empty.
-    if (!gab)
-    {
-        return "";
-    }
 
 	// If an tied value is assigned to a physical port, it shall be used.
     if (!gab->tieOff.isEmpty())

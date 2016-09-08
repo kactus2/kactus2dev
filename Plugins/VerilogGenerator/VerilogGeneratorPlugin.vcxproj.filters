@@ -125,6 +125,12 @@
     <Filter Include="Source Files\TextBodyWrite">
       <UniqueIdentifier>{2d88d741-961b-458c-9da6-1fe4fcd13d83}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\VerilogInterconnectionWriter">
+      <UniqueIdentifier>{c959ce36-a9a5-45a8-80a6-4bce81d36a92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VerilogInterconnectionWriter">
+      <UniqueIdentifier>{49c1da0b-e2ef-4922-b33f-0b53c28cd4a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="VerilogGenerator\VerilogGenerator.cpp">
@@ -232,11 +238,14 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.cpp">
-      <Filter>Source Files\editors</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\PortSorter\InterfaceDirectionNameSorter.cpp">
       <Filter>Source Files\PortSorter</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentInstanceVerilogWriter\ComponentInstanceVerilogWriter.cpp">
+      <Filter>Source Files\ComponentInstanceVerilogWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.cpp">
+      <Filter>Source Files\VerilogInterconnectionWriter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -317,6 +326,9 @@
     </ClInclude>
     <ClInclude Include="..\common\PortSorter\PortSorter.h">
       <Filter>Header Files\PortSorter</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.h">
+      <Filter>Header Files\VerilogInterconnectionWriter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
