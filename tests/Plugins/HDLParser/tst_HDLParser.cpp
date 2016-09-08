@@ -538,6 +538,7 @@ void tst_HDLParser::mapPortToInterface(QString const& portName, QString const& l
 
             QSharedPointer<AbstractionDefinition> testAbstractionDefinition (new AbstractionDefinition());
             testAbstractionDefinition->setVlnv(*abstractionVLNV.data());
+            library_.addComponent(testAbstractionDefinition);
 
             QSharedPointer<PortAbstraction> logicalPort (new PortAbstraction());
             logicalPort->setName(logicalName);
@@ -1274,6 +1275,7 @@ void tst_HDLParser::testPortMapsWithoutBoundsInInterconnection()
         
     QSharedPointer<AbstractionDefinition> testAbstractionDefinition (new AbstractionDefinition());
     testAbstractionDefinition->setVlnv(*abstractionVLNV.data());
+    library_.addComponent(testAbstractionDefinition);
 
     QSharedPointer<AbstractionType> senderAbstraction(new AbstractionType());
     senderAbstraction->setAbstractionRef(abstractionVLNV);
