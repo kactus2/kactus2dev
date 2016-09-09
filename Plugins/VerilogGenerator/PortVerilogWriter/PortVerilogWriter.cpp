@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "PortVerilogWriter.h"
+#include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortVerilogWriter::PortVerilogWriter()
@@ -44,7 +45,7 @@ void PortVerilogWriter::write( QTextStream& outputStream ) const
 bool PortVerilogWriter::nothingToWrite() const
 {
     return port_.isNull() || 
-        port_->direction == DirectionTypes::DIRECTION_PHANTOM || port_->direction == DirectionTypes::DIRECTION_INVALID;
+        port_->port->getDirection() == DirectionTypes::DIRECTION_PHANTOM || port_->port->getDirection() == DirectionTypes::DIRECTION_INVALID;
 }
 
 //-----------------------------------------------------------------------------
@@ -55,9 +56,9 @@ QString PortVerilogWriter::createDeclaration() const
     QString portDeclaration("<direction> <type> <bounds> <name>");
 
     portDeclaration.replace("<direction>", direction().leftJustified(6));
-    portDeclaration.replace("<type>", port_->typeName.leftJustified(7));
+    portDeclaration.replace("<type>", port_->port->getTypeName().leftJustified(7));
     portDeclaration.replace("<bounds>", arrayAndVectorBounds().leftJustified(20));
-    portDeclaration.replace("<name>", port_->name);
+    portDeclaration.replace("<name>", port_->port->name());
 
     return portDeclaration;
 }
@@ -69,15 +70,15 @@ QString PortVerilogWriter::direction() const
 {
     QString directionString;
 
-    if (port_->direction == DirectionTypes::IN)
+    if (port_->port->getDirection() == DirectionTypes::IN)
     {
         directionString = "input";
     }
-    else if (port_->direction == DirectionTypes::OUT)    
+    else if (port_->port->getDirection() == DirectionTypes::OUT)    
     {
         directionString = "output";
     }
-    else if (port_->direction == DirectionTypes::INOUT)   
+    else if (port_->port->getDirection() == DirectionTypes::INOUT)   
     {
         directionString = "inout";
     }

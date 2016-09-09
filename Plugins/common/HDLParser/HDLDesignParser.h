@@ -41,29 +41,12 @@ class HDLDesignParser : public QObject
 
 public:
     //! The constructor.
-	HDLDesignParser(LibraryInterface* library, QSharedPointer<Component> component, QSharedPointer<View> topComponentView, 
-		QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf);
+	HDLDesignParser(LibraryInterface* library, QSharedPointer<GenerationComponent> component,
+        QSharedPointer<View> topComponentView,  QSharedPointer<Design> design,
+        QSharedPointer<DesignConfiguration> designConf);
 
     //! The destructor.
     ~HDLDesignParser();
-	
-    /*!
-	*   Returns an expression parser for the given top component.
-	*/
-	QSharedPointer<ExpressionFormatter> createFormatterForComponent(QSharedPointer<Component> targetComponent,
-		QSharedPointer<View> targetView, QString instanceName);
-
-    /*!
-     *  Creates an expression parser for the given component.
-     *
-	 *      @param [in] targetComponent		The component for which to create the parser.
-	 *      @param [in] targetView			The active view of the instance.
-	 *      @param [in] instanceName		An instance of the component.
-     *
-     *      @return Expression parser for the component.
-     */
-	QSharedPointer<ExpressionParser> createParserForComponent(QSharedPointer<Component> targetComponent,
-		QSharedPointer<View> targetView, QString instanceName);
 
 	void parseDesign();
 
@@ -112,7 +95,8 @@ private:
      *
      *      @return The port bounds for the port map in an instance.
      */
-    QPair<QString, QString> physicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance, QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<Port> port) const;
+    QPair<QString, QString> physicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance,
+        QSharedPointer<GenerationPort> port) const;
 
     /*!
      *  Finds the logical bounds for a port map in an instance.
@@ -122,9 +106,10 @@ private:
      *
      *      @return The port bounds for the port map in an instance.
      */
-	QPair<QString, QString> logicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance, QSharedPointer<View> activeView, QSharedPointer<Component> component, QSharedPointer<PortMap> portMap) const;
+	QPair<QString, QString> logicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance,
+        QSharedPointer<PortMap> portMap) const;
 
-	bool connectTieOff(QString tieOff, QSharedPointer<Port> port, DirectionTypes::Direction requiredDirection, QString& value);
+	bool connectTieOff(QString tieOff, QSharedPointer<GenerationPort> port, DirectionTypes::Direction requiredDirection, QString& value);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -134,7 +119,7 @@ private:
      LibraryInterface* library_;
 
      //! The top level component.
-     QSharedPointer<Component> topComponent_;
+     QSharedPointer<GenerationComponent> topComponent_;
 
      //! The design to parse.
 	 QSharedPointer<Design> design_;

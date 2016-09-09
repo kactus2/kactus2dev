@@ -38,11 +38,11 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] instance                The component instance to write to Verilog
-	 *      @param [in] sorter                  Sorter for the ports in the component.
-     *      @param [in] expressionParser     	The expression parser.
+     *      @param [in] sorter                  Sorter for the ports in the component.
+     *      @param [in] useInterfaces           True, if interfaces are used where applicable. False means always ports.
 	 */
-	ComponentInstanceVerilogWriter(QSharedPointer<GenerationInstance> instance, QSharedPointer<const PortSorter> sorter,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter, bool useInterfaces);
+	ComponentInstanceVerilogWriter(QSharedPointer<GenerationInstance> instance,
+        QSharedPointer<const PortSorter> sorter, bool useInterfaces);
 
 	//! The destructor.
 	~ComponentInstanceVerilogWriter();
@@ -185,12 +185,6 @@ private:
 
 	//! Sorter for the ports of the component.
     QSharedPointer<const PortSorter> sorter_;
-
-    //! The assigned expression formatter.
-    QSharedPointer<ExpressionParser> expressionParser_;
-
-	//! The assigned expression formatter.
-    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
     //! True, if interfaces are utilized separately from physical ports, else false.
     bool useInterfaces_;

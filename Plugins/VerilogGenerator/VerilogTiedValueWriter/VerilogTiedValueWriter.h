@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: VerilogTiedValueWriter.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 13.05.2016
 //
@@ -15,10 +15,6 @@
 #include <Plugins/VerilogGenerator/common/Writer.h>
 #include "../veriloggeneratorplugin_global.h"
 
-#include <QSharedPointer>
-
-class ExpressionFormatter;
-
 //-----------------------------------------------------------------------------
 //! Class for writing a Verilog port tied value declaration.
 //-----------------------------------------------------------------------------
@@ -29,7 +25,7 @@ public:
 	/*!
      *  The constructor.
      */
-    VerilogTiedValueWriter(QSharedPointer<ExpressionFormatter> formatter);
+    VerilogTiedValueWriter();
 
 	/*!
      *  The destructor.
@@ -63,9 +59,6 @@ private:
 
     //! Port name, tied value pairs.
     QMap<QString, QString> portTiedValues_;
-
-    //! The used expression formatter.
-    QSharedPointer<ExpressionFormatter> formatter_;
 };
 
 #endif // VERILOGTIEDVALUEWRITER_H

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: VerilogTiedValueWriter.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 13.05.2016
 //
@@ -11,16 +11,12 @@
 
 #include "VerilogTiedValueWriter.h"
 
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-
 //-----------------------------------------------------------------------------
 // Function: VerilogTiedValueWriter::VerilogTiedValueWriter()
 //-----------------------------------------------------------------------------
-VerilogTiedValueWriter::VerilogTiedValueWriter(QSharedPointer<ExpressionFormatter> formatter):
-portTiedValues_(),
-formatter_(formatter)
+VerilogTiedValueWriter::VerilogTiedValueWriter():
+portTiedValues_()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -36,7 +32,7 @@ VerilogTiedValueWriter::~VerilogTiedValueWriter()
 //-----------------------------------------------------------------------------
 void VerilogTiedValueWriter::addPortTiedValue(QString const& portName, QString const& tiedValue)
 {
-    QString formattedTiedValue = formatter_->formatReferringExpression(tiedValue);
+    QString formattedTiedValue = tiedValue;
 
     portTiedValues_.insert(portName, formattedTiedValue);
 }

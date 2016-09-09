@@ -17,11 +17,6 @@
 #include <IPXACTmodels/Component/Port.h>
 
 #include <Plugins/common/PortSorter/PortSorter.h>
-#include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
-#include <Plugins/VerilogGenerator/common/Writer.h>
-#include <Plugins/VerilogGenerator/common/WriterGroup.h>
-
-#include <Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h>
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
 
 #include <QSharedPointer>
@@ -97,15 +92,6 @@ private:
 
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter_;
-
-    //! Writers for the inner elements e.g. wires and subcomponent instances.
-    QList<QSharedPointer<Writer> > childWriters_;
-
-	//! The implementation, which is essentially the user-written things in the module.
-	QSharedPointer<TextBodyWriter> implementation_;
-
-	//! The extra stuff that comes after the written module.
-    QSharedPointer<TextBodyWriter> postModule_;
 
     QMap<QSharedPointer<BusInterface>, QSharedPointer<GenerationInterface> > interfaces_;
 };

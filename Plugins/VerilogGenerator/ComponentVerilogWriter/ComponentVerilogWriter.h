@@ -31,8 +31,6 @@
 #include <QTextStream>
 #include <QList>
 
-class ExpressionFormatter;
-
 //-----------------------------------------------------------------------------
 //! Class for writing a component as a Verilog module.
 //-----------------------------------------------------------------------------
@@ -46,8 +44,7 @@ public:
 	 *      @param [in] component               The component to write to Verilog.
      *      @param [in] expressionFormatter     Formatter for writing expressions.
 	 */
-	ComponentVerilogWriter(QSharedPointer<GenerationComponent> component,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, bool useInterfaces);
+	ComponentVerilogWriter(QSharedPointer<GenerationComponent> component, bool useInterfaces);
 
 	//! The destructor.
 	~ComponentVerilogWriter();
@@ -167,9 +164,6 @@ private:
 
     //! True, if interfaces are utilized separately from physical ports, else false.
     bool useInterfaces_;
-
-    //! The formatter for expressions.
-    QSharedPointer<ExpressionFormatter> formatter_;
 
     //! Writers for the inner elements e.g. wires and subcomponent instances.
     QList<QSharedPointer<Writer> > childWriters_;

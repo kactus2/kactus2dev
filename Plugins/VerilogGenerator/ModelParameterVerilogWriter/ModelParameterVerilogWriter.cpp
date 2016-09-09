@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ModuleParameterVerilogWriter.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 14.7.2014
 //
@@ -18,10 +18,8 @@
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterVerilogWriter::ModuleParameterVerilogWriter()
 //-----------------------------------------------------------------------------
-ModuleParameterVerilogWriter::ModuleParameterVerilogWriter(QSharedPointer<Parameter> parameter,
-    QSharedPointer<ExpressionFormatter> formatter) :
-parameter_(parameter),
-formatter_(formatter)
+ModuleParameterVerilogWriter::ModuleParameterVerilogWriter(QSharedPointer<Parameter> parameter) :
+parameter_(parameter)
 {
 
 }
@@ -103,7 +101,7 @@ QString ModuleParameterVerilogWriter::arrayBounds() const
         vectorDefinition.clear();
     }
 
-    return formatter_->formatReferringExpression(arrayDefinition + vectorDefinition);
+    return arrayDefinition + vectorDefinition;
 }
 
 //-----------------------------------------------------------------------------
@@ -139,7 +137,5 @@ QString ModuleParameterVerilogWriter::formattedValue() const
         value.remove(" ");
     }
 
-    QString formatted = formatter_->formatReferringExpression(value);
-
-    return formatted;
+    return value;
 }

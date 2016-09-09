@@ -14,11 +14,6 @@
 #include <library/LibraryManager/libraryinterface.h>
 #include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 
-#include <Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h>
-#include <Plugins/VerilogGenerator/PortVerilogWriter/PortVerilogWriter.h>
-
-#include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
-
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <IPXACTmodels/common/ModuleParameter.h>
@@ -81,6 +76,7 @@ QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent(QString o
         gif->description = busInterface->description();
         gif->mode = interfaceMode2Str(busInterface->getInterfaceMode());
         gif->name = busInterface->name();
+        gif->interface = busInterface;
 
         ConfigurableVLNVReference busRef = busInterface->getBusType();
         gif->typeName = busRef.getName();
@@ -103,8 +99,7 @@ QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent(QString o
             }
         }
 
-        interfaces_.insert(busInterface, gif);
-        retval->interfaces.append(gif);
+        retval->interfaces.insert(busInterface->name(),gif);
     }
 
     parsePorts(retval);
@@ -207,7 +202,7 @@ void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval)
         // Cull all interfaces that utilize the port.
         foreach (QSharedPointer<BusInterface> busInterface, *busInterfaces)
         {
-            QSharedPointer<GenerationInterface> gif = interfaces_[busInterface];
+            QSharedPointer<GenerationInterface> gif = retval->interfaces[busInterface->name()];
 
             if (gif)
             {
@@ -215,11 +210,8 @@ void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval)
             }
         }
 
-        // Pick the needed variables.
-        gport->name = cport->name();
-        gport->typeName = cport->getTypeName();
-        gport->description = cport->description();
-        gport->direction = cport->getDirection();
+        // Needs a reference to the IP-XACT port.
+        gport->port = cport;
 
         // Both vector and array bounds may be needed.
         gport->arrayBounds.first = formatter_->formatReferringExpression(cport->getArrayLeft());
@@ -229,7 +221,7 @@ void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval)
         gport->vectorBounds.second = formatter_->formatReferringExpression(cport->getRightBound());
 
         // Add to the list.
-        retval->ports.append(gport);
+        retval->ports.insert(cport->name(),gport);
     }
 }
 
@@ -367,21 +359,35 @@ void HDLComponentParser::parseParameterDeclarations(QSharedPointer<GenerationCom
 	QSharedPointer<ComponentInstantiation> currentInsta =
 		component_->getModel()->findComponentInstantiation(activeView_->getComponentInstantiationRef());
 
-	// Take copy the parameters of the component instantiation as well as the component.
-	QList<QSharedPointer<Parameter> > parameters = QList<QSharedPointer<Parameter> >(*component_->getParameters());
+    // Take copy the parameters of the component instantiation as well as the component..
+    QList<QSharedPointer<Parameter> > parameters;
+
+    foreach(QSharedPointer<Parameter> parameterOrig, *component_->getParameters())
+    {
+        QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
+        parameters.append(parameterCpy);
+    }
 
 	if (currentInsta)
 	{
-		foreach(QSharedPointer<ModuleParameter> parameter, *currentInsta->getModuleParameters())
+		foreach(QSharedPointer<ModuleParameter> parameterOrig, *currentInsta->getModuleParameters())
 		{
-			parameters.append(parameter);
+            QSharedPointer<ModuleParameter> parameterCpy(new ModuleParameter(*parameterOrig));
+			parameters.append(parameterCpy);
 		}
 	}
 
-	// Create a new list of module parameters.
-	target->parameters = QList<QSharedPointer<Parameter> >(parameters);
+    // Create a new list of the parameters.
+    target->parameters = QList<QSharedPointer<Parameter> >(parameters);
 
+	// Sort the parameters.
 	sortParameters(parameters, target->parameters);
+
+    // Format the parameters.
+    foreach(QSharedPointer<Parameter> parameter, target->parameters)
+    {
+        parameter->setValue(formatter_->formatReferringExpression(parameter->getValue()));
+    }
 }
 
 //-----------------------------------------------------------------------------

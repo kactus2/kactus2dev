@@ -13,10 +13,6 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
-
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <designEditors/common/TopComponentParameterFinder.h>
 
@@ -90,8 +86,8 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
     if (design_ && designConf_)
     {
 		// Parse the design, using the provided configuration and the top component.
-		HDLDesignParser parser(library_,component,topComponentView,design,designConf);
-		parser.parseDesign();
+		HDLDesignParser parser(library_,joq,topComponentView,design,designConf);
+        parser.parseDesign();
 
 		// Create instance writers for the instances, complete with expression parsers and formatters.
 		foreach(QSharedPointer<GenerationInstance> gi, parser.instances_)
@@ -99,10 +95,7 @@ void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer
 			QSharedPointer<ComponentInstance> instance = gi->componentInstance_;
 
 			QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter(new ComponentInstanceVerilogWriter(
-				gi, sorter_,
-				parser.createParserForComponent(gi->component, gi->activeView_, instance->getInstanceName()),
-				parser.createFormatterForComponent(gi->component, gi->activeView_, instance->getInstanceName()),
-				useInterfaces_));
+				gi, sorter_, useInterfaces_));
 
 
 			instanceWriters_.insert(instance->getInstanceName(), instanceWriter);
@@ -338,12 +331,7 @@ void VerilogGenerator::initializeWriters()
     headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent_->getVlnv(), 
         componentXmlPath, currentUser));
 
-	QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(topComponent_));
-	parameterFinder->setActiveView(topComponentView_);
-
-	QSharedPointer<ExpressionFormatter> formatter = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
-
-    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(joq, formatter, useInterfaces_));
+    topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(joq, useInterfaces_));
 
     instanceWriters_.clear();
 
@@ -351,7 +339,7 @@ void VerilogGenerator::initializeWriters()
 
     wireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
 
-    tiedValueWriter_ = QSharedPointer<VerilogTiedValueWriter>(new VerilogTiedValueWriter(formatter));
+    tiedValueWriter_ = QSharedPointer<VerilogTiedValueWriter>(new VerilogTiedValueWriter);
 }
 
 //-----------------------------------------------------------------------------

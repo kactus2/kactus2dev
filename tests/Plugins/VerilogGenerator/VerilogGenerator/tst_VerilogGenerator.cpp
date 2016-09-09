@@ -1722,7 +1722,7 @@ void tst_VerilogGenerator::testAdHocConnectionToUnknownInstanceIsNotWritten()
     addAdhocConnection("notConnected", "unknownInstance", "emptyPort", "unknownInstance", "emptyPort" );
     addHierAdhocConnection("top_clk", "unknownInstance", "clk");
 
-    runGenerator(true);
+    //runGenerator(true);
 
     verifyOutputContains(
         "module TestComponent();\n"

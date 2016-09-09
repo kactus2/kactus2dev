@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ModuleParameterVerilogWriter.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 14.7.2014
 //
@@ -14,8 +14,6 @@
 
 #include "../veriloggeneratorplugin_global.h"
 #include "../common/Writer.h"
-
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <QString>
 #include <QSharedPointer>
@@ -35,10 +33,8 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] ModuleParameter  The model parameter represented by this object.
-	 *      @param [in] formatter       The expression formatter.
 	 */
-	ModuleParameterVerilogWriter(QSharedPointer<Parameter> parameter,
-        QSharedPointer<ExpressionFormatter> formatter);
+	ModuleParameterVerilogWriter(QSharedPointer<Parameter> parameter);
 	
 	//! The destructor
 	~ModuleParameterVerilogWriter();
@@ -91,9 +87,6 @@ private:
 
     //! The model parameter to write to Verilog.
     QSharedPointer<Parameter> parameter_;
-
-    //! The expresion formatter, used to change ids from expressions to names of references.
-    QSharedPointer<ExpressionFormatter> formatter_;
 };
 
 #endif // ModuleParameterVerilogWriter_H

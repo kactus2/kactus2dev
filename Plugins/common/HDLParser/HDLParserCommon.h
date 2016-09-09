@@ -67,6 +67,7 @@ struct GenerationRemapState
 
 struct GenerationInterface
 {
+    QSharedPointer<BusInterface> interface;
     QString name;
     QString typeName;
     QString mode;
@@ -76,13 +77,10 @@ struct GenerationInterface
 
 struct GenerationPort
 {
-    QString name;
-    QString typeName;
-    QString description;
     QList<QSharedPointer<GenerationInterface> > interfaces;
-    DirectionTypes::Direction direction;
     QPair<QString,QString> vectorBounds;
     QPair<QString,QString> arrayBounds;
+    QSharedPointer<Port> port;
 };
 
 struct GenerationComponent
@@ -90,8 +88,8 @@ struct GenerationComponent
     QSharedPointer<Component> component;
     QList<QSharedPointer<GenerationRemap> > remaps;
     QList<QSharedPointer<Parameter> > parameters;
-    QList<QSharedPointer<GenerationPort> > ports;
-    QList<QSharedPointer<GenerationInterface> > interfaces;
+    QMap<QString,QSharedPointer<GenerationPort> > ports;
+    QMap<QString,QSharedPointer<GenerationInterface> > interfaces;
     QString aub;
     QString totalRange;
     QList<QSharedPointer<GenerationRemapState> > remapStates;
@@ -99,7 +97,7 @@ struct GenerationComponent
 
 struct GenerationWire
 {
-    QList<QSharedPointer<Port> > ports;
+    QList<QSharedPointer<GenerationPort> > ports;
     QPair<QString,QString> bounds;
 	QString name;
 };
@@ -116,7 +114,7 @@ struct GenerationInterconnection
 {
 	QList<QPair<QString,QString> > interfaces;
 	QMap<QString,QSharedPointer<GenerationWire> > wires_;
-	QSharedPointer<BusInterface> topInterface_;
+	QSharedPointer<GenerationInterface> topInterface_;
     QString name;
     QString typeName;
 };
@@ -129,26 +127,24 @@ struct GenerationInterfaceAssignment
 
 struct GenerationPortAssignMent
 {
-	QSharedPointer<Port> port;
+	QSharedPointer<GenerationPort> port;
 	QPair<QString,QString> bounds;
 	QSharedPointer<GenerationWire> wire;
-	QString topPortName;
+	QString topPort;
     QString tieOff;
     bool adhoc;
 };
 
 struct GenerationInstance
 {
-	QSharedPointer<Component> component;
+    //! The component referenced by the instance.
+	QSharedPointer<GenerationComponent> component;
 
 	//! The component instance to write to Verilog.
 	QSharedPointer<ComponentInstance> componentInstance_;
 
 	//! The component instantiation corresponding the active view.
 	QSharedPointer<const ComponentInstantiation> componentInstantiation_;
-
-	//! The component referenced by the instance.
-	QSharedPointer<Component> referencedComponent_;
 
 	//! The assigned port connections.
     QMap<QString,QSharedPointer<GenerationPortAssignMent> > portAssignments_;
