@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ViewSelectionWidget.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 14.06.2016
 //
@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "ViewSelectionWidget.h"
-#include "GeneratorConfiguration.h"
+#include "ViewSelection.h"
 
 #include <QComboBox>
 #include <QDialogButtonBox>
@@ -24,10 +24,8 @@
 //-----------------------------------------------------------------------------
 // Function: ViewSelectionWidget::ViewSelectionWidget()
 //-----------------------------------------------------------------------------
-ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> configuration, 
-	QString language) : 
+ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<ViewSelection> configuration) : 
 	configuration_(configuration),
-	targetLanguage_(language),
     viewSelection_(new QComboBox(this)),
     addToFileset_(new QGroupBox(tr("Add file to fileset"))),
 	instantiationSelection_(new QComboBox(this)),
@@ -200,13 +198,13 @@ void ViewSelectionWidget::setLanguage(QString selectedLanguage)
 	instantiationLanguage_->setText(selectedLanguage);
 
     // No target language means no further reaction.
-    if (targetLanguage_.isEmpty())
+    if (configuration_->getTargetLanguage().isEmpty())
     {
         return;
     }
 
 	// Select color depending on match.
-	if (selectedLanguage == targetLanguage_)
+	if (selectedLanguage == configuration_->getTargetLanguage())
 	{
 		instantiationLanguage_->setStyleSheet("QLabel { color : green; }");
 	}

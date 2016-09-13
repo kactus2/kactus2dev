@@ -19,6 +19,8 @@
 class Component;
 class ComponentInstance;
 class ComponentInstantiation;
+class Design;
+class DesignConfiguration;
 class View;
 class BusInterface;
 class Port;
@@ -143,8 +145,10 @@ struct GenerationInstance
 	//! The component instance to write to Verilog.
 	QSharedPointer<ComponentInstance> componentInstance_;
 
-	//! The component instantiation corresponding the active view.
-	QSharedPointer<const ComponentInstantiation> componentInstantiation_;
+	//! The instantiations corresponding the active view.
+    QSharedPointer<const ComponentInstantiation> componentInstantiation_;
+    QSharedPointer<Design> design_;
+    QSharedPointer<DesignConfiguration> designConfiguration_;
 
 	//! The assigned port connections.
     QMap<QString,QSharedPointer<GenerationPortAssignMent> > portAssignments_;
@@ -155,6 +159,17 @@ struct GenerationInstance
 	QSharedPointer<View> activeView_;
 
 	QList<QSharedPointer<Parameter> > parameters;
+};
+
+struct GenerationDesign
+{
+    //! The top level component.
+    QSharedPointer<GenerationComponent> topComponent_;
+
+    QList<QSharedPointer<GenerationInstance> > instances_;
+    QList<QSharedPointer<GenerationInterconnection> > interConnections_;
+    QList<QSharedPointer<GenerationAdHoc> > adHocs_;
+    QMap<QString, QString> portTiedValues_;
 };
 
 #endif // VERILOGGENERATORCOMMON_H

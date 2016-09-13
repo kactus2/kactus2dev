@@ -16,10 +16,10 @@
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-#include <designEditors/common/TopComponentParameterFinder.h>
+
+#include <editors/ComponentEditor/common/ListParameterFinder.h>
 
 #include <IPXACTmodels/common/PortAlignment.h>
 
@@ -33,20 +33,40 @@
 
 #include <QDateTime>
 #include <QFileInfo>
-#include "editors/ComponentEditor/common/ListParameterFinder.h"
 
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::HDLParser()
 //-----------------------------------------------------------------------------
-HDLDesignParser::HDLDesignParser(LibraryInterface* library, QSharedPointer<GenerationComponent> component,
-    QSharedPointer<View> topComponentView,  QSharedPointer<Design> design,
-    QSharedPointer<DesignConfiguration> designConf) : QObject(0), 
+HDLDesignParser::HDLDesignParser(LibraryInterface* library, QSharedPointer<GenerationComponent> topComponent,
+    QSharedPointer<GenerationInstance> topInstance, QSharedPointer<View> topComponentView,
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) : QObject(0),
 library_(library),
-topComponent_(component),
+topInstance_(topInstance),
 topComponentView_(topComponentView),
 design_(design),
-designConf_(designConf)
+designConf_(designConf),
+retval_(new GenerationDesign),
+topFinder_(new ListParameterFinder)
 {
+    // Set the top level component.
+    retval_->topComponent_ = topComponent;
+
+    QSharedPointer<QList<QSharedPointer<Parameter> > > toplist;
+    
+    // If the top component is based on an instance, use parameters of the instance instead.
+    if (topInstance)
+    {
+        toplist = QSharedPointer<QList<QSharedPointer<Parameter> > >
+            (new QList<QSharedPointer<Parameter> >(topInstance_->parameters));
+    }
+    else
+    {
+        toplist = QSharedPointer<QList<QSharedPointer<Parameter> > >
+            (new QList<QSharedPointer<Parameter> >(topComponent->parameters));
+    }
+
+    // Set the list for the finder.
+    topFinder_->setParameterList(toplist);
 }
 
 //-----------------------------------------------------------------------------
@@ -59,7 +79,7 @@ HDLDesignParser::~HDLDesignParser()
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::parseComponentInstances()
 //-----------------------------------------------------------------------------
-void HDLDesignParser::parseDesign()
+void HDLDesignParser::parseDesign(QList<QSharedPointer<GenerationDesign> >& parsedDesigns)
 {
 	parseComponentInstances();
 
@@ -70,6 +90,25 @@ void HDLDesignParser::parseDesign()
 	assignInternalAdHocs();
 
 	parseHierarchicallAdhocs();
+
+    parsedDesigns.append(retval_);
+
+    if (parsedDesigns.size() >= 10000)
+    {
+        return;
+    }
+
+    foreach(QSharedPointer<GenerationInstance> gi, retval_->instances_)
+    {
+        if (gi->design_ && gi->designConfiguration_)
+        {
+            HDLComponentParser pars(library_, gi->component->component, gi->activeView_);
+            QSharedPointer<GenerationComponent> gc = pars.parseComponent();
+
+            HDLDesignParser parser(library_, gc, gi, gi->activeView_, gi->design_, gi->designConfiguration_);
+            parser.parseDesign(parsedDesigns);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -77,11 +116,6 @@ void HDLDesignParser::parseDesign()
 //-----------------------------------------------------------------------------
 void HDLDesignParser::parseComponentInstances()
 {
-    QSharedPointer<TopComponentParameterFinder> topFinder(new TopComponentParameterFinder(topComponent_->component));
-    topFinder->setActiveView(topComponentView_);
-
-    ExpressionFormatter designFormatter(topFinder);
-
 	// Go through each component instance in the design.
 	foreach(QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
 	{
@@ -113,6 +147,12 @@ void HDLDesignParser::parseComponentInstances()
 			continue;
         }
 
+        // Find also the hierarchical references if applicable.
+        QSharedPointer<DesignInstantiation> dis = component->getModel()->
+            findDesignInstantiation(activeView->getDesignInstantiationRef());
+        QSharedPointer<DesignConfigurationInstantiation> disg = component->getModel()->
+            findDesignConfigurationInstantiation(activeView->getDesignConfigurationInstantiationRef());
+
         // Parse the component first
         HDLComponentParser componentParser(library_, component, activeView);
         QSharedPointer<GenerationComponent> gc = componentParser.parseComponent();
@@ -123,10 +163,32 @@ void HDLDesignParser::parseComponentInstances()
 		gi->componentInstance_ = instance;
 		gi->componentInstantiation_ = instantiation;
 		gi->activeView_ = activeView;
-		instances_.append(gi);
+		retval_->instances_.append(gi);
+
+        if (disg && disg->getDesignConfigurationReference())
+        {
+            gi->designConfiguration_ = library_->getModel(*(disg->getDesignConfigurationReference()))
+                .dynamicCast<DesignConfiguration>();
+            gi->design_ = library_->getModel(gi->designConfiguration_->getDesignRef()).dynamicCast<Design>();
+        }
+        else if (dis && dis->getDesignReference())
+        {
+            gi->design_ = library_->getModel(*(dis->getDesignReference())).dynamicCast<Design>();
+        }
+
+        // Initialize the parameter parsing: Find parameters from both the instance and the top component.
+        QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(new QList<QSharedPointer<Parameter> >(gi->parameters));
+        QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
+        instanceFinder->setParameterList(ilist);
+
+        QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
+        multiFinder->addFinder(instanceFinder);
+        multiFinder->addFinder(topFinder_);
+
+        IPXactSystemVerilogParser instanceParser(multiFinder);
 
 		// Go through the culled parameters, find if any exists in CEVs.
-		foreach(QSharedPointer<Parameter> parameter, parameters)
+		foreach(QSharedPointer<Parameter> parameter, gc->parameters)
 		{
 			// Get the existing value.
 			QString paraValue = parameter->getValue();
@@ -137,44 +199,18 @@ void HDLDesignParser::parseComponentInstances()
 				if (cev->getReferenceId() == parameter->getValueId())
 				{
                     paraValue = cev->getConfigurableValue();
-                    paraValue = designFormatter.formatReferringExpression(paraValue);
 					break;
 				}
 			}
 
 			// Make a copy of the parameter.
 			QSharedPointer<Parameter> parameterCopy(new Parameter(*parameter));
-			// Assign its value.
-			parameterCopy->setValue(paraValue);
+			// Assign its parsed value.
+			parameterCopy->setValue(instanceParser.parseExpression(paraValue));
 
 			// Append to the list of the parameters which shall be used.
 			gi->parameters.append(parameterCopy);
 		}
-
-        QSharedPointer<QList<QSharedPointer<Parameter> > > slist(new QList<QSharedPointer<Parameter> >(gi->parameters));
-        QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
-        instanceFinder->setParameterList(slist);
-        ExpressionFormatter instanceFormatter(instanceFinder);
-
-        // Format the parameters.
-        foreach(QSharedPointer<Parameter> parameter, gi->parameters)
-        {
-            parameter->setValue(instanceFormatter.formatReferringExpression(parameter->getValue()));
-        }
-
-        // Replace those parameter names with their values, if they exists within the instance parameters.
-        foreach(QSharedPointer<Parameter> parameter, gi->parameters)
-        {
-            foreach(QSharedPointer<Parameter> parameterSupplement, gi->parameters)
-            {
-                if (parameterSupplement == parameter)
-                {
-                    continue;
-                }
-
-                parameter->setValue(parameter->getValue().replace(parameterSupplement->name(), parameterSupplement->getValue()));
-            }
-        }
     }
 }
 
@@ -207,7 +243,7 @@ void HDLDesignParser::findInterconnections()
 			foundInterfaces.append(interface);
 
 			// Go through existing "our" interconnections.
-			foreach(QSharedPointer<GenerationInterconnection> existing, interConnections_)
+			foreach(QSharedPointer<GenerationInterconnection> existing, retval_->interConnections_)
 			{
 				// Go through their interfaces.
 				typedef QPair<QString, QString> customPair;
@@ -238,11 +274,11 @@ void HDLDesignParser::findInterconnections()
             if (!connection->getHierInterfaces()->isEmpty())
             {
                 QSharedPointer<HierInterface> topInterface = connection->getHierInterfaces()->first();
-                gic->topInterface_ = topComponent_->interfaces[topInterface->getBusReference()];
+                gic->topInterface_ = retval_->topComponent_->interfaces[topInterface->getBusReference()];
             }
 
 			// Append to the pool of detected interconnections.
-			interConnections_.append(gic);
+			retval_->interConnections_.append(gic);
 		}
 
 		// Finally, append the found pairs to the "our" interconnection: They belong to it.
@@ -256,13 +292,13 @@ void HDLDesignParser::findInterconnections()
 void HDLDesignParser::assignInterconnections()
 {
 	// Go through detected instances.
-	foreach (QSharedPointer<GenerationInstance> gi, instances_)
+	foreach (QSharedPointer<GenerationInstance> gi, retval_->instances_)
 	{
 		QSharedPointer<GenerationComponent> component = gi->component;
 		QSharedPointer<ComponentInstance> instance = gi->componentInstance_;
 
 		// Go through detected interconnections.
-		foreach (QSharedPointer<GenerationInterconnection> gic, interConnections_)
+		foreach (QSharedPointer<GenerationInterconnection> gic, retval_->interConnections_)
 		{
 			// Go through interfaces detected for the interconnection.
 			typedef QPair<QString, QString> customPair;
@@ -465,7 +501,7 @@ void HDLDesignParser::findInternalAdhocs()
 			foundPorts.append(port);
 
 			// Go through existing detected ad-hocs.
-			foreach(QSharedPointer<GenerationAdHoc> existing, adHocs_)
+			foreach(QSharedPointer<GenerationAdHoc> existing, retval_->adHocs_)
 			{
 				typedef QPair<QString, QString> customPair;
 				foreach(customPair theirPort, existing->ports)
@@ -499,7 +535,7 @@ void HDLDesignParser::findInternalAdhocs()
 			gah->tieOff = adHocConnection->getTiedValue();
 
 			// Add to the pool of existing ones.
-			adHocs_.append(gah);
+			retval_->adHocs_.append(gah);
 		}
 
 		// Finally, the found pairs are appended to the connection.
@@ -513,19 +549,17 @@ void HDLDesignParser::findInternalAdhocs()
 void HDLDesignParser::assignInternalAdHocs()
 {
 	// Go through each instance.
-	foreach (QSharedPointer<GenerationInstance> gi, instances_)
+	foreach (QSharedPointer<GenerationInstance> gi, retval_->instances_)
 	{
-		QSharedPointer<ComponentInstance> instance = gi->componentInstance_;
-
 		// Go through each detected internal adhoc interconnection.
-		foreach(QSharedPointer<GenerationAdHoc> existing, adHocs_)
+		foreach(QSharedPointer<GenerationAdHoc> existing, retval_->adHocs_)
 		{
 			// Go through each port reference associated with the interconnection.
 			typedef QPair<QString, QString> customPair;
 			foreach(customPair theirPort, existing->ports)
 			{
 				// If the instance name does not match, it does not belong to this instance.
-				if (theirPort.first != instance->getInstanceName())
+				if (theirPort.first != gi->componentInstance_->getInstanceName())
 				{
 					continue;
 				}
@@ -588,7 +622,7 @@ void HDLDesignParser::parseHierarchicallAdhocs()
 		// ...go trough the external ports.
 		foreach(QSharedPointer<PortReference> externalPort, *adHocConnection->getExternalPortReferences())
 		{
-			QSharedPointer<GenerationPort> topPort = topComponent_->ports[externalPort->getPortRef()];
+			QSharedPointer<GenerationPort> topPort = retval_->topComponent_->ports[externalPort->getPortRef()];
 
 			// No top port means no action.
 			if (!topPort)
@@ -601,11 +635,11 @@ void HDLDesignParser::parseHierarchicallAdhocs()
 			{
                 QString value;
 				connectTieOff(adHocConnection->getTiedValue(), topPort, DirectionTypes::OUT, value);
-                portTiedValues_.insert(topPort->port->name(), value);
+                retval_->portTiedValues_.insert(topPort->port->name(), value);
 			}
 
 			// Find connected instances.
-			foreach (QSharedPointer<GenerationInstance> gi, instances_)
+			foreach (QSharedPointer<GenerationInstance> gi, retval_->instances_)
 			{
 				// Go through connected internal ports.
 				foreach(QSharedPointer<PortReference> internalPort, *adHocConnection->getInternalPortReferences())
@@ -650,31 +684,26 @@ QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPoi
 	QPair<QString, QString> bounds("", "");
 
 	// Must have components, both the target and the top, as well as the target port.
-	if (!instance || !topComponent_ || !port)
+	if (!instance || !port)
 	{
 		return bounds;
 	}
 
-	// Find parameters from both the component and the top component, as the component may refer to the top.
-	QSharedPointer<ComponentParameterFinder> componentFinder(new ComponentParameterFinder(instance->component->component));
-    componentFinder->setActiveView(instance->activeView_);
-    QSharedPointer<QList<QSharedPointer<Parameter> > > slist(new QList<QSharedPointer<Parameter> >(instance->parameters));
+    // Find parameters from both the component and the top component, as the component may refer to the top.
+    QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(new QList<QSharedPointer<Parameter> >(instance->parameters));
     QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
-    instanceFinder->setParameterList(slist);
-	QSharedPointer<TopComponentParameterFinder> topFinder(new TopComponentParameterFinder(topComponent_->component));
-	topFinder->setActiveView(topComponentView_);
+    instanceFinder->setParameterList(ilist);
 
-	QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-    //multiFinder->addFinder(componentFinder);
+    QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
     multiFinder->addFinder(instanceFinder);
-	multiFinder->addFinder(topFinder);
+    multiFinder->addFinder(topFinder_);
 
-	// We settle for formatting the expressions.
-	ExpressionFormatter instanceFormatter(multiFinder);
+	// Parse the bounds.
+	IPXactSystemVerilogParser portParser(multiFinder);
 
 	// Use the physical bounds of the port, as promised.
-	bounds.first = instanceFormatter.formatReferringExpression(port->vectorBounds.first);
-	bounds.second = instanceFormatter.formatReferringExpression(port->vectorBounds.second);
+	bounds.first = portParser.parseExpression(port->vectorBounds.first);
+	bounds.second = portParser.parseExpression(port->vectorBounds.second);
 
     QStringList ids = instanceFinder->getAllParameterIds();
 
@@ -698,34 +727,29 @@ QPair<QString, QString> HDLDesignParser::logicalPortBoundsInInstance(QSharedPoin
     QPair<QString, QString> bounds("", "");
 
 	// Must have components, both the target and the top, as well as the target port map.
-	if (!instance || !topComponent_ || !portMap)
+	if (!instance || !portMap)
 	{
 		return bounds;
 	}
 
-	// Find parameters from both the component and the top component, as the component may refer to the top.
-	QSharedPointer<ComponentParameterFinder> componentFinder(new ComponentParameterFinder(instance->component->component));
-    componentFinder->setActiveView(instance->activeView_);
-    QSharedPointer<QList<QSharedPointer<Parameter> > > slist(new QList<QSharedPointer<Parameter> >(instance->parameters));
+    // Find parameters from both the component and the top component, as the component may refer to the top.
+    QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(new QList<QSharedPointer<Parameter> >(instance->parameters));
     QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
-    instanceFinder->setParameterList(slist);
-	QSharedPointer<TopComponentParameterFinder> topFinder(new TopComponentParameterFinder(topComponent_->component));
-	topFinder->setActiveView(topComponentView_);
+    instanceFinder->setParameterList(ilist);
 
-	QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-    //multiFinder->addFinder(componentFinder);
+    QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
     multiFinder->addFinder(instanceFinder);
-	multiFinder->addFinder(topFinder);
+    multiFinder->addFinder(topFinder_);
 
-	// We settle for formatting the expressions.
-	ExpressionFormatter instanceFormatter(multiFinder);
+    // Parse the bounds.
+    IPXactSystemVerilogParser portParser(multiFinder);
 
 	// Logical port for the map must exist, as well as the range.
 	if (portMap->getLogicalPort() && portMap->getLogicalPort()->range_)
 	{
 		// Pick the range expressions as the logical bounds.
-		bounds.first = instanceFormatter.formatReferringExpression(portMap->getLogicalPort()->range_->getLeft());
-        bounds.second = instanceFormatter.formatReferringExpression(portMap->getLogicalPort()->range_->getRight());
+		bounds.first = portParser.parseExpression(portMap->getLogicalPort()->range_->getLeft());
+        bounds.second = portParser.parseExpression(portMap->getLogicalPort()->range_->getRight());
 
         QStringList ids = instanceFinder->getAllParameterIds();
 

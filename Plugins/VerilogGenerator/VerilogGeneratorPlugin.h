@@ -25,10 +25,13 @@
 
 class Component;
 class GeneratorConfiguration;
+class ViewSelection;
 class Document;
 class View;
 class ComponentInstantiation;
 class FileSet;
+class Design;
+class DesignConfiguration;
 
 //-----------------------------------------------------------------------------
 //! Plugin for structural verilog generation.
@@ -137,7 +140,7 @@ protected:
      *      @return List of possible view names for which to run the generation.
      */
     QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<Component> targetComponent,
-        QSharedPointer<Document> libDes, QSharedPointer<Document> libDesConf) const;
+        QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) const;
 
     /*!
      *  Checks if the generator could be configured.
@@ -204,7 +207,7 @@ private:
 	 *      @param [in] fileSetName		The name of the file set, where the file will be appended to.
      *
      */
-    void addGeneratedFileToFileSet(QSharedPointer<GeneratorConfiguration> configuration) const;
+    void addGeneratedFileToFileSet(QSharedPointer<ViewSelection> configuration) const;
 
     //! Saves the changes made to the top component.
     void saveChanges() const;

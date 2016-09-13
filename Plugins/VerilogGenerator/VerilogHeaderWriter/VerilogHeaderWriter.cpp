@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: VerilogHeaderWriter.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 04.08.2014
 //
@@ -16,8 +16,8 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogHeaderWriter::()
 //-----------------------------------------------------------------------------
-VerilogHeaderWriter::VerilogHeaderWriter(VLNV const& vlnv, QString const& xmlPath , QString const& author) : 
-vlnv_(vlnv), xmlPath_(xmlPath), author_(author)
+VerilogHeaderWriter::VerilogHeaderWriter(VLNV const& vlnv, QString const& xmlPath, QString const& author, QString const& description) : 
+vlnv_(vlnv), xmlPath_(xmlPath), author_(author), description_(description)
 {
 
 }
@@ -34,9 +34,9 @@ VerilogHeaderWriter::~VerilogHeaderWriter()
 // Function: VerilogHeaderWriter::write()
 //-----------------------------------------------------------------------------
 void VerilogHeaderWriter::write(QTextStream& outputStream, QString const& fileName, QString const& generatorVersion,
-	QString const& kactusVersion, QString const& description, QDateTime const& generationTime) const
+	QString const& kactusVersion, QDateTime const& generationTime) const
 {
-    QStringList descriptionLines = description.split("\n");
+    QStringList descriptionLines = description_.split("\n");
 
     outputStream << "//-----------------------------------------------------------------------------" << endl;
     outputStream << "// File          : " << fileName << endl;

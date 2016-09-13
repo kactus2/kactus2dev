@@ -247,6 +247,9 @@
     <ClCompile Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.cpp">
       <Filter>Source Files\VerilogInterconnectionWriter</Filter>
     </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="veriloggeneratorplugin_global.h">
@@ -329,6 +332,9 @@
     </ClInclude>
     <ClInclude Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.h">
       <Filter>Header Files\VerilogInterconnectionWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

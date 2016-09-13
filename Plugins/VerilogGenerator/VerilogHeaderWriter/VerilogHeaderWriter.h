@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: VerilogHeaderWriter.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 04.08.2014
 //
@@ -27,14 +27,15 @@ class VERILOGGENERATORPLUGIN_EXPORT VerilogHeaderWriter
 {
 public:
 
-	/*!
-	 *  <Method description>.
+    /*!
+     *  The constructor.
 	 *
 	 *      @param [in] vlnv            The VLNV of the top level component.
      *      @param [in] xmlPath         The path to the top level component XML file.
-	 *      @param [in] author          The creator of the file.
+     *      @param [in] author          The creator of the file.
+     *      @param [in] description		The description of the top level component.
 	 */
-	VerilogHeaderWriter(VLNV const& vlnv, QString const& xmlPath, QString const& author);
+	VerilogHeaderWriter(VLNV const& vlnv, QString const& xmlPath, QString const& author, QString const& description);
 
 	//! The destructor.
 	~VerilogHeaderWriter();
@@ -45,11 +46,10 @@ public:
 	 *      @param [in] outputStream		The output to write to.
 	 *      @param [in] kactusVersion		The version of the current Kactus build.
 	 *      @param [in] generatorVersion	The current version of the generator.
-	 *      @param [in] description			The file description.
      *      @param [in] generationTime		Time of the generation.
      */
     void write(QTextStream& outputStream, QString const& fileName, QString const& generatorVersion,
-		QString const& kactusVersion, QString const& description, QDateTime const& generationTime) const;
+		QString const& kactusVersion, QDateTime const& generationTime) const;
 
 private:
 
@@ -65,6 +65,9 @@ private:
 
     //! The user who created the file.
     QString author_;
+
+    //! The description of the top level component.
+    QString description_;
 };
 
 #endif // VERILOGHEADERWRITER_H

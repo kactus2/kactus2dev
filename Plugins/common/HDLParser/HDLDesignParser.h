@@ -23,12 +23,12 @@
 #include <QTextStream>
 #include "HDLParserCommon.h"
 
-class ExpressionFormatter;
 class LibraryInterface;
 class PortSorter;
 class AbstractionType;
 class AbstractionDefinition;
 
+class ListParameterFinder;
 class ExpressionParser;
 class PortAlignment;
 
@@ -41,19 +41,14 @@ class HDLDesignParser : public QObject
 
 public:
     //! The constructor.
-	HDLDesignParser(LibraryInterface* library, QSharedPointer<GenerationComponent> component,
-        QSharedPointer<View> topComponentView,  QSharedPointer<Design> design,
-        QSharedPointer<DesignConfiguration> designConf);
+	HDLDesignParser(LibraryInterface* library, QSharedPointer<GenerationComponent> topComponent,
+        QSharedPointer<GenerationInstance> topInstance, QSharedPointer<View> topComponentView,
+        QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf);
 
     //! The destructor.
     ~HDLDesignParser();
 
-	void parseDesign();
-
-	QList<QSharedPointer<GenerationInstance> > instances_;
-	QList<QSharedPointer<GenerationInterconnection> > interConnections_;
-	QList<QSharedPointer<GenerationAdHoc> > adHocs_;
-	QMap<QString, QString> portTiedValues_;
+	void parseDesign(QList<QSharedPointer<GenerationDesign> >& parsedDesigns);
 
 signals:
 	
@@ -118,8 +113,11 @@ private:
      //! The component library.
      LibraryInterface* library_;
 
-     //! The top level component.
-     QSharedPointer<GenerationComponent> topComponent_;
+     //! The active instance of the top level component.
+     QSharedPointer<GenerationInstance> topInstance_;
+
+     //! The active view for top component.
+     QSharedPointer<View> topComponentView_;
 
      //! The design to parse.
 	 QSharedPointer<Design> design_;
@@ -127,9 +125,11 @@ private:
 	 //! The design configuration to parse.
 	 QSharedPointer<DesignConfiguration> designConf_;
 
-     //! The active view for top component.
-     QSharedPointer<View> topComponentView_;
+     //! The parsed design.
+     QSharedPointer<GenerationDesign> retval_;
 
+     //! The finder for top level parameters.
+     QSharedPointer<ListParameterFinder> topFinder_;
 };
 
 #endif // HDLDESIGNPARSER_H

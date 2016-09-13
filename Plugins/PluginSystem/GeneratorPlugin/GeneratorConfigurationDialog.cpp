@@ -26,14 +26,14 @@
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
 //-----------------------------------------------------------------------------
 GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration,
-	QString language, QWidget *parent) : 
+	QWidget *parent) : 
 	QDialog(parent), 
     configuration_(configuration),
 	pathEditor_(new QLineEdit(this)),
-	viewSelection_(new ViewSelectionWidget(configuration, language)),
+	viewSelection_(new ViewSelectionWidget(configuration->getViewSelection())),
     generalWarningLabel_(new QLabel)
 {    
-    setWindowTitle(tr("Configure file generation for %1.").arg(language));
+    setWindowTitle(tr("Configure file generation for %1.").arg(configuration->getViewSelection()->getTargetLanguage()));
 
     QFormLayout* checkLayout = new QFormLayout();
     QCheckBox* useInterfaces = new QCheckBox();
@@ -147,9 +147,8 @@ void GeneratorConfigurationDialog::onPathEdited(const QString &text)
 void GeneratorConfigurationDialog::onBrowse()
 {
 	// Acquire the path to the file through a dialog.
-    QString selectedPath = QFileDialog::getSaveFileName(this,
-        tr("Select output file for generation"), pathEditor_->text(),
-        tr("Verilog files (*.v)"));
+    QString selectedPath = QFileDialog::getExistingDirectory(this,
+        tr("Select output path for generation"), pathEditor_->text(), 0);
 
 	// If any path chosen, set it as the selected path.
     if (!selectedPath.isEmpty())

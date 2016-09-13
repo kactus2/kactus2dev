@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ViewSelectionWidget.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Janne Virtanen
 // Date: 14.06.2016
 //
@@ -18,7 +18,7 @@
 #include <QGroupBox>
 #include <QLabel>
 
-class GeneratorConfiguration;
+class ViewSelection;
 
 class ViewSelectionWidget : public QWidget
 {
@@ -26,7 +26,7 @@ class ViewSelectionWidget : public QWidget
 public:
 
 	//! The constructor.
-	ViewSelectionWidget(QSharedPointer<GeneratorConfiguration> configuration, QString targetLanguage);
+	ViewSelectionWidget(QSharedPointer<ViewSelection> configuration);
 
 	//! The destructor.
 	~ViewSelectionWidget();
@@ -58,10 +58,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	// The "model" for the widget.
-	QSharedPointer<GeneratorConfiguration> configuration_;
-
-	// The desired language for the component instantiation.
-	QString targetLanguage_;
+	QSharedPointer<ViewSelection> configuration_;
 
 	// The combobox to select the desired view.
 	QComboBox* viewSelection_;

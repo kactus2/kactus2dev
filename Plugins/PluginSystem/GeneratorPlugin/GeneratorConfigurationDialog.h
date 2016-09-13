@@ -32,8 +32,7 @@ class GeneratorConfigurationDialog : public QDialog
 public:
 
 	//! The constructor.
-	GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration,
-		QString language, QWidget *parent);
+	GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration, QWidget *parent);
 
 	//! The destructor.
 	~GeneratorConfigurationDialog();

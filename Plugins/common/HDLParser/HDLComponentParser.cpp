@@ -35,7 +35,6 @@
 
 #include "editors/ComponentEditor/common/ComponentParameterFinder.h"
 #include "editors/ComponentEditor/common/ExpressionFormatter.h"
-#include "QFileInfo"
 
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::HDLComponentParser
@@ -62,14 +61,104 @@ HDLComponentParser::~HDLComponentParser()
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::parseComponent
 //-----------------------------------------------------------------------------
-QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent(QString outputPath)
+QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent()
 {
     QSharedPointer<GenerationComponent> retval(new GenerationComponent);
     retval->component = component_;
 
-    QFileInfo componentQfi = QFileInfo(outputPath);
+    /*QFileInfo componentQfi = QFileInfo(outputPath);
     QString componentPath = componentQfi.absolutePath() + "/";
+    QFileInfo absDefQfi = QFileInfo(library_->getPath(*absRef));
+    gif->fileName = General::getRelativePath(componentPath,absDefQfi.absolutePath()+ "/" + absDef->getFileName());*/
 
+    parseInterfaces(retval);
+    parsePorts(retval);
+    parseMemoryMaps(retval);
+    parseParameters(retval);
+    parseRemapStates(retval);
+
+    return retval;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLComponentParser::sortModuleParameters()
+//-----------------------------------------------------------------------------
+void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
+    QList<QSharedPointer<Parameter> >& sortParameters )
+{
+    // Go through existing ones on the instance.
+    for (QList<QSharedPointer<Parameter> >::Iterator parameterAdd =
+        refParameters.begin(); parameterAdd != refParameters.end(); ++parameterAdd)
+    {
+        // The first position for the second pass.
+        QList<QSharedPointer<Parameter> >::Iterator minPos =
+            sortParameters.begin();
+
+        // The value of the inspected parameter.
+        QString valueAdd = (*parameterAdd)->getValue();
+
+        // First pass: Detect if the parameter depends on another parameter.
+        for (QList<QSharedPointer<Parameter> >::Iterator parameterCmp =
+            sortParameters.begin();
+            parameterCmp != sortParameters.end(); ++parameterCmp)
+        {
+            if (valueAdd.contains((*parameterCmp)->getValueId()))
+            {
+                // A match found: The parameter must be positioned after this one!
+                minPos = ++parameterCmp;
+
+                // The first one needed is the relevant one, so break here.
+                break;
+            }
+        }
+
+        // If true, the parameter will be appended to the end of the list.
+        bool append = true;
+
+        // The second pass: Find the actual position before the parameter is referred.
+        for (QList<QSharedPointer<Parameter> >::Iterator parameterCmp = minPos;
+            parameterCmp != sortParameters.end(); ++parameterCmp)
+        {
+            // The value of the the compared parameter.
+            QString valueCmp = (*parameterCmp)->getValue();
+
+            // Check if it contains a reference to the inspected parameter.
+            if (valueCmp.contains((*parameterAdd)->getValueId()))
+            {
+                // Take a direct shared pointer to the referring parameter.
+                QSharedPointer<Parameter> parameterRef = *parameterCmp;
+
+                // Remove the inspected parameter from the previous place.
+                sortParameters.removeOne(*parameterAdd);
+
+                // See where the referring parameter is located now.
+                int cmpLoc = sortParameters.indexOf(*parameterCmp);
+
+                // Then the inspected parameter comes before it is referred.
+                sortParameters.insert(cmpLoc, *parameterAdd);
+
+                // It will not be inserted twice, so break here.
+                append = false;
+                break;
+            }
+        }
+
+        // If there was no match in the second pass, or no second pass at all, append to the end.
+        if (append)
+        {
+            // Remove the inspected parameter from the previous place.
+            sortParameters.removeOne(*parameterAdd);
+            // Append at the end of the list.
+            sortParameters.append(*parameterAdd);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLComponentParser::parseInterfaces()
+//-----------------------------------------------------------------------------
+void HDLComponentParser::parseInterfaces(QSharedPointer<GenerationComponent> retval)
+{
     foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
     {
         QSharedPointer<GenerationInterface> gif(new GenerationInterface);
@@ -93,94 +182,16 @@ QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent(QString o
                 if (docAbsDef)
                 {
                     absDef = docAbsDef.dynamicCast<AbstractionDefinition>();
-                    QFileInfo absDefQfi = QFileInfo(library_->getPath(*absRef));
-                    gif->fileName = General::getRelativePath(componentPath,absDefQfi.absolutePath()+ "/" + absDef->getFileName());
+
+                    if (absDef)
+                    {
+                        gif->fileName =  absDef->getFileName();
+                    }
                 }
             }
         }
 
-        retval->interfaces.insert(busInterface->name(),gif);
-    }
-
-    parsePorts(retval);
-    parseMemoryMaps(retval);
-    parseParameterDeclarations(retval);
-    parseRemapStates(retval);
-
-    return retval;
-}
-
-//-----------------------------------------------------------------------------
-// Function: HDLComponentParser::sortModuleParameters()
-//-----------------------------------------------------------------------------
-void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& parameters,
-    QList<QSharedPointer<Parameter> >& parametersToWrite )
-{
-    // Go through existing ones on the instance.
-    for (QList<QSharedPointer<Parameter> >::Iterator parameterAdd =
-        parameters.begin(); parameterAdd != parameters.end(); ++parameterAdd)
-    {
-        // The first position for the second pass.
-        QList<QSharedPointer<Parameter> >::Iterator minPos =
-            parametersToWrite.begin();
-
-        // The value of the inspected parameter.
-        QString valueAdd = (*parameterAdd)->getValue();
-
-        // First pass: Detect if the parameter depends on another parameter.
-        for (QList<QSharedPointer<Parameter> >::Iterator parameterCmp =
-            parametersToWrite.begin();
-            parameterCmp != parametersToWrite.end(); ++parameterCmp)
-        {
-            if (valueAdd.contains((*parameterCmp)->getValueId()))
-            {
-                // A match found: The parameter must be positioned after this one!
-                minPos = ++parameterCmp;
-
-                // The first one needed is the relevant one, so break here.
-                break;
-            }
-        }
-
-        // If true, the parameter will be appended to the end of the list.
-        bool append = true;
-
-        // The second pass: Find the actual position before the parameter is referred.
-        for (QList<QSharedPointer<Parameter> >::Iterator parameterCmp = minPos;
-            parameterCmp != parametersToWrite.end(); ++parameterCmp)
-        {
-            // The value of the the compared parameter.
-            QString valueCmp = (*parameterCmp)->getValue();
-
-            // Check if it contains a reference to the inspected parameter.
-            if (valueCmp.contains((*parameterAdd)->getValueId()))
-            {
-                // Take a direct shared pointer to the referring parameter.
-                QSharedPointer<Parameter> parameterRef = *parameterCmp;
-
-                // Remove the inspected parameter from the previous place.
-                parametersToWrite.removeOne(*parameterAdd);
-
-                // See where the referring parameter is located now.
-                int cmpLoc = parametersToWrite.indexOf(*parameterCmp);
-
-                // Then the inspected parameter comes before it is referred.
-                parametersToWrite.insert(cmpLoc, *parameterAdd);
-
-                // It will not be inserted twice, so break here.
-                append = false;
-                break;
-            }
-        }
-
-        // If there was no match in the second pass, or no second pass at all, append to the end.
-        if (append)
-        {
-            // Remove the inspected parameter from the previous place.
-            parametersToWrite.removeOne(*parameterAdd);
-            // Append at the end of the list.
-            parametersToWrite.append(*parameterAdd);
-        }
+        retval->interfaces.insert(busInterface->name(), gif);
     }
 }
 
@@ -347,9 +358,9 @@ void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSha
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLComponentParser::parseParameterDeclarations()
+// Function: HDLComponentParser::parseParameters()
 //-----------------------------------------------------------------------------
-void HDLComponentParser::parseParameterDeclarations(QSharedPointer<GenerationComponent> target) const
+void HDLComponentParser::parseParameters(QSharedPointer<GenerationComponent> target) const
 {
 	if (!activeView_)
 	{
@@ -359,34 +370,35 @@ void HDLComponentParser::parseParameterDeclarations(QSharedPointer<GenerationCom
 	QSharedPointer<ComponentInstantiation> currentInsta =
 		component_->getModel()->findComponentInstantiation(activeView_->getComponentInstantiationRef());
 
-    // Take copy the parameters of the component instantiation as well as the component..
-    QList<QSharedPointer<Parameter> > parameters;
+    QList<QSharedPointer<Parameter> > origParameters;
 
-    foreach(QSharedPointer<Parameter> parameterOrig, *component_->getParameters())
+    foreach(QSharedPointer<Parameter> parameter, *component_->getParameters())
     {
-        QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
-        parameters.append(parameterCpy);
+        origParameters.append(parameter);
     }
 
 	if (currentInsta)
 	{
-		foreach(QSharedPointer<ModuleParameter> parameterOrig, *currentInsta->getModuleParameters())
+		foreach(QSharedPointer<ModuleParameter> parameter, *currentInsta->getModuleParameters())
 		{
-            QSharedPointer<ModuleParameter> parameterCpy(new ModuleParameter(*parameterOrig));
-			parameters.append(parameterCpy);
+			origParameters.append(parameter);
 		}
-	}
+    }
 
     // Create a new list of the parameters.
-    target->parameters = QList<QSharedPointer<Parameter> >(parameters);
+    QList<QSharedPointer<Parameter> > sortedParameters = QList<QSharedPointer<Parameter> >(origParameters);
 
 	// Sort the parameters.
-	sortParameters(parameters, target->parameters);
+    sortParameters(origParameters, sortedParameters);
 
-    // Format the parameters.
-    foreach(QSharedPointer<Parameter> parameter, target->parameters)
+    foreach(QSharedPointer<Parameter> parameterOrig, sortedParameters)
     {
-        parameter->setValue(formatter_->formatReferringExpression(parameter->getValue()));
+        QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
+
+        // Format the parameter.
+        parameterCpy->setValue(formatter_->formatReferringExpression(parameterOrig->getValue()));
+
+        target->parameters.append(parameterCpy);
     }
 }
 

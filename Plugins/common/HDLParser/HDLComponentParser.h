@@ -38,28 +38,30 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] component               The component to write to Verilog.
-     *      @param [in] activeView              The active view name for the component.
+     *      @param [in] activeView              The active view for the component.
 	 */
 	HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component, QSharedPointer<View> activeView);
 
 	//! The destructor.
 	~HDLComponentParser();
 
-    QSharedPointer<GenerationComponent> parseComponent(QString outputPath = QString());
+    QSharedPointer<GenerationComponent> parseComponent();
 
     /*!
-     *  Sorts list of module parameters based on their interdependencies.
+     *  Sorts list of parameters based on their interdependencies.
      *
-     *      @param [in] currentInsta			The component instantiation, which module parameters are referred.
-     *      @param [out] parametersToWrite      The list containing parameters, that will be sorted.
+     *      @param [in] refParameters		    The list containing the parameters, to be used as a reference.
+     *      @param [out] sortParameters         The list containing the same parameters as in refParameters, that will be sorted.
      */
-	static void sortParameters(QList<QSharedPointer<Parameter> >& parameters,
-		QList<QSharedPointer<Parameter> >& parametersToWrite);
+	static void sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
+		QList<QSharedPointer<Parameter> >& sortParameters);
 
 private:
 	// Disable copying.
 	HDLComponentParser(HDLComponentParser const& rhs);
     HDLComponentParser& operator=(HDLComponentParser const& rhs);
+
+    void parseInterfaces(QSharedPointer<GenerationComponent> retval);
 
     void parsePorts(QSharedPointer<GenerationComponent> retval);
     
@@ -68,9 +70,9 @@ private:
     void parseAddressBlock(QSharedPointer<AddressBlock> ab, QSharedPointer<GenerationRemap> target) const;
 
      /*!
-      *  Culls parameter declarations for the module.
+      *  Culls and formats parameter declarations for the module.
       */
-    void parseParameterDeclarations(QSharedPointer<GenerationComponent> target) const;
+    void parseParameters(QSharedPointer<GenerationComponent> target) const;
 
     void parseRemapStates(QSharedPointer<GenerationComponent> target) const;
 
@@ -93,6 +95,7 @@ private:
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter_;
 
+    //! The interfaces utilized by the component.
     QMap<QSharedPointer<BusInterface>, QSharedPointer<GenerationInterface> > interfaces_;
 };
 

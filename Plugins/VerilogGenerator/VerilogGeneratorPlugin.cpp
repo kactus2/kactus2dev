@@ -60,7 +60,7 @@ QString VerilogGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVersion() const
 {
-    return "1.4";
+    return "1.5";
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ QString VerilogGeneratorPlugin::getVersion() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getDescription() const
 {
-    return tr("Generates a top-level Verilog module for a HW design or component.");
+    return tr("Generates a Verilog module for a component or a hierarchy of modules for a HW design.");
 }
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getVendor()
@@ -138,18 +138,47 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     QSharedPointer<Document> libDesConf,
     QSharedPointer<Document> libDes)
 {
-    utility_ = utility;
-    topComponent_ = libComp.dynamicCast<Component>();
-
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
+
+    utility_ = utility;
+
+    if (!libComp)
+    {
+        utility->printError(tr("Null top component given as a parameter."));
+        return;
+    }
+
+    topComponent_ = libComp.dynamicCast<Component>();
 
     if (!topComponent_)
     {
-        utility->printInfo(tr("Could not cast the top component to the proper type!"));
+        utility->printError(tr("Could not cast the top component to the proper type! VLNV: %1").arg(libComp->getVlnv().toString()));
+        return;
+    }
+
+    QSharedPointer<Design> design = libDes.dynamicCast<Design>();
+    QSharedPointer<DesignConfiguration> designConfig = libDesConf.dynamicCast<DesignConfiguration>();
+
+    if (libDes && !design)
+    {
+        utility->printError(tr("A design was specified, but could not cast it to the proper type! VLNV: %1").arg(libDes->getVlnv().toString()));
+        return;
+    }
+
+    if (libDesConf && !designConfig)
+    {
+        utility->printError(tr("A design configuration was specified, but could not cast it to the proper type! VLNV: %1").arg(libDesConf->getVlnv().toString()));
+        return;
+    }
+
+    if ((design && !designConfig) || (!design && designConfig))
+    {
+        utility->printError(tr("The design must be accompanied by a design configuration and vice versa."));
+        return;
     }
 
 	// Try to configure the generation, giving possible views and instantiations as parameters.
-    if (couldConfigure(findPossibleViews(topComponent_, libDes, libDesConf),
+    if (couldConfigure(findPossibleViews(topComponent_, design, designConfig),
 		topComponent_->getComponentInstantiations(), topComponent_->getFileSets()))
     {
 		// Get the resulting configuration, it is obtained with this way to make it compatible with the tests.
@@ -164,21 +193,20 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 		connect(&generator, SIGNAL(reportError(const QString&)), 
 			this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
 
-        generator.parse(topComponent_, configuration->getView(), outputFile_,
-			libDes.dynamicCast<Design>(), libDesConf.dynamicCast<DesignConfiguration>());
+        generator.parse(topComponent_, configuration->getViewSelection()->getView(), outputFile_,
+			design, designConfig);
 
 		generator.generate(outputFile_, getVersion(), utility_->getKactusVersion());
 
         utility_->printInfo(tr("Finished writing file %1.").arg(outputFile_));
 
 		// If so desired in the configuration, the resulting file will be added to the file set.
-        if (configuration->getSaveToFileset())
+        if (configuration->getViewSelection()->getSaveToFileset())
         {
-            addGeneratedFileToFileSet(configuration);
+            addGeneratedFileToFileSet(configuration->getViewSelection());
         }
 
         insertFileDescription();
-
 
         saveChanges();
 
@@ -219,18 +247,16 @@ void VerilogGeneratorPlugin::insertFileDescription()
 // Function: VerilogGeneratorPlugin::findPossibleViews()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossibleViews(
-	QSharedPointer<Component> targetComponent, QSharedPointer<Document> libDes, QSharedPointer<Document> libDesConf) const
+	QSharedPointer<Component> targetComponent, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) const
 {
-    QSharedPointer<DesignConfiguration> designConfig = libDesConf.dynamicCast<DesignConfiguration>();
-
 	// If the generation is targeted to a design, return views referring to the design or a design configuration.
-    if (designConfig && libDes && designConfig->getDesignRef() == libDes->getVlnv())
+    if (design && designConf->getDesignRef() == design->getVlnv())
     {
-        return findReferencingViews(targetComponent, designConfig->getVlnv());
+        return findReferencingViews(targetComponent, designConf->getVlnv());
     }
-    else if (libDes)
+    else if (design)
     {
-        return findReferencingViews(targetComponent, libDes->getVlnv());
+        return findReferencingViews(targetComponent, design->getVlnv());
     }
 
 	// If the generation is targeted to a component, return the flat views of the component.
@@ -263,15 +289,17 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 		return false;
 	}
 
-	configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration(
-		"verilog", possibleViews,possibleInstantiations,possibleFileSets));
+    QSharedPointer<ViewSelection> viewSelect(
+        new ViewSelection("verilog", possibleViews, possibleInstantiations, possibleFileSets));
 
-	configuration_->setView(possibleViews->first());
+	viewSelect->setView(possibleViews->first());
 
+    viewSelect->setSaveToFileset(outputFileAndViewShouldBeAddedToTopComponent());
+
+    configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration(viewSelect));
     configuration_->setOutputPath(defaultOutputPath());
-    configuration_->setSaveToFileset(outputFileAndViewShouldBeAddedToTopComponent());
 
-    GeneratorConfigurationDialog dialog(configuration_, "verilog", utility_->getParentWidget());
+    GeneratorConfigurationDialog dialog(configuration_, utility_->getParentWidget());
     return dialog.exec() == QDialog::Accepted;
 }
 
@@ -300,7 +328,7 @@ QString VerilogGeneratorPlugin::defaultOutputPath() const
 
     QString topComponentPath = utility_->getLibraryInterface()->getPath(topComponent_->getVlnv());
     QString xmlDir =  QFileInfo(topComponentPath).canonicalPath();
-    suggestedFile = xmlDir + "/" + topComponent_->getVlnv().getName() + ".v";
+    suggestedFile = xmlDir;
 
     return suggestedFile;
 }
@@ -326,7 +354,7 @@ QString VerilogGeneratorPlugin::relativePathFromXmlToFile(QString const& filePat
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::addFileToFileSet()
 //-----------------------------------------------------------------------------
-void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<GeneratorConfiguration> configuration) const
+void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<ViewSelection> configuration) const
 {
 	// The view and the names of the instantiation and file set are assumed to exist.
 	Q_ASSERT (configuration->getView() && !configuration->getFileSetName().isEmpty() && 
@@ -401,12 +429,12 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::
     foreach(QSharedPointer<View> view, *containingComponent->getViews())
     {
 		QSharedPointer<DesignConfigurationInstantiation> disg = containingComponent->getModel()->
-			findDesignConfigurationInstantiation( view->getDesignConfigurationInstantiationRef() );
+			findDesignConfigurationInstantiation(view->getDesignConfigurationInstantiationRef());
 		QSharedPointer<DesignInstantiation> dis = containingComponent->getModel()->
-			findDesignInstantiation( view->getDesignInstantiationRef() );
+			findDesignInstantiation(view->getDesignInstantiationRef());
 
         if (disg && *disg->getDesignConfigurationReference() == targetReference
-			|| dis && *dis->getDesignReference() == targetReference )
+			|| dis && *dis->getDesignReference() == targetReference)
         {
              views->append(view);
         }

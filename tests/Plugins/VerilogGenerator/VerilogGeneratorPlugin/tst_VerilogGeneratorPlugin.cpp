@@ -152,7 +152,7 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign()
     QSharedPointer<Design> targetDesign = createTestDesign();
 
     QSharedPointer<View> structuralView( new View(viewName) );
-	QSharedPointer<DesignInstantiation> di( new DesignInstantiation("test_design_insta") );
+	QSharedPointer<Design> di( new Design("test_design_insta") );
 	structuralView->setDesignInstantiationRef(di->name());
 	QSharedPointer<ConfigurableVLNVReference> cvr( new ConfigurableVLNVReference( targetDesign->getVlnv() ) );
 	di->setDesignReference(cvr);
@@ -194,7 +194,7 @@ void tst_VerilogGenerator::testFlatViewsArePossibleForTopComponent()
     targetComponent->getViews()->append(secondView);
 
     QSharedPointer<View> hierView( new View("hierView") );
-	QSharedPointer<DesignInstantiation> di( new DesignInstantiation("test_design_insta") );
+	QSharedPointer<Design> di( new Design("test_design_insta") );
 	hierView->setDesignInstantiationRef(di->name());
 	QSharedPointer<ConfigurableVLNVReference> cvr( new ConfigurableVLNVReference( targetDesign->getVlnv() ) );
 	di->setDesignReference(cvr);
@@ -224,7 +224,7 @@ void tst_VerilogGenerator::testRefenecedDesignViewIsPossible()
     targetComponent->getViews()->append(secondView);
 
 	QSharedPointer<View> hierView( new View("hierView") );
-	QSharedPointer<DesignInstantiation> di( new DesignInstantiation("test_design_insta") );
+	QSharedPointer<Design> di( new Design("test_design_insta") );
 	hierView->setDesignInstantiationRef(di->name());
 	QSharedPointer<ConfigurableVLNVReference> cvr( new ConfigurableVLNVReference( targetDesign->getVlnv() ) );
 	di->setDesignReference(cvr);
@@ -252,7 +252,7 @@ void tst_VerilogGenerator::testRefenecedDesignConfigurationViewIsPossible()
     targetComponent->getViews()->append(flatView);
 
 	QSharedPointer<View> designView( new View("designView") );
-	QSharedPointer<DesignInstantiation> di( new DesignInstantiation("test_design_insta") );
+	QSharedPointer<Design> di( new Design("test_design_insta") );
 	designView->setDesignInstantiationRef(di->name());
 	QSharedPointer<ConfigurableVLNVReference> cvr1( new ConfigurableVLNVReference( targetDesign->getVlnv() ) );
 	di->setDesignReference(cvr1);
@@ -260,7 +260,7 @@ void tst_VerilogGenerator::testRefenecedDesignConfigurationViewIsPossible()
 	targetComponent->getViews()->append(designView);
 
     QSharedPointer<View> designConfigView( new View("designConfigView") );
-	QSharedPointer<DesignConfigurationInstantiation> disg( new DesignConfigurationInstantiation("test_design_conf_insta") );
+	QSharedPointer<DesignConfiguration> disg( new DesignConfiguration("test_design_conf_insta") );
 	designConfigView->setDesignConfigurationInstantiationRef(disg->name());
 	QSharedPointer<ConfigurableVLNVReference> cvr2( new ConfigurableVLNVReference( targetConfiguration->getVlnv() ) );
 	disg->setDesignConfigurationReference(cvr2);

@@ -38,7 +38,8 @@ HEADERS += ../common/HDLParser/HDLComponentParser.h \
     ../../designEditors/common/TopComponentParameterFinder.h \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.h \
     ./TextBodyWriter/TextBodyWriter.h \
-    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h
+    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
+    ../PluginSystem/GeneratorPlugin/ViewSelection.h
 SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../common/HDLParser/HDLDesignParser.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
@@ -65,5 +66,6 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../../designEditors/common/TopComponentParameterFinder.cpp \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ./TextBodyWriter/TextBodyWriter.cpp \
-    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp
+    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp \
+    ../PluginSystem/GeneratorPlugin/ViewSelection.cpp
 RESOURCES += VerilogGenerator.qrc
