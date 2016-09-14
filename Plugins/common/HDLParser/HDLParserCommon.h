@@ -89,7 +89,8 @@ struct GenerationComponent
 {
     QSharedPointer<Component> component;
     QList<QSharedPointer<GenerationRemap> > remaps;
-    QList<QSharedPointer<Parameter> > parameters;
+    QList<QSharedPointer<Parameter> > originalParameters;
+    QList<QSharedPointer<Parameter> > formattedParameters;
     QMap<QString,QSharedPointer<GenerationPort> > ports;
     QMap<QString,QSharedPointer<GenerationInterface> > interfaces;
     QString aub;
@@ -146,7 +147,6 @@ struct GenerationInstance
 	QSharedPointer<ComponentInstance> componentInstance_;
 
 	//! The instantiations corresponding the active view.
-    QSharedPointer<const ComponentInstantiation> componentInstantiation_;
     QSharedPointer<Design> design_;
     QSharedPointer<DesignConfiguration> designConfiguration_;
 

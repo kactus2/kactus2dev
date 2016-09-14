@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ConfigurableElementsModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 12.08.2011
 //
@@ -42,6 +42,7 @@ QAbstractItemModel(parent),
 ParameterizableTable(parameterFinder),
 component_(0),
 componentInstance_(0),
+viewConfiguration_(0),
 currentElementValues_(),
 configurableElements_(new QList<QSharedPointer<Parameter> > ()),
 editProvider_(0),
@@ -84,19 +85,26 @@ ConfigurableElementsModel::~ConfigurableElementsModel()
 // Function: ConfigurableElementsModel::setComponent()
 //-----------------------------------------------------------------------------
 void ConfigurableElementsModel::setComponent(QSharedPointer<Component> component,
-    QSharedPointer<ComponentInstance> instance, QSharedPointer<IEditProvider> editProvider)
+    QSharedPointer<ComponentInstance> instance, QSharedPointer<ViewConfiguration> viewConfiguration,
+    QSharedPointer<IEditProvider> editProvider)
 {
     Q_ASSERT(instance);
     Q_ASSERT(component);
 
     component_ = component;
     componentInstance_ = instance;
+    viewConfiguration_ = viewConfiguration;
 
     // get the edit provider that manages the undo/redo stack
     editProvider_ = editProvider;
     	
     currentElementValues_.clear();
     foreach (QSharedPointer<ConfigurableElementValue> element, *instance->getConfigurableElementValues())
+    {
+        currentElementValues_.insert(element->getReferenceId(), element->getConfigurableValue());
+    }
+
+    foreach (QSharedPointer<ConfigurableElementValue> element, *viewConfiguration->getViewConfigurableElements())
     {
         currentElementValues_.insert(element->getReferenceId(), element->getConfigurableValue());
     }
@@ -674,17 +682,31 @@ bool ConfigurableElementsModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 void ConfigurableElementsModel::save() 
 {
-	QMap<QString, QString> newValues;
+    QMap<QString, QString> newInstanceValues;
+    QMap<QString, QString> newViewValues;
+    QMap<QString, QString> newValues;
+
     for (int i = 0; i < configurableElements_->size(); ++i)
     {
-        if (configurableElements_->at(i)->hasAttribute("kactus2:editedInConfigurableElements"))
+        QSharedPointer<Parameter> parameter = configurableElements_->at(i);
+
+        if (parameter->hasAttribute("kactus2:editedInConfigurableElements"))
         {
-            newValues.insert(configurableElements_->at(i)->getValueId(), configurableElements_->at(i)->getValue());
+            if (parameterMapping_[parameter])
+            {
+                newInstanceValues.insert(parameter->getValueId(), parameter->getValue());
+            }
+            else
+            {
+                newViewValues.insert(parameter->getValueId(), parameter->getValue());
+            }
+
+            newValues.insert(parameter->getValueId(), parameter->getValue());
         }
 	}
 
-	QSharedPointer<ComponentConfElementChangeCommand> cmd(new ComponentConfElementChangeCommand(componentInstance_,
-		newValues));
+	QSharedPointer<ComponentConfElementChangeCommand> cmd(new ComponentConfElementChangeCommand(componentInstance_, viewConfiguration_,
+		newInstanceValues, newViewValues));
 	editProvider_->addCommand(cmd);
     cmd->redo();
 
@@ -752,7 +774,7 @@ void ConfigurableElementsModel::readComponentConfigurableElements()
     {
         foreach (QSharedPointer<Parameter> parameterPointer, *component_->getParameters())
         {
-            addParameterToConfigurableElements(parameterPointer, "Parameters");
+            addParameterToConfigurableElements(parameterPointer, "Parameters", true);
         }
     }
 
@@ -786,12 +808,12 @@ void ConfigurableElementsModel::readActiveViewParameters()
                         {
                             foreach (QSharedPointer<Parameter> parameter, *instantiation->getParameters())
                             {
-                                addParameterToConfigurableElements(parameter, "View parameters");
+                                addParameterToConfigurableElements(parameter, "View parameters", false);
                             }
                             foreach (QSharedPointer<ModuleParameter> parameter,
                                 *instantiation->getModuleParameters())
                             {
-                                addParameterToConfigurableElements(parameter, "Module parameters");
+                                addParameterToConfigurableElements(parameter, "Module parameters", false);
                             }
                             break;
                         }
@@ -806,7 +828,7 @@ void ConfigurableElementsModel::readActiveViewParameters()
 // Function: ConfigurableElementsModel::addParameterToConfigurableElements()
 //-----------------------------------------------------------------------------
 void ConfigurableElementsModel::addParameterToConfigurableElements(QSharedPointer<Parameter> parameterPointer,
-    QString const& rootItemName)
+    QString const& rootItemName, bool addToInstance)
 {
     QSharedPointer<Parameter> newConfigurableElement (new Parameter(*(parameterPointer)));
     newConfigurableElement->setValueAttribute("kactus2:defaultValue", parameterPointer->getValue());
@@ -814,6 +836,8 @@ void ConfigurableElementsModel::addParameterToConfigurableElements(QSharedPointe
     newConfigurableElement->setAttribute("kactus2:rootItem", rootItemName);
 
     configurableElements_->append(newConfigurableElement);
+
+    parameterMapping_.insert(newConfigurableElement, addToInstance);
 }
 
 //-----------------------------------------------------------------------------
@@ -852,6 +876,8 @@ QSharedPointer<Parameter> ConfigurableElementsModel::getStoredConfigurableElemen
     newConfigurableElement->setValueResolve("user");
     newConfigurableElement->setAttribute("kactus2:rootItem", "Unknown");
     configurableElements_->append(newConfigurableElement);
+
+    parameterMapping_.insert(newConfigurableElement, false);
 
     return newConfigurableElement;
 }

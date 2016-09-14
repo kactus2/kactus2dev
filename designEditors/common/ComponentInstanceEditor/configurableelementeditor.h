@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: configurableelementeditor.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 12.08.2011
 //
@@ -71,7 +71,7 @@ public:
      *      @param [in] instance        Pointer to the component instance to edit.
      *      @param [in] editProvider    Pointer to the editing capabilities.
 	 */
-    void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance,
+    void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance, QSharedPointer<ViewConfiguration> viewConfiguration,
         QSharedPointer<IEditProvider> editProvider);
 
 	/*!

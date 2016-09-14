@@ -62,7 +62,7 @@ topFinder_(new ListParameterFinder)
     else
     {
         toplist = QSharedPointer<QList<QSharedPointer<Parameter> > >
-            (new QList<QSharedPointer<Parameter> >(topComponent->parameters));
+            (new QList<QSharedPointer<Parameter> >(topComponent->formattedParameters));
     }
 
     // Set the list for the finder.
@@ -102,10 +102,7 @@ void HDLDesignParser::parseDesign(QList<QSharedPointer<GenerationDesign> >& pars
     {
         if (gi->design_ && gi->designConfiguration_)
         {
-            HDLComponentParser pars(library_, gi->component->component, gi->activeView_);
-            QSharedPointer<GenerationComponent> gc = pars.parseComponent();
-
-            HDLDesignParser parser(library_, gc, gi, gi->activeView_, gi->design_, gi->designConfiguration_);
+            HDLDesignParser parser(library_, gi->component, gi, gi->activeView_, gi->design_, gi->designConfiguration_);
             parser.parseDesign(parsedDesigns);
         }
     }
@@ -138,15 +135,6 @@ void HDLDesignParser::parseComponentInstances()
 			continue;
 		}
 
-		// The active view must refer to an existing component instantiation.
-		QSharedPointer<ComponentInstantiation> instantiation = component->getModel()->
-			findComponentInstantiation(activeView->getComponentInstantiationRef());
-
-		if (!instantiation)
-		{
-			continue;
-        }
-
         // Find also the hierarchical references if applicable.
         QSharedPointer<DesignInstantiation> dis = component->getModel()->
             findDesignInstantiation(activeView->getDesignInstantiationRef());
@@ -161,7 +149,6 @@ void HDLDesignParser::parseComponentInstances()
 		QSharedPointer<GenerationInstance> gi(new GenerationInstance);
 		gi->component = gc;
 		gi->componentInstance_ = instance;
-		gi->componentInstantiation_ = instantiation;
 		gi->activeView_ = activeView;
 		retval_->instances_.append(gi);
 
@@ -176,19 +163,8 @@ void HDLDesignParser::parseComponentInstances()
             gi->design_ = library_->getModel(*(dis->getDesignReference())).dynamicCast<Design>();
         }
 
-        // Initialize the parameter parsing: Find parameters from both the instance and the top component.
-        QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(new QList<QSharedPointer<Parameter> >(gi->parameters));
-        QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
-        instanceFinder->setParameterList(ilist);
-
-        QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-        multiFinder->addFinder(instanceFinder);
-        multiFinder->addFinder(topFinder_);
-
-        IPXactSystemVerilogParser instanceParser(multiFinder);
-
 		// Go through the culled parameters, find if any exists in CEVs.
-		foreach(QSharedPointer<Parameter> parameter, gc->parameters)
+		foreach(QSharedPointer<Parameter> parameter, gc->originalParameters)
 		{
 			// Get the existing value.
 			QString paraValue = parameter->getValue();
@@ -205,12 +181,29 @@ void HDLDesignParser::parseComponentInstances()
 
 			// Make a copy of the parameter.
 			QSharedPointer<Parameter> parameterCopy(new Parameter(*parameter));
-			// Assign its parsed value.
-			parameterCopy->setValue(instanceParser.parseExpression(paraValue));
+			// Assign its value.
+			parameterCopy->setValue(paraValue);
 
 			// Append to the list of the parameters which shall be used.
 			gi->parameters.append(parameterCopy);
-		}
+        }
+
+        // Initialize the parameter parsing: Find parameters from both the instance and the top component.
+        QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(new QList<QSharedPointer<Parameter> >(gi->parameters));
+        QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
+        instanceFinder->setParameterList(ilist);
+
+        QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
+        multiFinder->addFinder(instanceFinder);
+        multiFinder->addFinder(topFinder_);
+
+        IPXactSystemVerilogParser instanceParser(multiFinder);
+
+        // Parse values.
+        foreach(QSharedPointer<Parameter> parameter, gi->parameters)
+        {
+            parameter->setValue(instanceParser.parseExpression(parameter->getValue()));
+        }
     }
 }
 
@@ -382,10 +375,8 @@ void HDLDesignParser::parsePortMaps(QSharedPointer<AbstractionType> absType,
             continue;
         }
 
-        // Bounds for both the wire and the port must be found.
-        QPair<QString, QString> wireBounds;
+        // The bounds for port assignment must be found.
         QPair<QString, QString> portBounds;
-        QString absDefWidth;
 
         // The port map ought to use some physical port.
         QSharedPointer<GenerationPort> physicalPort = gi->component->ports[portMap->getPhysicalPort()->name_];
@@ -439,28 +430,65 @@ void HDLDesignParser::parsePortMaps(QSharedPointer<AbstractionType> absType,
                 gw = QSharedPointer<GenerationWire>(new GenerationWire);
                 // ...and use the logical port name as the key.
                 gic->wires_[portMap->getLogicalPort()->name_] = gw;
-                // Form a name for the wire.
+                // Form the name for the wire.
                 gw->name = gic->name + "_" + portMap->getLogicalPort()->name_;
+            }
 
-                // Try find the width defined by  abstraction definition.
-                QSharedPointer<PortAbstraction> portAbs = absDef->getPort(
-                    portMap->getLogicalPort()->name_, busInterface->getInterfaceMode());
+            // Try find the width defined by abstraction definition.
+            QSharedPointer<PortAbstraction> portAbs = absDef->getPort(
+                portMap->getLogicalPort()->name_, busInterface->getInterfaceMode());
+            QString absDefWidth;
 
-                if (portAbs && portAbs->getWire())
-                {
-                    absDefWidth = portAbs->getWire()->getWidth(busInterface->getInterfaceMode());
-                }
+            if (portAbs && portAbs->getWire())
+            {
+                absDefWidth = portAbs->getWire()->getWidth(busInterface->getInterfaceMode());
+            }
 
-                // If found, the width shall dictate wire bounds, else it is the same as port bounds.
-                if (!absDefWidth.isEmpty())
-                {
-                    gw->bounds.first = absDefWidth + "-1";
-                    gw->bounds.second = "0";
-                }
-                else
-                {
-                    gw->bounds = portBounds;
-                }
+            QPair<int,int> boundCand;
+
+            // If found, the width shall dictate wire bounds, else it is the same as port bounds.
+            if (!absDefWidth.isEmpty())
+            {
+                QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(new QList<QSharedPointer<Parameter> >(gi->parameters));
+                QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
+                instanceFinder->setParameterList(ilist);
+
+                QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
+                multiFinder->addFinder(instanceFinder);
+                multiFinder->addFinder(topFinder_);
+
+                // Parse the bounds.
+                IPXactSystemVerilogParser portParser(multiFinder);
+
+                boundCand.first = portParser.parseExpression(absDefWidth + "-1").toInt();
+                boundCand.second = 0;
+            }
+            else
+            {
+                boundCand.first = portBounds.first.toInt();
+                boundCand.second = portBounds.second.toInt();
+            }
+
+            if (!gw->bounds.first.isEmpty() && !gw->bounds.second.isEmpty())
+            {
+                int maxAlignment1 = qMax(boundCand.first, boundCand.second);
+                int minAlignment1 = qMin(boundCand.first, boundCand.second);
+
+                QPair<int,int> existingBound;
+
+                existingBound.first = gw->bounds.first.toInt();
+                existingBound.second = gw->bounds.second.toInt();;
+
+                int maxAlignment2 = qMax(existingBound.first, existingBound.second);
+                int minAlignment2 = qMin(existingBound.first, existingBound.second);
+
+                gw->bounds.first = QString::number(qMax(maxAlignment1,maxAlignment2));
+                gw->bounds.second = QString::number(qMin(minAlignment1,minAlignment2));
+            }
+            else
+            {
+                gw->bounds.first = QString::number(boundCand.first);
+                gw->bounds.second = QString::number(boundCand.second);
             }
 
             // The wire shall be the wire of the port assignment.
@@ -603,7 +631,7 @@ void HDLDesignParser::assignInternalAdHocs()
 					// so we trust in validation here.
 					if (gw->bounds.first.isEmpty() || gw->bounds.second.isEmpty())
 					{
-						gw->bounds = bounds;
+                        gw->bounds = bounds;
 					}
 				}
 			}

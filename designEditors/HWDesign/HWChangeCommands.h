@@ -33,6 +33,7 @@ class AdHocPortItem;
 class BusInterfaceItem;
 class BusPortItem;
 class ComponentItem;
+class ConfigurableElementValue;
 class ConnectionEndpoint;
 class DesignDiagram;
 class GraphicsColumn;
@@ -44,6 +45,7 @@ class HWConnectionEndpoint;
 class ComponentInstance;
 class Design;
 class AdHocConnection;
+class ViewConfiguration;
 
 //-----------------------------------------------------------------------------
 //! ComponentChangeNameCommand class.
@@ -224,15 +226,20 @@ public:
 	 *      @param [in] parent              Pointer to the owner of this command.
 	 */
     ComponentConfElementChangeCommand(QSharedPointer<ComponentInstance> componentInstance,
-        const QMap<QString, QString>& newConfElements, QUndoCommand* parent = 0);
+        QSharedPointer<ViewConfiguration> viewConfiguration, const QMap<QString, QString>& newInstanceElements,
+        const QMap<QString, QString>& newViewElements, QUndoCommand* parent = 0);
 
 	//! The destructor.
 	virtual ~ComponentConfElementChangeCommand();
+
+    void udo(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables, QMap<QString, QString>& oldElements);
 
 	/*!
      *  Undoes the command.
      */
 	virtual void undo();
+
+    void edo(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables, QMap<QString, QString>& newElements);
 
 	/*!
      *  Redoes the command.
@@ -249,11 +256,20 @@ private:
 	//! Pointer to the component instance that's configurable elements are changed.
     QSharedPointer<ComponentInstance> componentInstance_;
 
+    //! Pointer to the active view of the instanced component.
+    QSharedPointer<ViewConfiguration> viewConfiguration_;
+
 	//! The old configurable element values.
-	QMap<QString, QString> oldConfElements_;
+	QMap<QString, QString> oldInstanceElements_;
 
 	//! The new configurable element values.
-	QMap<QString, QString> newConfElements_;
+    QMap<QString, QString> newInstanceElements_;
+
+    //! The old configurable element values.
+    QMap<QString, QString> oldViewElements_;
+
+    //! The new configurable element values.
+    QMap<QString, QString> newViewElements_;
 };
 
 class ComponentActiveViewChangeCommand : public QUndoCommand

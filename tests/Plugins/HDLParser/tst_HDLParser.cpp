@@ -61,7 +61,7 @@ private slots:
     void testMasterToSlaveInterconnection();
     void testMasterToSlaveInterconnectionWithExpressions();
     void testMasterToMultipleSlavesInterconnections();
-    //void testInterconnectionToVaryingSizeLogicalMaps();
+    void testInterconnectionToVaryingSizeLogicalMaps();
     void testSlicedInterconnection();
     void testMasterInterconnectionToMirroredMaster();
     void testMirroredSlaveInterconnectionToSlaves();  
@@ -82,6 +82,7 @@ private slots:
 	void testParameterPropagationFromTop();
     void testParameterPropagationFromTop2();
     void testParameterPropagationFromTopWire();
+    void testMultiLevelHierachy();
 
 	void testParameterSorting();
     void testParameterSorting2();
@@ -223,11 +224,11 @@ void tst_HDLParser::testTopLevelComponent()
 
     QSharedPointer<GenerationComponent> parsed = parser.parseComponent();
 
-    QCOMPARE( parsed->parameters.size(), 2 );
-    QCOMPARE( parsed->parameters.at(0)->name(), QString("dataWidth") );
-    QCOMPARE( parsed->parameters.at(0)->getValue(), QString("8") );
-    QCOMPARE( parsed->parameters.at(1)->name(), QString("freq") );
-    QCOMPARE( parsed->parameters.at(1)->getValue(), QString("100000") );
+    QCOMPARE( parsed->formattedParameters.size(), 2 );
+    QCOMPARE( parsed->formattedParameters.at(0)->name(), QString("dataWidth") );
+    QCOMPARE( parsed->formattedParameters.at(0)->getValue(), QString("8") );
+    QCOMPARE( parsed->formattedParameters.at(1)->name(), QString("freq") );
+    QCOMPARE( parsed->formattedParameters.at(1)->getValue(), QString("100000") );
 
     QCOMPARE( parsed->ports.size(), 4 );
     QCOMPARE( parsed->ports["clk"]->port->getDirection(), DirectionTypes::IN );
@@ -260,9 +261,9 @@ void tst_HDLParser::testTopLevelComponentExpressions()
 
     QSharedPointer<GenerationComponent> parsed = parser.parseComponent();
 
-    QCOMPARE( parsed->parameters.size(), 1 );
-    QCOMPARE( parsed->parameters.at(0)->name(), QString("module") );
-    QCOMPARE( parsed->parameters.at(0)->getValue(), QString("10") );
+    QCOMPARE( parsed->formattedParameters.size(), 1 );
+    QCOMPARE( parsed->formattedParameters.at(0)->name(), QString("module") );
+    QCOMPARE( parsed->formattedParameters.at(0)->getValue(), QString("10") );
 
     QCOMPARE( parsed->ports.size(), 1 );
     QCOMPARE( parsed->ports["clk"]->port->getDirection(), DirectionTypes::IN );
@@ -332,11 +333,15 @@ void tst_HDLParser::testHierarchicalConnections()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationInstance> gi = designParser.instances_.at(0);
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi = design->instances_.at(0);
 
     QCOMPARE( gi->componentInstance_->getInstanceName(), QString("instance1") );
     QCOMPARE( gi->portAssignments_.size(), 4 );
@@ -427,11 +432,15 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationInstance> gi = designParser.instances_.at(0);
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi = design->instances_.at(0);
 
     QCOMPARE( gi->componentInstance_->getInstanceName(), QString("instance1") );
     QCOMPARE( gi->parameters.size(), 1 );
@@ -443,7 +452,7 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
     QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_["instance_clk"];
     QCOMPARE( gpa->topPort, QString("top_clk") );
     QCOMPARE( gpa->bounds.first, QString("1*2") );
-    QCOMPARE( gpa->bounds.second, QString("4-2*2") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -469,11 +478,15 @@ void tst_HDLParser::testSlicedHierarchicalConnection()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationInstance> gi = designParser.instances_.at(0);
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi = design->instances_.at(0);
 
     QCOMPARE( gi->portAssignments_.size(), 4 );
 
@@ -661,13 +674,17 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.interConnections_.size(), 1 );
-    QCOMPARE( designParser.interConnections_.at(0)->wires_.size(), 2 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.interConnections_.at(0)->wires_.first();
-    QSharedPointer<GenerationWire> gw1 = designParser.interConnections_.at(0)->wires_.last();
+    QCOMPARE( design->interConnections_.size(), 1 );
+    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 2 );
+
+    QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
+    QSharedPointer<GenerationWire> gw1 = design->interConnections_.at(0)->wires_.last();
 
     QCOMPARE( gw0->bounds.first, QString("7") );
     QCOMPARE( gw0->bounds.second, QString("0") );
@@ -675,10 +692,10 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
     QCOMPARE( gw1->bounds.first, QString("0") );
     QCOMPARE( gw1->bounds.second, QString("0") );
 
-    QCOMPARE( designParser.instances_.size(), 2 );
+    QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(1);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(0);
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -760,32 +777,36 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.interConnections_.size(), 1 );
-    QCOMPARE( designParser.interConnections_.at(0)->wires_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.interConnections_.at(0)->wires_.first();
+    QCOMPARE( design->interConnections_.size(), 1 );
+    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 1 );
 
-    QCOMPARE( gw0->bounds.first, QString("7*2") );
+    QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
+
+    QCOMPARE( gw0->bounds.first, QString("14") );
     QCOMPARE( gw0->bounds.second, QString("0") );
 
-    QCOMPARE( designParser.instances_.size(), 2 );
+    QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(1);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(0);
 
     QCOMPARE( gi0->portAssignments_.size(), 1 );
     QCOMPARE( gi1->portAssignments_.size(), 1 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_in"];
     QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7+1") );
+    QCOMPARE( gpa->bounds.first, QString("8") );
     QCOMPARE( gpa->bounds.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_out"];
     QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7*2") );
+    QCOMPARE( gpa->bounds.first, QString("14") );
     QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
@@ -884,13 +905,17 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.interConnections_.size(), 1 );
-    QCOMPARE( designParser.interConnections_.at(0)->wires_.size(), 2 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.interConnections_.at(0)->wires_.last();
-    QSharedPointer<GenerationWire> gw1 = designParser.interConnections_.at(0)->wires_.first();
+    QCOMPARE( design->interConnections_.size(), 1 );
+    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 2 );
+
+    QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.last();
+    QSharedPointer<GenerationWire> gw1 = design->interConnections_.at(0)->wires_.first();
 
     QCOMPARE( gw0->bounds.first, QString("0") );
     QCOMPARE( gw0->bounds.second, QString("0") );
@@ -898,11 +923,11 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     QCOMPARE( gw1->bounds.first, QString("7") );
     QCOMPARE( gw1->bounds.second, QString("0") );
 
-    QCOMPARE( designParser.instances_.size(), 3 );
+    QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = designParser.instances_.at(2);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -939,7 +964,7 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
 //-----------------------------------------------------------------------------
-/*void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
+void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
 {
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
     QSharedPointer<View> sendView = addSenderComponentToLibrary(senderVLNV, General::MASTER);
@@ -964,35 +989,74 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     addConnectionToDesign("sender", "data_bus", "fourBitReceiver", "data_bus");
     addConnectionToDesign("sender", "data_bus", "sixteenBitReceiver", "data_bus");
 
-    runGenerator(true);
+    HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
-    verifyOutputContains("wire [15:0] sender_data_bus_DATA;");
-    verifyOutputContains("wire        sender_data_bus_ENABLE;");    
+    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
+    QList<QSharedPointer<GenerationDesign> > designs;
+    designParser.parseDesign(designs);
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_bus\n"
-        "        .data_out            (sender_data_bus_DATA[7:0]),\n"
-        "        .enable_out          (sender_data_bus_ENABLE)");
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    verifyOutputContains(
-        "    TestReceiver oneBitReceiver(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (sender_data_bus_DATA[0]),\n"
-        "        .enable_in           (sender_data_bus_ENABLE)");
+    QCOMPARE( design->interConnections_.size(), 1 );
+    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 2 );
 
-    verifyOutputContains(
-        "    TestReceiver4bit fourBitReceiver(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (sender_data_bus_DATA[3:0]),\n"
-        "        .enable_in           (sender_data_bus_ENABLE)");
+    QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
+    QCOMPARE( gw0->bounds.first, QString("15") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
 
-    verifyOutputContains(
-        "    TestReceiver16bit sixteenBitReceiver(\n"
-        "        // Interface: data_bus\n"
-        "        .data_in             (sender_data_bus_DATA),\n"
-        "        .enable_in           (sender_data_bus_ENABLE)");
-}*/
+    QSharedPointer<GenerationWire> gw1 = design->interConnections_.at(0)->wires_.last();
+    QCOMPARE( gw1->bounds.first, QString("0") );
+    QCOMPARE( gw1->bounds.second, QString("0") );
+
+    QCOMPARE( design->instances_.size(), 4 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
+    QSharedPointer<GenerationInstance> gi3 = design->instances_.at(3);
+
+    QCOMPARE( gi0->portAssignments_.size(), 2 );
+    QCOMPARE( gi1->portAssignments_.size(), 2 );
+    QCOMPARE( gi2->portAssignments_.size(), 2 );
+    QCOMPARE( gi3->portAssignments_.size(), 2 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
+    QCOMPARE( gpa->wire->name, gw0->name );
+    QCOMPARE( gpa->bounds.first, QString("7") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi0->portAssignments_["enable_out"];
+    QCOMPARE( gpa->wire->name, gw1->name );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi1->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, gw0->name );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi1->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, gw1->name );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi2->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, gw0->name );
+    QCOMPARE( gpa->bounds.first, QString("3") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi2->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, gw1->name );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+
+    gpa = gi3->portAssignments_["data_in"];
+    QCOMPARE( gpa->wire->name, gw0->name );
+    QCOMPARE( gpa->bounds.first, QString("15") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+    gpa = gi3->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, gw1->name );
+    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
+}
 
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::setComponentDataWidth()
@@ -1109,20 +1173,24 @@ void tst_HDLParser::testSlicedInterconnection()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.interConnections_.size(), 1 );
-    QCOMPARE( designParser.interConnections_.at(0)->wires_.size(), 2 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.interConnections_.at(0)->wires_.last();
+    QCOMPARE( design->interConnections_.size(), 1 );
+    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 2 );
 
-    QCOMPARE( gw0->bounds.first, QString("2-1") );
+    QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.last();
+
+    QCOMPARE( gw0->bounds.first, QString("1") );
     QCOMPARE( gw0->bounds.second, QString("0") );
 
-    QCOMPARE( designParser.instances_.size(), 2 );
+    QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -1160,13 +1228,17 @@ void tst_HDLParser::testMasterInterconnectionToMirroredMaster()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.interConnections_.size(), 1 );
-    QCOMPARE( designParser.interConnections_.at(0)->wires_.size(), 2 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.interConnections_.at(0)->wires_.first();
-    QSharedPointer<GenerationWire> gw1 = designParser.interConnections_.at(0)->wires_.last();
+    QCOMPARE( design->interConnections_.size(), 1 );
+    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 2 );
+
+    QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
+    QSharedPointer<GenerationWire> gw1 = design->interConnections_.at(0)->wires_.last();
 
     QCOMPARE( gw0->bounds.first, QString("7") );
     QCOMPARE( gw0->bounds.second, QString("0") );
@@ -1174,10 +1246,10 @@ void tst_HDLParser::testMasterInterconnectionToMirroredMaster()
     QCOMPARE( gw1->bounds.first, QString("0") );
     QCOMPARE( gw1->bounds.second, QString("0") );
 
-    QCOMPARE( designParser.instances_.size(), 2 );
+    QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -1221,13 +1293,17 @@ void tst_HDLParser::testMirroredSlaveInterconnectionToSlaves()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.interConnections_.size(), 1 );
-    QCOMPARE( designParser.interConnections_.at(0)->wires_.size(), 2 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.interConnections_.at(0)->wires_.first();
-    QSharedPointer<GenerationWire> gw1 = designParser.interConnections_.at(0)->wires_.last();
+    QCOMPARE( design->interConnections_.size(), 1 );
+    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 2 );
+
+    QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
+    QSharedPointer<GenerationWire> gw1 = design->interConnections_.at(0)->wires_.last();
 
     QCOMPARE( gw0->bounds.first, QString("7") );
     QCOMPARE( gw0->bounds.second, QString("0") );
@@ -1235,10 +1311,10 @@ void tst_HDLParser::testMirroredSlaveInterconnectionToSlaves()
     QCOMPARE( gw1->bounds.first, QString("0") );
     QCOMPARE( gw1->bounds.second, QString("0") );
 
-    QCOMPARE( designParser.instances_.size(), 3 );
+    QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -1342,20 +1418,24 @@ void tst_HDLParser::testPortMapsWithoutBoundsInInterconnection()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.interConnections_.size(), 1 );
-    QCOMPARE( designParser.interConnections_.at(0)->wires_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.interConnections_.at(0)->wires_.first();
+    QCOMPARE( design->interConnections_.size(), 1 );
+    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 1 );
+
+    QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
 
     QCOMPARE( gw0->bounds.first, QString("7") );
     QCOMPARE( gw0->bounds.second, QString("0") );
 
-    QCOMPARE( designParser.instances_.size(), 2 );
+    QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(1);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
 
     QCOMPARE( gi0->portAssignments_.size(), 1 );
     QCOMPARE( gi1->portAssignments_.size(), 1 );
@@ -1392,12 +1472,16 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.adHocs_.size(), 2 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.adHocs_.at(0)->wire;
-    QSharedPointer<GenerationWire> gw1 = designParser.adHocs_.at(1)->wire;
+    QCOMPARE( design->adHocs_.size(), 2 );
+
+    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire;
+    QSharedPointer<GenerationWire> gw1 = design->adHocs_.at(1)->wire;
 
     QCOMPARE( gw0->bounds.first, QString("0") );
     QCOMPARE( gw0->bounds.second, QString("0") );
@@ -1405,11 +1489,11 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
     QCOMPARE( gw1->bounds.first, QString("7") );
     QCOMPARE( gw1->bounds.second, QString("0") );
 
-    QCOMPARE( designParser.instances_.size(), 3 );
+    QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = designParser.instances_.at(2);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -1502,11 +1586,15 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
 
     QCOMPARE( gi0->portAssignments_.size(), 9 );
 
@@ -1550,20 +1638,24 @@ void tst_HDLParser::testMultipleAdhocConnectionsBetweenComponentInstances()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.adHocs_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.adHocs_.at(0)->wire;
+    QCOMPARE( design->adHocs_.size(), 1 );
+
+    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire;
 
     QCOMPARE( gw0->bounds.first, QString("0") );
     QCOMPARE( gw0->bounds.second, QString("0") );
 
-    QCOMPARE( designParser.instances_.size(), 3 );
+    QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = designParser.instances_.at(2);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
 
     QCOMPARE( gi0->portAssignments_.size(), 1 );
     QCOMPARE( gi1->portAssignments_.size(), 1 );
@@ -1646,20 +1738,24 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.adHocs_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.adHocs_.at(0)->wire;
+    QCOMPARE( design->adHocs_.size(), 1 );
 
-    QCOMPARE( gw0->bounds.first, QString("10*2-8") );
+    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire;
+
+    QCOMPARE( gw0->bounds.first, QString("12") );
     QCOMPARE( gw0->bounds.second, QString("2") );
 
-    QCOMPARE( designParser.instances_.size(), 3 );
+    QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = designParser.instances_.at(2);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
 
     QCOMPARE( gi0->portAssignments_.size(), 1 );
     QCOMPARE( gi1->portAssignments_.size(), 1 );
@@ -1668,17 +1764,17 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
     QSharedPointer<GenerationPortAssignMent> gpa;
     gpa = gi0->portAssignments_["enable_out"];
     QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("10*2-8") );
+    QCOMPARE( gpa->bounds.first, QString("12") );
     QCOMPARE( gpa->bounds.second, QString("2") );
 
     gpa = gi1->portAssignments_["enable_in"];
     QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("2+2") );
+    QCOMPARE( gpa->bounds.first, QString("4") );
     QCOMPARE( gpa->bounds.second, QString("0") );
 
     gpa = gi2->portAssignments_["enable_in"];
     QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("2+2") );
+    QCOMPARE( gpa->bounds.first, QString("4") );
     QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
@@ -1751,11 +1847,15 @@ void tst_HDLParser::testHierarchicalAdhocConnection()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
 
@@ -1834,19 +1934,23 @@ void tst_HDLParser::testHierarchicalAdHocTieOffValues()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 0 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QCOMPARE( designParser.portTiedValues_.size(), 9 );
+    QCOMPARE( design->instances_.size(), 0 );
 
-    QCOMPARE( designParser.portTiedValues_["defaultTieOff"], QString("20") );
-    QCOMPARE( designParser.portTiedValues_["expressionTieOff"], QString("expID - 4") );
-    QCOMPARE( designParser.portTiedValues_["inOutTieOff"], QString("1") );
-    QCOMPARE( designParser.portTiedValues_["n/aTieOff"], QString("abc") );
-    QCOMPARE( designParser.portTiedValues_["numberedTieOff"], QString("12") );
-    QCOMPARE( designParser.portTiedValues_["oneTieOff"], QString("1") );
-    QCOMPARE( designParser.portTiedValues_["zeroTieOff"], QString("0") );
+    QCOMPARE( design->portTiedValues_.size(), 9 );
+
+    QCOMPARE( design->portTiedValues_["defaultTieOff"], QString("20") );
+    QCOMPARE( design->portTiedValues_["expressionTieOff"], QString("expID - 4") );
+    QCOMPARE( design->portTiedValues_["inOutTieOff"], QString("1") );
+    QCOMPARE( design->portTiedValues_["n/aTieOff"], QString("abc") );
+    QCOMPARE( design->portTiedValues_["numberedTieOff"], QString("12") );
+    QCOMPARE( design->portTiedValues_["oneTieOff"], QString("1") );
+    QCOMPARE( design->portTiedValues_["zeroTieOff"], QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1929,15 +2033,19 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.adHocs_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QCOMPARE( designParser.instances_.size(), 3 );
+    QCOMPARE( design->adHocs_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = designParser.instances_.at(2);
+    QCOMPARE( design->instances_.size(), 3 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
 
     QCOMPARE( gi0->portAssignments_.size(), 1 );
     QCOMPARE( gi1->portAssignments_.size(), 1 );
@@ -2003,11 +2111,15 @@ void tst_HDLParser::testInstanceParametersAreCulled()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
 
     QCOMPARE( gi0->parameters.size(), 2 );
 
@@ -2060,16 +2172,20 @@ void tst_HDLParser::testTopComponentParametersAreUtilized()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
 
     QCOMPARE( gi0->parameters.size(), 1 );
 
     QCOMPARE( gi0->parameters.at(0)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("componentParameter") );
+    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("1337") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2116,11 +2232,15 @@ void tst_HDLParser::testInstanceComponentParametersAreUtilized()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
 
     QCOMPARE( gi0->parameters.size(), 2 );
 
@@ -2172,16 +2292,20 @@ void tst_HDLParser::testParameterPropagationFromTop()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
 
     QCOMPARE( gi0->parameters.size(), 1 );
 
     QCOMPARE( gi0->parameters.at(0)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("topParameter") );
+    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("10") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2233,18 +2357,22 @@ void tst_HDLParser::testParameterPropagationFromTop2()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.instances_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(0);
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
 
     QCOMPARE( gi0->parameters.size(), 2 );
 
     QCOMPARE( gi0->parameters.at(0)->name(), QString("senderParameter") );
-    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("topParameter") );
+    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("10") );
     QCOMPARE( gi0->parameters.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters.at(1)->getValue(), QString("topParameter") );
+    QCOMPARE( gi0->parameters.at(1)->getValue(), QString("10") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2331,39 +2459,149 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
     HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    designParser.parseDesign();
+    QList<QSharedPointer<GenerationDesign> > designs;
+	designParser.parseDesign(designs);
 
-    QCOMPARE( designParser.interConnections_.size(), 1 );
-    QCOMPARE( designParser.interConnections_.at(0)->wires_.size(), 1 );
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
 
-    QSharedPointer<GenerationWire> gw0 = designParser.interConnections_.at(0)->wires_.first();
+    QCOMPARE( design->interConnections_.size(), 1 );
+    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 1 );
+
+    QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
 
     QCOMPARE( gw0->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gw0->bounds.first, QString("7*topParameter") );
+    QCOMPARE( gw0->bounds.first, QString("70") );
     QCOMPARE( gw0->bounds.second, QString("0") );
 
-    QCOMPARE( designParser.instances_.size(), 2 );
+    QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = designParser.instances_.at(1);
-    QSharedPointer<GenerationInstance> gi1 = designParser.instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(0);
 
     QSharedPointer<GenerationPortAssignMent> gpa;
     gpa = gi0->portAssignments_["data_in"];
     QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7+1") );
+    QCOMPARE( gpa->bounds.first, QString("8") );
     QCOMPARE( gpa->bounds.second, QString("0") );
 
     QCOMPARE( gi1->parameters.size(), 2 );
 
     QCOMPARE( gi1->parameters.at(0)->name(), QString("senderParameter") );
-    QCOMPARE( gi1->parameters.at(0)->getValue(), QString("topParameter") );
+    QCOMPARE( gi1->parameters.at(0)->getValue(), QString("10") );
     QCOMPARE( gi1->parameters.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi1->parameters.at(1)->getValue(), QString("topParameter") );
+    QCOMPARE( gi1->parameters.at(1)->getValue(), QString("10") );
 
     gpa = gi1->portAssignments_["data_out"];
     QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7*topParameter") );
+    QCOMPARE( gpa->bounds.first, QString("70") );
     QCOMPARE( gpa->bounds.second, QString("0") );
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_HDLParser::testMultiLevelHierachy()
+//-----------------------------------------------------------------------------
+void tst_HDLParser::testMultiLevelHierachy()
+{
+    VLNV slaveVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "SlaveComponent", "1.0b");
+    QSharedPointer<Component> slaveTopComponent = QSharedPointer<Component>(new Component(slaveVlnv));
+
+    VLNV slaveDesignVlnv(VLNV::DESIGN, "Test", "TestLibrary", "SlaveDesign", "1.0b");
+    QSharedPointer<Design> slaveDesign = QSharedPointer<Design>(new Design(slaveDesignVlnv));
+
+    VLNV slaveDesignConfVlnv(VLNV::DESIGNCONFIGURATION, "Test", "TestLibrary", "SlaveDesignConfiguration", "1.0b");
+    QSharedPointer<DesignConfiguration> slaveDesignConf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(slaveDesignConfVlnv));
+    slaveDesignConf->setDesignRef(slaveDesignVlnv);
+
+    QSharedPointer<View> slaveTopView = QSharedPointer<View>(new View("topView"));
+    QSharedPointer<DesignConfigurationInstantiation> disg(new DesignConfigurationInstantiation("SlaveDesignConfigurationInstantiation"));
+    disg->setDesignConfigurationReference(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(slaveDesignConfVlnv)));
+    slaveTopComponent->getDesignConfigurationInstantiations()->append(disg);
+    slaveTopView->setDesignConfigurationInstantiationRef(disg->name());
+
+    slaveTopComponent->getViews()->append(slaveTopView);
+
+    library_.addComponent(slaveTopComponent);
+    library_.addComponent(slaveDesign);
+    library_.addComponent(slaveDesignConf);
+
+    QSharedPointer<ComponentInstance> slaveInstance = addInstanceToDesign("hierSlave", slaveVlnv, slaveTopView);
+
+    QSharedPointer<ConfigurableElementValue> parameterSlaveOverride(new ConfigurableElementValue());
+    parameterSlaveOverride->setReferenceId("slaveTopID");
+    parameterSlaveOverride->setConfigurableValue("topID");
+    slaveInstance->getConfigurableElementValues()->append(parameterSlaveOverride);
+
+    QSharedPointer<Parameter> slaveTopParameter(new Parameter());
+    slaveTopParameter->setName("topParameter");
+    slaveTopParameter->setValueId("slaveTopID");
+    slaveTopParameter->setValue("12");
+    slaveTopComponent->getParameters()->append(slaveTopParameter);
+
+    QSharedPointer<Parameter> topParameter(new Parameter());
+    topParameter->setName("topParameter");
+    topParameter->setValueId("topID");
+    topParameter->setValue("76");
+    topComponent_->getParameters()->append(topParameter);
+
+    QSharedPointer<View> activeView(new View());
+    activeView->setName("rtl");
+    activeView->setComponentInstantiationRef("instance1");
+
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");    
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    library_.addComponent(senderComponent);
+
+    QSharedPointer<ConfigurableVLNVReference> componentVLNV (new ConfigurableVLNVReference(senderVLNV));
+    QSharedPointer<ComponentInstance> senderInstance (new ComponentInstance("sender", componentVLNV));
+
+    slaveDesign->getComponentInstances()->append(senderInstance);
+
+    slaveDesignConf->addViewConfiguration("sender", activeView->name());
+
+    QSharedPointer<Parameter> senderParameter(new Parameter());
+    senderParameter->setName("senderParameter");
+    senderParameter->setValueId("senderID");
+    senderParameter->setValue("47");
+    senderParameter->setValueResolve("user");
+    senderComponent->getParameters()->append(senderParameter);
+
+    QSharedPointer<ModuleParameter> moduleParameter(new ModuleParameter());
+    moduleParameter->setValueId("parameterId");
+    moduleParameter->setName("moduleParameter");
+    moduleParameter->setValueResolve("generated");
+    moduleParameter->setValue("senderID");
+
+    QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
+    instantiation->getModuleParameters()->append(moduleParameter);
+
+    senderComponent->getComponentInstantiations()->append(instantiation);
+    senderComponent->getViews()->append(activeView);
+
+    QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
+    parameterOverride->setReferenceId("senderID");
+    parameterOverride->setConfigurableValue("slaveTopID");
+    senderInstance->getConfigurableElementValues()->append(parameterOverride);
+
+    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+
+    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
+    QList<QSharedPointer<GenerationDesign> > designs;
+    designParser.parseDesign(designs);
+
+    QCOMPARE( designs.size(), 2 );
+    QSharedPointer<GenerationDesign> design = designs.last();
+
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+
+    QCOMPARE( gi0->parameters.size(), 2 );
+
+    QCOMPARE( gi0->parameters.at(0)->name(), QString("senderParameter") );
+    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("76") );
+    QCOMPARE( gi0->parameters.at(1)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters.at(1)->getValue(), QString("76") );
 }
 
 //-----------------------------------------------------------------------------

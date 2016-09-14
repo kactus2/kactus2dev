@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: configurableelementeditor.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 12.08.2011
 //
@@ -82,9 +82,10 @@ ConfigurableElementEditor::~ConfigurableElementEditor()
 // Function: ConfigurableElementEditor::setComponent()
 //-----------------------------------------------------------------------------
 void ConfigurableElementEditor::setComponent(QSharedPointer<Component> component,
-    QSharedPointer<ComponentInstance> instance, QSharedPointer<IEditProvider> editProvider)
+    QSharedPointer<ComponentInstance> instance, QSharedPointer<ViewConfiguration> viewConfiguration,
+    QSharedPointer<IEditProvider> editProvider)
 {
-    model_.setComponent(component, instance, editProvider);
+    model_.setComponent(component, instance, viewConfiguration, editProvider);
     delegate_->setChoices(component->getChoices());
 
     view_.expandAll();

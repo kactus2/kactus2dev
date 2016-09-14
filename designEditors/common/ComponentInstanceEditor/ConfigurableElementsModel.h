@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ConfigurableElementsModel.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 12.08.2011
 //
@@ -71,12 +71,13 @@ public:
 	/*!
 	 *  Set the component being edited.
 	 *
-	 *      @param [in] component       Pointer to the component referenced by the component instance.
-     *      @param [in] instance        Pointer to the component instance being edited.
-     *      @param [in] editProvider    Pointer to the edit provider.
+	 *      @param [in] component           Pointer to the component referenced by the component instance.
+     *      @param [in] instance            Pointer to the component instance being edited.
+     *      @param [in] viewConfiguration   Pointer to the active view of the instanced component.
+     *      @param [in] editProvider        Pointer to the edit provider.
 	 */
     void setComponent(QSharedPointer<Component> component, QSharedPointer<ComponentInstance> instance,
-        QSharedPointer<IEditProvider> editProvider);
+        QSharedPointer<ViewConfiguration> viewConfiguration, QSharedPointer<IEditProvider> editProvider);
 
 	/*!
 	 *  Get the number of rows to be displayed.
@@ -337,7 +338,7 @@ private:
      *      @param [in] rootItemName        The root item of the configurable element.
      */
     void addParameterToConfigurableElements(QSharedPointer <Parameter> parameterPointer,
-        QString const& rootItemName);
+        QString const& rootItemName, bool addToInstance);
 
     /*!
      *  Restore the previously saved configurable element values to their correct element.
@@ -376,6 +377,9 @@ private:
 	//! Pointer to the component instance being edited.
     QSharedPointer<ComponentInstance> componentInstance_;
 
+    //! Pointer to the active view of the instanced component.
+    QSharedPointer<ViewConfiguration> viewConfiguration_;
+
     //! Pointer to the component referenced by the component instance.
     QSharedPointer<Component> component_;
 
@@ -384,6 +388,9 @@ private:
 
     //! The list that is used to display the elements in a table form.
     QSharedPointer<QList<QSharedPointer<Parameter> > > configurableElements_;
+
+    //! In which list the parameter belongs to.
+    QMap<QSharedPointer<Parameter>, bool> parameterMapping_;
 
 	//! The edit provider that manages the undo/redo stack.
 	QSharedPointer<IEditProvider> editProvider_;

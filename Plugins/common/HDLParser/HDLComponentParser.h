@@ -72,7 +72,7 @@ private:
      /*!
       *  Culls and formats parameter declarations for the module.
       */
-    void parseParameters(QSharedPointer<GenerationComponent> target) const;
+    void findParameters(QSharedPointer<GenerationComponent> target) const;
 
     void parseRemapStates(QSharedPointer<GenerationComponent> target) const;
 

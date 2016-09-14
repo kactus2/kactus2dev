@@ -748,16 +748,25 @@ void EndPointPortMapCommand::redo()
 // Function: ComponentConfElementChangeCommand::ComponentConfElementChangeCommand()
 //-----------------------------------------------------------------------------
 ComponentConfElementChangeCommand::ComponentConfElementChangeCommand(
-    QSharedPointer<ComponentInstance> componentInstance, const QMap<QString, QString>& newConfElements,
-    QUndoCommand* parent /* = 0 */):
+    QSharedPointer<ComponentInstance> componentInstance, QSharedPointer<ViewConfiguration> viewConfiguration,
+    const QMap<QString, QString>& newInstanceElements,
+    const QMap<QString, QString>& newViewElements, QUndoCommand* parent /*= 0*/) :
 QUndoCommand(parent),
-componentInstance_(componentInstance),
-oldConfElements_(),
-newConfElements_(newConfElements)
+    componentInstance_(componentInstance),
+    viewConfiguration_(viewConfiguration),
+    oldInstanceElements_(),
+    newInstanceElements_(newInstanceElements),
+    oldViewElements_(),
+    newViewElements_(newViewElements)
 {
     foreach (QSharedPointer<ConfigurableElementValue> element, *componentInstance_->getConfigurableElementValues())
     {
-        oldConfElements_.insert(element->getReferenceId(), element->getConfigurableValue());
+        oldInstanceElements_.insert(element->getReferenceId(), element->getConfigurableValue());
+    }
+
+    foreach (QSharedPointer<ConfigurableElementValue> element, *viewConfiguration_->getViewConfigurableElements())
+    {
+        oldViewElements_.insert(element->getReferenceId(), element->getConfigurableValue());
     }
 }
 
@@ -768,19 +777,16 @@ ComponentConfElementChangeCommand::~ComponentConfElementChangeCommand()
 {
 }
 
-//-----------------------------------------------------------------------------
-// Function: ComponentConfElementChangeCommand::undo()
-//-----------------------------------------------------------------------------
-void ComponentConfElementChangeCommand::undo()
+void ComponentConfElementChangeCommand::udo(
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables,
+    QMap<QString, QString>& oldElements)
 {
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables =
-        componentInstance_->getConfigurableElementValues();
     QStringList configurableIDs;
     foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurables)
     {
-        if (oldConfElements_.contains(element->getReferenceId()))
+        if (oldElements.contains(element->getReferenceId()))
         {
-            element->setConfigurableValue(oldConfElements_.value(element->getReferenceId()));
+            element->setConfigurableValue(oldElements.value(element->getReferenceId()));
             configurableIDs.append(element->getReferenceId());
         }
         else
@@ -789,9 +795,9 @@ void ComponentConfElementChangeCommand::undo()
         }
     }
 
-    if (oldConfElements_.size() > currentConfigurables->size())
+    if (oldElements.size() > currentConfigurables->size())
     {
-        QMapIterator<QString, QString> elementIterator(oldConfElements_);
+        QMapIterator<QString, QString> elementIterator(oldElements);
         while (elementIterator.hasNext())
         {
             elementIterator.next();
@@ -800,36 +806,40 @@ void ComponentConfElementChangeCommand::undo()
             {
                 QSharedPointer<ConfigurableElementValue> newElement (
                     new ConfigurableElementValue(elementIterator.value(), elementIterator.key()));
-                componentInstance_->getConfigurableElementValues()->append(newElement);
+                currentConfigurables->append(newElement);
             }
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentConfElementChangeCommand::redo()
+// Function: ComponentConfElementChangeCommand::undo()
 //-----------------------------------------------------------------------------
-void ComponentConfElementChangeCommand::redo()
+void ComponentConfElementChangeCommand::undo()
 {
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurableElements =
-        componentInstance_->getConfigurableElementValues();
-    if (newConfElements_.size() < currentConfigurableElements->size())
+    udo(componentInstance_->getConfigurableElementValues(), oldInstanceElements_);
+    udo(viewConfiguration_->getViewConfigurableElements(), oldViewElements_);
+}
+
+void ComponentConfElementChangeCommand::edo(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables, QMap<QString, QString>& newElements)
+{
+    if (newElements.size() < currentConfigurables->size())
     {
-        foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurableElements)
+        foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurables)
         {
-            if (!newConfElements_.contains(element->getReferenceId()))
+            if (!newElements.contains(element->getReferenceId()))
             {
-                componentInstance_->getConfigurableElementValues()->removeAll(element);
+                currentConfigurables->removeAll(element);
             }
         }
     }
 
-    QMapIterator<QString, QString> elementIterator(newConfElements_);
+    QMapIterator<QString, QString> elementIterator(newElements);
     while (elementIterator.hasNext())
     {
         elementIterator.next();
         bool elementExists = false;
-        foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurableElements)
+        foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurables)
         {
             if (elementIterator.key() == element->getReferenceId())
             {
@@ -843,9 +853,18 @@ void ComponentConfElementChangeCommand::redo()
         {
             QSharedPointer<ConfigurableElementValue> newElement (
                 new ConfigurableElementValue(elementIterator.value(), elementIterator.key()));
-            componentInstance_->getConfigurableElementValues()->append(newElement);
+            currentConfigurables->append(newElement);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentConfElementChangeCommand::redo()
+//-----------------------------------------------------------------------------
+void ComponentConfElementChangeCommand::redo()
+{
+    edo(componentInstance_->getConfigurableElementValues(), newInstanceElements_);
+    edo(viewConfiguration_->getViewConfigurableElements(), newViewElements_);
 }
 
 //-----------------------------------------------------------------------------

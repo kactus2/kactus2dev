@@ -74,7 +74,7 @@ QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent()
     parseInterfaces(retval);
     parsePorts(retval);
     parseMemoryMaps(retval);
-    parseParameters(retval);
+    findParameters(retval);
     parseRemapStates(retval);
 
     return retval;
@@ -358,9 +358,9 @@ void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSha
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLComponentParser::parseParameters()
+// Function: HDLComponentParser::dindParameters()
 //-----------------------------------------------------------------------------
-void HDLComponentParser::parseParameters(QSharedPointer<GenerationComponent> target) const
+void HDLComponentParser::findParameters(QSharedPointer<GenerationComponent> target) const
 {
 	if (!activeView_)
 	{
@@ -370,26 +370,24 @@ void HDLComponentParser::parseParameters(QSharedPointer<GenerationComponent> tar
 	QSharedPointer<ComponentInstantiation> currentInsta =
 		component_->getModel()->findComponentInstantiation(activeView_->getComponentInstantiationRef());
 
-    QList<QSharedPointer<Parameter> > origParameters;
-
     foreach(QSharedPointer<Parameter> parameter, *component_->getParameters())
     {
-        origParameters.append(parameter);
+        target->originalParameters.append(parameter);
     }
 
 	if (currentInsta)
 	{
 		foreach(QSharedPointer<ModuleParameter> parameter, *currentInsta->getModuleParameters())
 		{
-			origParameters.append(parameter);
+			target->originalParameters.append(parameter);
 		}
     }
 
     // Create a new list of the parameters.
-    QList<QSharedPointer<Parameter> > sortedParameters = QList<QSharedPointer<Parameter> >(origParameters);
+    QList<QSharedPointer<Parameter> > sortedParameters = QList<QSharedPointer<Parameter> >(target->originalParameters);
 
 	// Sort the parameters.
-    sortParameters(origParameters, sortedParameters);
+    sortParameters(target->originalParameters, sortedParameters);
 
     foreach(QSharedPointer<Parameter> parameterOrig, sortedParameters)
     {
@@ -398,7 +396,7 @@ void HDLComponentParser::parseParameters(QSharedPointer<GenerationComponent> tar
         // Format the parameter.
         parameterCpy->setValue(formatter_->formatReferringExpression(parameterOrig->getValue()));
 
-        target->parameters.append(parameterCpy);
+        target->formattedParameters.append(parameterCpy);
     }
 }
 

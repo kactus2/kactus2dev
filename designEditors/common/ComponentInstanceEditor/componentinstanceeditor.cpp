@@ -19,6 +19,7 @@
 #include <designEditors/common/TopComponentParameterFinder.h>
 
 #include <designEditors/HWDesign/HWChangeCommands.h>
+#include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <designEditors/SystemDesign/SystemComponentItem.h>
 #include <designEditors/SystemDesign/SWComponentItem.h>
@@ -26,6 +27,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/Design/ComponentInstance.h>
+#include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
 
 #include <QVBoxLayout>
 #include <QDockWidget>
@@ -108,8 +111,8 @@ ComponentInstanceEditor::~ComponentInstanceEditor()
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceEditor::setComponentInstance()
 //-----------------------------------------------------------------------------
-void ComponentInstanceEditor::setComponentInstance(ComponentItem* component,
-    QSharedPointer<IEditProvider> editProvider, QSharedPointer<Design> design, QString const& activeViewName)
+void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSharedPointer<IEditProvider> editProvider,
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, QString const& activeViewName)
 {
 	Q_ASSERT(component);
 
@@ -186,9 +189,20 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component,
     {
         propertyValueEditor_->hide();
 
+        QSharedPointer<ViewConfiguration> matchingViewConfiguration;
+
+        foreach (QSharedPointer<ViewConfiguration> viewConfiguration, *designConfiguration->getViewConfigurations() )
+        {
+            if (viewConfiguration->getInstanceName() == component->getComponentInstance()->getInstanceName())
+            {
+                matchingViewConfiguration = viewConfiguration;
+                break;
+            }
+        }
+
         // Show the component's configurable elements in case of HW.
         configurableElements_->setComponent(component->componentModel(), component->getComponentInstance(),
-            editProvider);
+            matchingViewConfiguration, editProvider);
 	    configurableElements_->show();
     }
 
