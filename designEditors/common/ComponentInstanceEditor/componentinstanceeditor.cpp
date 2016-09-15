@@ -141,7 +141,11 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSh
 
 	nameGroup_->setName(component->name());
 	nameGroup_->setDisplayName(component->displayName());
-	nameGroup_->setDescription(component->description());
+
+    disconnect(nameGroup_, SIGNAL(descriptionChanged()),
+        this, SLOT(onDescriptionChanged()));
+    nameGroup_->setDescription(component->description());
+    connect(nameGroup_, SIGNAL(descriptionChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 
 	nameGroup_->show();
 

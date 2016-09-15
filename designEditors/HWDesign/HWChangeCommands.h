@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: HWChangeCommands.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 5.8.2011
 //
@@ -214,15 +214,17 @@ private:
     QString newDescription_;
 };
 
-class ComponentConfElementChangeCommand: public QUndoCommand {
-
+class ComponentConfElementChangeCommand: public QUndoCommand
+{
 public:
 
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] componentInstance   Pointer to the component instance that is being edited.
-	 *      @param [in] newConfElements     The new configurable elements for the instance.
+     *      @param [in] componentInstance   Pointer to the component instance that is being edited.
+     *      @param [in] viewConfiguration   Pointer to the view configuration that is being edited.
+     *      @param [in] newInstanceElements     The new configurable elements for the instance.
+     *      @param [in] newViewElements     The new configurable elements for the view configuration.
 	 *      @param [in] parent              Pointer to the owner of this command.
 	 */
     ComponentConfElementChangeCommand(QSharedPointer<ComponentInstance> componentInstance,
@@ -232,14 +234,10 @@ public:
 	//! The destructor.
 	virtual ~ComponentConfElementChangeCommand();
 
-    void udo(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables, QMap<QString, QString>& oldElements);
-
 	/*!
      *  Undoes the command.
      */
 	virtual void undo();
-
-    void edo(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables, QMap<QString, QString>& newElements);
 
 	/*!
      *  Redoes the command.
@@ -247,6 +245,25 @@ public:
 	virtual void redo();
 
 private:
+
+	/*!
+     *  Sets values in parameter oldElement to parameter currentConfigurables.
+	 *
+	 *      @param [in] currentConfigurables    Pointer to the CEVs needing modification.
+	 *      @param [in] oldElements             Pointer to the old values, that were there before new values.
+	 */
+    void setOldValues(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables,
+        QMap<QString, QString>& oldElements);
+    
+	/*!
+     *  Sets values in parameter newElement to parameter currentConfigurables.
+	 *
+	 *      @param [in] currentConfigurables    Pointer to the CEVs needing modification.
+	 *      @param [in] newElements             Pointer to the new values, that where set after old values.
+	 */
+    void setNewValues(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables,
+        QMap<QString, QString>& newElements);
+
 	//! No copying
 	ComponentConfElementChangeCommand(const ComponentConfElementChangeCommand& other);
 

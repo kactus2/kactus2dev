@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: HWChangeCommands.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 5.8.2011
 //
@@ -759,11 +759,13 @@ QUndoCommand(parent),
     oldViewElements_(),
     newViewElements_(newViewElements)
 {
+    // The existing CEVs become the old elements.
     foreach (QSharedPointer<ConfigurableElementValue> element, *componentInstance_->getConfigurableElementValues())
     {
         oldInstanceElements_.insert(element->getReferenceId(), element->getConfigurableValue());
     }
 
+    // The existing CEVs become the old elements.
     foreach (QSharedPointer<ConfigurableElementValue> element, *viewConfiguration_->getViewConfigurableElements())
     {
         oldViewElements_.insert(element->getReferenceId(), element->getConfigurableValue());
@@ -777,24 +779,49 @@ ComponentConfElementChangeCommand::~ComponentConfElementChangeCommand()
 {
 }
 
-void ComponentConfElementChangeCommand::udo(
+//-----------------------------------------------------------------------------
+// Function: ComponentConfElementChangeCommand::undo()
+//-----------------------------------------------------------------------------
+void ComponentConfElementChangeCommand::undo()
+{
+    setOldValues(componentInstance_->getConfigurableElementValues(), oldInstanceElements_);
+    setOldValues(viewConfiguration_->getViewConfigurableElements(), oldViewElements_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentConfElementChangeCommand::redo()
+//-----------------------------------------------------------------------------
+void ComponentConfElementChangeCommand::redo()
+{
+    setNewValues(componentInstance_->getConfigurableElementValues(), newInstanceElements_);
+    setNewValues(viewConfiguration_->getViewConfigurableElements(), newViewElements_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentConfElementChangeCommand::setOldValues()
+//-----------------------------------------------------------------------------
+void ComponentConfElementChangeCommand::setOldValues(
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables,
     QMap<QString, QString>& oldElements)
 {
+    // Go through the CEVS.
     QStringList configurableIDs;
     foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurables)
     {
         if (oldElements.contains(element->getReferenceId()))
         {
+            // If the CEV reference matches a key in old elements, set the value and append it to the list.
             element->setConfigurableValue(oldElements.value(element->getReferenceId()));
             configurableIDs.append(element->getReferenceId());
         }
         else
         {
+            // Remove a non-existing reference: It must be a newcomer that did not exist before.
             currentConfigurables->removeAll(element);
         }
     }
 
+    // If it turns out that there are too many old elements for CEVs...
     if (oldElements.size() > currentConfigurables->size())
     {
         QMapIterator<QString, QString> elementIterator(oldElements);
@@ -802,6 +829,7 @@ void ComponentConfElementChangeCommand::udo(
         {
             elementIterator.next();
 
+            // ...then create a new CEV for the missing reference.
             if (!configurableIDs.contains(elementIterator.key()))
             {
                 QSharedPointer<ConfigurableElementValue> newElement (
@@ -813,20 +841,19 @@ void ComponentConfElementChangeCommand::udo(
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentConfElementChangeCommand::undo()
+// Function: ComponentConfElementChangeCommand::setNewValues()
 //-----------------------------------------------------------------------------
-void ComponentConfElementChangeCommand::undo()
+void ComponentConfElementChangeCommand::setNewValues(
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables,
+    QMap<QString, QString>& newElements)
 {
-    udo(componentInstance_->getConfigurableElementValues(), oldInstanceElements_);
-    udo(viewConfiguration_->getViewConfigurableElements(), oldViewElements_);
-}
-
-void ComponentConfElementChangeCommand::edo(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > currentConfigurables, QMap<QString, QString>& newElements)
-{
+    // If it turns out that there are too many new elements for CEVs...
     if (newElements.size() < currentConfigurables->size())
     {
+        // ...go through CEVs...
         foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurables)
         {
+            // ...and remove the ones that are not share a reference with no new element. They are removed ones.
             if (!newElements.contains(element->getReferenceId()))
             {
                 currentConfigurables->removeAll(element);
@@ -834,21 +861,25 @@ void ComponentConfElementChangeCommand::edo(QSharedPointer<QList<QSharedPointer<
         }
     }
 
+    // Then go through each new element...
     QMapIterator<QString, QString> elementIterator(newElements);
     while (elementIterator.hasNext())
     {
+        // ...and find a matching one in the CEVs.
         elementIterator.next();
         bool elementExists = false;
         foreach (QSharedPointer<ConfigurableElementValue> element, *currentConfigurables)
         {
             if (elementIterator.key() == element->getReferenceId())
             {
+                // If a matching CEV is found, set its value.
                 element->setConfigurableValue(elementIterator.value());
                 elementExists = true;
                 break;
             }
         }
 
+        // If no matching CEV is found, create a new one.
         if (!elementExists)
         {
             QSharedPointer<ConfigurableElementValue> newElement (
@@ -856,15 +887,6 @@ void ComponentConfElementChangeCommand::edo(QSharedPointer<QList<QSharedPointer<
             currentConfigurables->append(newElement);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentConfElementChangeCommand::redo()
-//-----------------------------------------------------------------------------
-void ComponentConfElementChangeCommand::redo()
-{
-    edo(componentInstance_->getConfigurableElementValues(), newInstanceElements_);
-    edo(viewConfiguration_->getViewConfigurableElements(), newViewElements_);
 }
 
 //-----------------------------------------------------------------------------
