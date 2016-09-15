@@ -104,9 +104,12 @@ void ConfigurableElementsModel::setComponent(QSharedPointer<Component> component
         currentElementValues_.insert(element->getReferenceId(), element->getConfigurableValue());
     }
 
-    foreach (QSharedPointer<ConfigurableElementValue> element, *viewConfiguration->getViewConfigurableElements())
+    if (viewConfiguration)
     {
-        currentElementValues_.insert(element->getReferenceId(), element->getConfigurableValue());
+        foreach (QSharedPointer<ConfigurableElementValue> element, *viewConfiguration->getViewConfigurableElements())
+        {
+            currentElementValues_.insert(element->getReferenceId(), element->getConfigurableValue());
+        }
     }
 
 	setupConfigurableElements();

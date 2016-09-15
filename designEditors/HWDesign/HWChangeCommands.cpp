@@ -765,10 +765,13 @@ QUndoCommand(parent),
         oldInstanceElements_.insert(element->getReferenceId(), element->getConfigurableValue());
     }
 
-    // The existing CEVs become the old elements.
-    foreach (QSharedPointer<ConfigurableElementValue> element, *viewConfiguration_->getViewConfigurableElements())
+    if (viewConfiguration_)
     {
-        oldViewElements_.insert(element->getReferenceId(), element->getConfigurableValue());
+        // The existing CEVs become the old elements.
+        foreach (QSharedPointer<ConfigurableElementValue> element, *viewConfiguration_->getViewConfigurableElements())
+        {
+            oldViewElements_.insert(element->getReferenceId(), element->getConfigurableValue());
+        }
     }
 }
 
@@ -785,7 +788,11 @@ ComponentConfElementChangeCommand::~ComponentConfElementChangeCommand()
 void ComponentConfElementChangeCommand::undo()
 {
     setOldValues(componentInstance_->getConfigurableElementValues(), oldInstanceElements_);
-    setOldValues(viewConfiguration_->getViewConfigurableElements(), oldViewElements_);
+
+    if (viewConfiguration_)
+    {
+        setOldValues(viewConfiguration_->getViewConfigurableElements(), oldViewElements_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -794,7 +801,11 @@ void ComponentConfElementChangeCommand::undo()
 void ComponentConfElementChangeCommand::redo()
 {
     setNewValues(componentInstance_->getConfigurableElementValues(), newInstanceElements_);
-    setNewValues(viewConfiguration_->getViewConfigurableElements(), newViewElements_);
+
+    if (viewConfiguration_)
+    {
+        setNewValues(viewConfiguration_->getViewConfigurableElements(), newViewElements_);
+    }
 }
 
 //-----------------------------------------------------------------------------
