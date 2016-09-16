@@ -96,6 +96,9 @@ struct GenerationComponent
     QString aub;
     QString totalRange;
     QList<QSharedPointer<GenerationRemapState> > remapStates;
+
+    //! The path for the document
+    QString path_;
 };
 
 struct GenerationWire

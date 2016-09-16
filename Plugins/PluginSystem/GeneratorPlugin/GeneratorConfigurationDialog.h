@@ -18,17 +18,19 @@
 #include <QLineEdit>
 #include <QGroupBox>
 #include <QLabel>
+#include <QTableWidget>
 
 #include "ViewSelectionWidget.h"
 
 class GeneratorConfiguration;
 
 //-----------------------------------------------------------------------------
-//! Dialog for setting file generation options.
+//! Interface model for setting file generation options.
 //-----------------------------------------------------------------------------
 class GeneratorConfigurationDialog : public QDialog
 {
     Q_OBJECT
+
 public:
 
 	//! The constructor.
@@ -42,6 +44,10 @@ public slots:
     virtual void accept();
 
 private slots:
+
+    void onViewChanged();
+
+    void onOutputFilesChanged();
 
     void onInterfaceGenerationStateChanged(int state);
 
@@ -60,17 +66,20 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	// The "model" for the dialog.
+	//! The "model" for the dialog.
 	QSharedPointer<GeneratorConfiguration> configuration_;
 
-	// Editor for the path of the generated file.
+	//! Editor for the path of the generated file.
 	QLineEdit* pathEditor_;
 
-	// Widget for selecting view-component instantiation-file set -tuple.
+	//! Widget for selecting view-component instantiation-file set -tuple.
 	ViewSelectionWidget* viewSelection_;
 
-	// Warning is display here, namely for an existing file being overwritten.
+	//! Warning is display here, namely for an existing file being overwritten.
 	QLabel* generalWarningLabel_;
+
+    //! Table used to display all needed files.
+    QTableWidget* fileTable_;
 };
 
 #endif //GENERATORCONFIGURATIONDIALOG_H

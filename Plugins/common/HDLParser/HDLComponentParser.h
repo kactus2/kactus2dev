@@ -40,12 +40,14 @@ public:
 	 *      @param [in] component               The component to write to Verilog.
      *      @param [in] activeView              The active view for the component.
 	 */
-	HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component, QSharedPointer<View> activeView);
+	HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component);
 
 	//! The destructor.
 	~HDLComponentParser();
 
-    QSharedPointer<GenerationComponent> parseComponent();
+    void parseComponent(QSharedPointer<View> activeView);
+
+    QSharedPointer<GenerationComponent> getParsedComponent(){return retval_;}
 
     /*!
      *  Sorts list of parameters based on their interdependencies.
@@ -83,8 +85,8 @@ private:
     //! The component library.
     LibraryInterface* library_;
 
-    //! The component to write to Verilog module.
-    QSharedPointer<Component> component_;
+    //! The componet parsed for generation.
+    QSharedPointer<GenerationComponent> retval_;
 
     //! The component active view.
     QSharedPointer<View> activeView_;

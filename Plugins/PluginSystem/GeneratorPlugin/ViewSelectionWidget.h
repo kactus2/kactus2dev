@@ -34,6 +34,13 @@ public:
 	// Returns true, if the selections are fine by this widget. Will also update texts if needed.
 	bool validSelections() const;
 
+signals:
+	
+    /*!
+    *  Emitted when the view is changed.
+     */
+	void viewChanged() const;
+
 private slots:
 
     void onFileSetStateChanged(bool on);

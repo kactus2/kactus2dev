@@ -16,7 +16,6 @@
 #include <Plugins/common/NameGenerationPolicy.h>
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -36,7 +35,7 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::VerilogGeneratorPlugin()
 //-----------------------------------------------------------------------------
-VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0), utility_(0), topComponent_(0), outputFile_()
+VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0), utility_(0), topComponent_(0)
 {
 }
 
@@ -177,45 +176,58 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         return;
     }
 
-	// Try to configure the generation, giving possible views and instantiations as parameters.
-    if (couldConfigure(findPossibleViews(topComponent_, design, designConfig),
-		topComponent_->getComponentInstantiations(), topComponent_->getFileSets()))
+    bool designGeneration = (design || designConfig);
+
+    QSharedPointer<HDLComponentParser> componentParser =
+        QSharedPointer<HDLComponentParser>(new HDLComponentParser(utility_->getLibraryInterface(), topComponent_));
+    QSharedPointer<HDLDesignParser> designParser;
+
+    if (designGeneration)
     {
-		// Get the resulting configuration, it is obtained with this way to make it compatible with the tests.
-        QSharedPointer<GeneratorConfiguration> configuration = getConfiguration();
+        designParser = QSharedPointer<HDLDesignParser>(new HDLDesignParser(utility_->getLibraryInterface(), design, designConfig));
+    }
 
-		// The configuration will know the target path for the resulting file.
-        outputFile_ = configuration->getOutputPath();
-
-        utility_->printInfo(tr("Generation started %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
-        
-		VerilogGenerator generator(utility->getLibraryInterface(), configuration->getInterfaceGeneration());
-		connect(&generator, SIGNAL(reportError(const QString&)), 
-			this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
-
-        generator.parse(topComponent_, configuration->getViewSelection()->getView(), outputFile_,
-			design, designConfig);
-
-		generator.generate(outputFile_, getVersion(), utility_->getKactusVersion());
-
-        utility_->printInfo(tr("Finished writing file %1.").arg(outputFile_));
-
-		// If so desired in the configuration, the resulting file will be added to the file set.
-        if (configuration->getViewSelection()->getSaveToFileset())
-        {
-            addGeneratedFileToFileSet(configuration->getViewSelection());
-        }
-
-        insertFileDescription();
-
-        saveChanges();
-
-        utility_->printInfo(tr("Generation complete."));
-    }    
-    else
+	// Try to configure the generation, giving possible views and instantiations as parameters.
+    if (!couldConfigure(findPossibleViews(topComponent_, design, designConfig),
+		topComponent_->getComponentInstantiations(), topComponent_->getFileSets(), componentParser, designParser))
     {
         utility_->printInfo(tr("Generation aborted."));
+        return;
     }
+
+	// Get the resulting configuration, it is obtained with this way to make it compatible with the tests.
+    QSharedPointer<GeneratorConfiguration> configuration = getConfiguration();
+
+    utility_->printInfo(tr("Generation started %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+        
+	VerilogGenerator generator(utility->getLibraryInterface(), configuration->getInterfaceGeneration());
+	connect(&generator, SIGNAL(reportError(const QString&)), 
+		this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
+
+    if (designGeneration)
+    {
+        generator.parseDesign(designParser->getParsedDesigns());
+    }
+    else
+    {
+        generator.parseComponent(componentParser->getParsedComponent());
+    }
+
+	generator.generate(getVersion(), utility_->getKactusVersion());
+
+    utility_->printInfo(tr("Finished writing the file(s)."));
+
+	// If so desired in the configuration, the resulting file will be added to the file set.
+    if (configuration->getViewSelection()->getSaveToFileset())
+    {
+        addGeneratedFileToFileSet(configuration->getViewSelection());
+    }
+
+    insertFileDescription();
+
+    saveChanges();
+
+    utility_->printInfo(tr("Generation complete."));
 }
 
 //-----------------------------------------------------------------------------
@@ -223,7 +235,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 //-----------------------------------------------------------------------------
 void VerilogGeneratorPlugin::insertFileDescription()
 {
-    QList<QSharedPointer<File> > filecands = topComponent_->getFiles(relativePathFromXmlToFile(outputFile_));
+    /*QList<QSharedPointer<File> > filecands = topComponent_->getFiles(relativePathFromXmlToFile(outputFile_));
 
     if (filecands.size() > 0)
     {
@@ -240,7 +252,7 @@ void VerilogGeneratorPlugin::insertFileDescription()
         QString time = generationTime.time().toString("hh:mm:ss");
 
         file->setDescription("Generated at " + time + " on " + date + " by Kactus2. " + desc);
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------
@@ -280,7 +292,9 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossib
 //-----------------------------------------------------------------------------
 bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
 	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
-	QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets)
+	QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets,
+    QSharedPointer<HDLComponentParser> componentParser,
+    QSharedPointer<HDLDesignParser> designParser)
 {
     if (possibleViews->isEmpty())
 	{
@@ -296,7 +310,8 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 
     viewSelect->setSaveToFileset(outputFileAndViewShouldBeAddedToTopComponent());
 
-    configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration(viewSelect));
+    configuration_ = QSharedPointer<GeneratorConfiguration>(
+        new GeneratorConfiguration(viewSelect, componentParser, designParser));
     configuration_->setOutputPath(defaultOutputPath());
 
     GeneratorConfigurationDialog dialog(configuration_, utility_->getParentWidget());
@@ -338,8 +353,8 @@ QString VerilogGeneratorPlugin::defaultOutputPath() const
 //-----------------------------------------------------------------------------
 bool VerilogGeneratorPlugin::outputFileAndViewShouldBeAddedToTopComponent() const
 {
-    QString filePath = relativePathFromXmlToFile(outputFile_);
-    return !topComponent_->hasFile(filePath);
+    //QString filePath = relativePathFromXmlToFile(outputFile_);
+    return true;//!topComponent_->hasFile(filePath);
 }
 
 //-----------------------------------------------------------------------------
@@ -381,10 +396,10 @@ void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<ViewSelect
 	}
 
 	// Need path for the file.
-	QString filePath = relativePathFromXmlToFile(outputFile_);
+	/*QString filePath = relativePathFromXmlToFile(outputFile_);
 	// Add the new file to the file set.
 	QSettings settings;
-	fileSet->addFile(filePath, settings);
+	fileSet->addFile(filePath, settings);*/
 
 	// Make sure that the instantiation language is verilog.
 	instantiation->setLanguage("verilog");

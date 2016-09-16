@@ -17,20 +17,35 @@
 #include <QSharedPointer>
 
 #include "ViewSelection.h"
-
+#include <Plugins/common/HDLParser/HDLComponentParser.h>
+#include <Plugins/common/HDLParser/HDLDesignParser.h>
 
 //-----------------------------------------------------------------------------
 //! Container class for generator configuration.
 //-----------------------------------------------------------------------------
-class GeneratorConfiguration 
+class GeneratorConfiguration : public QObject
 {
+    Q_OBJECT
+
 public:
 
 	//! The constructor.
-	GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection);
+    GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection,
+        QSharedPointer<HDLComponentParser> componentParser,
+        QSharedPointer<HDLDesignParser> designParser);
 
 	//! The destructor.
 	~GeneratorConfiguration();
+    
+    /*!
+     *  Parses the documents so that we know what will be generated.
+     */
+    void parseDocuments();
+    
+    /*!
+     *  Gets reference to the output file names.
+     */
+    QSharedPointer<QStringList> getDocumentNames();
 	
     /*!
      *  Gets the view selection data.
@@ -61,6 +76,13 @@ public:
      */
     QString getOutputPath() const;
 
+signals:
+	
+    /*!
+     *  Emitted when output files have changed.
+     */
+	void outputFilesChanged() const;
+
 private:
 
 	// Disable copying.
@@ -70,8 +92,13 @@ private:
     //! The view selection configuration.
     QSharedPointer<ViewSelection> viewSelection_;
 
-    //! The path for output file.
+    QSharedPointer<HDLComponentParser> componentParser_;
+    QSharedPointer<HDLDesignParser> designParser_;
+
+    //! The base directory for output paths.
     QString outputPath_;
+    //! The paths of individual output files.
+    QSharedPointer<QStringList> outputPaths_;
 
     //! Flag for indicating if the output file should be saved to top component file sets.
     bool generateInterface_;

@@ -318,6 +318,22 @@ void DesignConfiguration::removeViewConfiguration(QString const& instanceName)
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignConfiguration::getViewConfiguration()
+//-----------------------------------------------------------------------------
+QSharedPointer<ViewConfiguration> DesignConfiguration::getViewConfiguration(QString const& instanceName) const
+{
+    foreach (QSharedPointer<ViewConfiguration> configuration, *viewConfigurations_)
+    {
+        if (configuration->getInstanceName() == instanceName)
+        {
+            return configuration;
+        }
+    }
+
+    return QSharedPointer<ViewConfiguration>();
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getActiveView()
 //-----------------------------------------------------------------------------
 QString DesignConfiguration::getActiveView(QString const& instanceName) const

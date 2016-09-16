@@ -37,36 +37,14 @@
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::HDLParser()
 //-----------------------------------------------------------------------------
-HDLDesignParser::HDLDesignParser(LibraryInterface* library, QSharedPointer<GenerationComponent> topComponent,
-    QSharedPointer<GenerationInstance> topInstance, QSharedPointer<View> topComponentView,
-    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) : QObject(0),
+HDLDesignParser::HDLDesignParser(LibraryInterface* library, QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConf) : QObject(0),
 library_(library),
-topInstance_(topInstance),
-topComponentView_(topComponentView),
 design_(design),
 designConf_(designConf),
 retval_(new GenerationDesign),
 topFinder_(new ListParameterFinder)
 {
-    // Set the top level component.
-    retval_->topComponent_ = topComponent;
-
-    QSharedPointer<QList<QSharedPointer<Parameter> > > toplist;
-    
-    // If the top component is based on an instance, use parameters of the instance instead.
-    if (topInstance)
-    {
-        toplist = QSharedPointer<QList<QSharedPointer<Parameter> > >
-            (new QList<QSharedPointer<Parameter> >(topInstance_->parameters));
-    }
-    else
-    {
-        toplist = QSharedPointer<QList<QSharedPointer<Parameter> > >
-            (new QList<QSharedPointer<Parameter> >(topComponent->formattedParameters));
-    }
-
-    // Set the list for the finder.
-    topFinder_->setParameterList(toplist);
 }
 
 //-----------------------------------------------------------------------------
@@ -79,8 +57,28 @@ HDLDesignParser::~HDLDesignParser()
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::parseComponentInstances()
 //-----------------------------------------------------------------------------
-void HDLDesignParser::parseDesign(QList<QSharedPointer<GenerationDesign> >& parsedDesigns)
+void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topComponent,
+    QSharedPointer<View> topComponentView, QSharedPointer<GenerationInstance> topInstance)
 {
+    // Set the top level component.
+    retval_->topComponent_ = topComponent;
+
+    QSharedPointer<QList<QSharedPointer<Parameter> > > toplist;
+
+    // If the top component is based on an instance, use parameters of the instance instead.
+    if (topInstance)
+    {
+        toplist = QSharedPointer<QList<QSharedPointer<Parameter> > >
+            (new QList<QSharedPointer<Parameter> >(topInstance->parameters));
+    }
+    else
+    {
+        toplist = QSharedPointer<QList<QSharedPointer<Parameter> > >
+            (new QList<QSharedPointer<Parameter> >(topComponent->formattedParameters));
+    }
+
+    // Set the list for the finder.
+    topFinder_->setParameterList(toplist);
 	parseComponentInstances();
 
 	findInterconnections();
@@ -91,9 +89,9 @@ void HDLDesignParser::parseDesign(QList<QSharedPointer<GenerationDesign> >& pars
 
 	parseHierarchicallAdhocs();
 
-    parsedDesigns.append(retval_);
+    parsedDesigns_.append(retval_);
 
-    if (parsedDesigns.size() >= 10000)
+    if (parsedDesigns_.size() >= 10000)
     {
         return;
     }
@@ -102,8 +100,10 @@ void HDLDesignParser::parseDesign(QList<QSharedPointer<GenerationDesign> >& pars
     {
         if (gi->design_ && gi->designConfiguration_)
         {
-            HDLDesignParser parser(library_, gi->component, gi, gi->activeView_, gi->design_, gi->designConfiguration_);
-            parser.parseDesign(parsedDesigns);
+            HDLDesignParser parser(library_, gi->design_, gi->designConfiguration_);
+            parser.parseDesign(gi->component, gi->activeView_, gi);
+
+            parsedDesigns_.append(parser.getParsedDesigns());
         }
     }
 }
@@ -142,8 +142,9 @@ void HDLDesignParser::parseComponentInstances()
             findDesignConfigurationInstantiation(activeView->getDesignConfigurationInstantiationRef());
 
         // Parse the component first
-        HDLComponentParser componentParser(library_, component, activeView);
-        QSharedPointer<GenerationComponent> gc = componentParser.parseComponent();
+        HDLComponentParser componentParser(library_, component);
+        componentParser.parseComponent(activeView);
+        QSharedPointer<GenerationComponent> gc = componentParser.getParsedComponent();
 
 		// Mop up this information, append to the list.
 		QSharedPointer<GenerationInstance> gi(new GenerationInstance);
@@ -177,7 +178,18 @@ void HDLDesignParser::parseComponentInstances()
                     paraValue = cev->getConfigurableValue();
 					break;
 				}
-			}
+            }
+
+            foreach(QSharedPointer<ConfigurableElementValue> cev,
+                *designConf_->getViewConfiguration(instance->getInstanceName())->getViewConfigurableElements())
+            {
+                // If a CEV refers to the parameter, its value shall be the value of the parameter.
+                if (cev->getReferenceId() == parameter->getValueId())
+                {
+                    paraValue = cev->getConfigurableValue();
+                    break;
+                }
+            }
 
 			// Make a copy of the parameter.
 			QSharedPointer<Parameter> parameterCopy(new Parameter(*parameter));

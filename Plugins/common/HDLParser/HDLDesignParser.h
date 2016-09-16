@@ -41,14 +41,16 @@ class HDLDesignParser : public QObject
 
 public:
     //! The constructor.
-	HDLDesignParser(LibraryInterface* library, QSharedPointer<GenerationComponent> topComponent,
-        QSharedPointer<GenerationInstance> topInstance, QSharedPointer<View> topComponentView,
-        QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf);
+    HDLDesignParser(LibraryInterface* library, QSharedPointer<Design> design,
+        QSharedPointer<DesignConfiguration> designConf);
 
     //! The destructor.
     ~HDLDesignParser();
 
-	void parseDesign(QList<QSharedPointer<GenerationDesign> >& parsedDesigns);
+    void parseDesign(QSharedPointer<GenerationComponent> topComponent, QSharedPointer<View> topComponentView,
+        QSharedPointer<GenerationInstance> topInstance = QSharedPointer<GenerationInstance>());
+
+     QList<QSharedPointer<GenerationDesign> > getParsedDesigns(){return parsedDesigns_;}
 
 signals:
 	
@@ -113,9 +115,6 @@ private:
      //! The component library.
      LibraryInterface* library_;
 
-     //! The active instance of the top level component.
-     QSharedPointer<GenerationInstance> topInstance_;
-
      //! The active view for top component.
      QSharedPointer<View> topComponentView_;
 
@@ -124,6 +123,8 @@ private:
 
 	 //! The design configuration to parse.
 	 QSharedPointer<DesignConfiguration> designConf_;
+     
+     QList<QSharedPointer<GenerationDesign> > parsedDesigns_;
 
      //! The parsed design.
      QSharedPointer<GenerationDesign> retval_;

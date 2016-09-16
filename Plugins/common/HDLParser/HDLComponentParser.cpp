@@ -39,16 +39,12 @@
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::HDLComponentParser
 //-----------------------------------------------------------------------------
-HDLComponentParser::HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component,
-    QSharedPointer<View> activeView) :
+HDLComponentParser::HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component) :
 library_(library),
-component_(component),
-activeView_(activeView),
+retval_(new GenerationComponent),
 sorter_(new InterfaceDirectionNameSorter)
 {
-    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(component));
-    parameterFinder->setActiveView(activeView);
-    formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
+    retval_->component = component;
 }
 
 //-----------------------------------------------------------------------------
@@ -61,23 +57,19 @@ HDLComponentParser::~HDLComponentParser()
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::parseComponent
 //-----------------------------------------------------------------------------
-QSharedPointer<GenerationComponent> HDLComponentParser::parseComponent()
+void HDLComponentParser::parseComponent(QSharedPointer<View> activeView)
 {
-    QSharedPointer<GenerationComponent> retval(new GenerationComponent);
-    retval->component = component_;
+    activeView_ = activeView;
 
-    /*QFileInfo componentQfi = QFileInfo(outputPath);
-    QString componentPath = componentQfi.absolutePath() + "/";
-    QFileInfo absDefQfi = QFileInfo(library_->getPath(*absRef));
-    gif->fileName = General::getRelativePath(componentPath,absDefQfi.absolutePath()+ "/" + absDef->getFileName());*/
+    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(retval_->component));
+    parameterFinder->setActiveView(activeView);
+    formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
 
-    parseInterfaces(retval);
-    parsePorts(retval);
-    parseMemoryMaps(retval);
-    findParameters(retval);
-    parseRemapStates(retval);
-
-    return retval;
+    parseInterfaces(retval_);
+    parsePorts(retval_);
+    parseMemoryMaps(retval_);
+    findParameters(retval_);
+    parseRemapStates(retval_);
 }
 
 //-----------------------------------------------------------------------------
@@ -159,7 +151,7 @@ void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& refPa
 //-----------------------------------------------------------------------------
 void HDLComponentParser::parseInterfaces(QSharedPointer<GenerationComponent> retval)
 {
-    foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
+    foreach(QSharedPointer<BusInterface> busInterface, *retval_->component->getBusInterfaces())
     {
         QSharedPointer<GenerationInterface> gif(new GenerationInterface);
         gif->description = busInterface->description();
@@ -201,14 +193,14 @@ void HDLComponentParser::parseInterfaces(QSharedPointer<GenerationComponent> ret
 void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval)
 {
     // Pick the ports in sorted order.
-    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(component_);
+    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(retval_->component);
 
     foreach (QSharedPointer<Port> cport, ports)
     {
         QSharedPointer<GenerationPort> gport(new GenerationPort);
 
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-            component_->getInterfacesUsedByPort(cport->name());
+            retval_->component->getInterfacesUsedByPort(cport->name());
 
         // Cull all interfaces that utilize the port.
         foreach (QSharedPointer<BusInterface> busInterface, *busInterfaces)
@@ -242,12 +234,12 @@ void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval)
 void HDLComponentParser::parseMemoryMaps(QSharedPointer<GenerationComponent> target) const
 {
     // TODO: replace with a foreach structure
-    if (component_->getMemoryMaps()->size() < 1)
+    if (retval_->component->getMemoryMaps()->size() < 1)
     {
         return;
     }
 
-	QSharedPointer<MemoryMap> memmap = component_->getMemoryMaps()->first();
+	QSharedPointer<MemoryMap> memmap = retval_->component->getMemoryMaps()->first();
 
 	// The AUB is shared between all remap states.
 	target->aub = memmap->getAddressUnitBits();
@@ -368,9 +360,9 @@ void HDLComponentParser::findParameters(QSharedPointer<GenerationComponent> targ
 	}
 
 	QSharedPointer<ComponentInstantiation> currentInsta =
-		component_->getModel()->findComponentInstantiation(activeView_->getComponentInstantiationRef());
+		retval_->component->getModel()->findComponentInstantiation(activeView_->getComponentInstantiationRef());
 
-    foreach(QSharedPointer<Parameter> parameter, *component_->getParameters())
+    foreach(QSharedPointer<Parameter> parameter, *retval_->component->getParameters())
     {
         target->originalParameters.append(parameter);
     }
@@ -406,12 +398,12 @@ void HDLComponentParser::findParameters(QSharedPointer<GenerationComponent> targ
 void HDLComponentParser::parseRemapStates(QSharedPointer<GenerationComponent> target) const
 {
     // TODO: replace with a foreach structure
-    if (component_->getMemoryMaps()->size() < 1)
+    if (retval_->component->getMemoryMaps()->size() < 1)
     {
         return;
     }
 
-    QSharedPointer<MemoryMap> memmap = component_->getMemoryMaps()->first();
+    QSharedPointer<MemoryMap> memmap = retval_->component->getMemoryMaps()->first();
 
     // Each remap is may have a remap state.
     foreach (QSharedPointer<MemoryRemap> remap, *memmap->getMemoryRemaps())
@@ -421,7 +413,7 @@ void HDLComponentParser::parseRemapStates(QSharedPointer<GenerationComponent> ta
         QSharedPointer<RemapState> state;
         
         // Try to match the remap state reference to a remap state within the component.
-        foreach(QSharedPointer<RemapState> currentState, *component_->getRemapStates())
+        foreach(QSharedPointer<RemapState> currentState, *retval_->component->getRemapStates())
         {
             if (currentState->name() == stateName)
             {
@@ -447,7 +439,7 @@ void HDLComponentParser::parseRemapStates(QSharedPointer<GenerationComponent> ta
            QSharedPointer<QPair<QSharedPointer<Port>,QString> > parsedPort(new QPair<QSharedPointer<Port>,QString>);
            
            // Pick the port name, and the value needed for it to remap state become effective.
-           parsedPort->first = component_->getPort(rmport->getPortNameRef());
+           parsedPort->first = retval_->component->getPort(rmport->getPortNameRef());
            parsedPort->second = formatter_->formatReferringExpression(rmport->getValue());
 
            grms->ports.append(parsedPort);

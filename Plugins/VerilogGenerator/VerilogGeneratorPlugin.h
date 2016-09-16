@@ -16,6 +16,7 @@
 
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -24,7 +25,6 @@
 #include <QtPlugin>
 
 class Component;
-class GeneratorConfiguration;
 class ViewSelection;
 class Document;
 class View;
@@ -146,13 +146,16 @@ protected:
      *  Checks if the generator could be configured.
      *
 	 *      @param [in] possibleViews			The list of possible views for generation.
-	 *      @param [in] possibleInstantiations	The list of possible instantiations for generation.
+     *      @param [in] possibleInstantiations	The list of possible instantiations for generation.
+     *      @param [in] possibleFileSets	    The list of possible file sets for generation.
      *
      *      @return True, if configuration was successful, otherwise false.
      */
     virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
 		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
-		QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets);
+        QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets,
+        QSharedPointer<HDLComponentParser> componentParser,
+        QSharedPointer<HDLDesignParser> designParser);
 
     /*!
      *  Gets the configuration for the generation.
@@ -232,9 +235,6 @@ private:
 
     //! The top component for which to run the generation.
     QSharedPointer<Component> topComponent_;
-
-    //! The path to selected output file.
-    QString outputFile_;
 
     //! The configuration for file generation.
     QSharedPointer<GeneratorConfiguration> configuration_;

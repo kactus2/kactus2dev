@@ -31,7 +31,6 @@
 
 #include <QDateTime>
 #include <QFileInfo>
-#include "../../common/HDLParser/HDLComponentParser.h"
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()
@@ -53,56 +52,50 @@ VerilogGenerator::~VerilogGenerator()
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogGenerator::parse()
+// Function: VerilogGenerator::parseComponent()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::parse(QSharedPointer<Component> component, QSharedPointer<View> topComponentView, 
-	QString const& outputPath /*= QString("")*/, QSharedPointer<Design> design /*= QSharedPointer<Design>()*/,
-	QSharedPointer<DesignConfiguration> designConf /*= QSharedPointer<DesignConfiguration>()*/ )
+void VerilogGenerator::parseComponent(QSharedPointer<GenerationComponent> gc)
 {
-    HDLComponentParser pars(library_, component, topComponentView);
-    QSharedPointer<GenerationComponent> gc = pars.parseComponent();
+    // If we are not generating based on a design, we must parse the existing implementation.
+    QString implementation;
+    QString postModule;
 
-    if (design && designConf)
+    if (!selectImplementation(gc->path_, implementation, postModule))
     {
-        // Parse the design, using the provided configuration and the top component.
-        HDLDesignParser parser(library_, gc, QSharedPointer<GenerationInstance>(), topComponentView, design, designConf);
-        QList<QSharedPointer<GenerationDesign> > designs;
-        parser.parseDesign(designs);
-
-        foreach (QSharedPointer<GenerationDesign> design, designs)
-        {
-            QSharedPointer<VerilogDocument> document = initializeWriters(design->topComponent_);
-
-            createDesignWriters(design, document);
-
-            // Finally, add them to the top writer in desired order.
-            addWritersToTopInDesiredOrder(document);
-
-            documents_.append(document);
-        }
+        // If parser says no-go, we dare do nothing.
+        return;
     }
-	else
-	{
-		// If we are not generating based on a design, we must parse the existing implementation.
-		QString implementation;
-		QString postModule;
 
-		if (!selectImplementation(outputPath, implementation, postModule))
-		{
-			// If parser says no-go, we dare do nothing.
-			return;
-		}
+    QSharedPointer<VerilogDocument> document = initializeWriters(gc);
+    document->fileName_ = gc->path_;
+    documents_.append(document);
 
-        QSharedPointer<VerilogDocument> document = initializeWriters(gc);
+    // Next comes the implementation.
+    QSharedPointer<TextBodyWriter> implementationWriter(new TextBodyWriter(implementation));
+    document->topWriter_->setImplementation(implementationWriter);
 
-		// Next comes the implementation.
-		QSharedPointer<TextBodyWriter> implementationWriter(new TextBodyWriter(implementation));
-		document->topWriter_->setImplementation(implementationWriter);
+    // Also write any stuff that comes after the actual module.
+    QSharedPointer<TextBodyWriter> postModuleWriter(new TextBodyWriter(postModule));
+    document->topWriter_->setPostModule(postModuleWriter);
+}
 
-		// Also write any stuff that comes after the actual module.
-		QSharedPointer<TextBodyWriter> postModuleWriter(new TextBodyWriter(postModule));
-		document->topWriter_->setPostModule(postModuleWriter);
-	}
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::parseDesign()
+//-----------------------------------------------------------------------------
+void VerilogGenerator::parseDesign(QList<QSharedPointer<GenerationDesign> >& designs)
+{
+    foreach (QSharedPointer<GenerationDesign> design, designs)
+    {
+        QSharedPointer<VerilogDocument> document = initializeWriters(design->topComponent_);
+        document->fileName_ = design->topComponent_->path_;
+
+        createDesignWriters(design, document);
+
+        // Finally, add them to the top writer in desired order.
+        addWritersToTopInDesiredOrder(document);
+
+        documents_.append(document);
+    }
 }
 
 void VerilogGenerator::createDesignWriters(QSharedPointer<GenerationDesign> design, QSharedPointer<VerilogDocument> document)
@@ -287,8 +280,7 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::generate()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::generate(QString const& outputPath, QString const& generatorVersion /*= ""*/,
-	QString const& kactusVersion /*= ""*/) const
+void VerilogGenerator::generate(QString const& generatorVersion /*= ""*/, QString const& kactusVersion /*= ""*/) const
 {
     if (nothingToWrite())
 	{
@@ -298,10 +290,10 @@ void VerilogGenerator::generate(QString const& outputPath, QString const& genera
 
     foreach(QSharedPointer<VerilogDocument> document, documents_)
     {
-        QFile outputFile(outputPath + "/" + document->fileName_); 
+        QFile outputFile(document->fileName_); 
         if (!outputFile.open(QIODevice::WriteOnly))
         {
-            emit reportError(tr("Could not open output file for writing: %1").arg(outputPath));
+            emit reportError(tr("Could not open output file for writing: %1").arg(document->fileName_));
             return;
         }
 
@@ -320,13 +312,11 @@ void VerilogGenerator::generate(QString const& outputPath, QString const& genera
 //-----------------------------------------------------------------------------
 QSharedPointer<VerilogDocument> VerilogGenerator::initializeWriters(QSharedPointer<GenerationComponent> topComponent)
 {
-    QSharedPointer<VerilogDocument> retval(new VerilogDocument);
-
     QSettings settings;
     QString currentUser = settings.value("General/Username").toString();
     QString componentXmlPath = library_->getPath(topComponent->component->getVlnv());
 
-    retval->fileName_ = topComponent->component->getVlnv().getName() + ".v";
+    QSharedPointer<VerilogDocument> retval(new VerilogDocument);
 
     retval->headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent->component->getVlnv(), 
         componentXmlPath, currentUser, topComponent->component->getDescription()));

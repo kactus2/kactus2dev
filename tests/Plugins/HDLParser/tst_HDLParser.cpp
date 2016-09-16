@@ -2100,13 +2100,12 @@ void tst_HDLParser::testInstanceParametersAreCulled()
 
     senderComponent->getComponentInstantiations()->append(instantiation);
     senderComponent->getViews()->append(activeView);
-
-    QSharedPointer<ComponentInstance> senderInstance = design_->getComponentInstances()->first();
     
     QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
     parameterOverride->setReferenceId("parameterId");
     parameterOverride->setConfigurableValue("2");
-    senderInstance->getConfigurableElementValues()->append(parameterOverride);
+
+    designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
@@ -2162,12 +2161,11 @@ void tst_HDLParser::testTopComponentParametersAreUtilized()
 	senderComponent->getComponentInstantiations()->append(instantiation);
 	senderComponent->getViews()->append(activeView);
 
-	QSharedPointer<ComponentInstance> senderInstance = design_->getComponentInstances()->first();
-
 	QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
 	parameterOverride->setReferenceId("parameterId");
-	parameterOverride->setConfigurableValue("componentParameterId");
-    senderInstance->getConfigurableElementValues()->append(parameterOverride);
+    parameterOverride->setConfigurableValue("componentParameterId");
+
+    designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
@@ -2222,12 +2220,11 @@ void tst_HDLParser::testInstanceComponentParametersAreUtilized()
 
 	senderComponent->getComponentInstantiations()->append(instantiation);
 
-	QSharedPointer<ComponentInstance> senderInstance = design_->getComponentInstances()->first();
-
 	QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
 	parameterOverride->setReferenceId("parameterId");
-	parameterOverride->setConfigurableValue("cpId");
-    senderInstance->getConfigurableElementValues()->append(parameterOverride);
+    parameterOverride->setConfigurableValue("cpId");
+
+    designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 
@@ -2282,12 +2279,11 @@ void tst_HDLParser::testParameterPropagationFromTop()
     senderComponent->getComponentInstantiations()->append(instantiation);
     senderComponent->getViews()->append(activeView);
 
-    QSharedPointer<ComponentInstance> senderInstance = design_->getComponentInstances()->first();
-
     QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue());
     parameterOverride->setReferenceId("parameterId");
     parameterOverride->setConfigurableValue("topID");
-    senderInstance->getConfigurableElementValues()->append(parameterOverride);
+
+    designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
     HDLComponentParser componentParser(&library_, topComponent_, topView_);
 

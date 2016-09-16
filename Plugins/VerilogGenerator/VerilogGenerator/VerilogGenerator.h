@@ -14,12 +14,6 @@
 
 #include "../veriloggeneratorplugin_global.h"
 
-#include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
-
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/View.h>
-
 #include <QTextStream>
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
 
@@ -64,7 +58,7 @@ struct VerilogDocument
 //-----------------------------------------------------------------------------
 // Verilog file generator.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT VerilogGenerator : public QObject
+class VerilogGenerator : public QObject
 {
 	Q_OBJECT
 
@@ -80,17 +74,24 @@ public:
      *
      *      @param [in] component           The component to parse for generation.
      *      @param [in] topComponentView    The component view to parse for generation.
-	 *      @param [in] design              The design to parse for generation.
-	 *      @param [in] designConf              The design configuration to parse for generation.
      *
-     *      @remark If parse() is not called before generate(), nothing is generated.
+     *      @remark If parsing is not called before generation, nothing is generated.
      */
-    void parse(QSharedPointer<Component> component, QSharedPointer<View> topComponentView, 
-        QString const& outputPath = QString(""), QSharedPointer<Design> design = QSharedPointer<Design>(),
-		QSharedPointer<DesignConfiguration> designConf = QSharedPointer<DesignConfiguration>());
+    void parseComponent(QSharedPointer<GenerationComponent> gc);
+
+    /*!
+     *  Parses a given design for generation.
+     *
+     *      @param [in] component           The component of the design.
+     *      @param [in] topComponentView    The component view to parse for generation.
+	 *      @param [in] design              The design to parse for generation.
+	 *      @param [in] designConf          The design configuration to parse for generation.
+     *
+     *      @remark If parsing is not called before generation, nothing is generated.
+     */
+    void parseDesign(QList<QSharedPointer<GenerationDesign> >& designs);
 
     void createDesignWriters(QSharedPointer<GenerationDesign> design, QSharedPointer<VerilogDocument> document);
-
 
     /*!
      *  Parses the module implementation out of verilog file given as output, if it already exists.
@@ -113,8 +114,7 @@ public:
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
-	void generate(QString const& outputPath, QString const& generatorVersion = "",
-		QString const& kactusVersion = "") const;
+	void generate(QString const& generatorVersion = "", QString const& kactusVersion = "") const;
 
 signals:
 	

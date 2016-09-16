@@ -20,6 +20,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QApplication>
 
 //-----------------------------------------------------------------------------
 // Function: ViewSelectionWidget::ViewSelectionWidget()
@@ -157,10 +158,12 @@ void ViewSelectionWidget::onViewChanged(QString const& selectedViewName)
 	if (index != -1)
     {
         instantiationSelection_->setItemData(instantiationSelection_->currentIndex(),
-            QColor(Qt::white), Qt::BackgroundRole);
+           QApplication::palette().brush(QPalette::Base), Qt::BackgroundRole);
 		instantiationSelection_->setCurrentIndex(index);
 		instantiationSelection_->setItemData(index, QColor(Qt::green), Qt::BackgroundRole);
-	}
+    }
+
+    emit viewChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -194,8 +197,16 @@ void ViewSelectionWidget::onInstantiationChanged(QString const& selectedInstanti
 //-----------------------------------------------------------------------------
 void ViewSelectionWidget::setLanguage(QString selectedLanguage)
 {
-    // Inform the language setting to user.
-	instantiationLanguage_->setText(selectedLanguage);
+    if (selectedLanguage.isEmpty())
+    {
+        // Make it more notable, if the selected language is empty
+        instantiationLanguage_->setText("Not specified");
+    }
+    else
+    {
+        // Inform the language setting to user.
+        instantiationLanguage_->setText(selectedLanguage);
+    }
 
     // No target language means no further reaction.
     if (configuration_->getTargetLanguage().isEmpty())

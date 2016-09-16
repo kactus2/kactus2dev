@@ -168,6 +168,15 @@ public:
 	virtual void removeViewConfiguration(QString const& instanceName);
 
     /*!
+	 *  Get the active view configuration for the given component instance.
+	 *
+	 *      @param [in] instanceName   Identifies the component instance.
+     *
+     *      @return The active view configuration.
+	 */
+	QSharedPointer<ViewConfiguration> getViewConfiguration(QString const& instanceName) const;
+
+    /*!
 	 *  Get the active view name for the given component instance.
 	 *
 	 *      @param [in] instanceName   Identifies the component instance.

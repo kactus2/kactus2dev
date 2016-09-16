@@ -18,8 +18,11 @@
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
-GeneratorConfiguration::GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection) :
-	viewSelection_(viewSelection), outputPath_(), generateInterface_(false)
+GeneratorConfiguration::GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection,
+    QSharedPointer<HDLComponentParser> componentParser,
+    QSharedPointer<HDLDesignParser> designParser) :
+	viewSelection_(viewSelection), componentParser_(componentParser), designParser_(designParser),
+    outputPath_(), outputPaths_(new QStringList), generateInterface_(false)
 {
 }
 
@@ -28,6 +31,44 @@ GeneratorConfiguration::GeneratorConfiguration(QSharedPointer<ViewSelection> vie
 //-----------------------------------------------------------------------------
 GeneratorConfiguration::~GeneratorConfiguration()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::parseDocuments()
+//-----------------------------------------------------------------------------
+void GeneratorConfiguration::parseDocuments()
+{
+    outputPaths_->clear();
+
+    componentParser_->parseComponent(viewSelection_->getView());
+
+    if (designParser_)
+    {
+        designParser_->parseDesign(componentParser_->getParsedComponent(), viewSelection_->getView());
+
+        foreach(QSharedPointer<GenerationDesign> design, designParser_->getParsedDesigns())
+        {
+            QString path = outputPath_ + "/" + design->topComponent_->component->getVlnv().getName();
+            outputPaths_->append(path);
+            design->topComponent_->path_ = path;
+        }
+    }
+    else
+    {
+        QString path = outputPath_ + "/" + componentParser_->getParsedComponent()->component->getVlnv().getName();
+        outputPaths_->append(path);
+        componentParser_->getParsedComponent()->path_ = path;
+    }
+
+    emit outputFilesChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getDocumentNames()
+//-----------------------------------------------------------------------------
+QSharedPointer<QStringList> GeneratorConfiguration::getDocumentNames()
+{
+    return outputPaths_;
 }
 
 //-----------------------------------------------------------------------------
