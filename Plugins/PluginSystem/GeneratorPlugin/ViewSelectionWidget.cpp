@@ -21,6 +21,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QApplication>
+#include <IPXACTmodels/Component/View.h>
 
 //-----------------------------------------------------------------------------
 // Function: ViewSelectionWidget::ViewSelectionWidget()
@@ -53,7 +54,7 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<ViewSelection> configura
 	// Widgets for choosing the component instantiation and the file set.
 	QFormLayout* selectionLayout = new QFormLayout();
 	filesetLayout->addLayout(selectionLayout);
-	selectionLayout->addRow(tr("Select component instantiation:"), instantiationSelection_);
+	selectionLayout->addRow(tr("Set component instantiation:"), instantiationSelection_);
 	selectionLayout->addRow(tr("Language of the instantiation:"), instantiationLanguage_);
 	selectionLayout->addRow(tr("Select file set:"), fileSetSelection_);
 	// Both are editable, in case a custom entry is desired.
@@ -174,7 +175,13 @@ void ViewSelectionWidget::onInstantiationChanged(QString const& selectedInstanti
     if (!configuration_->setInstantiation(selectedInstantiationName) && !selectedInstantiationName.isEmpty())
     {
         // Warn user that a new instantiation will be created.
-        instantiationWarningLabel_->setText(tr("New component instantiation '%1' will be created.").arg(
+        instantiationWarningLabel_->setText(tr("The view will be associated with new component instantiation '%1'.").arg(
+            selectedInstantiationName));
+    }
+    else if (configuration_->getView()->getComponentInstantiationRef() != selectedInstantiationName)
+    {
+        // Clear the warning.
+        instantiationWarningLabel_->setText(tr("The view will be associated with component instantiation '%1'.").arg(
             selectedInstantiationName));
     }
     else

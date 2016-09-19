@@ -220,9 +220,10 @@ void tst_HDLParser::testTopLevelComponent()
     addModuleParameter("dataWidth", "8");
     addModuleParameter("freq", "100000");
 
-    HDLComponentParser parser(&library_, topComponent_, topView_);
-
-    QSharedPointer<GenerationComponent> parsed = parser.parseComponent();
+    QSharedPointer<HDLComponentParser> componentParser =
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    componentParser->parseComponent(topView_);
+    QSharedPointer<GenerationComponent> parsed = componentParser->getParsedComponent();
 
     QCOMPARE( parsed->formattedParameters.size(), 2 );
     QCOMPARE( parsed->formattedParameters.at(0)->name(), QString("dataWidth") );
@@ -257,9 +258,10 @@ void tst_HDLParser::testTopLevelComponentExpressions()
     port->setRightBound("2+5");
     topComponent_->getPorts()->append(port);
 
-    HDLComponentParser parser(&library_, topComponent_, topView_);
-
-    QSharedPointer<GenerationComponent> parsed = parser.parseComponent();
+    QSharedPointer<HDLComponentParser> componentParser =
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    componentParser->parseComponent(topView_);
+    QSharedPointer<GenerationComponent> parsed = componentParser->getParsedComponent();
 
     QCOMPARE( parsed->formattedParameters.size(), 1 );
     QCOMPARE( parsed->formattedParameters.at(0)->name(), QString("module") );
@@ -330,11 +332,15 @@ void tst_HDLParser::testHierarchicalConnections()
     QSharedPointer<View> activeView = addTestComponentToLibrary(instanceVlnv);
     addInstanceToDesign("instance1", instanceVlnv, activeView);
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -429,11 +435,16 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
 
     addInstanceToDesign("instance1", instanceVlnv, activeView);
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -451,7 +462,7 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_["instance_clk"];
     QCOMPARE( gpa->topPort, QString("top_clk") );
-    QCOMPARE( gpa->bounds.first, QString("1*2") );
+    QCOMPARE( gpa->bounds.first, QString("2") );
     QCOMPARE( gpa->bounds.second, QString("0") );
 }
 
@@ -475,11 +486,16 @@ void tst_HDLParser::testSlicedHierarchicalConnection()
     QSharedPointer<View> activeView = addTestComponentToLibrary(instanceVlnv);
     addInstanceToDesign("instance1", instanceVlnv, activeView);
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -671,11 +687,16 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -774,11 +795,16 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -902,11 +928,16 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     addConnectionToDesign("sender", "data_bus", "receiver1", "data_bus");
     addConnectionToDesign("sender", "data_bus", "receiver2", "data_bus");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -989,11 +1020,15 @@ void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
     addConnectionToDesign("sender", "data_bus", "fourBitReceiver", "data_bus");
     addConnectionToDesign("sender", "data_bus", "sixteenBitReceiver", "data_bus");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-    designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+        QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+    designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -1170,11 +1205,16 @@ void tst_HDLParser::testSlicedInterconnection()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -1225,11 +1265,16 @@ void tst_HDLParser::testMasterInterconnectionToMirroredMaster()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -1290,11 +1335,16 @@ void tst_HDLParser::testMirroredSlaveInterconnectionToSlaves()
     addConnectionToDesign("sender", "data_bus", "bus1", "data_bus");
     addConnectionToDesign("sender", "data_bus", "bus2", "data_bus");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -1415,11 +1465,16 @@ void tst_HDLParser::testPortMapsWithoutBoundsInInterconnection()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -1469,11 +1524,16 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
     addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver2", "enable_in");
     addAdhocConnection("dataAdHoc", "sender", "data_out", "receiver1", "data_in");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -1583,11 +1643,16 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     addTieOffAdhocConnectionToInstancePort("open", instanceName, openName, "open_connection");
     addTieOffAdhocConnectionToInstancePort("expID - 4", instanceName, expressionName, "expression_connection");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -1635,11 +1700,16 @@ void tst_HDLParser::testMultipleAdhocConnectionsBetweenComponentInstances()
     addAdhocConnection("sender_enable_to_receiver1_enable", "sender", "enable_out", "receiver1", "enable_in");
     addAdhocConnection("sender_enable_to_receiver2_enable", "sender", "enable_out", "receiver2", "enable_in");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -1735,11 +1805,16 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
     addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver1", "enable_in");
     addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver2", "enable_in");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -1844,11 +1919,16 @@ void tst_HDLParser::testHierarchicalAdhocConnection()
     addHierAdhocConnection("enable_from_sender", "sender", "enable_out");
     addHierAdhocConnection("data_from_sender", "sender", "data_out");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -1931,11 +2011,16 @@ void tst_HDLParser::testHierarchicalAdHocTieOffValues()
     addTieOffConnectionToTopComponentPort("open", openName, "open_connection");
     addTieOffConnectionToTopComponentPort("expID - 4", expressionName, "expression_connection");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -2030,11 +2115,16 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
 
     design_->getAdHocConnections()->append(multiConnection);
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -2107,11 +2197,16 @@ void tst_HDLParser::testInstanceParametersAreCulled()
 
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -2167,11 +2262,16 @@ void tst_HDLParser::testTopComponentParametersAreUtilized()
 
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -2226,11 +2326,16 @@ void tst_HDLParser::testInstanceComponentParametersAreUtilized()
 
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -2285,11 +2390,16 @@ void tst_HDLParser::testParameterPropagationFromTop()
 
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -2350,11 +2460,16 @@ void tst_HDLParser::testParameterPropagationFromTop2()
 	parameterOverride->setConfigurableValue("topID");
     senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -2452,11 +2567,16 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-	designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 1 );
     QSharedPointer<GenerationDesign> design = designs.first();
@@ -2579,11 +2699,15 @@ void tst_HDLParser::testMultiLevelHierachy()
     parameterOverride->setConfigurableValue("slaveTopID");
     senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
-    HDLComponentParser componentParser(&library_, topComponent_, topView_);
+    QSharedPointer<HDLComponentParser> componentParser =
 
-    HDLDesignParser designParser(&library_, componentParser.parseComponent(), QSharedPointer<GenerationInstance>(), topView_, design_, designConf_);
-    QList<QSharedPointer<GenerationDesign> > designs;
-    designParser.parseDesign(designs);
+    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+        QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+    designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
 
     QCOMPARE( designs.size(), 2 );
     QSharedPointer<GenerationDesign> design = designs.last();

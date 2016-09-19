@@ -742,18 +742,9 @@ QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPoi
 	IPXactSystemVerilogParser portParser(multiFinder);
 
 	// Use the physical bounds of the port, as promised.
-	bounds.first = portParser.parseExpression(port->vectorBounds.first);
-	bounds.second = portParser.parseExpression(port->vectorBounds.second);
-
-    QStringList ids = instanceFinder->getAllParameterIds();
-
-    foreach (QString id, ids)
-    {
-        QSharedPointer<Parameter> parameter = instanceFinder->getParameterWithID(id);
-
-        bounds.first.replace(parameter->name(), parameter->getValue());
-        bounds.second.replace(parameter->name(), parameter->getValue());
-    }
+    // Notice: We are taking the bounds directly from the IP-XACT port, as those are not formatted.
+	bounds.first = portParser.parseExpression(port->port->getLeftBound());
+	bounds.second = portParser.parseExpression(port->port->getRightBound());
 
 	return bounds;
 }
@@ -790,16 +781,6 @@ QPair<QString, QString> HDLDesignParser::logicalPortBoundsInInstance(QSharedPoin
 		// Pick the range expressions as the logical bounds.
 		bounds.first = portParser.parseExpression(portMap->getLogicalPort()->range_->getLeft());
         bounds.second = portParser.parseExpression(portMap->getLogicalPort()->range_->getRight());
-
-        QStringList ids = instanceFinder->getAllParameterIds();
-
-        foreach (QString id, ids)
-        {
-            QSharedPointer<Parameter> parameter = instanceFinder->getParameterWithID(id);
-
-            bounds.first.replace(parameter->name(), parameter->getValue());
-            bounds.second.replace(parameter->name(), parameter->getValue());
-        }
     }
 
     return bounds;

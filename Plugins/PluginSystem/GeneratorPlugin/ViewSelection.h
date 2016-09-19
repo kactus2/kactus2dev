@@ -52,7 +52,7 @@ public:
 	QSharedPointer<QStringList> fileSetNames() const;
 
     /*!
-     *  Returns the name of default view for the top component in generation, based on the target language.
+     *  Returns the name of default view, based on the target language.
      *  If there is no suitable view with suitable component instantiation, return empty string.
      *
      *       @return The name of the view.
@@ -133,30 +133,6 @@ public:
      *      @return True, if file should be saved, false otherwise.
      */
     bool getSaveToFileset() const;
-
-    /*!
-     *  Sets true for generating, false for not generating.
-     */
-    void setInterfaceGeneration(bool shouldGenerate);
-
-    /*!
-     *  Returns true for generating, false for not generating.
-     */
-    bool getInterfaceGeneration() const;
-
-    /*!
-     *  Sets the path for the output file for the generation.
-     *
-     *      @param [in] path   The path to set.
-     */
-    void setOutputPath(QString const& path);
-
-    /*!
-     *  Gets the output path for generation.
-     *
-     *      @return The path to output file.
-     */
-    QString getOutputPath() const;
 	
     /*!
      *  Gets the target language of the generation.
