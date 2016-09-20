@@ -61,6 +61,23 @@ void HDLComponentParser::parseComponent(QSharedPointer<View> activeView)
 {
     activeView_ = activeView;
 
+    if (!activeView_)
+    {
+        return;
+    }
+
+    QSharedPointer<ComponentInstantiation> currentInsta =
+        retval_->component->getModel()->findComponentInstantiation(activeView_->getComponentInstantiationRef());
+
+    if (currentInsta && !currentInsta->getModuleName().isEmpty())
+    {
+        retval_->moduleName_ = currentInsta->getModuleName();
+    }
+    else
+    {
+        retval_->moduleName_ = retval_->component->getVlnv().getName();
+    }
+
     QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(retval_->component));
     parameterFinder->setActiveView(activeView);
     formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
@@ -354,13 +371,8 @@ void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSha
 //-----------------------------------------------------------------------------
 void HDLComponentParser::findParameters(QSharedPointer<GenerationComponent> target) const
 {
-	if (!activeView_)
-	{
-		return;
-	}
-
-	QSharedPointer<ComponentInstantiation> currentInsta =
-		retval_->component->getModel()->findComponentInstantiation(activeView_->getComponentInstantiationRef());
+    QSharedPointer<ComponentInstantiation> currentInsta =
+        retval_->component->getModel()->findComponentInstantiation(activeView_->getComponentInstantiationRef());
 
     foreach(QSharedPointer<Parameter> parameter, *retval_->component->getParameters())
     {

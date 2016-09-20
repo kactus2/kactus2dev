@@ -43,9 +43,9 @@ public:
     void parseDocuments();
     
     /*!
-     *  Gets reference to the output file names.
+     *  Gets reference to the output file paths.
      */
-    QSharedPointer<QStringList> getDocumentNames();
+    QSharedPointer<QList<QString*> > getFileNames();
 	
     /*!
      *  Gets the view selection data.
@@ -76,12 +76,14 @@ public:
      */
     QString getOutputPath() const;
 
+    void setOutputFileName(QString newName, int index);
+
 signals:
 	
     /*!
      *  Emitted when output files have changed.
      */
-	void outputFilesChanged() const;
+	void outputFilesChanged(QStringList) const;
 
 private:
 
@@ -97,8 +99,8 @@ private:
 
     //! The base directory for output paths.
     QString outputPath_;
-    //! The paths of individual output files.
-    QSharedPointer<QStringList> outputPaths_;
+    //! The names of the potential new files.
+    QSharedPointer<QList<QString*> > fileNames_;
 
     //! Flag for indicating if the output file should be saved to top component file sets.
     bool generateInterface_;

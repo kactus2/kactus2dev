@@ -213,7 +213,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         generator.parseComponent(componentParser->getParsedComponent());
     }
 
-	generator.generate(getVersion(), utility_->getKactusVersion());
+	generator.generate(configuration_->getOutputPath(), getVersion(), utility_->getKactusVersion());
 
     utility_->printInfo(tr("Finished writing the file(s)."));
 

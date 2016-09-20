@@ -31,8 +31,7 @@
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/Component/Model.h>
 
-#include <QDateTime>
-#include <QFileInfo>
+#include <QSet>
 
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::HDLParser()
@@ -60,8 +59,12 @@ HDLDesignParser::~HDLDesignParser()
 void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topComponent,
     QSharedPointer<View> topComponentView, QSharedPointer<GenerationInstance> topInstance)
 {
+    // Clear any existing designs.
+    parsedDesigns_.clear();
     // Set the top level component.
     retval_->topComponent_ = topComponent;
+    // Set the instance from upper level.
+    retval_->topInstance_ = topInstance;
 
     QSharedPointer<QList<QSharedPointer<Parameter> > > toplist;
 
@@ -91,7 +94,7 @@ void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topCompone
 
     parsedDesigns_.append(retval_);
 
-    if (parsedDesigns_.size() >= 10000)
+    if (parsedDesigns_.size() > 1000)
     {
         return;
     }
@@ -104,6 +107,37 @@ void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topCompone
             parser.parseDesign(gi->component, gi->activeView_, gi);
 
             parsedDesigns_.append(parser.getParsedDesigns());
+        }
+    }
+
+    // If this was the topmost, make sure that all parsed designs have a unique module name.
+    if (!topInstance)
+    {
+        // Each name is associated with the count of the same name.
+        QMap<QString,int> names;
+
+        foreach(QSharedPointer<GenerationDesign> gd, parsedDesigns_)
+        {
+            QString name = gd->topComponent_->moduleName_;
+
+            // Find the name from the set of existing names.
+            QMap<QString,int>::iterator nameIter = names.find(name);
+            int count = 0;
+
+            if (nameIter == names.end())
+            {
+                // This is the first encounter, so insert it to the list.
+                names.insert(name,1);
+            }
+            else
+            {
+                // This is not the first one -> See how many there are so far and increase the count.
+                count = *nameIter;
+                *nameIter = count + 1;
+            }
+
+            // Set the module name as the existing module name + number of encounter before this one.
+            gd->topComponent_->moduleName_ = name + "_" + QString::number(count);
         }
     }
 }
@@ -153,11 +187,17 @@ void HDLDesignParser::parseComponentInstances()
 		gi->activeView_ = activeView;
 		retval_->instances_.append(gi);
 
+        // If there are references, assign them as well.
         if (disg && disg->getDesignConfigurationReference())
         {
             gi->designConfiguration_ = library_->getModel(*(disg->getDesignConfigurationReference()))
                 .dynamicCast<DesignConfiguration>();
-            gi->design_ = library_->getModel(gi->designConfiguration_->getDesignRef()).dynamicCast<Design>();
+
+            // If the design configuration is found, use its design reference.
+            if (gi->designConfiguration_)
+            {
+                gi->design_ = library_->getModel(gi->designConfiguration_->getDesignRef()).dynamicCast<Design>();
+            }
         }
         else if (dis && dis->getDesignReference())
         {

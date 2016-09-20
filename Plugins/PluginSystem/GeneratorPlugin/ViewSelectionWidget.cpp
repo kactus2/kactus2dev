@@ -175,13 +175,14 @@ void ViewSelectionWidget::onInstantiationChanged(QString const& selectedInstanti
     if (!configuration_->setInstantiation(selectedInstantiationName) && !selectedInstantiationName.isEmpty())
     {
         // Warn user that a new instantiation will be created.
-        instantiationWarningLabel_->setText(tr("The view will be associated with new component instantiation '%1'.").arg(
+        instantiationWarningLabel_->setText(tr("<b>The view will be associated with new component instantiation '%1'.</b>").arg(
             selectedInstantiationName));
     }
-    else if (configuration_->getView()->getComponentInstantiationRef() != selectedInstantiationName)
+    else if (configuration_->getView()->getComponentInstantiationRef() != selectedInstantiationName
+        && !selectedInstantiationName.isEmpty())
     {
         // Clear the warning.
-        instantiationWarningLabel_->setText(tr("The view will be associated with component instantiation '%1'.").arg(
+        instantiationWarningLabel_->setText(tr("<b>The view will be associated with component instantiation '%1'.</b>").arg(
             selectedInstantiationName));
     }
     else

@@ -22,7 +22,7 @@ GeneratorConfiguration::GeneratorConfiguration(QSharedPointer<ViewSelection> vie
     QSharedPointer<HDLComponentParser> componentParser,
     QSharedPointer<HDLDesignParser> designParser) :
 	viewSelection_(viewSelection), componentParser_(componentParser), designParser_(designParser),
-    outputPath_(), outputPaths_(new QStringList), generateInterface_(false)
+    outputPath_(), fileNames_(new QList<QString*>), generateInterface_(false)
 {
 }
 
@@ -38,9 +38,11 @@ GeneratorConfiguration::~GeneratorConfiguration()
 //-----------------------------------------------------------------------------
 void GeneratorConfiguration::parseDocuments()
 {
-    outputPaths_->clear();
+    fileNames_->clear();
 
     componentParser_->parseComponent(viewSelection_->getView());
+
+    QStringList vlnvs;
 
     if (designParser_)
     {
@@ -48,27 +50,31 @@ void GeneratorConfiguration::parseDocuments()
 
         foreach(QSharedPointer<GenerationDesign> design, designParser_->getParsedDesigns())
         {
-            QString path = outputPath_ + "/" + design->topComponent_->component->getVlnv().getName();
-            outputPaths_->append(path);
-            design->topComponent_->path_ = path;
+            QString* fileName = &design->topComponent_->fileName_;
+            *fileName = design->topComponent_->moduleName_ + ".v";
+            fileNames_->append(fileName);
+
+            vlnvs.append(design->topComponent_->component->getVlnv().toString());
         }
     }
     else
     {
-        QString path = outputPath_ + "/" + componentParser_->getParsedComponent()->component->getVlnv().getName();
-        outputPaths_->append(path);
-        componentParser_->getParsedComponent()->path_ = path;
+        QString* fileName = &componentParser_->getParsedComponent()->fileName_;
+        *fileName = componentParser_->getParsedComponent()->moduleName_ + ".v";
+        fileNames_->append(fileName);
+
+        vlnvs.append(componentParser_->getParsedComponent()->component->getVlnv().toString());
     }
 
-    emit outputFilesChanged();
+    emit outputFilesChanged(vlnvs);
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::getDocumentNames()
+// Function: GeneratorConfiguration::getFileNames()
 //-----------------------------------------------------------------------------
-QSharedPointer<QStringList> GeneratorConfiguration::getDocumentNames()
+QSharedPointer<QList<QString*> > GeneratorConfiguration::getFileNames()
 {
-    return outputPaths_;
+    return fileNames_;
 }
 
 //-----------------------------------------------------------------------------
@@ -109,4 +115,18 @@ void GeneratorConfiguration::setOutputPath(QString const& path)
 QString GeneratorConfiguration::getOutputPath() const
 {
     return outputPath_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::setOutputFileName()
+//-----------------------------------------------------------------------------
+void GeneratorConfiguration::setOutputFileName(QString newName, int index)
+{
+    if (index < 0 || index >= fileNames_->size())
+    {
+        return;
+    }
+
+    QString* modpath = fileNames_->at(index);
+    *modpath = newName;
 }

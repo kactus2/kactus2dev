@@ -60,14 +60,14 @@ void VerilogGenerator::parseComponent(QSharedPointer<GenerationComponent> gc)
     QString implementation;
     QString postModule;
 
-    if (!selectImplementation(gc->path_, implementation, postModule))
+    if (!selectImplementation(gc->fileName_, implementation, postModule))
     {
         // If parser says no-go, we dare do nothing.
         return;
     }
 
     QSharedPointer<VerilogDocument> document = initializeWriters(gc);
-    document->fileName_ = gc->path_;
+    document->fileName_ = gc->fileName_;
     documents_.append(document);
 
     // Next comes the implementation.
@@ -87,7 +87,7 @@ void VerilogGenerator::parseDesign(QList<QSharedPointer<GenerationDesign> >& des
     foreach (QSharedPointer<GenerationDesign> design, designs)
     {
         QSharedPointer<VerilogDocument> document = initializeWriters(design->topComponent_);
-        document->fileName_ = design->topComponent_->path_;
+        document->fileName_ = design->topComponent_->fileName_;
 
         createDesignWriters(design, document);
 
@@ -280,7 +280,8 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::generate()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::generate(QString const& generatorVersion /*= ""*/, QString const& kactusVersion /*= ""*/) const
+void VerilogGenerator::generate(QString const& outputPath, QString const& generatorVersion /*= ""*/,
+    QString const& kactusVersion /*= ""*/) const
 {
     if (nothingToWrite())
 	{
@@ -290,16 +291,17 @@ void VerilogGenerator::generate(QString const& generatorVersion /*= ""*/, QStrin
 
     foreach(QSharedPointer<VerilogDocument> document, documents_)
     {
-        QFile outputFile(document->fileName_); 
+        QString filePath = outputPath + "/" + document->fileName_;
+        QFile outputFile(filePath); 
         if (!outputFile.open(QIODevice::WriteOnly))
         {
-            emit reportError(tr("Could not open output file for writing: %1").arg(document->fileName_));
+            emit reportError(tr("Could not open output file for writing: %1").arg(filePath));
             return;
         }
 
         QTextStream outputStream(&outputFile);
 
-        document->headerWriter_->write(outputStream, document->fileName_, generatorVersion, kactusVersion,
+        document->headerWriter_->write(outputStream, filePath, generatorVersion, kactusVersion,
             QDateTime::currentDateTime());
         document->topWriter_->write(outputStream);
 

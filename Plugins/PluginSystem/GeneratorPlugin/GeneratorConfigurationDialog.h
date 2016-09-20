@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: GeneratorConfigurationDialog.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 23.02.2015
 //
@@ -47,7 +47,7 @@ private slots:
 
     void onViewChanged();
 
-    void onOutputFilesChanged();
+    void onOutputFilesChanged(QStringList vlvns);
 
     void onInterfaceGenerationStateChanged(int state);
 
@@ -55,7 +55,13 @@ private slots:
 
     void onBrowse();
 
+    void onItemChanged(QTableWidgetItem *item);
+
 private:
+
+    // Goes through the fileTable_ and checks if there are files that already exists.
+    // Will set appropriate warnings.
+    void checkExistence();
 
     // Disable copying.
     GeneratorConfigurationDialog(GeneratorConfigurationDialog const& rhs);

@@ -97,8 +97,10 @@ struct GenerationComponent
     QString totalRange;
     QList<QSharedPointer<GenerationRemapState> > remapStates;
 
-    //! The path for the document
-    QString path_;
+    //! The filename for the document.
+    QString fileName_;
+    //! The module name for HDL.
+    QString moduleName_;
 };
 
 struct GenerationWire
@@ -168,6 +170,8 @@ struct GenerationDesign
 {
     //! The top level component.
     QSharedPointer<GenerationComponent> topComponent_;
+    //! The corresponding instance at upper level.
+    QSharedPointer<GenerationInstance> topInstance_;
 
     QList<QSharedPointer<GenerationInstance> > instances_;
     QList<QSharedPointer<GenerationInterconnection> > interConnections_;

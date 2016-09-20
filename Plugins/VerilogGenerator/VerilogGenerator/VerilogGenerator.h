@@ -114,7 +114,8 @@ public:
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
-	void generate(QString const& generatorVersion = "", QString const& kactusVersion = "") const;
+	void generate(QString const& outputPath, QString const& generatorVersion = "",
+        QString const& kactusVersion = "") const;
 
 signals:
 	

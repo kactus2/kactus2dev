@@ -4246,6 +4246,9 @@
     <ClCompile Include="common\widgets\ParameterGroupBox\parametergroupbox.cpp">
       <Filter>Source Files\common\widgets\ParameterGroupBox</Filter>
     </ClCompile>
+    <ClCompile Include="VersionHelper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6382,6 +6385,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\MemoryDesigner\ConnectivityGraphFactory.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="VersionHelper.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

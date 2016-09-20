@@ -1,7 +1,7 @@
-//-----------------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------------
 // File: GeneratorConfigurationDialog.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 23.02.2015
 //
@@ -24,12 +24,17 @@
 #include <QHeaderView>
 #include <QApplication>
 
+#define WARNING_FILE_EXISTS "<b>One or more of the output files already exists and will be overwritten.</b>"
+#define COLUMN_VLNV 0
+#define COLUMN_EXISTS 1
+#define COLUMN_FILENAME 2
+
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
 //-----------------------------------------------------------------------------
 GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<GeneratorConfiguration> configuration,
 	QWidget *parent) : 
-	QDialog(parent), 
+	QDialog(parent,Qt::WindowTitleHint), 
     configuration_(configuration),
 	pathEditor_(new QLineEdit(this)),
 	viewSelection_(new ViewSelectionWidget(configuration->getViewSelection())),
@@ -37,10 +42,6 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     fileTable_(new QTableWidget)
 {    
     setWindowTitle(tr("Configure file generation for %1.").arg(configuration->getViewSelection()->getTargetLanguage()));
-
-    QFormLayout* checkLayout = new QFormLayout();
-    QCheckBox* useInterfaces = new QCheckBox();
-    checkLayout->addRow(tr("Use interfaces:"), useInterfaces);
 
 	// Layout for path selection widgets.
     QHBoxLayout* pathSelectionLayout = new QHBoxLayout();
@@ -54,6 +55,15 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     QPushButton* browseButton = new QPushButton(tr("Browse"), this);
     pathSelectionLayout->addWidget(browseButton);
 
+    QHBoxLayout* headerLayout = new QHBoxLayout();
+    QLabel* tableHeader = new QLabel("Output files:");
+    headerLayout->addWidget(tableHeader);
+
+    QFormLayout* checkLayout = new QFormLayout();
+    headerLayout->addLayout(checkLayout);
+    QCheckBox* useInterfaces = new QCheckBox();
+    checkLayout->addRow(tr("Use interfaces:"), useInterfaces);
+
 	// Layout for thing coming to the bottom part of the dialog.
 	QHBoxLayout* bottomLayout = new QHBoxLayout();
 
@@ -66,8 +76,9 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 
     // The headers for each of the column.
     QStringList headers;
+    headers.append(tr("Top component VLNV"));
     headers.append(tr("Exists"));
-    headers.append(tr("File path"));
+    headers.append(tr("File name"));
     // Set the number of columns correspond the number of headers.
     fileTable_->setColumnCount(headers.size());
 
@@ -86,9 +97,9 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 	// Add everything it their proper position in the final layout.
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(viewSelection_);
-    topLayout->addLayout(checkLayout);
 	topLayout->addLayout(pathSelectionLayout);
     topLayout->addStretch(1);
+    topLayout->addLayout(headerLayout);
     topLayout->addWidget(fileTable_);
 	topLayout->addLayout(bottomLayout);
 
@@ -99,8 +110,8 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     // Finally, connect the relevant events to their handler functions.
     connect(viewSelection_, SIGNAL(viewChanged()), 
         this, SLOT(onViewChanged()), Qt::UniqueConnection);
-    connect(configuration_.data(), SIGNAL(outputFilesChanged()), 
-        this, SLOT(onOutputFilesChanged()), Qt::UniqueConnection);
+    connect(configuration_.data(), SIGNAL(outputFilesChanged(QStringList)), 
+        this, SLOT(onOutputFilesChanged(QStringList)), Qt::UniqueConnection);
     connect(useInterfaces, SIGNAL(stateChanged(int)), 
         this, SLOT(onInterfaceGenerationStateChanged(int)), Qt::UniqueConnection);
     connect(pathEditor_, SIGNAL(textChanged(const QString &)), this,
@@ -110,6 +121,9 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
 
     configuration_->parseDocuments();
+
+    connect(fileTable_, SIGNAL(itemChanged(QTableWidgetItem*)),
+        this, SLOT(onItemChanged(QTableWidgetItem*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -151,57 +165,42 @@ void GeneratorConfigurationDialog::onViewChanged()
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::onOutputFilesChanged()
 //-----------------------------------------------------------------------------
-void GeneratorConfigurationDialog::onOutputFilesChanged()
+void GeneratorConfigurationDialog::onOutputFilesChanged(QStringList vlvns)
 {
-    fileTable_->setRowCount(configuration_->getDocumentNames()->size());
+    // Remove the old stuff, set number of rows as number of files.
+    fileTable_->clearContents();
+    fileTable_->setRowCount(configuration_->getFileNames()->size());
 
     // Populate the table.
     int row = 0;
-    bool existingFiles = false;
 
-    foreach(QString name, *configuration_->getDocumentNames())
+    foreach(QString* fileName, *configuration_->getFileNames())
     {
-        // The name goes to the last columns.
-        QTableWidgetItem* nameItem = new QTableWidgetItem(name);
-        fileTable_->setItem(row, 1, nameItem);
+        // Insert VLNV string to the row.
+        QTableWidgetItem* vlnvItem = new QTableWidgetItem(vlvns.at(row));
+        fileTable_->setItem(row, COLUMN_VLNV, vlnvItem);
 
+        // Create existence check box and insert to the row.
         QTableWidgetItem* defCheckItem = new QTableWidgetItem(Qt::Checked);
+        fileTable_->setItem(row, COLUMN_EXISTS, defCheckItem);
+
+        // Insert filename to the row.
+        QTableWidgetItem* fileNameItem = new QTableWidgetItem(*fileName);
+        fileTable_->setItem(row, COLUMN_FILENAME, fileNameItem);
 
         // Disable editing.
+        vlnvItem->setFlags(Qt::ItemIsSelectable);
         defCheckItem->setFlags(Qt::ItemIsSelectable);
-
-        // Select correct check state: Does it exist or not.
-        QFile fileCandidate(name);
-
-        if (fileCandidate.exists())
-        {
-            defCheckItem->setCheckState(Qt::Checked);
-            nameItem->setTextColor(QColor(Qt::red));
-            existingFiles = true;
-        }
-        else
-        {
-            defCheckItem->setCheckState(Qt::Unchecked);
-            nameItem->setTextColor(QApplication::palette().brush(QPalette::Text).color());
-        }
-
-        // Set the check box to the correct column at the current row.
-        fileTable_->setItem(row, 0, defCheckItem);
 
         // The next one goes to the next row.
         ++row;
     }
 
-    if (existingFiles)
-    {
-        // Warn user if it already exists
-        generalWarningLabel_->setText("<b>One or more of the output files already exists and will be overwritten.</b>");
-    }
-    else
-    {
-        // Else clear any warning.
-        generalWarningLabel_->setText("");
-    }
+    // File paths are potentially changed -> update existince status.
+    checkExistence();
+
+    // Refit the columns.
+    fileTable_->resizeColumnsToContents();
 }
 
 //-----------------------------------------------------------------------------
@@ -217,8 +216,11 @@ void GeneratorConfigurationDialog::onInterfaceGenerationStateChanged(int state)
 //-----------------------------------------------------------------------------
 void GeneratorConfigurationDialog::onPathEdited(const QString &text)
 {
-	// At any rate, tell the path to the configuration.
+	// Tell the path to the configuration.
     configuration_->setOutputPath(pathEditor_->text());
+
+    // Path of of all files changed -> update existence status.
+    checkExistence();
 }
 
 //-----------------------------------------------------------------------------
@@ -234,5 +236,69 @@ void GeneratorConfigurationDialog::onBrowse()
     if (!selectedPath.isEmpty())
     {
         pathEditor_->setText(selectedPath);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfigurationDialog::onItemChanged()
+//-----------------------------------------------------------------------------
+void GeneratorConfigurationDialog::onItemChanged(QTableWidgetItem *item)
+{
+    if (item->column() != COLUMN_FILENAME)
+    {
+        return;
+    }
+
+    configuration_->setOutputFileName(item->text(),item->row());
+
+    // A name of a file changed -> update existence status.
+    checkExistence();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfigurationDialog::checkExistence()
+//-----------------------------------------------------------------------------
+void GeneratorConfigurationDialog::checkExistence()
+{
+    bool existingFiles = false;
+
+    for(int row = 0; row < fileTable_->rowCount(); ++row)
+    {
+        QTableWidgetItem* pathItem = fileTable_->item(row, COLUMN_FILENAME);
+        QTableWidgetItem* defCheckItem = fileTable_->item(row, COLUMN_EXISTS);
+
+        // Both must exist
+        if (!defCheckItem || !pathItem)
+        {
+            continue;
+        }
+
+        // Select correct check state: Does it exist or not.
+        QFile fileCandidate(configuration_->getOutputPath() + "/" + pathItem->text());
+
+        if (fileCandidate.exists())
+        {
+            // Check and set a warning color.
+            defCheckItem->setCheckState(Qt::Checked);
+            pathItem->setTextColor(QColor(Qt::red));
+            existingFiles = true;
+        }
+        else
+        {
+            // Uncheck and set regular color.
+            defCheckItem->setCheckState(Qt::Unchecked);
+            pathItem->setTextColor(QApplication::palette().brush(QPalette::Text).color());
+        }
+    }
+
+    if (existingFiles)
+    {
+        // Warn user if it already exists
+        generalWarningLabel_->setText(WARNING_FILE_EXISTS);
+    }
+    else
+    {
+        // Else clear any warning.
+        generalWarningLabel_->setText("");
     }
 }
