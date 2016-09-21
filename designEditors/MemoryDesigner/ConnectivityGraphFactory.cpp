@@ -165,8 +165,8 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
         spaceItem->setIdentifier(spaceIdentifier);
         spaceItem->setAUB(space->getAddressUnitBits());
         spaceItem->setAddress("0");        
-        spaceItem->setRange(space->getRange());
-        spaceItem->setWidth(space->getWidth());
+        spaceItem->setRange(expressionParser_->parseExpression(space->getRange()));
+        spaceItem->setWidth(expressionParser_->parseExpression(space->getWidth()));
 
         newInstance->addMemory(spaceItem);
 

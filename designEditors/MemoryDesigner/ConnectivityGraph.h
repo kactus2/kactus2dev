@@ -70,13 +70,6 @@ public:
      *      @return All instances.
      */
     QVector<QSharedPointer<ConnectivityComponent> > getInstances() const;
-
-    /*!
-     *  Finds all the master interfaces with a single connection.
-     *
-     *      @return All master interfaces with exactly one connection.
-     */
-    QVector<QSharedPointer<ConnectivityInterface> > getMasterInterfaces() const;
     
     /*!
      *  Finds all connections for the given interface.

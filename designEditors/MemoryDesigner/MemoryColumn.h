@@ -15,13 +15,13 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 #include <common/graphicsItems/GraphicsColumn.h>
 
+class GraphicsColumnLayout;
+class GraphicsConnection;
+class MainMemoryGraphicsItem;
+
 #include <QGraphicsRectItem>
 #include <QSet>
 #include <QCursor>
-
-class GraphicsColumnLayout;
-class GraphicsConnection;
-class MemoryBaseItem;
 
 //-----------------------------------------------------------------------------
 //! MemoryColumn class.
@@ -36,13 +36,14 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] name          The column description.
-     *      @param [in] layout        The parent column layout.
+     *      @param [in] name            The column description.
+     *      @param [in] layout          The parent column layout.
+     *      @param [in] itemSpacing     Spacing for the graphics items.
      */
-    MemoryColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout);
+    MemoryColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout, int itemSpacing = 30);
 
     /*!
-     *  Destructor.
+     *  The destructor.
      */
     virtual ~MemoryColumn();
 
@@ -53,11 +54,30 @@ public:
      *
      *      @return The item which contains the given y coordinate.
      */
-    MemoryBaseItem* findItemAt(int y) const;
+    MainMemoryGraphicsItem* findItemAt(int y) const;
 
+    /*!
+     *  Find a graphics item at a given position.
+     *
+     *      @param [in] itemYPosition   The given position.
+     */
+    MainMemoryGraphicsItem* findGraphicsItemAt(int itemYPosition) const;
+
+    /*!
+     *  Find a graphics item by a given name.
+     *
+     *      @param [in] itemName        Name of the searched item.
+     *      @param [in] instanceName    Name of the component instance containing the graphics item.
+     */
+    MainMemoryGraphicsItem* findGraphicsItemByName(QString const& itemName, QString const& instanceName) const;
+
+    /*!
+     *  Get the type of this item.
+     */
     int type() const { return Type; }
 
 protected:
+
     /*!
      *  Returns true if the given item is allowed to reside in the column based on the allowed items.
      *
