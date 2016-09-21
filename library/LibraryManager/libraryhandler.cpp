@@ -1521,6 +1521,8 @@ void LibraryHandler::syncronizeModels()
         this, SLOT(onOpenDesign(const VLNV&)), Qt::UniqueConnection);
     //     connect(treeModel_.data(), SIGNAL(openMemoryDesign(const VLNV&)),
     //         this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
+    connect(treeModel_.data(), SIGNAL(openMemoryDesign(const VLNV&)),
+        this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_.data(), SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
     connect(treeModel_.data(), SIGNAL(openSystemDesign(const VLNV&)),
@@ -1557,8 +1559,6 @@ void LibraryHandler::syncronizeModels()
 
     connect(hierarchyModel_.data(), SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(hierarchyModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
-        this, SIGNAL(openMemoryDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
     connect(hierarchyModel_.data(), SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(onOpenMemoryDesign(const VLNV&)), Qt::UniqueConnection);

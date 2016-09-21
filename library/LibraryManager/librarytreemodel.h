@@ -146,6 +146,9 @@ signals:
 	//! Open the system design of a component.
 	void openSystemDesign(VLNV const& vlnv);
 
+    //! Open the memory design of a HW design.
+    void openMemoryDesign(VLNV const& vlnv);
+
 	//! Open the component in a component editor.
 	void editItem(VLNV const& vlnv);
 
@@ -192,6 +195,9 @@ public slots:
 
 	//! Open the selected hierarchical design
 	void onOpenDesign(QModelIndex const& index);
+
+    //! Open the selected memory design.
+    void onOpenMemoryDesign(QModelIndex const& index);
 
 	//! Open the selected hierarchical SW design
 	void onOpenSWDesign(QModelIndex const& index);

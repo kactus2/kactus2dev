@@ -41,6 +41,7 @@ LibraryTreeView::LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* f
       dragIndex_(),
       openDesignAction_(new QAction(tr("Open HW Design"), this)),
       openSWDesignAction_(new QAction(tr("Open SW Design"), this)),
+      openMemoryDesignAction_(new QAction(tr("Open Memory Design"), this)),
       openComponentAction_(new QAction(tr("Open Component"), this)),
       createNewDesignAction_(new QAction(tr("New HW Design..."), this)),
       createNewSWDesignAction_(new QAction(tr("New SW Design..."), this)),
@@ -156,6 +157,8 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
                 if (!component->getHierViews().isEmpty())
                 {
                     menu.addAction(openDesignAction_);
+
+                    menu.addAction(openMemoryDesignAction_);
                 }
 
                 if (component->hasSWViews())
@@ -241,6 +244,10 @@ void LibraryTreeView::setupActions()
     openSWDesignAction_->setStatusTip(tr("Open a SW design"));
     openSWDesignAction_->setToolTip(tr("Open a SW design"));
     connect(openSWDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenSWDesign()), Qt::UniqueConnection);
+
+    openMemoryDesignAction_->setStatusTip(tr("Open a memory design"));
+    openMemoryDesignAction_->setToolTip(tr("Open a memory design"));
+    connect(openMemoryDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenMemoryDesign()), Qt::UniqueConnection);
 
 	openComponentAction_->setStatusTip(tr("Open component editor"));
 	openComponentAction_->setToolTip(tr("Open component editor"));
@@ -451,6 +458,17 @@ void LibraryTreeView::onOpenDesign()
 void LibraryTreeView::onOpenSWDesign()
 {
     emit openSWDesign(filter_->mapToSource(currentIndex()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: librarytreeview::onOpenMemoryDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenMemoryDesign()
+{
+    foreach (QModelIndex const& index, selectedIndexes())
+    {
+        emit openMemoryDesign(filter_->mapToSource(index));
+    }
 }
 
 //-----------------------------------------------------------------------------

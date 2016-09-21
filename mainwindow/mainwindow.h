@@ -113,7 +113,7 @@ public slots:
      *      @param [in] forceUnlocked   Forces the design to be opened in unlocked mode.
      */
     void openMemoryDesign(const VLNV& vlnv = VLNV(), const QString& viewName = QString(),
-                          bool forceUnlocked = false);    
+        bool forceUnlocked = true);    
 
     /*!
      *  Opens a SW design.

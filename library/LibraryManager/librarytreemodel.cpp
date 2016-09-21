@@ -641,6 +641,28 @@ void LibraryTreeModel::onOpenDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
+// Function: librarytreemodel::onOpenMemoryDesign()
+//-----------------------------------------------------------------------------
+void LibraryTreeModel::onOpenMemoryDesign(QModelIndex const& index)
+{
+    if (!index.isValid())
+    {
+        return;
+    }
+
+    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
+    if (item)
+    {
+        VLNV vlnv = item->getVLNV();
+
+        if (vlnv.isValid())
+        {
+            emit openMemoryDesign(vlnv);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryTreeModel::onOpenSWDesign()
 //-----------------------------------------------------------------------------
 void LibraryTreeModel::onOpenSWDesign(QModelIndex const& index)

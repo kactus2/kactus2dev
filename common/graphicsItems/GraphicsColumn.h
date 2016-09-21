@@ -40,10 +40,12 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] desc    The column description.
-     *      @param [in] layout  The parent column layout.
+     *      @param [in] desc                            The column description.
+     *      @param [in] layout                          The parent column layout.
+     *      @param [in] itemsCanTransferToOtherColumns  Possibility of item transfer between columns.
      */
-    GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout);
+    GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout,
+        bool itemsCanTransferToOtherColumns = true);
 
     /*!
      *  Destructor.
@@ -261,6 +263,9 @@ private:
 
     //! The old column width before resize.
     unsigned int oldWidth_;
+
+    //! Holds wether column items are transferable to other columns or not.
+    bool itemsAreTransferable_;
 };
 
 //-----------------------------------------------------------------------------

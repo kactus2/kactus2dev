@@ -41,7 +41,7 @@
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 #include <common/dialogs/propertyPageDialog/PropertyPageDialog.h>
 
-#include <designEditors/MemoryDesigner/MemoryDesignWidget.h>
+#include <designEditors/MemoryDesigner/MemoryDesignDocument.h>
 
 #include <designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h>
 #include <designEditors/common/ConfigurationEditor/configurationeditor.h>
@@ -3179,6 +3179,13 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
     // check if the design is already open
     VLNV refVLNV = comp->getHierRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
+
+    QString memoryDesignName = designVLNV.getName();
+
+    int extensionBegin = memoryDesignName.size() - 7;
+    memoryDesignName.replace(extensionBegin, 7, ".memoryDesign");
+    designVLNV.setName(memoryDesignName);
+
     if (isOpen(designVLNV))
     {
         return;
@@ -3191,30 +3198,30 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
         return;
     }
 
-    MemoryDesignWidget* designWidget = new MemoryDesignWidget(libraryHandler_, this);
+    MemoryDesignDocument* memoryDesignWidget = new MemoryDesignDocument(libraryHandler_, this);
     
-    // open the design in the designWidget
-    designWidget->setDesign(vlnv, viewName);
+    memoryDesignWidget->getDocumentName();
 
-    // if the design could not be opened
-    if (designWidget->getOpenDocument().isEmpty())
+    connect(memoryDesignWidget, SIGNAL(errorMessage(const QString&)),
+        console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+
+    if (!memoryDesignWidget->setDesign(vlnv, viewName))
     {
-        delete designWidget;
+        delete memoryDesignWidget;
         return;
     }
 
-    connect(designWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
-    connect(designWidget, SIGNAL(modeChanged(DrawMode)),
-        this, SLOT(onDrawModeChanged(DrawMode)), Qt::UniqueConnection);
+    connect(memoryDesignWidget, SIGNAL(zoomChanged()), this, SLOT(updateZoomTools()), Qt::UniqueConnection);
 
-    connect(designWidget, SIGNAL(destroyed(QObject*)), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+    connect(memoryDesignWidget, SIGNAL(destroyed(QObject*)), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-    connect(designWidget, SIGNAL(clearItemSelection()),
+    connect(memoryDesignWidget, SIGNAL(clearItemSelection()),
         libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
 
-    connect(designWidget, SIGNAL(clearItemSelection()), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
+    connect(memoryDesignWidget, SIGNAL(clearItemSelection()), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-    designTabs_->addAndOpenDocument(designWidget, forceUnlocked);
+
+    designTabs_->addAndOpenDocument(memoryDesignWidget, forceUnlocked);
 }
 
 //-----------------------------------------------------------------------------

@@ -32,7 +32,8 @@
 //-----------------------------------------------------------------------------
 // Function: GraphicsColumn::GraphicsColumn()
 //-----------------------------------------------------------------------------
-GraphicsColumn::GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout)
+GraphicsColumn::GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout,
+    bool itemsCanTransferToOtherColumns)
     : QGraphicsRectItem(),
       layout_(layout),
       columnData_(),
@@ -41,7 +42,8 @@ GraphicsColumn::GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLa
       items_(),
       oldPos_(),
       mouseNearResizeArea_(false),
-      oldWidth_(0)
+      oldWidth_(0),
+      itemsAreTransferable_(itemsCanTransferToOtherColumns)
 {
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
@@ -288,11 +290,14 @@ void GraphicsColumn::onMoveItem(QGraphicsItem* item)
     }
 
     // If none of the child components handled the movement, find the column under the item's current position.
-    GraphicsColumn* column = layout_->findColumnAt(item->scenePos());
-    if (column != 0 && column != this && column->isItemAllowed(item))
+    if (itemsAreTransferable_)
     {
-        switchItemToColumn(item, column);
-        return;
+        GraphicsColumn* column = layout_->findColumnAt(item->scenePos());
+        if (column != 0 && column != this && column->isItemAllowed(item))
+        {
+            switchItemToColumn(item, column);
+            return;
+        }
     }
 
     // Check if auto-reorganize is enabled and the item needs to be moved somewhere else.
@@ -446,8 +451,12 @@ void GraphicsColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     if (mouseNearResizeArea_ && columnData_->getWidth() != oldWidth_)
     {
-        QSharedPointer<QUndoCommand> cmd(new GraphicsColumnResizeCommand(this, oldWidth_));
-        static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(cmd);
+        DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+        if (diagram)
+        {
+            QSharedPointer<QUndoCommand> cmd(new GraphicsColumnResizeCommand(this, oldWidth_));
+            diagram->getEditProvider()->addCommand(cmd);
+        }
     }
     else if (!mouseNearResizeArea_)
     {
@@ -456,12 +465,14 @@ void GraphicsColumn::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         setZValue(0.0);
         layout_->onReleaseColumn(this);
 
-        QSharedPointer<QUndoCommand> undoCommand = createMoveUndoCommand();
-
-        // Add the undo command to the edit provider only if there were any actual changes.
-        if (undoCommand->childCount() > 0 || pos() != oldPos_)
+        DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+        if (diagram)
         {
-            static_cast<DesignDiagram*>(scene())->getEditProvider()->addCommand(undoCommand);
+            QSharedPointer<QUndoCommand> undoCommand = createMoveUndoCommand();
+            if (undoCommand->childCount() > 0 || pos() != oldPos_)
+            {
+                diagram->getEditProvider()->addCommand(undoCommand);
+            }
         }
     }
 }

@@ -8,6 +8,19 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./VersionHelper.h \
+    ./designEditors/MemoryDesigner/AddressSpaceGraphicsItem.h \
+    ./designEditors/MemoryDesigner/AddressSegmentGraphicsItem.h \
+    ./designEditors/MemoryDesigner/AddressBlockGraphicsItem.h \
+    ./designEditors/MemoryDesigner/MainMemoryGraphicsItem.h \
+    ./designEditors/MemoryDesigner/MemoryConnectionItem.h \
+    ./designEditors/MemoryDesigner/MemoryDesignDocument.h \
+    ./designEditors/MemoryDesigner/MemoryDesignerDiagram.h \
+    ./designEditors/MemoryDesigner/MemoryDesignerGraphicsItem.h \
+    ./designEditors/MemoryDesigner/MemoryCollisionItem.h \
+    ./designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h \
+    ./designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h \
+    ./designEditors/MemoryDesigner/MemoryMapGraphicsItem.h \
+    ./designEditors/MemoryDesigner/RegisterGraphicsItem.h \
     ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
@@ -589,15 +602,7 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/MemoryDesigner/ConnectivityInterface.h \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.h \
     ./designEditors/MemoryDesigner/MemoryItem.h \
-    ./designEditors/MemoryDesigner/AddressBlockItem.h \
-    ./designEditors/MemoryDesigner/SegmentItem.h \
-    ./designEditors/MemoryDesigner/AddressSectionItem.h \
-    ./designEditors/MemoryDesigner/AddressSpaceItem.h \
-    ./designEditors/MemoryDesigner/AddressSubsection.h \
-    ./designEditors/MemoryDesigner/MemoryBaseItem.h \
     ./designEditors/MemoryDesigner/MemoryColumn.h \
-    ./designEditors/MemoryDesigner/MemoryDesignDiagram.h \
-    ./designEditors/MemoryDesigner/MemoryDesignWidget.h \
     ./designEditors/HWDesign/AdHocEnabled.h \
     ./designEditors/HWDesign/HWAddCommands.h \
     ./designEditors/HWDesign/HWMoveCommands.h \
@@ -702,7 +707,20 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h
-SOURCES += ./VersionHelper.cpp \
+SOURCES += ./designEditors/MemoryDesigner/AddressBlockGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/AddressSegmentGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/AddressSpaceGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/MainMemoryGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/MemoryCollisionItem.cpp \
+    ./designEditors/MemoryDesigner/MemoryConnectionItem.cpp \
+    ./designEditors/MemoryDesigner/MemoryDesignDocument.cpp \
+    ./designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/MemoryDesignerDiagram.cpp \
+    ./designEditors/MemoryDesigner/MemoryDesignerGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/MemoryMapGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/RegisterGraphicsItem.cpp \
+    ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1220,22 +1238,14 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityModel.cpp \
     ./designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityPolicy.cpp \
     ./designEditors/HWDesign/AdhocEditor/AdhocEditor.cpp \
-    ./designEditors/MemoryDesigner/AddressBlockItem.cpp \
-    ./designEditors/MemoryDesigner/AddressSectionItem.cpp \
-    ./designEditors/MemoryDesigner/AddressSpaceItem.cpp \
-    ./designEditors/MemoryDesigner/AddressSubsection.cpp \
     ./designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ./designEditors/MemoryDesigner/ConnectivityConnection.cpp \
     ./designEditors/MemoryDesigner/ConnectivityGraph.cpp \
     ./designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
     ./designEditors/MemoryDesigner/ConnectivityInterface.cpp \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
-    ./designEditors/MemoryDesigner/MemoryBaseItem.cpp \
     ./designEditors/MemoryDesigner/MemoryColumn.cpp \
-    ./designEditors/MemoryDesigner/MemoryDesignDiagram.cpp \
-    ./designEditors/MemoryDesigner/MemoryDesignWidget.cpp \
     ./designEditors/MemoryDesigner/MemoryItem.cpp \
-    ./designEditors/MemoryDesigner/SegmentItem.cpp \
     ./designEditors/SystemDesign/ApiGraphicsConnection.cpp \
     ./designEditors/SystemDesign/ComGraphicsConnection.cpp \
     ./designEditors/SystemDesign/HWMappingItem.cpp \

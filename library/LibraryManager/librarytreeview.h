@@ -52,6 +52,9 @@ signals:
 	//! Open the SW design of a component
 	void openSWDesign(QModelIndex const& index);
 
+    //! Open the Memory design of a HW design.
+    void openMemoryDesign(QModelIndex const& index);
+
 	//! Open the system design of a component
 	void openSystemDesign(QModelIndex const& index);
 
@@ -119,6 +122,9 @@ public slots:
 
     //! Open the SW design of a component
     void onOpenSWDesign();
+
+    //! Open the Memor design of a HW design.
+    void onOpenMemoryDesign();
 
     //! Open the system design of a component
     void onOpenSystemDesign();
@@ -231,6 +237,9 @@ private:
 
 	//! Open the SW design of a component
 	QAction* openSWDesignAction_;
+
+    //! Action for opening a memory design.
+    QAction* openMemoryDesignAction_;
 
 	//! Open the component editor
 	QAction* openComponentAction_;

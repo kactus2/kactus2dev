@@ -1759,52 +1759,10 @@
     <ClCompile Include="designEditors\HWDesign\SelectItemTypeDialog.cpp">
       <Filter>Source Files\designEditors\HWDesign</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\AddressBlockItem.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\AddressSectionItem.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\AddressSpaceItem.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\AddressSubsection.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\MemoryBaseItem.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\MemoryDesigner\MemoryColumn.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignDiagram.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignWidget.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\SegmentItem.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressSectionItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressSpaceItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressSubsection.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MemoryBaseItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_MemoryColumn.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MemoryDesignDiagram.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MemoryDesignWidget.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SWComponentItem.cpp">
@@ -4249,6 +4207,87 @@
     <ClCompile Include="VersionHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AddressBlockGraphicsItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AddressSegmentGraphicsItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_AddressSpaceGraphicsItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MainMemoryGraphicsItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryCollisionItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryConnectionItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignDocument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignerChildGraphicsItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignerDiagram.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignerGraphicsItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryMapGraphicsItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_RegisterGraphicsItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\AddressBlockGraphicsItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\AddressSegmentGraphicsItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\AddressSpaceGraphicsItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MainMemoryGraphicsItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryCollisionItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryConnectionItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignDocument.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerChildGraphicsItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerDiagram.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerGraphicsItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryExtensionGraphicsItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryMapGraphicsItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignDocument.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignerDiagram.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\RegisterGraphicsItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4662,25 +4701,7 @@
     <CustomBuild Include="designEditors\HWDesign\views\CellEditTableView.h">
       <Filter>Header Files\designEditors\HWDesign\views</Filter>
     </CustomBuild>
-    <CustomBuild Include="designEditors\MemoryDesigner\AddressSectionItem.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\MemoryDesigner\AddressSpaceItem.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\MemoryDesigner\AddressSubsection.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\MemoryDesigner\MemoryBaseItem.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
-    </CustomBuild>
     <CustomBuild Include="designEditors\MemoryDesigner\MemoryColumn.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\MemoryDesigner\MemoryDesignDiagram.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\MemoryDesigner\MemoryDesignWidget.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\SystemDesign\SWComponentItem.h">
@@ -5838,6 +5859,45 @@
     <CustomBuild Include="common\widgets\ParameterGroupBox\parametergroupbox.h">
       <Filter>Header Files\common\widgets\ParameterGroupBox</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\AddressBlockGraphicsItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\AddressSegmentGraphicsItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\AddressSpaceGraphicsItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MainMemoryGraphicsItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryCollisionItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryConnectionItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryDesignDocument.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryDesignerChildGraphicsItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryDesignerDiagram.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryDesignerGraphicsItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryExtensionGraphicsItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryMapGraphicsItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\RegisterGraphicsItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -5977,12 +6037,6 @@
     </ClInclude>
     <ClInclude Include="designEditors\HWDesign\PortmapDialog.h">
       <Filter>Header Files\designEditors\HWDesign</Filter>
-    </ClInclude>
-    <ClInclude Include="designEditors\MemoryDesigner\AddressBlockItem.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
-    </ClInclude>
-    <ClInclude Include="designEditors\MemoryDesigner\SegmentItem.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\SystemDesign\HWMappingItem.h">
       <Filter>Header Files\designEditors\SystemDesign</Filter>
