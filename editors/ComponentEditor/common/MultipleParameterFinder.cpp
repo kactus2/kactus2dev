@@ -109,3 +109,11 @@ int MultipleParameterFinder::getNumberOfParameters() const
 {
     return getAllParameterIds().size();
 }
+
+//-----------------------------------------------------------------------------
+// Function: MultipleParameterFinder::registerParameterModel()
+//-----------------------------------------------------------------------------
+void MultipleParameterFinder::registerParameterModel(QAbstractItemModel const* /*model*/)
+{
+    // Nothing to do.
+}

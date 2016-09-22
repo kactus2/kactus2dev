@@ -155,6 +155,14 @@ void TopComponentParameterFinder::setActiveView(QSharedPointer<View> view)
 }
 
 //-----------------------------------------------------------------------------
+// Function: TopComponentParameterFinder::registerParameterModel()
+//-----------------------------------------------------------------------------
+void TopComponentParameterFinder::registerParameterModel(QAbstractItemModel const* /*model*/)
+{
+    // Nothing to do.
+}
+
+//-----------------------------------------------------------------------------
 // Function: TopComponentParameterFinder::activeViewParameters()
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<Parameter> > TopComponentParameterFinder::activeViewParameters() const

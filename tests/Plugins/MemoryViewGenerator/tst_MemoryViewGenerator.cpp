@@ -74,6 +74,8 @@ private slots:
 
     void testSegmentsWithinAddressSpace();
 
+    void testMultipleConnectionsFromMaster();
+
 private:
     
     QString runGenerator();
@@ -909,8 +911,8 @@ void tst_MemoryViewGenerator::testSegmentsWithinAddressSpace()
     masterSpace->getSegments()->append(firstSegment);
 
     QSharedPointer<Segment> secondSegment(new Segment("secondSegment"));
-    secondSegment->setRange("16");    
-    secondSegment->setOffset("10");
+    secondSegment->setRange("'h10");    
+    secondSegment->setOffset("'h10");
 
     masterSpace->getSegments()->append(secondSegment);
 
@@ -926,8 +928,42 @@ void tst_MemoryViewGenerator::testSegmentsWithinAddressSpace()
     QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
         "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterAddressSpace;addressSpace;0x0;;;;;\n"
         "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterAddressSpace.firstSegment;segment;0x0;2;;;8;\n"
-        "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterAddressSpace.secondSegment;segment;0x0;16;;;10;\n"
+        "tut.fi.TestLib.TestMaster.1.0.masterID.masterInstance.masterAddressSpace.secondSegment;segment;0x0;16;;;16;\n"
     ));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryViewGenerator::testMultipleConnectionsFromMaster()
+//-----------------------------------------------------------------------------
+void tst_MemoryViewGenerator::testMultipleConnectionsFromMaster()
+{
+    VLNV masterVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "TestMaster", "1.0");
+    VLNV slaveVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "TestSlave", "1.0");
+
+    createMasterComponent(masterVLNV);
+
+    QSharedPointer<Component> slaveComponent = createSlaveComponent(slaveVLNV);
+
+    QSharedPointer<MemoryMap> slaveMemoryMap(new MemoryMap("slaveMemoryMap"));
+    slaveComponent->getMemoryMaps()->append(slaveMemoryMap);
+
+    QSharedPointer<AddressBlock> slaveAddressBlock = addAddressBlock("slaveBlock", "0", "8", "32", slaveMemoryMap);
+
+    createComponentInstance(masterVLNV, "master", "masterID", design_);
+    createComponentInstance(slaveVLNV, "slave1", "slave1_id", design_);
+    createComponentInstance(slaveVLNV, "slave2", "slave2_id", design_);
+
+    createInterconnection("master", "masterIf", "slave1", "slaveIf", design_);
+    createInterconnection("master", "masterIf", "slave2", "slaveIf", design_);
+
+    QString output = runGenerator();
+
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slave1_id.slave1.slaveMemoryMap;memoryMap;0x0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slave1_id.slave1.slaveMemoryMap.slaveBlock;addressBlock;0x0;8;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slave2_id.slave2.slaveMemoryMap;memoryMap;0x0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slave2_id.slave2.slaveMemoryMap.slaveBlock;addressBlock;0x0;8;32;;;\n"
+        ));
 }
 
 //-----------------------------------------------------------------------------
@@ -936,7 +972,7 @@ void tst_MemoryViewGenerator::testSegmentsWithinAddressSpace()
 QString tst_MemoryViewGenerator::runGenerator()
 {
     MemoryViewGenerator generator(library_);
-    generator.generate(topComponent_, "","output.csv");
+    generator.generate(topComponent_, "", "output.csv");
 
     QFile outputFile("./output.csv");
 
@@ -1054,8 +1090,8 @@ void tst_MemoryViewGenerator::createHierarchicalConnection(QString const& topInt
 //-----------------------------------------------------------------------------
 // Function: tst_MemoryViewGenerator::addAddressBlock()
 //-----------------------------------------------------------------------------
-QSharedPointer<AddressBlock> tst_MemoryViewGenerator::addAddressBlock(QString const& name, QString const& baseAddress,
-    QString const& range, QString const& width, 
+QSharedPointer<AddressBlock> tst_MemoryViewGenerator::addAddressBlock(QString const& name,
+    QString const& baseAddress, QString const& range, QString const& width, 
     QSharedPointer<MemoryMap> containingMemoryMap)
 {
     QSharedPointer<AddressBlock> block(new AddressBlock(name, baseAddress));

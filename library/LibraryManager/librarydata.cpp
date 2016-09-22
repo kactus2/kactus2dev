@@ -20,6 +20,7 @@
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ParameterCache.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -83,7 +84,7 @@ vlnvErrors_(0),
 fileErrors_(0),
 fileCount_(0),
 urlTester_(new QRegExpValidator(Utils::URL_VALIDITY_REG_EXP, this)),
-componentValidatorFinder_(new ComponentParameterFinder(QSharedPointer<Component>())),
+componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
 componentValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
                     handler_),
 designValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), handler_),

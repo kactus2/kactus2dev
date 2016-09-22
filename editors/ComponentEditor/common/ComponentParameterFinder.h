@@ -14,6 +14,7 @@
 
 #include "ParameterFinder.h"
 
+class AbstractParameterModel;
 class Component;
 class View;
 
@@ -112,6 +113,13 @@ public:
      *      @param [in] viewName   The name of the active view.
      */
     void setActiveView(QString const& viewName);
+    
+    /*!
+     *  Registers a parameter model that can modify parameters for the finder.
+     *
+     *      @param [in] model   The model to register.
+     */
+    virtual void registerParameterModel(QAbstractItemModel const* model);
 
 private:
 
@@ -145,6 +153,12 @@ private:
      *      @return The parameters in all registers.
      */
     QList<QSharedPointer<Parameter> > allRegisterParameters() const;
+
+    int viewParameterCount() const;
+
+    int busInterfaceParameterCount() const;
+
+    int registerParameterCount() const;
 
     //-----------------------------------------------------------------------------
     // Data.

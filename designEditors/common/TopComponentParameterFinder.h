@@ -97,6 +97,13 @@ public:
      *      @param [in] view   The name of the active view.
      */
     void setActiveView(QSharedPointer<View> view);
+    
+    /*!
+     *  Registers a parameter model that can modify parameters for the finder.
+     *
+     *      @param [in] model   The model to register.
+     */
+    virtual void registerParameterModel(QAbstractItemModel const* model);
 
 private:
 

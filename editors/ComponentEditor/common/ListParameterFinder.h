@@ -91,6 +91,13 @@ public:
      *      @param [in] parameterList   [Description].
      */
     void setParameterList(QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList);
+    
+    /*!
+     *  Registers a parameter model that can modify parameters for the finder.
+     *
+     *      @param [in] model   The model to register.
+     */
+    virtual void registerParameterModel(QAbstractItemModel const* model);
 
 private:
 

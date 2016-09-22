@@ -19,8 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: PortWriter::PortWriter()
 //-----------------------------------------------------------------------------
-PortWriter::PortWriter(QObject* parent /* = 0 */) :
-CommonItemsWriter(parent)
+PortWriter::PortWriter(QObject* parent) : CommonItemsWriter(parent)
 {
 
 }
@@ -38,7 +37,7 @@ PortWriter::~PortWriter()
 //-----------------------------------------------------------------------------
 void PortWriter::writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port) const
 {
-    writer.writeStartElement("ipxact:port");
+    writer.writeStartElement(QStringLiteral("ipxact:port"));
 
     NameGroupWriter nameWriter;
     nameWriter.writeNameGroup(writer, port);
@@ -66,16 +65,19 @@ void PortWriter::writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port) 
 //-----------------------------------------------------------------------------
 void PortWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire) const
 {
-    writer.writeStartElement("ipxact:wire");
+    writer.writeStartElement(QStringLiteral("ipxact:wire"));
 
     if (wire->getAllLogicalDirectionsAllowed())
     {
-        writer.writeAttribute("allLogicalDirectionsAllowed", "true");
+        writer.writeAttribute(QStringLiteral("allLogicalDirectionsAllowed"), QStringLiteral("true"));
     }
 
-    writer.writeTextElement("ipxact:direction", DirectionTypes::direction2Str(wire->getDirection()));
+    writer.writeTextElement(QStringLiteral("ipxact:direction"), DirectionTypes::direction2Str(wire->getDirection()));
 
-    writeVector(writer, wire->getVector());
+    if (wire->getVector() && (!wire->getVector()->getLeft().isEmpty() || !wire->getVector()->getRight().isEmpty()))
+    {
+        writeVector(writer, wire->getVector());
+    }
 
     writeWireTypeDefinitions(writer, wire->getWireTypeDefs());
 
@@ -91,12 +93,12 @@ void PortWriter::writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> ve
 {
     if (vector)
     {
-        writer.writeStartElement("ipxact:vectors");
+        writer.writeStartElement(QStringLiteral("ipxact:vectors"));
 
-        writer.writeStartElement("ipxact:vector");
+        writer.writeStartElement(QStringLiteral("ipxact:vector"));
 
-        writer.writeTextElement("ipxact:left", vector->getLeft());
-        writer.writeTextElement("ipxact:right", vector->getRight());
+        writer.writeTextElement(QStringLiteral("ipxact:left"), vector->getLeft());
+        writer.writeTextElement(QStringLiteral("ipxact:right"), vector->getRight());
 
         writer.writeEndElement(); // ipxact:vector
 
@@ -112,13 +114,13 @@ void PortWriter::writeWireTypeDefinitions(QXmlStreamWriter& writer,
 {
     if (typeDefinitions && !typeDefinitions->isEmpty())
     {
-        writer.writeStartElement("ipxact:wireTypeDefs");
+        writer.writeStartElement(QStringLiteral("ipxact:wireTypeDefs"));
 
         foreach(QSharedPointer<WireTypeDef> singleTypeDefinition, *typeDefinitions)
         {
-            writer.writeStartElement("ipxact:wireTypeDef");
+            writer.writeStartElement(QStringLiteral("ipxact:wireTypeDef"));
 
-            writeSingleTypeDefinition(writer, singleTypeDefinition, "constrained");
+            writeSingleTypeDefinition(writer, singleTypeDefinition, QStringLiteral("constrained"));
 
             writer.writeEndElement(); // ipxact:wireTypeDef
         }
@@ -135,11 +137,11 @@ void PortWriter::writeSingleTypeDefinition(QXmlStreamWriter& writer, QSharedPoin
 {
     if (!typeDefinition->getTypeName().isEmpty())
     {
-        writer.writeStartElement("ipxact:typeName");
+        writer.writeStartElement(QStringLiteral("ipxact:typeName"));
 
         if (typeDefinition->isConstrained())
         {
-            writer.writeAttribute(attributeName, "true");
+            writer.writeAttribute(attributeName, QStringLiteral("true"));
         }
 
         writer.writeCharacters(typeDefinition->getTypeName());
@@ -148,12 +150,12 @@ void PortWriter::writeSingleTypeDefinition(QXmlStreamWriter& writer, QSharedPoin
 
     foreach (QString definition, typeDefinition->getTypeDefinitions())
     {
-        writer.writeTextElement("ipxact:typeDefinition", definition);
+        writer.writeTextElement(QStringLiteral("ipxact:typeDefinition"), definition);
     }
 
     foreach (QString viewReference, typeDefinition->getViewRefs())
     {
-        writer.writeTextElement("ipxact:viewRef", viewReference);
+        writer.writeTextElement(QStringLiteral("ipxact:viewRef"), viewReference);
     }
 }
 
@@ -164,10 +166,10 @@ void PortWriter::writeWireDefaultValue(QXmlStreamWriter& writer, QString const& 
 {
     if (!defaultValue.isEmpty())
     {
-        writer.writeStartElement("ipxact:drivers");
-        writer.writeStartElement("ipxact:driver");
+        writer.writeStartElement(QStringLiteral("ipxact:drivers"));
+        writer.writeStartElement(QStringLiteral("ipxact:driver"));
 
-        writer.writeTextElement("ipxact:defaultValue", defaultValue);
+        writer.writeTextElement(QStringLiteral("ipxact:defaultValue"), defaultValue);
 
         writer.writeEndElement(); // ipxact:driver
         writer.writeEndElement(); // ipxact:drivers
@@ -179,14 +181,14 @@ void PortWriter::writeWireDefaultValue(QXmlStreamWriter& writer, QString const& 
 //-----------------------------------------------------------------------------
 void PortWriter::writeTransactional(QXmlStreamWriter& writer, QSharedPointer<Transactional> transactional) const
 {
-    writer.writeStartElement("ipxact:transactional");
+    writer.writeStartElement(QStringLiteral("ipxact:transactional"));
 
     if (transactional->getAllLogicalInitiativesAllowed())
     {
-        writer.writeAttribute("allLogicalInitiativesAllowed", "true");
+        writer.writeAttribute(QStringLiteral("allLogicalInitiativesAllowed"), QStringLiteral("true"));
     }
 
-    writer.writeTextElement("ipxact:initiative", transactional->getInitiative());
+    writer.writeTextElement(QStringLiteral("ipxact:initiative"), transactional->getInitiative());
 
     writeTransactionalKind(writer, transactional->getKind());
 
@@ -209,15 +211,15 @@ void PortWriter::writeTransactionalKind(QXmlStreamWriter& writer, QString const&
 {
     if (!kind.isEmpty())
     {
-        writer.writeStartElement("ipxact:kind");
+        writer.writeStartElement(QStringLiteral("ipxact:kind"));
         if (TransactionalTypes::isIpXactKindType(kind))
         {
             writer.writeCharacters(kind);
         }
         else
         {
-            writer.writeAttribute("custom", kind);
-            writer.writeCharacters("custom");
+            writer.writeAttribute(QStringLiteral("custom"), kind);
+            writer.writeCharacters(QStringLiteral("custom"));
         }
 
         writer.writeEndElement(); // ipxact:kind
@@ -231,7 +233,7 @@ void PortWriter::writeTransactionalBusWidth(QXmlStreamWriter& writer, QString co
 {
     if (!busWidth.isEmpty())
     {
-        writer.writeTextElement("ipxact:busWidth", busWidth);
+        writer.writeTextElement(QStringLiteral("ipxact:busWidth"), busWidth);
     }
 }
 
@@ -243,13 +245,13 @@ void PortWriter::writeTransactionalTypeDefinitions(QXmlStreamWriter& writer,
 {
     if (!transactional->getTransTypeDef()->isEmpty())
     {
-        writer.writeStartElement("ipxact:transTypeDefs");
+        writer.writeStartElement(QStringLiteral("ipxact:transTypeDefs"));
 
         foreach (QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transactional->getTransTypeDef())
         {
-            writer.writeStartElement("ipxact:transTypeDef");
+            writer.writeStartElement(QStringLiteral("ipxact:transTypeDef"));
 
-            writeSingleTypeDefinition(writer, transactionalTypeDefinition, "exact");
+            writeSingleTypeDefinition(writer, transactionalTypeDefinition, QStringLiteral("exact"));
 
             writer.writeEndElement(); // ipxact:transTypeDef
         }
@@ -266,15 +268,15 @@ void PortWriter::writeTransactionalMinMaxConnections(QXmlStreamWriter& writer,
 {
     if (!transactional->getMinConnections().isEmpty() || !transactional->getMaxConnections().isEmpty())
     {
-        writer.writeStartElement("ipxact:connection");
+        writer.writeStartElement(QStringLiteral("ipxact:connection"));
 
         if (!transactional->getMaxConnections().isEmpty())
         {
-            writer.writeTextElement("ipxact:maxConnections", transactional->getMaxConnections());
+            writer.writeTextElement(QStringLiteral("ipxact:maxConnections"), transactional->getMaxConnections());
         }
         if (!transactional->getMinConnections().isEmpty())
         {
-            writer.writeTextElement("ipxact:minConnections", transactional->getMinConnections());
+            writer.writeTextElement(QStringLiteral("ipxact:minConnections"), transactional->getMinConnections());
         }
         writer.writeEndElement(); // ipxact:connection
     }
@@ -287,14 +289,14 @@ void PortWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<QSha
 {
     if (!arrays->isEmpty())
     {
-        writer.writeStartElement("ipxact:arrays");
+        writer.writeStartElement(QStringLiteral("ipxact:arrays"));
 
         foreach (QSharedPointer<Array> singleArray, *arrays)
         {
-            writer.writeStartElement("ipxact:array");
+            writer.writeStartElement(QStringLiteral("ipxact:array"));
 
-            writer.writeTextElement("ipxact:left", singleArray->getLeft());
-            writer.writeTextElement("ipxact:right", singleArray->getRight());
+            writer.writeTextElement(QStringLiteral("ipxact:left"), singleArray->getLeft());
+            writer.writeTextElement(QStringLiteral("ipxact:right"), singleArray->getRight());
 
             writer.writeEndElement(); // ipxact:array
         }

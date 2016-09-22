@@ -74,6 +74,26 @@ public:
      */
     virtual int baseForExpression(QString const& expression) const;
 
+protected:
+     
+    /*!
+     *  Parses a constant number to a real number.
+     *
+     *      @param [in] constantNumber   The constant to parse.
+     *
+     *      @return The real value of the constant.
+     */
+    virtual qreal parseConstantToDecimal(QString const& constantNumber) const;
+
+        /*!
+     *  Splits the given expression to string list with terms and operations as separate items.
+     *
+     *      @param [in] expression   The expression to split.
+     *
+     *      @return The separated list.
+     */
+    QStringList toStringList(QString const& expression) const;
+
 private:
 
 	// Disable copying.
@@ -116,14 +136,7 @@ private:
      */
     QString parseComparison(QString const& expression) const;
 
-    /*!
-     *  Splits the given expression to string list with terms and operations as separate items.
-     *
-     *      @param [in] expression   The expression to split.
-     *
-     *      @return The separated list.
-     */
-    QStringList toStringList(QString const& expression) const;
+    QString parseArray(QString const& expression) const;
 
     /*!
      *  Splits the given operand to string list with terms and parentheses as separate items.
@@ -172,7 +185,9 @@ private:
      *      @return The position of the ending parenthesis.
      */
     int findMatchingEndParenthesis(QStringList const& equation, int parenthesesStart) const;
-      
+
+    int findMatchingEndParenthesis(QString const& equation, int parenthesesStart) const;
+
     /*!
      *  Solves power operations in a given equation.
      *
@@ -220,16 +235,7 @@ private:
     *      @return The result of the operation.
     */
     QString solve(QString const& firstTerm, QString const& operation, QString const& secondTerm) const;
-        
-    /*!
-     *  Parses a constant number to a real number.
-     *
-     *      @param [in] constantNumber   The constant to parse.
-     *
-     *      @return The real value of the constant.
-     */
-    qreal parseConstantToDecimal(QString const& constantNumber) const;
-
+       
     /*!
      *  Get the precision used from the terms.
      *

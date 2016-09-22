@@ -49,10 +49,10 @@ void ComponentParameterFinder::changeComponent(QSharedPointer<Component> newComp
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString const& parameterId) const
 {
-	// First, search for the parameter corresponding the id.
-	QSharedPointer<Parameter> parameter = searchParameter(parameterId);
+    // First, search for the parameter corresponding the id.
+    QSharedPointer<Parameter> parameter = searchParameter(parameterId);
 
-	return parameter;
+    return parameter;
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ bool ComponentParameterFinder::hasId(QString const& id) const
 {
     if (!component_.isNull() && searchParameter(id))
     {
-		return true;
+        return true;
     }
 
     return false;
@@ -73,12 +73,12 @@ bool ComponentParameterFinder::hasId(QString const& id) const
 //-----------------------------------------------------------------------------
 QString ComponentParameterFinder::nameForId(QString const& id) const
 {
-	QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
+    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
 
-	if (targetParameter)
-	{
-		return targetParameter->name();
-	}
+    if (targetParameter)
+    {
+        return targetParameter->name();
+    }
 
     return "";
 }
@@ -90,10 +90,10 @@ QString ComponentParameterFinder::valueForId(QString const& id) const
 {
     QSharedPointer<Parameter> targetParameter = getParameterWithID(id);
 
-	if (targetParameter)
-	{
-		return targetParameter->getValue();
-	}
+    if (targetParameter)
+    {
+        return targetParameter->getValue();
+    }
 
     return "";
 }
@@ -137,9 +137,15 @@ QStringList ComponentParameterFinder::getAllParameterIds() const
 //-----------------------------------------------------------------------------
 int ComponentParameterFinder::getNumberOfParameters() const
 {
-    QStringList allParameterIds = getAllParameterIds();
-
-    return allParameterIds.size();
+    int parameterCount = 0;
+    if (!component_.isNull())
+    {
+        parameterCount += component_->getParameters()->count();
+        parameterCount += viewParameterCount();
+        parameterCount += busInterfaceParameterCount();
+        parameterCount += registerParameterCount();
+    }
+    return parameterCount;
 }
 
 //-----------------------------------------------------------------------------
@@ -155,7 +161,7 @@ void ComponentParameterFinder::setComponent(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 void ComponentParameterFinder::setActiveView(QSharedPointer<View> view)
 {
-	activeView_ = view;
+    activeView_ = view;
 }
 
 //-----------------------------------------------------------------------------
@@ -163,14 +169,22 @@ void ComponentParameterFinder::setActiveView(QSharedPointer<View> view)
 //-----------------------------------------------------------------------------
 void ComponentParameterFinder::setActiveView(QString const& viewName)
 {
-	if (component_)
-	{
-		activeView_ = component_->getModel()->findView(viewName);
-	}
-	else
-	{
-		activeView_ = QSharedPointer<View>();
-	}
+    if (component_)
+    {
+        activeView_ = component_->getModel()->findView(viewName);
+    }
+    else
+    {
+        activeView_ = QSharedPointer<View>();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::registerParameterModel()
+//-----------------------------------------------------------------------------
+void ComponentParameterFinder::registerParameterModel(QAbstractItemModel const* /*model*/)
+{
+    // Nothing to do.
 }
 
 //-----------------------------------------------------------------------------
@@ -178,39 +192,39 @@ void ComponentParameterFinder::setActiveView(QString const& viewName)
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ComponentParameterFinder::searchParameter(QString const& parameterId) const
 {
-	foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
-	{
-		if (parameter->getValueId() == parameterId)
-		{
-			return parameter;
-		}
-	}
+    foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
+    {
+        if (parameter->getValueId() == parameterId)
+        {
+            return parameter;
+        }
+    }
 
-	foreach (QSharedPointer<Parameter> viewParameter, allViewParameters())
-	{
-		if (viewParameter->getValueId() == parameterId)
-		{
-			return viewParameter;
-		}
-	}
+    foreach (QSharedPointer<Parameter> viewParameter, allViewParameters())
+    {
+        if (viewParameter->getValueId() == parameterId)
+        {
+            return viewParameter;
+        }
+    }
 
-	foreach (QSharedPointer<Parameter> busInterfaceParameter, allBusInterfaceParameters())
-	{
-		if (busInterfaceParameter->getValueId() == parameterId)
-		{
-			return busInterfaceParameter;
-		}
-	}
+    foreach (QSharedPointer<Parameter> busInterfaceParameter, allBusInterfaceParameters())
+    {
+        if (busInterfaceParameter->getValueId() == parameterId)
+        {
+            return busInterfaceParameter;
+        }
+    }
 
-	foreach (QSharedPointer<Parameter> registerParameter, allRegisterParameters())
-	{
-		if (registerParameter->getValueId() == parameterId)
-		{
-			return registerParameter;
-		}
-	}
+    foreach (QSharedPointer<Parameter> registerParameter, allRegisterParameters())
+    {
+        if (registerParameter->getValueId() == parameterId)
+        {
+            return registerParameter;
+        }
+    }
 
-	return QSharedPointer<Parameter>();
+    return QSharedPointer<Parameter>();
 }
 
 //-----------------------------------------------------------------------------
@@ -218,42 +232,39 @@ QSharedPointer<Parameter> ComponentParameterFinder::searchParameter(QString cons
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allViewParameters() const
 {
-	// The parameters found in views.
-	QList<QSharedPointer<Parameter> > viewParameters;
+    // The parameters found in views.
+    QList<QSharedPointer<Parameter> > viewParameters;
 
-	// The list of views to go through.
-	QSharedPointer<QList<QSharedPointer<View> > > views(new QList<QSharedPointer<View> >);
+    // The list of views to go through.
+    QSharedPointer<QList<QSharedPointer<View> > > views(new QList<QSharedPointer<View> >);
 
-	// If an active views is set, use it only. Otherwise use all views in the component.
-	if (activeView_)
-	{
-		views->append(activeView_);
-	}
-	else
-	{
-		views = component_->getViews();
-	}
+    // If an active views is set, use it only. Otherwise use all views in the component.
+    if (activeView_)
+    {
+        views->append(activeView_);
+    }
+    else
+    {
+        views = component_->getViews();
+    }
 
-	// Go through the specified views.
-	foreach (QSharedPointer<View> view, *views)
-	{
-		QSharedPointer<ComponentInstantiation> instantiation = component_->getModel()->
-			findComponentInstantiation(view->getComponentInstantiationRef());
+    // Go through the specified views.
+    foreach (QSharedPointer<View> view, *views)
+    {
+        QSharedPointer<ComponentInstantiation> instantiation = component_->getModel()->
+            findComponentInstantiation(view->getComponentInstantiationRef());
 
-		// If an instantiation exists, append its module parameters as well as parameters.
-		if (instantiation)
-		{
-			foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
-			{
-				viewParameters.append(parameter);
-			}
+        // If an instantiation exists, append its module parameters as well as parameters.
+        if (instantiation)
+        {
+            foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
+            {
+                viewParameters.append(parameter);
+            }
 
-			foreach (QSharedPointer<Parameter> parameter, *instantiation->getParameters())
-			{
-				viewParameters.append(parameter);
-			}
-		}
-	}
+            viewParameters.append(*instantiation->getParameters());
+        }
+    }
 
     return viewParameters;
 }
@@ -287,14 +298,73 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allRegisterParameter
             {
                 foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
                 {
-                    foreach (QSharedPointer<Parameter> parameter, *registerBase->getParameters())
-                    {
-                        registerParameters.append(parameter);
-                    }
+                    registerParameters.append(*registerBase->getParameters());
                 }
             }
         }
     }
 
     return registerParameters;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::viewParameterCount()
+//-----------------------------------------------------------------------------
+int ComponentParameterFinder::viewParameterCount() const
+{
+    int parameterCount = 0;
+
+    foreach (QSharedPointer<View> view, *component_->getViews())
+    {
+        QSharedPointer<ComponentInstantiation> instantiation = component_->getModel()->
+            findComponentInstantiation(view->getComponentInstantiationRef());
+
+        if (instantiation)
+        {
+            parameterCount += instantiation->getModuleParameters()->count();
+
+            parameterCount += instantiation->getParameters()->count();
+        }
+    }
+
+    return parameterCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::busInterfaceParameterCount()
+//-----------------------------------------------------------------------------
+int ComponentParameterFinder::busInterfaceParameterCount() const
+{
+    int parameterCount = 0;
+    foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
+    {
+        parameterCount += busInterface->getParameters()->count();
+    }
+
+    return parameterCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterFinder::registerParameterCount()
+//-----------------------------------------------------------------------------
+int ComponentParameterFinder::registerParameterCount() const
+{
+    int parameterCount = 0;
+
+    foreach (QSharedPointer<MemoryMapBase> memoryMap, *component_->getMemoryMaps())
+    {
+        foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
+        {
+            QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
+            if (addressBlock)
+            {
+                foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
+                {
+                    parameterCount += registerBase->getParameters()->count();
+                }
+            }
+        }
+    }
+
+    return parameterCount;
 }

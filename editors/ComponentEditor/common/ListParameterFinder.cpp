@@ -111,3 +111,11 @@ void ListParameterFinder::setParameterList(QSharedPointer<QList<QSharedPointer<P
 {
     parameterList_ = parameterList;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ListParameterFinder::registerParameterModel()
+//-----------------------------------------------------------------------------
+void ListParameterFinder::registerParameterModel(QAbstractItemModel const* /*model*/)
+{
+    // Nothing to do.
+}

@@ -56,6 +56,8 @@
 
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
+#include <editors/ComponentEditor/common/ParameterCache.h>
+
 #include <QDialog>
 
 #include <QMessageBox>
@@ -82,7 +84,7 @@ navigationView_(libHandler, component->getVlnv(), &navigationSplitter_),
 proxy_(this),
 editorSlot_(&editorVisualizerSplitter_),
 visualizerSlot_(&editorVisualizerSplitter_),
-parameterFinder_(new ComponentParameterFinder(component_)),
+parameterFinder_(new ParameterCache(component_)),
 referenceCounter_(new ParameterReferenceCounter(parameterFinder_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),

@@ -38,6 +38,7 @@ validator_(validator),
 expressionFormatter_(expressionFormatter)
 {
     setExpressionParser(expressionParser);
+    parameterFinder->registerParameterModel(this);
 }
 
 //-----------------------------------------------------------------------------

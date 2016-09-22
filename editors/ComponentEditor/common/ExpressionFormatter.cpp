@@ -35,11 +35,9 @@ ExpressionFormatter::~ExpressionFormatter()
 //-----------------------------------------------------------------------------
 QString ExpressionFormatter::formatReferringExpression(QString const& expression) const
 {
-    QStringList parameterIds = parameterFinder_->getAllParameterIds();
-
     QString formattedExpression = expression;
 
-    foreach (QString valueID, parameterIds)
+    foreach (QString valueID, parameterFinder_->getAllParameterIds())
     {
         if (expression.contains(valueID))
         {

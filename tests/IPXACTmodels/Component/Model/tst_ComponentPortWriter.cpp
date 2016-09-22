@@ -34,6 +34,7 @@ private slots:
 
     void writeWirePortAllLogicalDirectionsAllowed();
     void writeWirePortVectors();
+    void emptyVectorIsNotWritten();
     void writeWireTypeDefinitions();
     void writeWireDefaultValue();
 
@@ -343,6 +344,32 @@ void tst_ComponentPortWriter::writeWirePortVectors()
                         "<ipxact:right>Yaoxao</ipxact:right>"
                     "</ipxact:vector>"
                 "</ipxact:vectors>"
+            "</ipxact:wire>"
+        "</ipxact:port>"
+        );
+
+    PortWriter portWriter;
+    portWriter.writePort(xmlStreamWriter, testPort);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::emptyVectorIsNotWritten()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::emptyVectorIsNotWritten()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Port> testPort (new Port("testPort", DirectionTypes::OUT));
+    testPort->getWire()->setVectorLeftBound("");
+    testPort->getWire()->setVectorRightBound("");
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:wire>"
+                "<ipxact:direction>out</ipxact:direction>"              
             "</ipxact:wire>"
         "</ipxact:port>"
         );

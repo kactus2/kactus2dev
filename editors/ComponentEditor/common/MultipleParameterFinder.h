@@ -36,6 +36,11 @@ public:
      */
     ~MultipleParameterFinder();
 
+     /*!
+      *  Adds a finder to be used in searches.
+      *
+      *      @param [in] finder   The finder to add.
+      */
      void addFinder(QSharedPointer<ParameterFinder> finder);
 
     /*!
@@ -85,6 +90,13 @@ public:
      *      @return The number of parameters in the component.
      */
     virtual int getNumberOfParameters() const;
+    
+    /*!
+     *  Registers a parameter model that can modify parameters for the finder.
+     *
+     *      @param [in] model   The model to register.
+     */
+    virtual void registerParameterModel(QAbstractItemModel const* model);
 
 private:
 
@@ -92,7 +104,8 @@ private:
     MultipleParameterFinder(const MultipleParameterFinder& other);
 	//! No assignment
     MultipleParameterFinder& operator=(const MultipleParameterFinder& other);
-   
+
+    //! The finders to use in searches.
     QList<QSharedPointer<ParameterFinder> > finders_;
 };
 

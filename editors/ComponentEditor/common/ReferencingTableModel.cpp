@@ -34,8 +34,7 @@ ReferencingTableModel::~ReferencingTableModel()
 //-----------------------------------------------------------------------------
 void ReferencingTableModel::removeReferencesInItemOnRow(const int& row) const
 {
-    QStringList allParameterIds = parameterFinder_->getAllParameterIds();
-    foreach (QString valueID, allParameterIds)
+    foreach (QString const& valueID, parameterFinder_->getAllParameterIds())
     {
         int totalreferences = getAllReferencesToIdInItemOnRow(row, valueID);
         for (int i = 0; i < totalreferences; ++i)

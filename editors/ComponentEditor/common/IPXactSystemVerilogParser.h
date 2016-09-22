@@ -6,7 +6,7 @@
 // Date: 02.12.2014
 //
 // Description:
-// Parser for SystemVerilog expressions within one IP-XACT component.
+// Parser for SystemVerilog expressions with parameter references.
 //-----------------------------------------------------------------------------
 
 #ifndef IPXACTSYSTEMVERILOGPARSER_H
@@ -20,7 +20,7 @@
 class ParameterFinder;
 
 //-----------------------------------------------------------------------------
-// Parser for SystemVerilog expressions within one IP-XACT component.
+// Parser for SystemVerilog expressions with parameter references.
 //-----------------------------------------------------------------------------
 class IPXactSystemVerilogParser : public SystemVerilogExpressionParser
 {
@@ -63,6 +63,11 @@ public:
      */
     virtual int baseForExpression(QString const& expression) const;
 
+protected:
+
+   //virtual qreal parseConstantToDecimal(QString const& constantNumber) const;
+
+
 private:
 
     // Disable copying.
@@ -70,22 +75,31 @@ private:
     IPXactSystemVerilogParser& operator=(IPXactSystemVerilogParser const& rhs);
 
     /*!
-     *  Evaluates the values of references parameter in the given expression recursively.
+     *  Evaluates the values of referenced parameters in the given expression recursively.
      *
      *      @param [in] expression              The expression to evaluate.
-     *      @param [in] availableIds            The ids available in the expressions.
      *      @param [in] recursionStep           The current depth in recursion.
      *
      *      @return The expression where the references have been replaced with the evaluated values.
      */
-    QString evaluateReferencesIn(QString const& expression) const;
+    QString parseReferencesIn(QString const& expression, unsigned int recursionStep = 0) const;
+
+    /*!
+     *  Recursively replaces all references with their values without evaluating the expressions.
+     *
+     *      @param [in] expression      The expression to replace references in.
+     *      @param [in] recursionStep   The current depth in recursion.
+     *
+     *      @return The expression where the references have been replaced with their values.
+     */
+    QString replaceReferencesWithValues(QString const& expression, unsigned int recursionStep = 0) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Maximum number of steps in evaluating a value for a parameter.
-    static const int MAX_EVALUATION_STEPS = 16;
+    static const int MAX_EVALUATION_STEPS = 25;
     
     //! The finder for parameters available in the SystemVerilog expressions.
     QSharedPointer<ParameterFinder> finder_;

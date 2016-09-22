@@ -71,18 +71,22 @@ QModelIndex ComponentParameterModel::parent(QModelIndex const& /*child*/) const
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterModel::data()
 //-----------------------------------------------------------------------------
-QVariant ComponentParameterModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
+QVariant ComponentParameterModel::data(QModelIndex const& index, int role) const
 {
-    if (!index.isValid() || index.row() > rowCount())
+    if (!index.isValid())
     {
         return QVariant();
     }
 
-    QStringList parameterIds = parameterFinder_->getAllParameterIds();
-
     if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-        if (index.column() == ComponentParameterColumns::NAME)
+        QStringList parameterIds = parameterFinder_->getAllParameterIds();
+
+        if (index.row() > parameterIds.size())
+        {
+            return QVariant();
+        }
+        else if (index.column() == ComponentParameterColumns::NAME)
         {
             return parameterFinder_->nameForId(parameterIds.at(index.row()));
         }

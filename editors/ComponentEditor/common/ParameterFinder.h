@@ -14,7 +14,9 @@
 
 #include <QSharedPointer>
 
+class QAbstractItemModel;
 class Parameter;
+
 //-----------------------------------------------------------------------------
 //! Parameter finder.
 //-----------------------------------------------------------------------------
@@ -75,6 +77,14 @@ public:
      *      @return The number of parameters.
      */
     virtual int getNumberOfParameters() const = 0;
+
+    /*!
+     *  Registers a parameter model that can modify parameters for the finder.
+     *
+     *      @param [in] model   The model to register.
+     */
+    virtual void registerParameterModel(QAbstractItemModel const* model) = 0;
+
 };
 
 #endif // PARAMETERFINDER_H

@@ -4207,40 +4207,13 @@
     <ClCompile Include="VersionHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressBlockGraphicsItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressSegmentGraphicsItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AddressSpaceGraphicsItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MainMemoryGraphicsItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MemoryCollisionItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MemoryConnectionItem.cpp">
+    <ClCompile Include="VersionHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_MemoryDesignDocument.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MemoryDesignerChildGraphicsItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_MemoryDesignerDiagram.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MemoryDesignerGraphicsItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MemoryMapGraphicsItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_RegisterGraphicsItem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\MemoryDesigner\AddressBlockGraphicsItem.cpp">
@@ -4287,6 +4260,12 @@
     </ClCompile>
     <ClCompile Include="designEditors\MemoryDesigner\RegisterGraphicsItem.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ParameterCache.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ParameterCache.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5897,6 +5876,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\MemoryDesigner\RegisterGraphicsItem.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\common\ParameterCache.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

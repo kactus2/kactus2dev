@@ -15,6 +15,7 @@
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ParameterCache.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -23,7 +24,7 @@
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/Model.h>
 #include <IPXACTmodels/Component/Register.h>
-//#include <IPXACTmodels/Component/modelparameter.h>
+
 #include <IPXACTmodels/common/Parameter.h>
 
 
@@ -66,6 +67,9 @@ private slots:
 
     void testExpressionComparison();
     void testExpressionComparison_data();
+
+    void testLongReferenceChainPerformance();
+    void testLongReferenceChainPerformance_data();
 };
 
 //-----------------------------------------------------------------------------
@@ -98,15 +102,14 @@ void tst_IPXactSystemVerilogParser::testParseConstant_data()
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QString>("expectedResult");
 
-    QTest::newRow("Boolean true is invalid") << "true" << "true";
-    QTest::newRow("Boolean false is invalid") << "false" << "false";
+    QTest::newRow("Boolean true is invalid") << "true" << "1";
+    QTest::newRow("Boolean false is invalid") << "false" << "0";
 
     QTest::newRow("Decimal value 1 is valid") << "1" << "1";
 
-    QTest::newRow("Hexadecimal value 0xff is invalid") << "0xff" << "0xff";
-    QTest::newRow("Hexadecimal value #ff is invalid") << "#ff" << "#ff";
-    QTest::newRow("Hexadecimal value ff is invalid") << "ff" << "ff";
-
+    QTest::newRow("Hexadecimal value 0xff is invalid") << "0xff" << "x";
+    QTest::newRow("Hexadecimal value #ff is invalid") << "#ff" << "x";
+    QTest::newRow("Hexadecimal value ff is invalid") << "ff" << "x";
 }
 
 //-----------------------------------------------------------------------------
@@ -118,7 +121,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithUnknownReference()
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(emptyComponent)));
 
-    QCOMPARE(parser.parseExpression("unknownParameter"), QString("unknownParameter"));
+    QCOMPARE(parser.parseExpression("unknownParameter"), QString("x"));
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +137,7 @@ void tst_IPXactSystemVerilogParser::testParameterWithoutId()
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
-    QCOMPARE(parser.parseExpression("unknownParameter"), QString("unknownParameter"));
+    QCOMPARE(parser.parseExpression("unknownParameter"), QString("x"));
 }
 
 //-----------------------------------------------------------------------------
@@ -190,8 +193,8 @@ void tst_IPXactSystemVerilogParser::testExpressionWithParameterReferences_data()
     QTest::newRow("Parameter value plus parameter value") << "one + one" << "2";
     QTest::newRow("Parameter value multiplied") << "4*one" << "4";
 
-    QTest::newRow("Reference to unknown parameter") << "unknown" << "unknown" ;
-    QTest::newRow("Parameter value plus unknown parameter value") << "one + unknown" << "1 + unknown";
+    QTest::newRow("Reference to unknown parameter") << "unknown" << "x" ;
+    QTest::newRow("Parameter value plus unknown parameter value") << "one + unknown" << "x";
 
     QTest::newRow("Two parameters") << "one + two" << "3";
 }
@@ -300,6 +303,11 @@ void tst_IPXactSystemVerilogParser::testParameterDefinedUsingOtherParameter()
     secondParameter->setValue("2*first");
     testComponent->getParameters()->append(secondParameter);
 
+    QSharedPointer<Parameter> thirdParameter(new Parameter());
+    thirdParameter->setValueId("third");
+    thirdParameter->setValue("second**second");
+    testComponent->getParameters()->append(thirdParameter);
+
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression(expression), QString(expectedResult));
@@ -315,6 +323,7 @@ void tst_IPXactSystemVerilogParser::testParameterDefinedUsingOtherParameter_data
 
     QTest::newRow("Parameter defined using other parameter") << "second" << "2";
     QTest::newRow("Parameter value is evaluated before other operations") << "second**3" << "8";
+    QTest::newRow("Expressions in parameter values are evaluated before further evaluation") << "third" << "4";
 }
 
 //-----------------------------------------------------------------------------
@@ -335,7 +344,7 @@ void tst_IPXactSystemVerilogParser::testLoopTerminatesEventually()
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
-    QCOMPARE(parser.parseExpression("second"), QString("x"));
+    QTRY_COMPARE_WITH_TIMEOUT(parser.parseExpression("second"), QString("x"), 3000);
 }
 
 //-----------------------------------------------------------------------------
@@ -357,7 +366,7 @@ void tst_IPXactSystemVerilogParser::testReferenceToStringInExpression()
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
     QCOMPARE(parser.parseExpression("first"), QString("\"text\""));
-    QCOMPARE(parser.parseExpression("second"), QString("\"text\" + 2"));
+    QCOMPARE(parser.parseExpression("second"), QString("x"));
 }
 
 //-----------------------------------------------------------------------------
@@ -397,7 +406,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithRealValueParameterReferenc
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
-    QCOMPARE(parser.parseExpression(expression), expectedResult);
+    QCOMPARE(parser.parseExpression(expression), expectedResult);   
 }
 
 //-----------------------------------------------------------------------------
@@ -410,10 +419,9 @@ void tst_IPXactSystemVerilogParser::testExpressionWithRealValueParameterReferenc
 
     QTest::newRow("Two parameters multiplication, integer and floating point") <<
         "firstValue * secondValue" << "22.53";
-    QTest::newRow("Two parameters division, integer and floating point") << "firstValue / secondValue" << "39";
-    QTest::newRow("Two parameters addition, integer and floating point") << "firstValue + secondValue" << "30.751";
-    QTest::newRow("Two parameters subtraction, integer and floating point") <<
-        "firstValue - secondValue" << "29.249";
+    QTest::newRow("Parameters division, integer and floating point") << "firstValue / secondValue" << "39";
+    QTest::newRow("Parameters addition, integer and floating point") << "firstValue + secondValue" << "30.751";
+    QTest::newRow("Parameters subtraction, integer and floating point") << "firstValue - secondValue" << "29.249";
 }
 
 //-----------------------------------------------------------------------------
@@ -472,6 +480,65 @@ void tst_IPXactSystemVerilogParser::testExpressionComparison_data()
         "firstValue+secondValue+1==secondValue*2" << 0;
 }
 
-QTEST_APPLESS_MAIN(tst_IPXactSystemVerilogParser)
+//-----------------------------------------------------------------------------
+// Function: tst_IPXactSystemVerilogParser::testLongReferenceChainPerformance()
+//-----------------------------------------------------------------------------
+void tst_IPXactSystemVerilogParser::testLongReferenceChainPerformance()
+{
+    QFETCH(int, chainLength);
+    QFETCH(bool, useCache);
+
+    QSharedPointer<Component> testComponent(new Component());
+
+    QSharedPointer<Parameter> firstParameter(new Parameter());
+    firstParameter->setValueId("id_0");
+    firstParameter->setValue("0");
+    testComponent->getParameters()->append(firstParameter);
+
+    for (int i = 1; i <= chainLength; i++)
+    {
+        QSharedPointer<Parameter> nextParamter(new Parameter());
+        nextParamter->setValueId("id_" + QString::number(i));
+        nextParamter->setValue(QString("id_%1 + 1").arg(i-1));
+        testComponent->getParameters()->append(nextParamter);
+    }
+
+    QSharedPointer<ParameterFinder> finder;
+    if (useCache)
+    {
+        finder = QSharedPointer<ParameterFinder>(new ParameterCache(testComponent));
+    }
+    else
+    {
+        finder = QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent));
+    }
+
+    IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
+
+    QBENCHMARK
+    {
+        QTRY_COMPARE(parser.parseExpression(QString("id_%1").arg(chainLength)).toInt(), chainLength);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_IPXactSystemVerilogParser::testLongReferenceChain()
+//-----------------------------------------------------------------------------
+void tst_IPXactSystemVerilogParser::testLongReferenceChainPerformance_data()
+{
+    QTest::addColumn<int>("chainLength");
+    QTest::addColumn<bool>("useCache");
+
+    QTest::newRow("Chain of 1 parameter, no cache") << 1 << false;
+    QTest::newRow("Chain of 1 parameter, cached") << 1 << true;
+
+    QTest::newRow("Chain of 5 parameters, no cache") << 5 << false;
+    QTest::newRow("Chain of 5 parameters, cached") << 5 << true;
+
+    QTest::newRow("Chain of 20 parameters, no cache") << 20 << false;
+    QTest::newRow("Chain of 20 parameters, cached") << 20 << true;
+}
+
+QTEST_MAIN(tst_IPXactSystemVerilogParser)
 
 #include "tst_IPXactSystemVerilogParser.moc"
