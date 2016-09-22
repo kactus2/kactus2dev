@@ -7,12 +7,12 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+HEADERS += ../../../Plugins/common/PortSorter/PortSorter.h \
+    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../Plugins/common/HDLParser/HDLComponentParser.h \
     ../../../Plugins/common/HDLParser/HDLParserCommon.h \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.h \
     ../../../editors/ComponentEditor/common/ListParameterFinder.h \
     ../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h \
     ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
@@ -20,10 +20,8 @@ HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../designEditors/common/TopComponentParameterFinder.h \
     ../../../Plugins/common/HDLParser/HDLDesignParser.h \
-    ../../MockObjects/LibraryMock.h \
-    ../../../Plugins/common/PortSorter/PortSorter.h
-SOURCES += ../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.cpp \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../MockObjects/LibraryMock.h
+SOURCES += ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
     ../../../Plugins/common/HDLParser/HDLDesignParser.cpp \

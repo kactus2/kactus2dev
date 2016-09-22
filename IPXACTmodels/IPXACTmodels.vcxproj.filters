@@ -131,9 +131,6 @@
     <ClCompile Include="validators\NMTokenValidator.cpp">
       <Filter>Source Files\validators</Filter>
     </ClCompile>
-    <ClCompile Include="validators\BinaryValidator.cpp">
-      <Filter>Source Files\validators</Filter>
-    </ClCompile>
     <ClCompile Include="BusDefinition\BusDefinition.cpp">
       <Filter>Source Files\BusDefinition</Filter>
     </ClCompile>
@@ -327,12 +324,6 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_WireAbstractionReader.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_BinaryValidator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_BinaryValidator.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_namevalidator.cpp">
@@ -1838,9 +1829,6 @@
     </CustomBuild>
     <CustomBuild Include="AbstractionDefinition\WireAbstractionReader.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
-    </CustomBuild>
-    <CustomBuild Include="validators\BinaryValidator.h">
-      <Filter>Header Files\validators</Filter>
     </CustomBuild>
     <CustomBuild Include="validators\namevalidator.h">
       <Filter>Header Files\validators</Filter>

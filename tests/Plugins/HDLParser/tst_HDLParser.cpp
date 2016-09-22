@@ -139,12 +139,6 @@ private:
 
 	QSharedPointer<View> topView_;
 
-    //! The generator output as a string.
-    QString output_;
-    
-    //! The time of the generator run.
-    QDateTime generationTime_;
-
     //! The test mock for library interface.
     LibraryMock library_;
 };
@@ -152,8 +146,7 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::tst_HDLParser()
 //-----------------------------------------------------------------------------
-tst_HDLParser::tst_HDLParser(): topComponent_(), design_(), designConf_(), output_(),
-	generationTime_(), library_(this)
+tst_HDLParser::tst_HDLParser(): topComponent_(), design_(), designConf_(), library_(this)
 {
 
 }
@@ -202,10 +195,6 @@ void tst_HDLParser::init()
 void tst_HDLParser::cleanup()
 {
     topComponent_.clear();
-
-    output_.clear();
-
-    QFile::remove("./generatorOutput.v");
 }
 
 //-----------------------------------------------------------------------------

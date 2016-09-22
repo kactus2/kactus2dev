@@ -64,8 +64,7 @@ QList<QSharedPointer<Port> > InterfaceDirectionNameSorter::sortedPorts(QSharedPo
 
         if (busInterfaces->size() == 1)
         {
-            SortKey key(busInterfaces->first()->name(), port->getDirection(),
-                port);
+            SortKey key(busInterfaces->first()->name(), port->getDirection(), port);
             sortedPorts.insert(key, port);
         }
         else if (!busInterfaces->isEmpty())

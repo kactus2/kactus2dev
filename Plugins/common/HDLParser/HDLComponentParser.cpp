@@ -12,7 +12,6 @@
 #include "HDLComponentParser.h"
 
 #include <library/LibraryManager/libraryinterface.h>
-#include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
@@ -41,8 +40,7 @@
 //-----------------------------------------------------------------------------
 HDLComponentParser::HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component) :
 library_(library),
-retval_(new GenerationComponent),
-sorter_(new InterfaceDirectionNameSorter)
+retval_(new GenerationComponent)
 {
     retval_->component = component;
 }
@@ -209,10 +207,7 @@ void HDLComponentParser::parseInterfaces(QSharedPointer<GenerationComponent> ret
 //-----------------------------------------------------------------------------
 void HDLComponentParser::parsePorts(QSharedPointer<GenerationComponent> retval)
 {
-    // Pick the ports in sorted order.
-    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(retval_->component);
-
-    foreach (QSharedPointer<Port> cport, ports)
+    foreach (QSharedPointer<Port> cport, *retval_->component->getPorts())
     {
         QSharedPointer<GenerationPort> gport(new GenerationPort);
 

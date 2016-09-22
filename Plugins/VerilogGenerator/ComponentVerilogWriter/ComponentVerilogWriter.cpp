@@ -26,6 +26,7 @@
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
+#include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
@@ -34,7 +35,8 @@ ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<GenerationComponen
     bool useInterfaces) :
 component_(component),
 useInterfaces_(useInterfaces),
-childWriters_()
+childWriters_(),
+sorter_(new InterfaceDirectionNameSorter)
 {
 
 }
@@ -230,11 +232,15 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
         }
     }
 
-    foreach(QSharedPointer<GenerationPort> port, component_->ports)
+    // Pick the ports in sorted order.
+    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(component_->component);
+
+    foreach(QSharedPointer<Port> cport, ports)
     {   
+        QSharedPointer<GenerationPort> gport = component_->ports[cport->name()];
         QString interfaceName;
 
-        if (port->interfaces.count() < 1 )
+        if (gport->interfaces.count() < 1 )
         {
             interfaceName = "none";
         }
@@ -244,9 +250,9 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
         }
         else
         {
-            if (port->interfaces.count() == 1)
+            if (gport->interfaces.count() == 1)
             {
-                interfaceName  = port->interfaces.first()->name;
+                interfaceName  = gport->interfaces.first()->name;
             }
             else
             {
@@ -254,10 +260,10 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
             }
         }
 
-        writeInterfaceIntroduction(interfaceName, port->port->description(), previousInterfaceName, outputStream);
+        writeInterfaceIntroduction(interfaceName, gport->port->description(), previousInterfaceName, outputStream);
 
-        bool lastPortToWrite = port == component_->ports.last();
-        writePort(outputStream, port, lastPortToWrite);
+        bool lastPortToWrite = cport == ports.last();
+        writePort(outputStream, gport, lastPortToWrite);
     }
     
     outputStream << ");" << endl;

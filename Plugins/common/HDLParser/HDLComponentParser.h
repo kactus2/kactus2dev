@@ -91,9 +91,6 @@ private:
     //! The component active view.
     QSharedPointer<View> activeView_;
 
-    //! Sorter for the ports of the component.
-    QSharedPointer<const PortSorter> sorter_;
-
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter_;
 

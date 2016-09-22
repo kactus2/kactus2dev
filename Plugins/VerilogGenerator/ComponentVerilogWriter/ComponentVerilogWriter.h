@@ -168,6 +168,9 @@ private:
     //! Writers for the inner elements e.g. wires and subcomponent instances.
     QList<QSharedPointer<Writer> > childWriters_;
 
+    //! Sorter for the ports of the component.
+    QSharedPointer<const PortSorter> sorter_;
+
 	//! The implementation, which is essentially the user-written things in the module.
 	QSharedPointer<TextBodyWriter> implementation_;
 

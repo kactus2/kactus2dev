@@ -45,7 +45,6 @@ HEADERS += ./XmlUtils.h \
     ./kactusExtensions/ComDefinitionReader.h \
     ./kactusExtensions/validators/SystemDesignConfigurationValidator.h \
     ./kactusExtensions/validators/SystemViewConfigurationValidator.h \
-    ./validators/BinaryValidator.h \
     ./validators/namevalidator.h \
     ./validators/NMTokenValidator.h \
     ./common/AccessTypes.h \
@@ -229,6 +228,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/AddressBlockValidator.h \
     ./Component/validators/AddressSpaceValidator.h \
     ./Component/validators/BuildCommandValidator.h \
+    ./Component/validators/BusInterfaceValidator.h \
     ./Component/validators/ChannelValidator.h \
     ./Component/validators/ChoiceValidator.h \
     ./Component/validators/ComponentGeneratorValidator.h \
@@ -247,8 +247,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./Component/validators/ViewValidator.h \
-    ./Component/validators/BusInterfaceValidator.h
+    ./Component/validators/ViewValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -286,7 +285,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/validators/ComDefinitionValidator.cpp \
     ./kactusExtensions/validators/SystemDesignConfigurationValidator.cpp \
     ./kactusExtensions/validators/SystemViewConfigurationValidator.cpp \
-    ./validators/BinaryValidator.cpp \
     ./validators/namevalidator.cpp \
     ./validators/NMTokenValidator.cpp \
     ./common/AccessTypes.cpp \
