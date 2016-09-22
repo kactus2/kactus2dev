@@ -307,13 +307,13 @@ void AdHocItem::setTieOffLabelPosition()
 //-----------------------------------------------------------------------------
 void AdHocItem::removeTieOffItem()
 {
-    if (tieOffPath_ != nullptr)
+    if (tieOffPath_ != 0)
     {
         delete tieOffPath_;
         tieOffPath_ = 0;
     }
 
-    if (tieOffLabel_ != nullptr)
+    if (tieOffLabel_ != 0)
     {
         delete tieOffLabel_;
         tieOffLabel_ = 0;

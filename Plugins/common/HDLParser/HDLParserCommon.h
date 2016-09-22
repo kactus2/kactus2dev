@@ -14,7 +14,8 @@
 
 #include <QSharedPointer>
 #include <QString>
-#include <IPXACTmodels\common\DirectionTypes.h>
+
+#include <IPXACTmodels/common/DirectionTypes.h>
 
 class Component;
 class ComponentInstance;

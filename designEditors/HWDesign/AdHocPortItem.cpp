@@ -218,7 +218,7 @@ QVariant AdHocPortItem::itemChange(GraphicsItemChange change, QVariant const& va
     else if (change == ItemRotationHasChanged)
     {
         getNameLabel().setRotation(-rotation());
-        if (getTieOffLabel() != nullptr)
+        if (getTieOffLabel() != 0)
         {
             getTieOffLabel()->setRotation(-rotation());
         }

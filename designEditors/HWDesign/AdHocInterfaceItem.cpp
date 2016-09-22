@@ -231,7 +231,7 @@ QVariant AdHocInterfaceItem::itemChange(GraphicsItemChange change, QVariant cons
     else if (change == ItemRotationHasChanged)
     {
         getNameLabel().setRotation(-rotation());
-        if (getTieOffLabel() != nullptr)
+        if (getTieOffLabel() != 0)
         {
             getTieOffLabel()->setRotation(-rotation());
         }
