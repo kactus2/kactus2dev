@@ -11,8 +11,6 @@
 
 #include "VerilogGeneratorPlugin.h"
 
-#include "VerilogGenerator/VerilogGenerator.h"
-
 #include <Plugins/common/NameGenerationPolicy.h>
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
@@ -206,54 +204,26 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
     if (designGeneration)
     {
-        QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
-        generator.parseDesign(designs);
+        generator.parseDesign(configuration_->getOutputPath(), designParser->getParsedDesigns());
     }
     else
     {
-        generator.parseComponent(componentParser->getParsedComponent());
+        generator.parseComponent(configuration_->getOutputPath(), componentParser->getParsedComponent());
     }
 
-	generator.generate(configuration_->getOutputPath(), getVersion(), utility_->getKactusVersion());
+	generator.generate(getVersion(), utility_->getKactusVersion());
 
     utility_->printInfo(tr("Finished writing the file(s)."));
 
 	// If so desired in the configuration, the resulting file will be added to the file set.
     if (configuration->getViewSelection()->getSaveToFileset())
     {
-        addGeneratedFileToFileSet(configuration->getViewSelection());
+        addGeneratedFileToFileSet(configuration->getViewSelection(), generator.getDocuments());
     }
-
-    insertFileDescription();
 
     saveChanges();
 
     utility_->printInfo(tr("Generation complete."));
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGeneratorPlugin::insertFileDescription()
-//-----------------------------------------------------------------------------
-void VerilogGeneratorPlugin::insertFileDescription()
-{
-    /*QList<QSharedPointer<File> > filecands = topComponent_->getFiles(relativePathFromXmlToFile(outputFile_));
-
-    if (filecands.size() > 0)
-    {
-        QSharedPointer<File> file = filecands.first();
-
-        QString desc = file->getDescription();
-
-        QRegularExpression regExp = QRegularExpression("(Generated at).+(by Kactus2. *)");
-        QDateTime generationTime = QDateTime::currentDateTime();
-
-        QRegularExpressionMatch match = regExp.match(desc);
-        desc = desc.remove(match.capturedStart(), match.capturedLength());
-        QString date = generationTime.date().toString("dd.MM.yyyy");
-        QString time = generationTime.time().toString("hh:mm:ss");
-
-        file->setDescription("Generated at " + time + " on " + date + " by Kactus2. " + desc);
-    }*/
 }
 
 //-----------------------------------------------------------------------------
@@ -309,7 +279,7 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 
 	viewSelect->setView(possibleViews->first());
 
-    viewSelect->setSaveToFileset(outputFileAndViewShouldBeAddedToTopComponent());
+    viewSelect->setSaveToFileset(outputFileShouldBeAddedToTopComponent());
 
     configuration_ = QSharedPointer<GeneratorConfiguration>(
         new GeneratorConfiguration(viewSelect, componentParser, designParser));
@@ -350,12 +320,11 @@ QString VerilogGeneratorPlugin::defaultOutputPath() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogGeneratorPlugin::fileShouldBeAddedToFileset()
+// Function: VerilogGeneratorPlugin::outputFileShouldBeAddedToTopComponent()
 //-----------------------------------------------------------------------------
-bool VerilogGeneratorPlugin::outputFileAndViewShouldBeAddedToTopComponent() const
+bool VerilogGeneratorPlugin::outputFileShouldBeAddedToTopComponent() const
 {
-    //QString filePath = relativePathFromXmlToFile(outputFile_);
-    return true;//!topComponent_->hasFile(filePath);
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -370,7 +339,8 @@ QString VerilogGeneratorPlugin::relativePathFromXmlToFile(QString const& filePat
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::addFileToFileSet()
 //-----------------------------------------------------------------------------
-void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<ViewSelection> configuration) const
+void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<ViewSelection> configuration,
+    QSharedPointer<QList<QSharedPointer<VerilogDocument> > > documents)
 {
 	// The view and the names of the instantiation and file set are assumed to exist.
 	Q_ASSERT (configuration->getView() && !configuration->getFileSetName().isEmpty() && 
@@ -396,23 +366,48 @@ void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<ViewSelect
 		topComponent_->getFileSets()->append(fileSet);
 	}
 
-	// Need path for the file.
-	/*QString filePath = relativePathFromXmlToFile(outputFile_);
-	// Add the new file to the file set.
-	QSettings settings;
-	fileSet->addFile(filePath, settings);*/
+    // Go through each generated file.
+    foreach(QSharedPointer<VerilogDocument> doc, *documents)
+    {
+	    // Need path for the file.
+	    QString filePath = relativePathFromXmlToFile(doc->filePath_);
+	    // Add the new file to the file set.
+	    QSettings settings;
+	    QSharedPointer<File> file = fileSet->addFile(filePath, settings);
 
-	// Make sure that the instantiation language is verilog.
-	instantiation->setLanguage("verilog");
+	    // Make sure that the instantiation language is verilog.
+	    instantiation->setLanguage("verilog");
 
-	// Make sure that the instantiation refers to the file set.
-	if (!instantiation->getFileSetReferences()->contains(fileSet->name()))
-	{
-		instantiation->getFileSetReferences()->append(fileSet->name());
-	}
+	    // Make sure that the instantiation refers to the file set.
+	    if (!instantiation->getFileSetReferences()->contains(fileSet->name()))
+	    {
+		    instantiation->getFileSetReferences()->append(fileSet->name());
+	    }
 
-	// Make sure that the view refers to component instantiation.
-	activeView->setComponentInstantiationRef(instantiation->name());
+	    // Make sure that the view refers to component instantiation.
+        activeView->setComponentInstantiationRef(instantiation->name());
+
+        // Insert the proper description to the file.
+        insertFileDescription(file);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGeneratorPlugin::insertFileDescription()
+//-----------------------------------------------------------------------------
+void VerilogGeneratorPlugin::insertFileDescription(QSharedPointer<File> file)
+{
+    QString desc = file->getDescription();
+
+    QRegularExpression regExp = QRegularExpression("(Generated at).+(by Kactus2. *)");
+    QDateTime generationTime = QDateTime::currentDateTime();
+
+    QRegularExpressionMatch match = regExp.match(desc);
+    desc = desc.remove(match.capturedStart(), match.capturedLength());
+    QString date = generationTime.date().toString("dd.MM.yyyy");
+    QString time = generationTime.time().toString("hh:mm:ss");
+
+    file->setDescription("Generated at " + time + " on " + date + " by Kactus2. " + desc);
 }
 
 //-----------------------------------------------------------------------------

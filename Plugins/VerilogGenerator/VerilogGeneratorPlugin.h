@@ -13,6 +13,7 @@
 #define VERILOGGENERATORPLUGIN_H
 
 #include "veriloggeneratorplugin_global.h"
+#include "VerilogGenerator/VerilogGenerator.h"
 
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
@@ -126,11 +127,6 @@ public:
 protected:
 
     /*!
-     *  Inserts description to the generated file..
-     */
-    void insertFileDescription();
-
-    /*!
      *  Finds the possible views for generation.
      *
      *      @param [in,out]	    targetComponent	The component for which the generator is run.
@@ -190,7 +186,7 @@ private:
      *
      *      @return True, if the file should be added to file set, otherwise false.
      */
-    virtual bool outputFileAndViewShouldBeAddedToTopComponent() const;
+    virtual bool outputFileShouldBeAddedToTopComponent() const;
     
     /*!
      *  Gets the relative path from the top component xml file to the given absolute path.
@@ -208,9 +204,16 @@ private:
 	 *      @param [in] activeView		The top component active view, which will refer to the instantiation.
 	 *      @param [in] instantiation   The instantiation, which will have the fileSetName as reference.
 	 *      @param [in] fileSetName		The name of the file set, where the file will be appended to.
-     *
      */
-    void addGeneratedFileToFileSet(QSharedPointer<ViewSelection> configuration) const;
+    void addGeneratedFileToFileSet(QSharedPointer<ViewSelection> configuration,
+        QSharedPointer<QList<QSharedPointer<VerilogDocument> > > documents);
+
+    /*!
+     *  Inserts description to a generated file.
+     *
+	 *      @param [in] file		The file which needs to be described.
+     */
+    void insertFileDescription(QSharedPointer<File> file);
 
     //! Saves the changes made to the top component.
     void saveChanges() const;

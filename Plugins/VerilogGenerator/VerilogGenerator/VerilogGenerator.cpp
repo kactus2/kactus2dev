@@ -38,9 +38,9 @@
 VerilogGenerator::VerilogGenerator(LibraryInterface* library, bool useInterfaces) : QObject(0), 
 library_(library),
 useInterfaces_(useInterfaces),
-sorter_(new InterfaceDirectionNameSorter())
+sorter_(new InterfaceDirectionNameSorter()),
+documents_(new QList<QSharedPointer<VerilogDocument> >)
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -48,27 +48,27 @@ sorter_(new InterfaceDirectionNameSorter())
 //-----------------------------------------------------------------------------
 VerilogGenerator::~VerilogGenerator()
 {
-
 }
 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::parseComponent()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::parseComponent(QSharedPointer<GenerationComponent> gc)
+void VerilogGenerator::parseComponent(QString const& outputPath, QSharedPointer<GenerationComponent> gc)
 {
     // If we are not generating based on a design, we must parse the existing implementation.
     QString implementation;
     QString postModule;
+    QString filePath = outputPath + "/" + gc->fileName_;
 
-    if (!selectImplementation(gc->fileName_, implementation, postModule))
+    if (!selectImplementation(filePath, implementation, postModule))
     {
         // If parser says no-go, we dare do nothing.
         return;
     }
 
     QSharedPointer<VerilogDocument> document = initializeWriters(gc);
-    document->fileName_ = gc->fileName_;
-    documents_.append(document);
+    document->filePath_ = filePath;
+    documents_->append(document);
 
     // Next comes the implementation.
     QSharedPointer<TextBodyWriter> implementationWriter(new TextBodyWriter(implementation));
@@ -82,19 +82,19 @@ void VerilogGenerator::parseComponent(QSharedPointer<GenerationComponent> gc)
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::parseDesign()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::parseDesign(QList<QSharedPointer<GenerationDesign> >& designs)
+void VerilogGenerator::parseDesign(QString const& outputPath, QList<QSharedPointer<GenerationDesign> >& designs)
 {
     foreach (QSharedPointer<GenerationDesign> design, designs)
     {
         QSharedPointer<VerilogDocument> document = initializeWriters(design->topComponent_);
-        document->fileName_ = design->topComponent_->fileName_;
+        document->filePath_ = outputPath + "/" + design->topComponent_->fileName_;
 
         createDesignWriters(design, document);
 
         // Finally, add them to the top writer in desired order.
         addWritersToTopInDesiredOrder(document);
 
-        documents_.append(document);
+        documents_->append(document);
     }
 }
 
@@ -280,7 +280,7 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::generate()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::generate(QString const& outputPath, QString const& generatorVersion /*= ""*/,
+void VerilogGenerator::generate(QString const& generatorVersion /*= ""*/,
     QString const& kactusVersion /*= ""*/) const
 {
     if (nothingToWrite())
@@ -289,19 +289,18 @@ void VerilogGenerator::generate(QString const& outputPath, QString const& genera
         return;
     }
 
-    foreach(QSharedPointer<VerilogDocument> document, documents_)
+    foreach(QSharedPointer<VerilogDocument> document, *documents_)
     {
-        QString filePath = outputPath + "/" + document->fileName_;
-        QFile outputFile(filePath); 
+        QFile outputFile(document->filePath_); 
         if (!outputFile.open(QIODevice::WriteOnly))
         {
-            emit reportError(tr("Could not open output file for writing: %1").arg(filePath));
+            emit reportError(tr("Could not open output file for writing: %1").arg(document->filePath_));
             return;
         }
 
         QTextStream outputStream(&outputFile);
 
-        document->headerWriter_->write(outputStream, filePath, generatorVersion, kactusVersion,
+        document->headerWriter_->write(outputStream, document->filePath_, generatorVersion, kactusVersion,
             QDateTime::currentDateTime());
         document->topWriter_->write(outputStream);
 
@@ -341,7 +340,7 @@ QSharedPointer<VerilogDocument> VerilogGenerator::initializeWriters(QSharedPoint
 //-----------------------------------------------------------------------------
 bool VerilogGenerator::nothingToWrite() const
 {
-    return documents_.size() < 1;
+    return documents_->size() < 1;
 }
 
 //-----------------------------------------------------------------------------

@@ -31,7 +31,7 @@ class WriterGroup;
 struct VerilogDocument
 {
     //! The name of the file for the document
-    QString fileName_;
+    QString filePath_;
 
     //! Writer for generating file header.
     QSharedPointer<VerilogHeaderWriter> headerWriter_;
@@ -72,16 +72,18 @@ public:
     /*!
      *  Parses a given component for generation.
      *
+     *      @param [in] outputPath			The path to the output file.
      *      @param [in] component           The component to parse for generation.
      *      @param [in] topComponentView    The component view to parse for generation.
      *
      *      @remark If parsing is not called before generation, nothing is generated.
      */
-    void parseComponent(QSharedPointer<GenerationComponent> gc);
+    void parseComponent(QString const& outputPath, QSharedPointer<GenerationComponent> gc);
 
     /*!
      *  Parses a given design for generation.
      *
+     *      @param [in] outputPath			The path to the output file.
      *      @param [in] component           The component of the design.
      *      @param [in] topComponentView    The component view to parse for generation.
 	 *      @param [in] design              The design to parse for generation.
@@ -89,7 +91,7 @@ public:
      *
      *      @remark If parsing is not called before generation, nothing is generated.
      */
-    void parseDesign(QList<QSharedPointer<GenerationDesign> >& designs);
+    void parseDesign(QString const& outputPath, QList<QSharedPointer<GenerationDesign> >& designs);
 
     void createDesignWriters(QSharedPointer<GenerationDesign> design, QSharedPointer<VerilogDocument> document);
 
@@ -108,14 +110,15 @@ public:
     /*!
      *  Generates the component Verilog to a given file.
      *
-	 *      @param [in] outputPath			The path to the output file.
 	 *      @param [in] kactusVersion		The version of the current Kactus build.
 	 *      @param [in] generatorVersion	The current version of the generator.
      *
      *      @remark If parse() is not called before generate(), nothing is generated.
      */
-	void generate(QString const& outputPath, QString const& generatorVersion = "",
+	void generate(QString const& generatorVersion = "",
         QString const& kactusVersion = "") const;
+
+    QSharedPointer<QList<QSharedPointer<VerilogDocument> > > getDocuments(){return documents_;}
 
 signals:
 	
@@ -170,7 +173,7 @@ private:
     QSharedPointer<PortSorter> sorter_;
 
     //! Documents that are ready for writing
-    QList<QSharedPointer<VerilogDocument> > documents_;
+    QSharedPointer<QList<QSharedPointer<VerilogDocument> > > documents_;
 };
 
 #endif // VERILOGGENERATOR_H
