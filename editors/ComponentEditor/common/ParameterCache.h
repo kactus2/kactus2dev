@@ -9,8 +9,8 @@
 // The cached implementation for finding parameters with the correct ID.
 //-----------------------------------------------------------------------------
 
-#ifndef ParameterCache_H
-#define ParameterCache_H
+#ifndef PARAMETERCACHE_H
+#define PARAMETERCACHE_H
 
 #include "ParameterFinder.h"
 #include "ComponentParameterFinder.h"
@@ -99,9 +99,9 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! 
+    //! Parameters available in the cache. Key is the parameterID.
 	QHash<QString, QSharedPointer<Parameter> > availableParameters_;
 
 };
 
-#endif // ParameterCache_H
+#endif // PARAMETERCACHE_H

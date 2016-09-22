@@ -522,7 +522,7 @@ void tst_IPXactSystemVerilogParser::testLongReferenceChainPerformance()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_IPXactSystemVerilogParser::testLongReferenceChain()
+// Function: tst_IPXactSystemVerilogParser::testLongReferenceChainPerformance_data()
 //-----------------------------------------------------------------------------
 void tst_IPXactSystemVerilogParser::testLongReferenceChainPerformance_data()
 {

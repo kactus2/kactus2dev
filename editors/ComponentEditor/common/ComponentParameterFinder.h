@@ -39,13 +39,6 @@ public:
     ~ComponentParameterFinder();
 
     /*!
-     *  Change the target component.
-     *
-     *      @param [in] newComponent    The new component.
-     */
-    void changeComponent(QSharedPointer<Component> newComponent);
-
-    /*!
      *  Get the parameter with the given id.
      *
      *      @param [in] parameterId     The id of the parameter being searched for.

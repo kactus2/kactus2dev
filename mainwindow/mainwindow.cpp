@@ -1791,7 +1791,7 @@ void MainWindow::runGeneratorPlugin(QAction* action)
     IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
 	Q_ASSERT(plugin != 0);
 
-	PluginUtilityAdapter adapter(libraryHandler_, this, createVersionString());
+	PluginUtilityAdapter adapter(libraryHandler_, this, VersionHelper::createVersionString());
 
     connect(&adapter, SIGNAL(errorMessage(QString const&)), 
         this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
@@ -2191,7 +2191,7 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier, Kac
 
     component->getViews()->append(emptyFlatView);
 
-    component->setVersion(versionFileStr());
+    component->setVersion(VersionHelper::versionFileStr());
 
     // Create the file.
     if (!libraryHandler_->writeModelToFile(directory, component))
@@ -2226,7 +2226,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
     component->setHierarchy(prodHier);
     component->setFirmness(firmness);
     component->setImplementation(KactusAttribute::HW);
-    component->setVersion(versionFileStr());
+    component->setVersion(VersionHelper::versionFileStr());
 
     QSharedPointer<View> newHierarchicalView(new View());
     if (component->getHierarchy() == KactusAttribute::IP || component->getHierarchy() == KactusAttribute::SOC)
@@ -2255,12 +2255,12 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
 	// Create the design and design configuration.
 	QSharedPointer<Design> design(new Design(designVLNV));
     design->setDesignImplementation(KactusAttribute::HW);
-    design->setVersion(versionFileStr());
+    design->setVersion(VersionHelper::versionFileStr());
 
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
 	designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::HW);
-    designConf->setVersion(versionFileStr());
+    designConf->setVersion(VersionHelper::versionFileStr());
 
 	// Create the files.
 	libraryHandler_->beginSave();
@@ -2314,7 +2314,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     QSettings settings;
     QStringList suggestions = settings.value("Policies/HWViewNames").toStringList();
     dialog.setViewNameSuggestions(suggestions);
-    component->setVersion(versionFileStr());
+    component->setVersion(VersionHelper::versionFileStr());
 
     QString baseViewName = "";
     QString viewName = "";
@@ -2361,11 +2361,11 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::HW);
-    designConf->setVersion(versionFileStr());
+    designConf->setVersion(VersionHelper::versionFileStr());
 
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
     newDesign->setDesignImplementation(KactusAttribute::HW);
-    newDesign->setVersion(versionFileStr());
+    newDesign->setVersion(VersionHelper::versionFileStr());
     
     newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("IO", ColumnTypes::IO, 0, HWDesignDiagram::IO_COLUMN_WIDTH)));
     newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Buses", ColumnTypes::BUSES, 0, HWDesignDiagram::COMPONENT_COLUMN_WIDTH)));
@@ -2421,7 +2421,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
 
     // Set Kactus attributes.
     component->setImplementation(KactusAttribute::SW);
-    component->setVersion(versionFileStr());
+    component->setVersion(VersionHelper::versionFileStr());
 
     // Create the view.
     QSharedPointer<SWView> view (new SWView("software"));
@@ -2434,12 +2434,12 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
     // Create the design and design configuration.
     QSharedPointer<Design> design(new Design(designVLNV));
     design->setDesignImplementation(KactusAttribute::SW);
-    design->setVersion(versionFileStr());
+    design->setVersion(VersionHelper::versionFileStr());
     
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
     designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::SW);
-    designConf->setVersion(versionFileStr());
+    designConf->setVersion(VersionHelper::versionFileStr());
 
     design->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("Low-level", ColumnTypes::COMPONENTS, 0,
         SystemDesignDiagram::SW_COLUMN_WIDTH)));
@@ -2540,17 +2540,17 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     swViews.append(view);
     component->setSWViews(swViews);
 
-    component->setVersion(versionFileStr());
+    component->setVersion(VersionHelper::versionFileStr());
 
     // Create the design and design configuration objects.
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::SW);
-    designConf->setVersion(versionFileStr());
+    designConf->setVersion(VersionHelper::versionFileStr());
 
     QSharedPointer<Design> newDesign(new Design(dialog.getDesignVLNV()));
     newDesign->setDesignImplementation(KactusAttribute::SW);
-    newDesign->setVersion(versionFileStr());
+    newDesign->setVersion(VersionHelper::versionFileStr());
 
     if (component->getImplementation() == KactusAttribute::SW)
     {
@@ -2650,7 +2650,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
         parentComp->setHierarchy(KactusAttribute::PRODUCT);
         parentComp->setFirmness(KactusAttribute::FIXED);
         parentComp->setImplementation(KactusAttribute::SYSTEM);
-        parentComp->setVersion(versionFileStr());
+        parentComp->setVersion(VersionHelper::versionFileStr());
     }
 
     // Create the system view to the system design.
@@ -2674,7 +2674,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
 	// Flat-out the hierarchy to form the system design.
 	QSharedPointer<Design> sysDesign(new Design(designVLNV));
     sysDesign->setDesignImplementation(KactusAttribute::SYSTEM);
-    sysDesign->setVersion(versionFileStr());
+    sysDesign->setVersion(VersionHelper::versionFileStr());
 
     sysDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0, 
         SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
@@ -2687,7 +2687,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
 	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
 	designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::SYSTEM);
-    designConf->setVersion(versionFileStr());
+    designConf->setVersion(VersionHelper::versionFileStr());
 
 	// Create the files.
     bool success = true;
@@ -2742,7 +2742,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     // Retrieve the component to which the system design will be created.
     QSharedPointer<Document> libComp = libraryHandler_->getModel(vlnv);
     QSharedPointer<Component> component = libComp.staticCast<Component>();
-    component->setVersion(versionFileStr());
+    component->setVersion(VersionHelper::versionFileStr());
 
     // Ask the user the VLNV, target path and view name.
     NewDesignDialog dialog(libraryHandler_, component, KactusAttribute::SYSTEM, this);
@@ -2790,11 +2790,11 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV()));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::SYSTEM);
-    designConf->setVersion(versionFileStr());
+    designConf->setVersion(VersionHelper::versionFileStr());
 
     QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
     newDesign->setDesignImplementation(KactusAttribute::SYSTEM);
-    newDesign->setVersion(versionFileStr());
+    newDesign->setVersion(VersionHelper::versionFileStr());
 
     newDesign->addColumn(QSharedPointer<ColumnDesc>(new ColumnDesc("SW Components", ColumnTypes::COMPONENTS, 0,
         SystemDesignDiagram::SYSTEM_COLUMN_WIDTH)));
@@ -2877,7 +2877,7 @@ void MainWindow::createBus( VLNV const& vlnv, QString const& directory )
 	// Create a bus definition.
 	QSharedPointer<BusDefinition> busDef = QSharedPointer<BusDefinition>(new BusDefinition());
 	busDef->setVlnv(busVLNV);
-    busDef->setVersion(versionFileStr());
+    busDef->setVersion(VersionHelper::versionFileStr());
 
 	// Create the file for the bus definition.
     bool success = true;
@@ -2890,7 +2890,7 @@ void MainWindow::createBus( VLNV const& vlnv, QString const& directory )
 	// create an abstraction definition
 	QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
 	absDef->setVlnv(absVLNV);
-    absDef->setVersion(versionFileStr());
+    absDef->setVersion(VersionHelper::versionFileStr());
 
 	// set reference from abstraction definition to bus definition
 	absDef->setBusType(busVLNV);
@@ -2949,7 +2949,7 @@ void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory,
 	// create an abstraction definition
 	QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
 	absDef->setVlnv(absVLNV);
-    absDef->setVersion(versionFileStr());
+    absDef->setVersion(VersionHelper::versionFileStr());
 
 	// set reference from abstraction definition to bus definition
 	absDef->setBusType(busDefVLNV);
@@ -2975,7 +2975,7 @@ void MainWindow::createComDefinition(VLNV const& vlnv, QString const& directory)
 
     // Create an empty COM definition and save it.
     QSharedPointer<ComDefinition> comDef(new ComDefinition(vlnv));
-    comDef->setVersion(versionFileStr());
+    comDef->setVersion(VersionHelper::versionFileStr());
 
     if (!libraryHandler_->writeModelToFile(directory, comDef))
     {
@@ -3000,7 +3000,7 @@ void MainWindow::createApiDefinition(VLNV const& vlnv, QString const& directory)
 
     // Create an empty API definition and save it.
     QSharedPointer<ApiDefinition> apiDef(new ApiDefinition(apiDefVLNV));
-    apiDef->setVersion(versionFileStr());
+    apiDef->setVersion(VersionHelper::versionFileStr());
 
     if (!libraryHandler_->writeModelToFile(directory, apiDef))
     {
@@ -4031,7 +4031,7 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
 	// Create a component.
 	QSharedPointer<Component> component = QSharedPointer<Component>(new Component());
 	component->setVlnv(vlnv);
-    component->setVersion(versionFileStr());
+    component->setVersion(VersionHelper::versionFileStr());
 
 	// Set Kactus attributes.
     component->setImplementation(KactusAttribute::SW);
@@ -4053,7 +4053,7 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
 //-----------------------------------------------------------------------------
 void MainWindow::showAbout()
 {
-	SplashScreen* splash = new SplashScreen(createVersionString(), this);
+	SplashScreen* splash = new SplashScreen(VersionHelper::createVersionString(), this);
 	splash->setAttribute(Qt::WA_DeleteOnClose);
 	splash->setWindowFlags(splash->windowFlags() & ~(Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint));
 	splash->move(this->mapToGlobal(this->rect().center() - splash->rect().center()));

@@ -627,7 +627,7 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
 //-----------------------------------------------------------------------------
 void LibraryData::changeComponentValidatorParameterFinder(QSharedPointer<Component> targetComponent)
 {
-    componentValidatorFinder_->changeComponent(targetComponent);
+    componentValidatorFinder_->setComponent(targetComponent);
 }
 
 //-----------------------------------------------------------------------------

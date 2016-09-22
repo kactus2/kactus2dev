@@ -7,15 +7,29 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.h \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
-    ../../MockObjects/LibraryMock.h \
+HEADERS += ../../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.h \
-    ../../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h
-SOURCES += ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.cpp \
-    ./tst_MemoryViewGenerator.cpp \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
-    ../../MockObjects/LibraryMock.cpp \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../MockObjects/LibraryMock.h \
+    ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.h \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
+    ../../../designEditors/MemoryDesigner/ConnectivityInterface.h \
+    ../../../designEditors/MemoryDesigner/ConnectivityComponent.h \
+    ../../../designEditors/MemoryDesigner/ConnectivityConnection.h \
+    ../../../designEditors/MemoryDesigner/ConnectivityGraph.h \
+    ../../../designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
+    ../../../designEditors/MemoryDesigner/MemoryItem.h \
+    ../../../designEditors/MemoryDesigner/MasterSlavePathSearch.h
+SOURCES += ../../MockObjects/LibraryMock.cpp \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp
+    ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.cpp \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ./tst_MemoryViewGenerator.cpp \
+    ../../../designEditors/MemoryDesigner/ConnectivityInterface.cpp \
+    ../../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
+    ../../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
+    ../../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
+    ../../../designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
+    ../../../designEditors/MemoryDesigner/MemoryItem.cpp \
+    ../../../designEditors/MemoryDesigner/MasterSlavePathSearch.cpp

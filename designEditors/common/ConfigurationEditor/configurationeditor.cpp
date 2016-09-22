@@ -128,7 +128,7 @@ void ConfigurationEditor::onAdd()
 	// create the configuration
 	QSharedPointer<DesignConfiguration> desConf(new DesignConfiguration(configVLNV));
     desConf->setDesignConfigImplementation(KactusAttribute::HW);
-    desConf->setVersion(versionFileStr());
+    desConf->setVersion(VersionHelper::versionFileStr());
     
     if (dialog.designSelection() == CreateConfigurationDialog::USE_EXISTING)
     {

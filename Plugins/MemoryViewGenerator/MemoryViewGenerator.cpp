@@ -148,6 +148,7 @@ void MemoryViewGenerator::writeFile(QString const& outputPath, QVector<QVector<Q
         }
 
         writeItem(path.first()->getConnectedMemory(), addressOffset, outputStream);
+
         if (path.first() != path.last())
         {
             writeItem(path.last()->getConnectedMemory(), addressOffset, outputStream);

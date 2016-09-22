@@ -164,9 +164,17 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
         QSharedPointer<MemoryItem> spaceItem(new MemoryItem(space->name(), "addressSpace"));
         spaceItem->setIdentifier(spaceIdentifier);
         spaceItem->setAUB(space->getAddressUnitBits());
-        spaceItem->setAddress("0");        
-        spaceItem->setRange(expressionParser_->parseExpression(space->getRange()));
-        spaceItem->setWidth(expressionParser_->parseExpression(space->getWidth()));
+        spaceItem->setAddress("0");
+        
+        if (!space->getRange().isEmpty())
+        {
+            spaceItem->setRange(expressionParser_->parseExpression(space->getRange()));
+        }
+        
+        if (!space->getWidth().isEmpty())
+        {
+            spaceItem->setWidth(expressionParser_->parseExpression(space->getWidth()));
+        }        
 
         newInstance->addMemory(spaceItem);
 
@@ -525,9 +533,12 @@ void ConnectivityGraphFactory::addConnections(QSharedPointer<const Design> desig
             {
                 QSharedPointer<ConnectivityInterface> target = graph->getInterface(topInstanceName,  
                     hierInterface->getBusReference());
-                target->setHierarchical();
-
-                graph->addConnection(interconnection->name(), startInterface, target);
+                
+                if (target)
+                {
+                    target->setHierarchical();
+                    graph->addConnection(interconnection->name(), startInterface, target);
+                }
             }
 
             foreach (QSharedPointer<ActiveInterface> activeInterface, *interconnection->getActiveInterfaces())
@@ -535,7 +546,10 @@ void ConnectivityGraphFactory::addConnections(QSharedPointer<const Design> desig
                 QSharedPointer<ConnectivityInterface> target = graph->getInterface(activeInterface->getComponentReference(), 
                     activeInterface->getBusReference());
 
-                 graph->addConnection(interconnection->name(), startInterface, target);
+                if (target)
+                {
+                    graph->addConnection(interconnection->name(), startInterface, target);
+                }                 
             }
         }
     }

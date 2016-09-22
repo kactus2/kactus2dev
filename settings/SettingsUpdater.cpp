@@ -140,7 +140,7 @@ namespace SettingsUpdater
         // Retrieve the version number of the settings file and check if it is not up-to-date.
         QString settingsVersion = settings.value("Platform/Version", "1.5.0.0").toString();
         
-        if (!isVersionOlder(settingsVersion, versionFull()))
+        if (!isVersionOlder(settingsVersion, VersionHelper::versionFull()))
         {
             // Already up-to-date.
             return;
@@ -241,6 +241,6 @@ namespace SettingsUpdater
         }
 
         // Finally update the settings version.
-        settings.setValue("Platform/Version", versionFull());
+        settings.setValue("Platform/Version", VersionHelper::versionFull());
     }
 }

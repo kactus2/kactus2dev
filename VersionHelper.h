@@ -9,13 +9,15 @@
 // A module that returns variations version number.
 //-----------------------------------------------------------------------------
 
-#ifndef VersionHelper_H
-#define VersionHelper_H
+#ifndef VERSIONHELPER_H
+#define VERSIONHELPER_H
 
 #include "QString"
 
+namespace VersionHelper
+{
     /*!
-     *  Returns a formatted full version info including the bitness of the build.
+     *  Returns a formatted full version info including the bit information of the build.
      */
     QString createVersionString();
 
@@ -28,5 +30,6 @@
     *  Returns full version info, separated by commas.
      */
     QString versionFileStr();
+}
 
-#endif // VersionHelper_H
+#endif // VERSIONHELPER_H

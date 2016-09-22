@@ -16,9 +16,9 @@
 #define TOSTRING(str) #str
 
 //-----------------------------------------------------------------------------
-// Function: createVersionString()
+// Function: VersionHelper::createVersionString()
 //-----------------------------------------------------------------------------
-QString createVersionString()
+QString VersionHelper::createVersionString()
 {
 #if defined (_WIN64) || (__LP64__) || (_LP64)
     int bits = 64;
@@ -33,17 +33,17 @@ QString createVersionString()
 }
 
 //-----------------------------------------------------------------------------
-// Function: versionFull()
+// Function: VersionHelper::versionFull()
 //-----------------------------------------------------------------------------
-QString versionFull()
+QString VersionHelper::versionFull()
 {
     return TOSTRING(VERSION_FULL);
 }
 
 //-----------------------------------------------------------------------------
-// Function: versionFileStr()
+// Function: VersionHelper::versionFileStr()
 //-----------------------------------------------------------------------------
-QString versionFileStr()
+QString VersionHelper::versionFileStr()
 {
     return VERSION_FILESTR;
 }
