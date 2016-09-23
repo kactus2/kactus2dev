@@ -7,5 +7,26 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./MemoryViewGeneratorPlugin.h
-SOURCES += ./MemoryViewGeneratorPlugin.cpp
+HEADERS += ../../designEditors/MemoryDesigner/ConnectivityComponent.h \
+    ../../designEditors/MemoryDesigner/ConnectivityConnection.h \
+    ../../designEditors/MemoryDesigner/ConnectivityGraph.h \
+    ../../designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
+    ../../designEditors/MemoryDesigner/ConnectivityInterface.h \
+    ../../designEditors/MemoryDesigner/MasterSlavePathSearch.h \
+    ../../designEditors/MemoryDesigner/MemoryItem.h \
+    ../../editors/ComponentEditor/common/ExpressionParser.h \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ./MemoryViewGenerator.h \
+    ./memoryviewgenerator_global.h \
+    ./MemoryViewGeneratorPlugin.h
+SOURCES += ../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
+    ../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
+    ../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
+    ../../designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
+    ../../designEditors/MemoryDesigner/ConnectivityInterface.cpp \
+    ../../designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
+    ../../designEditors/MemoryDesigner/MemoryItem.cpp \
+    ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ./MemoryViewGenerator.cpp \
+    ./MemoryViewGeneratorPlugin.cpp
+RESOURCES += MemoryViewGenerator.qrc

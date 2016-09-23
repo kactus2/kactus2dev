@@ -7,9 +7,9 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./ModelSimGenerator.h \
+HEADERS += ./modelsimgenerator_global.h \
+    ./ModelSimGenerator.h \
     ./ModelSimParser.h \
-    ./modelsimgenerator_global.h \
     ./ModelSimGeneratorPlugin.h
 SOURCES += ./ModelSimGenerator.cpp \
     ./ModelSimGeneratorPlugin.cpp \

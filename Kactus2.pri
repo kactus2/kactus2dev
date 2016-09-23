@@ -591,6 +591,7 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/MemoryDesigner/ConnectivityInterface.h \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.h \
     ./designEditors/MemoryDesigner/MemoryItem.h \
+    ./designEditors/MemoryDesigner/SubMemoryLayout.h \
     ./designEditors/MemoryDesigner/AddressSpaceGraphicsItem.h \
     ./designEditors/MemoryDesigner/AddressSegmentGraphicsItem.h \
     ./designEditors/MemoryDesigner/AddressBlockGraphicsItem.h \
@@ -708,12 +709,8 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/MemoryDesigner/SubMemoryLayout.h \
-    ./editors/ComponentEditor/common/ParameterCache.h
-SOURCES += ./GeneratedFiles/moc_MemoryDesignDocument.cpp \
-    ./GeneratedFiles/moc_MemoryDesignerDiagram.cpp \
-    ./VersionHelper.cpp \
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
     ./common/utils.cpp \
@@ -1145,7 +1142,6 @@ SOURCES += ./GeneratedFiles/moc_MemoryDesignDocument.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
-    ./editors/ComponentEditor/common/ParameterCache.cpp \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp \
@@ -1254,6 +1250,7 @@ SOURCES += ./GeneratedFiles/moc_MemoryDesignDocument.cpp \
     ./designEditors/MemoryDesigner/MemoryItem.cpp \
     ./designEditors/MemoryDesigner/MemoryMapGraphicsItem.cpp \
     ./designEditors/MemoryDesigner/RegisterGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/SubMemoryLayout.cpp \
     ./designEditors/SystemDesign/ApiGraphicsConnection.cpp \
     ./designEditors/SystemDesign/ComGraphicsConnection.cpp \
     ./designEditors/SystemDesign/HWMappingItem.cpp \
@@ -1333,6 +1330,5 @@ SOURCES += ./GeneratedFiles/moc_MemoryDesignDocument.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./designEditors/MemoryDesigner/SubMemoryLayout.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc
