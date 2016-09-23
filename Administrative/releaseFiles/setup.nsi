@@ -122,21 +122,29 @@ Section "MainSection" SEC01
   SetOverwrite off
   File /oname=Kactus2.ini "DefaultSettingsWin.ini"
   
-  SetOutPath "$INSTDIR\Library\TUT\global.communication\mcapi\1.063"
+  SetOutPath "$INSTDIR\Library\tut.fi\global.communication\mcapi\1.063"
   SetOverwrite on
-  File "Library\TUT\global.communication\mcapi\1.063\mcapi.1.063.xml"
+  File "Library\tut.fi\global.communication\mcapi\1.063\mcapi.1.063.xml"
   
-  SetOutPath "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
+  SetOutPath "$INSTDIR\Library\tut.fi\ip.swp.api\mcapi.apiDef\1.063"
   SetOverwrite on
-  File "Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
+  File "Library\tut.fi\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
   
-  SetOutPath "$INSTDIR\Library\TUT\global.communication\mcapi\2.015"
+  SetOutPath "$INSTDIR\Library\tut.fi\global.communication\mcapi\2.015"
   SetOverwrite on
-  File "Library\TUT\global.communication\mcapi\2.015\mcapi.2.015.xml"
+  File "Library\tut.fi\global.communication\mcapi\2.015\mcapi.2.015.xml"
   
-  SetOutPath "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\2.015"
+  SetOutPath "$INSTDIR\Library\tut.fi\ip.swp.api\mcapi.apiDef\2.015"
   SetOverwrite on
-  File "Library\TUT\ip.swp.api\mcapi.apiDef\2.015\mcapi.apiDef.2.015.xml"
+  File "Library\tut.fi\ip.swp.api\mcapi.apiDef\2.015\mcapi.apiDef.2.015.xml"
+  
+  SetOutPath "$INSTDIR\Library\tut.fi\global.communication\iptlm\1.1"
+  SetOverwrite on
+  File "Library\tut.fi\global.communication\iptlm\1.1\TLMW.1.1.xml"
+
+  SetOutPath "$INSTDIR\Library\tut.fi\ip.swp.api\IPTLM.apidef\1.1"
+  SetOverwrite on
+  File "Library\tut.fi\ip.swp.api\IPTLM.apidef\1.1\TLMW.apiDef.1.1.xml"
   
   SetOutPath "$INSTDIR"
   CreateDirectory "$SMPROGRAMS\Kactus2"
@@ -187,10 +195,12 @@ FunctionEnd
 
 Section Uninstall
   Delete "$INSTDIR\uninst.exe"
-  Delete "$INSTDIR\Library\TUT\global.communication\mcapi\2.015\mcapi.2.015.xml"
-  Delete "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\2.015\mcapi.apiDef.2.015.xml"
-  Delete "$INSTDIR\Library\TUT\global.communication\mcapi\1.063\mcapi.1.063.xml"
-  Delete "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
+  Delete "$INSTDIR\Library\tut.fi\ip.swp.api\IPTLM.apiDef\1.1\TLMW.apiDef.1.1.xml"
+  Delete "$INSTDIR\Library\tut.fi\global.communication\iptlm\1.1\TLMW.1.1.xml"
+  Delete "$INSTDIR\Library\tut.fi\global.communication\mcapi\2.015\mcapi.2.015.xml"
+  Delete "$INSTDIR\Library\tut.fi\ip.swp.api\mcapi.apiDef\2.015\mcapi.apiDef.2.015.xml"
+  Delete "$INSTDIR\Library\tut.fi\global.communication\mcapi\1.063\mcapi.1.063.xml"
+  Delete "$INSTDIR\Library\tut.fi\ip.swp.api\mcapi.apiDef\1.063\mcapi.apiDef.1.063.xml"
   Delete "$INSTDIR\Help\Kactus2Help.qch"
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
   Delete "$INSTDIR\Plugins\TLMWGenerator.dll"
@@ -251,15 +261,19 @@ Section Uninstall
   RMDir "$INSTDIR\sqldrivers"
   RMDir "$INSTDIR\platforms"
   RMDir "$INSTDIR\accessible"
-  RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\2.015"
-  RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef\1.063"
-  RMDir "$INSTDIR\Library\TUT\ip.swp.api\mcapi.apiDef"
-  RMDir "$INSTDIR\Library\TUT\ip.swp.api"
-  RMDir "$INSTDIR\Library\TUT\global.communication\mcapi\2.015"
-  RMDir "$INSTDIR\Library\TUT\global.communication\mcapi\1.063"
-  RMDir "$INSTDIR\Library\TUT\global.communication\mcapi"
-  RMDir "$INSTDIR\Library\TUT\global.communication"
-  RMDir "$INSTDIR\Library\TUT"
+  RMDir "$INSTDIR\Library\tut.fi\ip.swp.api\IPTLM.apiDef\1.1"
+  RMDir "$INSTDIR\Library\tut.fi\ip.swp.api\IPTLM.apiDef"
+  RMDir "$INSTDIR\Library\tut.fi\ip.swp.api\mcapi.apiDef\2.015"
+  RMDir "$INSTDIR\Library\tut.fi\ip.swp.api\mcapi.apiDef\1.063"
+  RMDir "$INSTDIR\Library\tut.fi\ip.swp.api\mcapi.apiDef"
+  RMDir "$INSTDIR\Library\tut.fi\ip.swp.api"
+  RMDir "$INSTDIR\Library\tut.fi\global.communication\iptlm\1.1"
+  RMDir "$INSTDIR\Library\tut.fi\global.communication\iptlm"
+  RMDir "$INSTDIR\Library\tut.fi\global.communication\mcapi\2.015"
+  RMDir "$INSTDIR\Library\tut.fi\global.communication\mcapi\1.063"
+  RMDir "$INSTDIR\Library\tut.fi\global.communication\mcapi"
+  RMDir "$INSTDIR\Library\tut.fi\global.communication"
+  RMDir "$INSTDIR\Library\tut.fi"
   RMDir "$INSTDIR\Library"
   RMDir "$INSTDIR"
 
