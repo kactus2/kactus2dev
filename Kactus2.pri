@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./VersionHelper.h \
+    ./version.h \
     ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
@@ -708,7 +709,8 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/MemoryDesigner/SubMemoryLayout.h
+    ./designEditors/MemoryDesigner/SubMemoryLayout.h \
+    ./editors/ComponentEditor/common/ParameterCache.h
 SOURCES += ./GeneratedFiles/moc_MemoryDesignDocument.cpp \
     ./GeneratedFiles/moc_MemoryDesignerDiagram.cpp \
     ./VersionHelper.cpp \
@@ -1143,6 +1145,7 @@ SOURCES += ./GeneratedFiles/moc_MemoryDesignDocument.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ./editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ./editors/ComponentEditor/common/ParameterCache.cpp \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.cpp \
     ./editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTree.cpp \

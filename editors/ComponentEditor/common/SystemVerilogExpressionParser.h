@@ -150,12 +150,9 @@ private:
     /*!
      *  Solves function calls to math functions in a given equation.
      *
-     *      @param [in] equation   The equation to solve.
-     *
-     *      @return Equation where the function calls have been replaced with the solved results
-     *              and without the parentheses.
+     *      @param [in/out] equation   The equation to solve.
      */
-    QStringList solveMathFuctions(QStringList const& equation) const;
+    void solveMathFuctions(QStringList& equation) const;
     
     /*!
      *  Solves the SystemVerilog $clog2 function.
@@ -169,12 +166,9 @@ private:
     /*!
      *  Solves expressions in parentheses in a given equation.
      *
-     *      @param [in] equation   The equation to solve.
-     *
-     *      @return Equation where the expressions in parenthesis have been replaced with the solved results
-     *              and without the parentheses.
+     *      @param [in/out] equation   The equation to solve.
      */
-    QStringList solveExpressionsInParentheses(QStringList const& equation) const;
+    void solveExpressionsInParentheses(QStringList& equation) const;
 
     /*!
      *  Finds the matching end parenthesis in the given equation for the opening parenthesis in given position.
@@ -191,39 +185,31 @@ private:
     /*!
      *  Solves power operations in a given equation.
      *
-     *      @param [in] equation   The equation to solve.
-     *
-     *      @return Equation where the terms and operators have been replaced with the result.
+     *      @param [in/out] equation   The equation to solve.
      */  
-    QStringList solvePower(QStringList const& equation) const;
+    void solvePower(QStringList& equation) const;
 
     /*!
      *  Solves multiply and division operations in a given equation.
      *
-     *      @param [in] equation   The equation to solve.
-     *
-     *      @return Equation where the terms and operators have been replaced with the result.
+     *      @param [in/out] equation   The equation to solve.
      */
-    QStringList solveMultiplyAndDivide(QStringList const& equation) const;
+    void solveMultiplyAndDivide(QStringList& equation) const;
 
     /*!
     *  Solves addition and subtraction operations in given equation.
     *
-    *      @param [in] equation   The equation to solve.
-    *
-    *      @return Equation where the terms and operators have been replaced with the result.
+    *      @param [in/out] equation   The equation to solve.
     */
-    QStringList solveAdditionAndSubtraction(QStringList const& equation) const;
+    void solveAdditionAndSubtraction(QStringList& equation) const;
 
     /*!
     *  Solves binary operations in given equation.
     *
-    *      @param [in] equation         The equation to solve.
-    *      @param [in] binaryOperator   An expression for finding the operator to solve.
-    *
-    *      @return Equation where the terms and operators have been replaced with the result.
+    *      @param [in/out]  equation         The equation to solve.
+    *      @param [in]      binaryOperator   An expression for finding the operator to solve.
     */
-    QStringList solveBinaryOperationsFromLeftToRight(QStringList const& equation, QRegularExpression const& binaryOperator) const;
+    void solveBinaryOperationsFromLeftToRight(QStringList& equation, QRegularExpression const& binaryOperator) const;
 
     /*!
     *  Solves a binary operation.

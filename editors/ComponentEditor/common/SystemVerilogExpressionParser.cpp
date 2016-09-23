@@ -80,11 +80,11 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
 
     QStringList equation = toStringList(expression);
 
-    equation = solveMathFuctions(equation);
-    equation = solveExpressionsInParentheses(equation);
-    equation = solvePower(equation);
-    equation = solveMultiplyAndDivide(equation);
-    equation = solveAdditionAndSubtraction(equation);
+    solveMathFuctions(equation);
+    solveExpressionsInParentheses(equation);
+    solvePower(equation);
+    solveMultiplyAndDivide(equation);
+    solveAdditionAndSubtraction(equation);
 
     if (equation.first().compare(QLatin1String("x")) == 0)
     {
@@ -354,32 +354,27 @@ QStringList SystemVerilogExpressionParser::parseLiteralAndParentheses(QString co
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solveMathFuctions()
 //-----------------------------------------------------------------------------
-QStringList SystemVerilogExpressionParser::solveMathFuctions(QStringList const& equation) const
+void SystemVerilogExpressionParser::solveMathFuctions(QStringList& equation) const
 {
-    QStringList solvedEquation = equation;
-
     QRegularExpression mathFunctionExpression("[$]clog2[(]");
 
-    int functionIndex = solvedEquation.indexOf(mathFunctionExpression);
+    int functionIndex = equation.indexOf(mathFunctionExpression);
     while (functionIndex != -1)
     {
+        int functionEnd = findMatchingEndParenthesis(equation, functionIndex);
+
         QString functionArgument;
-
-        int functionEnd = findMatchingEndParenthesis(solvedEquation, functionIndex);
-
         int argumentCount = functionEnd - functionIndex -1;
         for (int i = 0; i < argumentCount; i++)
         {
-            functionArgument.append(solvedEquation.takeAt(functionIndex + 1));
+            functionArgument.append(equation.takeAt(functionIndex + 1));
         }        
 
-        solvedEquation.replace(functionIndex, solveClog2(functionArgument));
-        solvedEquation.removeAt(functionIndex + 1); //<! Remove closing parenthesis.
+        equation.replace(functionIndex, solveClog2(functionArgument));
+        equation.removeAt(functionIndex + 1); //<! Remove closing parenthesis.
 
-        functionIndex = solvedEquation.indexOf(mathFunctionExpression);
+        functionIndex = equation.indexOf(mathFunctionExpression);
     }
-
-    return solvedEquation;
 }
 
 //-----------------------------------------------------------------------------
@@ -411,35 +406,27 @@ QString SystemVerilogExpressionParser::solveClog2(QString const& value) const
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solveExpressionsInParentheses()
 //-----------------------------------------------------------------------------
-QStringList SystemVerilogExpressionParser::solveExpressionsInParentheses(QStringList const& equation) const
+void SystemVerilogExpressionParser::solveExpressionsInParentheses(QStringList& equation) const
 {
-    QStringList equationWithoutParentheses;
-
     int position = 0;
     while(equation.indexOf("(", position) != -1)
     {
         int parenthesesStart = equation.indexOf("(", position);
         int parenthesesEnd = findMatchingEndParenthesis(equation, parenthesesStart);
 
-        int itemsBeforeParenthesesStart =  parenthesesStart - position ;
-
-        equationWithoutParentheses.append(equation.mid(position, itemsBeforeParenthesesStart));
-
         int itemsInsideParenthesis = parenthesesEnd - parenthesesStart - 1;
 
         QString expressionInParentheses;
-        foreach (QString item, equation.mid(parenthesesStart + 1, itemsInsideParenthesis))
+        for (int i = 0; i < itemsInsideParenthesis; i++)
         {
-            expressionInParentheses.append(item);
+            expressionInParentheses.append(equation.takeAt(parenthesesStart + 1));
         }
 
-        equationWithoutParentheses.append(parseExpression(expressionInParentheses));
-        position = parenthesesEnd + 1;
-    }
-     
-    equationWithoutParentheses.append(equation.mid(position));
+        equation.replace(parenthesesStart, parseExpression(expressionInParentheses));
+        equation.takeAt(parenthesesStart + 1); //<! Remove closing parenthesis.
 
-    return equationWithoutParentheses;
+        position = parenthesesStart + 1;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -500,59 +487,57 @@ int SystemVerilogExpressionParser::findMatchingEndParenthesis(QString const& equ
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solvePower()
 //-----------------------------------------------------------------------------
-QStringList SystemVerilogExpressionParser::solvePower(QStringList const& equation) const
+void SystemVerilogExpressionParser::solvePower(QStringList& equation) const
 {
     QRegularExpression power("[/*][/*]");
-    return solveBinaryOperationsFromLeftToRight(equation, power);
+    solveBinaryOperationsFromLeftToRight(equation, power);
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::parseMultiplyAndDivide()
 //-----------------------------------------------------------------------------
-QStringList SystemVerilogExpressionParser::solveMultiplyAndDivide(QStringList const& equation) const
+void SystemVerilogExpressionParser::solveMultiplyAndDivide(QStringList& equation) const
 {
     QRegularExpression multiplyDivide("[/*//]");
-    return solveBinaryOperationsFromLeftToRight(equation, multiplyDivide);
+    solveBinaryOperationsFromLeftToRight(equation, multiplyDivide);
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solveAdditionAndSubtraction()
 //-----------------------------------------------------------------------------
-QStringList SystemVerilogExpressionParser::solveAdditionAndSubtraction(QStringList const& equation) const
+void SystemVerilogExpressionParser::solveAdditionAndSubtraction(QStringList& equation) const
 {
     QRegularExpression addSubtract("[+-]");
-    return solveBinaryOperationsFromLeftToRight(equation, addSubtract);
+    solveBinaryOperationsFromLeftToRight(equation, addSubtract);
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solveBinaryOperations()
 //-----------------------------------------------------------------------------
-QStringList SystemVerilogExpressionParser::solveBinaryOperationsFromLeftToRight(QStringList const& equation, 
+void SystemVerilogExpressionParser::solveBinaryOperationsFromLeftToRight(QStringList& equation, 
     QRegularExpression const& binaryOperator) const
 {
     QString operation;
     QString operand1;
     QString operand2;
 
-    QStringList solvedEquation = equation;
-    while(solvedEquation.indexOf(binaryOperator) != -1)
+    while(equation.indexOf(binaryOperator) != -1)
     {
-        int operatorPosition = solvedEquation.indexOf(binaryOperator);
+        int operatorPosition = equation.indexOf(binaryOperator);
         int firstOperandPosition = operatorPosition - 1;
         int secondOperandPosition = operatorPosition + 1;
 
-        operation = solvedEquation.at(operatorPosition);
-        operand1 = solvedEquation.at(firstOperandPosition);
-        operand2 = solvedEquation.at(secondOperandPosition);
+        operation = equation.at(operatorPosition);
+        operand1 = equation.at(firstOperandPosition);
+        operand2 = equation.at(secondOperandPosition);
 
         QString result = solve(operand1, operation, operand2);
 
-        solvedEquation.replace(firstOperandPosition, result);
-        solvedEquation.removeAt(secondOperandPosition);
-        solvedEquation.removeAt(operatorPosition);
+        equation.replace(firstOperandPosition, result);
+        equation.removeAt(secondOperandPosition);
+        equation.removeAt(operatorPosition);
     }
 
-    return solvedEquation;
 }
 
 //-----------------------------------------------------------------------------

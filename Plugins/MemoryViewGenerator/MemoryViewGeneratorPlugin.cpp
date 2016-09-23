@@ -17,6 +17,8 @@
 
 #include "MemoryViewGenerator.h"
 
+#include <QFileDialog>
+
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGeneratorPlugin::MemoryViewGeneratorPlugin()
 //-----------------------------------------------------------------------------
@@ -122,7 +124,20 @@ void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPoi
     QSharedPointer<Document> libDesConf,
     QSharedPointer<Document> libDes)
 {
-    MemoryViewGenerator generator(utility->getLibraryInterface());
+    utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
+    
+    QString targetFile = QFileDialog::getSaveFileName(utility->getParentWidget(), tr("Select target file"), 
+        QString(), tr("Comma separated values (*.csv)"));
 
-    generator.generate(libComp.dynamicCast<Component>(), "", "output.csv");
+    if (targetFile.isEmpty())
+    {
+        utility->printInfo(tr("Generation aborted."));
+        return;
+    }
+
+    MemoryViewGenerator generator(utility->getLibraryInterface());
+   
+    generator.generate(libComp.dynamicCast<Component>(), "", targetFile);
+
+    utility->printInfo(tr("Generation complete."));
 }

@@ -86,6 +86,8 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::addColumn<QString>("constant");
     QTest::addColumn<QString>("expectedValue");
 
+    QTest::newRow("Empty value evaluates to unknown") << "" << "x";
+
 	//! Booleans
 	QTest::newRow("Boolean true should evaluate to 1") << "true" << "1";
 	QTest::newRow("Boolean false should evaluate to 0") << "false" << "0";
@@ -105,8 +107,6 @@ void tst_SystemVerilogExpressionParser::testParseConstant_data()
     QTest::newRow("Array '{1,1} should evaluate to an array of {1,1}") << "'{1,1}" << "{1,1}";
     //QTest::newRow("Array consisting of multiple types of data is unknown") << "{1.1,1,\"helloWorld\"}" << "x";
     //QTest::newRow("Array inside an array is ok") << "{1,{1,1}}" << "{1,{1,1}}";
-
-    QTest::newRow("Empty expression should evaluate to unknown") << "" << "x";
 
     //! Decimal numbers.
     QTest::newRow("Decimal number 0 should evaluate to 0") << "0" << "0";
@@ -284,7 +284,6 @@ void tst_SystemVerilogExpressionParser::testParseAddition_data()
     QTest::newRow("Sum of multiple values of different bases") << "'hA + 'b1010 + 'o12 + 10" << "40";
 
     QTest::newRow("Sum of ascii characters and a number is unknown") << "text + 2" << "x";
-
 }
 
 //-----------------------------------------------------------------------------

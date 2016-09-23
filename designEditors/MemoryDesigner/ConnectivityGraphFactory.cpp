@@ -391,7 +391,10 @@ void ConnectivityGraphFactory::addSubInstances(QSharedPointer<ConnectivityCompon
                 QSharedPointer<const Design> hierarchicalDesign = getHierarchicalDesign(topComponent,
                     componentView, hierarchicalConfiguration);
 
-                analyzeDesign(hierarchicalDesign, hierarchicalConfiguration, topInstance->getName(), graph);
+                if (hierarchicalDesign)
+                {
+                    analyzeDesign(hierarchicalDesign, hierarchicalConfiguration, topInstance->getName(), graph);
+                }
             }
         }
     }
