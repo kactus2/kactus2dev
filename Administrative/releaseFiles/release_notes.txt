@@ -8,6 +8,26 @@
               * Changed or Information
 ===============================================================================
 
+23/09/2016 3.2.0
+----------------------------------------------------
+
++ Added preliminary version of memory designer:
+    * Address spaces and Memory maps within design hierarchy are visualized with their
+	  addressing information
+	* Connectivity between spaces and maps are visualized
++ Added preliminary version of memory connectivity analysis within designs
+    * Added plugin for generating memory listing in CSV format
++ Improvements to Verilog generation	
++ Added "Getting started" section to help
++ Fixed performance issues
+
+- Fixed crashing when opening a bus interface without abstraction definition
+
+* ModelSim Generator moved from core to a separate plugin
+
+KNOWN UNRESOLVED ISSUES:
+* UI issue: paste command does not update usage count of referenced parameters.
+
 17/06/2016 3.1.0
 ----------------------------------------------------
 
