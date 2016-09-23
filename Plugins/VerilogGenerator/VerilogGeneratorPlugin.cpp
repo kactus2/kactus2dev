@@ -204,7 +204,8 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
     if (designGeneration)
     {
-        generator.parseDesign(configuration_->getOutputPath(), designParser->getParsedDesigns());
+        QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+        generator.parseDesign(configuration_->getOutputPath(), designs);
     }
     else
     {
