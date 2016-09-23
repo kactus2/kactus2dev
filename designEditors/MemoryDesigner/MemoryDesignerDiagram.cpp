@@ -419,6 +419,8 @@ void MemoryDesignerDiagram::createMemoryConnections()
     moveUnconnectedAddressSpaces(placedSpaceItems, spaceYPlacement, spaceColumn);
     moveUnconnectedMemoryMaps(placedMapItems, memoryMapColumn);
 
+    reDrawConnections();
+
     createOverlappingConnectionMarkers(placedSpaceItems);
 }
 
@@ -757,15 +759,24 @@ void MemoryDesignerDiagram::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* 
     spaceItem->setPos(targetItem->pos());
     newSpaceColumn->onMoveItem(spaceItem);
     newSpaceColumn->onReleaseItem(spaceItem);
-
-    reDrawConnections(spaceColumns);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::reDrawConnections()
 //-----------------------------------------------------------------------------
-void MemoryDesignerDiagram::reDrawConnections(QVector<MemoryColumn*> addressSpaceColumns)
+void MemoryDesignerDiagram::reDrawConnections()
 {
+    QVector<MemoryColumn*> addressSpaceColumns;
+
+    foreach (GraphicsColumn* column, layout_->getColumns())
+    {
+        MemoryColumn* spaceColumn = dynamic_cast<MemoryColumn*>(column);
+        if (spaceColumn && spaceColumn->name().contains("Address Space", Qt::CaseInsensitive))
+        {
+            addressSpaceColumns.append(spaceColumn);
+        }
+    }
+
     foreach (MemoryColumn* singleSpaceColumn, addressSpaceColumns)
     {
         foreach (QGraphicsItem* graphicsItem, singleSpaceColumn->getItems())
@@ -773,7 +784,7 @@ void MemoryDesignerDiagram::reDrawConnections(QVector<MemoryColumn*> addressSpac
             MainMemoryGraphicsItem* memoryGraphicsItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
             if (memoryGraphicsItem)
             {
-                memoryGraphicsItem->moveConnectedConnections(memoryGraphicsItem->pos());
+                memoryGraphicsItem->reDrawConnections();
             }
         }
     }

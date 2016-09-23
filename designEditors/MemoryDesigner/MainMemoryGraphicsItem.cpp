@@ -187,3 +187,14 @@ QList<MemoryConnectionItem*> MainMemoryGraphicsItem::getMemoryConnections() cons
 {
     return memoryConnections_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::reDrawConnections()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::reDrawConnections()
+{
+    foreach (MemoryConnectionItem* connection, memoryConnections_)
+    {
+        connection->reDrawConnection();
+    }
+}

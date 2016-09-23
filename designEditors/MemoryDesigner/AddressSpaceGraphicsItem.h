@@ -15,6 +15,7 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <designEditors/MemoryDesigner/MainMemoryGraphicsItem.h>
+#include <designEditors/MemoryDesigner/SubMemoryLayout.h>
 
 class AddressSpace;
 class MemoryItem;
@@ -27,7 +28,7 @@ class AddressSegmentGraphicsItem;
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing address spaces in the memory designer.
 //-----------------------------------------------------------------------------
-class AddressSpaceGraphicsItem : public MainMemoryGraphicsItem
+class AddressSpaceGraphicsItem : public MainMemoryGraphicsItem, public SubMemoryLayout
 {
 
 public:
@@ -72,20 +73,25 @@ private:
     virtual void setLabelPositions();
 
     /*!
-     *  Setup the address segment items.
+     *  Create a new address segment graphics item.
      *
-     *      @param [in] spaceItem   Memory item containing the address space data.
+     *      @param [in] subMemoryItem   Memory item containing address segment data.
+     *      @param [in] isEmpty         Boolean value for an empty address segment.
+     *
+     *      @return The created address segment graphics item.
      */
-    void setupSegments(QSharedPointer<MemoryItem> spaceItem);
+    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
+        bool isEmpty);
 
     /*!
-     *  Create an empty address segment.
+     *  Create an empty address segment graphics item.
      *
-     *      @param [in] segmentXPosition    X position of the segment.
-     *      @param [in] beginAddress        The base address of the segment.
-     *      @param [in] rangeEnd            The end address of the segment.
+     *      @param [in] beginAddress    Base address of the empty address segment graphics item.
+     *      @param [in] rangeEnd        End address of the empty address segment graphics item.
+     *
+     *      @return The created address segment graphics item.
      */
-    void createEmptySegment(qreal segmentXPosition, quint64 beginAddress, quint64 rangeEnd);
+    virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -93,9 +99,6 @@ private:
 
     //! The icon for an address space with a CPU.
     QGraphicsPixmapItem* cpuIcon_;
-
-    //! A list of address segment items.
-    QVector<AddressSegmentGraphicsItem*> segments_;
 };
 
 //-----------------------------------------------------------------------------

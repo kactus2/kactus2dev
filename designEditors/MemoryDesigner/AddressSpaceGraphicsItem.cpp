@@ -11,11 +11,7 @@
 
 #include "AddressSpaceGraphicsItem.h"
 
-#include <IPXACTmodels/Component/AddressSpace.h>
-
 #include <common/KactusColors.h>
-
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <designEditors/MemoryDesigner/MemoryItem.h>
 #include <designEditors/MemoryDesigner/ConnectivityComponent.h>
@@ -31,8 +27,8 @@
 AddressSpaceGraphicsItem::AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
     QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem->getName(), containingInstance->getName(), memoryItem->getAUB(), parent),
-cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), this)),
-segments_()
+SubMemoryLayout(memoryItem, "segment", this),
+cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), this))
 {
     QBrush addressSpaceBrush(KactusColors::ADDRESS_SEGMENT);
     setBrush(addressSpaceBrush);
@@ -49,7 +45,8 @@ segments_()
 
     setLabelPositions();
 
-    setupSegments(memoryItem);
+    qreal segmentPositionX = - boundingRect().width() / 4;
+    setupSubItems(segmentPositionX);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,96 +80,28 @@ void AddressSpaceGraphicsItem::setLabelPositions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceGraphicsItem::setupSegments()
+// Function: AddressSpaceGraphicsItem::createNewSubItem()
 //-----------------------------------------------------------------------------
-void AddressSpaceGraphicsItem::setupSegments(QSharedPointer<MemoryItem> spaceItem)
+MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createNewSubItem(
+    QSharedPointer<MemoryItem> subMemoryItem, bool isEmpty)
 {
-    qreal segmentXPosition = - boundingRect().width() / 4;
-
-    if (!spaceItem->getChildItems().isEmpty())
-    {
-        qreal segmentTransferY = 0;
-
-        QMap<quint64, AddressSegmentGraphicsItem*> segmentsInOrder;
-
-        foreach (QSharedPointer<MemoryItem> segmentItem, spaceItem->getChildItems())
-        {
-            if (segmentItem->getType().compare("segment", Qt::CaseInsensitive) == 0)
-            {
-                AddressSegmentGraphicsItem* newSegment = new AddressSegmentGraphicsItem(segmentItem, false, this);
-
-                quint64 offset = segmentItem->getOffset().toULongLong();
-
-                segmentTransferY = offset * GridSize * 1.5;
-
-                newSegment->setPos(segmentXPosition, segmentTransferY);
-
-                segmentsInOrder.insert(offset, newSegment);
-
-                segments_.append(newSegment);
-            }
-        }
-
-        if (!segmentsInOrder.isEmpty())
-        {
-            if (segmentsInOrder.firstKey() > 0)
-            {
-                createEmptySegment(segmentXPosition, 0, segmentsInOrder.firstKey() - 1);
-            }
-
-            QMapIterator<quint64, AddressSegmentGraphicsItem*> segmentIterator(segmentsInOrder);
-
-            quint64 currentOffset = 0;
-            quint64 segmentLastAddress = 0;
-
-            while (segmentIterator.hasNext())
-            {
-                segmentIterator.next();
-
-                currentOffset = segmentIterator.key();
-                if (currentOffset > segmentLastAddress + 1)
-                {
-                    createEmptySegment(segmentXPosition, segmentLastAddress + 1, currentOffset - 1);
-                }
-
-                quint64 rangeEnd = segmentIterator.value()->getLastAddress();
-
-                segmentLastAddress = qMax(segmentLastAddress, rangeEnd);
-            }
-
-            if (segmentLastAddress != getLastAddress())
-            {
-                createEmptySegment(segmentXPosition, segmentLastAddress + 1, getLastAddress());
-            }
-        }
-    }
-    else
-    {
-        createEmptySegment(segmentXPosition, 0, getLastAddress());
-    }
+    return new AddressSegmentGraphicsItem(subMemoryItem, isEmpty, this);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceGraphicsItem::createEmptySegment()
+// Function: AddressSpaceGraphicsItem::createEmptySubItem()
 //-----------------------------------------------------------------------------
-void AddressSpaceGraphicsItem::createEmptySegment(qreal segmentXPosition, quint64 beginAddress, quint64 rangeEnd)
+MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createEmptySubItem(quint64 beginAddress,
+    quint64 rangeEnd)
 {
-    quint64 emptySegmentOffsetInt = beginAddress;
-    quint64 emptySegmentRangeInt = rangeEnd - emptySegmentOffsetInt + 1;
-
-    QString emptySegmentOffset = QString::number(emptySegmentOffsetInt);
-    QString emptySegmentRange = QString::number(emptySegmentRangeInt);
+    QString emptySegmentOffset = QString::number(beginAddress);
+    QString emptySegmentRange = QString::number(rangeEnd - beginAddress + 1);
 
     QSharedPointer<MemoryItem> emptySegment (new MemoryItem("Empty", "segment"));
     emptySegment->setOffset(emptySegmentOffset);
     emptySegment->setRange(emptySegmentRange);
 
-    AddressSegmentGraphicsItem* newSegment = new AddressSegmentGraphicsItem(emptySegment, true, this);
-
-    quint64 segmentTransferY = emptySegmentOffset.toULongLong() * GridSize * 1.5;
-    newSegment->setPos(segmentXPosition, segmentTransferY);
-
-    segments_.append(newSegment);
+    return createNewSubItem(emptySegment, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -180,8 +109,5 @@ void AddressSpaceGraphicsItem::createEmptySegment(qreal segmentXPosition, quint6
 //-----------------------------------------------------------------------------
 void AddressSpaceGraphicsItem::changeChildItemRanges(quint64 offset)
 {
-    foreach (AddressSegmentGraphicsItem* segmentItem, segments_)
-    {
-        segmentItem->changeAddressRange(offset);
-    }
+    SubMemoryLayout::changeChildItemRanges(offset);
 }

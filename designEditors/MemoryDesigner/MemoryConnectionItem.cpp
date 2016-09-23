@@ -275,3 +275,12 @@ QString MemoryConnectionItem::getRangeEndValue() const
 {
     return formatValueToHexadecimal(rangeEnd_);
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::reDrawConnection()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::reDrawConnection()
+{
+    createPath();
+    repositionLabels();
+}

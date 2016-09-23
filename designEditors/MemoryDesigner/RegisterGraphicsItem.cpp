@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 RegisterGraphicsItem::RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister,
     AddressBlockGraphicsItem* blockItem):
-MemoryDesignerChildGraphicsItem(registerItem, "register", registerItem->getAddress().toULongLong(),
+MemoryDesignerChildGraphicsItem(registerItem->getName(), "register", registerItem->getAddress().toULongLong(),
     getRegisterEnd(registerItem), getRegisterWidth(blockItem), blockItem)
 {
     setColors(KactusColors::REGISTER_COLOR, isEmptyRegister);

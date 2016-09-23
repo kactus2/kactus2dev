@@ -90,6 +90,11 @@ public:
      */
     virtual void changeChildItemRanges(quint64 offset) = 0;
 
+    /*!
+     *  Redraw the connected memory connections.
+     */
+    void reDrawConnections();
+
 protected:
 
     /*!

@@ -25,13 +25,16 @@
 //-----------------------------------------------------------------------------
 AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock,
     MemoryMapGraphicsItem* memoryMapItem):
-MemoryDesignerChildGraphicsItem(blockItem, "address block", blockItem->getAddress().toULongLong(),
+MemoryDesignerChildGraphicsItem(blockItem->getName(), "address block", blockItem->getAddress().toULongLong(),
     blockItem->getRange().toULongLong(), getBlockWidth(memoryMapItem), memoryMapItem),
-registers_()
+SubMemoryLayout(blockItem, "register", this),
+addressUnitBits_(blockItem->getAUB())
 {
     setColors(KactusColors::ADDR_BLOCK_COLOR, isEmptyBlock);
     setLabelPositions();
-    setupRegisters(blockItem);
+
+    qreal xPosition = boundingRect().width() / 6 - 1;
+    setupSubItems(xPosition);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,108 +78,34 @@ void AddressBlockGraphicsItem::setLabelPositions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockGraphicsItem::setupRegisters()
+// Function: AddressBlockGraphicsItem::createNewSubItem()
 //-----------------------------------------------------------------------------
-void AddressBlockGraphicsItem::setupRegisters(QSharedPointer<MemoryItem> blockItem)
+MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createNewSubItem(
+    QSharedPointer<MemoryItem> subMemoryItem, bool isEmpty)
 {
-    QString blockItemAUB = blockItem->getAUB();
-
-    quint64 blockBaseAddress = blockItem->getAddress().toULongLong();
-
-    if (!blockItem->getChildItems().isEmpty())
-    {
-        qreal registerTransferY = 0;
-        quint64 registerAddress = 0;
-
-        QMap<quint64, RegisterGraphicsItem*> registersInOrder;
-
-        foreach (QSharedPointer<MemoryItem> registerItem, blockItem->getChildItems())
-        {
-            if (registerItem->getType().compare("register", Qt::CaseInsensitive) == 0)
-            {
-                RegisterGraphicsItem* newRegister = new RegisterGraphicsItem(registerItem, false, this);
-                qreal registerXPosition = newRegister->boundingRect().width() / 4 - 1;
-
-                registerAddress = registerItem->getAddress().toULongLong();
-                registerTransferY = (registerAddress - blockBaseAddress) * GridSize * 1.5;
-
-                newRegister->setPos(registerXPosition, registerTransferY);
-
-                registersInOrder.insert(registerAddress, newRegister);
-                registers_.append(newRegister);
-            }
-        }
-
-        if (!registersInOrder.isEmpty())
-        {
-            if ((registersInOrder.firstKey() - blockBaseAddress) > 0)
-            {
-                createEmptyRegister(
-                    blockBaseAddress, registersInOrder.firstKey() - 1, blockItemAUB, blockBaseAddress);
-            }
-
-            QMapIterator<quint64, RegisterGraphicsItem*> registerIterator(registersInOrder);
-
-            quint64 currentAddress = blockBaseAddress;
-            quint64 registerLastAddress = blockBaseAddress;
-
-            while (registerIterator.hasNext())
-            {
-                registerIterator.next();
-
-                currentAddress = registerIterator.key();
-                if (currentAddress > registerLastAddress + 1)
-                {
-                    createEmptyRegister(
-                        registerLastAddress + 1, currentAddress - 1, blockItemAUB, blockBaseAddress);
-                }
-
-                quint64 rangeEnd = registerIterator.value()->getLastAddress();
-
-                registerLastAddress = qMax(registerLastAddress, rangeEnd);
-            }
-
-            if (registerLastAddress != getLastAddress())
-            {
-                createEmptyRegister(registerLastAddress + 1, getLastAddress(), blockItemAUB, blockBaseAddress);
-            }
-        }
-    }
-    else
-    {
-        createEmptyRegister(blockBaseAddress, getLastAddress(), blockItemAUB, blockBaseAddress);
-    }
+    return new RegisterGraphicsItem(subMemoryItem, isEmpty, this);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockGraphicsItem::createEmptyRegister()
+// Function: AddressBlockGraphicsItem::createEmptySubItem()
 //-----------------------------------------------------------------------------
-void AddressBlockGraphicsItem::createEmptyRegister(quint64 beginAddress, quint64 rangeEnd,
-    QString const& addressUnitBits, quint64 blockBaseAddress)
+MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createEmptySubItem(quint64 beginAddress,
+    quint64 rangeEnd)
 {
-    quint64 emptyRegisterOffsetInInt = beginAddress;
-    quint64 emptyRegisterRangeInt = rangeEnd - emptyRegisterOffsetInInt + 1;
+    quint64 emptyRegisterRangeInt = rangeEnd - beginAddress + 1;
 
-    QString emptyRegisterBaseAddress = QString::number(emptyRegisterOffsetInInt);
+    QString emptyRegisterBaseAddress = QString::number(beginAddress);
     QString emptyRegisterRange = QString::number(emptyRegisterRangeInt);
 
-    int intAUB = addressUnitBits.toInt();
+    int intAUB = addressUnitBits_.toInt();
     quint64 registerSize = emptyRegisterRangeInt * intAUB;
 
     QSharedPointer<MemoryItem> emptyRegister (new MemoryItem("Reserved", "register"));
     emptyRegister->setAddress(emptyRegisterBaseAddress);
     emptyRegister->setSize(QString::number(registerSize));
-    emptyRegister->setAUB(addressUnitBits);
+    emptyRegister->setAUB(addressUnitBits_);
 
-    RegisterGraphicsItem* newRegister = new RegisterGraphicsItem(emptyRegister, true, this);
-
-    quint64 registerTransferY = (emptyRegisterOffsetInInt - blockBaseAddress) * GridSize * 1.5;
-
-    qreal registerPositionX = newRegister->boundingRect().width() / 4 - 1;
-
-    newRegister->setPos(registerPositionX, registerTransferY);
-
-    registers_.append(newRegister);
+    return createNewSubItem(emptyRegister, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -186,8 +115,5 @@ void AddressBlockGraphicsItem::changeAddressRange(quint64 memoryMapOffset)
 {
     MemoryDesignerChildGraphicsItem::changeAddressRange(memoryMapOffset);
 
-    foreach (RegisterGraphicsItem* registerItem, registers_)
-    {
-        registerItem->changeAddressRange(memoryMapOffset);
-    }
+    SubMemoryLayout::changeChildItemRanges(memoryMapOffset);
 }

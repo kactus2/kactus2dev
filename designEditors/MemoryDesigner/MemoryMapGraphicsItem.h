@@ -15,6 +15,7 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <designEditors/MemoryDesigner/MainMemoryGraphicsItem.h>
+#include <designEditors/MemoryDesigner/SubMemoryLayout.h>
 
 class MemoryItem;
 class ConnectivityComponent;
@@ -25,7 +26,7 @@ class AddressBlockGraphicsItem;
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing a memory map in the memory designer.
 //-----------------------------------------------------------------------------
-class MemoryMapGraphicsItem : public MainMemoryGraphicsItem
+class MemoryMapGraphicsItem : public MainMemoryGraphicsItem, public SubMemoryLayout
 {
 
 public:
@@ -89,34 +90,32 @@ private:
     virtual void setLabelPositions();
 
     /*!
-     *  Setup the contained address block items.
+     *  Create a new address block graphics item.
      *
-     *      @param [in] memoryItem  Memory item containing the memory map data.
+     *      @param [in] subMemoryItem   Memory item containing address block data.
+     *      @param [in] isEmpty         Boolean value for an empty address block.
+     *
+     *      @return The created address block graphics item.
      */
-    void setupAddressBlocks(QSharedPointer<MemoryItem> memoryItem);
+    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
+        bool isEmpty);
 
     /*!
-     *  Create an empty address block.
+     *  Create an empty address block graphics item.
      *
-     *      @param [in] blockPositionX  The x position of an address block.
-     *      @param [in] beginAddress    Begin address of the empty address block.
-     *      @param [in] rangeEnd        End address of the empty address block.
-     *      @param [in] mapAUB          Address unit bits of the containing memory map.
+     *      @param [in] beginAddress    Base address of the empty address block graphics item.
+     *      @param [in] rangeEnd        End address of the empty address block graphics item.
+     *
+     *      @return The created address block graphics item.
      */
-    void createEmptyBlock(qreal blockPositionX, quint64 beginAddress, quint64 rangeEnd, QString const& mapAUB);
+    virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The base address of the memory map item.
-    quint64 baseAddress_;
-
-    //! The end address of the memory map item.
-    quint64 lastAddress_;
-
-    //! The contained address block items.
-    QVector<AddressBlockGraphicsItem*> addressBlocks_;
+    //! The address unit bits of a memory map.
+    QString addressUnitBits_;
 };
 
 //-----------------------------------------------------------------------------

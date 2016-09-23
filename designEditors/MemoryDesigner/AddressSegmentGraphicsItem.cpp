@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 AddressSegmentGraphicsItem::AddressSegmentGraphicsItem(QSharedPointer<MemoryItem> segmentItem, bool isEmptySegment,
     AddressSpaceGraphicsItem* spaceItem):
-MemoryDesignerChildGraphicsItem(segmentItem, "segment", segmentItem->getOffset().toULongLong(),
+MemoryDesignerChildGraphicsItem(segmentItem->getName(), "segment", segmentItem->getOffset().toULongLong(),
     segmentItem->getRange().toULongLong(), getSegmentItemWidth(spaceItem), spaceItem)
 {
     setColors(KactusColors::ADDRESS_SEGMENT, isEmptySegment);

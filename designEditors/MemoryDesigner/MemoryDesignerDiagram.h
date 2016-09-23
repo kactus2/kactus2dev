@@ -289,10 +289,8 @@ private:
 
     /*!
      *  Redraw the memory connections.
-     *
-     *      @param [in] addressSpaceColumns     The columns containing address space items.
      */
-    void reDrawConnections(QVector<MemoryColumn*> addressSpaceColumns);
+    void reDrawConnections();
 
     /*!
      *  Move an address space item.

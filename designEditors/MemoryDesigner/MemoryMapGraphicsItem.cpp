@@ -26,20 +26,24 @@
 MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
     QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem->getName(), containingInstance->getName(), memoryItem->getAUB(), parent),
-baseAddress_(getMemoryMapStart(memoryItem)),
-lastAddress_(getMemoryMapEnd(memoryItem)),
-addressBlocks_()
+SubMemoryLayout(memoryItem, "addressBlock", this),
+addressUnitBits_(memoryItem->getAUB())
 {
+    quint64 baseAddress = getMemoryMapStart(memoryItem);
+    quint64 lastAddress = getMemoryMapEnd(memoryItem);
+
     QBrush memoryMapBrush(KactusColors::MEM_MAP_COLOR);
     setBrush(memoryMapBrush);
 
-    quint64 memoryHeight = (lastAddress_ - baseAddress_ + 1);
+    quint64 memoryHeight = (lastAddress - baseAddress + 1);
     int memoryWidth = 500;
 
     setGraphicsRectangle(memoryWidth, memoryHeight);
-    setupToolTip("memory map", baseAddress_, lastAddress_);
+    setupToolTip("memory map", baseAddress, lastAddress);
     setLabelPositions();
-    setupAddressBlocks(memoryItem);
+    
+    qreal blockXPosition = boundingRect().width() / 8;
+    setupSubItems(blockXPosition);
 }
 
 //-----------------------------------------------------------------------------
@@ -129,99 +133,28 @@ void MemoryMapGraphicsItem::setLabelPositions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::setupAddressBlocks()
+// Function: MemoryMapGraphicsItem::createNewSubItem()
 //-----------------------------------------------------------------------------
-void MemoryMapGraphicsItem::setupAddressBlocks(QSharedPointer<MemoryItem> memoryItem)
+MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
+    bool isEmpty)
 {
-    qreal blockXPosition = boundingRect().width() / 8;
-    QString const& mapAUB = memoryItem->getAUB();
-
-    if (!memoryItem->getChildItems().isEmpty())
-    {
-        qreal blockTransferY = 0;
-
-        QMap<quint64, AddressBlockGraphicsItem*> blocksInOrder;
-
-        foreach (QSharedPointer<MemoryItem> blockItem, memoryItem->getChildItems())
-        {
-            if (blockItem->getType().compare("addressBlock", Qt::CaseInsensitive) == 0)
-            {
-                AddressBlockGraphicsItem* newBlock = new AddressBlockGraphicsItem(blockItem, false, this);
-
-                quint64 baseAddress = blockItem->getAddress().toULongLong();
-
-                blockTransferY = baseAddress * GridSize * 1.5;
-
-                newBlock->setPos(blockXPosition, blockTransferY);
-
-                blocksInOrder.insert(baseAddress, newBlock);
-
-                addressBlocks_.append(newBlock);
-            }
-        }
-
-        if (!blocksInOrder.isEmpty())
-        {
-            if (blocksInOrder.firstKey() > 0)
-            {
-                createEmptyBlock(blockXPosition, 0, blocksInOrder.firstKey() - 1, mapAUB);
-            }
-
-            QMapIterator<quint64, AddressBlockGraphicsItem*> blockIterator(blocksInOrder);
-
-            quint64 currentOffset = 0;
-            quint64 blockLastAddress = 0;
-
-            while (blockIterator.hasNext())
-            {
-                blockIterator.next();
-
-                currentOffset = blockIterator.key();
-                if (currentOffset > blockLastAddress + 1)
-                {
-                    createEmptyBlock(blockXPosition, blockLastAddress + 1, currentOffset - 1, mapAUB);
-                }
-
-                quint64 rangeEnd = blockIterator.value()->getLastAddress();
-
-                blockLastAddress = qMax(blockLastAddress, rangeEnd);
-            }
-
-            if (blockLastAddress != getLastAddress())
-            {
-                createEmptyBlock(blockXPosition, blockLastAddress + 1, getLastAddress(), mapAUB);
-            }
-        }
-    }
-    else
-    {
-        createEmptyBlock(blockXPosition, 0, getLastAddress(), mapAUB);
-    }
+    return new AddressBlockGraphicsItem(subMemoryItem, isEmpty, this);
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::createEmptyBlock()
+// Function: MemoryMapGraphicsItem::createEmptySubItem()
 //-----------------------------------------------------------------------------
-void MemoryMapGraphicsItem::createEmptyBlock(qreal blockPositionX, quint64 beginAddress, quint64 rangeEnd,
-    QString const& mapAUB)
+MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint64 beginAddress, quint64 rangeEnd)
 {
-    quint64 emptyBlockOffsetInInt = beginAddress;
-    quint64 emptyBlockRangeInt = rangeEnd - emptyBlockOffsetInInt + 1;
+    QString emptyBlockBaseAddress = QString::number(beginAddress);
+    QString emptyBlockRange = QString::number(rangeEnd - beginAddress + 1);
 
-    QString emptyBlockBaseAddress = QString::number(emptyBlockOffsetInInt);
-    QString emptyBlockRange = QString::number(emptyBlockRangeInt);
+    QSharedPointer<MemoryItem> emptyBlockItem (new MemoryItem("Reserved", "address block"));
+    emptyBlockItem->setAddress(emptyBlockBaseAddress);
+    emptyBlockItem->setRange(emptyBlockRange);
+    emptyBlockItem->setAUB(addressUnitBits_);
 
-    QSharedPointer<MemoryItem> emptyBlock (new MemoryItem("Reserved", "address block"));
-    emptyBlock->setAddress(emptyBlockBaseAddress);
-    emptyBlock->setRange(emptyBlockRange);
-    emptyBlock->setAUB(mapAUB);
-
-    AddressBlockGraphicsItem* newBlock = new AddressBlockGraphicsItem(emptyBlock, true, this);
-
-    quint64 segmentTransferY = emptyBlockBaseAddress.toULongLong() * GridSize * 1.5;
-    newBlock->setPos(blockPositionX, segmentTransferY);
-
-    addressBlocks_.append(newBlock);
+    return createNewSubItem(emptyBlockItem, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -229,8 +162,5 @@ void MemoryMapGraphicsItem::createEmptyBlock(qreal blockPositionX, quint64 begin
 //-----------------------------------------------------------------------------
 void MemoryMapGraphicsItem::changeChildItemRanges(quint64 offset)
 {
-    foreach(AddressBlockGraphicsItem* blockItem, addressBlocks_)
-    {
-        blockItem->changeAddressRange(offset);
-    }
+    SubMemoryLayout::changeChildItemRanges(offset);
 }

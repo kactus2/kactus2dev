@@ -14,8 +14,6 @@
 
 #include <designEditors/MemoryDesigner/MemoryDesignerGraphicsItem.h>
 
-class MemoryItem;
-
 #include <QSharedPointer>
 #include <QGraphicsItem>
 
@@ -30,15 +28,15 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] memoryItem      Memory item containing the graphics item data.
+     *      @param [in] itemName        Name of the memory item.
      *      @param [in] toolTipType     The type of the memory item.
      *      @param [in] baseAddress     Base address of the memory item.
      *      @param [in] range           Range of the memory item.
      *      @param [in] blockWidth      Width of the memory item.
      *      @param [in] parent          The parent item.
      */
-    MemoryDesignerChildGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QString const& toolTipType,
-        quint64 baseAddress, quint64 range, qreal blockWidth, QGraphicsItem* parent);
+    MemoryDesignerChildGraphicsItem(QString const& itemName, QString const& toolTipType, quint64 baseAddress,
+        quint64 range, qreal blockWidth, QGraphicsItem* parent);
 
 	/*!
      *  The destructor.
@@ -56,6 +54,15 @@ public:
      *      @param [in] offset  The offset of the parent item.
      */
     virtual void changeAddressRange(quint64 offset);
+
+    /*!
+     *  Check if this memory item collides with the given rectangle.
+     *
+     *      @param [in] comparisonRectangle     The selected rectangle.
+     *
+     *      @return True, if the item collides with the rectangle, false otherwise.
+     */
+    bool collidesWithRectangle(QRectF comparisonRectangle);
 
 protected:
 

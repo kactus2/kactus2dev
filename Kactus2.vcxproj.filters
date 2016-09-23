@@ -4267,6 +4267,9 @@
     <ClCompile Include="GeneratedFiles\moc_ParameterCache.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\SubMemoryLayout.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6424,6 +6427,9 @@
     </ClInclude>
     <ClInclude Include="VersionHelper.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\SubMemoryLayout.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -71,6 +71,11 @@ public:
      */
     QString getRangeEndValue() const;
 
+    /*!
+     *  Redraw the path of this connection.
+     */
+    void reDrawConnection();
+
 private:
     // Disable copying.
     MemoryConnectionItem(MemoryConnectionItem const& rhs);

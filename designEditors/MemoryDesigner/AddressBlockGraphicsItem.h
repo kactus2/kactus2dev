@@ -13,6 +13,7 @@
 #define ADDRESSBLOCKGRAPHICSITEM_H
 
 #include <designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h>
+#include <designEditors/MemoryDesigner/SubMemoryLayout.h>
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
@@ -25,7 +26,7 @@ class RegisterGraphicsItem;
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing an address block in the memory designer.
 //-----------------------------------------------------------------------------
-class AddressBlockGraphicsItem : public MemoryDesignerChildGraphicsItem
+class AddressBlockGraphicsItem : public MemoryDesignerChildGraphicsItem, public SubMemoryLayout
 {
 
 public:
@@ -78,29 +79,32 @@ private:
     virtual void setLabelPositions();
 
     /*!
-     *  Setup registers contained within the address block.
+     *  Create a new register graphics item.
      *
-     *      @param [in] blockItem   The selected address block item.
+     *      @param [in] subMemoryItem   Memory item containing register data.
+     *      @param [in] isEmpty         Boolean value for an empty register.
+     *
+     *      @return The created register graphics item.
      */
-    void setupRegisters(QSharedPointer<MemoryItem> blockItem);
+    virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
+        bool isEmpty);
 
     /*!
-     *  Creates an empty register item for the address block item.
+     *  Create an empty register graphics item.
      *
-     *      @param [in] beginAddress        The base address of the register item.
-     *      @param [in] rangeEnd            The end address of the register item.
-     *      @param [in] addressUnitBits     The address unit bits of the memory map.
-     *      @param [in] blockBaseAddress    The base address of the address block.
+     *      @param [in] beginAddress    Base address of the empty register graphics item.
+     *      @param [in] rangeEnd        End address of the empty register graphics item.
+     *
+     *      @return The created register graphics item.
      */
-    void createEmptyRegister(quint64 beginAddress, quint64 rangeEnd, QString const& addressUnitBits,
-        quint64 blockBaseAddress);
+    virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! A list of registers contained within the address block.
-    QVector<RegisterGraphicsItem*> registers_;
+    //! Address unit bits of the containing memory map.
+    QString addressUnitBits_;
 };
 
 //-----------------------------------------------------------------------------

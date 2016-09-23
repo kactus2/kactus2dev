@@ -11,17 +11,15 @@
 
 #include "MemoryDesignerChildGraphicsItem.h"
 
-#include <designEditors/MemoryDesigner/MemoryItem.h>
-
 #include <QBrush>
 #include <QFont>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem()
 //-----------------------------------------------------------------------------
-MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
+MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem(QString const& itemName,
     QString const& toolTipType, quint64 baseAddress, quint64 range, qreal blockWidth, QGraphicsItem* parent):
-MemoryDesignerGraphicsItem(memoryItem->getName(), parent)
+MemoryDesignerGraphicsItem(itemName, parent)
 {
     if (range == 1)
     {
@@ -95,4 +93,30 @@ void MemoryDesignerChildGraphicsItem::changeAddressRange(quint64 offset)
 
     quint64 newLastAddress = getLastAddress() + offset;
     getRangeEndLabel()->setPlainText(getValueFormattedToHexadecimal(newLastAddress));
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerChildGraphicsItem::collidesWithRectangle()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerChildGraphicsItem::collidesWithRectangle(QRectF comparisonRectangle)
+{
+    qreal thisTop = sceneBoundingRect().top();
+    qreal thisLow = sceneBoundingRect().bottom();
+    qreal comparisonTop = comparisonRectangle.top();
+    qreal comparisonLow = comparisonRectangle.bottom();
+
+    if (
+        ((thisTop > comparisonTop && thisTop < comparisonLow) ||
+        (thisLow < comparisonLow && thisLow > comparisonTop) ||
+
+        (comparisonTop > thisTop && comparisonTop < thisLow) ||
+        (comparisonLow < thisLow && comparisonLow > thisTop) ||
+
+        (thisTop == comparisonTop && thisLow == comparisonLow)))
+    {
+        return true;
+    }
+
+    return false;
+
 }
