@@ -58,7 +58,8 @@ QVector<QSharedPointer<ConnectivityInterface> > MasterSlavePathSearch::findIniti
 
     foreach (QSharedPointer<ConnectivityInterface> vertex, graph->getInterfaces())
     {
-        if (vertex->getMode() == "master" && !vertex->isHierarchical())
+        if (vertex->getMode().compare(QStringLiteral("master")) == 0 && !vertex->isHierarchical() &&
+            !vertex->isBridged())
         {
             masterInterfaces.append(vertex);
         }

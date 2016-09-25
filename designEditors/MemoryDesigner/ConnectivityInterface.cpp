@@ -15,7 +15,7 @@
 // Function: ConnectivityInterface::ConnectivityInterface()
 //-----------------------------------------------------------------------------
 ConnectivityInterface::ConnectivityInterface(QString const& name): name_(name), mode_(), baseAddress_(),
-    remapAddress_(), instance_(), memory_(), hierarchical_(false)
+    remapAddress_(), instance_(), memory_(), hierarchical_(false), bridged_(false)
 {
 
 }
@@ -154,4 +154,20 @@ void ConnectivityInterface::setHierarchical()
 bool ConnectivityInterface::isHierarchical() const
 {
     return hierarchical_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::setBridgd()
+//-----------------------------------------------------------------------------
+void ConnectivityInterface::setBridged()
+{
+    bridged_ = true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::isBridged()
+//-----------------------------------------------------------------------------
+bool ConnectivityInterface::isBridged() const
+{
+    return bridged_;
 }

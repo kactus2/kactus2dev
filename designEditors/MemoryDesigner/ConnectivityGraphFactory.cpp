@@ -27,15 +27,17 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
+#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/SlaveInterface.h>
+
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::ConnectivityGraphFactory()
@@ -121,6 +123,27 @@ void ConnectivityGraphFactory::addInstancesAndInterfaces(QSharedPointer<const De
                 {
                     graph->addConnection(channel->name(), startInterface, 
                         graph->getInterface(componentInstance->getInstanceName(), endInterface));
+                }
+            }
+
+            foreach (QSharedPointer<BusInterface> busInterface, *instancedComponent->getBusInterfaces())
+            {
+                if (busInterface->hasBridge())
+                {
+                    QSharedPointer<ConnectivityInterface> startInterface = 
+                        graph->getInterface(componentInstance->getInstanceName(), busInterface->name());
+                    startInterface->setBridged();
+
+                    foreach (QSharedPointer<SlaveInterface::Bridge> bridge, *busInterface->getSlave()->getBridges())
+                    {
+                        QSharedPointer<ConnectivityInterface> endInterface = graph->getInterface(
+                            componentInstance->getInstanceName(), bridge->masterRef_);
+                        endInterface->setBridged();
+
+                        graph->addConnection(busInterface->name() + QObject::tr("_bridge"), startInterface, 
+                            endInterface);
+                    }
+
                 }
             }
 

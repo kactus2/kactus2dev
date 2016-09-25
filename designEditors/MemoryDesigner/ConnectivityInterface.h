@@ -144,6 +144,16 @@ public:
      */
     bool isHierarchical() const;
 
+    //! Marks the interface as bridged.     
+    void setBridged();
+
+    /*!
+     *  Checks if the interface is bridged.
+     *
+     *      @return True, if the interface is bridged, otherwise false.
+     */
+    bool isBridged() const;
+
 private:
 
 	// Disable copying.
@@ -173,6 +183,9 @@ private:
 
     //! Whether the interface is hierarchical or not.
     bool hierarchical_;
+
+    //! Wheter the interface is a part of a bridge or not.
+    bool bridged_;
 };
 
 #endif // INTERFACE_H

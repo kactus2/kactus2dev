@@ -76,6 +76,8 @@ private slots:
 
     void testMultipleConnectionsFromMaster();
 
+    void testBridge();
+
 private:
     
     QString runGenerator();
@@ -967,6 +969,57 @@ void tst_MemoryViewGenerator::testMultipleConnectionsFromMaster()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_MemoryViewGenerator::testBridge()
+//-----------------------------------------------------------------------------
+void tst_MemoryViewGenerator::testBridge()
+{
+    VLNV masterVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "TestMaster", "1.0");
+    VLNV bridgeVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "TestBridge", "1.0");
+    VLNV slaveVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "TestSlave", "1.0");
+
+    createMasterComponent(masterVLNV);
+
+    QSharedPointer<Component> bridgeComponent(new Component(bridgeVLNV));
+
+    QSharedPointer<BusInterface> bridgeMaster(new BusInterface());
+    bridgeMaster->setName("bridgeMaster");
+    bridgeMaster->setInterfaceMode(General::MASTER);
+    bridgeComponent->getBusInterfaces()->append(bridgeMaster);
+    
+    QSharedPointer<BusInterface> bridgeSlave(new BusInterface());
+    bridgeSlave->setName("bridgeSlave");
+    bridgeSlave->setInterfaceMode(General::SLAVE);
+    
+    QSharedPointer<SlaveInterface::Bridge> bridge(new SlaveInterface::Bridge());
+    bridge->masterRef_ = "bridgeMaster";
+    bridgeSlave->getSlave()->getBridges()->append(bridge);
+
+    bridgeComponent->getBusInterfaces()->append(bridgeSlave);
+    library_->addComponent(bridgeComponent);
+
+    QSharedPointer<Component> slaveComponent = createSlaveComponent(slaveVLNV);
+
+    QSharedPointer<MemoryMap> slaveMemoryMap(new MemoryMap("slaveMemoryMap"));
+    slaveComponent->getMemoryMaps()->append(slaveMemoryMap);
+
+    QSharedPointer<AddressBlock> slaveAddressBlock = addAddressBlock("slaveBlock", "0", "8", "32", slaveMemoryMap);
+
+    createComponentInstance(masterVLNV, "master", "masterID", design_);
+    createComponentInstance(bridgeVLNV, "bridge", "bridgeID", design_);
+    createComponentInstance(slaveVLNV, "slave", "slaveID", design_);
+    
+    createInterconnection("master", "masterIf", "bridge", "bridgeSlave", design_);
+    createInterconnection("bridge", "bridgeMaster", "slave", "slaveIf", design_);
+    
+    QString output = runGenerator();
+
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slave.slaveMemoryMap;memoryMap;0x0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slave.slaveMemoryMap.slaveBlock;addressBlock;0x0;8;32;;;\n"
+        ));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_MemoryViewGenerator::runGenerator()
 //-----------------------------------------------------------------------------
 QString tst_MemoryViewGenerator::runGenerator()
@@ -1101,6 +1154,7 @@ QSharedPointer<AddressBlock> tst_MemoryViewGenerator::addAddressBlock(QString co
 
     return block;
 }
+
 
 QTEST_APPLESS_MAIN(tst_MemoryViewGenerator)
 
