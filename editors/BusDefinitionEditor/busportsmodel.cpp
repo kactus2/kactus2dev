@@ -297,7 +297,7 @@ bool BusPortsModel::setData(QModelIndex const& index, QVariant const& value, int
         QString newName = value.toString();
 
         // Make sure there is not already port with same name.
-        if (!absDef_->hasPort(newName))
+        if (absDef_->hasPort(newName))
         {
             return false;
         }
