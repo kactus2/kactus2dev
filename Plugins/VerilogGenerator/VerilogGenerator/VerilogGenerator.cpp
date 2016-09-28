@@ -147,10 +147,7 @@ void VerilogGenerator::createDesignWriters(QSharedPointer<GenerationDesign> desi
             {
                 QSharedPointer<GenerationWire> gw = *iter;
 
-                if (gw->ports.size() > 1)
-                {
-                    document->wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw)));
-                }
+                document->wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw)));
             }
 
             usedGic.append(gic);
@@ -168,10 +165,7 @@ void VerilogGenerator::createDesignWriters(QSharedPointer<GenerationDesign> desi
             continue;
         }
 
-        if (gw->ports.size() > 1)
-        {
-            document->wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw)));
-        }
+        document->wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw)));
 
         usedWire.append(gw);
     }
@@ -280,8 +274,8 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::generate()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::generate(QString const& generatorVersion /*= ""*/,
-    QString const& kactusVersion /*= ""*/) const
+void VerilogGenerator::generate(QString const& generatorVersion,
+    QString const& kactusVersion) const
 {
     if (nothingToWrite())
 	{

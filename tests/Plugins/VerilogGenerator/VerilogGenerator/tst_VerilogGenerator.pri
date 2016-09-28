@@ -26,6 +26,7 @@ HEADERS += ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.h 
     ../../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h \
     ../../../../designEditors/common/TopComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h \
+    ../../../../Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
     ../../../../Plugins/VerilogImport/VerilogSyntax.h \
     ../../../../Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.h \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h \
@@ -33,8 +34,7 @@ HEADERS += ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.h 
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
     ../../../../Plugins/common/HDLParser/HDLDesignParser.h \
     ../../../MockObjects/LibraryMock.h \
-    ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
-    ../../../../Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.h
+    ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h
 SOURCES += ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.cpp \
     ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
@@ -44,6 +44,7 @@ SOURCES += ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.cp
     ../../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
     ../../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../../Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp \
     ../../../MockObjects/LibraryMock.cpp \
     ../../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
@@ -57,5 +58,4 @@ SOURCES += ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.cp
     ../../../../Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
-    ./tst_VerilogGenerator.cpp \
-    ../../../../Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp
+    ./tst_VerilogGenerator.cpp

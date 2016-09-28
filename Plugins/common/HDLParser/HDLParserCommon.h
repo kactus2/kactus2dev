@@ -106,7 +106,7 @@ struct GenerationComponent
 
 struct GenerationWire
 {
-    QList<QSharedPointer<GenerationPort> > ports;
+    //QList<QSharedPointer<GenerationPort> > ports;
     QPair<QString,QString> bounds;
 	QString name;
 };
@@ -160,7 +160,7 @@ struct GenerationInstance
     QMap<QString,QSharedPointer<GenerationPortAssignMent> > portAssignments_;
     QList<QSharedPointer<GenerationInterfaceAssignment> > interfaceAssignments_;
 
-	QMap<QSharedPointer<BusInterface>,QSharedPointer<GenerationInterconnection> > interfaces_;
+	QMap<QSharedPointer<BusInterface>,QSharedPointer<GenerationInterconnection> > interconnections_;
 
 	QSharedPointer<View> activeView_;
 

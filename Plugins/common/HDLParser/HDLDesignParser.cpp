@@ -545,8 +545,6 @@ void HDLDesignParser::parsePortMaps(QSharedPointer<AbstractionType> absType,
 
             // The wire shall be the wire of the port assignment.
             gpa->wire = gw;
-            // A new physical port is identified for the wire.
-            gw->ports.append(physicalPort);
         }
     }
 }
@@ -671,8 +669,6 @@ void HDLDesignParser::assignInternalAdHocs()
 					QSharedPointer<GenerationWire> gw = existing->wire;
 
 					gpa->wire = gw;
-					// One more port assigned to the wire.
-					gw->ports.append(ourPort);
 
 					// Since it is an ad-hoc connection, a physical connection is the only choice.
 					QPair<QString,QString> bounds = physicalPortBoundsInInstance(gi, ourPort);
@@ -740,6 +736,7 @@ void HDLDesignParser::parseHierarchicallAdhocs()
 
 					// Create a new port assignment.
 					QSharedPointer<GenerationPortAssignMent> gpa(new GenerationPortAssignMent);
+        			gpa->port = ourPort;
 					gi->portAssignments_.insert(ourPort->port->name(),gpa);
 
 					// It will not have a wire, but reference to the top port.

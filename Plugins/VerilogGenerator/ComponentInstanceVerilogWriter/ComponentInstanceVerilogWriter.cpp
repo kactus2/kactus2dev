@@ -154,23 +154,22 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 	foreach(QString portName, sorter_->sortedPortNames(instance_->component->component))
     {
         // Seek for a port assignment.
-        QSharedPointer<GenerationPortAssignMent> gab = instance_->portAssignments_.value(portName);
+        QSharedPointer<GenerationPortAssignMent> gpa = instance_->portAssignments_.value(portName);
 
         // If none found, or is not applicable, skip.
-        if (!gab || (useInterfaces_ && !gab->adhoc))
+        if (!gpa || (useInterfaces_ && !gpa->adhoc))
         {
             continue;
         }
 
-		QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-			instance_->component->component->getInterfacesUsedByPort(portName);
+		QList<QSharedPointer<GenerationInterface> > busInterfaces = gpa->port->interfaces;
 		QString interfaceName;
 
-		if (busInterfaces->size() == 1)
+		if (busInterfaces.size() == 1)
 		{
-			interfaceName = busInterfaces->first()->name();
+			interfaceName = busInterfaces.first()->name;
 		}
-		else if (!busInterfaces->isEmpty())
+		else if (!busInterfaces.isEmpty())
 		{
 			interfaceName = QLatin1String("several");
 		}
@@ -184,7 +183,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 
 		QString portAssignment = interfaceSeparatorLine + indentation().repeated(2) + ".<port>(<connection>)";
 		portAssignment.replace("<port>", portName.leftJustified(20));
-		portAssignment.replace("<connection>", assignmentForPort(gab));
+		portAssignment.replace("<connection>", assignmentForPort(gpa));
 
 		portAssignments.append(portAssignment);
 	}
@@ -267,7 +266,7 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<Generat
 		{
 			assignment.replace("<signalName>", gab->topPort);
 		}
-		else if (gab->wire && gab->wire->ports.size() > 1)
+		else if (gab->wire)
 		{
 			assignment.replace("<signalName>", gab->wire->name);
 		}
