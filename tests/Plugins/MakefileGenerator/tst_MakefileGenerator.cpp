@@ -119,7 +119,7 @@ private:
     PluginUtilityAdapter utilityMock_;
 };
 
-tst_MakefileGenerator::tst_MakefileGenerator(): library_( this ), utilityMock_(&library_, 0, this)
+tst_MakefileGenerator::tst_MakefileGenerator(): library_( this ), utilityMock_(&library_, 0, "", this)
 {
 }
 

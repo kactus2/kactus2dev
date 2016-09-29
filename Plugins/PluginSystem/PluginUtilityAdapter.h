@@ -30,8 +30,10 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parent   The parent object.
-	 *      @param [in] versionString   Returns the current version of the Kactus2 build.
+     *      @param [in] libraryInterface    The library object that is to be associated with the utility object.
+     *      @param [in] parentWidget        The parent widget.
+     *      @param [in] versionString       The current version of the Kactus2 build.
+     *      @param [in] parent              The parent object.
 	 */
 	PluginUtilityAdapter(LibraryInterface* libraryInterface, QWidget* parentWidget, QString versionString,
 		QObject* parent = 0);

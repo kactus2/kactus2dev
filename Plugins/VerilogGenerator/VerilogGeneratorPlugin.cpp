@@ -168,9 +168,9 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         return;
     }
 
-    if ((design && !designConfig) || (!design && designConfig))
+    if (!design && designConfig)
     {
-        utility->printError(tr("The design must be accompanied by a design configuration and vice versa."));
+        utility->printError(tr("The design configuration must be accompanied by a design."));
         return;
     }
 
@@ -205,11 +205,11 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     if (designGeneration)
     {
         QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
-        generator.parseDesign(configuration_->getOutputPath(), designs);
+        generator.parseDesign(configuration->getOutputPath(), designs);
     }
     else
     {
-        generator.parseComponent(configuration_->getOutputPath(), componentParser->getParsedComponent());
+        generator.parseComponent(configuration->getOutputPath(), componentParser->getParsedComponent());
     }
 
 	generator.generate(getVersion(), utility_->getKactusVersion());
@@ -234,7 +234,7 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossib
 	QSharedPointer<Component> targetComponent, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) const
 {
 	// If the generation is targeted to a design, return views referring to the design or a design configuration.
-    if (design && designConf->getDesignRef() == design->getVlnv())
+    if (designConf && design && designConf->getDesignRef() == design->getVlnv())
     {
         return findReferencingViews(targetComponent, designConf->getVlnv());
     }

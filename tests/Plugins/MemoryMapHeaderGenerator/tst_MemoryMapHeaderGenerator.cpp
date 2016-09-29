@@ -223,7 +223,7 @@ void tst_MemoryMapHeaderGenerator::testLocalMemoryMapHeaderGeneration()
     headerGenerator_->setLocalSaveFileOptions(localMemoryMap, saveFileInfo, "swView");
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
     QSharedPointer<Document> libComponent = library_.getModel(topComponent_->getVlnv());
 
     QSignalSpy generatorSpy(&adapter, SIGNAL(infoMessage(QString const&)));
@@ -349,7 +349,7 @@ void tst_MemoryMapHeaderGenerator::testGenerationWithHexadecimalRegisterOffset()
     headerGenerator_->setLocalSaveFileOptions(localMemoryMap, saveFileInfo, "swView");
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
     QSharedPointer<Document> libComponent = library_.getModel(topComponent_->getVlnv());
 
     headerGenerator_->runGenerator(&adapter, libComponent);
@@ -449,7 +449,7 @@ void tst_MemoryMapHeaderGenerator::testGenerationWithReferencingRegisterOffset()
     headerGenerator_->setLocalSaveFileOptions(localMemoryMap, saveFileInfo, "swView");
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
     QSharedPointer<Document> libComponent = library_.getModel(topComponent_->getVlnv());
 
     headerGenerator_->runGenerator(&adapter, libComponent);
@@ -563,7 +563,7 @@ void tst_MemoryMapHeaderGenerator::testLocalMemoryMapAddressBlockIsMemoryOrReser
     headerGenerator_->setLocalSaveFileOptions(localMemoryMap, saveFileInfo, "swView");
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
     QSharedPointer<Document> libComponent = library_.getModel(topComponent_->getVlnv());
 
     headerGenerator_->runGenerator(&adapter, libComponent);
@@ -671,7 +671,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderGeneration()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
     QSignalSpy generatorSpy(&adapter, SIGNAL(infoMessage(QString const&)));
 
@@ -847,7 +847,7 @@ void tst_MemoryMapHeaderGenerator::testMemoryMapHeaderGenerationInDesignWithMult
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
 
@@ -990,7 +990,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithReferences()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
 
@@ -1101,7 +1101,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithMasterReference(
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
 
@@ -1265,7 +1265,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithConfigurableElem
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, headerDesignConfiguration, headerDesign);
 
@@ -1381,7 +1381,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithChannel()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
 
@@ -1499,7 +1499,7 @@ void tst_MemoryMapHeaderGenerator::testChannelDesignWithReferences()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
 
@@ -1607,7 +1607,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithBridge()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, QSharedPointer<Document>(), headerDesign);
 
@@ -1730,7 +1730,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithOpaqueBridge()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
     QSignalSpy errorMessageSignals(&adapter, SIGNAL(errorMessage(QString const&)));
 
@@ -1826,7 +1826,7 @@ void tst_MemoryMapHeaderGenerator::testSystemMemoryMapHeaderGeneration()
         masterComponent->getBusInterfaceNames().at(0), saveFileInfo);
 
     QWidget parentWidget;
-    PluginUtilityAdapter adapter(&library_, &parentWidget, this);
+    PluginUtilityAdapter adapter(&library_, &parentWidget, "", this);
 
     headerGenerator_->runGenerator(&adapter, topComponent_, systemDesignConfiguration, systemDesign);
 

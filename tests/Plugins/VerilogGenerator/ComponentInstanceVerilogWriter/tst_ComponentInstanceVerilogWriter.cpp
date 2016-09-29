@@ -12,7 +12,7 @@
 #include <QtTest>
 
 #include <Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h>
-#include <Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h>
+#include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 

@@ -73,8 +73,8 @@ void tst_VerilogHeaderWriter::testVlnv()
     VLNV vlnv(VLNV::COMPONENT, vendor, library, name, version);
     QDateTime generationTime(QDate(2014, 4, 1), QTime(14,14,14));
 
-    VerilogHeaderWriter writer(vlnv, "", "");
-    writer.write(outputStream_, "output.v", "", "", "", generationTime);
+    VerilogHeaderWriter writer(vlnv, "", "", "");
+    writer.write(outputStream_, "output.v", "", "", generationTime);
 
     compareLineByLine(QString(
         "//-----------------------------------------------------------------------------\n"
@@ -115,8 +115,8 @@ void tst_VerilogHeaderWriter::testGenerationTime()
 
     QDateTime generationTime(QDate(2014, 1, 14), QTime(12, 0, 40));
 
-    VerilogHeaderWriter writer(vlnv, "", "");
-    writer.write(outputStream_, "TestComponent.v", "", "", "", generationTime);       
+    VerilogHeaderWriter writer(vlnv, "", "", "");
+    writer.write(outputStream_, "TestComponent.v", "", "", generationTime);       
 
     compareLineByLine(QString(
         "//-----------------------------------------------------------------------------\n"
@@ -144,8 +144,8 @@ void tst_VerilogHeaderWriter::testDescription()
 
     QDateTime generationTime(QDate(2014, 4, 14), QTime(14, 14, 14));
 
-    VerilogHeaderWriter writer(vlnv, "", "");
-    writer.write(outputStream_, "TestComponent.v", "", "", description, generationTime);       
+    VerilogHeaderWriter writer(vlnv, "", "", description);
+    writer.write(outputStream_, "TestComponent.v", "", "", generationTime);       
 
     compareLineByLine(expectedOutput);
 }
