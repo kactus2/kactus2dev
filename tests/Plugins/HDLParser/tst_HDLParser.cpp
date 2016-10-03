@@ -336,7 +336,7 @@ void tst_HDLParser::testHierarchicalConnections()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi = design->instances_["instance1"];
 
     QCOMPARE( gi->componentInstance_->getInstanceName(), QString("instance1") );
     QCOMPARE( gi->portAssignments_.size(), 4 );
@@ -440,7 +440,7 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi = design->instances_["instance1"];
 
     QCOMPARE( gi->componentInstance_->getInstanceName(), QString("instance1") );
     QCOMPARE( gi->parameters.size(), 1 );
@@ -491,7 +491,7 @@ void tst_HDLParser::testSlicedHierarchicalConnection()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi = design->instances_["instance1"];
 
     QCOMPARE( gi->portAssignments_.size(), 4 );
 
@@ -704,8 +704,8 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
 
     QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(1);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["receiver"];
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -808,8 +808,8 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
 
     QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(1);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["receiver"];
 
     QCOMPARE( gi0->portAssignments_.size(), 1 );
     QCOMPARE( gi1->portAssignments_.size(), 1 );
@@ -945,9 +945,9 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
 
     QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver1"];
+    QSharedPointer<GenerationInstance> gi2 = design->instances_["receiver2"];
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -1035,10 +1035,10 @@ void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
 
     QCOMPARE( design->instances_.size(), 4 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
-    QSharedPointer<GenerationInstance> gi3 = design->instances_.at(3);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["oneBitReceiver"];
+    QSharedPointer<GenerationInstance> gi2 = design->instances_["fourBitReceiver"];
+    QSharedPointer<GenerationInstance> gi3 = design->instances_["sixteenBitReceiver"];
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -1218,8 +1218,8 @@ void tst_HDLParser::testSlicedInterconnection()
 
     QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver"];
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -1282,8 +1282,8 @@ void tst_HDLParser::testMasterInterconnectionToMirroredMaster()
 
     QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver"];
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -1352,8 +1352,8 @@ void tst_HDLParser::testMirroredSlaveInterconnectionToSlaves()
 
     QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["bus1"];
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -1478,8 +1478,8 @@ void tst_HDLParser::testPortMapsWithoutBoundsInInterconnection()
 
     QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver"];
 
     QCOMPARE( gi0->portAssignments_.size(), 1 );
     QCOMPARE( gi1->portAssignments_.size(), 1 );
@@ -1540,9 +1540,9 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
 
     QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];;
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver1"];
+    QSharedPointer<GenerationInstance> gi2 = design->instances_["receiver2"];
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
     QCOMPARE( gi1->portAssignments_.size(), 2 );
@@ -1648,7 +1648,7 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["tieOffer"];
 
     QCOMPARE( gi0->portAssignments_.size(), 9 );
 
@@ -1712,9 +1712,9 @@ void tst_HDLParser::testMultipleAdhocConnectionsBetweenComponentInstances()
 
     QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver1"];
+    QSharedPointer<GenerationInstance> gi2 = design->instances_["receiver2"];
 
     QCOMPARE( gi0->portAssignments_.size(), 1 );
     QCOMPARE( gi1->portAssignments_.size(), 1 );
@@ -1746,8 +1746,8 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
     QSharedPointer<Component> senderComponent(new Component(senderVLNV));
 
     QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("enable_out", DirectionTypes::OUT));
-    senderPort->setLeftBound("10*2-8");
-    senderPort->setRightBound("2");
+    senderPort->setLeftBound("(10-9)*4");
+    senderPort->setRightBound("2-2");
 	senderComponent->getPorts()->append(senderPort);
 
 	QSharedPointer<View> sendView(new View("rtl"));
@@ -1756,14 +1756,6 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
 	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
 	senderComponent->getComponentInstantiations()->append(instantiation);
 	senderComponent->getViews()->append(sendView);
-
-    addInterfaceToComponent("data_bus", senderComponent);
-    senderComponent->getBusInterface("data_bus")->setInterfaceMode(General::MASTER);
-
-    mapPortToInterface("enable_out", "ENABLE", "data_bus", senderComponent);
-    QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
-    QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
-    logPort->range_ = QSharedPointer<Range>(new Range("10/2","1"));
 
     library_.addComponent(senderComponent);
     addInstanceToDesign("sender", senderVLNV, sendView);
@@ -1775,10 +1767,6 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
     receiverPort->setLeftBound("2+2");
     receiverPort->setRightBound("0");
     receiverComponent->getPorts()->append(receiverPort);
-
-    addInterfaceToComponent("data_bus", receiverComponent);
-    receiverComponent->getBusInterface("data_bus")->setInterfaceMode(General::SLAVE);
-	mapPortToInterface("enable_in", "ENABLE", "data_bus", receiverComponent);
 
 	QSharedPointer<View> recvView(new View("rtl"));
 	recvView->setComponentInstantiationRef("instance2");
@@ -1812,14 +1800,14 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
 
     QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire;
 
-    QCOMPARE( gw0->bounds.first, QString("12") );
-    QCOMPARE( gw0->bounds.second, QString("2") );
+    QCOMPARE( gw0->bounds.first, QString("4") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver1"];
+    QSharedPointer<GenerationInstance> gi2 = design->instances_["receiver2"];
 
     QCOMPARE( gi0->portAssignments_.size(), 1 );
     QCOMPARE( gi1->portAssignments_.size(), 1 );
@@ -1828,8 +1816,8 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
     QSharedPointer<GenerationPortAssignMent> gpa;
     gpa = gi0->portAssignments_["enable_out"];
     QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("12") );
-    QCOMPARE( gpa->bounds.second, QString("2") );
+    QCOMPARE( gpa->bounds.first, QString("4") );
+    QCOMPARE( gpa->bounds.second, QString("0") );
 
     gpa = gi1->portAssignments_["enable_in"];
     QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
@@ -1924,7 +1912,7 @@ void tst_HDLParser::testHierarchicalAdhocConnection()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
     QCOMPARE( gi0->portAssignments_.size(), 2 );
 
@@ -2066,7 +2054,6 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
 	view1->setComponentInstantiationRef(instantiation1->name());
 	senderComponent->getComponentInstantiations()->append(instantiation1);
 
-
     library_.addComponent(senderComponent);
     addInstanceToDesign("sender", senderVLNV, view1);
 
@@ -2122,9 +2109,9 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
 
     QCOMPARE( design->instances_.size(), 3 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(1);
-    QSharedPointer<GenerationInstance> gi2 = design->instances_.at(2);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver1"];
+    QSharedPointer<GenerationInstance> gi2 = design->instances_["receiver2"];
 
     QCOMPARE( gi0->portAssignments_.size(), 1 );
     QCOMPARE( gi1->portAssignments_.size(), 1 );
@@ -2202,7 +2189,7 @@ void tst_HDLParser::testInstanceParametersAreCulled()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
     QCOMPARE( gi0->parameters.size(), 2 );
 
@@ -2267,7 +2254,7 @@ void tst_HDLParser::testTopComponentParametersAreUtilized()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
     QCOMPARE( gi0->parameters.size(), 1 );
 
@@ -2331,7 +2318,7 @@ void tst_HDLParser::testInstanceComponentParametersAreUtilized()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
     QCOMPARE( gi0->parameters.size(), 2 );
 
@@ -2395,7 +2382,7 @@ void tst_HDLParser::testParameterPropagationFromTop()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
     QCOMPARE( gi0->parameters.size(), 1 );
 
@@ -2465,7 +2452,7 @@ void tst_HDLParser::testParameterPropagationFromTop2()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
     QCOMPARE( gi0->parameters.size(), 2 );
 
@@ -2581,8 +2568,8 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
 
     QCOMPARE( design->instances_.size(), 2 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(1);
-    QSharedPointer<GenerationInstance> gi1 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["sender"];
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["receiver"];
 
     QSharedPointer<GenerationPortAssignMent> gpa;
     gpa = gi0->portAssignments_["data_in"];
@@ -2703,7 +2690,7 @@ void tst_HDLParser::testMultiLevelHierachy()
 
     QCOMPARE( design->instances_.size(), 1 );
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_.at(0);
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
     QCOMPARE( gi0->parameters.size(), 2 );
 

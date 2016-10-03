@@ -31,8 +31,8 @@ public:
 
 	//! The constructor.
     GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection,
-        QSharedPointer<HDLComponentParser> componentParser,
-        QSharedPointer<HDLDesignParser> designParser);
+        HDLComponentParser* componentParser,
+        HDLDesignParser* designParser);
 
 	//! The destructor.
 	~GeneratorConfiguration();
@@ -75,7 +75,13 @@ public:
      *      @return The path to output file.
      */
     QString getOutputPath() const;
-
+    
+    /*!
+     *  Sets the file name in the given index of file names.
+     *
+     *      @param [in] path    The new name.
+     *      @param [in] index   The index of the file name.
+     */
     void setOutputFileName(QString newName, int index);
 
 signals:
@@ -94,8 +100,9 @@ private:
     //! The view selection configuration.
     QSharedPointer<ViewSelection> viewSelection_;
 
-    QSharedPointer<HDLComponentParser> componentParser_;
-    QSharedPointer<HDLDesignParser> designParser_;
+    //! The parsers used to parse IP-XACT for data usable in generation.
+    HDLComponentParser* componentParser_;
+    HDLDesignParser* designParser_;
 
     //! The base directory for output paths.
     QString outputPath_;

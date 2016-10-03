@@ -577,6 +577,11 @@ QStringList BusInterface::getLogicalPortNames() const
 //-----------------------------------------------------------------------------
 bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const
 {
+    if (abstractionTypes_->size() < 1)
+    {
+        return false;
+    }
+
 	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
 	{
 		if (portMap->getLogicalPort()->name_ == logicalPortName)
@@ -593,6 +598,11 @@ bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const
 //-----------------------------------------------------------------------------
 bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const
 {
+    if (abstractionTypes_->size() < 1)
+    {
+        return false;
+    }
+
 	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
 	{
 		if (portMap->getPhysicalPort()->name_ == physicalPortName)
@@ -601,7 +611,7 @@ bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const
 		}
 	}
 
-	return false;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -609,6 +619,11 @@ bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const
 //-----------------------------------------------------------------------------
 QString BusInterface::getLogicalPortName( const QString& physicalPortName ) const
 {
+    if (abstractionTypes_->size() < 1)
+    {
+        return false;
+    }
+
 	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
 	{
 		if (portMap->getPhysicalPort()->name_.compare(physicalPortName) == 0)

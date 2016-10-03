@@ -142,11 +142,11 @@ QString ComponentInstanceVerilogWriter::portConnections() const
         {
             if (gifa->interConnection_->topInterface_)
             {
-                portAssignments.append( "." + gifa->name + "(" + gifa->interConnection_->topInterface_->name + ")");
+                portAssignments.append( "." + gifa->interface_->name + "(" + gifa->interConnection_->topInterface_->name + ")");
             }
             else
             {
-                portAssignments.append( "." + gifa->name + "("+ gifa->interConnection_->name + ")");
+                portAssignments.append( "." + gifa->interface_->name + "("+ gifa->interConnection_->name + ")");
             }
         }
     }
@@ -161,15 +161,16 @@ QString ComponentInstanceVerilogWriter::portConnections() const
         {
             continue;
         }
-
-		QList<QSharedPointer<GenerationInterface> > busInterfaces = gpa->port->interfaces;
+        
+        QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
+        instance_->component->component->getInterfacesUsedByPort(portName);
 		QString interfaceName;
 
-		if (busInterfaces.size() == 1)
+		if (busInterfaces->size() == 1)
 		{
-			interfaceName = busInterfaces.first()->name;
+			interfaceName = busInterfaces->first()->name();
 		}
-		else if (!busInterfaces.isEmpty())
+		else if (!busInterfaces->isEmpty())
 		{
 			interfaceName = QLatin1String("several");
 		}

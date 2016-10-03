@@ -47,10 +47,11 @@ public:
     //! The destructor.
     ~HDLDesignParser();
 
+
     void parseDesign(QSharedPointer<GenerationComponent> topComponent, QSharedPointer<View> topComponentView,
         QSharedPointer<GenerationInstance> topInstance = QSharedPointer<GenerationInstance>());
 
-     QList<QSharedPointer<GenerationDesign> > getParsedDesigns(){return parsedDesigns_;}
+    QList<QSharedPointer<GenerationDesign> > getParsedDesigns(){return parsedDesigns_;}
 
 signals:
 	
@@ -69,19 +70,46 @@ private:
      *  Parses all the component instances in the design.
      */
     void parseComponentInstances();
-
+    
+    /*!
+     *  Finds interconnections within the design and which interfaces they connect to.
+     */
 	void findInterconnections();
-
+    
+    /*!
+     *  Creates port/interface assignments and wires out of interconnections.
+     */
 	void assignInterconnections();
-
+    
+    /*!
+     *  Does interconnection assignments to port maps of given abstraction type.
+     */
     void parsePortMaps(QSharedPointer<AbstractionType> absType, QSharedPointer<GenerationInstance> gi,
         QSharedPointer<GenerationInterconnection> gic, QSharedPointer<AbstractionDefinition> absDef,
         QSharedPointer<BusInterface> busInterface);
-
+    
+    /*!
+     *  Compares new bounds to existing bounds of the wire and then assigns the largest combination of two
+     *  If even one of the existing bounds is missing, candidates will replace them both.
+     *
+     *      @param [in] wire            The wire which bounds are possibly enlarged.
+     *      @param [in] boundCand		The candidate for new bounds.
+     */
+    void assignLargerBounds(QSharedPointer<GenerationWire> wire, QPair<int,int> &boundCand);
+    
+    /*!
+     *  Finds ad hoc interconnections within the design and which interfaces they connect to.
+     */
 	void findInternalAdhocs();
-
+    
+    /*!
+     *  Creates port assignments from ad hoc connections.
+     */
 	void assignInternalAdHocs();
-
+    
+    /*!
+     *  Creates special port assignments for hierarchical ad hoc connections.
+     */
 	void parseHierarchicallAdhocs();
 
     /*!
@@ -105,8 +133,17 @@ private:
      */
 	QPair<QString, QString> logicalPortBoundsInInstance(QSharedPointer<GenerationInstance> instance,
         QSharedPointer<PortMap> portMap) const;
-
-	bool connectTieOff(QString tieOff, QSharedPointer<GenerationPort> port, DirectionTypes::Direction requiredDirection, QString& value);
+    
+    /*!
+     *  Assigns a tie off value, if applicable.
+     *
+     *      @param [in] tieOff              The tied value needing assignment.
+     *      @param [in] port			    The port where the tied value would belong to.
+     *      @param [in] requiredDirection   The direction of the tiedOff: Must be inout or this.
+     *
+     *      @return The resolved tied value.
+     */
+	QString connectTieOff(QString tieOff, QSharedPointer<GenerationPort> port, DirectionTypes::Direction requiredDirection);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -124,6 +161,7 @@ private:
 	 //! The design configuration to parse.
 	 QSharedPointer<DesignConfiguration> designConf_;
      
+     //! The list of all parsed designs that are below the current top are in this list.
      QList<QSharedPointer<GenerationDesign> > parsedDesigns_;
 
      //! The parsed design.

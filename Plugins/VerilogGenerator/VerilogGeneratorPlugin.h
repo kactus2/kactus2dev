@@ -150,8 +150,8 @@ protected:
     virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
 		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
         QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets,
-        QSharedPointer<HDLComponentParser> componentParser,
-        QSharedPointer<HDLDesignParser> designParser);
+        HDLComponentParser* componentParser,
+        HDLDesignParser* designParser);
 
     /*!
      *  Gets the configuration for the generation.

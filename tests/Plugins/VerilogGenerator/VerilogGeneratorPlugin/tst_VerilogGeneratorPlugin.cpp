@@ -56,8 +56,8 @@ protected:
     virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
         QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
         QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets,
-        QSharedPointer<HDLComponentParser> componentParser,
-        QSharedPointer<HDLDesignParser> designParser);
+        HDLComponentParser* componentParser,
+        HDLDesignParser* designParser);
 
     virtual QSharedPointer<GeneratorConfiguration> getConfiguration();
 
@@ -85,8 +85,8 @@ private:
 
     QSharedPointer<GeneratorConfiguration> configuration_;
 
-    QSharedPointer<HDLDesignParser> designParser_;
-    QSharedPointer<HDLComponentParser> componentParser_;
+    HDLDesignParser* designParser_;
+    HDLComponentParser* componentParser_;
 };
 
 //-----------------------------------------------------------------------------
@@ -95,7 +95,6 @@ private:
 tst_VerilogGenerator::tst_VerilogGenerator(): library_(this), utilityMock_(&library_, 0, "", this), plugin_(),
 	activeWindow_(0)
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -155,6 +154,7 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign()
 
     QSharedPointer<Component> targetComponent = createTestComponent();
     QSharedPointer<Design> targetDesign = createTestDesign();
+    QSharedPointer<DesignConfiguration> targetConfiguration = createTestDesignConfig();
 
     QSharedPointer<View> structuralView( new View(viewName) );
 	QSharedPointer<DesignInstantiation> di( new DesignInstantiation("test_design_insta") );
@@ -164,7 +164,7 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign()
     targetComponent->getDesignInstantiations()->append(di);
     targetComponent->getViews()->append(structuralView);
 
-    runGenerator(&utilityMock_, targetComponent, QSharedPointer<Document>(), targetDesign);
+    runGenerator(&utilityMock_, targetComponent, targetConfiguration, targetDesign);
 
     QVERIFY2(QFile::exists("test_0.v"), "No file created");
     QCOMPARE(targetComponent->getFileSets()->count(), 1);
@@ -285,8 +285,8 @@ void tst_VerilogGenerator::testRefenecedDesignConfigurationViewIsPossible()
 bool tst_VerilogGenerator::couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
     QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
     QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets,
-    QSharedPointer<HDLComponentParser> componentParser,
-    QSharedPointer<HDLDesignParser> designParser)
+    HDLComponentParser* componentParser,
+    HDLDesignParser* designParser)
 {
     QSharedPointer<ViewSelection> viewSelect(
         new ViewSelection("verilog", possibleViews, possibleInstantiations, possibleFileSets));

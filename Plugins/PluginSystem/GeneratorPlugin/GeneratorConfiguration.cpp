@@ -19,8 +19,7 @@
 // Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
 GeneratorConfiguration::GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection,
-    QSharedPointer<HDLComponentParser> componentParser,
-    QSharedPointer<HDLDesignParser> designParser) :
+    HDLComponentParser* componentParser, HDLDesignParser* designParser) :
 	viewSelection_(viewSelection), componentParser_(componentParser), designParser_(designParser),
     outputPath_(), fileNames_(new QList<QString*>), generateInterface_(false)
 {

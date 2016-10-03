@@ -55,7 +55,7 @@ public:
 	 *      @param [in] output			Any text in the file that comes after the module declaration.
 	 */
     virtual void write(QTextStream& outputStream) const;
-	
+
 	/*! 
 	 *      Sets implementation module writer that will write the module implementation.
 	 */
@@ -133,6 +133,13 @@ private:
      *      @param [in] outputStream   The output to write to.
      */
     void writeInternalWiresAndComponentInstances(QTextStream& outputStream) const;
+    
+    /*!
+     *  Writes the defined conditions of the remap states.
+     *
+     *      @param [in] outputStream   The output to write to.
+     */
+    void writeRemapSates(QTextStream& outputStream) const;
 
     /*!
      *  Writes the module port declaration.

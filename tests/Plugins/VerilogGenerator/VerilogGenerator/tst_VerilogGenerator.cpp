@@ -438,8 +438,6 @@ void tst_VerilogGenerator::mapPortToInterface(QSharedPointer<GenerationPort> por
     pp->name_ = port->port->name();
     pm->setPhysicalPort(pp);
     at->getPortMaps()->append(pm);
-
-    port->interfaces.append(gi);
 }
 
 //-----------------------------------------------------------------------------
@@ -485,7 +483,7 @@ QSharedPointer<GenerationInstance> tst_VerilogGenerator::addInstanceToDesign(QSt
     gi->componentInstance_ = instance;
     gi->component = component;
 
-    design_->instances_.append(gi);
+    design_->instances_.insert(instanceName, gi);
 
 	return gi;
 }
@@ -516,19 +514,19 @@ void tst_VerilogGenerator::testMasterToSlaveInterconnection()
 
     verifyOutputContains(
     "    wire [7:0]  sender_to_receiver_DATA;\n"
-    "    wire [0:0]  sender_to_receiver_ENABLE;\n"   
-    "\n"
-    "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
-    "    TestSender sender(\n"
-    "        // Interface: data_bus\n"
-    "        .data_out            (sender_to_receiver_DATA[7:0]),\n"
-    "        .enable_out          (sender_to_receiver_ENABLE[0:0]));\n"
+    "    wire [0:0]  sender_to_receiver_ENABLE;\n"
     "\n"
     "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
     "    TestReceiver receiver(\n"
     "        // Interface: data_bus\n"
     "        .data_in             (sender_to_receiver_DATA[7:0]),\n"
-    "        .enable_in           (sender_to_receiver_ENABLE[0:0]));");
+    "        .enable_in           (sender_to_receiver_ENABLE[0:0]));\n"
+    "\n"
+    "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
+    "    TestSender sender(\n"
+    "        // Interface: data_bus\n"
+    "        .data_out            (sender_to_receiver_DATA[7:0]),\n"
+    "        .enable_out          (sender_to_receiver_ENABLE[0:0]));");
 }
 
 //-----------------------------------------------------------------------------

@@ -44,10 +44,16 @@ public:
 
 	//! The destructor.
 	~HDLComponentParser();
-
+    
+    /*!
+    *  Parses the component using the given view.
+    */
     void parseComponent(QSharedPointer<View> activeView);
 
-    QSharedPointer<GenerationComponent> getParsedComponent(){return retval_;}
+    /*!
+    *  Returns the parsed component.
+    */
+    QSharedPointer<GenerationComponent> getParsedComponent();
 
     /*!
      *  Sorts list of parameters based on their interdependencies.
@@ -63,20 +69,35 @@ private:
 	HDLComponentParser(HDLComponentParser const& rhs);
     HDLComponentParser& operator=(HDLComponentParser const& rhs);
 
-    void parseInterfaces(QSharedPointer<GenerationComponent> retval);
-
-    void parsePorts(QSharedPointer<GenerationComponent> retval);
+    /*!
+    *  Culls and formats parameter declarations for the component.
+    */
+    void findParameters();
     
-	void parseMemoryMaps(QSharedPointer<GenerationComponent> target) const;
-
-    void parseAddressBlock(QSharedPointer<AddressBlock> ab, QSharedPointer<GenerationRemap> target) const;
-
-     /*!
-      *  Culls and formats parameter declarations for the module.
-      */
-    void findParameters(QSharedPointer<GenerationComponent> target) const;
-
-    void parseRemapStates(QSharedPointer<GenerationComponent> target) const;
+    /*!
+    *  Culls the interfaces of the component.
+    */
+    void parseInterfaces();
+    
+    /*!
+    *  Culls, sorts and formats the ports of the component.
+    */
+    void parsePorts();
+    
+    /*!
+    *  Culls the memory of the component.
+    */
+	void parseMemoryMaps();
+    
+    /*!
+    *  Parses the relevant data of the given address block.
+    */
+    void parseAddressBlock(QSharedPointer<AddressBlock> ab, QSharedPointer<GenerationRemap> target);
+    
+    /*!
+    *  Goes through the remap states, connects remaps to correct ports.
+    */
+    void parseRemapStates();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -85,11 +106,14 @@ private:
     //! The component library.
     LibraryInterface* library_;
 
-    //! The componet parsed for generation.
+    //! The component parsed for generation.
     QSharedPointer<GenerationComponent> retval_;
 
-    //! The component active view.
+    //! The active view of the component.
     QSharedPointer<View> activeView_;
+
+    //! The component instantiation referred by the active view.
+    QSharedPointer<ComponentInstantiation> activeInstantiation_;
 
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter_;

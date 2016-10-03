@@ -65,7 +65,7 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 
         foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces)
         {
-            fileNames.append(gif->fileName);
+            fileNames.append(gif->interface->name());
         }
 
         fileNames.removeDuplicates();
@@ -83,28 +83,7 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 	if ( implementation_ )
     {
         // Implementing -> may need remap states.
-        foreach (QSharedPointer<GenerationRemapState> grms, component_->remapStates)
-        {
-            QString condition;
-            
-            QSharedPointer<QPair<QSharedPointer<Port>, QString> > parsedPort;
-            foreach (parsedPort, grms->ports)
-            {
-                condition += "(" + parsedPort->first->name() + " == " + parsedPort->second + ")";
-
-                if (parsedPort != grms->ports.last())
-                {
-                     condition += " && ";
-                }
-            }
-
-            outputStream << indentation() << "`define " << grms->stateName << " " << condition << endl;
-        }
-
-        if (component_->remapStates.count() > 0)
-        {
-            outputStream << endl;
-        }
+        writeRemapSates(outputStream);
 
         // Implementing -> may need registers.
         writeRegisters(outputStream);
@@ -228,7 +207,8 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
     {
         foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces)
         {
-            outputStream << endl << gif->typeName.replace('.',"_") << "." << gif->mode << " " << gif->name << ",";
+            QString typeName = gif->interface->getBusType().getName();
+            outputStream << endl << typeName << "." << gif->mode << " " << gif->name << ",";
         }
     }
 
@@ -239,8 +219,10 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
     {   
         QSharedPointer<GenerationPort> gport = component_->ports[cport->name()];
         QString interfaceName;
+        QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
+            component_->component->getInterfacesUsedByPort(cport->name());
 
-        if (gport->interfaces.count() < 1 )
+        if (busInterfaces->count() < 1 )
         {
             interfaceName = "none";
         }
@@ -250,9 +232,9 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
         }
         else
         {
-            if (gport->interfaces.count() == 1)
+            if (busInterfaces->count() == 1)
             {
-                interfaceName  = gport->interfaces.first()->name;
+                interfaceName  = busInterfaces->first()->name();
             }
             else
             {
@@ -332,6 +314,35 @@ void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream
     outputStream << endl;
 
     WriterGroup::write(outputStream);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentVerilogWriter:writeRemapSates()
+//-----------------------------------------------------------------------------
+void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
+{
+    foreach (QSharedPointer<GenerationRemapState> grms, component_->remapStates)
+    {
+        QString condition;
+
+        QSharedPointer<QPair<QSharedPointer<Port>, QString> > parsedPort;
+        foreach (parsedPort, grms->ports)
+        {
+            condition += "(" + parsedPort->first->name() + " == " + parsedPort->second + ")";
+
+            if (parsedPort != grms->ports.last())
+            {
+                condition += " && ";
+            }
+        }
+
+        outputStream << indentation() << "`define " << grms->stateName << " " << condition << endl;
+    }
+
+    if (component_->remapStates.count() > 0)
+    {
+        outputStream << endl;
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -23,7 +23,6 @@
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 
 #include <IPXACTmodels/Design/Design.h>
-
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <QDateTime>
@@ -168,21 +167,22 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         return;
     }
 
-    if (!design && designConfig)
+    if ((design && !designConfig) || (!design && designConfig))
     {
-        utility->printError(tr("The design configuration must be accompanied by a design."));
+        utility->printError(tr("The design must be accompanied by a design configuration and vice versa."));
         return;
     }
 
     bool designGeneration = (design || designConfig);
 
-    QSharedPointer<HDLComponentParser> componentParser =
-        QSharedPointer<HDLComponentParser>(new HDLComponentParser(utility_->getLibraryInterface(), topComponent_));
-    QSharedPointer<HDLDesignParser> designParser;
+    HDLComponentParser* componentParser = new HDLComponentParser(utility_->getLibraryInterface(), topComponent_);
+    HDLDesignParser* designParser = 0;
 
     if (designGeneration)
     {
-        designParser = QSharedPointer<HDLDesignParser>(new HDLDesignParser(utility_->getLibraryInterface(), design, designConfig));
+        designParser = new HDLDesignParser(utility_->getLibraryInterface(), design, designConfig);
+        connect(designParser, SIGNAL(reportError(const QString&)), 
+            this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
     }
 
 	// Try to configure the generation, giving possible views and instantiations as parameters.
@@ -265,8 +265,8 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossib
 bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
 	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
 	QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets,
-    QSharedPointer<HDLComponentParser> componentParser,
-    QSharedPointer<HDLDesignParser> designParser)
+    HDLComponentParser* componentParser,
+    HDLDesignParser* designParser)
 {
     if (possibleViews->isEmpty())
 	{

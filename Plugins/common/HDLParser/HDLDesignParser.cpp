@@ -82,31 +82,47 @@ void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topCompone
 
     // Set the list for the finder.
     topFinder_->setParameterList(toplist);
-	parseComponentInstances();
 
+    // Parse instances first.
+	parseComponentInstances();
+    // Then we can find interconnections, and assign them appropriately.
 	findInterconnections();
 	assignInterconnections();
 
+    // Do the same for the internal ad hocs.
 	findInternalAdhocs();
 	assignInternalAdHocs();
 
+    // Hiearchical ad hocs need to be considered separately.
 	parseHierarchicallAdhocs();
 
+    // Finally add the parsed design to the list.
     parsedDesigns_.append(retval_);
 
-    if (parsedDesigns_.size() > 1000)
+    // Thousand designs is currently deemed as the maximum, and it is pretty much already.
+    if (parsedDesigns_.size() >= 1000)
     {
+        emit reportError(tr("Hit the limit: THOUSAND DESIGNS IN ONE GENERATION."));
         return;
     }
 
+    // Go through the parsed instances.
     foreach(QSharedPointer<GenerationInstance> gi, retval_->instances_)
     {
         if (gi->design_ && gi->designConfiguration_)
         {
+            // If an instance has design AND design configuration, parse it as a design as well.
             HDLDesignParser parser(library_, gi->design_, gi->designConfiguration_);
+            // NOTICE: The instance shall be fed as a parameter, since it carries significance in certain situations.
             parser.parseDesign(gi->component, gi->activeView_, gi);
-
+            // Append its designs to the list.
             parsedDesigns_.append(parser.getParsedDesigns());
+        }
+        else if(gi->activeView_->isHierarchical())
+        {
+            // If the instance has a hierarchical design despite lacking design or design configuration, it is regarded as an error.
+            emit reportError(tr("Design configuration %1: Active view %2 of instance %3 is hierarchical, but is missing design or design configuration.")
+                .arg(designConf_->getVlnv().toString(), gi->activeView_->name(), gi->componentInstance_->getInstanceName()));
         }
     }
 
@@ -156,16 +172,20 @@ void HDLDesignParser::parseComponentInstances()
         QSharedPointer<Component> component = library_->getModel(instanceVLNV).dynamicCast<Component>();
 
 		if (!component)
-		{
+        {
+            emit reportError(tr("Design %1: Component of instance %2 was not found: %3")
+                .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
 			continue;
         }
 
 		// The instance must have an active view in the design configuration.
-		QSharedPointer<View> activeView = component->getModel()->
-			findView(designConf_->getActiveView(instance->getInstanceName()));
+        QString activeViewName = designConf_->getActiveView(instance->getInstanceName());
+		QSharedPointer<View> activeView = component->getModel()->findView(activeViewName);
 
 		if (!activeView)
-		{
+        {
+            emit reportError(tr("Design configuration %1: Active view %2 of instance %3 was not found.")
+                .arg(designConf_->getVlnv().toString(), activeViewName, instance->getInstanceName()));
 			continue;
 		}
 
@@ -185,7 +205,7 @@ void HDLDesignParser::parseComponentInstances()
 		gi->component = gc;
 		gi->componentInstance_ = instance;
 		gi->activeView_ = activeView;
-		retval_->instances_.append(gi);
+		retval_->instances_.insert(instance->getInstanceName(), gi);
 
         // If there are references, assign them as well.
         if (disg && disg->getDesignConfigurationReference())
@@ -275,36 +295,43 @@ void HDLDesignParser::findInterconnections()
 		QSharedPointer<GenerationInterconnection> gic;
 
 		// The instance-interface pairs connected to the interconnection.
-		QList<QPair<QString,QString> > foundInterfaces;
+		QList<QSharedPointer<GenerationInterface> > foundInterfaces;
+
+        QString typeName;
 
 		// Go through the interfaces.
 		foreach (QSharedPointer<ActiveInterface> connectionInterface, interfaces)
 		{
 			// Name of the instance + name of the interface is unique within the design.
-			QPair<QString,QString> interface;
-			interface.first = connectionInterface->getComponentReference();
-			interface.second = connectionInterface->getBusReference();
+            QSharedPointer<GenerationInstance> gis = retval_->instances_[connectionInterface->getComponentReference()];
+
+            // The matching instance must exist.
+            if (!gis)
+            {
+                continue;
+            }
+
+            QSharedPointer<GenerationInterface> ourInterface = gis->component->interfaces[connectionInterface->getBusReference()];
+
+            // The matching interface must exist within the component.
+            if (!ourInterface)
+            {
+                continue;
+            }
+
+            typeName = ourInterface->interface->getBusType().getName();
+
 			// Append to the list.
-			foundInterfaces.append(interface);
+			foundInterfaces.append(ourInterface);
 
 			// Go through existing "our" interconnections.
 			foreach(QSharedPointer<GenerationInterconnection> existing, retval_->interConnections_)
 			{
 				// Go through their interfaces.
-				typedef QPair<QString, QString> customPair;
-				foreach(customPair theirInterface, existing->interfaces)
-				{
-					// If any there is match for instance and interface, it means that we use it.
-					if (theirInterface.first == interface.first && theirInterface.second == interface.second)
-					{
-						gic = existing;
-						break;
-					}
-				}
-
-				if(gic)
-				{
-					break;
+                if (existing->interfaces.contains(ourInterface))
+                {
+                    gic = existing;
+                    break;
 				}
 			}
 		}
@@ -313,7 +340,10 @@ void HDLDesignParser::findInterconnections()
 		if (!gic)
 		{
 			gic = QSharedPointer<GenerationInterconnection>(new GenerationInterconnection);
-			gic->name = connection->name();
+            gic->name = connection->name();
+
+            // First one defines the type.
+            gic->typeName = typeName;
 
             // Remember the top interface: It marks this as a hierarchical interconnection.
             if (!connection->getHierInterfaces()->isEmpty())
@@ -326,7 +356,7 @@ void HDLDesignParser::findInterconnections()
 			retval_->interConnections_.append(gic);
 		}
 
-		// Finally, append the found pairs to the "our" interconnection: They belong to it.
+		// Finally, append the found interfaces to the "our" interconnection: They belong to it.
 		gic->interfaces.append(foundInterfaces);
 	}
 }
@@ -342,69 +372,59 @@ void HDLDesignParser::assignInterconnections()
 		QSharedPointer<GenerationComponent> component = gi->component;
 		QSharedPointer<ComponentInstance> instance = gi->componentInstance_;
 
-		// Go through detected interconnections.
-		foreach (QSharedPointer<GenerationInterconnection> gic, retval_->interConnections_)
-		{
-			// Go through interfaces detected for the interconnection.
-			typedef QPair<QString, QString> customPair;
-			foreach(customPair theirInterface, gic->interfaces)
-			{
-				// If it does not refer to the instance, skip to the next.
-				if (theirInterface.first != instance->getInstanceName())
-				{
-					continue;
-				}
+		// Go through interfaces of the component.
+		foreach(QSharedPointer<GenerationInterface> gif, component->interfaces)
+        {
+            QSharedPointer<GenerationInterconnection> interconnect;
 
-				// The referred interface must be within the instantiated component.
-				QSharedPointer<BusInterface> busInterface = component->interfaces[theirInterface.second]->interface;
-
-				if (!busInterface)
-				{
-					continue;
-				}
-
-                // Find correct abstraction type.
-                QSharedPointer<AbstractionType> absType = busInterface->getAbstractionTypes()->first();
-
-                if (busInterface->getAbstractionTypes()->size() > 0)
+            // Go through detected interconnections.
+            foreach (QSharedPointer<GenerationInterconnection> gic, retval_->interConnections_)
+            {
+                if (gic->interfaces.contains(gif))
                 {
-                     absType = busInterface->getAbstractionTypes()->first();
+                    interconnect = gic;
+                    break;
                 }
+            }
 
-                // Must have an abstraction type, for else there cannot be a defined interface.
-                if (!absType)
-                {
-                    continue;
-                }
+            // No interconnection means no interface assignment.
+            if (!interconnect)
+            {
+                continue;
+            }
 
-				// Try to find and abstraction definition matching it.
-				QSharedPointer<AbstractionDefinition> absDef;
+            // Find correct abstraction type.
+            QSharedPointer<AbstractionType> absType = gif->absType;
 
-				if (absType->getAbstractionRef())
-				{
-					QSharedPointer<Document> docAbsDef = library_->getModel(*absType->getAbstractionRef());
-					if (docAbsDef)
-					{
-						absDef = docAbsDef.dynamicCast<AbstractionDefinition>();
-					}
-				}
+            // Must have an abstraction type, for else there cannot be a defined interface.
+            if (!absType)
+            {
+                emit reportError(tr("Component %1: No abstraction type was found for bus interface %2 with view %3.")
+                    .arg(component->component->getVlnv().toString(), gif->interface->name(), 
+                    gi->activeView_->name()));
+                continue;
+            }
 
-                // Abstraction definition is mandatory.
-                if (!absDef)
-                {
-                    continue;
-                }
+			// Try to find an abstraction definition matching it.
+			QSharedPointer<AbstractionDefinition> absDef = gif->absDef;
 
-                gic->typeName = busInterface->getBusType().getName();
+            // Abstraction definition is mandatory.
+            if (!absDef)
+            {
+                emit reportError(tr("Component %1: Abstraction definition %2 was not found. Bus interface: %3 Active view: %4.")
+                    .arg(component->component->getVlnv().toString(), absType->getAbstractionRef()->toString(),
+                    gif->interface->name(), gi->activeView_->name()));
+                continue;
+            }
 
-				// Go through port maps within the abstraction type.
-                parsePortMaps(absType, gi, gic, absDef, busInterface);
+			// Go through port maps within the abstraction type.
+            parsePortMaps(absType, gi, interconnect, absDef, gif->interface);
 
-                QSharedPointer<GenerationInterfaceAssignment> gifa(new GenerationInterfaceAssignment);
-                gifa->name = busInterface->name();
-                gifa->interConnection_ = gic;
-                gi->interfaceAssignments_.append(gifa);
-			}
+            // Create an interface assignment, coupling the interface with the interconnection.
+            QSharedPointer<GenerationInterfaceAssignment> gifa(new GenerationInterfaceAssignment);
+            gifa->interface_ = gif;
+            gifa->interConnection_ = interconnect;
+            gi->interfaceAssignments_.append(gifa);
 		}
 	}
 }
@@ -521,31 +541,46 @@ void HDLDesignParser::parsePortMaps(QSharedPointer<AbstractionType> absType,
                 boundCand.second = portBounds.second.toInt();
             }
 
-            if (!gw->bounds.first.isEmpty() && !gw->bounds.second.isEmpty())
-            {
-                int maxAlignment1 = qMax(boundCand.first, boundCand.second);
-                int minAlignment1 = qMin(boundCand.first, boundCand.second);
-
-                QPair<int,int> existingBound;
-
-                existingBound.first = gw->bounds.first.toInt();
-                existingBound.second = gw->bounds.second.toInt();;
-
-                int maxAlignment2 = qMax(existingBound.first, existingBound.second);
-                int minAlignment2 = qMin(existingBound.first, existingBound.second);
-
-                gw->bounds.first = QString::number(qMax(maxAlignment1,maxAlignment2));
-                gw->bounds.second = QString::number(qMin(minAlignment1,minAlignment2));
-            }
-            else
-            {
-                gw->bounds.first = QString::number(boundCand.first);
-                gw->bounds.second = QString::number(boundCand.second);
-            }
+            // Assign larger bounds for wire, if applicable.
+            assignLargerBounds(gw, boundCand);
 
             // The wire shall be the wire of the port assignment.
             gpa->wire = gw;
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLDesignParser::assignLargerBounds()
+//-----------------------------------------------------------------------------
+void HDLDesignParser::assignLargerBounds(QSharedPointer<GenerationWire> wire, QPair<int,int> &boundCand)
+{
+    // Do the comparison only there are existing bounds.
+    if (!wire->bounds.first.isEmpty() && !wire->bounds.second.isEmpty())
+    {
+        // Check the size of the new bounds.
+        int maxAlignment1 = qMax(boundCand.first, boundCand.second);
+        int minAlignment1 = qMin(boundCand.first, boundCand.second);
+
+        QPair<int,int> existingBound;
+
+        // Check the size of the new bounds.
+        existingBound.first = wire->bounds.first.toInt();
+        existingBound.second = wire->bounds.second.toInt();;
+
+        // Compare.
+        int maxAlignment2 = qMax(existingBound.first, existingBound.second);
+        int minAlignment2 = qMin(existingBound.first, existingBound.second);
+
+        // Assign.
+        wire->bounds.first = QString::number(qMax(maxAlignment1,maxAlignment2));
+        wire->bounds.second = QString::number(qMin(minAlignment1,minAlignment2));
+    }
+    else
+    {
+        // No existing bounds -> This shall be the new one.
+        wire->bounds.first = QString::number(boundCand.first);
+        wire->bounds.second = QString::number(boundCand.second);
     }
 }
 
@@ -662,12 +697,13 @@ void HDLDesignParser::assignInternalAdHocs()
                     gpa->adhoc = true;
 				}
 
-				// If no tie-off connection cannot be applied...
-				if (!connectTieOff(existing->tieOff, ourPort, DirectionTypes::IN, gpa->tieOff))
-				{
-					// ...then the wire is used.
-					QSharedPointer<GenerationWire> gw = existing->wire;
+                // Try to apply a tie off value.
+                gpa->tieOff = connectTieOff(existing->tieOff, ourPort, DirectionTypes::IN);
 
+				if (gpa->tieOff.isEmpty())
+				{
+					// If no tie-off connection cannot be applied, the wire is used.
+					QSharedPointer<GenerationWire> gw = existing->wire;
 					gpa->wire = gw;
 
 					// Since it is an ad-hoc connection, a physical connection is the only choice.
@@ -709,8 +745,7 @@ void HDLDesignParser::parseHierarchicallAdhocs()
 			// No internal port references means direct tie-off without instance, if any tie-off exists.
 			if (adHocConnection->getInternalPortReferences()->size() < 1)
 			{
-                QString value;
-				connectTieOff(adHocConnection->getTiedValue(), topPort, DirectionTypes::OUT, value);
+                QString value = connectTieOff(adHocConnection->getTiedValue(), topPort, DirectionTypes::OUT);
                 retval_->portTiedValues_.insert(topPort->port->name(), value);
 			}
 
@@ -826,8 +861,8 @@ QPair<QString, QString> HDLDesignParser::logicalPortBoundsInInstance(QSharedPoin
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::connectTieOff()
 //-----------------------------------------------------------------------------
-bool HDLDesignParser::connectTieOff(QString tieOff, QSharedPointer<GenerationPort> port,
-	DirectionTypes::Direction requiredDirection, QString& value)
+QString HDLDesignParser::connectTieOff(QString tieOff, QSharedPointer<GenerationPort> port,
+	DirectionTypes::Direction requiredDirection)
 {
 	QString tieOffValue = tieOff;
 
@@ -855,13 +890,10 @@ bool HDLDesignParser::connectTieOff(QString tieOff, QSharedPointer<GenerationPor
 			tieOffValue = "";
 		}
 
-		// Finally, assign it to the map.
-        value = tieOffValue;
-
-		// Tie-off found and logged.
-		return true;
+        // Finally, return the value.
+		return tieOffValue;
 	}
 
 	// No tie-off for the connection.
-	return false;
+	return "";
 }
