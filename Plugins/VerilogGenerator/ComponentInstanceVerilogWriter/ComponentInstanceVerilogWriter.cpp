@@ -250,8 +250,8 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<Generat
 
 		QPair<QString,QString> connectionBounds = gab->bounds;
 
-		// Use bounds only if neither of them is empty.
-		if (connectionBounds.first.isEmpty() || connectionBounds.second.isEmpty())
+		// Use bounds only if they are not the same.
+		if (connectionBounds.first == connectionBounds.second)
 		{
 			assignment = "<signalName>";
 		}

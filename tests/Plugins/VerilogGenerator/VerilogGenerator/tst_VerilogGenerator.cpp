@@ -356,11 +356,11 @@ void tst_VerilogGenerator::testHierarchicalConnections()
         "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
         "    TestInstance instance1(\n"
         "        // Interface: clk\n"
-        "        .clk                 (top_clk[0:0]),\n"
+        "        .clk                 (top_clk),\n"
         "        // Interface: data\n"
         "        .data_in             (data_to_instance[7:0]),\n"
-        "        .enable              (enable_to_instance[0:0]),\n"
-        "        .full                (full_from_instance[0:0]),\n"
+        "        .enable              (enable_to_instance),\n"
+        "        .full                (full_from_instance),\n"
         "        // These ports are not in any interface\n"
         "        .data_out            ());\n"
         "\n"
@@ -514,19 +514,19 @@ void tst_VerilogGenerator::testMasterToSlaveInterconnection()
 
     verifyOutputContains(
     "    wire [7:0]  sender_to_receiver_DATA;\n"
-    "    wire [0:0]  sender_to_receiver_ENABLE;\n"
+    "    wire        sender_to_receiver_ENABLE;\n"
     "\n"
     "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
     "    TestReceiver receiver(\n"
     "        // Interface: data_bus\n"
     "        .data_in             (sender_to_receiver_DATA[7:0]),\n"
-    "        .enable_in           (sender_to_receiver_ENABLE[0:0]));\n"
+    "        .enable_in           (sender_to_receiver_ENABLE));\n"
     "\n"
     "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
     "    TestSender sender(\n"
     "        // Interface: data_bus\n"
     "        .data_out            (sender_to_receiver_DATA[7:0]),\n"
-    "        .enable_out          (sender_to_receiver_ENABLE[0:0]));");
+    "        .enable_out          (sender_to_receiver_ENABLE));");
 }
 
 //-----------------------------------------------------------------------------
@@ -641,23 +641,23 @@ void tst_VerilogGenerator::testMasterToMultipleSlavesInterconnections()
 
     runGenerator(true);
 
-    verifyOutputContains("wire [0:0]  sender_to_receiver_ENABLE;");
+    verifyOutputContains("wire        sender_to_receiver_ENABLE;");
     verifyOutputContains("wire [7:0]  sender_to_receiver_DATA;");
 
     verifyOutputContains("TestSender sender(\n"
         "        // Interface: data_bus\n"
         "        .data_out            (sender_to_receiver_DATA[7:0]),\n"
-        "        .enable_out          (sender_to_receiver_ENABLE[0:0])");
+        "        .enable_out          (sender_to_receiver_ENABLE)");
 
     verifyOutputContains("TestReceiver receiver1(\n"
         "        // Interface: data_bus\n"
         "        .data_in             (sender_to_receiver_DATA[7:0]),\n"
-        "        .enable_in           (sender_to_receiver_ENABLE[0:0])");
+        "        .enable_in           (sender_to_receiver_ENABLE)");
 
     verifyOutputContains("TestReceiver receiver2(\n"
         "        // Interface: data_bus\n"
         "        .data_in             (sender_to_receiver_DATA[7:0]),\n"
-        "        .enable_in           (sender_to_receiver_ENABLE[0:0])");
+        "        .enable_in           (sender_to_receiver_ENABLE)");
 }
 
 //-----------------------------------------------------------------------------
@@ -687,25 +687,25 @@ void tst_VerilogGenerator::testAdhocConnectionBetweenComponentInstances()
 
     runGenerator(true);
 
-    verifyOutputContains("wire [0:0]  enableAdHoc;");
+    verifyOutputContains("wire        enableAdHoc;");
     verifyOutputContains("wire [7:0]  dataAdHoc;");
 
     verifyOutputContains(
         "    TestSender sender(\n"
         "        // Interface: data_bus\n"
         "        .data_out            (dataAdHoc[7:0]),\n"
-        "        .enable_out          (enableAdHoc[0:0])");
+        "        .enable_out          (enableAdHoc)");
 
     verifyOutputContains(
         "    TestReceiver receiver1(\n"
         "        // Interface: data_bus\n"
         "        .data_in             (dataAdHoc[7:0]),\n"
-        "        .enable_in           (enableAdHoc[0:0])");
+        "        .enable_in           (enableAdHoc)");
 
     verifyOutputContains(
         "    TestReceiver receiver2(\n"
         "        // Interface: data_bus\n"
-        "        .enable_in           (enableAdHoc[0:0])");
+        "        .enable_in           (enableAdHoc)");
 }
 
 //-----------------------------------------------------------------------------
@@ -799,7 +799,7 @@ void tst_VerilogGenerator::testHierarchicalAdhocConnection()
         "    TestSender sender(\n"
         "        // Interface: data_bus\n"
         "        .data_out            (data_from_sender[7:0]),\n"
-        "        .enable_out          (enable_from_sender[0:0])");
+        "        .enable_out          (enable_from_sender)");
 }
 
 //-----------------------------------------------------------------------------

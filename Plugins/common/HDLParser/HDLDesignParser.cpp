@@ -16,9 +16,6 @@
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
-
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
 #include <IPXACTmodels/common/PortAlignment.h>
@@ -159,6 +156,21 @@ void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topCompone
 }
 
 //-----------------------------------------------------------------------------
+// Function: HDLDesignParser::parseExpression()
+//-----------------------------------------------------------------------------
+QString HDLDesignParser::parseExpression(IPXactSystemVerilogParser& parser, const QString& expression) const
+{
+    QString value = parser.parseExpression(expression);
+
+    if (value == "x")
+    {
+        return "0";
+    }
+
+    return value;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HDLDesignParser::parseComponentInstances()
 //-----------------------------------------------------------------------------
 void HDLDesignParser::parseComponentInstances()
@@ -274,7 +286,7 @@ void HDLDesignParser::parseComponentInstances()
         // Parse values.
         foreach(QSharedPointer<Parameter> parameter, gi->parameters)
         {
-            parameter->setValue(instanceParser.parseExpression(parameter->getValue()));
+            parameter->setValue(parseExpression(instanceParser, parameter->getValue()));
         }
     }
 }
@@ -532,7 +544,7 @@ void HDLDesignParser::parsePortMaps(QSharedPointer<AbstractionType> absType,
                 // Parse the bounds.
                 IPXactSystemVerilogParser portParser(multiFinder);
 
-                boundCand.first = portParser.parseExpression(absDefWidth + "-1").toInt();
+                boundCand.first = parseExpression(portParser, absDefWidth + "-1").toInt();
                 boundCand.second = 0;
             }
             else
@@ -815,8 +827,8 @@ QPair<QString, QString> HDLDesignParser::physicalPortBoundsInInstance(QSharedPoi
 
 	// Use the physical bounds of the port, as promised.
     // Notice: We are taking the bounds directly from the IP-XACT port, as those are not formatted.
-	bounds.first = portParser.parseExpression(port->port->getLeftBound());
-	bounds.second = portParser.parseExpression(port->port->getRightBound());
+	bounds.first = parseExpression(portParser, port->port->getLeftBound());
+	bounds.second = parseExpression(portParser, port->port->getRightBound());
 
 	return bounds;
 }
@@ -851,8 +863,8 @@ QPair<QString, QString> HDLDesignParser::logicalPortBoundsInInstance(QSharedPoin
 	if (portMap->getLogicalPort() && portMap->getLogicalPort()->range_)
 	{
 		// Pick the range expressions as the logical bounds.
-		bounds.first = portParser.parseExpression(portMap->getLogicalPort()->range_->getLeft());
-        bounds.second = portParser.parseExpression(portMap->getLogicalPort()->range_->getRight());
+		bounds.first = parseExpression(portParser,portMap->getLogicalPort()->range_->getLeft());
+        bounds.second = parseExpression(portParser,portMap->getLogicalPort()->range_->getRight());
     }
 
     return bounds;

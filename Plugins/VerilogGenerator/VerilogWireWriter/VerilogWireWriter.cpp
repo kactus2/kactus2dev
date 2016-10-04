@@ -54,7 +54,7 @@ QString VerilogWireWriter::formattedSize() const
 {
 	QString sizeString;
 
-	if (!wire_->bounds.first.isEmpty() && !wire_->bounds.second.isEmpty())
+	if (wire_->bounds.first != wire_->bounds.second)
 	{
 		sizeString = "[" + wire_->bounds.first + ":" + wire_->bounds.second + "]";
 	}

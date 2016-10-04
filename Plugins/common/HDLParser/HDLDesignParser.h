@@ -16,11 +16,11 @@
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <IPXACTmodels/Component/PortMap.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
-#include <QTextStream>
 #include "HDLParserCommon.h"
 
 class LibraryInterface;
@@ -65,6 +65,8 @@ private:
     // Disable copying.
     HDLDesignParser(HDLDesignParser const& rhs);
     HDLDesignParser& operator=(HDLDesignParser const& rhs);
+
+    QString parseExpression(IPXactSystemVerilogParser& parser, const QString& expression) const;
 
     /*!
      *  Parses all the component instances in the design.
