@@ -106,13 +106,19 @@ public slots:
     void openDesign(VLNV const& vlnv = VLNV(), QString const& viewName = QString(), bool forceUnlocked = false);
 
     /*!
+     *  Opens the memory design of the current HW design.
+     *  
+     */
+    void openMemoryDesign(); 
+
+    /*!
      *  Opens the memory design of the HW design specified by the component VLNV and view name.
      *  
      *      @param [in] vlnv            The VLNV of the top-level component.
      *      @param [in] viewName        Name of the view to open.
      *      @param [in] forceUnlocked   Forces the design to be opened in unlocked mode.
      */
-    void openMemoryDesign(const VLNV& vlnv = VLNV(), const QString& viewName = QString(),
+    void openMemoryDesign(const VLNV& vlnv, const QString& viewName = QString(),
         bool forceUnlocked = true);    
 
     /*!
@@ -903,6 +909,9 @@ private:
 
     //! Action to manage visibility control.
     QAction* actVisibilityControl_;
+
+    //! Action to open memory designer.
+    QAction* openMemoryDesignerAction_;
 
     //! Action to manage the workspaces.
     QAction* actWorkspaces_;

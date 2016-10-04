@@ -19,7 +19,8 @@
 #include "MemoryItem.h"
 #include "ConnectivityGraph.h"
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
+#include <editors/ComponentEditor/common/ParameterCache.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
@@ -43,7 +44,8 @@
 // Function: ConnectivityGraphFactory::ConnectivityGraphFactory()
 //-----------------------------------------------------------------------------
 ConnectivityGraphFactory::ConnectivityGraphFactory(LibraryInterface* library):
-library_(library), expressionParser_(new SystemVerilogExpressionParser())
+library_(library), parameterFinder_(new ParameterCache(QSharedPointer<Component>())), 
+    expressionParser_(new IPXactSystemVerilogParser(parameterFinder_))
 {
 
 }
@@ -92,11 +94,13 @@ void ConnectivityGraphFactory::addInstancesAndInterfaces(QSharedPointer<const De
 {
     foreach (QSharedPointer<ComponentInstance> componentInstance, *design->getComponentInstances())
     {
-        QSharedPointer<const Document> instanceDocument = library_->getModelReadOnly(*componentInstance->getComponentRef());
-        QSharedPointer<const Component> instancedComponent = instanceDocument.dynamicCast<const Component>();
+        QSharedPointer<Document> instanceDocument = library_->getModel(*componentInstance->getComponentRef());
+        QSharedPointer<Component> instancedComponent = instanceDocument.dynamicCast<Component>();
 
         if (instancedComponent)
         {
+            parameterFinder_->setComponent(instancedComponent);
+
             QString activeView;
             if (designConfiguration)
             {
@@ -138,10 +142,13 @@ void ConnectivityGraphFactory::addInstancesAndInterfaces(QSharedPointer<const De
                     {
                         QSharedPointer<ConnectivityInterface> endInterface = graph->getInterface(
                             componentInstance->getInstanceName(), bridge->masterRef_);
-                        endInterface->setBridged();
+                        if (endInterface)
+                        {
+                            endInterface->setBridged();
 
-                        graph->addConnection(busInterface->name() + QObject::tr("_bridge"), startInterface, 
-                            endInterface);
+                            graph->addConnection(busInterface->name() + QObject::tr("_bridge"), startInterface, 
+                                endInterface);
+                        }
                     }
 
                 }

@@ -30,10 +30,11 @@ class View;
 
 class ConnectivityConnection;
 class ConnectivityGraph;
-class ExpressionParser;
 class ConnectivityComponent;
 class ConnectivityInterface;
+class ExpressionParser;
 class MemoryItem;
+class ComponentParameterFinder;
 
 #include <QString>
 #include <QSharedPointer>
@@ -258,6 +259,8 @@ private:
 
     //! The library interface.
     LibraryInterface* library_;
+
+    QSharedPointer<ComponentParameterFinder> parameterFinder_;
 
     //! Parser for resolving expressions.
     ExpressionParser* expressionParser_;

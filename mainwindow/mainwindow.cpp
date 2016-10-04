@@ -199,6 +199,7 @@ actZoomOriginal_(0),
 actFitInView_(0),
 actVisibleDocks_(0),
 actVisibilityControl_(0),
+openMemoryDesignerAction_(0),
 actWorkspaces_(0),
 protectGroup_(0),
 actRefresh_(0),
@@ -839,6 +840,11 @@ void MainWindow::setupActions()
     connect(actVisibilityControl_, SIGNAL(triggered()), this, SLOT(openVisibilityControlMenu()), Qt::UniqueConnection);    
     connect(&visibilityMenu_, SIGNAL(triggered(QAction*)), this, SLOT(onVisibilityControlToggled(QAction*)));
 
+    // Initialize the action for opening memory designer.
+    openMemoryDesignerAction_ = new QAction(QIcon(":icons/common/graphics/memoryDesigner.png"), tr("Open Memory Designer"), this);
+    openMemoryDesignerAction_->setVisible(false);
+    connect(openMemoryDesignerAction_, SIGNAL(triggered()), this, SLOT(openMemoryDesign()), Qt::UniqueConnection);   
+
 	// Initialize the action to manage workspaces.
 	actWorkspaces_ = new QAction(QIcon(":icons/common/graphics/workspace.png"),	tr("Workspaces"), this);
 	connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
@@ -973,6 +979,7 @@ void MainWindow::setupMenus()
 	viewGroup->addAction(actFitInView_);
 	viewGroup->addAction(actVisibleDocks_);
     viewGroup->addAction(actVisibilityControl_);
+    viewGroup->addAction(openMemoryDesignerAction_);
 
 	viewGroup->widgetForAction(actZoomIn_)->installEventFilter(ribbon_);
 	viewGroup->widgetForAction(actZoomOut_)->installEventFilter(ribbon_);
@@ -980,6 +987,7 @@ void MainWindow::setupMenus()
 	viewGroup->widgetForAction(actFitInView_)->installEventFilter(ribbon_);
 	viewGroup->widgetForAction(actVisibleDocks_)->installEventFilter(ribbon_);
 	viewGroup->widgetForAction(actVisibilityControl_)->installEventFilter(ribbon_);
+	viewGroup->widgetForAction(openMemoryDesignerAction_)->installEventFilter(ribbon_);
 
     //! The "Configuration tools" group.
     configurationToolsGroup_ = ribbon_->addGroup(tr("Configuration Tools"));
@@ -1593,6 +1601,8 @@ void MainWindow::updateMenuStrip()
 		
 		actRunImport_->setEnabled(false);
         actRunImport_->setVisible(false);
+
+        openMemoryDesignerAction_->setVisible(true);
 	}
 	// if is hardware component then set only documentation, modelsim and vhdl enabled
 	else if (isHWComp)
@@ -1605,12 +1615,15 @@ void MainWindow::updateMenuStrip()
 
         actRunImport_->setEnabled(unlocked);
         actRunImport_->setVisible(true);
+
+        openMemoryDesignerAction_->setVisible(false);
 	}
 	else
     {
 		actGenVHDL_->setVisible(false);
 		actGenDocumentation_->setVisible(false);
         actRunImport_->setVisible(false);
+        openMemoryDesignerAction_->setVisible(false);
 	}
 
     configurationToolsGroup_->setEnabled(unlocked);
@@ -3167,6 +3180,22 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName , bool for
 //-----------------------------------------------------------------------------
 // Function: MainWindow::openMemoryDesign()
 //-----------------------------------------------------------------------------
+void MainWindow::openMemoryDesign()
+{
+	TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+		
+	// if there is no currently selected tab
+	if (!doc)
+    {
+		return;
+	}
+
+    libraryHandler_->onOpenMemoryDesign(doc->getDocumentVLNV());
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::openMemoryDesign()
+//-----------------------------------------------------------------------------
 void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, bool forceUnlocked)
 {
     // the vlnv must always be for a component
@@ -3219,7 +3248,6 @@ void MainWindow::openMemoryDesign(const VLNV& vlnv, const QString& viewName, boo
         libraryHandler_, SLOT(onClearSelection()), Qt::UniqueConnection);
 
     connect(memoryDesignWidget, SIGNAL(clearItemSelection()), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
-
 
     designTabs_->addAndOpenDocument(memoryDesignWidget, forceUnlocked);
 }
