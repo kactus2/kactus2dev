@@ -34,7 +34,6 @@
 #include <QFileInfoList>
 #include <QSettings>
 #include <QHeaderView>
-#include <QDebug>
 #include <QAction>
 #include <QVariant>
 
@@ -406,7 +405,7 @@ void FileDependencyEditor::scanDirectories()
         foreach (QSharedPointer<File> file, *fileSet->getFiles())
         {
             // For non-url files, check if the model does not contain a corresponding file item.
-            if (!QRegExp(Utils::URL_VALIDITY_REG_EXP).exactMatch(file->name()) &&
+            if (!(Utils::URL_VALIDITY_REG_EXP.match(file->name()).hasMatch()) &&
                 model_.findFileItem(file->name()) == 0)
             {
                 QFileInfo info(file->name());

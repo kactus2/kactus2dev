@@ -157,6 +157,8 @@ private:
      */
     bool filePathExists(QSharedPointer<File> file) const;
 
+    bool isValidURI(QSharedPointer<File> file) const;
+
 	//! The instance that manages the library.
 	LibraryInterface* handler_;
 

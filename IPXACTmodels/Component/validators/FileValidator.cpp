@@ -42,7 +42,7 @@ FileValidator::~FileValidator()
 //-----------------------------------------------------------------------------
 bool FileValidator::validate(QSharedPointer<File> file) const
 {
-	if (!hasValidName( file->name()))
+	if (!hasValidName(file->name()))
 	{
 		return false;
 	}
@@ -133,7 +133,7 @@ void FileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<File> 
 }
 
 //-----------------------------------------------------------------------------
-// Function: EnumeratedValueValidator::hasValidName()
+// Function: FileValidator::hasValidName()
 //-----------------------------------------------------------------------------
 bool FileValidator::hasValidName(QString const& name) const
 {

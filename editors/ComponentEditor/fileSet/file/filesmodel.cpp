@@ -12,6 +12,7 @@
 #include "filesmodel.h"
 #include "FileColumns.h"
 
+#include <common/Utils.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
@@ -81,8 +82,8 @@ Qt::ItemFlags FilesModel::flags(QModelIndex const& index ) const
     {
 		return Qt::NoItemFlags;
 	}
-	// The first two columns are not editable
-	else if (index.column() <= 1)
+	// The first column is not editable
+	else if (index.column() < 1)
     {
 		return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 	}
@@ -99,6 +100,7 @@ QVariant FilesModel::headerData(int section, Qt::Orientation orientation, int ro
     {
 		return QVariant();
 	}
+
 	if (role == Qt::DisplayRole)
     {
         if (section == FileColumns::NAME_COLUMN)
@@ -134,7 +136,11 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
 
     QSharedPointer<File> file = files_->at(index.row());
 
-    if (role == Qt::DisplayRole)
+    if (role == Qt::EditRole && index.column() == FileColumns::DESCRIPTION)
+    {
+        return file->getDescription();
+    }
+    else if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == FileColumns::NAME_COLUMN)
         {
@@ -147,9 +153,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == FileColumns::TYPES_COLUMN)
         {
-            // each group name if in it's own index
-            QStringList typeNames = *file->getFileTypes().data();
-            return typeNames.join(' ');
+            return file->getFileTypes()->join(' ');
         }
         else if (index.column() == FileColumns::DESCRIPTION)
         {
@@ -161,27 +165,21 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
 	}
-    else if (role == Qt::EditRole && index.column() == FileColumns::DESCRIPTION)
-    {
-        return file->getDescription();
-    }
 	else if (role == Qt::ForegroundRole)
     {
-        if (filePathExists(file))
-        {
-            return QColor("black");
-        }
-        else
+        if (index.column() == FileColumns::PATH_COLUMN && !(filePathExists(file) || isValidURI(file)))
         {
             return QColor("red");
         }
+
+        return QColor("black");
 	}
 
     else if (role == Qt::ToolTipRole)
     {
-        if (!filePathExists(file))
+        if (!filePathExists(file) && !isValidURI(file))
         {
-            return tr("File not found.");
+            return tr("File path is not found or defines an invalid URI.");
         }
         else if (index.column() == FileColumns::DESCRIPTION)
         {
@@ -195,7 +193,8 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
 
 	else if (role == Qt::BackgroundRole)
     {
-        if (index.column() == FileColumns::NAME_COLUMN ||index.column() == FileColumns::PATH_COLUMN ||
+        if (index.column() == FileColumns::NAME_COLUMN ||
+            index.column() == FileColumns::PATH_COLUMN ||
             index.column() == FileColumns::TYPES_COLUMN)
         {
             return QColor("LemonChiffon");
@@ -227,7 +226,7 @@ bool FilesModel::setData(QModelIndex const& index, const QVariant& value, int ro
         {
             // file name can not be set directly
             // if user clears the column then the file is removed
-            const QString filePath = value.toString();
+            QString filePath = value.toString();
             if (filePath.isEmpty())
             {
                 onRemoveItem(index);
@@ -240,7 +239,7 @@ bool FilesModel::setData(QModelIndex const& index, const QVariant& value, int ro
         // file name is set through file path
         else if (index.column() == FileColumns::PATH_COLUMN)
         {
-            const QString filePath = value.toString();
+            QString filePath = value.toString();
 
             // if the path is empty then the file should be removed
             if (filePath.isEmpty())
@@ -398,4 +397,12 @@ bool FilesModel::filePathExists(QSharedPointer<File> file) const
     QFileInfo fileInfo(absFilePath);
 
     return fileInfo.exists();
+}
+
+//-----------------------------------------------------------------------------
+// Function: filesmodel::isValidURI()
+//-----------------------------------------------------------------------------
+bool FilesModel::isValidURI(QSharedPointer<File> file) const
+{
+    return Utils::URL_VALIDITY_REG_EXP.match(file->name()).hasMatch();
 }

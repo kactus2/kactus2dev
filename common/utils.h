@@ -13,7 +13,7 @@
 
 #include <common/Global.h>
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QObject>
 
 namespace Utils {
@@ -180,7 +180,9 @@ namespace Utils {
 	KACTUS2_API qint64 str2Int(const QString& str);
 
     //! Regular expression to validate URLs.
-    const QRegExp URL_VALIDITY_REG_EXP = QRegExp("^([A-Za-z]{3,9}\\:\\/\\/)?[A-Za-z0-9]+([\\-\\.][A-Za-z0-9]+)*(\\/[A-Za-z0-9_\\.\\;\\,\\-\\?\\=\\&\\%\\#\\~\\+]*)*$", Qt::CaseInsensitive, QRegExp::W3CXmlSchema11);
+    const QRegularExpression URL_VALIDITY_REG_EXP = QRegularExpression(
+        "^[a-z]{3,9}[:][/]{2}[a-z0-9]+([-.][a-z0-9]+)*([/][-a-z0-9_.;,?=&%#~+]*)*$",
+        QRegularExpression::CaseInsensitiveOption);
 
     /*!
      *  Retrieves and returns the name of the current user.

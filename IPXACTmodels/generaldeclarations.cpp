@@ -5,8 +5,6 @@
  */
 
 #include "generaldeclarations.h"
-//#include "PortMap.h"
-#include <IPXACTmodels/common/Vector.h>
 #include "XmlUtils.h"
 
 #include <QDomNode>
@@ -22,8 +20,6 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <qmath.h>
-
-#include <QDebug>
 
 General::PortBounds::PortBounds():
 portName_(),

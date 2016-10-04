@@ -42,7 +42,7 @@ FilesDelegate::~FilesDelegate()
 //-----------------------------------------------------------------------------
 QWidget* FilesDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, QModelIndex const& index) const
 {
-	if (index.column() == FileColumns::NAME_COLUMN || index.column() == FileColumns::PATH_COLUMN)
+	if (index.column() == FileColumns::NAME_COLUMN)// || index.column() == FileColumns::PATH_COLUMN)
 	{
         return 0;
 	}
@@ -69,11 +69,10 @@ QWidget* FilesDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem
 //-----------------------------------------------------------------------------
 void FilesDelegate::setEditorData(QWidget* editor, QModelIndex const& index ) const
 {
-    if (index.column() == FileColumns::NAME_COLUMN || index.column() == FileColumns::PATH_COLUMN)
+    if (index.column() == FileColumns::NAME_COLUMN)// || index.column() == FileColumns::PATH_COLUMN)
     {
         return;
     }
-
     if (index.column() == FileColumns::TYPES_COLUMN)
     {
         ListEditor* listEditor = qobject_cast<ListEditor*>(editor);
@@ -92,7 +91,7 @@ void FilesDelegate::setEditorData(QWidget* editor, QModelIndex const& index ) co
 //-----------------------------------------------------------------------------
 void FilesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
-	if (index.column() == FileColumns::NAME_COLUMN || index.column() == FileColumns::PATH_COLUMN)
+	if (index.column() == FileColumns::NAME_COLUMN)// || index.column() == FileColumns::PATH_COLUMN)
     {
         return;
     }

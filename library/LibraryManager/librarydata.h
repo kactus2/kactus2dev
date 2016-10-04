@@ -353,7 +353,7 @@ private:
 	 int fileCount_;
 
 	//! Checks if the given string is a URL (invalids are allowed) or not.
-	 QRegExpValidator* urlTester_;
+	 QRegularExpressionValidator* urlTester_;
 
      //! The parameter finder used in the component validator.
      QSharedPointer<ComponentParameterFinder> componentValidatorFinder_;

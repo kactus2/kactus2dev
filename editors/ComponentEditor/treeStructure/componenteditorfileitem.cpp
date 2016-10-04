@@ -11,6 +11,8 @@
 
 #include "componenteditorfileitem.h"
 
+#include <common/Utils.h>
+
 #include <editors/ComponentEditor/fileSet/file/fileeditor.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
@@ -87,22 +89,7 @@ bool ComponentEditorFileItem::isValid() const
 
 	QString filePath = file_->name();
 
-    QString absolutePath;
-    QFileInfo originalInfo(filePath);
-    if (originalInfo.isRelative())
-    {
-        QString basePath = libHandler_->getPath(component_->getVlnv());
-        absolutePath = General::getAbsolutePath(basePath, filePath);
-    }
-    // if the reference is directly absolute
-    else
-    {
-        absolutePath = filePath;
-    }
-
-    // check if the file exists in the file system
-    QFileInfo fileInfo(absolutePath);
-    return fileInfo.exists();
+    return isValidPath(filePath) || isValidURI(filePath);
 }
 
 //-----------------------------------------------------------------------------
@@ -320,7 +307,7 @@ QString ComponentEditorFileItem::resolveEnvironmentVariables(QString const& text
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyView::onOpenContainingFolder()
+// Function: ComponentEditorFileItem::onOpenContainingFolder()
 //-----------------------------------------------------------------------------
 void ComponentEditorFileItem::onOpenContainingFolder()
 {
@@ -328,4 +315,35 @@ void ComponentEditorFileItem::onOpenContainingFolder()
 
 	// Open the folder in the operating system's default file browser.
 	QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::isValidPath()
+//-----------------------------------------------------------------------------
+bool ComponentEditorFileItem::isValidPath(QString const& filePath) const
+{
+    QString absolutePath;
+    QFileInfo originalInfo(filePath);
+    if (originalInfo.isRelative())
+    {
+        QString basePath = libHandler_->getPath(component_->getVlnv());
+        absolutePath = General::getAbsolutePath(basePath, filePath);
+    }
+    // if the reference is directly absolute
+    else
+    {
+        absolutePath = filePath;
+    }
+
+    // check if the file exists in the file system
+    QFileInfo fileInfo(absolutePath);
+    return fileInfo.exists();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorFileItem::isValidURI()
+//-----------------------------------------------------------------------------
+bool ComponentEditorFileItem::isValidURI(QString const& fileURI) const
+{                     
+    return Utils::URL_VALIDITY_REG_EXP.match(fileURI).hasMatch();
 }

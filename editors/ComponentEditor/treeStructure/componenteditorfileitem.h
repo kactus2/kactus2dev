@@ -163,6 +163,10 @@ private:
      */
 	QString resolveEnvironmentVariables(QString const& text) const;
 
+    bool isValidPath(QString const& filePath) const;
+
+    bool isValidURI(QString const& fileURI) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
