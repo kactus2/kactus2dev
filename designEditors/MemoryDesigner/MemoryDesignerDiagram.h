@@ -362,6 +362,25 @@ private:
     bool itemCollidesWithAnotherItem(QRectF firstRectangle, int firstLineWidth, QRectF secondRectangle,
         int secondLineWidth) const;
 
+    /*!
+     *  Compress the graphics items.
+     *
+     *      @param [in] placedSpaceItems    A list of the placed address space items.
+     *      @param [in] spaceYPlacement     The last y-coordinate of the address space items.
+     *      @param [in] spaceColumn   [Description].
+     */
+    void compressGraphicsItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
+        int& spaceYPlacement, MemoryColumn* spaceColumn);
+
+    /*!
+     *  Get the specified columns.
+     *
+     *      @param [in] columnSpecification     Identifier for the wanted columns.
+     *
+     *      @return A vector containing the specified columns.
+     */
+    QVector<MemoryColumn*> getSpecifiedColumns(QString const& columnSpecification);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

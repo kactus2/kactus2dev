@@ -16,9 +16,13 @@
 #include <designEditors/MemoryDesigner/MemoryItem.h>
 #include <designEditors/MemoryDesigner/ConnectivityComponent.h>
 #include <designEditors/MemoryDesigner/AddressBlockGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
+#include <designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 
 #include <QBrush>
 #include <QFont>
+#include <QPen>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::MemoryMapGraphicsItem()
@@ -26,7 +30,7 @@
 MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
     QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem->getName(), containingInstance->getName(), memoryItem->getAUB(), parent),
-SubMemoryLayout(memoryItem, "addressBlock", this),
+SubMemoryLayout(memoryItem, MemoryDesignerConstants::ADDRESSBLOCK_TYPE, this),
 addressUnitBits_(memoryItem->getAUB())
 {
     quint64 baseAddress = getMemoryMapStart(memoryItem);
@@ -66,7 +70,7 @@ quint64 MemoryMapGraphicsItem::getMemoryMapStart(QSharedPointer<MemoryItem> memo
 
         foreach (QSharedPointer<MemoryItem> blockItem, memoryItem->getChildItems())
         {
-            if (blockItem->getType().compare("addressBlock", Qt::CaseInsensitive) == 0)
+            if (blockItem->getType().compare(MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
             {
                 if (firstBlock)
                 {
@@ -97,7 +101,7 @@ quint64 MemoryMapGraphicsItem::getMemoryMapEnd(QSharedPointer<MemoryItem> memory
 
     foreach (QSharedPointer<MemoryItem> blockItem, memoryItem->getChildItems())
     {
-        if (blockItem->getType().compare("addressBlock", Qt::CaseInsensitive) == 0)
+        if (blockItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
         {
             quint64 childBaseAddress = blockItem->getAddress().toULongLong();
             quint64 childRange = blockItem->getRange().toULongLong();
@@ -149,7 +153,8 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint
     QString emptyBlockBaseAddress = QString::number(beginAddress);
     QString emptyBlockRange = QString::number(rangeEnd - beginAddress + 1);
 
-    QSharedPointer<MemoryItem> emptyBlockItem (new MemoryItem("Reserved", "address block"));
+    QSharedPointer<MemoryItem> emptyBlockItem
+        (new MemoryItem("Reserved", MemoryDesignerConstants::ADDRESSBLOCK_TYPE));
     emptyBlockItem->setAddress(emptyBlockBaseAddress);
     emptyBlockItem->setRange(emptyBlockRange);
     emptyBlockItem->setAUB(addressUnitBits_);
@@ -163,4 +168,106 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint
 void MemoryMapGraphicsItem::changeChildItemRanges(quint64 offset)
 {
     SubMemoryLayout::changeChildItemRanges(offset);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::condenseItemAndChildItems()
+//-----------------------------------------------------------------------------
+void MemoryMapGraphicsItem::condenseItemAndChildItems()
+{
+    int minimumSubItemHeight = 3 * MemoryDesignerConstants::RANGEINTERVAL;
+
+    quint64 memoryMapNewHeight = 0;
+
+    if (getMemoryConnections().isEmpty())
+    {
+        memoryMapNewHeight = condenseChildItems(minimumSubItemHeight);
+
+        condense(memoryMapNewHeight);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::condenseToConnection()
+//-----------------------------------------------------------------------------
+void MemoryMapGraphicsItem::condenseToConnection(MemoryConnectionItem* connectionItem)
+{
+    if (!hasExtensionItem())
+    {
+        MemoryConnectionItem* lowestConnection = getLowestConnection();
+        if (connectionItem == lowestConnection)
+        {
+            int minimumSubItemHeight = 3 * MemoryDesignerConstants::RANGEINTERVAL;
+
+            quint64 memoryMapNewHeight = 0;
+
+            bool temporary = true;
+            quint64 connectionBaseAddress = lowestConnection->getRangeStartValue().toULongLong(&temporary, 16);
+            quint64 connectionLastAddress = lowestConnection->getRangeEndValue().toULongLong(&temporary, 16);
+
+            foreach (MemoryDesignerChildGraphicsItem* childItem, getSubMemoryItems())
+            {
+                AddressBlockGraphicsItem* blockItem = dynamic_cast<AddressBlockGraphicsItem*>(childItem);
+                if (blockItem)
+                {
+                    quint64 blockBaseAddress = blockItem->getBaseAddress();
+                    quint64 blockLastAddress = blockItem->getLastAddress();
+                    if (blockBaseAddress >= connectionBaseAddress && blockLastAddress > connectionLastAddress)
+                    {
+                        memoryMapNewHeight += blockItem->condenseRegistersToConnection(
+                            lowestConnection, connectionBaseAddress, connectionLastAddress, minimumSubItemHeight);
+                    }
+                }
+            }
+
+            if (memoryMapNewHeight > 0)
+            {
+                condense(memoryMapNewHeight);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::hasExtensionItem()
+//-----------------------------------------------------------------------------
+bool MemoryMapGraphicsItem::hasExtensionItem() const
+{
+    foreach (QGraphicsItem* childItem, childItems())
+    {
+        MemoryExtensionGraphicsItem* extensionItem = dynamic_cast<MemoryExtensionGraphicsItem*>(childItem);
+        if (extensionItem)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::getLowestConnection()
+//-----------------------------------------------------------------------------
+MemoryConnectionItem* MemoryMapGraphicsItem::getLowestConnection() const
+{
+    QVector<MemoryConnectionItem*> memoryConnections = getMemoryConnections();
+    MemoryConnectionItem* lowestConnection = memoryConnections.first();
+
+    if (memoryConnections.size() > 1)
+    {
+        bool temporary = true;
+        quint64 lowestRangeEnd = lowestConnection->getRangeEndValue().toULongLong(&temporary, 16);
+
+        foreach (MemoryConnectionItem* connection, memoryConnections)
+        {
+            quint64 connectionRangeEnd = connection->getRangeEndValue().toULongLong(&temporary, 16);
+            if (connectionRangeEnd > lowestRangeEnd)
+            {
+                lowestRangeEnd = connectionRangeEnd;
+                lowestConnection = connection;
+            }
+        }
+    }
+
+    return lowestConnection;
 }

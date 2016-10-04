@@ -16,6 +16,8 @@
 #include <designEditors/MemoryDesigner/MemoryItem.h>
 #include <designEditors/MemoryDesigner/MemoryMapGraphicsItem.h>
 #include <designEditors/MemoryDesigner/RegisterGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 
 #include <QBrush>
 #include <QFont>
@@ -27,7 +29,7 @@ AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> bl
     MemoryMapGraphicsItem* memoryMapItem):
 MemoryDesignerChildGraphicsItem(blockItem->getName(), "address block", blockItem->getAddress().toULongLong(),
     blockItem->getRange().toULongLong(), getBlockWidth(memoryMapItem), memoryMapItem),
-SubMemoryLayout(blockItem, "register", this),
+SubMemoryLayout(blockItem, MemoryDesignerConstants::REGISTER_TYPE, this),
 addressUnitBits_(blockItem->getAUB())
 {
     setColors(KactusColors::ADDR_BLOCK_COLOR, isEmptyBlock);
@@ -50,7 +52,7 @@ AddressBlockGraphicsItem::~AddressBlockGraphicsItem()
 //-----------------------------------------------------------------------------
 qreal AddressBlockGraphicsItem::getBlockWidth(MemoryMapGraphicsItem* memoryMapItem) const
 {
-    qreal blockWidth = memoryMapItem->boundingRect().width() / 4 * 3;
+    int blockWidth = memoryMapItem->boundingRect().width() / 4 * 3 + 1;
     return blockWidth;
 }
 
@@ -100,7 +102,7 @@ MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createEmptySubItem(qu
     int intAUB = addressUnitBits_.toInt();
     quint64 registerSize = emptyRegisterRangeInt * intAUB;
 
-    QSharedPointer<MemoryItem> emptyRegister (new MemoryItem("Reserved", "register"));
+    QSharedPointer<MemoryItem> emptyRegister (new MemoryItem("Reserved", MemoryDesignerConstants::REGISTER_TYPE));
     emptyRegister->setAddress(emptyRegisterBaseAddress);
     emptyRegister->setSize(QString::number(registerSize));
     emptyRegister->setAUB(addressUnitBits_);
@@ -116,4 +118,98 @@ void AddressBlockGraphicsItem::changeAddressRange(quint64 memoryMapOffset)
     MemoryDesignerChildGraphicsItem::changeAddressRange(memoryMapOffset);
 
     SubMemoryLayout::changeChildItemRanges(memoryMapOffset);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphicsItem::condenseRegistersToConnection()
+//-----------------------------------------------------------------------------
+quint64 AddressBlockGraphicsItem::condenseRegistersToConnection(MemoryConnectionItem* connectionItem,
+    quint64 connectionBaseAdddress, quint64 connectionLastAddress, qreal minimumRegisterHeight)
+{
+    quint64 newBlockHeight = 0;
+
+    QVector<MemoryDesignerChildGraphicsItem*> registersInConnection;
+    QVector<MemoryDesignerChildGraphicsItem*> registersBelowConnection;
+
+    foreach (MemoryDesignerChildGraphicsItem* subItem, getSubMemoryItems())
+    {
+        quint64 subItemBaseAddress = subItem->getBaseAddress();
+
+        if (subItemBaseAddress >= connectionBaseAdddress)
+        {
+            if (subItemBaseAddress >= connectionLastAddress)
+            {
+                registersBelowConnection.append(subItem);
+            }
+            else
+            {
+                registersInConnection.append(subItem);
+            }
+        }
+    }
+
+    if (!registersInConnection.isEmpty())
+    {
+        MemoryDesignerChildGraphicsItem* firstItem = registersInConnection.first();
+        qreal firstItemTop = firstItem->sceneBoundingRect().top();
+        newBlockHeight = firstItemTop - sceneBoundingRect().top();
+
+        qreal registerHeight = getCondensedRegisterHeightForConnection(
+            connectionItem, registersInConnection, firstItemTop, minimumRegisterHeight);
+
+        foreach (MemoryDesignerChildGraphicsItem* registerItem, registersInConnection)
+        {
+            newBlockHeight = condenseSubItem(registerItem, registerHeight, newBlockHeight);
+        }
+    }
+
+    foreach (MemoryDesignerChildGraphicsItem* registerItem, registersBelowConnection)
+    {
+        newBlockHeight = condenseSubItem(registerItem, minimumRegisterHeight, newBlockHeight);
+    }
+
+    if (newBlockHeight > 0)
+    {
+        condense(newBlockHeight);
+    }
+
+    return newBlockHeight;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphicsItem::getCondensedRegisterHeightForConnection()
+//-----------------------------------------------------------------------------
+qreal AddressBlockGraphicsItem::getCondensedRegisterHeightForConnection(MemoryConnectionItem* connectionItem,
+    QVector<MemoryDesignerChildGraphicsItem*> registersInConnection, qreal registerStartPositionY,
+    qreal minimumHeight) const
+{
+    qreal availableArea = connectionItem->sceneBoundingRect().bottom() - registerStartPositionY;
+
+    int amountOfRegistersToBeCondensed = 0;
+
+    foreach (MemoryDesignerChildGraphicsItem* registerItem, registersInConnection)
+    {
+        quint64 registerBaseAddress = registerItem->getBaseAddress();
+        quint64 registerLastAddress = registerItem->getLastAddress();
+        if (registerLastAddress - registerBaseAddress > 1)
+        {
+            ++amountOfRegistersToBeCondensed;
+        }
+        else
+        {
+            availableArea = availableArea - registerItem->boundingRect().height();
+        }
+    }
+
+    qreal registerHeight = minimumHeight;
+    if (amountOfRegistersToBeCondensed > 0)
+    {
+        registerHeight = availableArea / amountOfRegistersToBeCondensed - 1;
+        if (registerHeight < minimumHeight)
+        {
+            registerHeight = minimumHeight;
+        }
+    }
+
+    return registerHeight;
 }

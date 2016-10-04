@@ -31,8 +31,8 @@ QGraphicsRectItem()
 {
     const qreal LINEWIDTH = 1;
 
-    QRectF firstItemRect = firstItem->boundingRect();
-    QRectF secondItemRect = secondItem->boundingRect();
+    QRectF firstItemRect = firstItem->sceneBoundingRect();
+    QRectF secondItemRect = secondItem->sceneBoundingRect();
 
     qreal startX = qMax(firstItemRect.left(), secondItemRect.left());
     qreal startY = qMax(firstItemRect.top(), secondItemRect.top()) + LINEWIDTH / 2;

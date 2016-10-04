@@ -20,6 +20,7 @@
 class MemoryItem;
 class MemoryMapGraphicsItem;
 class RegisterGraphicsItem;
+class MemoryConnectionItem;
 
 #include <QSharedPointer>
 
@@ -61,6 +62,19 @@ public:
      */
     virtual void changeAddressRange(quint64 memoryMapOffset);
 
+    /*!
+     *  Compress the registers contained within the address block to match the selected connection item.
+     *
+     *      @param [in] connectionItem          The selected connection item.
+     *      @param [in] connectionBaseAdddress  Base address of the connection.
+     *      @param [in] connectionLastAddress   Last address of the connection.
+     *      @param [in] minimumRegisterHeight   Minimum height of the registers.
+     *
+     *      @return New height of the compressed address block.
+     */
+    quint64 condenseRegistersToConnection(MemoryConnectionItem* connectionItem, quint64 connectionBaseAdddress,
+        quint64 connectionLastAddress, qreal minimumRegisterHeight);
+
 private:
     // Disable copying.
     AddressBlockGraphicsItem(AddressBlockGraphicsItem const& rhs);
@@ -98,6 +112,20 @@ private:
      *      @return The created register graphics item.
      */
     virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd);
+
+    /*!
+     *  Get the height to fit the condensed registers within the selected connection item.
+     *
+     *      @param [in] connectionItem          The selected memory connection item.
+     *      @param [in] registersInConnection   The registers contained within the selected connection.
+     *      @param [in] registerStartPositionY  Y position of the first register.
+     *      @param [in] minimumHeight           Minimum height of the registers.
+     *
+     *      @return The height for the condensed registers.
+     */
+    qreal getCondensedRegisterHeightForConnection(MemoryConnectionItem* connectionItem,
+        QVector<MemoryDesignerChildGraphicsItem*> registersInConnection, qreal registerStartPositionY,
+        qreal minimumHeight) const;
 
     //-----------------------------------------------------------------------------
     // Data.

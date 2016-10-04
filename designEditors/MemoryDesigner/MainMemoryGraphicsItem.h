@@ -66,7 +66,7 @@ public:
      *
      *      @return A list of the connected memory connections.
      */
-    QList<MemoryConnectionItem*> getMemoryConnections() const;
+    QVector<MemoryConnectionItem*> getMemoryConnections() const;
 
     /*!
      *  Move the connected memory connections.
@@ -76,12 +76,27 @@ public:
     void moveConnectedConnections(QPointF beforePosition);
 
     /*!
+     *  Move the connected memory connections in y-coordinate.
+     *
+     *      @param [in] yTransfer   The amount moved by.
+     */
+    void moveConnectedConnectionsInY(qreal yTransfer);
+
+    /*!
      *  Move the memory item through a moving memory connection.
      *
      *      @param [in] movementOrigin  The origin of the movement.
      *      @param [in] movementDelta   The movement delta.
      */
     void moveByConnection(MemoryConnectionItem* movementOrigin, QPointF movementDelta);
+
+    /*!
+     *  Move the memory item in y-coordinate through a moving memory connection.
+     *
+     *      @param [in] movementOrigin  The origin of the movement.
+     *      @param [in] yTransfer       The movement amount.
+     */
+    void moveByConnectionInY(MemoryConnectionItem* movementOrigin, qreal yTransfer);
 
     /*!
      *  Change the ranges of the child items.
@@ -94,6 +109,18 @@ public:
      *  Redraw the connected memory connections.
      */
     void reDrawConnections();
+
+    /*!
+     *  Compress the item and the contained sub items.
+     */
+    virtual void condenseItemAndChildItems() = 0;
+
+    /*!
+     *  Move the connected items by y-coordinate.
+     *
+     *      @param [in] yTransfer   The movement amount in the y-coordinate.
+     */
+    void moveConnectedItems(qreal yTransfer);
 
 protected:
 
@@ -140,7 +167,7 @@ private:
     QString instanceName_;
 
     //! A list of memory connections to this memory item.
-    QList<MemoryConnectionItem*> memoryConnections_;
+    QVector<MemoryConnectionItem*> memoryConnections_;
 
     //! A list of memory collisions connected to this memory item.
     QVector<MemoryCollisionItem*> memoryCollisions_;

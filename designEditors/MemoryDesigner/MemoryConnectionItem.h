@@ -58,6 +58,14 @@ public:
     void onMoveConnection(MainMemoryGraphicsItem* movementOrigin, QPointF movementDelta);
 
     /*!
+     *  Move a memory connection item by the y-coordinate.
+     *
+     *      @param [in] movementOrigin  The origin of the movement.
+     *      @param [in] yTransfer       The movement amount.
+     */
+    void onMoveConnectionInY(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer);
+
+    /*!
      *  Get the start value of the connection.
      *
      *      @return The start value of the connection.
@@ -75,6 +83,33 @@ public:
      *  Redraw the path of this connection.
      */
     void reDrawConnection();
+
+    /*!
+     *  Move the other connected item.
+     *
+     *      @param [in] movementOrigin  The origin item of the movement.
+     *      @param [in] yTransfer       The movement amount.
+     */
+    void moveConnectedItem(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer);
+
+    /*!
+     *  Get the lowest point of the connection.
+     *
+     *      @return The lowest point of the connection item.
+     */
+    quint64 getSceneEndPoint() const;
+
+    /*!
+     *  Get the last address of the connected end item.
+     *
+     *      @return The last address of the connected end item.
+     */
+    quint64 getConnectedEndItemLastAddress() const;
+
+    /*!
+     *  Compress the end item.
+     */
+    void condenseEndItemToConnection();
 
 private:
     // Disable copying.

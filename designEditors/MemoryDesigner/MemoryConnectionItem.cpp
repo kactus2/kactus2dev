@@ -15,6 +15,8 @@
 
 #include <designEditors/MemoryDesigner/MainMemoryGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryColumn.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
+#include <designEditors/MemoryDesigner/MemoryMapGraphicsItem.h>
 
 #include <QBrush>
 #include <QPen>
@@ -75,7 +77,8 @@ void MemoryConnectionItem::createPath()
     setPath(QPainterPath());
 
     const qreal LINEWIDTH = 1;
-    const qreal CONNECTIONWIDTH = (rangeEnd_.toULongLong() - rangeStart_.toULongLong() + 1) * GridSize * 1.5;
+    const qreal CONNECTIONWIDTH =
+        (rangeEnd_.toULongLong() - rangeStart_.toULongLong() + 1) * MemoryDesignerConstants::RANGEINTERVAL;
 
     QPointF startItemTopRight = startItem_->mapToScene(startItem_->boundingRect().topRight());
     QPointF endItemTopLeft = endItem_->mapToScene(endItem_->boundingRect().topLeft());
@@ -246,18 +249,50 @@ void MemoryConnectionItem::onMoveConnection(MainMemoryGraphicsItem* movementOrig
     if (connectedItem)
     {
         connectedItem->moveByConnection(this, movementDelta);
-
-        QGraphicsItem* itemParentItem = connectedItem->parentItem();
-        MemoryColumn* parentColumn = dynamic_cast<MemoryColumn*>(itemParentItem);
-        if (parentColumn)
-        {
-            parentColumn->onMoveItem(connectedItem);
-            parentColumn->onReleaseItem(connectedItem);
-        }
     }
 
     createPath();
     repositionLabels();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::onMoveConnectionInY()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::onMoveConnectionInY(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer)
+{
+    moveBy(0, yTransfer);
+
+    moveConnectedItem(movementOrigin, yTransfer);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::moveConnectedItem()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::moveConnectedItem(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer)
+{
+    MainMemoryGraphicsItem* connectedItem;
+
+    if (movementOrigin == startItem_)
+    {
+        connectedItem = endItem_;
+    }
+    else if (movementOrigin == endItem_)
+    {
+        connectedItem = startItem_;
+    }
+
+    if (connectedItem)
+    {
+        connectedItem->moveBy(0, yTransfer);
+
+        foreach (MemoryConnectionItem* connectionItem, connectedItem->getMemoryConnections())
+        {
+            if (connectionItem != this)
+            {
+                connectionItem->moveConnectedItem(connectedItem, yTransfer);
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -283,4 +318,51 @@ void MemoryConnectionItem::reDrawConnection()
 {
     createPath();
     repositionLabels();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::getSceneEndPoint()
+//-----------------------------------------------------------------------------
+quint64 MemoryConnectionItem::getSceneEndPoint() const
+{
+    quint64 sceneEndPoint = sceneBoundingRect().bottom();
+
+    quint64 endItemSceneEndPoint = endItem_->sceneBoundingRect().bottom();
+
+    if (endItemSceneEndPoint > sceneEndPoint)
+    {
+        sceneEndPoint = endItemSceneEndPoint;
+    }
+
+    return sceneEndPoint;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::condenseEndItemToConnection()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::condenseEndItemToConnection()
+{
+    MemoryMapGraphicsItem* mapItem = dynamic_cast<MemoryMapGraphicsItem*>(endItem_);
+    if (mapItem)
+    {
+        mapItem->condenseToConnection(this);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::getConnectedEndItemEndPoint()
+//-----------------------------------------------------------------------------
+quint64 MemoryConnectionItem::getConnectedEndItemLastAddress() const
+{
+    bool temporary = true;
+    quint64 baseAddress = getRangeStartValue().toULongLong(&temporary, 16);
+    quint64 lastAddress = getRangeEndValue().toULongLong(&temporary, 16);
+    
+    quint64 endItemLastAddress = endItem_->getLastAddress() + baseAddress;
+    if (endItemLastAddress > lastAddress)
+    {
+        lastAddress = endItemLastAddress;
+    }
+
+    return lastAddress;
 }

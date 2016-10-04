@@ -81,6 +81,6 @@ void RegisterGraphicsItem::setLabelPositions()
 //-----------------------------------------------------------------------------
 qreal RegisterGraphicsItem::getRegisterWidth(AddressBlockGraphicsItem* blockItem) const
 {
-    qreal registerWidth = blockItem->boundingRect().width() / 3 * 2;
+    int registerWidth = blockItem->boundingRect().width() / 3 * 2 + 1;
     return registerWidth;
 }

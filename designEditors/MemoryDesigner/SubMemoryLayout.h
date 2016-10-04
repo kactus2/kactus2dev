@@ -15,9 +15,11 @@
 class MemoryItem;
 class MemoryDesignerGraphicsItem;
 class MemoryDesignerChildGraphicsItem;
+class MemoryConnectionItem;
 
 #include <QSharedPointer>
 #include <QVector>
+#include <QMap>
 
 //-----------------------------------------------------------------------------
 //! Layout for sub memory items of a memory graphics item within memory designer.
@@ -57,6 +59,43 @@ protected:
      *      @param [in] subItemPositionX    X position of the sub memory items.
      */
     void setupSubItems(qreal subItemPositionX);
+
+    /*!
+     *  Get the sub memory items.
+     *
+     *      @return A map containing the sub memory items with the base addresses.
+     */
+    QMap<quint64, MemoryDesignerChildGraphicsItem*> getSubMemoryItems() const;
+
+    /*!
+     *  Compress the sub items.
+     *
+     *      @param [in] minimumSubItemHeight    The minimum height of the sub items.
+     *
+     *      @return The total height of the condensed sub items.
+     */
+    qreal condenseChildItems(qreal minimumSubItemHeight);
+
+    /*!
+     *  Compress the selected sub item.
+     *
+     *      @param [in] subItem                 The selected sub item.
+     *      @param [in] minimumSubItemHeight    Minimum height of the sub item.
+     *      @param [in] positionY               Y-coordinate for the sub item.
+     */
+    quint64 condenseSubItem(MemoryDesignerChildGraphicsItem* subItem, qreal minimumSubItemHeight,
+        quint64 positionY);
+
+    /*!
+     *  Get the connections within the range of the selected sub item.
+     *
+     *      @param [in] subItem             The selected sub item.
+     *      @param [in] parentConnections   Connections of the parent item.
+     *
+     *      @return A map containing the memory connection items with the base addresses.
+     */
+    QMap<quint64, MemoryConnectionItem*> getSubItemConnections(MemoryDesignerChildGraphicsItem* subItem,
+        QVector<MemoryConnectionItem*> parentConnections);
 
 private:
     // Disable copying.
@@ -98,8 +137,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! A list of sub memory items.
-    QVector<MemoryDesignerChildGraphicsItem*> subMemoryItems_;
+    //! A map containing the sub memory items and their base addresses.
+    QMap<quint64, MemoryDesignerChildGraphicsItem*> subMemoryItems_;
 
     //! Memory item containing main memory item data.
     QSharedPointer<MemoryItem> memoryItem_;

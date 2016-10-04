@@ -8,7 +8,6 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./VersionHelper.h \
-    ./version.h \
     ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
@@ -590,6 +589,7 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
     ./designEditors/MemoryDesigner/ConnectivityInterface.h \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.h \
+    ./designEditors/MemoryDesigner/MemoryDesignerConstants.h \
     ./designEditors/MemoryDesigner/MemoryItem.h \
     ./designEditors/MemoryDesigner/SubMemoryLayout.h \
     ./designEditors/MemoryDesigner/AddressSpaceGraphicsItem.h \

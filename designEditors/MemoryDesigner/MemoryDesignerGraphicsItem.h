@@ -74,6 +74,13 @@ public:
      */
     quint64 getLastAddress() const;
 
+    /*!
+     *  Compress this graphics item.
+     *
+     *      @param [in] newItemHeight   The new height of the graphics item.
+     */
+    void condense(qreal newItemHeight);
+
 protected:
 
     /*!

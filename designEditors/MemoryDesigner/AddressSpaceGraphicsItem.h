@@ -62,6 +62,11 @@ public:
      */
     virtual void changeChildItemRanges(quint64 offset);
 
+    /*!
+     *  Compress the sub items contained within the address space and the space item.
+     */
+    virtual void condenseItemAndChildItems();
+
 private:
     // Disable copying.
     AddressSpaceGraphicsItem(AddressSpaceGraphicsItem const& rhs);
@@ -92,6 +97,39 @@ private:
      *      @return The created address segment graphics item.
      */
     virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd);
+
+    /*!
+     *  Compress the address space segments.
+     *
+     *      @param [in] minimumSubItemHeight    Minimum height of an address space segment.
+     *
+     *      @return The total height of the condensed address segments.
+     */
+    quint64 condenseSpaceSegments(qreal minimumSubItemHeight);
+
+    /*!
+     *  Compress the selected address segment according to the contained memory connections.
+     *
+     *      @param [in] subItem             The selected address segment item.
+     *      @param [in] positionY           Y position of the compressed segment item.
+     *      @param [in] segmentConnections  The segment connections within the address segment.
+     *      @param [in] movedConnections    The already moved memory connections.
+     *
+     *      @return The total height of the compressed address segment item.
+     */
+    quint64 condenseSegmentWithConnections(MemoryDesignerChildGraphicsItem* subItem, quint64 positionY,
+        QMap<quint64, MemoryConnectionItem*> segmentConnections,
+        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
+
+    /*!
+     *  Move the selected memory connection item.
+     *
+     *      @param [in] connectionItem      Memory connection item.
+     *      @param [in] yTransfer           Item y transfer.
+     *      @param [in] movedConnections    The already moved memory connection items.
+     */
+    void moveConnectionItem(MemoryConnectionItem* connectionItem, qreal yTransfer,
+        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
 
     //-----------------------------------------------------------------------------
     // Data.

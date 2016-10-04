@@ -61,6 +61,18 @@ public:
      */
     virtual void changeChildItemRanges(quint64 offset);
 
+    /*!
+     *  Compress the item and the contained sub items.
+     */
+    virtual void condenseItemAndChildItems();
+
+    /*!
+     *  Compress the item to the selected memory connection item.
+     *
+     *      @param [in] connectionItem  The selected memory connection item.
+     */
+    void condenseToConnection(MemoryConnectionItem* connectionItem);
+
 private:
     // Disable copying.
     MemoryMapGraphicsItem(MemoryMapGraphicsItem const& rhs);
@@ -109,6 +121,20 @@ private:
      *      @return The created address block graphics item.
      */
     virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd);
+
+    /*!
+     *  Check if the memory map item has an extension item.
+     *
+     *      @return True, if the memory map item has an extension item, false otherwise.
+     */
+    bool hasExtensionItem() const;
+
+    /*!
+     *  Get the lowest connected memory connection item.
+     *
+     *      @return The lowest memory connection item.
+     */
+    MemoryConnectionItem* getLowestConnection() const;
 
     //-----------------------------------------------------------------------------
     // Data.

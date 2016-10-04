@@ -130,7 +130,23 @@ void MainMemoryGraphicsItem::moveConnectedConnections(QPointF beforePosition)
 
     foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
     {
-        collisionItem->moveBy(mouseMoveDelta.x(), mouseMoveDelta.y());
+        qreal collisionMoveY = collisionItem->pos().y() + mouseMoveDelta.y();
+        collisionItem->setPos(0, collisionMoveY);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::moveConnectedConnectionsInY()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::moveConnectedConnectionsInY(qreal yTransfer)
+{
+    foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
+    {
+        connectionItem->onMoveConnectionInY(this, yTransfer);
+    }
+    foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
+    {
+        collisionItem->moveBy(0, yTransfer);
     }
 }
 
@@ -139,7 +155,9 @@ void MainMemoryGraphicsItem::moveConnectedConnections(QPointF beforePosition)
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::moveByConnection(MemoryConnectionItem* movementOrigin, QPointF movementDelta)
 {
-    moveBy(movementDelta.x(), movementDelta.y());
+    qreal newPositionX = pos().x() + movementDelta.x();
+    qreal newPositionY = pos().y() + movementDelta.y();
+    setPos(newPositionX, newPositionY);
 
     foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
     {
@@ -152,7 +170,42 @@ void MainMemoryGraphicsItem::moveByConnection(MemoryConnectionItem* movementOrig
 
     foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
     {
-        collisionItem->moveBy(0, movementDelta.y());
+        qreal newCollisionY = collisionItem->pos().y() + movementDelta.y();
+        collisionItem->setPos(0, newCollisionY);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::moveByConnectionInY()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::moveByConnectionInY(MemoryConnectionItem* movementOrigin, qreal yTransfer)
+{
+    moveBy(0, yTransfer);
+
+    foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
+    {
+        if (connectionItem != movementOrigin)
+        {
+            connectionItem->onMoveConnectionInY(this, yTransfer);
+        }
+    }
+
+    foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
+    {
+        collisionItem->moveBy(0, yTransfer);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::moveConnectedItems()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::moveConnectedItems(qreal yTransfer)
+{
+    moveBy(0, yTransfer);
+
+    foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
+    {
+        connectionItem->moveConnectedItem(this, yTransfer);
     }
 }
 
@@ -183,7 +236,7 @@ void MainMemoryGraphicsItem::addConnectionCollision(MemoryCollisionItem* collisi
 //-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::getMemoryConnections()
 //-----------------------------------------------------------------------------
-QList<MemoryConnectionItem*> MainMemoryGraphicsItem::getMemoryConnections() const
+QVector<MemoryConnectionItem*> MainMemoryGraphicsItem::getMemoryConnections() const
 {
     return memoryConnections_;
 }

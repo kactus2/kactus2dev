@@ -16,6 +16,8 @@
 #include <designEditors/MemoryDesigner/MemoryItem.h>
 #include <designEditors/MemoryDesigner/ConnectivityComponent.h>
 #include <designEditors/MemoryDesigner/AddressSegmentGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
+#include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 
 #include <QBrush>
 #include <QFont>
@@ -27,7 +29,7 @@
 AddressSpaceGraphicsItem::AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
     QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem->getName(), containingInstance->getName(), memoryItem->getAUB(), parent),
-SubMemoryLayout(memoryItem, "segment", this),
+SubMemoryLayout(memoryItem, MemoryDesignerConstants::ADDRESSSEGMENT_TYPE, this),
 cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), this))
 {
     QBrush addressSpaceBrush(KactusColors::ADDRESS_SEGMENT);
@@ -97,7 +99,7 @@ MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createEmptySubItem(qu
     QString emptySegmentOffset = QString::number(beginAddress);
     QString emptySegmentRange = QString::number(rangeEnd - beginAddress + 1);
 
-    QSharedPointer<MemoryItem> emptySegment (new MemoryItem("Empty", "segment"));
+    QSharedPointer<MemoryItem> emptySegment (new MemoryItem("Empty", MemoryDesignerConstants::ADDRESSSEGMENT_TYPE));
     emptySegment->setOffset(emptySegmentOffset);
     emptySegment->setRange(emptySegmentRange);
 
@@ -110,4 +112,137 @@ MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createEmptySubItem(qu
 void AddressSpaceGraphicsItem::changeChildItemRanges(quint64 offset)
 {
     SubMemoryLayout::changeChildItemRanges(offset);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::condenseSpaceItem()
+//-----------------------------------------------------------------------------
+void AddressSpaceGraphicsItem::condenseItemAndChildItems()
+{
+    qreal minimumSubItemHeight = 2 * MemoryDesignerConstants::RANGEINTERVAL;
+    quint64 spaceNewHeight = 0;
+
+    if (getMemoryConnections().isEmpty())
+    {
+        spaceNewHeight = condenseChildItems(minimumSubItemHeight);
+    }
+    else
+    {
+        spaceNewHeight = condenseSpaceSegments(minimumSubItemHeight);
+    }
+
+    condense(spaceNewHeight);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::condenseSpaceSegments()
+//-----------------------------------------------------------------------------
+quint64 AddressSpaceGraphicsItem::condenseSpaceSegments(qreal minimumSubItemHeight)
+{
+    quint64 spaceNewHeight = 0;
+
+    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections (new QVector<MemoryConnectionItem*>());
+
+    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+    while (subItemIterator.hasNext())
+    {
+        subItemIterator.next();
+
+        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+        QMap<quint64, MemoryConnectionItem*> segmentConnections =
+            getSubItemConnections(subItem, getMemoryConnections());
+
+        if (segmentConnections.isEmpty())
+        {
+            spaceNewHeight = condenseSubItem(subItem, minimumSubItemHeight, spaceNewHeight);
+        }
+        else
+        {
+            spaceNewHeight += condenseSegmentWithConnections(subItem, spaceNewHeight, segmentConnections, movedConnections);
+        }
+    }
+
+    return spaceNewHeight;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::condenseSegmentWithConnections()
+//-----------------------------------------------------------------------------
+quint64 AddressSpaceGraphicsItem::condenseSegmentWithConnections(MemoryDesignerChildGraphicsItem* subItem,
+    quint64 positionY, QMap<quint64, MemoryConnectionItem*> segmentConnections,
+    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
+{
+    subItem->setPos(subItem->x(), positionY);
+
+    qreal segmentConnectionsEnd = 0;
+
+    quint64 currentConnectionBaseAddress = segmentConnections.firstKey();
+
+    MemoryConnectionItem* firstConnection = segmentConnections.first();
+    qreal yTransfer = subItem->sceneBoundingRect().top() - firstConnection->sceneBoundingRect().top();
+
+    moveConnectionItem(firstConnection, yTransfer, movedConnections);
+
+    quint64 connectionEnd = firstConnection->sceneBoundingRect().bottom();
+    if (connectionEnd > segmentConnectionsEnd)
+    {
+        segmentConnectionsEnd = connectionEnd;
+    }
+
+    QMapIterator<quint64, MemoryConnectionItem*> segmentConnectionIterator(segmentConnections);
+
+    quint64 previousConnectionLow = firstConnection->sceneBoundingRect().bottom();
+    bool temporary = true;
+    quint64 connectionRangeEnd = firstConnection->getRangeEndValue().toULongLong(&temporary, 16);
+
+    while(segmentConnectionIterator.hasNext())
+    {
+        segmentConnectionIterator.next();
+
+        MemoryConnectionItem* connectionItem = segmentConnectionIterator.value();
+        if (connectionItem != firstConnection)
+        {
+            currentConnectionBaseAddress = segmentConnectionIterator.key();
+            if (currentConnectionBaseAddress > connectionRangeEnd + 5)
+            {
+                yTransfer = previousConnectionLow - connectionItem->sceneBoundingRect().top() + GridSize;
+            }
+
+            moveConnectionItem(connectionItem, yTransfer, movedConnections);
+
+            connectionRangeEnd = connectionItem->getConnectedEndItemLastAddress();
+
+            previousConnectionLow = connectionItem->getSceneEndPoint();
+
+            quint64 connectionEnd = connectionItem->sceneBoundingRect().bottom();
+            if (connectionEnd > segmentConnectionsEnd)
+            {
+                segmentConnectionsEnd = connectionEnd;
+            }
+        }
+    }
+
+    quint64 subItemLow = subItem->sceneBoundingRect().bottom();
+    if (subItemLow > segmentConnectionsEnd)
+    {
+        quint64 subItemNewHeight = segmentConnectionsEnd - subItem->sceneBoundingRect().top();
+        subItem->condense(subItemNewHeight);
+    }
+
+    return subItem->boundingRect().bottom();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::moveConnectionItem()
+//-----------------------------------------------------------------------------
+void AddressSpaceGraphicsItem::moveConnectionItem(MemoryConnectionItem* connectionItem, qreal yTransfer,
+    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
+{
+    if (!movedConnections->contains(connectionItem))
+    {
+        connectionItem->condenseEndItemToConnection();
+
+        connectionItem->onMoveConnectionInY(this, yTransfer);
+        movedConnections->append(connectionItem);
+    }
 }

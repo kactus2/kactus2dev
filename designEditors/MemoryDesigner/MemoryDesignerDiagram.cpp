@@ -32,6 +32,7 @@
 #include <designEditors/MemoryDesigner/MemoryItem.h>
 #include <designEditors/MemoryDesigner/MemoryCollisionItem.h>
 #include <designEditors/MemoryDesigner/MemoryColumn.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 
 #include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 #include <IPXACTmodels/common/VLNV.h>
@@ -42,11 +43,6 @@
 #include <QPainter>
 #include <QPen>
 #include <QGraphicsSceneWheelEvent>
-
-namespace MemoryNameSpace
-{
-    const int ITEMINTERVAL = GridSize * 3;
-};
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::MemoryDesignerDiagram()
@@ -416,6 +412,8 @@ void MemoryDesignerDiagram::createMemoryConnections()
         }
     }
 
+    compressGraphicsItems(placedSpaceItems, spaceYPlacement, spaceColumn);
+
     moveUnconnectedAddressSpaces(placedSpaceItems, spaceYPlacement, spaceColumn);
     moveUnconnectedMemoryMaps(placedMapItems, memoryMapColumn);
 
@@ -496,7 +494,8 @@ MemoryConnectionItem* MemoryDesignerDiagram::createConnection(
                 QString startAddress = QString::number(remappedAddress);
                 QString endAddress = QString::number(endAddressNumber + mirroredSlaveAddressChange);
 
-                quint64 yTransfer = (memoryMapBaseAddress + mirroredSlaveAddressChange) * GridSize * 1.5;
+                quint64 yTransfer = (memoryMapBaseAddress + mirroredSlaveAddressChange) *
+                    MemoryDesignerConstants::RANGEINTERVAL;
 
                 QPointF startConnectionPosBefore = connectionStartItem->pos();
 
@@ -565,7 +564,8 @@ void MemoryDesignerDiagram::checkMemoryMapRepositionToOverlapColumn(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps, MainMemoryGraphicsItem* memoryItem,
     MemoryColumn* originalColumn, QString const& startAddress, QString const& endAddress)
 {
-    quint64 connectionWidth = (endAddress.toULongLong() - startAddress.toULongLong() + 1) * GridSize * 1.5;
+    quint64 connectionWidth =
+        (endAddress.toULongLong() - startAddress.toULongLong() + 1) * MemoryDesignerConstants::RANGEINTERVAL;
     QRectF memoryItemExtensionRectangle(memoryItem->scenePos().x(), memoryItem->scenePos().y(),
         memoryItem->sceneBoundingRect().width(), connectionWidth);
 
@@ -731,15 +731,11 @@ void MemoryDesignerDiagram::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* 
     originalColumn->onMoveItem(spaceItem);
     originalColumn->onReleaseItem(spaceItem);
 
-    QVector<MemoryColumn*> spaceColumns;
-
     foreach (GraphicsColumn* column, layout_->getColumns())
     {
         MemoryColumn* currentSpaceColumn = dynamic_cast<MemoryColumn*>(column);
         if (currentSpaceColumn && currentSpaceColumn->name().contains("Address Space", Qt::CaseInsensitive))
         {
-            spaceColumns.append(currentSpaceColumn);
-
             currentSpaceColumn->addItem(spaceItem);
             spaceItem->setPos(targetItem->pos().x(), targetItem->pos().y() + yTransfer);
 
@@ -766,16 +762,7 @@ void MemoryDesignerDiagram::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* 
 //-----------------------------------------------------------------------------
 void MemoryDesignerDiagram::reDrawConnections()
 {
-    QVector<MemoryColumn*> addressSpaceColumns;
-
-    foreach (GraphicsColumn* column, layout_->getColumns())
-    {
-        MemoryColumn* spaceColumn = dynamic_cast<MemoryColumn*>(column);
-        if (spaceColumn && spaceColumn->name().contains("Address Space", Qt::CaseInsensitive))
-        {
-            addressSpaceColumns.append(spaceColumn);
-        }
-    }
+    QVector<MemoryColumn*> addressSpaceColumns = getSpecifiedColumns("Address Space");
 
     foreach (MemoryColumn* singleSpaceColumn, addressSpaceColumns)
     {
@@ -1005,6 +992,75 @@ bool MemoryDesignerDiagram::itemCollidesWithAnotherItem(QRectF firstRectangle, i
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::compressGraphicsItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::compressGraphicsItems(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems, int& spaceYPlacement,
+    MemoryColumn* spaceColumn)
+{
+    foreach (GraphicsColumn* graphicsColumn, layout_->getColumns())
+    {
+        MemoryColumn* memoryColumn = dynamic_cast<MemoryColumn*>(graphicsColumn);
+        if (memoryColumn)
+        {
+            int yTransfer = 0;
+
+            foreach (QGraphicsItem* graphicsItem, memoryColumn->getItems())
+            {
+                MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
+                if (memoryItem)
+                {
+                    int memoryItemLowBefore = memoryItem->sceneBoundingRect().bottom();
+
+                    memoryItem->condenseItemAndChildItems();
+
+                    AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
+                    if (spaceItem && placedSpaceItems->contains(memoryItem) && memoryColumn == spaceColumn)
+                    {
+                        memoryItem->moveConnectedItems(yTransfer);
+
+                        int memoryItemLowAfter = memoryItem->sceneBoundingRect().bottom();
+
+                        yTransfer = memoryItemLowAfter - memoryItemLowBefore;
+
+                        foreach (QGraphicsItem* childItem, spaceItem->childItems())
+                        {
+                            MemoryExtensionGraphicsItem* extensionItem =
+                                dynamic_cast<MemoryExtensionGraphicsItem*>(childItem);
+                            if (extensionItem)
+                            {
+                                memoryItemLowAfter += extensionItem->sceneBoundingRect().bottom();
+                            }
+                        }
+
+                        spaceYPlacement = memoryItemLowAfter + GridSize * 8;
+                    }
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::getSpecifiedColumns()
+//-----------------------------------------------------------------------------
+QVector<MemoryColumn*> MemoryDesignerDiagram::getSpecifiedColumns(QString const& columnSpecification)
+{
+    QVector<MemoryColumn*> foundColumns;
+    
+    foreach (GraphicsColumn* column, layout_->getColumns())
+    {
+        MemoryColumn* currentColumn = dynamic_cast<MemoryColumn*>(column);
+        if (currentColumn && currentColumn->name().contains(columnSpecification, Qt::CaseInsensitive))
+        {
+            foundColumns.append(currentColumn);
+        }
+    }
+
+    return foundColumns;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::onShow()
 //-----------------------------------------------------------------------------
 void MemoryDesignerDiagram::onShow()
@@ -1056,7 +1112,7 @@ void MemoryDesignerDiagram::drawBackground(QPainter *painter, const QRectF &rect
     for (qreal x = left; x < rect.right(); x += GridSize )
     {
 //         for (qreal y = top; y < rect.bottom(); y += 3 * GridSize )
-        for (qreal y = top; y < rect.bottom(); y += MemoryNameSpace::ITEMINTERVAL )
+        for (qreal y = top; y < rect.bottom(); y += GridSize * 3)
         {
             painter->drawPoint(x, y);
         }

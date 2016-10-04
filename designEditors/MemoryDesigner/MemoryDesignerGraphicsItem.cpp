@@ -16,6 +16,7 @@
 #include <designEditors/MemoryDesigner/MemoryColumn.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 #include <designEditors/MemoryDesigner/MemoryCollisionItem.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 
 #include <QFont>
 #include <QGraphicsSceneMouseEvent>
@@ -60,7 +61,8 @@ void MemoryDesignerGraphicsItem::hideMemoryRangeLabels()
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::setGraphicsRectangle(qreal rectangleWidth, qreal rectangleHeight)
 {
-    setRect(QRectF(-rectangleWidth / 2, 0, rectangleWidth, rectangleHeight * GridSize * 1.5));
+    setRect(
+        QRectF(-rectangleWidth / 2, 0, rectangleWidth, rectangleHeight * MemoryDesignerConstants::RANGEINTERVAL));
 }
 
 //-----------------------------------------------------------------------------
@@ -144,4 +146,20 @@ quint64 MemoryDesignerGraphicsItem::getLastAddress() const
 {
     bool temporary = true;
     return endRangeLabel_->toPlainText().toULongLong(&temporary, 16);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::condense()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::condense(qreal newItemHeight)
+{
+    QRectF itemRectangle = boundingRect();
+    int subItemPenWidth = pen().width();
+
+    qint16 itemXPosition = -itemRectangle.width() / 2;
+    quint64 itemWidth = itemRectangle.width() - subItemPenWidth;
+
+    setRect(itemXPosition, 0, itemWidth, newItemHeight);
+
+    setLabelPositions();
 }

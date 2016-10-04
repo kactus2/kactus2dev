@@ -6429,6 +6429,9 @@
     <ClInclude Include="designEditors\MemoryDesigner\SubMemoryLayout.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\MemoryDesignerConstants.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">
