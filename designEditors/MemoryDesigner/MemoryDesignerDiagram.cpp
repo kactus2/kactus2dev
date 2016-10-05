@@ -413,6 +413,7 @@ void MemoryDesignerDiagram::createMemoryConnections()
     }
 
     compressGraphicsItems(placedSpaceItems, spaceYPlacement, spaceColumn);
+    repositionCompressedMemoryMaps(placedMapItems, memoryMapColumn, spaceColumn);
 
     moveUnconnectedAddressSpaces(placedSpaceItems, spaceYPlacement, spaceColumn);
     moveUnconnectedMemoryMaps(placedMapItems, memoryMapColumn);
@@ -1039,6 +1040,80 @@ void MemoryDesignerDiagram::compressGraphicsItems(
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::repositionCompressedMemoryMaps()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::repositionCompressedMemoryMaps(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems, MemoryColumn* memoryMapColumn,
+    MemoryColumn* spaceColumn)
+{
+    foreach (MainMemoryGraphicsItem* mapItem, *placedMapItems)
+    {
+        QGraphicsItem* mapParentItem = mapItem->parentItem();
+        MemoryColumn* originalColumn = dynamic_cast<MemoryColumn*>(mapParentItem);
+        if (originalColumn && originalColumn != memoryMapColumn)
+        {
+            QRectF mapRectangle = mapItem->sceneBoundingRect();
+            int mapPenWidth = mapItem->pen().width();
+
+            int columnWidth = originalColumn->sceneBoundingRect().width();
+
+            QPointF columnPoint (originalColumn->pos().x() - columnWidth, mapRectangle.y());
+            GraphicsColumn* comparisonColumn = layout_->findColumnAt(columnPoint);
+            if (comparisonColumn)
+            {
+                while (comparisonColumn != spaceColumn)
+                {
+                    mapRectangle.setX(mapRectangle.x() - columnWidth);
+
+                    if (!memoryMapCollidesWithMemoryMapsInColumn(mapRectangle, mapPenWidth, mapItem,
+                        comparisonColumn, placedMapItems))
+                    {
+                        originalColumn->removeItem(mapItem);
+                        comparisonColumn->addItem(mapItem, true);
+
+                        if (originalColumn->getItems().isEmpty() && originalColumn->name() != "Memory Map Overlap")
+                        {
+                            layout_->removeColumn(originalColumn);
+                        }
+
+                        break;
+                    }
+
+                    columnPoint.setX(mapRectangle.x());
+                    comparisonColumn = layout_->findColumnAt(columnPoint);
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::memoryMapCollidesWithIMemoryMapsInColumn()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerDiagram::memoryMapCollidesWithMemoryMapsInColumn(QRectF mapRectangle, int mapPenWidth,
+    MainMemoryGraphicsItem* mapItem, GraphicsColumn* comparisonColumn,
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems)
+{
+    foreach (QGraphicsItem* comparisonChild, comparisonColumn->getItems())
+    {
+        MemoryMapGraphicsItem* comparisonMap =
+            dynamic_cast<MemoryMapGraphicsItem*>(comparisonChild);
+        if (comparisonMap && comparisonMap != mapItem && placedMapItems->contains(comparisonMap))
+        {
+            QRectF comparisonRectangle = comparisonMap->sceneBoundingRect();
+            int comparisonPenWidth = comparisonMap->pen().width();
+
+            if (itemCollidesWithAnotherItem(mapRectangle, mapPenWidth, comparisonRectangle, comparisonPenWidth))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

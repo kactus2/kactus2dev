@@ -32,6 +32,7 @@ class ConnectivityComponent;
 class MemoryItem;
 class MainMemoryGraphicsItem;
 class MemoryConnectionItem;
+class MemoryMapGraphicsItem;
 
 //-----------------------------------------------------------------------------
 //! Declares the memory design diagram class.
@@ -371,6 +372,31 @@ private:
      */
     void compressGraphicsItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
         int& spaceYPlacement, MemoryColumn* spaceColumn);
+
+    /*!
+     *  Reposition compressed memory maps to previous columns.
+     *
+     *      @param [in] placedMapItems      A list of the placed memory map items.
+     *      @param [in] memoryMapColumn     The main memory map column.
+     *      @param [in] spaceColumn         The address space column.
+     */
+    void repositionCompressedMemoryMaps(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
+        MemoryColumn* memoryMapColumn, MemoryColumn* spaceColumn);
+
+    /*!
+     *  Check if a memory map collides.
+     *
+     *      @param [in] mapRectangle        Rectangle of the selected memory map.
+     *      @param [in] mapPenWidth         Pen width used to draw the selected memory map item.
+     *      @param [in] mapItem             The selected memory map item.
+     *      @param [in] comparisonColumn    The column whose items are being compared to.
+     *      @param [in] placedMapItems      A list of the placed memory map items.
+     *
+     *      @return True, if the memory map collides with memory maps in the selected column, false otherwise.
+     */
+    bool memoryMapCollidesWithMemoryMapsInColumn(QRectF mapRectangle, int mapPenWidth,
+        MainMemoryGraphicsItem* mapItem, GraphicsColumn* comparisonColumn,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems);
 
     /*!
      *  Get the specified columns.
