@@ -12,7 +12,7 @@
 #include "filesmodel.h"
 #include "FileColumns.h"
 
-#include <common/Utils.h>
+#include <common/utils.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>

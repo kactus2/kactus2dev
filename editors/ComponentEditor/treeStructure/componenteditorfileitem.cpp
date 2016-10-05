@@ -11,7 +11,7 @@
 
 #include "componenteditorfileitem.h"
 
-#include <common/Utils.h>
+#include <common/utils.h>
 
 #include <editors/ComponentEditor/fileSet/file/fileeditor.h>
 #include <editors/ComponentEditor/common/ParameterFinder.h>
