@@ -8,6 +8,17 @@
               * Changed or Information
 ===============================================================================
 
+05/10/2016 3.2.35
+----------------------------------------------------
+
++ Enabled URIs to be used in filepaths for files within filesets
++ Improved memory design layout of items
+
+- Fixed bug preventing signal renaming in Abstraction Defintions
+
+KNOWN UNRESOLVED ISSUES:
+* UI issue: paste command does not update usage count of referenced parameters.
+
 23/09/2016 3.2.0
 ----------------------------------------------------
 
