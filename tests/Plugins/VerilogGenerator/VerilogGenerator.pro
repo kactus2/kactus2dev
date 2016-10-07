@@ -17,7 +17,6 @@ SUBDIRS +=  VerilogGeneratorPlugin/tst_VerilogGeneratorPlugin.pro \
 		   VerilogHeaderWriter/tst_VerilogHeaderWriter.pro \
 		   ComponentVerilogWriter/tst_ComponentVerilogWriter.pro \
            PortVerilogWriter/tst_PortVerilogWriter.pro \
-		   ModelParameterVerilogWriter/tst_ModelParameterVerilogWriter.pro \
 		   ComponentInstanceVerilogWriter/tst_ComponentInstanceVerilogWriter.pro \
 		   InterfaceDirectionNameSorter/tst_InterfaceDirectionNameSorter.pro \
 		   CommentWriter/tst_CommentWriter.pro
