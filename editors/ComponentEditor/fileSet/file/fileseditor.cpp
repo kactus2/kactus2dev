@@ -17,7 +17,7 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
-#include <QIcon>
+
 #include <QStringList>
 #include <QFileDialog>
 
@@ -30,14 +30,16 @@ QGroupBox(title, parent),
 handler_(handler),
 component_(component),
 view_(handler, component, this),
-model_(handler, component, fileSet, this),
-addFilesButton_(QIcon(":/icons/common/graphics/add.png"), tr("Add Files"), this)
+model_(handler, component, fileSet, this)
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
-	layout->addWidget(&addFilesButton_, 0, Qt::AlignLeft);
 
-	// files can not be imported/exported to a csv file
+    view_.setAlternatingRowColors(false);
+
+    view_.setAcceptDrops(true);
+    view_.setDropIndicatorShown(true);
+    
 	view_.setAllowImportExport(false);
 
 	view_.setModel(&model_);
@@ -50,9 +52,9 @@ addFilesButton_(QIcon(":/icons/common/graphics/add.png"), tr("Add Files"), this)
 	// set the delegate to provide editors
 	view_.setItemDelegate(new FilesDelegate(this));
 
-	connect(&addFilesButton_, SIGNAL(clicked(bool)), this, SLOT(onAddFiles()), Qt::UniqueConnection);
-	connect(&view_, SIGNAL(addItem(const QModelIndex&, const QString&)),
-        &model_, SLOT(onAddItem(const QModelIndex&, const QString&)), Qt::UniqueConnection);
+	connect(&view_, SIGNAL(addItemByBrowsing()), this, SLOT(onAddFiles()), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(addItem(const QModelIndex&)),
+        &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
         &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(moveItem(const QModelIndex&, const QModelIndex&)),
@@ -74,14 +76,6 @@ FilesEditor::~FilesEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: fileseditor::isValid()
-//-----------------------------------------------------------------------------
-bool FilesEditor::isValid() const
-{
-	return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: fileseditor::refresh()
 //-----------------------------------------------------------------------------
 void FilesEditor::refresh()
@@ -94,16 +88,10 @@ void FilesEditor::refresh()
 //-----------------------------------------------------------------------------
 void FilesEditor::onAddFiles()
 {
-	QStringList files = QFileDialog::getOpenFileNames(this, tr("Select files to add."),
+	QStringList filePaths = QFileDialog::getOpenFileNames(this, tr("Select files to add."),
 		handler_->getPath(component_->getVlnv()));
 
-	if (files.isEmpty())
-    {
-		return;
-	}
-
-	// add all files to the model
-	foreach (QString file, files)
+	foreach (QString const& file, filePaths)
     {
 		model_.onAddItem(QModelIndex(), file);
 	}

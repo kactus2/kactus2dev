@@ -35,18 +35,17 @@
     <h3>Files</h3>
     <p>
       <b>Files</b> editor lists the files contained within the file set.
-      Each file has a <b>name</b> identifying the file. The name is mandatory, and it is determined when adding 
-      a file.
-      <br /><b>File path</b> is defined either as relative to the component's xml-file or as an absolute path.
-      The file path is mandatory and it is given when adding a file.
+      Each file has a <b>name</b> identifying the file. The name is mandatory, and it is determined automatically 
+      from the file path.
+      <br /><b>File path</b> is defined either as relative to the component's xml-file, as an absolute path or as 
+      an external URI. If an URI is used, the schema must be defined (e.g. http://...). The file path is mandatory.
       <br /><b>File type</b> links files to their build command (see below). File type is mandatory, and one 
       file can have many types.
       <br /><b>Description</b> is a freely formatted text describing a single file.
     </p>
     <p>
-      <b>Add Files</b> button opens a dialog to select files on the disk to add to the file set. The order of
-      files is maintained and can be changed by dragging rows. If the compilation order of files is important
-      then the files should be listed in order needed by compilation.
+      If the order of files is important for e.g. compilation then the files should be listed in the 
+      required order. The order of the files can be changed by dragging the rows.
       <br>If a file is in <font color="red">invalid state</font>, i.e. missing a mandatory file type, then the
       file is displayed in <font color="red">red color</font>.
     </p>
@@ -55,13 +54,12 @@
       that has the following options:
     </p>
     <ul>
+      <li>Add new files to the file set by browsing the file system (Add file(s)...)</li>
       <li>Add new file to the file set (Add row)</li>
       <li>Remove file from file set (Remove row)</li>
       <li>Clear the selected cells</li>
       <li>Copy the contents of the selected cells to clipboard</li>
       <li>Paste the contents of the clipboard to the selected cells</li>
-      <li>Import a csv-file to the editor</li>
-      <li>Export the contents of the editor to a csv-file</li>
     </ul>
     <h3>Default build commands</h3>
     <p>

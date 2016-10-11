@@ -17,7 +17,6 @@
 
 #include <QGroupBox>
 #include <QSharedPointer>
-#include <QPushButton>
 
 class LibraryInterface;
 class Component;
@@ -47,13 +46,6 @@ public:
 
 	//! The destructor.
 	~FilesEditor();
-
-	/*!
-     *  Check for the validity of the editor.
-	 * 
-	 *      @return True if the editor is in valid state.
-	 */
-	virtual bool isValid() const;
 
 public slots:
 
@@ -99,8 +91,6 @@ private:
 	//! The model to edit the file summary.
 	FilesModel model_;
 
-	//! The button to add new files to file set.
-	QPushButton addFilesButton_;
 };
 
 #endif // FILESEDITOR_H

@@ -103,8 +103,43 @@ public:
 	 *      @return True if save was successful, otherwise false.
 	 */
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
+    
+    /*!
+     *  Returns a list of supported MIME data types.
+     *
+     *      @return The supported MIME types.
+     */
+    virtual QStringList mimeTypes() const;
+   
+    /*!
+     *  Returns the supported actions of a drop.
+     *
+     *      @return The drop actions supported by the model.
+     */
+    virtual Qt::DropActions supportedDropActions() const;
+
+    /*!
+     *  Handler for the dropped MIME data.
+     *
+     *      @param [in] data    The data associated to the drop.
+     *      @param [in] action  The drop action.  
+     *      @param [in] row     The row beneath the drop position.
+     *      @param [in] column  The column beneath the drop position.
+     *      @param [in] parent  The parent index of the drop position.
+     *
+     *      @return True, if the model could handle the data, otherwise false.
+     */
+    virtual bool dropMimeData(QMimeData const* data, Qt::DropAction action, int row, int column, 
+        QModelIndex const& parent);
 
 public slots:
+
+	/*!
+     *  Add a new item to the given index.
+	 *
+	 *      @param [in] index       The index identifying the position for new file.
+	 */
+    virtual void onAddItem(QModelIndex const& index);
 
 	/*!
      *  Add a new item to the given index.
@@ -157,6 +192,13 @@ private:
      */
     bool filePathExists(QSharedPointer<File> file) const;
 
+    /*!
+     *  Checks if the file path is a valid URI.
+     *
+     *      @param [in] file   The selected file.
+     *
+     *      @return True, if the URI is valid, otherwise false.
+     */
     bool isValidURI(QSharedPointer<File> file) const;
 
 	//! The instance that manages the library.

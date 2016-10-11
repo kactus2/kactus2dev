@@ -14,6 +14,7 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
+#include <QAction>
 #include <QMouseEvent>
 #include <QSharedPointer>
 
@@ -43,23 +44,13 @@ public:
 
 signals:
 
-	/*!
-     *  A new file should be added to given index.
-	 *
-	 *      @param [in] index       The position where new item should be added at.
-	 *      @param [in] filePath    Path to the file that is to be added.
-	 */
-	void addItem(const QModelIndex& index, const QString& filePath);
+    //! Emitted when a new file should be added by file browsing.
+    void addItemByBrowsing();
 
 protected:
 
-	//! Handler for mouse double click events.
-	virtual void mouseDoubleClickEvent(QMouseEvent* event);
-
-private slots:
-
-	//! Handler for add action.
-	virtual void onAddAction();
+	//! Handler for context menu events.
+    virtual void contextMenuEvent(QContextMenuEvent* event);
 
 private:
 	
@@ -67,11 +58,14 @@ private:
 	FilesView(const FilesView& other);
 	FilesView& operator=(const FilesView& other);
 
-	//! Pointer to the instance that manages the library.
+	//! The instance that manages the library.
 	LibraryInterface* handler_;
 
-	//! Pointer to the component being edited.
+	//! The component being edited.
 	QSharedPointer<Component> component_;
+
+    //! Action for adding new files by browsing.
+    QAction* addByBrowsingAction_;
 };
 
 #endif // FILESVIEW_H

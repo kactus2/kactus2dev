@@ -15,9 +15,11 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <QFileDialog>
+#include <QMenu>
 #include <QSortFilterProxyModel>
 #include <QStringList>
-#include <QFileDialog>
+
 
 //-----------------------------------------------------------------------------
 // Function: filesview::FilesView()
@@ -25,9 +27,10 @@
 FilesView::FilesView(LibraryInterface* handler, QSharedPointer<Component> component, QWidget *parent):
 EditableTableView(parent),
 handler_(handler),
-component_(component)
+component_(component),
+addByBrowsingAction_(new QAction(tr("Add file(s)..."), this))
 {
-
+    connect(addByBrowsingAction_, SIGNAL(triggered()), this, SIGNAL(addItemByBrowsing()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -39,68 +42,30 @@ FilesView::~FilesView()
 }
 
 //-----------------------------------------------------------------------------
-// Function: filesview::mouseDoubleClickEvent()
+// Function: FilesView::contextMenuEvent()
 //-----------------------------------------------------------------------------
-void FilesView::mouseDoubleClickEvent( QMouseEvent* event )
+void FilesView::contextMenuEvent(QContextMenuEvent* event)
 {
-	// if there is no item on the clicked position then a new item should be added
-	QModelIndex index = indexAt(event->pos());
-	if (!index.isValid())
+    pressedPoint_ = event->pos();
+
+    QModelIndex index = indexAt(pressedPoint_);
+
+    QMenu menu(this);
+
+    menu.addAction(addByBrowsingAction_);
+    menu.addSeparator();
+    menu.addAction(&addAction_);
+
+    // if at least one valid item is selected
+    if (index.isValid())
     {
-		// ask user to select the files to add
-		QStringList files = QFileDialog::getOpenFileNames(this, tr("Select files to add."),
-            handler_->getPath(component_->getVlnv()));
-		
-		if (files.isEmpty())
-        {
-			event->accept();
-			return;
-		}
+        menu.addAction(&removeAction_);
+        menu.addAction(&clearAction_);
+        menu.addAction(&copyAction_);
+        menu.addAction(&pasteAction_);
+    }
 
-		foreach (QString file, files)
-        {
-			emit addItem(index, file);
-		}
+    menu.exec(event->globalPos());
 
-		event->accept();
-		return;
-	}
-
-	QTableView::mouseDoubleClickEvent(event);
-}
-
-//-----------------------------------------------------------------------------
-// Function: filesview::onAddAction()
-//-----------------------------------------------------------------------------
-void FilesView::onAddAction()
-{
-	QModelIndexList indexes = selectedIndexes();
-	QModelIndex posToAdd;
-
-	QSortFilterProxyModel* sortProxy = dynamic_cast<QSortFilterProxyModel*>(model());
-
-	if (!indexes.isEmpty())
-    {
-		qSort(indexes);
-		posToAdd = indexes.first();
-	}
-
-	// if proxy is used then map the index to source indexes
-	if (sortProxy)
-    {
-		posToAdd = sortProxy->mapToSource(posToAdd);
-	}
-
-	QStringList files = QFileDialog::getOpenFileNames(this, tr("Select files to add."),
-        handler_->getPath(component_->getVlnv()));
-
-	if (files.isEmpty())
-    {
-		return;
-	}
-
-	foreach (QString file, files)
-    {
-		emit addItem(posToAdd, file);
-	}
+    event->accept();
 }
