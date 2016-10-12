@@ -251,3 +251,22 @@ void MainMemoryGraphicsItem::reDrawConnections()
         connection->reDrawConnection();
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getSceneEndPoint()
+//-----------------------------------------------------------------------------
+quint64 MainMemoryGraphicsItem::getSceneEndPoint() const
+{
+    quint64 sceneEndPoint = sceneBoundingRect().bottom();
+
+    foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
+    {
+        quint64 connectionEndPoint = connectionItem->getSceneEndPoint();
+        if (connectionEndPoint > sceneEndPoint)
+        {
+            sceneEndPoint = connectionEndPoint;
+        }
+    }
+
+    return sceneEndPoint;
+}

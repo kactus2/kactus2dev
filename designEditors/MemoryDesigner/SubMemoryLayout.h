@@ -51,6 +51,13 @@ public:
      */
     void changeChildItemRanges(quint64 offset);
 
+    /*!
+     *  Get the sub memory items.
+     *
+     *      @return A map containing the sub memory items with the base addresses.
+     */
+    QMap<quint64, MemoryDesignerChildGraphicsItem*> getSubMemoryItems() const;
+
 protected:
 
     /*!
@@ -59,13 +66,6 @@ protected:
      *      @param [in] subItemPositionX    X position of the sub memory items.
      */
     void setupSubItems(qreal subItemPositionX);
-
-    /*!
-     *  Get the sub memory items.
-     *
-     *      @return A map containing the sub memory items with the base addresses.
-     */
-    QMap<quint64, MemoryDesignerChildGraphicsItem*> getSubMemoryItems() const;
 
     /*!
      *  Compress the sub items.
@@ -96,6 +96,18 @@ protected:
      */
     QMap<quint64, MemoryConnectionItem*> getSubItemConnections(MemoryDesignerChildGraphicsItem* subItem,
         QVector<MemoryConnectionItem*> parentConnections);
+
+    /*!
+     *  Get the minimum required height of the sub memory layout to fit the selected memory connection.
+     *
+     *      @param [in] minimumSubItemHeight    Minimum height of the sub items.
+     *      @param [in] connectionBaseAddress   Base address of the selected memory connection.
+     *      @param [in] connectionEndAddress    End address of the selected memory connection.
+     *
+     *      @return The minimum required height of the sub memory layout.
+     */
+    qreal getMinimumRequiredHeight(qreal minimumSubItemHeight, quint64 connectionBaseAddress,
+        quint64 connectionEndAddress) const;
 
 private:
     // Disable copying.

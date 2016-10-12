@@ -29,7 +29,8 @@ QGraphicsRectItem(parent),
 nameLabel_(new QGraphicsTextItem(itemName, this)),
 startRangeLabel_(new QGraphicsTextItem("", this)),
 endRangeLabel_(new QGraphicsTextItem("", this)),
-itemName_(itemName)
+itemName_(itemName),
+amountOfLabelNumbers_(0)
 {
     QFont labelFont = nameLabel_->font();
     labelFont.setWeight(QFont::Bold);
@@ -94,6 +95,8 @@ QGraphicsTextItem* MemoryDesignerGraphicsItem::getRangeEndLabel() const
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::setupToolTip(QString const& identifier, quint64 memoryStart, quint64 memoryEnd)
 {
+    amountOfLabelNumbers_ = getAmountOfLabelNumbers(memoryStart, memoryEnd);
+
     QString memoryStartInHexa = getValueFormattedToHexadecimal(memoryStart);
     QString memoryEndInHexa = getValueFormattedToHexadecimal(memoryEnd);
 
@@ -106,6 +109,31 @@ void MemoryDesignerGraphicsItem::setupToolTip(QString const& identifier, quint64
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::getAmountOfLabelNumbers()
+//-----------------------------------------------------------------------------
+int MemoryDesignerGraphicsItem::getAmountOfLabelNumbers(quint64 memoryStart, quint64 memoryEnd) const
+{
+    QString formattedStart = QString::number(memoryStart, 16).toUpper();
+    QString formattedEnd = QString::number(memoryEnd, 16).toUpper();
+
+    int startSize = formattedStart.size();
+    int endSize = formattedEnd.size();
+
+    int amountOfNumbers = endSize;
+    if (startSize > endSize)
+    {
+        amountOfNumbers = startSize;
+    }
+
+    while (amountOfNumbers % 4)
+    {
+        amountOfNumbers++;
+    }
+
+    return amountOfNumbers;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::getFormattedRangeValue()
 //-----------------------------------------------------------------------------
 QString MemoryDesignerGraphicsItem::getValueFormattedToHexadecimal(quint64 range) const
@@ -113,10 +141,11 @@ QString MemoryDesignerGraphicsItem::getValueFormattedToHexadecimal(quint64 range
     QString formattedRange = QString::number(range, 16).toUpper();
 
     int rangeSize = formattedRange.size();
-    while (rangeSize % 4)
+    int amountOfZeros = amountOfLabelNumbers_ - rangeSize;
+    while (amountOfZeros > 0)
     {
         formattedRange.prepend('0');
-        rangeSize++;
+        amountOfZeros--;
     }
 
     return formattedRange;
@@ -135,8 +164,7 @@ QString MemoryDesignerGraphicsItem::name() const
 //-----------------------------------------------------------------------------
 quint64 MemoryDesignerGraphicsItem::getBaseAddress() const
 {
-    bool temporary = true;
-    return startRangeLabel_->toPlainText().toULongLong(&temporary, 16);
+    return startRangeLabel_->toPlainText().toULongLong(0, 16);
 }
 
 //-----------------------------------------------------------------------------
@@ -144,8 +172,7 @@ quint64 MemoryDesignerGraphicsItem::getBaseAddress() const
 //-----------------------------------------------------------------------------
 quint64 MemoryDesignerGraphicsItem::getLastAddress() const
 {
-    bool temporary = true;
-    return endRangeLabel_->toPlainText().toULongLong(&temporary, 16);
+    return endRangeLabel_->toPlainText().toULongLong(0, 16);
 }
 
 //-----------------------------------------------------------------------------

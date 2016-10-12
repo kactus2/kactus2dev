@@ -392,7 +392,7 @@ void MemoryDesignerDiagram::createMemoryConnections()
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems(
         new QVector<MainMemoryGraphicsItem*> ());
 
-    int spaceYPlacement = GridSize * 8;
+    int spaceYPlacement = MemoryDesignerConstants::SPACEITEMINTERVAL;
 
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems(
         new QVector<MainMemoryGraphicsItem*> ());
@@ -473,12 +473,19 @@ MemoryConnectionItem* MemoryDesignerDiagram::createConnection(
 
                 foreach(QSharedPointer<ConnectivityInterface> pathInterface, connectionPath)
                 {
-                    if (pathInterface->getMode().compare("mirroredSlave", Qt::CaseInsensitive) == 0)
+                    if (pathInterface != startInterface && pathInterface != endInterface)
                     {
-                        mirroredSlaveAddressChange += pathInterface->getRemapAddress().toULongLong();
+                        if (pathInterface->getMode().compare("mirroredSlave", Qt::CaseInsensitive) == 0)
+                        {
+                            mirroredSlaveAddressChange += pathInterface->getRemapAddress().toULongLong();
 
-                        memoryMapEndAddress = pathInterface->getRemapRange().toULongLong() - 1;
-                        hasRemapRange = true;
+                            memoryMapEndAddress = pathInterface->getRemapRange().toULongLong() - 1;
+                            hasRemapRange = true;
+                        }
+                        else if (pathInterface->getMode().compare("master", Qt::CaseInsensitive) == 0)
+                        {
+                            mirroredSlaveAddressChange += pathInterface->getBaseAddress().toULongLong();
+                        }
                     }
                 }
 
@@ -535,8 +542,8 @@ MemoryConnectionItem* MemoryDesignerDiagram::createConnection(
                 {
                     placeSpaceItemToOtherColumn(connectionStartItem, spaceColumn, connectionEndItem, yTransfer);
 
-                    spaceYPlacement =
-                        spaceYPlacement - (connectionStartItem->boundingRect().height() + GridSize * 8);
+                    spaceYPlacement = spaceYPlacement - (connectionStartItem->boundingRect().height() +
+                        MemoryDesignerConstants::SPACEITEMINTERVAL);
                 }
 
                 MemoryConnectionItem* newConnectionItem = new MemoryConnectionItem(connectionStartItem,
@@ -709,7 +716,7 @@ void MemoryDesignerDiagram::repositionSpaceItemToMemoryMap(
         {
             QPointF collidingSpaceItemLowLeft =
                 spaceItem->mapToScene(spaceItem->boundingRect().bottomLeft());
-            int spaceItemYTransfer = collidingSpaceItemLowLeft.y() + GridSize * 8;
+            int spaceItemYTransfer = collidingSpaceItemLowLeft.y() + MemoryDesignerConstants::SPACEITEMINTERVAL;
 
             startItem->setPos(startItem->x(), spaceItemYTransfer);
 
@@ -836,7 +843,7 @@ void MemoryDesignerDiagram::moveAddressSpaceItem(MainMemoryGraphicsItem* spaceIt
     spaceColumn->onMoveItem(spaceItem);
     spaceColumn->onReleaseItem(spaceItem);
 
-    spaceYPlacement += spaceItem->boundingRect().height() + GridSize * 8;
+    spaceYPlacement += spaceItem->boundingRect().height() + MemoryDesignerConstants::SPACEITEMINTERVAL;
 }
 
 //-----------------------------------------------------------------------------
@@ -1005,36 +1012,37 @@ void MemoryDesignerDiagram::compressGraphicsItems(
         if (memoryColumn)
         {
             int yTransfer = 0;
+            quint64 spaceItemLowAfter = 0;
 
             foreach (QGraphicsItem* graphicsItem, memoryColumn->getItems())
             {
                 MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
                 if (memoryItem)
                 {
-                    int memoryItemLowBefore = memoryItem->sceneBoundingRect().bottom();
+                    int memoryItemLowBefore = memoryItem->getSceneEndPoint();
 
                     memoryItem->condenseItemAndChildItems();
 
                     AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
                     if (spaceItem && placedSpaceItems->contains(memoryItem) && memoryColumn == spaceColumn)
                     {
-                        memoryItem->moveConnectedItems(yTransfer);
+                        quint64 spaceItemTop = spaceItem->sceneBoundingRect().top();
+                        quint64 spaceInterval = (spaceItemTop + yTransfer) - spaceItemLowAfter;
 
-                        int memoryItemLowAfter = memoryItem->sceneBoundingRect().bottom();
-
-                        yTransfer = memoryItemLowAfter - memoryItemLowBefore;
-
-                        foreach (QGraphicsItem* childItem, spaceItem->childItems())
+                        if (spaceInterval < MemoryDesignerConstants::SPACEITEMINTERVAL)
                         {
-                            MemoryExtensionGraphicsItem* extensionItem =
-                                dynamic_cast<MemoryExtensionGraphicsItem*>(childItem);
-                            if (extensionItem)
-                            {
-                                memoryItemLowAfter += extensionItem->sceneBoundingRect().bottom();
-                            }
+                            quint64 yMovementAddition = MemoryDesignerConstants::SPACEITEMINTERVAL -
+                                ((spaceItemTop + yTransfer) - spaceItemLowAfter);
+                            yTransfer += yMovementAddition;
                         }
 
-                        spaceYPlacement = memoryItemLowAfter + GridSize * 8;
+                        spaceItem->moveConnectedItems(yTransfer);
+
+                        spaceItemLowAfter = spaceItem->getSceneEndPoint();
+
+                        yTransfer = spaceItemLowAfter - memoryItemLowBefore;
+
+                        spaceYPlacement = spaceItemLowAfter + MemoryDesignerConstants::SPACEITEMINTERVAL;
                     }
                 }
             }

@@ -137,7 +137,7 @@ quint64 AddressBlockGraphicsItem::condenseRegistersToConnection(MemoryConnection
 
         if (subItemBaseAddress >= connectionBaseAdddress)
         {
-            if (subItemBaseAddress >= connectionLastAddress)
+            if (subItemBaseAddress > connectionLastAddress)
             {
                 registersBelowConnection.append(subItem);
             }
@@ -183,9 +183,11 @@ qreal AddressBlockGraphicsItem::getCondensedRegisterHeightForConnection(MemoryCo
     QVector<MemoryDesignerChildGraphicsItem*> registersInConnection, qreal registerStartPositionY,
     qreal minimumHeight) const
 {
-    qreal availableArea = connectionItem->sceneBoundingRect().bottom() - registerStartPositionY;
+    qreal blockBottom = sceneBoundingRect().bottom();
+    qreal connectionBottom = connectionItem->sceneBoundingRect().bottom();
+    qreal availableArea = qMin(blockBottom, connectionBottom) - registerStartPositionY;
 
-    int amountOfRegistersToBeCondensed = 0;
+    unsigned int amountOfRegistersToBeCondensed = 0;
 
     foreach (MemoryDesignerChildGraphicsItem* registerItem, registersInConnection)
     {
@@ -197,7 +199,7 @@ qreal AddressBlockGraphicsItem::getCondensedRegisterHeightForConnection(MemoryCo
         }
         else
         {
-            availableArea = availableArea - registerItem->boundingRect().height();
+            availableArea = availableArea - registerItem->boundingRect().height() + 1;
         }
     }
 

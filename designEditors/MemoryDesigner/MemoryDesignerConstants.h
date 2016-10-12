@@ -19,6 +19,9 @@ namespace MemoryDesignerConstants
     //! Interval of one bit in a memory address.
     const qreal RANGEINTERVAL = GridSize * 1.5;
 
+    //! Minimum interval of address space graphics items.
+    const qreal SPACEITEMINTERVAL = GridSize * 8;
+
     const QString MEMORYMAP_TYPE = "memoryMap";
     const QString ADDRESSBLOCK_TYPE = "addressBlock";
     const QString REGISTER_TYPE = "register";

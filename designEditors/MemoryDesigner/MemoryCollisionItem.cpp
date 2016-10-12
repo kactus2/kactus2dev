@@ -105,17 +105,16 @@ void MemoryCollisionItem::setLabels(QString firstRangeStart, QString firstRangeE
     QPointF topLeft = boundingRect().topLeft();
     QPointF lowLeft = boundingRect().bottomLeft();
 
-    bool transformOk = true;
-    int firstStartInInt = firstRangeStart.toInt(&transformOk, 16);
-    int secondStartInInt = secondRangeStart.toInt(&transformOk, 16);
+    int firstStartInInt = firstRangeStart.toInt(0, 16);
+    int secondStartInInt = secondRangeStart.toInt(0, 16);
     QString collisionRangeStart = firstRangeStart;
     if (secondStartInInt > firstStartInInt)
     {
         collisionRangeStart = secondRangeStart;
     }
 
-    int firstEndInInt = firstRangeEnd.toInt(&transformOk, 16);
-    int secondEndInInt = secondRangeEnd.toInt(&transformOk, 16);
+    int firstEndInInt = firstRangeEnd.toInt(0, 16);
+    int secondEndInInt = secondRangeEnd.toInt(0, 16);
     QString collisionRangeEnd = firstRangeEnd;
     if (secondEndInInt < firstEndInInt)
     {
@@ -131,8 +130,8 @@ void MemoryCollisionItem::setLabels(QString firstRangeStart, QString firstRangeE
     QColor faultyTextColor(255, 0, 0);
     startPointRangeStart->setDefaultTextColor(faultyTextColor);
 
-    int rangeStartInt = collisionRangeStart.toInt(&transformOk, 16);
-    int rangeEndInt = collisionRangeEnd.toInt(&transformOk, 16);
+    int rangeStartInt = collisionRangeStart.toInt(0, 16);
+    int rangeEndInt = collisionRangeEnd.toInt(0, 16);
     
     int startPointYCorrection = -3;
     if (rangeEndInt - rangeStartInt > 0)

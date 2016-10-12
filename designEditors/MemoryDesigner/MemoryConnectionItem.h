@@ -143,9 +143,29 @@ private:
      */
     QString formatValueToHexadecimal(QString const& value) const;
 
+    /*!
+     *  Get the width of the connection.
+     *
+     *      @return The width of the connection.
+     */
+    qreal getConnectionWidth() const;
+
+    /*!
+     *  Get the amount of numbers used to display ranges.
+     *
+     *      @param [in] rangeStart  Range start.
+     *      @param [in] rangeEnd    Range end.
+     *
+     *      @return The amount of numbers used to display ranges.
+     */
+    int getAmountOfNumbers(QString const& rangeStart, QString const& rangeEnd) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The amount of numbers used to display ranges.
+    int amountOfNumbers_;
 
     //! The label containing the first item start range.
     QGraphicsTextItem* firstItemStartLabel_;

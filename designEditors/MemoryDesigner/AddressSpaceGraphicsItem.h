@@ -67,6 +67,16 @@ public:
      */
     virtual void condenseItemAndChildItems();
 
+    /*!
+     *  Get the minimum required height of the address space item to fit the selected memory connection.
+     *
+     *      @param [in] connectionBaseAddress   Base address of the selected memory connection.
+     *      @param [in] connectionEndAddress    End address of the selected memory connection.
+     *
+     *      @return The minimum required height of the address space item.
+     */
+    virtual qreal getMinimumRequiredHeight(quint64 connectionBaseAddress, quint64 connectionEndAddress) const;
+
 private:
     // Disable copying.
     AddressSpaceGraphicsItem(AddressSpaceGraphicsItem const& rhs);
@@ -120,6 +130,20 @@ private:
     quint64 condenseSegmentWithConnections(MemoryDesignerChildGraphicsItem* subItem, quint64 positionY,
         QMap<quint64, MemoryConnectionItem*> segmentConnections,
         QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
+
+    /*!
+     *  Get the y-coordinate transfer for the connected memory items.
+     *
+     *      @param [in] currentConnectionBaseAddress    Base address of the current connection.
+     *      @param [in] connectionRangeEnd              Range end of the current connection.
+     *      @param [in] previousConnectionLow           Scene low point of the connection item.
+     *      @param [in] connectionItem                  The connection item.
+     *      @param [in] yTransfer                       Previous y-coordinate transfer.
+     *
+     *      @return The y-coordinate transfer.
+     */
+    qreal getTransferY(quint64 currentConnectionBaseAddress, quint64 connectionRangeEnd,
+        quint64 previousConnectionLow, MemoryConnectionItem* connectionItem, qreal yTransfer) const;
 
     /*!
      *  Move the selected memory connection item.

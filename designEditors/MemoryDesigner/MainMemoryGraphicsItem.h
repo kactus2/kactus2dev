@@ -122,6 +122,23 @@ public:
      */
     void moveConnectedItems(qreal yTransfer);
 
+    /*!
+     *  Get the minimum required height of the memory item to fit the selected memory connection.
+     *
+     *      @param [in] connectionBaseAddress   Base address of the selected memory connection.
+     *      @param [in] connectionEndAddress    End address of the selected memory connection.
+     *
+     *      @return The minimum required height of the memory item.
+     */
+    virtual qreal getMinimumRequiredHeight(quint64 connectionBaseAddress, quint64 connectionEndAddress) const = 0;
+
+    /*!
+     *  Get lowest point of the item, connection or connected item.
+     *
+     *      @return The lowest point.
+     */
+    quint64 getSceneEndPoint() const;
+
 protected:
 
     /*!

@@ -73,6 +73,16 @@ public:
      */
     void condenseToConnection(MemoryConnectionItem* connectionItem);
 
+    /*!
+     *  Get the minimum required height of the memory map item to fit the selected memory connection.
+     *
+     *      @param [in] connectionBaseAddress   Base address of the selected memory connection.
+     *      @param [in] connectionEndAddress    End address of the selected memory connection.
+     *
+     *      @return The minimum required height of the memory map item.
+     */
+    virtual qreal getMinimumRequiredHeight(quint64 connectionBaseAddress, quint64 connectionEndAddress) const;
+
 private:
     // Disable copying.
     MemoryMapGraphicsItem(MemoryMapGraphicsItem const& rhs);
@@ -135,6 +145,13 @@ private:
      *      @return The lowest memory connection item.
      */
     MemoryConnectionItem* getLowestConnection() const;
+
+    /*!
+     *  Get the minimum height for the memory map sub items.
+     *
+     *      @return The minimum height for the memory map sub items.
+     */
+    int getMinimumHeightForSubItems() const;
 
     //-----------------------------------------------------------------------------
     // Data.

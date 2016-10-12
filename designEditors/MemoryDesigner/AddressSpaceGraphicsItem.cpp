@@ -23,6 +23,11 @@
 #include <QFont>
 #include <QPen>
 
+namespace AddressSpaceItemConstants
+{
+    const int MINMUMSUBITEMHEIGHT = 2 * MemoryDesignerConstants::RANGEINTERVAL;
+};
+
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::AddressSpaceGraphicsItem()
 //-----------------------------------------------------------------------------
@@ -119,16 +124,15 @@ void AddressSpaceGraphicsItem::changeChildItemRanges(quint64 offset)
 //-----------------------------------------------------------------------------
 void AddressSpaceGraphicsItem::condenseItemAndChildItems()
 {
-    qreal minimumSubItemHeight = 2 * MemoryDesignerConstants::RANGEINTERVAL;
     quint64 spaceNewHeight = 0;
 
     if (getMemoryConnections().isEmpty())
     {
-        spaceNewHeight = condenseChildItems(minimumSubItemHeight);
+        spaceNewHeight = condenseChildItems(AddressSpaceItemConstants::MINMUMSUBITEMHEIGHT);
     }
     else
     {
-        spaceNewHeight = condenseSpaceSegments(minimumSubItemHeight);
+        spaceNewHeight = condenseSpaceSegments(AddressSpaceItemConstants::MINMUMSUBITEMHEIGHT);
     }
 
     condense(spaceNewHeight);
@@ -176,8 +180,6 @@ quint64 AddressSpaceGraphicsItem::condenseSegmentWithConnections(MemoryDesignerC
 
     qreal segmentConnectionsEnd = 0;
 
-    quint64 currentConnectionBaseAddress = segmentConnections.firstKey();
-
     MemoryConnectionItem* firstConnection = segmentConnections.first();
     qreal yTransfer = subItem->sceneBoundingRect().top() - firstConnection->sceneBoundingRect().top();
 
@@ -192,8 +194,7 @@ quint64 AddressSpaceGraphicsItem::condenseSegmentWithConnections(MemoryDesignerC
     QMapIterator<quint64, MemoryConnectionItem*> segmentConnectionIterator(segmentConnections);
 
     quint64 previousConnectionLow = firstConnection->sceneBoundingRect().bottom();
-    bool temporary = true;
-    quint64 connectionRangeEnd = firstConnection->getRangeEndValue().toULongLong(&temporary, 16);
+    quint64 connectionRangeEnd = firstConnection->getRangeEndValue().toULongLong(0, 16);
 
     while(segmentConnectionIterator.hasNext())
     {
@@ -202,17 +203,18 @@ quint64 AddressSpaceGraphicsItem::condenseSegmentWithConnections(MemoryDesignerC
         MemoryConnectionItem* connectionItem = segmentConnectionIterator.value();
         if (connectionItem != firstConnection)
         {
-            currentConnectionBaseAddress = segmentConnectionIterator.key();
-            if (currentConnectionBaseAddress > connectionRangeEnd + 5)
-            {
-                yTransfer = previousConnectionLow - connectionItem->sceneBoundingRect().top() + GridSize;
-            }
+            yTransfer = getTransferY(segmentConnectionIterator.key(), connectionRangeEnd, previousConnectionLow,
+                connectionItem, yTransfer);
 
             moveConnectionItem(connectionItem, yTransfer, movedConnections);
 
-            connectionRangeEnd = connectionItem->getConnectedEndItemLastAddress();
+            quint64 newConnectionEnd = connectionItem->getConnectedEndItemLastAddress();
+            if (newConnectionEnd > connectionRangeEnd)
+            {
+                connectionRangeEnd = newConnectionEnd;
 
-            previousConnectionLow = connectionItem->getSceneEndPoint();
+                previousConnectionLow = connectionItem->getSceneEndPoint();
+            }
 
             quint64 connectionEnd = connectionItem->sceneBoundingRect().bottom();
             if (connectionEnd > segmentConnectionsEnd)
@@ -245,4 +247,34 @@ void AddressSpaceGraphicsItem::moveConnectionItem(MemoryConnectionItem* connecti
         connectionItem->onMoveConnectionInY(this, yTransfer);
         movedConnections->append(connectionItem);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getTransferY()
+//-----------------------------------------------------------------------------
+qreal AddressSpaceGraphicsItem::getTransferY(quint64 currentConnectionBaseAddress, quint64 connectionRangeEnd,
+    quint64 previousConnectionLow, MemoryConnectionItem* connectionItem, qreal yTransfer) const
+{
+    qreal newYTransfer = yTransfer;
+
+    if (currentConnectionBaseAddress == connectionRangeEnd + 1)
+    {
+        newYTransfer = previousConnectionLow - connectionItem->sceneBoundingRect().top() - 0.5;
+    }
+    else if (currentConnectionBaseAddress > connectionRangeEnd + 1)
+    {
+        newYTransfer = previousConnectionLow - connectionItem->sceneBoundingRect().top() + GridSize;
+    }
+
+    return newYTransfer;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getMinimumRequiredHeight()
+//-----------------------------------------------------------------------------
+qreal AddressSpaceGraphicsItem::getMinimumRequiredHeight(quint64 connectionBaseAddress,
+    quint64 connectionEndAddress) const
+{
+    return SubMemoryLayout::getMinimumRequiredHeight(AddressSpaceItemConstants::MINMUMSUBITEMHEIGHT,
+        connectionBaseAddress, connectionEndAddress);
 }

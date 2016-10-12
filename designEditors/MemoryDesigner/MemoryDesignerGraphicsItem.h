@@ -140,6 +140,16 @@ private:
      */
     virtual void setLabelPositions() = 0;
 
+    /*!
+     *  Get the amount numbers used to display memory ranges.
+     *
+     *      @param [in] memoryStart     Range start.
+     *      @param [in] memoryEnd       Range end.
+     *
+     *      @return The amount of numbers used to display memory ranges.
+     */
+    int getAmountOfLabelNumbers(quint64 memoryStart, quint64 memoryEnd) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -155,6 +165,9 @@ private:
 
     //! Name of the item.
     QString itemName_;
+
+    //! The amount of numbers used to display memory ranges.
+    int amountOfLabelNumbers_;
 };
 
 //-----------------------------------------------------------------------------

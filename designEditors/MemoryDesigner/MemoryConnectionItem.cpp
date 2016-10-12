@@ -30,6 +30,7 @@ MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem, QS
     QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QString const& secondStartValue,
     QString const& secondEndValue, QGraphicsScene* containingScene, int yTransfer, QGraphicsItem* parent):
 QGraphicsPathItem(parent),
+amountOfNumbers_(getAmountOfNumbers(firstStartValue, firstEndValue)),
 firstItemStartLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstStartValue), this)),
 firstItemEndLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstEndValue), this)),
 secondItemStartLabel_(new QGraphicsTextItem(formatValueToHexadecimal(secondStartValue), this)),
@@ -71,20 +72,18 @@ MemoryConnectionItem::~MemoryConnectionItem()
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::drawPath()
 //-----------------------------------------------------------------------------
-// void MemoryConnectionItem::createPath(MemoryDesignerGraphicsItem* startItem, MemoryDesignerGraphicsItem* endItem)
 void MemoryConnectionItem::createPath()
 {
     setPath(QPainterPath());
 
     const qreal LINEWIDTH = 1;
-    const qreal CONNECTIONWIDTH =
-        (rangeEnd_.toULongLong() - rangeStart_.toULongLong() + 1) * MemoryDesignerConstants::RANGEINTERVAL;
+    qreal connectionWidth = getConnectionWidth();
 
     QPointF startItemTopRight = startItem_->mapToScene(startItem_->boundingRect().topRight());
     QPointF endItemTopLeft = endItem_->mapToScene(endItem_->boundingRect().topLeft());
 
     QPointF highStartPoint(startItemTopRight.x(), startItemTopRight.y() + yTransfer_ + LINEWIDTH / 2);
-    QPointF lowStartPoint(highStartPoint.x(), highStartPoint.y() + CONNECTIONWIDTH);
+    QPointF lowStartPoint(highStartPoint.x(), highStartPoint.y() + connectionWidth);
     QPointF highEndPoint(endItemTopLeft.x(), highStartPoint.y());
     QPointF lowEndPoint(highEndPoint.x(), lowStartPoint.y());
 
@@ -100,6 +99,48 @@ void MemoryConnectionItem::createPath()
 
     setPath(path);
     avoidCollisionsOnPath(highStartPoint, highEndPoint, lowStartPoint, lowEndPoint);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::getConnectionWidth()
+//-----------------------------------------------------------------------------
+qreal MemoryConnectionItem::getConnectionWidth() const
+{
+    qreal connectionWidth =
+        (rangeEnd_.toULongLong() - rangeStart_.toULongLong() + 1) * MemoryDesignerConstants::RANGEINTERVAL;
+
+    quint64 connectionBaseAddress = getRangeStartValue().toULongLong(0, 16);
+    quint64 connectionLastAddress = getRangeEndValue().toULongLong(0, 16);
+
+    qreal endItemHeight = endItem_->getMinimumRequiredHeight(connectionBaseAddress, connectionLastAddress);
+    qreal startItemHeight = startItem_->getMinimumRequiredHeight(connectionBaseAddress, connectionLastAddress);
+
+    qreal comparisonHeight = endItemHeight;
+    if (startItemHeight > endItemHeight)
+    {
+        comparisonHeight = startItemHeight;
+    }
+
+    if (comparisonHeight < connectionWidth)
+    {
+        connectionWidth = comparisonHeight;
+
+        quint64 connectionSize = connectionLastAddress - connectionBaseAddress;
+
+        quint64 startLastAddress = startItem_->getLastAddress();
+        quint64 startBaseAddress = startItem_->getBaseAddress();
+        quint64 endLastAddress = endItem_->getLastAddress();
+        quint64 endBaseAddress = endItem_->getBaseAddress();
+
+        quint64 startItemSize = startLastAddress - startBaseAddress;
+        quint64 endItemSize = endLastAddress - endBaseAddress;
+        if (connectionSize > startItemSize || connectionSize > endItemSize)
+        {
+            connectionWidth += MemoryDesignerConstants::RANGEINTERVAL * 2;
+        }
+    }
+
+    return connectionWidth;
 }
 
 //-----------------------------------------------------------------------------
@@ -212,19 +253,43 @@ void MemoryConnectionItem::repositionLabels()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::getAmountOfNumbers()
+//-----------------------------------------------------------------------------
+int MemoryConnectionItem::getAmountOfNumbers(QString const& rangeStart, QString const& rangeEnd) const
+{
+    int startSize = rangeStart.size();
+    int endSize = rangeEnd.size();
+
+    int amountOfNumbers = endSize;
+    if (startSize > endSize)
+    {
+        amountOfNumbers = startSize;
+    }
+
+    while (amountOfNumbers % 4)
+    {
+        amountOfNumbers++;
+    }
+
+    return amountOfNumbers;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::formatValueToHexadecimal()
 //-----------------------------------------------------------------------------
 QString MemoryConnectionItem::formatValueToHexadecimal(QString const& value) const
 {
-    quint64 intValue = value.toInt();
+    quint64 intValue = value.toULongLong();
 
     QString formattedRange = QString::number(intValue, 16).toUpper();
 
     int rangeSize = formattedRange.size();
-    while (rangeSize % 4)
+
+    int amountOfZeros = amountOfNumbers_ - rangeSize;
+    while (amountOfZeros > 0)
     {
         formattedRange.prepend('0');
-        rangeSize++;
+        amountOfZeros--;
     }
 
     return formattedRange;
@@ -284,6 +349,8 @@ void MemoryConnectionItem::moveConnectedItem(MainMemoryGraphicsItem* movementOri
     if (connectedItem)
     {
         connectedItem->moveBy(0, yTransfer);
+
+        reDrawConnection();
 
         foreach (MemoryConnectionItem* connectionItem, connectedItem->getMemoryConnections())
         {
@@ -354,9 +421,8 @@ void MemoryConnectionItem::condenseEndItemToConnection()
 //-----------------------------------------------------------------------------
 quint64 MemoryConnectionItem::getConnectedEndItemLastAddress() const
 {
-    bool temporary = true;
-    quint64 baseAddress = getRangeStartValue().toULongLong(&temporary, 16);
-    quint64 lastAddress = getRangeEndValue().toULongLong(&temporary, 16);
+    quint64 baseAddress = getRangeStartValue().toULongLong(0, 16);
+    quint64 lastAddress = getRangeEndValue().toULongLong(0, 16);
     
     quint64 endItemLastAddress = endItem_->getLastAddress() + baseAddress;
     if (endItemLastAddress > lastAddress)

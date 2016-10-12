@@ -24,6 +24,11 @@
 #include <QFont>
 #include <QPen>
 
+namespace MemoryMapItemConstants
+{
+    const int MINIMUMSUBITEMHEIGHT = 2 * MemoryDesignerConstants::RANGEINTERVAL;
+};
+
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::MemoryMapGraphicsItem()
 //-----------------------------------------------------------------------------
@@ -175,13 +180,11 @@ void MemoryMapGraphicsItem::changeChildItemRanges(quint64 offset)
 //-----------------------------------------------------------------------------
 void MemoryMapGraphicsItem::condenseItemAndChildItems()
 {
-    int minimumSubItemHeight = 3 * MemoryDesignerConstants::RANGEINTERVAL;
-
-    quint64 memoryMapNewHeight = 0;
-
     if (getMemoryConnections().isEmpty())
     {
-        memoryMapNewHeight = condenseChildItems(minimumSubItemHeight);
+        int subItemHeight = getMinimumHeightForSubItems();
+
+        quint64 memoryMapNewHeight = condenseChildItems(subItemHeight);
 
         condense(memoryMapNewHeight);
     }
@@ -197,13 +200,12 @@ void MemoryMapGraphicsItem::condenseToConnection(MemoryConnectionItem* connectio
         MemoryConnectionItem* lowestConnection = getLowestConnection();
         if (connectionItem == lowestConnection)
         {
-            int minimumSubItemHeight = 3 * MemoryDesignerConstants::RANGEINTERVAL;
+            qreal minimumSubItemHeight = getMinimumHeightForSubItems();
 
             quint64 memoryMapNewHeight = 0;
 
-            bool temporary = true;
-            quint64 connectionBaseAddress = lowestConnection->getRangeStartValue().toULongLong(&temporary, 16);
-            quint64 connectionLastAddress = lowestConnection->getRangeEndValue().toULongLong(&temporary, 16);
+            quint64 connectionBaseAddress = lowestConnection->getRangeStartValue().toULongLong(0, 16);
+            quint64 connectionLastAddress = lowestConnection->getRangeEndValue().toULongLong(0, 16);
 
             foreach (MemoryDesignerChildGraphicsItem* childItem, getSubMemoryItems())
             {
@@ -211,11 +213,14 @@ void MemoryMapGraphicsItem::condenseToConnection(MemoryConnectionItem* connectio
                 if (blockItem)
                 {
                     quint64 blockBaseAddress = blockItem->getBaseAddress();
-                    quint64 blockLastAddress = blockItem->getLastAddress();
-                    if (blockBaseAddress >= connectionBaseAddress && blockLastAddress > connectionLastAddress)
+                    if (blockBaseAddress >= connectionBaseAddress && blockBaseAddress < connectionLastAddress)
                     {
-                        memoryMapNewHeight += blockItem->condenseRegistersToConnection(
-                            lowestConnection, connectionBaseAddress, connectionLastAddress, minimumSubItemHeight);
+                        memoryMapNewHeight += blockItem->condenseRegistersToConnection(lowestConnection,
+                            connectionBaseAddress, connectionLastAddress, minimumSubItemHeight);
+                    }
+                    else
+                    {
+                        memoryMapNewHeight += blockItem->sceneBoundingRect().height() - 1;
                     }
                 }
             }
@@ -255,12 +260,11 @@ MemoryConnectionItem* MemoryMapGraphicsItem::getLowestConnection() const
 
     if (memoryConnections.size() > 1)
     {
-        bool temporary = true;
-        quint64 lowestRangeEnd = lowestConnection->getRangeEndValue().toULongLong(&temporary, 16);
+        quint64 lowestRangeEnd = lowestConnection->getRangeEndValue().toULongLong(0, 16);
 
         foreach (MemoryConnectionItem* connection, memoryConnections)
         {
-            quint64 connectionRangeEnd = connection->getRangeEndValue().toULongLong(&temporary, 16);
+            quint64 connectionRangeEnd = connection->getRangeEndValue().toULongLong(0, 16);
             if (connectionRangeEnd > lowestRangeEnd)
             {
                 lowestRangeEnd = connectionRangeEnd;
@@ -270,4 +274,34 @@ MemoryConnectionItem* MemoryMapGraphicsItem::getLowestConnection() const
     }
 
     return lowestConnection;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::getMinimumRequiredHeight()
+//-----------------------------------------------------------------------------
+qreal MemoryMapGraphicsItem::getMinimumRequiredHeight(quint64 connectionBaseAddress, quint64 connectionEndAddress)
+    const
+{
+    int subItemHeight = getMinimumHeightForSubItems();
+
+    return SubMemoryLayout::getMinimumRequiredHeight(subItemHeight, connectionBaseAddress, connectionEndAddress);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::getMinimumHeightForSubItems()
+//-----------------------------------------------------------------------------
+int MemoryMapGraphicsItem::getMinimumHeightForSubItems() const
+{
+    int blockHeight = MemoryMapItemConstants::MINIMUMSUBITEMHEIGHT;
+    if (getSubMemoryItems().size() == 1)
+    {
+        MemoryDesignerChildGraphicsItem* blockItem = getSubMemoryItems().first();
+        SubMemoryLayout* blockLayout = dynamic_cast<SubMemoryLayout*>(blockItem);
+        if (blockLayout && blockLayout->getSubMemoryItems().size() == 1)
+        {
+            blockHeight = blockHeight * 1.5;
+        }
+    }
+
+    return blockHeight;
 }

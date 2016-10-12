@@ -209,9 +209,8 @@ QMap<quint64, MemoryConnectionItem*> SubMemoryLayout::getSubItemConnections(
 
     foreach (MemoryConnectionItem* connectionItem, parentConnections)
     {
-        bool temporary = true;
-        quint64 connectionRangeStart = connectionItem->getRangeStartValue().toULongLong(&temporary, 16);
-        quint64 connectionRangeEnd = connectionItem->getRangeEndValue().toULongLong(&temporary, 16);
+        quint64 connectionRangeStart = connectionItem->getRangeStartValue().toULongLong(0, 16);
+        quint64 connectionRangeEnd = connectionItem->getRangeEndValue().toULongLong(0, 16);
 
         if ((subItemLastAddress >= connectionRangeStart && subItemLastAddress <= connectionRangeEnd) ||
 
@@ -224,4 +223,39 @@ QMap<quint64, MemoryConnectionItem*> SubMemoryLayout::getSubItemConnections(
     }
 
     return subItemConnections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::getMinimumRequiredHeight()
+//-----------------------------------------------------------------------------
+qreal SubMemoryLayout::getMinimumRequiredHeight(qreal minimumSubItemHeight, quint64 connectionBaseAddress,
+    quint64 connectionEndAddress) const
+{
+    qreal height = 0;
+
+    foreach (MemoryDesignerChildGraphicsItem* subItem, subMemoryItems_)
+    {
+        SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
+        if (subLayout)
+        {
+            height += subLayout->getMinimumRequiredHeight(
+                minimumSubItemHeight, connectionBaseAddress, connectionEndAddress);
+        }
+        else
+        {
+            quint64 subBaseAddress = subItem->getBaseAddress();
+            quint64 subLastAddress = subItem->getLastAddress();
+
+            if (subLastAddress - subBaseAddress > 2)
+            {
+                height += minimumSubItemHeight;
+            }
+            else
+            {
+                height += subItem->boundingRect().height();
+            }
+        }
+    }
+
+    return height;
 }
