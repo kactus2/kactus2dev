@@ -518,13 +518,6 @@ MemoryConnectionItem* MemoryDesignerDiagram::createConnection(
                     {
                         repositionMemoryMap(placedMapItems, placedSpaceItems, connectionStartItem, spaceColumn,
                             connectionEndItem, yTransfer);
-
-                        MemoryColumn* endItemColumn = dynamic_cast<MemoryColumn*>(connectionEndItem->parentItem());
-                        if (endItemColumn)
-                        {
-                            endItemColumn->onMoveItem(connectionEndItem);
-                            endItemColumn->onReleaseItem(connectionEndItem);
-                        }
                     }
                     else
                     {
