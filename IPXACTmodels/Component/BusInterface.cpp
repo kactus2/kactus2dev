@@ -621,7 +621,7 @@ QString BusInterface::getLogicalPortName( const QString& physicalPortName ) cons
 {
     if (abstractionTypes_->size() < 1)
     {
-        return false;
+        return QString();
     }
 
 	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
