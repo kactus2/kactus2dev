@@ -13,7 +13,6 @@
 #include "BusInterfaceWizard.h"
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -28,14 +27,11 @@ BusInterfaceWizardGeneralOptionsPage::BusInterfaceWizardGeneralOptionsPage(QShar
     QSharedPointer<BusInterface> busIf, LibraryInterface* lh,  bool absDefEditable,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> ExpressionParser, 
-    QSharedPointer<BusInterfaceValidator> validator,
     BusInterfaceWizard* parent): 
 QWizardPage(parent),
     component_(component),
     busIf_(busIf),
     handler_(lh),
-    validator_(validator),
-    newBus_(true),
     generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, ExpressionParser,
     this, parent))
 {
@@ -89,7 +85,19 @@ bool BusInterfaceWizardGeneralOptionsPage::isComplete() const
         return false;
     }        
 
-    return validator_->validate(busIf_);
+    return mandatoryFieldsAreFilledIn();
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceWizardGeneralOptionsPage::mandatoryFieldsAreFilledIn()
+//-----------------------------------------------------------------------------
+bool BusInterfaceWizardGeneralOptionsPage::mandatoryFieldsAreFilledIn() const
+{
+    return !busIf_->name().isEmpty() &&
+        busIf_->getInterfaceMode() != General::INTERFACE_MODE_COUNT &&
+        handler_->contains(busIf_->getBusType()) && 
+        !busIf_->getAbstractionTypes()->isEmpty() && 
+        handler_->contains(*busIf_->getAbstractionTypes()->first()->getAbstractionRef());
 }
 
 //-----------------------------------------------------------------------------
@@ -100,4 +108,3 @@ void BusInterfaceWizardGeneralOptionsPage::setupLayout()
     QVBoxLayout* topLayout = new QVBoxLayout(this);    
     topLayout->addWidget(generalTab_);
 }
-

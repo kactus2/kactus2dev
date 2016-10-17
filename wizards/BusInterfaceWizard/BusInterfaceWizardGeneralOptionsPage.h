@@ -21,11 +21,11 @@
 #include <QWizardPage>
 
 class BusInterface;
-class BusInterfaceValidator;
 class BusInterfaceWizard;
 class Component;
 class LibraryInterface;
 class ExpressionParser;
+
 //-----------------------------------------------------------------------------
 //! General options page for the interface wizard.
 //-----------------------------------------------------------------------------
@@ -40,7 +40,7 @@ public:
      *
      *      @param [in] component               The component whose bus interface is being edited.
      *      @param [in] busIf                   The bus interface being edited.
-     *      @param [in] lh                      The component library hunter.
+     *      @param [in] lh                      The component library handler.
      *      @param [in] absDefEditable          The editability of abstract definition.
      *      @param [in] parameterFinder         The parameter finder.
      *      @param [in] expressionFormatter     The expression formatter.
@@ -53,7 +53,6 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<BusInterfaceValidator> validator,
         BusInterfaceWizard* parent);
 
     /*!
@@ -76,7 +75,7 @@ public:
      *
      *      @return True, if all fields are valid, otherwise false.
      */
-    virtual bool isComplete() const;
+    virtual bool isComplete() const;    
 
 signals:
 
@@ -99,9 +98,16 @@ private:
     BusInterfaceWizardGeneralOptionsPage(BusInterfaceWizardGeneralOptionsPage const& rhs);
     BusInterfaceWizardGeneralOptionsPage& operator=(BusInterfaceWizardGeneralOptionsPage const& rhs);
 
-   /*!
-    * Sets the page layout.
-    */
+    /*!
+     *  Checks if all the mandatory fields are filled in.
+     *
+     *      @return True, if mandatory fields are filled, otherwise false.
+     */
+    bool mandatoryFieldsAreFilledIn() const;
+
+    /*!
+     * Sets the page layout.
+     */
     void setupLayout();
    
     //-----------------------------------------------------------------------------
@@ -116,11 +122,6 @@ private:
 
     //! The library handler.
     LibraryInterface* handler_;
-
-    QSharedPointer<BusInterfaceValidator> validator_;
-
-    //! Flag for indicating, if a new bus is created.
-    bool newBus_;
 
     //! Editor for bus interface general options.
     BusIfGeneralTab* generalTab_;

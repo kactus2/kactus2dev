@@ -193,12 +193,16 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSh
     {
         propertyValueEditor_->hide();
 
-        QSharedPointer<ViewConfiguration> matchingViewConfiguration =
-            designConfiguration->getViewConfiguration(component->getComponentInstance()->getInstanceName());
+        if (designConfiguration)
+        {
+            QSharedPointer<ViewConfiguration> matchingViewConfiguration =
+                designConfiguration->getViewConfiguration(component->getComponentInstance()->getInstanceName());
 
-        // Show the component's configurable elements in case of HW.
-        configurableElements_->setComponent(component->componentModel(), component->getComponentInstance(),
-            matchingViewConfiguration, editProvider);
+            // Show the component's configurable elements in case of HW.
+            configurableElements_->setComponent(component->componentModel(), component->getComponentInstance(),
+                matchingViewConfiguration, editProvider);
+        }
+
 	    configurableElements_->show();
     }
 

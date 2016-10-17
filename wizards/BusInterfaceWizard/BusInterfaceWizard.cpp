@@ -48,17 +48,15 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    BusInterfaceWizardBusDefinitionEditorPage::SignalNamingPolicy namingPolicy = BusInterfaceWizardBusDefinitionEditorPage::NAME;
+    BusInterfaceWizardBusDefinitionEditorPage::SignalNamingPolicy namingPolicy =
+        BusInterfaceWizardBusDefinitionEditorPage::NAME;
     if (descriptionAsLogicalName)
     {
         namingPolicy = BusInterfaceWizardBusDefinitionEditorPage::DESCRIPTION;
     }
 
-    QSharedPointer<BusInterfaceValidator> validator =
-        createBusInterfaceValidator(component, expressionParser, handler);
-
     BusInterfaceWizardGeneralOptionsPage* optionsPage = new BusInterfaceWizardGeneralOptionsPage(component, busIf,
-        handler, !absDefVLNV.isValid(), parameterFinder, expressionFormatter, expressionParser, validator, this);
+        handler, !absDefVLNV.isValid(), parameterFinder, expressionFormatter, expressionParser, this);
 
     connect(optionsPage, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -70,7 +68,8 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusDefinitionEditorPage(component, busIf, handler, portNames, 
         this, absDefVLNV, expressionParser, namingPolicy));
     setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
-        expressionParser, expressionFormatter, parameterFinder, validator, this));
+        expressionParser, expressionFormatter, parameterFinder, 
+        createBusInterfaceValidator(component, expressionParser, handler), this));
     setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
 }
 
