@@ -152,7 +152,8 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 	makeParser.parse( topComponent );
 
 	// Show the dialog.
-	MakeParametersDialog dialog(stackParser.getReplacedFiles(), makeParser.getParsedData(),
+    bool addLauncher = false;
+	MakeParametersDialog dialog(stackParser.getReplacedFiles(), makeParser.getParsedData(), &addLauncher,
 		utility->getParentWidget());
 
 	// Return, if user did not want to proceed after seeing it.
@@ -164,7 +165,7 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 
 	// Generate files from parsed data.
     MakefileGenerator generator( makeParser, utility, stackParser.getGeneralFileSet() );
-    int exe_count = generator.generate(targetDir, topDir, sysViewName);
+    int exe_count = generator.generate(targetDir, topDir, sysViewName, addLauncher);
 
 	// Did we actually generate anything?
 	if ( exe_count > 0 )

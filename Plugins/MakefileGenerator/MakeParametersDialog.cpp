@@ -11,15 +11,16 @@
 
 #include "MakeParametersDialog.h"
 #include <QtWidgets/QScrollArea>
+#include <QFormLayout>
+#include <QCheckBox>
 
 //-----------------------------------------------------------------------------
 // Function: CompileConflictDialog()
 //-----------------------------------------------------------------------------
 MakeParametersDialog::MakeParametersDialog(QStringList replacedFiles,
-	QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, QWidget* parent) :
-	QDialog(parent,Qt::CustomizeWindowHint)
+	QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, bool* addLauncher, QWidget* parent) :
+	addLauncher_(addLauncher), QDialog(parent,Qt::CustomizeWindowHint)
 {
-
 	QScrollArea* scrollArea = new QScrollArea(this);
 
 	QWidget* widgetList = new QWidget;
@@ -34,7 +35,12 @@ MakeParametersDialog::MakeParametersDialog(QStringList replacedFiles,
 	foreach ( QString file, replacedFiles )
 	{
 		replaceList->addItem( file );
-	}
+    }
+
+    // Generating launcher script is optional: Create a checkbox + description.
+    QFormLayout* checkLayout = new QFormLayout();
+    QCheckBox* addCheck = new QCheckBox();
+    checkLayout->addRow(tr("Generate launcher script:"), addCheck);
 
 	// Add "ok" and "cancel" button in neat horizontal order.
 	QPushButton* btnOK = new QPushButton(tr("Generate"), this);
@@ -49,11 +55,15 @@ MakeParametersDialog::MakeParametersDialog(QStringList replacedFiles,
 
 	// Add things to main layout in vertical order.
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->addLayout(checkLayout);
 	mainLayout->addWidget(new QLabel(tr("Following top component files will be overwritten in the generation:"),
 		this));
 	mainLayout->addWidget(replaceList, Qt::AlignTop);
 	mainLayout->addLayout(buttonLayout);
-	mainLayout->addWidget(scrollArea);
+    mainLayout->addWidget(scrollArea);
+
+    connect(addCheck, SIGNAL(stateChanged(int)), 
+        this, SLOT(onLauncherGenerationStateChanged(int)), Qt::UniqueConnection);
 
 	foreach ( QSharedPointer<MakeFileData> makeData, *parsedData )
 	{
@@ -144,4 +154,12 @@ MakeParametersDialog::MakeParametersDialog(QStringList replacedFiles,
 //-----------------------------------------------------------------------------
 MakeParametersDialog::~MakeParametersDialog()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: MakeParametersDialog::onInterfaceGenerationStateChanged()
+//-----------------------------------------------------------------------------
+void MakeParametersDialog::onLauncherGenerationStateChanged(int state)
+{
+    *addLauncher_ = (state == Qt::Checked);
 }

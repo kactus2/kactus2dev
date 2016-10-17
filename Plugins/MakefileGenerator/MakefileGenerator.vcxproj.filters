@@ -67,6 +67,12 @@
     <ClCompile Include="MakeParametersDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MakeParametersDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MakeParametersDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MakefileGenerator.h">
@@ -99,9 +105,6 @@
     <ClInclude Include="SWStackParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="MakeParametersDialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MakefileGeneratorPlugin.h">
@@ -109,6 +112,9 @@
     </CustomBuild>
     <CustomBuild Include="MakefileGenerator.qrc">
       <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MakeParametersDialog.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

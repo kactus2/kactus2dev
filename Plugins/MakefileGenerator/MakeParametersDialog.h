@@ -29,22 +29,30 @@
 //-----------------------------------------------------------------------------
 class MakeParametersDialog : public QDialog
 {
+    Q_OBJECT
+
 public:
     /*!
      *  Constructor.
      */
     MakeParametersDialog(QStringList replacedFiles,
-		QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, QWidget* parent);
+		QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, bool* addLauncher, QWidget* parent);
 
     /*!
      *  Destructor.
      */
     ~MakeParametersDialog();
 
+private slots:
+
+    void onLauncherGenerationStateChanged(int state);
+
 private:
     // Disable copying.
     MakeParametersDialog(MakeParametersDialog const& rhs);
     MakeParametersDialog& operator=(MakeParametersDialog const& rhs);
+
+    bool* addLauncher_;
 };
 
 //-----------------------------------------------------------------------------

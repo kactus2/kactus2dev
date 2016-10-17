@@ -36,7 +36,7 @@ MakefileGenerator::~MakefileGenerator()
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::generate()
 //-----------------------------------------------------------------------------
-int MakefileGenerator::generate(QString targetPath, QString topPath, QString sysViewName)
+int MakefileGenerator::generate(QString targetPath, QString topPath, QString sysViewName, bool addLauncher /*= false*/)
 {
     // Names of the created directories to be referenced by the master makefile.
     QStringList makeNames;
@@ -50,11 +50,14 @@ int MakefileGenerator::generate(QString targetPath, QString topPath, QString sys
         generateInstanceMakefile(topPath, mfd, makeNames);
     }
 
-	if ( makeNames.count() > 0 )
+	if (makeNames.count() > 0)
 	{
 		generateMainMakefile(basePath, topPath, makeNames);
 
-		generateLauncher(basePath, topPath, makeNames);
+        if (addLauncher)
+        {
+		    generateLauncher(basePath, topPath, makeNames);
+        }
 	}
 
 	return makeNames.count();
@@ -67,14 +70,14 @@ void MakefileGenerator::generateInstanceMakefile(QString topPath,
     QSharedPointer<MakeFileData> makeData, QStringList &makeNames)
 {
 	// Nothing to make -> no action.
-	if ( makeData->swObjects.count() < 1 )
+	if (makeData->swObjects.count() < 1)
 	{
 		utility_->printError("No objects for makefile. Top instance: " + makeData->name);
 		return;
 	}
 
 	// No path -> no action.
-	if ( makeData->targetPath.isEmpty() )
+	if (makeData->targetPath.isEmpty())
 	{
 		utility_->printError("Empty path for a makefile. Top instance: " + makeData->name);
 		return;
@@ -82,14 +85,14 @@ void MakefileGenerator::generateInstanceMakefile(QString topPath,
 
     // Construct the path and folder.
     QDir path;
-    path.mkpath( makeData->targetPath );
+    path.mkpath(makeData->targetPath);
 
     // Create the makefile.
     QString makePath = makeData->targetPath + "/Makefile"; 
     QFile makeFile(makePath);
     
 	// If it cannot be written, then it is too bad.
-    if ( !makeFile.open(QIODevice::WriteOnly) )
+    if (!makeFile.open(QIODevice::WriteOnly))
     {
         utility_->printError("Could not open the makefile at location " + makePath);
 		utility_->printError("Reason: " + makeFile.errorString());
@@ -106,7 +109,7 @@ void MakefileGenerator::generateInstanceMakefile(QString topPath,
     // Write the paths of directories containing includes.
     outStream << "_INCLUDES=";
 
-    foreach( QString path, makeData->includeDirectories )
+    foreach(QString path, makeData->includeDirectories)
     {
         outStream << " " << General::getRelativePath(makeData->targetPath,path);
     }
@@ -151,7 +154,7 @@ void MakefileGenerator::generateInstanceMakefile(QString topPath,
     QString relPath = General::getRelativePath(topPath,makePath);
 
     // Add the file to instance fileSet, if it does not exist there.
-    if ( fileSet && !fileSet->contains(relPath) )
+    if (fileSet && !fileSet->contains(relPath))
     {
         QSharedPointer<File> file;
         QSettings settings;
@@ -174,7 +177,7 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, 
     // Default target for each directory.
     outStream << "make:";
 
-    foreach( QString directory, makeNames )
+    foreach(QString directory, makeNames)
     {
         outStream << endl << "\t(cd " << General::getRelativePath(basePath,directory) << "; make)";
     }
@@ -182,7 +185,7 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, 
     // Needs also cleaner for each directory.
     outStream << endl << endl << "clean:";
 
-    foreach( QString directory, makeNames )
+    foreach(QString directory, makeNames)
     {
         outStream << endl << "\t(cd " << General::getRelativePath(basePath,directory) << "; make clean)";
 	}
@@ -190,7 +193,7 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, 
 	// Debug target for each directory.
 	outStream << endl << endl << "debug:";
 
-	foreach( QString directory, makeNames )
+	foreach(QString directory, makeNames)
 	{
 		outStream << endl << "\t(cd " << General::getRelativePath(basePath,directory) << "; make debug)";
 	}
@@ -198,7 +201,7 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, 
 	// Profiling target for each directory.
 	outStream << endl << endl << "profile:";
 
-	foreach( QString directory, makeNames )
+	foreach(QString directory, makeNames)
 	{
 		outStream << endl << "\t(cd " << General::getRelativePath(basePath,directory) << "; make profile)";
 	}
@@ -210,7 +213,7 @@ void MakefileGenerator::generateMainMakefile(QString basePath, QString topPath, 
     QString relDir = General::getRelativePath(topPath,dir);
 
     // Add the file to instance fileSet
-    if ( generalFileSet_ && !generalFileSet_->contains(relDir) )
+    if (generalFileSet_ && !generalFileSet_->contains(relDir))
     {
         QSharedPointer<File> file;
         QSettings settings;
@@ -235,7 +238,7 @@ void MakefileGenerator::generateLauncher(QString basePath, QString topPath, QStr
 
     writeProcessLaunch(outStream);
 
-    writeEnding(outStream);
+    writeLauncherEnding(outStream);
 
     // Close after it is done.
     launcherFile.close();
@@ -244,7 +247,7 @@ void MakefileGenerator::generateLauncher(QString basePath, QString topPath, QStr
     QString relDir = General::getRelativePath(topPath,dir);
 
     // Add the file to instance fileSet
-    if ( generalFileSet_ && !generalFileSet_->contains(relDir) )
+    if (generalFileSet_ && !generalFileSet_->contains(relDir))
     {
         QSharedPointer<File> file;
         QSettings settings;
@@ -262,7 +265,7 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(QSharedPointer<MakeFileData> m
     QString finalBuilder;
 
     // If build command of software view of the hardware instance exist, its properties are used.
-    if ( mfd->hardPart->buildCmd != 0 )
+    if (mfd->hardPart->buildCmd != 0)
     {
         finalBuilder = mfd->hardPart->buildCmd->getCommand();
 
@@ -270,7 +273,7 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(QSharedPointer<MakeFileData> m
     }
 
     // All flags of all software views must be appended to the flags.
-    foreach ( QString flag, mfd->softViewFlags )
+    foreach (QString flag, mfd->softViewFlags)
     {
         finalFlags += " " + flag;
     }
@@ -291,7 +294,7 @@ void MakefileGenerator::writeObjectList(QSharedPointer<MakeFileData> mfd, QTextS
 
     foreach(QSharedPointer<MakeObjectData> mod, mfd->swObjects)
     {
-        if ( ( !mod->file || !mod->file->isIncludeFile() ) && !mod->compiler.isEmpty() )
+        if (( !mod->file || !mod->file->isIncludeFile() ) && !mod->compiler.isEmpty())
         {
             outStream << " " << mod->fileName << ".o";
         }
@@ -371,9 +374,9 @@ void MakefileGenerator::writeProcessList(QTextStream& outStream, QStringList mak
     outStream << "PROCESSES=(";
 
     // The list consists of relative path to each executable.
-    foreach( QString directory, makeNames )
+    foreach(QString directory, makeNames)
     {
-        QFileInfo qfi = QFileInfo( directory );
+        QFileInfo qfi = QFileInfo(directory);
 
         outStream << General::getRelativePath(basePath,directory) << "/" << qfi.fileName() << " ";
     }
@@ -437,7 +440,7 @@ void MakefileGenerator::writeProcessLaunch(QTextStream& outStream) const
 //-----------------------------------------------------------------------------
 // Function: MakefileGenerator::writeEnding()
 //-----------------------------------------------------------------------------
-void MakefileGenerator::writeEnding(QTextStream& outStream) const
+void MakefileGenerator::writeLauncherEnding(QTextStream& outStream) const
 {
     // Signal trap to called when calling suspend process.
     outStream << "trap \"terminate\" SIGTSTP" << endl;

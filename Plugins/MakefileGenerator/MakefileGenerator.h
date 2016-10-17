@@ -38,7 +38,7 @@ public:
 	 *
 	 *      @return How many executables got a makefile.
 	 */
-	int generate(QString targetPath, QString topPath, QString sysViewName);
+	int generate(QString targetPath, QString topPath, QString sysViewName, bool addLauncher = false);
 
 private:
 
@@ -138,7 +138,7 @@ private:
       *
       *      @param [in] outStream   The stream where the launcher is written.
       */
-      void writeEnding(QTextStream& outStream) const;
+      void writeLauncherEnding(QTextStream& outStream) const;
 
       //! Collection of data sets, one for each makefile.
       QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData_;
