@@ -73,7 +73,7 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
 
 	writer.writeEndElement(); // kactus2:properties
 
-	if (comDefinition->getVendorExtensions()->isEmpty())
+	if (!comDefinition->getVendorExtensions()->isEmpty())
 	{
 		writer.writeStartElement("ipxact:vendorExtensions");
 		foreach (QSharedPointer<VendorExtension> extension, *comDefinition->getVendorExtensions())
