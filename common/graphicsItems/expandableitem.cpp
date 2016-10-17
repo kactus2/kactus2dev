@@ -14,15 +14,22 @@
 ExpandableItem::ExpandableItem(QGraphicsItem* parent):
 VisualizerItem(parent),
 expandCollapseItem_(new GraphicsExpandCollapseItem(this)),
-expansionRect_(new QGraphicsRectItem(this))
+expansionArrow_(new QGraphicsPixmapItem(this))
 {
 	connect(expandCollapseItem_, SIGNAL(stateChanged(bool)),
         this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
 
     setShowExpandableItem(false);
 
-	expandCollapseItem_->setZValue(1);
-	expansionRect_->show();
+    expandCollapseItem_->show();
+
+    QPixmap pic(":/icons/common/graphics/triangle_arrow_right.png");
+    QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
+        GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
+    expansionArrow_->setPixmap(scaledPic);
+
+    expansionArrow_->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
+    expansionArrow_->setZValue(1);
 }
 
 //-----------------------------------------------------------------------------
@@ -30,7 +37,6 @@ expansionRect_(new QGraphicsRectItem(this))
 //-----------------------------------------------------------------------------
 ExpandableItem::~ExpandableItem()
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -55,10 +61,18 @@ void ExpandableItem::onExpandStateChange(bool expanded)
     if (expanded)
     {
         reorganizeChildren();
+        QPixmap pic(":/icons/common/graphics/triangle_arrow_down.png");
+        QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE,
+            Qt::KeepAspectRatio);
+        expansionArrow_->setPixmap(scaledPic);
     }
     else
     {
         updateRectangle();
+        QPixmap pic(":/icons/common/graphics/triangle_arrow_right.png");
+        QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE,
+            Qt::KeepAspectRatio);
+        expansionArrow_->setPixmap(scaledPic);
     }
 
     emit expandStateChanged();
@@ -69,7 +83,7 @@ void ExpandableItem::onExpandStateChange(bool expanded)
 //-----------------------------------------------------------------------------
 void ExpandableItem::setShowExpandableItem( bool show )
 {
-	expandCollapseItem_->setVisible(show);
+    expansionArrow_->setVisible(show);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +117,7 @@ void ExpandableItem::setDefaultBrush(QBrush brush)
 //-----------------------------------------------------------------------------
 void ExpandableItem::setExpansionBrush(QBrush const& brush)
 {
-	expansionRect_->setBrush(brush);
+    expandCollapseItem_->setBrush(brush);
 }
 
 //-----------------------------------------------------------------------------
@@ -111,7 +125,7 @@ void ExpandableItem::setExpansionBrush(QBrush const& brush)
 //-----------------------------------------------------------------------------
 void ExpandableItem::setExpansionPen(QPen const& pen)
 {
-    expansionRect_->setPen(pen);
+    expandCollapseItem_->setPen(pen);
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +133,7 @@ void ExpandableItem::setExpansionPen(QPen const& pen)
 //-----------------------------------------------------------------------------
 void ExpandableItem::setExpansionRectVisible(bool visible)
 {
-	expansionRect_->setVisible(visible);
+    expandCollapseItem_->setVisible(visible);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,10 +145,10 @@ void ExpandableItem::updateRectangle()
     QRectF totalRect = itemTotalRect();
 
     // the rectangle is on the left side of the parent and children
-    expansionRect_->setRect(-GraphicsExpandCollapseItem::SIDE, 0, 
+    expandCollapseItem_->setRect(-GraphicsExpandCollapseItem::SIDE, 0, 
         GraphicsExpandCollapseItem::SIDE, totalRect.height());
 
     // Set the position for the expand/collapse item with the icon.
-    expandCollapseItem_->setPos(-GraphicsExpandCollapseItem::SIDE, 
+    expansionArrow_->setPos(-GraphicsExpandCollapseItem::SIDE, 
         GraphicsExpandCollapseItem::SIDE / 2 + VisualizerItem::CORNER_INDENTATION);
 }

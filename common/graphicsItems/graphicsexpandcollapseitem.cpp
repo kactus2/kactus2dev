@@ -18,15 +18,9 @@
 // Function: graphicsexpandcollapseitem::GraphicsExpandCollapseItem()
 //-----------------------------------------------------------------------------
 GraphicsExpandCollapseItem::GraphicsExpandCollapseItem( QGraphicsItem* parent /*= 0*/ ):
-QGraphicsPixmapItem(parent),
+QGraphicsRectItem(parent),
 expanded_(false)
 {
-	QPixmap pic(":/icons/common/graphics/triangle_arrow_right.png");
-	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
-		GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
-	setPixmap(scaledPic);
-
-	setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
 }
 
 //-----------------------------------------------------------------------------
@@ -43,10 +37,6 @@ GraphicsExpandCollapseItem::~GraphicsExpandCollapseItem()
 void GraphicsExpandCollapseItem::expand()
 {
 	expanded_ = true;
-	QPixmap pic(":/icons/common/graphics/triangle_arrow_down.png");
-	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE,
-        Qt::KeepAspectRatio);
-    setPixmap(scaledPic);
 
     emit stateChanged(expanded_);
 }
@@ -65,10 +55,6 @@ bool GraphicsExpandCollapseItem::isExpanded() const
 void GraphicsExpandCollapseItem::collapse()
 {
 	expanded_ = false;
-	QPixmap pic(":/icons/common/graphics/triangle_arrow_right.png");
-	QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE,
-        Qt::KeepAspectRatio);
-    setPixmap(scaledPic);
 
     emit stateChanged(expanded_);
 }
@@ -87,7 +73,7 @@ bool GraphicsExpandCollapseItem::isCollapsed() const
 void GraphicsExpandCollapseItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
 	event->accept();
-	QGraphicsPixmapItem::mousePressEvent(event);
+	QGraphicsRectItem::mousePressEvent(event);
 
 	// mouse left button changes the state of the item
 	if (event->button() == Qt::LeftButton)

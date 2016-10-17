@@ -107,8 +107,8 @@ private:
 	//! \brief The item to show/hide the child items
 	GraphicsExpandCollapseItem* expandCollapseItem_;
 
-	//! \brief Pointer to the rect item which displays which children belong to parent.
-	QGraphicsRectItem* expansionRect_;
+	//! \brief Pointer to the image used to denote the expandability of the item.
+    QGraphicsPixmapItem* expansionArrow_;
 
 };
 

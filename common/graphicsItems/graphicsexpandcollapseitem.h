@@ -14,13 +14,13 @@
 
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-#include <QGraphicsPixmapItem>
+#include <QGraphicsRectItem>
 #include <QObject>
 
 //-----------------------------------------------------------------------------
 //! This item provides an expand/collapse item.
 //-----------------------------------------------------------------------------
-class GraphicsExpandCollapseItem : public QObject, public QGraphicsPixmapItem
+class GraphicsExpandCollapseItem : public QObject, public QGraphicsRectItem
 {
 	Q_OBJECT
 
