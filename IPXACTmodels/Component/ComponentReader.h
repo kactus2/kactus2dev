@@ -252,6 +252,9 @@ private:
      *      @param [in] newComponent    The new component.
      */
     void parseFileDependencies(QDomNode const& fileNode, QSharedPointer<Component> newComponent) const;
+
+
+    void parseAuthor(QDomNode const& authorNode, QSharedPointer<Component> newComponent) const;
 };
 
 #endif // COMPONENTREADER_H

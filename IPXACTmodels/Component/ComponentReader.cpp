@@ -511,6 +511,10 @@ void ComponentReader::parseComponentExtensions(QDomNode const& componentNode,
         {
             parseFileDependencies(singleExtensionNode, newComponent);
         }
+        else if (singleExtensionNode.nodeName() == QLatin1String("kactus2:author"))
+        {
+            parseAuthor(singleExtensionNode, newComponent);
+        }
     }
 
     parseKactusAndVendorExtensions(componentNode, newComponent);
@@ -822,4 +826,12 @@ void ComponentReader::parseFileDependencies(QDomNode const& fileNode, QSharedPoi
     }
 
     newComponent->setFileDependendencies(fileDependencies);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentReader::parseAuthor()
+//-----------------------------------------------------------------------------
+void ComponentReader::parseAuthor(QDomNode const& authorNode, QSharedPointer<Component> newComponent) const
+{
+    newComponent->setAuthor(authorNode.firstChild().nodeValue());
 }

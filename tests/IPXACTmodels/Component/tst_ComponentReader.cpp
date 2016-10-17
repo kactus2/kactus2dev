@@ -78,6 +78,7 @@ private slots:
     void readComInterfaces();
     void readApiInterfaces();
     void readFileDependencies();
+    void readAuthor();
 };
 
 //-----------------------------------------------------------------------------
@@ -1256,6 +1257,41 @@ void tst_ComponentReader::readFileDependencies()
     QCOMPARE(dependency->getFile2(), QString("melee"));
     QCOMPARE(dependency->getDescription(), QString("Immediately obvious to the most casual observer"));
 }
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentReader::readAuthor()
+//-----------------------------------------------------------------------------
+void tst_ComponentReader::readAuthor()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>0.11</ipxact:version>"
+            "<ipxact:vendorExtensions>"
+                "<kactus2:author>tester</kactus2:author>"              
+            "</ipxact:vendorExtensions>"
+        "</ipxact:component>"
+        );
+
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    ComponentReader componentReader;
+
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+
+    QCOMPARE(testComponent->getAuthor(), QString("tester"));
+}
+
 
 QTEST_APPLESS_MAIN(tst_ComponentReader)
 
