@@ -259,7 +259,11 @@ void tst_MemoryMapGraphItem::testPartiallyOverlappingAddressBlocks()
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
     AddressBlockGraphItem* firstBlockItem = new AddressBlockGraphItem(firstBlock, noParser, memoryMapItem);
+    firstBlockItem->setAddressableUnitBits(8);
+
     AddressBlockGraphItem* secondBlockItem = new AddressBlockGraphItem(secondBlock, noParser, memoryMapItem);
+    secondBlockItem->setAddressableUnitBits(8);
+
     memoryMapItem->addChild(firstBlockItem);
     memoryMapItem->addChild(secondBlockItem);
 
@@ -558,8 +562,14 @@ void tst_MemoryMapGraphItem::testIdenticalBlocksOverlappingThird()
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
     AddressBlockGraphItem* unique = new AddressBlockGraphItem(uniqueBlock, noParser, memoryMapItem);
+    unique->setAddressableUnitBits(8);
+
     AddressBlockGraphItem* firstTwin = new AddressBlockGraphItem(twin1, noParser, memoryMapItem);
+    firstTwin->setAddressableUnitBits(8);
+
     AddressBlockGraphItem* secondTwin = new AddressBlockGraphItem(twin2, noParser, memoryMapItem);
+    secondTwin->setAddressableUnitBits(8);
+
     memoryMapItem->addChild(unique);
     memoryMapItem->addChild(firstTwin);
     memoryMapItem->addChild(secondTwin);

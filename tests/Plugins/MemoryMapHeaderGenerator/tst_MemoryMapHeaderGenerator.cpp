@@ -420,12 +420,12 @@ void tst_MemoryMapHeaderGenerator::testGenerationWithHexadecimalRegisterOffset()
 //-----------------------------------------------------------------------------
 void tst_MemoryMapHeaderGenerator::testGenerationWithReferencingRegisterOffset()
 {
-    QSharedPointer<Parameter> referencedParameter = createTestParameter("testParameter", "Param-ID", "40");
+    QSharedPointer<Parameter> referencedParameter = createTestParameter("testParameter", "Param_ID", "40");
     topComponent_->getParameters()->append(referencedParameter);
 
-    QSharedPointer<Register> headerRegister1 = createTestRegister("headerReg", "Param-ID");
-    QSharedPointer<Register> headerRegister2 = createTestRegister("headerReg2", "Param-ID * 2");
-    QSharedPointer<Register> headerRegister3 = createTestRegister("headerReg3", "'h4 + Param-ID");
+    QSharedPointer<Register> headerRegister1 = createTestRegister("headerReg", "Param_ID");
+    QSharedPointer<Register> headerRegister2 = createTestRegister("headerReg2", "Param_ID * 2");
+    QSharedPointer<Register> headerRegister3 = createTestRegister("headerReg3", "'h4 + Param_ID");
 
     QList<QSharedPointer<Register> > registerList;
     registerList.append(headerRegister1);

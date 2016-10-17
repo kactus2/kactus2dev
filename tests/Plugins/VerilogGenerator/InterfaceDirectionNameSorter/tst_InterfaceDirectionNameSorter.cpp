@@ -11,7 +11,7 @@
 
 #include <QtTest>
 
-#include <Plugins/VerilogGenerator/PortSorter/InterfaceDirectionNameSorter.h>
+#include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>

@@ -17,7 +17,7 @@
 #include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
 #include <editors/ComponentEditor/common/NullParser.h>
 
-#include <IPXACTmodels/field.h>
+#include <IPXACTmodels/Component/Field.h>
 
 class tst_FieldGraphItem : public QObject
 {
@@ -47,8 +47,8 @@ void tst_FieldGraphItem::testConstructor()
 {
     QSharedPointer<Field> testField(new Field());
     testField->setName("testField");
-    testField->setBitOffset(0);
-    testField->setBitWidth(2);
+    testField->setBitOffset("0");
+    testField->setBitWidth("2");
 
     QSharedPointer<ExpressionParser> noParser(new NullParser());
 
@@ -72,8 +72,8 @@ void tst_FieldGraphItem::testConstructor()
 void tst_FieldGraphItem::testExpressions()
 {
     QSharedPointer<Field> testField(new Field());
-    testField->setBitOffsetExpression("1+1");
-    testField->setBitWidthExpression("2*2");
+    testField->setBitOffset("1+1");
+    testField->setBitWidth("2*2");
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
 

@@ -193,7 +193,7 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
 
     testBlock->setBaseAddress("0");
     testBlock->setRange("2");
-    testBlock->setWidth("10");
+    testBlock->setWidth("16");
     QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), true);
 
     QSharedPointer<AddressBlock> otherBlock (new AddressBlock(*testBlock.data()));
@@ -228,11 +228,11 @@ void tst_MemoryMapBaseValidator::testAddressBlocksOverlap()
 
     QSharedPointer<AddressBlock> blockOne (new AddressBlock("One", baseAddressOne));
     blockOne->setRange(rangeOne);
-    blockOne->setWidth("1");
+    blockOne->setWidth("8");
 
     QSharedPointer<AddressBlock> blockTwo (new AddressBlock("Two", baseAddressTwo));
     blockTwo->setRange(rangeTwo);
-    blockTwo->setWidth("1");
+    blockTwo->setWidth("8");
 
     QSharedPointer<MemoryMapBase> testMap (new MemoryMapBase("testMap"));
     testMap->getMemoryBlocks()->append(blockOne);

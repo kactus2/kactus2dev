@@ -168,7 +168,7 @@ void tst_QuartusGenerator::testGeneratorWithoutFilesets()
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
+    quartusGenerator_->generateProject(targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
         "QUARTUS_VERSION = \"10.0\"\n"
@@ -218,8 +218,8 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingTopComponentVerilogF
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusTestView->name());
-    quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
+    quartusGenerator_->parseFiles(topComponent_, quartusTestView);
+    quartusGenerator_->generateProject(targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
         "QUARTUS_VERSION = \"10.0\"\n"
@@ -333,8 +333,8 @@ void tst_QuartusGenerator::testGeneratorWithDesignContainingInstances()
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->name());
-    quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
+    quartusGenerator_->parseFiles(topComponent_, quartusDesignView);
+    quartusGenerator_->generateProject(targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
         "QUARTUS_VERSION = \"10.0\"\n"
@@ -443,8 +443,8 @@ void tst_QuartusGenerator::testGeneratorWithConfiguredViews()
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->name());
-    quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
+    quartusGenerator_->parseFiles(topComponent_, quartusDesignView);
+    quartusGenerator_->generateProject(targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
         "QUARTUS_VERSION = \"10.0\"\n"
@@ -555,8 +555,8 @@ void tst_QuartusGenerator::testGeneratorInInstancesWithoutActiveViews()
     QString currentTime = QDateTime::currentDateTime().toString(QString("hh:mm:ss dd.MM.yyyy"));
     quartusGenerator_->replaceTime(currentTime);
 
-    quartusGenerator_->parseFiles(topComponent_, quartusDesignView->name());
-    quartusGenerator_->generateProject(targetPath_, targetEntity_, generatorInformation_);
+    quartusGenerator_->parseFiles(topComponent_, quartusDesignView);
+    quartusGenerator_->generateProject(targetEntity_, generatorInformation_);
 
     QString expectedProjectOutput( getQuartusHeader(currentTime) + 
         "QUARTUS_VERSION = \"10.0\"\n"

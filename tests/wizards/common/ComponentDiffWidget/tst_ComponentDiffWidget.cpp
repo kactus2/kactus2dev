@@ -367,11 +367,11 @@ void tst_ComponentDiffWidget::testViewModelNameChangeShowsPreviousAndCurrentValu
 {    
     QSharedPointer<Component> reference(new Component());
     addView(reference, "view1");
-    reference->getViews().first()->setModelName("old");
+    reference->getViews()->first()->setModelName("old");
 
     QSharedPointer<Component> subject(new Component());
     addView(subject, "view1");
-    subject->getViews().first()->setModelName("new");
+    subject->getViews()->first()->setModelName("new");
 
     QSharedPointer<ParameterFinder> parameterFinder = createFinder(reference, subject);
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
@@ -396,7 +396,7 @@ void tst_ComponentDiffWidget::testViewChangesShowsAsChilds()
     referenceView->setLanguage("old language");
     referenceView->setFileSetRefs(QStringList("old FileSetRef"));
     referenceView->setModelName("old model");
-    reference->addView(referenceView);
+    reference->getViews()->append(referenceView);
 
     QSharedPointer<Component> subject(new Component());
     View* subjectView = new View("view1");
@@ -404,7 +404,7 @@ void tst_ComponentDiffWidget::testViewChangesShowsAsChilds()
     subjectView->setLanguage("new language");
     subjectView->setFileSetRefs(QStringList("new FileSetRef"));
     subjectView->setModelName("new model");
-    subject->addView(subjectView);
+    subject->getViews()->append(subjectView);
 
     QSharedPointer<ParameterFinder> parameterFinder = createFinder(reference, subject);
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));

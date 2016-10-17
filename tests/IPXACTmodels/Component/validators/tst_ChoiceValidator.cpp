@@ -103,7 +103,7 @@ void tst_ChoiceValidator::testHasValidEnumerations()
     QVector<QString> foundErrors;
     validator.findErrorsIn(foundErrors, testChoice, "test");
 
-    QString expectedError = QObject::tr("No enumerations found in choice %1 within %2")
+    QString expectedError = QObject::tr("No enumerations found in choice '%1' within %2")
         .arg(testChoice->name()).arg("test");
     if (errorIsNotFoundInErrorList(expectedError, foundErrors))
     {
@@ -118,7 +118,7 @@ void tst_ChoiceValidator::testHasValidEnumerations()
     foundErrors.clear();
     validator.findErrorsIn(foundErrors, testChoice, "test");
 
-    expectedError = QObject::tr("Invalid value %1 set for enumeration in choice %2 within %3")
+    expectedError = QObject::tr("Invalid value '%1' set for enumeration in choice '%2' within %3")
         .arg(testEnumeration->getValue()).arg(testChoice->name()).arg("test");
     if (errorIsNotFoundInErrorList(expectedError, foundErrors))
     {

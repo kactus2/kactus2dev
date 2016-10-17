@@ -426,8 +426,13 @@ void tst_businterfaceWriter::testWritePortMaps()
 	QSharedPointer<PortMap> portMap(new PortMap());
 	portMap->setLogicalPort(logicalPort);
 	portMap->setPhysicalPort(physicalPort);    
-	portMap->setLogicalTieOff("tieoffValue");
+	//portMap->setLogicalTieOff("tieoffValue");
     abstractionType->getPortMaps()->append(portMap);
+
+    QSharedPointer<PortMap> tiedPortMap(new PortMap());
+    tiedPortMap->setLogicalPort(logicalPort);
+    tiedPortMap->setLogicalTieOff("tieoffValue");
+    abstractionType->getPortMaps()->append(tiedPortMap);
 
     testbusinterface_->getAbstractionTypes()->append(abstractionType);
 
@@ -441,7 +446,6 @@ void tst_businterfaceWriter::testWritePortMaps()
                         "version=\"1.0\"/>"
     	    	    "<ipxact:portMaps>"
                 		"<ipxact:portMap>"
-                    		"<ipxact:logicalTieOff>tieoffValue</ipxact:logicalTieOff>"
                     		"<ipxact:logicalPort>"
                         		"<ipxact:name>CLK</ipxact:name>"
                         		"<ipxact:range>"
@@ -463,6 +467,16 @@ void tst_businterfaceWriter::testWritePortMaps()
                         		"</ipxact:partSelect>"
                     		"</ipxact:physicalPort>"
                 		"</ipxact:portMap>"
+                        "<ipxact:portMap>"
+                            "<ipxact:logicalPort>"
+                                "<ipxact:name>CLK</ipxact:name>"
+                                "<ipxact:range>"
+                                    "<ipxact:left>testLeft</ipxact:left>"
+                                    "<ipxact:right>testRight</ipxact:right>"
+                                "</ipxact:range>"
+                            "</ipxact:logicalPort>"
+                            "<ipxact:logicalTieOff>tieoffValue</ipxact:logicalTieOff>"
+                        "</ipxact:portMap>"
             		"</ipxact:portMaps>"
         		"</ipxact:abstractionType>"
     		"</ipxact:abstractionTypes>"

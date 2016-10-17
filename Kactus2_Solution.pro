@@ -26,7 +26,8 @@ SUBDIRS += IPXACTmodels/IPXACTmodels.pro \
     Plugins/VerilogImport/VerilogImport.pro \
     Plugins/VerilogIncludeImport/VerilogIncludeImport.pro \
     Plugins/VerilogSourceAnalyzer/VerilogSourceAnalyzer.pro \
-    Plugins/QuartusProjectGenerator/QuartusProjectGenerator.pro
+    Plugins/QuartusProjectGenerator/QuartusProjectGenerator.pro \
+	Plugins/MemoryViewGenerator/MemoryViewGenerator.pro
 
 CONFIG(test) {
 	SUBDIRS += tests/test_all.pro

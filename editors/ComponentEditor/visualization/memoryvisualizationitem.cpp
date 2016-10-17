@@ -336,11 +336,9 @@ void MemoryVisualizationItem::updateChildMap()
     MemoryGapItem* previousOverlap = 0;
     MemoryVisualizationItem* previous = 0;
     quint64 previousLastAddress = lastAddressInUse;
-    childCount = childItems_.count();
-    for (int i = 0; i < childCount; i++)
-    {
-        MemoryVisualizationItem* current = childItems_.values().at(i);
 
+    foreach (MemoryVisualizationItem* current, childItems_.values())
+    {
         if (current->isPresent())
         {
             quint64 currentOffset = current->getOffset();

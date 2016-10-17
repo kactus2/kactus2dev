@@ -911,7 +911,7 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
 
         testComponent->getBusInterfaces()->append(testBus);
 
-        testConnection->setStartInterface(testInterface);
+        testConnection->getActiveInterfaces()->append(testInterface);
 
         mockLibrary.addComponent(testComponent);
 

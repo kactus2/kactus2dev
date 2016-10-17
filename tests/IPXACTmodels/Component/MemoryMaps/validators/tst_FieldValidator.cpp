@@ -125,6 +125,7 @@ void tst_FieldValidator::testIsPresentIsValid()
     QFETCH(bool, isValid);
 
     QSharedPointer<Field> testField (new Field());
+    testField->setName("testField");
     testField->setIsPresent(isPresent);
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
@@ -139,8 +140,8 @@ void tst_FieldValidator::testIsPresentIsValid()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testField, "test");
 
-        QString expectedError = QObject::tr("Invalid isPresent specified for %1 within %2").
-            arg(testField->name(), "test");
+        QString expectedError = QObject::tr("Invalid isPresent value specified for testField within test. "
+            "Value should evaluate to 0 or 1.");
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
             QFAIL("No error message found");
@@ -356,7 +357,7 @@ void tst_FieldValidator::testWriteValueConstraintIsValid()
                 !bitExpression.match(parser->parseExpression(testConstraint->getMinimum())).hasMatch())
             {
                 expectedError = QObject::tr(
-                    "Invalid minimum value for write value constraint set for field %1 within %2").
+                    "Invalid minimum value set for write value constraint in field %1 within %2").
                     arg(testField->name()).arg("test");
                 if (errorIsNotFoundInErrorList(expectedError, foundErrors))
                 {
@@ -368,7 +369,7 @@ void tst_FieldValidator::testWriteValueConstraintIsValid()
                 !bitExpression.match(parser->parseExpression(testConstraint->getMaximum())).hasMatch())
             {
                 expectedError = QObject::tr(
-                    "Invalid maximum value for write value constraint set for field %1 within %2").
+                    "Invalid maximum value set for write value constraint in field %1 within %2").
                     arg(testField->name()).arg("test");
                 if (errorIsNotFoundInErrorList(expectedError, foundErrors))
                 {

@@ -277,8 +277,6 @@ void QuartusGenerator::parseFiles(QSharedPointer<Component> component, QSharedPo
 {
 	Q_ASSERT_X(component, "QuartusGenerator::parseFiles", "Null component-pointer given as parameter");
 
-    utility_->printInfo(tr("Processing view %1 of component %2").arg(view->name(), component->getVlnv().toString()));
-
 	if (!view)
     {
         utility_->printInfo(tr("Component %1 didn't contain an active view, adding all found RTL-files from "
@@ -287,6 +285,8 @@ void QuartusGenerator::parseFiles(QSharedPointer<Component> component, QSharedPo
         parseBlindFileSet(component);
         return;
 	}
+
+    utility_->printInfo(tr("Processing view %1 of component %2").arg(view->name(), component->getVlnv().toString()));
 
 	if (!view->isHierarchical())
 	{

@@ -29,7 +29,7 @@
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
-#include <IPXACTmodels/component.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/choice.h>
 #include <IPXACTmodels/Enumeration.h>
 #include <IPXACTmodels/model.h>

@@ -267,7 +267,7 @@ void HWDesignWidgetMock::createDesignForComponent(QSharedPointer<Component> comp
 	// and a hierarchical view for it
 	QSharedPointer<View> hierView(new View(viewName));
     hierView->setDesignConfigurationInstantiationRef("config");
-	hierView->addEnvIdentifier("");
+	//hierView->addEnvIdentifier("");
 	component->getViews()->append(hierView);
 
     QSharedPointer<DesignConfigurationInstantiation> configurationInstantiation(new 
