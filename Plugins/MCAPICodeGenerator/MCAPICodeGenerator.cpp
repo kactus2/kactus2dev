@@ -139,7 +139,7 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
 		file->addFileType( "cSource" );
 
         //The build flags of this file must contain tool integration to avoid redefinition.
-        file->setBuildFlags( "-DTOOL_INTEGRATION", false );
+        file->setBuildFlags( "-DTOOL_INTEGRATION", "false" );
     }
     if (!fileSet->contains("main.c"))
     {

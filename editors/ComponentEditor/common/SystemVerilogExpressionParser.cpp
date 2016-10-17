@@ -594,7 +594,7 @@ QString SystemVerilogExpressionParser::solve(QString const& firstTerm, QString c
         qint64 integerResult = result;
         QString integerPart = QString::number(integerResult);
 
-        qreal decimals = abs(result - integerResult);
+        qreal decimals = qAbs(result - integerResult);
 
         QString decimalPart = QString::number(decimals, 'g', getDecimalPrecision(firstTerm, secondTerm));
 

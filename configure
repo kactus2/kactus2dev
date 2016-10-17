@@ -12,17 +12,17 @@ print_success() {
 
 # Generate compressed help files.
 echo "Generating compressed help files..."
-${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhp -o Help/Kactus2Help.qch
-${QTBIN_PATH}qcollectiongenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
+${QTBIN_PATH}qhelpgenerator-qt5 Help/kactus2help.qhp -o Help/Kactus2Help.qch
+${QTBIN_PATH}qcollectiongenerator-qt5 Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
 
 #Run qmake using qtchooser.
 if command -v ${QTBIN_PATH}qtchooser >/dev/null 2>&1; then
    echo "Qtchooser found. Running qmake through qtchooser..."
-   ${QTBIN_PATH}qtchooser -run-tool=${QTBIN_PATH}qmake -qt=qt5 Kactus2_Solution.pro
+   ${QTBIN_PATH}qtchooser -run-tool=${QTBIN_PATH}qmake-qt5 -qt=qt5 Kactus2_Solution.pro
    print_success
-elif command -v ${QTBIN_PATH}qmake >/dev/null 2>&1; then
+elif command -v ${QTBIN_PATH}qmake-qt5 >/dev/null 2>&1; then
    echo "Qtchooser not found. Running qmake directly..."
-   ${QTBIN_PATH}qmake Kactus2_Solution.pro
+   ${QTBIN_PATH}qmake-qt5 Kactus2_Solution.pro
    print_success
 else
     echo "Qmake not found. Please set variable QTBIN_PATH to Qt binary files."

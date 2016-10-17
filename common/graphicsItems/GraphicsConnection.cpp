@@ -538,7 +538,7 @@ void GraphicsConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
             qreal next = pathPoints_[selected_ + 2].y();
 
             // Change the route only if the next and previous segments would not be too short.
-            if (abs(newPos.y() - prev) >= MIN_LENGTH && abs(newPos.y() - next) >= MIN_LENGTH)
+            if (qAbs(newPos.y() - prev) >= MIN_LENGTH && qAbs(newPos.y() - next) >= MIN_LENGTH)
             {
                 pathPoints_[selected_].setY(newPos.y());
                 pathPoints_[selected_+1].setY(newPos.y());
