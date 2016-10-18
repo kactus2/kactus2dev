@@ -27,10 +27,10 @@ namespace TransactionalTypes
 
 	//! The file types specified in the IP-Xact.
 	const QString INITIATIVE_TYPES[INITIATIVE_TYPE_COUNT] = {
-		"requires",
-        "provides",
-        "both",
-        "phantom"
+		QLatin1String("requires"),
+        QLatin1String("provides"),
+        QLatin1String("both"),
+        QLatin1String("phantom")
 	};
 
 	/*!
@@ -47,11 +47,11 @@ namespace TransactionalTypes
 
     //! The kind types specified in the IP-XACT.
     const QString KIND_TYPES[KIND_TYPE_COUNT] = {
-        "tlm_port",
-        "tlm_socket",
-        "simple_socket",
-        "multi_socket",
-        "custom"
+        QLatin1String("tlm_port"),
+        QLatin1String("tlm_socket"),
+        QLatin1String("simple_socket"),
+        QLatin1String("multi_socket"),
+        QLatin1String("custom")
     };
 
     /*!

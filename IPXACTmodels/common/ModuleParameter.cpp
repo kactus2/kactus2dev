@@ -58,7 +58,7 @@ ModuleParameter& ModuleParameter::operator =(const ModuleParameter& other)
 //-----------------------------------------------------------------------------
 QString ModuleParameter::getDataType() const
 {
-    return getAttribute("dataType");
+    return getAttribute(QStringLiteral("dataType"));
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ QString ModuleParameter::getDataType() const
 //-----------------------------------------------------------------------------
 void ModuleParameter::setDataType(QString const& newDataType)
 {
-    setAttribute("dataType", newDataType);
+    setAttribute(QStringLiteral("dataType"), newDataType);
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +74,7 @@ void ModuleParameter::setDataType(QString const& newDataType)
 //-----------------------------------------------------------------------------
 QString ModuleParameter::getUsageType() const
 {
-    return getAttribute("usageType");
+    return getAttribute(QStringLiteral("usageType"));
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ QString ModuleParameter::getUsageType() const
 //-----------------------------------------------------------------------------
 void ModuleParameter::setUsageType(QString const& newUsageType)
 {
-    setAttribute("usageType", newUsageType);
+    setAttribute(QStringLiteral("usageType"), newUsageType);
 }
 
 //-----------------------------------------------------------------------------

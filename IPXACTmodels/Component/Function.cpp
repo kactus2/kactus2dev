@@ -189,7 +189,7 @@ QString Function::getReturnType() const
 //-----------------------------------------------------------------------------
 void Function::setReturnType(QString const& returnType)
 {
-    if (returnType == "int" || returnType == "void" || returnType.isEmpty())
+    if (returnType.isEmpty() || returnType == QLatin1String("int") || returnType == QLatin1String("void"))
     {
         returnType_ = returnType;
     }

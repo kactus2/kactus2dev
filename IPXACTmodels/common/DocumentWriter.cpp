@@ -62,11 +62,12 @@ void DocumentWriter::writeXmlProcessingInstructions(QXmlStreamWriter& writer, QS
 //-----------------------------------------------------------------------------
 void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer) const
 {
-    writer.writeNamespace("http://www.w3.org/2001/XMLSchema-instance", "xsi");
-    writer.writeNamespace("http://www.accellera.org/XMLSchema/IPXACT/1685-2014", "ipxact");
-    writer.writeNamespace("http://kactus2.cs.tut.fi", "kactus2");
-    writer.writeAttribute("xsi:schemaLocation", "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
-        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd");
+    writer.writeNamespace(QStringLiteral("http://www.w3.org/2001/XMLSchema-instance"), QStringLiteral("xsi"));
+    writer.writeNamespace(QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014"),
+        QStringLiteral("ipxact"));
+    writer.writeNamespace(QStringLiteral("http://kactus2.cs.tut.fi"), QStringLiteral("kactus2"));
+    writer.writeAttribute(QStringLiteral("xsi:schemaLocation"), 
+        QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd"));
 }
 
 //-----------------------------------------------------------------------------
@@ -76,7 +77,7 @@ void DocumentWriter::writeDescription(QXmlStreamWriter& writer, QSharedPointer<D
 {
     if (!document->getDescription().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", document->getDescription());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), document->getDescription());
     }
 }
 
@@ -95,15 +96,15 @@ void DocumentWriter::writeAssertions(QXmlStreamWriter& writer, QSharedPointer<Do
 {
     if (!document->getAssertions()->isEmpty())
     {
-        writer.writeStartElement("ipxact:assertions");
+        writer.writeStartElement(QStringLiteral("ipxact:assertions"));
 
         NameGroupWriter nameGroupWriter;
         foreach (QSharedPointer<Assertion> assertion, *document->getAssertions())
         {
-            writer.writeStartElement("ipxact:assertion");
+            writer.writeStartElement(QStringLiteral("ipxact:assertion"));
 
             nameGroupWriter.writeNameGroup(writer, assertion);
-            writer.writeTextElement("ipxact:assert", assertion->getAssert());
+            writer.writeTextElement(QStringLiteral("ipxact:assert"), assertion->getAssert());
 
             writer.writeEndElement(); // ipxact:assertion
         }

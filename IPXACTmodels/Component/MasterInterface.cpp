@@ -129,7 +129,7 @@ QMap<QString,QString> MasterInterface::getBaseAttributes() const
 //-----------------------------------------------------------------------------
 QString MasterInterface::getPrompt() const
 {
-    return baseAttributes_.value("ipxact:prompt");
+    return baseAttributes_.value(QStringLiteral("ipxact:prompt"));
 }
 
 

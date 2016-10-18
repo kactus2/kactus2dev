@@ -73,7 +73,7 @@ bool RegisterValidator::validate(QSharedPointer<Register> selectedRegister) cons
 bool RegisterValidator::hasValidName(QSharedPointer<RegisterBase> selectedRegister) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(selectedRegister->name());
 
     if (selectedRegister->name().isEmpty() || whiteSpaceMatch.hasMatch())
@@ -251,7 +251,7 @@ bool RegisterValidator::hasValidAlternateRegisters(QSharedPointer<Register> sele
 bool RegisterValidator::hasValidAlternateGroups(QSharedPointer<AlternateRegister> selectedRegister) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
         
     QStringList alternateGroups;
     bool alternateGroupsOk = false;
@@ -379,7 +379,7 @@ bool RegisterValidator::fieldsHaveSimilarDefinitionGroups(QSharedPointer<Field> 
 void RegisterValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Register> selectedRegister,
     QString const& context) const
 {
-    QString registerContext = "register " + selectedRegister->name();
+    QString registerContext = QStringLiteral("register ") + selectedRegister->name();
 
     findErrorsInName(errors, selectedRegister, context);
     findErrorsInIsPresent(errors, selectedRegister, context);
@@ -539,21 +539,21 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
 void RegisterValidator::findErrorsInAlternateRegisters(QVector<QString>& errors,
     QSharedPointer<Register> selectedRegister) const
 {
-    QString context = "register " + selectedRegister->name();
+    QString context = QStringLiteral("register ") + selectedRegister->name();
     QStringList alternateGroupNames;
     foreach (QSharedPointer<AlternateRegister> alternateRegister, *selectedRegister->getAlternateRegisters())
     {
         if (alternateGroupNames.contains(alternateRegister->name()))
         {
-            errors.append(QObject::tr("Name %1 of alternate registers in %2 is not unique.").
-                arg(alternateRegister->name()).arg("register " + selectedRegister->name()));
+            errors.append(QObject::tr("Name %1 of alternate registers in %2 is not unique.").arg(
+                alternateRegister->name(), context));
         }
         else
         {
             alternateGroupNames.append(alternateRegister->name());
         }
 
-        QString registerContext = "alternate register " + alternateRegister->name();
+        QString registerContext = QStringLiteral("alternate register ") + alternateRegister->name();
 
         findErrorsInName(errors, alternateRegister, context);
         findErrorsInIsPresent(errors, alternateRegister, context);
@@ -589,8 +589,8 @@ void RegisterValidator::findErrorsInParameters(QVector<QString>&errors,
         {
             if (parameterNames.contains(parameter->name()))
             {
-                errors.append(QObject::tr("Name %1 of parameters in %2 is not unique.").arg(parameter->name()).
-                    arg(context));
+                errors.append(QObject::tr("Name %1 of parameters in %2 is not unique.").arg(parameter->name(),
+                    context));
             }
             else
             {

@@ -85,11 +85,11 @@ QString BooleanValue::toString() const
 {
     if (value_ == BOOL_TRUE)
     {
-        return QString("true");
+        return QStringLiteral("true");
     }
     else if (value_ == BOOL_FALSE)
     {
-        return QString("false");
+        return QStringLiteral("false");
     }
     else
     {

@@ -67,9 +67,9 @@ void EnumeratedValueReader::parseUsage(QDomNode const& enumerationNode,
     QSharedPointer<EnumeratedValue> newEnumeration) const
 {
     QDomElement enumerationElement = enumerationNode.toElement();
-    if (enumerationElement.hasAttribute("usage"))
+    if (enumerationElement.hasAttribute(QStringLiteral("usage")))
     {
-        QString usageString = enumerationElement.attribute("usage");
+        QString usageString = enumerationElement.attribute(QStringLiteral("usage"));
         EnumeratedValue::EnumeratedUsage usage =
             EnumeratedValue::str2Usage(usageString, EnumeratedValue::UNKNOWNUSAGE);
 
@@ -83,6 +83,6 @@ void EnumeratedValueReader::parseUsage(QDomNode const& enumerationNode,
 void EnumeratedValueReader::parseValue(QDomNode const& enumerationNode,
     QSharedPointer<EnumeratedValue> newEnumeration) const
 {
-    QString value = enumerationNode.firstChildElement("ipxact:value").firstChild().nodeValue();
+    QString value = enumerationNode.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue();
     newEnumeration->setValue(value);
 }

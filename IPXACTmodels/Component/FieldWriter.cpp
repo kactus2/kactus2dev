@@ -38,7 +38,7 @@ FieldWriter::~FieldWriter()
 //-----------------------------------------------------------------------------
 void FieldWriter::writeField(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
 {
-    writer.writeStartElement("ipxact:field");
+    writer.writeStartElement(QStringLiteral("ipxact:field"));
 
     writeID(writer, field->getId());
 
@@ -46,13 +46,13 @@ void FieldWriter::writeField(QXmlStreamWriter& writer, QSharedPointer<Field> fie
 
     writeIsPresent(writer, field->getIsPresent());
 
-    writer.writeTextElement("ipxact:bitOffset", field->getBitOffset());
+    writer.writeTextElement(QStringLiteral("ipxact:bitOffset"), field->getBitOffset());
 
     writeReset(writer, field);
 
     writeTypeIdentifier(writer, field);
 
-    writer.writeTextElement("ipxact:bitWidth", field->getBitWidth());
+    writer.writeTextElement(QStringLiteral("ipxact:bitWidth"), field->getBitWidth());
 
     writeVolatile(writer, field);
 
@@ -84,7 +84,7 @@ void FieldWriter::writeID(QXmlStreamWriter& writer, QString const& fieldID) cons
 {
     if (!fieldID.isEmpty())
     {
-        writer.writeAttribute("fieldID", fieldID);
+        writer.writeAttribute(QStringLiteral("fieldID"), fieldID);
     }
 }
 
@@ -105,20 +105,20 @@ void FieldWriter::writeReset(QXmlStreamWriter& writer, QSharedPointer<Field> fie
     if (!field->getResetTypeReference().isEmpty() || !field->getResetValue().isEmpty() ||
         !field->getResetMask().isEmpty())
     {
-        writer.writeStartElement("ipxact:resets");
+        writer.writeStartElement(QStringLiteral("ipxact:resets"));
 
-        writer.writeStartElement("ipxact:reset");
+        writer.writeStartElement(QStringLiteral("ipxact:reset"));
 
         if (!field->getResetTypeReference().isEmpty())
         {
-            writer.writeAttribute("resetTypeRef", field->getResetTypeReference());
+            writer.writeAttribute(QStringLiteral("resetTypeRef"), field->getResetTypeReference());
         }
 
-        writer.writeTextElement("ipxact:value", field->getResetValue());
+        writer.writeTextElement(QStringLiteral("ipxact:value"), field->getResetValue());
 
         if (!field->getResetMask().isEmpty())
         {
-            writer.writeTextElement("ipxact:mask", field->getResetMask());
+            writer.writeTextElement(QStringLiteral("ipxact:mask"), field->getResetMask());
         }
 
         writer.writeEndElement(); // ipxact:reset
@@ -134,7 +134,7 @@ void FieldWriter::writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPointer<F
 {
     if (!field->getTypeIdentifier().isEmpty())
     {
-        writer.writeTextElement("ipxact:typeIdentifier", field->getTypeIdentifier());
+        writer.writeTextElement(QStringLiteral("ipxact:typeIdentifier"), field->getTypeIdentifier());
     }
 }
 
@@ -145,7 +145,7 @@ void FieldWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<Field> 
 {
     if (!field->getVolatile().toString().isEmpty())
     {
-        writer.writeTextElement("ipxact:volatile", field->getVolatile().toString());
+        writer.writeTextElement(QStringLiteral("ipxact:volatile"), field->getVolatile().toString());
     }
 }
 
@@ -157,7 +157,7 @@ void FieldWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Field> fi
     if (field->getAccess() != AccessTypes::ACCESS_COUNT)
     {
         QString access = AccessTypes::access2Str(field->getAccess());
-        writer.writeTextElement("ipxact:access", access);
+        writer.writeTextElement(QStringLiteral("ipxact:access"), access);
     }
 }
 
@@ -169,7 +169,7 @@ void FieldWriter::writeEnumerations(QXmlStreamWriter& writer, QSharedPointer<Fie
     if (!field->getEnumeratedValues()->isEmpty())
     {
         EnumeratedValueWriter enumerationWriter;
-        writer.writeStartElement("ipxact:enumeratedValues");
+        writer.writeStartElement(QStringLiteral("ipxact:enumeratedValues"));
 
         foreach (QSharedPointer<EnumeratedValue> enumeration, *field->getEnumeratedValues())
         {
@@ -187,11 +187,11 @@ void FieldWriter::writeModifiedWriteValue(QXmlStreamWriter& writer, QSharedPoint
 {
     if (field->getModifiedWrite() != General::MODIFIED_WRITE_COUNT)
     {
-        writer.writeStartElement("ipxact:modifiedWriteValue");
+        writer.writeStartElement(QStringLiteral("ipxact:modifiedWriteValue"));
 
         if (!field->getModifiedWriteModify().isEmpty())
         {
-            writer.writeAttribute("modify", field->getModifiedWriteModify());
+            writer.writeAttribute(QStringLiteral("modify"), field->getModifiedWriteModify());
         }
 
         QString modifiedWriteValue = General::modifiedWrite2Str(field->getModifiedWrite());
@@ -209,20 +209,20 @@ void FieldWriter::writeWriteValueConstraint(QXmlStreamWriter& writer,
 {
     if (!writeConstraint.isNull())
     {
-        writer.writeStartElement("ipxact:writeValueConstraint");
+        writer.writeStartElement(QStringLiteral("ipxact:writeValueConstraint"));
 
         if (writeConstraint->getType() == WriteValueConstraint::WRITE_AS_READ)
         {
-            writer.writeTextElement("ipxact:writeAsRead", "true");
+            writer.writeTextElement(QStringLiteral("ipxact:writeAsRead"), QStringLiteral("true"));
         }
         else if (writeConstraint->getType() == WriteValueConstraint::USE_ENUM)
         {
-            writer.writeTextElement("ipxact:useEnumeratedValues", "true");
+            writer.writeTextElement(QStringLiteral("ipxact:useEnumeratedValues"), QStringLiteral("true"));
         }
         else if (writeConstraint->getType() == WriteValueConstraint::MIN_MAX)
         {
-            writer.writeTextElement("ipxact:minimum", writeConstraint->getMinimum());
-            writer.writeTextElement("ipxact:maximum", writeConstraint->getMaximum());
+            writer.writeTextElement(QStringLiteral("ipxact:minimum"), writeConstraint->getMinimum());
+            writer.writeTextElement(QStringLiteral("ipxact:maximum"), writeConstraint->getMaximum());
         }
 
         writer.writeEndElement(); // ipxact:writeValueConstraint
@@ -238,11 +238,11 @@ void FieldWriter::writeReadAction(QXmlStreamWriter& writer, QSharedPointer<Field
     {
         QString readAction = General::readAction2Str(field->getReadAction());
 
-        writer.writeStartElement("ipxact:readAction");
+        writer.writeStartElement(QStringLiteral("ipxact:readAction"));
 
         if (!field->getReadActionModify().isEmpty())
         {
-            writer.writeAttribute("modify", field->getReadActionModify());
+            writer.writeAttribute(QStringLiteral("modify"), field->getReadActionModify());
         }
         writer.writeCharacters(readAction);
 
@@ -257,12 +257,12 @@ void FieldWriter::writeTestable(QXmlStreamWriter& writer, QSharedPointer<Field> 
 {
     if (!field->getTestable().toString().isEmpty())
     {
-        writer.writeStartElement("ipxact:testable");
+        writer.writeStartElement(QStringLiteral("ipxact:testable"));
 
         if (field->getTestConstraint() != General::TESTCONSTRAINT_COUNT)
         {
             QString testConstraint = General::testConstraint2Str(field->getTestConstraint());
-            writer.writeAttribute("testConstraint", testConstraint);
+            writer.writeAttribute(QStringLiteral("testConstraint"), testConstraint);
         }
 
         writer.writeCharacters(field->getTestable().toString());
@@ -278,6 +278,6 @@ void FieldWriter::writeReserved(QXmlStreamWriter& writer, QSharedPointer<Field> 
 {
     if (!field->getReserved().isEmpty())
     {
-        writer.writeTextElement("ipxact:reserved", field->getReserved());
+        writer.writeTextElement(QStringLiteral("ipxact:reserved"), field->getReserved());
     }
 }

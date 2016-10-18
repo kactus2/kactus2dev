@@ -115,7 +115,7 @@ void RegisterReader::parseNameGroup(QDomNode const& nameGroupNode, QSharedPointe
 void RegisterReader::parsePresence(QDomNode const& registerBaseNode, QSharedPointer<RegisterBase> registerBase)
     const
 {
-    QDomElement isPresentElement = registerBaseNode.firstChildElement("ipxact:isPresent");
+    QDomElement isPresentElement = registerBaseNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
     QString isPresent = parseIsPresent(isPresentElement);
 
     if (!isPresent.isEmpty())
@@ -129,7 +129,7 @@ void RegisterReader::parsePresence(QDomNode const& registerBaseNode, QSharedPoin
 //-----------------------------------------------------------------------------
 QString RegisterReader::createAddressOffsetFrom(QDomNode const& registerBaseNode) const
 {
-    QDomElement addressOffsetElement = registerBaseNode.firstChildElement("ipxact:addressOffset");
+    QDomElement addressOffsetElement = registerBaseNode.firstChildElement(QStringLiteral("ipxact:addressOffset"));
     return addressOffsetElement.firstChild().nodeValue();
 }
 
@@ -139,7 +139,7 @@ QString RegisterReader::createAddressOffsetFrom(QDomNode const& registerBaseNode
 void RegisterReader::parseRegisterSize(QDomNode const& registerNode, QSharedPointer<Register> selectedRegister)
     const
 {
-    QString registerSize = registerNode.firstChildElement("ipxact:size").firstChild().nodeValue();
+    QString registerSize = registerNode.firstChildElement(QStringLiteral("ipxact:size")).firstChild().nodeValue();
     selectedRegister->setSize(registerSize);
 }
 
@@ -149,7 +149,7 @@ void RegisterReader::parseRegisterSize(QDomNode const& registerNode, QSharedPoin
 void RegisterReader::parseRegisterDimension(QDomNode const& registerNode,
     QSharedPointer<Register> selectedRegister) const
 {
-    QDomElement dimensionElement = registerNode.firstChildElement("ipxact:dim");
+    QDomElement dimensionElement = registerNode.firstChildElement(QStringLiteral("ipxact:dim"));
     if (!dimensionElement.isNull())
     {
         selectedRegister->setDimension(dimensionElement.firstChild().nodeValue());
@@ -162,7 +162,7 @@ void RegisterReader::parseRegisterDimension(QDomNode const& registerNode,
 void RegisterReader::parseTypeIdentifier(QDomNode const& registerBaseNode,
     QSharedPointer<RegisterBase> registerBase) const
 {
-    QDomElement typeIdentifierElement = registerBaseNode.firstChildElement("ipxact:typeIdentifier");
+    QDomElement typeIdentifierElement = registerBaseNode.firstChildElement(QStringLiteral("ipxact:typeIdentifier"));
     if (!typeIdentifierElement.isNull())
     {
         QString typeIdentifier = typeIdentifierElement.firstChild().nodeValue();
@@ -176,12 +176,12 @@ void RegisterReader::parseTypeIdentifier(QDomNode const& registerBaseNode,
 void RegisterReader::parseVolatile(QDomNode const& registerDefinitionNode,
     QSharedPointer<RegisterDefinition> registerDefinition) const
 {
-    QDomElement volatileElement = registerDefinitionNode.firstChildElement("ipxact:volatile");
+    QDomElement volatileElement = registerDefinitionNode.firstChildElement(QStringLiteral("ipxact:volatile"));
     if (!volatileElement.isNull())
     {
         QString volatileString = volatileElement.firstChild().nodeValue();
 
-        if (volatileString=="true")
+        if (volatileString == QLatin1String("true"))
         {
             registerDefinition->setVolatile(true);
         }
@@ -198,7 +198,7 @@ void RegisterReader::parseVolatile(QDomNode const& registerDefinitionNode,
 void RegisterReader::parseAccess(QDomNode const& definitionNode,
     QSharedPointer<RegisterDefinition> registerDefinition) const
 {
-    QDomElement accessElement = definitionNode.firstChildElement("ipxact:access");
+    QDomElement accessElement = definitionNode.firstChildElement(QStringLiteral("ipxact:access"));
     if (!accessElement.isNull())
     {
         QString accessString = accessElement.firstChild().nodeValue();
@@ -221,7 +221,7 @@ void RegisterReader::parseFields(QDomElement const& registerDefinitionElement,
 
         for (int fieldIndex = 0; fieldIndex < fieldNodeList.count(); ++fieldIndex)
         {
-            if (fieldNodeList.at(fieldIndex).nodeName() == "ipxact:field")
+            if (fieldNodeList.at(fieldIndex).nodeName() == QLatin1String("ipxact:field"))
             {
                 QSharedPointer<Field> newField = fieldReader.createFieldFrom(fieldNodeList.at(fieldIndex));
                 registerDefinition->getFields()->append(newField);
@@ -236,11 +236,11 @@ void RegisterReader::parseFields(QDomElement const& registerDefinitionElement,
 void RegisterReader::parseAlternateRegisters(QDomElement const& registerElement,
     QSharedPointer<Register> targetRegister) const
 {
-    QDomElement multipleAlternaterRegisterNode = registerElement.firstChildElement("ipxact:alternateRegisters");
+    QDomElement multipleAlternaterRegisterNode = registerElement.firstChildElement(QStringLiteral("ipxact:alternateRegisters"));
     if (!multipleAlternaterRegisterNode.isNull())
     {
         QDomNodeList alternateNodeList =
-            multipleAlternaterRegisterNode.elementsByTagName("ipxact:alternateRegister");
+            multipleAlternaterRegisterNode.elementsByTagName(QStringLiteral("ipxact:alternateRegister"));
 
         for (int alternateIndex = 0; alternateIndex < alternateNodeList.count(); ++alternateIndex)
         {
@@ -284,10 +284,10 @@ void RegisterReader::parseSingleAlternateRegister(QDomElement const& alternateRe
 void RegisterReader::parseAlternateGroups(QDomElement const& alternateRegisterElement,
     QSharedPointer<AlternateRegister> newAlternateRegister) const
 {
-    QDomElement groupsElement = alternateRegisterElement.firstChildElement("ipxact:alternateGroups");
+    QDomElement groupsElement = alternateRegisterElement.firstChildElement(QStringLiteral("ipxact:alternateGroups"));
     if (!groupsElement.isNull())
     {
-        QDomNodeList groupNodeList = groupsElement.elementsByTagName("ipxact:alternateGroup");
+        QDomNodeList groupNodeList = groupsElement.elementsByTagName(QStringLiteral("ipxact:alternateGroup"));
 
         for (int groupIndex = 0; groupIndex < groupNodeList.count(); ++groupIndex)
         {
@@ -318,7 +318,7 @@ void RegisterReader::parseParameters(QDomNode const& registerBaseNode,
 void RegisterReader::parseRegisterFileRange(QDomNode const& registerFileNode,
     QSharedPointer<RegisterFile> newRegisterFile) const
 {
-    QDomElement rangeElement = registerFileNode.firstChildElement("ipxact:range");
+    QDomElement rangeElement = registerFileNode.firstChildElement(QStringLiteral("ipxact:range"));
     if (!rangeElement.isNull())
     {
         QString range = rangeElement.firstChild().nodeValue();
@@ -332,7 +332,7 @@ void RegisterReader::parseRegisterFileRange(QDomNode const& registerFileNode,
 void RegisterReader::parseRegisterFileDimension(QDomNode const& registerFileNode,
     QSharedPointer<RegisterFile> newRegisterFile) const
 {
-    QDomElement dimensionElement = registerFileNode.firstChildElement("ipxact:dim");
+    QDomElement dimensionElement = registerFileNode.firstChildElement(QStringLiteral("ipxact:dim"));
     if (!dimensionElement.isNull())
     {
         QString dimension = dimensionElement.firstChild().nodeValue();
@@ -350,13 +350,13 @@ void RegisterReader::parseRegisterFileRegisterData(QDomNode const& registerFileN
 
     for (int i = 0; i < childNodeList.count(); ++i)
     {
-        if (childNodeList.at(i).nodeName() == "ipxact:register")
+        if (childNodeList.at(i).nodeName() == QStringLiteral("ipxact:register"))
         {
             QSharedPointer<Register> newRegister = createRegisterfrom(childNodeList.at(i));
             newRegisterFile->getRegisterData()->append(newRegister);
         }
 
-        else if (childNodeList.at(i).nodeName() == "ipxact:registerFile")
+        else if (childNodeList.at(i).nodeName() == QStringLiteral("ipxact:registerFile"))
         {
             QSharedPointer<RegisterFile> containedRegisterFile = createRegisterFileFrom(childNodeList.at(i));
             newRegisterFile->getRegisterData()->append(containedRegisterFile);

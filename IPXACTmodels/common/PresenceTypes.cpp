@@ -11,18 +11,21 @@
 
 #include "PresenceTypes.h"
 
+//-----------------------------------------------------------------------------
+// Function: PresenceTypes::str2Presence()
+//-----------------------------------------------------------------------------
 PresenceTypes::Presence PresenceTypes::str2Presence(QString str, PresenceTypes::Presence defaultValue)
 {
 	// Identify the correct enum value.
-	if (str == QString("illegal"))
+	if (str == QLatin1String("illegal"))
 	{
 		return PresenceTypes::ILLEGAL;
 	}
-	else if (str == QString("required"))
+	else if (str == QLatin1String("required"))
 	{
 		return PresenceTypes::REQUIRED;
 	}
-	else if (str == QString("optional"))
+	else if (str == QLatin1String("optional"))
 	{
 		return PresenceTypes::OPTIONAL;
 	}
@@ -32,27 +35,26 @@ PresenceTypes::Presence PresenceTypes::str2Presence(QString str, PresenceTypes::
 	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: PresenceTypes::presence2Str()
+//-----------------------------------------------------------------------------
 QString PresenceTypes::presence2Str(PresenceTypes::Presence presence)
 {
-	// Create string based on the enum value.
-	switch (presence)
-	{
-		case PresenceTypes::ILLEGAL:
-		{
-			return QString("illegal");
-		}
-		case PresenceTypes::REQUIRED:
-		{
-			return QString("required");
-		}
-		case PresenceTypes::OPTIONAL:
-		{
-			return QString("optional");
-		}
-		default:
-		{
-			return QString();
-		}
-	}
+    // Create string based on the enum value.
+    if (presence == PresenceTypes::ILLEGAL)
+    {
+        return QStringLiteral("illegal");
+    }
+    else if (presence == PresenceTypes::REQUIRED)
+    {
+        return QStringLiteral("required");
+    }
+    else if (presence == PresenceTypes::OPTIONAL)
+    {
+        return QStringLiteral("optional");
+    }
+    else
+    {
+        return QString();
+    }
 }
-

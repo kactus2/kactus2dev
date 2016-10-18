@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceWriter::ComponentInstanceWriter()
 //-----------------------------------------------------------------------------
-ComponentInstanceWriter::ComponentInstanceWriter(QObject* parent /* = 0 */) :
+ComponentInstanceWriter::ComponentInstanceWriter(QObject* parent) :
 CommonItemsWriter(parent)
 {
 
@@ -34,21 +34,21 @@ ComponentInstanceWriter::~ComponentInstanceWriter()
 void ComponentInstanceWriter::writeComponentInstance(QXmlStreamWriter& writer,
     QSharedPointer<ComponentInstance> instance) const
 {
-    writer.writeStartElement("ipxact:componentInstance");
-    writer.writeTextElement("ipxact:instanceName", instance->getInstanceName());
+    writer.writeStartElement(QStringLiteral("ipxact:componentInstance"));
+    writer.writeTextElement(QStringLiteral("ipxact:instanceName"), instance->getInstanceName());
 
     if (!instance->getDisplayName().isEmpty())
     {
-        writer.writeTextElement("ipxact:displayName", instance->getDisplayName());
+        writer.writeTextElement(QStringLiteral("ipxact:displayName"), instance->getDisplayName());
     }
     if (!instance->getDescription().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", instance->getDescription());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), instance->getDescription());
     }
 
     writeIsPresent(writer, instance->getIsPresent());
 
-    writeConfigurableVLNVReference(writer, instance->getComponentRef(), "ipxact:componentRef");
+    writeConfigurableVLNVReference(writer, instance->getComponentRef(), QStringLiteral("ipxact:componentRef"));
 
     writeVendorExtensions(writer, instance);
 
@@ -67,13 +67,13 @@ void ComponentInstanceWriter::writeConfigurableVLNVReference(QXmlStreamWriter& w
 
     if (!VLNVreference->getConfigurableElementValues()->isEmpty())
     {
-        writer.writeStartElement("ipxact:configurableElementValues");
+        writer.writeStartElement(QStringLiteral("ipxact:configurableElementValues"));
 
         foreach (QSharedPointer<ConfigurableElementValue> configurableElement,
             *VLNVreference->getConfigurableElementValues())
         {
-            writer.writeStartElement("ipxact:configurableElementValue");
-            writer.writeAttribute("referenceId", configurableElement->getReferenceId());
+            writer.writeStartElement(QStringLiteral("ipxact:configurableElementValue"));
+            writer.writeAttribute(QStringLiteral("referenceId"), configurableElement->getReferenceId());
             writer.writeCharacters(configurableElement->getConfigurableValue());
             writer.writeEndElement(); // ipxact:configurableElementValue
         }

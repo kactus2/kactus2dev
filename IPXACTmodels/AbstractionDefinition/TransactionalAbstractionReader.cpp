@@ -62,13 +62,15 @@ QSharedPointer<TransactionalAbstraction> TransactionalAbstractionReader::createT
 void TransactionalAbstractionReader::parseQualifier(QDomNode const& transactionalNode, 
     QSharedPointer<TransactionalAbstraction> transactional) const
 {
-    QDomNode qualifierNode = transactionalNode.firstChildElement("ipxact:qualifier");
+    QDomNode qualifierNode = transactionalNode.firstChildElement(QStringLiteral("ipxact:qualifier"));
 
     if (!qualifierNode.isNull())
     {
         Qualifier readQualifier;
-        bool isData = qualifierNode.firstChildElement("ipxact:isData").firstChild().nodeValue() == "true";
-        bool isAddress = qualifierNode.firstChildElement("ipxact:isAddress").firstChild().nodeValue() == "true";
+        bool isData = qualifierNode.firstChildElement(QStringLiteral("ipxact:isData")).firstChild().nodeValue() ==
+            QStringLiteral("true");
+        bool isAddress = qualifierNode.firstChildElement(
+            QStringLiteral("ipxact:isAddress")).firstChild().nodeValue() == QStringLiteral("true");
         
         if (isData && isAddress)
         {
@@ -91,14 +93,14 @@ void TransactionalAbstractionReader::parseQualifier(QDomNode const& transactiona
 void TransactionalAbstractionReader::parseSystems(QDomNode const& transactionalNode, 
     QSharedPointer<TransactionalAbstraction> transactional) const
 {
-    QDomNodeList systemNodes = transactionalNode.toElement().elementsByTagName("ipxact:onSystem");
+    QDomNodeList systemNodes = transactionalNode.toElement().elementsByTagName(QStringLiteral("ipxact:onSystem"));
 
     for (int i = 0; i < systemNodes.count(); i++)
     {
         QDomNode systemNode = systemNodes.at(i);
 
         QSharedPointer<TransactionalPort> system = parseTransactionalPort(systemNode);
-        system->setSystemGroup(systemNode.firstChildElement("ipxact:group").firstChild().nodeValue());
+        system->setSystemGroup(systemNode.firstChildElement(QStringLiteral("ipxact:group")).firstChild().nodeValue());
         transactional->addSystemPort(system);
     }
 }
@@ -110,15 +112,15 @@ QSharedPointer<TransactionalPort> TransactionalAbstractionReader::parseTransacti
 {
     QSharedPointer<TransactionalPort> transactionalPort(new TransactionalPort());
 
-    QDomNode presenceNode = portNode.firstChildElement("ipxact:presence");
+    QDomNode presenceNode = portNode.firstChildElement(QStringLiteral("ipxact:presence"));
     transactionalPort->setPresence(PresenceTypes::str2Presence(presenceNode.firstChild().nodeValue(),
         PresenceTypes::UNKNOWN));
 
-    transactionalPort->setInitiative(portNode.firstChildElement("ipxact:initiative").firstChild().nodeValue());
+    transactionalPort->setInitiative(portNode.firstChildElement(QStringLiteral("ipxact:initiative")).firstChild().nodeValue());
 
-    transactionalPort->setKind(portNode.firstChildElement("ipxact:kind").firstChild().nodeValue());
+    transactionalPort->setKind(portNode.firstChildElement(QStringLiteral("ipxact:kind")).firstChild().nodeValue());
 
-    transactionalPort->setBusWidth(portNode.firstChildElement("ipxact:busWidth").firstChild().nodeValue());
+    transactionalPort->setBusWidth(portNode.firstChildElement(QStringLiteral("ipxact:busWidth")).firstChild().nodeValue());
 
     parseProtocol(portNode, transactionalPort);
 
@@ -131,7 +133,7 @@ QSharedPointer<TransactionalPort> TransactionalAbstractionReader::parseTransacti
 void TransactionalAbstractionReader::parseProtocol(QDomNode const& portNode,
     QSharedPointer<TransactionalPort> transactionalPort) const
 {
-    QDomNode protocolNode = portNode.firstChildElement("ipxact:protocol");
+    QDomNode protocolNode = portNode.firstChildElement(QStringLiteral("ipxact:protocol"));
 
     if (!protocolNode.isNull())
     {
@@ -146,7 +148,7 @@ void TransactionalAbstractionReader::parseProtocol(QDomNode const& portNode,
 void TransactionalAbstractionReader::parseMaster(QDomNode const& transactionalNode, 
     QSharedPointer<TransactionalAbstraction> transactional) const
 {
-    QDomNode masterNode = transactionalNode.firstChildElement("ipxact:onMaster");
+    QDomNode masterNode = transactionalNode.firstChildElement(QStringLiteral("ipxact:onMaster"));
 
     if (!masterNode.isNull())
     {
@@ -161,7 +163,7 @@ void TransactionalAbstractionReader::parseMaster(QDomNode const& transactionalNo
 void TransactionalAbstractionReader::parseSlave(QDomNode const& transactionalNode, 
     QSharedPointer<TransactionalAbstraction> transactional) const
 {
-    QDomNode slaveNode = transactionalNode.firstChildElement("ipxact:onSlave");
+    QDomNode slaveNode = transactionalNode.firstChildElement(QStringLiteral("ipxact:onSlave"));
 
     if (!slaveNode.isNull())
     {

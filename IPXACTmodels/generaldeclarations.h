@@ -37,14 +37,14 @@ namespace General
 
     //! The names to display that match the enum InterfaceMode
     const QString INTERFACE_MODE_NAMES[] = {
-        "master",
-        "slave",
-        "system",
-        "mirroredMaster",
-        "mirroredSlave",
-        "mirroredSystem",
-        "monitor",
-        "undefined"
+        QLatin1String("master"),
+        QLatin1String("slave"),
+        QLatin1String("system"),
+        QLatin1String("mirroredMaster"),
+        QLatin1String("mirroredSlave"),
+        QLatin1String("mirroredSystem"),
+        QLatin1String("monitor"),
+        QLatin1String("undefined")
     };
 
     /*! Convert QString into boolean value
@@ -148,16 +148,16 @@ namespace General
 
     //! Contains the strings that match the enum ModifiedWrite values.
     const QString MODIFIED_WRITE_STRINGS[] = {
-        "oneToClear",
-        "oneToSet",
-        "oneToToggle",
-        "zeroToClear",
-        "zeroToSet",
-        "zeroToToggle",
-        "clear",
-        "set",
-        "modify",
-        ""
+        QLatin1String("oneToClear"),
+        QLatin1String("oneToSet"),
+        QLatin1String("oneToToggle"),
+        QLatin1String("zeroToClear"),
+        QLatin1String("zeroToSet"),
+        QLatin1String("zeroToToggle"),
+        QLatin1String("clear"),
+        QLatin1String("set"),
+        QLatin1String("modify"),
+        QLatin1String("")
     };
 
     /*! Convert the value of the QString into enum ModifiedWrite.
@@ -192,10 +192,10 @@ namespace General
 
     //! Contains the strings that match the enum ReadAction values.
     const QString READ_ACTION_STRINGS[] = {
-        "clear",
-        "set",
-        "modify",
-        ""
+        QLatin1String("clear"),
+        QLatin1String("set"),
+        QLatin1String("modify"),
+        QLatin1String("")
     };
 
     /*! Convert the enum value to a matching string.
@@ -231,11 +231,11 @@ namespace General
 
     //! Contains the strings that match the enum TestConstraint values.
     const QString TEST_CONSTRAINT_STRINGS[TESTCONSTRAINT_COUNT+1] = {
-        "unConstrained",
-        "restore",
-        "writeAsRead",
-        "readOnly",
-        ""
+        QLatin1String("unConstrained"),
+        QLatin1String("restore"),
+        QLatin1String("writeAsRead"),
+        QLatin1String("readOnly"),
+        QLatin1String("")
     };
 
     /*! Convert the enum value to a matching string.

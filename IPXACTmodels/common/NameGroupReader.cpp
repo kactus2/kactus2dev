@@ -54,7 +54,7 @@ void NameGroupReader::parseNameGroup(QDomNode const& nameGroupNode, QSharedPoint
 //-----------------------------------------------------------------------------
 QString NameGroupReader::parseName(QDomNode const& nameGroupNode) const
 {
-    return nameGroupNode.firstChildElement("ipxact:name").firstChild().nodeValue();
+    return nameGroupNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ QString NameGroupReader::parseName(QDomNode const& nameGroupNode) const
 //-----------------------------------------------------------------------------
 QString NameGroupReader::parseDisplayName(QDomNode const& nameGroupNode) const
 {
-    return nameGroupNode.firstChildElement("ipxact:displayName").firstChild().nodeValue();
+    return nameGroupNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -70,5 +70,5 @@ QString NameGroupReader::parseDisplayName(QDomNode const& nameGroupNode) const
 //-----------------------------------------------------------------------------
 QString NameGroupReader::parseDescription(QDomNode const& nameGroupNode) const
 {
-    return nameGroupNode.firstChildElement("ipxact:description").firstChild().nodeValue();
+    return nameGroupNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue();
 }

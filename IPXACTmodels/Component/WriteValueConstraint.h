@@ -38,10 +38,10 @@ public:
 	WriteValueConstraint();
 
 	//! Copy constructor.
-	WriteValueConstraint(const WriteValueConstraint& other);
+	WriteValueConstraint(WriteValueConstraint const& other);
 
 	//! Assignment operator.
-	WriteValueConstraint& operator=(const WriteValueConstraint& other);
+	WriteValueConstraint& operator=(WriteValueConstraint const& other);
 
 	//! The destructor.
 	virtual ~WriteValueConstraint();

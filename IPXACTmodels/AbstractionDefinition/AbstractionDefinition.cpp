@@ -283,7 +283,7 @@ QString AbstractionDefinition::getFileName() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:definitionFile")
+        if (extension->type() == QLatin1String("kactus2:definitionFile"))
         {
             QSharedPointer<Kactus2Value> hashExtension = extension.dynamicCast<Kactus2Value>();
             return hashExtension->value();
@@ -300,7 +300,7 @@ void AbstractionDefinition::setFilename(QString const& fileName)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:definitionFile")
+        if (extension->type() == QLatin1String("kactus2:definitionFile"))
         {
             if (fileName.isEmpty())
             {
@@ -317,7 +317,7 @@ void AbstractionDefinition::setFilename(QString const& fileName)
 
     if (!fileName.isEmpty())
     {
-        QSharedPointer<Kactus2Value> hashExtension (new Kactus2Value("kactus2:definitionFile", fileName));
+        QSharedPointer<Kactus2Value> hashExtension (new Kactus2Value(QStringLiteral("kactus2:definitionFile"), fileName));
         getVendorExtensions()->append(hashExtension);
     }
 }

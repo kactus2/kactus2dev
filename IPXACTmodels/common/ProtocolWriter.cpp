@@ -38,7 +38,7 @@ void ProtocolWriter::writeProtocol(QXmlStreamWriter& writer, QSharedPointer<Prot
 {
     if (!protocol.isNull())
     {
-        writer.writeStartElement("ipxact:protocol");
+        writer.writeStartElement(QStringLiteral("ipxact:protocol"));
 
         writeProtocolType(writer, protocol);
         writePayload(writer, protocol);
@@ -52,15 +52,15 @@ void ProtocolWriter::writeProtocol(QXmlStreamWriter& writer, QSharedPointer<Prot
 //-----------------------------------------------------------------------------
 void ProtocolWriter::writeProtocolType(QXmlStreamWriter& writer, QSharedPointer<Protocol> portProtocol) const
 {
-    if (portProtocol->getProtocolType() == "tlm")
+    if (portProtocol->getProtocolType() == QLatin1String("tlm"))
     {
-        writer.writeTextElement("ipxact:protocolType", "tlm");
+        writer.writeTextElement(QStringLiteral("ipxact:protocolType"), QStringLiteral("tlm"));
     }
     else
     {
-        writer.writeStartElement("ipxact:protocolType");
-        writer.writeAttribute("custom", portProtocol->getCustomProtocolType());
-        writer.writeCharacters("custom");
+        writer.writeStartElement(QStringLiteral("ipxact:protocolType"));
+        writer.writeAttribute(QStringLiteral("custom"), portProtocol->getCustomProtocolType());
+        writer.writeCharacters(QStringLiteral("custom"));
         writer.writeEndElement();
     }
 }
@@ -72,22 +72,22 @@ void ProtocolWriter::writePayload(QXmlStreamWriter& writer, QSharedPointer<Proto
 {
     if (!portProtocol->getPayloadType().isEmpty())
     {
-        writer.writeStartElement("ipxact:payload");
+        writer.writeStartElement(QStringLiteral("ipxact:payload"));
 
         if (!portProtocol->getPayloadName().isEmpty())
         {
-            writer.writeTextElement("ipxact:name", portProtocol->getPayloadName());
+            writer.writeTextElement(QStringLiteral("ipxact:name"), portProtocol->getPayloadName());
         }
 
-        writer.writeTextElement("ipxact:type", portProtocol->getPayloadType());
+        writer.writeTextElement(QStringLiteral("ipxact:type"), portProtocol->getPayloadType());
 
         if (!portProtocol->getPayloadExtension().isEmpty())
         {
-            writer.writeStartElement("ipxact:extension");
+            writer.writeStartElement(QStringLiteral("ipxact:extension"));
          
             if (portProtocol->hasMandatoryPayloadExtension())
             {
-                writer.writeAttribute("mandatory", "true");
+                writer.writeAttribute(QStringLiteral("mandatory"), QStringLiteral("true"));
             }
             writer.writeCharacters(portProtocol->getPayloadExtension());
 
@@ -107,7 +107,7 @@ void ProtocolWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedPoin
 {
     if (!portProtocol->getVendorExtensions()->isEmpty())
     {
-        writer.writeStartElement("ipxact:vendorExtensions");
+        writer.writeStartElement(QStringLiteral("ipxact:vendorExtensions"));
         foreach (QSharedPointer<VendorExtension> extension, *portProtocol->getVendorExtensions())
         {
             extension->write(writer);

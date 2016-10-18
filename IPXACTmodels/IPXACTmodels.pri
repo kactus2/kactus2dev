@@ -228,7 +228,6 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/AddressBlockValidator.h \
     ./Component/validators/AddressSpaceValidator.h \
     ./Component/validators/BuildCommandValidator.h \
-    ./Component/validators/BusInterfaceValidator.h \
     ./Component/validators/ChannelValidator.h \
     ./Component/validators/ChoiceValidator.h \
     ./Component/validators/ComponentGeneratorValidator.h \
@@ -247,7 +246,8 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./Component/validators/ViewValidator.h
+    ./Component/validators/ViewValidator.h \
+    ./Component/validators/BusInterfaceValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \

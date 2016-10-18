@@ -41,7 +41,7 @@ TransactionalAbstractionWriter::~TransactionalAbstractionWriter()
 void TransactionalAbstractionWriter::writeTransactional(QXmlStreamWriter& writer, 
     QSharedPointer<TransactionalAbstraction> transactional) const
 {
-    writer.writeStartElement("ipxact:transactional");
+    writer.writeStartElement(QStringLiteral("ipxact:transactional"));
 
     writeQualifier(writer, transactional);
 
@@ -63,14 +63,14 @@ void TransactionalAbstractionWriter::writeQualifier(QXmlStreamWriter& writer,
     Qualifier qualifier = transactional->getQualifier();
     if (qualifier.isData() || qualifier.isAddress())
     {
-        writer.writeStartElement("ipxact:qualifier");
+        writer.writeStartElement(QStringLiteral("ipxact:qualifier"));
         if (qualifier.isData())
         {
-            writer.writeTextElement("ipxact:isData", "true");
+            writer.writeTextElement(QStringLiteral("ipxact:isData"), QStringLiteral("true"));
         }
         if (qualifier.isAddress())
         {
-            writer.writeTextElement("ipxact:isAddress", "true");
+            writer.writeTextElement(QStringLiteral("ipxact:isAddress"), QStringLiteral("true"));
         }
      
         writer.writeEndElement();
@@ -85,8 +85,8 @@ void TransactionalAbstractionWriter::writeSystem(QXmlStreamWriter& writer,
 {
     foreach (QSharedPointer<TransactionalPort> systemPort, *transactional->getSystemPorts())
     {
-        writer.writeStartElement("ipxact:onSystem");
-        writer.writeTextElement("ipxact:group", systemPort->getSystemGroup());
+        writer.writeStartElement(QStringLiteral("ipxact:onSystem"));
+        writer.writeTextElement(QStringLiteral("ipxact:group"), systemPort->getSystemGroup());
         writeTransactionalPort(writer, systemPort);
         writer.writeEndElement();
     }
@@ -118,15 +118,15 @@ void TransactionalAbstractionWriter::writePresence(QXmlStreamWriter& writer,
 {
     if (port->getPresence() == PresenceTypes::REQUIRED)
     {
-        writer.writeTextElement("ipxact:presence", "required");
+        writer.writeTextElement(QStringLiteral("ipxact:presence"), QStringLiteral("required"));
     }
     else if (port->getPresence() == PresenceTypes::OPTIONAL)
     {
-        writer.writeTextElement("ipxact:presence", "optional");
+        writer.writeTextElement(QStringLiteral("ipxact:presence"), QStringLiteral("optional"));
     }
     else if (port->getPresence() == PresenceTypes::ILLEGAL)
     {
-        writer.writeTextElement("ipxact:presence", "illegal");
+        writer.writeTextElement(QStringLiteral("ipxact:presence"), QStringLiteral("illegal"));
     }
 }
 
@@ -138,7 +138,7 @@ void TransactionalAbstractionWriter::writeInitiative(QXmlStreamWriter& writer,
 {
     if (!port->getInitiative().isEmpty())
     {
-        writer.writeTextElement("ipxact:initiative", port->getInitiative());
+        writer.writeTextElement(QStringLiteral("ipxact:initiative"), port->getInitiative());
     }
 }
 
@@ -151,17 +151,18 @@ void TransactionalAbstractionWriter::writeKind(QXmlStreamWriter& writer,
     if (!port->getKind().isEmpty())
     {
         QStringList standardKinds;
-        standardKinds << "tlm_port" << "tlm_socket" << "simple_socket" << "multi_socket";
+        standardKinds << QStringLiteral("tlm_port") << QStringLiteral("tlm_socket") << 
+            QStringLiteral("simple_socket") << QStringLiteral("multi_socket");
 
-        writer.writeStartElement("ipxact:kind");
+        writer.writeStartElement(QStringLiteral("ipxact:kind"));
         if (standardKinds.contains(port->getKind()))
         {
             writer.writeCharacters(port->getKind());
         }
         else
         {
-            writer.writeAttribute("custom", port->getKind());
-            writer.writeCharacters("custom");
+            writer.writeAttribute(QStringLiteral("custom"), port->getKind());
+            writer.writeCharacters(QStringLiteral("custom"));
         }
         writer.writeEndElement();
     }
@@ -175,7 +176,7 @@ void TransactionalAbstractionWriter::writeBusWidth(QXmlStreamWriter& writer,
 {
     if (!port->getBusWidth().isEmpty())
     {
-        writer.writeTextElement("ipxact:busWidth", port->getBusWidth());
+        writer.writeTextElement(QStringLiteral("ipxact:busWidth"), port->getBusWidth());
     }
 }
 
@@ -187,7 +188,7 @@ void TransactionalAbstractionWriter::writeVendorExtensions(QXmlStreamWriter& wri
 {
     if (!portProtocol->getVendorExtensions()->isEmpty())
     {
-        writer.writeStartElement("ipxact:vendorExtensions");
+        writer.writeStartElement(QStringLiteral("ipxact:vendorExtensions"));
         foreach (QSharedPointer<VendorExtension> extension, *portProtocol->getVendorExtensions())
         {
             extension->write(writer);
@@ -204,7 +205,7 @@ void TransactionalAbstractionWriter::writeMaster(QXmlStreamWriter& writer,
 {
    if (transactional->hasMasterPort())
    {
-       writer.writeStartElement("ipxact:onMaster");
+       writer.writeStartElement(QStringLiteral("ipxact:onMaster"));
        writeTransactionalPort(writer, transactional->getMasterPort());
        writer.writeEndElement();
    }
@@ -218,7 +219,7 @@ void TransactionalAbstractionWriter::writeSlave(QXmlStreamWriter& writer,
 {
     if (transactional->hasSlavePort())
     {
-        writer.writeStartElement("ipxact:onSlave");
+        writer.writeStartElement(QStringLiteral("ipxact:onSlave"));
         writeTransactionalPort(writer, transactional->getSlavePort());
         writer.writeEndElement();
     }

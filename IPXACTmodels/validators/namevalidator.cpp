@@ -21,7 +21,7 @@ QRegExpValidator(parent)
 {
 	QRegExp exp;
 
-	exp.setPattern("^[a-zA-Z:_]+[a-zA-Z0-9:_.-]*$");
+	exp.setPattern(QStringLiteral("^[a-zA-Z:_]+[a-zA-Z0-9:_.-]*$"));
 
     exp.setPatternSyntax(QRegExp::W3CXmlSchema11);
 

@@ -30,7 +30,7 @@ public:
      *
      *      @param [in] busRef  The name of the referenced bus interface.
      */
-    HierInterface(QString busRef = QString(""));
+    HierInterface(QString busRef = QString());
 
     /*!
      *  Copy constructor.

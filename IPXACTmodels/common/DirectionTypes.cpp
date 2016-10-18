@@ -43,19 +43,19 @@ DirectionTypes::Direction DirectionTypes::convert2Mirrored(const Direction origi
 //-----------------------------------------------------------------------------
 DirectionTypes::Direction DirectionTypes::str2Direction(QString str, DirectionTypes::Direction defaultValue)
 {
-	if (str == QString("in"))
+	if (str == QLatin1String("in"))
     {
 		return DirectionTypes::IN;
 	}
-	else if (str == QString("out"))
+	else if (str == QLatin1String("out"))
     {
 		return DirectionTypes::OUT;
 	}
-	else if (str == QString("inout"))
+	else if (str == QLatin1String("inout"))
     {
 		return DirectionTypes::INOUT;
 	}
-	else if (str == QString("phantom"))
+	else if (str == QLatin1String("phantom"))
     {
 		return DirectionTypes::DIRECTION_PHANTOM;
 	}
@@ -72,19 +72,19 @@ QString DirectionTypes::direction2Str(const DirectionTypes::Direction direction)
 {
     if (direction == DirectionTypes::IN)
     {
-        return QString("in");
+        return QStringLiteral("in");
     }
     else if (direction == DirectionTypes::OUT)
     {
-        return QString("out");
+        return QStringLiteral("out");
     }
     else if (direction == DirectionTypes::INOUT)
     {
-        return QString("inout");
+        return QStringLiteral("inout");
     }
     else if (direction == DirectionTypes::DIRECTION_PHANTOM)
     {
-        return QString("phantom");
+        return QStringLiteral("phantom");
     }
     else
     {

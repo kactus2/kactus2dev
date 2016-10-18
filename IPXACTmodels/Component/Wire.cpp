@@ -213,7 +213,7 @@ void Wire::setVectorLeftBound(QString const& expression)
 {
     if (!vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector("0","0"));
+        vector_ = QSharedPointer<Vector>(new Vector(QStringLiteral("0"), QStringLiteral("0")));
     }
 
     vector_->setLeft(expression);
@@ -226,7 +226,7 @@ void Wire::setVectorRightBound(QString const& expression)
 {
     if (!vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector("0","0"));
+        vector_ = QSharedPointer<Vector>(new Vector(QStringLiteral("0"), QStringLiteral("0")));
     }
 
     vector_->setRight(expression);
@@ -239,7 +239,7 @@ QString Wire::getVectorLeftBound()
 {
     if (!vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector("", ""));
+        vector_ = QSharedPointer<Vector>(new Vector(QString(), QString()));
     }
 
     return vector_->getLeft();
@@ -252,7 +252,7 @@ QString Wire::getVectorRightBound()
 {
     if (!vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector("", ""));
+        vector_ = QSharedPointer<Vector>(new Vector(QString(), QString()));
     }
 
     return vector_->getRight();
@@ -274,7 +274,7 @@ QString Wire::getTypeName(QString const& viewName) const
         }
     }
 
-    return QString("");
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -319,12 +319,12 @@ QString Wire::getTypeDefinition(QString const& typeName)
         {
             if (wireTypeDefinition->getTypeName() == typeName)
             {
-                return wireTypeDefinition->getTypeDefinitions().value(0, QString(""));
+                return wireTypeDefinition->getTypeDefinitions().value(0, QString());
             }
         }
     }
 
-    return QString("");
+    return QString();
 }
 
 //-----------------------------------------------------------------------------

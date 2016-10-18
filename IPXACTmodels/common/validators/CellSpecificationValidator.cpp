@@ -18,14 +18,14 @@
 //-----------------------------------------------------------------------------
 CellSpecificationValidator::CellSpecificationValidator()
 {
-	functions_.append("nd2");
-	functions_.append("buf");
-	functions_.append("inv");
-	functions_.append("mux21");
-	functions_.append("dff");
-	functions_.append("latch");
-	functions_.append("xor2");
-	functions_.append("other");
+	functions_.append(QStringLiteral("nd2"));
+	functions_.append(QStringLiteral("buf"));
+	functions_.append(QStringLiteral("inv"));
+	functions_.append(QStringLiteral("mux21"));
+	functions_.append(QStringLiteral("dff"));
+	functions_.append(QStringLiteral("latch"));
+	functions_.append(QStringLiteral("xor2"));
+	functions_.append(QStringLiteral("other"));
 }
 
 //-----------------------------------------------------------------------------

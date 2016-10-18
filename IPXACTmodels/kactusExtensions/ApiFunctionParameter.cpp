@@ -53,15 +53,16 @@ ApiFunctionParameter::ApiFunctionParameter(QDomNode& node)
       dependentParamIndex_(-1),
       desc_()
 {
-    Q_ASSERT(node.nodeName() == "kactus2:functionParameter");
+    Q_ASSERT(node.nodeName() == QStringLiteral("kactus2:functionParameter"));
 
-    name_ = node.attributes().namedItem("name").nodeValue();
-    type_ = node.attributes().namedItem("type").nodeValue();
-    comTransferType_ = node.attributes().namedItem("transferType").nodeValue();
-    comDirection_ = DirectionTypes::str2Direction(node.attributes().namedItem("comDirection").nodeValue(), DirectionTypes::DIRECTION_INVALID);
-    contentSource_ = node.attributes().namedItem("contentSource").nodeValue();
-    dependentParamIndex_ = node.attributes().namedItem("dependentParamIndex").nodeValue().toInt();
-    desc_ = node.attributes().namedItem("description").nodeValue();
+    name_ = node.attributes().namedItem(QStringLiteral("name")).nodeValue();
+    type_ = node.attributes().namedItem(QStringLiteral("type")).nodeValue();
+    comTransferType_ = node.attributes().namedItem(QStringLiteral("transferType")).nodeValue();
+    comDirection_ = DirectionTypes::str2Direction(node.attributes().namedItem(
+        QStringLiteral("comDirection")).nodeValue(), DirectionTypes::DIRECTION_INVALID);
+    contentSource_ = node.attributes().namedItem(QStringLiteral("contentSource")).nodeValue();
+    dependentParamIndex_ = node.attributes().namedItem(QStringLiteral("dependentParamIndex")).nodeValue().toInt();
+    desc_ = node.attributes().namedItem(QStringLiteral("description")).nodeValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -76,19 +77,19 @@ ApiFunctionParameter::~ApiFunctionParameter()
 //-----------------------------------------------------------------------------
 void ApiFunctionParameter::write(QXmlStreamWriter& writer)
 {
-    writer.writeEmptyElement("kactus2:functionParameter");
-    writer.writeAttribute("name", name_);
-    writer.writeAttribute("type", type_);
-    writer.writeAttribute("transferType", comTransferType_);
+    writer.writeEmptyElement(QStringLiteral("kactus2:functionParameter"));
+    writer.writeAttribute(QStringLiteral("name"), name_);
+    writer.writeAttribute(QStringLiteral("type"), type_);
+    writer.writeAttribute(QStringLiteral("transferType"), comTransferType_);
 
     if (comDirection_ != DirectionTypes::DIRECTION_INVALID)
     {
-        writer.writeAttribute("comDirection", DirectionTypes::direction2Str(comDirection_));
+        writer.writeAttribute(QStringLiteral("comDirection"), DirectionTypes::direction2Str(comDirection_));
     }
 
-    writer.writeAttribute("contentSource", contentSource_);
-    writer.writeAttribute("dependentParamIndex", QString::number(dependentParamIndex_));
-    writer.writeAttribute("description", desc_);
+    writer.writeAttribute(QStringLiteral("contentSource"), contentSource_);
+    writer.writeAttribute(QStringLiteral("dependentParamIndex"), QString::number(dependentParamIndex_));
+    writer.writeAttribute(QStringLiteral("description"), desc_);
 }
 
 //-----------------------------------------------------------------------------

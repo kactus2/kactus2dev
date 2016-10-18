@@ -253,7 +253,12 @@ private:
      */
     void parseFileDependencies(QDomNode const& fileNode, QSharedPointer<Component> newComponent) const;
 
-
+    /*!
+     *  Reads the author vendor extension.
+     *
+     *      @param [in] authorNode      XML description of the author.
+     *      @param [in] newComponent    The new component.
+     */
     void parseAuthor(QDomNode const& authorNode, QSharedPointer<Component> newComponent) const;
 };
 

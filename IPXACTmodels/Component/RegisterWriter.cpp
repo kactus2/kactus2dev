@@ -58,7 +58,7 @@ void RegisterWriter::writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<
 //-----------------------------------------------------------------------------
 void RegisterWriter::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister) const
 {
-    writer.writeStartElement("ipxact:register");
+    writer.writeStartElement(QStringLiteral("ipxact:register"));
 
     writeNameGroup(writer, targetRegister);
 
@@ -70,7 +70,7 @@ void RegisterWriter::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Regi
 
     writeTypeIdentifier(writer, targetRegister);
 
-    writer.writeTextElement("ipxact:size", targetRegister->getSize());
+    writer.writeTextElement(QStringLiteral("ipxact:size"), targetRegister->getSize());
 
     writeVolatile(writer, targetRegister);
 
@@ -103,7 +103,7 @@ void RegisterWriter::writeDimension(QXmlStreamWriter& writer, QString const& dim
 {
     if (!dimension.isEmpty())
     {
-        writer.writeTextElement("ipxact:dim", dimension);
+        writer.writeTextElement(QStringLiteral("ipxact:dim"), dimension);
     }
 }
 
@@ -112,7 +112,7 @@ void RegisterWriter::writeDimension(QXmlStreamWriter& writer, QString const& dim
 //-----------------------------------------------------------------------------
 void RegisterWriter::writeAddressOffset(QXmlStreamWriter& writer, QString const& addressOffset) const
 {
-    writer.writeTextElement("ipxact:addressOffset", addressOffset);
+    writer.writeTextElement(QStringLiteral("ipxact:addressOffset"), addressOffset);
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +122,7 @@ void RegisterWriter::writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPointe
 {
     if (!registerData->getTypeIdentifier().isEmpty())
     {
-        writer.writeTextElement("ipxact:typeIdentifier", registerData->getTypeIdentifier());
+        writer.writeTextElement(QStringLiteral("ipxact:typeIdentifier"), registerData->getTypeIdentifier());
     }
 }
 
@@ -134,7 +134,7 @@ void RegisterWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<Regi
 {
     if (!registerDefinition->getVolatile().isEmpty())
     {
-        writer.writeTextElement("ipxact:volatile", registerDefinition->getVolatile());
+        writer.writeTextElement(QStringLiteral("ipxact:volatile"), registerDefinition->getVolatile());
     }
 }
 
@@ -147,7 +147,7 @@ void RegisterWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Regist
     if (registerDefinition->getAccess() != AccessTypes::ACCESS_COUNT)
     {
         QString accessString = AccessTypes::access2Str(registerDefinition->getAccess());
-        writer.writeTextElement("ipxact:access", accessString);
+        writer.writeTextElement(QStringLiteral("ipxact:access"), accessString);
     }
 }
 
@@ -172,7 +172,7 @@ void RegisterWriter::writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPo
 {
     if (!targetRegister->getAlternateRegisters()->isEmpty())
     {
-        writer.writeStartElement("ipxact:alternateRegisters");
+        writer.writeStartElement(QStringLiteral("ipxact:alternateRegisters"));
 
         foreach (QSharedPointer<AlternateRegister> alternateRegister, *targetRegister->getAlternateRegisters())
         {
@@ -189,7 +189,7 @@ void RegisterWriter::writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPo
 void RegisterWriter::writeSingleAlternateRegister(QXmlStreamWriter& writer,
     QSharedPointer<AlternateRegister> alternateRegister) const
 {
-    writer.writeStartElement("ipxact:alternateRegister");
+    writer.writeStartElement(QStringLiteral("ipxact:alternateRegister"));
 
     NameGroupWriter nameGroupWriter;
     nameGroupWriter.writeNameGroup(writer, alternateRegister);
@@ -220,11 +220,11 @@ void RegisterWriter::writeSingleAlternateRegister(QXmlStreamWriter& writer,
 void RegisterWriter::writeAlternateGroups(QXmlStreamWriter& writer,
     QSharedPointer<AlternateRegister> alternateRegister) const
 {
-    writer.writeStartElement("ipxact:alternateGroups");
+    writer.writeStartElement(QStringLiteral("ipxact:alternateGroups"));
 
     foreach (QString groupName, *alternateRegister->getAlternateGroups())
     {
-        writer.writeTextElement("ipxact:alternateGroup", groupName);
+        writer.writeTextElement(QStringLiteral("ipxact:alternateGroup"), groupName);
     }
 
     writer.writeEndElement(); // ipxact:alternateGroups
@@ -235,7 +235,7 @@ void RegisterWriter::writeAlternateGroups(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 void RegisterWriter::writeRegisterFile(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile) const
 {
-    writer.writeStartElement("ipxact:registerFile");
+    writer.writeStartElement(QStringLiteral("ipxact:registerFile"));
 
     writeNameGroup(writer, registerFile);
 
@@ -247,7 +247,7 @@ void RegisterWriter::writeRegisterFile(QXmlStreamWriter& writer, QSharedPointer<
 
     writeTypeIdentifier(writer, registerFile);
 
-    writer.writeTextElement("ipxact:range", registerFile->getRange());
+    writer.writeTextElement(QStringLiteral("ipxact:range"), registerFile->getRange());
 
     writeRegisterFileRegisterData(writer, registerFile);
 

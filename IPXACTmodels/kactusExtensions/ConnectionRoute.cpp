@@ -45,7 +45,7 @@ VendorExtension* ConnectionRoute::clone() const
 //-----------------------------------------------------------------------------
 QString ConnectionRoute::type() const
 {
-    return "kactus2:route";
+    return QStringLiteral("kactus2:route");
 }
 
 //-----------------------------------------------------------------------------
@@ -53,23 +53,23 @@ QString ConnectionRoute::type() const
 //-----------------------------------------------------------------------------
 void ConnectionRoute::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:route");
+    writer.writeStartElement(QStringLiteral("kactus2:route"));
     
-    writer.writeAttribute("kactus2:connRef", name());
+    writer.writeAttribute(QStringLiteral("kactus2:connRef"), name());
     if (isOffpage())
     {
-        writer.writeAttribute("kactus2:offPage", "true");
+        writer.writeAttribute(QStringLiteral("kactus2:offPage"), QStringLiteral("true"));
     }
     else
     {
-        writer.writeAttribute("kactus2:offPage", "false");
+        writer.writeAttribute(QStringLiteral("kactus2:offPage"), QStringLiteral("false"));
     }
 
     foreach (QPointF routePoint, route_)
     {
-        writer.writeEmptyElement("kactus2:position");
-        writer.writeAttribute("x", QString::number(routePoint.x()));
-        writer.writeAttribute("y", QString::number(routePoint.y()));
+        writer.writeEmptyElement(QStringLiteral("kactus2:position"));
+        writer.writeAttribute(QStringLiteral("x"), QString::number(routePoint.x()));
+        writer.writeAttribute(QStringLiteral("y"), QString::number(routePoint.y()));
     }
 
     writer.writeEndElement();

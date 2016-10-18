@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: ChoiceWriter::ChoiceWriter()
 //-----------------------------------------------------------------------------
-ChoiceWriter::ChoiceWriter(QObject* parent /* = 0 */) :
+ChoiceWriter::ChoiceWriter(QObject* parent) :
 QObject(parent)
 {
 
@@ -35,29 +35,30 @@ ChoiceWriter::~ChoiceWriter()
 //-----------------------------------------------------------------------------
 void ChoiceWriter::writeChoice(QXmlStreamWriter& writer, QSharedPointer<Choice> choice) const
 {
-	writer.writeStartElement("ipxact:choice");
+	writer.writeStartElement(QStringLiteral("ipxact:choice"));
 
-	writer.writeTextElement("ipxact:name", choice->name());
+	writer.writeTextElement(QStringLiteral("ipxact:name"), choice->name());
 
-	QSharedPointer<QList<QSharedPointer<Enumeration> > > enumrs = choice->enumerations();
+	QSharedPointer<QList<QSharedPointer<Enumeration> > > enumerations = choice->enumerations();
 
-	for ( int i = 0; i < enumrs->size(); ++i )
+    int enumerationCount = enumerations->size();
+	for (int i = 0; i < enumerationCount; i++)
 	{
-		QSharedPointer<Enumeration> enumr = enumrs->at(i);
+		QSharedPointer<Enumeration> enumeration = enumerations->at(i);
 
-		writer.writeStartElement("ipxact:enumeration");
+		writer.writeStartElement(QStringLiteral("ipxact:enumeration"));
 
-		if (!enumr->getText().isEmpty())
+		if (!enumeration->getText().isEmpty())
 		{
-			writer.writeAttribute("text", enumr->getText());
+			writer.writeAttribute(QStringLiteral("text"), enumeration->getText());
 		}
 
-		if (!enumr->getHelp().isEmpty())
+		if (!enumeration->getHelp().isEmpty())
 		{
-			writer.writeAttribute("help", enumr->getHelp());
+			writer.writeAttribute(QStringLiteral("help"), enumeration->getHelp());
 		}
 
-		writer.writeCharacters(enumr->getValue());
+		writer.writeCharacters(enumeration->getValue());
 
 		writer.writeEndElement();
 	}

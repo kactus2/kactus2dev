@@ -66,7 +66,7 @@ bool AdHocConnectionValidator::validate(QSharedPointer<AdHocConnection> connecti
 bool AdHocConnectionValidator::hasValidName(QSharedPointer<AdHocConnection> connection) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(connection->name());
 
     if (connection->name().isEmpty() || whiteSpaceMatch.hasMatch())
@@ -109,8 +109,8 @@ bool AdHocConnectionValidator::hasValidTiedValue(QSharedPointer<AdHocConnection>
         bool toInt = true;
         parser_->parseExpression(tiedValue).toInt(&toInt);
 
-        return toInt || tiedValue.compare("default", Qt::CaseInsensitive) == 0 ||
-            tiedValue.compare("open", Qt::CaseInsensitive) == 0;
+        return toInt || tiedValue.compare(QLatin1String("default"), Qt::CaseInsensitive) == 0 ||
+            tiedValue.compare(QLatin1String("open"), Qt::CaseInsensitive) == 0;
     }
 
     return true;

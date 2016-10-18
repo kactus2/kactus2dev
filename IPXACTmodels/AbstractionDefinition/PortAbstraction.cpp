@@ -184,7 +184,7 @@ QString PortAbstraction::getDefaultValue() const
 {
 	if (wire_.isNull())
     {
-		return "";
+		return QStringLiteral("");
     }
 
 	return wire_->getDefaultValue();

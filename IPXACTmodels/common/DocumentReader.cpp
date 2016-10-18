@@ -66,7 +66,7 @@ void DocumentReader::parseXMLProcessingInstructions(QDomNode const& documentNode
         if (nodeList.at(i).isProcessingInstruction())
         {
             QDomProcessingInstruction instruction = nodeList.at(i).toProcessingInstruction();
-            if (!instruction.data().startsWith("version"))
+            if (!instruction.data().startsWith(QStringLiteral("version")))
             {
                 document->addXmlProcessingInstructions(instruction.target(), instruction.data());
             }            
@@ -88,7 +88,7 @@ void DocumentReader::parseVLNVElements(QDomNode const& documentNode, QSharedPoin
 //-----------------------------------------------------------------------------
 void DocumentReader::parseDescription(QDomNode const& documentNode, QSharedPointer<Document> document) const
 {
-    document->setDescription(documentNode.firstChildElement("ipxact:description").firstChild().nodeValue());
+    document->setDescription(documentNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ void DocumentReader::parseParameters(QDomNode const& documentNode, QSharedPointe
 //-----------------------------------------------------------------------------
 void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointer<Document> document) const
 {
-    QDomNodeList assertionNodeList = documentNode.firstChildElement("ipxact:assertions").childNodes();
+    QDomNodeList assertionNodeList = documentNode.firstChildElement(QStringLiteral("ipxact:assertions")).childNodes();
 
     if (!assertionNodeList.isEmpty())
     {
@@ -119,12 +119,12 @@ void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointe
             QDomNode assertionNode = assertionNodeList.at(i);
 
             QSharedPointer<Assertion> newAssertion (new Assertion());
-            newAssertion->setName(assertionNode.firstChildElement("ipxact:name").firstChild().nodeValue());
-            newAssertion->setDisplayName(assertionNode.firstChildElement("ipxact:displayName").firstChild().
+            newAssertion->setName(assertionNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue());
+            newAssertion->setDisplayName(assertionNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().
                 nodeValue());
-            newAssertion->setDescription(assertionNode.firstChildElement("ipxact:description").firstChild().
+            newAssertion->setDescription(assertionNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().
                 nodeValue());
-            newAssertion->setAssert(assertionNode.firstChildElement("ipxact:assert").firstChild().nodeValue());
+            newAssertion->setAssert(assertionNode.firstChildElement(QStringLiteral("ipxact:assert")).firstChild().nodeValue());
 
             document->getAssertions()->append(newAssertion);
         }
@@ -137,15 +137,15 @@ void DocumentReader::parseAssertions(QDomNode const& documentNode, QSharedPointe
 void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode, 
     QSharedPointer<Document> document) const
 {
-    QDomElement extensionNodes = documentNode.firstChildElement("ipxact:vendorExtensions");
+    QDomElement extensionNodes = documentNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
 
-    QDomNode versionNode = extensionNodes.firstChildElement("kactus2:version");
+    QDomNode versionNode = extensionNodes.firstChildElement(QStringLiteral("kactus2:version"));
     if (!versionNode.isNull())
     {
         document->setVersion(versionNode.firstChild().nodeValue());
     }
 
-    QDomNode attributesNode = extensionNodes.firstChildElement("kactus2:kts_attributes");
+    QDomNode attributesNode = extensionNodes.firstChildElement(QStringLiteral("kactus2:kts_attributes"));
     if (!attributesNode.isNull())
     {
         parseKactusAttributes(attributesNode, document);
@@ -159,7 +159,7 @@ void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode
 //-----------------------------------------------------------------------------
 void DocumentReader::parseKactusAttributes(QDomNode const& attributesNode, QSharedPointer<Document> document) const
 {
-    QDomNode hierarchyNode = attributesNode.firstChildElement("kactus2:kts_productHier");
+    QDomNode hierarchyNode = attributesNode.firstChildElement(QStringLiteral("kactus2:kts_productHier"));
     if (!hierarchyNode.isNull())
     {
         KactusAttribute::ProductHierarchy hierarchy = 
@@ -167,7 +167,7 @@ void DocumentReader::parseKactusAttributes(QDomNode const& attributesNode, QShar
         document->setHierarchy(hierarchy);
     }
 
-    QDomNode implementationNode = attributesNode.firstChildElement("kactus2:kts_implementation");
+    QDomNode implementationNode = attributesNode.firstChildElement(QStringLiteral("kactus2:kts_implementation"));
     if (!implementationNode.isNull())
     {
         KactusAttribute::Implementation implementation = 
@@ -175,7 +175,7 @@ void DocumentReader::parseKactusAttributes(QDomNode const& attributesNode, QShar
         document->setImplementation(implementation);
     }
 
-    QDomNode firmnessNode = attributesNode.firstChildElement("kactus2:kts_firmness");
+    QDomNode firmnessNode = attributesNode.firstChildElement(QStringLiteral("kactus2:kts_firmness"));
     if (!firmnessNode.isNull())
     {
         KactusAttribute::Firmness firmness = KactusAttribute::firmnessFrom(firmnessNode.firstChild().nodeValue());

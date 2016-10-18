@@ -58,35 +58,35 @@ topInterfaceRef_(),
 position_(),
 direction_()
 {
-    setName(connectionNode.firstChildElement("ipxact:name").firstChild().nodeValue());
-    setDisplayName(connectionNode.firstChildElement("ipxact:displayName").firstChild().nodeValue());
-    setDescription(connectionNode.firstChildElement("ipxact:description").firstChild().nodeValue());
+    setName(connectionNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue());
+    setDisplayName(connectionNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
+    setDescription(connectionNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
 
     QDomNamedNodeMap connectionAttributes = connectionNode.attributes();
-    setTopInterfaceRef(connectionAttributes.namedItem("interfaceRef").nodeValue());
+    setTopInterfaceRef(connectionAttributes.namedItem(QStringLiteral("interfaceRef")).nodeValue());
 
-    QDomElement comInterfaceElement = connectionNode.firstChildElement("kactus2:activeComInterface");
+    QDomElement comInterfaceElement = connectionNode.firstChildElement(QStringLiteral("kactus2:activeComInterface"));
     QDomNamedNodeMap interfaceAttributes = comInterfaceElement.attributes();
-    QString interfaceComponentRef = interfaceAttributes.namedItem("componentRef").nodeValue();
-    QString interfaceApiRef = interfaceAttributes.namedItem("comRef").nodeValue();
+    QString interfaceComponentRef = interfaceAttributes.namedItem(QStringLiteral("componentRef")).nodeValue();
+    QString interfaceApiRef = interfaceAttributes.namedItem(QStringLiteral("comRef")).nodeValue();
     QSharedPointer<ActiveInterface> newApiInterface(new ActiveInterface(interfaceComponentRef, interfaceApiRef));
     setInterface(newApiInterface);
 
-    QDomElement positionElement = connectionNode.firstChildElement("kactus2:position");
-    int positionX = positionElement.attribute("x").toInt();
-    int positionY = positionElement.attribute("y").toInt();
+    QDomElement positionElement = connectionNode.firstChildElement(QStringLiteral("kactus2:position"));
+    int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
+    int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
     setPosition(QPointF(positionX, positionY));
 
-    QDomElement directionElement = connectionNode.firstChildElement("kactus2:direction");
-    int directionX = directionElement.attribute("x").toInt();
-    int directionY = directionElement.attribute("y").toInt();
+    QDomElement directionElement = connectionNode.firstChildElement(QStringLiteral("kactus2:direction"));
+    int directionX = directionElement.attribute(QStringLiteral("x")).toInt();
+    int directionY = directionElement.attribute(QStringLiteral("y")).toInt();
     setDirection(QVector2D(directionX, directionY));
 
-    QDomElement routeElement = connectionNode.firstChildElement("kactus2:route");
+    QDomElement routeElement = connectionNode.firstChildElement(QStringLiteral("kactus2:route"));
     if (!routeElement.isNull())
     {
         QList<QPointF> newRoute;
-        if (routeElement.attribute("kactus2:offPage") == "true")
+        if (routeElement.attribute(QStringLiteral("kactus2:offPage")) == QLatin1String("true"))
         {
             setOffPage(true);
         }
@@ -100,88 +100,14 @@ direction_()
         {
             QDomNode routePositionNode = positionList.at(i);
             QDomNamedNodeMap routePositionAttributes = routePositionNode.attributes();
-            int routePositionX = routePositionAttributes.namedItem("x").nodeValue().toInt();
-            int routePositionY = routePositionAttributes.namedItem("y").nodeValue().toInt();
+            int routePositionX = routePositionAttributes.namedItem(QStringLiteral("x")).nodeValue().toInt();
+            int routePositionY = routePositionAttributes.namedItem(QStringLiteral("y")).nodeValue().toInt();
             newRoute.append(QPointF(routePositionX, routePositionY));
         }
 
         setRoute(newRoute);
     }
 }
-
-/*
-//-----------------------------------------------------------------------------
-// Function: HierComConnection::HierComConnection()
-//-----------------------------------------------------------------------------
-HierComConnection::HierComConnection(QDomNode& node) :
-NameGroup(),
-//name_(), displayName_(), desc_(),
-interfaceRef_(),
-interface_(new ActiveInterface()),
-position_(),
-direction_(1.0, 0.0),
-route_(),
-offPage_(false)
-{
-    interfaceRef_ = node.attributes().namedItem("kactus2:interfaceRef").nodeValue();
-
-    for (int i = 0; i < node.childNodes().count(); ++i)
-    {
-        QDomNode childNode = node.childNodes().at(i);
-
-        if (childNode.isComment())
-        {
-            continue;
-        }
-
-        if (childNode.nodeName() == "ipxact:name")
-        {
-            setName(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == "ipxact:displayName")
-        {
-            setDisplayName(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == "ipxact:description")
-        {
-            setDescription(childNode.childNodes().at(0).nodeValue());
-        }
-        else if (childNode.nodeName() == "kactus2:activeComInterface")
-        {
-            interface_->setComponentReference(childNode.attributes().namedItem("kactus2:componentRef").nodeValue());
-            interface_->setBusReference(childNode.attributes().namedItem("kactus2:comRef").nodeValue());
-        }
-        else if (childNode.nodeName() == "kactus2:position")
-        {
-            QDomNamedNodeMap attributeMap = childNode.attributes();
-            position_.setX(attributeMap.namedItem("x").nodeValue().toInt());
-            position_.setY(attributeMap.namedItem("y").nodeValue().toInt());
-        }
-        else if (childNode.nodeName() == "kactus2:direction")
-        {
-            QDomNamedNodeMap attributeMap = childNode.attributes();
-            direction_.setX(attributeMap.namedItem("x").nodeValue().toInt());
-            direction_.setY(attributeMap.namedItem("y").nodeValue().toInt());
-        }
-        else if (childNode.nodeName() == "kactus2:route")
-        {
-            offPage_ = childNode.attributes().namedItem("kactus2:offPage").nodeValue() == "true";
-
-            for (int i = 0; i < childNode.childNodes().size(); ++i)
-            {
-                QDomNode posNode = childNode.childNodes().at(i);
-                QPointF pos;
-
-                if (posNode.nodeName() == "kactus2:position")
-                {
-                    pos.setX(posNode.attributes().namedItem("x").nodeValue().toInt());
-                    pos.setY(posNode.attributes().namedItem("y").nodeValue().toInt());
-                    route_.append(pos);
-                }
-            }
-        }
-    }
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: HierComInterconnection::~HierComInterconnection()
@@ -204,7 +130,7 @@ HierComInterconnection* HierComInterconnection::clone() const
 //-----------------------------------------------------------------------------
 QString HierComInterconnection::type() const
 {
-    return QString("kactus2:hierComConnection");
+    return QStringLiteral("kactus2:hierComConnection");
 }
 
 //-----------------------------------------------------------------------------
@@ -212,38 +138,38 @@ QString HierComInterconnection::type() const
 //-----------------------------------------------------------------------------
 void HierComInterconnection::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:hierComConnection");
-    writer.writeAttribute("interfaceRef", topInterfaceRef_);
+    writer.writeStartElement(QStringLiteral("kactus2:hierComConnection"));
+    writer.writeAttribute(QStringLiteral("interfaceRef"), topInterfaceRef_);
 
-    writer.writeTextElement("ipxact:name", name());
-    writer.writeTextElement("ipxact:displayName", displayName());
-    writer.writeTextElement("ipxact:description", description());
+    writer.writeTextElement(QStringLiteral("ipxact:name"), name());
+    writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
+    writer.writeTextElement(QStringLiteral("ipxact:description"), description());
 
-    writer.writeEmptyElement("kactus2:activeComInterface");
-    writer.writeAttribute("componentRef", getInterface()->getComponentReference());
-    writer.writeAttribute("comRef", getInterface()->getBusReference());
+    writer.writeEmptyElement(QStringLiteral("kactus2:activeComInterface"));
+    writer.writeAttribute(QStringLiteral("componentRef"), getInterface()->getComponentReference());
+    writer.writeAttribute(QStringLiteral("comRef"), getInterface()->getBusReference());
 
     writePosition(writer);
     writeVectorDirection(writer);
 
     if (!getRoute().isEmpty())
     {
-        writer.writeStartElement("kactus2:route");
+        writer.writeStartElement(QStringLiteral("kactus2:route"));
 
         if (isOffPage())
         {
-            writer.writeAttribute("offPage", "true");
+            writer.writeAttribute(QStringLiteral("offPage"), QStringLiteral("true"));
         }
         else
         {
-            writer.writeAttribute("offPage", "false");
+            writer.writeAttribute(QStringLiteral("offPage"), QStringLiteral("false"));
         }
 
         foreach (QPointF const& point, getRoute())
         {
-            writer.writeEmptyElement("kactus2:position");
-            writer.writeAttribute("x", QString::number(int(point.x())));
-            writer.writeAttribute("y", QString::number(int(point.y())));
+            writer.writeEmptyElement(QStringLiteral("kactus2:position"));
+            writer.writeAttribute(QStringLiteral("x"), QString::number(int(point.x())));
+            writer.writeAttribute(QStringLiteral("y"), QString::number(int(point.y())));
         }
 
         writer.writeEndElement();
@@ -251,64 +177,6 @@ void HierComInterconnection::write(QXmlStreamWriter& writer) const
 
     writer.writeEndElement(); // kactus2:hierComConnection
 }
-
-/*
-bool HierComConnection::isValid( QStringList& errorList, QStringList const& instanceNames, QString const& parentId ) const {
-	bool valid = true;
-	QString const thisId(QObject::tr("Hierarchical COM connection in %1").arg(parentId));
-
-	if (name().isEmpty()) {
-		errorList.append(QObject::tr("No name specified for Hierarchical COM connection in %1").arg(parentId));
-		valid = false;
-	}
-
-	// Validate the interface references.
-	if (interface_->getComponentReference().isEmpty()) {
-		errorList.append(QObject::tr("No component reference set for hierarchical COM interface in %1").arg(thisId));
-		valid = false;
-	}
-	else if (!instanceNames.contains(interface_->getComponentReference())) {
-		errorList.append(QObject::tr("Hierarchical COM interface in %1 contains a reference "
-			"to component instance '%2' that does not exist.").arg(
-			thisId).arg(interface_->getComponentReference()));
-		valid = false;
-	}
-
-	if (interface_->getBusReference().isEmpty()) {
-		errorList.append(QObject::tr("No COM reference set for hierarchical COM interface in %1").arg(thisId));
-		valid = false;
-	}
-
-	if (interfaceRef_.isEmpty()) {
-		errorList.append(QObject::tr("No COM reference set for top COM connection in %1.").arg(thisId));
-		valid = false;
-	}
-
-	return valid;
-}
-*//*
-bool HierComConnection::isValid( const QStringList& instanceNames ) const {
-	if (name().isEmpty()) {
-		return false;
-	}
-
-	// Validate the interface references.
-	if (interface_->getComponentReference().isEmpty()) {
-		return false;
-	}
-	else if (!instanceNames.contains(interface_->getComponentReference())) {
-		return false;
-	}
-
-	if (interface_->getBusReference().isEmpty()) {
-		return false;
-	}
-
-	if (interfaceRef_.isEmpty()) {
-		return false;
-	}
-	return true;
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: HierComInterconnection::setInterface()
@@ -379,9 +247,9 @@ HierComInterconnection& HierComInterconnection::operator=(HierComInterconnection
 //-----------------------------------------------------------------------------
 void HierComInterconnection::writePosition(QXmlStreamWriter& writer) const
 {
-    writer.writeEmptyElement("kactus2:position");
-    writer.writeAttribute("x", QString::number(int(position_.x())));
-    writer.writeAttribute("y", QString::number(int(position_.y())));
+    writer.writeEmptyElement(QStringLiteral("kactus2:position"));
+    writer.writeAttribute(QStringLiteral("x"), QString::number(int(position_.x())));
+    writer.writeAttribute(QStringLiteral("y"), QString::number(int(position_.y())));
 }
 
 //-----------------------------------------------------------------------------
@@ -389,9 +257,9 @@ void HierComInterconnection::writePosition(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 void HierComInterconnection::writeVectorDirection(QXmlStreamWriter& writer) const
 {
-    writer.writeEmptyElement("kactus2:direction");
-    writer.writeAttribute("x", QString::number(int(direction_.x())));
-    writer.writeAttribute("y", QString::number(int(direction_.y())));
+    writer.writeEmptyElement(QStringLiteral("kactus2:direction"));
+    writer.writeAttribute(QStringLiteral("x"), QString::number(int(direction_.x())));
+    writer.writeAttribute(QStringLiteral("y"), QString::number(int(direction_.y())));
 }
 
 //-----------------------------------------------------------------------------

@@ -81,7 +81,7 @@ void DesignConfigurationWriter::writeDesignConfigurationStart(QXmlStreamWriter& 
 {
     writeTopComments(writer, designConfiguration);
     writeXmlProcessingInstructions(writer, designConfiguration);
-    writer.writeStartElement("ipxact:designConfiguration");
+    writer.writeStartElement(QStringLiteral("ipxact:designConfiguration"));
 }
 
 //-----------------------------------------------------------------------------
@@ -91,7 +91,7 @@ void DesignConfigurationWriter::writeDesignReference(QXmlStreamWriter& writer, V
 {
     if (designReference.isValid())
     {
-        writer.writeEmptyElement("ipxact:designRef");
+        writer.writeEmptyElement(QStringLiteral("ipxact:designRef"));
 
         writeVLNVAttributes(writer, designReference);
     }
@@ -105,7 +105,7 @@ void DesignConfigurationWriter::writeGeneratorChainConfiguration(QXmlStreamWrite
 {
     foreach (QSharedPointer<ConfigurableVLNVReference> currentChain, *designConfiguration->getGeneratorChainConfs())
     {
-        writer.writeStartElement("ipxact:generatorChainConfiguration");
+        writer.writeStartElement(QStringLiteral("ipxact:generatorChainConfiguration"));
 
         VLNV currentChainVLNV = *currentChain;
         writeVLNVAttributes(writer, currentChainVLNV);
@@ -125,14 +125,14 @@ void DesignConfigurationWriter::writeInterConnectionConfiguration(QXmlStreamWrit
     foreach (QSharedPointer<InterconnectionConfiguration> configuration,
         *designConfiguration->getInterconnectionConfs())
     {
-        writer.writeStartElement("ipxact:interconnectionConfiguration");
+        writer.writeStartElement(QStringLiteral("ipxact:interconnectionConfiguration"));
 
         if (!configuration->getIsPresent().isEmpty())
         {
-            writer.writeTextElement("ipxact:isPresent", configuration->getIsPresent());
+            writer.writeTextElement(QStringLiteral("ipxact:isPresent"), configuration->getIsPresent());
         }
 
-        writer.writeTextElement("ipxact:interconnectionRef", configuration->getInterconnectionReference());
+        writer.writeTextElement(QStringLiteral("ipxact:interconnectionRef"), configuration->getInterconnectionReference());
 
         writeMultipleAbstractorInstances(writer, configuration->getAbstractorInstances());
 
@@ -148,11 +148,11 @@ void DesignConfigurationWriter::writeMultipleAbstractorInstances(QXmlStreamWrite
 {
     foreach (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor, *multipleAbstractors)
     {
-        writer.writeStartElement("ipxact:abstractorInstances");
+        writer.writeStartElement(QStringLiteral("ipxact:abstractorInstances"));
 
         if (!multipleAbstractor->getIsPresent().isEmpty())
         {
-            writer.writeTextElement("ipxact:isPresent", multipleAbstractor->getIsPresent());
+            writer.writeTextElement(QStringLiteral("ipxact:isPresent"), multipleAbstractor->getIsPresent());
         }
 
         writeInterfaceReferences(writer, multipleAbstractor->getInterfaceReferences());
@@ -170,14 +170,14 @@ void DesignConfigurationWriter::writeInterfaceReferences(QXmlStreamWriter& write
 {
     foreach (QSharedPointer<InterfaceRef> singleInterface, *interfaceReferences)
     {
-        writer.writeStartElement("ipxact:interfaceRef");
+        writer.writeStartElement(QStringLiteral("ipxact:interfaceRef"));
         
-        writer.writeAttribute("componentRef", singleInterface->getComponentRef());
-        writer.writeAttribute("busRef", singleInterface->getBusRef());
+        writer.writeAttribute(QStringLiteral("componentRef"), singleInterface->getComponentRef());
+        writer.writeAttribute(QStringLiteral("busRef"), singleInterface->getBusRef());
 
         if (!singleInterface->getIsPresent().isEmpty())
         {
-            writer.writeTextElement("ipxact:isPresent", singleInterface->getIsPresent());
+            writer.writeTextElement(QStringLiteral("ipxact:isPresent"), singleInterface->getIsPresent());
         }
 
         writer.writeEndElement(); // ipxact:interfaceRef
@@ -192,20 +192,20 @@ void DesignConfigurationWriter::writeAbstractorInstances(QXmlStreamWriter& write
 {
     foreach (QSharedPointer<AbstractorInstance> abstractorInstance, *abstractorInstances)
     {
-        writer.writeStartElement("ipxact:abstractorInstance");
+        writer.writeStartElement(QStringLiteral("ipxact:abstractorInstance"));
 
-        writer.writeTextElement("ipxact:instanceName", abstractorInstance->getInstanceName());
+        writer.writeTextElement(QStringLiteral("ipxact:instanceName"), abstractorInstance->getInstanceName());
 
         if (!abstractorInstance->getDisplayName().isEmpty())
         {
-            writer.writeTextElement("ipxact:displayName", abstractorInstance->getDisplayName());
+            writer.writeTextElement(QStringLiteral("ipxact:displayName"), abstractorInstance->getDisplayName());
         }
         if (!abstractorInstance->getDescription().isEmpty())
         {
-            writer.writeTextElement("ipxact:description", abstractorInstance->getDescription());
+            writer.writeTextElement(QStringLiteral("ipxact:description"), abstractorInstance->getDescription());
         }
 
-        writer.writeStartElement("ipxact:abstractorRef");
+        writer.writeStartElement(QStringLiteral("ipxact:abstractorRef"));
 
         QSharedPointer<ConfigurableVLNVReference> abstractorRef = abstractorInstance->getAbstractorRef();  
 
@@ -216,7 +216,7 @@ void DesignConfigurationWriter::writeAbstractorInstances(QXmlStreamWriter& write
 
         writer.writeEndElement(); // ipxact:abstractorRef
 
-        writer.writeTextElement("ipxact:viewName", abstractorInstance->getViewName());
+        writer.writeTextElement(QStringLiteral("ipxact:viewName"), abstractorInstance->getViewName());
 
         writer.writeEndElement(); // ipxact:abstractorInstance
     }
@@ -230,17 +230,17 @@ void DesignConfigurationWriter::writeViewConfigurations(QXmlStreamWriter& writer
 {
     foreach (QSharedPointer<ViewConfiguration> configuration, *designConfiguration->getViewConfigurations())
     {
-        writer.writeStartElement("ipxact:viewConfiguration");
+        writer.writeStartElement(QStringLiteral("ipxact:viewConfiguration"));
 
-        writer.writeTextElement("ipxact:instanceName", configuration->getInstanceName());
+        writer.writeTextElement(QStringLiteral("ipxact:instanceName"), configuration->getInstanceName());
 
         if (!configuration->getIsPresent().isEmpty())
         {
-            writer.writeTextElement("ipxact:isPresent", configuration->getIsPresent());
+            writer.writeTextElement(QStringLiteral("ipxact:isPresent"), configuration->getIsPresent());
         }
 
-        writer.writeStartElement("ipxact:view");
-        writer.writeAttribute("viewRef", configuration->getViewReference());
+        writer.writeStartElement(QStringLiteral("ipxact:view"));
+        writer.writeAttribute(QStringLiteral("viewRef"), configuration->getViewReference());
 
         writeConfigurableElementValues(writer, configuration->getViewConfigurableElements());
 

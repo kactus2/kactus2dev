@@ -85,7 +85,7 @@ void AddressBlockReader::parseNameGroup(QDomNode const& addressBlockNode,
 void AddressBlockReader::parsePresence(QDomNode const& addressBlockNode,
     QSharedPointer<AddressBlock> newAddressBlock) const
 {
-    QDomElement isPresentElement = addressBlockNode.firstChildElement("ipxact:isPresent");
+    QDomElement isPresentElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
     if (!isPresentElement.isNull())
     {
         QString isPresent = isPresentElement.firstChild().nodeValue();
@@ -99,7 +99,7 @@ void AddressBlockReader::parsePresence(QDomNode const& addressBlockNode,
 void AddressBlockReader::parseBaseAddress(QDomNode const& addressBlockNode,
     QSharedPointer<AddressBlock> newAddressBlock) const
 {
-    QString baseAddress = addressBlockNode.firstChildElement("ipxact:baseAddress").firstChild().nodeValue();
+    QString baseAddress = addressBlockNode.firstChildElement(QStringLiteral("ipxact:baseAddress")).firstChild().nodeValue();
     newAddressBlock->setBaseAddress(baseAddress);
 }
 
@@ -109,7 +109,7 @@ void AddressBlockReader::parseBaseAddress(QDomNode const& addressBlockNode,
 void AddressBlockReader::parseTypeIdentifier(QDomNode const& addressBlockNode,
     QSharedPointer<AddressBlock> newAddressBlock) const
 {
-    QDomElement typeIdentifierElement = addressBlockNode.firstChildElement("ipxact:typeIdentifier");
+    QDomElement typeIdentifierElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:typeIdentifier"));
     if (!typeIdentifierElement.isNull())
     {
         QString typeIdentifier = typeIdentifierElement.firstChild().nodeValue();
@@ -123,7 +123,7 @@ void AddressBlockReader::parseTypeIdentifier(QDomNode const& addressBlockNode,
 void AddressBlockReader::parseRange(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
     const
 {
-    QString range = addressBlockNode.firstChildElement("ipxact:range").firstChild().nodeValue();
+    QString range = addressBlockNode.firstChildElement(QStringLiteral("ipxact:range")).firstChild().nodeValue();
     newAddressBlock->setRange(range);
 }
 
@@ -133,7 +133,7 @@ void AddressBlockReader::parseRange(QDomNode const& addressBlockNode, QSharedPoi
 void AddressBlockReader::parseWidth(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
     const
 {
-    QString width = addressBlockNode.firstChildElement("ipxact:width").firstChild().nodeValue();
+    QString width = addressBlockNode.firstChildElement(QStringLiteral("ipxact:width")).firstChild().nodeValue();
     newAddressBlock->setWidth(width);
 }
 
@@ -143,7 +143,7 @@ void AddressBlockReader::parseWidth(QDomNode const& addressBlockNode, QSharedPoi
 void AddressBlockReader::parseUsage(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
     const
 {
-    QDomElement usageElement = addressBlockNode.firstChildElement("ipxact:usage");
+    QDomElement usageElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:usage"));
     if (!usageElement.isNull())
     {
         QString usageString = usageElement.firstChild().nodeValue();
@@ -158,15 +158,15 @@ void AddressBlockReader::parseUsage(QDomNode const& addressBlockNode, QSharedPoi
 void AddressBlockReader::parseVolatile(QDomNode const& addressBlockNode,
     QSharedPointer<AddressBlock> newAddressBlock) const
 {
-    QDomElement volatileElement = addressBlockNode.firstChildElement("ipxact:volatile");
+    QDomElement volatileElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:volatile"));
     if (!volatileElement.isNull())
     {
         QString volatileString = volatileElement.firstChild().nodeValue();
-        if (volatileString == "true")
+        if (volatileString == QLatin1String("true"))
         {
             newAddressBlock->setVolatile(true);
         }
-        else if (volatileString == "false")
+        else if (volatileString == QLatin1String("false"))
         {
             newAddressBlock->setVolatile(false);
         }
@@ -179,7 +179,7 @@ void AddressBlockReader::parseVolatile(QDomNode const& addressBlockNode,
 void AddressBlockReader::parseAccess(QDomNode const& addressBlockNode,
     QSharedPointer<AddressBlock> newAddressBlock) const
 {
-    QDomElement accessElement = addressBlockNode.firstChildElement("ipxact:access");
+    QDomElement accessElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:access"));
     if (!accessElement.isNull())
     {
         QString accessString = accessElement.firstChild().nodeValue();
@@ -213,12 +213,12 @@ void AddressBlockReader::parseRegisterData(QDomNode const& addressBlockNode,
     for (int i = 0; i < childNodeList.count(); ++i)
     {
         QDomNode currentNode = childNodeList.at(i);
-        if (currentNode.nodeName() == "ipxact:register")
+        if (currentNode.nodeName() == QStringLiteral("ipxact:register"))
         {
             QSharedPointer<Register> newRegister = registerReader.createRegisterfrom(currentNode);
             newAddressBlock->getRegisterData()->append(newRegister);
         }
-        else if (childNodeList.at(i).nodeName() == "ipxact:registerFile")
+        else if (childNodeList.at(i).nodeName() == QStringLiteral("ipxact:registerFile"))
         {
             QSharedPointer<RegisterFile> newFile = registerReader.createRegisterFileFrom(currentNode);
             newAddressBlock->getRegisterData()->append(newFile);

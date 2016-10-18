@@ -36,14 +36,14 @@ ChannelWriter::~ChannelWriter()
 void ChannelWriter::writeChannel(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const
 {
 	// Start the element, write name group and presence.
-	writer.writeStartElement("ipxact:channel");
+	writer.writeStartElement(QStringLiteral("ipxact:channel"));
 	writeNameGroup(writer, channel);
 	writeIsPresent(writer, channel);
 
 	foreach (QString const& busInterfaceReference, channel->getInterfaces())
 	{
-		writer.writeStartElement("ipxact:busInterfaceRef");
-		writer.writeTextElement("ipxact:localName", busInterfaceReference);
+		writer.writeStartElement(QStringLiteral("ipxact:busInterfaceRef"));
+		writer.writeTextElement(QStringLiteral("ipxact:localName"), busInterfaceReference);
 		writer.writeEndElement();
 	}
 
@@ -67,6 +67,6 @@ void ChannelWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<Chan
 {
 	if (!channel->getIsPresent().isEmpty())
 	{
-		writer.writeTextElement("ipxact:isPresent", channel->getIsPresent());
+		writer.writeTextElement(QStringLiteral("ipxact:isPresent"), channel->getIsPresent());
 	}
 }

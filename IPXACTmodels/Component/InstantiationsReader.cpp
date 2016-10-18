@@ -44,7 +44,7 @@ QSharedPointer<DesignInstantiation> InstantiationsReader::createDesignInstantiat
     NameGroupReader nameReader;
     nameReader.parseNameGroup(instantiationNode, newInstantiation);
 
-    QDomNode designReferenceNode = instantiationNode.firstChildElement("ipxact:designRef");
+    QDomNode designReferenceNode = instantiationNode.firstChildElement(QStringLiteral("ipxact:designRef"));
     newInstantiation->setDesignReference(parseConfigurableVLNVReference(designReferenceNode, VLNV::DESIGN));
 
     parseVendorExtensions(instantiationNode, newInstantiation);
@@ -63,7 +63,8 @@ QSharedPointer<DesignConfigurationInstantiation> InstantiationsReader::createDes
     NameGroupReader nameReader;
     nameReader.parseNameGroup(instantiationNode, newInstantiation);
 
-    QDomNode configurationReferenceNode = instantiationNode.firstChildElement("ipxact:designConfigurationRef");
+    QDomNode configurationReferenceNode = instantiationNode.firstChildElement(
+        QStringLiteral("ipxact:designConfigurationRef"));
     QSharedPointer<ConfigurableVLNVReference> configurationReference =
         parseConfigurableVLNVReference(configurationReferenceNode, VLNV::DESIGNCONFIGURATION);
     newInstantiation->setDesignConfigurationReference(configurationReference);
@@ -83,7 +84,7 @@ QSharedPointer<DesignConfigurationInstantiation> InstantiationsReader::createDes
 //-----------------------------------------------------------------------------
 QString InstantiationsReader::parseLanguageFrom(QDomNode const& instantiationNode) const
 {
-    QDomElement languageNode = instantiationNode.firstChildElement("ipxact:language");
+    QDomElement languageNode = instantiationNode.firstChildElement(QStringLiteral("ipxact:language"));
     return languageNode.firstChild().nodeValue();
 }
 
@@ -92,8 +93,8 @@ QString InstantiationsReader::parseLanguageFrom(QDomNode const& instantiationNod
 //-----------------------------------------------------------------------------
 bool InstantiationsReader::parseLanguageStrictnessFrom(QDomNode const& instantiationNode) const
 {
-    QDomElement languageNode = instantiationNode.firstChildElement("ipxact:language");
-    if (!languageNode.attribute("strict").isNull())
+    QDomElement languageNode = instantiationNode.firstChildElement(QStringLiteral("ipxact:language"));
+    if (!languageNode.attribute(QStringLiteral("strict")).isNull())
     {
         return true;
     }
@@ -114,7 +115,7 @@ QSharedPointer<ComponentInstantiation> InstantiationsReader::createComponentInst
     NameGroupReader nameReader;
     nameReader.parseNameGroup(instantiationNode, newInstantiation);
 
-    if (!instantiationNode.firstChildElement("ipxact:isVirtual").isNull())
+    if (!instantiationNode.firstChildElement(QStringLiteral("ipxact:isVirtual")).isNull())
     {
         newInstantiation->setVirtual(true);
     }
@@ -143,31 +144,31 @@ QSharedPointer<ComponentInstantiation> InstantiationsReader::createComponentInst
 void InstantiationsReader::parseNameReferences(QDomNode const& instantiationNode,
     QSharedPointer<ComponentInstantiation> instantiation) const
 {
-    QDomElement libraryElement = instantiationNode.firstChildElement("ipxact:libraryName");
+    QDomElement libraryElement = instantiationNode.firstChildElement(QStringLiteral("ipxact:libraryName"));
     if (!libraryElement.isNull())
     {
         instantiation->setLibraryName(libraryElement.firstChild().nodeValue());
     }
 
-    QDomElement packageElement = instantiationNode.firstChildElement("ipxact:packageName");
+    QDomElement packageElement = instantiationNode.firstChildElement(QStringLiteral("ipxact:packageName"));
     if (!libraryElement.isNull())
     {
         instantiation->setPackageName(packageElement.firstChild().nodeValue());
     }
 
-    QDomElement moduleElement = instantiationNode.firstChildElement("ipxact:moduleName");
+    QDomElement moduleElement = instantiationNode.firstChildElement(QStringLiteral("ipxact:moduleName"));
     if (!moduleElement.isNull())
     {
         instantiation->setModuleName(moduleElement.firstChild().nodeValue());
     }
 
-    QDomElement architectureElement = instantiationNode.firstChildElement("ipxact:architectureName");
+    QDomElement architectureElement = instantiationNode.firstChildElement(QStringLiteral("ipxact:architectureName"));
     if (!architectureElement.isNull())
     {
         instantiation->setArchitectureName(architectureElement.firstChild().nodeValue());
     }
 
-    QDomElement configurationElement = instantiationNode.firstChildElement("ipxact:configurationName");
+    QDomElement configurationElement = instantiationNode.firstChildElement(QStringLiteral("ipxact:configurationName"));
     if (!configurationElement.isNull())
     {
         instantiation->setConfigurationName(configurationElement.firstChild().nodeValue());
@@ -180,10 +181,10 @@ void InstantiationsReader::parseNameReferences(QDomNode const& instantiationNode
 void InstantiationsReader::parseModuleParameters(QDomNode const& instantiationNode,
     QSharedPointer<ComponentInstantiation> instantiation) const
 {
-    QDomElement moduleParametersElement = instantiationNode.firstChildElement("ipxact:moduleParameters");
+    QDomElement moduleParametersElement = instantiationNode.firstChildElement(QStringLiteral("ipxact:moduleParameters"));
     if (!moduleParametersElement.isNull())
     {
-        QDomNodeList moduleParameterNodes = moduleParametersElement.elementsByTagName("ipxact:moduleParameter");
+        QDomNodeList moduleParameterNodes = moduleParametersElement.elementsByTagName(QStringLiteral("ipxact:moduleParameter"));
 
         ModuleParameterReader moduleParameterReader;
 
@@ -205,7 +206,7 @@ void InstantiationsReader::parseDefaultFileBuilders(QDomNode const& instantiatio
 {
     QDomElement instantiationElement = instantiationNode.toElement();
 
-    QDomNodeList defaultFileBuilderNodeList = instantiationElement.elementsByTagName("ipxact:defaultFileBuilder");
+    QDomNodeList defaultFileBuilderNodeList = instantiationElement.elementsByTagName(QStringLiteral("ipxact:defaultFileBuilder"));
 
     if (!defaultFileBuilderNodeList.isEmpty())
     {
@@ -230,12 +231,12 @@ void InstantiationsReader::parseFileSetReferences(QDomNode const& instantiationN
     
     if (!instantiationElement.isNull())
     {
-        QDomNodeList fileSetReferenceNodeList = instantiationElement.elementsByTagName("ipxact:fileSetRef");
+        QDomNodeList fileSetReferenceNodeList = instantiationElement.elementsByTagName(QStringLiteral("ipxact:fileSetRef"));
 
         for (int i = 0; i < fileSetReferenceNodeList.count(); ++i)
         {
             QDomNode fileSetNode = fileSetReferenceNodeList.at(i);
-            QString referenceName = fileSetNode.firstChildElement("ipxact:localName").firstChild().nodeValue();
+            QString referenceName = fileSetNode.firstChildElement(QStringLiteral("ipxact:localName")).firstChild().nodeValue();
 
             instantiation->getFileSetReferences()->append(referenceName);
         }

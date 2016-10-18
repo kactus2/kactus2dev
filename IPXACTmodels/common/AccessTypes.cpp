@@ -16,23 +16,23 @@
 //-----------------------------------------------------------------------------
 AccessTypes::Access AccessTypes::str2Access(QString str, AccessTypes::Access defaultValue)
 {
-    if (str == QString("read-write"))
+    if (str == QLatin1String("read-write"))
     {
 		return AccessTypes::READ_WRITE;
 	}
-	else if (str == QString("read-only"))
+	else if (str == QLatin1String("read-only"))
     {
 		return AccessTypes::READ_ONLY;
 	}
-	else if (str ==	QString("write-only"))
+	else if (str ==	QLatin1String("write-only"))
     {
 		return AccessTypes::WRITE_ONLY;
 	}
-	else if (str ==	QString("read-writeOnce"))
+	else if (str ==	QLatin1String("read-writeOnce"))
     {
 		return AccessTypes::READ_WRITEONCE;
 	}
-	else if (str == QString("writeOnce"))
+	else if (str == QLatin1String("writeOnce"))
     {
 		return AccessTypes::WRITEONCE;
 	}
@@ -49,26 +49,26 @@ QString AccessTypes::access2Str(const AccessTypes::Access access)
 {
     if (access == AccessTypes::READ_WRITE)
     {
-        return QString("read-write");
+        return QStringLiteral("read-write");
     }
     else if (access == AccessTypes::READ_ONLY)
     {
-        return QString("read-only");
+        return QStringLiteral("read-only");
     }
     else if (access == AccessTypes::WRITE_ONLY)
     {
-        return QString("write-only");
+        return QStringLiteral("write-only");
     }
     else if (access == AccessTypes::READ_WRITEONCE)
     {
-        return QString("read-writeOnce");
+        return QStringLiteral("read-writeOnce");
     }
     else if (access == AccessTypes::WRITEONCE)
     {
-        return QString("writeOnce");
+        return QStringLiteral("writeOnce");
     }
     else
     {
-        return QString();
+        return QStringLiteral("");
     }
 }

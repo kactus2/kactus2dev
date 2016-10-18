@@ -19,9 +19,9 @@
 ComProperty::ComProperty():
 name_(),
     required_(true),
-    type_("string"),
-    defaultValue_(""),
-    desc_("")
+    type_(QStringLiteral("string")),
+    defaultValue_(),
+    desc_()
 {
 
 }
@@ -45,15 +45,15 @@ name_(rhs.name_),
 ComProperty::ComProperty(QDomNode const& node):
 name_(),
     required_(true),
-    type_("string"),
-    defaultValue_(""),
-    desc_("")
+    type_(QStringLiteral("string")),
+    defaultValue_(),
+    desc_()
 {
-    name_ = node.attributes().namedItem("name").nodeValue();
-    required_ = General::str2Bool(node.attributes().namedItem("required").nodeValue(), false);
-    type_ = node.attributes().namedItem("propertyType").nodeValue();
-    defaultValue_ = node.attributes().namedItem("defaultValue").nodeValue();
-    desc_ = node.attributes().namedItem("description").nodeValue();
+    name_ = node.attributes().namedItem(QStringLiteral("name")).nodeValue();
+    required_ = General::str2Bool(node.attributes().namedItem(QStringLiteral("required")).nodeValue(), false);
+    type_ = node.attributes().namedItem(QStringLiteral("propertyType")).nodeValue();
+    defaultValue_ = node.attributes().namedItem(QStringLiteral("defaultValue")).nodeValue();
+    desc_ = node.attributes().namedItem(QStringLiteral("description")).nodeValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ ComProperty* ComProperty::clone() const
 //-----------------------------------------------------------------------------
 QString ComProperty::type() const
 {
-    return QString("kactus2:property");
+    return QStringLiteral("kactus2:property");
 }
 
 //-----------------------------------------------------------------------------
@@ -85,12 +85,12 @@ QString ComProperty::type() const
 //-----------------------------------------------------------------------------
 void ComProperty::write(QXmlStreamWriter& writer) const
 {
-    writer.writeEmptyElement("kactus2:property");
-    writer.writeAttribute("name", name_);
-    writer.writeAttribute("required", General::bool2Str(required_));
-    writer.writeAttribute("propertyType", type_);
-    writer.writeAttribute("defaultValue", defaultValue_);
-    writer.writeAttribute("description", desc_);
+    writer.writeEmptyElement(QStringLiteral("kactus2:property"));
+    writer.writeAttribute(QStringLiteral("name"), name_);
+    writer.writeAttribute(QStringLiteral("required"), General::bool2Str(required_));
+    writer.writeAttribute(QStringLiteral("propertyType"), type_);
+    writer.writeAttribute(QStringLiteral("defaultValue"), defaultValue_);
+    writer.writeAttribute(QStringLiteral("description"), desc_);
 }
 
 //-----------------------------------------------------------------------------

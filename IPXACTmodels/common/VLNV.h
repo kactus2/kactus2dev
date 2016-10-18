@@ -80,7 +80,7 @@ public:
 	 *      @param [in] separator The character used to separate the different vlnv fields in the string.
 	 *
 	*/
-	VLNV(IPXactType const& type, QString const& parseStr, QString const& separator = QString(":"));
+	VLNV(IPXactType const& type, QString const& parseStr, QString const& separator = QLatin1String(":"));
 
 	/*! Copy constructor
 	 *
@@ -190,7 +190,7 @@ public:
 	 *
 	 *      @return QString contains the vlnv in one string.
 	*/
-	QString toString(QString const& separator = QString(":")) const;
+	QString toString(QString const& separator = QLatin1String(":")) const;
 
 	//! The assignment operator for the class
 	VLNV &operator=(const VLNV &other);

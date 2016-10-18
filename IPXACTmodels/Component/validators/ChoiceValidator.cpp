@@ -48,7 +48,7 @@ bool ChoiceValidator::validate(QSharedPointer<Choice> choice) const
 bool ChoiceValidator::hasValidName(QSharedPointer<Choice> choice) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(choice->name());
 
     if (choice->name().isEmpty() || whiteSpaceMatch.hasMatch())
@@ -98,7 +98,7 @@ void ChoiceValidator::findErrorsInName(QVector<QString>& errors, QSharedPointer<
 {
     if (!hasValidName(choice))
     {
-        errors.append(QObject::tr("Invalid name set for choice %1 within %2").arg(choice->name()).arg(context));
+        errors.append(QObject::tr("Invalid name set for choice %1 within %2").arg(choice->name(), context));
     }
 }
 
@@ -118,8 +118,8 @@ void ChoiceValidator::findErrorsInEnumerations(QVector<QString>& errors, QShared
         {
             if (!expressionParser_->isValidExpression(enumeration->getValue()))
             {
-                errors.append(QObject::tr("Invalid value '%1' set for enumeration in choice '%2' within %3")
-                    .arg(enumeration->getValue()).arg(choice->name(), context));
+                errors.append(QObject::tr("Invalid value '%1' set for enumeration in choice '%2' within %3").arg(
+                    enumeration->getValue(), choice->name(), context));
             }
         }
     }

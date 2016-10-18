@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: OtherClockDriverWriter::OtherClockDriverWriter()
 //-----------------------------------------------------------------------------
-OtherClockDriverWriter::OtherClockDriverWriter(QObject* parent /* = 0 */) :
+OtherClockDriverWriter::OtherClockDriverWriter(QObject* parent) :
 QObject(parent)
 {
 
@@ -33,17 +33,17 @@ OtherClockDriverWriter::~OtherClockDriverWriter()
 //-----------------------------------------------------------------------------
 void OtherClockDriverWriter::writeOtherClockDriver(QXmlStreamWriter& writer, QSharedPointer<OtherClockDriver> otherClockDriver) const
 {
-	writer.writeStartElement("ipxact:otherClockDriver");
+	writer.writeStartElement(QStringLiteral("ipxact:otherClockDriver"));
 
     writeClockDriverAttributes(writer, otherClockDriver);
 
-    writeClockUnit(writer, otherClockDriver->getClockPeriod(), "ipxact:clockPeriod");
+    writeClockUnit(writer, otherClockDriver->getClockPeriod(), QStringLiteral("ipxact:clockPeriod"));
 
-    writeClockUnit(writer, otherClockDriver->getClockPulseOffset(), "ipxact:clockPulseOffset");
+    writeClockUnit(writer, otherClockDriver->getClockPulseOffset(), QStringLiteral("ipxact:clockPulseOffset"));
 
-    writer.writeTextElement("ipxact:clockPulseValue", otherClockDriver->getClockPulseValue());
+    writer.writeTextElement(QStringLiteral("ipxact:clockPulseValue"), otherClockDriver->getClockPulseValue());
 
-    writeClockUnit(writer, otherClockDriver->getClockPulseDuration(), "ipxact:clockPulseDuration");
+    writeClockUnit(writer, otherClockDriver->getClockPulseDuration(), QStringLiteral("ipxact:clockPulseDuration"));
 
 	writer.writeEndElement();
 }
@@ -54,11 +54,11 @@ void OtherClockDriverWriter::writeOtherClockDriver(QXmlStreamWriter& writer, QSh
 void OtherClockDriverWriter::writeClockDriverAttributes(QXmlStreamWriter& writer,
     QSharedPointer<OtherClockDriver> otherClockDriver) const
 {
-    writer.writeAttribute("clockName", otherClockDriver->getClockName());
+    writer.writeAttribute(QStringLiteral("clockName"), otherClockDriver->getClockName());
 
     if (!otherClockDriver->getClockSource().isEmpty())
     {
-        writer.writeAttribute("clockSource", otherClockDriver->getClockSource());
+        writer.writeAttribute(QStringLiteral("clockSource"), otherClockDriver->getClockSource());
     }
 }
 
@@ -72,7 +72,7 @@ void OtherClockDriverWriter::writeClockUnit(QXmlStreamWriter& writer, QSharedPoi
 
     if (clockUnit->getTimeUnit() != ClockUnit::TIMEUNIT_UNSPECIFIED)
     {
-        writer.writeAttribute("units", clockUnit->timeUnitToString());
+        writer.writeAttribute(QStringLiteral("units"), clockUnit->timeUnitToString());
     }
 
     writer.writeCharacters(clockUnit->getValue());

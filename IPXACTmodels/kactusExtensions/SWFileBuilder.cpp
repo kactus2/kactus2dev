@@ -26,14 +26,14 @@ SWFileBuilder::SWFileBuilder(QDomNode const& swBuildNode): FileBuilder()
 {
     QDomElement swBuildElement = swBuildNode.toElement();
 
-    setFileType(swBuildElement.firstChildElement("kactus2:fileType").firstChild().nodeValue());
+    setFileType(swBuildElement.firstChildElement(QStringLiteral("kactus2:fileType")).firstChild().nodeValue());
 
-    setCommand(swBuildElement.firstChildElement("ipxact:command").firstChild().nodeValue());
+    setCommand(swBuildElement.firstChildElement(QStringLiteral("ipxact:command")).firstChild().nodeValue());
 
-    setFlags(swBuildElement.firstChildElement("ipxact:flags").firstChild().nodeValue());
+    setFlags(swBuildElement.firstChildElement(QStringLiteral("ipxact:flags")).firstChild().nodeValue());
 
     setReplaceDefaultFlags(
-        swBuildElement.firstChildElement("ipxact:setReplaceDefaultFlags").firstChild().nodeValue());
+        swBuildElement.firstChildElement(QStringLiteral("ipxact:setReplaceDefaultFlags")).firstChild().nodeValue());
 }
 
 //-----------------------------------------------------------------------------
@@ -78,15 +78,15 @@ SWFileBuilder::~SWFileBuilder()
 //-----------------------------------------------------------------------------
 void SWFileBuilder::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:SWBuildCommand");
+    writer.writeStartElement(QStringLiteral("kactus2:SWBuildCommand"));
 
-    writer.writeTextElement("kactus2:fileType", getFileType());
+    writer.writeTextElement(QStringLiteral("kactus2:fileType"), getFileType());
 
-    writer.writeTextElement("ipxact:command", getCommand());
+    writer.writeTextElement(QStringLiteral("ipxact:command"), getCommand());
 
-    writer.writeTextElement("ipxact:flags", getFlags());
+    writer.writeTextElement(QStringLiteral("ipxact:flags"), getFlags());
 
-    writer.writeTextElement("ipxact:replaceDefaultFlags", getReplaceDefaultFlags());
+    writer.writeTextElement(QStringLiteral("ipxact:replaceDefaultFlags"), getReplaceDefaultFlags());
 
     writer.writeEndElement(); // kactus2:SWBuildCommand
 }

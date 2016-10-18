@@ -53,7 +53,7 @@ bool OtherClockDriverValidator::validate(QSharedPointer<OtherClockDriver> otherC
 bool OtherClockDriverValidator::hasValidName(QString const& name) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
 
     if (name.isEmpty() || whiteSpaceMatch.hasMatch())

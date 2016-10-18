@@ -59,7 +59,7 @@ QSharedPointer<ModuleParameter> ModuleParameterReader::createModuleParameterFrom
 void ModuleParameterReader::parseIsPresent(QDomNode const& moduleParameterNode,
     QSharedPointer<ModuleParameter> moduleParameter) const
 {
-    QDomElement presenceElement = moduleParameterNode.firstChildElement("ipxact:isPresent");
+    QDomElement presenceElement = moduleParameterNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
 
     if (!presenceElement.isNull())
     {

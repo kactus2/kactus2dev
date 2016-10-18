@@ -60,7 +60,7 @@ bool ViewValidator::validate(QSharedPointer<View> view) const
 bool ViewValidator::hasValidName(QString const& name) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
 
     if (name.isEmpty() || whiteSpaceMatch.hasMatch())
@@ -113,7 +113,7 @@ bool ViewValidator::hasValidEnvironmentIdentifiers(QSharedPointer<View> view) co
 bool ViewValidator::isValidEnvId(QSharedPointer<View::EnvironmentIdentifier> envId) const
 {
     QRegularExpression envIdExpression;
-	envIdExpression.setPattern("[A-Za-z0-9_+\\*\\.]*");
+	envIdExpression.setPattern(QStringLiteral("[A-Za-z0-9_+\\*\\.]*"));
 	QRegularExpressionMatch envIdMatchLanguage = envIdExpression.match(envId->language);
 	QRegularExpressionMatch envIdMatchTool = envIdExpression.match(envId->tool);
 	QRegularExpressionMatch envIdMatchVendor = envIdExpression.match(envId->vendorSpecific);

@@ -165,7 +165,7 @@ QSharedPointer<QList<QSharedPointer<Assertion> > > Document::getAssertions() con
 //-----------------------------------------------------------------------------
 void Document::setTopComments(QString const& comment)
 {
-    QStringList comments = comment.split("\n");
+    QStringList comments = comment.split(QStringLiteral("\n"));
     topComments_ = comments;
 }
 
@@ -216,14 +216,15 @@ void Document::setVersion(QString const& versionNumber)
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:version")
+        if (extension->type() == QLatin1String("kactus2:version"))
         {
             extension.dynamicCast<Kactus2Value>()->setValue(versionNumber);
             return;
         }
     }
 
-    getVendorExtensions()->append(QSharedPointer<Kactus2Value>(new Kactus2Value("kactus2:version", versionNumber)));
+    getVendorExtensions()->append(QSharedPointer<Kactus2Value>(new Kactus2Value(QStringLiteral("kactus2:version"),
+        versionNumber)));
 }
 
 //-----------------------------------------------------------------------------
@@ -233,7 +234,7 @@ QString Document::getVersion() const
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:version")
+        if (extension->type() == QLatin1String("kactus2:version"))
         {
             return extension.dynamicCast<Kactus2Value>()->value();
         }
@@ -249,7 +250,7 @@ bool Document::hasKactusAttributes() const
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:extensions")
+        if (extension->type() == QLatin1String("kactus2:extensions"))
         {
             return true;
         }
@@ -265,7 +266,7 @@ bool Document::hasImplementation() const
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:extensions")
+        if (extension->type() == QLatin1String("kactus2:extensions"))
         {
             QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
             return attributes->getImplementation() != KactusAttribute::KTS_IMPLEMENTATION_COUNT;
@@ -282,7 +283,7 @@ void Document::setImplementation(KactusAttribute::Implementation implementation)
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:extensions")
+        if (extension->type() == QLatin1String("kactus2:extensions"))
         {
             return extension.dynamicCast<KactusAttribute>()->setImplementation(implementation);
         }
@@ -301,7 +302,7 @@ KactusAttribute::Implementation Document::getImplementation() const
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:extensions")
+        if (extension->type() == QLatin1String("kactus2:extensions"))
         {
             KactusAttribute::Implementation implementationType =
                 extension.dynamicCast<KactusAttribute>()->getImplementation();
@@ -326,7 +327,7 @@ bool Document::hasProductHierarchy() const
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:extensions")
+        if (extension->type() == QLatin1String("kactus2:extensions"))
         {
             QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
             return attributes->getHierarchy() != KactusAttribute::KTS_PRODHIER_COUNT;
@@ -343,7 +344,7 @@ void Document::setHierarchy(KactusAttribute::ProductHierarchy productHierarchy)
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:extensions")
+        if (extension->type() == QLatin1String("kactus2:extensions"))
         {
             return extension.dynamicCast<KactusAttribute>()->setHierarchy(productHierarchy);
         }
@@ -362,7 +363,7 @@ KactusAttribute::ProductHierarchy Document::getHierarchy() const
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:extensions")
+        if (extension->type() == QLatin1String("kactus2:extensions"))
         {
             return extension.dynamicCast<KactusAttribute>()->getHierarchy();
         }
@@ -378,7 +379,7 @@ bool Document::hasFirmness() const
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:extensions")
+        if (extension->type() == QLatin1String("kactus2:extensions"))
         {
             QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
             return attributes->getFirmness() != KactusAttribute::KTS_REUSE_LEVEL_COUNT;
@@ -395,7 +396,7 @@ KactusAttribute::Firmness Document::getFirmness() const
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:extensions")
+        if (extension->type() == QLatin1String("kactus2:extensions"))
         {
             QSharedPointer<KactusAttribute> attributes = extension.dynamicCast<KactusAttribute>();
             return attributes->getFirmness();
@@ -412,7 +413,7 @@ void Document::setFirmness(KactusAttribute::Firmness firmness)
 {
     foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:extensions")
+        if (extension->type() == QLatin1String("kactus2:extensions"))
         {
             return extension.dynamicCast<KactusAttribute>()->setFirmness(firmness);
         }

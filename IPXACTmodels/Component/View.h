@@ -40,7 +40,7 @@ public:
 		 */
 		QString toString()
 		{
-			return language + ":" + tool + ":" + vendorSpecific;
+			return language + QStringLiteral(":") + tool + QStringLiteral(":") + vendorSpecific;
 		}
 	};
 

@@ -15,26 +15,26 @@ namespace
 {
     QString const PROD_HIER_NAMES[KactusAttribute::KTS_PRODHIER_COUNT] =
     {
-        "Flat",
-        "Product",
-        "Board",
-        "Chip",
-        "SoC",
-        "IP"
+        QLatin1String("Flat"),
+        QLatin1String("Product"),
+        QLatin1String("Board"),
+        QLatin1String("Chip"),
+        QLatin1String("SoC"),
+        QLatin1String("IP")
     };
 
     QString const FIRMNESS_NAMES[KactusAttribute::KTS_REUSE_LEVEL_COUNT] =
     {
-        "Mutable",
-        "Template",
-        "Fixed"
+        QLatin1String("Mutable"),
+        QLatin1String("Template"),
+        QLatin1String("Fixed")
     };
 
     QString const IMPLEMENTATION_NAMES[KactusAttribute::KTS_IMPLEMENTATION_COUNT] =
     {
-        "HW",
-        "SW",
-        "SYS"
+        QLatin1String("HW"),
+        QLatin1String("SW"),
+        QLatin1String("SYS")
     };
 }
 
@@ -78,21 +78,21 @@ QString KactusAttribute::type() const
 //-----------------------------------------------------------------------------
 void KactusAttribute::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:kts_attributes");
+    writer.writeStartElement(QStringLiteral("kactus2:kts_attributes"));
 
     if (productHierarchy_ != KTS_PRODHIER_COUNT)
     {
-        writer.writeTextElement("kactus2:kts_productHier", hierarchyToString(productHierarchy_));
+        writer.writeTextElement(QStringLiteral("kactus2:kts_productHier"), hierarchyToString(productHierarchy_));
     }
    
     if (implementation_ != KTS_IMPLEMENTATION_COUNT)
     {
-        writer.writeTextElement("kactus2:kts_implementation", implementationToString(implementation_));
+        writer.writeTextElement(QStringLiteral("kactus2:kts_implementation"), implementationToString(implementation_));
     }
    
     if (firmness_ != KTS_REUSE_LEVEL_COUNT)
     {
-        writer.writeTextElement("kactus2:kts_firmness", firmnessToString(firmness_));
+        writer.writeTextElement(QStringLiteral("kactus2:kts_firmness"), firmnessToString(firmness_));
     }
 
     writer.writeEndElement(); // kactus2:kts_attributes

@@ -132,7 +132,9 @@ bool MemoryMapValidator::remapStateIsNotValid(QSharedPointer<MemoryRemap> memory
 void MemoryMapValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMap> memoryMap,
     QString const& context) const
 {
-    QString memoryMapContext = memoryMap->elementName() + " " + memoryMap->name(); 
+    QString memoryMapContext = memoryMap->elementName();
+    memoryMapContext.append(QLatin1Char(' '));
+    memoryMapContext.append(memoryMap->name());
 
     MemoryMapBaseValidator::findErrorsIn(errors, memoryMap, memoryMap->getAddressUnitBits(), context);
     findErrorsInAddressUnitBits(errors, memoryMap, context);

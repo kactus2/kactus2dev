@@ -69,7 +69,7 @@ void MemoryMapReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
     for (int childIndex = 0; childIndex < childNodes.count(); ++childIndex)
     {
         QDomNode addressBlockNode = childNodes.at(childIndex);
-        if (addressBlockNode.nodeName() == "ipxact:addressBlock")
+        if (addressBlockNode.nodeName() == QStringLiteral("ipxact:addressBlock"))
         {
             QSharedPointer<AddressBlock> newAddressBlock =
                 addressBlockReader.createAddressBlockFrom(addressBlockNode);
@@ -85,7 +85,7 @@ void MemoryMapReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
 void MemoryMapReader::parseMemoryRemaps(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap)
     const
 {
-    QDomNodeList memoryRemapNodeList = memoryMapNode.toElement().elementsByTagName("ipxact:memoryRemap");
+    QDomNodeList memoryRemapNodeList = memoryMapNode.toElement().elementsByTagName(QStringLiteral("ipxact:memoryRemap"));
 
     for (int memoryRemapIndex = 0; memoryRemapIndex < memoryRemapNodeList.count(); ++memoryRemapIndex)
     {
@@ -104,7 +104,7 @@ QSharedPointer<MemoryRemap> MemoryMapReader::createSingleMemoryRemap(QDomElement
 {
     QSharedPointer<MemoryRemap> newMemoryRemap (new MemoryRemap());
 
-    QString remapState = memoryRemapElement.attribute("state");
+    QString remapState = memoryRemapElement.attribute(QStringLiteral("state"));
     newMemoryRemap->setRemapState(remapState);
 
     parseNameGroup(memoryRemapElement, newMemoryRemap);
@@ -122,7 +122,7 @@ QSharedPointer<MemoryRemap> MemoryMapReader::createSingleMemoryRemap(QDomElement
 void MemoryMapReader::parseAddressUnitBits(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap)
     const
 {
-    QDomNode addressUnitBitsNode = memoryMapNode.firstChildElement("ipxact:addressUnitBits");
+    QDomNode addressUnitBitsNode = memoryMapNode.firstChildElement(QStringLiteral("ipxact:addressUnitBits"));
     if (!addressUnitBitsNode.isNull())
     {
         QString addressUnitBits = addressUnitBitsNode.firstChild().nodeValue();
@@ -135,15 +135,15 @@ void MemoryMapReader::parseAddressUnitBits(QDomNode const& memoryMapNode, QShare
 //-----------------------------------------------------------------------------
 void MemoryMapReader::parseShared(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap) const
 {
-    QDomNode sharedNode = memoryMapNode.firstChildElement("ipxact:shared");
+    QDomNode sharedNode = memoryMapNode.firstChildElement(QStringLiteral("ipxact:shared"));
     if (!sharedNode.isNull())
     {
         QString sharedValue = sharedNode.firstChild().nodeValue();
-        if (sharedValue == "yes")
+        if (sharedValue == QLatin1String("yes"))
         {
             newMemoryMap->setShared(true);
         }
-        else if (sharedValue == "no")
+        else if (sharedValue == QLatin1String("no"))
         {
             newMemoryMap->setShared(false);
         }

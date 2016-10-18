@@ -60,7 +60,7 @@ bool RemapStateValidator::validate(QSharedPointer<RemapState> remapState) const
 bool RemapStateValidator::hasValidName(QSharedPointer<RemapState> remapState) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(remapState->name());
 
     if (remapState->name().isEmpty() || whiteSpaceMatch.hasMatch())
@@ -146,7 +146,7 @@ bool RemapStateValidator::remapPortHasValidValue(QSharedPointer<RemapPort> remap
 void RemapStateValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<RemapState> remapState,
     QString const& context) const
 {
-    QString const& remapStateContext = "remap state " + remapState->name();
+    QString const& remapStateContext = QStringLiteral("remap state ") + remapState->name();
 
     findErrorsInName(errors, remapState, context);
     findErrorsInRemapPorts(errors, remapState, remapStateContext);

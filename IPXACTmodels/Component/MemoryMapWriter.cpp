@@ -41,7 +41,7 @@ MemoryMapWriter::~MemoryMapWriter()
 //-----------------------------------------------------------------------------
 void MemoryMapWriter::writeMemoryMap(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap) const
 {
-    writer.writeStartElement("ipxact:memoryMap");
+    writer.writeStartElement(QStringLiteral("ipxact:memoryMap"));
 
 	writeMemoryMapBase(writer, memoryMap);
 
@@ -63,9 +63,9 @@ void MemoryMapWriter::writeMemoryRemaps(QXmlStreamWriter& writer, QSharedPointer
 {
     foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap->getMemoryRemaps())
     {
-        writer.writeStartElement("ipxact:memoryRemap");
+        writer.writeStartElement(QStringLiteral("ipxact:memoryRemap"));
 
-        writer.writeAttribute("state", memoryRemap->getRemapState());
+        writer.writeAttribute(QStringLiteral("state"), memoryRemap->getRemapState());
 
         writeNameGroup(writer, memoryRemap);
 
@@ -84,7 +84,7 @@ void MemoryMapWriter::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPoin
 {
     if (!memoryMap->getAddressUnitBits().isEmpty())
     {
-        writer.writeTextElement("ipxact:addressUnitBits", memoryMap->getAddressUnitBits());
+        writer.writeTextElement(QStringLiteral("ipxact:addressUnitBits"), memoryMap->getAddressUnitBits());
     }
 }
 
@@ -95,15 +95,15 @@ void MemoryMapWriter::writeShared(QXmlStreamWriter& writer, QSharedPointer<Memor
 {
     if (!memoryMap->getShared().isEmpty())
     {
-        writer.writeStartElement("ipxact:shared");
+        writer.writeStartElement(QStringLiteral("ipxact:shared"));
 
-        if (memoryMap->getShared() == "true")
+        if (memoryMap->getShared() == QLatin1String("true"))
         {
-            writer.writeCharacters("yes");
+            writer.writeCharacters(QStringLiteral("yes"));
         }
         else
         {
-            writer.writeCharacters("no");
+            writer.writeCharacters(QStringLiteral("no"));
         }
 
         writer.writeEndElement(); // ipxact:shared

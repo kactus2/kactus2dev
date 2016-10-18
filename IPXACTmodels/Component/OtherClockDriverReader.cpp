@@ -40,13 +40,13 @@ QSharedPointer<OtherClockDriver> OtherClockDriverReader::createOtherClockDriverF
 
     parseClockDriverAttributes(otherClockDriverNode, newOtherClockDriver);
 
-    newOtherClockDriver->setClockPeriod(parseClockUnit(otherClockDriverNode, "ipxact:clockPeriod"));
+    newOtherClockDriver->setClockPeriod(parseClockUnit(otherClockDriverNode, QStringLiteral("ipxact:clockPeriod")));
 
-    newOtherClockDriver->setClockPulseOffset(parseClockUnit(otherClockDriverNode, "ipxact:clockPulseOffset"));
+    newOtherClockDriver->setClockPulseOffset(parseClockUnit(otherClockDriverNode, QStringLiteral("ipxact:clockPulseOffset")));
 
     parseClockPulseValue(otherClockDriverNode, newOtherClockDriver);
 
-    newOtherClockDriver->setClockPulseDuration(parseClockUnit(otherClockDriverNode, "ipxact:clockPulseDuration"));
+    newOtherClockDriver->setClockPulseDuration(parseClockUnit(otherClockDriverNode, QStringLiteral("ipxact:clockPulseDuration")));
 
     return newOtherClockDriver;
 }
@@ -57,12 +57,12 @@ QSharedPointer<OtherClockDriver> OtherClockDriverReader::createOtherClockDriverF
 void OtherClockDriverReader::parseClockDriverAttributes(QDomNode const& otherClockDriverNode,
     QSharedPointer<OtherClockDriver> newOtherClockDriver) const
 {
-    QString name = otherClockDriverNode.toElement().attribute("clockName");
+    QString name = otherClockDriverNode.toElement().attribute(QStringLiteral("clockName"));
     newOtherClockDriver->setClockName(name);
 
-    if (otherClockDriverNode.toElement().hasAttribute("clockSource"))
+    if (otherClockDriverNode.toElement().hasAttribute(QStringLiteral("clockSource")))
     {
-        QString clockSource = otherClockDriverNode.toElement().attribute("clockSource");
+        QString clockSource = otherClockDriverNode.toElement().attribute(QStringLiteral("clockSource"));
         newOtherClockDriver->setClockSource(clockSource);
     }
 }
@@ -78,9 +78,9 @@ QSharedPointer<ClockUnit> OtherClockDriverReader::parseClockUnit(QDomNode const&
     QString value = childElement.firstChild().nodeValue();
     QSharedPointer<ClockUnit> newClockUnit (new ClockUnit(value));
 
-    if (childElement.hasAttribute("units"))
+    if (childElement.hasAttribute(QStringLiteral("units")))
     {
-        QString timeUnit = childElement.attribute("units");
+        QString timeUnit = childElement.attribute(QStringLiteral("units"));
         newClockUnit->setTimeUnit(timeUnit);
     }
 
@@ -93,6 +93,6 @@ QSharedPointer<ClockUnit> OtherClockDriverReader::parseClockUnit(QDomNode const&
 void OtherClockDriverReader::parseClockPulseValue(QDomNode const& otherClockDriverNode,
     QSharedPointer<OtherClockDriver> newOtherClockDriver) const
 {
-    QString pulseValue = otherClockDriverNode.firstChildElement("ipxact:clockPulseValue").firstChild().nodeValue();
+    QString pulseValue = otherClockDriverNode.firstChildElement(QStringLiteral("ipxact:clockPulseValue")).firstChild().nodeValue();
     newOtherClockDriver->setClockPulseValue(pulseValue);
 }

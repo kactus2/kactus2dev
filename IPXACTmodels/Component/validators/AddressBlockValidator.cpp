@@ -71,7 +71,7 @@ bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock, 
 bool AddressBlockValidator::hasValidName(QSharedPointer<AddressBlock> addressBlock) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(addressBlock->name());
 
     if (addressBlock->name().isEmpty() || whiteSpaceMatch.hasMatch())
@@ -352,7 +352,7 @@ bool AddressBlockValidator::hasValidUsage(QSharedPointer<AddressBlock> addressBl
 void AddressBlockValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
     QString const& addressUnitBits, QString const& context) const
 {
-    QString addressBlockContext = "addressBlock " + addressBlock->name();
+    QString addressBlockContext = QStringLiteral("addressBlock ") + addressBlock->name();
 
     findErrorsInName(errors, addressBlock, context);
     findErrorsInIsPresent(errors, addressBlock, context);

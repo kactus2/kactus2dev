@@ -98,15 +98,15 @@ QString EnumeratedValue::usage2Str(EnumeratedValue::EnumeratedUsage usage)
 {
     if (usage == EnumeratedValue::READ)
     {
-        return QString("read");
+        return QStringLiteral("read");
     }
     else if (usage == EnumeratedValue::WRITE)
     {
-        return QString("write");
+        return QStringLiteral("write");
     }
     else if (usage == EnumeratedValue::READWRITE)
     {
-        return QString("read-write");
+        return QStringLiteral("read-write");
     }
     else
     {
@@ -119,15 +119,15 @@ QString EnumeratedValue::usage2Str(EnumeratedValue::EnumeratedUsage usage)
 //-----------------------------------------------------------------------------
 EnumeratedValue::EnumeratedUsage EnumeratedValue::str2Usage(const QString& usage, EnumeratedUsage defaultValue)
 {
-    if (usage == QString("read"))
+    if (usage == QLatin1String("read"))
     {
         return EnumeratedValue::READ;
     }
-    else if (usage == QString("write"))
+    else if (usage == QLatin1String("write"))
     {
         return EnumeratedValue::WRITE;
     }
-    else if (usage == QString("read-write"))
+    else if (usage == QLatin1String("read-write"))
     {
         return EnumeratedValue::READWRITE;
     }

@@ -52,7 +52,7 @@ bool ComponentGeneratorValidator::validate(QSharedPointer<ComponentGenerator> ge
 bool ComponentGeneratorValidator::hasValidName(QSharedPointer<ComponentGenerator> generator) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(generator->name());
 
     if (generator->name().isEmpty() || whiteSpaceMatch.hasMatch())

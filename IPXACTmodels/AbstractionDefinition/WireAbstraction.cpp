@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 WireAbstraction::WireAbstraction():
 qualifier_(),
-    defaultValue_(""),
+    defaultValue_(QStringLiteral("")),
     requiresDriver_(false),
     driverType_(General::NO_DRIVER),
     onMaster_(QSharedPointer<WirePort>()), 

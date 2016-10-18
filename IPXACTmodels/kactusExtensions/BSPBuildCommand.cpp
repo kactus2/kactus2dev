@@ -22,10 +22,10 @@ cpuName_()
 {
     QDomElement bspElement = bspNode.toElement();
 
-    fileType_ = bspElement.firstChildElement("kactus2:fileType").firstChild().nodeValue();
-    command_ = bspElement.firstChildElement("ipxact:command").firstChild().nodeValue();
-    arguments_ = bspElement.firstChildElement("kactus2:arguments").firstChild().nodeValue();
-    cpuName_ = bspElement.firstChildElement("kactus2:cpuName").firstChild().nodeValue();
+    fileType_ = bspElement.firstChildElement(QStringLiteral("kactus2:fileType")).firstChild().nodeValue();
+    command_ = bspElement.firstChildElement(QStringLiteral("ipxact:command")).firstChild().nodeValue();
+    arguments_ = bspElement.firstChildElement(QStringLiteral("kactus2:arguments")).firstChild().nodeValue();
+    cpuName_ = bspElement.firstChildElement(QStringLiteral("kactus2:cpuName")).firstChild().nodeValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -84,12 +84,12 @@ void BSPBuildCommand::write(QXmlStreamWriter& writer)
 		return;
 	}
 
-	writer.writeStartElement("kactus2:BSPBuildCommand");
+	writer.writeStartElement(QStringLiteral("kactus2:BSPBuildCommand"));
 
-	writer.writeTextElement("kactus2:fileType", fileType_);
-	writer.writeTextElement("ipxact:command", command_);
-	writer.writeTextElement("kactus2:arguments", arguments_);
-	writer.writeTextElement("kactus2:cpuName", cpuName_);
+	writer.writeTextElement(QStringLiteral("kactus2:fileType"), fileType_);
+	writer.writeTextElement(QStringLiteral("ipxact:command"), command_);
+	writer.writeTextElement(QStringLiteral("kactus2:arguments"), arguments_);
+	writer.writeTextElement(QStringLiteral("kactus2:cpuName"), cpuName_);
 
 	writer.writeEndElement(); // kactus2:BSPBuildCommand
 }

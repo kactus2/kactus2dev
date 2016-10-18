@@ -30,7 +30,7 @@ public:
      *      @param [in] componentRef    The name of the referenced component instance.
      *      @param [in] busRef          The name of the referenced bus interface.
      */
-    MonitorInterface(QString componentRef = QString(""), QString busRef = QString(""));
+    MonitorInterface(QString componentRef = QString(), QString busRef = QString());
 
     /*!
      *  Copy constructor.

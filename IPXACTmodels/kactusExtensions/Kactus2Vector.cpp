@@ -41,5 +41,5 @@ Kactus2Vector* Kactus2Vector::clone() const
 //-----------------------------------------------------------------------------
 QString Kactus2Vector::type() const
 {
-    return QString("kactus2:vector");
+    return QStringLiteral("kactus2:vector");
 }

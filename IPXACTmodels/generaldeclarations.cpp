@@ -5,6 +5,7 @@
  */
 
 #include "generaldeclarations.h"
+
 #include "XmlUtils.h"
 
 #include <QDomNode>
@@ -20,6 +21,7 @@
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <qmath.h>
+
 
 General::PortBounds::PortBounds():
 portName_(),
@@ -199,28 +201,28 @@ General::PortAlignment& General::PortAlignment::operator=( const PortAlignment& 
 
 QString General::port2String(const QString& portName, int leftBound, int rightBound) {
 	QString str(portName);
-	str += QString("[%1..%2]").arg(leftBound).arg(rightBound);
+	str.append(QStringLiteral("[%1..%2]")).arg(leftBound).arg(rightBound);
 	return str;
 }
 
 QString General::bool2Str(bool value) {
 	if (value) {
-		return QString("true");
+		return QStringLiteral("true");
 	}
 	else {
-		return QString("false");
+		return QStringLiteral("false");
 	}
 }
 
 General::Usage General::str2Usage(QString str,
 		General::Usage defaultValue) {
-	if (str == QString("memory")) {
+	if (str == QLatin1String("memory")) {
 		return General::MEMORY;
 	}
-	else if (str == QString("register")) {
+	else if (str == QLatin1String("register")) {
 		return General::REGISTER;
 	}
-	else if (str ==	QString("reserved")) {
+	else if (str ==	QLatin1String("reserved")) {
 		return General::RESERVED;
 	}
 	else {
@@ -231,13 +233,13 @@ General::Usage General::str2Usage(QString str,
 QString General::usage2Str(const General::Usage usage) {
 	switch (usage) {
 	case General::MEMORY: {
-		return QString("memory");
+		return QStringLiteral("memory");
 	}
 	case General::REGISTER: {
-		return QString("register");
+		return QStringLiteral("register");
 	}
 	case General::RESERVED: {
-		return QString("reserved");
+		return QStringLiteral("reserved");
 	}
 	// if UNSPECIFIED_USAGE
 	default: {
@@ -248,19 +250,19 @@ QString General::usage2Str(const General::Usage usage) {
 
 General::DriverType General::str2DriverType(QString str, General::DriverType defaultValue)
 {
-	if (str == "any")
+	if (str == QLatin1String("any"))
     {
 		return General::ANY;
 	}
-	else if (str == "clock")
+	else if (str == QLatin1String("clock"))
     {
 		return General::CLOCK;
 	}
-	else if (str == "singleShot")
+	else if (str == QLatin1String("singleShot"))
     {
 		return General::SINGLESHOT;
 	}
-    else if (str == "none")
+    else if (str == QLatin1String("none"))
     {
         return General::NO_DRIVER;
     }
@@ -274,15 +276,15 @@ QString General::driverType2Str(General::DriverType type)
 {
     if (type == General::ANY)
     {
-        return QString("any");
+        return QStringLiteral("any");
     }
     else if (type == General::CLOCK)
     {
-        return QString("clock");
+        return QStringLiteral("clock");
     }
     else if (type == General::SINGLESHOT)
     {
-        return QString("singleShot");
+        return QStringLiteral("singleShot");
     }
     else 
     {
@@ -291,10 +293,10 @@ QString General::driverType2Str(General::DriverType type)
 }
 
 bool General::str2Bool(const QString str, bool defaultValue) {
-	if (str == QString("true")) {
+	if (str == QLatin1String("true")) {
 		return true;
 	}
-	else if (str == QString("false")) {
+	else if (str == QLatin1String("false")) {
 		return false;
 	}
 	else {
@@ -414,13 +416,13 @@ QString General::getRelativePath(const QString from, const QString to) {
 	QString relPath = ipXactDir.relativeFilePath(toInfo.absoluteFilePath());
 
     // Strip the ending slash if found.
-    if (relPath.size() > 0 && relPath.at(relPath.size() - 1) == '/')
+    if (relPath.size() > 0 && relPath.at(relPath.size() - 1) == QLatin1Char('/'))
     {
         relPath = relPath.left(relPath.size() - 1);
     }
     else if (relPath.isEmpty())
     {
-        relPath = ".";
+        relPath = QStringLiteral(".");
     }
 
     return relPath;
@@ -535,9 +537,10 @@ General::TestConstraint General::str2TestConstraint( const QString& str ) {
 
 
 
-quint64 General::str2Uint( const QString& str ) {
-
-    if (str.isEmpty()) {
+quint64 General::str2Uint( const QString& str )
+{
+    if (str.isEmpty())
+    {
         return 0;
     }
 
@@ -546,10 +549,11 @@ quint64 General::str2Uint( const QString& str ) {
     quint64 number = 0;
 
     // if starts with "0x" then it is hexadecimal digit
-    if (str.startsWith("0x", Qt::CaseInsensitive)) {
-
+    if (str.startsWith(QStringLiteral("0x"), Qt::CaseInsensitive))
+    {
         number = str.toULongLong(&success, 16);
-        if (success) {
+        if (success)
+        {
             return number;
         }
     }
@@ -562,23 +566,28 @@ quint64 General::str2Uint( const QString& str ) {
     quint64 multiplier = 1;
 
     // get the correct multiplier and remove the letter from the string
-    if (multiple == 'k' || multiple == 'K') {
+    if (multiple == QLatin1Char('k') || multiple == QLatin1Char('K'))
+    {
         multiplier = qPow(2, 10);
         strNumber.chop(1);
     }
-    else if (multiple == 'M') {
+    else if (multiple == QLatin1Char('M'))
+    {
         multiplier = qPow(2, 20);
         strNumber.chop(1);
     }
-    else if (multiple == 'G') {
+    else if (multiple == QLatin1Char('G'))
+    {
         multiplier = qPow(2, 30);
         strNumber.chop(1);
     }
-    else if (multiple == 'T') {
+    else if (multiple == QLatin1Char('T'))
+    {
         multiplier = qPow(2, 40);
         strNumber.chop(1);
     }
-    else if (multiple == 'P') {
+    else if (multiple == QLatin1Char('P'))
+    {
         multiplier = qPow(2, 50);
         strNumber.chop(1);
     }
@@ -587,11 +596,13 @@ quint64 General::str2Uint( const QString& str ) {
     number = strNumber.toULongLong(&success);
 
     // if the conversion failed
-    if (!success) {
+    if (!success)
+    {
         return 0;
     }
     // otherwise return the correct int-format
-    else {
+    else
+    {
         return number * multiplier;
     }
 }

@@ -23,8 +23,8 @@ kind_(),
 busWidth_(),
 protocol_(),
 transTypeDefs_(new QList<QSharedPointer<WireTypeDef> > ()),
-maxConnections_(QString("")),
-minConnections_(QString(""))
+maxConnections_(),
+minConnections_()
 {
 
 }
@@ -231,7 +231,7 @@ QString Transactional::getTypeName(QString const& viewName) const
         }
     }
 
-    return QString("");
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -283,11 +283,11 @@ QString Transactional::getTypeDefinition(QString const& typeName) const
     {
         if (transactionalTypeDefinition->getTypeName() == typeName)
         {
-            return transactionalTypeDefinition->getTypeDefinitions().value(0, QString(""));
+            return transactionalTypeDefinition->getTypeDefinitions().value(0, QString());
         }
     }
 
-    return QString("");
+    return QString();
 }
 
 //-----------------------------------------------------------------------------

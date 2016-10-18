@@ -69,7 +69,7 @@ void DesignWriter::writeDesignStart(QXmlStreamWriter& writer, QSharedPointer<Des
 {
     writeTopComments(writer, design);
     writeXmlProcessingInstructions(writer, design);
-    writer.writeStartElement("ipxact:design");
+    writer.writeStartElement(QStringLiteral("ipxact:design"));
 }
 
 //-----------------------------------------------------------------------------
@@ -79,7 +79,7 @@ void DesignWriter::writeComponentInstances(QXmlStreamWriter& writer, QSharedPoin
 {
     if (design->getComponentInstances()->size() > 0)
     {
-        writer.writeStartElement("ipxact:componentInstances");
+        writer.writeStartElement(QStringLiteral("ipxact:componentInstances"));
 
         ComponentInstanceWriter instanceWriter;
 
@@ -99,7 +99,7 @@ void DesignWriter::writeInterconnections(QXmlStreamWriter& writer, QSharedPointe
 {
     if (!design->getInterconnections()->isEmpty() || !design->getMonitorInterconnecions()->isEmpty())
     {
-        writer.writeStartElement("ipxact:interconnections");
+        writer.writeStartElement(QStringLiteral("ipxact:interconnections"));
 
         foreach (QSharedPointer<Interconnection> currentInterconnection, *design->getInterconnections())
         {
@@ -121,7 +121,7 @@ void DesignWriter::writeInterconnections(QXmlStreamWriter& writer, QSharedPointe
 void DesignWriter::writeSingleInterconncetion(
     QXmlStreamWriter& writer, QSharedPointer<Interconnection> currentInterconnection) const
 {
-    writer.writeStartElement("ipxact:interconnection");
+    writer.writeStartElement(QStringLiteral("ipxact:interconnection"));
 
     NameGroupWriter nameGroupWriter;
     nameGroupWriter.writeNameGroup(writer, currentInterconnection);
@@ -152,24 +152,24 @@ void DesignWriter::writeSingleInterconncetion(
 void DesignWriter::writeActiveInterface(QXmlStreamWriter& writer, QSharedPointer<ActiveInterface> activeInterface)
     const
 {
-    writer.writeStartElement("ipxact:activeInterface");
+    writer.writeStartElement(QStringLiteral("ipxact:activeInterface"));
 
-    writer.writeAttribute("componentRef", activeInterface->getComponentReference());
-    writer.writeAttribute("busRef", activeInterface->getBusReference());
+    writer.writeAttribute(QStringLiteral("componentRef"), activeInterface->getComponentReference());
+    writer.writeAttribute(QStringLiteral("busRef"), activeInterface->getBusReference());
     writeIsPresent(writer, activeInterface->getIsPresent());
 
     if (!activeInterface->getDescription().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", activeInterface->getDescription());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), activeInterface->getDescription());
     }
 
     if (!activeInterface->getExcludePorts()->isEmpty())
     {
-        writer.writeStartElement("ipxact:excludePorts");
+        writer.writeStartElement(QStringLiteral("ipxact:excludePorts"));
 
         foreach (QString portName, *activeInterface->getExcludePorts())
         {
-            writer.writeTextElement("ipxact:excludePort", portName);
+            writer.writeTextElement(QStringLiteral("ipxact:excludePort"), portName);
         }
 
         writer.writeEndElement(); // ipxact:excludePorts
@@ -185,15 +185,15 @@ void DesignWriter::writeActiveInterface(QXmlStreamWriter& writer, QSharedPointer
 //-----------------------------------------------------------------------------
 void DesignWriter::writeHierInterface(QXmlStreamWriter& writer, QSharedPointer<HierInterface> hierInterface) const
 {
-    writer.writeStartElement("ipxact:hierInterface");
+    writer.writeStartElement(QStringLiteral("ipxact:hierInterface"));
 
-    writer.writeAttribute("busRef", hierInterface->getBusReference());
+    writer.writeAttribute(QStringLiteral("busRef"), hierInterface->getBusReference());
 
     writeIsPresent(writer, hierInterface->getIsPresent());
 
     if (!hierInterface->getDescription().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", hierInterface->getDescription());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), hierInterface->getDescription());
     }
 
     writeVendorExtensions(writer, hierInterface);
@@ -207,14 +207,14 @@ void DesignWriter::writeHierInterface(QXmlStreamWriter& writer, QSharedPointer<H
 void DesignWriter::writeMonitorInterconnection(QXmlStreamWriter& writer,
     QSharedPointer<MonitorInterconnection> monitorConnection) const
 {
-    writer.writeStartElement("ipxact:monitorInterconnection");
+    writer.writeStartElement(QStringLiteral("ipxact:monitorInterconnection"));
 
     NameGroupWriter monitorNamegroupWriter;
     monitorNamegroupWriter.writeNameGroup(writer, monitorConnection);
 
     writeIsPresent(writer, monitorConnection->getIsPresent());
 
-    writer.writeStartElement("ipxact:monitoredActiveInterface");
+    writer.writeStartElement(QStringLiteral("ipxact:monitoredActiveInterface"));
 
     writeMonitorInterface(writer, monitorConnection->getMonitoredActiveInterface());
 
@@ -222,7 +222,7 @@ void DesignWriter::writeMonitorInterconnection(QXmlStreamWriter& writer,
 
     foreach (QSharedPointer<MonitorInterface> monitorInterface, *monitorConnection->getMonitorInterfaces())
     {
-        writer.writeStartElement("ipxact:monitorInterface");
+        writer.writeStartElement(QStringLiteral("ipxact:monitorInterface"));
 
         writeMonitorInterface(writer, monitorInterface);
 
@@ -240,17 +240,17 @@ void DesignWriter::writeMonitorInterconnection(QXmlStreamWriter& writer,
 void DesignWriter::writeMonitorInterface(QXmlStreamWriter& writer,
     QSharedPointer<MonitorInterface> monitorInterface) const
 {
-    writer.writeAttribute("componentRef", monitorInterface->getComponentReference());
-    writer.writeAttribute("busRef", monitorInterface->getBusReference());
+    writer.writeAttribute(QStringLiteral("componentRef"), monitorInterface->getComponentReference());
+    writer.writeAttribute(QStringLiteral("busRef"), monitorInterface->getBusReference());
 
     if (!monitorInterface->getPath().isEmpty())
     {
-        writer.writeAttribute("path", monitorInterface->getPath());
+        writer.writeAttribute(QStringLiteral("path"), monitorInterface->getPath());
     }
 
     if (!monitorInterface->getDescription().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", monitorInterface->getDescription());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), monitorInterface->getDescription());
     }
 
     writeVendorExtensions(writer, monitorInterface);
@@ -263,7 +263,7 @@ void DesignWriter::writeAdHocConnections(QXmlStreamWriter& writer, QSharedPointe
 {
     if (!design->getAdHocConnections()->isEmpty())
     {
-        writer.writeStartElement("ipxact:adHocConnections");
+        writer.writeStartElement(QStringLiteral("ipxact:adHocConnections"));
 
         foreach (QSharedPointer<AdHocConnection> connection, *design->getAdHocConnections())
         {
@@ -280,7 +280,7 @@ void DesignWriter::writeAdHocConnections(QXmlStreamWriter& writer, QSharedPointe
 void DesignWriter::writeSingleAdHocConnection(QXmlStreamWriter& writer,
     QSharedPointer<AdHocConnection> adHocConnection) const
 {
-    writer.writeStartElement("ipxact:adHocConnection");
+    writer.writeStartElement(QStringLiteral("ipxact:adHocConnection"));
 
     NameGroupWriter adHocNameWriter;
     adHocNameWriter.writeNameGroup(writer, adHocConnection);
@@ -289,7 +289,7 @@ void DesignWriter::writeSingleAdHocConnection(QXmlStreamWriter& writer,
 
     if (!adHocConnection->getTiedValue().isEmpty())
     {
-        writer.writeTextElement("ipxact:tiedValue", adHocConnection->getTiedValue());
+        writer.writeTextElement(QStringLiteral("ipxact:tiedValue"), adHocConnection->getTiedValue());
     }
 
     writeAdHocPortReferences(writer, adHocConnection);
@@ -308,13 +308,13 @@ void DesignWriter::writeAdHocPortReferences(QXmlStreamWriter& writer,
     if (!adHocConnection->getInternalPortReferences()->isEmpty() || 
         !adHocConnection->getExternalPortReferences()->isEmpty())
     {
-        writer.writeStartElement("ipxact:portReferences");
+        writer.writeStartElement(QStringLiteral("ipxact:portReferences"));
 
         foreach (QSharedPointer<PortReference> internalRef, *adHocConnection->getInternalPortReferences())
         {
-            writer.writeStartElement("ipxact:internalPortReference");
+            writer.writeStartElement(QStringLiteral("ipxact:internalPortReference"));
 
-            writer.writeAttribute("componentRef", internalRef->getComponentRef());
+            writer.writeAttribute(QStringLiteral("componentRef"), internalRef->getComponentRef());
             writePortReference(writer, internalRef);
 
             writer.writeEndElement(); // ipxact:internalPortReference
@@ -322,7 +322,7 @@ void DesignWriter::writeAdHocPortReferences(QXmlStreamWriter& writer,
 
         foreach (QSharedPointer<PortReference> externalRef, *adHocConnection->getExternalPortReferences())
         {
-            writer.writeStartElement("ipxact:externalPortReference");
+            writer.writeStartElement(QStringLiteral("ipxact:externalPortReference"));
 
             writePortReference(writer, externalRef);
 
@@ -338,7 +338,7 @@ void DesignWriter::writeAdHocPortReferences(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 void DesignWriter::writePortReference(QXmlStreamWriter& writer, QSharedPointer<PortReference> portRefernce) const
 {
-    writer.writeAttribute("portRef", portRefernce->getPortRef());
+    writer.writeAttribute(QStringLiteral("portRef"), portRefernce->getPortRef());
 
     writeIsPresent(writer, portRefernce->getIsPresent());
 
@@ -353,22 +353,22 @@ void DesignWriter::writePortReference(QXmlStreamWriter& writer, QSharedPointer<P
 //-----------------------------------------------------------------------------
 void DesignWriter::writePartSelect(QXmlStreamWriter& writer, QSharedPointer<PartSelect> partSelect) const
 {
-    writer.writeStartElement("ipxact:partSelect");
+    writer.writeStartElement(QStringLiteral("ipxact:partSelect"));
 
-    writer.writeStartElement("ipxact:range");
+    writer.writeStartElement(QStringLiteral("ipxact:range"));
 
-    writer.writeTextElement("ipxact:left", partSelect->getLeftRange());
-    writer.writeTextElement("ipxact:right", partSelect->getRightRange());
+    writer.writeTextElement(QStringLiteral("ipxact:left"), partSelect->getLeftRange());
+    writer.writeTextElement(QStringLiteral("ipxact:right"), partSelect->getRightRange());
 
     writer.writeEndElement(); //ipxact:range
 
     if (!partSelect->getIndices()->isEmpty())
     {
-        writer.writeStartElement("ipxact:indices");
+        writer.writeStartElement(QStringLiteral("ipxact:indices"));
 
         foreach (QString index, *partSelect->getIndices())
         {
-            writer.writeTextElement("ipxact:index", index);
+            writer.writeTextElement(QStringLiteral("ipxact:index"), index);
         }
 
         writer.writeEndElement(); // ipxact:indices

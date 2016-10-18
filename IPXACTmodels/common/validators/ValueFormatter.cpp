@@ -11,6 +11,7 @@
 
 #include "ValueFormatter.h"
 
+#include <QStringBuilder>
 #include <QStringList>
 #include <QRegularExpression>
 
@@ -35,22 +36,22 @@ ValueFormatter::~ValueFormatter()
 //-----------------------------------------------------------------------------
 QString ValueFormatter::format(QString const& value, int base) const
 {
-    if (value.contains('{') && value.contains('}'))
+    if (value.contains(QLatin1Char('{')) && value.contains(QLatin1Char('}')))
     {
         return formatArray(value, base);
     }
 
     else if (base == 2)
     {
-        return "'b" + QString::number(value.toInt(), 2);
+        return QStringLiteral("'b") + QString::number(value.toInt(), 2);
     }
     else if (base == 8)
     {
-        return "'o" + QString::number(value.toInt(), 8);
+        return QStringLiteral("'o") + QString::number(value.toInt(), 8);
     }
     else if (base == 16)
     {
-        return "'h" + QString::number(value.toInt(), 16);
+        return QStringLiteral("'h") + QString::number(value.toInt(), 16);
     }
     else
     {
@@ -63,23 +64,23 @@ QString ValueFormatter::format(QString const& value, int base) const
 //-----------------------------------------------------------------------------
 QString ValueFormatter::formatArray(QString const& arrayValue, int& base) const
 {
-    QStringList subValues = arrayValue.split(',');
+    QStringList subValues = arrayValue.split(QLatin1Char(','));
 
-    QRegularExpression arrayStart ("^'?{");
+    QRegularExpression arrayStart(QStringLiteral("^'?{"));
 
     subValues.first().remove(arrayStart);
     subValues.last().chop(1);
 
-    QString formattedArray("{");
+    QString formattedArray(QStringLiteral("{"));
     for (int arrayIndex = 0; arrayIndex < subValues.size(); ++arrayIndex)
     {
         formattedArray.append(format(subValues.at(arrayIndex), base));
         if (arrayIndex < subValues.size() - 1)
         {
-            formattedArray.append(',');
+            formattedArray.append(QLatin1Char(','));
         }
     }
-    formattedArray.append('}');
+    formattedArray.append(QLatin1Char('}'));
 
     return formattedArray;
 }

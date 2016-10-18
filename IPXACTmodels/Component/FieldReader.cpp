@@ -85,9 +85,9 @@ QSharedPointer<Field> FieldReader::createFieldFrom(QDomNode const& fieldNode) co
 //-----------------------------------------------------------------------------
 void FieldReader::parseID(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    if (fieldElement.hasAttribute("fieldID"))
+    if (fieldElement.hasAttribute(QStringLiteral("fieldID")))
     {
-        QString fieldID = fieldElement.attribute("fieldID");
+        QString fieldID = fieldElement.attribute(QStringLiteral("fieldID"));
         newField->setId(fieldID);
     }
 }
@@ -106,7 +106,7 @@ void FieldReader::parseNameGroup(QDomNode const& fieldNode, QSharedPointer<Field
 //-----------------------------------------------------------------------------
 void FieldReader::parsePresence(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QString newIsPresent = parseIsPresent(fieldElement.firstChildElement("ipxact:isPresent"));
+    QString newIsPresent = parseIsPresent(fieldElement.firstChildElement(QStringLiteral("ipxact:isPresent")));
     if (!newIsPresent.isEmpty())
     {
         newField->setIsPresent(newIsPresent);
@@ -118,7 +118,7 @@ void FieldReader::parsePresence(QDomElement const& fieldElement, QSharedPointer<
 //-----------------------------------------------------------------------------
 void FieldReader::parseBitOffset(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement bitOffsetElement = fieldElement.firstChildElement("ipxact:bitOffset");
+    QDomElement bitOffsetElement = fieldElement.firstChildElement(QStringLiteral("ipxact:bitOffset"));
     QString bitOffset = bitOffsetElement.firstChild().nodeValue();
     newField->setBitOffset(bitOffset);
 }
@@ -128,10 +128,10 @@ void FieldReader::parseBitOffset(QDomElement const& fieldElement, QSharedPointer
 //-----------------------------------------------------------------------------
 void FieldReader::parseReset(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement resetsElement = fieldElement.firstChildElement("ipxact:resets");
+    QDomElement resetsElement = fieldElement.firstChildElement(QStringLiteral("ipxact:resets"));
     if (!resetsElement.isNull())
     {
-        QDomNodeList resetNodeList = resetsElement.elementsByTagName("ipxact:reset");
+        QDomNodeList resetNodeList = resetsElement.elementsByTagName(QStringLiteral("ipxact:reset"));
         for (int resetIndex = 0; resetIndex < resetNodeList.count(); ++resetIndex)
         {
             QDomElement resetElement = resetNodeList.at(resetIndex).toElement();
@@ -150,9 +150,9 @@ void FieldReader::parseReset(QDomElement const& fieldElement, QSharedPointer<Fie
 //-----------------------------------------------------------------------------
 void FieldReader::parseResetTypeRef(QDomElement const& resetElement, QSharedPointer<Field> newField) const
 {
-    if (resetElement.hasAttribute("resetTypeRef"))
+    if (resetElement.hasAttribute(QStringLiteral("resetTypeRef")))
     {
-        newField->setResetTypeReference(resetElement.attribute("resetTypeRef"));
+        newField->setResetTypeReference(resetElement.attribute(QStringLiteral("resetTypeRef")));
     }
 }
 
@@ -161,7 +161,7 @@ void FieldReader::parseResetTypeRef(QDomElement const& resetElement, QSharedPoin
 //-----------------------------------------------------------------------------
 void FieldReader::parseResetValue(QDomElement const& resetElement, QSharedPointer<Field> newField) const
 {
-    QString resetValue = resetElement.firstChildElement("ipxact:value").firstChild().nodeValue();
+    QString resetValue = resetElement.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue();
     newField->setResetValue(resetValue);
 }
 
@@ -170,7 +170,7 @@ void FieldReader::parseResetValue(QDomElement const& resetElement, QSharedPointe
 //-----------------------------------------------------------------------------
 void FieldReader::parseResetMask(QDomElement const& resetElement, QSharedPointer<Field> newField) const
 {
-    QDomElement resetMaskElement = resetElement.firstChildElement("ipxact:mask");
+    QDomElement resetMaskElement = resetElement.firstChildElement(QStringLiteral("ipxact:mask"));
     if (!resetMaskElement.isNull())
     {
         QString resetMask = resetMaskElement.firstChild().nodeValue();
@@ -183,7 +183,7 @@ void FieldReader::parseResetMask(QDomElement const& resetElement, QSharedPointer
 //-----------------------------------------------------------------------------
 void FieldReader::parseTypeIdentifier(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement typeIdentifierElement = fieldElement.firstChildElement("ipxact:typeIdentifier");
+    QDomElement typeIdentifierElement = fieldElement.firstChildElement(QStringLiteral("ipxact:typeIdentifier"));
     if (!typeIdentifierElement.isNull())
     {
         QString typeIdentifier = typeIdentifierElement.firstChild().nodeValue();
@@ -196,7 +196,7 @@ void FieldReader::parseTypeIdentifier(QDomElement const& fieldElement, QSharedPo
 //-----------------------------------------------------------------------------
 void FieldReader::parseBitWidth(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement bitWidthElement = fieldElement.firstChildElement("ipxact:bitWidth");
+    QDomElement bitWidthElement = fieldElement.firstChildElement(QStringLiteral("ipxact:bitWidth"));
     QString bitWidth = bitWidthElement.firstChild().nodeValue();
     newField->setBitWidth(bitWidth);
 }
@@ -206,7 +206,7 @@ void FieldReader::parseBitWidth(QDomElement const& fieldElement, QSharedPointer<
 //-----------------------------------------------------------------------------
 void FieldReader::parseVolatile(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement volatileElement = fieldElement.firstChildElement("ipxact:volatile");
+    QDomElement volatileElement = fieldElement.firstChildElement(QStringLiteral("ipxact:volatile"));
     if (!volatileElement.isNull())
     {
         if (volatileElement.firstChild().nodeValue() == QLatin1String("true"))
@@ -225,7 +225,7 @@ void FieldReader::parseVolatile(QDomElement const& fieldElement, QSharedPointer<
 //-----------------------------------------------------------------------------
 void FieldReader::parseAccess(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement accessElement = fieldElement.firstChildElement("ipxact:access");
+    QDomElement accessElement = fieldElement.firstChildElement(QStringLiteral("ipxact:access"));
     if (!accessElement.isNull())
     {
         QString accessString = accessElement.firstChild().nodeValue();
@@ -239,12 +239,12 @@ void FieldReader::parseAccess(QDomElement const& fieldElement, QSharedPointer<Fi
 //-----------------------------------------------------------------------------
 void FieldReader::parseEnumeratedValues(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement enumeratedValuesElement = fieldElement.firstChildElement("ipxact:enumeratedValues");
+    QDomElement enumeratedValuesElement = fieldElement.firstChildElement(QStringLiteral("ipxact:enumeratedValues"));
     if (!enumeratedValuesElement.isNull())
     {
         EnumeratedValueReader enumerationReader;
 
-        QDomNodeList enumeratedValueNodes = enumeratedValuesElement.elementsByTagName("ipxact:enumeratedValue");
+        QDomNodeList enumeratedValueNodes = enumeratedValuesElement.elementsByTagName(QStringLiteral("ipxact:enumeratedValue"));
         for (int enumerationIndex = 0; enumerationIndex < enumeratedValueNodes.count(); ++enumerationIndex)
         {
             QDomNode enumerationNode = enumeratedValueNodes.at(enumerationIndex);
@@ -262,16 +262,16 @@ void FieldReader::parseEnumeratedValues(QDomElement const& fieldElement, QShared
 //-----------------------------------------------------------------------------
 void FieldReader::parseModifiedWriteValue(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement modifiedWriteElement = fieldElement.firstChildElement("ipxact:modifiedWriteValue");
+    QDomElement modifiedWriteElement = fieldElement.firstChildElement(QStringLiteral("ipxact:modifiedWriteValue"));
     if (!modifiedWriteElement.isNull())
     {
         QString modifiedWriteValueString = modifiedWriteElement.firstChild().nodeValue();
         General::ModifiedWrite modifiedWriteValue = General::str2ModifiedWrite(modifiedWriteValueString);
         newField->setModifiedWrite(modifiedWriteValue);
 
-        if (modifiedWriteElement.hasAttribute("modify"))
+        if (modifiedWriteElement.hasAttribute(QStringLiteral("modify")))
         {
-            newField->setModifiedWriteModify(modifiedWriteElement.attribute("modify"));
+            newField->setModifiedWriteModify(modifiedWriteElement.attribute(QStringLiteral("modify")));
         }
     }
 }
@@ -281,13 +281,13 @@ void FieldReader::parseModifiedWriteValue(QDomElement const& fieldElement, QShar
 //-----------------------------------------------------------------------------
 void FieldReader::parseWriteValueConstraint(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement writeConstraintElement = fieldElement.firstChildElement("ipxact:writeValueConstraint");
+    QDomElement writeConstraintElement = fieldElement.firstChildElement(QStringLiteral("ipxact:writeValueConstraint"));
     if (!writeConstraintElement.isNull())
     {
         QSharedPointer<WriteValueConstraint> writeConstraint (new WriteValueConstraint());
 
-        QDomElement writeAsReadElement = writeConstraintElement.firstChildElement("ipxact:writeAsRead");
-        QDomElement useEnumerationElement = writeConstraintElement.firstChildElement("ipxact:useEnumeratedValues");
+        QDomElement writeAsReadElement = writeConstraintElement.firstChildElement(QStringLiteral("ipxact:writeAsRead"));
+        QDomElement useEnumerationElement = writeConstraintElement.firstChildElement(QStringLiteral("ipxact:useEnumeratedValues"));
         if (!writeAsReadElement.isNull())
         {
             writeConstraint->setType(WriteValueConstraint::WRITE_AS_READ);
@@ -298,10 +298,10 @@ void FieldReader::parseWriteValueConstraint(QDomElement const& fieldElement, QSh
         }
         else
         {
-            QString minimum = writeConstraintElement.firstChildElement("ipxact:minimum").firstChild().nodeValue();
+            QString minimum = writeConstraintElement.firstChildElement(QStringLiteral("ipxact:minimum")).firstChild().nodeValue();
             writeConstraint->setMinimum(minimum);
 
-            QString maximum = writeConstraintElement.firstChildElement("ipxact:maximum").firstChild().nodeValue();
+            QString maximum = writeConstraintElement.firstChildElement(QStringLiteral("ipxact:maximum")).firstChild().nodeValue();
             writeConstraint->setMaximum(maximum);
         }
 
@@ -314,7 +314,7 @@ void FieldReader::parseWriteValueConstraint(QDomElement const& fieldElement, QSh
 //-----------------------------------------------------------------------------
 void FieldReader::parseReadAction(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement readActionElement = fieldElement.firstChildElement("ipxact:readAction");
+    QDomElement readActionElement = fieldElement.firstChildElement(QStringLiteral("ipxact:readAction"));
     if (!readActionElement.isNull())
     {
         QString readActionString = readActionElement.firstChild().nodeValue();
@@ -322,9 +322,9 @@ void FieldReader::parseReadAction(QDomElement const& fieldElement, QSharedPointe
 
         newField->setReadAction(readAction);
 
-        if (readActionElement.hasAttribute("modify"))
+        if (readActionElement.hasAttribute(QStringLiteral("modify")))
         {
-            newField->setReadActionModify(readActionElement.attribute("modify"));
+            newField->setReadActionModify(readActionElement.attribute(QStringLiteral("modify")));
         }
     }
 }
@@ -334,11 +334,11 @@ void FieldReader::parseReadAction(QDomElement const& fieldElement, QSharedPointe
 //-----------------------------------------------------------------------------
 void FieldReader::parseTestable(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement testableElement = fieldElement.firstChildElement("ipxact:testable");
+    QDomElement testableElement = fieldElement.firstChildElement(QStringLiteral("ipxact:testable"));
     if (!testableElement.isNull())
     {
         QString testableString = testableElement.firstChild().nodeValue();
-        if (testableString == "true")
+        if (testableString == QLatin1String("true"))
         {
             newField->setTestable(true);
         }
@@ -347,9 +347,9 @@ void FieldReader::parseTestable(QDomElement const& fieldElement, QSharedPointer<
             newField->setTestable(false);
         }
 
-        if (testableElement.hasAttribute("testConstraint"))
+        if (testableElement.hasAttribute(QStringLiteral("testConstraint")))
         {
-            QString testConstraintString = testableElement.attribute("testConstraint");
+            QString testConstraintString = testableElement.attribute(QStringLiteral("testConstraint"));
             General::TestConstraint testConstraint = General::str2TestConstraint(testConstraintString);
             newField->setTestConstraint(testConstraint);
         }
@@ -361,7 +361,7 @@ void FieldReader::parseTestable(QDomElement const& fieldElement, QSharedPointer<
 //-----------------------------------------------------------------------------
 void FieldReader::parseReserved(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement reservedElement = fieldElement.firstChildElement("ipxact:reserved");
+    QDomElement reservedElement = fieldElement.firstChildElement(QStringLiteral("ipxact:reserved"));
     if (!reservedElement.isNull())
     {
         QString reserved = reservedElement.firstChild().nodeValue();
@@ -374,7 +374,7 @@ void FieldReader::parseReserved(QDomElement const& fieldElement, QSharedPointer<
 //-----------------------------------------------------------------------------
 void FieldReader::parseParameters(QDomElement const& fieldElement, QSharedPointer<Field> newField) const
 {
-    QDomElement parametersElement = fieldElement.firstChildElement("ipxact:parameters");
+    QDomElement parametersElement = fieldElement.firstChildElement(QStringLiteral("ipxact:parameters"));
     if (!parametersElement.isNull())
     {
         QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(fieldElement);

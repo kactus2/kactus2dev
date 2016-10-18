@@ -38,7 +38,7 @@ AddressSpaceWriter::~AddressSpaceWriter()
 //-----------------------------------------------------------------------------
 void AddressSpaceWriter::writeAddressSpace(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace) const
 {
-	writer.writeStartElement("ipxact:addressSpace");
+	writer.writeStartElement(QStringLiteral("ipxact:addressSpace"));
 
     NameGroupWriter nameGroupWriter;
 	nameGroupWriter.writeNameGroup(writer, addressSpace);
@@ -65,8 +65,8 @@ void AddressSpaceWriter::writeAddressSpace(QXmlStreamWriter& writer, QSharedPoin
 //-----------------------------------------------------------------------------
 void AddressSpaceWriter::writeBlockSize(QXmlStreamWriter &writer, QSharedPointer<AddressSpace> addressSpace) const
 {
-    writer.writeTextElement("ipxact:range", addressSpace->getRange());
-    writer.writeTextElement("ipxact:width", addressSpace->getWidth());
+    writer.writeTextElement(QStringLiteral("ipxact:range"), addressSpace->getRange());
+    writer.writeTextElement(QStringLiteral("ipxact:width"), addressSpace->getWidth());
 }
 
 //-----------------------------------------------------------------------------
@@ -76,7 +76,7 @@ void AddressSpaceWriter::writeSegments(QSharedPointer<AddressSpace> addressSpace
 {
 	if (!addressSpace->getSegments()->isEmpty())
 	{
-		writer.writeStartElement("ipxact:segments");
+		writer.writeStartElement(QStringLiteral("ipxact:segments"));
 
 		foreach (QSharedPointer<Segment> segment, *addressSpace->getSegments())
 		{
@@ -92,7 +92,7 @@ void AddressSpaceWriter::writeSegments(QSharedPointer<AddressSpace> addressSpace
 //-----------------------------------------------------------------------------
 void AddressSpaceWriter::writeSingleSegment(QXmlStreamWriter& writer, QSharedPointer<Segment> segment) const
 {
-    writer.writeStartElement("ipxact:segment");
+    writer.writeStartElement(QStringLiteral("ipxact:segment"));
 
     NameGroupWriter nameGroupWriter;
     nameGroupWriter.writeNameGroup(writer, segment);
@@ -101,7 +101,7 @@ void AddressSpaceWriter::writeSingleSegment(QXmlStreamWriter& writer, QSharedPoi
 
     if (!segment->getAddressOffset().isEmpty())
     {
-        writer.writeStartElement("ipxact:addressOffset");
+        writer.writeStartElement(QStringLiteral("ipxact:addressOffset"));
 
         writeAttributeMap(writer, segment->getOffsetAttributes());
         writer.writeCharacters(segment->getAddressOffset());
@@ -111,7 +111,7 @@ void AddressSpaceWriter::writeSingleSegment(QXmlStreamWriter& writer, QSharedPoi
 
     if ( !segment->getRange().isEmpty() )
     {
-        writer.writeStartElement("ipxact:range");
+        writer.writeStartElement(QStringLiteral("ipxact:range"));
 
         writeAttributeMap(writer, segment->getRangeAttributes());
         writer.writeCharacters(segment->getRange());
@@ -144,7 +144,7 @@ void AddressSpaceWriter::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedP
 {
     if (!addressSpace->getAddressUnitBits().isEmpty())
     {
-        writer.writeTextElement("ipxact:addressUnitBits", addressSpace->getAddressUnitBits());
+        writer.writeTextElement(QStringLiteral("ipxact:addressUnitBits"), addressSpace->getAddressUnitBits());
     }
 }
 
@@ -156,7 +156,7 @@ void AddressSpaceWriter::writeLocalMemoryMap(QXmlStreamWriter& writer, QSharedPo
 {
     if (addressSpace->getLocalMemoryMap())
     {
-        writer.writeStartElement("ipxact:localMemoryMap");
+        writer.writeStartElement(QStringLiteral("ipxact:localMemoryMap"));
         
         MemoryMapBaseWriter mmbw;
         mmbw.writeMemoryMapBase( writer, addressSpace->getLocalMemoryMap() );

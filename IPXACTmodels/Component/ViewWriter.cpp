@@ -35,7 +35,7 @@ ViewWriter::~ViewWriter()
 //-----------------------------------------------------------------------------
 void ViewWriter::writeView(QXmlStreamWriter& writer, QSharedPointer<View> view) const
 {
-    writer.writeStartElement("ipxact:view");
+    writer.writeStartElement(QStringLiteral("ipxact:view"));
 
     writeNameGroup(writer, view);
 
@@ -64,7 +64,7 @@ void ViewWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<View> v
 {
     if (!view->getIsPresent().isEmpty())
     {
-        writer.writeTextElement("ipxact:isPresent", view->getIsPresent());
+        writer.writeTextElement(QStringLiteral("ipxact:isPresent"), view->getIsPresent());
     }
 }
 
@@ -75,7 +75,7 @@ void ViewWriter::writeEnvIdentifiers(QXmlStreamWriter& writer, QSharedPointer<Vi
 {
 	foreach (QSharedPointer<View::EnvironmentIdentifier> identifier, *view->getEnvIdentifiers())
 	{
-		writer.writeTextElement("ipxact:envIdentifier", identifier->toString());
+		writer.writeTextElement(QStringLiteral("ipxact:envIdentifier"), identifier->toString());
 	}
 }
 
@@ -86,17 +86,17 @@ void ViewWriter::writeInstantiationReferences(QXmlStreamWriter& writer, QSharedP
 {
     if (!view->getComponentInstantiationRef().isEmpty())
     {
-        writer.writeTextElement("ipxact:componentInstantiationRef", view->getComponentInstantiationRef());
+        writer.writeTextElement(QStringLiteral("ipxact:componentInstantiationRef"), view->getComponentInstantiationRef());
     }
 
     if (!view->getDesignInstantiationRef().isEmpty())
     {
-        writer.writeTextElement("ipxact:designInstantiationRef", view->getDesignInstantiationRef());
+        writer.writeTextElement(QStringLiteral("ipxact:designInstantiationRef"), view->getDesignInstantiationRef());
     }
 
     if (!view->getDesignConfigurationInstantiationRef().isEmpty())
     {
         writer.writeTextElement(
-            "ipxact:designConfigurationInstantiationRef", view->getDesignConfigurationInstantiationRef());
+            QStringLiteral("ipxact:designConfigurationInstantiationRef"), view->getDesignConfigurationInstantiationRef());
     }
 }

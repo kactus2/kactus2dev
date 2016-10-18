@@ -42,10 +42,10 @@ CommonItemsWriter::~CommonItemsWriter()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeVLNVElements(QXmlStreamWriter& writer, VLNV const& vlnv) const
 {
-    writer.writeTextElement("ipxact:vendor", vlnv.getVendor());
-    writer.writeTextElement("ipxact:library", vlnv.getLibrary());
-    writer.writeTextElement("ipxact:name", vlnv.getName());
-    writer.writeTextElement("ipxact:version", vlnv.getVersion());
+    writer.writeTextElement(QStringLiteral("ipxact:vendor"), vlnv.getVendor());
+    writer.writeTextElement(QStringLiteral("ipxact:library"), vlnv.getLibrary());
+    writer.writeTextElement(QStringLiteral("ipxact:name"), vlnv.getName());
+    writer.writeTextElement(QStringLiteral("ipxact:version"), vlnv.getVersion());
 }
 
 //-----------------------------------------------------------------------------
@@ -53,10 +53,10 @@ void CommonItemsWriter::writeVLNVElements(QXmlStreamWriter& writer, VLNV const& 
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeVLNVAttributes(QXmlStreamWriter& writer, VLNV const& vlnv) const
 {
-    writer.writeAttribute("vendor", vlnv.getVendor());
-    writer.writeAttribute("library", vlnv.getLibrary());
-    writer.writeAttribute("name", vlnv.getName());
-    writer.writeAttribute("version", vlnv.getVersion());
+    writer.writeAttribute(QStringLiteral("vendor"), vlnv.getVendor());
+    writer.writeAttribute(QStringLiteral("library"), vlnv.getLibrary());
+    writer.writeAttribute(QStringLiteral("name"), vlnv.getName());
+    writer.writeAttribute(QStringLiteral("version"), vlnv.getVersion());
 }
 
 //-----------------------------------------------------------------------------
@@ -67,7 +67,7 @@ void CommonItemsWriter::writeParameters(QXmlStreamWriter& writer,
 {
     if (!parameters->isEmpty())
     {
-        writer.writeStartElement("ipxact:parameters");
+        writer.writeStartElement(QStringLiteral("ipxact:parameters"));
 
         ParameterWriter parameterWriter;
         foreach (QSharedPointer<Parameter> parameter, *parameters)
@@ -86,7 +86,7 @@ void CommonItemsWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedP
 {
     if (!element->getVendorExtensions()->isEmpty())
     {
-        writer.writeStartElement("ipxact:vendorExtensions");
+        writer.writeStartElement(QStringLiteral("ipxact:vendorExtensions"));
         foreach (QSharedPointer<VendorExtension> extension, *element->getVendorExtensions())
         {
             extension->write(writer);
@@ -102,7 +102,7 @@ void CommonItemsWriter::writeIsPresent(QXmlStreamWriter& writer, QString const& 
 {
     if (!isPresent.isEmpty())
     {
-        writer.writeTextElement("ipxact:isPresent", isPresent);
+        writer.writeTextElement(QStringLiteral("ipxact:isPresent"), isPresent);
     }
 }
 
@@ -114,11 +114,11 @@ void CommonItemsWriter::writeConfigurableElementValues(QXmlStreamWriter& writer,
 {
     if (!configurableElements->isEmpty())
     {
-        writer.writeStartElement("ipxact:configurableElementValues");
+        writer.writeStartElement(QStringLiteral("ipxact:configurableElementValues"));
 
         foreach (QSharedPointer<ConfigurableElementValue> element, *configurableElements)
         {
-            writer.writeStartElement("ipxact:configurableElementValue");
+            writer.writeStartElement(QStringLiteral("ipxact:configurableElementValue"));
 
             QMapIterator<QString, QString> attributeIterator(element->getAttributes());
             while (attributeIterator.hasNext())

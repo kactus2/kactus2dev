@@ -38,33 +38,33 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
     
     writeTopComments(writer, comDefinition);
 	
-    writer.writeStartElement("kactus2:comDefinition");
+    writer.writeStartElement(QStringLiteral("kactus2:comDefinition"));
     writeNamespaceDeclarations(writer);
 
 	// Write basic information.
-	writer.writeTextElement("ipxact:vendor", comDefinition->getVlnv().getVendor());
-	writer.writeTextElement("ipxact:library", comDefinition->getVlnv().getLibrary());
-	writer.writeTextElement("ipxact:name", comDefinition->getVlnv().getName());
-	writer.writeTextElement("ipxact:version", comDefinition->getVlnv().getVersion());
+	writer.writeTextElement(QStringLiteral("ipxact:vendor"), comDefinition->getVlnv().getVendor());
+	writer.writeTextElement(QStringLiteral("ipxact:library"), comDefinition->getVlnv().getLibrary());
+	writer.writeTextElement(QStringLiteral("ipxact:name"), comDefinition->getVlnv().getName());
+	writer.writeTextElement(QStringLiteral("ipxact:version"), comDefinition->getVlnv().getVersion());
 
 	if (!comDefinition->getDescription().isEmpty())
 	{
-		writer.writeTextElement("ipxact:description", comDefinition->getDescription());
+		writer.writeTextElement(QStringLiteral("ipxact:description"), comDefinition->getDescription());
 	}
 
     // Write data types.
-    writer.writeStartElement("kactus2:transferTypes");
+    writer.writeStartElement(QStringLiteral("kactus2:transferTypes"));
 
     foreach (QString const& type, *comDefinition->getTransferTypes())
     {
-        writer.writeEmptyElement("kactus2:transferType");
-        writer.writeAttribute("name", type);
+        writer.writeEmptyElement(QStringLiteral("kactus2:transferType"));
+        writer.writeAttribute(QStringLiteral("name"), type);
     }
 
     writer.writeEndElement(); // kactus2:transferTypes
 
     // Write properties.
-    writer.writeStartElement("kactus2:properties");
+    writer.writeStartElement(QStringLiteral("kactus2:properties"));
 
     foreach (QSharedPointer<ComProperty> prop, *comDefinition->getProperties())
 	{
@@ -73,9 +73,9 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
 
 	writer.writeEndElement(); // kactus2:properties
 
-	if (!comDefinition->getVendorExtensions()->isEmpty())
+	if (comDefinition->getVendorExtensions()->isEmpty())
 	{
-		writer.writeStartElement("ipxact:vendorExtensions");
+		writer.writeStartElement(QStringLiteral("ipxact:vendorExtensions"));
 		foreach (QSharedPointer<VendorExtension> extension, *comDefinition->getVendorExtensions())
 		{
 			extension->write(writer);

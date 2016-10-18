@@ -41,10 +41,10 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 
 	QDomElement comNode = document.firstChildElement();
 
-	QString vendor = comNode.firstChildElement("ipxact:vendor").firstChild().nodeValue();
-	QString library = comNode.firstChildElement("ipxact:library").firstChild().nodeValue();
-	QString name = comNode.firstChildElement("ipxact:name").firstChild().nodeValue();
-	QString version = comNode.firstChildElement("ipxact:version").firstChild().nodeValue();
+	QString vendor = comNode.firstChildElement(QStringLiteral("ipxact:vendor")).firstChild().nodeValue();
+	QString library = comNode.firstChildElement(QStringLiteral("ipxact:library")).firstChild().nodeValue();
+	QString name = comNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
+	QString version = comNode.firstChildElement(QStringLiteral("ipxact:version")).firstChild().nodeValue();
 
 	VLNV itemVLNV;
 	itemVLNV.setType(VLNV::COMDEFINITION);
@@ -55,14 +55,14 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 
 	comDefinition->setVlnv(itemVLNV);
 
-	QDomNodeList extensionNodes = comNode.firstChildElement("ipxact:vendorExtensions").childNodes();
+	QDomNodeList extensionNodes = comNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions")).childNodes();
 
 	int extensionCount = extensionNodes.count();
 	for (int i = 0; i < extensionCount; i++)
 	{
 		QDomNode extensionNode = extensionNodes.at(i);
 
-		if (!extensionNode.nodeName().startsWith("kactus2:"))
+		if (!extensionNode.nodeName().startsWith(QLatin1String("kactus2:")))
 		{
 			QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNode));
 			comDefinition->getVendorExtensions()->append(extension);
@@ -79,15 +79,15 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 			continue;
 		}
 
-		if (childNode.nodeName() ==QString("ipxact:description"))
+		if (childNode.nodeName() == QLatin1String("ipxact:description"))
 		{
-			comDefinition->setDescription( childNode.childNodes().at(0).nodeValue() );
+			comDefinition->setDescription(childNode.childNodes().at(0).nodeValue());
 		}
-		else if (childNode.nodeName() == "kactus2:transferTypes")
+		else if (childNode.nodeName() == QLatin1String("kactus2:transferTypes"))
 		{
 			parseTransferTypes(childNode, comDefinition);
 		}
-		else if (childNode.nodeName() == "kactus2:properties")
+		else if (childNode.nodeName() == QLatin1String("kactus2:properties"))
 		{
 			parseProperties(childNode, comDefinition);
 		}
@@ -105,9 +105,9 @@ void ComDefinitionReader::parseTransferTypes(QDomNode& node, QSharedPointer<ComD
 	{
 		QDomNode typeNode = node.childNodes().at(i);
 
-		if (typeNode.nodeName() == "kactus2:transferType")
+		if (typeNode.nodeName() == QLatin1String("kactus2:transferType"))
 		{
-			QString name = typeNode.attributes().namedItem("name").nodeValue();
+			QString name = typeNode.attributes().namedItem(QStringLiteral("name")).nodeValue();
 			comDefinition->getTransferTypes()->append(name);
 		}
 	}
@@ -122,7 +122,7 @@ void ComDefinitionReader::parseProperties(QDomNode& node, QSharedPointer<ComDefi
 	{
 		QDomNode propNode = node.childNodes().at(i);
 
-		if (propNode.nodeName() == "kactus2:property")
+		if (propNode.nodeName() == QLatin1String("kactus2:property"))
 		{
 			QSharedPointer<ComProperty> prop(new ComProperty(propNode));
 			comDefinition->getProperties()->append(prop);

@@ -90,11 +90,11 @@ void ClockUnit::setTimeUnit(TimeUnit newTimeUnit)
 //-----------------------------------------------------------------------------
 void ClockUnit::setTimeUnit(QString const& newTimeUnit)
 {
-    if (newTimeUnit=="ns")
+    if (newTimeUnit == QLatin1String("ns"))
     {
         setTimeUnit(NS);
     }
-    else if (newTimeUnit=="ps")
+    else if (newTimeUnit == QLatin1String("ps"))
     {
         setTimeUnit(PS);
     }
@@ -111,11 +111,11 @@ QString ClockUnit::timeUnitToString() const
 {
     if (timeUnit_ == NS)
     {
-        return QString("ns");
+        return QStringLiteral("ns");
     }
     else if (timeUnit_ == PS)
     {
-        return QString("ps");
+        return QStringLiteral("ps");
     }
     else
     {

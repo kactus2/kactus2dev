@@ -188,7 +188,7 @@ QList<VLNV> Design::getDependentVLNVs() const
 	}
 
     QList<QSharedPointer<VendorExtension> > swExtensions =
-        getGroupedExtensionsByType("kactus2:swInstances", "kactus2:swInstance");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:swInstances"), QStringLiteral("kactus2:swInstance"));
 
     foreach (QSharedPointer<VendorExtension> extension, swExtensions)
     {
@@ -209,7 +209,8 @@ QList<VLNV> Design::getDependentVLNVs() const
 QMap<QString, bool> Design::getPortAdHocVisibilities() const
 {
     QList<QSharedPointer<VendorExtension> > portAdHocExtensions =
-        getGroupedExtensionsByType("kactus2:adHocVisibilities", "kactus2:adHocVisible");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:adHocVisibilities"),
+        QStringLiteral("kactus2:adHocVisible"));
 
     QMap<QString, bool> portAdHocVisibilities;
 
@@ -217,7 +218,7 @@ QMap<QString, bool> Design::getPortAdHocVisibilities() const
     {
         QSharedPointer<Kactus2Placeholder> portAdHocVisibility = extension.dynamicCast<Kactus2Placeholder>();
         
-        QString portName = portAdHocVisibility->getAttributeValue("portName");
+        QString portName = portAdHocVisibility->getAttributeValue(QStringLiteral("portName"));
 
         portAdHocVisibilities.insert(portName, true);
     }
@@ -232,7 +233,7 @@ QSharedPointer<VendorExtension> Design::getAdHocPortPositions() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:adHocVisibilities")
+        if (extension->type() == QLatin1String("kactus2:adHocVisibilities"))
         {
             return extension;
         }
@@ -252,7 +253,8 @@ QList<QSharedPointer<ColumnDesc> > Design::getColumns() const
     QSharedPointer<Kactus2Group> columnExtensions = getLayoutExtension();
     if (!columnExtensions.isNull())
     {  
-        foreach (QSharedPointer<VendorExtension> extension, columnExtensions->getByType("kactus2:column"))
+        foreach (QSharedPointer<VendorExtension> extension,
+            columnExtensions->getByType(QStringLiteral("kactus2:column")))
         {
             columnList.append(extension.dynamicCast<ColumnDesc>());
         }
@@ -271,7 +273,8 @@ QList<QSharedPointer<ConnectionRoute> > Design::getRoutes() const
     QSharedPointer<Kactus2Group> routeExtensions = getRoutesExtension();
     if (!routeExtensions.isNull())
     {  
-        foreach (QSharedPointer<VendorExtension> extension, routeExtensions->getByType("kactus2:route"))
+        foreach (QSharedPointer<VendorExtension> extension, 
+            routeExtensions->getByType(QStringLiteral("kactus2:route")))
         {
             routes.append(extension.dynamicCast<ConnectionRoute>());
         }
@@ -338,7 +341,7 @@ void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:adHocVisibilities")
+        if (extension->type() == QLatin1String("kactus2:adHocVisibilities"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -347,7 +350,7 @@ void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
 
     if (!val.isEmpty())
     {
-        QSharedPointer<Kactus2Group> portAdHocs (new Kactus2Group("kactus2:adHocVisibilities"));
+        QSharedPointer<Kactus2Group> portAdHocs (new Kactus2Group(QStringLiteral("kactus2:adHocVisibilities")));
 
         QMapIterator<QString, QPointF> positionIterator(val);
 
@@ -355,11 +358,11 @@ void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
         {
             positionIterator.next();
 
-            QSharedPointer<Kactus2Placeholder> newAdHocPort (new Kactus2Placeholder("kactus2:adHocVisible"));
+            QSharedPointer<Kactus2Placeholder> newAdHocPort (new Kactus2Placeholder(QStringLiteral("kactus2:adHocVisible")));
 
-            newAdHocPort->setAttribute("portName", positionIterator.key());
-            newAdHocPort->setAttribute("x", QString::number(positionIterator.value().x()));
-            newAdHocPort->setAttribute("y", QString::number(positionIterator.value().y()));
+            newAdHocPort->setAttribute(QStringLiteral("portName"), positionIterator.key());
+            newAdHocPort->setAttribute(QStringLiteral("x"), QString::number(positionIterator.value().x()));
+            newAdHocPort->setAttribute(QStringLiteral("y"), QString::number(positionIterator.value().y()));
 
             portAdHocs->addToGroup(newAdHocPort);
         }
@@ -385,7 +388,7 @@ void Design::setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApi
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:apiConnections")
+        if (extension->type() == QLatin1String("kactus2:apiConnections"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -394,7 +397,8 @@ void Design::setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApi
 
     if (!newApiConnections.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newApiConnectionGroup (new Kactus2Group("kactus2:apiConnections"));
+        QSharedPointer<Kactus2Group> newApiConnectionGroup(
+            new Kactus2Group(QStringLiteral("kactus2:apiConnections")));
 
         foreach (QSharedPointer<ApiInterconnection> connection, newApiConnections)
         {
@@ -412,7 +416,7 @@ void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newCom
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:comConnections")
+        if (extension->type() == QLatin1String("kactus2:comConnections"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -421,7 +425,8 @@ void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newCom
 
     if (!newComConnections.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newComConnectionGroup (new Kactus2Group("kactus2:comConnections"));
+        QSharedPointer<Kactus2Group> newComConnectionGroup(
+            new Kactus2Group(QStringLiteral("kactus2:comConnections")));
 
         foreach (QSharedPointer<ComInterconnection> connection, newComConnections)
         {
@@ -438,7 +443,7 @@ void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newCom
 QList<QSharedPointer<SWInstance> > Design::getSWInstances() const
 {
     QList<QSharedPointer<VendorExtension> > swExtensions =
-        getGroupedExtensionsByType("kactus2:swInstances", "kactus2:swInstance");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:swInstances"), QStringLiteral("kactus2:swInstance"));
 
     QList<QSharedPointer<SWInstance> > swInstanceList;
 
@@ -457,7 +462,7 @@ void Design::setSWInstances(QList<QSharedPointer<SWInstance> > newSWInstances)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:swInstances")
+        if (extension->type() == QLatin1String("kactus2:swInstances"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -466,7 +471,7 @@ void Design::setSWInstances(QList<QSharedPointer<SWInstance> > newSWInstances)
 
     if (!newSWInstances.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newSwGroup (new Kactus2Group("kactus2:swInstances"));
+        QSharedPointer<Kactus2Group> newSwGroup (new Kactus2Group(QStringLiteral("kactus2:swInstances")));
 
         foreach(QSharedPointer<SWInstance> swInstance, newSWInstances)
         {
@@ -483,7 +488,7 @@ void Design::setSWInstances(QList<QSharedPointer<SWInstance> > newSWInstances)
 QList<QSharedPointer<ApiInterconnection> > Design::getApiConnections() const
 {
     QList<QSharedPointer<VendorExtension> > apiConnectionExtensions =
-        getGroupedExtensionsByType("kactus2:apiConnections", "kactus2:apiConnection");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:apiConnections"), QStringLiteral("kactus2:apiConnection"));
 
     QList<QSharedPointer<ApiInterconnection> > connectionList;
 
@@ -501,7 +506,7 @@ QList<QSharedPointer<ApiInterconnection> > Design::getApiConnections() const
 QList<QSharedPointer<ComInterconnection> > Design::getComConnections() const
 {
     QList<QSharedPointer<VendorExtension> > comConnectionExtensions =
-        getGroupedExtensionsByType("kactus2:comConnections", "kactus2:comConnection");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:comConnections"), QStringLiteral("kactus2:comConnection"));
 
     QList<QSharedPointer<ComInterconnection> > comConnectionList;
 
@@ -660,7 +665,7 @@ void Design::addColumn(QSharedPointer<ColumnDesc> column)
 
     if (layoutGroup.isNull())
     {
-        layoutGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:columnLayout"));
+        layoutGroup = QSharedPointer<Kactus2Group>(new Kactus2Group(QStringLiteral("kactus2:columnLayout")));
         getVendorExtensions()->append(layoutGroup);
     }
     
@@ -688,7 +693,7 @@ void Design::addRoute(QSharedPointer<ConnectionRoute> route)
 
     if (routesGroup.isNull())
     {
-        routesGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:routes"));
+        routesGroup = QSharedPointer<Kactus2Group>(new Kactus2Group(QStringLiteral("kactus2:routes")));
         getVendorExtensions()->append(routesGroup);
     }
 
@@ -706,7 +711,7 @@ void Design::removeRoute(QSharedPointer<ConnectionRoute> route)
     {
         routesGroup->removeFromGroup(route);
 
-        if (routesGroup->getByType("kactus2:route").isEmpty())
+        if (routesGroup->getByType(QStringLiteral("kactus2:route")).isEmpty())
         {
             getVendorExtensions()->removeAll(routesGroup);
         }
@@ -762,7 +767,7 @@ QSharedPointer<Kactus2Group> Design::getLayoutExtension() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:columnLayout")
+        if (extension->type() == QLatin1String("kactus2:columnLayout"))
         {
             return extension.dynamicCast<Kactus2Group>();
         }
@@ -778,7 +783,7 @@ QSharedPointer<Kactus2Group> Design::getRoutesExtension() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:routes")
+        if (extension->type() == QLatin1String("kactus2:routes"))
         {
             return extension.dynamicCast<Kactus2Group>();
         }
@@ -796,7 +801,7 @@ QList<QSharedPointer<InterfaceGraphicsData> > Design::getInterfaceGraphicsData()
 
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:interfaceGraphics")
+        if (extension->type() == QLatin1String("kactus2:interfaceGraphics"))
         {
             QSharedPointer<InterfaceGraphicsData> graphicsData = extension.dynamicCast<InterfaceGraphicsData>();
             if (graphicsData)

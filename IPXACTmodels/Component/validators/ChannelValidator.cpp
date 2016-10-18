@@ -130,7 +130,7 @@ void ChannelValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cha
 //-----------------------------------------------------------------------------
 bool ChannelValidator::hasValidName(QString const& name) const
 {
-	QRegularExpression whiteSpaceExpression("^\\s*$");
+	QRegularExpression whiteSpaceExpression(QStringLiteral("^\\s*$"));
 
 	if (name.isEmpty() || whiteSpaceExpression.match(name).hasMatch())
 	{

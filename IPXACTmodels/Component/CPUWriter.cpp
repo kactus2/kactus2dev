@@ -37,7 +37,7 @@ CPUWriter::~CPUWriter()
 void CPUWriter::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const
 {
 	// Start the element, write name group, presence and vendor extensions with pre-existing writers.
-	writer.writeStartElement("ipxact:cpu");
+	writer.writeStartElement(QStringLiteral("ipxact:cpu"));
 	
     writeNameGroup(writer, cpu);
 
@@ -68,7 +68,7 @@ void CPUWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu
 {
 	if (!cpu->getIsPresent().isEmpty())
 	{
-		writer.writeTextElement("ipxact:isPresent", cpu->getIsPresent());
+		writer.writeTextElement(QStringLiteral("ipxact:isPresent"), cpu->getIsPresent());
 	}
 }
 
@@ -79,13 +79,13 @@ void CPUWriter::writeAddressSpaceRefs(QXmlStreamWriter& writer, QSharedPointer<C
 {
     foreach (QSharedPointer<Cpu::AddressSpaceRef> reference, *cpu->getAddressSpaceReferences())
     {
-        writer.writeStartElement("ipxact:addressSpaceRef");
+        writer.writeStartElement(QStringLiteral("ipxact:addressSpaceRef"));
 
-        writer.writeAttribute("addressSpaceRef", reference->getAddressSpaceRef());
+        writer.writeAttribute(QStringLiteral("addressSpaceRef"), reference->getAddressSpaceRef());
 
         if (!reference->getIsPresent().isEmpty())
         {
-            writer.writeTextElement("ipxact:isPresent", reference->getIsPresent());
+            writer.writeTextElement(QStringLiteral("ipxact:isPresent"), reference->getIsPresent());
         }
 
         writer.writeEndElement(); // ipxact:addressSpaceRef

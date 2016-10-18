@@ -50,12 +50,12 @@ QSharedPointer<FileBuilder> FileBuilderReader::createDefaultFileBuilderFrom(QDom
 void FileBuilderReader::parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder)
     const
 {
-    QDomElement fileTypeElement = filebuilderNode.firstChildElement("ipxact:fileType");
+    QDomElement fileTypeElement = filebuilderNode.firstChildElement(QStringLiteral("ipxact:fileType"));
 
     QString fileType = fileTypeElement.firstChild().nodeValue();
-    if (fileType == "user")
+    if (fileType == QLatin1String("user"))
     {
-        fileType = fileTypeElement.attribute("user");
+        fileType = fileTypeElement.attribute(QStringLiteral("user"));
     }
 
     newFileBuilder->setFileType(fileType);
@@ -67,9 +67,9 @@ void FileBuilderReader::parseFileType(QDomNode const& filebuilderNode, QSharedPo
 void FileBuilderReader::parseBuildModel(QDomNode const& fileBuilderNode,
     QSharedPointer<FileBuilder> newFileBuilder) const
 {
-    QString command = fileBuilderNode.firstChildElement("ipxact:command").firstChild().nodeValue();
-    QString flags = fileBuilderNode.firstChildElement("ipxact:flags").firstChild().nodeValue();
-    QString replaceFlags = fileBuilderNode.firstChildElement("ipxact:replaceDefaultFlags").firstChild().nodeValue();
+    QString command = fileBuilderNode.firstChildElement(QStringLiteral("ipxact:command")).firstChild().nodeValue();
+    QString flags = fileBuilderNode.firstChildElement(QStringLiteral("ipxact:flags")).firstChild().nodeValue();
+    QString replaceFlags = fileBuilderNode.firstChildElement(QStringLiteral("ipxact:replaceDefaultFlags")).firstChild().nodeValue();
 
     newFileBuilder->setCommand(command);
     newFileBuilder->setFlags(flags);

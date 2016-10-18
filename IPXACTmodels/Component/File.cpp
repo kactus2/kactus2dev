@@ -411,7 +411,7 @@ QString File::getLastHash() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:hash")
+        if (extension->type() == QLatin1String("kactus2:hash"))
         {
             QSharedPointer<Kactus2Value> hashExtension = extension.dynamicCast<Kactus2Value>();
             return hashExtension->value();
@@ -428,7 +428,7 @@ void File::setLastHash(QString const& newHash)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:hash")
+        if (extension->type() == QLatin1String("kactus2:hash"))
         {
             if (newHash.isEmpty())
             {
@@ -445,7 +445,7 @@ void File::setLastHash(QString const& newHash)
 
     if (!newHash.isEmpty())
     {
-        QSharedPointer<Kactus2Value> hashExtension (new Kactus2Value("kactus2:hash", newHash));
+        QSharedPointer<Kactus2Value> hashExtension (new Kactus2Value(QStringLiteral("kactus2:hash"), newHash));
         getVendorExtensions()->append(hashExtension);
     }
 }
@@ -568,8 +568,9 @@ QString File::getFlags() const
         {
             flags += buildCommand_->getFlags();
         }
-        flags += " ";
+        flags.append(QLatin1Char(' '));
     }
+
     return flags;
 }
 
@@ -580,9 +581,9 @@ bool File::isRTLFile() const
 {
     foreach (QString fileType, *fileTypes_)
     {
-        if (fileType == QString("vhdlSource") || fileType == QString("vhdlSource-87") ||
-            fileType == QString("vhdlSource-93") || fileType == QString("verilogSource") ||
-            fileType == QString("verilogSource-95") || fileType == QString("verilogSource-2001"))
+        if (fileType == QLatin1String("vhdlSource") || fileType == QLatin1String("vhdlSource-87") ||
+            fileType == QLatin1String("vhdlSource-93") || fileType == QLatin1String("verilogSource") ||
+            fileType == QLatin1String("verilogSource-95") || fileType == QLatin1String("verilogSource-2001"))
         {
             return true;
         }
@@ -614,9 +615,9 @@ bool File::isVerilogFile() const
 {
     foreach (QString fileType, *fileTypes_)
     {
-        if (fileType.compare(QString("verilogSource"), Qt::CaseInsensitive) == 0 ||
-            fileType.compare(QString("verilogSource-95"), Qt::CaseInsensitive) == 0 ||
-            fileType.compare(QString("verilogSource-2001"), Qt::CaseInsensitive) == 0 )
+        if (fileType.compare(QLatin1String("verilogSource"), Qt::CaseInsensitive) == 0 ||
+            fileType.compare(QLatin1String("verilogSource-95"), Qt::CaseInsensitive) == 0 ||
+            fileType.compare(QLatin1String("verilogSource-2001"), Qt::CaseInsensitive) == 0 )
         {
             return true;
         }

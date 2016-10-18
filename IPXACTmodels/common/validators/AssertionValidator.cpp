@@ -48,7 +48,7 @@ bool AssertionValidator::validate(QSharedPointer<Assertion> assertion) const
 bool AssertionValidator::hasValidName(QSharedPointer<Assertion> assertion) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(assertion->name());
 
     if (assertion->name().isEmpty() || whiteSpaceMatch.hasMatch())

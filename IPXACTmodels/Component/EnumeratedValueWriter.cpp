@@ -17,7 +17,7 @@
 //-----------------------------------------------------------------------------
 // Function: EnumeratedValueWriter::EnumeratedValueWriter()
 //-----------------------------------------------------------------------------
-EnumeratedValueWriter::EnumeratedValueWriter(QObject* parent /* = 0 */) :
+EnumeratedValueWriter::EnumeratedValueWriter(QObject* parent) :
 CommonItemsWriter(parent)
 {
 
@@ -37,7 +37,7 @@ EnumeratedValueWriter::~EnumeratedValueWriter()
 void EnumeratedValueWriter::writeEnumeratedValue(QXmlStreamWriter& writer,
     QSharedPointer<EnumeratedValue> enumeratedValue) const
 {
-    writer.writeStartElement("ipxact:enumeratedValue");
+    writer.writeStartElement(QStringLiteral("ipxact:enumeratedValue"));
 
     writeUsage(writer, enumeratedValue);
 
@@ -59,7 +59,7 @@ void EnumeratedValueWriter::writeUsage(QXmlStreamWriter& writer, QSharedPointer<
     EnumeratedValue::EnumeratedUsage usage = enumeratedValue->getUsage();
     if (usage != EnumeratedValue::UNKNOWNUSAGE)
     {
-        writer.writeAttribute("usage", EnumeratedValue::usage2Str(usage));
+        writer.writeAttribute(QStringLiteral("usage"), EnumeratedValue::usage2Str(usage));
     }
 }
 
@@ -79,5 +79,5 @@ void EnumeratedValueWriter::writeNameGroup(QXmlStreamWriter& writer,
 void EnumeratedValueWriter::writeValue(QXmlStreamWriter& writer, QSharedPointer<EnumeratedValue> enumeratedValue)
     const
 {
-    writer.writeTextElement("ipxact:value", enumeratedValue->getValue());
+    writer.writeTextElement(QStringLiteral("ipxact:value"), enumeratedValue->getValue());
 }

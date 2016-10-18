@@ -36,7 +36,7 @@ FileBuilderWriter::~FileBuilderWriter()
 void FileBuilderWriter::writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder)
     const
 {
-    writer.writeStartElement("ipxact:defaultFileBuilder");
+    writer.writeStartElement(QStringLiteral("ipxact:defaultFileBuilder"));
 
     writeFileType(writer, fileBuilder);
 
@@ -52,11 +52,11 @@ void FileBuilderWriter::writeDefaultFileBuilder(QXmlStreamWriter& writer, QShare
 //-----------------------------------------------------------------------------
 void FileBuilderWriter::writeFileType(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const
 {
-    writer.writeStartElement("ipxact:fileType");
+    writer.writeStartElement(QStringLiteral("ipxact:fileType"));
 
     if (!FileTypes::isIpXactFileType(fileBuilder->getFileType()))
     {
-        writer.writeAttribute("user", fileBuilder->getUserFileType());
+        writer.writeAttribute(QStringLiteral("user"), fileBuilder->getUserFileType());
     }
     writer.writeCharacters(fileBuilder->getFileType());
 
@@ -68,14 +68,14 @@ void FileBuilderWriter::writeFileType(QXmlStreamWriter& writer, QSharedPointer<F
 //-----------------------------------------------------------------------------
 void FileBuilderWriter::writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const
 {
-    writer.writeTextElement("ipxact:command", fileBuilder->getCommand());
+    writer.writeTextElement(QStringLiteral("ipxact:command"), fileBuilder->getCommand());
 
     if (!fileBuilder->getFlags().isEmpty())
     {
-        writer.writeTextElement("ipxact:flags", fileBuilder->getFlags());
+        writer.writeTextElement(QStringLiteral("ipxact:flags"), fileBuilder->getFlags());
     }
     if (!fileBuilder->getReplaceDefaultFlags().isEmpty())
     {
-        writer.writeTextElement("ipxact:replaceDefaultFlags", fileBuilder->getReplaceDefaultFlags());
+        writer.writeTextElement(QStringLiteral("ipxact:replaceDefaultFlags"), fileBuilder->getReplaceDefaultFlags());
     }
 }

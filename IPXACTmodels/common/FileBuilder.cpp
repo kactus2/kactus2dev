@@ -100,7 +100,7 @@ void FileBuilder::setFileType( const QString& newFileType )
     }
 	else if (!newFileType.isEmpty())
     {
-        fileType_ = "user";
+        fileType_ = QStringLiteral("user");
         userFileType_ = newFileType;
     }
     else

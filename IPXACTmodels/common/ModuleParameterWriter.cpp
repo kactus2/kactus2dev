@@ -34,7 +34,7 @@ ModuleParameterWriter::~ModuleParameterWriter()
 void ModuleParameterWriter::writeModuleParameter(QXmlStreamWriter& writer,
     QSharedPointer<ModuleParameter> moduleParameter) const
 {
-    writer.writeStartElement("ipxact:moduleParameter");
+    writer.writeStartElement(QStringLiteral("ipxact:moduleParameter"));
 
     writeAttributes(writer, moduleParameter);
 
@@ -61,6 +61,6 @@ void ModuleParameterWriter::writeIsPresent(QXmlStreamWriter& writer,
 {
     if (!moduleParameter->getIsPresent().isEmpty())
     {
-        writer.writeTextElement("ipxact:isPresent", moduleParameter->getIsPresent());
+        writer.writeTextElement(QStringLiteral("ipxact:isPresent"), moduleParameter->getIsPresent());
     }
 }

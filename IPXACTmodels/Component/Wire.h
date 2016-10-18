@@ -191,7 +191,7 @@ public:
      *
      *      @return The required type name.
 	 */
-	QString getTypeName(const QString& viewName = QString("")) const;
+	QString getTypeName(const QString& viewName = QLatin1String("")) const;
 
 	/*!
 	 *  Check if the wire has a type name in given view.
@@ -215,7 +215,7 @@ public:
 	 *      @param [in] typeName    The name of the type.
 	 *      @param [in] viewName    The name of the view used for this type.
 	 */
-	void setTypeName(const QString& typeName, const QString& viewName = QString(""));
+	void setTypeName(const QString& typeName, const QString& viewName = QLatin1String(""));
 
 	/*!
 	 *  Get the type definition of the given type name.

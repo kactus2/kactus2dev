@@ -38,42 +38,42 @@ void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPo
     
     writeTopComments(writer, apiDefinition);
 	
-    writer.writeStartElement("kactus2:apiDefinition");
+    writer.writeStartElement(QStringLiteral("kactus2:apiDefinition"));
     writeNamespaceDeclarations(writer);
 
 	// Write basic information.
-	writer.writeTextElement("ipxact:vendor", apiDefinition->getVlnv().getVendor());
-	writer.writeTextElement("ipxact:library", apiDefinition->getVlnv().getLibrary());
-	writer.writeTextElement("ipxact:name", apiDefinition->getVlnv().getName());
-	writer.writeTextElement("ipxact:version", apiDefinition->getVlnv().getVersion());
+	writer.writeTextElement(QStringLiteral("ipxact:vendor"), apiDefinition->getVlnv().getVendor());
+	writer.writeTextElement(QStringLiteral("ipxact:library"), apiDefinition->getVlnv().getLibrary());
+	writer.writeTextElement(QStringLiteral("ipxact:name"), apiDefinition->getVlnv().getName());
+	writer.writeTextElement(QStringLiteral("ipxact:version"), apiDefinition->getVlnv().getVersion());
 
 	if (!apiDefinition->getDescription().isEmpty())
 	{
-		writer.writeTextElement("ipxact:description", apiDefinition->getDescription());
+		writer.writeTextElement(QStringLiteral("ipxact:description"), apiDefinition->getDescription());
 	}
 
 	// Write COM definition reference.
 	VLNV comDefRef = apiDefinition->getComDefinitionRef();
 
-	writer.writeEmptyElement("kactus2:comDefinitionRef");
-	writer.writeAttribute("vendor", comDefRef.getVendor());
-	writer.writeAttribute("library", comDefRef.getLibrary());
-	writer.writeAttribute("name", comDefRef.getName());
-	writer.writeAttribute("version", comDefRef.getVersion());
+	writer.writeEmptyElement(QStringLiteral("kactus2:comDefinitionRef"));
+	writer.writeAttribute(QStringLiteral("vendor"), comDefRef.getVendor());
+	writer.writeAttribute(QStringLiteral("library"), comDefRef.getLibrary());
+	writer.writeAttribute(QStringLiteral("name"), comDefRef.getName());
+	writer.writeAttribute(QStringLiteral("version"), comDefRef.getVersion());
 
 	// Write data types.
-	writer.writeStartElement("kactus2:dataTypes");
+	writer.writeStartElement(QStringLiteral("kactus2:dataTypes"));
 
 	foreach (QString const& type, *apiDefinition->getDataTypes())
 	{
-		writer.writeEmptyElement("kactus2:dataType");
-		writer.writeAttribute("name", type);
+		writer.writeEmptyElement(QStringLiteral("kactus2:dataType"));
+		writer.writeAttribute(QStringLiteral("name"), type);
 	}
 
 	writer.writeEndElement(); // kactus2:dataTypes
 
 	// Write properties.
-	writer.writeStartElement("kactus2:functions");
+	writer.writeStartElement(QStringLiteral("kactus2:functions"));
 
 	foreach (QSharedPointer<ApiFunction> func, *apiDefinition->getFunctions())
 	{
@@ -84,7 +84,7 @@ void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPo
 
 	if (apiDefinition->getVendorExtensions()->isEmpty())
 	{
-		writer.writeStartElement("ipxact:vendorExtensions");
+		writer.writeStartElement(QStringLiteral("ipxact:vendorExtensions"));
 		foreach (QSharedPointer<VendorExtension> extension, *apiDefinition->getVendorExtensions())
 		{
 			extension->write(writer);

@@ -41,17 +41,17 @@ void BusDefinitionWriter::writeBusDefinition(QXmlStreamWriter& writer,
 
     writeXmlProcessingInstructions(writer, busDefinition);
 
-    writer.writeStartElement("ipxact:busDefinition");
+    writer.writeStartElement(QStringLiteral("ipxact:busDefinition"));
     writeNamespaceDeclarations(writer);
 
 
     writeVLNVElements(writer, busDefinition->getVlnv());
 
-    writer.writeTextElement("ipxact:directConnection", bool2Str(busDefinition->getDirectConnection()));
+    writer.writeTextElement(QStringLiteral("ipxact:directConnection"), bool2Str(busDefinition->getDirectConnection()));
 
     writeBroadcast(writer, busDefinition);
 
-    writer.writeTextElement("ipxact:isAddressable", bool2Str(busDefinition->getIsAddressable()));
+    writer.writeTextElement(QStringLiteral("ipxact:isAddressable"), bool2Str(busDefinition->getIsAddressable()));
 
     writeExtends(writer, busDefinition);
 
@@ -68,7 +68,7 @@ void BusDefinitionWriter::writeBusDefinition(QXmlStreamWriter& writer,
 
     writeVendorExtensions(writer, busDefinition);
 
-    writer.writeEndElement(); // "ipxact:busDefinition"
+    writer.writeEndElement(); // QStringLiteral("ipxact:busDefinition"
     writer.writeEndDocument();
 }
 
@@ -81,7 +81,7 @@ void BusDefinitionWriter::writeBroadcast(QXmlStreamWriter& writer,
     BooleanValue broadcastValue = busDefinition->getBroadcast();
     if (!broadcastValue.toString().isEmpty())
     {
-        writer.writeTextElement("ipxact:broadcast", busDefinition->getBroadcast().toString());
+        writer.writeTextElement(QStringLiteral("ipxact:broadcast"), busDefinition->getBroadcast().toString());
     }
 }
 
@@ -93,7 +93,7 @@ void BusDefinitionWriter::writeExtends(QXmlStreamWriter& writer, QSharedPointer<
 {
     if (!busDefinition->getExtends().isEmpty())
     {
-        writer.writeStartElement("ipxact:extends");
+        writer.writeStartElement(QStringLiteral("ipxact:extends"));
         writeVLNVAttributes(writer, busDefinition->getExtends());
         writer.writeEndElement();
     }
@@ -107,7 +107,7 @@ void BusDefinitionWriter::writeMaximumMasters(QXmlStreamWriter& writer,
 {
     if (!busDefinition->getMaxMasters().isEmpty())
     {
-        writer.writeTextElement("ipxact:maxMasters", busDefinition->getMaxMasters());
+        writer.writeTextElement(QStringLiteral("ipxact:maxMasters"), busDefinition->getMaxMasters());
     }
 }
 
@@ -119,7 +119,7 @@ void BusDefinitionWriter::writeMaximumSlaves(QXmlStreamWriter& writer,
 {
     if (!busDefinition->getMaxSlaves().isEmpty())
     {
-        writer.writeTextElement("ipxact:maxSlaves", busDefinition->getMaxSlaves());
+        writer.writeTextElement(QStringLiteral("ipxact:maxSlaves"), busDefinition->getMaxSlaves());
     }
 }
 
@@ -132,10 +132,10 @@ void BusDefinitionWriter::writeSystemGroupNames(QXmlStreamWriter& writer,
     QStringList systemGroupNames = busDefinition->getSystemGroupNames();
     if (!systemGroupNames.isEmpty())
     {
-        writer.writeStartElement("ipxact:systemGroupNames");
+        writer.writeStartElement(QStringLiteral("ipxact:systemGroupNames"));
         foreach (QString name, systemGroupNames)
         {
-            writer.writeTextElement("ipxact:systemGroupName", name);
+            writer.writeTextElement(QStringLiteral("ipxact:systemGroupName"), name);
         }
         writer.writeEndElement();
     }
@@ -149,11 +149,11 @@ QString BusDefinitionWriter::bool2Str(bool value) const
 {
     if (value)
     {
-        return QString("true");
+        return QStringLiteral("true");
     }
     else
     {
-        return QString("false");
+        return QStringLiteral("false");
     }
 }
 

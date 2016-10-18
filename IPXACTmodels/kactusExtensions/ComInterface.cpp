@@ -63,42 +63,42 @@ defaultPos_()
             continue;
         }
 
-        if (childNode.nodeName() == QString("ipxact:name"))
+        if (childNode.nodeName() == QLatin1String("ipxact:name"))
         {
             setName(childNode.firstChild().nodeValue());
         }
-        else if (childNode.nodeName() == QString("ipxact:displayName"))
+        else if (childNode.nodeName() == QLatin1String("ipxact:displayName"))
         {
             setDisplayName(childNode.firstChild().nodeValue());
         }
-        else if (childNode.nodeName() == QString("ipxact:description"))
+        else if (childNode.nodeName() == QLatin1String("ipxact:description"))
         {
             setDescription(childNode.firstChild().nodeValue());
         }
-        else if (childNode.nodeName() == "kactus2:comType")
+        else if (childNode.nodeName() == QLatin1String("kactus2:comType"))
         {
             comType_ = VLNV::createVLNV(childNode, VLNV::COMDEFINITION);
         }
-        else if (childNode.nodeName() == "kactus2:transferType")
+        else if (childNode.nodeName() == QLatin1String("kactus2:transferType"))
         {
             transferType_ = childNode.childNodes().at(0).nodeValue();
         }
-        else if (childNode.nodeName() == "kactus2:comDirection")
+        else if (childNode.nodeName() == QLatin1String("kactus2:comDirection"))
         {
             dir_ = DirectionTypes::str2Direction(childNode.childNodes().at(0).nodeValue(), DirectionTypes::INOUT);
         }
-        else if (childNode.nodeName() == "kactus2:propertyValues")
+        else if (childNode.nodeName() == QLatin1String("kactus2:propertyValues"))
         {
             parsePropertyValues(childNode);
         }
-        else if (childNode.nodeName() == "kactus2:comImplementationRef")
+        else if (childNode.nodeName() == QLatin1String("kactus2:comImplementationRef"))
         {
             comImplementation_ = VLNV::createVLNV(childNode, VLNV::COMPONENT);
         }
-        else if (childNode.nodeName() == "kactus2:position")
+        else if (childNode.nodeName() == QLatin1String("kactus2:position"))
         {
-            defaultPos_.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
-            defaultPos_.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
+            defaultPos_.setX(childNode.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt());
+            defaultPos_.setY(childNode.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt());
         }
     }
 }
@@ -124,7 +124,7 @@ ComInterface* ComInterface::clone() const
 //-----------------------------------------------------------------------------
 QString ComInterface::type() const
 {
-    return QString("kactus2:comInterface");
+    return QStringLiteral("kactus2:comInterface");
 }
 
 //-----------------------------------------------------------------------------
@@ -132,30 +132,30 @@ QString ComInterface::type() const
 //-----------------------------------------------------------------------------
 void ComInterface::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:comInterface");
+    writer.writeStartElement(QStringLiteral("kactus2:comInterface"));
 
-    writer.writeTextElement("ipxact:name", name());
+    writer.writeTextElement(QStringLiteral("ipxact:name"), name());
 
     if (!displayName().isEmpty())
     {
-        writer.writeTextElement("ipxact:displayName", displayName());
+        writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
     }
     if (!description().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", description());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), description());
     }
 
     // Write communication type, data type and communication direction.
-    writer.writeEmptyElement("kactus2:comType");
-    writer.writeAttribute("vendor", comType_.getVendor());
-    writer.writeAttribute("library", comType_.getLibrary());
-    writer.writeAttribute("name", comType_.getName());
-    writer.writeAttribute("version", comType_.getVersion());
+    writer.writeEmptyElement(QStringLiteral("kactus2:comType"));
+    writer.writeAttribute(QStringLiteral("vendor"), comType_.getVendor());
+    writer.writeAttribute(QStringLiteral("library"), comType_.getLibrary());
+    writer.writeAttribute(QStringLiteral("name"), comType_.getName());
+    writer.writeAttribute(QStringLiteral("version"), comType_.getVersion());
 
-    writer.writeTextElement("kactus2:transferType", transferType_);
-    writer.writeTextElement("kactus2:comDirection", DirectionTypes::direction2Str(dir_));
+    writer.writeTextElement(QStringLiteral("kactus2:transferType"), transferType_);
+    writer.writeTextElement(QStringLiteral("kactus2:comDirection"), DirectionTypes::direction2Str(dir_));
 
-    writer.writeStartElement("kactus2:propertyValues");
+    writer.writeStartElement(QStringLiteral("kactus2:propertyValues"));
 
     // Write property values.
     QMapIterator<QString, QString> iter(propertyValues_);
@@ -164,18 +164,18 @@ void ComInterface::write(QXmlStreamWriter& writer) const
     {
         iter.next();
 
-        writer.writeEmptyElement("kactus2:propertyValue");
-        writer.writeAttribute("name", iter.key());
-        writer.writeAttribute("value", iter.value());
+        writer.writeEmptyElement(QStringLiteral("kactus2:propertyValue"));
+        writer.writeAttribute(QStringLiteral("name"), iter.key());
+        writer.writeAttribute(QStringLiteral("value"), iter.value());
     }
 
     writer.writeEndElement(); // kactus2:propertyValues
 
-	writer.writeEmptyElement("kactus2:comImplementationRef");
-    writer.writeAttribute("vendor", comImplementation_.getVendor());
-    writer.writeAttribute("library", comImplementation_.getLibrary());
-    writer.writeAttribute("name", comImplementation_.getName());
-    writer.writeAttribute("version", comImplementation_.getVersion());
+	writer.writeEmptyElement(QStringLiteral("kactus2:comImplementationRef"));
+    writer.writeAttribute(QStringLiteral("vendor"), comImplementation_.getVendor());
+    writer.writeAttribute(QStringLiteral("library"), comImplementation_.getLibrary());
+    writer.writeAttribute(QStringLiteral("name"), comImplementation_.getName());
+    writer.writeAttribute(QStringLiteral("version"), comImplementation_.getVersion());
 
     if (!defaultPos_.isNull())
     {
@@ -358,10 +358,10 @@ void ComInterface::parsePropertyValues(QDomNode& node)
     {
         QDomNode propNode = node.childNodes().at(i);
 
-        if (propNode.nodeName() == "kactus2:propertyValue")
+        if (propNode.nodeName() == QLatin1String("kactus2:propertyValue"))
         {
-            QString name = propNode.attributes().namedItem("name").nodeValue();
-            QString value = propNode.attributes().namedItem("value").nodeValue();
+            QString name = propNode.attributes().namedItem(QStringLiteral("name")).nodeValue();
+            QString value = propNode.attributes().namedItem(QStringLiteral("value")).nodeValue();
 
             propertyValues_.insert(name, value);
         }
@@ -405,7 +405,7 @@ QPointF const& ComInterface::getDefaultPos() const
 //-----------------------------------------------------------------------------
 void ComInterface::writePosition(QXmlStreamWriter& writer, QPointF const& pos) const
 {
-    writer.writeEmptyElement("kactus2:position");
-    writer.writeAttribute("x", QString::number(int(pos.x())));
-    writer.writeAttribute("y", QString::number(int(pos.y())));
+    writer.writeEmptyElement(QStringLiteral("kactus2:position"));
+    writer.writeAttribute(QStringLiteral("x"), QString::number(int(pos.x())));
+    writer.writeAttribute(QStringLiteral("y"), QString::number(int(pos.y())));
 }

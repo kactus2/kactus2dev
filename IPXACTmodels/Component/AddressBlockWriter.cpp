@@ -38,19 +38,19 @@ AddressBlockWriter::~AddressBlockWriter()
 void AddressBlockWriter::writeAddressBlock(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock)
     const
 {
-    writer.writeStartElement("ipxact:addressBlock");
+    writer.writeStartElement(QStringLiteral("ipxact:addressBlock"));
 
     writeNameGroup(writer, addressBlock);
 
     writeIsPresent(writer, addressBlock->getIsPresent());
 
-    writer.writeTextElement("ipxact:baseAddress", addressBlock->getBaseAddress());
+    writer.writeTextElement(QStringLiteral("ipxact:baseAddress"), addressBlock->getBaseAddress());
 
     writeTypeIdentifier(writer, addressBlock);
 
-    writer.writeTextElement("ipxact:range", addressBlock->getRange());
+    writer.writeTextElement(QStringLiteral("ipxact:range"), addressBlock->getRange());
 
-    writer.writeTextElement("ipxact:width", addressBlock->getWidth());
+    writer.writeTextElement(QStringLiteral("ipxact:width"), addressBlock->getWidth());
 
     writeUsage(writer, addressBlock);
 
@@ -84,7 +84,7 @@ void AddressBlockWriter::writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPo
 {
     if (!addressBlock->getTypeIdentifier().isEmpty())
     {
-        writer.writeTextElement("ipxact:typeIdentifier", addressBlock->getTypeIdentifier());
+        writer.writeTextElement(QStringLiteral("ipxact:typeIdentifier"), addressBlock->getTypeIdentifier());
     }
 }
 
@@ -96,7 +96,7 @@ void AddressBlockWriter::writeUsage(QXmlStreamWriter& writer, QSharedPointer<Add
     if (addressBlock->getUsage() != General::USAGE_COUNT)
     {
         QString usageString = General::usage2Str(addressBlock->getUsage());
-        writer.writeTextElement("ipxact:usage", usageString);
+        writer.writeTextElement(QStringLiteral("ipxact:usage"), usageString);
     }
 }
 
@@ -107,7 +107,7 @@ void AddressBlockWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<
 {
     if (!addressBlock->getVolatile().isEmpty())
     {
-        writer.writeTextElement("ipxact:volatile", addressBlock->getVolatile());
+        writer.writeTextElement(QStringLiteral("ipxact:volatile"), addressBlock->getVolatile());
     }
 }
 
@@ -119,7 +119,7 @@ void AddressBlockWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Ad
     if (addressBlock->getAccess() != AccessTypes::ACCESS_COUNT)
     {
         QString accessString = AccessTypes::access2Str(addressBlock->getAccess());
-        writer.writeTextElement("ipxact:access", accessString);
+        writer.writeTextElement(QStringLiteral("ipxact:access"), accessString);
     }
 }
 

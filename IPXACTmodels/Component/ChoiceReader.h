@@ -42,9 +42,9 @@ public:
     /*!
      *  Creates a new Choice from a given Choice node.
      *
-     *      @param [in] ChoiceNode    XML description of the vhannel.
+     *      @param [in] choiceNode    XML description of the choice.
      */
-    QSharedPointer<Choice> createChoiceFrom(QDomNode const& ChoiceNode) const;
+    QSharedPointer<Choice> createChoiceFrom(QDomNode const& choiceNode) const;
 
 private:
 

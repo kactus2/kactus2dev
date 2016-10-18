@@ -39,7 +39,7 @@ ParameterWriter::~ParameterWriter()
 //-----------------------------------------------------------------------------
 void ParameterWriter::writeParameter(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
 {
-    writer.writeStartElement("ipxact:parameter");
+    writer.writeStartElement(QStringLiteral("ipxact:parameter"));
     writeAttributes(writer, parameter);
     
     writeNameGroup(writer, parameter);
@@ -83,12 +83,12 @@ void ParameterWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<Param
     QSharedPointer<QList<QSharedPointer<Array> > > arrays = parameter->getArrays();
     if (!arrays->isEmpty())
     {
-        writer.writeStartElement("ipxact:arrays");
+        writer.writeStartElement(QStringLiteral("ipxact:arrays"));
         foreach (QSharedPointer<Array> array, *arrays)
         {
-            writer.writeStartElement("ipxact:array");
-            writer.writeTextElement("ipxact:left", array->getLeft());
-            writer.writeTextElement("ipxact:right", array->getRight());
+            writer.writeStartElement(QStringLiteral("ipxact:array"));
+            writer.writeTextElement(QStringLiteral("ipxact:left"), array->getLeft());
+            writer.writeTextElement(QStringLiteral("ipxact:right"), array->getRight());
             writer.writeEndElement();
         }
         writer.writeEndElement();
@@ -103,12 +103,12 @@ void ParameterWriter::writeVectors(QXmlStreamWriter& writer, QSharedPointer<Para
     QSharedPointer<QList<QSharedPointer<Vector> > > vectors = parameter->getVectors();
     if (!vectors->isEmpty())
     {
-        writer.writeStartElement("ipxact:vectors");
+        writer.writeStartElement(QStringLiteral("ipxact:vectors"));
         foreach (QSharedPointer<Vector> vector, *vectors)
         {
-            writer.writeStartElement("ipxact:vector");
-            writer.writeTextElement("ipxact:left", vector->getLeft());
-            writer.writeTextElement("ipxact:right", vector->getRight());
+            writer.writeStartElement(QStringLiteral("ipxact:vector"));
+            writer.writeTextElement(QStringLiteral("ipxact:left"), vector->getLeft());
+            writer.writeTextElement(QStringLiteral("ipxact:right"), vector->getRight());
             writer.writeEndElement();
         }
         writer.writeEndElement();
@@ -120,7 +120,7 @@ void ParameterWriter::writeVectors(QXmlStreamWriter& writer, QSharedPointer<Para
 //-----------------------------------------------------------------------------
 void ParameterWriter::writeValue(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
 {
-    writer.writeStartElement("ipxact:value");
+    writer.writeStartElement(QStringLiteral("ipxact:value"));
     
     foreach (QString attribute, parameter->getValueAttributeNames())
     {
@@ -138,7 +138,7 @@ void ParameterWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedPoi
 {
     if (!parameter->getVendorExtensions()->isEmpty())
     {
-        writer.writeStartElement("ipxact:vendorExtensions");
+        writer.writeStartElement(QStringLiteral("ipxact:vendorExtensions"));
         foreach (QSharedPointer<VendorExtension> extension, *parameter->getVendorExtensions())
         {
             extension->write(writer);

@@ -318,7 +318,7 @@ void DesignConfigurationValidator::findErrorsInGeneratorChainConfigurations(QVec
                     .arg(context));
             }
 
-            chainReference->isValid(errors, "generator chain configuration");
+            chainReference->isValid(errors, QStringLiteral("generator chain configuration"));
 
             for (int comparisonIndex = chainIndex + 1;
                 comparisonIndex < designConfiguration->getGeneratorChainConfs()->size(); ++comparisonIndex)

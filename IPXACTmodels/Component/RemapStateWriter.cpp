@@ -37,7 +37,7 @@ RemapStateWriter::~RemapStateWriter()
 //-----------------------------------------------------------------------------
 void RemapStateWriter::writeRemapState(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState) const
 {
-    writer.writeStartElement("ipxact:remapState");
+    writer.writeStartElement(QStringLiteral("ipxact:remapState"));
 
     writeNameGroup(writer, remapState);
 
@@ -62,7 +62,7 @@ void RemapStateWriter::writeRemapPorts(QXmlStreamWriter& writer, QSharedPointer<
 {
     if (!remapState->getRemapPorts()->isEmpty())
     {
-        writer.writeStartElement("ipxact:remapPorts");
+        writer.writeStartElement(QStringLiteral("ipxact:remapPorts"));
 
         foreach (QSharedPointer<RemapPort> remapPort, *remapState->getRemapPorts())
         {
@@ -78,16 +78,16 @@ void RemapStateWriter::writeRemapPorts(QXmlStreamWriter& writer, QSharedPointer<
 //-----------------------------------------------------------------------------
 void RemapStateWriter::writeSingleRemapPort(QXmlStreamWriter& writer, QSharedPointer<RemapPort> remapPort) const
 {
-    writer.writeStartElement("ipxact:remapPort");
+    writer.writeStartElement(QStringLiteral("ipxact:remapPort"));
 
-    writer.writeAttribute("portRef", remapPort->getPortNameRef());
+    writer.writeAttribute(QStringLiteral("portRef"), remapPort->getPortNameRef());
 
     if (!remapPort->getPortIndex().isEmpty())
     {
-        writer.writeTextElement("ipxact:portIndex", remapPort->getPortIndex());
+        writer.writeTextElement(QStringLiteral("ipxact:portIndex"), remapPort->getPortIndex());
     }
 
-    writer.writeTextElement("ipxact:value", remapPort->getValue());
+    writer.writeTextElement(QStringLiteral("ipxact:value"), remapPort->getValue());
 
     writer.writeEndElement(); // ipxact:remapPort
 }

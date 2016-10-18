@@ -568,7 +568,7 @@ void Component::setOtherClockDrivers(
 QList<QSharedPointer<SWView> > Component::getSWViews() const
 {
     QList<QSharedPointer<VendorExtension> > swViewExtensions =
-        getGroupedExtensionsByType("kactus2:swViews", "kactus2:swView");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:swViews"), QStringLiteral("kactus2:swView"));
 
     QList<QSharedPointer<SWView> > swViews;
     foreach (QSharedPointer<VendorExtension> extension, swViewExtensions)
@@ -586,7 +586,7 @@ void Component::setSWViews(QList<QSharedPointer<SWView> > newSWViews)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:swViews")
+        if (extension->type() == QLatin1String("kactus2:swViews"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -595,7 +595,7 @@ void Component::setSWViews(QList<QSharedPointer<SWView> > newSWViews)
 
     if (!newSWViews.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newSWViewGroup (new Kactus2Group("kactus2:swViews"));
+        QSharedPointer<Kactus2Group> newSWViewGroup (new Kactus2Group(QStringLiteral("kactus2:swViews")));
         foreach (QSharedPointer<SWView> swView, newSWViews)
         {
             newSWViewGroup->addToGroup(swView);
@@ -611,7 +611,7 @@ void Component::setSWViews(QList<QSharedPointer<SWView> > newSWViews)
 QSharedPointer<QList<QSharedPointer<ComProperty> > > Component::getSWProperties() const
 {
     QList<QSharedPointer<VendorExtension> > swPropertiesExtensionList =
-        getGroupedExtensionsByType("kactus2:properties", "kactus2:property");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:properties"), QStringLiteral("kactus2:property"));
 
     QSharedPointer<QList<QSharedPointer<ComProperty> > > swProperties( new QList<QSharedPointer<ComProperty> > );
     foreach (QSharedPointer<VendorExtension> extension, swPropertiesExtensionList)
@@ -629,7 +629,7 @@ void Component::setSWProperties(QList<QSharedPointer<ComProperty> > newPropertie
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:properties")
+        if (extension->type() == QLatin1String("kactus2:properties"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -638,7 +638,7 @@ void Component::setSWProperties(QList<QSharedPointer<ComProperty> > newPropertie
 
     if (!newProperties.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newPropertiesGroup (new Kactus2Group("kactus2:properties"));
+        QSharedPointer<Kactus2Group> newPropertiesGroup (new Kactus2Group(QStringLiteral("kactus2:properties")));
         foreach (QSharedPointer<ComProperty> swProperty, newProperties)
         {
             newPropertiesGroup->addToGroup(swProperty);
@@ -654,7 +654,7 @@ void Component::setSWProperties(QList<QSharedPointer<ComProperty> > newPropertie
 QList<QSharedPointer<SystemView> > Component::getSystemViews() const
 {
     QList<QSharedPointer<VendorExtension> > systemViewExtensions =
-        getGroupedExtensionsByType("kactus2:systemViews", "kactus2:systemView");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:systemViews"), QStringLiteral("kactus2:systemView"));
 
     QList<QSharedPointer<SystemView> > systemViews;
     foreach (QSharedPointer<VendorExtension> extension, systemViewExtensions)
@@ -672,7 +672,7 @@ void Component::setSystemViews(QList<QSharedPointer<SystemView> > newSystemViews
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:systemViews")
+        if (extension->type() == QLatin1String("kactus2:systemViews"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -681,7 +681,7 @@ void Component::setSystemViews(QList<QSharedPointer<SystemView> > newSystemViews
 
     if (!newSystemViews.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newSystemViewGroup (new Kactus2Group("kactus2:systemViews"));
+        QSharedPointer<Kactus2Group> newSystemViewGroup (new Kactus2Group(QStringLiteral("kactus2:systemViews")));
         foreach (QSharedPointer<SystemView> systemView, newSystemViews)
         {
             newSystemViewGroup->addToGroup(systemView);
@@ -697,7 +697,7 @@ void Component::setSystemViews(QList<QSharedPointer<SystemView> > newSystemViews
 QList<QSharedPointer<ComInterface> > Component::getComInterfaces() const
 {
     QList<QSharedPointer<VendorExtension> > comInterfaceExtensions =
-        getGroupedExtensionsByType("kactus2:comInterfaces", "kactus2:comInterface");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:comInterfaces"), QStringLiteral("kactus2:comInterface"));
 
     QList<QSharedPointer<ComInterface> > comInterfaces;
     foreach (QSharedPointer<VendorExtension> extension, comInterfaceExtensions)
@@ -715,7 +715,7 @@ void Component::setComInterfaces(QList<QSharedPointer<ComInterface> > newComInte
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:comInterfaces")
+        if (extension->type() == QLatin1String("kactus2:comInterfaces"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -724,7 +724,7 @@ void Component::setComInterfaces(QList<QSharedPointer<ComInterface> > newComInte
 
     if (!newComInterfaces.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newComInterfaceGroup (new Kactus2Group("kactus2:comInterfaces"));
+        QSharedPointer<Kactus2Group> newComInterfaceGroup (new Kactus2Group(QStringLiteral("kactus2:comInterfaces")));
         foreach (QSharedPointer<ComInterface> comInterface, newComInterfaces)
         {
             newComInterfaceGroup->addToGroup(comInterface);
@@ -740,7 +740,7 @@ void Component::setComInterfaces(QList<QSharedPointer<ComInterface> > newComInte
 QList<QSharedPointer<ApiInterface> > Component::getApiInterfaces() const
 {
     QList<QSharedPointer<VendorExtension> > apiInterfaceExtensions =
-        getGroupedExtensionsByType("kactus2:apiInterfaces", "kactus2:apiInterface");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:apiInterfaces"), QStringLiteral("kactus2:apiInterface"));
 
     QList<QSharedPointer<ApiInterface> > apiInterfaces;
     foreach (QSharedPointer<VendorExtension> extension, apiInterfaceExtensions)
@@ -758,7 +758,7 @@ void Component::setApiInterfaces(QList<QSharedPointer<ApiInterface> > newApiInte
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:apiInterfaces")
+        if (extension->type() == QLatin1String("kactus2:apiInterfaces"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -767,7 +767,7 @@ void Component::setApiInterfaces(QList<QSharedPointer<ApiInterface> > newApiInte
 
     if (!newApiInterfaces.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newApiInterfaceGroup (new Kactus2Group("kactus2:apiInterfaces"));
+        QSharedPointer<Kactus2Group> newApiInterfaceGroup (new Kactus2Group(QStringLiteral("kactus2:apiInterfaces")));
         foreach (QSharedPointer<ApiInterface> apiInterface, newApiInterfaces)
         {
             newApiInterfaceGroup->addToGroup(apiInterface);
@@ -782,7 +782,7 @@ void Component::setApiInterfaces(QList<QSharedPointer<ApiInterface> > newApiInte
 QList<QSharedPointer<FileDependency> > Component::getFileDependencies() const
 {
     QList<QSharedPointer<VendorExtension> > fileDependencyExtensions =
-        getGroupedExtensionsByType("kactus2:fileDependencies", "kactus2:fileDependency");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:fileDependencies"), QStringLiteral("kactus2:fileDependency"));
 
     QList<QSharedPointer<FileDependency> > fileDependencies;
     foreach (QSharedPointer<VendorExtension> extension, fileDependencyExtensions)
@@ -800,7 +800,7 @@ void Component::setFileDependendencies(QList<QSharedPointer<FileDependency> > ne
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:fileDependencies")
+        if (extension->type() == QLatin1String("kactus2:fileDependencies"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -809,7 +809,7 @@ void Component::setFileDependendencies(QList<QSharedPointer<FileDependency> > ne
 
     if (!newFileDependencies.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newFileDependencyGroup (new Kactus2Group("kactus2:fileDependencies"));
+        QSharedPointer<Kactus2Group> newFileDependencyGroup (new Kactus2Group(QStringLiteral("kactus2:fileDependencies")));
         foreach (QSharedPointer<FileDependency> fileDependency, newFileDependencies)
         {
             newFileDependencyGroup->addToGroup(fileDependency);
@@ -840,7 +840,7 @@ void Component::setPendingFileDependencies(QList<QSharedPointer<FileDependency> 
 QStringList Component::getSourceDirectories() const
 {
     QList<QSharedPointer<VendorExtension> > sourceDirectoryExtensions =
-        getGroupedExtensionsByType("kactus2:sourceDirectories", "kactus2:sourceDirectory");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:sourceDirectories"), QStringLiteral("kactus2:sourceDirectory"));
 
     QStringList sourceDirections;
     foreach (QSharedPointer<VendorExtension> extension, sourceDirectoryExtensions)
@@ -859,7 +859,7 @@ void Component::setSourceDirectories(QStringList const& sourceDirs)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:sourceDirectories")
+        if (extension->type() == QLatin1String("kactus2:sourceDirectories"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -868,11 +868,11 @@ void Component::setSourceDirectories(QStringList const& sourceDirs)
 
     if (!sourceDirs.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newSourceDirectoryGroup (new Kactus2Group("kactus2:sourceDirectories"));
+        QSharedPointer<Kactus2Group> newSourceDirectoryGroup (new Kactus2Group(QStringLiteral("kactus2:sourceDirectories")));
         foreach (QString sourceDirectory, sourceDirs)
         {
             QSharedPointer<Kactus2Value> directoryExtension (
-                new Kactus2Value("kactus2:sourceDirectory", sourceDirectory));
+                new Kactus2Value(QStringLiteral("kactus2:sourceDirectory"), sourceDirectory));
             newSourceDirectoryGroup->addToGroup(directoryExtension);
         }
         getVendorExtensions()->append(newSourceDirectoryGroup);
@@ -885,7 +885,7 @@ void Component::setSourceDirectories(QStringList const& sourceDirs)
 QStringList Component::getIgnoredFiles() const
 {
     QList<QSharedPointer<VendorExtension> > ignoredFileExtensions =
-        getGroupedExtensionsByType("kactus2:ignoredFiles", "kactus2:ignoredFile");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:ignoredFiles"), QStringLiteral("kactus2:ignoredFile"));
 
     QStringList ignoredFiles;
     foreach (QSharedPointer<VendorExtension> extension, ignoredFileExtensions)
@@ -904,7 +904,7 @@ void Component::setIgnoredFiles(QStringList const& ignoredFiles)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:ignoredFiles")
+        if (extension->type() == QLatin1String("kactus2:ignoredFiles"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -913,11 +913,11 @@ void Component::setIgnoredFiles(QStringList const& ignoredFiles)
 
     if (!ignoredFiles.isEmpty())
     {
-        QSharedPointer<Kactus2Group> newIgnoredFilesGroup (new Kactus2Group("kactus2:ignoredFiles"));
+        QSharedPointer<Kactus2Group> newIgnoredFilesGroup (new Kactus2Group(QStringLiteral("kactus2:ignoredFiles")));
         foreach (QString ignoredFile, ignoredFiles)
         {
             QSharedPointer<Kactus2Value> ignoredFileExtension (
-                new Kactus2Value("kactus2:ignoredFile", ignoredFile));
+                new Kactus2Value(QStringLiteral("kactus2:ignoredFile"), ignoredFile));
             newIgnoredFilesGroup->addToGroup(ignoredFileExtension);
         }
         getVendorExtensions()->append(newIgnoredFilesGroup);
@@ -931,7 +931,7 @@ QString Component::getAuthor() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:author")
+        if (extension->type() == QLatin1String("kactus2:author"))
         {
             QSharedPointer<Kactus2Value> authorExtension = extension.dynamicCast<Kactus2Value>();
             return authorExtension->value();
@@ -948,7 +948,7 @@ void Component::setAuthor(QString const& author)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:author")
+        if (extension->type() == QLatin1String("kactus2:author"))
         {
             getVendorExtensions()->removeAll(extension);
         }
@@ -956,7 +956,7 @@ void Component::setAuthor(QString const& author)
 
     if (!author.isEmpty())
     {
-        QSharedPointer<Kactus2Value> authorValue (new Kactus2Value("kactus2:author", author));
+        QSharedPointer<Kactus2Value> authorValue (new Kactus2Value(QStringLiteral("kactus2:author"), author));
         getVendorExtensions()->append(authorValue);
     }
 }

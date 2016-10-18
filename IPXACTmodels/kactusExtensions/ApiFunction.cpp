@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 ApiFunction::ApiFunction()
     : name_(),
-      returnType_("void"),
+      returnType_(QStringLiteral("void")),
       returnValueDesc_(),
       desc_(),
       params_()
@@ -47,29 +47,29 @@ ApiFunction::ApiFunction(ApiFunction const& rhs) : name_(rhs.name_),
 //-----------------------------------------------------------------------------
 ApiFunction::ApiFunction(QDomNode& node)
     : name_(),
-      returnType_("void"),
+      returnType_(QStringLiteral("void")),
       returnValueDesc_(),
       desc_(),
       params_()
 {
-    Q_ASSERT(node.nodeName() == "kactus2:function");
+    Q_ASSERT(node.nodeName() == QLatin1String("kactus2:function"));
 
     // Read basic information from attributes.
-    name_ = node.attributes().namedItem("name").nodeValue();
-    returnType_ = node.attributes().namedItem("returnType").nodeValue();
-    desc_ = node.attributes().namedItem("description").nodeValue();
+    name_ = node.attributes().namedItem(QStringLiteral("name")).nodeValue();
+    returnType_ = node.attributes().namedItem(QStringLiteral("returnType")).nodeValue();
+    desc_ = node.attributes().namedItem(QStringLiteral("description")).nodeValue();
 
     // Parse return value and parameters from the child nodes.
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
         QDomNode paramNode = node.childNodes().at(i);
 
-        if (paramNode.nodeName() == "kactus2:returnValue")
+        if (paramNode.nodeName() == QLatin1String("kactus2:returnValue"))
         {
-            returnType_ = paramNode.attributes().namedItem("type").nodeValue();
-            returnValueDesc_ = paramNode.attributes().namedItem("description").nodeValue();
+            returnType_ = paramNode.attributes().namedItem(QStringLiteral("type")).nodeValue();
+            returnValueDesc_ = paramNode.attributes().namedItem(QStringLiteral("description")).nodeValue();
         }
-        if (paramNode.nodeName() == "kactus2:functionParameter")
+        if (paramNode.nodeName() == QLatin1String("kactus2:functionParameter"))
         {
             QSharedPointer<ApiFunctionParameter> param(new ApiFunctionParameter(paramNode));
             params_.append(param);
@@ -89,13 +89,13 @@ ApiFunction::~ApiFunction()
 //-----------------------------------------------------------------------------
 void ApiFunction::write(QXmlStreamWriter& writer)
 {
-    writer.writeStartElement("kactus2:function");
-    writer.writeAttribute("name", name_);
-    writer.writeAttribute("description", desc_);
+    writer.writeStartElement(QStringLiteral("kactus2:function"));
+    writer.writeAttribute(QStringLiteral("name"), name_);
+    writer.writeAttribute(QStringLiteral("description"), desc_);
 
-    writer.writeEmptyElement("kactus2:returnValue");
-    writer.writeAttribute("type", returnType_);
-    writer.writeAttribute("description", returnValueDesc_);
+    writer.writeEmptyElement(QStringLiteral("kactus2:returnValue"));
+    writer.writeAttribute(QStringLiteral("type"), returnType_);
+    writer.writeAttribute(QStringLiteral("description"), returnValueDesc_);
 
     foreach (QSharedPointer<ApiFunctionParameter> param, params_)
     {
@@ -300,10 +300,13 @@ void ApiFunction::generateToolTipText(int paramIndex, QString& text) const
 {
     text.clear();
 
-    text += "<p style='white-space:pre'>";
+    text = QStringLiteral("<p style='white-space:pre'>");
 
     // First add the return value hint and the function name.
-    text += returnType_ + ' ' + name_ + '(';
+    text.append(returnType_);
+    text.append(QLatin1Char(' '));
+    text.append(name_);
+    text.append(QLatin1Char('('));
 
     // Then add the function parameters.
     for (int i = 0; i < params_.count(); ++i)
@@ -311,25 +314,33 @@ void ApiFunction::generateToolTipText(int paramIndex, QString& text) const
         // Highlight the parameter of the given index.
         if (i == paramIndex)
         {
-            text += "<b>" + params_.at(i)->getType() + ' ' + params_.at(i)->name() + "</b>";
+            text.append(QStringLiteral("<b>"));
+            text.append(params_.at(i)->getType());
+            text.append(QLatin1Char(' '));
+            text.append(params_.at(i)->name());
+            text.append(QStringLiteral("</b>"));
         }
         else
         {
-            text += params_.at(i)->getType() + ' ' + params_.at(i)->name();
+            text.append(params_.at(i)->getType());
+            text.append(QLatin1Char(' '));
+            text.append(params_.at(i)->name());
         }
 
         // Add comma only if this is not the last parameter.
         if (i < params_.count() - 1)
         {
-            text += ", ";
+            text.append(QStringLiteral(", "));
         }
     }
 
-    text += ")<br>" + desc_;
+    text.append(QStringLiteral(")<br>"));
+    text.append(desc_);
     
     if (paramIndex < params_.size())
     {
-        text += "<br><b>Parameter:</b> " + params_.at(paramIndex)->getDescription();
+        text.append(QStringLiteral("<br><b>Parameter:</b> "));
+        text.append(params_.at(paramIndex)->getDescription());
     }
 }
 

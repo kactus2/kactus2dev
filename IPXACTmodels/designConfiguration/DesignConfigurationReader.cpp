@@ -69,14 +69,14 @@ QSharedPointer<DesignConfiguration> DesignConfigurationReader::createDesignConfi
 void DesignConfigurationReader::parseDesignReference(QDomNode const& designConfigurationNode,
     QSharedPointer<DesignConfiguration> newDesignConfiguration) const
 {
-    QDomNode designReferenceNode = designConfigurationNode.firstChildElement("ipxact:designRef");
+    QDomNode designReferenceNode = designConfigurationNode.firstChildElement(QStringLiteral("ipxact:designRef"));
 
     QDomNamedNodeMap attributeMap = designReferenceNode.attributes();
 
-    QString vendor = attributeMap.namedItem("vendor").nodeValue();
-    QString library = attributeMap.namedItem("library").nodeValue();
-    QString name = attributeMap.namedItem("name").nodeValue();
-    QString version = attributeMap.namedItem("version").nodeValue();
+    QString vendor = attributeMap.namedItem(QStringLiteral("vendor")).nodeValue();
+    QString library = attributeMap.namedItem(QStringLiteral("library")).nodeValue();
+    QString name = attributeMap.namedItem(QStringLiteral("name")).nodeValue();
+    QString version = attributeMap.namedItem(QStringLiteral("version")).nodeValue();
 
     VLNV designReferenceVLNV(VLNV::DESIGN, vendor, library, name, version);
     newDesignConfiguration->setDesignRef(designReferenceVLNV);
@@ -89,7 +89,7 @@ void DesignConfigurationReader::parseGeneratorChainConfigurations(QDomDocument c
     QSharedPointer<DesignConfiguration> newDesignConfiguration) const
 {
     QDomNodeList chainConfigurationElements =
-        designConfigurationDocument.elementsByTagName("ipxact:generatorChainConfiguration");
+        designConfigurationDocument.elementsByTagName(QStringLiteral("ipxact:generatorChainConfiguration"));
 
     for (int i = 0; i < chainConfigurationElements.size(); ++i)
     {
@@ -116,7 +116,7 @@ void DesignConfigurationReader::parseInterconnectionConfigurations(QDomDocument 
     QSharedPointer<DesignConfiguration> newDesignConfiguration) const
 {
     QDomNodeList interconnectionElements =
-        designConfigurationDocument.elementsByTagName("ipxact:interconnectionConfiguration");
+        designConfigurationDocument.elementsByTagName(QStringLiteral("ipxact:interconnectionConfiguration"));
 
     for (int interconConfIndex = 0; interconConfIndex < interconnectionElements.size(); ++interconConfIndex)
     {
@@ -126,10 +126,10 @@ void DesignConfigurationReader::parseInterconnectionConfigurations(QDomDocument 
             new InterconnectionConfiguration());
 
         newInterconnectionConfiguration->setIsPresent (
-            interconnectionConfigurationNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue());
+            interconnectionConfigurationNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
 
         newInterconnectionConfiguration->setInterconnectionReference(interconnectionConfigurationNode.
-            firstChildElement("ipxact:interconnectionRef").firstChild().nodeValue());
+            firstChildElement(QStringLiteral("ipxact:interconnectionRef")).firstChild().nodeValue());
 
         parseMultipleAbstractors(interconnectionConfigurationNode, newInterconnectionConfiguration);
         
@@ -144,7 +144,7 @@ void DesignConfigurationReader::parseMultipleAbstractors(QDomNode const& interco
     QSharedPointer<InterconnectionConfiguration> newInterconnectionConfiguration) const
 {
     QDomNodeList multipleAbstractorsNodes =
-        getNamedChildNodes(interconnectionConfigurationNode, "ipxact:abstractorInstances");
+        getNamedChildNodes(interconnectionConfigurationNode, QStringLiteral("ipxact:abstractorInstances"));
 
     for (int multipleAbstractorsIndex = 0; multipleAbstractorsIndex < multipleAbstractorsNodes.size();
         ++multipleAbstractorsIndex)
@@ -154,7 +154,7 @@ void DesignConfigurationReader::parseMultipleAbstractors(QDomNode const& interco
         QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractors (new MultipleAbstractorInstances());
 
         newMultipleAbstractors->setIsPresent(
-            multipleAbstractorNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue());
+            multipleAbstractorNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
 
         parseInterfaceReferences(multipleAbstractorNode, newMultipleAbstractors);
 
@@ -170,7 +170,7 @@ void DesignConfigurationReader::parseMultipleAbstractors(QDomNode const& interco
 void DesignConfigurationReader::parseInterfaceReferences(QDomNode const& multipleAbstractorsNode,
     QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances) const
 {
-    QDomNodeList interfaceRefNodes = getNamedChildNodes(multipleAbstractorsNode, "ipxact:interfaceRef");
+    QDomNodeList interfaceRefNodes = getNamedChildNodes(multipleAbstractorsNode, QStringLiteral("ipxact:interfaceRef"));
 
     for (int interfaceRefIndex = 0; interfaceRefIndex < interfaceRefNodes.size(); ++interfaceRefIndex)
     {
@@ -180,10 +180,10 @@ void DesignConfigurationReader::parseInterfaceReferences(QDomNode const& multipl
 
         QSharedPointer<InterfaceRef> newInterfaceRef (new InterfaceRef());
 
-        newInterfaceRef->setComponentRef(attributeMap.namedItem("componentRef").nodeValue());
-        newInterfaceRef->setBusRef(attributeMap.namedItem("busRef").nodeValue());
+        newInterfaceRef->setComponentRef(attributeMap.namedItem(QStringLiteral("componentRef")).nodeValue());
+        newInterfaceRef->setBusRef(attributeMap.namedItem(QStringLiteral("busRef")).nodeValue());
         newInterfaceRef->setIsPresent(
-            singleInterfaceRefNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue());
+            singleInterfaceRefNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
 
         newMultipleAbstractorInstances->getInterfaceReferences()->append(newInterfaceRef);
     }
@@ -195,7 +195,7 @@ void DesignConfigurationReader::parseInterfaceReferences(QDomNode const& multipl
 void DesignConfigurationReader::parseAbstractorInstances(QDomNode const& multipleAbstractorsNode,
     QSharedPointer<MultipleAbstractorInstances> newMultipleAbstractorInstances) const
 {
-    QDomNodeList abstractorInstanceNodes = getNamedChildNodes(multipleAbstractorsNode, "ipxact:abstractorInstance");
+    QDomNodeList abstractorInstanceNodes = getNamedChildNodes(multipleAbstractorsNode, QStringLiteral("ipxact:abstractorInstance"));
 
     for (int i = 0; i < abstractorInstanceNodes.size(); ++i)
     {
@@ -204,16 +204,16 @@ void DesignConfigurationReader::parseAbstractorInstances(QDomNode const& multipl
         QSharedPointer<AbstractorInstance> newAbstractorInstance (new AbstractorInstance());
 
         newAbstractorInstance->setInstanceName(
-            singleAbstractorInstanceNode.firstChildElement("ipxact:instanceName").firstChild().nodeValue());
+            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue());
         newAbstractorInstance->setDisplayName(
-            singleAbstractorInstanceNode.firstChildElement("ipxact:displayName").firstChild().nodeValue());
+            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
         newAbstractorInstance->setDescription(
-            singleAbstractorInstanceNode.firstChildElement("ipxact:description").firstChild().nodeValue());
+            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
         newAbstractorInstance->setViewName(
-            singleAbstractorInstanceNode.firstChildElement("ipxact:viewName").firstChild().nodeValue());
+            singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:viewName")).firstChild().nodeValue());
 
         QDomNode abstractorReferenceNode
-            = singleAbstractorInstanceNode.firstChildElement("ipxact:abstractorRef");
+            = singleAbstractorInstanceNode.firstChildElement(QStringLiteral("ipxact:abstractorRef"));
 
         QSharedPointer<ConfigurableVLNVReference> newAbstractorRef = 
             parseConfigurableVLNVReference(abstractorReferenceNode, VLNV::ABSTRACTOR);
@@ -231,7 +231,7 @@ QDomNodeList DesignConfigurationReader::getNamedChildNodes(QDomNode const& targe
 {
     QDomNodeList allChildNodes = targetNode.childNodes();
 
-    QDomDocument targetDocument("temporaryDoc");
+    QDomDocument targetDocument(QStringLiteral("temporaryDoc"));
 
     for (int i = 0; i < allChildNodes.size(); ++i)
     {
@@ -251,7 +251,7 @@ QDomNodeList DesignConfigurationReader::getNamedChildNodes(QDomNode const& targe
 void DesignConfigurationReader::parseViewConfigurations(QDomDocument const& designConfigurationDocument,
     QSharedPointer<DesignConfiguration> newDesignConfiguration) const
 {
-    QDomNodeList viewConfigurationNodes = designConfigurationDocument.elementsByTagName("ipxact:viewConfiguration");
+    QDomNodeList viewConfigurationNodes = designConfigurationDocument.elementsByTagName(QStringLiteral("ipxact:viewConfiguration"));
 
     for (int i = 0; i < viewConfigurationNodes.size(); ++i)
     {
@@ -260,17 +260,17 @@ void DesignConfigurationReader::parseViewConfigurations(QDomDocument const& desi
         QSharedPointer<ViewConfiguration> newViewConfiguration (new ViewConfiguration());
 
         newViewConfiguration->setInstanceName(
-            singleViewConfigurationNode.firstChildElement("ipxact:instanceName").firstChild().nodeValue());
+            singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue());
         newViewConfiguration->setIsPresent(
-            singleViewConfigurationNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue());
+            singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
 
-        QDomNode viewNode = singleViewConfigurationNode.firstChildElement("ipxact:view");
+        QDomNode viewNode = singleViewConfigurationNode.firstChildElement(QStringLiteral("ipxact:view"));
         
-        QDomNamedNodeMap attribeMap = viewNode.attributes();
+        QDomNamedNodeMap attributeMap = viewNode.attributes();
 
-        newViewConfiguration->setViewReference(attribeMap.namedItem("viewRef").nodeValue());
+        newViewConfiguration->setViewReference(attributeMap.namedItem(QStringLiteral("viewRef")).nodeValue());
 
-        QDomNode multipleConfigurableElementsNode = viewNode.firstChildElement("ipxact:configurableElementValues");
+        QDomNode multipleConfigurableElementsNode = viewNode.firstChildElement(QStringLiteral("ipxact:configurableElementValues"));
 
         QDomNodeList configurableElementNodes = multipleConfigurableElementsNode.childNodes();
 
@@ -292,15 +292,16 @@ void DesignConfigurationReader::parseViewConfigurations(QDomDocument const& desi
 void DesignConfigurationReader::parseDesignConfigurationExtensions(QDomNode const& designConfigurationNode,
     QSharedPointer<DesignConfiguration> newDesignConfiguration) const
 {
-    QDomNode extensionsNode = designConfigurationNode.firstChildElement("ipxact:vendorExtensions");
+    QDomNode extensionsNode = designConfigurationNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
 
-    QDomElement configurableElementsNode = extensionsNode.firstChildElement("kactus2:configurableElementValues");
+    QDomElement configurableElementsNode = extensionsNode.firstChildElement(
+        QStringLiteral("kactus2:configurableElementValues"));
     if (!configurableElementsNode.isNull())
     {
         parseInstanceConfigurableElementValues(configurableElementsNode, newDesignConfiguration);
     }
 
-    QDomElement viewOverridesNode = extensionsNode.firstChildElement("kactus2:viewOverrides");
+    QDomElement viewOverridesNode = extensionsNode.firstChildElement(QStringLiteral("kactus2:viewOverrides"));
     if (!viewOverridesNode.isNull())
     {
         parseViewOverrides(viewOverridesNode, newDesignConfiguration);
@@ -316,7 +317,7 @@ void DesignConfigurationReader::parseInstanceConfigurableElementValues(QDomEleme
     QSharedPointer<DesignConfiguration> newDesignConfiguration) const
 {
     QDomNodeList componentInstanceList =
-        configurableElementsNode.elementsByTagName("kactus2:componentInstance");
+        configurableElementsNode.elementsByTagName(QStringLiteral("kactus2:componentInstance"));
     for (int instanceIndex = 0; instanceIndex < componentInstanceList.count(); ++instanceIndex)
     {
         QDomNode instance = componentInstanceList.at(instanceIndex);
@@ -324,17 +325,17 @@ void DesignConfigurationReader::parseInstanceConfigurableElementValues(QDomEleme
 
         if (!instanceElement.isNull())
         {
-            QString instanceUUID = instanceElement.firstChildElement("kactus2:uuid").firstChild().nodeValue();
+            QString instanceUUID = instanceElement.firstChildElement(QStringLiteral("kactus2:uuid")).firstChild().nodeValue();
             QMap<QString, QString> configurableElementValues;
 
-            QDomNodeList elementNodes = instanceElement.elementsByTagName("kactus2:configurableElementValue");
+            QDomNodeList elementNodes = instanceElement.elementsByTagName(QStringLiteral("kactus2:configurableElementValue"));
             for (int elementIndex = 0; elementIndex < elementNodes.count(); ++elementIndex)
             {
                 QDomNode singleElementNode = elementNodes.at(elementIndex);
                 QDomNamedNodeMap elementAttributes = singleElementNode.attributes();
 
-                QString referenceID = elementAttributes.namedItem("referenceId").nodeValue();
-                QString configuredValue = elementAttributes.namedItem("value").nodeValue();
+                QString referenceID = elementAttributes.namedItem(QStringLiteral("referenceId")).nodeValue();
+                QString configuredValue = elementAttributes.namedItem(QStringLiteral("value")).nodeValue();
                 configurableElementValues.insert(referenceID, configuredValue);
             }
 
@@ -351,14 +352,14 @@ void DesignConfigurationReader::parseViewOverrides(QDomElement const& viewOverri
 {
     QMap<QString, QString> newViewOverrides;
 
-    QDomNodeList viewOverrideList = viewOverridesNode.elementsByTagName("kactus2:instanceView");
+    QDomNodeList viewOverrideList = viewOverridesNode.elementsByTagName(QStringLiteral("kactus2:instanceView"));
     for (int overrideIndex = 0; overrideIndex < viewOverrideList.count(); ++overrideIndex)
     {
         QDomNode viewOverride = viewOverrideList.at(overrideIndex);
 
         QDomNamedNodeMap overrideAttributes = viewOverride.attributes();
-        QString instanceID = overrideAttributes.namedItem("id").nodeValue();
-        QString viewName = overrideAttributes.namedItem("viewName").nodeValue();
+        QString instanceID = overrideAttributes.namedItem(QStringLiteral("id")).nodeValue();
+        QString viewName = overrideAttributes.namedItem(QStringLiteral("viewName")).nodeValue();
 
         newViewOverrides.insert(instanceID, viewName);
     }

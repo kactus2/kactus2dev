@@ -33,12 +33,12 @@ QStringList FileTypes::getFileTypes( QSettings& settings, const QString& fileSuf
 {
     QStringList types;
 
-	settings.beginGroup("FileTypes");
+	settings.beginGroup(QStringLiteral("FileTypes"));
 	foreach (QString const& type, settings.childGroups())
     {
-		QString extensions = settings.value(type + "/Extensions").toString();
+		QString extensions = settings.value(type + QStringLiteral("/Extensions")).toString();
 
-		foreach (QString extension, extensions.split(";", QString::SkipEmptyParts))
+		foreach (QString const& extension, extensions.split(QLatin1Char(';'), QString::SkipEmptyParts))
         {
 			if (extension.compare(fileSuffix, Qt::CaseInsensitive) == 0)
             {

@@ -130,7 +130,7 @@ void FileSetValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Fil
 //-----------------------------------------------------------------------------
 bool FileSetValidator::hasValidName(QString const& name) const
 {
-	QRegularExpression whiteSpaceExpression("^\\s*$");
+	QRegularExpression whiteSpaceExpression(QStringLiteral("^\\s*$"));
 
 	if (name.isEmpty() || whiteSpaceExpression.match(name).hasMatch())
 	{

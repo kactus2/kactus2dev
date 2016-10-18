@@ -41,14 +41,14 @@ QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode) const
     NameGroupReader nameReader;
     nameReader.parseNameGroup(portNode, newPort);
 
-    newPort->setIsPresent(portNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue());
+    newPort->setIsPresent(portNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
 
-    QDomElement wireElement = portNode.firstChildElement("ipxact:wire");
+    QDomElement wireElement = portNode.firstChildElement(QStringLiteral("ipxact:wire"));
     if (!wireElement.isNull())
     {
         parseWire(wireElement, newPort);
     }
-    QDomElement transactionalElement = portNode.firstChildElement("ipxact:transactional");
+    QDomElement transactionalElement = portNode.firstChildElement(QStringLiteral("ipxact:transactional"));
     if (!transactionalElement.isNull())
     {
         parseTransactional(transactionalElement, newPort);
@@ -66,24 +66,25 @@ QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode) const
 //-----------------------------------------------------------------------------
 void PortReader::parseWire(QDomElement const& wireElement, QSharedPointer<Port> newPort) const
 {
-    QDomElement directionElement = wireElement.firstChildElement("ipxact:direction");
+    QDomElement directionElement = wireElement.firstChildElement(QStringLiteral("ipxact:direction"));
     QString directionString = directionElement.firstChild().nodeValue();
 
     QSharedPointer<Wire> newWire (new Wire());
     newWire->setDirection(DirectionTypes::str2Direction(directionString, DirectionTypes::IN));
 
-    QString allLogicalDirectionsAllowed = wireElement.attribute("allLogicalDirectionsAllowed");
+    QString allLogicalDirectionsAllowed = wireElement.attribute(QStringLiteral("allLogicalDirectionsAllowed"));
     if (!allLogicalDirectionsAllowed.isEmpty())
     {
         newWire->setAllLogicalDirectionsAllowed(true);
     }
 
-    parseWireVectors(wireElement.firstChildElement("ipxact:vectors"), newWire);
+    parseWireVectors(wireElement.firstChildElement(QStringLiteral("ipxact:vectors")), newWire);
 
-    QDomElement wireTypeDefsElement = wireElement.firstChildElement("ipxact:wireTypeDefs");
+    QDomElement wireTypeDefsElement = wireElement.firstChildElement(QStringLiteral("ipxact:wireTypeDefs"));
     if (!wireTypeDefsElement.isNull())
     {
-        newWire->setWireTypeDefs(parseWireTypeDefinitions(wireTypeDefsElement, "ipxact:wireTypeDef", "constrained"));
+        newWire->setWireTypeDefs(parseWireTypeDefinitions(wireTypeDefsElement, QStringLiteral("ipxact:wireTypeDef"),
+            QStringLiteral("constrained")));
     }
 
     parseWireDefaultValue(wireElement, newWire);
@@ -96,12 +97,12 @@ void PortReader::parseWire(QDomElement const& wireElement, QSharedPointer<Port> 
 //-----------------------------------------------------------------------------
 void PortReader::parseWireVectors(QDomElement const& vectorsElement, QSharedPointer<Wire> newWire) const
 {
-    QDomNodeList vectorNodeList = vectorsElement.elementsByTagName("ipxact:vector");
+    QDomNodeList vectorNodeList = vectorsElement.elementsByTagName(QStringLiteral("ipxact:vector"));
     for (int vectorIndex = 0; vectorIndex < vectorNodeList.count(); ++vectorIndex)
     {
         QDomNode vectorNode = vectorNodeList.at(vectorIndex);
-        newWire->setVectorLeftBound(vectorNode.firstChildElement("ipxact:left").firstChild().nodeValue());
-        newWire->setVectorRightBound(vectorNode.firstChildElement("ipxact:right").firstChild().nodeValue());
+        newWire->setVectorLeftBound(vectorNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue());
+        newWire->setVectorRightBound(vectorNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue());
     }
 
 }
@@ -119,7 +120,7 @@ QSharedPointer<QList<QSharedPointer<WireTypeDef> > > PortReader::parseWireTypeDe
     {
         QDomElement wireTypeDefinitionElement = wireYypeDefinitionNodeList.at(wireTypeIndex).toElement();
 
-        QDomElement nameElement = wireTypeDefinitionElement.firstChildElement("ipxact:typeName");
+        QDomElement nameElement = wireTypeDefinitionElement.firstChildElement(QStringLiteral("ipxact:typeName"));
         QString typeName = nameElement.firstChild().nodeValue();
         QSharedPointer<WireTypeDef> newWireTypeDefinition (new WireTypeDef(typeName));
         if (!nameElement.attribute(attributeName).isEmpty())
@@ -143,7 +144,7 @@ QSharedPointer<QList<QSharedPointer<WireTypeDef> > > PortReader::parseWireTypeDe
 void PortReader::parseTypeDefinitions(QDomElement const& wireTypeDefinitionElement,
     QSharedPointer<WireTypeDef> newWireTypeDefinition) const
 {
-    QDomNodeList typeDefinitionList = wireTypeDefinitionElement.elementsByTagName("ipxact:typeDefinition");
+    QDomNodeList typeDefinitionList = wireTypeDefinitionElement.elementsByTagName(QStringLiteral("ipxact:typeDefinition"));
     QStringList definitionList;
     for (int typeDefinitionIndex = 0; typeDefinitionIndex < typeDefinitionList.count(); ++typeDefinitionIndex)
     {
@@ -162,7 +163,7 @@ void PortReader::parseTypeDefinitions(QDomElement const& wireTypeDefinitionEleme
 void PortReader::parseViewReferences(QDomElement const& wireTypeDefinitionElement,
     QSharedPointer<WireTypeDef> newWireTypeDefinition) const
 {
-    QDomNodeList viewRefNodeList = wireTypeDefinitionElement.elementsByTagName("ipxact:viewRef");
+    QDomNodeList viewRefNodeList = wireTypeDefinitionElement.elementsByTagName(QStringLiteral("ipxact:viewRef"));
     QStringList viewRefs;
 
     for (int viewIndex = 0; viewIndex < viewRefNodeList.count(); ++viewIndex)
@@ -182,14 +183,14 @@ void PortReader::parseViewReferences(QDomElement const& wireTypeDefinitionElemen
 //-----------------------------------------------------------------------------
 void PortReader::parseWireDefaultValue(QDomElement const& wireElement, QSharedPointer<Wire> newWire) const
 {
-    QDomElement driversElement = wireElement.firstChildElement("ipxact:drivers");
+    QDomElement driversElement = wireElement.firstChildElement(QStringLiteral("ipxact:drivers"));
 
     if (!driversElement.isNull())
     {
-        QDomNodeList driverNodeList = driversElement.elementsByTagName("ipxact:driver");
+        QDomNodeList driverNodeList = driversElement.elementsByTagName(QStringLiteral("ipxact:driver"));
         for (int driverIndex = 0; driverIndex < driverNodeList.count(); ++driverIndex)
         {
-            QDomNode driverDefaultNode = driverNodeList.at(driverIndex).firstChildElement("ipxact:defaultValue");
+            QDomNode driverDefaultNode = driverNodeList.at(driverIndex).firstChildElement(QStringLiteral("ipxact:defaultValue"));
             QString defaultValue = driverDefaultNode.firstChild().nodeValue();
             newWire->setDefaultDriverValue(defaultValue);
         }
@@ -203,19 +204,20 @@ void PortReader::parseTransactional(QDomElement const& transactionalElement, QSh
 {
     QSharedPointer<Transactional> newTransactional(new Transactional());
 
-    QString allLogicalInitiativesAllowed = transactionalElement.attribute("allLogicalInitiativesAllowed");
+    QString allLogicalInitiativesAllowed = transactionalElement.attribute(
+        QStringLiteral("allLogicalInitiativesAllowed"));
     if (!allLogicalInitiativesAllowed.isEmpty())
     {
         newTransactional->setAllLogicalInitiativesAllowed(true);
     }
 
-    QDomElement initiativeElement = transactionalElement.firstChildElement("ipxact:initiative");
+    QDomElement initiativeElement = transactionalElement.firstChildElement(QStringLiteral("ipxact:initiative"));
     QString initiative = initiativeElement.firstChild().nodeValue();
     newTransactional->setInitiative(initiative);
 
-    parseTransactionalKind(transactionalElement.firstChildElement("ipxact:kind"), newTransactional);
+    parseTransactionalKind(transactionalElement.firstChildElement(QStringLiteral("ipxact:kind")), newTransactional);
 
-    QDomElement busWidthElement = transactionalElement.firstChildElement("ipxact:busWidth");
+    QDomElement busWidthElement = transactionalElement.firstChildElement(QStringLiteral("ipxact:busWidth"));
     if (!busWidthElement.isNull())
     {
         QString busWidth = busWidthElement.firstChild().nodeValue();
@@ -224,11 +226,11 @@ void PortReader::parseTransactional(QDomElement const& transactionalElement, QSh
 
     parseTransactionalProtocol(transactionalElement, newTransactional);
 
-    QDomElement typeDefinitions = transactionalElement.firstChildElement("ipxact:transTypeDefs");
+    QDomElement typeDefinitions = transactionalElement.firstChildElement(QStringLiteral("ipxact:transTypeDefs"));
     if (!typeDefinitions.isNull())
     {
-        newTransactional->setTransTypeDefs(parseWireTypeDefinitions(typeDefinitions, "ipxact:transTypeDef",
-            "exact"));
+        newTransactional->setTransTypeDefs(parseWireTypeDefinitions(typeDefinitions, 
+            QStringLiteral("ipxact:transTypeDef"), QStringLiteral("exact")));
     }
 
     parseTransactionalConnectionsMinMax(transactionalElement, newTransactional);
@@ -245,9 +247,9 @@ void PortReader::parseTransactionalKind(QDomElement const& kindElement,
     if (!kindElement.isNull())
     {
         QString transactionalKind = kindElement.firstChild().nodeValue();
-        if (transactionalKind == "custom" && kindElement.hasAttribute("custom"))
+        if (transactionalKind == QLatin1String("custom") && kindElement.hasAttribute(QStringLiteral("custom")))
         {
-            transactionalKind = kindElement.attribute("custom");
+            transactionalKind = kindElement.attribute(QStringLiteral("custom"));
         }
         transactional->setKind(transactionalKind);
     }
@@ -259,7 +261,7 @@ void PortReader::parseTransactionalKind(QDomElement const& kindElement,
 void PortReader::parseTransactionalProtocol(QDomNode const& transactionalNode,
     QSharedPointer<Transactional> transactional) const
 {
-    QDomNode protocolNode = transactionalNode.firstChildElement("ipxact:protocol");
+    QDomNode protocolNode = transactionalNode.firstChildElement(QStringLiteral("ipxact:protocol"));
     if (!protocolNode.isNull())
     {
         ProtocolReader protocolReader;
@@ -274,17 +276,17 @@ void PortReader::parseTransactionalProtocol(QDomNode const& transactionalNode,
 void PortReader::parseTransactionalConnectionsMinMax(QDomElement const& transactionalElement,
     QSharedPointer<Transactional> transactional) const
 {
-    QDomElement connectionsElement = transactionalElement.firstChildElement("ipxact:connection");
+    QDomElement connectionsElement = transactionalElement.firstChildElement(QStringLiteral("ipxact:connection"));
     if (!connectionsElement.isNull())
     {
-        QDomElement maxElement = connectionsElement.firstChildElement("ipxact:maxConnections");
+        QDomElement maxElement = connectionsElement.firstChildElement(QStringLiteral("ipxact:maxConnections"));
         if (!maxElement.isNull())
         {
             QString maxConnections = maxElement.firstChild().nodeValue();
             transactional->setMaxConnections(maxConnections);
         }
 
-        QDomElement minElement = connectionsElement.firstChildElement("ipxact:minConnections");
+        QDomElement minElement = connectionsElement.firstChildElement(QStringLiteral("ipxact:minConnections"));
         if (!minElement.isNull())
         {
             QString minConnections = minElement.firstChild().nodeValue();
@@ -298,16 +300,16 @@ void PortReader::parseTransactionalConnectionsMinMax(QDomElement const& transact
 //-----------------------------------------------------------------------------
 void PortReader::parseArrays(QDomNode const& portNode, QSharedPointer<Port> newPort) const
 {
-    QDomElement arraysElement = portNode.firstChildElement("ipxact:arrays");
+    QDomElement arraysElement = portNode.firstChildElement(QStringLiteral("ipxact:arrays"));
 
-    QDomNodeList arrayNodeList = arraysElement.elementsByTagName("ipxact:array");
+    QDomNodeList arrayNodeList = arraysElement.elementsByTagName(QStringLiteral("ipxact:array"));
 
     for (int arrayIndex = 0; arrayIndex < arrayNodeList.count(); ++arrayIndex)
     {
         QDomNode arrayNode = arrayNodeList.at(arrayIndex);
 
-        QString arrayLeft = arrayNode.firstChildElement("ipxact:left").firstChild().nodeValue();
-        QString arrayRight = arrayNode.firstChildElement("ipxact:right").firstChild().nodeValue();
+        QString arrayLeft = arrayNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
+        QString arrayRight = arrayNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
 
         QSharedPointer<Array> newArray (new Array(arrayLeft, arrayRight));
 
@@ -320,21 +322,21 @@ void PortReader::parseArrays(QDomNode const& portNode, QSharedPointer<Port> newP
 //-----------------------------------------------------------------------------
 void PortReader::parsePortExtensions(QDomNode const& portNode, QSharedPointer<Port> newPort) const
 {
-    QDomElement extensionsNode = portNode.firstChildElement("ipxact:vendorExtensions");
+    QDomElement extensionsNode = portNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
 
-    QDomElement adHocElement = extensionsNode.firstChildElement("kactus2:adHocVisible");
+    QDomElement adHocElement = extensionsNode.firstChildElement(QStringLiteral("kactus2:adHocVisible"));
     if (!adHocElement.isNull())
     {
         newPort->setAdHocVisible(true);
     }
 
-    QDomElement positionElement = extensionsNode.firstChildElement("kactus2:position");
+    QDomElement positionElement = extensionsNode.firstChildElement(QStringLiteral("kactus2:position"));
     if (!positionElement.isNull())
     {
         parsePosition(positionElement, newPort);
     }
 
-    QDomElement tagsElement = extensionsNode.firstChildElement("kactus2:portTags");
+    QDomElement tagsElement = extensionsNode.firstChildElement(QStringLiteral("kactus2:portTags"));
     if (!tagsElement.isNull())
     {
         newPort->setPortTags(tagsElement.firstChild().nodeValue());
@@ -348,7 +350,7 @@ void PortReader::parsePortExtensions(QDomNode const& portNode, QSharedPointer<Po
 //-----------------------------------------------------------------------------
 void PortReader::parsePosition(QDomElement const& positionElement, QSharedPointer<Port> newPort) const
 {
-    int positionX = positionElement.attribute("x").toInt();
-    int positionY = positionElement.attribute("y").toInt();
+    int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
+    int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
     newPort->setDefaultPos(QPointF(positionX, positionY));
 }

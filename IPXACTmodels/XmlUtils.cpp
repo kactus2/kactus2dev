@@ -23,7 +23,7 @@ namespace XmlUtils
     //-----------------------------------------------------------------------------
     IPXACTMODELS_EXPORT QString removeWhiteSpace(QString const& str)
     {
-        return str.simplified().replace(' ', '_');
+        return str.simplified().replace(QLatin1Char(' '), QLatin1Char('_'));
     }
 
     //-----------------------------------------------------------------------------
@@ -63,8 +63,8 @@ namespace XmlUtils
     //-----------------------------------------------------------------------------
     QPointF parsePoint(QDomNode const& node)
     {
-        int x = node.attributes().namedItem("x").nodeValue().toInt();
-        int y = node.attributes().namedItem("y").nodeValue().toInt();
+        int x = node.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt();
+        int y = node.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt();
 
         return QPointF(x, y);
     }

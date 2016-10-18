@@ -38,12 +38,12 @@ InstantiationsWriter::~InstantiationsWriter()
 void InstantiationsWriter::writeDesignInstantiation(QXmlStreamWriter& writer,
     QSharedPointer<DesignInstantiation> instantiation) const
 {
-    writer.writeStartElement("ipxact:designInstantiation");
+    writer.writeStartElement(QStringLiteral("ipxact:designInstantiation"));
 
     NameGroupWriter nameWriter;
     nameWriter.writeNameGroup(writer, instantiation);
 
-    writeReference(writer, instantiation->getDesignReference(), "ipxact:designRef");
+    writeReference(writer, instantiation->getDesignReference(), QStringLiteral("ipxact:designRef"));
 
     writeVendorExtensions(writer, instantiation);
 
@@ -73,14 +73,14 @@ void InstantiationsWriter::writeReference(QXmlStreamWriter& writer,
 void InstantiationsWriter::writeDesignConfigurationInstantiation(QXmlStreamWriter& writer,
     QSharedPointer<DesignConfigurationInstantiation> instantiation) const
 {
-    writer.writeStartElement("ipxact:designConfigurationInstantiation");
+    writer.writeStartElement(QStringLiteral("ipxact:designConfigurationInstantiation"));
 
     NameGroupWriter nameWriter;
     nameWriter.writeNameGroup(writer, instantiation);
 
     writeLanguage(writer, instantiation->getLanguage(), instantiation->isLangugageStrict());
 
-    writeReference(writer, instantiation->getDesignConfigurationReference(), "ipxact:designConfigurationRef");
+    writeReference(writer, instantiation->getDesignConfigurationReference(), QStringLiteral("ipxact:designConfigurationRef"));
 
     writeParameters(writer, instantiation->getParameters());
 
@@ -97,11 +97,11 @@ void InstantiationsWriter::writeLanguage(QXmlStreamWriter& writer, QString const
 {
     if (!language.isEmpty())
     {
-        writer.writeStartElement("ipxact:language");
+        writer.writeStartElement(QStringLiteral("ipxact:language"));
 
         if (languageStrictness)
         {
-            writer.writeAttribute("strict", "true");
+            writer.writeAttribute(QStringLiteral("strict"), QStringLiteral("true"));
         }
         writer.writeCharacters(language);
 
@@ -115,7 +115,7 @@ void InstantiationsWriter::writeLanguage(QXmlStreamWriter& writer, QString const
 void InstantiationsWriter::writeComponentInstantiation(QXmlStreamWriter& writer,
     QSharedPointer<ComponentInstantiation> instantiation) const
 {
-    writer.writeStartElement("ipxact:componentInstantiation");
+    writer.writeStartElement(QStringLiteral("ipxact:componentInstantiation"));
 
     NameGroupWriter nameWriter;
     nameWriter.writeNameGroup(writer, instantiation);
@@ -124,7 +124,7 @@ void InstantiationsWriter::writeComponentInstantiation(QXmlStreamWriter& writer,
 
     if (instantiation->isVirtual())
     {
-        writer.writeTextElement("ipxact:isVirtual", "true");
+        writer.writeTextElement(QStringLiteral("ipxact:isVirtual"), QStringLiteral("true"));
     }
 
     writeNameReferences(writer, instantiation);
@@ -150,23 +150,23 @@ void InstantiationsWriter::writeNameReferences(QXmlStreamWriter& writer,
 {
     if (!instantiation->getLibraryName().isEmpty())
     {
-        writer.writeTextElement("ipxact:libraryName", instantiation->getLibraryName());
+        writer.writeTextElement(QStringLiteral("ipxact:libraryName"), instantiation->getLibraryName());
     }
     if (!instantiation->getPackageName().isEmpty())
     {
-        writer.writeTextElement("ipxact:packageName", instantiation->getPackageName());
+        writer.writeTextElement(QStringLiteral("ipxact:packageName"), instantiation->getPackageName());
     }
     if (!instantiation->getModuleName().isEmpty())
     {
-        writer.writeTextElement("ipxact:moduleName", instantiation->getModuleName());
+        writer.writeTextElement(QStringLiteral("ipxact:moduleName"), instantiation->getModuleName());
     }
     if (!instantiation->getArchitectureName().isEmpty())
     {
-        writer.writeTextElement("ipxact:architectureName", instantiation->getArchitectureName());
+        writer.writeTextElement(QStringLiteral("ipxact:architectureName"), instantiation->getArchitectureName());
     }
     if (!instantiation->getConfigurationName().isEmpty())
     {
-        writer.writeTextElement("ipxact:configurationName", instantiation->getConfigurationName());
+        writer.writeTextElement(QStringLiteral("ipxact:configurationName"), instantiation->getConfigurationName());
     }
 }
 
@@ -178,7 +178,7 @@ void InstantiationsWriter::writeModuleParameters(QXmlStreamWriter& writer,
 {
     if (!moduleParameters->isEmpty())
     {
-        writer.writeStartElement("ipxact:moduleParameters");
+        writer.writeStartElement(QStringLiteral("ipxact:moduleParameters"));
 
         ModuleParameterWriter moduleParameterWriter;
         foreach (QSharedPointer<ModuleParameter> singleModuleParameter, *moduleParameters)
@@ -217,9 +217,9 @@ void InstantiationsWriter::writeFileSetReferences(QXmlStreamWriter& writer, QSha
     {
         foreach (QString fileSetReference, *references)
         {
-            writer.writeStartElement("ipxact:fileSetRef");
+            writer.writeStartElement(QStringLiteral("ipxact:fileSetRef"));
 
-            writer.writeTextElement("ipxact:localName", fileSetReference);
+            writer.writeTextElement(QStringLiteral("ipxact:localName"), fileSetReference);
 
             writer.writeEndElement(); // ipxact:fileSetRef
         }

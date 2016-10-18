@@ -27,7 +27,7 @@ maximum_()
 //-----------------------------------------------------------------------------
 // Function: WriteValueConstraint::WriteValueConstraint()
 //-----------------------------------------------------------------------------
-WriteValueConstraint::WriteValueConstraint( const WriteValueConstraint& other):
+WriteValueConstraint::WriteValueConstraint(WriteValueConstraint const& other):
 type_(other.type_),
 writeAsRead_(other.writeAsRead_),
 useEnumValues_(other.useEnumValues_),
@@ -48,7 +48,7 @@ WriteValueConstraint::~WriteValueConstraint()
 //-----------------------------------------------------------------------------
 // Function: WriteValueConstraint::operator=()
 //-----------------------------------------------------------------------------
-WriteValueConstraint& WriteValueConstraint::operator=( const WriteValueConstraint& other)
+WriteValueConstraint& WriteValueConstraint::operator=(WriteValueConstraint const& other)
 {
     if (&other != this)
     {
@@ -78,8 +78,8 @@ void WriteValueConstraint::setType(WriteValueConstraint::Type newType )
 
     writeAsRead_ = false;
     useEnumValues_ = true;
-    minimum_ = "";
-    maximum_ = "";
+    minimum_ = QString();
+    maximum_ = QString();
 
     if (type_ == WriteValueConstraint::WRITE_AS_READ)
     {
@@ -91,8 +91,8 @@ void WriteValueConstraint::setType(WriteValueConstraint::Type newType )
     }
     else if (type_ == WriteValueConstraint::MIN_MAX)
     {
-        minimum_ = "";
-        maximum_ = "";
+        minimum_ = QString();
+        maximum_ = QString();
     }
 }
 

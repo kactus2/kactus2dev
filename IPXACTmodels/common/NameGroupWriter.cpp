@@ -33,15 +33,15 @@ NameGroupWriter::~NameGroupWriter()
 //-----------------------------------------------------------------------------
 void NameGroupWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup) const
 {
-    writer.writeTextElement("ipxact:name", nameGroup->name());
+    writer.writeTextElement(QStringLiteral("ipxact:name"), nameGroup->name());
 
     if (!nameGroup->displayName().isEmpty())
     {
-        writer.writeTextElement("ipxact:displayName", nameGroup->displayName());
+        writer.writeTextElement(QStringLiteral("ipxact:displayName"), nameGroup->displayName());
     }
 
     if (!nameGroup->description().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", nameGroup->description());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), nameGroup->description());
     }
 }

@@ -287,7 +287,7 @@ bool InterconnectionConfigurationValidator::abstractorInstanceIsValid(QSharedPoi
 bool InterconnectionConfigurationValidator::hasValidName(QString const& name) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
 
     if (name.isEmpty() || whiteSpaceMatch.hasMatch())

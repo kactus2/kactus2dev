@@ -328,7 +328,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
         slave_.clear();
         master_.clear();
         mirroredSlave_.clear();
-        systemGroup_ = "default";
+        systemGroup_ = QStringLiteral("default");
     }
     else if (interfaceMode == General::MIRROREDSLAVE)
     {
@@ -358,7 +358,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
         slave_.clear();
         master_.clear();
         mirroredSlave_.clear();
-        systemGroup_ = "default";
+        systemGroup_ = QStringLiteral("default");
     }
     else if (interfaceMode == General::MONITOR)
     {
@@ -575,9 +575,9 @@ QStringList BusInterface::getLogicalPortNames() const
 //-----------------------------------------------------------------------------
 // Function: BusInterface::hasLogicalPort()
 //-----------------------------------------------------------------------------
-bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const
+bool BusInterface::hasLogicalPort(QString const& logicalPortName ) const
 {
-    if (abstractionTypes_->size() < 1)
+    if (abstractionTypes_->isEmpty())
     {
         return false;
     }
@@ -596,9 +596,9 @@ bool BusInterface::hasLogicalPort( const QString& logicalPortName ) const
 //-----------------------------------------------------------------------------
 // Function: BusInterface::hasPhysicalPort()
 //-----------------------------------------------------------------------------
-bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const
+bool BusInterface::hasPhysicalPort(QString const& physicalPortName ) const
 {
-    if (abstractionTypes_->size() < 1)
+    if (abstractionTypes_->isEmpty())
     {
         return false;
     }
@@ -617,9 +617,9 @@ bool BusInterface::hasPhysicalPort( const QString& physicalPortName ) const
 //-----------------------------------------------------------------------------
 // Function: BusInterface::getLogicalPortName()
 //-----------------------------------------------------------------------------
-QString BusInterface::getLogicalPortName( const QString& physicalPortName ) const
+QString BusInterface::getLogicalPortName(QString const& physicalPortName) const
 {
-    if (abstractionTypes_->size() < 1)
+    if (abstractionTypes_->isEmpty())
     {
         return QString();
     }
@@ -642,7 +642,7 @@ void BusInterface::setMCAPIPortID(int portID)
 {
     foreach (QSharedPointer<Parameter> param, *parameters_)
     {
-        if (param->name() == "kts_port_id")
+        if (param->name() == QLatin1String("kts_port_id"))
         {
             param->setValue(QString::number(portID));
             return;
@@ -650,7 +650,7 @@ void BusInterface::setMCAPIPortID(int portID)
     }
     
     QSharedPointer<Parameter> param(new Parameter());
-    param->setName("kts_port_id");
+    param->setName(QStringLiteral("kts_port_id"));
     param->setValue(QString::number(portID));
     parameters_->append(param);
 }
@@ -662,7 +662,7 @@ int BusInterface::getMCAPIPortID() const
 {
     foreach (QSharedPointer<Parameter> param, *parameters_)
     {
-        if (param->name() == "kts_port_id")
+        if (param->name() == QLatin1String("kts_port_id"))
         {
             return param->getValue().toInt();
         }
@@ -719,7 +719,7 @@ void BusInterface::setDefaultPos(QPointF const& pos)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:position")
+        if (extension->type() == QLatin1String("kactus2:position"))
         {
             getVendorExtensions()->removeAll(extension);
         }
@@ -739,7 +739,7 @@ QPointF BusInterface::getDefaultPos()
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:position")
+        if (extension->type() == QLatin1String("kactus2:position"))
         {
             QSharedPointer<Kactus2Position> defaultPosition = extension.dynamicCast<Kactus2Position>();
             return defaultPosition->position();

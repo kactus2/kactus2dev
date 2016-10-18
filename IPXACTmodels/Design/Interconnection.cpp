@@ -132,7 +132,7 @@ bool Interconnection::isOffPage() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type().compare("kactus2:offPage") == 0)
+        if (extension->type().compare(QLatin1String("kactus2:offPage")) == 0)
         {
             return true;
         }
@@ -148,7 +148,7 @@ void Interconnection::setOffPage(bool offpage)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type().compare("kactus2:offPage") == 0)
+        if (extension->type().compare(QLatin1String("kactus2:offPage")) == 0)
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -157,7 +157,8 @@ void Interconnection::setOffPage(bool offpage)
 
     if (offpage)
     {
-        QSharedPointer<Kactus2Placeholder> offPageExtension (new Kactus2Placeholder("kactus2:offPage"));
+        QSharedPointer<Kactus2Placeholder> offPageExtension(
+            new Kactus2Placeholder(QStringLiteral("kactus2:offPage")));
         getVendorExtensions()->append(offPageExtension);
     }
 }

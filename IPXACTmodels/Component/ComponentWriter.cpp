@@ -57,7 +57,7 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
 
     writeXmlProcessingInstructions(writer, component);
 
-    writer.writeStartElement("ipxact:component");
+    writer.writeStartElement(QStringLiteral("ipxact:component"));
 
     writeNamespaceDeclarations(writer);
 
@@ -107,7 +107,7 @@ void ComponentWriter::writeBusInterfaces(QXmlStreamWriter& writer, QSharedPointe
     {
         BusInterfaceWriter busWriter;
 
-        writer.writeStartElement("ipxact:busInterfaces");
+        writer.writeStartElement(QStringLiteral("ipxact:busInterfaces"));
 
         foreach (QSharedPointer<BusInterface> busInterface, *component->getBusInterfaces())
         {
@@ -127,7 +127,7 @@ void ComponentWriter::writeChannels(QXmlStreamWriter& writer, QSharedPointer<Com
     {
         ChannelWriter channelWriter;
 
-        writer.writeStartElement("ipxact:channels");
+        writer.writeStartElement(QStringLiteral("ipxact:channels"));
 
         foreach (QSharedPointer<Channel> channel, *component->getChannels())
         {
@@ -147,7 +147,7 @@ void ComponentWriter::writeRemapStates(QXmlStreamWriter& writer, QSharedPointer<
     {
         RemapStateWriter remapStateWriter;
 
-        writer.writeStartElement("ipxact:remapStates");
+        writer.writeStartElement(QStringLiteral("ipxact:remapStates"));
 
         foreach (QSharedPointer<RemapState> remapState, *component->getRemapStates())
         {
@@ -167,7 +167,7 @@ void ComponentWriter::writeAddressSpaces(QXmlStreamWriter& writer, QSharedPointe
     {
         AddressSpaceWriter spaceWriter;
 
-        writer.writeStartElement("ipxact:addressSpaces");
+        writer.writeStartElement(QStringLiteral("ipxact:addressSpaces"));
 
         foreach (QSharedPointer<AddressSpace> addressSpace, *component->getAddressSpaces())
         {
@@ -187,7 +187,7 @@ void ComponentWriter::writeMemoryMaps(QXmlStreamWriter& writer, QSharedPointer<C
     {
         MemoryMapWriter mapWriter;
 
-        writer.writeStartElement("ipxact:memoryMaps");
+        writer.writeStartElement(QStringLiteral("ipxact:memoryMaps"));
 
         foreach (QSharedPointer<MemoryMap> memoryMap, *component->getMemoryMaps())
         {
@@ -205,7 +205,7 @@ void ComponentWriter::writeModel(QXmlStreamWriter& writer, QSharedPointer<Compon
 {
     if (component->getModel()->hasContents())
     {
-        writer.writeStartElement("ipxact:model");
+        writer.writeStartElement(QStringLiteral("ipxact:model"));
 
         writeViews(writer, component);
 
@@ -226,7 +226,7 @@ void ComponentWriter::writeViews(QXmlStreamWriter& writer, QSharedPointer<Compon
     {
         ViewWriter viewWriter;
 
-        writer.writeStartElement("ipxact:views");
+        writer.writeStartElement(QStringLiteral("ipxact:views"));
 
         foreach (QSharedPointer<View> view, *component->getViews())
         {
@@ -247,7 +247,7 @@ void ComponentWriter::writeInstantiations(QXmlStreamWriter& writer, QSharedPoint
     {
         InstantiationsWriter instantiationsWriter;
 
-        writer.writeStartElement("ipxact:instantiations");
+        writer.writeStartElement(QStringLiteral("ipxact:instantiations"));
 
         foreach (QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
         {
@@ -276,7 +276,7 @@ void ComponentWriter::writePorts(QXmlStreamWriter& writer, QSharedPointer<Compon
     {
         PortWriter portWriter;
 
-        writer.writeStartElement("ipxact:ports");
+        writer.writeStartElement(QStringLiteral("ipxact:ports"));
 
         foreach (QSharedPointer<Port> port, *component->getPorts())
         {
@@ -296,7 +296,7 @@ void ComponentWriter::writeComponentGenerators(QXmlStreamWriter& writer, QShared
     {
         ComponentGeneratorWriter generatorWriter;
 
-        writer.writeStartElement("ipxact:componentGenerators");
+        writer.writeStartElement(QStringLiteral("ipxact:componentGenerators"));
 
         foreach (QSharedPointer<ComponentGenerator> generator, *component->getComponentGenerators())
         {
@@ -316,7 +316,7 @@ void ComponentWriter::writeChoices(QXmlStreamWriter& writer, QSharedPointer<Comp
     {
         ChoiceWriter choiceWriter;
 
-        writer.writeStartElement("ipxact:choices");
+        writer.writeStartElement(QStringLiteral("ipxact:choices"));
 
         foreach (QSharedPointer<Choice> choice, *component->getChoices())
         {
@@ -336,7 +336,7 @@ void ComponentWriter::writeFileSets(QXmlStreamWriter& writer, QSharedPointer<Com
     {
         FileSetWriter setWriter;
 
-        writer.writeStartElement("ipxact:fileSets");
+        writer.writeStartElement(QStringLiteral("ipxact:fileSets"));
 
         foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
         {
@@ -356,7 +356,7 @@ void ComponentWriter::writeCPUs(QXmlStreamWriter& writer, QSharedPointer<Compone
     {
         CPUWriter cpuWriter;
 
-        writer.writeStartElement("ipxact:cpus");
+        writer.writeStartElement(QStringLiteral("ipxact:cpus"));
 
         foreach (QSharedPointer<Cpu> cpu, *component->getCpus())
         {
@@ -376,7 +376,7 @@ void ComponentWriter::writeOtherClockDrivers(QXmlStreamWriter& writer, QSharedPo
     {
         OtherClockDriverWriter clockWriter;
 
-        writer.writeStartElement("ipxact:otherClockDrivers");
+        writer.writeStartElement(QStringLiteral("ipxact:otherClockDrivers"));
 
         foreach (QSharedPointer<OtherClockDriver> driver, *component->getOtherClockDrivers())
         {

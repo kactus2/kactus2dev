@@ -64,7 +64,7 @@ bool MemoryMapBaseValidator::validate(QSharedPointer<MemoryMapBase> memoryMapBas
 bool MemoryMapBaseValidator::hasValidName(QSharedPointer<MemoryMapBase> memoryMapBase) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(memoryMapBase->name());
 
     if (memoryMapBase->name().isEmpty() || whiteSpaceMatch.hasMatch())
@@ -208,7 +208,9 @@ bool MemoryMapBaseValidator::twoAddressBlocksOverlap(QSharedPointer<AddressBlock
 void MemoryMapBaseValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
     QString const& addressUnitBits, QString const& context) const
 {
-    QString memoryMapContext = memoryMapBase->elementName() + " " + memoryMapBase->name();
+    QString memoryMapContext = memoryMapBase->elementName();
+    memoryMapContext.append(QLatin1Char(' '));
+    memoryMapContext.append(memoryMapBase->name());
 
     findErrorsInName(errors, memoryMapBase, context);
     findErrorsInIsPresent(errors, memoryMapBase, context);

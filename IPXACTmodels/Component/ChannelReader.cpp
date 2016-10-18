@@ -46,10 +46,10 @@ QSharedPointer<Channel> ChannelReader::createChannelFrom(QDomNode const& channel
 	// The intermediate list for parsed child nodes.
 	QStringList busInterfaces;
 
-    QDomNodeList interfaceReferenceNodes = channelNode.toElement().elementsByTagName("ipxact:busInterfaceRef");
+    QDomNodeList interfaceReferenceNodes = channelNode.toElement().elementsByTagName(QStringLiteral("ipxact:busInterfaceRef"));
     for (int i = 0; i < interfaceReferenceNodes.count(); i++)
     {
-        QDomNode nameNode = interfaceReferenceNodes.at(i).toElement().firstChildElement("ipxact:localName");
+        QDomNode nameNode = interfaceReferenceNodes.at(i).toElement().firstChildElement(QStringLiteral("ipxact:localName"));
             
         busInterfaces.append(nameNode.firstChild().nodeValue());
     }
@@ -65,7 +65,7 @@ QSharedPointer<Channel> ChannelReader::createChannelFrom(QDomNode const& channel
 //-----------------------------------------------------------------------------
 void ChannelReader::parseIsPresent(QDomNode const& channelNode, QSharedPointer<Channel> newChannel) const
 {
-	QString newIsPresent = channelNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
+	QString newIsPresent = channelNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
 	if (!newIsPresent.isEmpty())
 	{
 		newChannel->setIsPresent(newIsPresent);

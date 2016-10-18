@@ -31,7 +31,7 @@ ParameterValidator2014::ParameterValidator2014(QSharedPointer<ExpressionParser> 
     QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices):
 expressionParser_(expressionParser),
     availableChoices_(availableChoices),
-    typeValidator_(QRegularExpression("bit|byte|shortint|int|longint|shortreal|real|string|^$"))
+    typeValidator_(QRegularExpression(QStringLiteral("bit|byte|shortint|int|longint|shortreal|real|string|^$")))
 {
 }
 
@@ -122,11 +122,11 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
 
     if (type.isEmpty())
     {
-        return solvedValue != "x";
+        return solvedValue != QLatin1String("x");
     }
 
     bool canConvert = false;
-    if (type == "bit")
+    if (type == QLatin1String("bit"))
     {
         solvedValue.toInt(&canConvert);
         if (canConvert)
@@ -134,26 +134,26 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
             ValueFormatter formatter;
             solvedValue = formatter.format(solvedValue, 2);
 
-            QRegularExpression bitExpression("^([01]|[1-9]?[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$");
+            QRegularExpression bitExpression(QStringLiteral("^([01]|[1-9]?[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$"));
             return bitExpression.match(value).hasMatch() || bitExpression.match(solvedValue).hasMatch();
         }
     }
-    else if (type == "byte")
+    else if (type == QLatin1String("byte"))
     {
         solvedValue.toShort(&canConvert);
         return canConvert && -128 <= solvedValue.toShort() && solvedValue.toShort() <= 127;
     }
-    else if (type == "shortint")
+    else if (type == QLatin1String("shortint"))
     {
         solvedValue.toShort(&canConvert);
     }
-    else if (type == "int")
+    else if (type == QLatin1String("int"))
     {
         solvedValue.toInt(&canConvert);
     }
-    else if (type == "longint")
+    else if (type == QLatin1String("longint"))
     {
-        if (solvedValue.startsWith("-"))
+        if (solvedValue.startsWith(QStringLiteral("-")))
         {
             solvedValue.toLongLong(&canConvert);
         }
@@ -162,17 +162,17 @@ bool ParameterValidator2014::hasValidValueForType(QString const& value, QString 
             solvedValue.toULongLong(&canConvert);
         }
     }
-    else if (type == "shortreal")
+    else if (type == QLatin1String("shortreal"))
     {
         solvedValue.toFloat(&canConvert);
     }
-    else if (type == "real")
+    else if (type == QLatin1String("real"))
     {
         solvedValue.toDouble(&canConvert);
     }
-    else if (type == "string")
+    else if (type == QLatin1String("string"))
     {
-        QRegularExpression stringExpression("^\\s*\".*\"\\s*$");
+        QRegularExpression stringExpression(QStringLiteral("^\\s*\".*\"\\s*$"));
         return stringExpression.match(solvedValue).hasMatch();
     }
 
@@ -190,7 +190,7 @@ bool ParameterValidator2014::isArrayValidForType(QString const& arrayExpression,
     {
         foreach (QString innerValue, subValues)
         {
-            innerValue.remove(" ");
+            innerValue.remove(QLatin1Char(' '));
             if (!hasValidValueForType(innerValue, type))
             {
                 return false;
@@ -274,12 +274,12 @@ bool ParameterValidator2014::hasValidValueForChoice(QSharedPointer<const Paramet
 
     QSharedPointer<Choice> referencedChoice = findChoiceByName(parameter->getChoiceRef());
 
-    if (!referencedChoice.isNull() && parameter->getValue().contains('{') &&
-        parameter->getValue().contains('}'))
+    if (!referencedChoice.isNull() && parameter->getValue().contains(QLatin1Char('{')) &&
+        parameter->getValue().contains(QLatin1Char('}')))
     {
-        QStringList valueArray = parameter->getValue().split(',');
-        valueArray.first().remove('{');
-        valueArray.last().remove('}');
+        QStringList valueArray = parameter->getValue().split(QLatin1Char(','));
+        valueArray.first().remove(QLatin1Char('{'));
+        valueArray.last().remove(QLatin1Char('}'));
 
         foreach (QString const& parameterValue, valueArray)
         {
@@ -457,11 +457,13 @@ void ParameterValidator2014::findErrorsInValue(QVector<QString>& errors, QShared
 void ParameterValidator2014::findErrorsInMinimumValue(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
-    if (shouldCompareValueAndBoundary(parameter->getValueAttribute("ipxact:minimum"), parameter->getType())
-        && !hasValidValueForFormat(parameter->getValueAttribute("ipxact:minimum")))
+    if (shouldCompareValueAndBoundary(parameter->getValueAttribute(QStringLiteral("ipxact:minimum")),
+        parameter->getType())
+        && !hasValidValueForFormat(parameter->getValueAttribute(QStringLiteral("ipxact:minimum"))))
     {
         errors.append(QObject::tr("Minimum value %1 is not valid for format %2 in %3 %4 within %5").arg(
-            parameter->getValueAttribute("ipxact:minimum"), parameter->getValueAttribute("ipxact:format"),
+            parameter->getValueAttribute(QStringLiteral("ipxact:minimum")), 
+            parameter->getValueAttribute(QStringLiteral("ipxact:format")),
             parameter->elementName(), parameter->name(), context));
     }
 }
@@ -472,11 +474,13 @@ void ParameterValidator2014::findErrorsInMinimumValue(QVector<QString>& errors, 
 void ParameterValidator2014::findErrorsInMaximumValue(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
     QString const& context) const
 {
-    if (shouldCompareValueAndBoundary(parameter->getValueAttribute("ipxact:maximum"), parameter->getType())
-        && !hasValidValueForFormat(parameter->getValueAttribute("ipxact:maximum")))
+    if (shouldCompareValueAndBoundary(parameter->getValueAttribute(QStringLiteral("ipxact:maximum")),
+        parameter->getType())
+        && !hasValidValueForFormat(parameter->getValueAttribute(QStringLiteral("ipxact:maximum"))))
     {
         errors.append(QObject::tr("Maximum value %1 is not valid for format %2 in %3 %4 within %5").arg(
-            parameter->getValueAttribute("ipxact:maximum"), parameter->getValueAttribute("ipxact:format"),
+            parameter->getValueAttribute(QStringLiteral("ipxact:maximum")),
+            parameter->getValueAttribute(QStringLiteral("ipxact:format")),
             parameter->elementName(), parameter->name(), context));
     }
 }
@@ -535,7 +539,8 @@ bool ParameterValidator2014::valueIsLessThanMinimum(QSharedPointer<const Paramet
     QString const& solvedValue, QString const& type) const
 {
     QString minimum = parameter->getMinimumValue();
-    if (expressionParser_->isArrayExpression(solvedValue) && type != "bit" && type != "string" && !type.isEmpty())
+    if (expressionParser_->isArrayExpression(solvedValue) && type != QLatin1String("bit") &&
+        type != QLatin1String("string") && !type.isEmpty())
     {
         QStringList subValues = splitArrayToList(solvedValue);
 
@@ -561,7 +566,8 @@ bool ParameterValidator2014::valueIsGreaterThanMaximum(QSharedPointer<const Para
 {
     QString maximum = parameter->getMaximumValue();
 
-    if (expressionParser_->isArrayExpression(solvedValue) && type != "bit" && type != "string" && !type.isEmpty())
+    if (expressionParser_->isArrayExpression(solvedValue) && type != QLatin1String("bit") && 
+        type != QLatin1String("string") && !type.isEmpty())
     {
         QStringList subValues = splitArrayToList(solvedValue);
 
@@ -584,8 +590,8 @@ bool ParameterValidator2014::valueIsGreaterThanMaximum(QSharedPointer<const Para
 //-----------------------------------------------------------------------------
 QStringList ParameterValidator2014::splitArrayToList(QString const& arrayValue) const
 {
-    QStringList subValues = arrayValue.split(',');
-    QRegularExpression startExpression ("^'?{");
+    QStringList subValues = arrayValue.split(QLatin1Char(','));
+    QRegularExpression startExpression (QLatin1String("^'?{"));
 
     subValues.first().remove(startExpression);
     subValues.last().chop(1);

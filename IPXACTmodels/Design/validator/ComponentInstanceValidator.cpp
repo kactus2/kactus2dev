@@ -54,7 +54,7 @@ bool ComponentInstanceValidator::validate(QSharedPointer<ComponentInstance> inst
 bool ComponentInstanceValidator::hasValidName(QSharedPointer<ComponentInstance> instance) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(instance->getInstanceName());
 
     if (instance->getInstanceName().isEmpty() || whiteSpaceMatch.hasMatch())

@@ -62,7 +62,7 @@ void ViewReader::parseNameGroup(QDomNode const& viewNode, QSharedPointer<View> n
 //-----------------------------------------------------------------------------
 void ViewReader::parseIsPresent(QDomNode const& viewNode, QSharedPointer<View> newView) const
 {
-    QString newIsPresent = viewNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
+    QString newIsPresent = viewNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
     if (!newIsPresent.isEmpty())
     {
         newView->setIsPresent(newIsPresent);
@@ -78,13 +78,13 @@ void ViewReader::parseEnvIdentifiers(QDomNode const& viewNode, QSharedPointer<Vi
 
     if (!viewElement.isNull())
     {
-        QDomNodeList envIdentifierNodes = viewElement.elementsByTagName("ipxact:envIdentifier");
+        QDomNodeList envIdentifierNodes = viewElement.elementsByTagName(QStringLiteral("ipxact:envIdentifier"));
 
         for (int i = 0; i < envIdentifierNodes.count(); ++i)
         {
 			// Read an environment identifier, identify its parts by the separator.
 			QString idString = envIdentifierNodes.at(i).firstChild().nodeValue();
-			QStringList idTuple = idString.split(":");
+			QStringList idTuple = idString.split(QLatin1Char(':'));
 
 			// Assign the parts to a struct.
 			QSharedPointer<View::EnvironmentIdentifier> identifier( new View::EnvironmentIdentifier );
@@ -115,20 +115,20 @@ void ViewReader::parseEnvIdentifiers(QDomNode const& viewNode, QSharedPointer<Vi
 //-----------------------------------------------------------------------------
 void ViewReader::parseInstantiationRefs(QDomNode const& viewNode, QSharedPointer<View> newView) const
 {
-    QDomElement componentRefNode = viewNode.firstChildElement("ipxact:componentInstantiationRef");
+    QDomElement componentRefNode = viewNode.firstChildElement(QStringLiteral("ipxact:componentInstantiationRef"));
     if (!componentRefNode.isNull())
     {
         newView->setComponentInstantiationRef(componentRefNode.firstChild().nodeValue());
     }
 
-    QDomElement designRefNode = viewNode.firstChildElement("ipxact:designInstantiationRef");
+    QDomElement designRefNode = viewNode.firstChildElement(QStringLiteral("ipxact:designInstantiationRef"));
     if (!designRefNode.isNull())
     {
         newView->setDesignInstantiationRef(designRefNode.firstChild().nodeValue());
     }
 
     QDomElement designConfigurationRefNode =
-        viewNode.firstChildElement("ipxact:designConfigurationInstantiationRef");
+        viewNode.firstChildElement(QStringLiteral("ipxact:designConfigurationInstantiationRef"));
     if (!designConfigurationRefNode.isNull())
     {
         newView->setDesignConfigurationInstantiationRef(designConfigurationRefNode.firstChild().nodeValue());

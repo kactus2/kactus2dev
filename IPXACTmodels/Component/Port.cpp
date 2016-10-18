@@ -166,7 +166,7 @@ QString Port::getLeftBound() const
         }
     }
 
-    return QString("0");
+    return QStringLiteral("0");
 }
 
 //-----------------------------------------------------------------------------
@@ -198,7 +198,7 @@ QString Port::getRightBound() const
         }
     }
 
-    return QString("0");
+    return QStringLiteral("0");
 }
 
 //-----------------------------------------------------------------------------
@@ -223,7 +223,7 @@ void Port::setRightBound(QString const& newRightBound)
 void Port::setPortSize( int size )
 {
     setLeftBound(QString::number(qMax(0, size-1)));
-    setRightBound(QString("0"));
+    setRightBound(QStringLiteral("0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -334,7 +334,7 @@ QString Port::getTypeName( const QString& viewName /*= QString("")*/ ) const
     }
     else 
     {
-        return QString("");
+        return QString();
     }
 }
 
@@ -390,7 +390,7 @@ QString Port::getTypeDefinition( const QString& typeName )
     }
     else
     {
-        return QString("");
+        return QString();
     }
 }
 
@@ -459,7 +459,7 @@ bool Port::isAdHocVisible() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:adHocVisible")
+        if (extension->type() == QLatin1String("kactus2:adHocVisible"))
         {
             return true;
         }
@@ -475,7 +475,7 @@ void Port::setAdHocVisible(bool visible)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:adHocVisible")
+        if (extension->type() == QLatin1String("kactus2:adHocVisible"))
         {
             if (!visible)
             {
@@ -485,7 +485,8 @@ void Port::setAdHocVisible(bool visible)
         }
     }
 
-    QSharedPointer<Kactus2Placeholder> adHocVisibility (new Kactus2Placeholder("kactus2:adHocVisible"));
+    QSharedPointer<Kactus2Placeholder> adHocVisibility (new Kactus2Placeholder(
+        QStringLiteral("kactus2:adHocVisible")));
     getVendorExtensions()->append(adHocVisibility);
 }
 
@@ -496,7 +497,7 @@ QPointF Port::getDefaultPos() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:position")
+        if (extension->type() == QLatin1String("kactus2:position"))
         {
             QSharedPointer<Kactus2Position> positionExtension = extension.dynamicCast<Kactus2Position>();
             return positionExtension->position();
@@ -513,7 +514,7 @@ void Port::setDefaultPos(QPointF const& pos)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:position")
+        if (extension->type() == QLatin1String("kactus2:position"))
         {
             QSharedPointer<Kactus2Position> positionExtension = extension.dynamicCast<Kactus2Position>();
             positionExtension->setPosition(pos);
@@ -532,7 +533,7 @@ QString Port::getArrayLeft() const
 {
     if (configurableArrays_->isEmpty())
     {
-        return QString("");
+        return QString();
     }
     else
     {
@@ -547,7 +548,7 @@ void Port::setArrayLeft(QString const& newArrayLeft)
 {
     if (configurableArrays_->isEmpty())
     {
-        QSharedPointer<Array> newArray (new Array(newArrayLeft, "0"));
+        QSharedPointer<Array> newArray (new Array(newArrayLeft, QStringLiteral("0")));
         configurableArrays_->append(newArray);
     }
     else
@@ -571,7 +572,7 @@ QString Port::getArrayRight() const
 {
     if (configurableArrays_->isEmpty())
     {
-        return QString("");
+        return QString();
     }
     else
     {
@@ -586,7 +587,7 @@ void Port::setArrayRight(QString const& newArrayRight)
 {
     if (configurableArrays_->isEmpty())
     {
-        QSharedPointer<Array> newArray (new Array("0", newArrayRight));
+        QSharedPointer<Array> newArray (new Array(QStringLiteral("0"), newArrayRight));
         configurableArrays_->append(newArray);
     }
     else
@@ -610,14 +611,14 @@ const QString Port::getPortTags() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:portTags")
+        if (extension->type() == QLatin1String("kactus2:portTags"))
         {
             QSharedPointer<Kactus2Value> portTags = extension.dynamicCast<Kactus2Value>();
             return portTags->value();
         }
     }
 
-    return QString("");
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -627,7 +628,7 @@ void Port::setPortTags(const QString& newPortTags)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:portTags")
+        if (extension->type() == QLatin1String("kactus2:portTags"))
         {
             if (newPortTags.isEmpty())
             {
@@ -642,7 +643,7 @@ void Port::setPortTags(const QString& newPortTags)
         }
     }
 
-    QSharedPointer<Kactus2Value> tagExtension (new Kactus2Value("kactus2:portTags", newPortTags));
+    QSharedPointer<Kactus2Value> tagExtension (new Kactus2Value(QStringLiteral("kactus2:portTags"), newPortTags));
     getVendorExtensions()->append(tagExtension);
 }
 

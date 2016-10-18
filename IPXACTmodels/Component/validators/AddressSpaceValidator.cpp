@@ -69,7 +69,7 @@ bool AddressSpaceValidator::validate(QSharedPointer<AddressSpace> addressSpace) 
 bool AddressSpaceValidator::hasValidName(QString const& name) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
 
     if (name.isEmpty() || whiteSpaceMatch.hasMatch())
@@ -277,7 +277,7 @@ bool AddressSpaceValidator::hasValidParameters(QSharedPointer<AddressSpace> addr
 void AddressSpaceValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressSpace> addressSpace,
     QString const& context) const
 {
-    QString addressSpaceContext = "address space " + addressSpace->name();
+    QString addressSpaceContext = QStringLiteral("address space ") + addressSpace->name();
 
     findErrorsInName(errors, addressSpace, context);
     findErrorsInIsPresent(errors, addressSpace, context);

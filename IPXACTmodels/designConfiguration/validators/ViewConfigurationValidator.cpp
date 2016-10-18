@@ -74,7 +74,7 @@ bool ViewConfigurationValidator::hasValidName(QSharedPointer<ViewConfiguration> 
             if (instance->getInstanceName() == configuration->getInstanceName())
             {
                 QRegularExpression whiteSpaceExpression;
-                whiteSpaceExpression.setPattern("^\\s*$");
+                whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
                 QRegularExpressionMatch whiteSpaceMatch =
                     whiteSpaceExpression.match(configuration->getInstanceName());
 

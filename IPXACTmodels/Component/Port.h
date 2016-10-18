@@ -171,7 +171,7 @@ public:
      *
      *      @return The matching type name.
 	 */
-	QString getTypeName(const QString& viewName = QString("")) const;
+	QString getTypeName(const QString& viewName = QLatin1String("")) const;
     
 	/*!
 	 *  Set the type name for the port in given view.
@@ -179,7 +179,7 @@ public:
 	 *      @param [in] typeName    The name of the type.
 	 *      @param [in] viewName    The name of the view used for this type.
 	 */
-	void setTypeName(const QString& typeName, const QString& viewName = QString(""));
+	void setTypeName(const QString& typeName, const QString& viewName = QLatin1String(""));
 
 	/*!
 	 *  Check if the port has a type name in given view.

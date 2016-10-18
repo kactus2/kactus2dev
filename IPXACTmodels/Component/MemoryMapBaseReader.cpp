@@ -64,7 +64,7 @@ void MemoryMapBaseReader::parseNameGroup(QDomNode const& MemoryMapBaseBaseNode,
 void MemoryMapBaseReader::parsePresence(QDomNode const& MemoryMapBaseBaseNode,
     QSharedPointer<MemoryMapBase> newMemoryMapBaseBase) const
 {
-    QDomNode isPresentNode = MemoryMapBaseBaseNode.firstChildElement("ipxact:isPresent");
+    QDomNode isPresentNode = MemoryMapBaseBaseNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
     if (!isPresentNode.isNull())
     {
         QString isPresent = isPresentNode.firstChild().nodeValue();
@@ -85,7 +85,7 @@ void MemoryMapBaseReader::parseMemoryBlocks(QDomNode const& MemoryMapBaseBaseNod
     for (int childIndex = 0; childIndex < childNodes.count(); ++childIndex)
     {
         QDomNode addressBlockNode = childNodes.at(childIndex);
-        if (addressBlockNode.nodeName() == "ipxact:addressBlock")
+        if (addressBlockNode.nodeName() == QLatin1String("ipxact:addressBlock"))
         {
             QSharedPointer<AddressBlock> newAddressBlock =
                 addressBlockReader.createAddressBlockFrom(addressBlockNode);

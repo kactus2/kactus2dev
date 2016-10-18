@@ -124,7 +124,7 @@ bool BusInterfaceValidator::validate(QSharedPointer<BusInterface> busInterface) 
 bool BusInterfaceValidator::hasValidName(QSharedPointer<BusInterface> busInterface) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(busInterface->name());
 
     if (busInterface->name().isEmpty() || whiteSpaceMatch.hasMatch())
@@ -777,7 +777,7 @@ bool BusInterfaceValidator::hasValidParameters(QSharedPointer<BusInterface> busI
 void BusInterfaceValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
     QString const& context) const
 {
-    QString busInterfaceContext = "bus interface " + busInterface->name();
+    QString busInterfaceContext = QStringLiteral("bus interface ") + busInterface->name();
 
     findErrorsInName(errors, busInterface, context);
     findErrorsInIsPresent(errors, busInterface, context);
@@ -1015,7 +1015,9 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
 {
     General::InterfaceMode interfaceMode = busInterface->getInterfaceMode();
 
-    QString newContext = General::interfaceMode2Str(busInterface->getInterfaceMode()) + " " + busInterfaceContext;
+    QString newContext = General::interfaceMode2Str(busInterface->getInterfaceMode());
+    newContext.append(QLatin1Char(' '));
+    newContext.append(busInterfaceContext);
 
     if (interfaceMode == General::MASTER || interfaceMode == General::MIRROREDMASTER)
     {

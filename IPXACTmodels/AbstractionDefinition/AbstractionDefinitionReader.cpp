@@ -46,7 +46,7 @@ QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstrac
 
     parseXMLProcessingInstructions(document, abstractionDefinion);
 
-    QDomNode definitionNode = document.firstChildElement("ipxact:abstractionDefinition");
+    QDomNode definitionNode = document.firstChildElement(QStringLiteral("ipxact:abstractionDefinition"));
 
     parseVLNVElements(definitionNode, abstractionDefinion, VLNV::ABSTRACTIONDEFINITION);
 
@@ -75,7 +75,7 @@ QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstrac
 void AbstractionDefinitionReader::parseBusType(QDomNode const& definitionNode, 
     QSharedPointer<AbstractionDefinition> abstractionDefinion) const
 {
-    QDomNode extendsNode = definitionNode.firstChildElement("ipxact:busType");
+    QDomNode extendsNode = definitionNode.firstChildElement(QStringLiteral("ipxact:busType"));
     abstractionDefinion->setBusType(parseVLNVAttributes(extendsNode, VLNV::BUSDEFINITION));
 }
 
@@ -85,7 +85,7 @@ void AbstractionDefinitionReader::parseBusType(QDomNode const& definitionNode,
 void AbstractionDefinitionReader::parseExtends(QDomNode const& definitionNode, 
     QSharedPointer<AbstractionDefinition> abstractionDefinion) const
 {
-    QDomNode extendsNode = definitionNode.firstChildElement("ipxact:extends");
+    QDomNode extendsNode = definitionNode.firstChildElement(QStringLiteral("ipxact:extends"));
     if (!extendsNode.isNull())
     {
         abstractionDefinion->setExtends(parseVLNVAttributes(extendsNode, VLNV::ABSTRACTIONDEFINITION));
@@ -100,7 +100,8 @@ void AbstractionDefinitionReader::parsePorts(QDomNode definitionNode,
 {
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > logicalPorts = abstractionDefinion->getLogicalPorts();
 
-    QDomNodeList portNodes = definitionNode.firstChildElement("ipxact:ports").elementsByTagName("ipxact:port");
+    QDomNodeList portNodes = definitionNode.firstChildElement(
+        QStringLiteral("ipxact:ports")).elementsByTagName(QStringLiteral("ipxact:port"));
     int portCount = portNodes.count();
     for (int i = 0; i < portCount; i++)
     {
@@ -116,10 +117,10 @@ QSharedPointer<PortAbstraction> AbstractionDefinitionReader::parsePort(QDomNode 
 {
     QSharedPointer<PortAbstraction> port(new PortAbstraction());
 
-    port->setIsPresent(portNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue());
-    port->setLogicalName(portNode.firstChildElement("ipxact:logicalName").firstChild().nodeValue());
-    port->setDisplayName(portNode.firstChildElement("ipxact:displayName").firstChild().nodeValue());
-    port->setDescription(portNode.firstChildElement("ipxact:description").firstChild().nodeValue());
+    port->setIsPresent(portNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+    port->setLogicalName(portNode.firstChildElement(QStringLiteral("ipxact:logicalName")).firstChild().nodeValue());
+    port->setDisplayName(portNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
+    port->setDescription(portNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
 
     parseWire(portNode, port);
 
@@ -135,7 +136,7 @@ QSharedPointer<PortAbstraction> AbstractionDefinitionReader::parsePort(QDomNode 
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionReader::parseWire(QDomNode const& portNode, QSharedPointer<PortAbstraction> port) const
 {
-    QDomNode wireNode = portNode.firstChildElement("ipxact:wire");
+    QDomNode wireNode = portNode.firstChildElement(QStringLiteral("ipxact:wire"));
 
     if (!wireNode.isNull())
     {
@@ -152,7 +153,7 @@ void AbstractionDefinitionReader::parseWire(QDomNode const& portNode, QSharedPoi
 void AbstractionDefinitionReader::parseTransactional(QDomNode const& portNode, 
     QSharedPointer<PortAbstraction> port) const
 {
-    QDomNode transactionalNode = portNode.firstChildElement("ipxact:transactional");
+    QDomNode transactionalNode = portNode.firstChildElement(QStringLiteral("ipxact:transactional"));
 
     if (!transactionalNode.isNull())
     {
@@ -170,9 +171,9 @@ void AbstractionDefinitionReader::parseTransactional(QDomNode const& portNode,
 void AbstractionDefinitionReader::parseAbstractionDefinitionExtensions(QDomNode const& absDefNode,
     QSharedPointer<AbstractionDefinition> absDef) const
 {
-    QDomElement extensionsElement = absDefNode.firstChildElement("ipxact:vendorExtensions");
+    QDomElement extensionsElement = absDefNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
 
-    QDomElement fileExtension = extensionsElement.firstChildElement("kactus2:definitionFile");
+    QDomElement fileExtension = extensionsElement.firstChildElement(QStringLiteral("kactus2:definitionFile"));
     if (!fileExtension.isNull())
     {
         QString file = fileExtension.firstChild().nodeValue();

@@ -67,23 +67,23 @@ status_(STATUS_UNCHANGED)
             continue;
         }
 
-        if (childNode.nodeName() == "kactus2:fileRef1")
+        if (childNode.nodeName() == QLatin1String("kactus2:fileRef1"))
         {
             file1_ = childNode.childNodes().at(0).nodeValue();
         }
-        else if (childNode.nodeName() == "kactus2:fileRef2")
+        else if (childNode.nodeName() == QLatin1String("kactus2:fileRef2"))
         {
             file2_ = childNode.childNodes().at(0).nodeValue();
         }
-        else if (childNode.nodeName() == "ipxact:description")
+        else if (childNode.nodeName() == QLatin1String("ipxact:description"))
         {
             desc_ = childNode.childNodes().at(0).nodeValue();
         }
     }
 
-    locked_ = General::str2Bool(node.attributes().namedItem("kactus2:locked").nodeValue(), false);
-    bidirectional_ = General::str2Bool(node.attributes().namedItem("kactus2:bidirectional").nodeValue(), false);
-    manual_ = General::str2Bool(node.attributes().namedItem("kactus2:manual").nodeValue(), false);
+    locked_ = General::str2Bool(node.attributes().namedItem(QStringLiteral("kactus2:locked")).nodeValue(), false);
+    bidirectional_ = General::str2Bool(node.attributes().namedItem(QStringLiteral("kactus2:bidirectional")).nodeValue(), false);
+    manual_ = General::str2Bool(node.attributes().namedItem(QStringLiteral("kactus2:manual")).nodeValue(), false);
 }
 
 //-----------------------------------------------------------------------------
@@ -107,7 +107,7 @@ FileDependency* FileDependency::clone() const
 //-----------------------------------------------------------------------------
 QString FileDependency::type() const
 {
-    return QString("kactus2:fileDependency");
+    return QStringLiteral("kactus2:fileDependency");
 }
 
 //-----------------------------------------------------------------------------
@@ -115,14 +115,14 @@ QString FileDependency::type() const
 //-----------------------------------------------------------------------------
 void FileDependency::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:fileDependency");
-    writer.writeAttribute("manual", General::bool2Str(manual_));
-    writer.writeAttribute("bidirectional", General::bool2Str(bidirectional_));
-    writer.writeAttribute("locked", General::bool2Str(locked_));
+    writer.writeStartElement(QStringLiteral("kactus2:fileDependency"));
+    writer.writeAttribute(QStringLiteral("manual"), General::bool2Str(manual_));
+    writer.writeAttribute(QStringLiteral("bidirectional"), General::bool2Str(bidirectional_));
+    writer.writeAttribute(QStringLiteral("locked"), General::bool2Str(locked_));
 
-    writer.writeTextElement("kactus2:fileRef1", file1_);
-    writer.writeTextElement("kactus2:fileRef2", file2_);
-    writer.writeTextElement("ipxact:description", desc_);
+    writer.writeTextElement(QStringLiteral("kactus2:fileRef1"), file1_);
+    writer.writeTextElement(QStringLiteral("kactus2:fileRef2"), file2_);
+    writer.writeTextElement(QStringLiteral("ipxact:description"), desc_);
 
     writer.writeEndElement(); // kactus2:fileDependency
 }

@@ -78,8 +78,8 @@ QSharedPointer<BusDefinition> BusDefinitionReader::createBusDefinitionFrom(QDomN
 void BusDefinitionReader::parseDirectConnection(QDomNode const& busNode,
     QSharedPointer<BusDefinition> busDefinition) const
 {
-    QString directConnection = busNode.firstChildElement("ipxact:directConnection").firstChild().nodeValue();
-    busDefinition->setDirectConnection(directConnection == "true");
+    QString directConnection = busNode.firstChildElement(QStringLiteral("ipxact:directConnection")).firstChild().nodeValue();
+    busDefinition->setDirectConnection(directConnection == QLatin1String("true"));
 }
 
 //-----------------------------------------------------------------------------
@@ -88,10 +88,10 @@ void BusDefinitionReader::parseDirectConnection(QDomNode const& busNode,
 void BusDefinitionReader::parseBroadcast(QDomNode const& busNode,
     QSharedPointer<BusDefinition> busDefinition) const
 {
-    QDomNode broadcastNode = busNode.firstChildElement("ipxact:broadcast");
+    QDomNode broadcastNode = busNode.firstChildElement(QStringLiteral("ipxact:broadcast"));
     if (!broadcastNode.isNull())
     {
-        busDefinition->setBroadcast(broadcastNode.firstChild().nodeValue() == "true");
+        busDefinition->setBroadcast(broadcastNode.firstChild().nodeValue() == QLatin1String("true"));
     }
 }
 
@@ -101,8 +101,8 @@ void BusDefinitionReader::parseBroadcast(QDomNode const& busNode,
 void BusDefinitionReader::parseIsAddressable(QDomNode const& busNode, 
     QSharedPointer<BusDefinition> busDefinition) const
 {
-    QString addressable = busNode.firstChildElement("ipxact:isAddressable").firstChild().nodeValue();
-    busDefinition->setIsAddressable(addressable == "true");
+    QString addressable = busNode.firstChildElement(QStringLiteral("ipxact:isAddressable")).firstChild().nodeValue();
+    busDefinition->setIsAddressable(addressable == QLatin1String("true"));
 }
 
 //-----------------------------------------------------------------------------
@@ -110,16 +110,16 @@ void BusDefinitionReader::parseIsAddressable(QDomNode const& busNode,
 //-----------------------------------------------------------------------------
 void BusDefinitionReader::parseExtends(QDomNode const& busNode, QSharedPointer<BusDefinition> busDefinition) const
 {
-    QDomNode extendsNode = busNode.firstChildElement("ipxact:extends");
+    QDomNode extendsNode = busNode.firstChildElement(QStringLiteral("ipxact:extends"));
     if (!extendsNode.isNull())
     {
         QDomNamedNodeMap attributes = extendsNode.attributes();
         VLNV extendedVLNV;
         extendedVLNV.setType(VLNV::BUSDEFINITION);
-        extendedVLNV.setVendor(attributes.namedItem("vendor").nodeValue());
-        extendedVLNV.setLibrary(attributes.namedItem("library").nodeValue());
-        extendedVLNV.setName(attributes.namedItem("name").nodeValue());
-        extendedVLNV.setVersion(attributes.namedItem("version").nodeValue());
+        extendedVLNV.setVendor(attributes.namedItem(QStringLiteral("vendor")).nodeValue());
+        extendedVLNV.setLibrary(attributes.namedItem(QStringLiteral("library")).nodeValue());
+        extendedVLNV.setName(attributes.namedItem(QStringLiteral("name")).nodeValue());
+        extendedVLNV.setVersion(attributes.namedItem(QStringLiteral("version")).nodeValue());
 
         busDefinition->setExtends(extendedVLNV);
     }
@@ -131,7 +131,7 @@ void BusDefinitionReader::parseExtends(QDomNode const& busNode, QSharedPointer<B
 void BusDefinitionReader::parseMaximumMasters(QDomNode const& busNode,
     QSharedPointer<BusDefinition> busDefinition) const
 {
-    QDomNode maximumMastersNode = busNode.firstChildElement("ipxact:maxMasters");
+    QDomNode maximumMastersNode = busNode.firstChildElement(QStringLiteral("ipxact:maxMasters"));
     if (!maximumMastersNode.isNull())
     {
         busDefinition->setMaxMasters(maximumMastersNode.firstChild().nodeValue());
@@ -144,7 +144,7 @@ void BusDefinitionReader::parseMaximumMasters(QDomNode const& busNode,
 void BusDefinitionReader::parseMaximumSlaves(QDomNode const& busNode,
     QSharedPointer<BusDefinition> busDefinition) const
 {
-    QDomNode maximumSlavesNode = busNode.firstChildElement("ipxact:maxSlaves");
+    QDomNode maximumSlavesNode = busNode.firstChildElement(QStringLiteral("ipxact:maxSlaves"));
     if (!maximumSlavesNode.isNull())
     {
         busDefinition->setMaxSlaves(maximumSlavesNode.firstChild().nodeValue());
@@ -157,7 +157,7 @@ void BusDefinitionReader::parseMaximumSlaves(QDomNode const& busNode,
 void BusDefinitionReader::parseSystemGroupNames(QDomNode const& busNode,
     QSharedPointer<BusDefinition> busDefinition) const
 {
-    QDomNodeList systemNodes = busNode.firstChildElement("ipxact:systemGroupNames").childNodes();
+    QDomNodeList systemNodes = busNode.firstChildElement(QStringLiteral("ipxact:systemGroupNames")).childNodes();
     
     QStringList systemGroupNames;
     int systemNameCount = systemNodes.count();

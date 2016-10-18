@@ -38,11 +38,11 @@ FileWriter::~FileWriter()
 //-----------------------------------------------------------------------------
 void FileWriter::writeFile(QXmlStreamWriter& writer, QSharedPointer<File> file) const
 {
-    writer.writeStartElement("ipxact:file");
+    writer.writeStartElement(QStringLiteral("ipxact:file"));
 
     writeAttributes(writer, file);
 
-    writer.writeTextElement("ipxact:name", file->name());
+    writer.writeTextElement(QStringLiteral("ipxact:name"), file->name());
 
     writeIsPresent(writer, file->getIsPresent());
 
@@ -78,7 +78,7 @@ void FileWriter::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<File> 
 {
     if (!file->getFileId().isEmpty())
     {
-        writer.writeAttribute("fileId", file->getFileId());
+        writer.writeAttribute(QStringLiteral("fileId"), file->getFileId());
     }
 
     QMapIterator<QString, QString> attributeIterator(file->getAttributes());
@@ -97,7 +97,7 @@ void FileWriter::writeFileTypes(QXmlStreamWriter& writer, QSharedPointer<File> f
 {
     foreach (QString fileType, *file->getFileTypes())
     {
-        writer.writeStartElement("ipxact:fileType");
+        writer.writeStartElement(QStringLiteral("ipxact:fileType"));
 
         if (FileTypes::isIpXactFileType(fileType))
         {
@@ -105,8 +105,8 @@ void FileWriter::writeFileTypes(QXmlStreamWriter& writer, QSharedPointer<File> f
         }
         else
         {
-            writer.writeAttribute("user", fileType);
-            writer.writeCharacters("user");
+            writer.writeAttribute(QStringLiteral("user"), fileType);
+            writer.writeCharacters(QStringLiteral("user"));
         }
 
         writer.writeEndElement(); // ipxact:fileType
@@ -120,7 +120,7 @@ void FileWriter::writeIsStructural(QXmlStreamWriter& writer, QSharedPointer<File
 {
     if (file->isStructural())
     {
-        writer.writeTextElement("ipxact:isStructural", "true");
+        writer.writeTextElement(QStringLiteral("ipxact:isStructural"), QStringLiteral("true"));
     }
 }
 
@@ -131,14 +131,14 @@ void FileWriter::writeIsIncludeFile(QXmlStreamWriter& writer, QSharedPointer<Fil
 {
     if (file->isIncludeFile())
     {
-        writer.writeStartElement("ipxact:isIncludeFile");
+        writer.writeStartElement(QStringLiteral("ipxact:isIncludeFile"));
 
         if (file->hasExternalDeclarations())
         {
-            writer.writeAttribute("externalDeclarations", "true");
+            writer.writeAttribute(QStringLiteral("externalDeclarations"), QStringLiteral("true"));
         }
 
-        writer.writeCharacters("true");
+        writer.writeCharacters(QStringLiteral("true"));
 
         writer.writeEndElement(); // ipxact:isIncludeFile
     }
@@ -151,11 +151,11 @@ void FileWriter::writeLogicalName(QXmlStreamWriter& writer, QSharedPointer<File>
 {
     if (!file->getLogicalName().isEmpty())
     {
-        writer.writeStartElement("ipxact:logicalName");
+        writer.writeStartElement(QStringLiteral("ipxact:logicalName"));
 
         if (file->isLogicalNameDefault())
         {
-            writer.writeAttribute("default", "true");
+            writer.writeAttribute(QStringLiteral("default"), QStringLiteral("true"));
         }
 
         writer.writeCharacters(file->getLogicalName());
@@ -171,7 +171,7 @@ void FileWriter::writeExportedNames(QXmlStreamWriter& writer, QSharedPointer<Fil
 {
     foreach (QString exportedName, *file->getExportedNames())
     {
-        writer.writeTextElement("ipxact:exportedName", exportedName);
+        writer.writeTextElement(QStringLiteral("ipxact:exportedName"), exportedName);
     }
 }
 
@@ -182,20 +182,20 @@ void FileWriter::writeBuildCommand(QXmlStreamWriter& writer, QSharedPointer<File
 {
     if (file->getBuildCommand())
     {
-        writer.writeStartElement("ipxact:buildCommand");
+        writer.writeStartElement(QStringLiteral("ipxact:buildCommand"));
 
         QSharedPointer<BuildCommand> buildCommand = file->getBuildCommand();
         if (!buildCommand->getCommand().isEmpty())
         {
-            writer.writeTextElement("ipxact:command", buildCommand->getCommand());
+            writer.writeTextElement(QStringLiteral("ipxact:command"), buildCommand->getCommand());
         }
         if (!buildCommand->getFlags().isEmpty())
         {
-            writer.writeStartElement("ipxact:flags");
+            writer.writeStartElement(QStringLiteral("ipxact:flags"));
 
             if (!buildCommand->getFlagsAppend().isEmpty())
             {
-                writer.writeAttribute("append", buildCommand->getFlagsAppend());
+                writer.writeAttribute(QStringLiteral("append"), buildCommand->getFlagsAppend());
             }
 
             writer.writeCharacters(buildCommand->getFlags());
@@ -203,11 +203,11 @@ void FileWriter::writeBuildCommand(QXmlStreamWriter& writer, QSharedPointer<File
         }
         if (!buildCommand->getReplaceDefaultFlags().isEmpty())
         {
-            writer.writeTextElement("ipxact:replaceDefaultFlags", buildCommand->getReplaceDefaultFlags());
+            writer.writeTextElement(QStringLiteral("ipxact:replaceDefaultFlags"), buildCommand->getReplaceDefaultFlags());
         }
         if (!buildCommand->getTargetName().isEmpty())
         {
-            writer.writeTextElement("ipxact:targetName", buildCommand->getTargetName());
+            writer.writeTextElement(QStringLiteral("ipxact:targetName"), buildCommand->getTargetName());
         }
 
         writer.writeEndElement(); // ipxact:buildCommand
@@ -221,7 +221,7 @@ void FileWriter::writeDependencies(QXmlStreamWriter& writer, QSharedPointer<File
 {
     foreach (QString dependency, *file->getDependencies())
     {
-        writer.writeTextElement("ipxact:dependency", dependency);
+        writer.writeTextElement(QStringLiteral("ipxact:dependency"), dependency);
     }
 }
 
@@ -236,11 +236,11 @@ void FileWriter::writeDefines(QXmlStreamWriter& writer, QSharedPointer<File> fil
 
         foreach (QSharedPointer<NameValuePair> define, *file->getDefines())
         {
-            writer.writeStartElement("ipxact:define");
+            writer.writeStartElement(QStringLiteral("ipxact:define"));
 
             nameGroupWriter.writeNameGroup(writer, define);
 
-            writer.writeTextElement("ipxact:value", define->getValue());
+            writer.writeTextElement(QStringLiteral("ipxact:value"), define->getValue());
 
             writeVendorExtensions(writer, define);
 
@@ -256,7 +256,7 @@ void FileWriter::writeImageTypes(QXmlStreamWriter& writer, QSharedPointer<File> 
 {
     foreach (QString imageType, *file->getImageTypes())
     {
-        writer.writeTextElement("ipxact:imageType", imageType);
+        writer.writeTextElement(QStringLiteral("ipxact:imageType"), imageType);
     }
 }
 
@@ -267,7 +267,7 @@ void FileWriter::writeDescription(QXmlStreamWriter& writer, QSharedPointer<File>
 {
     if (!file->getDescription().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", file->getDescription());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), file->getDescription());
     }
 }
 

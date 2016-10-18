@@ -48,7 +48,7 @@ bool EnumeratedValueValidator::validate(QSharedPointer<EnumeratedValue> enumerat
 bool EnumeratedValueValidator::hasValidName(QSharedPointer<EnumeratedValue> enumeratedValue) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(enumeratedValue->name());
 
     if (enumeratedValue->name().isEmpty() || whiteSpaceMatch.hasMatch())
@@ -67,7 +67,7 @@ bool EnumeratedValueValidator::hasValidValue(QSharedPointer<EnumeratedValue> enu
     QString value = enumeratedValue->getValue();
     QString solvedValue = expressionParser_->parseExpression(value);
 
-    QRegularExpression bitExpression("^([0-9]+|[1-9]+[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$");
+    QRegularExpression bitExpression(QStringLiteral("^([0-9]+|[1-9]+[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$"));
     return !value.isEmpty() || bitExpression.match(value).hasMatch() || bitExpression.match(solvedValue).hasMatch();
 }
 

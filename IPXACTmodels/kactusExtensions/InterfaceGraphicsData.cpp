@@ -43,27 +43,27 @@ name_(),
 positionExtension_(),
 direction_()
 {
-    QDomElement nameElement = node.firstChildElement("kactus2:name");
+    QDomElement nameElement = node.firstChildElement(QStringLiteral("kactus2:name"));
     if (!nameElement.isNull())
     {
         setName(nameElement.nodeValue());
     }
 
-    QDomElement positionElement = node.firstChildElement("kactus2:position");
+    QDomElement positionElement = node.firstChildElement(QStringLiteral("kactus2:position"));
     if (!positionElement.isNull())
     {
-        int positionX = positionElement.attribute("x").toInt();
-        int positionY = positionElement.attribute("y").toInt();
+        int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
+        int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
 
         QPointF loadPosition(positionX, positionY);
         positionExtension_ = QSharedPointer<Kactus2Position> (new Kactus2Position(loadPosition));
     }
 
-    QDomElement directionElement = node.firstChildElement("kactus2:direction");
+    QDomElement directionElement = node.firstChildElement(QStringLiteral("kactus2:direction"));
     if (!directionElement.isNull())
     {
-        int directionX = directionElement.attribute("x").toInt();
-        int directionY = directionElement.attribute("y").toInt();
+        int directionX = directionElement.attribute(QStringLiteral("x")).toInt();
+        int directionY = directionElement.attribute(QStringLiteral("y")).toInt();
 
         QVector2D loadDirection(directionX, directionY);
         setDirection(loadDirection);
@@ -108,7 +108,7 @@ InterfaceGraphicsData& InterfaceGraphicsData::operator=(InterfaceGraphicsData co
 //-----------------------------------------------------------------------------
 QString InterfaceGraphicsData::type() const
 {
-    return QString("kactus2:interfaceGraphics");
+    return QStringLiteral("kactus2:interfaceGraphics");
 }
 
 //-----------------------------------------------------------------------------
@@ -118,13 +118,13 @@ void InterfaceGraphicsData::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement(type());
 
-    writer.writeTextElement("kactus2:name", name_);
+    writer.writeTextElement(QStringLiteral("kactus2:name"), name_);
 
     positionExtension_->write(writer);
 
-    writer.writeEmptyElement("kactus2:direction");
-    writer.writeAttribute("x", QString::number(direction_.x()));
-    writer.writeAttribute("y", QString::number(direction_.y()));
+    writer.writeEmptyElement(QStringLiteral("kactus2:direction"));
+    writer.writeAttribute(QStringLiteral("x"), QString::number(direction_.x()));
+    writer.writeAttribute(QStringLiteral("y"), QString::number(direction_.y()));
 
     writer.writeEndElement(); // kactus2:interfaceGraphics
 }

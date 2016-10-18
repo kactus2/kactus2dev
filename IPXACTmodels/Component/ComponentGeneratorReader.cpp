@@ -44,19 +44,19 @@ QSharedPointer<ComponentGenerator> ComponentGeneratorReader::createComponentGene
 
 	readAttributes(componentGeneratorNode, newComponentGenerator);
 
-    QDomElement phaseElement = componentGeneratorNode.firstChildElement("ipxact:phase");
+    QDomElement phaseElement = componentGeneratorNode.firstChildElement(QStringLiteral("ipxact:phase"));
     if (!phaseElement.isNull())
     {
         newComponentGenerator->setPhase(phaseElement.childNodes().at(0).nodeValue());
     }
 
-    readParameters(componentGeneratorNode.firstChildElement("ipxact:parameters"), newComponentGenerator);
+    readParameters(componentGeneratorNode.firstChildElement(QStringLiteral("ipxact:parameters")), newComponentGenerator);
         
-    readApiType(componentGeneratorNode.firstChildElement("ipxact:apiType"), newComponentGenerator);
+    readApiType(componentGeneratorNode.firstChildElement(QStringLiteral("ipxact:apiType")), newComponentGenerator);
    
-    readTransportMethods(componentGeneratorNode.firstChildElement("ipxact:transportMethods"), newComponentGenerator);
+    readTransportMethods(componentGeneratorNode.firstChildElement(QStringLiteral("ipxact:transportMethods")), newComponentGenerator);
 
-    QDomElement exeElement = componentGeneratorNode.firstChildElement("ipxact:generatorExe");
+    QDomElement exeElement = componentGeneratorNode.firstChildElement(QStringLiteral("ipxact:generatorExe"));
     if (!exeElement.isNull())
     {
         newComponentGenerator->setGeneratorExe(exeElement.childNodes().at(0).nodeValue());
@@ -77,7 +77,7 @@ void ComponentGeneratorReader::readAttributes(QDomNode const& componentGenerator
 {
 	QDomNamedNodeMap attributeMap = componentGeneratorNode.attributes();
 
-	QString scope = attributeMap.namedItem("scope").nodeValue();
+	QString scope = attributeMap.namedItem(QStringLiteral("scope")).nodeValue();
 	if (scope == QLatin1String("entity"))
 	{
 		newComponentGenerator->setScope(ComponentGenerator::ENTITY);
@@ -87,7 +87,7 @@ void ComponentGeneratorReader::readAttributes(QDomNode const& componentGenerator
 		newComponentGenerator->setScope(ComponentGenerator::INSTANCE);
 	}
 
-    QString hidden = attributeMap.namedItem("hidden").childNodes().at(0).nodeValue();
+    QString hidden = attributeMap.namedItem(QStringLiteral("hidden")).childNodes().at(0).nodeValue();
     if (hidden == QLatin1String("true"))
     {
         newComponentGenerator->setHidden(true);
@@ -167,7 +167,7 @@ void ComponentGeneratorReader::readTransportMethods(QDomElement const& methodsNo
 void ComponentGeneratorReader::parseGroups(QDomNode const& componentGeneratorNode, 
     QSharedPointer<ComponentGenerator> newComponentGenerator) const
 {
-    QDomNodeList groupNodes = componentGeneratorNode.toElement().elementsByTagName("ipxact:group");
+    QDomNodeList groupNodes = componentGeneratorNode.toElement().elementsByTagName(QStringLiteral("ipxact:group"));
 
     QStringList groupNames;
     int groupCount = groupNodes.count();

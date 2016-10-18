@@ -23,19 +23,19 @@ bspCommand_()
 {
     QDomElement swViewElement = viewNode.toElement();
 
-    setName(swViewElement.firstChildElement("ipxact:name").firstChild().nodeValue());
+    setName(swViewElement.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue());
 
-    setDisplayName(swViewElement.firstChildElement("ipxact:displayName").firstChild().nodeValue());
+    setDisplayName(swViewElement.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
 
-    setDescription(swViewElement.firstChildElement("ipxact:description").firstChild().nodeValue());
+    setDescription(swViewElement.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
 
-    QDomElement hierarchyElement = swViewElement.firstChildElement("kactus2:hierarchyRef");
+    QDomElement hierarchyElement = swViewElement.firstChildElement(QStringLiteral("kactus2:hierarchyRef"));
     if (!hierarchyElement.isNull())
     {
         hierarchyRef_ = VLNV::createVLNV(hierarchyElement, VLNV::DESIGN);
     }
 
-    QDomNodeList fileSetRefNodes = swViewElement.elementsByTagName("kactus2:fileSetRef");
+    QDomNodeList fileSetRefNodes = swViewElement.elementsByTagName(QStringLiteral("kactus2:fileSetRef"));
     int fileSetRefCount = fileSetRefNodes.count();
     for (int i = 0; i < fileSetRefCount; i++)
     {
@@ -43,7 +43,7 @@ bspCommand_()
         filesetRefs_.append(filesetNode.firstChild().nodeValue());
     }
 
-    QDomNodeList buildCommandNodes = swViewElement.elementsByTagName("kactus2:SWBuildCommand");
+    QDomNodeList buildCommandNodes = swViewElement.elementsByTagName(QStringLiteral("kactus2:SWBuildCommand"));
     int buildCommandCount = buildCommandNodes.count();
     for (int i = 0; i < buildCommandCount; i++)
     {
@@ -51,7 +51,7 @@ bspCommand_()
         swBuildCommands_->append(QSharedPointer<SWFileBuilder>(new SWFileBuilder(buildCommandNode)));
     }
 
-    QDomElement bspCommandElement = swViewElement.firstChildElement("kactus2:BSPBuildCommand");
+    QDomElement bspCommandElement = swViewElement.firstChildElement(QStringLiteral("kactus2:BSPBuildCommand"));
     if (!bspCommandElement.isNull())
     {
         bspCommand_ = QSharedPointer<BSPBuildCommand>(new BSPBuildCommand(bspCommandElement));
@@ -140,7 +140,7 @@ SWView* SWView::clone() const
 //-----------------------------------------------------------------------------
 QString SWView::type() const
 {
-    return QString("kactus2:swView");
+    return QStringLiteral("kactus2:swView");
 }
 
 //-----------------------------------------------------------------------------
@@ -148,34 +148,34 @@ QString SWView::type() const
 //-----------------------------------------------------------------------------
 void SWView::write(QXmlStreamWriter& writer) const
 {
-	writer.writeStartElement("kactus2:swView");
+	writer.writeStartElement(QStringLiteral("kactus2:swView"));
 
-    writer.writeTextElement("ipxact:name", name());
+    writer.writeTextElement(QStringLiteral("ipxact:name"), name());
 
     if (!displayName().isEmpty())
     {
-        writer.writeTextElement("ipxact:displayName", displayName());
+        writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
     }
 
     if (!description().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", description());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), description());
     }
 
     // write ipxact:hierarchyRef if one exists
 	if (hierarchyRef_.isValid())
     {
-        writer.writeEmptyElement("kactus2:hierarchyRef");
-        writer.writeAttribute("vendor", hierarchyRef_.getVendor());
-        writer.writeAttribute("library", hierarchyRef_.getLibrary());
-        writer.writeAttribute("name", hierarchyRef_.getName());
-        writer.writeAttribute("version", hierarchyRef_.getVersion());
+        writer.writeEmptyElement(QStringLiteral("kactus2:hierarchyRef"));
+        writer.writeAttribute(QStringLiteral("vendor"), hierarchyRef_.getVendor());
+        writer.writeAttribute(QStringLiteral("library"), hierarchyRef_.getLibrary());
+        writer.writeAttribute(QStringLiteral("name"), hierarchyRef_.getName());
+        writer.writeAttribute(QStringLiteral("version"), hierarchyRef_.getVersion());
 	}
 
 	// write the file set references
-	foreach (QString fileSetName, filesetRefs_)
+	foreach (QString const& fileSetName, filesetRefs_)
     {
-        writer.writeTextElement("kactus2:fileSetRef", fileSetName);
+        writer.writeTextElement(QStringLiteral("kactus2:fileSetRef"), fileSetName);
 	}
 
 	// write all SW build commands
@@ -256,7 +256,7 @@ bool SWView::isValid(QStringList const& fileSetNames, QStringList const& cpuName
     }
 
 	// make sure the referenced file sets are found
-	foreach (QString fileSetRef, filesetRefs_)
+	foreach (QString const& fileSetRef, filesetRefs_)
     {
 		if (!fileSetNames.contains(fileSetRef))
         {

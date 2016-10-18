@@ -69,7 +69,7 @@ bool FieldValidator::validate(QSharedPointer<Field> field) const
 bool FieldValidator::hasValidName(QSharedPointer<Field> field) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(field->name());
 
     if (field->name().isEmpty() || whiteSpaceMatch.hasMatch())
@@ -466,7 +466,7 @@ void FieldValidator::findErrorsInEnumeratedValues(QVector<QString>& errors, QSha
 {
     if (!field->getEnumeratedValues()->isEmpty())
     {
-        QString context = "field " + field->name();
+        QString context = QStringLiteral("field ") + field->name();
 
         bool useEnumerations = false;
         if (field->getWriteConstraint())
@@ -517,7 +517,7 @@ void FieldValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPoi
 {
     if (!hasValidParameters(field))
     {
-        QString context = "field " + field->name();
+        QString context = QStringLiteral("field ") + field->name();
 
         QStringList parameterNames;
 
@@ -569,6 +569,6 @@ bool FieldValidator::isBitExpressionValid(QString const& expression) const
 {
     QString solvedValue = expressionParser_->parseExpression(expression);
     
-    QRegularExpression bitExpression("^([0-9]+|[1-9]+[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$");
+    QRegularExpression bitExpression(QStringLiteral("^([0-9]+|[1-9]+[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$"));
     return bitExpression.match(expression).hasMatch() || bitExpression.match(solvedValue).hasMatch();
 }

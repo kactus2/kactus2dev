@@ -107,13 +107,13 @@ QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument cons
 void ComponentReader::parseBusInterfaces(QDomNode const& componentNode, QSharedPointer<Component> newComponent)
     const
 {
-    QDomElement busInterfaceElement = componentNode.firstChildElement("ipxact:busInterfaces");
+    QDomElement busInterfaceElement = componentNode.firstChildElement(QStringLiteral("ipxact:busInterfaces"));
 
     if (!busInterfaceElement.isNull())
     {
         BusinterfaceReader busReader;
 
-        QDomNodeList busInterfaceNodeList = busInterfaceElement.elementsByTagName("ipxact:busInterface");
+        QDomNodeList busInterfaceNodeList = busInterfaceElement.elementsByTagName(QStringLiteral("ipxact:busInterface"));
         for (int interfaceIndex = 0; interfaceIndex < busInterfaceNodeList.count(); ++interfaceIndex)
         {
             QDomNode busNode = busInterfaceNodeList.at(interfaceIndex);
@@ -129,13 +129,13 @@ void ComponentReader::parseBusInterfaces(QDomNode const& componentNode, QSharedP
 //-----------------------------------------------------------------------------
 void ComponentReader::parseChannels(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
 {
-    QDomElement channelsElement = componentNode.firstChildElement("ipxact:channels");
+    QDomElement channelsElement = componentNode.firstChildElement(QStringLiteral("ipxact:channels"));
 
     if (!channelsElement.isNull())
     {
         ChannelReader channelReader;
 
-        QDomNodeList channelNodeList = channelsElement.elementsByTagName("ipxact:channel");
+        QDomNodeList channelNodeList = channelsElement.elementsByTagName(QStringLiteral("ipxact:channel"));
         for (int channelIndex = 0; channelIndex < channelNodeList.count(); ++channelIndex)
         {
             QDomNode channelNode = channelNodeList.at(channelIndex);
@@ -151,13 +151,13 @@ void ComponentReader::parseChannels(QDomNode const& componentNode, QSharedPointe
 //-----------------------------------------------------------------------------
 void ComponentReader::parseRemapStates(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
 {
-    QDomElement remapStateElement = componentNode.firstChildElement("ipxact:remapStates");
+    QDomElement remapStateElement = componentNode.firstChildElement(QStringLiteral("ipxact:remapStates"));
 
     if (!remapStateElement.isNull())
     {
         RemapStateReader remapStateReader;
 
-        QDomNodeList remapNodeList = remapStateElement.elementsByTagName("ipxact:remapState");
+        QDomNodeList remapNodeList = remapStateElement.elementsByTagName(QStringLiteral("ipxact:remapState"));
         for (int remapStateIndex = 0; remapStateIndex < remapNodeList.count(); ++remapStateIndex)
         {
             QDomNode remapStateNode = remapNodeList.at(remapStateIndex);
@@ -174,13 +174,13 @@ void ComponentReader::parseRemapStates(QDomNode const& componentNode, QSharedPoi
 void ComponentReader::parseAddressSpaces(QDomNode const& componentNode, QSharedPointer<Component> newComponent)
     const
 {
-    QDomElement addressSpacesElement = componentNode.firstChildElement("ipxact:addressSpaces");
+    QDomElement addressSpacesElement = componentNode.firstChildElement(QStringLiteral("ipxact:addressSpaces"));
 
     if (!addressSpacesElement.isNull())
     {
         AddressSpaceReader spaceReader;
 
-        QDomNodeList addressNodeList = addressSpacesElement.elementsByTagName("ipxact:addressSpace");
+        QDomNodeList addressNodeList = addressSpacesElement.elementsByTagName(QStringLiteral("ipxact:addressSpace"));
         for (int spaceIndex = 0; spaceIndex < addressNodeList.count(); ++spaceIndex)
         {
             QDomNode addressSpaceNode = addressNodeList.at(spaceIndex);
@@ -196,13 +196,13 @@ void ComponentReader::parseAddressSpaces(QDomNode const& componentNode, QSharedP
 //-----------------------------------------------------------------------------
 void ComponentReader::parseMemoryMaps(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
 {
-    QDomElement memoryMapsElement = componentNode.firstChildElement("ipxact:memoryMaps");
+    QDomElement memoryMapsElement = componentNode.firstChildElement(QStringLiteral("ipxact:memoryMaps"));
 
     if (!memoryMapsElement.isNull())
     {
         MemoryMapReader memoryReader;
 
-        QDomNodeList memoryMapNodeList = memoryMapsElement.elementsByTagName("ipxact:memoryMap");
+        QDomNodeList memoryMapNodeList = memoryMapsElement.elementsByTagName(QStringLiteral("ipxact:memoryMap"));
         for (int memoryIndex = 0; memoryIndex < memoryMapNodeList.count(); ++memoryIndex)
         {
             QDomNode memoryMapNode = memoryMapNodeList.at(memoryIndex);
@@ -218,7 +218,7 @@ void ComponentReader::parseMemoryMaps(QDomNode const& componentNode, QSharedPoin
 //-----------------------------------------------------------------------------
 void ComponentReader::parseModel(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
 {
-    QDomElement modelElement = componentNode.firstChildElement("ipxact:model");
+    QDomElement modelElement = componentNode.firstChildElement(QStringLiteral("ipxact:model"));
     if (!modelElement.isNull())
     {
         QSharedPointer<Model> newmodel (new Model());
@@ -238,13 +238,13 @@ void ComponentReader::parseModel(QDomNode const& componentNode, QSharedPointer<C
 //-----------------------------------------------------------------------------
 void ComponentReader::parseViews(QDomElement const& modelElement, QSharedPointer<Model> newModel) const
 {
-    QDomElement viewsElement = modelElement.firstChildElement("ipxact:views");
+    QDomElement viewsElement = modelElement.firstChildElement(QStringLiteral("ipxact:views"));
 
     if (!viewsElement.isNull())
     {
         ViewReader viewReader;
 
-        QDomNodeList viewNodeList = viewsElement.elementsByTagName("ipxact:view");
+        QDomNodeList viewNodeList = viewsElement.elementsByTagName(QStringLiteral("ipxact:view"));
         for (int viewIndex = 0; viewIndex < viewNodeList.count(); ++viewIndex)
         {
             QDomNode viewNode = viewNodeList.at(viewIndex);
@@ -260,7 +260,7 @@ void ComponentReader::parseViews(QDomElement const& modelElement, QSharedPointer
 //-----------------------------------------------------------------------------
 void ComponentReader::parseInstantiations(QDomElement const& modelElement, QSharedPointer<Model> newModel) const
 {
-    QDomElement instantiationsElement = modelElement.firstChildElement("ipxact:instantiations");
+    QDomElement instantiationsElement = modelElement.firstChildElement(QStringLiteral("ipxact:instantiations"));
     if (!instantiationsElement.isNull())
     {
         parseComponentInstantiations(instantiationsElement, newModel);
@@ -278,7 +278,7 @@ void ComponentReader::parseComponentInstantiations(QDomElement const& instantiat
     QSharedPointer<Model> newModel) const
 {
     QDomNodeList componentInstantiationNodeList =
-        instantiationsElement.elementsByTagName("ipxact:componentInstantiation");
+        instantiationsElement.elementsByTagName(QStringLiteral("ipxact:componentInstantiation"));
     if (!componentInstantiationNodeList.isEmpty())
     {
         InstantiationsReader instantiationsReader;
@@ -301,7 +301,7 @@ void ComponentReader::parseDesignInstantiations(QDomElement const& instantiation
     QSharedPointer<Model> newModel) const
 {
     QDomNodeList designInstantiationNodeList =
-        instantiationsElement.elementsByTagName("ipxact:designInstantiation");
+        instantiationsElement.elementsByTagName(QStringLiteral("ipxact:designInstantiation"));
     if (!designInstantiationNodeList.isEmpty())
     {
         InstantiationsReader instantiationsReader;
@@ -324,7 +324,7 @@ void ComponentReader::parseDesignConfigurationInstantiations(QDomElement const& 
     QSharedPointer<Model> newModel) const
 {
     QDomNodeList designConfigurationInstantiationNodeList =
-        instantiationsElement.elementsByTagName("ipxact:designConfigurationInstantiation");
+        instantiationsElement.elementsByTagName(QStringLiteral("ipxact:designConfigurationInstantiation"));
     if (!designConfigurationInstantiationNodeList.isEmpty())
     {
         InstantiationsReader instantiationsReader;
@@ -345,13 +345,13 @@ void ComponentReader::parseDesignConfigurationInstantiations(QDomElement const& 
 //-----------------------------------------------------------------------------
 void ComponentReader::parsePorts(QDomElement const& modelElement, QSharedPointer<Model> newModel) const
 {
-    QDomElement portsElement = modelElement.firstChildElement("ipxact:ports");
+    QDomElement portsElement = modelElement.firstChildElement(QStringLiteral("ipxact:ports"));
 
     if (!portsElement.isNull())
     {
         PortReader portReader;
 
-        QDomNodeList portNodeList = portsElement.elementsByTagName("ipxact:port");
+        QDomNodeList portNodeList = portsElement.elementsByTagName(QStringLiteral("ipxact:port"));
         for (int portIndex = 0; portIndex < portNodeList.count(); ++portIndex)
         {
             QDomNode portNode = portNodeList.at(portIndex);
@@ -368,13 +368,13 @@ void ComponentReader::parsePorts(QDomElement const& modelElement, QSharedPointer
 void ComponentReader::parseComponentGenerators(QDomNode const& componentNode,
     QSharedPointer<Component> newComponent) const
 {
-    QDomElement componentGeneratorsElement = componentNode.firstChildElement("ipxact:componentGenerators");
+    QDomElement componentGeneratorsElement = componentNode.firstChildElement(QStringLiteral("ipxact:componentGenerators"));
 
     if (!componentGeneratorsElement.isNull())
     {
         ComponentGeneratorReader generatorReader;
 
-        QDomNodeList generatorNodeList = componentGeneratorsElement.elementsByTagName("ipxact:componentGenerator");
+        QDomNodeList generatorNodeList = componentGeneratorsElement.elementsByTagName(QStringLiteral("ipxact:componentGenerator"));
         for (int generatorIndex = 0; generatorIndex < generatorNodeList.count(); ++generatorIndex)
         {
             QDomNode generatorNode = generatorNodeList.at(generatorIndex);
@@ -391,13 +391,13 @@ void ComponentReader::parseComponentGenerators(QDomNode const& componentNode,
 //-----------------------------------------------------------------------------
 void ComponentReader::parseChoices(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
 {
-    QDomElement choicesElement = componentNode.firstChildElement("ipxact:choices");
+    QDomElement choicesElement = componentNode.firstChildElement(QStringLiteral("ipxact:choices"));
 
     if (!choicesElement.isNull())
     {
         ChoiceReader choiceReader;
 
-        QDomNodeList choiceNodeList = choicesElement.elementsByTagName("ipxact:choice");
+        QDomNodeList choiceNodeList = choicesElement.elementsByTagName(QStringLiteral("ipxact:choice"));
         for (int choiceIndex = 0; choiceIndex < choiceNodeList.count(); ++choiceIndex)
         {
             QDomNode choiceNode = choiceNodeList.at(choiceIndex);
@@ -413,13 +413,13 @@ void ComponentReader::parseChoices(QDomNode const& componentNode, QSharedPointer
 //-----------------------------------------------------------------------------
 void ComponentReader::parseFileSets(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
 {
-    QDomElement fileSetsElement = componentNode.firstChildElement("ipxact:fileSets");
+    QDomElement fileSetsElement = componentNode.firstChildElement(QStringLiteral("ipxact:fileSets"));
 
     if (!fileSetsElement.isNull())
     {
         FileSetReader setReader;
 
-        QDomNodeList fileSetNodeList = fileSetsElement.elementsByTagName("ipxact:fileSet");
+        QDomNodeList fileSetNodeList = fileSetsElement.elementsByTagName(QStringLiteral("ipxact:fileSet"));
         for (int fileSetIndex = 0; fileSetIndex < fileSetNodeList.count(); ++fileSetIndex)
         {
             QDomNode fileSetNode = fileSetNodeList.at(fileSetIndex);
@@ -435,13 +435,13 @@ void ComponentReader::parseFileSets(QDomNode const& componentNode, QSharedPointe
 //-----------------------------------------------------------------------------
 void ComponentReader::parseCPUs(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
 {
-    QDomElement cpusElement = componentNode.firstChildElement("ipxact:cpus");
+    QDomElement cpusElement = componentNode.firstChildElement(QStringLiteral("ipxact:cpus"));
 
     if (!cpusElement.isNull())
     {
         CPUReader cpuReader;
 
-        QDomNodeList cpuNodeList = cpusElement.elementsByTagName("ipxact:cpu");
+        QDomNodeList cpuNodeList = cpusElement.elementsByTagName(QStringLiteral("ipxact:cpu"));
         for (int cpuIndex = 0; cpuIndex < cpuNodeList.count(); ++cpuIndex)
         {
             QDomNode cpuNode = cpuNodeList.at(cpuIndex);
@@ -458,13 +458,13 @@ void ComponentReader::parseCPUs(QDomNode const& componentNode, QSharedPointer<Co
 void ComponentReader::parseOtherClockDrivers(QDomNode const& componentNode,
     QSharedPointer<Component> newComponent) const
 {
-    QDomElement otherClocksElement = componentNode.firstChildElement("ipxact:otherClockDrivers");
+    QDomElement otherClocksElement = componentNode.firstChildElement(QStringLiteral("ipxact:otherClockDrivers"));
 
     if (!otherClocksElement.isNull())
     {
         OtherClockDriverReader otherClockReader;
 
-        QDomNodeList clockNodeList = otherClocksElement.elementsByTagName("ipxact:otherClockDriver");
+        QDomNodeList clockNodeList = otherClocksElement.elementsByTagName(QStringLiteral("ipxact:otherClockDriver"));
         for (int clockIndex = 0; clockIndex < clockNodeList.count(); ++clockIndex)
         {
             QDomNode clockNode = clockNodeList.at(clockIndex);
@@ -482,7 +482,7 @@ void ComponentReader::parseOtherClockDrivers(QDomNode const& componentNode,
 void ComponentReader::parseComponentExtensions(QDomNode const& componentNode,
     QSharedPointer<Component> newComponent) const
 {
-    QDomNodeList extensionNodeList = componentNode.firstChildElement("ipxact:vendorExtensions").childNodes();
+    QDomNodeList extensionNodeList = componentNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions")).childNodes();
 
     for (int extensionIndex = 0; extensionIndex < extensionNodeList.count(); ++extensionIndex)
     {
@@ -537,28 +537,28 @@ void ComponentReader::parseSwViews(QDomNode const& swViewsNode, QSharedPointer<C
 
         nameReader.parseNameGroup(singleSWViewElement, newSWView);
 
-        QDomElement hierarchyElement = singleSWViewElement.firstChildElement("kactus2:hierarchyRef");
+        QDomElement hierarchyElement = singleSWViewElement.firstChildElement(QStringLiteral("kactus2:hierarchyRef"));
         if (!hierarchyElement.isNull())
         {
             VLNV hierarhcyReference = parseVLNVAttributes(hierarchyElement, VLNV::DESIGN);
             newSWView->setHierarchyRef(hierarhcyReference);
         }
 
-        QDomNodeList fileSetRefNodeList = singleSWViewElement.elementsByTagName("kactus2:fileSetRef");
+        QDomNodeList fileSetRefNodeList = singleSWViewElement.elementsByTagName(QStringLiteral("kactus2:fileSetRef"));
         for (int setIndex = 0; setIndex < fileSetRefNodeList.count(); ++setIndex)
         {
             QString setReference = fileSetRefNodeList.at(setIndex).firstChild().nodeValue();
             newSWView->addFileSetRef(setReference);
         }
 
-        QDomNodeList swBuildCommandNodes = singleSWViewElement.elementsByTagName("kactus2:SWBuildCommand");
+        QDomNodeList swBuildCommandNodes = singleSWViewElement.elementsByTagName(QStringLiteral("kactus2:SWBuildCommand"));
         for (int commandIndex = 0; commandIndex < swBuildCommandNodes.count(); ++commandIndex)
         {
             QSharedPointer<SWFileBuilder> command(new SWFileBuilder(swBuildCommandNodes.at(commandIndex)));
             newSWView->getSWBuildCommands()->append(command);
         }
 
-        QDomElement bspCommandElement = singleSWViewElement.firstChildElement("kactus2:BSPBuildCommand");
+        QDomElement bspCommandElement = singleSWViewElement.firstChildElement(QStringLiteral("kactus2:BSPBuildCommand"));
         if (!bspCommandElement.isNull())
         {
             QSharedPointer<BSPBuildCommand> command (new BSPBuildCommand(bspCommandElement));
@@ -584,11 +584,11 @@ void ComponentReader::parseSwProperties(QDomNode const& propertiesNode, QSharedP
     {
         QDomElement propertyElement = propertyNodeList.at(propertyIndex).toElement();
 
-        QString name = propertyElement.attribute("name");
-        QString type = propertyElement.attribute("propertyType");
-        QString defaultValue = propertyElement.attribute("defaultValue");
-        QString description =propertyElement.attribute("description");
-        QString requiredString = propertyElement.attribute("required");
+        QString name = propertyElement.attribute(QStringLiteral("name"));
+        QString type = propertyElement.attribute(QStringLiteral("propertyType"));
+        QString defaultValue = propertyElement.attribute(QStringLiteral("defaultValue"));
+        QString description =propertyElement.attribute(QStringLiteral("description"));
+        QString requiredString = propertyElement.attribute(QStringLiteral("required"));
         bool required = false;
         if (requiredString == QLatin1String("true"))
         {
@@ -625,21 +625,21 @@ void ComponentReader::parseSystemViews(QDomNode const& viewsNode, QSharedPointer
 
         nameReader.parseNameGroup(singleSystemElement, newSystemView);
 
-        QDomElement hierarchyElement = singleSystemElement.firstChildElement("kactus2:hierarchyRef");
+        QDomElement hierarchyElement = singleSystemElement.firstChildElement(QStringLiteral("kactus2:hierarchyRef"));
         if (!hierarchyElement.isNull())
         {
             VLNV hierarhcyReference = parseVLNVAttributes(hierarchyElement, VLNV::DESIGN);
             newSystemView->setHierarchyRef(hierarhcyReference);
         }
 
-        QDomElement hwViewReferenceElement = singleSystemElement.firstChildElement("kactus2:hwViewRef");
+        QDomElement hwViewReferenceElement = singleSystemElement.firstChildElement(QStringLiteral("kactus2:hwViewRef"));
         if (!hwViewReferenceElement.isNull())
         {
             QString viewRefernce = hwViewReferenceElement.firstChild().nodeValue();
             newSystemView->setHWViewRef(viewRefernce);
         }
 
-        QDomNodeList fileSetRefNodeList = singleSystemElement.elementsByTagName("kactus2:fileSetRef");
+        QDomNodeList fileSetRefNodeList = singleSystemElement.elementsByTagName(QStringLiteral("kactus2:fileSetRef"));
         QStringList fileSetReferences;
         for (int setIndex = 0; setIndex < fileSetRefNodeList.count(); ++setIndex)
         {
@@ -672,21 +672,21 @@ void ComponentReader::parseComInterfaces(QDomNode const& interfaceNode, QSharedP
 
         nameReader.parseNameGroup(interfaceElement, newComInterface);
 
-        QDomElement comTypeElement = interfaceElement.firstChildElement("kactus2:comType");
+        QDomElement comTypeElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:comType"));
         if (!comTypeElement.isNull())
         {
             VLNV comType = parseVLNVAttributes(comTypeElement, VLNV::DESIGN);
             newComInterface->setComType(comType);
         }
 
-        QDomElement transferElement = interfaceElement.firstChildElement("kactus2:transferType");
+        QDomElement transferElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:transferType"));
         if (!transferElement.isNull())
         {
             QString transfer = transferElement.firstChild().nodeValue();
             newComInterface->setTransferType(transfer);
         }
 
-        QDomElement directionElement = interfaceElement.firstChildElement("kactus2:comDirection");
+        QDomElement directionElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:comDirection"));
         if (!directionElement.isNull())
         {
             QString directionString = directionElement.firstChild().nodeValue();
@@ -695,7 +695,7 @@ void ComponentReader::parseComInterfaces(QDomNode const& interfaceNode, QSharedP
             newComInterface->setDirection(direction);
         }
 
-        QDomElement propertiesElement = interfaceElement.firstChildElement("kactus2:propertyValues");
+        QDomElement propertiesElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:propertyValues"));
         if (!propertiesElement.isNull())
         {
             QMap<QString, QString> newProperties;
@@ -703,26 +703,26 @@ void ComponentReader::parseComInterfaces(QDomNode const& interfaceNode, QSharedP
             QDomNodeList propertiesNodeList = propertiesElement.childNodes();
             for (int i = 0; i < propertiesNodeList.count(); ++i)
             {
-                QString name = propertiesNodeList.at(i).toElement().attribute("name");
-                QString value = propertiesNodeList.at(i).toElement().attribute("value");
+                QString name = propertiesNodeList.at(i).toElement().attribute(QStringLiteral("name"));
+                QString value = propertiesNodeList.at(i).toElement().attribute(QStringLiteral("value"));
                 newProperties.insert(name, value);
             }
 
             newComInterface->setPropertyValues(newProperties);
         }
 
-        QDomElement comImplementationElement = interfaceElement.firstChildElement("kactus2:comImplementationRef");
+        QDomElement comImplementationElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:comImplementationRef"));
         if (!comImplementationElement.isNull())
         {
             VLNV comImplementation = parseVLNVAttributes(comImplementationElement, VLNV::DESIGN);
             newComInterface->setComImplementation(comImplementation);
         }
 
-        QDomElement positionElement = interfaceElement.firstChildElement("kactus2:position");
+        QDomElement positionElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:position"));
         if (!positionElement.isNull())
         {
-            int positionX = positionElement.attribute("x").toInt();
-            int positionY = positionElement.attribute("y").toInt();
+            int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
+            int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
             newComInterface->setDefaultPos(QPointF(positionX, positionY));
         }
 
@@ -751,14 +751,14 @@ void ComponentReader::parseApiInterfaces(QDomNode const& interfaceNode, QSharedP
 
         nameReader.parseNameGroup(interfaceElement, newApiInterface);
 
-        QDomElement apiTypeElement = interfaceElement.firstChildElement("kactus2:apiType");
+        QDomElement apiTypeElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:apiType"));
         if (!apiTypeElement.isNull())
         {
             VLNV apiType = parseVLNVAttributes(apiTypeElement, VLNV::DESIGN);
             newApiInterface->setApiType(apiType);
         }
 
-        QDomElement directionElement = interfaceElement.firstChildElement("kactus2:dependencyDirection");
+        QDomElement directionElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:dependencyDirection"));
         if (!directionElement.isNull())
         {
             QString directionString = directionElement.firstChild().nodeValue();
@@ -766,11 +766,11 @@ void ComponentReader::parseApiInterfaces(QDomNode const& interfaceNode, QSharedP
                 (str2DependencyDirection(directionString, DEPENDENCY_PROVIDER));
         }
 
-        QDomElement positionElement = interfaceElement.firstChildElement("kactus2:position");
+        QDomElement positionElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:position"));
         if (!positionElement.isNull())
         {
-            int positionX = positionElement.attribute("x").toInt();
-            int positionY = positionElement.attribute("y").toInt();
+            int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
+            int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
             newApiInterface->setDefaultPos(QPointF(positionX, positionY));
         }
 
@@ -792,24 +792,24 @@ void ComponentReader::parseFileDependencies(QDomNode const& fileNode, QSharedPoi
     {
         QDomElement dependencyElement = dependencyNodeList.at(dependencyIndex).toElement();
 
-        QString file1 = dependencyElement.firstChildElement("kactus2:fileRef1").firstChild().nodeValue();
-        QString file2 = dependencyElement.firstChildElement("kactus2:fileRef2").firstChild().nodeValue();
-        QString description = dependencyElement.firstChildElement("ipxact:description").firstChild().nodeValue();
+        QString file1 = dependencyElement.firstChildElement(QStringLiteral("kactus2:fileRef1")).firstChild().nodeValue();
+        QString file2 = dependencyElement.firstChildElement(QStringLiteral("kactus2:fileRef2")).firstChild().nodeValue();
+        QString description = dependencyElement.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue();
 
         bool locked = false;
-        if (dependencyElement.attribute("locked") == QLatin1String("true"))
+        if (dependencyElement.attribute(QStringLiteral("locked")) == QLatin1String("true"))
         {
             locked = true;
         }
 
         bool biDirectional = false;
-        if (dependencyElement.attribute("bidirectional") == QLatin1String("true"))
+        if (dependencyElement.attribute(QStringLiteral("bidirectional")) == QLatin1String("true"))
         {
             biDirectional = true;
         }
 
         bool manual = false;
-        if (dependencyElement.attribute("manual") == QLatin1String("true"))
+        if (dependencyElement.attribute(QStringLiteral("manual")) == QLatin1String("true"))
         {
             manual = true;
         }

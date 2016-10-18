@@ -36,10 +36,10 @@ CommonItemsReader::~CommonItemsReader()
 //-----------------------------------------------------------------------------
 VLNV CommonItemsReader::createVLNVFrom(QDomNode const& vlnvNode, VLNV::IPXactType type) const
 {
-    QString vendor = vlnvNode.firstChildElement("ipxact:vendor").firstChild().nodeValue();
-    QString library = vlnvNode.firstChildElement("ipxact:library").firstChild().nodeValue();
-    QString name = vlnvNode.firstChildElement("ipxact:name").firstChild().nodeValue();
-    QString version = vlnvNode.firstChildElement("ipxact:version").firstChild().nodeValue();
+    QString vendor = vlnvNode.firstChildElement(QStringLiteral("ipxact:vendor")).firstChild().nodeValue();
+    QString library = vlnvNode.firstChildElement(QStringLiteral("ipxact:library")).firstChild().nodeValue();
+    QString name = vlnvNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
+    QString version = vlnvNode.firstChildElement(QStringLiteral("ipxact:version")).firstChild().nodeValue();
 
     VLNV itemVLNV;
     itemVLNV.setType(type);
@@ -60,10 +60,10 @@ VLNV CommonItemsReader::parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXa
 
     VLNV attributedVLNV;
     attributedVLNV.setType(vlnvType);
-    attributedVLNV.setVendor(attributes.namedItem("vendor").nodeValue());
-    attributedVLNV.setLibrary(attributes.namedItem("library").nodeValue());
-    attributedVLNV.setName(attributes.namedItem("name").nodeValue());
-    attributedVLNV.setVersion(attributes.namedItem("version").nodeValue());
+    attributedVLNV.setVendor(attributes.namedItem(QStringLiteral("vendor")).nodeValue());
+    attributedVLNV.setLibrary(attributes.namedItem(QStringLiteral("library")).nodeValue());
+    attributedVLNV.setName(attributes.namedItem(QStringLiteral("name")).nodeValue());
+    attributedVLNV.setVersion(attributes.namedItem(QStringLiteral("version")).nodeValue());
 
     return attributedVLNV;
 }
@@ -74,7 +74,7 @@ VLNV CommonItemsReader::parseVLNVAttributes(QDomNode const& vlnvNode, VLNV::IPXa
 QSharedPointer<QList<QSharedPointer<Parameter> > > CommonItemsReader::parseAndCreateParameters(
     QDomNode const& itemNode) const
 {
-    QDomNodeList parameterNodeList = itemNode.firstChildElement("ipxact:parameters").childNodes();
+    QDomNodeList parameterNodeList = itemNode.firstChildElement(QStringLiteral("ipxact:parameters")).childNodes();
     
     QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters (new QList<QSharedPointer<Parameter> > ());
     if (!parameterNodeList.isEmpty())
@@ -96,14 +96,14 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > CommonItemsReader::parseAndCr
 void CommonItemsReader::parseVendorExtensions(QDomNode const& itemNode, QSharedPointer<Extendable> element)
     const
 {
-    QDomNodeList extensionNodes = itemNode.firstChildElement("ipxact:vendorExtensions").childNodes();
+    QDomNodeList extensionNodes = itemNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions")).childNodes();
 
     int extensionCount = extensionNodes.count();
     for (int i = 0; i < extensionCount; i++)
     {
         QDomNode extensionNode = extensionNodes.at(i);
 
-        if (!extensionNode.nodeName().startsWith("kactus2:"))
+        if (!extensionNode.nodeName().startsWith(QStringLiteral("kactus2:")))
         {
             QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNode));
             element->getVendorExtensions()->append(extension);
@@ -119,15 +119,15 @@ QSharedPointer<ConfigurableVLNVReference> CommonItemsReader::parseConfigurableVL
 {
     QDomNamedNodeMap attributeMap = configurableVLNVNode.attributes();
 
-    QString vendor = attributeMap.namedItem("vendor").nodeValue();
-    QString library = attributeMap.namedItem("library").nodeValue();
-    QString name = attributeMap.namedItem("name").nodeValue();
-    QString version = attributeMap.namedItem("version").nodeValue();
+    QString vendor = attributeMap.namedItem(QStringLiteral("vendor")).nodeValue();
+    QString library = attributeMap.namedItem(QStringLiteral("library")).nodeValue();
+    QString name = attributeMap.namedItem(QStringLiteral("name")).nodeValue();
+    QString version = attributeMap.namedItem(QStringLiteral("version")).nodeValue();
 
     QSharedPointer<ConfigurableVLNVReference> vlnvReference(
         new ConfigurableVLNVReference(type, vendor, library, name, version));
 
-    QDomNode configurableElementsNode = configurableVLNVNode.firstChildElement("ipxact:configurableElementValues");
+    QDomNode configurableElementsNode = configurableVLNVNode.firstChildElement(QStringLiteral("ipxact:configurableElementValues"));
 
     QDomNodeList configurableElementNodeList = configurableElementsNode.childNodes();
     for (int i = 0; i < configurableElementNodeList.size(); ++i)

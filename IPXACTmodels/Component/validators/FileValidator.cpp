@@ -119,8 +119,8 @@ void FileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<File> 
 	{
 		if (!hasValidName(currentPair->name()))
 		{
-			errors.append(QObject::tr("The name '%1' of a define is invalid within file %2."
-				).arg(currentPair->name(), file->name()));
+			errors.append(QObject::tr("The name '%1' of a define is invalid within file %2.").arg(
+                currentPair->name(), file->name()));
 		}
 	}
 
@@ -137,7 +137,7 @@ void FileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<File> 
 //-----------------------------------------------------------------------------
 bool FileValidator::hasValidName(QString const& name) const
 {
-	QRegularExpression whiteSpaceExpression("^\\s*$");
+	QRegularExpression whiteSpaceExpression(QStringLiteral("^\\s*$"));
 
 	if (name.isEmpty() || whiteSpaceExpression.match(name).hasMatch())
 	{

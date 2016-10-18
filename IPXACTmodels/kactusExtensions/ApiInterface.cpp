@@ -17,11 +17,11 @@
 //-----------------------------------------------------------------------------
 DependencyDirection str2DependencyDirection(QString const& str, DependencyDirection defaultValue)
 {
-    if (str == "provider")
+    if (str == QLatin1String("provider"))
     {
         return DEPENDENCY_PROVIDER;
     }
-    else if (str == "requester")
+    else if (str == QLatin1String("requester"))
     {
         return DEPENDENCY_REQUESTER;
     }
@@ -36,14 +36,13 @@ DependencyDirection str2DependencyDirection(QString const& str, DependencyDirect
 //-----------------------------------------------------------------------------
 QString dependencyDirection2Str(DependencyDirection dir)
 {
-    switch (dir)
+    if (dir == DEPENDENCY_PROVIDER)
     {
-    case DEPENDENCY_PROVIDER:
-        return "provider";
-
-    case DEPENDENCY_REQUESTER:
-    default:
-        return "requester";
+        return QStringLiteral("provider");
+    }
+    else
+    {
+        return QStringLiteral("requester");
     }
 }
 
@@ -89,30 +88,30 @@ defaultPos_()
             continue;
         }
 
-        if (childNode.nodeName() == QString("ipxact:name"))
+        if (childNode.nodeName() == QLatin1String("ipxact:name"))
         {
             setName(childNode.firstChild().nodeValue());
         }
-        else if (childNode.nodeName() == QString("ipxact:displayName"))
+        else if (childNode.nodeName() == QLatin1String("ipxact:displayName"))
         {
             setDisplayName(childNode.firstChild().nodeValue());
         }
-        else if (childNode.nodeName() == QString("ipxact:description"))
+        else if (childNode.nodeName() == QLatin1String("ipxact:description"))
         {
             setDescription(childNode.firstChild().nodeValue());
         }
-        else if (childNode.nodeName() == "kactus2:apiType")
+        else if (childNode.nodeName() == QLatin1String("kactus2:apiType"))
         {
             apiType_ = VLNV::createVLNV(childNode, VLNV::APIDEFINITION);
         }
-        else if (childNode.nodeName() == "kactus2:dependencyDirection")
+        else if (childNode.nodeName() == QLatin1String("kactus2:dependencyDirection"))
         {
             dependencyDir_ = str2DependencyDirection(childNode.childNodes().at(0).nodeValue(), DEPENDENCY_PROVIDER);
         }
-        else if (childNode.nodeName() == "kactus2:position")
+        else if (childNode.nodeName() == QLatin1String("kactus2:position"))
         {
-            defaultPos_.setX(childNode.attributes().namedItem("x").nodeValue().toInt());
-            defaultPos_.setY(childNode.attributes().namedItem("y").nodeValue().toInt());
+            defaultPos_.setX(childNode.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt());
+            defaultPos_.setY(childNode.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt());
         }
     }
 }
@@ -138,7 +137,7 @@ ApiInterface* ApiInterface::clone() const
 //-----------------------------------------------------------------------------
 QString ApiInterface::type() const
 {
-    return QString("kactus2:apiInterface");
+    return QStringLiteral("kactus2:apiInterface");
 }
 
 //-----------------------------------------------------------------------------
@@ -146,26 +145,26 @@ QString ApiInterface::type() const
 //-----------------------------------------------------------------------------
 void ApiInterface::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:apiInterface");
+    writer.writeStartElement(QStringLiteral("kactus2:apiInterface"));
 
-    writer.writeTextElement("ipxact:name", name());
+    writer.writeTextElement(QStringLiteral("ipxact:name"), name());
 
     if (!displayName().isEmpty())
     {
-        writer.writeTextElement("ipxact:displayName", displayName());
+        writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
     }
     if (!description().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", description());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), description());
     }
 
-    writer.writeEmptyElement("kactus2:apiType");
-    writer.writeAttribute("vendor", apiType_.getVendor());
-    writer.writeAttribute("library", apiType_.getLibrary());
-    writer.writeAttribute("name", apiType_.getName());
-    writer.writeAttribute("version", apiType_.getVersion());
+    writer.writeEmptyElement(QStringLiteral("kactus2:apiType"));
+    writer.writeAttribute(QStringLiteral("vendor"), apiType_.getVendor());
+    writer.writeAttribute(QStringLiteral("library"), apiType_.getLibrary());
+    writer.writeAttribute(QStringLiteral("name"), apiType_.getName());
+    writer.writeAttribute(QStringLiteral("version"), apiType_.getVersion());
 
-    writer.writeTextElement("kactus2:dependencyDirection", dependencyDirection2Str(dependencyDir_));
+    writer.writeTextElement(QStringLiteral("kactus2:dependencyDirection"), dependencyDirection2Str(dependencyDir_));
 
     if (!defaultPos_.isNull())
     {
@@ -274,7 +273,7 @@ QPointF const& ApiInterface::getDefaultPos() const
 //-----------------------------------------------------------------------------
 void ApiInterface::writePosition(QXmlStreamWriter& writer, QPointF const& pos) const
 {
-    writer.writeEmptyElement("kactus2:position");
-    writer.writeAttribute("x", QString::number(int(pos.x())));
-    writer.writeAttribute("y", QString::number(int(pos.y())));
+    writer.writeEmptyElement(QStringLiteral("kactus2:position"));
+    writer.writeAttribute(QStringLiteral("x"), QString::number(int(pos.x())));
+    writer.writeAttribute(QStringLiteral("y"), QString::number(int(pos.y())));
 }

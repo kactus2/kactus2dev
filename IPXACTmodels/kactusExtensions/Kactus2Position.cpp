@@ -42,7 +42,7 @@ Kactus2Position* Kactus2Position::clone() const
 //-----------------------------------------------------------------------------
 QString Kactus2Position::type() const
 {
-    return "kactus2:position";
+    return QStringLiteral("kactus2:position");
 }
 
 //-----------------------------------------------------------------------------
@@ -51,8 +51,8 @@ QString Kactus2Position::type() const
 void Kactus2Position::write(QXmlStreamWriter& writer) const
 {
     writer.writeEmptyElement(type());
-    writer.writeAttribute("x", QString::number(int(position_.x())));
-    writer.writeAttribute("y", QString::number(int(position_.y())));
+    writer.writeAttribute(QStringLiteral("x"), QString::number(int(position_.x())));
+    writer.writeAttribute(QStringLiteral("y"), QString::number(int(position_.y())));
 }
 
 //-----------------------------------------------------------------------------

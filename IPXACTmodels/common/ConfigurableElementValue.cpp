@@ -70,7 +70,7 @@ void ConfigurableElementValue::setConfigurableValue(QString const& newConfigurab
 //-----------------------------------------------------------------------------
 QString ConfigurableElementValue::getReferenceId() const
 {
-    return attributes_.value("referenceId");
+    return attributes_.value(QStringLiteral("referenceId"));
 }
 
 //-----------------------------------------------------------------------------
@@ -78,7 +78,7 @@ QString ConfigurableElementValue::getReferenceId() const
 //-----------------------------------------------------------------------------
 void ConfigurableElementValue::setReferenceId(QString const& newReferenceId)
 {
-    attributes_.insert("referenceId", newReferenceId);
+    attributes_.insert(QStringLiteral("referenceId"), newReferenceId);
 }
 
 //-----------------------------------------------------------------------------

@@ -35,8 +35,8 @@ public:
 	 *      @param [in] addressOffset   Address offset of the segment.
 	 *      @param [in] range           Range of the segment.
 	 */
-	Segment(QString const& name = QString(""), QString const& addressOffset = QString(""),
-        QString const& range = QString(""));
+	Segment(QString const& name = QLatin1String(""), QString const& addressOffset = QLatin1String(""),
+        QString const& range = QLatin1String(""));
 	
 	//! The destructor.
 	~Segment();

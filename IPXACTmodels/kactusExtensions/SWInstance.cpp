@@ -55,51 +55,52 @@ comInterfaces_()
             continue;
         }
 
-        if (childNode.nodeName() == "kactus2:instanceName")
+        if (childNode.nodeName() == QLatin1String("kactus2:instanceName"))
         {
             setInstanceName(childNode.firstChild().nodeValue());
         }
-        else if (childNode.nodeName() == "kactus2:displayName")
+        else if (childNode.nodeName() == QLatin1String("kactus2:displayName"))
         {
             setDisplayName(childNode.firstChild().nodeValue());
         }
-        else if (childNode.nodeName() == "kactus2:description")
+        else if (childNode.nodeName() == QLatin1String("kactus2:description"))
         {
             setDescription(childNode.firstChild().nodeValue());
         }
-        else if (childNode.nodeName() == "kactus2:componentRef")
+        else if (childNode.nodeName() == QLatin1String("kactus2:componentRef"))
         {
             setComponentRef(createComponentReference(childNode));
         }
-        else if (childNode.nodeName() == "kactus2:fileSetRef")
+        else if (childNode.nodeName() == QLatin1String("kactus2:fileSetRef"))
         {
             fileSetRef_ = childNode.firstChild().nodeValue();
         }
-        else if (childNode.nodeName() == "kactus2:mapping")
+        else if (childNode.nodeName() == QLatin1String("kactus2:mapping"))
         {
-            hwRef_ = childNode.attributes().namedItem("hwRef").nodeValue();
+            hwRef_ = childNode.attributes().namedItem(QStringLiteral("hwRef")).nodeValue();
         }
-        else if (childNode.nodeName() == "kactus2:position")
+        else if (childNode.nodeName() == QLatin1String("kactus2:position"))
         {
-            int positionX = childNode.attributes().namedItem("x").nodeValue().toInt();
-            int positionY = childNode.attributes().namedItem("y").nodeValue().toInt();
+            int positionX = childNode.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt();
+            int positionY = childNode.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt();
             setPosition(QPointF(positionX, positionY));
         }
-        else if (childNode.nodeName() == "kactus2:imported")
+        else if (childNode.nodeName() == QLatin1String("kactus2:imported"))
         {
-            setImportRef(childNode.attributes().namedItem("importRef").nodeValue());
+            setImportRef(childNode.attributes().namedItem(QStringLiteral("importRef")).nodeValue());
         }
-        else if (childNode.nodeName() == "kactus2:comInterfaces")
+        else if (childNode.nodeName() == QLatin1String("kactus2:comInterfaces"))
         {
             parseComInterfaces(childNode);
         }
-        else if (childNode.nodeName() == "kactus2:propertyValues")
+        else if (childNode.nodeName() == QLatin1String("kactus2:propertyValues"))
         {
             parsePropertyValues(childNode);
         }
-        else if (childNode.nodeName() == "kactus2:apiInterfacePositions")
+        else if (childNode.nodeName() == QLatin1String("kactus2:apiInterfacePositions"))
         {
-            QMap<QString, QPointF> apiInterfacePositions = createMappedPositions(childNode, "apiRef");
+            QMap<QString, QPointF> apiInterfacePositions = createMappedPositions(childNode, 
+                QStringLiteral("apiRef"));
             QMapIterator<QString, QPointF> apiInterfaceIterator(apiInterfacePositions);
 
             while (apiInterfaceIterator.hasNext())
@@ -110,9 +111,10 @@ comInterfaces_()
             }
 
         }
-        else if (childNode.nodeName() == "kactus2:comInterfacePositions")
+        else if (childNode.nodeName() == QLatin1String("kactus2:comInterfacePositions"))
         {
-            QMap<QString, QPointF> comInterfacePositions = createMappedPositions(childNode, "comRef");
+            QMap<QString, QPointF> comInterfacePositions = createMappedPositions(childNode, 
+                QStringLiteral("comRef"));
             QMapIterator<QString, QPointF> apiInterfaceIterator(comInterfacePositions);
 
             while (apiInterfaceIterator.hasNext())
@@ -123,7 +125,7 @@ comInterfaces_()
             }
 
         }
-        else if (childNode.nodeName() == "kactus2:draft")
+        else if (childNode.nodeName() == QLatin1String("kactus2:draft"))
         {
             setDraft(true);
         }
@@ -150,7 +152,7 @@ SWInstance* SWInstance::clone() const
 //-----------------------------------------------------------------------------
 QString SWInstance::type() const
 {
-    return QString("kactus2:swInstance");
+    return QStringLiteral("kactus2:swInstance");
 }
 
 //-----------------------------------------------------------------------------
@@ -158,52 +160,52 @@ QString SWInstance::type() const
 //-----------------------------------------------------------------------------
 void SWInstance::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement("kactus2:swInstance");
+    writer.writeStartElement(QStringLiteral("kactus2:swInstance"));
 
     // Write general data.
-    writer.writeTextElement("kactus2:instanceName", getInstanceName());
+    writer.writeTextElement(QStringLiteral("kactus2:instanceName"), getInstanceName());
     if (!getDisplayName().isEmpty())
     {
-        writer.writeTextElement("kactus2:displayName", getDisplayName());
+        writer.writeTextElement(QStringLiteral("kactus2:displayName"), getDisplayName());
     }
     if (!getDescription().isEmpty())
     {
-        writer.writeTextElement("kactus2:description", getDescription());
+        writer.writeTextElement(QStringLiteral("kactus2:description"), getDescription());
     }
 
     if (!getComponentRef()->isEmpty())
     {
-        writer.writeEmptyElement("kactus2:componentRef");
+        writer.writeEmptyElement(QStringLiteral("kactus2:componentRef"));
         writeVLNVasAttributes(writer, *getComponentRef());
     }
     
     if (!fileSetRef_.isEmpty())
     {
-        writer.writeTextElement("kactus2:fileSetRef", fileSetRef_);
+        writer.writeTextElement(QStringLiteral("kactus2:fileSetRef"), fileSetRef_);
     }
     
-    writer.writeEmptyElement("kactus2:mapping");
-    writer.writeAttribute("hwRef", hwRef_);
+    writer.writeEmptyElement(QStringLiteral("kactus2:mapping"));
+    writer.writeAttribute(QStringLiteral("hwRef"), hwRef_);
 
-    writer.writeEmptyElement("kactus2:position");
-    writer.writeAttribute("x", QString::number(int(getPosition().x())));
-    writer.writeAttribute("y", QString::number(int(getPosition().y())));
+    writer.writeEmptyElement(QStringLiteral("kactus2:position"));
+    writer.writeAttribute(QStringLiteral("x"), QString::number(int(getPosition().x())));
+    writer.writeAttribute(QStringLiteral("y"), QString::number(int(getPosition().y())));
 
     if (isImported())
     {
-        writer.writeEmptyElement("kactus2:imported");
-        writer.writeAttribute("importRef", getImportRef());
+        writer.writeEmptyElement(QStringLiteral("kactus2:imported"));
+        writer.writeAttribute(QStringLiteral("importRef"), getImportRef());
     }
 
     if (isDraft())
     {
-        writer.writeEmptyElement("kactus2:draft");
+        writer.writeEmptyElement(QStringLiteral("kactus2:draft"));
     }
 
     // Write communication interfaces.
     if (!comInterfaces_.empty())
     {
-        writer.writeStartElement("kactus2:comInterfaces");
+        writer.writeStartElement(QStringLiteral("kactus2:comInterfaces"));
 
         foreach (QSharedPointer<ComInterface> comIf, comInterfaces_)
         {
@@ -216,7 +218,7 @@ void SWInstance::write(QXmlStreamWriter& writer) const
     // Write property values.
     if (!getPropertyValues().isEmpty())
     {
-        writer.writeStartElement("kactus2:propertyValues");
+        writer.writeStartElement(QStringLiteral("kactus2:propertyValues"));
 
         QMapIterator<QString, QString> iter(getPropertyValues());
 
@@ -224,17 +226,19 @@ void SWInstance::write(QXmlStreamWriter& writer) const
         {
             iter.next();
 
-            writer.writeEmptyElement("kactus2:propertyValue");
-            writer.writeAttribute("name", iter.key());
-            writer.writeAttribute("value", iter.value());
+            writer.writeEmptyElement(QStringLiteral("kactus2:propertyValue"));
+            writer.writeAttribute(QStringLiteral("name"), iter.key());
+            writer.writeAttribute(QStringLiteral("value"), iter.value());
         }
 
         writer.writeEndElement(); // kactus2:propertyValues
     }
 
     // Write API and COM interface positions.
-    writeMappedPosition(writer, getApiInterfacePositions(), "kactus2:apiInterfacePosition", "apiRef");
-    writeMappedPosition(writer, getComInterfacePositions(), "kactus2:comInterfacePosition", "comRef");
+    writeMappedPosition(writer, getApiInterfacePositions(), QStringLiteral("kactus2:apiInterfacePosition"), 
+        QStringLiteral("apiRef"));
+    writeMappedPosition(writer, getComInterfacePositions(), QStringLiteral("kactus2:comInterfacePosition"),
+        QStringLiteral("comRef"));
 
     writer.writeEndElement(); // kactus2:swInstance
 }
@@ -395,7 +399,7 @@ void SWInstance::parseComInterfaces(QDomNode& node)
     {
         QDomNode comIfNode = node.childNodes().at(i);
 
-        if (comIfNode.nodeName() == "kactus2:comInterface")
+        if (comIfNode.nodeName() == QLatin1String("kactus2:comInterface"))
         {
             QSharedPointer<ComInterface> comIf(new ComInterface(comIfNode));
             comInterfaces_.append(comIf);
@@ -414,10 +418,10 @@ void SWInstance::parsePropertyValues(QDomNode& node)
     {
         QDomNode propNode = node.childNodes().at(i);
 
-        if (propNode.nodeName() == "kactus2:propertyValue")
+        if (propNode.nodeName() == QLatin1String("kactus2:propertyValue"))
         {
-            QString name = propNode.attributes().namedItem("name").nodeValue();
-            QString value = propNode.attributes().namedItem("value").nodeValue();
+            QString name = propNode.attributes().namedItem(QStringLiteral("name")).nodeValue();
+            QString value = propNode.attributes().namedItem(QStringLiteral("value")).nodeValue();
 
             newPropertyValues.insert(name, value);
         }
@@ -431,10 +435,10 @@ void SWInstance::parsePropertyValues(QDomNode& node)
 //-----------------------------------------------------------------------------
 void SWInstance::writeVLNVasAttributes(QXmlStreamWriter& writer, VLNV const& targetVLNV) const
 {
-    writer.writeAttribute("vendor", targetVLNV.getVendor());
-    writer.writeAttribute("library", targetVLNV.getLibrary());
-    writer.writeAttribute("name", targetVLNV.getName());
-    writer.writeAttribute("version", targetVLNV.getVersion());
+    writer.writeAttribute(QStringLiteral("vendor"), targetVLNV.getVendor());
+    writer.writeAttribute(QStringLiteral("library"), targetVLNV.getLibrary());
+    writer.writeAttribute(QStringLiteral("name"), targetVLNV.getName());
+    writer.writeAttribute(QStringLiteral("version"), targetVLNV.getVersion());
 }
 
 //-----------------------------------------------------------------------------
@@ -446,7 +450,7 @@ void SWInstance::writeMappedPosition(QXmlStreamWriter& writer, QMap<QString, QPo
     if (!positions.isEmpty())
     {
         QMapIterator<QString, QPointF> itrPortPos(positions);
-        writer.writeStartElement(identifier + "s");
+        writer.writeStartElement(identifier + QStringLiteral("s"));
 
         while (itrPortPos.hasNext())
         {
@@ -454,8 +458,8 @@ void SWInstance::writeMappedPosition(QXmlStreamWriter& writer, QMap<QString, QPo
 
             writer.writeStartElement(identifier);
             writer.writeAttribute(refIdentifier, itrPortPos.key());
-            writer.writeAttribute("x", QString::number(int(itrPortPos.value().x())));
-            writer.writeAttribute("y", QString::number(int(itrPortPos.value().y())));
+            writer.writeAttribute(QStringLiteral("x"), QString::number(int(itrPortPos.value().x())));
+            writer.writeAttribute(QStringLiteral("y"), QString::number(int(itrPortPos.value().y())));
 
 
             writer.writeEndElement();
@@ -470,8 +474,8 @@ void SWInstance::writeMappedPosition(QXmlStreamWriter& writer, QMap<QString, QPo
 //-----------------------------------------------------------------------------
 QPointF SWInstance::parseSinglePoint(QDomNode const& node) 
 {
-    int x = node.attributes().namedItem("x").nodeValue().toInt();
-    int y = node.attributes().namedItem("y").nodeValue().toInt();
+    int x = node.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt();
+    int y = node.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt();
 
     return QPointF(x, y);
 }
@@ -483,15 +487,15 @@ QSharedPointer<ConfigurableVLNVReference> SWInstance::createComponentReference(c
 {
     QDomNamedNodeMap attributeMap = node.attributes();
 
-    QString vendor = attributeMap.namedItem("vendor").nodeValue();
-    QString library = attributeMap.namedItem("library").nodeValue();
-    QString name = attributeMap.namedItem("name").nodeValue();
-    QString version = attributeMap.namedItem("version").nodeValue();
+    QString vendor = attributeMap.namedItem(QStringLiteral("vendor")).nodeValue();
+    QString library = attributeMap.namedItem(QStringLiteral("library")).nodeValue();
+    QString name = attributeMap.namedItem(QStringLiteral("name")).nodeValue();
+    QString version = attributeMap.namedItem(QStringLiteral("version")).nodeValue();
 
     QSharedPointer<ConfigurableVLNVReference> vlnvReference(
         new ConfigurableVLNVReference(VLNV::COMPONENT, vendor, library, name, version));
 
-    QDomNode configurableElementsNode = node.firstChildElement("ipxact:configurableElementValues");
+    QDomNode configurableElementsNode = node.firstChildElement(QStringLiteral("ipxact:configurableElementValues"));
 
     QDomNodeList configurableElementNodeList = configurableElementsNode.childNodes();
     for (int i = 0; i < configurableElementNodeList.size(); ++i)
@@ -543,8 +547,8 @@ QMap<QString, QPointF> SWInstance::createMappedPositions(QDomNode& mapNode, QStr
         QDomNamedNodeMap interfaceAttributes = interfaceNode.attributes();
 
         QString interfaceName = interfaceAttributes.namedItem(referenceIdentifier).nodeValue();
-        int positionX = interfaceAttributes.namedItem("x").nodeValue().toInt();
-        int positionY = interfaceAttributes.namedItem("y").nodeValue().toInt();
+        int positionX = interfaceAttributes.namedItem(QStringLiteral("x")).nodeValue().toInt();
+        int positionY = interfaceAttributes.namedItem(QStringLiteral("y")).nodeValue().toInt();
 
         interfacePositions.insert(interfaceName, QPointF(positionX, positionY));
     }

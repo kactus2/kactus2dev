@@ -51,7 +51,7 @@ ColumnDesc* ColumnDesc::clone() const
 //-----------------------------------------------------------------------------
 QString ColumnDesc::type() const
 {
-    return QString("kactus2:column");
+    return QStringLiteral("kactus2:column");
 }
 
 //-----------------------------------------------------------------------------
@@ -59,13 +59,13 @@ QString ColumnDesc::type() const
 //-----------------------------------------------------------------------------
 void ColumnDesc::write(QXmlStreamWriter& writer) const
 {
-    writer.writeEmptyElement("kactus2:column");
-    writer.writeAttribute("name", name_);
-    writer.writeAttribute("contentType", QString::number(contentType_));
-    writer.writeAttribute("allowedItems", QString::number(allowedItems_));
-    writer.writeAttribute("minWidth", QString::number(minWidth_));
-    writer.writeAttribute("width", QString::number(width_));
-    writer.writeAttribute("x", QString::number(xPosition_));
+    writer.writeEmptyElement(QStringLiteral("kactus2:column"));
+    writer.writeAttribute(QStringLiteral("name"), name_);
+    writer.writeAttribute(QStringLiteral("contentType"), QString::number(contentType_));
+    writer.writeAttribute(QStringLiteral("allowedItems"), QString::number(allowedItems_));
+    writer.writeAttribute(QStringLiteral("minWidth"), QString::number(minWidth_));
+    writer.writeAttribute(QStringLiteral("width"), QString::number(width_));
+    writer.writeAttribute(QStringLiteral("x"), QString::number(xPosition_));
 }
 
 //-----------------------------------------------------------------------------

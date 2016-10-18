@@ -79,7 +79,7 @@ Parameter & Parameter::operator=(Parameter const& other)
 //-----------------------------------------------------------------------------
 QString Parameter::elementName() const
 {
-    return "parameter";
+    return QStringLiteral("parameter");
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ void Parameter::setValue(QString const& value)
 //-----------------------------------------------------------------------------
 QString Parameter::getChoiceRef() const
 {
-    return getAttribute("choiceRef");
+    return getAttribute(QStringLiteral("choiceRef"));
 }
 
 //-----------------------------------------------------------------------------
@@ -111,7 +111,7 @@ QString Parameter::getChoiceRef() const
 //-----------------------------------------------------------------------------
 void Parameter::setChoiceRef(QString const& choiceRef)
 { 
-    setAttribute("choiceRef", choiceRef);
+    setAttribute(QStringLiteral("choiceRef"), choiceRef);
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +119,7 @@ void Parameter::setChoiceRef(QString const& choiceRef)
 //-----------------------------------------------------------------------------
 QString Parameter::getType() const
 {
-    return attributes_.value("type");
+    return attributes_.value(QStringLiteral("type"));
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ QString Parameter::getType() const
 //-----------------------------------------------------------------------------
 void Parameter::setType(QString const& type)
 {
-    setAttribute("type", type);
+    setAttribute(QStringLiteral("type"), type);
 }
 
 //-----------------------------------------------------------------------------
@@ -135,7 +135,7 @@ void Parameter::setType(QString const& type)
 //-----------------------------------------------------------------------------
 QString Parameter::getMinimumValue() const
 {
-    return getAttribute("minimum");
+    return getAttribute(QStringLiteral("minimum"));
 }
 
 //-----------------------------------------------------------------------------
@@ -143,7 +143,7 @@ QString Parameter::getMinimumValue() const
 //-----------------------------------------------------------------------------
 void Parameter::setMinimumValue(QString const& minimum)
 {
-    setAttribute("minimum", minimum);
+    setAttribute(QStringLiteral("minimum"), minimum);
 }
 
 //-----------------------------------------------------------------------------
@@ -151,7 +151,7 @@ void Parameter::setMinimumValue(QString const& minimum)
 //-----------------------------------------------------------------------------
 QString Parameter::getMaximumValue() const
 {
-    return getAttribute("maximum");
+    return getAttribute(QStringLiteral("maximum"));
 }
 
 //-----------------------------------------------------------------------------
@@ -159,7 +159,7 @@ QString Parameter::getMaximumValue() const
 //-----------------------------------------------------------------------------
 void Parameter::setMaximumValue(QString const& maximum)
 {
-    setAttribute("maximum", maximum);
+    setAttribute(QStringLiteral("maximum"), maximum);
 }
 
 //-----------------------------------------------------------------------------
@@ -167,7 +167,7 @@ void Parameter::setMaximumValue(QString const& maximum)
 //-----------------------------------------------------------------------------
 QString Parameter::getValueResolve() const
 {
-    return getAttribute("resolve");
+    return getAttribute(QStringLiteral("resolve"));
 }
 
 //-----------------------------------------------------------------------------
@@ -175,7 +175,7 @@ QString Parameter::getValueResolve() const
 //-----------------------------------------------------------------------------
 void Parameter::setValueResolve(QString const& resolve)
 {
-    setAttribute("resolve", resolve);
+    setAttribute(QStringLiteral("resolve"), resolve);
 }
 
 //-----------------------------------------------------------------------------
@@ -183,7 +183,7 @@ void Parameter::setValueResolve(QString const& resolve)
 //-----------------------------------------------------------------------------
 QString Parameter::getValueId() const
 {
-     return getAttribute("parameterId");
+     return getAttribute(QStringLiteral("parameterId"));
 }
 
 //-----------------------------------------------------------------------------
@@ -191,7 +191,7 @@ QString Parameter::getValueId() const
 //-----------------------------------------------------------------------------
 void Parameter::setValueId(QString const& id)
 {
-     setAttribute("parameterId", id);
+     setAttribute(QStringLiteral("parameterId"), id);
 }
 
 //-----------------------------------------------------------------------------
@@ -199,7 +199,7 @@ void Parameter::setValueId(QString const& id)
 //-----------------------------------------------------------------------------
 int Parameter::getUsageCount() const
 {
-    return getAttribute("usageCount").toInt();
+    return getAttribute(QStringLiteral("usageCount")).toInt();
 }
 
 //-----------------------------------------------------------------------------
@@ -207,7 +207,7 @@ int Parameter::getUsageCount() const
 //-----------------------------------------------------------------------------
 void Parameter::increaseUsageCount()
 {
-    attributes_.insert("usageCount", QString::number(getUsageCount() + 1));
+    attributes_.insert(QStringLiteral("usageCount"), QString::number(getUsageCount() + 1));
 }
 
 //-----------------------------------------------------------------------------
@@ -217,12 +217,12 @@ void Parameter::decreaseUsageCount()
 {
     if (getUsageCount() < 2)
     {
-        attributes_.remove("usageCount");
+        attributes_.remove(QStringLiteral("usageCount"));
     }
 
     else
     {
-        attributes_.insert("usageCount", QString::number(getUsageCount() - 1));
+        attributes_.insert(QStringLiteral("usageCount"), QString::number(getUsageCount() - 1));
     }
 }
 
@@ -337,7 +337,7 @@ void Parameter::setVectorLeft(QString const& leftExpression)
     {
         if (!leftExpression.isEmpty())
         {
-            vectors_->append(QSharedPointer<Vector>(new Vector(leftExpression, "")));
+            vectors_->append(QSharedPointer<Vector>(new Vector(leftExpression, QStringLiteral(""))));
         }
     }
     else
@@ -359,7 +359,7 @@ void Parameter::setVectorRight(QString const& rightExpression)
     {
         if (!rightExpression.isEmpty())
         {
-            vectors_->append(QSharedPointer<Vector>(new Vector("", rightExpression)));
+            vectors_->append(QSharedPointer<Vector>(new Vector(QStringLiteral(""), rightExpression)));
         }
     }
     else
@@ -411,7 +411,7 @@ void Parameter::setArrayLeft(QString const& leftExpression)
 {
     if (arrays_->isEmpty())
     {
-        arrays_->append(QSharedPointer<Array>(new Array(leftExpression, "")));
+        arrays_->append(QSharedPointer<Array>(new Array(leftExpression, QStringLiteral(""))));
     }
     else
     {
@@ -427,7 +427,7 @@ void Parameter::setArrayRight(QString const& rightExpression)
 {
     if (arrays_->isEmpty())
     {
-        arrays_->append(QSharedPointer<Array>(new Array("", rightExpression)));
+        arrays_->append(QSharedPointer<Array>(new Array(QStringLiteral(""), rightExpression)));
     }
     else
     {
@@ -440,6 +440,8 @@ void Parameter::setArrayRight(QString const& rightExpression)
 //-----------------------------------------------------------------------------
 void Parameter::createUuid()
 {
-    QString formattedUuid = "uuid_" + QUuid::createUuid().toString().remove('{').remove('}').replace('-', '_');
+    QString formattedUuid = QUuid::createUuid().toString().remove(QLatin1Char('{')).remove(QLatin1Char('}'));
+    formattedUuid.replace(QLatin1Char('-'), QLatin1Char('_'));
+    formattedUuid.prepend(QLatin1String("uuid_"));
     setValueId(formattedUuid);
 }

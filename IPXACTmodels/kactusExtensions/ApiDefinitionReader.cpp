@@ -41,10 +41,10 @@ QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomN
 
 	QDomElement apiNode = document.firstChildElement();
 
-	QString vendor = apiNode.firstChildElement("ipxact:vendor").firstChild().nodeValue();
-	QString library = apiNode.firstChildElement("ipxact:library").firstChild().nodeValue();
-	QString name = apiNode.firstChildElement("ipxact:name").firstChild().nodeValue();
-	QString version = apiNode.firstChildElement("ipxact:version").firstChild().nodeValue();
+	QString vendor = apiNode.firstChildElement(QStringLiteral("ipxact:vendor")).firstChild().nodeValue();
+	QString library = apiNode.firstChildElement(QStringLiteral("ipxact:library")).firstChild().nodeValue();
+	QString name = apiNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
+	QString version = apiNode.firstChildElement(QStringLiteral("ipxact:version")).firstChild().nodeValue();
 
 	VLNV itemVLNV;
 	itemVLNV.setType(VLNV::APIDEFINITION);
@@ -55,14 +55,14 @@ QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomN
 
 	apiDefinition->setVlnv(itemVLNV);
 
-	QDomNodeList extensionNodes = apiNode.firstChildElement("ipxact:vendorExtensions").childNodes();
+	QDomNodeList extensionNodes = apiNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions")).childNodes();
 
 	int extensionCount = extensionNodes.count();
 	for (int i = 0; i < extensionCount; i++)
 	{
 		QDomNode extensionNode = extensionNodes.at(i);
 
-		if (!extensionNode.nodeName().startsWith("kactus2:"))
+		if (!extensionNode.nodeName().startsWith(QLatin1String("kactus2:")))
 		{
 			QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNode));
 			apiDefinition->getVendorExtensions()->append(extension);
@@ -79,23 +79,23 @@ QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomN
 			continue;
 		}
 
-		if (childNode.nodeName() ==QString("ipxact:description"))
+		if (childNode.nodeName() == QLatin1String("ipxact:description"))
 		{
 			apiDefinition->setDescription( childNode.childNodes().at(0).nodeValue() );
 		}
-		else if (childNode.nodeName() == "kactus2:language")
+		else if (childNode.nodeName() == QLatin1String("kactus2:language"))
 		{
 			apiDefinition->setLanguage( childNode.childNodes().at(0).nodeValue() );
 		}
-		else if (childNode.nodeName() == "kactus2:comDefinitionRef")
+		else if (childNode.nodeName() == QLatin1String("kactus2:comDefinitionRef"))
 		{
 			apiDefinition->setComDefinitionRef( VLNV::createVLNV(childNode, VLNV::COMDEFINITION) );
 		}
-		else if (childNode.nodeName() == "kactus2:dataTypes")
+		else if (childNode.nodeName() == QLatin1String("kactus2:dataTypes"))
 		{
 			parseDataTypes(childNode, apiDefinition);
 		}
-		else if (childNode.nodeName() == "kactus2:functions")
+		else if (childNode.nodeName() == QLatin1String("kactus2:functions"))
 		{
 			parseFunctions(childNode, apiDefinition);
 		}
@@ -114,9 +114,9 @@ void ApiDefinitionReader::parseDataTypes(QDomNode& node, QSharedPointer<ApiDefin
 	{
 		QDomNode typeNode = node.childNodes().at(i);
 
-		if (typeNode.nodeName() == "kactus2:dataType")
+		if (typeNode.nodeName() == QLatin1String("kactus2:dataType"))
 		{
-			QString name = typeNode.attributes().namedItem("name").nodeValue();
+			QString name = typeNode.attributes().namedItem(QStringLiteral("name")).nodeValue();
 			apiDefinition->getDataTypes()->append(name);
 		}
 	}
@@ -131,7 +131,7 @@ void ApiDefinitionReader::parseFunctions(QDomNode& node, QSharedPointer<ApiDefin
 	{
 		QDomNode propNode = node.childNodes().at(i);
 
-		if (propNode.nodeName() == "kactus2:function")
+		if (propNode.nodeName() == QLatin1String("kactus2:function"))
 		{
 			QSharedPointer<ApiFunction> func(new ApiFunction(propNode));
 			apiDefinition->getFunctions()->append(func);

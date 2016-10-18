@@ -66,7 +66,7 @@ void CPUReader::parseNameGroup(QDomNode const& cpuNode, QSharedPointer<Cpu> newC
 //-----------------------------------------------------------------------------
 void CPUReader::parseIsPresent(QDomNode const& cpuNode, QSharedPointer<Cpu> newCPU) const
 {
-	QString newIsPresent = cpuNode.firstChildElement("ipxact:isPresent").firstChild().nodeValue();
+	QString newIsPresent = cpuNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
 	if (!newIsPresent.isEmpty())
 	{
 		newCPU->setIsPresent(newIsPresent);
@@ -78,16 +78,16 @@ void CPUReader::parseIsPresent(QDomNode const& cpuNode, QSharedPointer<Cpu> newC
 //-----------------------------------------------------------------------------
 void CPUReader::parseAddressSpaceRefs(QDomNode const& cpuNode, QSharedPointer<Cpu> newCpu) const
 {
-    QDomNodeList referenceNodes = cpuNode.toElement().elementsByTagName("ipxact:addressSpaceRef");
+    QDomNodeList referenceNodes = cpuNode.toElement().elementsByTagName(QStringLiteral("ipxact:addressSpaceRef"));
 
     for (int spaceIndex = 0; spaceIndex < referenceNodes.count(); ++spaceIndex)
     {
         QDomElement addressSpaceElement = referenceNodes.at(spaceIndex).toElement();
 
-        QString reference = addressSpaceElement.attribute("addressSpaceRef");
+        QString reference = addressSpaceElement.attribute(QStringLiteral("addressSpaceRef"));
         QSharedPointer<Cpu::AddressSpaceRef> newAddressSpaceReference (new Cpu::AddressSpaceRef(reference));
 
-        QDomElement isPresentElement = addressSpaceElement.firstChildElement("ipxact:isPresent");
+        QDomElement isPresentElement = addressSpaceElement.firstChildElement(QStringLiteral("ipxact:isPresent"));
         if (!isPresentElement.isNull())
         {
             QString isPresent = isPresentElement.firstChild().nodeValue();

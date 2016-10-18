@@ -37,7 +37,7 @@ ComponentGeneratorWriter::~ComponentGeneratorWriter()
 void ComponentGeneratorWriter::writeComponentGenerator(QXmlStreamWriter& writer,
 	QSharedPointer<ComponentGenerator> componentGenerator) const
 {
-	writer.writeStartElement("ipxact:componentGenerator");
+	writer.writeStartElement(QStringLiteral("ipxact:componentGenerator"));
 
 	writeAttributes(writer, componentGenerator);
 
@@ -47,7 +47,7 @@ void ComponentGeneratorWriter::writeComponentGenerator(QXmlStreamWriter& writer,
 
     if (!componentGenerator->getPhase().isEmpty())
     {
-        writer.writeTextElement("ipxact:phase", componentGenerator->getPhase());
+        writer.writeTextElement(QStringLiteral("ipxact:phase"), componentGenerator->getPhase());
     }
 
     writeParameters(writer, componentGenerator->getParameters());
@@ -58,14 +58,14 @@ void ComponentGeneratorWriter::writeComponentGenerator(QXmlStreamWriter& writer,
 
 	if (!componentGenerator->getGeneratorExe().isEmpty())
 	{
-		writer.writeTextElement("ipxact:generatorExe", componentGenerator->getGeneratorExe());
+		writer.writeTextElement(QStringLiteral("ipxact:generatorExe"), componentGenerator->getGeneratorExe());
 	}
 
     writeVendorExtensions(writer, componentGenerator);
 
 	foreach (QString const& group, componentGenerator->getGroups())
 	{
-		writer.writeTextElement("ipxact:group", group);
+		writer.writeTextElement(QStringLiteral("ipxact:group"), group);
 	}
 
 	writer.writeEndElement();
@@ -80,16 +80,16 @@ void ComponentGeneratorWriter::writeAttributes(QXmlStreamWriter& writer,
     BooleanValue hiddenValue = componentGenerator->getHidden();
     if (!hiddenValue.toString().isEmpty())
     {
-        writer.writeAttribute("hidden", componentGenerator->getHidden().toString());
+        writer.writeAttribute(QStringLiteral("hidden"), componentGenerator->getHidden().toString());
     }
 
 	if (componentGenerator->getScope() == ComponentGenerator::ENTITY)
 	{
-		writer.writeAttribute("scope", "entity");
+		writer.writeAttribute(QStringLiteral("scope"), QStringLiteral("entity"));
 	}
 	else if (componentGenerator->getScope() == ComponentGenerator::INSTANCE)
 	{
-		writer.writeAttribute("scope", "instance");
+		writer.writeAttribute(QStringLiteral("scope"), QStringLiteral("instance"));
 	}
 }
 
@@ -101,15 +101,15 @@ void ComponentGeneratorWriter::writeApiType(QXmlStreamWriter& writer,
 {
     if (componentGenerator->getApiType() == ComponentGenerator::NONE)
     {
-        writer.writeTextElement("ipxact:apiType", "none");
+        writer.writeTextElement(QStringLiteral("ipxact:apiType"), QStringLiteral("none"));
     }
     else if (componentGenerator->getApiType() == ComponentGenerator::TGI_2014_EXTENDED)
     {
-        writer.writeTextElement("ipxact:apiType", "TGI_2014_EXTENDED");
+        writer.writeTextElement(QStringLiteral("ipxact:apiType"), QStringLiteral("TGI_2014_EXTENDED"));
     }
     else if (componentGenerator->getApiType() == ComponentGenerator::TGI_2009)
     {
-        writer.writeTextElement("ipxact:apiType", "TGI_2009");
+        writer.writeTextElement(QStringLiteral("ipxact:apiType"), QStringLiteral("TGI_2009"));
     }
 }
 
@@ -123,10 +123,10 @@ void ComponentGeneratorWriter::writeTransportMethods(QXmlStreamWriter& writer,
     
     if (!transportMethods.isEmpty())
     {
-       writer.writeStartElement("ipxact:transportMethods");
+       writer.writeStartElement(QStringLiteral("ipxact:transportMethods"));
        foreach (QString const& method, transportMethods)
        {
-           writer.writeTextElement("ipxact:transportMethod", method);
+           writer.writeTextElement(QStringLiteral("ipxact:transportMethod"), method);
        }
        writer.writeEndElement();
     }

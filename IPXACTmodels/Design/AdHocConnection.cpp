@@ -137,7 +137,7 @@ void AdHocConnection::setRoute(QList<QPointF> const& route)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:route")
+        if (extension->type() == QLatin1String("kactus2:route"))
         {
             getVendorExtensions()->removeAll(extension);
             break;
@@ -146,7 +146,7 @@ void AdHocConnection::setRoute(QList<QPointF> const& route)
 
     if (!route.isEmpty())
     {
-        QSharedPointer<Kactus2Group> routeGroup (new Kactus2Group("kactus2:route"));
+        QSharedPointer<Kactus2Group> routeGroup (new Kactus2Group(QStringLiteral("kactus2:route")));
         foreach (QPointF location, route)
         {
             QSharedPointer<Kactus2Position> routePoint (new Kactus2Position(location));
@@ -163,7 +163,7 @@ void AdHocConnection::setRoute(QList<QPointF> const& route)
 QList<QPointF> AdHocConnection::getRoute() const
 {
     QList<QSharedPointer<VendorExtension> > routeExtensions =
-        getGroupedExtensionsByType("kactus2:route", "kactus2:position");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:route"), QStringLiteral("kactus2:position"));
 
     QList<QPointF> route;
 
@@ -183,7 +183,7 @@ bool AdHocConnection::isOffPage() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:offPage")
+        if (extension->type() == QLatin1String("kactus2:offPage"))
         {
             return true;
         }
@@ -199,7 +199,7 @@ void AdHocConnection::setOffPage(bool offPage)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:offPage")
+        if (extension->type() == QLatin1String("kactus2:offPage"))
         {
             if (!offPage)
             {
@@ -211,7 +211,8 @@ void AdHocConnection::setOffPage(bool offPage)
 
     if (offPage)
     {
-        QSharedPointer<Kactus2Placeholder> offPageExtensions (new Kactus2Placeholder("kactus2:offPage"));
+        QSharedPointer<Kactus2Placeholder> offPageExtensions(
+            new Kactus2Placeholder(QStringLiteral("kactus2:offPage")));
         getVendorExtensions()->append(offPageExtensions);
     }
 }

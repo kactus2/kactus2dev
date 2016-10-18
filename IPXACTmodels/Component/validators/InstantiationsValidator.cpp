@@ -73,7 +73,7 @@ bool InstantiationsValidator::validateDesignInstantiation(QSharedPointer<DesignI
 bool InstantiationsValidator::hasValidName(QString const& name) const
 {
     QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern("^\\s*$");
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
     QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
 
     if (name.isEmpty() || whiteSpaceMatch.hasMatch())
@@ -423,8 +423,8 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 //-----------------------------------------------------------------------------
 bool InstantiationsValidator::moduleParameterHasValidUsageType(QSharedPointer<ModuleParameter> parameter) const
 {
-	if ( !parameter->getUsageType().isEmpty() && parameter->getUsageType() != "nontyped"
-		&& parameter->getUsageType() != "typed" )
+	if (!parameter->getUsageType().isEmpty() && parameter->getUsageType() != QLatin1String("nontyped") &&
+		parameter->getUsageType() != QLatin1String("typed" ))
 	{
 		return false;
 	}

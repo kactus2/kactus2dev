@@ -45,7 +45,7 @@ void AbstractionDefinitionWriter::writeAbstractionDefinition(QXmlStreamWriter& w
 
     writeXmlProcessingInstructions(writer, abstractionDefinition);
 
-    writer.writeStartElement("ipxact:abstractionDefinition");
+    writer.writeStartElement(QStringLiteral("ipxact:abstractionDefinition"));
     writeNamespaceDeclarations(writer);
 
     writeVLNVElements(writer, abstractionDefinition->getVlnv());
@@ -74,7 +74,7 @@ void AbstractionDefinitionWriter::writeAbstractionDefinition(QXmlStreamWriter& w
 void AbstractionDefinitionWriter::writeBusType(QXmlStreamWriter& writer,
     QSharedPointer<AbstractionDefinition> abstractionDefinition) const
 {
-        writer.writeStartElement("ipxact:busType");
+        writer.writeStartElement(QStringLiteral("ipxact:busType"));
         writeVLNVAttributes(writer, abstractionDefinition->getBusType());
         writer.writeEndElement();
 }
@@ -87,7 +87,7 @@ void AbstractionDefinitionWriter::writeExtends(QXmlStreamWriter& writer,
 {
     if (!abstractionDefinition->getExtends().isEmpty())
     {
-        writer.writeStartElement("ipxact:extends");
+        writer.writeStartElement(QStringLiteral("ipxact:extends"));
         writeVLNVAttributes(writer, abstractionDefinition->getExtends());
         writer.writeEndElement();
     }
@@ -102,7 +102,7 @@ void AbstractionDefinitionWriter::writePorts(QXmlStreamWriter& writer,
     QList<QSharedPointer<PortAbstraction> > logicalPorts = *abstractionDefinition->getLogicalPorts(); 
     if (!logicalPorts.isEmpty())
     {
-        writer.writeStartElement("ipxact:ports");
+        writer.writeStartElement(QStringLiteral("ipxact:ports"));
         foreach (QSharedPointer<PortAbstraction> logicalPort, logicalPorts)
         {
             writePort(writer, logicalPort);
@@ -117,23 +117,23 @@ void AbstractionDefinitionWriter::writePorts(QXmlStreamWriter& writer,
 void AbstractionDefinitionWriter::writePort(QXmlStreamWriter& writer,
     QSharedPointer<PortAbstraction> logicalPort) const
 {
-    writer.writeStartElement("ipxact:port");
+    writer.writeStartElement(QStringLiteral("ipxact:port"));
 
     if (!logicalPort->isPresent().isEmpty())
     {
-        writer.writeTextElement("ipxact:isPresent", logicalPort->isPresent());
+        writer.writeTextElement(QStringLiteral("ipxact:isPresent"), logicalPort->isPresent());
     }
 
-    writer.writeTextElement("ipxact:logicalName", logicalPort->name());
+    writer.writeTextElement(QStringLiteral("ipxact:logicalName"), logicalPort->name());
 
     if (!logicalPort->displayName().isEmpty())
     {
-        writer.writeTextElement("ipxact:displayName", logicalPort->displayName());
+        writer.writeTextElement(QStringLiteral("ipxact:displayName"), logicalPort->displayName());
     }
 
     if (!logicalPort->description().isEmpty())
     {
-        writer.writeTextElement("ipxact:description", logicalPort->description());
+        writer.writeTextElement(QStringLiteral("ipxact:description"), logicalPort->description());
     }
 
     writeWire(writer, logicalPort);

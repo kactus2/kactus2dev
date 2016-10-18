@@ -83,7 +83,7 @@ void ParameterReader::parseNameGroup(QDomNode const& parameterNode, QSharedPoint
 //-----------------------------------------------------------------------------
 void ParameterReader::parseVectors(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
 {
-    QDomNode vectorsNode = parameterNode.firstChildElement("ipxact:vectors");
+    QDomNode vectorsNode = parameterNode.firstChildElement(QStringLiteral("ipxact:vectors"));
 
     if (vectorsNode.hasChildNodes())
     {
@@ -94,8 +94,8 @@ void ParameterReader::parseVectors(QDomNode const& parameterNode, QSharedPointer
         {
             QDomNode vectorNode = vectorsNode.childNodes().at(i);
 
-            QString left = vectorNode.firstChildElement("ipxact:left").firstChild().nodeValue();
-            QString right = vectorNode.firstChildElement("ipxact:right").firstChild().nodeValue();
+            QString left = vectorNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
+            QString right = vectorNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
 
             vectors->append(QSharedPointer<Vector>(new Vector(left, right)));
         }
@@ -107,7 +107,7 @@ void ParameterReader::parseVectors(QDomNode const& parameterNode, QSharedPointer
 //-----------------------------------------------------------------------------
 void ParameterReader::parseArrays(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
 {
-    QDomNode arraysNode = parameterNode.firstChildElement("ipxact:arrays");
+    QDomNode arraysNode = parameterNode.firstChildElement(QStringLiteral("ipxact:arrays"));
 
     if (arraysNode.hasChildNodes())
     {
@@ -118,8 +118,8 @@ void ParameterReader::parseArrays(QDomNode const& parameterNode, QSharedPointer<
         {
             QDomNode arrayNode = arraysNode.childNodes().at(i);
 
-            QString left = arrayNode.firstChildElement("ipxact:left").firstChild().nodeValue();
-            QString right = arrayNode.firstChildElement("ipxact:right").firstChild().nodeValue();
+            QString left = arrayNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
+            QString right = arrayNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
 
             arrays->append(QSharedPointer<Array>(new Array(left, right)));
         }
@@ -131,9 +131,9 @@ void ParameterReader::parseArrays(QDomNode const& parameterNode, QSharedPointer<
 //-----------------------------------------------------------------------------
 void ParameterReader::parseValue(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
 {
-    parameter->setValue(parameterNode.firstChildElement("ipxact:value").firstChild().nodeValue());
+    parameter->setValue(parameterNode.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue());
 
-    QDomNamedNodeMap valueAttributes = parameterNode.firstChildElement("ipxact:value").attributes();
+    QDomNamedNodeMap valueAttributes = parameterNode.firstChildElement(QStringLiteral("ipxact:value")).attributes();
     for (int j = 0; j < valueAttributes.size(); ++j) 
     {
         QString attributeName = valueAttributes.item(j).nodeName();
@@ -148,7 +148,7 @@ void ParameterReader::parseValue(QDomNode const& parameterNode, QSharedPointer<P
 //-----------------------------------------------------------------------------
 void ParameterReader::parseVendorExtensions(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
 {
-    QDomNode extensionsNode = parameterNode.firstChildElement("ipxact:vendorExtensions");
+    QDomNode extensionsNode = parameterNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
 
     if (extensionsNode.hasChildNodes())
     {

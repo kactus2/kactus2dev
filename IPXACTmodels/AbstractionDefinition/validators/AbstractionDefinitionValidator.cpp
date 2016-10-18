@@ -582,7 +582,7 @@ void AbstractionDefinitionValidator::findErrorsInConstraints(QVector<QString>& e
 //-----------------------------------------------------------------------------
 bool AbstractionDefinitionValidator::hasValidName(QString const& name) const
 {
-	QRegularExpression whiteSpaceExpression("^\\s*$");
+	QRegularExpression whiteSpaceExpression(QStringLiteral("^\\s*$"));
 
 	if (name.isEmpty() || whiteSpaceExpression.match(name).hasMatch())
 	{
