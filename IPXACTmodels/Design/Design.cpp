@@ -253,8 +253,8 @@ QList<QSharedPointer<ColumnDesc> > Design::getColumns() const
     QSharedPointer<Kactus2Group> columnExtensions = getLayoutExtension();
     if (!columnExtensions.isNull())
     {  
-        foreach (QSharedPointer<VendorExtension> extension,
-            columnExtensions->getByType(QStringLiteral("kactus2:column")))
+        QString columnIdentifier = QStringLiteral("kactus2:column");
+        foreach (QSharedPointer<VendorExtension> extension, columnExtensions->getByType(columnIdentifier))
         {
             columnList.append(extension.dynamicCast<ColumnDesc>());
         }
@@ -273,8 +273,8 @@ QList<QSharedPointer<ConnectionRoute> > Design::getRoutes() const
     QSharedPointer<Kactus2Group> routeExtensions = getRoutesExtension();
     if (!routeExtensions.isNull())
     {  
-        foreach (QSharedPointer<VendorExtension> extension, 
-            routeExtensions->getByType(QStringLiteral("kactus2:route")))
+        QString routeIdentifier = QStringLiteral("kactus2:route");
+        foreach (QSharedPointer<VendorExtension> extension, routeExtensions->getByType(routeIdentifier))
         {
             routes.append(extension.dynamicCast<ConnectionRoute>());
         }

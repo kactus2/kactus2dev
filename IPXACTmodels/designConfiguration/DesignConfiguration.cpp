@@ -379,13 +379,14 @@ KactusAttribute::Implementation DesignConfiguration::getDesignConfigImplementati
 QMap<QString, QString> DesignConfiguration::getConfigurableElementValues(QString const& instanceUUID) const
 {
     QMap<QString, QString> configurableElements;
-    foreach(QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    QString instanceIdentifier = QStringLiteral("kactus2:componentInstance");
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:configurableElementValues"))
         {
             QSharedPointer<Kactus2Group> cevsGroup = extension.dynamicCast<Kactus2Group>();
-            foreach(QSharedPointer<VendorExtension> instanceNode, 
-                cevsGroup->getByType(QStringLiteral("kactus2:componentInstance")))
+            foreach (QSharedPointer<VendorExtension> instanceNode, 
+                cevsGroup->getByType(instanceIdentifier))
             {
                 QSharedPointer<Kactus2Group> instanceGroup = instanceNode.dynamicCast<Kactus2Group>();
 
@@ -398,8 +399,8 @@ QMap<QString, QString> DesignConfiguration::getConfigurableElementValues(QString
 
                 if (groupUUID == instanceUUID)
                 {
-                    foreach(QSharedPointer<VendorExtension> value,
-                        instanceGroup->getByType(QStringLiteral("kactus2:configurableElementValue")))
+                    QString elementIdentifier = QStringLiteral("kactus2:configurableElementValue");
+                    foreach (QSharedPointer<VendorExtension> value, instanceGroup->getByType(elementIdentifier))
                     {
                         QSharedPointer<Kactus2Placeholder> valueHolder = value.dynamicCast<Kactus2Placeholder>();
                         configurableElements.insert(valueHolder->getAttributeValue(QStringLiteral("referenceId")), 
@@ -429,8 +430,9 @@ void DesignConfiguration::setConfigurableElementValues(QString const& instanceUU
     QSharedPointer<Kactus2Group> instanceGroup =
         findOrCreateInstanceExtension(instanceUUID).dynamicCast<Kactus2Group>();
 
-    foreach(QSharedPointer<VendorExtension> value,
-        instanceGroup->getByType(QStringLiteral("kactus2:configurableElementValue")))
+   QString elementIdentifier = QStringLiteral("kactus2:configurableElementValue");
+                   
+    foreach (QSharedPointer<VendorExtension> value, instanceGroup->getByType(elementIdentifier))
     {
         QSharedPointer<Kactus2Placeholder> existingValue = value.dynamicCast<Kactus2Placeholder>();
 
@@ -476,8 +478,8 @@ QMap<QString, QString> DesignConfiguration::getKactus2ViewOverrides() const
 
     if (overrideGroup)
     {
-        foreach (QSharedPointer<VendorExtension> extension, 
-            overrideGroup->getByType(QStringLiteral("kactus2:instanceView")))
+        QString overrideIndentifier = QStringLiteral("kactus2:instanceView");
+        foreach (QSharedPointer<VendorExtension> extension, overrideGroup->getByType(overrideIndentifier))
         {
             QSharedPointer<Kactus2Placeholder> viewExtension = extension.dynamicCast<Kactus2Placeholder>();
 
@@ -551,7 +553,8 @@ QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtensi
     }
 
     QSharedPointer<Kactus2Group> targetInstanceGroup;
-    foreach (QSharedPointer<VendorExtension> instanceNode, cevGroup->getByType(QStringLiteral("kactus2:componentInstance")))
+    QString instanceIdentifier = QStringLiteral("kactus2:componentInstance");
+    foreach (QSharedPointer<VendorExtension> instanceNode, cevGroup->getByType(instanceIdentifier))
     {
         QSharedPointer<Kactus2Group> instanceGroup = instanceNode.dynamicCast<Kactus2Group>();
         QString groupUUID;

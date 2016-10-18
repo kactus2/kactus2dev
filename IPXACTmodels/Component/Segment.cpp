@@ -16,6 +16,7 @@
 //-----------------------------------------------------------------------------
 Segment::Segment(QString const& name, QString const& addressOffset, QString const& range):
 NameGroup(name),
+Extendable(),
 addressOffset_(addressOffset),
 offsetAttributes_(),
 range_(range),

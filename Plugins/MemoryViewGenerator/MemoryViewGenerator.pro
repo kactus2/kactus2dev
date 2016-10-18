@@ -10,7 +10,7 @@ CONFIG += plugin release
 DEFINES += MEMORYVIEWGENERATOR_LIB QT_DLL QT_HELP_LIB QT_PRINTSUPPORT_LIB QT_WIDGETS_LIB QT_XML_LIB QT_XMLPATTERNS_LIB
 INCLUDEPATH += ./GeneratedFiles \
     . \
-    ./../../.. \
+    ./../.. \
     $(QTDIR)/../qttools/include \
     ./GeneratedFiles/Release
 LIBS += -L"./../../executable" \
