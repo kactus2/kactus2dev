@@ -16,10 +16,10 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogSyntax::cullStrayComments()
 //-----------------------------------------------------------------------------
-QString VerilogSyntax::cullStrayComments(QString const& inspect)
+QString VerilogSyntax::cullStrayComments(QString const& input)
 {
     // Make a copy, remove all multiline comments as well as lines that are purely comments.
-    QString inspectWithoutComments = inspect;
+    QString inspectWithoutComments = input;
     inspectWithoutComments.remove(VerilogSyntax::MULTILINE_COMMENT);
     inspectWithoutComments.remove(VerilogSyntax::COMMENTLINE);
 
@@ -29,7 +29,7 @@ QString VerilogSyntax::cullStrayComments(QString const& inspect)
 //-----------------------------------------------------------------------------
 // Function: VerilogSyntax::findModuleHeader()
 //-----------------------------------------------------------------------------
-QPair<int,int> VerilogSyntax::findModuleHeader(QString const& input)
+QPair<int,int> VerilogSyntax::findModuleDeclaration(QString const& input)
 {
     // The return value.
     QPair<int,int> retval;
@@ -62,14 +62,17 @@ QPair<int,int> VerilogSyntax::findModuleHeader(QString const& input)
         // Read the next line.
         const QString currentLine = sourceStream.readLine();
 
+        // Find position of any comment start in the line, as well as declaration ending.
         int commentPosition = currentLine.indexOf(comment);
         int possibleEnding = currentLine.indexOf(");");
 
+        // If the declaration ending is actually before the comment, it is now valid.
         if (commentPosition != -1 && commentPosition < possibleEnding)
         {
             continue;
         }
 
+        // If the ending is detected, we are done looping.
         if (possibleEnding != -1)
         {
             moduleDeclarationEndIndex = possibleEnding;

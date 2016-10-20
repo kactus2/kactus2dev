@@ -62,9 +62,16 @@ namespace VerilogSyntax
      *
      *      @return   The input without comments.
      */
-    QString cullStrayComments(QString const& inspect);
-
-    QPair<int,int> findModuleHeader(QString const& input);
+    QString cullStrayComments(QString const& input);
+    
+    /*!
+     *  Finds the position and length of the first Verilog module declaration in the input.
+     *
+     *      @param [in] input   The input text to parse.
+     *
+     *      @return   The position and length of the module declaration.
+     */
+    QPair<int,int> findModuleDeclaration(QString const& input);
 }
 
 #endif // VERILOGSYNTAX_H

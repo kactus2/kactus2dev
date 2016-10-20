@@ -213,7 +213,7 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 	}
 
     // Find the module header.
-    QPair<int,int> headerPosition = VerilogSyntax::findModuleHeader(fileContent);
+    QPair<int,int> headerPosition = VerilogSyntax::findModuleDeclaration(fileContent);
     int moduleDeclarationBeginIndex = headerPosition.first;
     int moduleDeclarationLength = headerPosition.second;
 

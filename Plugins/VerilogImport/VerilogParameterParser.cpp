@@ -93,16 +93,18 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
 //-----------------------------------------------------------------------------
 QStringList VerilogParameterParser::findANSIDeclarations(QString const& input)
 {
-    QPair<int,int> headerPosition = VerilogSyntax::findModuleHeader(input);
+    // Find the module declaration first.
+    QPair<int,int> declarationPosition = VerilogSyntax::findModuleDeclaration(input);
 
-    if (headerPosition.first == -1 || headerPosition.second == -1)
+    // If cannot find, return empty list.
+    if (declarationPosition.first == -1 || declarationPosition.second == -1)
     {
         return QStringList();
     }
 
     // In the ANSI style parameter declarations the parameters are contained WITHIN the module header
     // and thus only the module header is inspected in the parsing.
-    QString inspect = input.mid(headerPosition.first, headerPosition.second);
+    QString inspect = input.mid(declarationPosition.first, declarationPosition.second);
 
     // Cull the stray comments to avoid distractions to parsing.
     inspect = VerilogSyntax::cullStrayComments(inspect);
