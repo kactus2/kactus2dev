@@ -88,12 +88,11 @@ private:
     /*!
      *  Finds parameter declarations from the inspected string with provided rule.
      *
-     *      @param [in] declarationRule   The rule for finding a parameter.
      *      @param [in] inspect           The input text containing the declarations.
      *
      *      @return   The resulting list of declarations.
      */
-    QStringList findDeclarations(QRegularExpression const& declarationRule, QString const& inspect);
+    QStringList findDeclarations(QString const& inspect);
 
     /*!
      *  Create an IP-XACT type for the parameter according to the given data type.

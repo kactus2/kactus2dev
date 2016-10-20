@@ -123,7 +123,7 @@ QStringList VerilogParameterParser::findANSIDeclarations(QString const &input)
         loc = inspect.lastIndexOf(beginEnd);
     }
 
-    // If the last location is contained within a comment, rip off the commend and find the another last.
+    // If the last location is contained within a comment, rip off the comment and find the another last.
     QRegularExpression lastComment(VerilogSyntax::COMMENT, QRegularExpression::CaseInsensitiveOption);
     int commentLoc = inspect.lastIndexOf(lastComment);
     int matchedLenght = lastComment.match(inspect, commentLoc).capturedLength();
@@ -142,7 +142,7 @@ QStringList VerilogParameterParser::findANSIDeclarations(QString const &input)
 
     QRegularExpression declarRule("\\bparameter\\s+", QRegularExpression::CaseInsensitiveOption);
 
-    return findDeclarations(declarRule, inspect);
+    return findDeclarations(inspect);
 }
 
 //-----------------------------------------------------------------------------
@@ -160,7 +160,7 @@ QStringList VerilogParameterParser::findOldDeclarations(QString const& input)
 
     QRegularExpression declarRule("\\bparameter\\s+", QRegularExpression::CaseInsensitiveOption);
 
-    return findDeclarations(declarRule, inspect);
+    return findDeclarations(inspect);
 }
 
 //-----------------------------------------------------------------------------
@@ -243,25 +243,30 @@ QString VerilogParameterParser::createTypeFromDataType(QString const& dataType)
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::findDeclarations()
 //-----------------------------------------------------------------------------
-QStringList VerilogParameterParser::findDeclarations(QRegularExpression const& declarationRule, 
-    QString const& inspect)
+QStringList VerilogParameterParser::findDeclarations(QString const& inspect)
 {
+    // Rule used to detect parameter declarations.
+    QRegularExpression declarationRule("\\bparameter\\s+", QRegularExpression::CaseInsensitiveOption);
+
+    // List of detected parameter declarations.
     QStringList declarations;
 
-    int previousStart = 0;
-    int declarationStart = inspect.indexOf(declarationRule);
+    // The initial current is zero, since it will immediately replaced with the first next.
+    int currentStart = 0;
+    // The initial next is the first match, since it will become the first current.
+    int nextStart = inspect.indexOf(declarationRule);
 
     // Repeat the parsing until no more matches are found.
-    while (declarationStart != -1)  
+    while (nextStart != -1)  
     {
-        int declarationLength = declarationRule.match(inspect, declarationStart).capturedLength();
+        // The next of the previous iteration is now the current.
+        currentStart = nextStart;
+        // Find the location of the next parameter for this iteration.
+        nextStart = inspect.indexOf(declarationRule, nextStart + 1);
 
-        // Seek for the next match beginning from the end of the previous match.
-        previousStart = declarationStart;
-        declarationStart = inspect.indexOf(declarationRule, declarationStart  + declarationLength + 1);
-
-        // Take the matching part of the text and remove extra white space.
-        QString declaration = inspect.mid(previousStart, declarationStart - previousStart);
+        // Everything between current and next are the declaration.
+        QString declaration = inspect.mid(currentStart, nextStart - currentStart);
+        // Also remove extra white space.
         declaration = declaration.trimmed();
 
         // Highlight the selection if applicable.
