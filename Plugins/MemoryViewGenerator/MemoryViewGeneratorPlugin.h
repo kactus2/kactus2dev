@@ -100,6 +100,16 @@ private:
     MemoryViewGeneratorPlugin(MemoryViewGeneratorPlugin const& rhs);
     MemoryViewGeneratorPlugin& operator=(MemoryViewGeneratorPlugin const& rhs);
 
+    /*!
+     *  Saves the generated file to top component fileset.
+     *
+     *      @param [in] targetFile      The generated file path.
+     *      @param [in] component       The top level component.
+     *      @param [in] utility         The plugin utility interface.
+     *
+     *      @return <Description>.
+     */
+    void saveToFileset(QString const& targetFile, QSharedPointer<Document> component, IPluginUtility* utility);
 };
 
 #endif // MEMORYVIEWGENERATORPLUGIN_H

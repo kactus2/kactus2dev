@@ -13,7 +13,11 @@
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
+#include <library/LibraryManager/libraryinterface.h>
+
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/File.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include "MemoryViewGenerator.h"
 
@@ -56,7 +60,7 @@ QString MemoryViewGeneratorPlugin::getVersion() const
 //-----------------------------------------------------------------------------
 QString MemoryViewGeneratorPlugin::getDescription() const
 {
-    return tr("Creates a CSV listing of all slave memories within a desing hierarchy.");
+    return tr("Creates a CSV listing of all slave memories within a design hierarchy.");
 }
 
 //-----------------------------------------------------------------------------
@@ -110,7 +114,7 @@ QIcon MemoryViewGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MemoryViewGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Document const> libComp,
+bool MemoryViewGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Document const> /*libComp*/,
     QSharedPointer<Document const> libDesConf, 
     QSharedPointer<Document const> libDes) const
 {
@@ -126,8 +130,10 @@ void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPoi
 {
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
     
+    QString xmlFilePath = utility->getLibraryInterface()->getDirectoryPath(libComp->getVlnv());
+
     QString targetFile = QFileDialog::getSaveFileName(utility->getParentWidget(), tr("Select target file"), 
-        QString(), tr("Comma separated values (*.csv)"));
+        xmlFilePath, tr("Comma separated values (*.csv)"));
 
     if (targetFile.isEmpty())
     {
@@ -135,9 +141,43 @@ void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPoi
         return;
     }
 
-    MemoryViewGenerator generator(utility->getLibraryInterface());
-   
+    MemoryViewGenerator generator(utility->getLibraryInterface());   
     generator.generate(libComp.dynamicCast<Component>(), "", targetFile);
 
+    saveToFileset(targetFile, libComp, utility);
+
     utility->printInfo(tr("Generation complete."));
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryViewGeneratorPlugin::saveToFileset()
+//-----------------------------------------------------------------------------
+void MemoryViewGeneratorPlugin::saveToFileset(QString const& targetFile, QSharedPointer<Document> component, 
+    IPluginUtility* utility)
+{
+    QString xmlFilePath = utility->getLibraryInterface()->getDirectoryPath(component->getVlnv());
+
+    QSharedPointer<Component> topComponent = component.dynamicCast<Component>();
+
+    QString filesetName = "memoryListings";
+    QSharedPointer<FileSet> targetFileset = topComponent->getFileSet(filesetName);
+    if (!targetFileset)
+    {
+        targetFileset = QSharedPointer<FileSet>(new FileSet(filesetName));
+        topComponent->getFileSets()->append(targetFileset);
+    }
+
+    if (targetFileset->getFile(targetFile).isNull())
+    {
+        QString relativeFilePath = General::getRelativePath(xmlFilePath, targetFile);
+
+        QSharedPointer<File> file(new File(relativeFilePath));
+        file->getFileTypes()->append(QStringLiteral("unknown"));
+
+        targetFileset->addFile(file);
+
+        utility->printInfo(tr("Added file %1 to top component file set %2.").arg(targetFile, filesetName));
+
+        utility->getLibraryInterface()->writeModelToFile(component);
+    }
 }
