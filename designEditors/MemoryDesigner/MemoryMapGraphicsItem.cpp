@@ -34,8 +34,8 @@ namespace MemoryMapItemConstants
 //-----------------------------------------------------------------------------
 MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
     QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
-MainMemoryGraphicsItem(memoryItem->getName(), containingInstance->getName(), memoryItem->getAUB(), parent),
-SubMemoryLayout(memoryItem, MemoryDesignerConstants::ADDRESSBLOCK_TYPE, this),
+MainMemoryGraphicsItem(
+    memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSBLOCK_TYPE, parent),
 addressUnitBits_(memoryItem->getAUB())
 {
     quint64 baseAddress = getMemoryMapStart(memoryItem);
@@ -168,14 +168,6 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::changeChildItemRanges()
-//-----------------------------------------------------------------------------
-void MemoryMapGraphicsItem::changeChildItemRanges(quint64 offset)
-{
-    SubMemoryLayout::changeChildItemRanges(offset);
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::condenseItemAndChildItems()
 //-----------------------------------------------------------------------------
 void MemoryMapGraphicsItem::condenseItemAndChildItems()
@@ -255,15 +247,20 @@ bool MemoryMapGraphicsItem::hasExtensionItem() const
 //-----------------------------------------------------------------------------
 MemoryConnectionItem* MemoryMapGraphicsItem::getLowestConnection() const
 {
-    QVector<MemoryConnectionItem*> memoryConnections = getMemoryConnections();
+    QMap<quint64, MemoryConnectionItem*> memoryConnections = getMemoryConnections();
+
     MemoryConnectionItem* lowestConnection = memoryConnections.first();
 
     if (memoryConnections.size() > 1)
     {
         quint64 lowestRangeEnd = lowestConnection->getRangeEndValue().toULongLong(0, 16);
 
-        foreach (MemoryConnectionItem* connection, memoryConnections)
+        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator (memoryConnections);
+        while (connectionIterator.hasNext())
         {
+            connectionIterator.next();
+            MemoryConnectionItem* connection = connectionIterator.value();
+
             quint64 connectionRangeEnd = connection->getRangeEndValue().toULongLong(0, 16);
             if (connectionRangeEnd > lowestRangeEnd)
             {

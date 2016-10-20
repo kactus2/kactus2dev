@@ -15,7 +15,6 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <designEditors/MemoryDesigner/MainMemoryGraphicsItem.h>
-#include <designEditors/MemoryDesigner/SubMemoryLayout.h>
 
 class AddressSpace;
 class MemoryItem;
@@ -28,7 +27,7 @@ class AddressSegmentGraphicsItem;
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing address spaces in the memory designer.
 //-----------------------------------------------------------------------------
-class AddressSpaceGraphicsItem : public MainMemoryGraphicsItem, public SubMemoryLayout
+class AddressSpaceGraphicsItem : public MainMemoryGraphicsItem
 {
 
 public:
@@ -54,13 +53,6 @@ public:
      *  Get the type of the address space graphics item.
      */
     int type() const { return Type; }
-
-    /*!
-     *  Change the ranges of the contained address segment items.
-     *
-     *      @param [in] offset  The new offset of the address space item.
-     */
-    virtual void changeChildItemRanges(quint64 offset);
 
     /*!
      *  Compress the sub items contained within the address space and the space item.
@@ -118,20 +110,6 @@ private:
     quint64 condenseSpaceSegments(qreal minimumSubItemHeight);
 
     /*!
-     *  Compress the selected address segment according to the contained memory connections.
-     *
-     *      @param [in] subItem             The selected address segment item.
-     *      @param [in] positionY           Y position of the compressed segment item.
-     *      @param [in] segmentConnections  The segment connections within the address segment.
-     *      @param [in] movedConnections    The already moved memory connections.
-     *
-     *      @return The total height of the compressed address segment item.
-     */
-    quint64 condenseSegmentWithConnections(MemoryDesignerChildGraphicsItem* subItem, quint64 positionY,
-        QMap<quint64, MemoryConnectionItem*> segmentConnections,
-        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
-
-    /*!
      *  Get the y-coordinate transfer for the connected memory items.
      *
      *      @param [in] currentConnectionBaseAddress    Base address of the current connection.
@@ -154,6 +132,47 @@ private:
      */
     void moveConnectionItem(MemoryConnectionItem* connectionItem, qreal yTransfer,
         QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
+
+    /*!
+     *  Get the height for a compressed memory sub item.
+     *
+     *      @param [in] subItem                 The selected memory sub item.
+     *      @param [in] minimumSubItemHeight    Minimum height for the memory sub item.
+     *      @param [in] yPosition               Y-coordinate for the compressed memory sub item.
+     *      @param [in] movedConnections        Connections that have been moved previously.
+     *
+     *      @return The compressed height for the memory sub item.
+     */
+    qreal getSubItemHeight(MemoryDesignerChildGraphicsItem* subItem, qreal minimumSubItemHeight, quint64 yPosition,
+        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
+
+    /*!
+     *  Get the height of the memory sub item so that it fits into the selected memory connection item.
+     *
+     *      @param [in] subItemBaseAddress      Base address of the sub item.
+     *      @param [in] subItemLastAddress      Last address of the sub item.
+     *      @param [in] subItem                 The selected memory sub item.
+     *      @param [in] connectionItem          The selected memory connection item.
+     *      @param [in] yPosition               Y-coordinate for the memory sub item.
+     *      @param [in] newSubItemHeight        Current height of the memory sub item.
+     *      @param [in] minimumSubItemHeight    Minimum height of the memory sub item.
+     */
+    quint64 getSubItemHeightForConnection(quint64 subItemBaseAddress, quint64 subItemLastAddress,
+        MemoryDesignerChildGraphicsItem* subItem, MemoryConnectionItem* connectionItem, quint64 yPosition,
+        quint64 newSubItemHeight, qreal minimumSubItemHeight) const;
+
+    /*!
+     *  Get the available area for the sub item in the selected memory connection.
+     *
+     *      @param [in] yPosition           Y-coordinate for the memory sub item.
+     *      @param [in] connectedSubItems   The memory sub items connected to the selected memory connection.
+     *      @param [in] subItemHeight       Current height of the memory sub item.
+     *      @param [in] connectionItem      The selected memory connection item.
+     *
+     *      @return The available area for the memory sub item in the selected memory connection.
+     */
+    qreal getAvailableArea(quint64 yPosition, QVector<MemoryDesignerChildGraphicsItem*> connectedSubItems,
+        qreal subItemHeight, MemoryConnectionItem* connectionItem) const;
 
     //-----------------------------------------------------------------------------
     // Data.

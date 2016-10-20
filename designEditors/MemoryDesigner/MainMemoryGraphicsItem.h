@@ -15,11 +15,14 @@
 #include <designEditors/common/diagramgrid.h>
 
 #include <designEditors/MemoryDesigner/MemoryDesignerGraphicsItem.h>
+#include <designEditors/MemoryDesigner/SubMemoryLayout.h>
+
+class MemoryItem;
 
 //-----------------------------------------------------------------------------
 //! Parent class for memory map and address space graphics items in memory designer.
 //-----------------------------------------------------------------------------
-class MainMemoryGraphicsItem : public MemoryDesignerGraphicsItem
+class MainMemoryGraphicsItem : public MemoryDesignerGraphicsItem, public SubMemoryLayout
 {
 
 public:
@@ -27,13 +30,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] itemName            Name of the graphics item.
-     *      @param [in] instanceName        Name of the containing instance.
-     *      @param [in] addressUnitBits     Address unit bits of the memory item.
-     *      @param [in] parent              The parent item.
+     *      @param [in] memoryItem      Memory item data.
+     *      @param [in] instanceName    Name of the containing instance.
+     *      @param [in] subItemType     Type of the memory sub items.
+     *      @param [in] parent          The parent item.
      */
-    MainMemoryGraphicsItem(QString const& itemName, QString const& instanceName, QString const& addressUnitBits,
-        QGraphicsItem* parent = 0);
+    MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QString const& instanceName,
+        QString const& subItemType, QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.
@@ -52,7 +55,7 @@ public:
      *
      *      @param [in] connectionItem  The selected memory connection item.
      */
-    void addMemoryConnection(MemoryConnectionItem* connectionItem);
+    virtual void addMemoryConnection(MemoryConnectionItem* connectionItem);
 
     /*!
      *  Add a memory connection collision to this item.
@@ -60,13 +63,6 @@ public:
      *      @param [in] collisionItem   The selected memory collision item.
      */
     void addConnectionCollision(MemoryCollisionItem* collisionItem);
-
-    /*!
-     *  Get the connected memory connections.
-     *
-     *      @return A list of the connected memory connections.
-     */
-    QVector<MemoryConnectionItem*> getMemoryConnections() const;
 
     /*!
      *  Move the connected memory connections.
@@ -103,7 +99,7 @@ public:
      *
      *      @param [in] offset  Offset of this memory item.
      */
-    virtual void changeChildItemRanges(quint64 offset) = 0;
+    virtual void changeChildItemRanges(quint64 offset);
 
     /*!
      *  Redraw the connected memory connections.
@@ -138,6 +134,13 @@ public:
      *      @return The lowest point.
      */
     quint64 getSceneEndPoint() const;
+
+    /*!
+     *  Get the last memory connection item connected to this memory graphics item.
+     *
+     *      @return The last memory connection item connected to this memory graphics item.
+     */
+    MemoryConnectionItem* getLastConnection() const;
 
 protected:
 
@@ -182,9 +185,6 @@ private:
 
     //! The name of the containing component instance.
     QString instanceName_;
-
-    //! A list of memory connections to this memory item.
-    QVector<MemoryConnectionItem*> memoryConnections_;
 
     //! A list of memory collisions connected to this memory item.
     QVector<MemoryCollisionItem*> memoryCollisions_;

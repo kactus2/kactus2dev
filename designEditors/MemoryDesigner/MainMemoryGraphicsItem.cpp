@@ -13,6 +13,7 @@
 
 #include <designEditors/common/diagramgrid.h>
 
+#include <designEditors/MemoryDesigner/MemoryItem.h>
 #include <designEditors/MemoryDesigner/MemoryColumn.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 #include <designEditors/MemoryDesigner/MemoryCollisionItem.h>
@@ -23,15 +24,16 @@
 //-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::MainMemoryGraphicsItem()
 //-----------------------------------------------------------------------------
-MainMemoryGraphicsItem::MainMemoryGraphicsItem(QString const& itemName, QString const& instanceName,
-    QString const& addressUnitBits, QGraphicsItem* parent):
-MemoryDesignerGraphicsItem(itemName, parent),
+MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QString const& instanceName,
+    QString const& subItemType, QGraphicsItem* parent):
+MemoryDesignerGraphicsItem(memoryItem->getName(), parent),
+SubMemoryLayout(memoryItem, subItemType, this),
 instanceNameLabel_(new QGraphicsTextItem(instanceName, this)),
 aubLabel_(new QGraphicsTextItem("", this)),
 instanceName_(instanceName),
-memoryConnections_(),
 memoryCollisions_()
 {
+    QString addressUnitBits = memoryItem->getAUB();
     QString aubText = "AUB: ";
 
     if (addressUnitBits.isEmpty())
@@ -123,7 +125,7 @@ void MainMemoryGraphicsItem::moveConnectedConnections(QPointF beforePosition)
     QPointF afterPosition = scenePos();
     QPointF mouseMoveDelta = afterPosition - beforePosition;
     
-    foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
+    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
     {
         connectionItem->onMoveConnection(this, mouseMoveDelta);
     }
@@ -140,7 +142,7 @@ void MainMemoryGraphicsItem::moveConnectedConnections(QPointF beforePosition)
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::moveConnectedConnectionsInY(qreal yTransfer)
 {
-    foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
+    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
     {
         connectionItem->onMoveConnectionInY(this, yTransfer);
     }
@@ -159,7 +161,7 @@ void MainMemoryGraphicsItem::moveByConnection(MemoryConnectionItem* movementOrig
     qreal newPositionY = pos().y() + movementDelta.y();
     setPos(newPositionX, newPositionY);
 
-    foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
+    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
     {
         if (connectionItem != movementOrigin)
         {
@@ -182,7 +184,7 @@ void MainMemoryGraphicsItem::moveByConnectionInY(MemoryConnectionItem* movementO
 {
     moveBy(0, yTransfer);
 
-    foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
+    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
     {
         if (connectionItem != movementOrigin)
         {
@@ -203,7 +205,7 @@ void MainMemoryGraphicsItem::moveConnectedItems(qreal yTransfer)
 {
     moveBy(0, yTransfer);
 
-    foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
+    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
     {
         connectionItem->moveConnectedItem(this, yTransfer);
     }
@@ -222,7 +224,9 @@ QString MainMemoryGraphicsItem::getContainingInstanceName() const
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::addMemoryConnection(MemoryConnectionItem* connectionItem)
 {
-    memoryConnections_.append(connectionItem);
+    MemoryDesignerGraphicsItem::addMemoryConnection(connectionItem);
+
+    addConnectionToSubItems(connectionItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -234,19 +238,11 @@ void MainMemoryGraphicsItem::addConnectionCollision(MemoryCollisionItem* collisi
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::getMemoryConnections()
-//-----------------------------------------------------------------------------
-QVector<MemoryConnectionItem*> MainMemoryGraphicsItem::getMemoryConnections() const
-{
-    return memoryConnections_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::reDrawConnections()
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::reDrawConnections()
 {
-    foreach (MemoryConnectionItem* connection, memoryConnections_)
+    foreach (MemoryConnectionItem* connection, getMemoryConnections())
     {
         connection->reDrawConnection();
     }
@@ -259,7 +255,7 @@ quint64 MainMemoryGraphicsItem::getSceneEndPoint() const
 {
     quint64 sceneEndPoint = sceneBoundingRect().bottom();
 
-    foreach (MemoryConnectionItem* connectionItem, memoryConnections_)
+    foreach (MemoryConnectionItem* connectionItem, getConnectionsInVector())
     {
         quint64 connectionEndPoint = connectionItem->getSceneEndPoint();
         if (connectionEndPoint > sceneEndPoint)
@@ -269,4 +265,39 @@ quint64 MainMemoryGraphicsItem::getSceneEndPoint() const
     }
 
     return sceneEndPoint;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::changeChildItemRanges()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::changeChildItemRanges(quint64 offset)
+{
+    SubMemoryLayout::changeChildItemRanges(offset);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getLastConnection()
+//-----------------------------------------------------------------------------
+MemoryConnectionItem* MainMemoryGraphicsItem::getLastConnection() const
+{
+    MemoryConnectionItem* lastConnection = 0;
+
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
+
+    quint64 lastConnectionRangeEnd = 0;
+
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+
+        MemoryConnectionItem* connection = connectionIterator.value();
+        quint64 connectionRangeEnd = connection->getRangeEndValue().toULongLong(0, 16);
+        if (connectionRangeEnd > lastConnectionRangeEnd)
+        {
+            lastConnection = connection;
+            lastConnectionRangeEnd = connectionRangeEnd;
+        }
+    }
+
+    return lastConnection;
 }

@@ -246,16 +246,43 @@ qreal SubMemoryLayout::getMinimumRequiredHeight(qreal minimumSubItemHeight, quin
             quint64 subBaseAddress = subItem->getBaseAddress();
             quint64 subLastAddress = subItem->getLastAddress();
 
-            if (subLastAddress - subBaseAddress > 2)
+            if (connectionEndAddress >= subBaseAddress && subLastAddress >= connectionBaseAddress)
             {
-                height += minimumSubItemHeight;
-            }
-            else
-            {
-                height += subItem->boundingRect().height();
+                if (subLastAddress - subBaseAddress > 2)
+                {
+                    height += minimumSubItemHeight;
+                }
+                else
+                {
+                    height += subItem->boundingRect().height() - 1;
+                }
             }
         }
     }
 
     return height;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::addConnectionToSubItems()
+//-----------------------------------------------------------------------------
+void SubMemoryLayout::addConnectionToSubItems(MemoryConnectionItem* connectionItem)
+{
+    quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
+    quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
+
+    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subMemoryItems_);
+    while (subItemIterator.hasNext())
+    {
+        subItemIterator.next();
+
+        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+        quint64 subItemBaseAddress = subItem->getBaseAddress();
+        quint64 subItemLastAddress = subItem->getLastAddress();
+
+        if (connectionLastAddress >= subItemBaseAddress && subItemLastAddress >= connectionBaseAddress)
+        {
+            subItem->addMemoryConnection(connectionItem);
+        }
+    }
 }

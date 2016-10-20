@@ -215,3 +215,13 @@ qreal AddressBlockGraphicsItem::getCondensedRegisterHeightForConnection(MemoryCo
 
     return registerHeight;
 }
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphicsItem::addMemoryConnection()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphicsItem::addMemoryConnection(MemoryConnectionItem* connectionItem)
+{
+    MemoryDesignerGraphicsItem::addMemoryConnection(connectionItem);
+
+    addConnectionToSubItems(connectionItem);
+}

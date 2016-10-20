@@ -111,6 +111,13 @@ public:
      */
     void condenseEndItemToConnection();
 
+    /*!
+     *  Get the height of the connected end memory item.
+     *
+     *      @return The height of the connected end memory item.
+     */
+    qreal getEndItemHeight() const;
+
 private:
     // Disable copying.
     MemoryConnectionItem(MemoryConnectionItem const& rhs);
@@ -193,6 +200,9 @@ private:
 
     //! Y transfer of the connection.
     int yTransfer_;
+
+    //! Width of the memory connection item.
+    qreal connectionWidth_;
 };
 
 //-----------------------------------------------------------------------------

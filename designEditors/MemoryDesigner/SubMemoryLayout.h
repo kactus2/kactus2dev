@@ -58,6 +58,13 @@ public:
      */
     QMap<quint64, MemoryDesignerChildGraphicsItem*> getSubMemoryItems() const;
 
+    /*!
+     *  Add the memory connection item to the correct memory sub items.
+     *
+     *      @param [in] connectionItem  The selected memory connection item.
+     */
+    void addConnectionToSubItems(MemoryConnectionItem* connectionItem);
+
 protected:
 
     /*!

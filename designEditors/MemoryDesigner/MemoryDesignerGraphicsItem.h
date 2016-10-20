@@ -81,6 +81,27 @@ public:
      */
     void condense(qreal newItemHeight);
 
+    /*!
+     *  Add a memory connection graphics item.
+     *
+     *      @param [in] connectionItem  The selected memory connection item.
+     */
+    virtual void addMemoryConnection(MemoryConnectionItem* connectionItem);
+
+    /*!
+     *  Get the connected memory connection items.
+     *
+     *      @return A map containing the memory connection items in the order of their base addresses.
+     */
+    QMap<quint64, MemoryConnectionItem*> getMemoryConnections() const;
+
+    /*!
+     *  Get the connected memory connection items in vector formate.
+     *
+     *      @return The connected memory connection items in vector format.
+     */
+    QVector<MemoryConnectionItem*> getConnectionsInVector() const;
+
 protected:
 
     /*!
@@ -168,6 +189,9 @@ private:
 
     //! The amount of numbers used to display memory ranges.
     int amountOfLabelNumbers_;
+
+    //! Map containing memory connection items and their base addresses.
+    QMap<quint64, MemoryConnectionItem*> memoryConnections_;
 };
 
 //-----------------------------------------------------------------------------

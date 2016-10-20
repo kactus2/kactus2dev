@@ -400,16 +400,10 @@ void MemoryDesignerDiagram::createMemoryConnections()
     MemoryColumn* spaceColumn = findColumnByName("Address Space");
     MemoryColumn* memoryMapColumn = findColumnByName("Memory Maps");
 
-    QVector<MemoryConnectionItem*> connectionItems;
-
     foreach (QVector<QSharedPointer<ConnectivityInterface> > singlePath, masterSlavePaths)
     {
-        MemoryConnectionItem* newConnection = createConnection(
+        createConnection(
             singlePath, placedMapItems, memoryMapColumn, spaceYPlacement, placedSpaceItems, spaceColumn);
-        if (newConnection)
-        {
-            connectionItems.append(newConnection);
-        }
     }
 
     compressGraphicsItems(placedSpaceItems, spaceYPlacement, spaceColumn);
@@ -426,8 +420,7 @@ void MemoryDesignerDiagram::createMemoryConnections()
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::createConnection()
 //-----------------------------------------------------------------------------
-MemoryConnectionItem* MemoryDesignerDiagram::createConnection(
-    QVector<QSharedPointer<ConnectivityInterface> > connectionPath,
+void MemoryDesignerDiagram::createConnection(QVector<QSharedPointer<ConnectivityInterface> > connectionPath,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems, MemoryColumn* memoryMapColumn,
     int& spaceYPlacement, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
     MemoryColumn* spaceColumn)
@@ -539,23 +532,23 @@ MemoryConnectionItem* MemoryDesignerDiagram::createConnection(
                         MemoryDesignerConstants::SPACEITEMINTERVAL);
                 }
 
-                MemoryConnectionItem* newConnectionItem = new MemoryConnectionItem(connectionStartItem,
-                    startAddress, endAddress, connectionEndItem, startAddress, endAddress, spaceColumn->scene(),
-                    yTransfer);
-
-                extendMemoryItem(connectionStartItem, newConnectionItem, spaceYPlacement);
-                int temporary = 0;
-                extendMemoryItem(connectionEndItem, newConnectionItem, temporary);
-
-                connectionStartItem->changeChildItemRanges(baseAddressNumber);
+                if (spaceItemPlaced)
+                {
+                    connectionStartItem->changeChildItemRanges(baseAddressNumber);
+                }
                 connectionEndItem->changeChildItemRanges(remappedAddress);
 
-                return newConnectionItem;
+                qreal spaceItemEndPointBefore = connectionStartItem->getSceneEndPoint();
+
+                new MemoryConnectionItem(connectionStartItem, startAddress, endAddress, connectionEndItem,
+                    startAddress, endAddress, spaceColumn->scene(), yTransfer);
+
+                qreal spaceItemEndPointAfter = connectionStartItem->getSceneEndPoint();
+
+                spaceYPlacement += spaceItemEndPointAfter - spaceItemEndPointBefore;
             }
         }
     }
-
-    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -940,14 +933,16 @@ void MemoryDesignerDiagram::createOverlappingConnectionMarkers(
     {
         if (spaceItem->getMemoryConnections().size() > 1)
         {
+            QVector<MemoryConnectionItem*> spaceConnections = spaceItem->getConnectionsInVector();
+
             for (int selectedIndex = 0; selectedIndex < spaceItem->getMemoryConnections().size() - 1;
                 ++selectedIndex)
             {
                 for (int comparisonIndex = selectedIndex + 1;
                     comparisonIndex < spaceItem->getMemoryConnections().size(); ++comparisonIndex)
                 {
-                    MemoryConnectionItem* selectedItem = spaceItem->getMemoryConnections().at(selectedIndex);
-                    MemoryConnectionItem* comparisonItem = spaceItem->getMemoryConnections().at(comparisonIndex);
+                    MemoryConnectionItem* selectedItem = spaceConnections.at(selectedIndex);
+                    MemoryConnectionItem* comparisonItem = spaceConnections.at(comparisonIndex);
 
                     QRectF connectionRect = selectedItem->sceneBoundingRect();
                     QRectF comparisonRect = comparisonItem->sceneBoundingRect();
@@ -1016,11 +1011,17 @@ void MemoryDesignerDiagram::compressGraphicsItems(
 
                     memoryItem->condenseItemAndChildItems();
 
+                    MemoryConnectionItem* lastConnection = memoryItem->getLastConnection();
+                    if (lastConnection)
+                    {
+                        extendMemoryItem(memoryItem, lastConnection, spaceYPlacement);
+                    }
+
                     AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
                     if (spaceItem && placedSpaceItems->contains(memoryItem) && memoryColumn == spaceColumn)
                     {
                         quint64 spaceItemTop = spaceItem->sceneBoundingRect().top();
-                        quint64 spaceInterval = (spaceItemTop + yTransfer) - spaceItemLowAfter;
+                        qint64 spaceInterval = (spaceItemTop + yTransfer) - spaceItemLowAfter;
 
                         if (spaceInterval < MemoryDesignerConstants::SPACEITEMINTERVAL)
                         {

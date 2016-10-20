@@ -75,6 +75,13 @@ public:
     quint64 condenseRegistersToConnection(MemoryConnectionItem* connectionItem, quint64 connectionBaseAdddress,
         quint64 connectionLastAddress, qreal minimumRegisterHeight);
 
+    /*!
+     *  Add a memory connection to address block item and to the correct sub items.
+     *
+     *      @param [in] connectionItem  The selected memory connection item.
+     */
+    virtual void addMemoryConnection(MemoryConnectionItem* connectionItem);
+
 private:
     // Disable copying.
     AddressBlockGraphicsItem(AddressBlockGraphicsItem const& rhs);

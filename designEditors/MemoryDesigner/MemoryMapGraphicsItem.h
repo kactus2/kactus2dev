@@ -15,7 +15,6 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 #include <designEditors/MemoryDesigner/MainMemoryGraphicsItem.h>
-#include <designEditors/MemoryDesigner/SubMemoryLayout.h>
 
 class MemoryItem;
 class ConnectivityComponent;
@@ -26,7 +25,7 @@ class AddressBlockGraphicsItem;
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing a memory map in the memory designer.
 //-----------------------------------------------------------------------------
-class MemoryMapGraphicsItem : public MainMemoryGraphicsItem, public SubMemoryLayout
+class MemoryMapGraphicsItem : public MainMemoryGraphicsItem
 {
 
 public:
@@ -53,13 +52,6 @@ public:
      *  Get the type of the memory item.
      */
     int type() const { return Type; }
-
-    /*!
-     *  Change the ranges of the containing child items.
-     *
-     *      @param [in] offset  The offset of the memory map item.
-     */
-    virtual void changeChildItemRanges(quint64 offset);
 
     /*!
      *  Compress the item and the contained sub items.

@@ -30,7 +30,8 @@ nameLabel_(new QGraphicsTextItem(itemName, this)),
 startRangeLabel_(new QGraphicsTextItem("", this)),
 endRangeLabel_(new QGraphicsTextItem("", this)),
 itemName_(itemName),
-amountOfLabelNumbers_(0)
+amountOfLabelNumbers_(0),
+memoryConnections_()
 {
     QFont labelFont = nameLabel_->font();
     labelFont.setWeight(QFont::Bold);
@@ -189,4 +190,39 @@ void MemoryDesignerGraphicsItem::condense(qreal newItemHeight)
     setRect(itemXPosition, 0, itemWidth, newItemHeight);
 
     setLabelPositions();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::addMemoryConnection()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::addMemoryConnection(MemoryConnectionItem* connectionItem)
+{
+    quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
+    memoryConnections_.insertMulti(connectionBaseAddress, connectionItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::getMemoryConnections()
+//-----------------------------------------------------------------------------
+QMap<quint64, MemoryConnectionItem*> MemoryDesignerGraphicsItem::getMemoryConnections() const
+{
+    return memoryConnections_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::getConnectionsInVector()
+//-----------------------------------------------------------------------------
+QVector<MemoryConnectionItem*> MemoryDesignerGraphicsItem::getConnectionsInVector() const
+{
+    QVector<MemoryConnectionItem*> vectoredConnections;
+
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(memoryConnections_);
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+
+        vectoredConnections.append(connectionIterator.value());
+    }
+
+    return vectoredConnections;
 }

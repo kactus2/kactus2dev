@@ -39,7 +39,8 @@ startItem_(startItem),
 endItem_(endItem),
 yTransfer_(yTransfer),
 rangeStart_(firstStartValue),
-rangeEnd_(firstEndValue)
+rangeEnd_(firstEndValue),
+connectionWidth_(getConnectionWidth())
 {
     if (firstStartValue.compare(firstEndValue) == 0 && secondStartValue.compare(secondEndValue) == 0)
     {
@@ -77,7 +78,7 @@ void MemoryConnectionItem::createPath()
     setPath(QPainterPath());
 
     const qreal LINEWIDTH = 1;
-    qreal connectionWidth = getConnectionWidth();
+    qreal connectionWidth = connectionWidth_;
 
     QPointF startItemTopRight = startItem_->mapToScene(startItem_->boundingRect().topRight());
     QPointF endItemTopLeft = endItem_->mapToScene(endItem_->boundingRect().topLeft());
@@ -431,4 +432,19 @@ quint64 MemoryConnectionItem::getConnectedEndItemLastAddress() const
     }
 
     return lastAddress;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::getEndItemHeight()
+//-----------------------------------------------------------------------------
+qreal MemoryConnectionItem::getEndItemHeight() const
+{
+    qreal endItemHeight = 0;
+
+    if (endItem_)
+    {
+        endItemHeight = endItem_->boundingRect().height();
+    }
+
+    return endItemHeight;
 }

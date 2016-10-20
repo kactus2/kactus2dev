@@ -213,7 +213,7 @@ private:
      *      @param [in] placedSpaceItems    A list of placed address space items.
      *      @param [in] spaceColumn         The column containing the address spaces.
      */
-    MemoryConnectionItem* createConnection(QVector<QSharedPointer<ConnectivityInterface> > connectionPath,
+    void createConnection(QVector<QSharedPointer<ConnectivityInterface> > connectionPath,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems, MemoryColumn* memoryMapColumn,
         int& spaceYPlacement, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
         MemoryColumn* spaceColumn);
