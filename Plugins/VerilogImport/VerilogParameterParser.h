@@ -59,7 +59,7 @@ public:
      *
      *      @return   The resulting list of declarations.
      */
-    QStringList findANSIDeclarations(QString const &input);
+    QStringList findANSIDeclarations(QString const& input);
 
     /*!
      *  Finds parameter declarations formated in the old style.
@@ -102,15 +102,6 @@ private:
      *      @return The type matching the data type, or none if data type does not match any IP-XACT type.
      */
     QString createTypeFromDataType(QString const& dataType);
-
-    /*!
-     *  Culls multi line comments and stray single line comments out of the input text.
-     *
-     *      @param [in] inspect   The input text to parse.
-     *
-     *      @return   The input without comments.
-     */
-    QString cullStrayComments(QString const& inspect);
 
     /*!
      *  Tries to parse the type of the declared parameters.

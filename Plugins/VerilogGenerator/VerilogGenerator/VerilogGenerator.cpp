@@ -212,21 +212,20 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 		return false;
 	}
 
-	// Find the beginning of the module header.
-	int moduleDeclarationBeginIndex = fileContent.indexOf(VerilogSyntax::MODULE_KEY_WORD);
+    // Find the module header.
+    QPair<int,int> headerPosition = VerilogSyntax::findModuleHeader(fileContent);
+    int moduleDeclarationBeginIndex = headerPosition.first;
+    int moduleDeclarationLength = headerPosition.second;
 
-	// Must have it to proceed.
+    // Must have it to proceed.
 	if (moduleDeclarationBeginIndex == -1)
 	{
 		emit reportError(tr("Could not find module header start from the output file."));
 		return false;
 	}
 
-	// Find the ending of the module header.
-	int moduleDeclarationEndIndex = fileContent.indexOf(");",moduleDeclarationBeginIndex);
-
-	// Must have it to proceed.
-	if (moduleDeclarationEndIndex == -1)
+    // Must have it to proceed.
+	if (moduleDeclarationLength == -1)
 	{
 		emit reportError(tr("Could not find module header end from the output file!"));
 		return false;
@@ -238,7 +237,7 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 	if (implementationStart == -1)
 	{
 		// If does not exist, the end of the header is the beginning of the implementation.
-		implementationStart = moduleDeclarationEndIndex + 3;
+		implementationStart = moduleDeclarationBeginIndex + moduleDeclarationLength + 3;
 	}
 	else
 	{

@@ -146,6 +146,7 @@
     <ClCompile Include="VerilogImporter.cpp" />
     <ClCompile Include="VerilogParameterParser.cpp" />
     <ClCompile Include="VerilogPortParser.cpp" />
+    <ClCompile Include="VerilogSyntax.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\editors\ComponentEditor\common\ExpressionParser.h" />

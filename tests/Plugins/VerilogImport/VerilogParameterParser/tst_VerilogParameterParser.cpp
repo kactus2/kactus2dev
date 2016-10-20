@@ -29,6 +29,7 @@ private slots:
     void singleLineHeader();
     void multiLineHeader();
     void multiLineComments();
+    void evilMultiLineComment();
     void commentLines();
     void multiDeclaration();
     void multiLineDeclarations();
@@ -36,12 +37,12 @@ private slots:
     void oneParameter();
     void threeParameter();
     void spacedParameters();
-    void doubleMultiParameters();
 
     void describedParameters();
     void oneUnDescribed();
     void multiLineDescribed();
-    void describedparentheses();
+    void describedParentheses();
+    void evilDescription();
     
     void otherParameterAsParameterValue();
 
@@ -112,7 +113,8 @@ void tst_VerilogParameterParser::singleLineHeader()
         "input clk, //input clock\n"
         "input data_ena, //serial data enable\n"
         "input serial_data, //serial data input\n"
-        "output reg [width-1:0] parallel_data //parallel data out );\n"
+        "output reg [width-1:0] parallel_data //parallel data out\n"
+        ");\n"
         "always @ (posedge clk, negedge reset_n)\n"
         "if(!reset_n) parallel_data <= ’0; //could not do \"width’d0\"\n"
         "else if (data_ena)\n"
@@ -121,6 +123,7 @@ void tst_VerilogParameterParser::singleLineHeader()
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE( declarations.size(), 1 );
     QCOMPARE( declarations[0], QString( "parameter ok joku=12") );
 }
 
@@ -136,7 +139,8 @@ void tst_VerilogParameterParser::multiLineHeader()
         "input clk, //input clock\n"
         "input data_ena, //serial data enable\n"
         "input serial_data, //serial data input\n"
-        "output reg [width-1:0] parallel_data //parallel data out );\n"
+        "output reg [width-1:0] parallel_data //parallel data out\n"
+        ");\n"
         "always @ (posedge clk, negedge reset_n)\n"
         "if(!reset_n) parallel_data <= ’0; //could not do \"width’d0\"\n"
         "else if (data_ena)\n"
@@ -145,6 +149,7 @@ void tst_VerilogParameterParser::multiLineHeader()
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE( declarations.size(), 2 );
     QCOMPARE(declarations[0], QString("parameter ok joku=8,\nesa=6,") );
     QCOMPARE(declarations[1], QString("parameter joku=22,\njaa joku=1234"));
 }
@@ -167,7 +172,8 @@ void tst_VerilogParameterParser::multiLineComments()
         "/*APINOITA\n"
         "PITKIN OITA\n"
         "usrujsjjrr*/\n"
-        "output reg [width-1:0] parallel_data //parallel data out );\n"
+        "output reg [width-1:0] parallel_data //parallel data out \n"
+        ");\n"
         "always @ (posedge clk, negedge reset_n)\n"
         "if(!reset_n) parallel_data <= ’0; //could not do \"width’d0\"\n"
         "else if (data_ena)\n"
@@ -176,8 +182,30 @@ void tst_VerilogParameterParser::multiLineComments()
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE( declarations.size(), 2 );
     QCOMPARE(declarations[0], QString("parameter ok joku=8,\n\nesa=6,") );
     QCOMPARE(declarations[1], QString("parameter joku=22,\n\njaa joku=1234"));
+}
+
+void tst_VerilogParameterParser::evilMultiLineComment()
+{
+    QString input = "module shifter #(\n"
+        "parameter uus,\n"
+        "parameter x\n"
+        ") (\n"
+        "input reset_n, //reset async active low\n"
+        "input clk, //input clock\n"
+        "output reg [width-1:0] parallel_data //parallel data out \n"
+        ");/*APINOITA\n"
+        "PITKIN OITA\n"
+        "usrujsjjrr*/\n"
+        "endmodule";
+
+    VerilogParameterParser parser;
+    QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE( declarations.size(), 2 );
+    QCOMPARE(declarations[0], QString("parameter uus,") );
+    QCOMPARE(declarations[1], QString("parameter x"));
 }
 
 void tst_VerilogParameterParser::commentLines()
@@ -198,7 +226,8 @@ void tst_VerilogParameterParser::commentLines()
         "//APINOITA\n"
         "//PITKIN OITA\n"
         "//usrujsjjrr\n"
-        "output reg [width-1:0] parallel_data //parallel data out );\n"
+        "output reg [width-1:0] parallel_data //parallel data out \n"
+        ");\n"
         "always @ (posedge clk, negedge reset_n)\n"
         "if(!reset_n) parallel_data <= ’0; //could not do \"width’d0\"\n"
         "else if (data_ena)\n"
@@ -207,6 +236,7 @@ void tst_VerilogParameterParser::commentLines()
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE( declarations.size(), 2 );
     QCOMPARE(declarations[0], QString("parameter ok joku=8, //herpaderp\nesa=6") );
     QCOMPARE(declarations[1], QString("parameter joku=22,\njaa joku=1234"));
 }
@@ -217,7 +247,8 @@ void tst_VerilogParameterParser::multiDeclaration()
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
-    QCOMPARE( declarations[0], QString( "parameter ok joku=12, esa = 3, jari = 123") );
+    QCOMPARE(declarations.size(), 1);
+    QCOMPARE(declarations[0], QString( "parameter ok joku=12, esa = 3, jari = 123"));
 }
 
 void tst_VerilogParameterParser::multiLineDeclarations()
@@ -229,6 +260,7 @@ void tst_VerilogParameterParser::multiLineDeclarations()
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE(declarations.size(), 2);
     QCOMPARE( declarations[0], QString( "parameter ok joku=12,\nesa = 3,\njari = 123") );
     QCOMPARE( declarations[1], QString( "parameter singed def[1:4] jees=1234, horspo = 567") );
 }
@@ -237,14 +269,17 @@ void tst_VerilogParameterParser::oneParameter()
 {
     QString input = "module shifter #(\n"
         "parameter ok joku=8\n"
-        ") ();\n";
+        ") (\n"
+        "); endmodule\n";
 
     VerilogParameterParser parser;
     QString description;
     QString type;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE(declarations.size(), 1);
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
+    QCOMPARE(parameters.size(), 1);
     verifyParameter( parameters[0], "joku", "8", "ok", "" );
 }
 
@@ -254,10 +289,12 @@ void tst_VerilogParameterParser::threeParameter()
         "parameter ok joku=8,\n"
         "parameter int esa=6\n"
         "parameter joku=22\n"
-        ") ();\n";
+        ") (\n"
+        "); endmodule\n";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE(declarations.size(), 3);
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8", "ok", "" );
@@ -273,10 +310,12 @@ void tst_VerilogParameterParser::spacedParameters()
         "parameter ok joku =8,\n"
         "parameter esa= 6\n"
         "parameter hopo = 22\n"
-        ") (\n";
+        ") (\n"
+        "); endmodule\n";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE(declarations.size(), 3);
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8", "ok", "" );
@@ -286,31 +325,6 @@ void tst_VerilogParameterParser::spacedParameters()
     verifyParameter( parameters[2], "hopo", "22", "", "" );
 }
 
-void tst_VerilogParameterParser::doubleMultiParameters()
-{
-    QString input = "module shifter (\n"
-        "parameter joku=8, \n"
-        "//vali spiikki \n"
-        "olololoo= 1234, //hopotus\n"
-        "juuuuu = 22 //hapatus\n"
-        "parameter signed def[6:5] seppox = 5,\n"
-        "jari = 1234,\n"
-        "jorma = 7\n";
-
-    VerilogParameterParser parser;
-    QStringList declarations = parser.findOldDeclarations(input);
-
-    QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
-    verifyParameter( parameters[0], "joku", "8", "", "hapatus" );
-    verifyParameter( parameters[1], "olololoo", "1234", "", "hapatus" );
-    verifyParameter( parameters[2], "juuuuu", "22", "", "hapatus" );
-
-    parameters.append(parser.parseParameters(declarations[1]));
-    verifyParameter( parameters[3], "seppox", "5", "", "" );
-    verifyParameter( parameters[4], "jari", "1234", "", "" );
-    verifyParameter( parameters[5], "jorma", "7", "", "" );
-}
-
 void tst_VerilogParameterParser::describedParameters()
 {
     QString input = "module shifter #(\n"
@@ -318,10 +332,12 @@ void tst_VerilogParameterParser::describedParameters()
         "parameter int juu =98 //evo\n"
         "parameter esa= 6 // epeli\n"
         "parameter hopo = 22 // o olololo ollllooo \n"
-        ") (\n";
+        ") (\n"
+        "); endmodule\n";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE(declarations.size(), 4);
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8", "ok", "seli" );
@@ -339,7 +355,8 @@ void tst_VerilogParameterParser::oneUnDescribed()
         "parameter ok joku =8//joku\n"
         "parameter int juu =98\n"
         "parameter esa= 6 // epeli\n"
-        ") (\n";
+        ") (\n"
+        "); endmodule\n";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
@@ -357,7 +374,8 @@ void tst_VerilogParameterParser::multiLineDescribed()
     QString input = "module shifter #(\n"
         "parameter char joku =8, juu =98,\n"
         "esa= 6 // epeli\n"
-        ") (\n";
+        ") (\n"
+        "); endmodule\n";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
@@ -368,12 +386,13 @@ void tst_VerilogParameterParser::multiLineDescribed()
     verifyParameter( parameters[2], "esa", "6", "char", "epeli" );
 }
 
-void tst_VerilogParameterParser::describedparentheses()
+void tst_VerilogParameterParser::describedParentheses()
 {
     QString input = "module shifter #(\n"
         "parameter esa= 6 // epeli\n"
         "parameter hopo = 22 // o (olololo ollllooo) \n"
-        ") (\n";
+        ") (\n"
+        "); endmodule\n";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
@@ -382,6 +401,23 @@ void tst_VerilogParameterParser::describedparentheses()
     verifyParameter( parameters[0], "esa", "6", "", "epeli" );
     parameters.append(parser.parseParameters(declarations[1]));
     verifyParameter( parameters[1], "hopo", "22", "", "o (olololo ollllooo)" );
+}
+
+void tst_VerilogParameterParser::evilDescription()
+{
+    QString input = "module shifter #(\n"
+        "parameter DATAWIDTH= 32 // module declaration end here :D );\n"
+        "parameter AUB = DATAWIDTH/4 // (oon); \n"
+        ") (\n"
+        "); endmodule\n";
+
+    VerilogParameterParser parser;
+    QStringList declarations = parser.findANSIDeclarations(input);
+
+    QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
+    verifyParameter( parameters[0], "DATAWIDTH", "32", "", "module declaration end here :D );" );
+    parameters.append(parser.parseParameters(declarations[1]));
+    verifyParameter( parameters[1], "AUB", "DATAWIDTH/4", "", "(oon);" );
 }
 
 //-----------------------------------------------------------------------------
@@ -537,7 +573,8 @@ void tst_VerilogParameterParser::parametersToComponent()
         "parameter int juu =98 //evo\n"
         "parameter esa= 6, // epeli\n"
         " hopo = 22 // o olololo ollllooo \n"
-        ") (\n";
+        ") ();\n"
+        "endmodule";
 
     VLNV swvlvnv("","kyytto","raision kirjasto","swName","1.0");
 	QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
@@ -549,6 +586,7 @@ void tst_VerilogParameterParser::parametersToComponent()
     VerilogParameterParser parser;
     parser.import(input, sw, insta);
 
+    QCOMPARE(insta->getModuleParameters()->size(), 4);
     verifyParameter( insta->getModuleParameters()->at(0), "joku", "8", "ok", "seli" );
     verifyParameter( insta->getModuleParameters()->at(1), "juu", "98", "int", "evo" );
     verifyParameter( insta->getModuleParameters()->at(2), "esa", "6", "", "o olololo ollllooo" );
@@ -573,6 +611,7 @@ void tst_VerilogParameterParser::oldParametersToComponent()
     VerilogParameterParser parser;
     parser.import(input, sw, insta);
 
+    QCOMPARE( insta->getModuleParameters()->size(), 4 );
     verifyParameter( insta->getModuleParameters()->at(0), "joku", "8", "ok", "seli" );
     verifyParameter( insta->getModuleParameters()->at(1), "juu", "98", "int", "evo" );
     verifyParameter( insta->getModuleParameters()->at(2), "esa", "6", "", "o olololo ollllooo" );
@@ -586,10 +625,12 @@ void tst_VerilogParameterParser::operations()
         "parameter esa= 6-5 // epeli\n"
         "parameter int juu = 98 + 7 / ( foo*bar ) //ev(o)\n"
         "parameter hopo = (22)-(((7*6))) // o olololo ollllooo \n"
-        ") ();\n";
+        ") ();\n"
+        "endmodule";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE( declarations.size(), 4 );
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "joku", "8 + 9", "ok", "seli" );
@@ -630,7 +671,8 @@ void tst_VerilogParameterParser::bases()
         "parameter esa= 6'000-5'h6666 // epeli\n"
         "parameter int juu = '98 / ( foo*bar ) //evo\n"
         "parameter hopo = '23 -'98 // o olololo ollllooo \n"
-        ") (\n";
+        ") ();\n"
+        "endmodule";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
@@ -651,7 +693,8 @@ void tst_VerilogParameterParser::braces()
         "parameter ok joku = {8'0009}//seli\n"
         "parameter esa= {6'000-5'h6666} // epeli\n"
         "parameter int juu = {'98} / { foo*bar } //evo\n"
-        ") (\n";
+        ") ();\n"
+        "endmodule";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
@@ -672,7 +715,8 @@ void tst_VerilogParameterParser::twoDimensional()
     QString input = "module shifter #(\n"
         "parameter bit          [7:0] shift_type      = '{3'b001}, //joku\n"
         "parameter bit [count:0][1:0] mask            = '{2'b00},\n"
-        ") (\n";
+        ") ();\n"
+        "endmodule";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
@@ -698,11 +742,13 @@ void tst_VerilogParameterParser::closerOnLine()
 {
     QString input = "module shifter #(\n"
         "parameter bit [count:1][2:0] shift_type      = '{3'b001}, //joku\n"
-        "parameter bit [count:1][1:0] mask             = '{2'b00} ) //hopo"
-        "\n (";
+        "parameter bit [count:1][1:0] mask             = '{2'b00} ) //hopo\n"
+        "();\n"
+        "endmodule";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
+    QCOMPARE( declarations.size(), 2 );
 
     QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
     verifyParameter( parameters[0], "shift_type", "'{3'b001}", "bit", "joku" );
@@ -725,7 +771,8 @@ void tst_VerilogParameterParser::closerOnLineDescribedparentheses()
     QString input = "module shifter #(\n"
         "parameter esa= 6 // epeli\n"
         "parameter hopo = 22) // o (olololo ollllooo) \n"
-        "(\n";
+        "();\n"
+        "endmodule";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
@@ -741,7 +788,8 @@ void tst_VerilogParameterParser::closerOnLineDescribedparentheses2()
     QString input = "module shifter #(\n"
         "parameter esa= 6 // epeli\n"
         "parameter hopo = 22) // o (olololo ollllooo) \n"
-        "();\n";
+        "();\n"
+        "endmodule";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);
@@ -759,7 +807,8 @@ void tst_VerilogParameterParser::parenthesesInPorts()
         "parameter hopo = 22) // o (olololo ollllooo) \n"
         "(\n"
         "//joo (hkhk jkhk)\n"
-        ");\n";
+        ");\n"
+        "endmodule";
 
     VerilogParameterParser parser;
     QStringList declarations = parser.findANSIDeclarations(input);

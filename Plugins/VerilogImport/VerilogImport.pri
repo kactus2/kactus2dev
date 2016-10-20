@@ -24,4 +24,5 @@ SOURCES += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../common/NameGenerationPolicy.cpp \
     ./VerilogImporter.cpp \
     ./VerilogParameterParser.cpp \
-    ./VerilogPortParser.cpp
+    ./VerilogPortParser.cpp \
+    ./VerilogSyntax.cpp

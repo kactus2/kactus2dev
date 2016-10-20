@@ -256,6 +256,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_GeneratorConfiguration.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\VerilogImport\VerilogSyntax.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\Writer.h">
@@ -338,6 +341,9 @@
     </ClInclude>
     <ClInclude Include="veriloggeneratorplugin_global.h">
       <Filter>Header Files\ComponentVerilogWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\VerilogImport\VerilogSyntax.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

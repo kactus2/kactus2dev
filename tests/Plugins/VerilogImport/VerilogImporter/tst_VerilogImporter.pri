@@ -9,10 +9,10 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../editors/ComponentEditor/common/ExpressionParser.h \
-    ../../../../Plugins/common/NameGenerationPolicy.h \
     ../../../../Plugins/PluginSystem/ImportPlugin/ExpressionSupport.h \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../../Plugins/importPlugins/common/ImportColors.h \
+    ../../../../Plugins/common/NameGenerationPolicy.h \
     ../../../../editors/ComponentEditor/common/NullParser.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../../Plugins/VerilogImport/VerilogParameterParser.h \
@@ -21,11 +21,12 @@ HEADERS += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h
     ../../../../Plugins/VerilogImport/VerilogImporter.h
 SOURCES += ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../../../Plugins/common/NameGenerationPolicy.cpp \
     ../../../../wizards/ComponentWizard/ImportEditor/ImportHighlighter.cpp \
+    ../../../../Plugins/common/NameGenerationPolicy.cpp \
     ../../../../editors/ComponentEditor/common/NullParser.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../../Plugins/VerilogImport/VerilogImporter.cpp \
     ../../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
     ../../../../Plugins/VerilogImport/VerilogPortParser.cpp \
-    ./tst_VerilogImporter.cpp
+    ./tst_VerilogImporter.cpp \
+    ../../../../Plugins/VerilogImport/VerilogSyntax.cpp

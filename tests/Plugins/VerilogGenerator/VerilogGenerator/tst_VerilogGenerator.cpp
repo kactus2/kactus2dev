@@ -59,6 +59,7 @@ private slots:
     void testInstanceParametersAreWritten();
 
 	void testImplementationSelection();
+    void testImplementationSelectionWithEvilComments();
 	void testImplementationSelectionWithTag();
 	void testImplementationSelectionWithoutParameters();
 	void testImplementationSelectionWithoutPorts();
@@ -983,6 +984,48 @@ void tst_VerilogGenerator::testImplementationSelection()
 	implementation = implementation.trimmed();
 
 	QCOMPARE(implementation,QString("foo\nbar"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testImplementationSelectionWithEvilComments()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testImplementationSelectionWithEvilComments()
+{
+    QFile existingFile("./generatorOutput.v");
+
+    existingFile.open(QIODevice::WriteOnly);
+    QTextStream outputStream(&existingFile);
+
+    QString content = QString(
+        "module TestComponent #(\n"
+        "    parameter                              dataWidth        = 8, // module ending );\n"
+        "    parameter                              freq             = 100000 /* ending module header );\n"
+        ") (\n"
+        "    // These ports are not in any interface\n"         
+        "    input                               clk,\n"
+        "    input          [7:0]                dataIn,\n"
+        "    input                               rst_n,\n"
+        "    output         [7:0]                dataOut\n"
+        ");\n"
+        "foo\n"
+        "bar\n"
+        "endmodule\n"
+        ); 
+
+    outputStream << content;
+
+    existingFile.close();
+
+    VerilogGenerator generator(&library_,false);
+
+    QString implementation;
+    QString postModule;
+
+    generator.selectImplementation("./generatorOutput.v", implementation, postModule);
+
+    implementation = implementation.trimmed();
+
+    QCOMPARE(implementation,QString("foo\nbar"));
 }
 
 //-----------------------------------------------------------------------------

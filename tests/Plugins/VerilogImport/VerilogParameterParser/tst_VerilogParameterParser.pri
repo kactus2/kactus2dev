@@ -7,12 +7,13 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../Plugins/VerilogImport/VerilogParameterParser.h \
-    ../../../../Plugins/VerilogImport/VerilogSyntax.h \
-    ../../../../editors/ComponentEditor/common/ExpressionParser.h \
+HEADERS += ../../../../editors/ComponentEditor/common/ExpressionParser.h \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h
-SOURCES += ../../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
+    ../../../../Plugins/VerilogImport/VerilogParameterParser.h \
+    ../../../../Plugins/VerilogImport/VerilogSyntax.h
+SOURCES += ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ../../../../Plugins/VerilogImport/VerilogParameterParser.cpp \
     ./tst_VerilogParameterParser.cpp \
-    ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp
+    ../../../../Plugins/VerilogImport/VerilogSyntax.cpp

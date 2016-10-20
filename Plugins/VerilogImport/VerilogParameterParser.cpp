@@ -91,13 +91,21 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::findANSIDeclarations()
 //-----------------------------------------------------------------------------
-QStringList VerilogParameterParser::findANSIDeclarations(QString const &input)
+QStringList VerilogParameterParser::findANSIDeclarations(QString const& input)
 {
-    // In the ANSI style parameter declarations the parameters are contained WITHIN the module header.
-    int endIndex = VerilogSyntax::MODULE_BEGIN.match(input).capturedEnd();
+    QPair<int,int> headerPosition = VerilogSyntax::findModuleHeader(input);
 
-    // And that is why only the module header is inspected in the parsing.
-    QString inspect = input.mid( 0, endIndex );
+    if (headerPosition.first == -1 || headerPosition.second == -1)
+    {
+        return QStringList();
+    }
+
+    // In the ANSI style parameter declarations the parameters are contained WITHIN the module header
+    // and thus only the module header is inspected in the parsing.
+    QString inspect = input.mid(headerPosition.first, headerPosition.second);
+
+    // Cull the stray comments to avoid distractions to parsing.
+    inspect = VerilogSyntax::cullStrayComments(inspect);
 
     // We shall further crop until the start of the ports.
     QRegularExpression portsBegin("([)](\\s*|(\\s*" + VerilogSyntax::COMMENT + "\\s*))[(])", 
@@ -105,42 +113,18 @@ QStringList VerilogParameterParser::findANSIDeclarations(QString const &input)
 
     QRegularExpression beginEnd("([)])");
 
-    int portLoc = inspect.lastIndexOf(portsBegin);
-    int loc = portLoc;
+    int loc = inspect.lastIndexOf(portsBegin);
 
-    if ( loc == -1 )
-    {
-        // If not encountered, crop until the end of the module begin.
-        int endLoc = inspect.lastIndexOf(beginEnd);
-        loc = endLoc;
-    }
-    else
+    if ( loc != -1 )
     {
         // If encountered, rip off the port declarations.
         QRegularExpression portsProper("([(].*[)])", QRegularExpression::DotMatchesEverythingOption);
         loc = inspect.indexOf(portsProper,loc);
         inspect = inspect.left(loc);
         loc = inspect.lastIndexOf(beginEnd);
+
+        inspect = inspect.left(loc);
     }
-
-    // If the last location is contained within a comment, rip off the comment and find the another last.
-    QRegularExpression lastComment(VerilogSyntax::COMMENT, QRegularExpression::CaseInsensitiveOption);
-    int commentLoc = inspect.lastIndexOf(lastComment);
-    int matchedLenght = lastComment.match(inspect, commentLoc).capturedLength();
-
-    if (commentLoc != -1 && commentLoc < loc && loc < commentLoc + matchedLenght )
-    {
-        inspect = inspect.left(commentLoc);
-
-        loc = inspect.lastIndexOf(beginEnd);
-    }
-
-    inspect = inspect.left(loc);
-
-    // Cull the stray comments to avoid distractions to parsing.
-    inspect = cullStrayComments(inspect);
-
-    QRegularExpression declarRule("\\bparameter\\s+", QRegularExpression::CaseInsensitiveOption);
 
     return findDeclarations(inspect);
 }
@@ -156,9 +140,7 @@ QStringList VerilogParameterParser::findOldDeclarations(QString const& input)
 
     // And that is why the inspected the region between the header and footer are included to the parsing.
     QString inspect = input.mid(startIndex, length);
-    inspect = cullStrayComments(inspect);
-
-    QRegularExpression declarRule("\\bparameter\\s+", QRegularExpression::CaseInsensitiveOption);
+    inspect = VerilogSyntax::cullStrayComments(inspect);
 
     return findDeclarations(inspect);
 }
@@ -280,18 +262,6 @@ QStringList VerilogParameterParser::findDeclarations(QString const& inspect)
     }
 
     return declarations;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogParameterParser::cullStrayComments()
-//-----------------------------------------------------------------------------
-QString VerilogParameterParser::cullStrayComments(QString const& inspect)
-{
-    QString inspectWithoutComments = inspect;
-    inspectWithoutComments.remove(VerilogSyntax::MULTILINE_COMMENT);
-    inspectWithoutComments.remove(VerilogSyntax::COMMENTLINE);
-
-    return inspectWithoutComments;
 }
 
 //-----------------------------------------------------------------------------

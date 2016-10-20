@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: VerilogSyntax.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 26.09.2014
 //
@@ -54,6 +54,17 @@ namespace VerilogSyntax
     
     //! Name + value pair, e.g. name=value.
     const QString NAME_VALUE = "\\w+\\s*=(\\s*(" + OPERATION_OR_ALPHANUMERIC + "))+";  
+
+    /*!
+     *  Culls multi line comments and stray single line comments out of the input text.
+     *
+     *      @param [in] inspect   The input text to parse.
+     *
+     *      @return   The input without comments.
+     */
+    QString cullStrayComments(QString const& inspect);
+
+    QPair<int,int> findModuleHeader(QString const& input);
 }
 
 #endif // VERILOGSYNTAX_H
