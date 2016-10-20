@@ -217,13 +217,6 @@ public:
     void setComConnections(QList<QSharedPointer<ComInterconnection> > newComConnections);
 
     /*!
-     *  Sets the port ad-hoc visibilities for the top-level component in this design.
-     *
-     *      @param [in] portAdHocVisibilities   A list of ad-hoc port visibilities.
-     */
-    void setPortAdHocVisibilities(QMap<QString, bool> const& portAdHocVisibilities);
-
-    /*!
      *  Sets the ad-hoc port positions.
      */
     void setAdHocPortPositions(QMap<QString, QPointF> const& val);

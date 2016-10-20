@@ -240,7 +240,6 @@ QSharedPointer<VendorExtension> Design::getAdHocPortPositions() const
     }
 
     return QSharedPointer<VendorExtension>();
-   // return getGroupedExtensionsByType("kactus2:adHocVisibilities", "kactus2:adHocVisible");
 }
 
 //-----------------------------------------------------------------------------
@@ -281,57 +280,6 @@ QList<QSharedPointer<ConnectionRoute> > Design::getRoutes() const
     }
 
     return routes;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::setPortAdHocVisibilities()
-//-----------------------------------------------------------------------------
-void Design::setPortAdHocVisibilities(QMap<QString, bool> const& portAdHocVisibilities)
-{
-    /*QMap<QString, QPointF> adHocPortPositions = getAdHocPortPositions();
-
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == "kactus2:adHocVisibilities")
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
-
-    if (!portAdHocVisibilities.isEmpty())
-    {
-        QSharedPointer<Kactus2Group> portAdHocs (new Kactus2Group("kactus2:adHocVisibilities"));
-        
-        QMapIterator<QString, bool> portIterator(portAdHocVisibilities);
-
-        while (portIterator.hasNext())
-        {
-            portIterator.next();
-
-            QSharedPointer<Kactus2Placeholder> newAdHocPort (new Kactus2Placeholder("kactus2:adHocVisible"));
-            newAdHocPort->setAttribute("portName", portIterator.key());
-
-            if (!adHocPortPositions.isEmpty())
-            {
-                QMapIterator<QString, QPointF> adHocPositionIterator(adHocPortPositions);
-                while (adHocPositionIterator.hasNext())
-                {
-                    adHocPositionIterator.next();
-
-                    if (portIterator.key() == adHocPositionIterator.key())
-                    {
-                        newAdHocPort->setAttribute("x", QString::number(int(adHocPositionIterator.value().x())));
-                        newAdHocPort->setAttribute("y", QString::number(int(adHocPositionIterator.value().y())));
-                    }
-                }
-            }
-
-            portAdHocs->addToGroup(newAdHocPort);
-        }
-
-        getVendorExtensions()->append(portAdHocs);
-    }*/
 }
 
 //-----------------------------------------------------------------------------

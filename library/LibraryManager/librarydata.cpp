@@ -157,7 +157,7 @@ bool LibraryData::addVLNV(VLNV const& vlnv, QString const& path)
 	QFileInfo fileInfo(path);
 	if (!fileInfo.exists())
     {
-		emit errorMessage(tr("The file %1 was not found in file system").arg(path));
+		emit errorMessage(tr("File %1 was not found in file system").arg(path));
 		return false;
 	}
 
@@ -345,13 +345,19 @@ void LibraryData::parseFile(QString const& filePath)
 	}
 	else // content could not be read.
     {
-		emit errorMessage(tr("The file %1 was not valid xml and could not be read.").arg(filePath));
+		emit errorMessage(tr("File %1 was not valid xml and could not be read.").arg(filePath));
 		docFile.close();
 		return;
 	}
 
 	if (!vlnv.isValid())
     {
+        if (doc.documentElement().nodeName().startsWith(QStringLiteral("spirit:")))
+        {
+            emit noticeMessage(tr("File %1 contains an IP-XACT description not compatible with the 1685-2014 "
+                "standard and could not be read.").arg(filePath));
+        }
+
 		return;
 	}
 	
@@ -641,7 +647,7 @@ QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> docu
 
 	if (!QFileInfo(path).exists())
     {
-        errorList.append(tr("The file %1 for the document was not found.").arg(path));
+        errorList.append(tr("File %1 for the document was not found.").arg(path));
 		errors_++;
 	}
 
@@ -919,9 +925,6 @@ void LibraryData::findErrorsInDependentFiles(QSharedPointer<const Document> docu
 //-----------------------------------------------------------------------------
 VLNV LibraryData::getDocumentVLNV(QDomDocument& doc)
 {
-    // get the type of the document
-    QDomNodeList nodeList = doc.childNodes();
-
     QDomElement documentElement = doc.documentElement();
     QString type = documentElement.nodeName();
 
