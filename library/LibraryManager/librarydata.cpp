@@ -306,7 +306,7 @@ void LibraryData::parseDirectory(QString const& directoryPath)
     {
 		if (entryInfo.exists())
         {
-            if (entryInfo.isFile() && entryInfo.suffix() == QLatin1String("xml"))
+            if (entryInfo.isFile() && (entryInfo.suffix().compare(QLatin1String("xml"), Qt::CaseInsensitive) == 0))
             {
                 parseFile(entryInfo.absoluteFilePath());
             }

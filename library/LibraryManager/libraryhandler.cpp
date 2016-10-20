@@ -250,7 +250,15 @@ bool LibraryHandler::writeModelToFile(QSharedPointer<Document> model)
 	VLNV objectVLNV = model->getVlnv();
 	objects_.remove(objectVLNV);
     objectValidity_.remove(objectVLNV);
+
 	QString filePath = data_->getPath(model->getVlnv());
+
+    QFileInfo pathInfo(filePath);
+    if (pathInfo.isSymLink() && pathInfo.exists())
+    {
+        filePath = pathInfo.symLinkTarget();
+    }
+
     if (!writeFile(filePath, model))
     {
         return false;
@@ -1219,27 +1227,16 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 bool LibraryHandler::writeFile(QString const& filePath, QSharedPointer<Document> model)
 {
-    // create file info instance representing the file in the path
-    QFileInfo oldFileInfo;
-    oldFileInfo.setFile(filePath);
-
-    // remove the old file
-    if (oldFileInfo.exists())
-    {
-        QFile oldFile(oldFileInfo.filePath());
-        oldFile.remove();
-    }
-
     // create a new file
-    QFile newFile(filePath);
-    if (!newFile.open(QFile::WriteOnly | QFile::Truncate))
+    QFile targetFile(filePath);
+    if (!targetFile.open(QFile::WriteOnly | QFile::Truncate))
     {
-        emit errorMessage(tr("Could not open file %1 for writing").arg(filePath));
+        emit errorMessage(tr("Could not open file %1 for writing.").arg(filePath));
         return false;
     }
 
     // write the parsed model
-    QXmlStreamWriter xmlWriter(&newFile);
+    QXmlStreamWriter xmlWriter(&targetFile);
     xmlWriter.setAutoFormatting(true);
     xmlWriter.setAutoFormattingIndent(-1);
 
@@ -1296,7 +1293,7 @@ bool LibraryHandler::writeFile(QString const& filePath, QSharedPointer<Document>
         Q_ASSERT_X(false, "Libraryhandler::writeFile().", "Trying to write unknown document type to file.");
     }
 
-    newFile.close();
+    targetFile.close();
     return true;
 }
 
