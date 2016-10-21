@@ -51,6 +51,8 @@ private slots:
 
     void onInterfaceGenerationStateChanged(int state);
 
+    void onMemoryGenerationStateChanged(int state);
+
     void onPathEdited(const QString &text);
 
     void onBrowse();

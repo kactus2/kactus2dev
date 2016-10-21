@@ -37,10 +37,8 @@ MakeParametersDialog::MakeParametersDialog(QStringList replacedFiles,
 		replaceList->addItem( file );
     }
 
-    // Generating launcher script is optional: Create a checkbox + description.
-    QFormLayout* checkLayout = new QFormLayout();
-    QCheckBox* addCheck = new QCheckBox();
-    checkLayout->addRow(tr("Generate launcher script:"), addCheck);
+    // Generating launcher script is optional.
+    QCheckBox* addCheck = new QCheckBox("Generate launcher script:");
 
 	// Add "ok" and "cancel" button in neat horizontal order.
 	QPushButton* btnOK = new QPushButton(tr("Generate"), this);
@@ -55,7 +53,7 @@ MakeParametersDialog::MakeParametersDialog(QStringList replacedFiles,
 
 	// Add things to main layout in vertical order.
 	QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->addLayout(checkLayout);
+    mainLayout->addWidget(addCheck);
 	mainLayout->addWidget(new QLabel(tr("Following top component files will be overwritten in the generation:"),
 		this));
 	mainLayout->addWidget(replaceList, Qt::AlignTop);

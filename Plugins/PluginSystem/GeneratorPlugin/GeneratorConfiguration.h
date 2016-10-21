@@ -63,6 +63,16 @@ public:
     bool getInterfaceGeneration() const;
 
     /*!
+     *  Sets true for generating, false for not generating.
+     */
+    void setMemoryGeneration(bool shouldGenerate);
+
+    /*!
+     *  Returns true for generating, false for not generating.
+     */
+    bool getMemoryGeneration() const;
+
+    /*!
      *  Sets the path for the output file for the generation.
      *
      *      @param [in] path   The path to set.
@@ -109,8 +119,10 @@ private:
     //! The names of the potential new files.
     QSharedPointer<QList<QString*> > fileNames_;
 
-    //! Flag for indicating if the output file should be saved to top component file sets.
+    //! If true, interfaces should be utilized in generation, else it is false.
     bool generateInterface_;
+    //! If true, definitions for registers are generated as well, else it is false.
+    bool generateMemory_;
 };
 
 #endif // GENERATORCONFIGURATION_H

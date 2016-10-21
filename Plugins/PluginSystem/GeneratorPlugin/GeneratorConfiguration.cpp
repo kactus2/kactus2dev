@@ -21,7 +21,7 @@
 GeneratorConfiguration::GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection,
     HDLComponentParser* componentParser, HDLDesignParser* designParser) :
 	viewSelection_(viewSelection), componentParser_(componentParser), designParser_(designParser),
-    outputPath_(), fileNames_(new QList<QString*>), generateInterface_(false)
+    outputPath_(), fileNames_(new QList<QString*>), generateInterface_(false), generateMemory_(false)
 {
 }
 
@@ -98,6 +98,22 @@ bool GeneratorConfiguration::getInterfaceGeneration() const
 void GeneratorConfiguration::setInterfaceGeneration(bool shouldGenerate)
 {
     generateInterface_ = shouldGenerate;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getMemoryGeneration()
+//-----------------------------------------------------------------------------
+bool GeneratorConfiguration::getMemoryGeneration() const
+{
+    return generateMemory_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::setMemoryGeneration()
+//-----------------------------------------------------------------------------
+void GeneratorConfiguration::setMemoryGeneration(bool shouldGenerate)
+{
+    generateMemory_ = shouldGenerate;
 }
 
 //-----------------------------------------------------------------------------

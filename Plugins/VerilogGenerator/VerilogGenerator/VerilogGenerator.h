@@ -63,8 +63,15 @@ class VerilogGenerator : public QObject
 	Q_OBJECT
 
 public:
-    //! The constructor.
-    VerilogGenerator(LibraryInterface* library, bool useInterfaces);
+
+	/*!
+	 *  The constructor.
+	 *
+	 *      @param [in] library                 The component library.
+     *      @param [in] useInterfaces           True, if interfaces are utilized separately from physical ports, else false.
+     *      @param [in] generateMemory          If true, definitions for registers are generated as well, else it is false.
+	 */
+    VerilogGenerator(LibraryInterface* library, bool useInterfaces, bool generateMemory);
 
     //! The destructor.
     ~VerilogGenerator();
@@ -168,6 +175,9 @@ private:
 
     //! True, if interfaces are utilized separately from physical ports, else false.
     bool useInterfaces_;
+
+    //! If true, definitions for registers are generated as well, else it is false.
+    bool generateMemory_;
 
     //! Sorter for component ports.
     QSharedPointer<PortSorter> sorter_;

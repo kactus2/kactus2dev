@@ -35,9 +35,10 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()
 //-----------------------------------------------------------------------------
-VerilogGenerator::VerilogGenerator(LibraryInterface* library, bool useInterfaces) : QObject(0), 
+VerilogGenerator::VerilogGenerator(LibraryInterface* library, bool useInterfaces, bool generateMemory) : QObject(0), 
 library_(library),
 useInterfaces_(useInterfaces),
+generateMemory_(generateMemory),
 sorter_(new InterfaceDirectionNameSorter()),
 documents_(new QList<QSharedPointer<VerilogDocument> >)
 {
@@ -315,7 +316,7 @@ QSharedPointer<VerilogDocument> VerilogGenerator::initializeWriters(QSharedPoint
     retval->headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent->component->getVlnv(), 
         componentXmlPath, currentUser, topComponent->component->getDescription()));
 
-    retval->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent, useInterfaces_));
+    retval->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent, useInterfaces_, generateMemory_));
 
     retval->instanceWriters_.clear();
 

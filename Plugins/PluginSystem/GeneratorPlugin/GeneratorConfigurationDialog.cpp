@@ -55,14 +55,16 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     QPushButton* browseButton = new QPushButton(tr("Browse"), this);
     pathSelectionLayout->addWidget(browseButton);
 
+    // Stuff that comes on top of the file table.
     QHBoxLayout* headerLayout = new QHBoxLayout();
     QLabel* tableHeader = new QLabel("Output files:");
     headerLayout->addWidget(tableHeader);
 
-    QFormLayout* checkLayout = new QFormLayout();
-    headerLayout->addLayout(checkLayout);
-    QCheckBox* useInterfaces = new QCheckBox();
-    checkLayout->addRow(tr("Use interfaces:"), useInterfaces);
+    // Optional generation features.
+    QCheckBox* useInterfaces = new QCheckBox("Use interfaces");
+    headerLayout->addWidget(useInterfaces);
+    QCheckBox* generateMemory = new QCheckBox("Generate memory");
+    headerLayout->addWidget(generateMemory);
 
 	// Layout for thing coming to the bottom part of the dialog.
 	QHBoxLayout* bottomLayout = new QHBoxLayout();
@@ -114,6 +116,8 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
         this, SLOT(onOutputFilesChanged(QStringList)), Qt::UniqueConnection);
     connect(useInterfaces, SIGNAL(stateChanged(int)), 
         this, SLOT(onInterfaceGenerationStateChanged(int)), Qt::UniqueConnection);
+    connect(generateMemory, SIGNAL(stateChanged(int)), 
+        this, SLOT(onMemoryGenerationStateChanged(int)), Qt::UniqueConnection);
     connect(pathEditor_, SIGNAL(textChanged(const QString &)), this,
 		SLOT(onPathEdited(const QString &)), Qt::UniqueConnection);
     connect(browseButton, SIGNAL(clicked(bool)), this, SLOT(onBrowse()), Qt::UniqueConnection);
@@ -209,6 +213,14 @@ void GeneratorConfigurationDialog::onOutputFilesChanged(QStringList vlvns)
 void GeneratorConfigurationDialog::onInterfaceGenerationStateChanged(int state)
 {
     configuration_->setInterfaceGeneration(state == Qt::Checked);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfigurationDialog::onMemoryGenerationStateChanged()
+//-----------------------------------------------------------------------------
+void GeneratorConfigurationDialog::onMemoryGenerationStateChanged(int state)
+{
+    configuration_->setMemoryGeneration(state == Qt::Checked);
 }
 
 //-----------------------------------------------------------------------------

@@ -32,9 +32,11 @@
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
 ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<GenerationComponent> component,
-    bool useInterfaces) :
+    bool useInterfaces,
+    bool generateMemory) :
 component_(component),
 useInterfaces_(useInterfaces),
+generateMemory_(generateMemory),
 childWriters_(),
 sorter_(new InterfaceDirectionNameSorter)
 {
@@ -80,13 +82,16 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 
     writeInternalWiresAndComponentInstances(outputStream);
 
-	if ( implementation_ )
+	if (implementation_)
     {
-        // Implementing -> may need remap states.
-        writeRemapSates(outputStream);
+        if (generateMemory_)
+        {
+            // Implementing -> may need remap states.
+            writeRemapSates(outputStream);
 
-        // Implementing -> may need registers.
-        writeRegisters(outputStream);
+            // Implementing -> may need registers.
+            writeRegisters(outputStream);
+        }
 
 		// If an implementation exists, there must be a warning about overwriting as well.
 		outputStream << "// " << VerilogSyntax::TAG_OVERRIDE << endl;
