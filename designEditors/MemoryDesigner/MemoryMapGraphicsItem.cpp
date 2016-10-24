@@ -183,44 +183,19 @@ void MemoryMapGraphicsItem::condenseItemAndChildItems()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::condenseToConnection()
+// Function: MemoryMapGraphicsItem::compressMapItem()
 //-----------------------------------------------------------------------------
-void MemoryMapGraphicsItem::condenseToConnection(MemoryConnectionItem* connectionItem)
+void MemoryMapGraphicsItem::compressMapItem()
 {
-    if (!hasExtensionItem())
+    if (!isCompressed())
     {
-        MemoryConnectionItem* lowestConnection = getLowestConnection();
-        if (connectionItem == lowestConnection)
+        quint64 newMapHeight = getCompressedHeight(getMinimumHeightForSubItems(), this);
+
+        if (newMapHeight > 0)
         {
-            qreal minimumSubItemHeight = getMinimumHeightForSubItems();
+            condense(newMapHeight);
 
-            quint64 memoryMapNewHeight = 0;
-
-            quint64 connectionBaseAddress = lowestConnection->getRangeStartValue().toULongLong(0, 16);
-            quint64 connectionLastAddress = lowestConnection->getRangeEndValue().toULongLong(0, 16);
-
-            foreach (MemoryDesignerChildGraphicsItem* childItem, getSubMemoryItems())
-            {
-                AddressBlockGraphicsItem* blockItem = dynamic_cast<AddressBlockGraphicsItem*>(childItem);
-                if (blockItem)
-                {
-                    quint64 blockBaseAddress = blockItem->getBaseAddress();
-                    if (blockBaseAddress >= connectionBaseAddress && blockBaseAddress < connectionLastAddress)
-                    {
-                        memoryMapNewHeight += blockItem->condenseRegistersToConnection(lowestConnection,
-                            connectionBaseAddress, connectionLastAddress, minimumSubItemHeight);
-                    }
-                    else
-                    {
-                        memoryMapNewHeight += blockItem->sceneBoundingRect().height() - 1;
-                    }
-                }
-            }
-
-            if (memoryMapNewHeight > 0)
-            {
-                condense(memoryMapNewHeight);
-            }
+            setCompressed(true);
         }
     }
 }
@@ -240,37 +215,6 @@ bool MemoryMapGraphicsItem::hasExtensionItem() const
     }
 
     return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::getLowestConnection()
-//-----------------------------------------------------------------------------
-MemoryConnectionItem* MemoryMapGraphicsItem::getLowestConnection() const
-{
-    QMap<quint64, MemoryConnectionItem*> memoryConnections = getMemoryConnections();
-
-    MemoryConnectionItem* lowestConnection = memoryConnections.first();
-
-    if (memoryConnections.size() > 1)
-    {
-        quint64 lowestRangeEnd = lowestConnection->getRangeEndValue().toULongLong(0, 16);
-
-        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator (memoryConnections);
-        while (connectionIterator.hasNext())
-        {
-            connectionIterator.next();
-            MemoryConnectionItem* connection = connectionIterator.value();
-
-            quint64 connectionRangeEnd = connection->getRangeEndValue().toULongLong(0, 16);
-            if (connectionRangeEnd > lowestRangeEnd)
-            {
-                lowestRangeEnd = connectionRangeEnd;
-                lowestConnection = connection;
-            }
-        }
-    }
-
-    return lowestConnection;
 }
 
 //-----------------------------------------------------------------------------

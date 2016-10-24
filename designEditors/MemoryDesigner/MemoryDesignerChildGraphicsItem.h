@@ -55,15 +55,6 @@ public:
      */
     virtual void changeAddressRange(quint64 offset);
 
-    /*!
-     *  Check if this memory item collides with the given rectangle.
-     *
-     *      @param [in] comparisonRectangle     The selected rectangle.
-     *
-     *      @return True, if the item collides with the rectangle, false otherwise.
-     */
-    bool collidesWithRectangle(QRectF comparisonRectangle);
-
 protected:
 
     /*!
@@ -73,6 +64,11 @@ protected:
      *      @param [in] itemIsEmpty     Boolean for determining empty memory item.
      */
     void setColors(QColor itemColor, bool itemIsEmpty);
+
+    /*!
+     *  Fit the name label to the available space.
+     */
+    virtual void fitNameLabel();
 
 private:
     // Disable copying.

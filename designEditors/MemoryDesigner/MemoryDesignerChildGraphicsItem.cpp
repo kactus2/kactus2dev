@@ -30,30 +30,6 @@ MemoryDesignerGraphicsItem(itemName, parent)
 
     quint64 rangeEnd = baseAddress + range - 1;
     setupToolTip(toolTipType, baseAddress, rangeEnd);
-
-    qreal rangeStartLabelWidth = getRangeStartLabel()->boundingRect().width();
-    qreal nameLabelWidth = getNameLabel()->boundingRect().width();
-    qreal itemBoundingWidth = boundingRect().width();
-
-    if (((getNameLabel()->collidesWithItem(getRangeStartLabel()) ||
-        getNameLabel()->collidesWithItem(getRangeEndLabel()))
-        && rangeStartLabelWidth + nameLabelWidth > itemBoundingWidth) || nameLabelWidth > itemBoundingWidth)
-    {
-        QString nameText = getNameLabel()->toPlainText();
-        nameText = nameText.left(nameText.size() - 3);
-        nameText.append("...");
-
-        getNameLabel()->setPlainText(nameText);
-        nameLabelWidth = getNameLabel()->boundingRect().width();
-
-        while (rangeStartLabelWidth + nameLabelWidth > itemBoundingWidth && nameText != "...")
-        {
-            nameText = nameText.left(nameText.size() - 4);
-            nameText.append("...");
-            getNameLabel()->setPlainText(nameText);
-            nameLabelWidth = getNameLabel()->boundingRect().width();
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -96,27 +72,31 @@ void MemoryDesignerChildGraphicsItem::changeAddressRange(quint64 offset)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryDesignerChildGraphicsItem::collidesWithRectangle()
+// Function: MemoryDesignerChildGraphicsItem::fitNameLabel()
 //-----------------------------------------------------------------------------
-bool MemoryDesignerChildGraphicsItem::collidesWithRectangle(QRectF comparisonRectangle)
+void MemoryDesignerChildGraphicsItem::fitNameLabel()
 {
-    qreal thisTop = sceneBoundingRect().top();
-    qreal thisLow = sceneBoundingRect().bottom();
-    qreal comparisonTop = comparisonRectangle.top();
-    qreal comparisonLow = comparisonRectangle.bottom();
+    qreal rangeStartLabelWidth = getRangeStartLabel()->boundingRect().width();
+    qreal nameLabelWidth = getNameLabel()->boundingRect().width();
+    qreal itemBoundingWidth = boundingRect().width();
 
-    if (
-        ((thisTop > comparisonTop && thisTop < comparisonLow) ||
-        (thisLow < comparisonLow && thisLow > comparisonTop) ||
-
-        (comparisonTop > thisTop && comparisonTop < thisLow) ||
-        (comparisonLow < thisLow && comparisonLow > thisTop) ||
-
-        (thisTop == comparisonTop && thisLow == comparisonLow)))
+    if (((getNameLabel()->collidesWithItem(getRangeStartLabel()) ||
+        getNameLabel()->collidesWithItem(getRangeEndLabel()))
+        && rangeStartLabelWidth + nameLabelWidth > itemBoundingWidth) || nameLabelWidth > itemBoundingWidth)
     {
-        return true;
+        QString nameText = getNameLabel()->toPlainText();
+        nameText = nameText.left(nameText.size() - 3);
+        nameText.append("...");
+
+        getNameLabel()->setPlainText(nameText);
+        nameLabelWidth = getNameLabel()->boundingRect().width();
+
+        while (rangeStartLabelWidth + nameLabelWidth > itemBoundingWidth && nameText != "...")
+        {
+            nameText = nameText.left(nameText.size() - 4);
+            nameText.append("...");
+            getNameLabel()->setPlainText(nameText);
+            nameLabelWidth = getNameLabel()->boundingRect().width();
+        }
     }
-
-    return false;
-
 }

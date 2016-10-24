@@ -109,7 +109,7 @@ public:
     /*!
      *  Compress the end item.
      */
-    void condenseEndItemToConnection();
+    void compressEndItem();
 
     /*!
      *  Get the height of the connected end memory item.

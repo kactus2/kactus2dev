@@ -59,11 +59,9 @@ public:
     virtual void condenseItemAndChildItems();
 
     /*!
-     *  Compress the item to the selected memory connection item.
-     *
-     *      @param [in] connectionItem  The selected memory connection item.
+     *  Compress the memory map item.
      */
-    void condenseToConnection(MemoryConnectionItem* connectionItem);
+    void compressMapItem();
 
     /*!
      *  Get the minimum required height of the memory map item to fit the selected memory connection.
@@ -130,13 +128,6 @@ private:
      *      @return True, if the memory map item has an extension item, false otherwise.
      */
     bool hasExtensionItem() const;
-
-    /*!
-     *  Get the lowest connected memory connection item.
-     *
-     *      @return The lowest memory connection item.
-     */
-    MemoryConnectionItem* getLowestConnection() const;
 
     /*!
      *  Get the minimum height for the memory map sub items.

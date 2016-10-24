@@ -29,6 +29,8 @@ MemoryDesignerChildGraphicsItem(segmentItem->getName(), "segment", segmentItem->
 {
     setColors(KactusColors::ADDRESS_SEGMENT, isEmptySegment);
     setLabelPositions();
+
+    fitNameLabel();
 }
 
 //-----------------------------------------------------------------------------

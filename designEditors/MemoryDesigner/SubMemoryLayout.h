@@ -16,6 +16,7 @@ class MemoryItem;
 class MemoryDesignerGraphicsItem;
 class MemoryDesignerChildGraphicsItem;
 class MemoryConnectionItem;
+class MainMemoryGraphicsItem;
 
 #include <QSharedPointer>
 #include <QVector>
@@ -65,6 +66,16 @@ public:
      */
     void addConnectionToSubItems(MemoryConnectionItem* connectionItem);
 
+    /*!
+     *  Get the compressed height for the layout.
+     *
+     *      @param [in] minimumSubItemHeight    Minimum height for the memory sub items.
+     *      @param [in] mainItem                The main sub memory layout.
+     *
+     *      @return The compressed height of the sub memory layout.
+     */
+    quint64 getCompressedHeight(qreal minimumSubItemHeight, SubMemoryLayout* mainItem);
+
 protected:
 
     /*!
@@ -94,17 +105,6 @@ protected:
         quint64 positionY);
 
     /*!
-     *  Get the connections within the range of the selected sub item.
-     *
-     *      @param [in] subItem             The selected sub item.
-     *      @param [in] parentConnections   Connections of the parent item.
-     *
-     *      @return A map containing the memory connection items with the base addresses.
-     */
-    QMap<quint64, MemoryConnectionItem*> getSubItemConnections(MemoryDesignerChildGraphicsItem* subItem,
-        QVector<MemoryConnectionItem*> parentConnections);
-
-    /*!
      *  Get the minimum required height of the sub memory layout to fit the selected memory connection.
      *
      *      @param [in] minimumSubItemHeight    Minimum height of the sub items.
@@ -115,6 +115,24 @@ protected:
      */
     qreal getMinimumRequiredHeight(qreal minimumSubItemHeight, quint64 connectionBaseAddress,
         quint64 connectionEndAddress) const;
+
+    /*!
+     *  Get the height for the memory sub item to fit in the selected memory connection item.
+     *
+     *      @param [in] mainItem                Main sub memory layout.
+     *      @param [in] subItemBaseAddress      Base address of the selected memory sub item.
+     *      @param [in] subItemLastAddress      Last address of the selected memory sub item.
+     *      @param [in] subItem                 The selected memory sub item.
+     *      @param [in] connectionItem          The selected memory connection item.
+     *      @param [in] yPosition               Y-coordinate for the memory sub item.
+     *      @param [in] newSubItemHeight        Current new height for the memory sub item.
+     *      @param [in] minimumSubItemHeight    Minimum height for a memory sub item.
+     *
+     *      @return The height for the sub memory item to fit in the selected memory connection item.
+     */
+    quint64 getSubItemHeightForConnection(SubMemoryLayout* mainItem, quint64 subItemBaseAddress,
+        quint64 subItemLastAddress, MemoryDesignerChildGraphicsItem* subItem, MemoryConnectionItem* connectionItem,
+        quint64 yPosition, quint64 newSubItemHeight, qreal minimumSubItemHeight) const;
 
 private:
     // Disable copying.
@@ -151,6 +169,47 @@ private:
      */
     void positionNewSubItem(qreal subItemXPosition, quint64 mainItemBaseAddress,
         MemoryDesignerChildGraphicsItem* newSubItem);
+
+    /*!
+     *  Get the height for the selected memory sub item.
+     *
+     *      @param [in] mainItem                The main memory layout.
+     *      @param [in] subItem                 The selected memory sub item.
+     *      @param [in] minimumSubItemHeight    Minimum height for a memory sub item.
+     *      @param [in] yPosition               Y-coordinate for the memory sub item.
+     *      @param [in] movedConnections        Connections that have been moved.
+     *
+     *      @return The height for the memory sub item.
+     */
+    virtual qreal getSubItemHeight(SubMemoryLayout* mainItem, MemoryDesignerChildGraphicsItem* subItem,
+        qreal minimumSubItemHeight, quint64 yPosition,
+        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
+
+    /*!
+     *  Get the memory sub items connected to the selected memory connection item.
+     *
+     *      @param [in] memoryItem      The main sub memory layout.
+     *      @param [in] connectionItem  The selected memory connection item.
+     *
+     *      @return Memory sub items connected to the selected memory connection item.
+     */
+    QVector<MemoryDesignerChildGraphicsItem*> getSubItemsInConnection(SubMemoryLayout* memoryItem,
+        MemoryConnectionItem* connectionItem) const;
+
+    /*!
+     *  Get the height of the available area for the memory sub item.
+     *
+     *      @param [in] mainItem                The main sub memory layout.
+     *      @param [in] yPosition               Y-coordinate of the memory sub item.
+     *      @param [in] subItemsInConnection    The memory sub items connected to the selected memory connection.
+     *      @param [in] newSubItemHeight        The current height of the memory sub item.
+     *      @param [in] connectionItem          The selected memory connection item.
+     *
+     *      @return The available area for the memory sub item.
+     */
+    qreal getAvailableArea(SubMemoryLayout* mainItem, quint64 yPosition,
+        QVector<MemoryDesignerChildGraphicsItem*> subItemsInConnection, quint64 newSubItemHeight,
+        MemoryConnectionItem* connectionItem) const;
 
     //-----------------------------------------------------------------------------
     // Data.

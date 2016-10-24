@@ -31,7 +31,8 @@ SubMemoryLayout(memoryItem, subItemType, this),
 instanceNameLabel_(new QGraphicsTextItem(instanceName, this)),
 aubLabel_(new QGraphicsTextItem("", this)),
 instanceName_(instanceName),
-memoryCollisions_()
+memoryCollisions_(),
+compressed_(false)
 {
     QString addressUnitBits = memoryItem->getAUB();
     QString aubText = "AUB: ";
@@ -300,4 +301,20 @@ MemoryConnectionItem* MainMemoryGraphicsItem::getLastConnection() const
     }
 
     return lastConnection;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::isCompressed()
+//-----------------------------------------------------------------------------
+bool MainMemoryGraphicsItem::isCompressed() const
+{
+    return compressed_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::setCompressed()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::setCompressed(bool newCompressValue)
+{
+    compressed_ = newCompressValue;
 }

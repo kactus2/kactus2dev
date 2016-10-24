@@ -28,8 +28,9 @@ MemoryDesignerChildGraphicsItem(registerItem->getName(), "register", registerIte
     getRegisterEnd(registerItem), getRegisterWidth(blockItem), blockItem)
 {
     setColors(KactusColors::REGISTER_COLOR, isEmptyRegister);
-
     setLabelPositions();
+
+    fitNameLabel();
 }
 
 //-----------------------------------------------------------------------------

@@ -142,6 +142,13 @@ public:
      */
     MemoryConnectionItem* getLastConnection() const;
 
+    /*!
+     *  Check if the memory graphics item has been compressed.
+     *
+     *      @return True, if the item has been compressed, false otherwise.
+     */
+    bool isCompressed() const;
+
 protected:
 
     /*!
@@ -168,6 +175,13 @@ protected:
      */
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
+    /*!
+     *  Set a new compression value.
+     *
+     *      @param [in] newCompressValue    The new memory compression value.
+     */
+    void setCompressed(bool newCompressValue);
+
 private:
     // Disable copying.
     MainMemoryGraphicsItem(MainMemoryGraphicsItem const& rhs);
@@ -188,6 +202,9 @@ private:
 
     //! A list of memory collisions connected to this memory item.
     QVector<MemoryCollisionItem*> memoryCollisions_;
+
+    //! Holds whether the graphics item has been compressed or not.
+    bool compressed_;
 };
 
 //-----------------------------------------------------------------------------

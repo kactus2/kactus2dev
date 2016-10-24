@@ -406,14 +406,17 @@ quint64 MemoryConnectionItem::getSceneEndPoint() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::condenseEndItemToConnection()
+// Function: MemoryConnectionItem::compressEndItem()
 //-----------------------------------------------------------------------------
-void MemoryConnectionItem::condenseEndItemToConnection()
+void MemoryConnectionItem::compressEndItem()
 {
-    MemoryMapGraphicsItem* mapItem = dynamic_cast<MemoryMapGraphicsItem*>(endItem_);
-    if (mapItem)
+    if (endItem_)
     {
-        mapItem->condenseToConnection(this);
+        MemoryMapGraphicsItem* mapItem = dynamic_cast<MemoryMapGraphicsItem*>(endItem_);
+        if (mapItem && !mapItem->isCompressed())
+        {
+            mapItem->compressMapItem();
+        }
     }
 }
 
