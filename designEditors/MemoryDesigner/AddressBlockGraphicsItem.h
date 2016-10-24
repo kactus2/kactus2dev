@@ -69,13 +69,6 @@ public:
      */
     virtual void addMemoryConnection(MemoryConnectionItem* connectionItem);
 
-protected:
-
-    /*!
-     *  Fit the name label to the available area of an address block item.
-     */
-    virtual void fitNameLabel();
-
 private:
     // Disable copying.
     AddressBlockGraphicsItem(AddressBlockGraphicsItem const& rhs);
@@ -113,6 +106,13 @@ private:
      *      @return The created register graphics item.
      */
     virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd);
+
+    /*!
+     *  Get the width of the available area used by the address block item.
+     *
+     *      @return The width of the available area used by the address block item.
+     */
+    virtual qreal getItemWidth() const;
 
     //-----------------------------------------------------------------------------
     // Data.

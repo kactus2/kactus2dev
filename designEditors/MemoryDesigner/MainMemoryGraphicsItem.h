@@ -149,6 +149,11 @@ public:
      */
     bool isCompressed() const;
 
+    /*!
+     *  Resize the name labels of the contained memory sub items.
+     */
+    void resizeSubItemNameLabels();
+
 protected:
 
     /*!

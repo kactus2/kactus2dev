@@ -172,13 +172,20 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint
 //-----------------------------------------------------------------------------
 void MemoryMapGraphicsItem::condenseItemAndChildItems()
 {
-    if (getMemoryConnections().isEmpty())
+    if (!isCompressed() && getMemoryConnections().isEmpty())
     {
+        quint64 memoryMapNewHeight = 0;
+
         int subItemHeight = getMinimumHeightForSubItems();
 
-        quint64 memoryMapNewHeight = condenseChildItems(subItemHeight);
+        memoryMapNewHeight = condenseChildItems(subItemHeight);
 
-        condense(memoryMapNewHeight);
+        if (memoryMapNewHeight > 0)
+        {
+            condense(memoryMapNewHeight);
+
+            setCompressed(true);
+        }
     }
 }
 

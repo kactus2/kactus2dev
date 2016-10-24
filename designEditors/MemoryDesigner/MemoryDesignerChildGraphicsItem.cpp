@@ -76,14 +76,22 @@ void MemoryDesignerChildGraphicsItem::changeAddressRange(quint64 offset)
 //-----------------------------------------------------------------------------
 void MemoryDesignerChildGraphicsItem::fitNameLabel()
 {
-    qreal rangeStartLabelWidth = getRangeStartLabel()->boundingRect().width();
     qreal nameLabelWidth = getNameLabel()->boundingRect().width();
-    qreal itemBoundingWidth = boundingRect().width();
+    qreal itemBoundingWidth = getItemWidth();
 
-    if (((getNameLabel()->collidesWithItem(getRangeStartLabel()) ||
-        getNameLabel()->collidesWithItem(getRangeEndLabel()))
-        && rangeStartLabelWidth + nameLabelWidth > itemBoundingWidth) || nameLabelWidth > itemBoundingWidth)
+    bool nameCollidesWithRange = getNameLabel()->collidesWithItem(getRangeStartLabel()) ||
+        getNameLabel()->collidesWithItem(getRangeEndLabel());
+
+    if (nameCollidesWithRange || nameLabelWidth > itemBoundingWidth)
     {
+        qreal rangeStartLabelWidth = 0;
+        if (nameCollidesWithRange)
+        {
+            rangeStartLabelWidth = getRangeStartLabel()->boundingRect().width();
+        }
+
+        qreal originalNameWidth = nameLabelWidth;
+
         QString nameText = getNameLabel()->toPlainText();
         nameText = nameText.left(nameText.size() - 3);
         nameText.append("...");
@@ -98,5 +106,16 @@ void MemoryDesignerChildGraphicsItem::fitNameLabel()
             getNameLabel()->setPlainText(nameText);
             nameLabelWidth = getNameLabel()->boundingRect().width();
         }
+
+        qreal widthDifference = originalNameWidth - nameLabelWidth;
+        getNameLabel()->setPos(getNameLabel()->pos().x() + widthDifference, getNameLabel()->pos().y());
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerChildGraphicsItem::getItemWidth()
+//-----------------------------------------------------------------------------
+qreal MemoryDesignerChildGraphicsItem::getItemWidth() const
+{
+    return boundingRect().width();
 }

@@ -17,6 +17,7 @@
 #include <designEditors/MemoryDesigner/MemoryColumn.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 #include <designEditors/MemoryDesigner/MemoryCollisionItem.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h>
 
 #include <QFont>
 #include <QGraphicsSceneMouseEvent>
@@ -317,4 +318,19 @@ bool MainMemoryGraphicsItem::isCompressed() const
 void MainMemoryGraphicsItem::setCompressed(bool newCompressValue)
 {
     compressed_ = newCompressValue;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::resizeSubItemNameLabels()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::resizeSubItemNameLabels()
+{
+    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+    while (subItemIterator.hasNext())
+    {
+        subItemIterator.next();
+
+        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+        subItem->fitNameLabel();
+    }
 }

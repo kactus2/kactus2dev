@@ -1038,6 +1038,8 @@ void MemoryDesignerDiagram::compressGraphicsItems(
 
                         spaceYPlacement = spaceItemLowAfter + MemoryDesignerConstants::SPACEITEMINTERVAL;
                     }
+
+                    memoryItem->resizeSubItemNameLabels();
                 }
             }
         }

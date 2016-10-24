@@ -37,8 +37,6 @@ addressUnitBits_(blockItem->getAUB())
 
     qreal xPosition = boundingRect().width() / 6 - 1;
     setupSubItems(xPosition);
-
-    fitNameLabel();
 }
 
 //-----------------------------------------------------------------------------
@@ -133,30 +131,10 @@ void AddressBlockGraphicsItem::addMemoryConnection(MemoryConnectionItem* connect
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockGraphicsItem::fitNameLabel()
+// Function: AddressBlockGraphicsItem::getItemWidth()
 //-----------------------------------------------------------------------------
-void AddressBlockGraphicsItem::fitNameLabel()
+qreal AddressBlockGraphicsItem::getItemWidth() const
 {
-    qreal rangeStartLabelWidth = getRangeStartLabel()->boundingRect().width();
-    qreal nameLabelWidth = getNameLabel()->boundingRect().width();
     qreal itemBoundingWidth = boundingRect().width() - getSubMemoryItems().first()->boundingRect().width();
-
-    if (((getNameLabel()->collidesWithItem(getRangeStartLabel()) ||
-        getNameLabel()->collidesWithItem(getRangeEndLabel()))))
-    {
-        QString nameText = getNameLabel()->toPlainText();
-        nameText = nameText.left(nameText.size() - 3);
-        nameText.append("...");
-
-        getNameLabel()->setPlainText(nameText);
-        nameLabelWidth = getNameLabel()->boundingRect().width();
-
-        while (rangeStartLabelWidth + nameLabelWidth > itemBoundingWidth && nameText != "...")
-        {
-            nameText = nameText.left(nameText.size() - 4);
-            nameText.append("...");
-            getNameLabel()->setPlainText(nameText);
-            nameLabelWidth = getNameLabel()->boundingRect().width();
-        }
-    }
+    return itemBoundingWidth;
 }

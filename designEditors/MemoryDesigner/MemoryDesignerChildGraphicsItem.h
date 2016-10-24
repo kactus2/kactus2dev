@@ -55,6 +55,11 @@ public:
      */
     virtual void changeAddressRange(quint64 offset);
 
+    /*!
+     *  Fit the name label to the available space.
+     */
+    virtual void fitNameLabel();
+
 protected:
 
     /*!
@@ -65,15 +70,17 @@ protected:
      */
     void setColors(QColor itemColor, bool itemIsEmpty);
 
-    /*!
-     *  Fit the name label to the available space.
-     */
-    virtual void fitNameLabel();
-
 private:
     // Disable copying.
     MemoryDesignerChildGraphicsItem(MemoryDesignerChildGraphicsItem const& rhs);
     MemoryDesignerChildGraphicsItem& operator=(MemoryDesignerChildGraphicsItem const& rhs);
+
+    /*!
+     *  Get the width of the available area used by the memory sub item.
+     *
+     *      @return The width of the available area used by the memory sub item.
+     */
+    virtual qreal getItemWidth() const;
 };
 
 //-----------------------------------------------------------------------------
