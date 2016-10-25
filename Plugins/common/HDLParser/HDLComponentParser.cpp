@@ -40,9 +40,8 @@
 //-----------------------------------------------------------------------------
 HDLComponentParser::HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component) :
 library_(library),
-retval_(new GenerationComponent)
+component_(component)
 {
-    retval_->component = component;
 }
 
 //-----------------------------------------------------------------------------
@@ -64,6 +63,9 @@ void HDLComponentParser::parseComponent(QSharedPointer<View> activeView)
     {
         return;
     }
+
+    retval_ = QSharedPointer<GenerationComponent>(new GenerationComponent);
+    retval_->component = component_;
 
     // Try to find a component instantiation for the view.
     activeInstantiation_ = retval_->component->getModel()->

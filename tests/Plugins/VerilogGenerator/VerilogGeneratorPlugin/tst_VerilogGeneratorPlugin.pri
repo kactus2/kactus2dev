@@ -26,9 +26,11 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h \
     ../../../../designEditors/common/TopComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h \
+    ../../../../Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
     ../../../../Plugins/VerilogImport/VerilogSyntax.h \
     ../../../../Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.h \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
@@ -38,9 +40,7 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
     ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.h \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.h \
-    ../../../../Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.h
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.h
 SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
@@ -65,10 +65,11 @@ SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp 
     ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.cpp \
+    ../../../../Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
     ./tst_VerilogGeneratorPlugin.cpp \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.cpp \
-    ../../../../Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp
+    ../../../../Plugins/VerilogImport/VerilogSyntax.cpp

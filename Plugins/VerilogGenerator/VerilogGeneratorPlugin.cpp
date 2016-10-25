@@ -56,7 +56,7 @@ QString VerilogGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVersion() const
 {
-    return "1.5";
+    return "1.5b";
 }
 
 //-----------------------------------------------------------------------------
@@ -343,21 +343,12 @@ QString VerilogGeneratorPlugin::relativePathFromXmlToFile(QString const& filePat
 void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<ViewSelection> configuration,
     QSharedPointer<QList<QSharedPointer<VerilogDocument> > > documents)
 {
-	// The view and the names of the instantiation and file set are assumed to exist.
-	Q_ASSERT (configuration->getView() && !configuration->getFileSetName().isEmpty() && 
-		!configuration->getInstantiationName().isEmpty());
+	// The view and the name of the file set are assumed to exist.
+	Q_ASSERT (configuration->getView() && !configuration->getFileSetName().isEmpty());
 
 	QSharedPointer<View> activeView = configuration->getView();
 	QSharedPointer<ComponentInstantiation> instantiation = configuration->getInstantiation();
 	QSharedPointer<FileSet> fileSet = configuration->getFileSet();
-	
-	// If the component instantiation does not exist, create a new one with the same name.
-	if (!instantiation)
-	{
-		instantiation = QSharedPointer<ComponentInstantiation>(new ComponentInstantiation);
-		instantiation->setName(configuration->getInstantiationName());
-		topComponent_->getComponentInstantiations()->append(instantiation);
-	}
 
 	// If the file set does not exist, create a new one with the same name.
 	if (!fileSet)
@@ -376,17 +367,11 @@ void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<ViewSelect
 	    QSettings settings;
 	    QSharedPointer<File> file = fileSet->addFile(filePath, settings);
 
-	    // Make sure that the instantiation language is verilog.
-	    instantiation->setLanguage("verilog");
-
-	    // Make sure that the instantiation refers to the file set.
-	    if (!instantiation->getFileSetReferences()->contains(fileSet->name()))
+	    // If instantiation exists, make sure that the instantiation refers to the file set.
+	    if (instantiation && !instantiation->getFileSetReferences()->contains(fileSet->name()))
 	    {
 		    instantiation->getFileSetReferences()->append(fileSet->name());
 	    }
-
-	    // Make sure that the view refers to component instantiation.
-        activeView->setComponentInstantiationRef(instantiation->name());
 
         // Insert the proper description to the file.
         insertFileDescription(file);

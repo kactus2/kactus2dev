@@ -70,10 +70,8 @@ public:
      *  Sets the view for the top component in generation, if it exists.
      *
 	 *      @param [in] viewName   The name of the active view.
-	 *
-	 *      @return The component instantiation reference of the view, if the view exists.
 	 */
-    QString setView(QString viewName);
+    void setView(QString viewName);
 
     /*!
      *  Gets the active view for the top component.
@@ -162,9 +160,8 @@ private:
     //! The selected view.
 	QSharedPointer<View> view_;
 
-	//! The selected component instantiation and its name.
+	//! The component instantiation of the current view.
 	QSharedPointer<ComponentInstantiation> instantiation_;
-	QString instantiationName_;
 
 	//! The selected file set and its name.
 	QSharedPointer<FileSet> fileSet_;

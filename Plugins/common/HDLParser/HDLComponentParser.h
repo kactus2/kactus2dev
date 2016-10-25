@@ -107,6 +107,9 @@ private:
     LibraryInterface* library_;
 
     //! The component parsed for generation.
+    QSharedPointer<Component> component_;
+
+    //! The parsing result of component_.
     QSharedPointer<GenerationComponent> retval_;
 
     //! The active view of the component.

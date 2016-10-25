@@ -43,6 +43,16 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 {    
     setWindowTitle(tr("Configure file generation for %1.").arg(configuration->getViewSelection()->getTargetLanguage()));
 
+    // Optional generation features.
+    QGroupBox* optionGroup = new QGroupBox("Optional features:");
+    QHBoxLayout* optionLayout = new QHBoxLayout();
+    optionGroup->setLayout(optionLayout);
+
+    QCheckBox* useInterfaces = new QCheckBox("Use interfaces");
+    optionLayout->addWidget(useInterfaces);
+    QCheckBox* generateMemory = new QCheckBox("Generate memory");
+    optionLayout->addWidget(generateMemory);
+
 	// Layout for path selection widgets.
     QHBoxLayout* pathSelectionLayout = new QHBoxLayout();
     pathSelectionLayout->addWidget(new QLabel(tr("Output directory:")));
@@ -59,12 +69,6 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     QHBoxLayout* headerLayout = new QHBoxLayout();
     QLabel* tableHeader = new QLabel("Output files:");
     headerLayout->addWidget(tableHeader);
-
-    // Optional generation features.
-    QCheckBox* useInterfaces = new QCheckBox("Use interfaces");
-    headerLayout->addWidget(useInterfaces);
-    QCheckBox* generateMemory = new QCheckBox("Generate memory");
-    headerLayout->addWidget(generateMemory);
 
 	// Layout for thing coming to the bottom part of the dialog.
 	QHBoxLayout* bottomLayout = new QHBoxLayout();
@@ -99,6 +103,7 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 	// Add everything it their proper position in the final layout.
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(viewSelection_);
+    topLayout->addWidget(optionGroup);
 	topLayout->addLayout(pathSelectionLayout);
     topLayout->addStretch(1);
     topLayout->addLayout(headerLayout);

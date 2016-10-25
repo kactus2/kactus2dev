@@ -47,8 +47,6 @@ private slots:
 
 	void onViewChanged(QString const& selectedViewName);
 
-	void onInstantiationChanged(QString const& selectedInstantiationName);
-
 	void setLanguage(QString selectedLanguage);
 
 	void onFileSetChanged(QString const& fileSetName);
@@ -74,16 +72,13 @@ private:
 	QGroupBox* addToFileset_;
 
 	// The combobox to select the desired component instantiation.
-	QComboBox* instantiationSelection_;
+	QLabel* instantiationSelection_;
 
 	// The label informing the known language of the currently select instantiation.
 	QLabel* instantiationLanguage_;
 
 	// The combobox to select the desired component instantiation.
 	QComboBox* fileSetSelection_;
-
-	// The label to give warnings about instantiation selection.
-	QLabel* instantiationWarningLabel_;
 
 	// The label to give warnings about file set selection.
 	QLabel* fileSetWarningLabel_;

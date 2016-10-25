@@ -106,18 +106,13 @@ void ViewSelection::setView(QSharedPointer<View> view)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewSelection::setActiveView()
+// Function: ViewSelection::setView()
 //-----------------------------------------------------------------------------
-QString ViewSelection::setView(QString viewName)
+void ViewSelection::setView(QString viewName)
 {
     view_ = views_[viewName];
 
-    if (view_)
-    {
-        return view_->getComponentInstantiationRef();
-    }
-
-	return "";
+    instantiation_ = instantiations_.value(view_->getComponentInstantiationRef());
 }
 
 //-----------------------------------------------------------------------------
@@ -126,23 +121,6 @@ QString ViewSelection::setView(QString viewName)
 QSharedPointer<View> ViewSelection::getView() const
 {
     return view_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewSelection::setInstantiation()
-//-----------------------------------------------------------------------------
-bool ViewSelection::setInstantiation(QString name)
-{
-	instantiationName_ = name;
-
-	instantiation_ = instantiations_.value(name);
-
-	if (instantiation_)
-	{
-		return true;
-	}
-
-	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -158,7 +136,7 @@ QSharedPointer<ComponentInstantiation> ViewSelection::getInstantiation() const
 //-----------------------------------------------------------------------------
 QString ViewSelection::getInstantiationName() const
 {
-	return instantiationName_;
+	return view_->getComponentInstantiationRef();
 }
 
 //-----------------------------------------------------------------------------
