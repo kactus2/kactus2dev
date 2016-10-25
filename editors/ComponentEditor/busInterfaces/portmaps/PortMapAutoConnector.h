@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/common/DirectionTypes.h>
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QMap>
@@ -137,16 +139,16 @@ private:
      *      @return Name of the best matching physical port.
      */
     QString getBestMatchingPhysicalPort(QSharedPointer<PortAbstraction> logicalPort, int logicalIndex,
-        QList<PossiblePortMaps> possiblePairings) const;
+        QList<PossiblePortMaps> const& possiblePairings) const;
 
     /*!
-     *  Get a list of possible weighted ports by the direction of the selected logical port.
+     *  Get a list of possible weighted ports by the direction of the given logical direction.
      *
-     *      @param [in] logicalPort     The selected logical port.
+     *      @param [in] direction     The selected logical port.
      *
      *      @return A list of weighted physical ports with a suitable direction to the logical port.
      */
-    QMap<QSharedPointer<Port>, double> getPortsByDirection(QSharedPointer<PortAbstraction> logicalPort) const;
+    QMap<QSharedPointer<Port>, double> getPortsByDirection(DirectionTypes::Direction logicalDirection) const;
 
     /*!
      *  Get the width of the selected logical port.
@@ -165,8 +167,7 @@ private:
      *
      *      @return A list of physical ports weighted by suitability to logical width.
      */
-    QMap<QString, double> getPortsByLogicalWidth(int logicalWidth, QMap<QSharedPointer<Port>, double> portList)
-        const;
+    QMap<QString, double> getPortsByLogicalWidth(double logicalWidth, QMap<QSharedPointer<Port>, double> portList) const;
 
     /*!
      *  Get a list of physical ports weighted by the name of the logical port.
@@ -177,49 +178,6 @@ private:
      *      @return A list of physical ports weighted by the name of the logical port.
      */
     QMap<QString, double> weightPortsByLogicalName(QString logicalName, QMap<QString, double> portList) const;
-
-    /*!
-     *  Get the matching characters from the selected names.
-     *
-     *      @param [in] shortName           The first name.
-     *      @param [in] longName            The second name.
-     *      @param [in] matchingDistance    The available matching distance.
-     *
-     *      @return String containing the matching characters.
-     */
-    QString getMatchingCharacters(QString const& shortName, QString const& longName, int matchingDistance) const;
-
-    /*!
-     *  Get the number of transpositions from the matched strings.
-     *
-     *      @param [in] firstMatch      The first string.
-     *      @param [in] secondMatch     The second string.
-     *
-     *      @return The number of character movements required to make the selected strings equal.
-     */
-    int getTranspositions(QString const& firstMatch, QString const& secondMatch) const;
-
-    /*!
-     *  Calculate a Jaro distance.
-     *
-     *      @param [in] physicalNameSize    The size of the physical name.
-     *      @param [in] logicalNameSize     The size of the logical name.
-     *      @param [in] matchingCharacters  The number of matching characters.
-     *      @param [in] transpositions      The number of transpositions.
-     *
-     *      @return The similarity between the two strings.
-     */
-    double calculateJaroDistance(int physicalNameSize, int logicalNameSize, int matchingCharacters,
-        int transpositions) const;
-
-    /*!
-     *  Calculate the Winkler distance from Jaro distance.
-     *
-     *      @param [in] jaroDistance    The selected Jaro distance.
-     *
-     *      @return The similarity between two strings, weighted by the length of a prefix and scaling factor.
-     */
-    double calculateWinklerDistance(double jaroDistance) const;
 
     /*!
      *  Get the port names.
@@ -267,7 +225,7 @@ private:
     QSharedPointer<BusInterface> busInterface_;
 
     //! The abstraction definition referenced in the bus interface.
-    QSharedPointer<AbstractionDefinition> absDef_;
+    QSharedPointer<AbstractionDefinition const> absDef_;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> parser_;

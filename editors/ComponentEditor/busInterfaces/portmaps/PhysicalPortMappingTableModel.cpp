@@ -26,9 +26,9 @@
 PhysicalPortMappingTableModel::PhysicalPortMappingTableModel(QSharedPointer<Component> component,
     QSharedPointer<ExpressionParser> componentParser, QObject *parent):
 PortMappingTableModel(parent),
-component_(component),
-ports_(),
-expressionParser_(componentParser)
+    component_(component),
+    ports_(),
+    expressionParser_(componentParser)
 {
     refresh();
 }
@@ -100,11 +100,23 @@ QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role)
         }
         else if (index.column() == PortMappingColumns::LEFT_BOUND)
         {
-            return expressionParser_->parseExpression(selectedPort->getLeftBound());
+            QString leftExpression = expressionParser_->parseExpression(selectedPort->getLeftBound());
+            if (leftExpression.compare(QLatin1String("x")) == 0)
+            {
+                return QString();
+            }
+
+            return leftExpression;
         }
         else if (index.column() == PortMappingColumns::RIGHT_BOUND)
         {
-            return expressionParser_->parseExpression(selectedPort->getRightBound());
+            QString rightExpression = expressionParser_->parseExpression(selectedPort->getRightBound());
+            if (rightExpression.compare(QLatin1String("x")) == 0)
+            {
+                return QString();
+            }
+
+            return rightExpression;
         }
         else if (index.column() == PortMappingColumns::SIZE)
         {
@@ -157,7 +169,7 @@ void PhysicalPortMappingTableModel::addPort(QString const& portName)
 {
     foreach (QSharedPointer<Port> port, ports_)
     {
-        if (port->name() == portName)
+        if (port->name().compare(portName) == 0)
         {
             return;
         }

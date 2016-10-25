@@ -4263,12 +4263,17 @@
     </ClCompile>
     <ClCompile Include="designEditors\MemoryDesigner\SubMemoryLayout.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
-    </ClCompile>    <ClCompile Include="GeneratedFiles\moc_MemoryDesignDocument.cpp">
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignDocument.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_MemoryDesignerDiagram.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>  </ItemGroup>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\JaroWinklerAlgorithm.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
   </ItemGroup>
@@ -5880,6 +5885,9 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\common\ParameterCache.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\JaroWinklerAlgorithm.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

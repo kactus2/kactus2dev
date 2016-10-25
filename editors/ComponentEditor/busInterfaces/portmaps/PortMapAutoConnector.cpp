@@ -11,6 +11,8 @@
 
 #include "PortMapAutoConnector.h"
 
+#include "JaroWinklerAlgorithm.h"
+
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -32,11 +34,11 @@ PortMapAutoConnector::PortMapAutoConnector(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busInterface, QSharedPointer<ExpressionParser> parser,
     LibraryInterface* libraryHandler, QObject* parent):
 QObject(parent),
-component_(component),
-busInterface_(busInterface),
-absDef_(),
-parser_(parser),
-libraryHandler_(libraryHandler)
+    component_(component),
+    busInterface_(busInterface),
+    absDef_(),
+    parser_(parser),
+    libraryHandler_(libraryHandler)
 {
 
 }
@@ -60,10 +62,10 @@ void PortMapAutoConnector::setAbstractionDefinition(VLNV const& abstractionDefin
 
     if (abstractionDefinitionVLNV.isValid())
     {
-        QSharedPointer<Document> libComb = libraryHandler_->getModel(abstractionDefinitionVLNV);
+        QSharedPointer<Document const> libComb = libraryHandler_->getModelReadOnly(abstractionDefinitionVLNV);
         if (libComb && libraryHandler_->getDocumentType(abstractionDefinitionVLNV) == VLNV::ABSTRACTIONDEFINITION)
         {
-            absDef_ = libComb.dynamicCast<AbstractionDefinition>();
+            absDef_ = libComb.dynamicCast<AbstractionDefinition const>();
         }
     }
 }
@@ -75,13 +77,7 @@ void PortMapAutoConnector::onAutoConnect()
 {
     if (absDef_ && !absDef_->getLogicalPorts()->isEmpty())
     {
-        QList<QSharedPointer<PortAbstraction> > logicalPorts;
-        foreach (QSharedPointer<PortAbstraction> abstractPort, *absDef_->getLogicalPorts())
-        {
-            logicalPorts.append(abstractPort);
-        }
-
-        connectSelectedLogicalPorts(logicalPorts);
+        connectSelectedLogicalPorts(*absDef_->getLogicalPorts());
     }
 }
 
@@ -124,32 +120,27 @@ void PortMapAutoConnector::connectSelectedLogicalPorts(QList<QSharedPointer<Port
 //-----------------------------------------------------------------------------
 // Function: PortMapAutoConnector::getBestMatchingPhysicalPort()
 //-----------------------------------------------------------------------------
-QString PortMapAutoConnector::getBestMatchingPhysicalPort(QSharedPointer<PortAbstraction> logicalPort, int
-    logicalIndex, QList<PossiblePortMaps> possiblePairings) const
+QString PortMapAutoConnector::getBestMatchingPhysicalPort(QSharedPointer<PortAbstraction> logicalPort, 
+    int logicalIndex, QList<PossiblePortMaps> const& possiblePairings) const
 {
-    int physicalPortRank = 0;
-
     QMapIterator<double, QString> physicalIterator(possiblePairings.at(logicalIndex).possiblePhysicals_);
     physicalIterator.toBack();
     while (physicalIterator.hasPrevious())
     {
         physicalIterator.previous();
 
-        physicalPortRank++;
-
         QString physicalPort = physicalIterator.value();
         double comparisonWeight = physicalIterator.key();
 
         bool physicalFound = true;
 
-        for (int j = logicalIndex + 1; j < possiblePairings.size(); j++)
+        for (int j = logicalIndex + 1; j < possiblePairings.size() && physicalFound; j++)
         {
             QString comparisonLogical = possiblePairings.at(j).logicalPort_->name();
             double comparisonValue = possiblePairings.at(j).possiblePhysicals_.key(physicalPort);
             if (comparisonValue > comparisonWeight)
             {
                 physicalFound = false;
-                break;
             }
         }
 
@@ -159,7 +150,7 @@ QString PortMapAutoConnector::getBestMatchingPhysicalPort(QSharedPointer<PortAbs
         }
     }
 
-    return QString("");
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -169,7 +160,7 @@ bool PortMapAutoConnector::logicalPortHasReferencingPortMap(QString const& logic
 {
     foreach (QSharedPointer<PortMap> portMap, *busInterface_->getPortMaps())
     {
-        if (portMap->getLogicalPort() && portMap->getLogicalPort()->name_ == logicalName)
+        if (portMap->getLogicalPort() && portMap->getLogicalPort()->name_.compare(logicalName) == 0)
         {
             return true;
         }
@@ -186,12 +177,15 @@ QMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(QSharedPoin
 {
     QMap<double, QString> weightedPhysicalPorts;
 
-    QMap<QSharedPointer<Port>, double> availablePorts = getPortsByDirection(logicalPort);
+    DirectionTypes::Direction logicalDirection = absDef_->getPortDirection(logicalPort->name(), interfaceMode_);
+    
+    QMap<QSharedPointer<Port>, double> availablePorts = getPortsByDirection(logicalDirection);
     if (!availablePorts.isEmpty())
     {
         QMap<QString, double> availableWeightedPorts;
+
         QString logicalWidth = getLogicalPortWidth(logicalPort);
-        if (parser_->isValidExpression(logicalWidth) && !logicalWidth.isEmpty())
+        if (!logicalWidth.isEmpty() && parser_->isValidExpression(logicalWidth))
         {
             int logicalWidthInt = parser_->parseExpression(logicalWidth).toInt();
             availableWeightedPorts = getPortsByLogicalWidth(logicalWidthInt, availablePorts);
@@ -222,11 +216,8 @@ QMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(QSharedPoin
 // Function: PortMapAutoConnector::getPortsByDirection()
 //-----------------------------------------------------------------------------
 QMap<QSharedPointer<Port>, double> PortMapAutoConnector::getPortsByDirection(
-    QSharedPointer<PortAbstraction> logicalPort) const
+    DirectionTypes::Direction logicalDirection) const
 {
-    DirectionTypes::Direction logicalDirection =
-        absDef_->getPortDirection(logicalPort->name(), interfaceMode_);
-
     QMap<QSharedPointer<Port>, double> availablePorts;
 
     foreach (QSharedPointer<Port> physicalPort, *component_->getPorts())
@@ -253,19 +244,20 @@ QString PortMapAutoConnector::getLogicalPortWidth(QSharedPointer<PortAbstraction
     QSharedPointer<WireAbstraction> abstractWire = logicalPort->getWire();
     if (abstractWire)
     {
-        QString logicalWidthString = abstractWire->getWidth(interfaceMode_);
-        return logicalWidthString;
+        return abstractWire->getWidth(interfaceMode_);
     }
 
-    return QString("");
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortMapAutoConnector::getPortsByLogicalWidth()
 //-----------------------------------------------------------------------------
-QMap<QString, double> PortMapAutoConnector::getPortsByLogicalWidth(int logicalWidth,
+QMap<QString, double> PortMapAutoConnector::getPortsByLogicalWidth(double logicalWidth, 
     QMap<QSharedPointer<Port>, double> portList) const
 {
+    const double WIDTH_WEIGHT = 0.2;
+
     QMap<QString, double> widthMatchingPorts;
 
     QMapIterator<QSharedPointer<Port>, double> portIterator(portList);
@@ -275,13 +267,11 @@ QMap<QString, double> PortMapAutoConnector::getPortsByLogicalWidth(int logicalWi
 
         QSharedPointer<Port> physicalPort = portIterator.key();
 
-        double logicalDouble = logicalWidth;
         int calculatedLeftBound = parser_->parseExpression(physicalPort->getLeftBound()).toInt();
         int calculatedRightBound = parser_->parseExpression(physicalPort->getRightBound()).toInt();
-
         double portWidth = abs(calculatedLeftBound - calculatedRightBound) + 1;
 
-        double widthSimilarity = (1/3) * (qMin(logicalDouble, portWidth)/(qMax(logicalDouble, portWidth)));
+        double widthSimilarity = WIDTH_WEIGHT * (qMin(logicalWidth, portWidth)/(qMax(logicalWidth, portWidth)));
 
         widthMatchingPorts.insert(physicalPort->name(), widthSimilarity + portIterator.value());
     }
@@ -295,137 +285,25 @@ QMap<QString, double> PortMapAutoConnector::getPortsByLogicalWidth(int logicalWi
 QMap<QString, double> PortMapAutoConnector::weightPortsByLogicalName(QString logicalName,
     QMap<QString, double> portList) const
 {
+    const double JARO_WINKLER_THRESHOLD = 0.75;
+
     QMap<QString, double> jaroDistancedPorts;
 
     QMapIterator<QString, double> portIterator(portList);
     while (portIterator.hasNext())
     {
-        portIterator.next();
+        portIterator.next();        
+        QString physicalName = portIterator.key();
 
-        QString logicalLower = logicalName.toLower();
-        QString physicalLower = portIterator.key().toLower();
-
-        int physicalNameSize = physicalLower.size();
-        int logicalNameSize = logicalLower.size();
-
-        int matchingDistance = qMax(qFloor(qMax(physicalNameSize, logicalNameSize)/2) - 1, 1);
-
-        QString firstMatch = getMatchingCharacters(physicalLower, logicalLower, matchingDistance);
-        QString secondMatch = getMatchingCharacters(logicalLower, physicalLower, matchingDistance);
+        double jaroDistance = JaroWinklerAlgorithm::calculateJaroWinklerDistance(physicalName, logicalName);
         
-        double jaroDistance = 0;
-
-        if (!firstMatch.isEmpty() && !secondMatch.isEmpty() && firstMatch.size() == secondMatch.size())
-        {
-            int matchingCharacters = firstMatch.size();
-            int transpositions = getTranspositions(firstMatch, secondMatch);
-
-            jaroDistance =
-                calculateJaroDistance(physicalNameSize, logicalNameSize, matchingCharacters, transpositions);
-
-            jaroDistance = calculateWinklerDistance(jaroDistance);
-        }
-        
-        if (jaroDistance > 0.65)
+        if (jaroDistance >= JARO_WINKLER_THRESHOLD)
         {
             jaroDistancedPorts.insert(portIterator.key(), jaroDistance + portIterator.value());
         }
     }
 
     return jaroDistancedPorts;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapAutoConnector::getMatchingCharacters()
-//-----------------------------------------------------------------------------
-QString PortMapAutoConnector::getMatchingCharacters(QString const& shortName, QString const& longName,
-    int matchingDistance) const
-{
-    QString matchingCharacters = "";
-
-    if (matchingDistance > 0)
-    {
-        for (int i = 0; i < shortName.size(); ++i)
-        {
-            if (!matchingCharacters.contains(shortName.at(i)))
-            {
-                int startPosition = 0;
-                int recalculatedMatchingDistance = matchingDistance;
-                if (i - matchingDistance > 0)
-                {
-                    startPosition = i - matchingDistance;
-                    recalculatedMatchingDistance = matchingDistance * 2;
-                }
-                else
-                {
-                    recalculatedMatchingDistance = qMax(1, recalculatedMatchingDistance + i);
-                }
-
-                QString longNameSection = longName.mid(startPosition, recalculatedMatchingDistance + 1);
-                if (longNameSection.contains(shortName.at(i)))
-                {
-                    matchingCharacters.append(shortName.at(i));
-                }
-            }
-        }
-    }
-
-    return matchingCharacters;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapAutoConnector::getTranspositions()
-//-----------------------------------------------------------------------------
-int PortMapAutoConnector::getTranspositions(QString const& firstMatch, QString const& secondMatch) const
-{
-    double transpositions = 0;
-    for (int i = 0; i < firstMatch.size(); i++)
-    {
-        if (firstMatch.at(i) != secondMatch.at(i))
-        {
-            transpositions++;
-        }
-    }
-
-    return transpositions;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapAutoConnector::calculateJaroDistance()
-//-----------------------------------------------------------------------------
-double PortMapAutoConnector::calculateJaroDistance(int physicalNameSize, int logicalNameSize,
-    int matchingCharacters, int transpositions) const
-{
-    double jaroDistance = 0;
-
-    if (matchingCharacters != 0)
-    {
-        double physicalNameDouble = physicalNameSize;
-        double logicalNameDouble = logicalNameSize;
-        double matchingDouble = matchingCharacters;
-        double transpositionsDouble = transpositions;
-
-        double physicalPart = matchingDouble / physicalNameDouble;
-        double logicalPart = matchingDouble / logicalNameDouble;
-        double transpositionPart = (matchingDouble - transpositionsDouble) / matchingDouble;
-
-        double jaroDistance = (physicalPart + logicalPart + transpositionPart) / 3;
-        return jaroDistance;
-    }
-
-    return jaroDistance;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortMapAutoConnector::calculateWinklerDistance()
-//-----------------------------------------------------------------------------
-double PortMapAutoConnector::calculateWinklerDistance(double jaroDistance) const
-{
-    double prefixLength = 3;
-    double scalingFactor = 0.1;
-
-    double winklerDistance = jaroDistance + (prefixLength*scalingFactor*(1-jaroDistance));
-    return winklerDistance;
 }
 
 //-----------------------------------------------------------------------------
@@ -523,16 +401,14 @@ void PortMapAutoConnector::connectPorts(QSharedPointer<PortAbstraction> portAbst
                 }
             }
 
-            QSharedPointer<Range> newLogicalRange
-                (new Range(QString::number(logicalLeft), QString::number(logicalRight)));
-            newMappedLogical->range_ = newLogicalRange;
+            newMappedLogical->range_ = QSharedPointer<Range>(
+                new Range(QString::number(logicalLeft), QString::number(logicalRight)));
 
-            QSharedPointer<PartSelect> newPhysicalPartSelect
-                (new PartSelect(QString::number(physicalLeft), QString::number(physicalRight)));
-            newMappedPhysical->partSelect_ = newPhysicalPartSelect;
+            newMappedPhysical->partSelect_ = QSharedPointer<PartSelect>(
+                new PartSelect(QString::number(physicalLeft), QString::number(physicalRight)));
         }
 
-        QSharedPointer<PortMap> newPortMap (new PortMap());
+        QSharedPointer<PortMap> newPortMap(new PortMap());
         newPortMap->setLogicalPort(newMappedLogical);
         newPortMap->setPhysicalPort(newMappedPhysical);
 
@@ -548,10 +424,9 @@ void PortMapAutoConnector::onAutoConnectLogicalSignals(QStringList const& logica
     if (absDef_)
     {
         QList<QSharedPointer<PortAbstraction> > selectedLogicalSignals;
-        foreach (QString logicalName, logicalSignals)
+        foreach (QString const& logicalName, logicalSignals)
         {
-            QSharedPointer<PortAbstraction> logicalPort = getLogicalPort(logicalName);
-            selectedLogicalSignals.append(logicalPort);
+            selectedLogicalSignals.append(getLogicalPort(logicalName));
         }
 
         connectSelectedLogicalPorts(selectedLogicalSignals);
@@ -567,7 +442,7 @@ QSharedPointer<PortAbstraction> PortMapAutoConnector::getLogicalPort(QString con
     {
         foreach (QSharedPointer<PortAbstraction> logicalPort, *absDef_->getLogicalPorts())
         {
-            if (logicalPort->name() == logicalName)
+            if (logicalPort->name().compare(logicalName) == 0)
             {
                 return logicalPort;
             }
