@@ -46,7 +46,7 @@ LibraryTreeView::LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* f
       createNewDesignAction_(new QAction(tr("New HW Design..."), this)),
       createNewSWDesignAction_(new QAction(tr("New SW Design..."), this)),
       createNewSystemDesignAction_(new QAction(tr("New System Design..."), this)),
-      deleteAction_(new QAction(tr("Delete Item"), this)), 
+      deleteAction_(new QAction(tr("Delete Item..."), this)), 
       exportAction_(new QAction(tr("Export"), this)),  
       showErrorsAction_(new QAction(tr("Show Errors"), this)),
       openBusAction_(new QAction(tr("Open"), this)),

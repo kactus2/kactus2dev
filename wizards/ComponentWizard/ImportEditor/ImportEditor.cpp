@@ -56,13 +56,13 @@ componentViews_(component->getViews())
 
     QSharedPointer<PortValidator> portValidator (new PortValidator(expressionParser, componentViews_));
 
-    portEditor_ = new PortsEditor(
-        importComponent_, handler, parameterFinder, expressionFormatter, portValidator, &splitter_);
+    portEditor_ = new PortsEditor(importComponent_, handler, parameterFinder, expressionFormatter, portValidator,
+        &splitter_);
 
     // CSV import/export is disabled in the wizard.
 	portEditor_->setAllowImportExport(false);
 
-    runner_->setVerilogExpressionParser(expressionParser);
+    runner_->setExpressionParser(expressionParser);
     runner_->loadPlugins(pluginMgr);
 
     connect(portEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -151,10 +151,10 @@ void ImportEditor::onRefresh()
 
     componentViews_ = importComponent_->getViews();
 
-	if ( selectedFileSet_ )
+	if (selectedFileSet_)
 	{
-		foreach( QSharedPointer<ComponentInstantiation> componentInstantiation, 
-			*importComponent_->getComponentInstantiations() )
+		foreach(QSharedPointer<ComponentInstantiation> componentInstantiation, 
+			*importComponent_->getComponentInstantiations())
 		{
 			if (!componentInstantiation->getFileSetReferences()->contains(selectedFileSet_->name()))
 			{
@@ -234,8 +234,6 @@ void ImportEditor::setupLayout()
 
     splitter_.addWidget(sourceWidget);
     splitter_.addWidget(portEditor_);
-    splitter_.setStretchFactor(0, 40);
-    splitter_.setStretchFactor(1, 10);
-    splitter_.setStretchFactor(2, 20);
-    splitter_.setStretchFactor(3, 30);
+    splitter_.setStretchFactor(0, 60);
+    splitter_.setStretchFactor(1, 40);
 }

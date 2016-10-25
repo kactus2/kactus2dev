@@ -44,7 +44,7 @@ public:
         LibraryInterface* libraryHandler);
 
 	//! The destructor.
-	~PortMapValidator();
+	virtual ~PortMapValidator();
     
     /*!
      *  Handle the change in bus interface.

@@ -50,11 +50,11 @@ public:
 	~ImportRunner();
   
     /*!
-     *  Sets the given highlighter to be used by all highlight sources.
+     *  Sets the expression parser to be used by all importers.
      *
-     *      @param [in] highlighter   The highlighter to use.          
+     *      @param [in] parser   The parser to use.          
      */
-    void setVerilogExpressionParser(QSharedPointer<ExpressionParser> parser);
+    void setExpressionParser(QSharedPointer<ExpressionParser> parser);
 
     /*!
      *  Loads all available import plugins.

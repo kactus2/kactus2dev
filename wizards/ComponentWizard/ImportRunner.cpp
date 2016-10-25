@@ -120,7 +120,7 @@ void ImportRunner::loadPlugins(PluginManager const& pluginManager)
 //-----------------------------------------------------------------------------
 // Function: ImportRunner::setVerilogExpressionParser()
 //-----------------------------------------------------------------------------
-void ImportRunner::setVerilogExpressionParser(QSharedPointer<ExpressionParser> parser)
+void ImportRunner::setExpressionParser(QSharedPointer<ExpressionParser> parser)
 {
     expressionParser_ = parser;
 }
