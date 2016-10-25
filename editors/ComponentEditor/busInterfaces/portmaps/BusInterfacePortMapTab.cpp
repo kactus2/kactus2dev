@@ -63,6 +63,7 @@ QWidget(parent),
     PortMapTreeSortProxyModel* portMapsSorter (new PortMapTreeSortProxyModel(busif_, this));
     portMapsSorter->setSourceModel(&portMapsModel_);
     portMapsView_.setModel(portMapsSorter);
+    portMapsSorter->sort(PortMapsColumns::LOGICAL_PORT);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(finder, this);
     componentParametersModel->setExpressionParser(expressionParser);

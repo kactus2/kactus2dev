@@ -271,7 +271,7 @@ QStringList SystemVerilogExpressionParser::toStringList(QString const& expressio
     
     QRegularExpressionMatch match = splitter.match(expression);
     int pos = 0;
-    while (match.hasMatch())
+    while (match.hasMatch() && pos != -1)
     {
         int len = match.capturedStart() - pos;
 

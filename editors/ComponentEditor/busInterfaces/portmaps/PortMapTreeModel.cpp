@@ -31,7 +31,7 @@
 
 namespace
 {
-    QString const MULTIPLEPHYSICALS = "[multiple]";
+    QString const MULTIPLE_SELECTED = "[multiple]";
 }
 
 //-----------------------------------------------------------------------------
@@ -279,10 +279,12 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
         {
             return getLogicalPortName(index, portMap, abstractPort);
         }
+
         else if (index.column() == PortMapsColumns::PHYSICAL_PORT)
         {
             return getPhysicalPortName(index, portMap);
         }
+
         else if (!index.parent().isValid() && index.column() == PortMapsColumns::LOGICAL_PRESENCE)
         {
             PresenceTypes::Presence requirement = abstractPort->getPresence(interfaceMode_);
@@ -293,11 +295,48 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
 
             return PresenceTypes::presence2Str(requirement);
         }
+
+        else if (index.column() == PortMapsColumns::INVERT && !index.parent().isValid() &&
+            !portMappings_.at(index.row()).portMaps_.isEmpty())
+        {
+            BooleanValue aggregatedInvert = portMappings_.at(index.row()).portMaps_.first()->getInvert();
+            foreach (QSharedPointer<PortMap> map, portMappings_.at(index.row()).portMaps_)
+            {
+                if (aggregatedInvert.toBool() != map->getInvert().toBool())
+                {
+                    return MULTIPLE_SELECTED;
+                }      
+            }
+
+            return aggregatedInvert.toBool();
+        }
+
+        else if (index.column() == PortMapsColumns::TIEOFF && !index.parent().isValid() &&
+            !portMappings_.at(index.row()).portMaps_.isEmpty())
+        {
+            QString aggregatedTieoff;
+            foreach (QSharedPointer<PortMap> map, portMappings_.at(index.row()).portMaps_)
+            {
+                if (aggregatedTieoff.isEmpty())
+                {
+                    aggregatedTieoff = map->getLogicalTieOff();
+                }
+                else if (!map->getLogicalTieOff().isEmpty() &&
+                    aggregatedTieoff.compare(map->getLogicalTieOff()) != 0)
+                {
+                    return MULTIPLE_SELECTED;
+                }      
+            }
+
+            return aggregatedTieoff;
+        }
+
         else
         {
             return formatter_->formatReferringExpression(valueForIndex(index, abstractPort, portMap).toString());
         }
     }
+
     else if (index.parent().isValid() && role == Qt::CheckStateRole && index.column() == PortMapsColumns::INVERT)
     {
         if (portMap->getInvert().toBool())
@@ -352,7 +391,7 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
         else if (index.column() == PortMapsColumns::PHYSICAL_PORT)
         {
             QString physicalPortName = getPhysicalPortName(index, portMap).toString();
-            if (!physicalPortName.isEmpty() && physicalPortName.compare(MULTIPLEPHYSICALS, Qt::CaseSensitive) != 0)
+            if (!physicalPortName.isEmpty() && physicalPortName.compare(MULTIPLE_SELECTED, Qt::CaseSensitive) != 0)
             {
                 DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
                 QSharedPointer<Port> physicalPort = component_->getPort(physicalPortName);
@@ -489,7 +528,7 @@ QVariant PortMapTreeModel::getPhysicalPortName(QModelIndex const& itemIndex, QSh
         }
         else if (physicalNames.size() > 1)
         {
-            physicalName = MULTIPLEPHYSICALS;
+            physicalName = MULTIPLE_SELECTED;
         }
     }
 
@@ -652,6 +691,9 @@ bool PortMapTreeModel::setData(const QModelIndex &index, const QVariant &value, 
             else if (index.column() == PortMapsColumns::TIEOFF)
             {
                 changedPortMap->setLogicalTieOff(value.toString());
+
+                QModelIndex logicalTieoffIndex = index.parent().sibling(index.parent().row(), index.column());
+                emit dataChanged(logicalTieoffIndex, logicalTieoffIndex);
             }
         }
 
@@ -662,12 +704,15 @@ bool PortMapTreeModel::setData(const QModelIndex &index, const QVariant &value, 
     }
     else if (index.parent().isValid() && role == Qt::CheckStateRole)
     {
-        bool inverValue = value == Qt::Checked;
+        bool invertValue = (value == Qt::Checked);
 
         QSharedPointer<PortMap> portMap = getIndexedPortMap(index.parent(), index.row());
-        portMap->setInvert(inverValue);
+        portMap->setInvert(invertValue);
+
+        QModelIndex logicalInvertIndex = index.parent().sibling(index.parent().row(), index.column());
 
         emit dataChanged(index, index);
+        emit dataChanged(logicalInvertIndex, logicalInvertIndex);
         emit contentChanged();
     }
 
@@ -1055,7 +1100,7 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
     QSharedPointer<Port> physicalPort = component_->getPort(physicalPortName);
 
     if ((index.column() == PortMapsColumns::LOGICAL_PORT || index.column() == PortMapsColumns::PHYSICAL_PORT) &&
-        (!physicalPortName.isEmpty() || physicalPortName.compare(MULTIPLEPHYSICALS) != 0) && physicalPort &&
+        (!physicalPortName.isEmpty() || physicalPortName.compare(MULTIPLE_SELECTED) != 0) && physicalPort &&
         logicalPort->getWire())
     {
         DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_);
