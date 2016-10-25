@@ -11,7 +11,7 @@
 
 #include "PortmapDialog.h"
 
-#include <editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h>
 #include <editors/ComponentEditor/common/NullParser.h>
 
 #include <library/LibraryManager/libraryinterface.h>

@@ -917,6 +917,12 @@
     <Filter Include="Source Files\editors\BusDefinitionEditor">
       <UniqueIdentifier>{259357d4-028a-437b-b212-8514a8af1434}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\busInterfaces\general">
+      <UniqueIdentifier>{f9968764-1d5f-41c2-bfaf-4661455bbeef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\busInterfaces\general">
+      <UniqueIdentifier>{3d510153-5ef7-4250-ab35-ec03ca108191}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -2125,33 +2131,6 @@
     <ClCompile Include="GeneratedFiles\moc_PortListSortProxyModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_bridgesmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busifgeneraldetails.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busifgeneraltab.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busifinterfacemaster.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busifinterfacemodeeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busifinterfacemonitor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busifinterfaceslave.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busifinterfacesystem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_businterfaceeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_businterfacesdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2159,18 +2138,6 @@
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_businterfacesmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_interfacemodestack.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ApiCreateDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_bridgesdelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_bridgeseditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_channelsdelegate.cpp">
@@ -2620,45 +2587,6 @@
     <ClCompile Include="editors\ComponentEditor\addressSpaces\addressSpaceVisualizer\segmentgraphitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\addressSpaces\addressSpaceVisualizer</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\ApiCreateDialog.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\bridgesdelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\bridgeseditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\bridgesmodel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\busifgeneraldetails.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\busifgeneraltab.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\busifinterfacemaster.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\busifinterfacemodeeditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\busifinterfacemonitor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\busifinterfacemslave.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\busifinterfaceslave.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\busifinterfacesystem.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\businterfaceeditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\businterfacesdelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClCompile>
@@ -2666,9 +2594,6 @@
       <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\businterfacesmodel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\interfacemodestack.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortListSortProxyModel.cpp">
@@ -3406,9 +3331,6 @@
     <ClCompile Include="editors\ComponentEditor\common\NullParser.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_busifinterfacemslave.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\common\DesignWidgetFactoryImplementation.cpp">
       <Filter>Source Files\designEditors\common</Filter>
     </ClCompile>
@@ -4087,12 +4009,6 @@
     <ClCompile Include="GeneratedFiles\moc_PhysicalPortMappingTableModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_BusInterfacePortMapTab.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\BusInterfacePortMapTab.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeView.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </ClCompile>
@@ -4272,6 +4188,90 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\JaroWinklerAlgorithm.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\bridgesdelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\bridgeseditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\bridgesmodel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifgeneraldetails.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifgeneraltab.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemaster.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemodeeditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemonitor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemslave.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfaceslave.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacesystem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\interfacemodestack.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_bridgesdelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_bridgeseditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_bridgesmodel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busifgeneraldetails.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busifgeneraltab.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacemaster.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacemodeeditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacemonitor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacemslave.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busifinterfaceslave.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_busifinterfacesystem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_interfacemodestack.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\BusInterfacePortMapTab.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_BusInterfacePortMapTab.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\businterfaceeditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_businterfaceeditor.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4902,36 +4902,6 @@
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortListSortProxyModel.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\bridgesmodel.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\busifgeneraldetails.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\busifgeneraltab.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\busifinterfacemaster.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\busifinterfacemodeeditor.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\busifinterfacemonitor.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\busifinterfacemslave.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\busifinterfaceslave.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\busifinterfacesystem.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\businterfaceeditor.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\businterfacesdelegate.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </CustomBuild>
@@ -4939,18 +4909,6 @@
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\businterfacesmodel.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\interfacemodestack.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\ApiCreateDialog.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\bridgesdelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\bridgeseditor.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\channels\channelsdelegate.h">
@@ -5796,9 +5754,6 @@
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PhysicalPortMappingTableModel.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\BusInterfacePortMapTab.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapTreeView.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
     </CustomBuild>
@@ -5888,6 +5843,48 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\JaroWinklerAlgorithm.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\bridgesdelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\bridgeseditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\bridgesmodel.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\busifgeneraldetails.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\busifgeneraltab.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemaster.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemodeeditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemonitor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemslave.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\busifinterfaceslave.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\busifinterfacesystem.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\interfacemodestack.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\portmaps\BusInterfacePortMapTab.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\portmaps</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\businterfaceeditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
@@ -6278,9 +6275,6 @@
     <ClInclude Include="editors\ComponentEditor\fileBuilders\FileBuilderColumns.h">
       <Filter>Header Files\editors\ComponentEditor\fileBuilders</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\busInterfaces\BridgeColumns.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\fileSet\FileSetColumns.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet</Filter>
     </ClInclude>
@@ -6439,6 +6433,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\MemoryDesigner\MemoryDesignerConstants.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\general\BridgeColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

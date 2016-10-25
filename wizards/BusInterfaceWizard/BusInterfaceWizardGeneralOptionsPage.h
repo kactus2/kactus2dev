@@ -12,7 +12,7 @@
 #ifndef BUSINTERFACEWIZARDGENERALOPTIONSPAGE_H
 #define BUSINTERFACEWIZARDGENERALOPTIONSPAGE_H
 
-#include <editors/ComponentEditor/busInterfaces/busifgeneraltab.h>
+#include <editors/ComponentEditor/busInterfaces/general/busifgeneraltab.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>

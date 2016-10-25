@@ -262,26 +262,22 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/channels/channelsdelegate.h \
     ./editors/ComponentEditor/channels/channelseditor.h \
     ./editors/ComponentEditor/channels/channelsmodel.h \
-    ./editors/ComponentEditor/busInterfaces/BridgeColumns.h \
     ./editors/ComponentEditor/busInterfaces/BusInterfaceColumns.h \
-    ./editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.h \
-    ./editors/ComponentEditor/busInterfaces/bridgesmodel.h \
-    ./editors/ComponentEditor/busInterfaces/busifgeneraldetails.h \
-    ./editors/ComponentEditor/busInterfaces/busifgeneraltab.h \
-    ./editors/ComponentEditor/busInterfaces/busifinterfacemaster.h \
-    ./editors/ComponentEditor/busInterfaces/busifinterfacemodeeditor.h \
-    ./editors/ComponentEditor/busInterfaces/busifinterfacemonitor.h \
-    ./editors/ComponentEditor/busInterfaces/busifinterfacemslave.h \
-    ./editors/ComponentEditor/busInterfaces/busifinterfaceslave.h \
-    ./editors/ComponentEditor/busInterfaces/busifinterfacesystem.h \
-    ./editors/ComponentEditor/busInterfaces/businterfaceeditor.h \
+    ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemslave.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemonitor.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemodeeditor.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemaster.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifgeneraltab.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifgeneraldetails.h \
+    ./editors/ComponentEditor/busInterfaces/general/bridgesmodel.h \
     ./editors/ComponentEditor/busInterfaces/businterfacesdelegate.h \
     ./editors/ComponentEditor/busInterfaces/businterfaceseditor.h \
     ./editors/ComponentEditor/busInterfaces/businterfacesmodel.h \
-    ./editors/ComponentEditor/busInterfaces/interfacemodestack.h \
-    ./editors/ComponentEditor/busInterfaces/ApiCreateDialog.h \
-    ./editors/ComponentEditor/busInterfaces/bridgesdelegate.h \
-    ./editors/ComponentEditor/busInterfaces/bridgeseditor.h \
+    ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.h \
+    ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingColumns.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h \
@@ -710,6 +706,9 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h \
+    ./editors/ComponentEditor/busInterfaces/businterfaceeditor.h \
+    ./editors/ComponentEditor/busInterfaces/general/BridgeColumns.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
@@ -902,24 +901,23 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/componenteditor.cpp \
     ./editors/ComponentEditor/itemeditor.cpp \
     ./editors/ComponentEditor/itemvisualizer.cpp \
-    ./editors/ComponentEditor/busInterfaces/ApiCreateDialog.cpp \
-    ./editors/ComponentEditor/busInterfaces/bridgesdelegate.cpp \
-    ./editors/ComponentEditor/busInterfaces/bridgeseditor.cpp \
-    ./editors/ComponentEditor/busInterfaces/bridgesmodel.cpp \
-    ./editors/ComponentEditor/busInterfaces/busifgeneraldetails.cpp \
-    ./editors/ComponentEditor/busInterfaces/busifgeneraltab.cpp \
-    ./editors/ComponentEditor/busInterfaces/busifinterfacemaster.cpp \
-    ./editors/ComponentEditor/busInterfaces/busifinterfacemodeeditor.cpp \
-    ./editors/ComponentEditor/busInterfaces/busifinterfacemonitor.cpp \
-    ./editors/ComponentEditor/busInterfaces/busifinterfacemslave.cpp \
-    ./editors/ComponentEditor/busInterfaces/busifinterfaceslave.cpp \
-    ./editors/ComponentEditor/busInterfaces/busifinterfacesystem.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfaceeditor.cpp \
-    ./editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemslave.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemonitor.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemodeeditor.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemaster.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifgeneraltab.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifgeneraldetails.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/bridgesmodel.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfacesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfaceseditor.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfacesmodel.cpp \
-    ./editors/ComponentEditor/busInterfaces/interfacemodestack.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.cpp \

@@ -12,14 +12,16 @@
 #ifndef BUSINTERFACEWIZARDPORTMAPPAGE_H
 #define BUSINTERFACEWIZARDPORTMAPPAGE_H
 
-#include <editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.h>
+#include <editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h>
 
 #include <QWizardPage>
 #include <QLabel>
 #include <QTextEdit>
 
+class BusInterface;
 class BusInterfaceWizard;
 class BusInterfaceValidator;
+class Component;
 class LibraryInterface;
 class ExpressionParser;
 class ParameterFinder;
