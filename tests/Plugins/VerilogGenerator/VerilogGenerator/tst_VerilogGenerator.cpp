@@ -450,6 +450,7 @@ QSharedPointer<GenerationComponent> tst_VerilogGenerator::addTestComponentToLibr
 
 	QSharedPointer<GenerationComponent> gc(new GenerationComponent);
     gc->component = instanceComponent;
+    gc->moduleName_ = vlnv.getName();
 
     addInterfaceToComponent("clk", gc);
 
@@ -539,6 +540,7 @@ QSharedPointer<GenerationComponent> tst_VerilogGenerator::addSenderComponentToLi
 
     QSharedPointer<GenerationComponent> gc(new GenerationComponent);
     gc->component = senderComponent;
+    gc->moduleName_ = senderVLNV.getName();
 
     addInterfaceToComponent("data_bus", gc);
     senderComponent->getBusInterface("data_bus")->setInterfaceMode(mode);    
@@ -563,6 +565,7 @@ QSharedPointer<GenerationComponent> tst_VerilogGenerator::addReceiverComponentTo
 
     QSharedPointer<GenerationComponent> gc(new GenerationComponent);
     gc->component = receiverComponent;
+    gc->moduleName_ = receiverVLNV.getName();
 
     addInterfaceToComponent("data_bus", gc);
     receiverComponent->getBusInterface("data_bus")->setInterfaceMode(mode);    
