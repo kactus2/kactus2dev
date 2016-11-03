@@ -76,6 +76,13 @@ public:
      */
     int type() const { return Type; }
 
+    /*!
+     *  Get the main memory graphics items contained within this column in the order of their scene positions.
+     *
+     *      @return Map containing y-coordinate, main memory graphics item pairs.
+     */
+    QMap<qreal, MainMemoryGraphicsItem*> getGraphicsItemInOrder() const;
+
 protected:
 
     /*!

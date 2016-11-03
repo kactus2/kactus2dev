@@ -210,3 +210,11 @@ void MemoryDesignDocument::showEvent(QShowEvent* event)
     TabDocument::showEvent(event);
     diagram_->onShow();
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::setProtection()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::setProtection(bool /*locked*/)
+{
+    TabDocument::setProtection(false);
+}

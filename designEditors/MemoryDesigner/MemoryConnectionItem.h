@@ -33,16 +33,13 @@ public:
      *      @param [in] firstStartValue     Start address in the start item.
      *      @param [in] firstEndValue       End address in the start item.
      *      @param [in] endItem             The end item of the connection (memory map).
-     *      @param [in] secondStartValue    Start address in the end item.
-     *      @param [in] secondEndValue      End address in the end item.
      *      @param [in] containingScene     Graphics scene containing the memory connection item.
      *      @param [in] yTransfer           Y transfer of the memory connection.
      *      @param [in] parent              Parent item of the connection.
      */
     MemoryConnectionItem(MainMemoryGraphicsItem* startItem, QString const& firstStartValue,
-        QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QString const& secondStartValue,
-        QString const& secondEndValue, QGraphicsScene* containingScene, int yTransfer = 0,
-        QGraphicsItem* parent = 0);
+        QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
+        int yTransfer = 0, QGraphicsItem* parent = 0);
 
 	/*!
      *  The Destructor.
@@ -108,8 +105,10 @@ public:
 
     /*!
      *  Compress the end item.
+     *
+     *      @param [in] movedConnections    Connection items that have already been moved.
      */
-    void compressEndItem();
+    void compressEndItem(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
 
     /*!
      *  Get the height of the connected end memory item.
@@ -117,6 +116,32 @@ public:
      *      @return The height of the connected end memory item.
      */
     qreal getEndItemHeight() const;
+
+    /*!
+     *  Check if the connected end memory items is a memory map.
+     *
+     *      @return True, if the connected end memory item is a memory map, otherwise false.
+     */
+    bool endItemIsMemoryMap() const;
+
+    /*!
+     *  Get the connected start memory item.
+     *
+     *      @return The connected start memory item.
+     */
+    MainMemoryGraphicsItem* getConnectionStartItem() const;
+
+    /*!
+     *  Get the connected end memory item.
+     *
+     *      @return The connected end memory item.
+     */
+    MainMemoryGraphicsItem* getConnectionEndItem() const;
+
+    /*!
+     *  Set the width for the memory connection item.
+     */
+    void setConnectionWidth();
 
 private:
     // Disable copying.
@@ -166,6 +191,15 @@ private:
      *      @return The amount of numbers used to display ranges.
      */
     int getAmountOfNumbers(QString const& rangeStart, QString const& rangeEnd) const;
+
+    /*!
+     *  Get the height of the memory connection item to match the connection chain.
+     *
+     *      @param [in] comparisonConnection    The selected memory connection item.
+     *
+     *      @return The new height for the memory connection item.
+     */
+    qreal getComparedConnectionHeight(MemoryConnectionItem* comparisonConnection) const;
 
     //-----------------------------------------------------------------------------
     // Data.

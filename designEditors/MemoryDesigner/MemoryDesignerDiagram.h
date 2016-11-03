@@ -143,7 +143,7 @@ private:
     /*!
      *  Create the initial memory columns.
      */
-    void createColumns();
+    void createInitialColumns();
 
     /*!
      *  Create an address space column.
@@ -271,24 +271,6 @@ private:
         int memoryMapYTransfer);
 
     /*!
-     *  Get the base address of the memory map.
-     *
-     *      @param [in] memoryItem  The selected memory map item.
-     *
-     *      @return The base address of the memory map item.
-     */
-    quint64 getMemoryMapBeginAddress(MainMemoryGraphicsItem* memoryItem) const;
-
-    /*!
-     *  Get the end address of the memory map.
-     *
-     *      @param [in] memoryItem  The selected memory map item.
-     *
-     *      @return The end address of the memory map item.
-     */
-    quint64 getMemoryMapEndAddress(MainMemoryGraphicsItem* memoryItem) const;
-
-    /*!
      *  Redraw the memory connections.
      */
     void reDrawConnections();
@@ -297,13 +279,10 @@ private:
      *  Move an address space item.
      *
      *      @param [in] spaceItem           The selected address space item.
-     *      @param [in] placedSpaceItems    List of placed address space items.
      *      @param [in] spaceColumn         Column containing the address spaces.
      *      @param [in] spaceYPlacement     Y placement of the address space item.
      */
-    void moveAddressSpaceItem(MainMemoryGraphicsItem* spaceItem,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems, MemoryColumn* spaceColumn,
-        int& spaceYPlacement);
+    void moveAddressSpaceItem(MainMemoryGraphicsItem* spaceItem, MemoryColumn* spaceColumn, int& spaceYPlacement);
 
     /*!
      *  Place the address space item to another address space column.
@@ -405,7 +384,83 @@ private:
      *
      *      @return A vector containing the specified columns.
      */
-    QVector<MemoryColumn*> getSpecifiedColumns(QString const& columnSpecification);
+    QVector<MemoryColumn*> getSpecifiedColumns(QString const& columnSpecification) const;
+
+    /*!
+     *  Get the main graphics item corresponding to the selected connection interface.
+     *
+     *      @param [in] connectionInterface     The selected connection interface.
+     *      @param [in] columnType              The column type of the main graphics item.
+     *
+     *      @return The found main graphics item.
+     */
+    MainMemoryGraphicsItem* getMainGraphicsItem(QSharedPointer<ConnectivityInterface> connectionInterface,
+        QString columnType) const;
+
+    /*!
+     *  Create a connection between two address space items.
+     *
+     *      @param [in] connectionStartItem     Start item of the connection.
+     *      @param [in] connectionMiddleItem    The second address space item.
+     *      @param [in] newSpaceInterface       Interface of the second address space item.
+     *      @param [in] spaceColumn             The address space column.
+     *      @param [in] placedSpaceItems        List of the placed address space items.
+     *      @param [in] spaceItemChain          Connection chain of address space items.
+     *      @param [in] spaceYPlacement         Y coordinate of the address space placement.
+     *
+     *      @return The created memory connection item.
+     */
+    MemoryConnectionItem* createSpaceConnection(MainMemoryGraphicsItem* connectionStartItem,
+        MainMemoryGraphicsItem* connectionMiddleItem, QSharedPointer<ConnectivityInterface> newSpaceInterface,
+        MemoryColumn* spaceColumn, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
+        QVector<MainMemoryGraphicsItem*> spaceItemChain, int& spaceYPlacement);
+
+    /*!
+     *  Change the column of the master address space item.
+     *
+     *      @param [in] masterSpaceItem     The selected master address space item.
+     *      @param [in] spaceItemY          Y-coordinate of the address space item.
+     *      @param [in] originalColumn      Original column of the master address space item.
+     *      @param [in] spaceItemChain      Connection chain of address space items.
+     */
+    void changeMasterAddressSpaceColumn(MainMemoryGraphicsItem* masterSpaceItem, qreal spaceItemY,
+        GraphicsColumn* originalColumn, QVector<MainMemoryGraphicsItem*> spaceItemChain);
+
+    /*!
+     *  Check if an address space item collides with an other address space item.
+     *
+     *      @param [in] spaceItem   The selected address space item.
+     *
+     *      @return True, if the address space item collides with an other address space item, false otherwise.
+     */
+    bool spaceItemCollidesWithOtherSpaceItems(MainMemoryGraphicsItem* spaceItem) const;
+
+    /*!
+     *  Change the column of a colliding master address space item.
+     *
+     *      @param [in] currentColumn   The current column of the master address space item.
+     *      @param [in] spaceItemChain  Connection chain of address space items.
+     */
+    void changeCollidingMasterAddressSpaceColumn(GraphicsColumn* currentColumn,
+        QVector<MainMemoryGraphicsItem*> spaceItemChain);
+
+    /*!
+     *  Get an address space connection from placed start memory item and middle memory item.
+     *
+     *      @param [in] connectionStartItem     The memory connection start memory item.
+     *      @param [in] connectionMiddleItem    The memory connection middle memory item.
+     *
+     *      @return The placed memory connection between an already placed start memory item and middle memory item.
+     */
+    MemoryConnectionItem* getAddressSpaceChainConnection(MainMemoryGraphicsItem* connectionStartItem,
+        MainMemoryGraphicsItem* connectionMiddleItem) const;
+
+    /*!
+     *  Set the connection width for the memory connection items within a memory connection chain.
+     *
+     *      @param [in] connectionChain     Connection chain of address space items.
+     */
+    void setHeightForConnectionChain(QVector<MemoryConnectionItem*> connectionChain);
 
     //-----------------------------------------------------------------------------
     // Data.

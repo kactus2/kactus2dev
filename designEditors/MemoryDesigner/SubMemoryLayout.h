@@ -71,10 +71,12 @@ public:
      *
      *      @param [in] minimumSubItemHeight    Minimum height for the memory sub items.
      *      @param [in] mainItem                The main sub memory layout.
+     *      @param [in] movedConnections        Connection items that have already been moved.
      *
      *      @return The compressed height of the sub memory layout.
      */
-    quint64 getCompressedHeight(qreal minimumSubItemHeight, SubMemoryLayout* mainItem);
+    quint64 getCompressedHeight(qreal minimumSubItemHeight, SubMemoryLayout* mainItem,
+        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
 
 protected:
 

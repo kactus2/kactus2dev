@@ -61,6 +61,16 @@ public:
     void hideMemoryRangeLabels();
 
     /*!
+     *  Hide the start memory range label.
+     */
+    void hideStartRangeLabel();
+
+    /*!
+     *  Hide the end memory range label.
+     */
+    void hideEndRangeLabel();
+
+    /*!
      *  Get the base address of the memory item.
      *
      *      @return The base address of the memory item.

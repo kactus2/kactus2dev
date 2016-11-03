@@ -261,12 +261,11 @@ void SubMemoryLayout::addConnectionToSubItems(MemoryConnectionItem* connectionIt
 //-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::getCompressedHeight()
 //-----------------------------------------------------------------------------
-quint64 SubMemoryLayout::getCompressedHeight(qreal minimumSubItemHeight, SubMemoryLayout* mainItem)
+quint64 SubMemoryLayout::getCompressedHeight(qreal minimumSubItemHeight, SubMemoryLayout* mainItem,
+    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
 {
     quint64 newHeight = 0;
     qreal newSubItemHeight = 0;
-
-    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections (new QVector<MemoryConnectionItem*>());
 
     QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subMemoryItems_);
     while (subItemIterator.hasNext())
@@ -279,7 +278,7 @@ quint64 SubMemoryLayout::getCompressedHeight(qreal minimumSubItemHeight, SubMemo
         SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
         if (subLayout)
         {
-            newSubItemHeight = subLayout->getCompressedHeight(minimumSubItemHeight, mainItem);
+            newSubItemHeight = subLayout->getCompressedHeight(minimumSubItemHeight, mainItem, movedConnections);
             subItem->condense(newSubItemHeight);
             subItem->setPos(subItem->pos().x(), newHeight);
             newHeight += newSubItemHeight;

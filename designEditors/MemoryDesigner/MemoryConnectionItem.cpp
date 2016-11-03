@@ -27,22 +27,22 @@
 // Function: MemoryConnectionItem::MemoryConnectionItem()
 //-----------------------------------------------------------------------------
 MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem, QString const& firstStartValue,
-    QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QString const& secondStartValue,
-    QString const& secondEndValue, QGraphicsScene* containingScene, int yTransfer, QGraphicsItem* parent):
+    QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, int yTransfer,
+    QGraphicsItem* parent):
 QGraphicsPathItem(parent),
 amountOfNumbers_(getAmountOfNumbers(firstStartValue, firstEndValue)),
 firstItemStartLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstStartValue), this)),
 firstItemEndLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstEndValue), this)),
-secondItemStartLabel_(new QGraphicsTextItem(formatValueToHexadecimal(secondStartValue), this)),
-secondItemEndLabel_(new QGraphicsTextItem(formatValueToHexadecimal(secondEndValue), this)),
+secondItemStartLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstStartValue), this)),
+secondItemEndLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstEndValue), this)),
 startItem_(startItem),
 endItem_(endItem),
 yTransfer_(yTransfer),
 rangeStart_(firstStartValue),
 rangeEnd_(firstEndValue),
-connectionWidth_(getConnectionWidth())
+connectionWidth_(0)
 {
-    if (firstStartValue.compare(firstEndValue) == 0 && secondStartValue.compare(secondEndValue) == 0)
+    if (firstStartValue.compare(firstEndValue) == 0)
     {
         firstItemEndLabel_->hide();
         secondItemEndLabel_->hide();
@@ -54,9 +54,6 @@ connectionWidth_(getConnectionWidth())
     }
 
     containingScene->addItem(this);
-
-    createPath();
-    repositionLabels();
 
     startItem_->addMemoryConnection(this);
     endItem_->addMemoryConnection(this);
@@ -71,7 +68,7 @@ MemoryConnectionItem::~MemoryConnectionItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::drawPath()
+// Function: MemoryConnectionItem::createPath()
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::createPath()
 {
@@ -408,14 +405,14 @@ quint64 MemoryConnectionItem::getSceneEndPoint() const
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::compressEndItem()
 //-----------------------------------------------------------------------------
-void MemoryConnectionItem::compressEndItem()
+void MemoryConnectionItem::compressEndItem(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
 {
     if (endItem_)
     {
         MemoryMapGraphicsItem* mapItem = dynamic_cast<MemoryMapGraphicsItem*>(endItem_);
         if (mapItem && !mapItem->isCompressed())
         {
-            mapItem->compressMapItem();
+            mapItem->compressMapItem(movedConnections);
         }
     }
 }
@@ -450,4 +447,80 @@ qreal MemoryConnectionItem::getEndItemHeight() const
     }
 
     return endItemHeight;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::endItemIsMemoryMap()
+//-----------------------------------------------------------------------------
+bool MemoryConnectionItem::endItemIsMemoryMap() const
+{
+    MemoryMapGraphicsItem* mapItem = dynamic_cast<MemoryMapGraphicsItem*>(endItem_);
+    if (mapItem)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::getStartItem()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryConnectionItem::getConnectionStartItem() const
+{
+    return startItem_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::getConnectionEndItem()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryConnectionItem::getConnectionEndItem() const
+{
+    return endItem_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::setConnectionWidth()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::setConnectionWidth()
+{
+    connectionWidth_ = getComparedConnectionHeight(this);
+    reDrawConnection();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::getComparedConnectionHeight()
+//-----------------------------------------------------------------------------
+qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* connectionItem) const
+{
+    MainMemoryGraphicsItem* connectionEndItem = connectionItem->getConnectionEndItem();
+
+    qreal connectionHeight = connectionItem->getConnectionWidth();
+    qreal containedConnectionsHeight = 0;
+
+    quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong();
+    quint64 comparisonLastAddress = 0;
+
+    foreach (MemoryConnectionItem* comparisonConnection, connectionEndItem->getMemoryConnections())
+    {
+        if (comparisonConnection->getConnectionStartItem() == connectionEndItem)
+        {
+            containedConnectionsHeight += getComparedConnectionHeight(comparisonConnection);
+            comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong();
+        }
+    }
+
+    if (connectionLastAddress == comparisonLastAddress)
+    {
+        connectionHeight = qMax(connectionHeight, containedConnectionsHeight);
+    }
+    else
+    {
+        connectionHeight =
+            qMax(connectionHeight, containedConnectionsHeight - MemoryDesignerConstants::RANGEINTERVAL * 2);
+    }
+
+    return connectionHeight;
 }

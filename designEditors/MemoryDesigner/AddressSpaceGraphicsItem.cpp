@@ -25,7 +25,7 @@
 
 namespace AddressSpaceItemConstants
 {
-    const int MINMUMSUBITEMHEIGHT = 2 * MemoryDesignerConstants::RANGEINTERVAL;
+    const int MINIMUMSUBITEMHEIGHT = 2 * MemoryDesignerConstants::RANGEINTERVAL;
 };
 
 //-----------------------------------------------------------------------------
@@ -33,8 +33,8 @@ namespace AddressSpaceItemConstants
 //-----------------------------------------------------------------------------
 AddressSpaceGraphicsItem::AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
     QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
-MainMemoryGraphicsItem(
-    memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSSEGMENT_TYPE, parent),
+MainMemoryGraphicsItem(memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSSEGMENT_TYPE,
+    parent),
 cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), this))
 {
     QBrush addressSpaceBrush(KactusColors::ADDRESS_SEGMENT);
@@ -114,7 +114,8 @@ MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createEmptySubItem(qu
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::condenseSpaceItem()
 //-----------------------------------------------------------------------------
-void AddressSpaceGraphicsItem::condenseItemAndChildItems()
+void AddressSpaceGraphicsItem::condenseItemAndChildItems(
+    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
 {
     if (!isCompressed())
     {
@@ -122,11 +123,12 @@ void AddressSpaceGraphicsItem::condenseItemAndChildItems()
 
         if (getMemoryConnections().isEmpty())
         {
-            spaceNewHeight = condenseChildItems(AddressSpaceItemConstants::MINMUMSUBITEMHEIGHT);
+            spaceNewHeight = condenseChildItems(AddressSpaceItemConstants::MINIMUMSUBITEMHEIGHT);
         }
         else
         {
-            spaceNewHeight = getCompressedHeight(AddressSpaceItemConstants::MINMUMSUBITEMHEIGHT, this);
+            spaceNewHeight =
+                getCompressedHeight(AddressSpaceItemConstants::MINIMUMSUBITEMHEIGHT, this, movedConnections);
         }
 
         if (spaceNewHeight > 0)
@@ -164,47 +166,51 @@ qreal AddressSpaceGraphicsItem::getSubItemHeight(SubMemoryLayout* mainItem,
 
         foreach (MemoryConnectionItem* connectionItem, subItem->getMemoryConnections())
         {
-            quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
-
-            yTransfer = getTransferY(connectionBaseAddress, connectionRangeEnd, previousConnectionLow,
-                connectionItem, yTransfer);
-
-            moveConnectionItem(connectionItem, yTransfer, movedConnections);
-
-            quint64 newConnectionEnd = connectionItem->getConnectedEndItemLastAddress();
-            if (connectionItem == firstConnection || newConnectionEnd > connectionRangeEnd)
+            if (connectionItem->getConnectionStartItem() == mainItem)
             {
-                connectionRangeEnd = newConnectionEnd;
-                previousConnectionLow = connectionItem->getSceneEndPoint();
-                connectionHighPoint = connectionItem->sceneBoundingRect().top();
+                quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
 
-                if (connectionItem != firstConnection && connectionHighPoint > connectionLowPoint)
-                {
-                    intervalBetweenConnections = connectionHighPoint - connectionLowPoint + 1;
-                }
-                else
-                {
-                    intervalBetweenConnections = 0;
-                }
+                yTransfer = getTransferY(connectionBaseAddress, connectionRangeEnd, previousConnectionLow,
+                    connectionItem, yTransfer);
 
-                if (connectionItem != firstConnection && connectionHighPoint < connectionLowPoint)
+                moveConnectionItem(connectionItem, yTransfer, movedConnections);
+
+                quint64 newConnectionEnd = connectionItem->getConnectedEndItemLastAddress();
+                if (connectionItem == firstConnection || newConnectionEnd > connectionRangeEnd)
                 {
-                    quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
-                    if (subItemLastAddress >= connectionLastAddress)
+                    connectionRangeEnd = newConnectionEnd;
+                    previousConnectionLow = connectionItem->getSceneEndPoint();
+                    connectionHighPoint = connectionItem->sceneBoundingRect().top();
+
+                    if (connectionItem != firstConnection && connectionHighPoint > connectionLowPoint)
                     {
-                        intervalBetweenConnections =
-                            intervalBetweenConnections - (connectionLowPoint - connectionHighPoint) + 1;
-
-                        yTransfer -= MemoryDesignerConstants::RANGEINTERVAL * 2;
+                        intervalBetweenConnections = connectionHighPoint - connectionLowPoint + 1;
                     }
+                    else
+                    {
+                        intervalBetweenConnections = 0;
+                    }
+
+                    if (connectionItem != firstConnection && connectionHighPoint < connectionLowPoint)
+                    {
+                        quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
+                        if (subItemLastAddress >= connectionLastAddress)
+                        {
+                            intervalBetweenConnections =
+                                intervalBetweenConnections - (connectionLowPoint - connectionHighPoint) + 1;
+
+                            yTransfer -= MemoryDesignerConstants::RANGEINTERVAL * 2;
+                        }
+                    }
+
+                    quint64 subItemConnectionHeight =
+                        getSubItemHeightForConnection(this, subItemBaseAddress, subItemLastAddress, subItem,
+                        connectionItem, yPosition, newSubItemHeight, minimumSubItemHeight);
+
+                    newSubItemHeight += subItemConnectionHeight + intervalBetweenConnections;
+
+                    connectionLowPoint = connectionItem->sceneBoundingRect().bottom();
                 }
-
-                quint64 subItemConnectionHeight = getSubItemHeightForConnection(this, subItemBaseAddress,
-                    subItemLastAddress, subItem, connectionItem, yPosition, newSubItemHeight, minimumSubItemHeight);
-
-                newSubItemHeight += subItemConnectionHeight + intervalBetweenConnections;
-
-                connectionLowPoint = connectionItem->sceneBoundingRect().bottom();
             }
         }
     }
@@ -220,7 +226,7 @@ void AddressSpaceGraphicsItem::moveConnectionItem(MemoryConnectionItem* connecti
 {
     if (!movedConnections->contains(connectionItem))
     {
-        connectionItem->compressEndItem();
+        connectionItem->compressEndItem(movedConnections);
 
         connectionItem->onMoveConnectionInY(this, yTransfer);
         movedConnections->append(connectionItem);
@@ -253,6 +259,6 @@ qreal AddressSpaceGraphicsItem::getTransferY(quint64 currentConnectionBaseAddres
 qreal AddressSpaceGraphicsItem::getMinimumRequiredHeight(quint64 connectionBaseAddress,
     quint64 connectionEndAddress) const
 {
-    return SubMemoryLayout::getMinimumRequiredHeight(AddressSpaceItemConstants::MINMUMSUBITEMHEIGHT,
+    return SubMemoryLayout::getMinimumRequiredHeight(AddressSpaceItemConstants::MINIMUMSUBITEMHEIGHT,
         connectionBaseAddress, connectionEndAddress);
 }

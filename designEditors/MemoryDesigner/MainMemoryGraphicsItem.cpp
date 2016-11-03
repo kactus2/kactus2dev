@@ -18,6 +18,7 @@
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 #include <designEditors/MemoryDesigner/MemoryCollisionItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
 
 #include <QFont>
 #include <QGraphicsSceneMouseEvent>
@@ -33,7 +34,8 @@ instanceNameLabel_(new QGraphicsTextItem(instanceName, this)),
 aubLabel_(new QGraphicsTextItem("", this)),
 instanceName_(instanceName),
 memoryCollisions_(),
-compressed_(false)
+compressed_(false),
+extensionItem_(0)
 {
     QString addressUnitBits = memoryItem->getAUB();
     QString aubText = "AUB: ";
@@ -333,4 +335,47 @@ void MainMemoryGraphicsItem::resizeSubItemNameLabels()
         MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
         subItem->fitNameLabel();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::setExtensionItem()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::setExtensionItem(MemoryExtensionGraphicsItem* newExtensionItem)
+{
+    extensionItem_ = newExtensionItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getExtensionItem()
+//-----------------------------------------------------------------------------
+MemoryExtensionGraphicsItem* MainMemoryGraphicsItem::getExtensionItem() const
+{
+    return extensionItem_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::hasExtensionItem()
+//-----------------------------------------------------------------------------
+bool MainMemoryGraphicsItem::hasExtensionItem() const
+{
+    if (extensionItem_)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::hideFirstAndLastSegmentRange()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::hideFirstAndLastSegmentRange()
+{
+    MemoryDesignerChildGraphicsItem* firstSubItem = getSubMemoryItems().first();
+    MemoryDesignerChildGraphicsItem* lastSubItem = getSubMemoryItems().last();
+
+    firstSubItem->hideStartRangeLabel();
+    lastSubItem->hideEndRangeLabel();
 }

@@ -56,8 +56,10 @@ public:
 
     /*!
      *  Compress the sub items contained within the address space and the space item.
+     *
+     *      @param [in] movedConnections    Connection items that have already been moved.
      */
-    virtual void condenseItemAndChildItems();
+    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
 
     /*!
      *  Get the minimum required height of the address space item to fit the selected memory connection.

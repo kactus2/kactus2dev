@@ -55,13 +55,17 @@ public:
 
     /*!
      *  Compress the item and the contained sub items.
+     *
+     *      @param [in] movedConnections    Connection items that have already been moved.
      */
-    virtual void condenseItemAndChildItems();
+    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
 
     /*!
      *  Compress the memory map item.
+     *
+     *      @param [in] movedConnections    Connection items that have already been moved.
      */
-    void compressMapItem();
+    void compressMapItem(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
 
     /*!
      *  Get the minimum required height of the memory map item to fit the selected memory connection.
@@ -121,13 +125,6 @@ private:
      *      @return The created address block graphics item.
      */
     virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd);
-
-    /*!
-     *  Check if the memory map item has an extension item.
-     *
-     *      @return True, if the memory map item has an extension item, false otherwise.
-     */
-    bool hasExtensionItem() const;
 
     /*!
      *  Get the minimum height for the memory map sub items.

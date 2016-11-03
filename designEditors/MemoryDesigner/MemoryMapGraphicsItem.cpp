@@ -17,7 +17,6 @@
 #include <designEditors/MemoryDesigner/ConnectivityComponent.h>
 #include <designEditors/MemoryDesigner/AddressBlockGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
-#include <designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 
 #include <QBrush>
@@ -170,15 +169,17 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::condenseItemAndChildItems()
 //-----------------------------------------------------------------------------
-void MemoryMapGraphicsItem::condenseItemAndChildItems()
+void MemoryMapGraphicsItem::condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> >)
 {
-    if (!isCompressed() && getMemoryConnections().isEmpty())
+    if (!isCompressed())
     {
         quint64 memoryMapNewHeight = 0;
-
         int subItemHeight = getMinimumHeightForSubItems();
-
-        memoryMapNewHeight = condenseChildItems(subItemHeight);
+        
+        if (getMemoryConnections().isEmpty())
+        {
+            memoryMapNewHeight = condenseChildItems(subItemHeight);
+        }
 
         if (memoryMapNewHeight > 0)
         {
@@ -192,11 +193,11 @@ void MemoryMapGraphicsItem::condenseItemAndChildItems()
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::compressMapItem()
 //-----------------------------------------------------------------------------
-void MemoryMapGraphicsItem::compressMapItem()
+void MemoryMapGraphicsItem::compressMapItem(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
 {
     if (!isCompressed())
     {
-        quint64 newMapHeight = getCompressedHeight(getMinimumHeightForSubItems(), this);
+        quint64 newMapHeight = getCompressedHeight(getMinimumHeightForSubItems(), this, movedConnections);
 
         if (newMapHeight > 0)
         {
@@ -205,23 +206,6 @@ void MemoryMapGraphicsItem::compressMapItem()
             setCompressed(true);
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::hasExtensionItem()
-//-----------------------------------------------------------------------------
-bool MemoryMapGraphicsItem::hasExtensionItem() const
-{
-    foreach (QGraphicsItem* childItem, childItems())
-    {
-        MemoryExtensionGraphicsItem* extensionItem = dynamic_cast<MemoryExtensionGraphicsItem*>(childItem);
-        if (extensionItem)
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 //-----------------------------------------------------------------------------

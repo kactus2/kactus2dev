@@ -18,6 +18,7 @@
 #include <designEditors/MemoryDesigner/SubMemoryLayout.h>
 
 class MemoryItem;
+class MemoryExtensionGraphicsItem;
 
 //-----------------------------------------------------------------------------
 //! Parent class for memory map and address space graphics items in memory designer.
@@ -108,8 +109,10 @@ public:
 
     /*!
      *  Compress the item and the contained sub items.
+     *
+     *      @param [in] movedConnections    Connection items that have already been moved.
      */
-    virtual void condenseItemAndChildItems() = 0;
+    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections) = 0;
 
     /*!
      *  Move the connected items by y-coordinate.
@@ -153,6 +156,32 @@ public:
      *  Resize the name labels of the contained memory sub items.
      */
     void resizeSubItemNameLabels();
+
+    /*!
+     *  Set a memory extension item for this graphics item.
+     *
+     *      @param [in] newExtensionItem    The new memory extension item.
+     */
+    void setExtensionItem(MemoryExtensionGraphicsItem* newExtensionItem);
+
+    /*!
+     *  Get the memory extension item contained within this graphics item.
+     *
+     *      @return The memory extension item contained within this graphics item.
+     */
+    MemoryExtensionGraphicsItem* getExtensionItem() const;
+
+    /*!
+     *  Check whether this item has a memory extension item.
+     *
+     *      @return True, if a memory extension item exists, false otherwise.
+     */
+    bool hasExtensionItem() const;
+
+    /*!
+     *  Hide the base address label of the first sub item and the last address label of the last sub item.
+     */
+    void hideFirstAndLastSegmentRange();
 
 protected:
 
@@ -210,6 +239,9 @@ private:
 
     //! Holds whether the graphics item has been compressed or not.
     bool compressed_;
+
+    //! The memory extension item.
+    MemoryExtensionGraphicsItem* extensionItem_;
 };
 
 //-----------------------------------------------------------------------------

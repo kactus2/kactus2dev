@@ -107,6 +107,13 @@ public:
      */
     void centerViewTo(QPointF const& centerPoint);
 
+    /*!
+     *  Sets the protection state of the document.
+     *
+     *      @param [in] locked True for locked state; false for unlocked.
+     */
+    virtual void setProtection(bool locked);
+
 public slots:
 
     //! Called when the vertical scrollbar is scrolled.

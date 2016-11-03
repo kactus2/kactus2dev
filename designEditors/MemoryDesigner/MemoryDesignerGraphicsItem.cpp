@@ -54,7 +54,23 @@ MemoryDesignerGraphicsItem::~MemoryDesignerGraphicsItem()
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::hideMemoryRangeLabels()
 {
+    hideStartRangeLabel();
+    hideEndRangeLabel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::hideStartRangeLabel()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::hideStartRangeLabel()
+{
     startRangeLabel_->hide();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::hideEndRangeLabel()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::hideEndRangeLabel()
+{
     endRangeLabel_->hide();
 }
 

@@ -31,8 +31,10 @@
 MemoryColumn::MemoryColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLayout* layout, int itemSpacing):
 GraphicsColumn(desc, layout, false)
 {
-    setItemLayout(
-        QSharedPointer<IVGraphicsLayout<QGraphicsItem> > (new VCollisionLayout<QGraphicsItem>(itemSpacing)));
+    QSharedPointer<IVGraphicsLayout<QGraphicsItem> > newItemLayout (
+        new VCollisionLayout<QGraphicsItem>(itemSpacing));
+
+    setItemLayout(newItemLayout);
 }
 
 //-----------------------------------------------------------------------------
@@ -106,4 +108,24 @@ MainMemoryGraphicsItem* MemoryColumn::findGraphicsItemByName(QString const& item
     }
 
     return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::getGraphicsItemInOrder()
+//-----------------------------------------------------------------------------
+QMap<qreal, MainMemoryGraphicsItem*> MemoryColumn::getGraphicsItemInOrder() const
+{
+    QMap<qreal, MainMemoryGraphicsItem*> orderedGraphicsItems;
+
+    foreach (QGraphicsItem* graphicsItem, getItems())
+    {
+        MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
+        if (memoryItem)
+        {
+            qreal itemScenePositionY = graphicsItem->scenePos().y();
+            orderedGraphicsItems.insert(itemScenePositionY, memoryItem);
+        }
+    }
+
+    return orderedGraphicsItems;
 }
