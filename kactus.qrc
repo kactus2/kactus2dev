@@ -105,7 +105,8 @@
       <file>common/graphics/star.png</file>
       <file>common/graphics/viewConfiguration.png</file>
       <file>common/graphics/compile.png</file>
-	  <file>common/graphics/memoryDesigner.png</file>
+	    <file>common/graphics/memoryDesigner.png</file>
+      <file>common/graphics/addressSpaceFilter.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>common/graphics/splash.png</file>

@@ -57,6 +57,20 @@ public:
     ~MemoryDesignerDiagram();
 
     /*!
+     *  Set the filtering for chained address space memory connections.
+     *
+     *      @param [in] filterChains    Value for the chained address space memory connection filtering.
+     */
+    void setFilterAddressSpaceChains(bool filterChains);
+
+    /*!
+     *  Check whether the chained address space memory connections are filtered or not.
+     *
+     *      @return True, if the chained address space memory connections are filtered, false otherwise.
+     */
+    bool addressSpaceChainsAreFiltered() const;
+
+    /*!
      *  Load a design using the selected view.
      *
      *      @param [in] component   Component containing the view.
@@ -483,6 +497,9 @@ private:
 
     //! The created connection graph.
     QSharedPointer<ConnectivityGraph> connectionGraph_;
+
+    //! Value for filtering the chained address space memory connections.
+    bool filterAddressSpaceChains_;
 };
 
 //-----------------------------------------------------------------------------

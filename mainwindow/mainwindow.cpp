@@ -210,6 +210,8 @@ actHelp_(0),
 actExit_(0),
 configurationToolsGroup_(0),
 actionConfigureViews_(0),
+filteringGroup_(0),
+actionFilterAddressSpaceChains_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
 workspaceMenu_(this),
@@ -880,6 +882,12 @@ void MainWindow::setupActions()
         tr("View Configuration"), this);
     connect(actionConfigureViews_, SIGNAL(triggered()), this, SLOT(onConfigureViews()), Qt::UniqueConnection);
 
+    actionFilterAddressSpaceChains_ = new QAction(QIcon(":/icons/common/graphics/addressSpaceFilter.png"),
+        tr("Address Space Filter"), this);
+    actionFilterAddressSpaceChains_->setCheckable(true);
+    connect(actionFilterAddressSpaceChains_, SIGNAL(triggered(bool)),
+        this, SLOT(onFilterAddressSpaceChains(bool)), Qt::UniqueConnection);
+
     connectVisibilityControls();
 
 	setupMenus();
@@ -996,6 +1004,14 @@ void MainWindow::setupMenus()
     configurationToolsGroup_->setEnabled(false);
 
     configurationToolsGroup_->widgetForAction(actionConfigureViews_)->installEventFilter(ribbon_);
+
+    //! The "Filtering tools" group.
+    filteringGroup_ = ribbon_->addGroup(tr("Filtering Tools"));
+    filteringGroup_->addAction(actionFilterAddressSpaceChains_);
+    filteringGroup_->setVisible(false);
+    filteringGroup_->setEnabled(true);
+
+    filteringGroup_->widgetForAction(actionFilterAddressSpaceChains_)->installEventFilter(ribbon_);
 
 	//! The "Workspace" group.
 	RibbonGroup* workspacesGroup = ribbon_->addGroup(tr("Workspace"));
@@ -1574,6 +1590,9 @@ void MainWindow::updateMenuStrip()
 	bool isHWDesign = dynamic_cast<HWDesignWidget*>(doc) != 0;
     bool isSystemDesign = dynamic_cast<SystemDesignWidget*>(doc) != 0;
 
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(doc);
+    bool isMemoryDesign = memoryDocument != 0;
+
 	actSave_->setEnabled(doc != 0 && doc->isModified());
 	actSaveAs_->setEnabled(doc != 0);
     actSaveHierarchy_->setEnabled(componentEditor || dynamic_cast<DesignWidget*>(doc));
@@ -1664,6 +1683,17 @@ void MainWindow::updateMenuStrip()
 	setPluginVisibilities();
 
 	updateZoomTools();
+
+    if (isMemoryDesign)
+    {
+        diagramToolsGroup_->setVisible(false);
+        generationGroup_->setVisible(false);
+
+        actionFilterAddressSpaceChains_->setChecked(memoryDocument->addressSpaceChainsAreFiltered());
+    }
+
+    filteringGroup_->setVisible(doc != 0 && isMemoryDesign);
+    actionFilterAddressSpaceChains_->setVisible(isMemoryDesign);
 }
 
 //-----------------------------------------------------------------------------
@@ -4724,4 +4754,19 @@ void MainWindow::onConfigureViews()
             doc->refresh();
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onFilterAddressSpaceChains()
+//-----------------------------------------------------------------------------
+void MainWindow::onFilterAddressSpaceChains(bool filterChains)
+{
+    MemoryDesignDocument* doc = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+
+    if (!doc || doc->isProtected())
+    {
+        return;
+    }
+
+    doc->filterAddressSpaceChains(filterChains);
 }

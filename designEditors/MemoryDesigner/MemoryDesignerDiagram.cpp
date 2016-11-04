@@ -52,7 +52,8 @@ QGraphicsScene(parent),
 parentDocument_(parent),
 layout_(new GraphicsColumnLayout(this)),
 libraryHandler_(library),
-instanceLocator_(library)
+instanceLocator_(library),
+filterAddressSpaceChains_(false)
 {
     setSceneRect(0, 0, 100000, 100000);
 }
@@ -63,6 +64,22 @@ instanceLocator_(library)
 MemoryDesignerDiagram::~MemoryDesignerDiagram()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::setFilterAddressSpaceChains()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::setFilterAddressSpaceChains(bool filterChains)
+{
+    filterAddressSpaceChains_ = filterChains;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::addressSpaceChainsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerDiagram::addressSpaceChainsAreFiltered() const
+{
+    return filterAddressSpaceChains_;
 }
 
 //-----------------------------------------------------------------------------
@@ -473,21 +490,28 @@ void MemoryDesignerDiagram::createConnection(QVector<QSharedPointer<Connectivity
                                 pathInterface, MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME);
                             if (connectionMiddleItem)
                             {
-                                MemoryConnectionItem* newSpaceConnection =
-                                    createSpaceConnection(connectionStartItem, connectionMiddleItem, pathInterface,
-                                    spaceColumn, placedSpaceItems, spaceItemChain, spaceYPlacement);
-                                if (newSpaceConnection)
+                                if (filterAddressSpaceChains_)
                                 {
-                                    connectionChain.append(newSpaceConnection);
+                                    connectionMiddleItem->hide();
                                 }
+                                else
+                                {
+                                    MemoryConnectionItem* newSpaceConnection = createSpaceConnection(
+                                        connectionStartItem, connectionMiddleItem, pathInterface, spaceColumn,
+                                        placedSpaceItems, spaceItemChain, spaceYPlacement);
+                                    if (newSpaceConnection)
+                                    {
+                                        connectionChain.append(newSpaceConnection);
+                                    }
 
-                                spaceItemChain.append(connectionMiddleItem);
-                                
-                                connectionStartItem = connectionMiddleItem;
+                                    spaceItemChain.append(connectionMiddleItem);
+
+                                    connectionStartItem = connectionMiddleItem;
+                                }
                             }
                         }
 
-                        if (!placedSpaceItems->contains(connectionStartItem))
+                        if (!placedSpaceItems->contains(connectionStartItem) && !filterAddressSpaceChains_)
                         {
                             baseAddressNumber = pathInterface->getBaseAddress().toULongLong();
                         }
@@ -497,6 +521,11 @@ void MemoryDesignerDiagram::createConnection(QVector<QSharedPointer<Connectivity
                         }
                     }
                 }
+            }
+
+            if (!connectionStartItem->isVisible())
+            {
+                connectionStartItem->setVisible(true);
             }
 
             bool spaceItemPlaced = false;

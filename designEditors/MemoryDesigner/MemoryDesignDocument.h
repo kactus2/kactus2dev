@@ -114,6 +114,20 @@ public:
      */
     virtual void setProtection(bool locked);
 
+    /*!
+     *  Change the filtering of chained address space memory connections.
+     *
+     *      @param [in] filterChains    Value for filtering chained address space memory connections.
+     */
+    void filterAddressSpaceChains(bool filterChains);
+
+    /*!
+     *  Check whether the chained address space memory connections are filtered or not.
+     *
+     *      @return True, if the chained connections are filtered, otherwise false.
+     */
+    bool addressSpaceChainsAreFiltered() const;
+
 public slots:
 
     //! Called when the vertical scrollbar is scrolled.

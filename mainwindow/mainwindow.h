@@ -501,6 +501,13 @@ private slots:
      */
     void onConfigureViews();
 
+    /*!
+     *  Set the filtering of chained address space memory connections within a memory design.
+     *
+     *      @param [in] filterChains    Value for the filter.
+     */
+    void onFilterAddressSpaceChains(bool filterChains);
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
@@ -944,6 +951,12 @@ private:
 
     //! The action to configure the views.
     QAction* actionConfigureViews_;
+
+    //! The group for filtering tools.
+    RibbonGroup* filteringGroup_;
+
+    //! The action to filter chained address space memory connections in a memory designer.
+    QAction* actionFilterAddressSpaceChains_;
 
 	//! The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
