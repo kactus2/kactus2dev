@@ -18,7 +18,7 @@ type_("std_logic")
 }
 
 
-VhdlPortMap::VhdlPortMap( const QString& name, unsigned int size /*= 1*/ ):
+VhdlPortMap::VhdlPortMap( const QString& name, unsigned int /*size = 1*/ ):
 VhdlTypedObject(name, "std_logic", "", ""),
 name_(name),
 left_(-1),

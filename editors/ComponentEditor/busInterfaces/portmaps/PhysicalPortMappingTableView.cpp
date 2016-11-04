@@ -84,8 +84,6 @@ void PhysicalPortMappingTableView::dropEvent(QDropEvent* event)
 		return;
 	}
 
-	QModelIndex index = indexAt(event->pos());
-
 	// tell source that nothing is to be done to item
 	event->setDropAction(Qt::IgnoreAction);
 

@@ -29,8 +29,8 @@ ComponentInstantiationsItem::ComponentInstantiationsItem(ComponentEditorTreeMode
     QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-    expressionParser_(expressionParser),
-    validator_(validator)
+    validator_(validator),
+    expressionParser_(expressionParser)
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);

@@ -307,9 +307,6 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The name of the interface before connecting.
-    QString oldName_;
-
     //! The library interface.
     LibraryInterface* library_;
 
@@ -339,6 +336,9 @@ private:
 
     //! If true, the ports were copied during end point connection.
     bool portsCopied_;
+
+    //! The name of the interface before connecting.
+    QString oldName_;
 };
 
 #endif // BUSINTERFACEITEM_H

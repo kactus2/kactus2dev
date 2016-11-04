@@ -107,7 +107,7 @@ void PortMapAutoConnector::connectSelectedLogicalPorts(QList<QSharedPointer<Port
     {
         QSharedPointer<PortAbstraction> logicalPort = possiblePairings.at(i).logicalPort_;
 
-        QString bestMatchingPhysicalPort = getBestMatchingPhysicalPort(logicalPort, i, possiblePairings);
+        QString bestMatchingPhysicalPort = getBestMatchingPhysicalPort(i, possiblePairings);
 
         if (!bestMatchingPhysicalPort.isEmpty())
         {
@@ -120,8 +120,8 @@ void PortMapAutoConnector::connectSelectedLogicalPorts(QList<QSharedPointer<Port
 //-----------------------------------------------------------------------------
 // Function: PortMapAutoConnector::getBestMatchingPhysicalPort()
 //-----------------------------------------------------------------------------
-QString PortMapAutoConnector::getBestMatchingPhysicalPort(QSharedPointer<PortAbstraction> logicalPort, 
-    int logicalIndex, QList<PossiblePortMaps> const& possiblePairings) const
+QString PortMapAutoConnector::getBestMatchingPhysicalPort(int logicalIndex,
+    QList<PossiblePortMaps> const& possiblePairings) const
 {
     QMapIterator<double, QString> physicalIterator(possiblePairings.at(logicalIndex).possiblePhysicals_);
     physicalIterator.toBack();

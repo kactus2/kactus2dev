@@ -42,7 +42,7 @@ public:
         QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-	~AbstractionDefinitionValidator();
+	virtual ~AbstractionDefinitionValidator();
 
     /*!
      *  Validates the given AbstractionDefinition.

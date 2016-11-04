@@ -18,8 +18,9 @@
 //-----------------------------------------------------------------------------
 // Function: SplashScreen()
 //-----------------------------------------------------------------------------
-SplashScreen::SplashScreen(QString versionString, QWidget* parent /*= 0*/) : 
-versionString_(versionString), QSplashScreen(parent, QPixmap(":/common/graphics/splash.png"))
+SplashScreen::SplashScreen(QString const& versionString, QWidget* parent /*= 0*/) : 
+QSplashScreen(parent, QPixmap(":/common/graphics/splash.png")),
+    versionString_(versionString)
 {
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
 }

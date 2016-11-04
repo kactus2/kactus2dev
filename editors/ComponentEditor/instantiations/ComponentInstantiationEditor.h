@@ -123,14 +123,14 @@ private:
 	//! Editor to set the hardware description language.
 	QLineEdit languageEditor_;
 
+    //! Set the strict definition to the language.
+    QCheckBox languageStrict_;
+
     //! Editor to set the compilation library.
     QLineEdit libraryEditor_;
 
     //! Editor to set the VHDL package for the model.
     QLineEdit packageEditor_;
-
-	//! Set the strict definition to the language.
-	QCheckBox languageStrict_;
 
 	//! Editor to set the model name element value.
 	QLineEdit modulelNameEditor_;

@@ -200,11 +200,11 @@ private:
     //! The old column from where the mouse drag event began.
     GraphicsColumn* oldColumn_;
 
-    //! The position of the port before mouse move.
-    QPointF oldPos_;
-
     //! The old positions of the other interfaces before mouse move.
     QMap<QGraphicsItem*, QPointF> oldInterfacePositions_;
+
+    //! The position of the port before mouse move.
+    QPointF oldPos_;
 };
 
 //-----------------------------------------------------------------------------

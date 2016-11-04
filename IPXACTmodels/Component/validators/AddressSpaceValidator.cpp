@@ -186,7 +186,7 @@ bool AddressSpaceValidator::segmentHasValidAddressOffset(QSharedPointer<Segment>
         quint64 addressOffset =
             expressionParser_->parseExpression(segment->getAddressOffset()).toULongLong(&offsetOk);
 
-        return offsetOk && addressOffset >= 0;
+        return offsetOk;
     }
 
     return false;
@@ -202,7 +202,7 @@ bool AddressSpaceValidator::segmentHasValidRange(QSharedPointer<Segment> segment
         bool rangeOk = true;
         quint64 range = expressionParser_->parseExpression(segment->getRange()).toULongLong(&rangeOk);
 
-        return rangeOk && range > 0;
+        return rangeOk;
     }
 
     return false;
@@ -220,7 +220,7 @@ bool AddressSpaceValidator::hasValidAddressUnitBits(QSharedPointer<AddressSpace>
         quint64 unitBits =
             expressionParser_->parseExpression(addressSpace->getAddressUnitBits()).toULongLong(&bitsOk);
 
-        return bitsOk && unitBits > 0;
+        return bitsOk;
     }
 
     return true;

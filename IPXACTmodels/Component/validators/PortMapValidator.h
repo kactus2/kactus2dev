@@ -241,9 +241,8 @@ private:
 	 *      @param [in] abstractPort    The abstraction for the logical port.
      *      @param [in] context         Context to help locate the error.
      */
-    void findErrorsInLogicalPort(QVector<QString>& errors, QSharedPointer<PortMap::LogicalPort> logicalPort,
-		QSharedPointer<PortAbstraction> abstractPort,
-        QString const& context) const;
+    void findErrorsInLogicalPort(QVector<QString>& errors,
+        QSharedPointer<PortMap::LogicalPort> logicalPort, QString const& context) const;
 
     /*!
      *  Find errors within the physical port.

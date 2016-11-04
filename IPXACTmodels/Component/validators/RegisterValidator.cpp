@@ -117,10 +117,7 @@ bool RegisterValidator::hasValidDimension(QSharedPointer<Register> selectedRegis
         bool toIntOk = true;
         quint64 intValue = solvedValue.toULongLong(&toIntOk);
 
-        if (!toIntOk || intValue < 0)
-        {
-            return false;
-        }
+        return toIntOk;
     }
 
     return true;

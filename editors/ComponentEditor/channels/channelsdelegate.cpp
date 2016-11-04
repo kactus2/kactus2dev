@@ -48,6 +48,7 @@ QWidget* ChannelsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem co
     {
         QLineEdit* lineEdit = new QLineEdit(parent);
         connect(lineEdit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+
         return lineEdit;
     }
     else if (index.column() == ChannelColumns::INTERFACE_COLUMN) 
@@ -72,8 +73,7 @@ void ChannelsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) 
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT(edit);
 
-        const QString text = index.data(Qt::DisplayRole).toString();
-        edit->setText(text);
+        edit->setText(index.data(Qt::DisplayRole).toString());
     }
 
     else if (index.column() == ChannelColumns::INTERFACE_COLUMN) 
@@ -81,8 +81,7 @@ void ChannelsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) 
         EnumCollectionEditor* collectionEditor = static_cast<EnumCollectionEditor*>(editor);
         Q_ASSERT(collectionEditor != 0);
 
-        QStringList selectedInterfaces =
-            index.data(ChannelColumns::USER_DISPLAY_ROLE).toStringList();
+        QStringList selectedInterfaces = index.data(ChannelColumns::USER_DISPLAY_ROLE).toStringList();
 
         foreach (QString const& name, component_->getBusInterfaceNames())
         {
@@ -93,14 +92,13 @@ void ChannelsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) 
     else
     {
         QStyledItemDelegate::setEditorData(editor, index);
-
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: ChannelsDelegate::setModelData()
 //-----------------------------------------------------------------------------
-void ChannelsDelegate::setModelData( QWidget* editor, QAbstractItemModel* model, QModelIndex const& index ) const
+void ChannelsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
     if (index.column() == ChannelColumns::NAME_COLUMN ||
         index.column() == ChannelColumns::DISPLAY_NAME_COLUMN ||
@@ -109,8 +107,7 @@ void ChannelsDelegate::setModelData( QWidget* editor, QAbstractItemModel* model,
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT(edit);
 
-        QString text = edit->text();
-        model->setData(index, text, Qt::EditRole);
+        model->setData(index, edit->text(), Qt::EditRole);
     }
     else if (index.column() == ChannelColumns::INTERFACE_COLUMN) 
     {

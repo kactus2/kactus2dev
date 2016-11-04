@@ -138,7 +138,7 @@ private:
      *
      *      @return Name of the best matching physical port.
      */
-    QString getBestMatchingPhysicalPort(QSharedPointer<PortAbstraction> logicalPort, int logicalIndex,
+    QString getBestMatchingPhysicalPort(int logicalIndex,
         QList<PossiblePortMaps> const& possiblePairings) const;
 
     /*!

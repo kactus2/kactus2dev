@@ -53,8 +53,8 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
         // Retrieve the size of the memory map.
         if (hasValidConnection())
         {
-            ComponentItem* connectedComp = connectedPort_->encompassingComp();
-            QString mapName = connectedPort_->getBusInterface()->getMemoryMapRef();
+            //ComponentItem* connectedComp = connectedPort_->encompassingComp();
+            //QString mapName = connectedPort_->getBusInterface()->getMemoryMapRef();
             
             /* TODO: Fix initialization.
             QSharedPointer<MemoryMap> map = connectedComp->componentModel()->getMemoryMap(mapName);
@@ -71,11 +71,11 @@ AddressEntry::AddressEntry(ComponentItem* component, BusPortItem* port)
 //-----------------------------------------------------------------------------
 // Function: AddressEntry::setStartAddress()
 //-----------------------------------------------------------------------------
-void AddressEntry::setStartAddress(unsigned int startAddress)
+void AddressEntry::setStartAddress(unsigned int /*startAddress*/)
 {   
     /* TODO: Fix addressing
 
-    /*QMap<QString, QString> elements = component_->getConfigurableElements();
+    QMap<QString, QString> elements = component_->getConfigurableElements();
     elements.insert(port_->name() + "_addr_start", QString::number(startAddress));
     elements.insert(port_->name() + "_addr_end", QString::number(startAddress + baseEndAddress_));
 
@@ -87,7 +87,7 @@ void AddressEntry::setStartAddress(unsigned int startAddress)
 //-----------------------------------------------------------------------------
 // Function: AddressEntry::setLocked()
 //-----------------------------------------------------------------------------
-void AddressEntry::setLocked(bool locked)
+void AddressEntry::setLocked(bool /*locked*/)
 {
     /* TODO: Fix locking.
     QMap<QString, QString> elements = component_->getConfigurableElements();
@@ -134,7 +134,7 @@ bool AddressEntry::isLocked() const
 {
     /* TODO: Fix locking.
 
-    /*QMap<QString, QString> const& elements = component_->getConfigurableElements();
+    QMap<QString, QString> const& elements = component_->getConfigurableElements();
     return elements.value(port_->name() + "_addr_locked", "false") == "true";*/
     return false;
 }

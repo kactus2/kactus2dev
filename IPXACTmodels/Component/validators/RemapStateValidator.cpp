@@ -137,7 +137,7 @@ bool RemapStateValidator::remapPortHasValidValue(QSharedPointer<RemapPort> remap
     bool valueIsOk = true;
     quint64 value = expressionParser_->parseExpression(remapPort->getValue()).toULongLong(&valueIsOk);
 
-    return valueIsOk && value >= 0;
+    return valueIsOk;
 }
 
 //-----------------------------------------------------------------------------

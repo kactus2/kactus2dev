@@ -16,13 +16,14 @@
 //-----------------------------------------------------------------------------
 // Function: EnumCollectionEditor::EnumCollectionEditor()
 //-----------------------------------------------------------------------------
-EnumCollectionEditor::EnumCollectionEditor(QWidget* parent)
-    : QFrame(parent),
-      layout_(new QVBoxLayout(this))
+EnumCollectionEditor::EnumCollectionEditor(QWidget* parent): QFrame(parent),
+      layout_(new QVBoxLayout(this)),
+      items_()
 {
     setFrameStyle(QFrame::StyledPanel);
     setAutoFillBackground(true);
     setFocusPolicy(Qt::StrongFocus);
+    
     layout_->addStretch(1);
 }
 
@@ -41,7 +42,7 @@ void EnumCollectionEditor::addItem(QString const& text, bool selected /*= false*
     QCheckBox* checkBox = new QCheckBox(text, this);
     checkBox->setChecked(selected);
     checkBox->setFocusProxy(this);
-
+    
     items_.append(checkBox);
     layout_->insertWidget(layout_->count() - 1, checkBox);
 
@@ -71,7 +72,6 @@ QStringList EnumCollectionEditor::getSelectedItems() const
 //-----------------------------------------------------------------------------
 void EnumCollectionEditor::moveEvent(QMoveEvent* event)
 {
-    // Set position.
     rePosition();
 
     QFrame::moveEvent(event);
@@ -82,8 +82,8 @@ void EnumCollectionEditor::moveEvent(QMoveEvent* event)
 //-----------------------------------------------------------------------------
 void EnumCollectionEditor::rePosition()
 {
-    int availableHeight = parentWidget()->height() - parentWidget()->contentsMargins().bottom() 
-        - parentWidget()->contentsMargins().top();
+    int availableHeight = parentWidget()->height() - parentWidget()->contentsMargins().bottom() -
+        parentWidget()->contentsMargins().top();
 
     int yLeftBottom = pos().y() + height();
     if (yLeftBottom > availableHeight)

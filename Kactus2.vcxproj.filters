@@ -674,9 +674,6 @@
     <Filter Include="Source Files\editors\ComponentEditor\general">
       <UniqueIdentifier>{900b90ab-3bb9-46cf-a0bd-681c45eb04dc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\otherClockDrivers">
-      <UniqueIdentifier>{3cc0e478-f0f1-4286-b4a8-74b708d06637}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\parameters">
       <UniqueIdentifier>{c9b71249-7b36-434d-b4b9-19a3e7c4e787}</UniqueIdentifier>
     </Filter>
@@ -922,6 +919,9 @@
     </Filter>
     <Filter Include="Header Files\editors\ComponentEditor\busInterfaces\general">
       <UniqueIdentifier>{3d510153-5ef7-4250-ab35-ec03ca108191}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\otherClockDrivers">
+      <UniqueIdentifier>{3cc0e478-f0f1-4286-b4a8-74b708d06637}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2506,9 +2506,6 @@
     <ClCompile Include="GeneratedFiles\moc_componenteditorregisteritem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_hierarchyrefwidget.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_vieweditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2976,9 +2973,6 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorrootitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\views\hierarchyrefwidget.cpp">
-      <Filter>Source Files\editors\ComponentEditor\views</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\views\vieweditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\views</Filter>
@@ -5288,9 +5282,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditorregisteritem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\views\hierarchyrefwidget.h">
-      <Filter>Header Files\editors\ComponentEditor\views</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\views\vieweditor.h">
       <Filter>Header Files\editors\ComponentEditor\views</Filter>

@@ -375,7 +375,7 @@ QVariant FileBuildersModel::expressionOrValueForIndex(QModelIndex const& index) 
 //-----------------------------------------------------------------------------
 // Function: filebuildersmodel::validateIndex()
 //-----------------------------------------------------------------------------
-bool FileBuildersModel::validateIndex(QModelIndex const& index) const
+bool FileBuildersModel::validateIndex(QModelIndex const& /*index*/) const
 {
     return true;
 }

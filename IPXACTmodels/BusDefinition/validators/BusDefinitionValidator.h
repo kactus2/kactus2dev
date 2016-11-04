@@ -37,7 +37,7 @@ public:
     BusDefinitionValidator(QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
-	~BusDefinitionValidator();
+	virtual ~BusDefinitionValidator();
     
     /*!
      *  Validates the given BusDefinition.

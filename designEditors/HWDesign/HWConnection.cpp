@@ -227,7 +227,7 @@ int HWConnection::calculateBusWidth() const
             if (port1 && port2)
             {
                 // TODO: Calculate the intersection of the port bounds and add it to the total width.
-                /*General::PortAlignment align =
+                General::PortAlignment align =
                 General::calculatePortAlignment(portMap1.data(), port1->getLeftBound(), port1->getRightBound(),
                 portMap2.data(), port2->getLeftBound(), port2->getRightBound());
 

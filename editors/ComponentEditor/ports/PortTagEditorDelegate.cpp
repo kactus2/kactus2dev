@@ -34,8 +34,8 @@ PortTagEditorDelegate::~PortTagEditorDelegate()
 //-----------------------------------------------------------------------------
 // Function: PortTagEditorDelegate::createEditor()
 //-----------------------------------------------------------------------------
-QWidget* PortTagEditorDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option,
-    const QModelIndex& index) const
+QWidget* PortTagEditorDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& /*option*/,
+    QModelIndex const& /*index*/) const
 {
     QComboBox* tagCombo = new QComboBox(parent);
     tagCombo->setEditable(true);

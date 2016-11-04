@@ -355,26 +355,6 @@ namespace General
         PortAlignment& operator=(const PortAlignment& other);
     };
 
-    /*! Calculate the alignment for the ports from the port maps.
-    *
-    *      @param [in] portMap1 Pointer to the port map of port 1.
-    *      @param [in] phys1LeftBound The left bound for the physical port 1.
-    *      @param [in] phys1RightBound The right bound for the physical port1.
-    *      @param [in] portMap2 Pointer to the port map of port 2.
-    *      @param [in] phys2LeftBound The left bound for the physical port 2.
-    *      @param [in] phys2RightBound The right bound for the physical port 2.
-    *
-    *      @return General::PortAlignment Contains the alignments for the ports.
-    */
-    /*IPXACTMODELS_EXPORT PortAlignment calculatePortAlignment(const PortMap* portMap1, 
-    int phys1LeftBound,
-    int phys1RightBound,
-    const PortMap* portMap2,
-    int phys2LeftBound,
-    int phys2RightBound);*/
-
-
-
     /*! Convert a boolean value into QString
     *
     *      @param [in] value The variable to convert into QString

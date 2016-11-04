@@ -374,14 +374,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! Pointer to the component referenced by the component instance.
+    QSharedPointer<Component> component_;
+
 	//! Pointer to the component instance being edited.
     QSharedPointer<ComponentInstance> componentInstance_;
 
     //! Pointer to the active view of the instanced component.
     QSharedPointer<ViewConfiguration> viewConfiguration_;
-
-    //! Pointer to the component referenced by the component instance.
-    QSharedPointer<Component> component_;
 
 	//! Reference to the map containing the actual configurable elements.
 	QMap<QString, QString> currentElementValues_;

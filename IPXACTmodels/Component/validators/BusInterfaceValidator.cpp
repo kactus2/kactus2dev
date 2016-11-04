@@ -659,7 +659,7 @@ bool BusInterfaceValidator::mirroredSlaveRemapAddressIsValid(
         quint64 addressInt =
             expressionParser_->parseExpression(remapAddress->remapAddress_).toULongLong(&changeOk);
 
-        return changeOk && addressInt >= 0;
+        return changeOk;
     }
 
     return false;

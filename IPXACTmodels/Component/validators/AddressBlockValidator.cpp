@@ -114,7 +114,7 @@ bool AddressBlockValidator::hasValidBaseAddress(QSharedPointer<AddressBlock> add
 
     quint64 baseAddress = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toULongLong(&toIntOk);
 
-    return toIntOk && baseAddress >= 0;
+    return toIntOk;
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +136,7 @@ bool AddressBlockValidator::hasValidWidth(QSharedPointer<AddressBlock> addressBl
     bool toIntOk = true;
     quint64 width = expressionParser_->parseExpression(addressBlock->getWidth()).toULongLong(&toIntOk);
 
-    return toIntOk && width >= 0;
+    return toIntOk;
 }
 
 //-----------------------------------------------------------------------------

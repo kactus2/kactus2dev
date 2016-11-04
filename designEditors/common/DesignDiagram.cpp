@@ -43,19 +43,19 @@
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::DesignDiagram()
 //-----------------------------------------------------------------------------
-DesignDiagram::DesignDiagram(LibraryInterface* lh,
-                             QSharedPointer<IEditProvider> editProvider, DesignWidget* parent)
-    : QGraphicsScene(parent),
-      parent_(parent),
-      lh_(lh),
-      editProvider_(editProvider),
-      component_(),
-      designConf_(),
-      layout_(new GraphicsColumnLayout(this)),
-      mode_(MODE_SELECT),
-      loading_(false),
-      locked_(false),
-      design_(),
+DesignDiagram::DesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, 
+    DesignWidget* parent) : 
+QGraphicsScene(parent),
+    parent_(parent),
+    lh_(lh),
+    editProvider_(editProvider),
+    component_(),
+    design_(),
+    designConf_(),
+    layout_(new GraphicsColumnLayout(this)),
+    mode_(MODE_SELECT),
+    loading_(false),
+    locked_(false),
     interactionMode_(NORMAL),
     associationLine_(0)
 {

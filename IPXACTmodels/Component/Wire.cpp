@@ -388,7 +388,7 @@ bool Wire::hasType(QString const& viewName) const
 
     foreach (QSharedPointer<WireTypeDef> wireTypeDefinition, *wireTypeDefs_)
     {
-		if (viewName.isEmpty() && !wireTypeDefinition->getTypeName().isEmpty() ||
+		if ((viewName.isEmpty() && !wireTypeDefinition->getTypeName().isEmpty()) ||
             (wireTypeDefinition->hasView(viewName) && !wireTypeDefinition->getTypeName().isEmpty()))
         {
             return true;

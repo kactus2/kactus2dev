@@ -111,12 +111,7 @@ bool FieldValidator::hasValidBitOffset(QSharedPointer<Field> field) const
     bool changeOk = true;
     quint64 intValue = solvedValue.toULongLong(&changeOk);
 
-    if (intValue < 0 || !changeOk)
-    {
-        return false;
-    }
-
-    return true;
+    return changeOk;
 }
 
 //-----------------------------------------------------------------------------

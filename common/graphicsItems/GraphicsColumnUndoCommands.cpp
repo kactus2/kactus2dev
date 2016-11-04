@@ -66,12 +66,12 @@ void GraphicsColumnMoveCommand::redo()
 // Function: GraphicsColumnAddCommand()
 //-----------------------------------------------------------------------------
 GraphicsColumnAddCommand::GraphicsColumnAddCommand(GraphicsColumnLayout* layout, GraphicsColumn* column,
-    QSharedPointer<Design> design, QUndoCommand* parent)
-    : QUndoCommand(parent),
-      layout_(layout),
-      column_(column),
-      del_(false),
-      design_(design)
+    QSharedPointer<Design> design, QUndoCommand* parent) :
+QUndoCommand(parent),
+    layout_(layout),
+    column_(column),
+    design_(design),
+    del_(false)
 {
 }
 

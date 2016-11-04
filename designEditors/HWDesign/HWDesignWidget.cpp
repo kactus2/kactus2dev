@@ -810,7 +810,8 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 //-----------------------------------------------------------------------------
 // Function: HWDesignWidget::updateFiles()
 //-----------------------------------------------------------------------------
-void HWDesignWidget::updateFiles(QSharedPointer<Component> topComponent, QString const& sourcePath, QString const& targetDirectory) const
+void HWDesignWidget::updateFiles(QSharedPointer<Component> topComponent, QString const& sourcePath,
+    QString const& targetPath) const
 {
     QDir sourceDirectory(sourcePath);
 
@@ -824,7 +825,7 @@ void HWDesignWidget::updateFiles(QSharedPointer<Component> topComponent, QString
             // If file is located under the source directory.
             if (!filePath.contains(QLatin1String("../")))
             {
-                QDir targetDirectory(targetDirectory);
+                QDir targetDirectory(targetPath);
                 QString absoluteTarget = targetDirectory.absoluteFilePath(filePath);
 
                 QFileInfo targetInfo(absoluteTarget);

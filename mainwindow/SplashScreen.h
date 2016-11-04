@@ -25,7 +25,7 @@ public:
     /*!
      *  Constructor.
      */
-    SplashScreen(QString versionString, QWidget* parent = 0);
+    SplashScreen(QString const& versionString, QWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -36,10 +36,10 @@ protected:
     //! Draws the contents of the splash screen.
     virtual void drawContents(QPainter *painter);
 
-	//! \brief Event handler for mouse clicks
+	//! Event handler for mouse clicks
 	virtual void mousePressEvent(QMouseEvent* event);
 
-	//! \brief Handler for key press events
+	//! Handler for key press events
 	virtual void keyPressEvent(QKeyEvent* event);
 
 private:

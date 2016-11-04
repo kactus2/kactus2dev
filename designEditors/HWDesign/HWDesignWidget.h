@@ -152,10 +152,10 @@ private:
      *
      *      @param [in] topComponent        The top component of the design.
      *      @param [in] sourcePath          The source path.
-     *      @param [in] targetDirectory     The target directory.
+     *      @param [in] targetPath          The target directory.
      */
     void updateFiles(QSharedPointer<Component> topComponent, QString const& sourcePath,
-        QString const& targetDirectory) const;
+        QString const& targetPath) const;
 
     //-----------------------------------------------------------------------------
     // Data.

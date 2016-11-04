@@ -29,7 +29,8 @@ protocolType_(),
 // Function: Protocol::Protocol()
 //-----------------------------------------------------------------------------
 Protocol::Protocol(Protocol const& other) : 
-protocolType_(other.protocolType_),
+Extendable(other),
+    protocolType_(other.protocolType_),
     customProtocolType_(other.customProtocolType_),
     payloadName_(other.payloadName_),
     payloadType_(other.payloadType_),

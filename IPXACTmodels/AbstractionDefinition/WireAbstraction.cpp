@@ -312,14 +312,10 @@ QString WireAbstraction::getWidth(General::InterfaceMode mode) const
 //-----------------------------------------------------------------------------
 bool WireAbstraction::hasMode(General::InterfaceMode mode) const
 {
-    if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && hasMasterPort() ||
-        ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && hasSlavePort()) ||
-        ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) && !getSystemPorts()->isEmpty()))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (mode == General::MASTER && hasMasterPort()) ||
+        (mode == General::MIRROREDMASTER && hasMasterPort()) ||
+        (mode == General::SLAVE && hasSlavePort()) ||
+        (mode == General::MIRROREDSLAVE && hasSlavePort()) ||
+        (mode == General::SYSTEM && !getSystemPorts()->isEmpty()) ||
+        (mode == General::MIRROREDSYSTEM && !getSystemPorts()->isEmpty());
 }

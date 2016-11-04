@@ -17,10 +17,10 @@
 //-----------------------------------------------------------------------------
 PluginUtilityAdapter::PluginUtilityAdapter(LibraryInterface* libraryInterface, QWidget* parentWidget, 
     QString versionString, QObject* parent) : 
+QObject(parent),
 	libraryInterface_(libraryInterface),
 	parentWidget_(parentWidget),
-	versionString_(versionString),
-	QObject(parent)
+	versionString_(versionString)	
 {
 
 }

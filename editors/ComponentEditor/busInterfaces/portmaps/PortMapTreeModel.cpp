@@ -484,7 +484,7 @@ QVariant PortMapTreeModel::getLogicalPortName(QModelIndex const& index, QSharedP
 
     if (index.parent().isValid())
     {
-        if (portMap && !portMap->getLogicalPort() ||
+        if ((portMap && !portMap->getLogicalPort()) ||
             (portMap->getLogicalPort() && portMap->getLogicalPort()->name_.isEmpty()))
         {
             logicalPortName = "Undefined";

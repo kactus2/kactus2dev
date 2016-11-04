@@ -14,10 +14,10 @@
 //-----------------------------------------------------------------------------
 // Function: RemapPort::RemapPort()
 //-----------------------------------------------------------------------------
-RemapPort::RemapPort(QString const& portReference /* = QString() */) :
-portRef_(portReference),
-portIndex_(),
-value_()
+RemapPort::RemapPort(QString const& portReference) :
+value_(),
+    portRef_(portReference),
+    portIndex_()
 {
 
 }
@@ -26,9 +26,9 @@ value_()
 // Function: RemapPort::RemapPort()
 //-----------------------------------------------------------------------------
 RemapPort::RemapPort(const RemapPort &other) :
-portRef_(other.portRef_),
-portIndex_(other.portIndex_),
-value_(other.value_)
+value_(other.value_),
+    portRef_(other.portRef_),
+    portIndex_(other.portIndex_)
 {
 
 }
@@ -40,9 +40,9 @@ RemapPort& RemapPort::operator=(const RemapPort& other)
 {
     if (this != &other)
     {
+        value_ = other.value_;
         portRef_ = other.portRef_;
         portIndex_ = other.portIndex_;
-        value_ = other.value_;
     }
 
     return *this;

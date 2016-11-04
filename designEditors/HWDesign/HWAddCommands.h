@@ -140,6 +140,8 @@ private:
     //! The interconnection.
     HWConnection* connection_;
 
+    QSharedPointer<Design> design_;
+
     //! The interface modes for the endpoints.
     General::InterfaceMode mode1_;
     General::InterfaceMode mode2_;
@@ -150,7 +152,6 @@ private:
     //! The graphics scene.
     QGraphicsScene* scene_;
 
-    QSharedPointer<Design> design_;
 
     //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;

@@ -137,8 +137,6 @@ void ComponentWizardConclusionPage::updateComponentDetails()
         ComponentComparator comparator;
         QList<QSharedPointer<IPXactDiff> > diff = comparator.diff(originalComponent_, workingComponent_);        
 
-        DiffSummary modelParameterSummary = creteSummaryFor("model parameter", diff);
-
         DiffSummary parameterSummary = creteSummaryFor("parameter", diff);
         parametersLabel_->setText(tr("%1 created, %2 removed, %3 modified.").arg(
             QString::number(parameterSummary.added), QString::number(parameterSummary.removed),

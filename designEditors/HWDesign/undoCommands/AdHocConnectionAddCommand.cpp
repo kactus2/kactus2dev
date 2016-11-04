@@ -27,11 +27,10 @@ AdHocConnectionAddCommand::AdHocConnectionAddCommand(DesignDiagram* scene,
     QSharedPointer<Design> design,
     QUndoCommand* parent) : QUndoCommand(parent),
     connection_(connection),
-    design_(design),   
     scene_(scene),
+    design_(design),   
     del_(false),
     portsCopied_(false)
-
 {
     QSharedPointer<GenericEditProvider> editProvider = scene->getEditProvider().dynamicCast<GenericEditProvider>();
     portsCopied_ = editProvider->getState("portsCopied").toBool();

@@ -35,9 +35,9 @@ AdHocInterfaceItem::AdHocInterfaceItem(QSharedPointer<Component> component, QSha
 AdHocItem(port, parent, QVector2D(1.0f, 0.0f)),
 component_(component),
 dataGroup_(dataGroup),
-oldPos_(),
+oldColumn_(0),
 oldInterfacePositions_(),
-oldColumn_(0)
+oldPos_()
 {
     if (dataGroup_->getAttributeValue("portName").isEmpty())
     {

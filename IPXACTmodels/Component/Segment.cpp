@@ -30,10 +30,11 @@ rangeAttributes_()
 //-----------------------------------------------------------------------------
 Segment::Segment( const Segment& other ):
 NameGroup(other),
-addressOffset_(other.addressOffset_),
-offsetAttributes_(other.offsetAttributes_),
-range_(other.range_),
-rangeAttributes_(other.rangeAttributes_)
+    Extendable(other),
+    addressOffset_(other.addressOffset_),
+    offsetAttributes_(other.offsetAttributes_),
+    range_(other.range_),
+    rangeAttributes_(other.rangeAttributes_)
 {
 
 }

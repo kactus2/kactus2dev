@@ -179,7 +179,7 @@ bool PortMapValidator::logicalPortHasValidRange(QSharedPointer<PortMap::LogicalP
         quint64 rangeRight =
             expressionParser_->parseExpression(logicalPort->range_->getRight()).toULongLong(&rightOk);
 
-        return leftOk && rangeLeft >= 0 && rightOk && rangeRight >= 0;
+        return leftOk && rightOk ;
     }
 
     return true;
@@ -201,8 +201,7 @@ bool PortMapValidator::logicalPortRangeIsWithinAbstractionWidth(QSharedPointer<P
             quint64 abstractionWidth = expressionParser_->parseExpression(
                 referencedPort->getWire()->getWidth(interfaceMode_)).toULongLong();
 
-            return 0 <= rangeLeft && rangeLeft <= abstractionWidth - 1 && 
-                0 <= rangeRight && rangeRight <= abstractionWidth - 1;
+            return rangeLeft <= abstractionWidth - 1 && rangeRight <= abstractionWidth - 1;
         }
 
         return true;
@@ -266,7 +265,7 @@ bool PortMapValidator::physicalPortHasValidPartSelect(QSharedPointer<PortMap::Ph
         quint64 rangeRight = expressionParser_->parseExpression(
             physicalPort->partSelect_->getRightRange()).toULongLong(&rangeRightOk);
 
-        return rangeLeftOk && rangeLeft >= 0 && rangeRightOk && rangeRight >= 0;
+        return rangeLeftOk && rangeRightOk ;
     }
 
     return true;
@@ -286,11 +285,8 @@ bool PortMapValidator::physicalPortRangeIsWithinReferencedPort(QSharedPointer<Po
         quint64 rangeRight =
             expressionParser_->parseExpression(physicalPort->partSelect_->getRightRange()).toULongLong();
 
-        quint64 portLeft = 0;
-        quint64 portRight = 0;
-
-        portLeft = expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong();
-        portRight = expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong();
+        quint64 portLeft = expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong();
+        quint64 portRight = expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong();
 
         if (portLeft > portRight)
         {
@@ -299,7 +295,7 @@ bool PortMapValidator::physicalPortRangeIsWithinReferencedPort(QSharedPointer<Po
             portRight = temporary;
         }
 
-        return rangeLeft >= portLeft && rangeLeft <= portRight && rangeRight >= portLeft&& rangeRight <= portRight;
+        return rangeLeft >= portLeft && rangeLeft <= portRight && rangeRight >= portLeft && rangeRight <= portRight;
     }
 
     return true;
@@ -400,7 +396,7 @@ void PortMapValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Por
     }
 
     findErrorsInIsPresent(errors, portMap, context);
-    findErrorsInLogicalPort(errors, portMap->getLogicalPort(), logicalPort, context);
+    findErrorsInLogicalPort(errors, portMap->getLogicalPort(), context);
     findErrorsInPhysicalPort(errors, portMap, physicalPort, context);
 	findErrorsInPortConnection(errors, portMap, logicalPort, physicalPort, context);
 }
@@ -421,8 +417,7 @@ void PortMapValidator::findErrorsInIsPresent(QVector<QString>& errors, QSharedPo
 // Function: PortMapValidator::findErrorsInLogicalPort()
 //-----------------------------------------------------------------------------
 void PortMapValidator::findErrorsInLogicalPort(QVector<QString>& errors,
-	QSharedPointer<PortMap::LogicalPort> logicalPort, 
-	QSharedPointer<PortAbstraction> referencedPort, QString const& context) const
+    QSharedPointer<PortMap::LogicalPort> logicalPort, QString const& context) const
 {
     if (logicalPort && !logicalPort->name_.isEmpty())
     {
