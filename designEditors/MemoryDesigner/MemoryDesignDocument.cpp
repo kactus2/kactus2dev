@@ -35,6 +35,7 @@ identifyingVLNV_(),
 designViewName_()
 {
     view_->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    view_->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_);
@@ -44,7 +45,7 @@ designViewName_()
 
     view_->setScene(diagram_);
 
-    centerViewTo(QPointF(0,0));
+    centerViewTo(QPointF(0,0)); 
 }
 
 //-----------------------------------------------------------------------------

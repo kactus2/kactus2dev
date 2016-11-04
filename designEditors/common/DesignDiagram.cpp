@@ -810,10 +810,6 @@ void DesignDiagram::wheelEvent(QGraphicsSceneWheelEvent* event)
         // Set the zoom level and center the view.
         getParent()->setZoomLevel(getParent()->getZoomLevel() + event->delta() / 12);
 
-        // Retrieve the center point in diagram coordinates.
-        QPointF centerPos = itemsBoundingRect().center();
-        getParent()->centerViewTo(centerPos);        
-
         event->accept();
     }
 }

@@ -1417,10 +1417,6 @@ void MemoryDesignerDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
         // Set the zoom level and center the view.
         parentDocument_->setZoomLevel(parentDocument_->getZoomLevel() + event->delta() / 12);
 
-        // Retrieve the center point in diagram coordinates.
-        QPointF centerPos = itemsBoundingRect().center();
-        parentDocument_->centerViewTo(centerPos);        
-
         event->accept();
     }
     else

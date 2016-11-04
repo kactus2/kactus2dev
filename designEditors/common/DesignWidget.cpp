@@ -48,6 +48,7 @@ DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent)
 {
 
     view_->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    view_->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view_);
