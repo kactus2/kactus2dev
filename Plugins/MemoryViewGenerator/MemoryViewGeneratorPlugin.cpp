@@ -21,6 +21,7 @@
 
 #include "MemoryViewGenerator.h"
 
+#include <QDateTime>
 #include <QFileDialog>
 
 //-----------------------------------------------------------------------------
@@ -114,19 +115,25 @@ QIcon MemoryViewGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MemoryViewGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Document const> /*libComp*/,
+bool MemoryViewGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Document const> libComp,
     QSharedPointer<Document const> libDesConf, 
     QSharedPointer<Document const> libDes) const
 {
-    return libDesConf || libDes;
+    QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
+    if (!component || component->getImplementation() != KactusAttribute::HW)
+    {
+        return false;
+    }
+
+    return libDes || libDesConf;
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Document> libComp, 
-    QSharedPointer<Document> libDesConf,
-    QSharedPointer<Document> libDes)
+    QSharedPointer<Document> /*libDesConf*/,
+    QSharedPointer<Document> /*libDes*/)
 {
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
     
@@ -135,18 +142,19 @@ void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPoi
     QString targetFile = QFileDialog::getSaveFileName(utility->getParentWidget(), tr("Select target file"), 
         xmlFilePath, tr("Comma separated values (*.csv)"));
 
-    if (targetFile.isEmpty())
+    if (!targetFile.isEmpty())
+    {
+        MemoryViewGenerator generator(utility->getLibraryInterface());
+        generator.generate(libComp.dynamicCast<Component>(), QString(), targetFile);
+
+        saveToFileset(targetFile, libComp, utility);
+
+        utility->printInfo(tr("Generation complete."));
+    }
+    else
     {
         utility->printInfo(tr("Generation aborted."));
-        return;
     }
-
-    MemoryViewGenerator generator(utility->getLibraryInterface());   
-    generator.generate(libComp.dynamicCast<Component>(), "", targetFile);
-
-    saveToFileset(targetFile, libComp, utility);
-
-    utility->printInfo(tr("Generation complete."));
 }
 
 //-----------------------------------------------------------------------------
@@ -167,17 +175,28 @@ void MemoryViewGeneratorPlugin::saveToFileset(QString const& targetFile, QShared
         topComponent->getFileSets()->append(targetFileset);
     }
 
-    if (targetFileset->getFile(targetFile).isNull())
-    {
-        QString relativeFilePath = General::getRelativePath(xmlFilePath, targetFile);
+    QString relativeFilePath = General::getRelativePath(xmlFilePath, targetFile);
 
-        QSharedPointer<File> file(new File(relativeFilePath));
+    QSharedPointer<File> file;
+    foreach (QSharedPointer<File> filesetFile, *targetFileset->getFiles())
+    {            
+        if (filesetFile->name().compare(relativeFilePath) == 0)
+        {
+            file = filesetFile;
+        }
+    }
+
+    if (!file)
+    {
+        file = QSharedPointer<File>(new File(relativeFilePath));
         file->getFileTypes()->append(QStringLiteral("unknown"));
 
         targetFileset->addFile(file);
-
         utility->printInfo(tr("Added file %1 to top component file set %2.").arg(targetFile, filesetName));
-
-        utility->getLibraryInterface()->writeModelToFile(component);
     }
+
+    file->setDescription(tr("Generated on %1 by Kactus2 %2 plugin version %3.").arg(
+        QDateTime::currentDateTime().toString("dd.MM.yyyy hh:mm:ss"), getName(), getVersion()));
+
+    utility->getLibraryInterface()->writeModelToFile(component);
 }

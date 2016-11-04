@@ -6,7 +6,7 @@
 // Date: 25.08.2016
 //
 // Description:
-// <Short description of the class/file contents>
+// Finds the paths from master interfaces to slave interfaces.
 //-----------------------------------------------------------------------------
 
 #ifndef MASTERSLAVEPATHSEARCH_H
@@ -19,6 +19,9 @@ class ConnectivityConnection;
 class ConnectivityGraph;
 class ConnectivityInterface;
 
+//-----------------------------------------------------------------------------
+//! Finds the paths from master interfaces to slave interfaces.
+//-----------------------------------------------------------------------------
 class MasterSlavePathSearch 
 {
 public:

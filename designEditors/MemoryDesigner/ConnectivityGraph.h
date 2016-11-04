@@ -88,7 +88,8 @@ public:
      *
      *      @return The found interface matching the given name and instance.
      */
-    QSharedPointer<ConnectivityInterface> getInterface(QString const& instanceName, QString const& interfaceName) const;
+    QSharedPointer<ConnectivityInterface> getInterface(QString const& interfaceName,
+        QString const& instanceName) const;
 
 private:
 

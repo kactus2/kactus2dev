@@ -99,12 +99,13 @@ QVector<QSharedPointer<ConnectivityConnection> > ConnectivityGraph::getConnectio
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraph::getInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityInterface> ConnectivityGraph::getInterface(QString const& instanceName, 
-    QString const& interfaceName) const
+QSharedPointer<ConnectivityInterface> ConnectivityGraph::getInterface(QString const& interfaceName,
+    QString const& instanceName) const
 {
     foreach (QSharedPointer<ConnectivityInterface> vertex, vertices_)
     {
-        if (vertex->getName() == interfaceName && vertex->getInstance()->getName() == instanceName)
+        if (vertex->getName().compare(interfaceName) == 0 && 
+            vertex->getInstance()->getName().compare(instanceName) == 0)            
         {
             return vertex;
         }

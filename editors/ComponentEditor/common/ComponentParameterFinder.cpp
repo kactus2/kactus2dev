@@ -143,7 +143,7 @@ int ComponentParameterFinder::getNumberOfParameters() const
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::setComponent()
 //-----------------------------------------------------------------------------
-void ComponentParameterFinder::setComponent(QSharedPointer<Component> component)
+void ComponentParameterFinder::setComponent(QSharedPointer<Component const> component)
 {
     component_ = component;
 }
@@ -184,37 +184,40 @@ void ComponentParameterFinder::registerParameterModel(QAbstractItemModel const* 
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ComponentParameterFinder::searchParameter(QString const& parameterId) const
 {
-    foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
+    if (component_)
     {
-        if (parameter->getValueId() == parameterId)
+        foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
         {
-            return parameter;
+            if (parameter->getValueId() == parameterId)
+            {
+                return parameter;
+            }
         }
-    }
 
-    foreach (QSharedPointer<Parameter> viewParameter, allViewParameters())
-    {
-        if (viewParameter->getValueId() == parameterId)
+        foreach (QSharedPointer<Parameter> viewParameter, allViewParameters())
         {
-            return viewParameter;
+            if (viewParameter->getValueId() == parameterId)
+            {
+                return viewParameter;
+            }
         }
-    }
 
-    foreach (QSharedPointer<Parameter> busInterfaceParameter, allBusInterfaceParameters())
-    {
-        if (busInterfaceParameter->getValueId() == parameterId)
+        foreach (QSharedPointer<Parameter> busInterfaceParameter, allBusInterfaceParameters())
         {
-            return busInterfaceParameter;
+            if (busInterfaceParameter->getValueId() == parameterId)
+            {
+                return busInterfaceParameter;
+            }
         }
-    }
 
-    foreach (QSharedPointer<Parameter> registerParameter, allRegisterParameters())
-    {
-        if (registerParameter->getValueId() == parameterId)
+        foreach (QSharedPointer<Parameter> registerParameter, allRegisterParameters())
         {
-            return registerParameter;
+            if (registerParameter->getValueId() == parameterId)
+            {
+                return registerParameter;
+            }
         }
-    }
+    }    
 
     return QSharedPointer<Parameter>();
 }

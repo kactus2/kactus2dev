@@ -33,7 +33,8 @@
 // Function: MemoryViewGenerator::MemoryViewGenerator()
 //-----------------------------------------------------------------------------
 MemoryViewGenerator::MemoryViewGenerator(LibraryInterface* library): library_(library),
-    expressionParser_(new SystemVerilogExpressionParser()), locator_(library)
+    graphFactory_(library),
+    expressionParser_(new SystemVerilogExpressionParser())
 {
 
 }
@@ -50,15 +51,13 @@ MemoryViewGenerator::~MemoryViewGenerator()
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGenerator::generate()
 //-----------------------------------------------------------------------------
-void MemoryViewGenerator::generate(QSharedPointer<Component> topComponent, QString const& activeView, QString const& outputPath)
+void MemoryViewGenerator::generate(QSharedPointer<Component> topComponent, QString const& activeView, 
+    QString const& outputPath)
 {
-    QVector<QVector<QSharedPointer<ConnectivityInterface> > > masterRoutes;
-
-    VLNV designReference = getConfigurationOrDesign(topComponent, activeView);
-
     QSharedPointer<const DesignConfiguration> designConfiguration(0);
     QSharedPointer<const Design> design(0);
 
+    VLNV designReference = getConfigurationOrDesign(topComponent, activeView);
     VLNV::IPXactType documentType = library_->getDocumentType(designReference);
 
     if (documentType == VLNV::DESIGNCONFIGURATION)
@@ -71,7 +70,7 @@ void MemoryViewGenerator::generate(QSharedPointer<Component> topComponent, QStri
         design = library_->getModelReadOnly(designReference).dynamicCast<const Design>();
     }
 
-    QSharedPointer<ConnectivityGraph> graph = locator_.createConnectivityGraph(design, designConfiguration);
+    QSharedPointer<ConnectivityGraph> graph = graphFactory_.createConnectivityGraph(design, designConfiguration);
     MasterSlavePathSearch searchAlgorithm;
 
     writeFile(outputPath, searchAlgorithm.findMasterSlavePaths(graph));
@@ -124,7 +123,8 @@ VLNV MemoryViewGenerator::getConfigurationOrDesign(QSharedPointer<Component> com
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGenerator::writeFile()
 //-----------------------------------------------------------------------------
-void MemoryViewGenerator::writeFile(QString const& outputPath, QVector<QVector<QSharedPointer<ConnectivityInterface> > > masterRoutes)
+void MemoryViewGenerator::writeFile(QString const& outputPath, 
+    QVector<QVector<QSharedPointer<ConnectivityInterface> > > masterRoutes)
 {
     QFile outputFile(outputPath); 
     if (!outputFile.open(QIODevice::WriteOnly))

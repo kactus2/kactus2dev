@@ -92,8 +92,8 @@ private:
     //! The available IP-XACT library.
     LibraryInterface* library_;
 
-    //!
-    ConnectivityGraphFactory locator_;
+    //! Factory for creating connectivity graphs.
+    ConnectivityGraphFactory graphFactory_;
 
     //! Parser for resolving expressions.
     ExpressionParser* expressionParser_;

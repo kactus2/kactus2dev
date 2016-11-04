@@ -78,6 +78,8 @@ private slots:
 
     void testBridge();
 
+    void testIdenticalHierarchies();
+
 private:
     
     QString runGenerator();
@@ -100,6 +102,12 @@ private:
 
     QSharedPointer<AddressBlock> addAddressBlock(QString const& name, QString const& baseAddress, QString const& range,
         QString const& width, QSharedPointer<MemoryMap> containingMemoryMap);
+
+    void addHierarchyReference(QSharedPointer<Component> hierarchicalComponent, VLNV designVLNV);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     LibraryMock* library_;
 
@@ -659,14 +667,8 @@ void tst_MemoryViewGenerator::testHierarchicalDesign()
 
     createHierarchicalConnection("slaveIf", "slaveInstance", "slaveIf", slaveDesign);
 
-    QSharedPointer<DesignInstantiation> hierarchyInstantiation(new DesignInstantiation("instantiation"));
-    hierarchyInstantiation->setDesignReference(QSharedPointer<ConfigurableVLNVReference>(
-        new ConfigurableVLNVReference(designVLNV)));
-    hierarchicalComponent->getDesignInstantiations()->append(hierarchyInstantiation);
+    addHierarchyReference(hierarchicalComponent, designVLNV);
 
-    QSharedPointer<View> hierarchicalView(new View("hierarchical"));
-    hierarchicalView->setDesignInstantiationRef("instantiation");
-    hierarchicalComponent->getViews()->append(hierarchicalView);
 
     createComponentInstance(masterVLNV, "masterInstance", "masterID", design_);
     createComponentInstance(hierarchicalSlaveVLNV, "hierarchicalInstance", "hierID", design_);
@@ -1020,6 +1022,89 @@ void tst_MemoryViewGenerator::testBridge()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_MemoryViewGenerator::testIdenticalHierarchies()
+//-----------------------------------------------------------------------------
+void tst_MemoryViewGenerator::testIdenticalHierarchies()
+{
+    VLNV masterVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "TestMaster", "1.0");
+    VLNV busVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "TestBridge", "1.0");
+    VLNV slaveVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "TestSlave", "1.0");
+    VLNV subDesign(VLNV::DESIGN, "tut.fi", "TestLib", "SubDesign", "1.0");
+    VLNV subSlave(VLNV::COMPONENT, "tut.fi", "TestLib", "SubSlave", "1.0");
+
+    createMasterComponent(masterVLNV);
+
+    QSharedPointer<Component> busComponent(new Component(busVLNV));
+    library_->addComponent(busComponent);
+
+    QSharedPointer<BusInterface> mirroredMasterInterface(new BusInterface());
+    mirroredMasterInterface->setName("mirroredMasterIf");
+    mirroredMasterInterface->setInterfaceMode(General::MIRROREDMASTER);
+    busComponent->getBusInterfaces()->append(mirroredMasterInterface);
+
+    QSharedPointer<BusInterface> mirroredSlaveInterface(new BusInterface());
+    mirroredSlaveInterface->setName("mirroredSlaveIf");
+    mirroredSlaveInterface->setInterfaceMode(General::MIRROREDSLAVE);
+    mirroredSlaveInterface->getMirroredSlave()->setRemapAddress("8");
+    busComponent->getBusInterfaces()->append(mirroredSlaveInterface);
+
+    QSharedPointer<BusInterface> duplicateSlaveInterface(new BusInterface());
+    duplicateSlaveInterface->setName("duplicateSlaveIf");
+    duplicateSlaveInterface->setInterfaceMode(General::MIRROREDSLAVE);
+    duplicateSlaveInterface->getMirroredSlave()->setRemapAddress("16");
+    busComponent->getBusInterfaces()->append(duplicateSlaveInterface);
+
+    QStringList channelInterfaces;
+    channelInterfaces << "mirroredMasterIf" << "mirroredSlaveIf" << "duplicateSlaveIf";
+
+    QSharedPointer<Channel> testChannel(new Channel());
+    testChannel->setName("testChannel");
+    testChannel->setInterfaces(channelInterfaces);
+    busComponent->getChannels()->append(testChannel);
+
+    QSharedPointer<Component> hierarchicalSlave(new Component(slaveVLNV));
+    library_->addComponent(hierarchicalSlave);
+
+    QSharedPointer<BusInterface> hierarchicalSlaveInterface(new BusInterface());
+    hierarchicalSlaveInterface->setName("hierarchicalSlaveIf");
+    hierarchicalSlaveInterface->setInterfaceMode(General::SLAVE);
+    hierarchicalSlave->getBusInterfaces()->append(hierarchicalSlaveInterface);
+
+    QSharedPointer<Design> slaveDesign(new Design(subDesign));
+    library_->addComponent(slaveDesign);
+
+    createComponentInstance(subSlave, "subSlave", "subID", slaveDesign);
+    createHierarchicalConnection("hierarchicalSlaveIf", "subSlave", "slaveIf", slaveDesign);
+
+    QSharedPointer<Component> slaveComponent = createSlaveComponent(subSlave);
+
+    QSharedPointer<MemoryMap> slaveMemoryMap(new MemoryMap("slaveMemoryMap"));
+    slaveComponent->getMemoryMaps()->append(slaveMemoryMap);
+
+    QSharedPointer<AddressBlock> slaveAddressBlock = addAddressBlock("slaveBlock", "0", "8", "32", slaveMemoryMap);
+
+    addHierarchyReference(hierarchicalSlave, subDesign);
+
+    createComponentInstance(masterVLNV, "master", "masterID", design_);
+    createComponentInstance(busVLNV, "busInstance", "busID", design_);
+    createComponentInstance(slaveVLNV, "slave1", "slave1_id", design_);
+    createComponentInstance(slaveVLNV, "slave2", "slave2_id", design_);
+
+    createInterconnection("master", "masterIf", "busInstance", "mirroredMasterIf", design_);
+    createInterconnection("slave1", "hierarchicalSlaveIf", "busInstance", "mirroredSlaveIf", design_);
+    createInterconnection("slave2", "hierarchicalSlaveIf", "busInstance", "duplicateSlaveIf", design_);
+
+    QString output = runGenerator();
+
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.SubSlave.1.0.subID.subSlave.slaveMemoryMap;memoryMap;0x8;;;;;\n"
+        "tut.fi.TestLib.SubSlave.1.0.subID.subSlave.slaveMemoryMap.slaveBlock;addressBlock;0x8;8;32;;;\n"
+        "tut.fi.TestLib.SubSlave.1.0.subID.subSlave.slaveMemoryMap;memoryMap;0x10;;;;;\n"
+        "tut.fi.TestLib.SubSlave.1.0.subID.subSlave.slaveMemoryMap.slaveBlock;addressBlock;0x10;8;32;;;\n"
+        ));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_MemoryViewGenerator::runGenerator()
 //-----------------------------------------------------------------------------
 QString tst_MemoryViewGenerator::runGenerator()
@@ -1155,6 +1240,21 @@ QSharedPointer<AddressBlock> tst_MemoryViewGenerator::addAddressBlock(QString co
     return block;
 }
 
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryViewGenerator::addHierarchyReference()
+//-----------------------------------------------------------------------------
+void tst_MemoryViewGenerator::addHierarchyReference(QSharedPointer<Component> hierarchicalComponent, 
+    VLNV designVLNV)
+{
+    QSharedPointer<DesignInstantiation> hierarchyInstantiation(new DesignInstantiation("instantiation"));
+    hierarchyInstantiation->setDesignReference(QSharedPointer<ConfigurableVLNVReference>(
+        new ConfigurableVLNVReference(designVLNV)));
+    hierarchicalComponent->getDesignInstantiations()->append(hierarchyInstantiation);
+
+    QSharedPointer<View> hierarchicalView(new View("hierarchical"));
+    hierarchicalView->setDesignInstantiationRef("instantiation");
+    hierarchicalComponent->getViews()->append(hierarchicalView);
+}
 
 QTEST_APPLESS_MAIN(tst_MemoryViewGenerator)
 

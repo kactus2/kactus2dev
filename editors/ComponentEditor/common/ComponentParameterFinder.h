@@ -91,7 +91,7 @@ public:
      *
      *      @param [in] component   The new component.
      */
-    virtual void setComponent(QSharedPointer<Component> component);
+    virtual void setComponent(QSharedPointer<Component const> component);
 
     /*!
      *  Sets the active view to use for the component.
@@ -158,7 +158,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The parameters are searched from this component.
-    QSharedPointer<Component> component_;
+    QSharedPointer<Component const> component_;
 
 	//! The currently active view of the component, if applicable.
 	QSharedPointer<View> activeView_;

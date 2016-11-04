@@ -84,7 +84,6 @@ void ConnectivityComponent::setActiveView(QString const& viewName)
 void ConnectivityComponent::addMemory(QSharedPointer<MemoryItem> spaceItem)
 {
     memories_.append(spaceItem);
-
 }
 
 //-----------------------------------------------------------------------------

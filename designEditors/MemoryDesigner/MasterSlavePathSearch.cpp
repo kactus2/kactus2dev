@@ -6,7 +6,7 @@
 // Date: 25.08.2016
 //
 // Description:
-// <Short description of the class/file contents>
+// Finds the paths from master interfaces to slave interfaces.
 //-----------------------------------------------------------------------------
 
 #include "MasterSlavePathSearch.h"
