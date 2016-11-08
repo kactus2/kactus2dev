@@ -75,7 +75,7 @@ public:
      *
      *      @param [in] component   The new component.
      */
-    virtual void setComponent(QSharedPointer<Component> component);
+    virtual void setComponent(QSharedPointer<Component const> component);
     
     /*!
      *  Registers a parameter model that can modify parameters for the finder.

@@ -67,7 +67,7 @@ int ParameterCache::getNumberOfParameters() const
 //-----------------------------------------------------------------------------
 // Function: ParameterCache::setComponent()
 //-----------------------------------------------------------------------------
-void ParameterCache::setComponent(QSharedPointer<Component> component)
+void ParameterCache::setComponent(QSharedPointer<Component const> component)
 {
 	ComponentParameterFinder::setComponent(component);
 	
