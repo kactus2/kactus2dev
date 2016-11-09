@@ -33,6 +33,7 @@ SubMemoryLayout(memoryItem, subItemType, filterSubItems, this),
 instanceNameLabel_(new QGraphicsTextItem(instanceName, this)),
 aubLabel_(new QGraphicsTextItem("", this)),
 instanceName_(instanceName),
+memoryItem_(memoryItem),
 memoryCollisions_(),
 compressed_(false),
 extensionItem_(0)
@@ -381,4 +382,12 @@ void MainMemoryGraphicsItem::hideFirstAndLastSegmentRange()
         firstSubItem->hideStartRangeLabel();
         lastSubItem->hideEndRangeLabel();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getMemoryItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> MainMemoryGraphicsItem::getMemoryItem() const
+{
+    return memoryItem_;
 }

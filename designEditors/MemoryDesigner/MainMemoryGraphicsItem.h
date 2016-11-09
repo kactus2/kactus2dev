@@ -184,6 +184,13 @@ public:
      */
     void hideFirstAndLastSegmentRange();
 
+    /*!
+     *  Get the memory item from which this graphics item has been constructed from.
+     *
+     *      @return The contained memory item.
+     */
+    QSharedPointer<MemoryItem> getMemoryItem() const;
+
 protected:
 
     /*!
@@ -234,6 +241,9 @@ private:
 
     //! The name of the containing component instance.
     QString instanceName_;
+
+    //! The memory item from which this graphics item has been constructed from.
+    QSharedPointer<MemoryItem> memoryItem_;
 
     //! A list of memory collisions connected to this memory item.
     QVector<MemoryCollisionItem*> memoryCollisions_;

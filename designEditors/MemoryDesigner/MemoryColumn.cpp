@@ -92,18 +92,20 @@ MainMemoryGraphicsItem* MemoryColumn::findGraphicsItemAt(int itemYPosition) cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryColumn::findGraphicsItemByName()
+// Function: MemoryColumn::findGraphicsItemByMemoryItem()
 //-----------------------------------------------------------------------------
-MainMemoryGraphicsItem* MemoryColumn::findGraphicsItemByName(QString const& itemName,
-    QString const& instanceName) const
+MainMemoryGraphicsItem* MemoryColumn::findGraphicsItemByMemoryItem(QSharedPointer<MemoryItem> containedMemoryItem)
+    const
 {
-    foreach (QGraphicsItem* item, getItems())
+    if (containedMemoryItem)
     {
-        MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(item);
-        if (memoryItem && memoryItem->name().compare(itemName, Qt::CaseInsensitive) == 0 &&
-            memoryItem->getContainingInstanceName().compare(instanceName, Qt::CaseInsensitive) == 0)
+        foreach (QGraphicsItem* item, getItems())
         {
-            return memoryItem;
+            MainMemoryGraphicsItem* memoryGraphicsItem = dynamic_cast<MainMemoryGraphicsItem*>(item);
+            if (memoryGraphicsItem && memoryGraphicsItem->getMemoryItem() == containedMemoryItem)
+            {
+                return memoryGraphicsItem;
+            }
         }
     }
 

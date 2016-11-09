@@ -18,6 +18,7 @@
 class GraphicsColumnLayout;
 class GraphicsConnection;
 class MainMemoryGraphicsItem;
+class MemoryItem;
 
 #include <QGraphicsRectItem>
 #include <QSet>
@@ -64,12 +65,13 @@ public:
     MainMemoryGraphicsItem* findGraphicsItemAt(int itemYPosition) const;
 
     /*!
-     *  Find a graphics item by a given name.
+     *  Find a graphics item by a given memory item.
      *
-     *      @param [in] itemName        Name of the searched item.
-     *      @param [in] instanceName    Name of the component instance containing the graphics item.
+     *      @param [in] containedMemoryItem     The selected memory item.
+     *
+     *      @return Memory graphics item matching the selected memory item.
      */
-    MainMemoryGraphicsItem* findGraphicsItemByName(QString const& itemName, QString const& instanceName) const;
+    MainMemoryGraphicsItem* findGraphicsItemByMemoryItem(QSharedPointer<MemoryItem> containedMemoryItem) const;
 
     /*!
      *  Get the type of this item.

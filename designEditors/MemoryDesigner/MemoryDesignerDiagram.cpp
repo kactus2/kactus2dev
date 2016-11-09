@@ -639,8 +639,7 @@ MainMemoryGraphicsItem* MemoryDesignerDiagram::getMainGraphicsItem(
         QVector<MemoryColumn*> matchingColumns = getSpecifiedColumns(columnType);
         foreach (MemoryColumn* currentColumn, matchingColumns)
         {
-            graphicsItem =
-                currentColumn->findGraphicsItemByName(memoryItem->getName(), connectionInstance->getName());
+            graphicsItem = currentColumn->findGraphicsItemByMemoryItem(memoryItem);
             if (graphicsItem)
             {
                 break;
@@ -1027,13 +1026,13 @@ void MemoryDesignerDiagram::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* 
             currentSpaceColumn->addItem(spaceItem);
             spaceItem->setPos(targetItem->pos().x(), targetItem->pos().y() + yTransfer);
 
-            if (spaceItem->collidingItems(Qt::IntersectsItemShape).isEmpty())
+            if (spaceItemCollidesWithOtherSpaceItems(spaceItem))
             {
-                return;
+                currentSpaceColumn->removeItem(spaceItem);
             }
             else
             {
-                currentSpaceColumn->removeItem(spaceItem);
+                return;
             }
         }
     }
