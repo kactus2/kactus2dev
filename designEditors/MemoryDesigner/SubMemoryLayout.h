@@ -35,9 +35,10 @@ public:
      *
      *      @param [in] memoryItem          Memory item containing main memory item data.
      *      @param [in] subItemType         Type of the sub items.
+     *      @param [in] filterSubItems      Value for filtering memory sub items.
      *      @param [in] mainGraphicsItem    The main graphics item.
      */
-    SubMemoryLayout(QSharedPointer<MemoryItem> memoryItem, QString const& subItemType,
+    SubMemoryLayout(QSharedPointer<MemoryItem> memoryItem, QString const& subItemType, bool filterSubItems,
         MemoryDesignerGraphicsItem* mainGraphicsItem);
 
 	/*!
@@ -213,6 +214,15 @@ private:
         QVector<MemoryDesignerChildGraphicsItem*> subItemsInConnection, quint64 newSubItemHeight,
         MemoryConnectionItem* connectionItem) const;
 
+    /*!
+     *  Get the height of a filtered sub memory layout.
+     *
+     *      @param [in] minimumSubItemHeight    Minimum height of the layout.
+     *
+     *      @return Filtered height of the sub memory layout.
+     */
+    virtual quint64 getFilteredCompressedHeight(qreal minimumSubItemHeight);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -228,6 +238,9 @@ private:
 
     //! Type of the sub memory items.
     QString subItemType_;
+
+    //! Value for filtering sub memory items.
+    bool filterSubItems_;
 };
 
 //-----------------------------------------------------------------------------

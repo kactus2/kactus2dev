@@ -25,11 +25,12 @@
 // Function: SubMemoryLayout::SubMemoryLayout()
 //-----------------------------------------------------------------------------
 SubMemoryLayout::SubMemoryLayout(QSharedPointer<MemoryItem> memoryItem, QString const& subItemType,
-    MemoryDesignerGraphicsItem* mainGraphicsItem):
+    bool filterSubItems, MemoryDesignerGraphicsItem* mainGraphicsItem):
 subMemoryItems_(),
 memoryItem_(memoryItem),
 mainGraphicsItem_(mainGraphicsItem),
-subItemType_(subItemType)
+subItemType_(subItemType),
+filterSubItems_(filterSubItems)
 {
 
 }
@@ -47,67 +48,70 @@ SubMemoryLayout::~SubMemoryLayout()
 //-----------------------------------------------------------------------------
 void SubMemoryLayout::setupSubItems(qreal subItemPositionX)
 {
-    quint64 itemBaseAddress = mainGraphicsItem_->getBaseAddress();
-    quint64 itemLastAddress = mainGraphicsItem_->getLastAddress();
-
-    if (!memoryItem_->getChildItems().isEmpty())
+    if (!filterSubItems_)
     {
-        QMap<quint64, MemoryDesignerChildGraphicsItem*> subItemsInOrder;
+        quint64 itemBaseAddress = mainGraphicsItem_->getBaseAddress();
+        quint64 itemLastAddress = mainGraphicsItem_->getLastAddress();
 
-        foreach (QSharedPointer<MemoryItem> subMemoryItem, memoryItem_->getChildItems())
+        if (!memoryItem_->getChildItems().isEmpty())
         {
-            if (subMemoryItem->getType().compare(subItemType_, Qt::CaseInsensitive) == 0)
+            QMap<quint64, MemoryDesignerChildGraphicsItem*> subItemsInOrder;
+
+            foreach (QSharedPointer<MemoryItem> subMemoryItem, memoryItem_->getChildItems())
             {
-                MemoryDesignerChildGraphicsItem* newSubItem = createNewSubItem(subMemoryItem, false);
-
-                positionNewSubItem(subItemPositionX, itemBaseAddress, newSubItem);
-
-                subItemsInOrder.insert(newSubItem->getBaseAddress(), newSubItem);
-            }
-        }
-
-        if (!subItemsInOrder.isEmpty())
-        {
-            if (subItemsInOrder.firstKey() > 0)
-            {
-                MemoryDesignerChildGraphicsItem* newEmptyItem = createEmptySubItem(0, subItemsInOrder.firstKey() - 1);
-                positionNewSubItem(subItemPositionX, itemBaseAddress, newEmptyItem);
-            }
-
-            QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subItemsInOrder);
-
-            quint64 currentOffset = itemBaseAddress;
-            quint64 subItemLastAddress = itemBaseAddress;
-
-            while (subItemIterator.hasNext())
-            {
-                subItemIterator.next();
-
-                currentOffset = subItemIterator.key();
-                if (currentOffset > subItemLastAddress + 1)
+                if (subMemoryItem->getType().compare(subItemType_, Qt::CaseInsensitive) == 0)
                 {
-                    MemoryDesignerChildGraphicsItem* newEmptyItem =
-                        createEmptySubItem(subItemLastAddress + 1, currentOffset - 1);
+                    MemoryDesignerChildGraphicsItem* newSubItem = createNewSubItem(subMemoryItem, false);
+
+                    positionNewSubItem(subItemPositionX, itemBaseAddress, newSubItem);
+
+                    subItemsInOrder.insert(newSubItem->getBaseAddress(), newSubItem);
+                }
+            }
+
+            if (!subItemsInOrder.isEmpty())
+            {
+                if (subItemsInOrder.firstKey() > 0)
+                {
+                    MemoryDesignerChildGraphicsItem* newEmptyItem = createEmptySubItem(0, subItemsInOrder.firstKey() - 1);
                     positionNewSubItem(subItemPositionX, itemBaseAddress, newEmptyItem);
                 }
 
-                quint64 rangeEnd = subItemIterator.value()->getLastAddress();
+                QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subItemsInOrder);
 
-                subItemLastAddress = qMax(subItemLastAddress, rangeEnd);
-            }
+                quint64 currentOffset = itemBaseAddress;
+                quint64 subItemLastAddress = itemBaseAddress;
 
-            if (subItemLastAddress < itemLastAddress)
-            {
-                MemoryDesignerChildGraphicsItem* newEmptyItem =
-                    createEmptySubItem(subItemLastAddress + 1, itemLastAddress);
-                positionNewSubItem(subItemPositionX, itemBaseAddress, newEmptyItem);
+                while (subItemIterator.hasNext())
+                {
+                    subItemIterator.next();
+
+                    currentOffset = subItemIterator.key();
+                    if (currentOffset > subItemLastAddress + 1)
+                    {
+                        MemoryDesignerChildGraphicsItem* newEmptyItem =
+                            createEmptySubItem(subItemLastAddress + 1, currentOffset - 1);
+                        positionNewSubItem(subItemPositionX, itemBaseAddress, newEmptyItem);
+                    }
+
+                    quint64 rangeEnd = subItemIterator.value()->getLastAddress();
+
+                    subItemLastAddress = qMax(subItemLastAddress, rangeEnd);
+                }
+
+                if (subItemLastAddress < itemLastAddress)
+                {
+                    MemoryDesignerChildGraphicsItem* newEmptyItem =
+                        createEmptySubItem(subItemLastAddress + 1, itemLastAddress);
+                    positionNewSubItem(subItemPositionX, itemBaseAddress, newEmptyItem);
+                }
             }
         }
-    }
-    else
-    {
-        MemoryDesignerChildGraphicsItem* newEmptyItem = createEmptySubItem(itemBaseAddress, itemLastAddress);
-        positionNewSubItem(subItemPositionX, itemBaseAddress, newEmptyItem);
+        else
+        {
+            MemoryDesignerChildGraphicsItem* newEmptyItem = createEmptySubItem(itemBaseAddress, itemLastAddress);
+            positionNewSubItem(subItemPositionX, itemBaseAddress, newEmptyItem);
+        }
     }
 }
 
@@ -155,14 +159,21 @@ qreal SubMemoryLayout::condenseChildItems(qreal minimumSubItemHeight)
 {
     quint64 positionY = 0;
 
-    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subMemoryIterator(subMemoryItems_);
-    while (subMemoryIterator.hasNext())
+    if (filterSubItems_)
     {
-        subMemoryIterator.next();
+        positionY = minimumSubItemHeight;
+    }
+    else
+    {
+        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subMemoryIterator(subMemoryItems_);
+        while (subMemoryIterator.hasNext())
+        {
+            subMemoryIterator.next();
 
-        MemoryDesignerChildGraphicsItem* subItem = subMemoryIterator.value();
+            MemoryDesignerChildGraphicsItem* subItem = subMemoryIterator.value();
 
-        positionY = condenseSubItem(subItem, minimumSubItemHeight, positionY);
+            positionY = condenseSubItem(subItem, minimumSubItemHeight, positionY);
+        }
     }
 
     return positionY;
@@ -204,28 +215,35 @@ qreal SubMemoryLayout::getMinimumRequiredHeight(qreal minimumSubItemHeight, quin
 {
     qreal height = 0;
 
-    foreach (MemoryDesignerChildGraphicsItem* subItem, subMemoryItems_)
+    if (filterSubItems_)
     {
-        SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
-        if (subLayout)
+        height = minimumSubItemHeight;
+    }
+    else
+    {
+        foreach (MemoryDesignerChildGraphicsItem* subItem, subMemoryItems_)
         {
-            height += subLayout->getMinimumRequiredHeight(
-                minimumSubItemHeight, connectionBaseAddress, connectionEndAddress);
-        }
-        else
-        {
-            quint64 subBaseAddress = subItem->getBaseAddress();
-            quint64 subLastAddress = subItem->getLastAddress();
-
-            if (connectionEndAddress >= subBaseAddress && subLastAddress >= connectionBaseAddress)
+            SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
+            if (subLayout)
             {
-                if (subLastAddress - subBaseAddress > 2)
+                height += subLayout->getMinimumRequiredHeight(
+                    minimumSubItemHeight, connectionBaseAddress, connectionEndAddress);
+            }
+            else
+            {
+                quint64 subBaseAddress = subItem->getBaseAddress();
+                quint64 subLastAddress = subItem->getLastAddress();
+
+                if (connectionEndAddress >= subBaseAddress && subLastAddress >= connectionBaseAddress)
                 {
-                    height += minimumSubItemHeight;
-                }
-                else
-                {
-                    height += subItem->boundingRect().height() - 1;
+                    if (subLastAddress - subBaseAddress > 2)
+                    {
+                        height += minimumSubItemHeight;
+                    }
+                    else
+                    {
+                        height += subItem->boundingRect().height() - 1;
+                    }
                 }
             }
         }
@@ -267,31 +285,38 @@ quint64 SubMemoryLayout::getCompressedHeight(qreal minimumSubItemHeight, SubMemo
     quint64 newHeight = 0;
     qreal newSubItemHeight = 0;
 
-    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subMemoryItems_);
-    while (subItemIterator.hasNext())
+    if (filterSubItems_)
     {
-        subItemIterator.next();
-
-        newSubItemHeight = minimumSubItemHeight;
-
-        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
-        SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
-        if (subLayout)
+        newHeight = getFilteredCompressedHeight(minimumSubItemHeight);
+    }
+    else
+    {
+        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subMemoryItems_);
+        while (subItemIterator.hasNext())
         {
-            newSubItemHeight = subLayout->getCompressedHeight(minimumSubItemHeight, mainItem, movedConnections);
-            subItem->condense(newSubItemHeight);
-            subItem->setPos(subItem->pos().x(), newHeight);
-            newHeight += newSubItemHeight;
-        }
-        else
-        {
-            if (!subItem->getMemoryConnections().isEmpty())
+            subItemIterator.next();
+
+            newSubItemHeight = minimumSubItemHeight;
+
+            MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+            SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
+            if (subLayout)
             {
-                newSubItemHeight =
-                    getSubItemHeight(mainItem, subItem, minimumSubItemHeight, newHeight, movedConnections);
+                newSubItemHeight = subLayout->getCompressedHeight(minimumSubItemHeight, mainItem, movedConnections);
+                subItem->condense(newSubItemHeight);
+                subItem->setPos(subItem->pos().x(), newHeight);
+                newHeight += newSubItemHeight;
             }
+            else
+            {
+                if (!subItem->getMemoryConnections().isEmpty())
+                {
+                    newSubItemHeight =
+                        getSubItemHeight(mainItem, subItem, minimumSubItemHeight, newHeight, movedConnections);
+                }
 
-            newHeight = condenseSubItem(subItem, newSubItemHeight, newHeight);
+                newHeight = condenseSubItem(subItem, newSubItemHeight, newHeight);
+            }
         }
     }
 
@@ -458,4 +483,49 @@ qreal SubMemoryLayout::getAvailableArea(SubMemoryLayout* mainItem, quint64 yPosi
     }
 
     return availableArea;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::getFilteredCompressedHeight()
+//-----------------------------------------------------------------------------
+quint64 SubMemoryLayout::getFilteredCompressedHeight(qreal minimumSubItemHeight)
+{
+    quint64 filteredHeight = minimumSubItemHeight;
+
+    MemoryDesignerGraphicsItem* memoryItem = dynamic_cast<MemoryDesignerGraphicsItem*>(this);
+    if (memoryItem)
+    {
+        QMap<quint64, MemoryConnectionItem*> memoryConnections = memoryItem->getMemoryConnections();
+        if (!memoryConnections.isEmpty())
+        {
+            MemoryConnectionItem* firstConnection = memoryConnections.first();
+
+            qreal connectionsStartY = firstConnection->sceneBoundingRect().top();
+            qreal connectionsEndY = firstConnection->sceneBoundingRect().bottom();
+            
+            QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(memoryItem->getMemoryConnections());
+            while (connectionIterator.hasNext())
+            {
+                connectionIterator.next();
+                MemoryConnectionItem* connectionItem = connectionIterator.value();
+                if (connectionItem != firstConnection)
+                {
+                    qreal comparisonStartY = connectionItem->sceneBoundingRect().top();
+                    if (comparisonStartY < connectionsStartY)
+                    {
+                        connectionsStartY = comparisonStartY;
+                    }
+                    qreal comparisonEndY = connectionItem->sceneBoundingRect().bottom();
+                    if (comparisonEndY > connectionsEndY)
+                    {
+                        connectionsEndY = comparisonEndY;
+                    }
+                }
+            }
+
+            filteredHeight = connectionsEndY - connectionsStartY - memoryItem->pen().width();
+        }
+    }
+
+    return filteredHeight;
 }

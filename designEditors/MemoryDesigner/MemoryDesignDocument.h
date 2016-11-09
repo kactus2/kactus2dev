@@ -128,7 +128,21 @@ public:
      */
     bool addressSpaceChainsAreFiltered() const;
 
+    /*!
+     *  Check if the address space segments are filtered.
+     *
+     *      @return True, if address space segments are filtered, otherwise false.
+     */
+    bool addressSpaceSegmentsAreFilterted() const;
+
 public slots:
+
+    /*!
+     *  Filter the address space segments.
+     *
+     *      @param [in] filterSegments  Value for filtering the segments.
+     */
+    void filterAddressSpaceSegments(bool filterSegments);
 
     //! Called when the vertical scrollbar is scrolled.
     void onVerticalScroll(int y);

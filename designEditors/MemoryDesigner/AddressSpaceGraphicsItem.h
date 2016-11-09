@@ -39,10 +39,11 @@ public:
      *
      *      @param [in] memoryItem          Memory item containing address space data.
      *      @param [in] containingInstance  Data of the containing component instance.
+     *      @param [in] filterSegments      Value for filtering address space segments.
      *      @param [in] parent              The parent item.
      */
     AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
-        QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent = 0);
+        QSharedPointer<ConnectivityComponent> containingInstance, bool filterSegments, QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.
@@ -140,6 +141,38 @@ private:
     virtual qreal getSubItemHeight(SubMemoryLayout* mainItem, MemoryDesignerChildGraphicsItem* subItem,
         qreal minimumSubItemHeight, quint64 yPosition,
         QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
+
+    /*!
+     *  Get the filtered compressed height of an address space graphics item.
+     *
+     *      @param [in] minimumSubItemHeight    Minimum height of the graphics item.
+     *
+     *      @return The compressed height of an address space graphics item.
+     */
+    virtual quint64 getFilteredCompressedHeight(qreal minimumSubItemHeight);
+
+    /*!
+     *  Get the connection movement of a filtered address space graphics item in y-coordinate.
+     *
+     *      @param [in] connectionItem          The selected memory connection graphics item.
+     *      @param [in] connectionBaseAddress   Base address of the selected connection.
+     *      @param [in] connectionRangeEnd      End address of the selected connection.
+     *      @param [in] previousConnectionLow   The low y-coordinate of the previous memory connection item.
+     *      @param [in] oldTransferY            The old y-coordinate transfer value.
+     *
+     *      @return Y-transfer of the memory connection item in a filtered address space graphics item.
+     */
+    qreal getFilteredConnectionYTransfer(MemoryConnectionItem* connectionItem, quint64 connectionBaseAddress,
+        quint64 connectionRangeEnd, quint64 previousConnectionLow, qreal oldTransferY) const;
+
+    /*!
+     *  Get the low y-coordinate of a memory connection item in a filtered address space item.
+     *
+     *      @param [in] connectionItem  The selected memory connection item.
+     *
+     *      @return The low y-coordinate of a memory connection item in a filtered address space item.
+     */
+    quint64 getFilteredPreviousConnectionLow(MemoryConnectionItem* connectionItem) const;
 
     //-----------------------------------------------------------------------------
     // Data.

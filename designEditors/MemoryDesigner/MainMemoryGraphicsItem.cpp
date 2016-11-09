@@ -27,9 +27,9 @@
 // Function: MainMemoryGraphicsItem::MainMemoryGraphicsItem()
 //-----------------------------------------------------------------------------
 MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QString const& instanceName,
-    QString const& subItemType, QGraphicsItem* parent):
+    QString const& subItemType, bool filterSubItems, QGraphicsItem* parent):
 MemoryDesignerGraphicsItem(memoryItem->getName(), parent),
-SubMemoryLayout(memoryItem, subItemType, this),
+SubMemoryLayout(memoryItem, subItemType, filterSubItems, this),
 instanceNameLabel_(new QGraphicsTextItem(instanceName, this)),
 aubLabel_(new QGraphicsTextItem("", this)),
 instanceName_(instanceName),
@@ -373,9 +373,12 @@ bool MainMemoryGraphicsItem::hasExtensionItem() const
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::hideFirstAndLastSegmentRange()
 {
-    MemoryDesignerChildGraphicsItem* firstSubItem = getSubMemoryItems().first();
-    MemoryDesignerChildGraphicsItem* lastSubItem = getSubMemoryItems().last();
+    if (getSubMemoryItems().size() > 0)
+    {
+        MemoryDesignerChildGraphicsItem* firstSubItem = getSubMemoryItems().first();
+        MemoryDesignerChildGraphicsItem* lastSubItem = getSubMemoryItems().last();
 
-    firstSubItem->hideStartRangeLabel();
-    lastSubItem->hideEndRangeLabel();
+        firstSubItem->hideStartRangeLabel();
+        lastSubItem->hideEndRangeLabel();
+    }
 }

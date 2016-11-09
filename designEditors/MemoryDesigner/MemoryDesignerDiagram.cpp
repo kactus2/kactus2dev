@@ -53,7 +53,10 @@ parentDocument_(parent),
 layout_(new GraphicsColumnLayout(this)),
 libraryHandler_(library),
 instanceLocator_(library),
-filterAddressSpaceChains_(false)
+filterAddressSpaceChains_(false),
+filterAddressSpaceSegments_(false),
+filterAddressBlocks_(false),
+filterRegisters_(false)
 {
     setSceneRect(0, 0, 100000, 100000);
 }
@@ -80,6 +83,22 @@ void MemoryDesignerDiagram::setFilterAddressSpaceChains(bool filterChains)
 bool MemoryDesignerDiagram::addressSpaceChainsAreFiltered() const
 {
     return filterAddressSpaceChains_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::setFilterAddressSpaceSegments()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::setFilterAddressSpaceSegments(bool filterSegments)
+{
+    filterAddressSpaceSegments_ = filterSegments;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::addressSpaceSegmentsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerDiagram::addressSpaceSegmentsAreFiltered() const
+{
+    return filterAddressSpaceSegments_;
 }
 
 //-----------------------------------------------------------------------------
@@ -376,8 +395,8 @@ void MemoryDesignerDiagram::createAddressSpaceItem(QSharedPointer<MemoryItem> sp
 {
     if (containingColumn)
     {
-        AddressSpaceGraphicsItem* spaceGraphicsItem =
-            new AddressSpaceGraphicsItem(spaceItem, containingInstance, containingColumn);
+        AddressSpaceGraphicsItem* spaceGraphicsItem = new AddressSpaceGraphicsItem(
+            spaceItem, containingInstance, filterAddressSpaceSegments_, containingColumn);
         containingColumn->addItem(spaceGraphicsItem);
     }
 }
@@ -390,8 +409,8 @@ void MemoryDesignerDiagram::createMemoryMapItem(QSharedPointer<MemoryItem> mapIt
 {
     if (containingColumn)
     {
-        MemoryMapGraphicsItem* mapGraphicsItem =
-            new MemoryMapGraphicsItem(mapItem, containingInstance, containingColumn);
+        MemoryMapGraphicsItem* mapGraphicsItem = new MemoryMapGraphicsItem(
+            mapItem, filterAddressBlocks_, filterRegisters_, containingInstance, containingColumn);
         containingColumn->addItem(mapGraphicsItem);
     }
 }
@@ -748,6 +767,7 @@ void MemoryDesignerDiagram::changeMasterAddressSpaceColumn(MainMemoryGraphicsIte
     }
 
     MemoryColumn* newSpaceColumn = createAddressSpaceColumn();
+    newSpaceColumn->setZValue(-1);
     newSpaceColumn->addItem(masterSpaceItem);
     masterSpaceItem->setPos(masterSpaceItem->pos().x(), spaceItemY);
 }

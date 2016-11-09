@@ -34,10 +34,11 @@ public:
      *      @param [in] memoryItem      Memory item data.
      *      @param [in] instanceName    Name of the containing instance.
      *      @param [in] subItemType     Type of the memory sub items.
+     *      @param [in] filterSubItems  Value for filtering sub items.
      *      @param [in] parent          The parent item.
      */
     MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QString const& instanceName,
-        QString const& subItemType, QGraphicsItem* parent = 0);
+        QString const& subItemType, bool filterSubItems, QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.

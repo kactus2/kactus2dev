@@ -426,6 +426,9 @@ private slots:
     //! Opens the visibility control menu.
     void openVisibilityControlMenu();
 
+    //! Opens the memory item filtering menu.
+    void openMemoryItemFilteringMenu();
+
     //! Opens the workspace management menu.
     void openWorkspaceMenu();
 
@@ -743,6 +746,12 @@ private:
 	 */
 	void setPluginVisibilities();
 
+    /*!
+     *  Setup the memory filtering menu for the selected tab document.
+     *
+     *      @param [in] document    The selected tab document.
+     */
+    void setupMemoryFilteringMenu(TabDocument* document);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -958,6 +967,9 @@ private:
     //! The action to filter chained address space memory connections in a memory designer.
     QAction* actionFilterAddressSpaceChains_;
 
+    //! The action to filter memory items.
+    QAction* actionFilterMemoryItems_;
+
 	//! The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
 
@@ -966,6 +978,9 @@ private:
 
     //! Menu which contains the actions for managing workspaces.
     QMenu workspaceMenu_;
+
+    //! Menu which contains the actions for managing memory item filtering.
+    QMenu memoryFilteringMenu_;
 
     //! The name of the currently active workspace.
     QString curWorkspaceName_;

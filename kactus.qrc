@@ -107,6 +107,7 @@
       <file>common/graphics/compile.png</file>
 	    <file>common/graphics/memoryDesigner.png</file>
       <file>common/graphics/addressSpaceFilter.png</file>
+      <file>common/graphics/memorySubItemFilter.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>common/graphics/splash.png</file>

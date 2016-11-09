@@ -18,6 +18,7 @@
 #include <designEditors/MemoryDesigner/AddressSegmentGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
+#include <designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
 
 #include <QBrush>
 #include <QFont>
@@ -32,9 +33,9 @@ namespace AddressSpaceItemConstants
 // Function: AddressSpaceGraphicsItem::AddressSpaceGraphicsItem()
 //-----------------------------------------------------------------------------
 AddressSpaceGraphicsItem::AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
-    QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
+    QSharedPointer<ConnectivityComponent> containingInstance, bool filterSegments, QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSSEGMENT_TYPE,
-    parent),
+    filterSegments, parent),
 cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), this))
 {
     QBrush addressSpaceBrush(KactusColors::ADDRESS_SEGMENT);
@@ -261,4 +262,124 @@ qreal AddressSpaceGraphicsItem::getMinimumRequiredHeight(quint64 connectionBaseA
 {
     return SubMemoryLayout::getMinimumRequiredHeight(AddressSpaceItemConstants::MINIMUMSUBITEMHEIGHT,
         connectionBaseAddress, connectionEndAddress);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getFilteredCompressedHeight()
+//-----------------------------------------------------------------------------
+quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(qreal minimumSubItemHeight)
+{
+    MemoryConnectionItem* firstConnection = getMemoryConnections().first();
+    quint64 connectionRangeEnd = firstConnection->getRangeEndValue().toULongLong(0, 16);
+    qreal yTransfer = (sceneBoundingRect().top()) - firstConnection->sceneBoundingRect().top();
+    quint64 previousConnectionLow = firstConnection->sceneBoundingRect().bottom();
+
+    quint64 itemLastAddress = getLastAddress();
+    
+    quint64 connectionHighPoint = firstConnection->sceneBoundingRect().top();
+    quint64 connectionLowPoint = sceneBoundingRect().top() + minimumSubItemHeight;
+
+    quint64 connectionsTopY = connectionHighPoint;
+    quint64 connectionsLowY = connectionLowPoint;
+
+    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections (new QVector<MemoryConnectionItem*>());
+
+    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
+    {
+        if (connectionItem->getConnectionStartItem() == this)
+        {
+            quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
+
+            yTransfer = getFilteredConnectionYTransfer(
+                connectionItem, connectionBaseAddress, connectionRangeEnd, previousConnectionLow, yTransfer);
+
+            moveConnectionItem(connectionItem, yTransfer, movedConnections);
+
+            quint64 newConnectionEnd = connectionItem->getConnectedEndItemLastAddress();
+            if (connectionItem == firstConnection || newConnectionEnd > connectionRangeEnd)
+            {
+                connectionRangeEnd = newConnectionEnd;
+
+                previousConnectionLow = getFilteredPreviousConnectionLow(connectionItem);
+
+                connectionHighPoint = connectionItem->sceneBoundingRect().top();
+
+                quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
+                quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
+                if (connectionItem != firstConnection && connectionHighPoint < connectionLowPoint)
+                {
+                    if (itemLastAddress >= connectionLastAddress)
+                    {
+                        yTransfer -= MemoryDesignerConstants::RANGEINTERVAL * 2;
+                    }
+                }
+
+                connectionLowPoint = connectionItem->sceneBoundingRect().bottom();
+
+                if (connectionHighPoint < connectionsTopY)
+                {
+                    connectionsTopY = connectionHighPoint;
+                }
+                if (connectionLowPoint > connectionsLowY)
+                {
+                    connectionsLowY = connectionLowPoint;
+                    if (connectionLastAddress > itemLastAddress + connectionBaseAddress)
+                    {
+                        connectionsLowY -= MemoryDesignerConstants::RANGEINTERVAL * 2;
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            connectionsLowY = connectionItem->sceneBoundingRect().bottom();
+        }
+    }
+
+    qreal newItemHeight = connectionsLowY - connectionsTopY - pen().width();
+    newItemHeight = qMax(newItemHeight, minimumSubItemHeight);
+
+    return newItemHeight;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getFilteredConnectionYTransfer()
+//-----------------------------------------------------------------------------
+qreal AddressSpaceGraphicsItem::getFilteredConnectionYTransfer(MemoryConnectionItem* connectionItem,
+    quint64 connectionBaseAddress, quint64 connectionRangeEnd, quint64 previousConnectionLow, qreal oldTransferY)
+    const
+{
+    qreal newTransferY = 0;
+
+    if (connectionItem->endItemIsMemoryMap())
+    {
+        newTransferY = getTransferY(
+            connectionBaseAddress, connectionRangeEnd, previousConnectionLow, connectionItem, oldTransferY);
+    }
+    else if (connectionBaseAddress >= connectionRangeEnd + 1)
+    {
+        newTransferY = previousConnectionLow - connectionItem->sceneBoundingRect().top() - 0.5;
+    }
+
+    return newTransferY;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getFilteredPreviousConnectionLow()
+//-----------------------------------------------------------------------------
+quint64 AddressSpaceGraphicsItem::getFilteredPreviousConnectionLow(MemoryConnectionItem* connectionItem) const
+{
+    quint64 previousConnectionLow = 0;
+
+    if (connectionItem->endItemIsMemoryMap())
+    {
+        previousConnectionLow = connectionItem->getSceneEndPoint();
+    }
+    else
+    {
+        previousConnectionLow = connectionItem->sceneBoundingRect().bottom();
+    }
+
+    return previousConnectionLow;
 }

@@ -71,6 +71,20 @@ public:
     bool addressSpaceChainsAreFiltered() const;
 
     /*!
+     *  Set a new value for filtering the address space segments.
+     *
+     *      @param [in] filterSegments  Value for filtering address space segments.
+     */
+    void setFilterAddressSpaceSegments(bool filterSegments);
+
+    /*!
+     *  Check if the address space segments are filtered.
+     *
+     *      @return True, if the address space segments are filtered, false otherwise.
+     */
+    bool addressSpaceSegmentsAreFiltered() const;
+
+    /*!
      *  Load a design using the selected view.
      *
      *      @param [in] component   Component containing the view.
@@ -500,6 +514,15 @@ private:
 
     //! Value for filtering the chained address space memory connections.
     bool filterAddressSpaceChains_;
+
+    //! Value for filtering address space segments.
+    bool filterAddressSpaceSegments_;
+
+    //! Value for filtering memory map address blocks.
+    bool filterAddressBlocks_;
+
+    //! Value for filtering address block registers.
+    bool filterRegisters_;
 };
 
 //-----------------------------------------------------------------------------

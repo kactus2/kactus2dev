@@ -31,11 +31,12 @@ namespace MemoryMapItemConstants
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::MemoryMapGraphicsItem()
 //-----------------------------------------------------------------------------
-MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
-    QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
-MainMemoryGraphicsItem(
-    memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSBLOCK_TYPE, parent),
-addressUnitBits_(memoryItem->getAUB())
+MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem, bool filterAddressBlocks,
+    bool filterRegisters, QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
+MainMemoryGraphicsItem(memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSBLOCK_TYPE,
+    filterAddressBlocks, parent),
+addressUnitBits_(memoryItem->getAUB()),
+filterRegisters_(filterRegisters)
 {
     quint64 baseAddress = getMemoryMapStart(memoryItem);
     quint64 lastAddress = getMemoryMapEnd(memoryItem);
@@ -146,7 +147,7 @@ void MemoryMapGraphicsItem::setLabelPositions()
 MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
     bool isEmpty)
 {
-    return new AddressBlockGraphicsItem(subMemoryItem, isEmpty, this);
+    return new AddressBlockGraphicsItem(subMemoryItem, isEmpty, filterRegisters_, this);
 }
 
 //-----------------------------------------------------------------------------

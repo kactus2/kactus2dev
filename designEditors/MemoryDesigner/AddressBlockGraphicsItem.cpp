@@ -26,10 +26,10 @@
 // Function: AddressBlockGraphicsItem::AddressBlockGraphicsItem()
 //-----------------------------------------------------------------------------
 AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock,
-    MemoryMapGraphicsItem* memoryMapItem):
+    bool filterRegisters, MemoryMapGraphicsItem* memoryMapItem):
 MemoryDesignerChildGraphicsItem(blockItem->getName(), "address block", blockItem->getAddress().toULongLong(),
     blockItem->getRange().toULongLong(), getBlockWidth(memoryMapItem), memoryMapItem),
-SubMemoryLayout(blockItem, MemoryDesignerConstants::REGISTER_TYPE, this),
+SubMemoryLayout(blockItem, MemoryDesignerConstants::REGISTER_TYPE, filterRegisters, this),
 addressUnitBits_(blockItem->getAUB())
 {
     setColors(KactusColors::ADDR_BLOCK_COLOR, isEmptyBlock);

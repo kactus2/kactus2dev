@@ -36,11 +36,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] memoryItem          Memory item containing memory map data.
-     *      @param [in] containingInstance  Instance containing the memory map.
-     *      @param [in] parent              The parent item.
+     *      @param [in] memoryItem              Memory item containing memory map data.
+     *      @param [in] filterAddressBlocks     Value for filtering memory map address blocks.
+     *      @param [in] containingInstance      Instance containing the memory map.
+     *      @param [in] parent                  The parent item.
      */
-    MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
+    MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem, bool filterAddressBlocks, bool filterRegisters,
         QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent = 0);
 
 	/*!
@@ -139,6 +140,9 @@ private:
 
     //! The address unit bits of a memory map.
     QString addressUnitBits_;
+
+    //! Value for filtering address block registers.
+    bool filterRegisters_;
 };
 
 //-----------------------------------------------------------------------------

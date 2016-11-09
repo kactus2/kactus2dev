@@ -212,9 +212,11 @@ configurationToolsGroup_(0),
 actionConfigureViews_(0),
 filteringGroup_(0),
 actionFilterAddressSpaceChains_(0),
+actionFilterMemoryItems_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
 workspaceMenu_(this),
+memoryFilteringMenu_(this),
 curWorkspaceName_("Default"),
 pluginMgr_(),
 helpWnd_(0),
@@ -882,11 +884,21 @@ void MainWindow::setupActions()
         tr("View Configuration"), this);
     connect(actionConfigureViews_, SIGNAL(triggered()), this, SLOT(onConfigureViews()), Qt::UniqueConnection);
 
+    //! Initialize the action to filter chained address space memory connections.
     actionFilterAddressSpaceChains_ = new QAction(QIcon(":/icons/common/graphics/addressSpaceFilter.png"),
         tr("Address Space Filter"), this);
     actionFilterAddressSpaceChains_->setCheckable(true);
     connect(actionFilterAddressSpaceChains_, SIGNAL(triggered(bool)),
         this, SLOT(onFilterAddressSpaceChains(bool)), Qt::UniqueConnection);
+
+    //! Initialize the action to manage memory item filtering control.
+    actionFilterMemoryItems_ = new QAction(QIcon(":icons/common/graphics/memorySubItemFilter.png"),
+        tr("Filter Memory Items"), this);
+    actionFilterMemoryItems_->setEnabled(true);
+    actionFilterMemoryItems_->setVisible(false);
+    actionFilterMemoryItems_->setMenu(&memoryFilteringMenu_);
+    connect(actionFilterMemoryItems_, SIGNAL(triggered()),
+        this, SLOT(openMemoryItemFilteringMenu()), Qt::UniqueConnection);
 
     connectVisibilityControls();
 
@@ -1007,11 +1019,13 @@ void MainWindow::setupMenus()
 
     //! The "Filtering tools" group.
     filteringGroup_ = ribbon_->addGroup(tr("Filtering Tools"));
-    filteringGroup_->addAction(actionFilterAddressSpaceChains_);
     filteringGroup_->setVisible(false);
     filteringGroup_->setEnabled(true);
+    filteringGroup_->addAction(actionFilterAddressSpaceChains_);
+    filteringGroup_->addAction(actionFilterMemoryItems_);
 
     filteringGroup_->widgetForAction(actionFilterAddressSpaceChains_)->installEventFilter(ribbon_);
+    filteringGroup_->widgetForAction(actionFilterMemoryItems_)->installEventFilter(ribbon_);
 
 	//! The "Workspace" group.
 	RibbonGroup* workspacesGroup = ribbon_->addGroup(tr("Workspace"));
@@ -1694,6 +1708,7 @@ void MainWindow::updateMenuStrip()
 
     filteringGroup_->setVisible(doc != 0 && isMemoryDesign);
     actionFilterAddressSpaceChains_->setVisible(isMemoryDesign);
+    actionFilterMemoryItems_->setVisible(isMemoryDesign);
 }
 
 //-----------------------------------------------------------------------------
@@ -2034,6 +2049,7 @@ void MainWindow::onDocumentChanged(int index)
     {
 		updateWindows();
         updateVisibilityControlMenu(doc);
+        setupMemoryFilteringMenu(doc);
 	}
 
 	// if the new tab is designWidget
@@ -4342,6 +4358,14 @@ void MainWindow::openVisibilityControlMenu()
 }
 
 //-----------------------------------------------------------------------------
+// Function: mainwindow::openMemoryItemFilteringMenu()
+//-----------------------------------------------------------------------------
+void MainWindow::openMemoryItemFilteringMenu()
+{
+    memoryFilteringMenu_.exec(QCursor::pos());
+}
+
+//-----------------------------------------------------------------------------
 // Function: onVisibilityControlToggled()
 //-----------------------------------------------------------------------------
 void MainWindow::onVisibilityControlToggled(QAction* action)
@@ -4769,4 +4793,30 @@ void MainWindow::onFilterAddressSpaceChains(bool filterChains)
     }
 
     doc->filterAddressSpaceChains(filterChains);
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::setupMemoryFilteringMenu()
+//-----------------------------------------------------------------------------
+void MainWindow::setupMemoryFilteringMenu(TabDocument* document)
+{
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(document);
+    if (memoryDocument)
+    {
+        memoryFilteringMenu_.clear();
+
+        QActionGroup* filterActionGroup = new QActionGroup(this);
+        filterActionGroup->setExclusive(false);
+
+        QAction* filterSegmentsAction = new QAction(tr(qPrintable("Filter Address Space Segments")), this);
+        filterSegmentsAction->setCheckable(true);
+        filterSegmentsAction->setChecked(memoryDocument->addressSpaceSegmentsAreFilterted());
+
+        connect(filterSegmentsAction, SIGNAL(triggered(bool)), memoryDocument,
+            SLOT(filterAddressSpaceSegments(bool)), Qt::UniqueConnection);
+
+        filterActionGroup->addAction(filterSegmentsAction);
+        memoryFilteringMenu_.addAction(filterSegmentsAction);
+
+    }
 }

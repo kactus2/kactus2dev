@@ -27,7 +27,7 @@
 // Function: MemoryDesignDocument::MemoryDesignDocument()
 //-----------------------------------------------------------------------------
 MemoryDesignDocument::MemoryDesignDocument(LibraryInterface* library, QWidget* parent):
-TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_PRINT_SUPPORT | DOC_VISIBILITY_CONTROL_SUPPORT, 30, 300),
+TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_PRINT_SUPPORT, 30, 300),
 view_(new QGraphicsView(this)),
 diagram_(new MemoryDesignerDiagram(library, this)),
 libraryHandler_(library),
@@ -234,4 +234,21 @@ void MemoryDesignDocument::filterAddressSpaceChains(bool filterChains)
 bool MemoryDesignDocument::addressSpaceChainsAreFiltered() const
 {
     return diagram_->addressSpaceChainsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::filterAddressSpaceSegments()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::filterAddressSpaceSegments(bool filterSegments)
+{
+    diagram_->setFilterAddressSpaceSegments(filterSegments);
+    refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::addressSpaceSegmentsAreFilterted()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDocument::addressSpaceSegmentsAreFilterted() const
+{
+    return diagram_->addressSpaceSegmentsAreFiltered();
 }

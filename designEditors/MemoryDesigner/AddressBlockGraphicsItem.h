@@ -38,11 +38,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] blockItem       Memory item containing the address block data.
-     *      @param [in] isEmptyBlock    Boolean value for existing blocks.
-     *      @param [in] memoryMapItem   The parent memory map item.
+     *      @param [in] blockItem           Memory item containing the address block data.
+     *      @param [in] isEmptyBlock        Boolean value for existing blocks.
+     *      @param [in] filterRegisters     Filtering value for address block registers.
+     *      @param [in] memoryMapItem       The parent memory map item.
      */
-    AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock,
+    AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock, bool filterRegisters,
         MemoryMapGraphicsItem* memoryMapItem);
 
 	/*!
