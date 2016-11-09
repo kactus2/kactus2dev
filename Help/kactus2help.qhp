@@ -101,10 +101,11 @@
                 </section>
 				<section title="SW Design" ref="swsysdesign/swdesign.html">
                     <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
-                </section>
+        </section>
 				<!--section title="System Design" ref="swsysdesign/systemdesign.html"/-->				
-				<section title="Keyboard and Mouse Shortcuts" ref="shortcuts.html"/>
-			</section>			
+        <section title="Keyboard and Mouse Shortcuts" ref="shortcuts.html"/>	
+        <section title="Community Guidelines" ref="communityGuideLines.html"/>
+        </section>			
         </toc>
         <keywords>
             <keyword name="HW Design" id="Kactus2::hwdesign" ref="hwdesign/hwdesign.html" />

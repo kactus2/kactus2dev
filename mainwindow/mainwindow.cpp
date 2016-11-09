@@ -1245,7 +1245,7 @@ void MainWindow::setupContextHelp()
 
     connect(this, SIGNAL(helpUrlRequested(QString const&)),
             contextHelpBrowser_, SLOT(onHelpRequested(QString const&)), Qt::UniqueConnection);
-    contextHelpBrowser_->onHelpRequested("index.html");
+    contextHelpBrowser_->onHelpRequested("welcome.html");
 }
 
 //-----------------------------------------------------------------------------
