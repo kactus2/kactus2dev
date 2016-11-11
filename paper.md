@@ -24,17 +24,15 @@ authors:
 affiliations:
  - name: Tampere University of Technology
    index: 1
-date: 9 November 2016
+date: 11 November 2016
 bibliography: paper.bib
 ---
 
 # Summary
 
-Kactus2 is a graphical EDA tool targeted mainly for FPGA design, but is also applicable for documentation [@DATAM] and mapping software on hardware [@MCAPI], making it a more general embedded systems development tool. The tool is based on IP-XACT 2014 standard [@IP-XACT], which defines an XML format for documents describing the overall structure of components, designs, and interfaces between components. The scope of the standard does not include behavior of the components, but the structural description necessary for tool integration. Another significant dependency for Kactus2 is the Qt user interface library.
+Kactus2 is a graphical Electronic Design Automation [@DEV] tool targeted for packing and assembling building blocks for ASICs and FPFGAs. Kactus2 is based on IEEE 1685-2014 "IP-XACT" standard [@IP-XACT], which defines an XML format for documents describing the components, designs and configurations. The IP-XACT standard is complex and versatile, but Kactus2 hides most of the complexity and offers the users the easiest to use tool to accomplish IP-XACT related EDA tasks. In addition, Kactus2 includes extensions for SW components, SW on HW mapping and API abstraction, as well as physical product hierarchy including printed circuit board level. 
 
-The tool uses the IP-XACT files as the way to store the documents as described in the standard, and most of the fields defined in the standard may be edited by the user. Some of the fields are edited more implicitly, such as interconnections within design diagrams, which are graphically drawn with the diagram editor within the tool. One of the intended benefits of Kactus2 is also the real-time feedback to user about potential design problems, such as mismatching interfaces between two connected components.
-
-Kactus2 is also an expandable tool, as it supports 3rd party plugins, for instance, importer and generator for Verilog. Supported platforms include Windows and Linux.
+Kactus2 is a comprehensive toolset consisting of a core and plugins. The latter implement, for example, import from legacy code (e.g. Verilog, VHDL) and generation of code for HW synthesis and SW development. Current generators support Verilog, VHDL, HTML, PADS PCB parts as well as C Header and Memory map generators. Kactus2 is implemented in Qt5 cross-platform supporting Windows and Linux.
 
 # References
 
