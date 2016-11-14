@@ -28,7 +28,6 @@
 #include <IPXACTmodels/Component/cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>

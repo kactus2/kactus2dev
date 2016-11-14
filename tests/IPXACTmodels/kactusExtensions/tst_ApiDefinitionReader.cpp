@@ -49,14 +49,17 @@ void tst_ApiDefinitionReader::baseCase()
 		"<ipxact:library>kurjasto</ipxact:library>"
 		"<ipxact:name>def</ipxact:name>"
 		"<ipxact:version>0.11</ipxact:version>"
-		"<kactus2:comDefinitionRef ipxact:vendor=\"he\" ipxact:library=\"s-lib\" ipxact:name=\"cdef\" ipxact:version=\"1.337\"/>"
-		"<kactus2:dataTypes><kactus2:dataType kactus2:name=\"new item\"/></kactus2:dataTypes>"
+		"<kactus2:comDefinitionRef vendor=\"he\" library=\"s-lib\" name=\"cdef\" version=\"1.337\"/>"
+		"<kactus2:dataTypes><kactus2:dataType name=\"new item\"/></kactus2:dataTypes>"
 		"<kactus2:functions>"
-		"<kactus2:function kactus2:name=\"hjjhjh\" kactus2:description=\"yryry\">"
-		"<kactus2:returnValue kactus2:type=\"void\" kactus2:description=\"lolol\"/>"
+		"<kactus2:function name=\"hjjhjh\" description=\"yryry\">"
+		"<kactus2:returnValue type=\"void\" description=\"lolol\"/>"
 		"</kactus2:function>"
-		"</kactus2:functions>"
-		"<ipxact:vendorExtensions/>"
+        "</kactus2:functions>"
+        "<ipxact:vendorExtensions>"
+        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+        "<kactus2:version>3.0.0</kactus2:version>"
+        "</ipxact:vendorExtensions>"
 		"</kactus2:apiDefinition>\n"
 		);
 
@@ -81,7 +84,11 @@ void tst_ApiDefinitionReader::baseCase()
 	QCOMPARE(testApiDefinition->getFunctions()->first()->name(), QString("hjjhjh"));
 	QCOMPARE(testApiDefinition->getFunctions()->first()->getDescription(), QString("yryry"));
 	QCOMPARE(testApiDefinition->getFunctions()->first()->getReturnValueType(), QString("void"));
-	QCOMPARE(testApiDefinition->getFunctions()->first()->getReturnValueDescription(), QString("lolol"));
+    QCOMPARE(testApiDefinition->getFunctions()->first()->getReturnValueDescription(), QString("lolol"));
+
+    QCOMPARE(testApiDefinition->getVendorExtensions()->size(), 2);
+    QCOMPARE(testApiDefinition->getVendorExtensions()->last()->type(), QString("testExtension"));
+    QCOMPARE(testApiDefinition->getVendorExtensions()->first()->type(), QString("kactus2:version"));
 }
 
 QTEST_APPLESS_MAIN(tst_ApiDefinitionReader)

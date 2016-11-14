@@ -82,15 +82,7 @@ void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPo
 
 	writer.writeEndElement(); // kactus2:functions
 
-	if (apiDefinition->getVendorExtensions()->isEmpty())
-	{
-		writer.writeStartElement(QStringLiteral("ipxact:vendorExtensions"));
-		foreach (QSharedPointer<VendorExtension> extension, *apiDefinition->getVendorExtensions())
-		{
-			extension->write(writer);
-		}
-		writer.writeEndElement(); // ipxact:vendorExtensions
-	}
+    writeVendorExtensions(writer, apiDefinition);
 
 	writer.writeEndElement(); // kactus2:apiDefinition
 	writer.writeEndDocument();

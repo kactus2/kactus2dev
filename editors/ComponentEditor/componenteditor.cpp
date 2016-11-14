@@ -654,9 +654,6 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
         &navigationModel_, libHandler_, pluginManager_, component, referenceCounter_, parameterFinder_,
         expressionParser_, expressionFormatter_, root)));
 
-    root->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
-        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser_, root)));
-
     QSharedPointer<InstantiationsItem> instantiationsItem (
         new InstantiationsItem(&navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
         expressionFormatter_, expressionParser_, root));
@@ -674,8 +671,11 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
     connect(viewsItem.data(), SIGNAL(openReferenceTree(QString)),
         this, SLOT(openReferenceTree(QString)), Qt::UniqueConnection);
 
-    root->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(
-        new ComponentEditorSystemViewsItem(&navigationModel_, libHandler_, component, root)));
+    if (component->getImplementation() != KactusAttribute::SW)
+    {
+        root->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(
+            new ComponentEditorSystemViewsItem(&navigationModel_, libHandler_, component, root)));
+    }
 
     if (component->getImplementation() == KactusAttribute::HW)
     {
@@ -690,6 +690,9 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
             expressionParser_, root, parentWidget()));
 
         root->addChildItem(busInterfaceItem);
+
+        root->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
+            new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component, expressionParser_, root)));
 
         QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
             &navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_, expressionParser_, 

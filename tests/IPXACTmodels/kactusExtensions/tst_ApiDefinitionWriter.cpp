@@ -11,6 +11,8 @@
 
 #include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
 
+#include <IPXACTmodels/common/GenericVendorExtension.h>
+
 #include <QtTest>
 
 class tst_ApiDefinitionWriter : public QObject
@@ -73,7 +75,17 @@ void tst_ApiDefinitionWriter::baseCase()
 	func->setReturnValueType("void");
 	func->setReturnValueDescription("lolol");
 
-	testApiDefinition_->getFunctions()->append(func);
+    testApiDefinition_->getFunctions()->append(func);
+
+    QDomDocument document;
+    QDomElement extensionNode = document.createElement("testExtension");
+    extensionNode.setAttribute("testExtensionAttribute", "extension");
+    extensionNode.appendChild(document.createTextNode("testValue"));
+
+    QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
+
+    testApiDefinition_->getVendorExtensions()->append(testExtension);
+    testApiDefinition_->setVersion("3.0.0");
 
 	QString expectedOutput(
 		"<?xml version=\"1.0\"?>"
@@ -86,14 +98,17 @@ void tst_ApiDefinitionWriter::baseCase()
 		"<ipxact:library>kurjasto</ipxact:library>"
 		"<ipxact:name>def</ipxact:name>"
 		"<ipxact:version>0.11</ipxact:version>"
-		"<kactus2:comDefinitionRef ipxact:vendor=\"he\" ipxact:library=\"s-lib\" ipxact:name=\"cdef\" ipxact:version=\"1.337\"/>"
-		"<kactus2:dataTypes><kactus2:dataType kactus2:name=\"new item\"/></kactus2:dataTypes>"
+		"<kactus2:comDefinitionRef vendor=\"he\" library=\"s-lib\" name=\"cdef\" version=\"1.337\"/>"
+		"<kactus2:dataTypes><kactus2:dataType name=\"new item\"/></kactus2:dataTypes>"
 		"<kactus2:functions>"
-		"<kactus2:function kactus2:name=\"hjjhjh\" kactus2:description=\"yryry\">"
-		"<kactus2:returnValue kactus2:type=\"void\" kactus2:description=\"lolol\"/>"
+		"<kactus2:function name=\"hjjhjh\" description=\"yryry\">"
+		"<kactus2:returnValue type=\"void\" description=\"lolol\"/>"
 		"</kactus2:function>"
-		"</kactus2:functions>"
-		"<ipxact:vendorExtensions/>"
+        "</kactus2:functions>"
+        "<ipxact:vendorExtensions>"
+        "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+        "<kactus2:version>3.0.0</kactus2:version>"
+        "</ipxact:vendorExtensions>"
 		"</kactus2:apiDefinition>\n"
 		);
 

@@ -55,20 +55,6 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 
 	comDefinition->setVlnv(itemVLNV);
 
-	QDomNodeList extensionNodes = comNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions")).childNodes();
-
-	int extensionCount = extensionNodes.count();
-	for (int i = 0; i < extensionCount; i++)
-	{
-		QDomNode extensionNode = extensionNodes.at(i);
-
-		if (!extensionNode.nodeName().startsWith(QLatin1String("kactus2:")))
-		{
-			QSharedPointer<VendorExtension> extension(new GenericVendorExtension(extensionNode));
-			comDefinition->getVendorExtensions()->append(extension);
-		}
-	}
-
 	// Parse child nodes.
 	for (int i = 0; i < comNode.childNodes().count(); ++i)
 	{
@@ -91,7 +77,9 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 		{
 			parseProperties(childNode, comDefinition);
 		}
-	}
+    }
+
+    parseKactusAndVendorExtensions(comNode, comDefinition);
 
 	return comDefinition;
 }

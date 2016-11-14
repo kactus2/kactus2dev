@@ -95,6 +95,7 @@ void tst_ComDefinitionReader::allFields()
         "</kactus2:properties>"
         "<ipxact:vendorExtensions>"
         "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+        "<kactus2:version>3.0.0</kactus2:version>"
         "</ipxact:vendorExtensions>"
         "</kactus2:comDefinition>\n"
         );
@@ -120,7 +121,9 @@ void tst_ComDefinitionReader::allFields()
     QCOMPARE(prop->getDefaultValue(), QString("128"));
     QCOMPARE(prop->getDescription(), QString("Maximum size of a single transfer"));
 
-    QCOMPARE(testComDefinition->getVendorExtensions()->size(), 1);
+    QCOMPARE(testComDefinition->getVendorExtensions()->size(), 2);
+    QCOMPARE(testComDefinition->getVendorExtensions()->last()->type(), QString("testExtension"));
+    QCOMPARE(testComDefinition->getVendorExtensions()->first()->type(), QString("kactus2:version"));
 }
 
 QTEST_APPLESS_MAIN(tst_ComDefinitionReader)
