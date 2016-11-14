@@ -263,27 +263,18 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/channels/channelseditor.h \
     ./editors/ComponentEditor/channels/channelsmodel.h \
     ./editors/ComponentEditor/busInterfaces/BusInterfaceColumns.h \
-    ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.h \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.h \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.h \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemslave.h \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemonitor.h \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemodeeditor.h \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemaster.h \
-    ./editors/ComponentEditor/busInterfaces/general/busifgeneraltab.h \
-    ./editors/ComponentEditor/busInterfaces/general/busifgeneraldetails.h \
-    ./editors/ComponentEditor/busInterfaces/general/bridgesmodel.h \
+    ./editors/ComponentEditor/busInterfaces/businterfaceeditor.h \
     ./editors/ComponentEditor/busInterfaces/businterfacesdelegate.h \
     ./editors/ComponentEditor/busInterfaces/businterfaceseditor.h \
     ./editors/ComponentEditor/busInterfaces/businterfacesmodel.h \
-    ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.h \
-    ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingColumns.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapsColumns.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.h \
+    ./editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.h \
@@ -291,6 +282,19 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h \
+    ./editors/ComponentEditor/busInterfaces/general/BridgeColumns.h \
+    ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.h \
+    ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.h \
+    ./editors/ComponentEditor/busInterfaces/general/bridgesmodel.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifgeneraldetails.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifgeneraltab.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemaster.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemodeeditor.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemonitor.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemslave.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.h \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.h \
+    ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.h \
     ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersdelegate.h \
     ./editors/ComponentEditor/fileBuilders/filebuilderseditor.h \
@@ -309,14 +313,6 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/software/comInterface/cominterfacesmodel.h \
     ./editors/ComponentEditor/software/comInterface/ComInterfaceEditor.h \
     ./editors/ComponentEditor/software/comInterface/cominterfacesdelegate.h \
-    ./editors/ComponentEditor/software/swView/cpuselector.h \
-    ./editors/ComponentEditor/software/swView/bspbuildeditor.h \
-    ./editors/ComponentEditor/software/swView/swbuildcommandeditor.h \
-    ./editors/ComponentEditor/software/swView/swbuildcommandmodel.h \
-    ./editors/ComponentEditor/software/swView/swbuilddelegate.h \
-    ./editors/ComponentEditor/software/swView/SWViewEditor.h \
-    ./editors/ComponentEditor/software/swView/swviewseditor.h \
-    ./editors/ComponentEditor/software/swView/swviewsmodel.h \
     ./editors/ComponentEditor/software/systemView/SystemViewEditor.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsEditor.h \
     ./editors/ComponentEditor/software/systemView/SystemViewsModel.h \
@@ -347,7 +343,6 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/views/EnvIdentifiersColumns.h \
     ./editors/ComponentEditor/views/ViewColumns.h \
     ./editors/ComponentEditor/views/ViewsDelegate.h \
-    ./editors/ComponentEditor/views/hierarchyrefwidget.h \
     ./editors/ComponentEditor/views/vieweditor.h \
     ./editors/ComponentEditor/views/viewseditor.h \
     ./editors/ComponentEditor/views/viewsmodel.h \
@@ -705,11 +700,7 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h \
-    ./editors/ComponentEditor/busInterfaces/businterfaceeditor.h \
-    ./editors/ComponentEditor/busInterfaces/general/BridgeColumns.h \
-    ./editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -901,23 +892,12 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/componenteditor.cpp \
     ./editors/ComponentEditor/itemeditor.cpp \
     ./editors/ComponentEditor/itemvisualizer.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfaceeditor.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemslave.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemonitor.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemodeeditor.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemaster.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/busifgeneraltab.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/busifgeneraldetails.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/bridgesmodel.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfacesdelegate.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfaceseditor.cpp \
     ./editors/ComponentEditor/busInterfaces/businterfacesmodel.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.cpp \
+    ./editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.cpp \
@@ -929,6 +909,18 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.cpp \
     ./editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/bridgesdelegate.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/bridgeseditor.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/bridgesmodel.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifgeneraldetails.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifgeneraltab.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemaster.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemodeeditor.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemonitor.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacemslave.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.cpp \
     ./editors/ComponentEditor/channels/channelsdelegate.cpp \
     ./editors/ComponentEditor/channels/channelseditor.cpp \
     ./editors/ComponentEditor/channels/channelsmodel.cpp \
@@ -966,9 +958,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/fileSet/groupmanagerdelegate.cpp \
     ./editors/ComponentEditor/general/desceditor.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
-    ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
-    ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
-    ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
     ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ./editors/ComponentEditor/parameters/ParameterDelegate.cpp \
@@ -985,7 +974,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \
-    ./editors/ComponentEditor/views/hierarchyrefwidget.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
     ./editors/ComponentEditor/views/ViewsDelegate.cpp \
     ./editors/ComponentEditor/views/viewseditor.cpp \
@@ -1002,14 +990,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/software/comInterface/cominterfacesdelegate.cpp \
     ./editors/ComponentEditor/software/comInterface/cominterfaceseditor.cpp \
     ./editors/ComponentEditor/software/comInterface/cominterfacesmodel.cpp \
-    ./editors/ComponentEditor/software/swView/bspbuildeditor.cpp \
-    ./editors/ComponentEditor/software/swView/cpuselector.cpp \
-    ./editors/ComponentEditor/software/swView/swbuildcommandeditor.cpp \
-    ./editors/ComponentEditor/software/swView/swbuildcommandmodel.cpp \
-    ./editors/ComponentEditor/software/swView/swbuilddelegate.cpp \
-    ./editors/ComponentEditor/software/swView/SWViewEditor.cpp \
-    ./editors/ComponentEditor/software/swView/swviewseditor.cpp \
-    ./editors/ComponentEditor/software/swView/swviewsmodel.cpp \
     ./editors/ComponentEditor/software/systemView/SystemViewEditor.cpp \
     ./editors/ComponentEditor/software/systemView/SystemViewsEditor.cpp \
     ./editors/ComponentEditor/software/systemView/SystemViewsModel.cpp \
@@ -1098,8 +1078,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorregisteritem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.cpp \
-    ./editors/ComponentEditor/treeStructure/componenteditorswviewitem.cpp \
-    ./editors/ComponentEditor/treeStructure/componenteditorswviewsitem.cpp \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.cpp \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditortreemodel.cpp \
@@ -1167,6 +1145,9 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterEditor.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterModel.cpp \
+    ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
+    ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
+    ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
@@ -1329,6 +1310,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc

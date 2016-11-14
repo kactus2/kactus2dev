@@ -950,12 +950,18 @@ void tst_ComponentReader::readSwViews()
                 "<kactus2:version>3.0.0</kactus2:version>"
                 "<kactus2:swViews>"
                     "<kactus2:swView>"
-                        "<ipxact:name>swView</ipxact:name>"
+                        "<ipxact:name>sampleSoftView</ipxact:name>"
                         "<ipxact:displayName>displayed</ipxact:displayName>"
                         "<ipxact:description>described</ipxact:description>"
                         "<kactus2:hierarchyRef vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
-                            "version=\"0.3\"/>"
+                        "version=\"0.3\"/>"
                         "<kactus2:fileSetRef>fileSet</kactus2:fileSetRef>"
+                        "<kactus2:SWBuildCommand>"
+                            "<kactus2:fileType>cSource</kactus2:fileType>"
+                            "<ipxact:command>gcc</ipxact:command>"
+                            "<ipxact:flags>-DhwA</ipxact:flags>"
+                            "<ipxact:replaceDefaultFlags>1</ipxact:replaceDefaultFlags>"
+                        "</kactus2:SWBuildCommand>"
                     "</kactus2:swView>"
                 "</kactus2:swViews>"
             "</ipxact:vendorExtensions>"
@@ -968,20 +974,44 @@ void tst_ComponentReader::readSwViews()
     ComponentReader componentReader;
 
     QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
-
     QCOMPARE(testComponent->getVlnv().getName(), QString("TestComponent"));
-    QCOMPARE(testComponent->getSWViews().size(), 1);
+    QCOMPARE(testComponent->getViews()->size(), 1);
 
-    QSharedPointer<SWView> swView = testComponent->getSWViews().first();
-    QCOMPARE(swView->name(), QString("swView"));
+    QSharedPointer<View> swView = testComponent->getViews()->first();
+    QCOMPARE(swView->name(), QString("sampleSoftView"));
     QCOMPARE(swView->displayName(), QString("displayed"));
     QCOMPARE(swView->description(), QString("described"));
-    QCOMPARE(swView->getHierarchyRef().getVendor(), QString("TUT"));
-    QCOMPARE(swView->getHierarchyRef().getLibrary(), QString("TestLibrary"));
-    QCOMPARE(swView->getHierarchyRef().getName(), QString("hierarchy"));
-    QCOMPARE(swView->getHierarchyRef().getVersion(), QString("0.3"));
-    QCOMPARE(swView->getFileSetRefs().size(), 1);
-    QCOMPARE(swView->getFileSetRefs().first(), QString("fileSet"));
+    QCOMPARE(swView->getComponentInstantiationRef(), QString("sampleSoftView_sw_component_instantiation"));
+    QCOMPARE(swView->getDesignInstantiationRef(), QString("sampleSoftView_sw_design_instantiation"));
+
+    QCOMPARE(testComponent->getComponentInstantiations()->size(), 1);
+
+    QSharedPointer<ComponentInstantiation> componentInstantiation =
+        testComponent->getComponentInstantiations()->first();
+    QCOMPARE(componentInstantiation->name(), swView->getComponentInstantiationRef());
+    QCOMPARE(componentInstantiation->getFileSetReferences()->size(), 1);
+    QCOMPARE(componentInstantiation->getFileSetReferences()->first(), QString("fileSet"));
+
+    QCOMPARE(componentInstantiation->getDefaultFileBuilders()->size(), 1);
+    QSharedPointer<FileBuilder> builder = componentInstantiation->getDefaultFileBuilders()->first();
+    QCOMPARE(builder->getFileType(),QString("cSource"));
+    QCOMPARE(builder->getCommand(),QString("gcc"));
+    QCOMPARE(builder->getFlags(),QString("-DhwA"));
+    QCOMPARE(builder->getReplaceDefaultFlags(),QString("1"));
+
+    QCOMPARE(testComponent->getDesignInstantiations()->size(), 1);
+
+    QSharedPointer<DesignInstantiation> designInstantiation =
+        testComponent->getDesignInstantiations()->first();
+    QCOMPARE(designInstantiation->name(), swView->getDesignInstantiationRef());
+
+    QSharedPointer<ConfigurableVLNVReference> designRef = designInstantiation->getDesignReference();
+
+    QVERIFY(designRef);
+    QCOMPARE(designRef->getVendor(), QString("TUT"));
+    QCOMPARE(designRef->getLibrary(), QString("TestLibrary"));
+    QCOMPARE(designRef->getName(), QString("hierarchy"));
+    QCOMPARE(designRef->getVersion(), QString("0.3"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1019,7 +1049,6 @@ void tst_ComponentReader::readSwComProperties()
     QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
 
     QCOMPARE(testComponent->getVlnv().getName(), QString("TestComponent"));
-    QCOMPARE(testComponent->getSWViews().size(), 0);
     QCOMPARE(testComponent->getSWProperties()->size(), 1);
 
     QSharedPointer<ComProperty> swProperty = testComponent->getSWProperties()->first();

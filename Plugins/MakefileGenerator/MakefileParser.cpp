@@ -71,7 +71,7 @@ void MakefileParser::parse(QSharedPointer<Component> topComponent)
 		// Now we may check the compiler and flags of individual files...
 		foreach (QSharedPointer<MakeObjectData> mod, makeData->swObjects)
 		{
-			mod->compiler = getFileCompiler( mod, makeData->hardPart->buildCmd );
+			mod->compiler = getFileCompiler(mod, makeData->hardPart->buildCmd);
 			mod->flags = getFileFlags(makeData->parts.first()->component, mod, makeData );
 		}
 
@@ -83,7 +83,7 @@ void MakefileParser::parse(QSharedPointer<Component> topComponent)
 
 		// Remove duplicates: They are not needed.
 		makeData->includeDirectories.removeDuplicates();
-		makeData->softViewFlags.removeDuplicates();
+		makeData->componentInstantiationFlags.removeDuplicates();
 
 		// Finally, see if there are any conflicts within the potential object files.
 		findConflicts(makeData);
@@ -104,12 +104,12 @@ void MakefileParser::parseMakeObjects( QSharedPointer<MakeFileData> makeData,
 	QString componentPath = componentQfi.absolutePath() + "/";
 
     // Go through the fileSets referenced in the software view.
-    foreach( QString fsetName, stackPart->view->getFileSetRefs())
+    foreach(QString fsetName, *stackPart->instantiation->getFileSetReferences())
     {
         QSharedPointer<FileSet> fset = stackPart->component->getFileSet(fsetName);
 
 		// Skip, if no such file set exist!
-		if ( fset )
+		if (fset)
 		{
 			parseFileSet(fset, makeData, stackPart, componentPath );
 		}
@@ -170,10 +170,10 @@ void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QSharedPointer<M
 // Function: MakefileParser::getFileCompiler()
 //-----------------------------------------------------------------------------
 QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod,
-	QSharedPointer<SWFileBuilder> hardBuilder) const
+	QSharedPointer<FileBuilder> hardBuilder) const
 {
 	QString compiler;
-	QSharedPointer<SWFileBuilder> swbc;
+	QSharedPointer<FileBuilder> swbc;
 
 	// This mesh does following:
 	// 1. No file builder -> use fileSet builder

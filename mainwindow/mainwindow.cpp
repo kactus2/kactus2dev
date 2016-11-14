@@ -97,7 +97,6 @@
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
@@ -1817,12 +1816,9 @@ void MainWindow::runGeneratorPlugin(QAction* action)
 
 		 // the implementation defines where to search for the hierarchy ref
 		 switch (desWidget->getImplementation()) {
-		 case KactusAttribute::HW: {
+         case KactusAttribute::HW: 
+         case KactusAttribute::SW: {
 			 desConfVLNV = comp->getHierRef(viewName);
-			 break;
-												 }
-		 case KactusAttribute::SW: {
-			 desConfVLNV = comp->getHierSWRef(viewName);
 			 break;
 												 }
 		 case KactusAttribute::SYSTEM: {
@@ -2483,12 +2479,18 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
     component->setVersion(VersionHelper::versionFileStr());
 
     // Create the view.
-    QSharedPointer<SWView> view (new SWView("software"));
-    view->setHierarchyRef(desConfVLNV);
+    QSharedPointer<View> view (new View("software"));
 
-    QList<QSharedPointer<SWView> > swViews = component->getSWViews();
-    swViews.append(view);
-    component->setSWViews(swViews);
+    QSharedPointer<ConfigurableVLNVReference> tempReference (new ConfigurableVLNVReference(desConfVLNV));
+
+    QSharedPointer<DesignConfigurationInstantiation> hierarchicalInstantiation
+        (new DesignConfigurationInstantiation(desConfVLNV.getName() + "_" + desConfVLNV.getVersion()));
+    hierarchicalInstantiation->setDesignConfigurationReference(tempReference);
+
+    view->setDesignConfigurationInstantiationRef(hierarchicalInstantiation->name());
+
+    component->getDesignConfigurationInstantiations()->append(hierarchicalInstantiation);
+    component->getViews()->append(view);
 
     // Create the design and design configuration.
     QSharedPointer<Design> design(new Design(designVLNV));
@@ -2534,7 +2536,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
     if (success)
     {
         // Open the design.
-        openSWDesign(vlnv, component->getSWViewNames().first(), true);
+        openSWDesign(vlnv, view->name(), true);
     }
     else
     {
@@ -2574,7 +2576,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
         viewName = baseViewName;
         unsigned int runningNumber = 1;
 
-        foreach (QSharedPointer<SWView> swView, component->getSWViews())
+        foreach (QSharedPointer<View> swView, *component->getViews())
         {
             if (swView->name() == viewName)
             {
@@ -2592,12 +2594,18 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     }
 
     // Create the view.
-    QSharedPointer<SWView> view (new SWView(dialog.getViewName()));
-    view->setHierarchyRef(dialog.getDesignConfVLNV());   
+    QSharedPointer<View> view (new View(dialog.getViewName()));
 
-    QList<QSharedPointer<SWView> > swViews = component->getSWViews();
-    swViews.append(view);
-    component->setSWViews(swViews);
+    QSharedPointer<ConfigurableVLNVReference> tempReference (new ConfigurableVLNVReference(dialog.getDesignConfVLNV()));
+
+    QSharedPointer<DesignConfigurationInstantiation> hierarchicalInstantiation
+        (new DesignConfigurationInstantiation(dialog.getDesignConfVLNV().getName() + "_" + dialog.getDesignConfVLNV().getVersion()));
+    hierarchicalInstantiation->setDesignConfigurationReference(tempReference);
+
+    view->setDesignConfigurationInstantiationRef(hierarchicalInstantiation->name());
+
+    component->getDesignConfigurationInstantiations()->append(hierarchicalInstantiation);
+    component->getViews()->append(view);
 
     component->setVersion(VersionHelper::versionFileStr());
 
@@ -3311,7 +3319,7 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName, bool fo
 	QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
 	// check if the design is already open
-	VLNV refVLNV = comp->getHierSWRef(viewName);
+	VLNV refVLNV = comp->getHierRef(viewName);
 	VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
 	if (isOpen(designVLNV))
     {
@@ -4641,12 +4649,9 @@ void MainWindow::setPluginVisibilities()
 
             // the implementation defines where to search for the hierarchy ref
             switch (desWidget->getImplementation()) {
-            case KactusAttribute::HW: {
-                desConfVLNV = comp->getHierRef(viewName);
-                break;
-                                      }
+            case KactusAttribute::HW:
             case KactusAttribute::SW: {
-                desConfVLNV = comp->getHierSWRef(viewName);
+                desConfVLNV = comp->getHierRef(viewName);
                 break;
                                       }
             case KactusAttribute::SYSTEM: {

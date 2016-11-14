@@ -201,24 +201,6 @@ private:
      *      @return The root item for the navigation model for the component.
      */
     QSharedPointer<ComponentEditorRootItem> createNavigationRootForComponent(QSharedPointer<Component> component);
-    
-    /*!
-     *  Creates the navigation model root item and its children for a HW component.
-     *
-     *      @param [in] component   The component for which to create the root item.
-     *
-     *      @return The root item for the navigation model for the component.
-     */
-    QSharedPointer<ComponentEditorRootItem> createHWRootItem(QSharedPointer<Component> component);
-        
-    /*!
-     *  Creates the navigation model root item and its children for a SW component.
-     *
-     *      @param [in] component   The component for which to create the root item.
-     *
-     *      @return The root item for the navigation model for the component.
-     */
-    QSharedPointer<ComponentEditorRootItem> createSWRootItem(QSharedPointer<Component> component);
 
     //! Setups the editor layout.
     void setupLayout();

@@ -44,7 +44,6 @@
 #include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 
 #include <QKeyEvent>
 #include <QMessageBox>
@@ -135,23 +134,14 @@ bool SystemDesignWidget::setDesign(QSharedPointer<Component> comp, const QString
 
     if (onlySW_)
     {
-        QSharedPointer<SWView> view;
-		
-		foreach ( QSharedPointer<SWView> currentView, comp->getSWViews() )
-		{
-			if ( currentView->name() == viewName )
-			{
-				view = currentView;
-				break;
-			}
-		}
+        QSharedPointer<View> view = comp->getModel()->findView(viewName);
 
         if (!view)
         {
             return false;
         }
 
-        designVLNV = comp->getHierSWRef(viewName);
+        designVLNV = comp->getHierRef(viewName);
     }
     else
     {
@@ -688,6 +678,6 @@ VLNV SystemDesignWidget::getIdentifyingVLNV() const
     }
     else
     {
-        return getEditedComponent()->getHierSWRef(getOpenViewName());
+        return getEditedComponent()->getHierRef(getOpenViewName());
     }
 }

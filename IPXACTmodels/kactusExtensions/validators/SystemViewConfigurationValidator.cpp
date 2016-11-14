@@ -97,7 +97,6 @@ void SystemViewConfigurationValidator::changeAvailableSystemViews(QSharedPointer
 
                     if (component)
                     {
-                        availableViews_ = component->getSWViewNames();
 						availableViews_.append( component->getSystemViewNames() );
                         return;
                     }

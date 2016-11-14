@@ -263,7 +263,7 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
                     }
                     else if (component->getImplementation() == KactusAttribute::SW)
                     {
-                        if (component->hasSWViews())
+                        if (component->isHierarchical())
                         {
                             return QIcon(":/icons/common/graphics/hier-sw-component.png");
                         }

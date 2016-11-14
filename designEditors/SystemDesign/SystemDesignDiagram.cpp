@@ -52,7 +52,6 @@
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include <IPXACTmodels/kactusExtensions/ComInterconnection.h>
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
@@ -663,7 +662,7 @@ void SystemDesignDiagram::onAddToLibraryAction()
 //-----------------------------------------------------------------------------
 void SystemDesignDiagram::openDesignForComponent(ComponentItem* component, QString const& viewName)
 {
-    if (component->componentModel()->hasSWView(viewName))
+    if (component->componentModel()->hasView(viewName))
     {
         emit openSWDesign(component->componentModel()->getVlnv(), viewName);
     }
@@ -1265,7 +1264,7 @@ bool SystemDesignDiagram::isHierarchicalComponent(QGraphicsItem* item) const
     SWComponentItem* component = qgraphicsitem_cast<SWComponentItem*>(item);
     if (component)
     {
-        return component->componentModel()->isHierarchicalSW();
+        return component->componentModel()->isHierarchical();
     }
 
     return false;
@@ -1338,7 +1337,7 @@ void SystemDesignDiagram::openComponentByActiveView(ComponentItem* comp)
     QString viewName = getActiveViewOf(comp);
 
     // if view was found
-    if (comp->componentModel()->hasSWView(viewName) && hierarchicalViewsOf(comp).contains(viewName))
+    if (comp->componentModel()->hasView(viewName) && hierarchicalViewsOf(comp).contains(viewName))
     {
         openDesignForComponent(comp, viewName);
     }
@@ -1353,17 +1352,7 @@ void SystemDesignDiagram::openComponentByActiveView(ComponentItem* comp)
 //-----------------------------------------------------------------------------
 QStringList SystemDesignDiagram::hierarchicalViewsOf(ComponentItem* component) const
 {
-    QStringList hierarchicalViews;
-
-    foreach( QSharedPointer<SWView> view, component->componentModel()->getSWViews() )
-    {
-        if ( view->getHierarchyRef().isValid() )
-        {
-            hierarchicalViews.append( view->name() );
-        }
-    }
-
-    return hierarchicalViews;
+    return component->componentModel()->getHierViews();
 }
 
 //-----------------------------------------------------------------------------

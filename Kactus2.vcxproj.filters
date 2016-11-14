@@ -605,9 +605,6 @@
     <Filter Include="Header Files\editors\ComponentEditor\software\comInterface">
       <UniqueIdentifier>{66c807c2-a1e3-495d-a098-0e1c76cee48f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\software\swView">
-      <UniqueIdentifier>{c12659a0-47da-4537-89ec-23966c1149b3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\editors\ComponentEditor\software\systemView">
       <UniqueIdentifier>{f5038f92-84e7-4b3d-be25-0457cda1d875}</UniqueIdentifier>
     </Filter>
@@ -691,9 +688,6 @@
     </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\software\comInterface">
       <UniqueIdentifier>{54646408-17d2-49d4-af9d-2c74b5fa2cd8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\software\swView">
-      <UniqueIdentifier>{65e6db94-9458-4762-80f4-1f32e3b7bc79}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\editors\ComponentEditor\software\systemView">
       <UniqueIdentifier>{4b04b8f3-ce92-415d-9e1b-6aa39a486c05}</UniqueIdentifier>
@@ -1374,9 +1368,6 @@
     </ClCompile>
     <ClCompile Include="common\widgets\viewSelector\viewselector.cpp">
       <Filter>Source Files\common\widgets\viewSelector</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_cpuselector.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_filetypeselector.cpp">
       <Filter>Generated Files</Filter>
@@ -2371,27 +2362,6 @@
     <ClCompile Include="GeneratedFiles\moc_cominterfacesdelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_bspbuildeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swbuildcommandeditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swbuildcommandmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swbuilddelegate.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_SWViewEditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swviewseditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_swviewsmodel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_SystemViewEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2839,27 +2809,6 @@
     <ClCompile Include="editors\ComponentEditor\software\comInterface\cominterfacesmodel.cpp">
       <Filter>Source Files\editors\ComponentEditor\software\comInterface</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\swView\swviewsmodel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\swView\swviewseditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\swView\SWViewEditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\swView\swbuilddelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\swView\swbuildcommandmodel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\swView\swbuildcommandeditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\swView\bspbuildeditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\software\systemView\SystemViewsModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\software\systemView</Filter>
     </ClCompile>
@@ -2870,12 +2819,6 @@
       <Filter>Source Files\editors\ComponentEditor\software\systemView</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorswpropertiesitem.cpp">
-      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorswviewitem.cpp">
-      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorswviewsitem.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorSystemViewItem.cpp">
@@ -3636,9 +3579,6 @@
     </ClCompile>
     <ClCompile Include="wizards\common\ModuleParameterComparator\ModuleParameterComparator.cpp">
       <Filter>Source Files\wizards\common\ModuleParameterComparator</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\software\swView\cpuselector.cpp">
-      <Filter>Source Files\editors\ComponentEditor\software\swView</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AdHocConnectionItem.cpp">
       <Filter>Generated Files</Filter>
@@ -5148,27 +5088,6 @@
     <CustomBuild Include="editors\ComponentEditor\software\comInterface\cominterfacesdelegate.h">
       <Filter>Header Files\editors\ComponentEditor\software\comInterface</Filter>
     </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\software\swView\bspbuildeditor.h">
-      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\software\swView\swbuildcommandeditor.h">
-      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\software\swView\swbuildcommandmodel.h">
-      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\software\swView\swbuilddelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\software\swView\SWViewEditor.h">
-      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\software\swView\swviewseditor.h">
-      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\software\swView\swviewsmodel.h">
-      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
-    </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\software\systemView\SystemViewEditor.h">
       <Filter>Header Files\editors\ComponentEditor\software\systemView</Filter>
     </CustomBuild>
@@ -5594,9 +5513,6 @@
     </CustomBuild>
     <CustomBuild Include="wizards\BusInterfaceWizard\BusInterfaceWizardGeneralOptionsPage.h">
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\software\swView\cpuselector.h">
-      <Filter>Header Files\editors\ComponentEditor\software\swView</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\AdHocConnectionItem.h">
       <Filter>Header Files\designEditors\HWDesign</Filter>

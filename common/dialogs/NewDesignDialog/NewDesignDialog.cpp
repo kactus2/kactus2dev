@@ -62,7 +62,7 @@ NewDesignDialog::NewDesignDialog(LibraryInterface* libInterface,
     case KactusAttribute::SW:
         {
             viewNameLabel_->setText(tr("Name for a new SW view to component:"));
-            viewNameEdit_->setDisallowedInputs(component->getSWViewNames());
+            viewNameEdit_->setDisallowedInputs(component->getViewNames());
             viewNameEdit_->setMessageTemplate("SW view name '%1' already exists!");
             vlnvEditor_->setTitle("VLNV for new SW design and design configuration");
             designExt_ = ".swdesign";

@@ -820,10 +820,24 @@ void LibraryHandler::onOpenSWDesign(VLNV const& vlnv)
     {
         QSharedPointer<const Component> component = document.staticCast<const Component>();
 
-        QStringList swViews = component->getSWViewNames();
-        if (!swViews.isEmpty())
+        QSharedPointer<View> swView;
+
+        foreach(QSharedPointer<View> view, *component->getViews())
         {
-            emit openSWDesign(vlnv, swViews.first());
+            VLNV reference = component->getModel()->getHierRef(view->name());
+
+            QSharedPointer<const Document> docu = getModelReadOnly(reference);
+
+            if (docu && docu->getImplementation() == KactusAttribute::SW)
+            {
+                swView = view;
+                break;
+            }
+        }
+
+        if (swView)
+        {
+            emit openSWDesign(vlnv, swView->name());
         }
     }
 }

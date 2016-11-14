@@ -152,7 +152,6 @@ void ViewConfigurationValidator::changeAvailableViews(QSharedPointer<ViewConfigu
                     if (component)
                     {
 						availableViews_ = component->getViewNames();
-						availableViews_.append( component->getSWViewNames() );
                         return;
                     }
                 }

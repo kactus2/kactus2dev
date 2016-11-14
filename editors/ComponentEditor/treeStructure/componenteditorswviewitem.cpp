@@ -116,7 +116,7 @@ bool ComponentEditorSWViewItem::canBeOpened() const
 	// been made to the library
 	QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(component_->getVlnv());
 	QSharedPointer<Component const> comp = libComp.staticCast<Component const>();
-	VLNV originalRef = comp->getHierSWRef(swView_->name());
+	VLNV originalRef = comp->getHierRef(swView_->name());
 	return originalRef == swView_->getHierarchyRef();
 }
 

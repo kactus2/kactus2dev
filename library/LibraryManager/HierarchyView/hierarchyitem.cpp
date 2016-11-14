@@ -18,7 +18,6 @@
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 
 //-----------------------------------------------------------------------------
 // Function: HierarchyItem::HierarchyItem()
@@ -538,7 +537,7 @@ bool HierarchyItem::isHierarchical() const
 
     if (component_->getImplementation() == KactusAttribute::SW)
     {
-        return component_->hasSWViews();
+        return component_->hasViews();
     }
     else
     {

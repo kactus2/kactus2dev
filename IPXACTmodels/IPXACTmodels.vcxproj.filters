@@ -389,9 +389,6 @@
     <ClCompile Include="kactusExtensions\SWInstance.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
-    <ClCompile Include="kactusExtensions\SWView.cpp">
-      <Filter>Source Files\kactusExtensions</Filter>
-    </ClCompile>
     <ClCompile Include="kactusExtensions\SystemView.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
@@ -1091,12 +1088,6 @@
     <ClCompile Include="kactusExtensions\ComDefinition.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
-    <ClCompile Include="kactusExtensions\SWFileBuilder.cpp">
-      <Filter>Source Files\kactusExtensions</Filter>
-    </ClCompile>
-    <ClCompile Include="kactusExtensions\BSPBuildCommand.cpp">
-      <Filter>Source Files\kactusExtensions</Filter>
-    </ClCompile>
     <ClCompile Include="common\GenericVendorExtension.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -1414,9 +1405,6 @@
     <ClInclude Include="kactusExtensions\SWInstance.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
-    <ClInclude Include="kactusExtensions\SWView.h">
-      <Filter>Header Files\kactusExtensions</Filter>
-    </ClInclude>
     <ClInclude Include="kactusExtensions\SystemView.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
@@ -1628,12 +1616,6 @@
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="kactusExtensions\ComDefinition.h">
-      <Filter>Header Files\kactusExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="kactusExtensions\SWFileBuilder.h">
-      <Filter>Header Files\kactusExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="kactusExtensions\BSPBuildCommand.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="common\VendorExtension.h">

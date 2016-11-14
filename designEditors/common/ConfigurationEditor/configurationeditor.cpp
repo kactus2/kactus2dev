@@ -25,7 +25,6 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 #include <QApplication>
@@ -159,7 +158,7 @@ void ConfigurationEditor::onAdd()
     handler_->writeModelToFile(dirPath, desConf);
 
     // create new view for the component and set it to reference to the configuration
-    if (designImplementation == KactusAttribute::HW )
+    if (designImplementation == KactusAttribute::HW || designImplementation == KactusAttribute::SW)
     {
         QSharedPointer<View> view (new View());
 
@@ -174,16 +173,6 @@ void ConfigurationEditor::onAdd()
 
 		component_->getDesignConfigurationInstantiations()->append(instantiation);
         component_->getViews()->append(view);
-    }
-    else if (designImplementation == KactusAttribute::SW)
-    {
-        QSharedPointer<SWView> view (new SWView());
-        view->setName(viewName);
-        view->setHierarchyRef(configVLNV);
-
-        QList<QSharedPointer<SWView> > componentSWViews = component_->getSWViews();
-        componentSWViews.append(view);
-        component_->setSWViews(componentSWViews);
     }
     else if (designImplementation == KactusAttribute::SYSTEM)
     {
@@ -253,19 +242,10 @@ void ConfigurationEditor::onRemove()
 	VLNV configVLNV;
 
     const KactusAttribute::Implementation designImplementation = designWidget_->getImplementation();
-    if (designImplementation == KactusAttribute::HW)
+    if (designImplementation == KactusAttribute::HW || designImplementation == KactusAttribute::SW)
     {
         removeViewHierarchicalInstantiationRefs(viewToRemove);
     }
-    else if (designImplementation == KactusAttribute::SW)
-    {
-        QSharedPointer<SWView> swView = findComponentSWView(viewToRemove);
-        if (swView)
-        {
-            configVLNV = swView->getHierarchyRef();
-        }
-    }
-
     else if (designImplementation ==  KactusAttribute::SYSTEM)
     {
         configVLNV = component_->findSystemView(viewToRemove)->getHierarchyRef();
@@ -274,7 +254,6 @@ void ConfigurationEditor::onRemove()
     {
         Q_ASSERT(false);
     }
-    
 
 	VLNV designVLNV;
 	QSharedPointer<Document> libComp = handler_->getModel(configVLNV);
@@ -293,15 +272,10 @@ void ConfigurationEditor::onRemove()
 	// remove the view from the component and retrieve the remaining references.
     QList<VLNV> hierRefs;
 
-    if (designImplementation == KactusAttribute::HW)
+    if (designImplementation == KactusAttribute::HW || designImplementation == KactusAttribute::SW)
     {
         removeViewFromComponent(viewToRemove);
         hierRefs = component_->getHierRefs();
-    }
-    else if (designImplementation == KactusAttribute::SW)
-    {
-        removeSWViewFromComponent(viewToRemove);
-        hierRefs = component_->getHierSWRefs();
     }
     else if (designImplementation == KactusAttribute::SYSTEM)
     {
@@ -397,15 +371,10 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
     QStringList hierViewNames;
 
     const KactusAttribute::Implementation designImplementation = designWidget->getImplementation();
-    if (designImplementation == KactusAttribute::HW)
+    if (designImplementation == KactusAttribute::HW || designImplementation == KactusAttribute::SW)
     {
         hierViewNames = component_->getHierViews();
     }
-    else if (designImplementation == KactusAttribute::SW)
-    {
-        hierViewNames = component_->getSWViewNames();
-    }
-
     else if (designImplementation == KactusAttribute::SYSTEM)
     {
         hierViewNames = component_->getSystemViewNames();
@@ -424,15 +393,10 @@ void ConfigurationEditor::setConfiguration(DesignWidget* designWidget)
     {
 		// the vlnv that the component references
 		VLNV ref;
-        if (designImplementation == KactusAttribute::HW)
+        if (designImplementation == KactusAttribute::HW || designImplementation == KactusAttribute::SW)
         {
             ref = component_->getHierRef(viewName);
         }
-        else if (designImplementation == KactusAttribute::SW)
-        {
-            ref = component_->getHierSWRef(viewName);
-        }
-
         else if (designImplementation ==  KactusAttribute::SYSTEM)
         {
             ref = component_->getHierSystemRef(viewName);
@@ -579,26 +543,6 @@ void ConfigurationEditor::removeViewHierarchicalInstantiationRefs(QString const&
 }
 
 //-----------------------------------------------------------------------------
-// Function: configurationeditor::findComponentSWView()
-//-----------------------------------------------------------------------------
-QSharedPointer<SWView> ConfigurationEditor::findComponentSWView(QString const& viewName) const
-{
-    QList<QSharedPointer<SWView> > swViews = component_->getSWViews();
-
-    for (int i = 0; i < swViews.size(); ++i)
-    {
-        // if the view has the specified name
-        if (swViews.at(i)->name() == viewName)
-        {
-            return swViews.at(i);
-        }
-    }
-
-    // view was not found
-    return QSharedPointer<SWView>();
-}
-
-//-----------------------------------------------------------------------------
 // Function: configurationeditor::removeViewFromComponent()
 //-----------------------------------------------------------------------------
 void ConfigurationEditor::removeViewFromComponent(QString const& viewName) const
@@ -610,27 +554,6 @@ void ConfigurationEditor::removeViewFromComponent(QString const& viewName) const
             component_->getViews()->removeOne(view);
             return;
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: configurationeditor::removeSWViewFromComponent()
-//-----------------------------------------------------------------------------
-void ConfigurationEditor::removeSWViewFromComponent(QString const& viewName) const
-{
-    QList<QSharedPointer<SWView> > swViews = component_->getSWViews();
-    foreach (QSharedPointer<SWView> view, swViews)
-    {
-        if (view->name() == viewName)
-        {
-            swViews.removeOne(view);
-            break;
-        }
-    }
-
-    if (!swViews.isEmpty())
-    {
-        component_->setSWViews(swViews);
     }
 }
 

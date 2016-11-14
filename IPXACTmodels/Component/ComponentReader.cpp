@@ -27,7 +27,6 @@
 #include <IPXACTmodels/Component/CPUReader.h>
 #include <IPXACTmodels/Component/OtherClockDriverReader.h>
 
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
@@ -525,7 +524,6 @@ void ComponentReader::parseComponentExtensions(QDomNode const& componentNode,
 //-----------------------------------------------------------------------------
 void ComponentReader::parseSwViews(QDomNode const& swViewsNode, QSharedPointer<Component> newComponent) const
 {
-    QList<QSharedPointer<SWView> > swViewList;
     NameGroupReader nameReader;
 
     QDomNodeList swViewNodeList = swViewsNode.childNodes();
@@ -533,42 +531,57 @@ void ComponentReader::parseSwViews(QDomNode const& swViewsNode, QSharedPointer<C
     {
         QDomElement singleSWViewElement = swViewNodeList.at(viewIndex).toElement();
 
-        QSharedPointer<SWView> newSWView (new SWView());
+        QSharedPointer<View> newSWView (new View());
 
         nameReader.parseNameGroup(singleSWViewElement, newSWView);
+
+        QSharedPointer<ComponentInstantiation> swInstantiation(new ComponentInstantiation);
+        swInstantiation->setName(newSWView->name() + QLatin1String("_sw_component_instantiation"));
+        newComponent->getComponentInstantiations()->append(swInstantiation);
+
+        newSWView->setComponentInstantiationRef(swInstantiation->name());
 
         QDomElement hierarchyElement = singleSWViewElement.firstChildElement(QStringLiteral("kactus2:hierarchyRef"));
         if (!hierarchyElement.isNull())
         {
             VLNV hierarhcyReference = parseVLNVAttributes(hierarchyElement, VLNV::DESIGN);
-            newSWView->setHierarchyRef(hierarhcyReference);
+
+            QSharedPointer<ConfigurableVLNVReference> ref(new ConfigurableVLNVReference(hierarhcyReference));
+            QSharedPointer<DesignInstantiation> designInstaniation(new DesignInstantiation);
+            designInstaniation->setDesignReference(ref);
+            designInstaniation->setName(newSWView->name() + QLatin1String("_sw_design_instantiation"));
+            newComponent->getDesignInstantiations()->append(designInstaniation);
+            newSWView->setDesignInstantiationRef(designInstaniation->name());
         }
 
         QDomNodeList fileSetRefNodeList = singleSWViewElement.elementsByTagName(QStringLiteral("kactus2:fileSetRef"));
         for (int setIndex = 0; setIndex < fileSetRefNodeList.count(); ++setIndex)
         {
             QString setReference = fileSetRefNodeList.at(setIndex).firstChild().nodeValue();
-            newSWView->addFileSetRef(setReference);
+            swInstantiation->getFileSetReferences()->append(setReference);
         }
 
         QDomNodeList swBuildCommandNodes = singleSWViewElement.elementsByTagName(QStringLiteral("kactus2:SWBuildCommand"));
         for (int commandIndex = 0; commandIndex < swBuildCommandNodes.count(); ++commandIndex)
         {
-            QSharedPointer<SWFileBuilder> command(new SWFileBuilder(swBuildCommandNodes.at(commandIndex)));
-            newSWView->getSWBuildCommands()->append(command);
+            QDomElement swBuildElement = swBuildCommandNodes.at(commandIndex).toElement();
+
+            QString fileType = swBuildElement.firstChildElement(QStringLiteral("kactus2:fileType")).firstChild().nodeValue();
+            QString command = swBuildElement.firstChildElement(QStringLiteral("ipxact:command")).firstChild().nodeValue();
+            QString flags = swBuildElement.firstChildElement(QStringLiteral("ipxact:flags")).firstChild().nodeValue();
+            QString replace = swBuildElement.firstChildElement(QStringLiteral("ipxact:replaceDefaultFlags")).firstChild().nodeValue();
+
+            QSharedPointer<FileBuilder> builder(new FileBuilder);
+            builder->setFileType(fileType);
+            builder->setCommand(command);
+            builder->setFlags(flags);
+            builder->setReplaceDefaultFlags(replace);
+
+            swInstantiation->getDefaultFileBuilders()->append(builder);
         }
 
-        QDomElement bspCommandElement = singleSWViewElement.firstChildElement(QStringLiteral("kactus2:BSPBuildCommand"));
-        if (!bspCommandElement.isNull())
-        {
-            QSharedPointer<BSPBuildCommand> command (new BSPBuildCommand(bspCommandElement));
-            newSWView->setBSPBuildCommand(command);
-        }
-
-        swViewList.append(newSWView);
+        newComponent->getViews()->append(newSWView);
     }
-
-    newComponent->setSWViews(swViewList);
 }
 
 //-----------------------------------------------------------------------------

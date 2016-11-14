@@ -273,7 +273,7 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(QSharedPointer<MakeFileData> m
     }
 
     // All flags of all software views must be appended to the flags.
-    foreach (QString flag, mfd->softViewFlags)
+    foreach (QString flag, mfd->componentInstantiationFlags)
     {
         finalFlags += " " + flag;
     }

@@ -147,21 +147,22 @@ void SWStackParser::parse(QSharedPointer<Component> topComponent,
 
 		// Find the view corresponding the active view name
 		QString hardViewName = desgConf->getActiveView(hardInstance->getInstanceName());
-		QSharedPointer<SWView> hardView;
-		foreach(QSharedPointer<SWView> view, hardComponent->getSWViews())
-		{
-			if (view->name() == hardViewName)
-			{
-				hardView = view;
-				break;
-			}
-		}
+		QSharedPointer<View> hardView = hardComponent->getModel()->findView(hardViewName);
 
 		// If not found, skip.
 		if (!hardView)
 		{
 			continue;
-		}
+        }
+
+        // Must have a component instantiation.
+        QSharedPointer<ComponentInstantiation> hardInstantiation = hardComponent->getModel()->
+            findComponentInstantiation(hardView->getComponentInstantiationRef());
+
+        if (!hardInstantiation)
+        {
+            return;
+        }
 
 		// They want the name of the instance.
 		QString instanceName = hardInstance->getDisplayName();
@@ -171,20 +172,21 @@ void SWStackParser::parse(QSharedPointer<Component> topComponent,
 		}
 
 		// Get the hardware data.
-		makeData->hardPart = QSharedPointer<StackPart>( new StackPart );
+		makeData->hardPart = QSharedPointer<StackPart>(new StackPart);
 		makeData->hardPart->component = hardComponent;
-		makeData->hardPart->instanceName = hardInstance->getInstanceName();
+		makeData->hardPart->instanceName = instanceName;
 		makeData->hardPart->view = hardView;
+        makeData->hardPart->instantiation = hardInstantiation;
 
 		// This is also the point where hardware build command is decided.
 		// TODO: Ask from user which one.
-		if ( hardView->getSWBuildCommands()->count() > 0 )
+		if (hardInstantiation->getDefaultFileBuilders()->count() > 0)
 		{
-			makeData->hardPart->buildCmd = hardView->getSWBuildCommands()->first();
+			makeData->hardPart->buildCmd = hardInstantiation->getDefaultFileBuilders()->first();
 		}
 
 		// No hardware build command means no makefile.
-		if ( !makeData->hardPart->buildCmd )
+		if (!makeData->hardPart->buildCmd)
 		{
 			continue;
 		}
@@ -193,13 +195,13 @@ void SWStackParser::parse(QSharedPointer<Component> topComponent,
 		parseStackObjects(topComponent, softComponent, softInstance, design, desgConf, makeData, sysViewName);
 
 		// Empty stack means no makefile.
-		if ( makeData->parts.count() < 1 )
+		if (makeData->parts.count() < 1)
 		{
 			continue;
 		}
 
 		// Now add the hardware to the list of parts as well.
-		makeData->parts.append( makeData->hardPart );
+		makeData->parts.append(makeData->hardPart);
 
 		// We need a file set for makefile. It shall be the header set of the topmost instance.
 		makeData->instanceHeaders = makeData->parts.first()->instanceHeaders;
@@ -279,29 +281,29 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> topComponent,
 	// There may be only one active software view.
 	QString softViewName = desgConf->getActiveView(softInstance->getInstanceName());
 
-	// Fetch it from the component.
-	QSharedPointer<SWView> softView;
-	foreach(QSharedPointer<SWView> view, softComponent->getSWViews())
-	{
-		if (view->name() == softViewName)
-		{
-			softView = view;
-			break;
-		}
-	}
+    // It must correspond an actual view in the component.
+	QSharedPointer<View> softView = softComponent->getModel()->findView(softViewName);
 
-	// If it does not exist, no further processing may done.
 	if (!softView)
 	{
 		return;
 	}
 
-	// Find build command of matching file type from the software view.
-	QSharedPointer<SWFileBuilder> softViewBuildCmd;
+    // Must have a component instantiation.
+    QSharedPointer<ComponentInstantiation> softInstantiation = softComponent->getModel()->
+        findComponentInstantiation(softView->getComponentInstantiationRef());
 
-	foreach( QSharedPointer<SWFileBuilder> buildCmd, *softView->getSWBuildCommands() )
+    if (!softInstantiation)
+    {
+        return;
+    }
+
+	// Find build command of matching file type from the software view.
+	QSharedPointer<FileBuilder> softViewBuildCmd;
+
+	foreach(QSharedPointer<FileBuilder> buildCmd, *softInstantiation->getDefaultFileBuilders())
 	{
-		if ( buildCmd->getFileType() == makeData->hardPart->buildCmd->getFileType() )
+		if (buildCmd->getFileType() == makeData->hardPart->buildCmd->getFileType())
 		{
 			softViewBuildCmd = buildCmd;
 
@@ -320,6 +322,7 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> topComponent,
 	stackPart->instanceName = softInstance->getInstanceName();
 	stackPart->component = softComponent;
 	stackPart->view = softView;
+    stackPart->instantiation = softInstantiation;
 	stackPart->buildCmd = softViewBuildCmd;
 
 	// Add to the lists.
@@ -327,7 +330,7 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> topComponent,
 	makeData->parsedInstances.append(softInstance);
 
 	// Its flags are to be used.
-	makeData->softViewFlags.append(softViewBuildCmd->getFlags());
+	makeData->componentInstantiationFlags.append(softViewBuildCmd->getFlags());
 
 	// The top component of the design may contain header files specific to the instance.
 	// The path leading to the design.

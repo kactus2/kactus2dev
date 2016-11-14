@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
+    ../../../IPXACTmodels/common/AccessTypes.h \
     ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/Component/AddressSpace.h \
     ../../../IPXACTmodels/Component/AlternateRegister.h \
@@ -69,7 +70,6 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/Component/RegisterFile.h \
     ../../../IPXACTmodels/Component/RemapPort.h \
     ../../../IPXACTmodels/Component/RemapState.h \
-    ../../../IPXACTmodels/kactusExtensions/SWView.h \
     ../../../IPXACTmodels/Component/Segment.h \
     ../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../IPXACTmodels/kactusExtensions/SystemView.h \
@@ -111,13 +111,9 @@ HEADERS += ../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../IPXACTmodels/common/ProtocolReader.h \
     ../../../IPXACTmodels/Component/RegisterReader.h \
     ../../../IPXACTmodels/Component/RemapStateReader.h \
-    ../../../IPXACTmodels/Component/ViewReader.h \
-    ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.h \
-    ../../../IPXACTmodels/kactusExtensions/SWFileBuilder.h \
-    ../../../IPXACTmodels/common/AccessTypes.h
-SOURCES += ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
-    ../../../IPXACTmodels/kactusExtensions/SWFileBuilder.cpp \
-    ../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../IPXACTmodels/Component/ViewReader.h
+SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/AddressBlockReader.cpp \
     ../../../IPXACTmodels/Component/AddressSpace.cpp \
@@ -205,7 +201,6 @@ SOURCES += ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
     ../../../IPXACTmodels/Component/RemapPort.cpp \
     ../../../IPXACTmodels/Component/RemapState.cpp \
     ../../../IPXACTmodels/Component/RemapStateReader.cpp \
-    ../../../IPXACTmodels/kactusExtensions/SWView.cpp \
     ../../../IPXACTmodels/Component/Segment.cpp \
     ../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ../../../IPXACTmodels/kactusExtensions/SystemView.cpp \
@@ -223,5 +218,4 @@ SOURCES += ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
     ../../../IPXACTmodels/Component/choice.cpp \
     ../../../IPXACTmodels/Component/cpu.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_ComponentReader.cpp \
-    ../../../IPXACTmodels/common/AccessTypes.cpp
+    ./tst_ComponentReader.cpp

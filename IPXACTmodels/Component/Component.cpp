@@ -30,7 +30,6 @@
 
 #include "File.h"
 
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
@@ -239,22 +238,6 @@ bool Component::isCpu() const
 bool Component::isHierarchical() const
 {
     return model_->hasHierView();
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::isHierarchicalSW()
-//-----------------------------------------------------------------------------
-bool Component::isHierarchicalSW() const
-{
-    foreach (QSharedPointer<SWView> view, getSWViews())
-    {
-        if (view->getHierarchyRef().isValid())
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -560,49 +543,6 @@ void Component::setOtherClockDrivers(
 {
     otherClockDrivers_->clear();
     otherClockDrivers_ = newOtherClockDrivers;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::getSWViews()
-//-----------------------------------------------------------------------------
-QList<QSharedPointer<SWView> > Component::getSWViews() const
-{
-    QList<QSharedPointer<VendorExtension> > swViewExtensions =
-        getGroupedExtensionsByType(QStringLiteral("kactus2:swViews"), QStringLiteral("kactus2:swView"));
-
-    QList<QSharedPointer<SWView> > swViews;
-    foreach (QSharedPointer<VendorExtension> extension, swViewExtensions)
-    {
-        swViews.append(extension.dynamicCast<SWView>());
-    }
-
-    return swViews;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::setSWViews()
-//-----------------------------------------------------------------------------
-void Component::setSWViews(QList<QSharedPointer<SWView> > newSWViews)
-{
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:swViews"))
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
-
-    if (!newSWViews.isEmpty())
-    {
-        QSharedPointer<Kactus2Group> newSWViewGroup (new Kactus2Group(QStringLiteral("kactus2:swViews")));
-        foreach (QSharedPointer<SWView> swView, newSWViews)
-        {
-            newSWViewGroup->addToGroup(swView);
-        }
-
-        getVendorExtensions()->append(newSWViewGroup);
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1005,14 +945,6 @@ QList<VLNV> Component::getDependentVLNVs() const
 
     vlnvList.append(model_->getViewReferences());
 
-    foreach (QSharedPointer<SWView> swView, getSWViews())
-    {
-        if (swView->getHierarchyRef().isValid())
-        {
-            vlnvList.append(swView->getHierarchyRef());
-        }
-    }
-
     foreach(QSharedPointer<SystemView> systemView, getSystemViews())
     {
         if (systemView->getHierarchyRef().isValid())
@@ -1150,13 +1082,6 @@ QList<VLNV> Component::getHierRefs() const
 
     QList<VLNV> list = model_->getHierarchyRefs();
 
-    foreach (QSharedPointer<SWView> swView, getSWViews())
-    {
-        if (swView->getHierarchyRef().isValid())
-        {
-            list.append(swView->getHierarchyRef());
-        }
-    }
     foreach (QSharedPointer<SystemView> sysView, getSystemViews())
     {
         if (sysView->getHierarchyRef().isValid())
@@ -1165,74 +1090,6 @@ QList<VLNV> Component::getHierRefs() const
         }
     }
     return list;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::hasSWViews()
-//-----------------------------------------------------------------------------
-bool Component::hasSWViews() const
-{
-    return !getSWViews().isEmpty();
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::getSWViewNames()
-//-----------------------------------------------------------------------------
-QStringList Component::getSWViewNames() const
-{
-    QStringList list;
-    foreach (QSharedPointer<SWView> view, getSWViews())
-    {
-        list.append(view->name());
-    }
-    return list;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::hasSWView()
-//-----------------------------------------------------------------------------
-bool Component::hasSWView( const QString& viewName ) const
-{
-    foreach (QSharedPointer<SWView> swView, getSWViews())
-    {
-        if (swView->name() == viewName)
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::getHierSWRef()
-//-----------------------------------------------------------------------------
-VLNV Component::getHierSWRef(const QString viewName) const
-{
-    foreach (QSharedPointer<SWView> swView, getSWViews())
-    {
-        if (swView->name() == viewName || (viewName.isEmpty() && swView->getHierarchyRef().isValid()))
-        {
-            return swView->getHierarchyRef();
-        }
-    }
-    return VLNV();
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::getHierSWRefs()
-//-----------------------------------------------------------------------------
-QList<VLNV> Component::getHierSWRefs() const
-{
-    QList<VLNV> refs;
-
-    foreach (QSharedPointer<SWView> swView, getSWViews())
-    {
-        if (swView->getHierarchyRef().isValid())
-        {
-            refs.append(swView->getHierarchyRef());
-        }
-    }
-    return refs;
 }
 
 //-----------------------------------------------------------------------------

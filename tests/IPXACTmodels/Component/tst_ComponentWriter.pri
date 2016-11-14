@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/Component/AddressBlock.h \
+HEADERS += ../../../IPXACTmodels/common/AccessTypes.h \
+    ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/Component/AddressSpace.h \
     ../../../IPXACTmodels/Component/AlternateRegister.h \
     ../../../IPXACTmodels/kactusExtensions/ApiInterface.h \
@@ -68,7 +69,6 @@ HEADERS += ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/Component/RegisterFile.h \
     ../../../IPXACTmodels/Component/RemapPort.h \
     ../../../IPXACTmodels/Component/RemapState.h \
-    ../../../IPXACTmodels/kactusExtensions/SWView.h \
     ../../../IPXACTmodels/Component/Segment.h \
     ../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../IPXACTmodels/kactusExtensions/SystemView.h \
@@ -82,7 +82,6 @@ HEADERS += ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../IPXACTmodels/Component/WriteValueConstraint.h \
     ../../../IPXACTmodels/XmlUtils.h \
-    ../../../IPXACTmodels/kactusExtensions/SWFileBuilder.h \
     ../../../IPXACTmodels/Component/channel.h \
     ../../../IPXACTmodels/Component/choice.h \
     ../../../IPXACTmodels/Component/cpu.h \
@@ -113,11 +112,9 @@ HEADERS += ../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../IPXACTmodels/common/ProtocolWriter.h \
     ../../../IPXACTmodels/Component/RegisterWriter.h \
     ../../../IPXACTmodels/Component/RemapStateWriter.h \
-    ../../../IPXACTmodels/Component/ViewWriter.h \
-    ../../../IPXACTmodels/common/AccessTypes.h \
-    ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.h
-SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
-    ../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../IPXACTmodels/Component/ViewWriter.h
+SOURCES += ../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../IPXACTmodels/Component/AddressBlockWriter.cpp \
     ../../../IPXACTmodels/Component/AddressSpace.cpp \
@@ -205,7 +202,6 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/RemapPort.cpp \
     ../../../IPXACTmodels/Component/RemapState.cpp \
     ../../../IPXACTmodels/Component/RemapStateWriter.cpp \
-    ../../../IPXACTmodels/kactusExtensions/SWView.cpp \
     ../../../IPXACTmodels/Component/Segment.cpp \
     ../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ../../../IPXACTmodels/kactusExtensions/SystemView.cpp \
@@ -219,10 +215,8 @@ SOURCES += ../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../IPXACTmodels/XmlUtils.cpp \
-    ../../../IPXACTmodels/kactusExtensions/SWFileBuilder.cpp \
     ../../../IPXACTmodels/Component/channel.cpp \
     ../../../IPXACTmodels/Component/choice.cpp \
     ../../../IPXACTmodels/Component/cpu.cpp \
     ../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_ComponentWriter.cpp \
-    ../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp
+    ./tst_ComponentWriter.cpp

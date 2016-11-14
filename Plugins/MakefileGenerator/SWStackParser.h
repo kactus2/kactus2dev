@@ -22,8 +22,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
-
-#include <IPXACTmodels/kactusExtensions/SWView.h>
+#include <IPXACTmodels/Component/View.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 

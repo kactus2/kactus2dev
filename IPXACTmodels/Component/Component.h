@@ -48,7 +48,6 @@ class OtherClockDriver;
 // Kactus2 extension classes.
 
 class File;
-class SWView;
 class ComProperty;
 class SystemView;
 class ComInterface;
@@ -381,20 +380,6 @@ public:
 	 */
     void setOtherClockDrivers(QSharedPointer<QList<QSharedPointer<OtherClockDriver> > > newOtherClockDrivers);
 
-	/*!
-     *  Get the SW views of the component.
-	 *
-	 *      @return List containing pointers to the SW views.
-	 */
-    QList<QSharedPointer<SWView> > getSWViews() const;
-
-    /*!
-     *  Set the sw views of the component.
-     *
-     *      @param [in] newSWViews  A list of new sw views.
-     */
-    void setSWViews(QList<QSharedPointer<SWView> > newSWViews);
-
     /*!
      *  Returns the list of SW properties.
      *
@@ -606,43 +591,6 @@ public:
 	 *      @return QList<VLNV> contains the VLNVs of the hierarchical references.
 	 */
 	QList<VLNV> getHierRefs() const;
-
-    /*!
-     *  Checks if the component contains SW views.
-	 *
-	 *      @return True if SW views exist.
-	 */
-	bool hasSWViews() const;
-
-	/*!
-     *  Check if the component has a SW view with given name.
-	 *
-	 *      @param [in] viewName    The name of the SW view to search for.
-	 *
-	 *      @return True if the view is found.
-	 */
-	bool hasSWView(const QString& viewName) const;
-
-	/*!
-     *  Get the names of the SW views of the component.
-	 *
-	 *      @return QStringList containing the SW view names.
-	 */
-	QStringList getSWViewNames() const;
-
-	/*!
-     *  Get the SW design of a hierarchical component.
-	 *
-     *      @return A vlnv of a design or configuration that is used within this component.
-     */
-	VLNV getHierSWRef(const QString viewName = QString()) const;
-
-	/*!
-     *  Get the hierarchical SW references this component contains.
-	 *
-	 *      @return QList<VLNV> contains the VLNVs of the hierarchical SW references.
-	 */
-	QList<VLNV> getHierSWRefs() const;
 
     /*!
      *  Checks if the component contains system views.

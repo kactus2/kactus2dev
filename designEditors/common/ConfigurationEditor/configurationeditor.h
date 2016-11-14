@@ -23,7 +23,6 @@ class DesignWidget;
 class LibraryInterface;
 class Component;
 class View;
-class SWView;
 class DesignConfiguration;
 
 //-----------------------------------------------------------------------------
@@ -116,27 +115,11 @@ private:
     void removeViewHierarchicalInstantiationRefs(QString const& viewName) const;
 
     /*!
-     *  Finds a component sw view matching the given name.
-     *
-     *      @param [in] viewName    The name of the sw view being searched.
-     *
-     *      @return SW view matching the given name.
-     */
-    QSharedPointer<SWView> findComponentSWView(QString const& viewName) const;
-
-    /*!
      *  Remove a view from component.
      *
      *      @param [in] viewName    The name of the view being removed.
      */
     void removeViewFromComponent(QString const& viewName) const;
-
-    /*!
-     *  Remove an sw view from component.
-     *
-     *      @param [in] viewName    The name of the sw view being removed.
-     */
-    void removeSWViewFromComponent(QString const& viewName) const;
 
     /*!
      *  Remove a system view from component.

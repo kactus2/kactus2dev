@@ -920,7 +920,6 @@
     <ClCompile Include="kactusExtensions\ApiFunctionParameter.cpp" />
     <ClCompile Include="kactusExtensions\ApiInterconnection.cpp" />
     <ClCompile Include="kactusExtensions\ApiInterface.cpp" />
-    <ClCompile Include="kactusExtensions\BSPBuildCommand.cpp" />
     <ClCompile Include="kactusExtensions\ColumnDesc.cpp" />
     <ClCompile Include="kactusExtensions\ComDefinition.cpp" />
     <ClCompile Include="kactusExtensions\ComDefinitionReader.cpp" />
@@ -940,9 +939,7 @@
     <ClCompile Include="kactusExtensions\Kactus2Value.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Vector.cpp" />
     <ClCompile Include="kactusExtensions\KactusAttribute.cpp" />
-    <ClCompile Include="kactusExtensions\SWFileBuilder.cpp" />
     <ClCompile Include="kactusExtensions\SWInstance.cpp" />
-    <ClCompile Include="kactusExtensions\SWView.cpp" />
     <ClCompile Include="kactusExtensions\SystemView.cpp" />
     <ClCompile Include="kactusExtensions\validators\ApiDefinitionValidator.cpp" />
     <ClCompile Include="kactusExtensions\validators\ComDefinitionValidator.cpp" />
@@ -2174,7 +2171,6 @@
     <ClInclude Include="kactusExtensions\ApiFunctionParameter.h" />
     <ClInclude Include="kactusExtensions\ApiInterconnection.h" />
     <ClInclude Include="kactusExtensions\ApiInterface.h" />
-    <ClInclude Include="kactusExtensions\BSPBuildCommand.h" />
     <ClInclude Include="kactusExtensions\ColumnDesc.h" />
     <ClInclude Include="kactusExtensions\ComDefinition.h" />
     <CustomBuild Include="kactusExtensions\ComDefinitionWriter.h">
@@ -2228,9 +2224,7 @@
     <ClInclude Include="kactusExtensions\Kactus2Value.h" />
     <ClInclude Include="kactusExtensions\Kactus2Vector.h" />
     <ClInclude Include="kactusExtensions\KactusAttribute.h" />
-    <ClInclude Include="kactusExtensions\SWFileBuilder.h" />
     <ClInclude Include="kactusExtensions\SWInstance.h" />
-    <ClInclude Include="kactusExtensions\SWView.h" />
     <ClInclude Include="kactusExtensions\SystemView.h" />
     <CustomBuild Include="validators\namevalidator.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

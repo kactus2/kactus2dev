@@ -23,7 +23,6 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 #include <QFileInfo>
@@ -344,29 +343,6 @@ void HierarchicalSaveBuildStrategy::updateComponentReferences(QSharedPointer<Com
                     break;
                 }
             }
-        }
-    }
-
-    foreach (QSharedPointer<SWView> view, component->getSWViews())
-    {
-        QSharedPointer<Document> configModel = library_->getModel(view->getHierarchyRef());
-        QSharedPointer<DesignConfiguration> config = configModel.dynamicCast<DesignConfiguration>(); 
-
-        if (view->getHierarchyRef() == reference)
-        {
-            view->setHierarchyRef(updatedReference);
-        }
-        else if (config && config->getDesignRef() == reference)
-        {
-            VLNV configVLNV(VLNV::DESIGNCONFIGURATION, updatedReference.toString());
-            configVLNV.setName(configVLNV.getName() + "cfg");
-
-            config->setVlnv(configVLNV);
-            config->setDesignRef(updatedReference);
-
-            view->setHierarchyRef(configVLNV);
-
-            saveToLibrary(view->getHierarchyRef(), config);
         }
     }
 

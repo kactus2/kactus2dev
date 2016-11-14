@@ -222,12 +222,12 @@ void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInsta
         QSharedPointer<Document const> libComp = lh->getModelReadOnly(*instance->getComponentRef());
         QSharedPointer<Component const> component = libComp.staticCast<Component const>();
 
-        if (component != 0 && component->hasSWViews())
+        if (component != 0 && component->hasViews())
         {
             QSharedPointer<Design const> swDesign;
             QSharedPointer<DesignConfiguration const> swDesignConf;
 
-            VLNV designVLNV = component->getHierSWRef();
+            VLNV designVLNV = component->getHierRef();
             if (!getDesign(lh, designVLNV, swDesign, swDesignConf))
             {
                 continue;
@@ -418,12 +418,12 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
             viewName = designConf->getActiveView(hwInstance->getInstanceName());
         }
 
-        if (component != 0 && component->hasSWViews())
+        if (component != 0)
         {
             QSharedPointer<Design const> swDesign;
             QSharedPointer<DesignConfiguration const> swDesignConf;
 
-            VLNV designVLNV = component->getHierSWRef(viewName);
+            VLNV designVLNV = component->getHierRef(viewName);
 
             if (!getDesign(lh, designVLNV, swDesign, swDesignConf))
             {

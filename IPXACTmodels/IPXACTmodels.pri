@@ -15,7 +15,6 @@ HEADERS += ./XmlUtils.h \
     ./kactusExtensions/ApiFunctionParameter.h \
     ./kactusExtensions/ApiInterconnection.h \
     ./kactusExtensions/ApiInterface.h \
-    ./kactusExtensions/BSPBuildCommand.h \
     ./kactusExtensions/ColumnDesc.h \
     ./kactusExtensions/ComDefinition.h \
     ./kactusExtensions/ComInterconnection.h \
@@ -33,9 +32,7 @@ HEADERS += ./XmlUtils.h \
     ./kactusExtensions/Kactus2Value.h \
     ./kactusExtensions/Kactus2Vector.h \
     ./kactusExtensions/KactusAttribute.h \
-    ./kactusExtensions/SWFileBuilder.h \
     ./kactusExtensions/SWInstance.h \
-    ./kactusExtensions/SWView.h \
     ./kactusExtensions/SystemView.h \
     ./kactusExtensions/validators/ApiDefinitionValidator.h \
     ./kactusExtensions/validators/ComDefinitionValidator.h \
@@ -228,6 +225,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/AddressBlockValidator.h \
     ./Component/validators/AddressSpaceValidator.h \
     ./Component/validators/BuildCommandValidator.h \
+    ./Component/validators/BusInterfaceValidator.h \
     ./Component/validators/ChannelValidator.h \
     ./Component/validators/ChoiceValidator.h \
     ./Component/validators/ComponentGeneratorValidator.h \
@@ -246,8 +244,7 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./Component/validators/ViewValidator.h \
-    ./Component/validators/BusInterfaceValidator.h
+    ./Component/validators/ViewValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -257,7 +254,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiFunctionParameter.cpp \
     ./kactusExtensions/ApiInterconnection.cpp \
     ./kactusExtensions/ApiInterface.cpp \
-    ./kactusExtensions/BSPBuildCommand.cpp \
     ./kactusExtensions/ColumnDesc.cpp \
     ./kactusExtensions/ComDefinition.cpp \
     ./kactusExtensions/ComDefinitionReader.cpp \
@@ -277,9 +273,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/Kactus2Value.cpp \
     ./kactusExtensions/Kactus2Vector.cpp \
     ./kactusExtensions/KactusAttribute.cpp \
-    ./kactusExtensions/SWFileBuilder.cpp \
     ./kactusExtensions/SWInstance.cpp \
-    ./kactusExtensions/SWView.cpp \
     ./kactusExtensions/SystemView.cpp \
     ./kactusExtensions/validators/ApiDefinitionValidator.cpp \
     ./kactusExtensions/validators/ComDefinitionValidator.cpp \

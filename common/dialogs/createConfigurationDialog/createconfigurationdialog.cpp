@@ -73,8 +73,8 @@ cancelButton_(new QPushButton(tr("Cancel"), this))
         QStringList suggestions = settings.value("Policies/SWViewNames").toStringList();
         configNameMatcher_.setItems(suggestions);
 
-        configNameEdit_->setDisallowedInputs(component->getSWViewNames());
-        configNameEdit_->setMessageTemplate("SW view '%1' already exists!");
+        configNameEdit_->setDisallowedInputs(component->getHierViews());
+        configNameEdit_->setMessageTemplate("View '%1' already exists!");
     }
     else if (configType == KactusAttribute::SYSTEM)
     {

@@ -48,10 +48,6 @@ void ViewSelector::refresh() {
 		viewNames += component_->getHierViews();
 		break;
 												 }
-	case ViewSelector::SW_VIEWS: {
-		viewNames = component_->getSWViewNames();
-		break;
-										  }
 	case ViewSelector::SYSTEM_VIEWS: {
 		viewNames = component_->getSystemViewNames();
 		break;

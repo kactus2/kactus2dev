@@ -140,49 +140,58 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
 
                 menu.addAction(openComponentAction_);
             }
-            else if (component->getImplementation() == KactusAttribute::SW)
-            {
-                if (component->hasSWViews())
-                {
-                    menu.addAction(openSWDesignAction_);
-                }
-                menu.addAction(openComponentAction_);
-
-                menuNew = menu.addMenu(tr("Add"));
-                menuNew->addAction(createNewSWDesignAction_);
-            }
             else 
             {
+                menuNew = menu.addMenu(tr("Add"));
 
-                if (!component->getHierViews().isEmpty())
+                if (component->getImplementation() == KactusAttribute::HW)
                 {
-                    menu.addAction(openDesignAction_);
+                    if (!component->getHierViews().isEmpty())
+                    {
+                        menu.addAction(openDesignAction_);
 
-                    menu.addAction(openMemoryDesignAction_);
+                        menu.addAction(openMemoryDesignAction_);
+                    }
+
+                    if (component->hasSystemViews())
+                    {
+                        menu.addAction(openSystemAction_);
+                    }
+
+                    menu.addSeparator();
+
+                    menuNew->addAction(createNewDesignAction_);
+
+                    // Add New System Design action only if the component contains hierarchical HW views.
+                    if (!component->getHierViews().isEmpty())
+                    {
+                        menuNew->addAction(createNewSystemDesignAction_);
+                    }
                 }
 
-                if (component->hasSWViews())
+                QSharedPointer<View> swView;
+
+                foreach(QSharedPointer<View> view, *component->getViews())
+                {
+                    VLNV reference = component->getModel()->getHierRef(view->name());
+
+                    QSharedPointer<const Document> docu = handler_->getModelReadOnly(reference);
+
+                    if (docu && docu->getImplementation() == KactusAttribute::SW)
+                    {
+                        swView = view;
+                        break;
+                    }
+                }
+
+                if (swView)
                 {
                     menu.addAction(openSWDesignAction_);
                 }
 
-                if (component->hasSystemViews())
-                {
-                    menu.addAction(openSystemAction_);
-                }
-
                 menu.addAction(openComponentAction_);
-                menu.addSeparator();
 
-                menuNew = menu.addMenu(tr("Add"));
-                menuNew->addAction(createNewDesignAction_);
                 menuNew->addAction(createNewSWDesignAction_);
-
-                // Add New System Design action only if the component contains hierarchical HW views.
-                if (!component->getHierViews().isEmpty())
-                {
-                    menuNew->addAction(createNewSystemDesignAction_);
-                }
             }
         }
 

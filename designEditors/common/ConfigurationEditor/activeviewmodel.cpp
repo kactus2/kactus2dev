@@ -209,14 +209,7 @@ QVariant ActiveViewModel::data(const QModelIndex& index, int role /*= Qt::Displa
 			Q_ASSERT(searched);
 
 			// return the views the component model contains.
-            if (searched->type() == HWComponentItem::Type)
-            {
-			    return searched->componentModel()->getViewNames();
-            }
-            else
-            {
-                return searched->componentModel()->getSWViewNames();
-            }
+            return searched->componentModel()->getViewNames();
 		}
 		else
 			return QVariant();

@@ -19,8 +19,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
-
-#include <IPXACTmodels/kactusExtensions/SWView.h>
+#include <IPXACTmodels/Component/View.h>
 
 // The name of a generated makefile.
 const QString MAKEFILE_NAME = "Makefile";
@@ -35,9 +34,11 @@ struct StackPart
 	// The instantiated component.
 	QSharedPointer<Component> component;
 	// The active view in the current design configuration.
-	QSharedPointer<SWView> view;
+	QSharedPointer<View> view;
+    // The component instantiation associated with the view.
+    QSharedPointer<ComponentInstantiation> instantiation;
 	// The selected build command of the active software view.
-	QSharedPointer<SWFileBuilder> buildCmd;
+	QSharedPointer<FileBuilder> buildCmd;
 	// Header files associated with the component instance.
 	QSharedPointer<FileSet> instanceHeaders;
 };
@@ -53,7 +54,7 @@ struct MakeObjectData
 	// The build command of the file set where file belongs to.
 	QSharedPointer<FileBuilder> fileSetBuildCmd;
 	// The build command of the active software view of the software instance.
-	QSharedPointer<SWFileBuilder> swBuildCmd;
+	QSharedPointer<FileBuilder> swBuildCmd;
 	// The resolved compiler for the object file.
 	QString compiler;
 	// The resolved flags for the object file.
@@ -79,8 +80,8 @@ struct MakeFileData
 
 	// Parsed files found in software views of software components.
 	QList<QSharedPointer<MakeObjectData> > swObjects;
-	// Flags passed down from software views.
-	QStringList softViewFlags;
+	// Flags passed down from component instantiations.
+	QStringList componentInstantiationFlags;
 	// The name of the instance.
 	QString name;
 	// The list of all included directories.

@@ -22,8 +22,6 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
 
-#include <IPXACTmodels/kactusExtensions/SWView.h>
-
 #include <library/LibraryManager/libraryinterface.h>
 
 class MakefileParser
@@ -81,7 +79,7 @@ private:
 	 *
 	 *      @return The resolved compiler for the file.
 	 */
-	 QString getFileCompiler(QSharedPointer<MakeObjectData> mod, QSharedPointer<SWFileBuilder> hardBuilder) const;
+	 QString getFileCompiler(QSharedPointer<MakeObjectData> mod, QSharedPointer<FileBuilder> hardBuilder) const;
 
     /*!
      *  Gets concatenated the build flags of the file with those fileSet and software views.
