@@ -12,15 +12,11 @@
 #ifndef GENERATORCONFIGURATIONDIALOG_H
 #define GENERATORCONFIGURATIONDIALOG_H
 
-#include <QComboBox>
 #include <QDialog>
-#include <QSharedPointer>
-#include <QLineEdit>
-#include <QGroupBox>
 #include <QLabel>
-#include <QTableWidget>
 
 #include "ViewSelectionWidget.h"
+#include "FileOutputWidget.h"
 
 class GeneratorConfiguration;
 
@@ -47,23 +43,11 @@ private slots:
 
     void onViewChanged();
 
-    void onOutputFilesChanged(QStringList vlvns);
-
     void onInterfaceGenerationStateChanged(int state);
 
     void onMemoryGenerationStateChanged(int state);
 
-    void onPathEdited(const QString &text);
-
-    void onBrowse();
-
-    void onItemChanged(QTableWidgetItem *item);
-
 private:
-
-    // Goes through the fileTable_ and checks if there are files that already exists.
-    // Will set appropriate warnings.
-    void checkExistence();
 
     // Disable copying.
     GeneratorConfigurationDialog(GeneratorConfigurationDialog const& rhs);
@@ -77,17 +61,14 @@ private:
 	//! The "model" for the dialog.
 	QSharedPointer<GeneratorConfiguration> configuration_;
 
-	//! Editor for the path of the generated file.
-	QLineEdit* pathEditor_;
-
 	//! Widget for selecting view-component instantiation-file set -tuple.
-	ViewSelectionWidget* viewSelection_;
+    ViewSelectionWidget* viewSelection_;
+
+    //! Widget for output file information.
+    FileOutputWidget* fileOutput_;
 
 	//! Warning is display here, namely for an existing file being overwritten.
 	QLabel* generalWarningLabel_;
-
-    //! Table used to display all needed files.
-    QTableWidget* fileTable_;
 };
 
 #endif //GENERATORCONFIGURATIONDIALOG_H

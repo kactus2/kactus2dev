@@ -10,6 +10,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 HEADERS += ../common/HDLParser/HDLComponentParser.h \
     ../common/HDLParser/HDLParserCommon.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
+    ../VerilogImport/VerilogSyntax.h \
     ../common/HDLParser/HDLDesignParser.h \
     ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
@@ -40,13 +41,15 @@ HEADERS += ../common/HDLParser/HDLComponentParser.h \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.h \
     ./TextBodyWriter/TextBodyWriter.h \
     ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
-    ../VerilogImport/VerilogSyntax.h
+    ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
+    ../PluginSystem/GeneratorPlugin/FileOutput.h
 SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../common/HDLParser/HDLDesignParser.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
+    ../VerilogImport/VerilogSyntax.cpp \
     ./VerilogGeneratorPlugin.cpp \
     ./VerilogGenerator/VerilogGenerator.cpp \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
@@ -69,5 +72,6 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ./TextBodyWriter/TextBodyWriter.cpp \
     ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp \
-    ../VerilogImport/VerilogSyntax.cpp
+    ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
+    ../PluginSystem/GeneratorPlugin/FileOutput.cpp
 RESOURCES += VerilogGenerator.qrc

@@ -118,10 +118,23 @@ QIcon VerilogGeneratorPlugin::getIcon() const
 // Function: VerilogGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
 bool VerilogGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Document const> libComp,
-    QSharedPointer<Document const> /*libDesConf*/,
-    QSharedPointer<Document const> /*libDes*/) const
+    QSharedPointer<Document const> libDesConf,
+    QSharedPointer<Document const> libDes) const
 {
     QSharedPointer<const Component> targetComponent = libComp.dynamicCast<const Component>();
+    QSharedPointer<const Design> design = libDes.dynamicCast<const Design>();
+    QSharedPointer<const DesignConfiguration> designConfig = libDesConf.dynamicCast<const DesignConfiguration>();
+
+    // If design or design configuration exists, their implementation overrides the top component.
+    if (design)
+    {
+        return design->getImplementation() == KactusAttribute::HW;
+    }
+
+    if (designConfig)
+    {
+        return designConfig->getImplementation() == KactusAttribute::HW;
+    }
     
     return targetComponent && targetComponent->getImplementation() == KactusAttribute::HW;    
 }
@@ -205,11 +218,11 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     if (designGeneration)
     {
         QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
-        generator.parseDesign(configuration->getOutputPath(), designs);
+        generator.parseDesign(configuration->getFileOuput()->getOutputPath(), designs);
     }
     else
     {
-        generator.parseComponent(configuration->getOutputPath(), componentParser->getParsedComponent());
+        generator.parseComponent(configuration->getFileOuput()->getOutputPath(), componentParser->getParsedComponent());
     }
 
 	generator.generate(getVersion(), utility_->getKactusVersion());
@@ -284,7 +297,7 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 
     configuration_ = QSharedPointer<GeneratorConfiguration>(
         new GeneratorConfiguration(viewSelect, componentParser, designParser));
-    configuration_->setOutputPath(defaultOutputPath());
+    configuration_->getFileOuput()->setOutputPath(defaultOutputPath());
 
     GeneratorConfigurationDialog dialog(configuration_, utility_->getParentWidget());
     return dialog.exec() == QDialog::Accepted;

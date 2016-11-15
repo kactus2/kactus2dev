@@ -6,15 +6,13 @@
 // Date: 14.06.2016
 //
 // Description:
-// Dialog for selecting a view, component instantiation and file set for generation.
+// Widget for selecting a view, component instantiation and file set for generation.
 //-----------------------------------------------------------------------------
 
 #ifndef VIEWSELECTIONWIDGET_H
 #define VIEWSELECTIONWIDGET_H
 
 #include <QComboBox>
-#include <QSharedPointer>
-#include <QLineEdit>
 #include <QGroupBox>
 #include <QLabel>
 
@@ -30,9 +28,6 @@ public:
 
 	//! The destructor.
 	~ViewSelectionWidget();
-
-	// Returns true, if the selections are fine by this widget. Will also update texts if needed.
-	bool validSelections() const;
 
 signals:
 	

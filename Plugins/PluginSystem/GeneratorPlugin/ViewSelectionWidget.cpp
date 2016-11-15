@@ -6,22 +6,14 @@
 // Date: 14.06.2016
 //
 // Description:
-// Dialog for selecting a view, component instantiation and file set for generation.
+// Widget for selecting a view, component instantiation and file set for generation.
 //-----------------------------------------------------------------------------
 
 #include "ViewSelectionWidget.h"
 #include "ViewSelection.h"
 
-#include <QComboBox>
-#include <QDialogButtonBox>
-#include <QFileDialog>
 #include <QFormLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
 #include <QVBoxLayout>
-#include <QApplication>
-#include <IPXACTmodels/Component/View.h>
 
 //-----------------------------------------------------------------------------
 // Function: ViewSelectionWidget::ViewSelectionWidget()
@@ -100,25 +92,6 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<ViewSelection> configura
 //-----------------------------------------------------------------------------
 ViewSelectionWidget::~ViewSelectionWidget()
 {
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewSelectionWidget::onFileSetStateChanged()
-//-----------------------------------------------------------------------------
-bool ViewSelectionWidget::validSelections() const
-{
-	// If the file is not saved to a file set, no selections needed.
-	if (configuration_->getSaveToFileset())
-	{
-		// Must have a file set as well.
-		if (configuration_->getFileSetName().isEmpty())
-		{
-			fileSetWarningLabel_->setText("<b>Please define a file set.</b>");
-			return false;
-		}
-	}
-
-	return true;
 }
 
 //-----------------------------------------------------------------------------

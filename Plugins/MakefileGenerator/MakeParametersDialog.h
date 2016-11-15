@@ -52,6 +52,8 @@ private:
     MakeParametersDialog(MakeParametersDialog const& rhs);
     MakeParametersDialog& operator=(MakeParametersDialog const& rhs);
 
+    void createConflictTable(QVBoxLayout* instanceLayout, QSharedPointer<MakeFileData> makeData);
+
     bool* addLauncher_;
 };
 

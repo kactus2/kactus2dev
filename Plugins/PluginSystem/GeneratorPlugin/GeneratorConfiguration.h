@@ -17,6 +17,7 @@
 #include <QSharedPointer>
 
 #include "ViewSelection.h"
+#include "FileOutput.h"
 #include <Plugins/common/HDLParser/HDLComponentParser.h>
 #include <Plugins/common/HDLParser/HDLDesignParser.h>
 
@@ -35,22 +36,29 @@ public:
         HDLDesignParser* designParser);
 
 	//! The destructor.
-	~GeneratorConfiguration();
+    ~GeneratorConfiguration();
+    
+    /*!
+     *  Checks if the generation configuration is not incomplete.
+     *
+     *      @param [out] warning   The stated reason for not accepting.
+     */
+    bool validSelections(QString &warning);
     
     /*!
      *  Parses the documents so that we know what will be generated.
      */
     void parseDocuments();
-    
-    /*!
-     *  Gets reference to the output file paths.
-     */
-    QSharedPointer<QList<QString*> > getFileNames();
 	
     /*!
      *  Gets the view selection data.
      */
 	QSharedPointer<ViewSelection> getViewSelection() const;
+	
+    /*!
+     *  Gets the file output data.
+     */
+	QSharedPointer<FileOuput> getFileOuput() const;
 
     /*!
      *  Sets true for generating, false for not generating.
@@ -72,28 +80,6 @@ public:
      */
     bool getMemoryGeneration() const;
 
-    /*!
-     *  Sets the path for the output file for the generation.
-     *
-     *      @param [in] path   The path to set.
-     */
-    void setOutputPath(QString const& path);
-
-    /*!
-     *  Gets the output path for generation.
-     *
-     *      @return The path to output file.
-     */
-    QString getOutputPath() const;
-    
-    /*!
-     *  Sets the file name in the given index of file names.
-     *
-     *      @param [in] path    The new name.
-     *      @param [in] index   The index of the file name.
-     */
-    void setOutputFileName(QString newName, int index);
-
 signals:
 	
     /*!
@@ -109,15 +95,12 @@ private:
 
     //! The view selection configuration.
     QSharedPointer<ViewSelection> viewSelection_;
+    //! The file output configuration.
+    QSharedPointer<FileOuput> fileOutput_;
 
     //! The parsers used to parse IP-XACT for data usable in generation.
     HDLComponentParser* componentParser_;
     HDLDesignParser* designParser_;
-
-    //! The base directory for output paths.
-    QString outputPath_;
-    //! The names of the potential new files.
-    QSharedPointer<QList<QString*> > fileNames_;
 
     //! If true, interfaces should be utilized in generation, else it is false.
     bool generateInterface_;
