@@ -28,7 +28,7 @@
 AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock,
     bool filterRegisters, MemoryMapGraphicsItem* memoryMapItem):
 MemoryDesignerChildGraphicsItem(blockItem->getName(), "address block", blockItem->getAddress().toULongLong(),
-    blockItem->getRange().toULongLong(), getBlockWidth(memoryMapItem), memoryMapItem),
+    blockItem->getRange().toULongLong(), getBlockWidth(memoryMapItem, filterRegisters), memoryMapItem),
 SubMemoryLayout(blockItem, MemoryDesignerConstants::REGISTER_TYPE, filterRegisters, this),
 addressUnitBits_(blockItem->getAUB())
 {
@@ -50,9 +50,18 @@ AddressBlockGraphicsItem::~AddressBlockGraphicsItem()
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphicsItem::getBlockWidth()
 //-----------------------------------------------------------------------------
-qreal AddressBlockGraphicsItem::getBlockWidth(MemoryMapGraphicsItem* memoryMapItem) const
+qreal AddressBlockGraphicsItem::getBlockWidth(MemoryMapGraphicsItem* memoryMapItem, bool registersAreFiltered)
+    const
 {
-    int blockWidth = memoryMapItem->boundingRect().width() / 4 * 3 + 1;
+    int blockWidth = 0;
+    if (registersAreFiltered)
+    {
+        blockWidth = memoryMapItem->boundingRect().width() / 2 + 1;
+    }
+    else
+    {
+        blockWidth = memoryMapItem->boundingRect().width() / 4 * 3 + 1;
+    }
     return blockWidth;
 }
 
@@ -61,7 +70,15 @@ qreal AddressBlockGraphicsItem::getBlockWidth(MemoryMapGraphicsItem* memoryMapIt
 //-----------------------------------------------------------------------------
 void AddressBlockGraphicsItem::setLabelPositions()
 {
-    qreal nameX = (-boundingRect().width() / 6) - getNameLabel()->boundingRect().width();
+    qreal nameX = 0;
+    if (subItemsAreFiltered())
+    {
+        nameX = boundingRect().right() - getNameLabel()->boundingRect().width();
+    }
+    else
+    {
+        nameX = (-boundingRect().width() / 6) - getNameLabel()->boundingRect().width();
+    }
     qreal nameY = (boundingRect().height() / 2) - (getNameLabel()->boundingRect().height() / 2);
 
     getNameLabel()->setPos(nameX, nameY);
@@ -135,6 +152,12 @@ void AddressBlockGraphicsItem::addMemoryConnection(MemoryConnectionItem* connect
 //-----------------------------------------------------------------------------
 qreal AddressBlockGraphicsItem::getItemWidth() const
 {
-    qreal itemBoundingWidth = boundingRect().width() - getSubMemoryItems().first()->boundingRect().width();
+    qreal registerWidth = 0;
+
+    if (!subItemsAreFiltered())
+    {
+        registerWidth = getSubMemoryItems().first()->boundingRect().width();
+    }
+    qreal itemBoundingWidth = boundingRect().width() - registerWidth;
     return itemBoundingWidth;
 }

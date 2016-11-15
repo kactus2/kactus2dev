@@ -67,14 +67,10 @@ MemoryDesignDocument::~MemoryDesignDocument()
 //-----------------------------------------------------------------------------
 void MemoryDesignDocument::refresh()
 {
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
     diagram_->clearScene();
     setDesign(identifyingVLNV_, designViewName_);
 
     TabDocument::refresh();
-
-    QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,6 +78,8 @@ void MemoryDesignDocument::refresh()
 //-----------------------------------------------------------------------------
 bool MemoryDesignDocument::setDesign(VLNV const& componentVLNV, QString const& viewName)
 {
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+
     bool designSetupSuccessfull = false;
 
     if (componentVLNV.isValid() && componentVLNV.getType() == VLNV::COMPONENT && !viewName.isEmpty())
@@ -117,6 +115,8 @@ bool MemoryDesignDocument::setDesign(VLNV const& componentVLNV, QString const& v
     {
         emit errorMessage(QString("Selected VLNV %1 is not valid.").arg(componentVLNV.toString()));
     }
+
+    QApplication::restoreOverrideCursor();
 
     return designSetupSuccessfull;
 }
@@ -251,4 +251,21 @@ void MemoryDesignDocument::filterAddressSpaceSegments(bool filterSegments)
 bool MemoryDesignDocument::addressSpaceSegmentsAreFilterted() const
 {
     return diagram_->addressSpaceSegmentsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::filterAddressBlockRegisters()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::filterAddressBlockRegisters(bool filterRegisters)
+{
+    diagram_->setFilterAddressBlockRegisters(filterRegisters);
+    refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::addressBlockRegistersAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDocument::addressBlockRegistersAreFiltered() const
+{
+    return diagram_->addressBlockRegistersAreFiltered();
 }

@@ -13,6 +13,7 @@
 
 #include <common/KactusColors.h>
 
+#include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryMapGraphicsItem.h>
@@ -134,14 +135,26 @@ void MemoryCollisionItem::setLabels(QString firstRangeStart, QString firstRangeE
     int rangeEndInt = collisionRangeEnd.toInt(0, 16);
     
     int startPointYCorrection = -3;
+    qreal endPointYCorrection = 0;
     if (rangeEndInt - rangeStartInt > 0)
     {
         QGraphicsTextItem* startPointRangeEnd = new QGraphicsTextItem(collisionRangeEnd, this);
-        startPointRangeEnd->setPos(lowLeft.x() + 2, lowLeft.y() - startPointRangeEnd->boundingRect().height() + 1);
+
+        if (boundingRect().height() <= MemoryDesignerConstants::RANGEINTERVAL + 1)
+        {
+            startPointYCorrection = -startPointRangeStart->boundingRect().height() + 4;
+            endPointYCorrection = 4;
+        }
+        else
+        {
+            startPointYCorrection = 0;
+            endPointYCorrection = startPointRangeEnd->boundingRect().height() - 1;
+        }
+
+        startPointRangeEnd->setPos(lowLeft.x() + 2, lowLeft.y() - endPointYCorrection);
         startPointRangeEnd->setFont(labelFont);
         startPointRangeEnd->setDefaultTextColor(faultyTextColor);
 
-        startPointYCorrection = 0;
     }
 
     startPointRangeStart->setPos(topLeft.x() + 2, topLeft.y() + startPointYCorrection);
@@ -179,7 +192,7 @@ void MemoryCollisionItem::setLabels(QString firstRangeStart, QString firstRangeE
                     collidingMapRangeEnd->setFont(labelFont);
                     collidingMapRangeEnd->setPos(
                         mapTopLeft.x() - (collidingMapRangeEnd->boundingRect().width() + 2),
-                        lowLeft.y() - collidingMapRangeEnd->boundingRect().height() + 1);
+                        lowLeft.y() - endPointYCorrection);
                 }
 
                 collidingColumns.append(containingColumn);

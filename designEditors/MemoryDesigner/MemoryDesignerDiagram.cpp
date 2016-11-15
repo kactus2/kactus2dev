@@ -102,6 +102,22 @@ bool MemoryDesignerDiagram::addressSpaceSegmentsAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::setFilterAddressBlockRegisters()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::setFilterAddressBlockRegisters(bool filterRegisters)
+{
+    filterRegisters_ = filterRegisters;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::addressBlockRegistersAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerDiagram::addressBlockRegistersAreFiltered() const
+{
+    return filterRegisters_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::loadDesign()
 //-----------------------------------------------------------------------------
 bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Component> component,
@@ -616,6 +632,11 @@ void MemoryDesignerDiagram::createConnection(QVector<QSharedPointer<Connectivity
                 endAddress, connectionEndItem, spaceColumn->scene(), yTransfer);
             connectionChain.append(newConnectionItem);
             setHeightForConnectionChain(connectionChain);
+
+            if (filterRegisters_ || filterAddressBlocks_)
+            {
+                newConnectionItem->repositionConnectionToStartItemConnections();
+            }
 
             qreal spaceItemEndPointAfter = connectionStartItem->getSceneEndPoint();
 

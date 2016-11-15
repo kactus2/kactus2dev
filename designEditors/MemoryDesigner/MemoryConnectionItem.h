@@ -143,6 +143,16 @@ public:
      */
     void setConnectionWidth();
 
+    /*!
+     *  Reposition this item according to other connection items originating from the start memory item.
+     */
+    void repositionConnectionToStartItemConnections();
+
+    /*!
+     *  Reposition range labels that are colliding with range labels of other memory connection items.
+     */
+    void repositionCollidingRangeLabels();
+
 private:
     // Disable copying.
     MemoryConnectionItem(MemoryConnectionItem const& rhs);
@@ -200,6 +210,26 @@ private:
      *      @return The new height for the memory connection item.
      */
     qreal getComparedConnectionHeight(MemoryConnectionItem* comparisonConnection) const;
+
+    /*!
+     *  Check if an item collides with another item.
+     *
+     *      @param [in] firstRectangle      Scene bounding rectangle of the first item.
+     *      @param [in] firstPenWidth       Line width of the first item.
+     *      @param [in] secondRectangle     Scene bounding rectangle of the second item.
+     *      @param [in] secondPenWidth      Line width of the second item.
+     *
+     *      @return True, if the item collides with another item, false otherwise.
+     */
+    bool itemCollidesWithAnotherItem(QRectF firstRectangle, int firstPenWidth, QRectF secondRectangle,
+        int secondPenWidth) const;
+
+    /*!
+     *  Reposition a single colliding range label.
+     *
+     *      @param [in] textLabel   The selected range label.
+     */
+    void repositionSingleRangeLabel(QGraphicsTextItem* rangeLabel) const;
 
     //-----------------------------------------------------------------------------
     // Data.

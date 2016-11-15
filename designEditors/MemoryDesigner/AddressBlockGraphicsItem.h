@@ -78,9 +78,10 @@ private:
     /*!
      *  Get the width of the block item.
      *
-     *      @param [in] memoryMapItem   The parent item of the address block item.
+     *      @param [in] memoryMapItem           The parent item of the address block item.
+     *      @param [in] registersAreFiltered    Filtering value for address block registers.
      */
-    qreal getBlockWidth(MemoryMapGraphicsItem* memoryMapItem) const;
+    qreal getBlockWidth(MemoryMapGraphicsItem* memoryMapItem, bool registersAreFiltered) const;
 
     /*!
      *  Set the positions for the labels.

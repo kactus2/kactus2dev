@@ -176,7 +176,7 @@ qreal AddressSpaceGraphicsItem::getSubItemHeight(SubMemoryLayout* mainItem,
 
                 moveConnectionItem(connectionItem, yTransfer, movedConnections);
 
-                quint64 newConnectionEnd = connectionItem->getConnectedEndItemLastAddress();
+                quint64 newConnectionEnd = getConnectionRangeEndValue(connectionItem, connectionRangeEnd);
                 if (connectionItem == firstConnection || newConnectionEnd > connectionRangeEnd)
                 {
                     connectionRangeEnd = newConnectionEnd;
@@ -220,6 +220,28 @@ qreal AddressSpaceGraphicsItem::getSubItemHeight(SubMemoryLayout* mainItem,
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getConnectionEndPoint()
+//-----------------------------------------------------------------------------
+quint64 AddressSpaceGraphicsItem::getConnectionRangeEndValue(MemoryConnectionItem* connectionItem,
+    quint64 previousEndPoint) const
+{
+    quint64 newConnectionEnd = connectionItem->getConnectedEndItemLastAddress();
+    quint64 connectionEndPoint = connectionItem->sceneBoundingRect().bottom();
+    quint64 endItemEndPoint = connectionItem->getSceneEndPoint();
+    quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
+    if (connectionEndPoint == endItemEndPoint && connectionBaseAddress > previousEndPoint + 1)
+    {
+        newConnectionEnd = connectionItem->getRangeEndValue().toULongLong(0, 16);
+    }
+    else
+    {
+        newConnectionEnd = connectionItem->getConnectedEndItemLastAddress();
+    }
+
+    return newConnectionEnd;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::moveConnectionItem()
 //-----------------------------------------------------------------------------
 void AddressSpaceGraphicsItem::moveConnectionItem(MemoryConnectionItem* connectionItem, qreal yTransfer,
@@ -260,14 +282,17 @@ qreal AddressSpaceGraphicsItem::getTransferY(quint64 currentConnectionBaseAddres
 qreal AddressSpaceGraphicsItem::getMinimumRequiredHeight(quint64 connectionBaseAddress,
     quint64 connectionEndAddress) const
 {
+    qreal height = boundingRect().height();
+
     return SubMemoryLayout::getMinimumRequiredHeight(AddressSpaceItemConstants::MINIMUMSUBITEMHEIGHT,
-        connectionBaseAddress, connectionEndAddress);
+        connectionBaseAddress, connectionEndAddress, getBaseAddress(), getLastAddress(), height);
 }
 
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::getFilteredCompressedHeight()
 //-----------------------------------------------------------------------------
-quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(qreal minimumSubItemHeight)
+quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(SubMemoryLayout*, quint64,
+    qreal minimumSubItemHeight)
 {
     MemoryConnectionItem* firstConnection = getMemoryConnections().first();
     quint64 connectionRangeEnd = firstConnection->getRangeEndValue().toULongLong(0, 16);
@@ -295,7 +320,7 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(qreal minimumSubIt
 
             moveConnectionItem(connectionItem, yTransfer, movedConnections);
 
-            quint64 newConnectionEnd = connectionItem->getConnectedEndItemLastAddress();
+            quint64 newConnectionEnd = getConnectionRangeEndValue(connectionItem, connectionRangeEnd);
             if (connectionItem == firstConnection || newConnectionEnd > connectionRangeEnd)
             {
                 connectionRangeEnd = newConnectionEnd;

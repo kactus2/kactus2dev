@@ -85,6 +85,20 @@ public:
     bool addressSpaceSegmentsAreFiltered() const;
 
     /*!
+     *  Set a new value for filtering the address block registers.
+     *
+     *      @param [in] filterSegments  Value for filtering address block registers.
+     */
+    void setFilterAddressBlockRegisters(bool filterRegisters);
+
+    /*!
+     *  Check if the address block registers are filtered.
+     *
+     *      @return True, if the address block registers are filtered, false otherwise.
+     */
+    bool addressBlockRegistersAreFiltered() const;
+
+    /*!
      *  Load a design using the selected view.
      *
      *      @param [in] component   Component containing the view.

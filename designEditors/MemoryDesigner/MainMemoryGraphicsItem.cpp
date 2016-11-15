@@ -250,6 +250,7 @@ void MainMemoryGraphicsItem::reDrawConnections()
     foreach (MemoryConnectionItem* connection, getMemoryConnections())
     {
         connection->reDrawConnection();
+        connection->repositionCollidingRangeLabels();
     }
 }
 

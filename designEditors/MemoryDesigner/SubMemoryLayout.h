@@ -79,6 +79,13 @@ public:
     quint64 getCompressedHeight(qreal minimumSubItemHeight, SubMemoryLayout* mainItem,
         QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
 
+    /*!
+     *  Check whether the sub items are filtered or not.
+     *
+     *      @return True, if the sub items are filtered, otherwise false.
+     */
+    bool subItemsAreFiltered() const;
+
 protected:
 
     /*!
@@ -113,11 +120,37 @@ protected:
      *      @param [in] minimumSubItemHeight    Minimum height of the sub items.
      *      @param [in] connectionBaseAddress   Base address of the selected memory connection.
      *      @param [in] connectionEndAddress    End address of the selected memory connection.
+     *      @param [in] itemBaseAddress         Base address of the layout.
+     *      @param [in] itemLastAddress         Last address of the layout.
+     *      @param [in] itemHeight              Height of the layout.
      *
      *      @return The minimum required height of the sub memory layout.
      */
     qreal getMinimumRequiredHeight(qreal minimumSubItemHeight, quint64 connectionBaseAddress,
-        quint64 connectionEndAddress) const;
+        quint64 connectionEndAddress, quint64 itemBaseAddress, quint64 itemLastAddress, qreal itemHeight) const;
+
+    /*!
+     *  Get the minimum available height for the layout.
+     *
+     *      @param [in] baseAddress         Base address of the layout.
+     *      @param [in] lastAddress         Last address of the layout.
+     *      @param [in] itemHeight          Height of the layout.
+     *      @param [in] minimumItemHeight   The minimum height for the layout.
+     *
+     *      @return The minimum available height for the layout.
+     */
+    qreal getMinimumItemHeight(quint64 baseAddress, quint64 lastAddress, qreal itemHeight, qreal minimumItemHeight)
+        const;
+
+    /*!
+     *  Check whether the selected address range is within the limit for the minimum height.
+     *
+     *      @param [in] baseAddress     The selected base address.
+     *      @param [in] lastAddress     The selected last address.
+     *
+     *      @return True, if the address range is within the limited range, false otherwise.
+     */
+    bool addressRangeIsWithinLimit(quint64 baseAddress, quint64 lastAddress) const;
 
     /*!
      *  Get the height for the memory sub item to fit in the selected memory connection item.
@@ -217,11 +250,14 @@ private:
     /*!
      *  Get the height of a filtered sub memory layout.
      *
+     *      @param [in] parentLayout            The parent layout.
+     *      @param [in] yPosition               Y coordinate for this layout.
      *      @param [in] minimumSubItemHeight    Minimum height of the layout.
      *
      *      @return Filtered height of the sub memory layout.
      */
-    virtual quint64 getFilteredCompressedHeight(qreal minimumSubItemHeight);
+    virtual quint64 getFilteredCompressedHeight(SubMemoryLayout* parentLayout, quint64 yPosition,
+        qreal minimumSubItemHeight);
 
     //-----------------------------------------------------------------------------
     // Data.

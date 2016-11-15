@@ -143,13 +143,26 @@ private:
         QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
 
     /*!
+     *  Get the last address of the connection or connected end item.
+     *
+     *      @param [in] connectionItem      The selected connection item.
+     *      @param [in] previousEndPoint    The previously connected end point.
+     *
+     *      @return The last address of the selected connection or connected end item.
+     */
+    quint64 getConnectionRangeEndValue(MemoryConnectionItem* connectionItem, quint64 previousEndPoint) const;
+
+    /*!
      *  Get the filtered compressed height of an address space graphics item.
      *
+     *      @param [in] parentLayout            Layout of the parent item.
+     *      @param [in] yPosition               Y coordinate of the layout.
      *      @param [in] minimumSubItemHeight    Minimum height of the graphics item.
      *
      *      @return The compressed height of an address space graphics item.
      */
-    virtual quint64 getFilteredCompressedHeight(qreal minimumSubItemHeight);
+    virtual quint64 getFilteredCompressedHeight(SubMemoryLayout* parentLayout, quint64 yPosition,
+        qreal minimumSubItemHeight);
 
     /*!
      *  Get the connection movement of a filtered address space graphics item in y-coordinate.

@@ -211,45 +211,67 @@ quint64 SubMemoryLayout::condenseSubItem(MemoryDesignerChildGraphicsItem* subIte
 // Function: SubMemoryLayout::getMinimumRequiredHeight()
 //-----------------------------------------------------------------------------
 qreal SubMemoryLayout::getMinimumRequiredHeight(qreal minimumSubItemHeight, quint64 connectionBaseAddress,
-    quint64 connectionEndAddress) const
+    quint64 connectionEndAddress, quint64 itemBaseAddress, quint64 itemLastAddress, qreal itemHeight) const
 {
     qreal height = 0;
 
     if (filterSubItems_)
     {
-        height = minimumSubItemHeight;
+        height = getMinimumItemHeight(itemBaseAddress, itemLastAddress, itemHeight, minimumSubItemHeight);
     }
     else
     {
         foreach (MemoryDesignerChildGraphicsItem* subItem, subMemoryItems_)
         {
+            quint64 subBaseAddress = subItem->getBaseAddress();
+            quint64 subLastAddress = subItem->getLastAddress();
+            qreal subItemHeight = subItem->boundingRect().height();
+
             SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
             if (subLayout)
             {
-                height += subLayout->getMinimumRequiredHeight(
-                    minimumSubItemHeight, connectionBaseAddress, connectionEndAddress);
+                height += subLayout->getMinimumRequiredHeight(minimumSubItemHeight, connectionBaseAddress,
+                    connectionEndAddress, subBaseAddress, subLastAddress, subItemHeight);
             }
             else
             {
-                quint64 subBaseAddress = subItem->getBaseAddress();
-                quint64 subLastAddress = subItem->getLastAddress();
-
                 if (connectionEndAddress >= subBaseAddress && subLastAddress >= connectionBaseAddress)
                 {
-                    if (subLastAddress - subBaseAddress > 2)
-                    {
-                        height += minimumSubItemHeight;
-                    }
-                    else
-                    {
-                        height += subItem->boundingRect().height() - 1;
-                    }
+                    height +=
+                        getMinimumItemHeight(subBaseAddress, subLastAddress, subItemHeight, minimumSubItemHeight);
                 }
             }
         }
     }
 
     return height;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::getMinimumItemHeight()
+//-----------------------------------------------------------------------------
+qreal SubMemoryLayout::getMinimumItemHeight(quint64 baseAddress, quint64 lastAddress, qreal itemHeight,
+    qreal minimumItemHeight) const
+{
+    qreal height = 0;
+    if (addressRangeIsWithinLimit(baseAddress, lastAddress))
+    {
+        height = minimumItemHeight;
+    }
+    else
+    {
+        height = itemHeight - 1;
+    }
+
+    return height;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::addressRangeIsWithinLimit()
+//-----------------------------------------------------------------------------
+bool SubMemoryLayout::addressRangeIsWithinLimit(quint64 baseAddress, quint64 lastAddress) const
+{
+    return lastAddress - baseAddress > 2;
 }
 
 //-----------------------------------------------------------------------------
@@ -287,7 +309,7 @@ quint64 SubMemoryLayout::getCompressedHeight(qreal minimumSubItemHeight, SubMemo
 
     if (filterSubItems_)
     {
-        newHeight = getFilteredCompressedHeight(minimumSubItemHeight);
+        newHeight = getFilteredCompressedHeight(mainItem, newSubItemHeight, minimumSubItemHeight);
     }
     else
     {
@@ -302,7 +324,7 @@ quint64 SubMemoryLayout::getCompressedHeight(qreal minimumSubItemHeight, SubMemo
             SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
             if (subLayout)
             {
-                newSubItemHeight = subLayout->getCompressedHeight(minimumSubItemHeight, mainItem, movedConnections);
+                newSubItemHeight = subLayout->getCompressedHeight(minimumSubItemHeight, this, movedConnections);
                 subItem->condense(newSubItemHeight);
                 subItem->setPos(subItem->pos().x(), newHeight);
                 newHeight += newSubItemHeight;
@@ -368,10 +390,6 @@ quint64 SubMemoryLayout::getSubItemHeightForConnection(SubMemoryLayout* mainItem
         QVector<MemoryDesignerChildGraphicsItem*> subItemsInConnection =
             getSubItemsInConnection(mainItem, connectionItem);
 
-        MemoryDesignerGraphicsItem* graphicsItem = dynamic_cast<MemoryDesignerGraphicsItem*>(mainItem);
-        QString mainName = graphicsItem->name();
-        QString subItemName = subItem->name();
-
         qreal availableArea =
             getAvailableArea(mainItem, yPosition, subItemsInConnection, newSubItemHeight, connectionItem);
 
@@ -380,7 +398,7 @@ quint64 SubMemoryLayout::getSubItemHeightForConnection(SubMemoryLayout* mainItem
         {
             quint64 comparisonBaseAddress = comparisonItem->getBaseAddress();
             quint64 comparisonLastAddress = comparisonItem->getLastAddress();
-            if (comparisonLastAddress - comparisonBaseAddress > 2)
+            if (addressRangeIsWithinLimit(comparisonBaseAddress, comparisonLastAddress))
             {
                 condensableSubItems++;
             }
@@ -424,7 +442,7 @@ QVector<MemoryDesignerChildGraphicsItem*> SubMemoryLayout::getSubItemsInConnecti
         MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
 
         SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
-        if (subLayout)
+        if (subLayout && !subLayout->subItemsAreFiltered())
         {
             QVector<MemoryDesignerChildGraphicsItem*> newSubItemsInConnection =
                 subLayout->getSubItemsInConnection(subLayout, connectionItem);
@@ -488,44 +506,36 @@ qreal SubMemoryLayout::getAvailableArea(SubMemoryLayout* mainItem, quint64 yPosi
 //-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::getFilteredCompressedHeight()
 //-----------------------------------------------------------------------------
-quint64 SubMemoryLayout::getFilteredCompressedHeight(qreal minimumSubItemHeight)
+quint64 SubMemoryLayout::getFilteredCompressedHeight(SubMemoryLayout* parentLayout, quint64 yPosition,
+    qreal minimumSubItemHeight)
 {
-    quint64 filteredHeight = minimumSubItemHeight;
+    quint64 filteredHeight = 0;
 
-    MemoryDesignerGraphicsItem* memoryItem = dynamic_cast<MemoryDesignerGraphicsItem*>(this);
-    if (memoryItem)
+    MemoryDesignerChildGraphicsItem* subItem = dynamic_cast<MemoryDesignerChildGraphicsItem*>(this);
+    if (subItem)
     {
-        QMap<quint64, MemoryConnectionItem*> memoryConnections = memoryItem->getMemoryConnections();
-        if (!memoryConnections.isEmpty())
+        quint64 baseAddress = subItem->getBaseAddress();
+        quint64 lastAddress = subItem->getLastAddress();
+
+        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(subItem->getMemoryConnections());
+        while (connectionIterator.hasNext())
         {
-            MemoryConnectionItem* firstConnection = memoryConnections.first();
+            connectionIterator.next();
+            MemoryConnectionItem* connectionItem = connectionIterator.value();
 
-            qreal connectionsStartY = firstConnection->sceneBoundingRect().top();
-            qreal connectionsEndY = firstConnection->sceneBoundingRect().bottom();
-            
-            QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(memoryItem->getMemoryConnections());
-            while (connectionIterator.hasNext())
-            {
-                connectionIterator.next();
-                MemoryConnectionItem* connectionItem = connectionIterator.value();
-                if (connectionItem != firstConnection)
-                {
-                    qreal comparisonStartY = connectionItem->sceneBoundingRect().top();
-                    if (comparisonStartY < connectionsStartY)
-                    {
-                        connectionsStartY = comparisonStartY;
-                    }
-                    qreal comparisonEndY = connectionItem->sceneBoundingRect().bottom();
-                    if (comparisonEndY > connectionsEndY)
-                    {
-                        connectionsEndY = comparisonEndY;
-                    }
-                }
-            }
-
-            filteredHeight = connectionsEndY - connectionsStartY - memoryItem->pen().width();
+            filteredHeight = getSubItemHeightForConnection(parentLayout, baseAddress, lastAddress, subItem,
+                connectionItem, yPosition, filteredHeight, minimumSubItemHeight);
         }
+
     }
 
     return filteredHeight;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::subItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool SubMemoryLayout::subItemsAreFiltered() const
+{
+    return filterSubItems_;
 }

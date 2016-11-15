@@ -386,6 +386,53 @@ void MemoryConnectionItem::reDrawConnection()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::repositionCollidingTextLabels()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::repositionCollidingRangeLabels()
+{
+    repositionSingleRangeLabel(firstItemStartLabel_);
+    repositionSingleRangeLabel(firstItemEndLabel_);
+    repositionSingleRangeLabel(secondItemStartLabel_);
+    repositionSingleRangeLabel(secondItemEndLabel_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::repositionCollidingTextLabel()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::repositionSingleRangeLabel(QGraphicsTextItem* rangeLabel) const
+{
+    const int RECTANGLEMODIFIER = 7;
+
+    QRectF labelRectangle = rangeLabel->sceneBoundingRect();
+    labelRectangle.setTop(labelRectangle.top() + RECTANGLEMODIFIER);
+    labelRectangle.setBottom(labelRectangle.bottom() - RECTANGLEMODIFIER);
+
+    foreach (QGraphicsItem* collidingItem, rangeLabel->collidingItems())
+    {
+        QGraphicsTextItem* collidingLabel = dynamic_cast<QGraphicsTextItem*>(collidingItem);
+        if (collidingLabel && collidingLabel != rangeLabel)
+        {
+            QRectF collidingRectangle = collidingLabel->sceneBoundingRect();
+            collidingRectangle.setTop(collidingRectangle.top() + RECTANGLEMODIFIER);
+            collidingRectangle.setBottom(collidingRectangle.bottom() - RECTANGLEMODIFIER);
+
+            if (itemCollidesWithAnotherItem(labelRectangle, 0, collidingRectangle, 0))
+            {
+                quint64 itemValue = rangeLabel->toPlainText().toULongLong(0, 16);
+                quint64 collidingValue = collidingLabel->toPlainText().toULongLong(0, 16);
+                if (itemValue < collidingValue)
+                {
+                    rangeLabel->moveBy(0, -6);
+                    collidingLabel->moveBy(0, 7);
+                }
+
+                return;
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::getSceneEndPoint()
 //-----------------------------------------------------------------------------
 quint64 MemoryConnectionItem::getSceneEndPoint() const
@@ -500,7 +547,7 @@ qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* co
     qreal connectionHeight = connectionItem->getConnectionWidth();
     qreal containedConnectionsHeight = 0;
 
-    quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong();
+    quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
     quint64 comparisonLastAddress = 0;
 
     foreach (MemoryConnectionItem* comparisonConnection, connectionEndItem->getMemoryConnections())
@@ -508,19 +555,108 @@ qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* co
         if (comparisonConnection->getConnectionStartItem() == connectionEndItem)
         {
             containedConnectionsHeight += getComparedConnectionHeight(comparisonConnection);
-            comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong();
+            comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
         }
     }
 
-    if (connectionLastAddress == comparisonLastAddress)
+    if (connectionLastAddress < comparisonLastAddress)
     {
-        connectionHeight = qMax(connectionHeight, containedConnectionsHeight);
+        containedConnectionsHeight -= MemoryDesignerConstants::RANGEINTERVAL * 2;
     }
-    else
+
+    connectionHeight = qMax(connectionHeight, containedConnectionsHeight);
+
+    foreach (MemoryConnectionItem* comparisonConnection, startItem_->getMemoryConnections())
     {
-        connectionHeight =
-            qMax(connectionHeight, containedConnectionsHeight - MemoryDesignerConstants::RANGEINTERVAL * 2);
+        if (comparisonConnection->getConnectionEndItem() == startItem_)
+        {
+            if (comparisonConnection->boundingRect().height() - 1 == connectionHeight)
+            {
+                quint64 comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
+                if (comparisonLastAddress < connectionLastAddress)
+                {
+                    connectionHeight += MemoryDesignerConstants::RANGEINTERVAL * 2;
+                }
+            }
+            break;
+        }
     }
 
     return connectionHeight;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::repositionConnectionToStartItemConnections()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::repositionConnectionToStartItemConnections()
+{
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(
+        getConnectionStartItem()->getMemoryConnections());
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+
+        MemoryConnectionItem* comparisonConnection = connectionIterator.value();
+
+        if (comparisonConnection != this)
+        {
+            QRectF newConnectionRect = sceneBoundingRect();
+            int newConnectionPenWidth = pen().width();
+            QRectF comparisonRect = comparisonConnection->sceneBoundingRect();
+            comparisonRect.setLeft(newConnectionRect.left());
+            comparisonRect.setRight(newConnectionRect.right());
+            int comparisonPenWidth = comparisonConnection->pen().width();
+
+            quint64 comparisonBaseAddress = comparisonConnection->getRangeStartValue().toULongLong(0, 16);
+            quint64 comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
+
+            quint64 baseAddress = getRangeStartValue().toULongLong(0, 16);
+            quint64 lastAddress = getRangeEndValue().toULongLong(0, 16);
+
+            if (comparisonLastAddress > baseAddress && comparisonBaseAddress < baseAddress &&
+                !itemCollidesWithAnotherItem(
+                newConnectionRect, newConnectionPenWidth, comparisonRect, comparisonPenWidth))
+            {
+                onMoveConnectionInY(getConnectionStartItem(), -MemoryDesignerConstants::RANGEINTERVAL);
+            }
+            else if (lastAddress > comparisonBaseAddress && baseAddress < comparisonBaseAddress &&
+                !itemCollidesWithAnotherItem(
+                newConnectionRect, newConnectionPenWidth, comparisonRect, comparisonPenWidth))
+            {
+                qreal sceneBottom = sceneBoundingRect().bottom();
+                qreal comparisonTop = comparisonConnection->sceneBoundingRect().top();
+
+                qreal connectionDifference = sceneBottom - comparisonTop + MemoryDesignerConstants::RANGEINTERVAL;
+
+                comparisonConnection->onMoveConnectionInY(getConnectionStartItem(), connectionDifference);
+            }
+        }
+    }
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::itemCollidesWithAnotherItem()
+//-----------------------------------------------------------------------------
+bool MemoryConnectionItem::itemCollidesWithAnotherItem(QRectF firstRectangle, int firstPenWidth,
+    QRectF secondRectangle, int secondPenWidth) const
+{
+    qreal firstItemTop = firstRectangle.top() + firstPenWidth;
+    qreal firstItemLow = firstRectangle.bottom() - firstPenWidth;
+    qreal secondItemTop = secondRectangle.top() + secondPenWidth;
+    qreal secondItemLow = secondRectangle.bottom() - secondPenWidth;
+
+    if (
+        ((firstItemTop > secondItemTop && firstItemTop < secondItemLow) ||
+        (firstItemLow < secondItemLow && firstItemLow > secondItemTop) ||
+
+        (secondItemTop > firstItemTop && secondItemTop < firstItemLow) ||
+        (secondItemLow < firstItemLow && secondItemLow > firstItemTop) ||
+
+        (firstItemTop == secondItemTop && firstItemLow == secondItemLow)))
+    {
+        return true;
+    }
+
+    return false;
 }

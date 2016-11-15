@@ -46,12 +46,24 @@ filterRegisters_(filterRegisters)
 
     quint64 memoryHeight = (lastAddress - baseAddress + 1);
     int memoryWidth = 500;
+    if (filterRegisters_)
+    {
+        memoryWidth = memoryWidth / 2;
+    }
 
     setGraphicsRectangle(memoryWidth, memoryHeight);
     setupToolTip("memory map", baseAddress, lastAddress);
     setLabelPositions();
     
-    qreal blockXPosition = boundingRect().width() / 8;
+    qreal blockXPosition = 0;
+    if (filterRegisters_)
+    {
+        blockXPosition = boundingRect().width() / 4;
+    }
+    else
+    {
+        blockXPosition = boundingRect().width() / 8;
+    }
     setupSubItems(blockXPosition);
 }
 
@@ -217,7 +229,10 @@ qreal MemoryMapGraphicsItem::getMinimumRequiredHeight(quint64 connectionBaseAddr
 {
     int subItemHeight = getMinimumHeightForSubItems();
 
-    return SubMemoryLayout::getMinimumRequiredHeight(subItemHeight, connectionBaseAddress, connectionEndAddress);
+    qreal height = boundingRect().height();
+
+    return SubMemoryLayout::getMinimumRequiredHeight(
+        subItemHeight, connectionBaseAddress, connectionEndAddress, getBaseAddress(), getLastAddress(), height);
 }
 
 //-----------------------------------------------------------------------------
