@@ -82,9 +82,9 @@ QString CppSourceAnalyzer::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: CppSourceAnalyzer::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* CppSourceAnalyzer::getSettingsWidget()
+QWidget* CppSourceAnalyzer::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

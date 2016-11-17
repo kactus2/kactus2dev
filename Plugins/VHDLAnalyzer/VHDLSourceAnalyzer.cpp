@@ -85,9 +85,9 @@ QString VHDLSourceAnalyzer::getDescription() const
 //-----------------------------------------------------------------------------
 // Function: VHDLSourceAnalyzer::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* VHDLSourceAnalyzer::getSettingsWidget()
+QWidget* VHDLSourceAnalyzer::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

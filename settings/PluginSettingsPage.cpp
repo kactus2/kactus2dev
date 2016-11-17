@@ -85,13 +85,22 @@ PluginSettingsPage::~PluginSettingsPage()
 //-----------------------------------------------------------------------------
 bool PluginSettingsPage::validate()
 {
-    for (int i = 0; i < settingsStack_.count(); ++i)
+    for (int i = 0; i < pluginsTree_.topLevelItemCount(); ++i)
     {
-        PluginSettingsWidget* settingsWidget = static_cast<PluginSettingsWidget*>(settingsStack_.widget(i));
+        QTreeWidgetItem* categoryRoot = pluginsTree_.topLevelItem(i);
 
-        if (!settingsWidget->validate())
+        for (int j = 0; j < categoryRoot->childCount(); ++j)
         {
-            return false;
+            QTreeWidgetItem* item = categoryRoot->child(j);
+
+            // Retrieve the plugin pointer from the data.
+            IPlugin* plugin = static_cast<IPlugin*>(item->data(0, PLUGIN_POINTER_ROLE).value<void*>());
+            Q_ASSERT(plugin != 0);
+
+            if (plugin->getSettingsModel() &&!plugin->getSettingsModel()->validateSettings())
+            {
+                return false;
+            }
         }
     }
 
@@ -127,13 +136,18 @@ void PluginSettingsPage::apply()
 
             // Retrieve the settings widget index from the data and save custom settings.
             int index = item->data(0, PLUGIN_STACK_INDEX_ROLE).toInt();
-            PluginSettingsWidget* settingsWidget = static_cast<PluginSettingsWidget*>(settingsStack_.widget(index));
+            QWidget* settingsWidget = settingsStack_.widget(index);
             Q_ASSERT(settingsWidget != 0);
 
             // Save the active state.
             settings_.beginGroup(XmlUtils::removeWhiteSpace(plugin->getName()));
             settings_.setValue("Active", item->checkState(0) == Qt::Checked);
-            settingsWidget->saveSettings(settings_);
+
+            if (plugin->getSettingsModel())
+            {
+                plugin->getSettingsModel()->saveSettings(settings_);
+            }
+
             settings_.endGroup();
         }
     }
@@ -198,8 +212,7 @@ QTreeWidgetItem* PluginSettingsPage::createPluginItem(IPlugin* plugin)
     item->setData(0, PLUGIN_STACK_INDEX_ROLE, settingsStack_.count());
 
     // Retrieve the settings widget and load the current settings.
-    PluginSettingsWidget* settingsWidget = plugin->getSettingsWidget();
-    settingsWidget->loadSettings(settings_);
+    QWidget* settingsWidget = plugin->getSettingsWidget();
     settingsStack_.addWidget(settingsWidget);        
 
     infoStack_.addWidget(new PluginInfoWidget(plugin));
@@ -296,7 +309,7 @@ void PluginSettingsPage::resetStacks()
         settingsStack_.removeWidget(settingsStack_.widget(0));
     }
 
-    settingsStack_.addWidget(new PluginSettingsWidget());
+    settingsStack_.addWidget(new QWidget());
 
     while (infoStack_.count() > 0)
     {

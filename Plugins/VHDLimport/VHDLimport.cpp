@@ -109,9 +109,9 @@ QString VHDLimport::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: VHDLimport::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* VHDLimport::getSettingsWidget()
+QWidget* VHDLimport::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

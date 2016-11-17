@@ -26,7 +26,6 @@
 
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
-#include <Plugins/PluginSystem/PluginSettingsWidget.h>
 
 #include <QDate>
 #include <QDialog>
@@ -142,9 +141,9 @@ QString PadsPartGenerator::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* PadsPartGenerator::getSettingsWidget()
+QWidget* PadsPartGenerator::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

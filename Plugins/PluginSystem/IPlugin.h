@@ -12,7 +12,8 @@
 #ifndef IPLUGIN_H
 #define IPLUGIN_H
 
-#include "PluginSettingsWidget.h"
+#include "QWidget.h"
+#include "PluginSettingsModel.h"
 
 #include <QString>
 #include <QList>
@@ -77,15 +78,20 @@ public:
 
     /*!
      *  This can be used to show custom plugin-specific settings UI in the Kactus2 settings dialog.
-	 *  If the plugin has no custom settings, a null pointer should be returned.
+	 *  A QWidget should be returned even if the plugin has no custom settings.
      */
-    virtual PluginSettingsWidget* getSettingsWidget() = 0;
+    virtual QWidget* getSettingsWidget() = 0;
+
+    /*!
+     *  This is used to access the settings modified by function getSettingsWidget().
+     */
+    virtual PluginSettingsModel* getSettingsModel() = 0;
 
     /*!
      *  This can be used to indicate what external programs the plugin needs in order to operate correctly.
 	 *  This allows Kactus2 to show settings to set paths where those external program are located.
      */
-	 virtual QList<ExternalProgramRequirement> getProgramRequirements() = 0;
+	virtual QList<ExternalProgramRequirement> getProgramRequirements() = 0;
 };
 
 Q_DECLARE_INTERFACE(IPlugin, "com.tut.Kactus2.IPlugin/1.0")

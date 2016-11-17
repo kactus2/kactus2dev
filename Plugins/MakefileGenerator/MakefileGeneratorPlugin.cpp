@@ -86,9 +86,9 @@ QString MakefileGeneratorPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* MakefileGeneratorPlugin::getSettingsWidget()
+QWidget* MakefileGeneratorPlugin::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

@@ -5912,9 +5912,6 @@
     <ClInclude Include="Plugins\PluginSystem\PluginManager.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
-    <ClInclude Include="Plugins\PluginSystem\PluginSettingsWidget.h">
-      <Filter>Header Files\Plugins\PluginSystem</Filter>
-    </ClInclude>
     <ClInclude Include="library\LibraryManager\libraryinterface.h">
       <Filter>Header Files\library\LibraryManager</Filter>
     </ClInclude>
@@ -6343,6 +6340,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\general\BridgeColumns.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\PluginSystem\PluginSettingsModel.h">
+      <Filter>Header Files\Plugins\PluginSystem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

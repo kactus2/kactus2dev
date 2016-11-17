@@ -91,9 +91,9 @@ QString MemoryViewGeneratorPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* MemoryViewGeneratorPlugin::getSettingsWidget()
+QWidget* MemoryViewGeneratorPlugin::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

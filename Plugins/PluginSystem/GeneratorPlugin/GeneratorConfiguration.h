@@ -39,7 +39,7 @@ public:
     ~GeneratorConfiguration();
     
     /*!
-     *  Checks if the generation configuration is not incomplete.
+     *  Checks if the generation configuration is valid.
      *
      *      @param [out] warning   The stated reason for not accepting.
      */

@@ -53,11 +53,10 @@ QString AlteraBSPGenerator::getLicenceHolder() const {
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* AlteraBSPGenerator::getSettingsWidget()
+QWidget* AlteraBSPGenerator::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getIcon()

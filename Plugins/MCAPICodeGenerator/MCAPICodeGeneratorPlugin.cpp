@@ -84,9 +84,9 @@ QString MCAPICodeGeneratorPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* MCAPICodeGeneratorPlugin::getSettingsWidget()
+QWidget* MCAPICodeGeneratorPlugin::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

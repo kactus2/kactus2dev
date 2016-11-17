@@ -65,6 +65,8 @@ QList<IPlugin*> PluginManager::getActivePlugins() const
 //-----------------------------------------------------------------------------
 void PluginManager::setPluginPaths(QStringList const& pluginPaths)
 {
+    QSettings settings;
+    settings.beginGroup("PluginSettings");
     plugins_.clear();
 
     foreach(QString dirName, pluginPaths)
@@ -97,8 +99,16 @@ void PluginManager::setPluginPaths(QStringList const& pluginPaths)
                 if (uniquePlugin)
                 {
                     plugins_.append(plugin);
+
+                    settings.beginGroup(XmlUtils::removeWhiteSpace(plugin->getName()));
+                    if (plugin->getSettingsModel())
+                    {
+                        plugin->getSettingsModel()->loadSettings(settings);
+                    }
+                    settings.endGroup();
                 }
             }
         }
     }
+    settings.endGroup();
 }

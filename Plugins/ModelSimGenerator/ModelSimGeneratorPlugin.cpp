@@ -87,9 +87,9 @@ QString ModelSimGeneratorPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: ModelSimGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* ModelSimGeneratorPlugin::getSettingsWidget()
+QWidget* ModelSimGeneratorPlugin::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

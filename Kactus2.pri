@@ -184,7 +184,7 @@ HEADERS += ./VersionHelper.h \
     ./Plugins/PluginSystem/ISourceAnalyzerPlugin.h \
     ./Plugins/PluginSystem/PluginInfoWidget.h \
     ./Plugins/PluginSystem/PluginManager.h \
-    ./Plugins/PluginSystem/PluginSettingsWidget.h \
+    ./Plugins/PluginSystem/PluginSettingsModel.h \
     ./Plugins/PluginSystem/NewPluginsDialog.h \
     ./Plugins/PluginSystem/PluginListDialog.h \
     ./Plugins/PluginSystem/PluginUtilityAdapter.h \

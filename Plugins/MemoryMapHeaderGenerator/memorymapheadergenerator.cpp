@@ -87,9 +87,9 @@ QString MemoryMapHeaderGenerator::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* MemoryMapHeaderGenerator::getSettingsWidget()
+QWidget* MemoryMapHeaderGenerator::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

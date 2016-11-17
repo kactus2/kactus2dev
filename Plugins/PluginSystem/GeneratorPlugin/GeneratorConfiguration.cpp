@@ -15,8 +15,6 @@
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
-#include <QDir>
-
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
@@ -50,10 +48,9 @@ bool GeneratorConfiguration::validSelections(QString &warning)
         }
     }
 
-    // Must have path for the files. 
-    if (fileOutput_->getOutputPath().isEmpty() || !QDir(fileOutput_->getOutputPath()).exists())
+    // Must have valid file output.
+    if (!fileOutput_->validSelections(warning))
     {
-        warning = QLatin1String("<b>The output directory must exist!</b>");
         return false;
     }
 

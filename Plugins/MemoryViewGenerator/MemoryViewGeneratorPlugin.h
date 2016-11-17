@@ -58,7 +58,12 @@ public:
      *  This can be used to show custom plugin-specific settings UI in the Kactus2 settings dialog.
 	 *  If the plugin has no custom settings, a null pointer should be returned.
      */
-    virtual PluginSettingsWidget* getSettingsWidget();
+    virtual QWidget* getSettingsWidget();
+
+    /*!
+     *  This is used to access the settings modified by function getSettingsWidget().
+     */
+    virtual PluginSettingsModel* getSettingsModel(){return NULL;}
 
     /*!
      *  This can be used to indicate what external programs the plugin needs in order to operate correctly.

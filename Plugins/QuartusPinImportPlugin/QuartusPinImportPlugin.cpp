@@ -83,9 +83,9 @@ QString QuartusPinImportPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: QuartusPinImportPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* QuartusPinImportPlugin::getSettingsWidget()
+QWidget* QuartusPinImportPlugin::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

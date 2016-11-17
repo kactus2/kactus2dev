@@ -15,6 +15,8 @@
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
+#include <QDir>
+
 //-----------------------------------------------------------------------------
 // Function: FileOuput::FileOuput()
 //-----------------------------------------------------------------------------
@@ -27,6 +29,45 @@ FileOuput::FileOuput() : outputPath_(), fileNames_(new QList<QString*>)
 //-----------------------------------------------------------------------------
 FileOuput::~FileOuput()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileOuput::validSelections()
+//-----------------------------------------------------------------------------
+bool FileOuput::validSelections(QString &warning)
+{
+    // Must have path for the files. 
+    if (outputPath_.isEmpty() || !QDir(outputPath_).exists())
+    {
+        warning = QLatin1String("<b>The output directory must exist!</b>");
+        return false;
+    }
+
+    // Must not have same file name more than once!
+    for(int i = 0; i < fileNames_->size(); ++i)
+    {
+        QString* name = fileNames_->at(i);
+
+        for(int j = 0; j < fileNames_->size(); ++j)
+        {
+            // Do not compare with itself
+            if (i==j)
+            {
+                continue;
+            }
+
+            QString* name2compare = fileNames_->at(j);
+
+            // Is the same -> fail.
+            if (*name == *name2compare)
+            {
+                warning = QLatin1String("<b>File name</b> ") + *name + QLatin1String(" <b>is listed more than once!</b>");
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

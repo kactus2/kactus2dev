@@ -83,9 +83,9 @@ QString TLMWGeneratorPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: TLMWGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* TLMWGeneratorPlugin::getSettingsWidget()
+QWidget* TLMWGeneratorPlugin::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

@@ -93,9 +93,9 @@ QString VerilogGeneratorPlugin::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* VerilogGeneratorPlugin::getSettingsWidget()
+QWidget* VerilogGeneratorPlugin::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

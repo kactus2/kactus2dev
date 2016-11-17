@@ -36,6 +36,13 @@ public:
 	~FileOuput();
     
     /*!
+     *  Checks if the file output configuration is valid.
+     *
+     *      @param [out] warning   The stated reason for not accepting.
+     */
+    bool validSelections(QString &warning);
+    
+    /*!
      *  Gets reference to the output file paths.
      */
     QSharedPointer<QList<QString*> > getFileNames();

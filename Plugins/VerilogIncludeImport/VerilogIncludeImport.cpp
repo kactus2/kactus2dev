@@ -92,9 +92,9 @@ QString VerilogIncludeImport::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: VerilogIncludeImport::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* VerilogIncludeImport::getSettingsWidget()
+QWidget* VerilogIncludeImport::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 //-----------------------------------------------------------------------------

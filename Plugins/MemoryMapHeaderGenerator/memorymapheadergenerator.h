@@ -99,7 +99,12 @@ public:
      *
      *      @return The plugin settings widget.
      */
-    virtual PluginSettingsWidget* getSettingsWidget();
+    virtual QWidget* getSettingsWidget();
+
+    /*!
+     *  This is used to access the settings modified by function getSettingsWidget().
+     */
+    virtual PluginSettingsModel* getSettingsModel(){return NULL;}
 
     /*!
      *  Get the icon for the generator.

@@ -106,9 +106,9 @@ QString QuartusProjectGenerator::getLicenceHolder() const
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::getSettingsWidget()
 //-----------------------------------------------------------------------------
-PluginSettingsWidget* QuartusProjectGenerator::getSettingsWidget()
+QWidget* QuartusProjectGenerator::getSettingsWidget()
 {
-    return new PluginSettingsWidget();
+    return new QWidget();
 }
 
 

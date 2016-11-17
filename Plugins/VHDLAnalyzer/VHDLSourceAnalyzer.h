@@ -66,7 +66,12 @@ public:
     /*!
      *  Returns the settings widget.
      */
-    virtual PluginSettingsWidget* getSettingsWidget();
+    virtual QWidget* getSettingsWidget();
+
+    /*!
+     *  This is used to access the settings modified by function getSettingsWidget().
+     */
+    virtual PluginSettingsModel* getSettingsModel(){return NULL;}
 
     /*!
      *  Returns the list of file types this plugin can run analysis for.

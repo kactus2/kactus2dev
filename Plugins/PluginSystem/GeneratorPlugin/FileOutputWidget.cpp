@@ -74,6 +74,9 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) :
     // The last column is stretched take the available space in the widget.
     fileTable_->horizontalHeader()->setStretchLastSection(true);
 
+    // Refit the columns.
+    fileTable_->resizeColumnsToContents();
+
     // Add everything it their proper position in the final layout.
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addLayout(pathSelectionLayout);
@@ -83,7 +86,6 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) :
 
     // Use red to make it more warny.
     generalWarningLabel_->setStyleSheet("QLabel { color : red; }");
-    onPathEdited("");
 
     connect(pathEditor_, SIGNAL(textChanged(const QString &)), this,
         SLOT(onPathEdited(const QString &)), Qt::UniqueConnection);
@@ -114,7 +116,9 @@ void FileOutputWidget::onOutputFilesChanged(QStringList vlvns)
     foreach(QString* fileName, *configuration_->getFileNames())
     {
         // Insert VLNV string to the row.
-        QTableWidgetItem* vlnvItem = new QTableWidgetItem(vlvns.at(row));
+        QString vlnv = vlvns.at(row);
+        QTableWidgetItem* vlnvItem = new QTableWidgetItem(vlnv);
+        vlnvItem->setToolTip(vlnv);
         fileTable_->setItem(row, COLUMN_VLNV, vlnvItem);
 
         // Create existence check box and insert to the row.
@@ -123,6 +127,7 @@ void FileOutputWidget::onOutputFilesChanged(QStringList vlvns)
 
         // Insert filename to the row.
         QTableWidgetItem* fileNameItem = new QTableWidgetItem(*fileName);
+        fileNameItem->setToolTip(*fileName);
         fileTable_->setItem(row, COLUMN_FILENAME, fileNameItem);
 
         // Disable editing.
@@ -135,9 +140,6 @@ void FileOutputWidget::onOutputFilesChanged(QStringList vlvns)
 
     // File paths are potentially changed -> update existince status.
     checkExistence();
-
-    // Refit the columns.
-    fileTable_->resizeColumnsToContents();
 }
 
 //-----------------------------------------------------------------------------
@@ -146,7 +148,7 @@ void FileOutputWidget::onOutputFilesChanged(QStringList vlvns)
 void FileOutputWidget::onPathEdited(const QString &text)
 {
     // Tell the path to the configuration.
-    configuration_->setOutputPath(pathEditor_->text());
+    configuration_->setOutputPath(text);
 
     // Path of of all files changed -> update existence status.
     checkExistence();

@@ -6,51 +6,50 @@
 // Date: 20.02.2013
 //
 // Description:
-// Base interface for plugin settings widgets.
+// Base interface for plugin settings model.
 //-----------------------------------------------------------------------------
 
-#ifndef PLUGINSETTINGSWIDGET_H
-#define PLUGINSETTINGSWIDGET_H
+#ifndef PLUGINSETTINGSMODEL_H
+#define PLUGINSETTINGSMODEL_H
 
-#include <QWidget>
 #include <QSettings>
 
 //-----------------------------------------------------------------------------
-//! Base interface for plugin settings widgets.
+//! Base interface for plugin settings model.
 //-----------------------------------------------------------------------------
-class PluginSettingsWidget : public QWidget
+class PluginSettingsModel
 {
 public:
     /*!
      *  Constructor.
      */
-    PluginSettingsWidget() {}
+    PluginSettingsModel() {}
 
     /*!
      *  Destructor.
      */
-    virtual ~PluginSettingsWidget() {}
-
+    virtual ~PluginSettingsModel() {}
+    
     /*!
-     *  Loads settings from the given settings store.
+     *  Loads plugin settings from the given settings store. Is called when Kactus2 loads the plugin.
      *
      *      @param [in] settings The settings store.
      */
     virtual void loadSettings(QSettings& /*settings*/) {}
-
+    
     /*!
-     *  Saves settings to the given settings store.
+     *  Saves plugin settings to the given settings store. Is called when Kactus2 applies changes to settings.
      *
      *      @param [in,out] settings The settings store.
      */
     virtual void saveSettings(QSettings& /*settings*/) {}
 
     /*!
-     *  Validates the contents of the widget.
+     *  Validates the settings of the plugin.
      */
-    virtual bool validate() const { return true; }
+    virtual bool validateSettings() const {return true;}
 };
 
 //-----------------------------------------------------------------------------
 
-#endif // PLUGINSETTINGSWIDGET_H
+#endif // PLUGINSETTINGSMODEL_H
