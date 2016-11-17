@@ -274,15 +274,35 @@ private:
         QString const& endAddress);
 
     /*!
+     *  Check if a selected memory map item overlaps another memory map item within the selected column.
+     *
+     *      @param [in] memoryColumn    The selected memory map column.
+     *      @param [in] memoryItem      The selected memory map graphics item.
+     *      @param [in] mapBaseAddress  Base address of the memory map.
+     *      @param [in] mapLastAddress  Last address of the memory map.
+     *      @param [in] memoryItemRect  Graphics rectangle of the memory map item.
+     *      @param [in] memoryPenWidth  Pen Width of the memory map item.
+     *      @param [in] placedMaps      List of memory maps that have already been placed.
+     *
+     *      @return True, if the memory map overlaps another memory map, false otherwise.
+     */
+    bool memoryMapOverlapsInColumn(MemoryColumn* memoryColumn, MainMemoryGraphicsItem* memoryItem,
+        quint64 mapBaseAddress, quint64 mapLastAddress, QRectF memoryItemRect, int memoryPenWidth,
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const;
+
+    /*!
      *  Check if a memory map overlaps another memory map in the same column.
      *
+     *      @param [in] mapBaseAddress          Base address of the selected memory map.
+     *      @param [in] lastAddress             Last address of the selected memory map.
      *      @param [in] selectedMapRect         Bounding rectangle of the selected memory map item.
      *      @param [in] selectedMapPenWidth     Line width of the selected memory map item.
-     *      @param [in] selectedExtensionRect   Bounding rectangle of the selected memory map extension.
      *      @param [in] comparisonMemoryItem    The compared memory map item.
+     *
+     *      @return True, if the selected memory map overlaps another memory map, false otherwise.
      */
-    bool memoryMapOverlapsAnotherMemoryMap(QRectF selectedMapRect, int selectedMapPenWidth,
-        QRectF selectedExtensionRect, MainMemoryGraphicsItem* comparisonMemoryItem) const;
+    bool memoryMapOverlapsAnotherMemoryMap(quint64 mapBaseAddress, quint64 mapLastAddress, QRectF selectedMapRect,
+        int selectedMapPenWidth, MainMemoryGraphicsItem* comparisonMemoryItem) const;
 
     /*!
      *  Reposition the selected memory map item.
@@ -314,8 +334,10 @@ private:
 
     /*!
      *  Redraw the memory connections.
+     *
+     *      @param [in] placedSpaceItems    List of the space items that have been placed in the diagram.
      */
-    void reDrawConnections();
+    void reDrawConnections(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
 
     /*!
      *  Move an address space item.
@@ -403,21 +425,6 @@ private:
      */
     void repositionCompressedMemoryMaps(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
         MemoryColumn* memoryMapColumn, MemoryColumn* spaceColumn);
-
-    /*!
-     *  Check if a memory map collides.
-     *
-     *      @param [in] mapRectangle        Rectangle of the selected memory map.
-     *      @param [in] mapPenWidth         Pen width used to draw the selected memory map item.
-     *      @param [in] mapItem             The selected memory map item.
-     *      @param [in] comparisonColumn    The column whose items are being compared to.
-     *      @param [in] placedMapItems      A list of the placed memory map items.
-     *
-     *      @return True, if the memory map collides with memory maps in the selected column, false otherwise.
-     */
-    bool memoryMapCollidesWithMemoryMapsInColumn(QRectF mapRectangle, int mapPenWidth,
-        MainMemoryGraphicsItem* mapItem, GraphicsColumn* comparisonColumn,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems);
 
     /*!
      *  Get the specified columns.

@@ -17,6 +17,7 @@
 #include <designEditors/MemoryDesigner/MemoryColumn.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <designEditors/MemoryDesigner/MemoryMapGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
 
 #include <QBrush>
 #include <QPen>
@@ -159,27 +160,29 @@ void MemoryConnectionItem::avoidCollisionsOnPath(QPointF highStartPoint, QPointF
         foreach (QGraphicsItem* collidingItem, collisions)
         {
             MemoryDesignerGraphicsItem* memoryItem = dynamic_cast<MemoryDesignerGraphicsItem*>(collidingItem);
-            if (memoryItem && memoryItem != startItem_ && memoryItem != endItem_)
+            if (memoryItem && (dynamic_cast<MainMemoryGraphicsItem*>(memoryItem) ||
+                dynamic_cast<MemoryExtensionGraphicsItem*>(memoryItem)) && memoryItem != startItem_ &&
+                memoryItem != endItem_)
             {
                 MemoryColumn* itemColumn = dynamic_cast<MemoryColumn*>(memoryItem->parentItem());
                 if (itemColumn && startColumn && endColumn && itemColumn != startColumn && itemColumn != endColumn)
                 {
-                    QPointF highCollisionStart = memoryItem->mapToScene(memoryItem->boundingRect().topLeft());
+                    QPointF highCollisionStart = memoryItem->sceneBoundingRect().topLeft();
                     if (highCollisionStart.y() < highStartPoint.y())
                     {
                         highCollisionStart.setY(highStartPoint.y());
-                        QPointF highCollisionEnd = memoryItem->mapToScene(memoryItem->boundingRect().topRight());
+                        QPointF highCollisionEnd = memoryItem->sceneBoundingRect().topRight();
                         highCollisionEnd.setY(highStartPoint.y());
 
                         QPair<QPointF, QPointF> collisionPoints(highCollisionStart, highCollisionEnd);
                         highCollisionPoints.append(collisionPoints);
                     }
 
-                    QPointF lowCollisionStart = memoryItem->mapToScene(memoryItem->boundingRect().bottomLeft());
+                    QPointF lowCollisionStart = memoryItem->sceneBoundingRect().bottomLeft();
                     if (lowCollisionStart.y() > lowStartPoint.y())
                     {
                         lowCollisionStart.setY(lowStartPoint.y());
-                        QPointF lowCollisionEnd = memoryItem->mapToScene(memoryItem->boundingRect().bottomRight());
+                        QPointF lowCollisionEnd = memoryItem->sceneBoundingRect().bottomRight();
                         lowCollisionEnd.setY(lowStartPoint.y());
 
                         QPair<QPointF, QPointF> collisionPoints(lowCollisionStart, lowCollisionEnd);
@@ -323,7 +326,7 @@ void MemoryConnectionItem::onMoveConnection(MainMemoryGraphicsItem* movementOrig
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::onMoveConnectionInY(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer)
 {
-    moveBy(0, yTransfer);
+    yTransfer_ += yTransfer;
 
     moveConnectedItem(movementOrigin, yTransfer);
 }
@@ -583,56 +586,6 @@ qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* co
     }
 
     return connectionHeight;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::repositionConnectionToStartItemConnections()
-//-----------------------------------------------------------------------------
-void MemoryConnectionItem::repositionConnectionToStartItemConnections()
-{
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(
-        getConnectionStartItem()->getMemoryConnections());
-    while (connectionIterator.hasNext())
-    {
-        connectionIterator.next();
-
-        MemoryConnectionItem* comparisonConnection = connectionIterator.value();
-
-        if (comparisonConnection != this)
-        {
-            QRectF newConnectionRect = sceneBoundingRect();
-            int newConnectionPenWidth = pen().width();
-            QRectF comparisonRect = comparisonConnection->sceneBoundingRect();
-            comparisonRect.setLeft(newConnectionRect.left());
-            comparisonRect.setRight(newConnectionRect.right());
-            int comparisonPenWidth = comparisonConnection->pen().width();
-
-            quint64 comparisonBaseAddress = comparisonConnection->getRangeStartValue().toULongLong(0, 16);
-            quint64 comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
-
-            quint64 baseAddress = getRangeStartValue().toULongLong(0, 16);
-            quint64 lastAddress = getRangeEndValue().toULongLong(0, 16);
-
-            if (comparisonLastAddress > baseAddress && comparisonBaseAddress < baseAddress &&
-                !itemCollidesWithAnotherItem(
-                newConnectionRect, newConnectionPenWidth, comparisonRect, comparisonPenWidth))
-            {
-                onMoveConnectionInY(getConnectionStartItem(), -MemoryDesignerConstants::RANGEINTERVAL);
-            }
-            else if (lastAddress > comparisonBaseAddress && baseAddress < comparisonBaseAddress &&
-                !itemCollidesWithAnotherItem(
-                newConnectionRect, newConnectionPenWidth, comparisonRect, comparisonPenWidth))
-            {
-                qreal sceneBottom = sceneBoundingRect().bottom();
-                qreal comparisonTop = comparisonConnection->sceneBoundingRect().top();
-
-                qreal connectionDifference = sceneBottom - comparisonTop + MemoryDesignerConstants::RANGEINTERVAL;
-
-                comparisonConnection->onMoveConnectionInY(getConnectionStartItem(), connectionDifference);
-            }
-        }
-    }
-
 }
 
 //-----------------------------------------------------------------------------

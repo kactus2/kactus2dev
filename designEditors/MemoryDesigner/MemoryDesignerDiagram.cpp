@@ -464,7 +464,7 @@ void MemoryDesignerDiagram::createMemoryConnections()
     moveUnconnectedAddressSpaces(placedSpaceItems, spaceYPlacement, spaceColumn);
     moveUnconnectedMemoryMaps(placedMapItems, memoryMapColumn);
 
-    reDrawConnections();
+    reDrawConnections(placedSpaceItems);
 
     createOverlappingConnectionMarkers(placedSpaceItems);
 }
@@ -632,11 +632,6 @@ void MemoryDesignerDiagram::createConnection(QVector<QSharedPointer<Connectivity
                 endAddress, connectionEndItem, spaceColumn->scene(), yTransfer);
             connectionChain.append(newConnectionItem);
             setHeightForConnectionChain(connectionChain);
-
-            if (filterRegisters_ || filterAddressBlocks_)
-            {
-                newConnectionItem->repositionConnectionToStartItemConnections();
-            }
 
             qreal spaceItemEndPointAfter = connectionStartItem->getSceneEndPoint();
 
@@ -867,95 +862,101 @@ void MemoryDesignerDiagram::checkMemoryMapRepositionToOverlapColumn(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps, MainMemoryGraphicsItem* memoryItem,
     MemoryColumn* originalColumn, QString const& startAddress, QString const& endAddress)
 {
-    quint64 connectionWidth =
-        (endAddress.toULongLong() - startAddress.toULongLong() + 1) * MemoryDesignerConstants::RANGEINTERVAL;
-    QRectF memoryItemExtensionRectangle(memoryItem->scenePos().x(), memoryItem->scenePos().y(),
-        memoryItem->sceneBoundingRect().width(), connectionWidth);
-
     QRectF selectedItemRect = memoryItem->sceneBoundingRect();
+
+    quint64 mapBaseAddress = startAddress.toULongLong();
+    quint64 mapLastAddress = endAddress.toULongLong();
+
     int selectedItemPenWidth = memoryItem->pen().width();
-    foreach (MainMemoryGraphicsItem* comparisonMapItem, *placedMaps)
+
+    if (memoryMapOverlapsInColumn(originalColumn, memoryItem, mapBaseAddress, mapLastAddress, selectedItemRect,
+        selectedItemPenWidth, placedMaps))
     {
-        if (memoryItem != comparisonMapItem)
+        foreach (GraphicsColumn* column, layout_->getColumns())
         {
-            if (memoryMapOverlapsAnotherMemoryMap(selectedItemRect, selectedItemPenWidth,
-                memoryItemExtensionRectangle, comparisonMapItem))
+            if (column->name().contains(QLatin1String("Overlap"), Qt::CaseInsensitive))
             {
-                foreach (GraphicsColumn* column, layout_->getColumns())
+                MemoryColumn* memoryColumn = dynamic_cast<MemoryColumn*>(column);
+                if (memoryColumn)
                 {
-                    MemoryColumn* overlapColumn = dynamic_cast<MemoryColumn*>(column);
-                    if (overlapColumn && overlapColumn->name().contains("Overlap"))
+                    selectedItemRect.setX(selectedItemRect.x() + memoryColumn->boundingRect().width());
+
+                    if (!memoryMapOverlapsInColumn(memoryColumn, memoryItem, mapBaseAddress, mapLastAddress,
+                        selectedItemRect, selectedItemPenWidth, placedMaps))
                     {
-                        selectedItemRect.setX(selectedItemRect.x() + overlapColumn->boundingRect().width());
-                        memoryItemExtensionRectangle.setX(selectedItemRect.x());
-
-                        foreach (MainMemoryGraphicsItem* mapItem, *placedMaps)
-                        {
-                            if (mapItem != memoryItem)
-                            {
-                                if (memoryMapOverlapsAnotherMemoryMap(selectedItemRect, selectedItemPenWidth,
-                                    memoryItemExtensionRectangle, mapItem))
-                                {
-                                    break;
-                                }
-                                else if (!memoryMapOverlapsAnotherMemoryMap(selectedItemRect, selectedItemPenWidth,
-                                    memoryItemExtensionRectangle, mapItem) && mapItem == placedMaps->last())
-                                {
-                                    originalColumn->removeItem(memoryItem);
-                                    overlapColumn->addItem(memoryItem);
-
-                                    return;
-                                }
-                            }
-                        }
+                        originalColumn->removeItem(memoryItem);
+                        memoryColumn->addItem(memoryItem);
+                        return;
                     }
                 }
-
-                MemoryColumn* overlapColumn = createMemoryOverlapColumn();
-                originalColumn->removeItem(memoryItem);
-                overlapColumn->addItem(memoryItem);
-
-                return;
             }
         }
+
+        MemoryColumn* overlapColumn = createMemoryOverlapColumn();
+        originalColumn->removeItem(memoryItem);
+        overlapColumn->addItem(memoryItem);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::memoryMapOverlapsInColumn()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerDiagram::memoryMapOverlapsInColumn(MemoryColumn* memoryColumn,
+    MainMemoryGraphicsItem* memoryItem, quint64 mapBaseAddress, quint64 mapLastAddress, QRectF memoryItemRect,
+    int memoryPenWidth, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const
+{
+    foreach (QGraphicsItem* graphicsItem, memoryColumn->childItems())
+    {
+        MainMemoryGraphicsItem* comparisonMemoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
+        if (comparisonMemoryItem && comparisonMemoryItem != memoryItem &&
+            placedMaps->contains(comparisonMemoryItem) &&
+            memoryMapOverlapsAnotherMemoryMap(
+                mapBaseAddress, mapLastAddress, memoryItemRect, memoryPenWidth, comparisonMemoryItem))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::memoryMapOverlapsAnotherMemoryMap()
 //-----------------------------------------------------------------------------
-bool MemoryDesignerDiagram::memoryMapOverlapsAnotherMemoryMap(QRectF selectedMapRect, int selectedMapPenWidth,
-    QRectF selectedExtensionRect, MainMemoryGraphicsItem* comparisonMemoryItem) const
+bool MemoryDesignerDiagram::memoryMapOverlapsAnotherMemoryMap(quint64 mapBaseAddress, quint64 mapLastAddress,
+    QRectF selectedMapRect, int selectedMapPenWidth, MainMemoryGraphicsItem* comparisonMemoryItem) const
 {
-    if (selectedMapRect.x() == comparisonMemoryItem->sceneBoundingRect().x())
+    QRectF comparisonRectangle = comparisonMemoryItem->sceneBoundingRect();
+
+    if (selectedMapRect.x() == comparisonRectangle.x())
     {
         int mapItemLineWidth = comparisonMemoryItem->pen().width();
-        int extensionLineWidth = 0;
 
-        QGraphicsRectItem* comparisonExtension = 0;
-        foreach (QGraphicsItem* comparisonChildItem, comparisonMemoryItem->childItems())
+        qreal comparisonItemEnd = comparisonRectangle.bottom();
+
+        foreach (MemoryConnectionItem* connectionItem, comparisonMemoryItem->getMemoryConnections())
         {
-            QGraphicsRectItem* comparisonChildExtensionItem = dynamic_cast<QGraphicsRectItem*>(comparisonChildItem);
-            if (comparisonChildExtensionItem)
+            qreal connectionLow = connectionItem->sceneBoundingRect().bottom();
+            if (connectionLow > comparisonItemEnd)
             {
-                comparisonExtension = comparisonChildExtensionItem;
-                extensionLineWidth = comparisonExtension->pen().width();
-                break;
+                comparisonItemEnd = connectionLow;
             }
         }
 
-        if (itemCollidesWithAnotherItem(selectedMapRect, selectedMapPenWidth,
-            comparisonMemoryItem->sceneBoundingRect(), mapItemLineWidth) ||
+        comparisonRectangle.setBottom(comparisonItemEnd);
 
-            itemCollidesWithAnotherItem(selectedExtensionRect, selectedMapPenWidth,
-            comparisonMemoryItem->sceneBoundingRect(), mapItemLineWidth) ||
-
-            (comparisonExtension && 
-            (itemCollidesWithAnotherItem(selectedMapRect, selectedMapPenWidth,
-            comparisonExtension->sceneBoundingRect(), extensionLineWidth) ||
-
-            (itemCollidesWithAnotherItem(selectedExtensionRect, selectedMapPenWidth,
-            comparisonExtension->sceneBoundingRect(), extensionLineWidth)))))
+        quint64 comparisonBaseAddress = comparisonMemoryItem->getBaseAddress();
+        quint64 comparisonLastAddress = comparisonMemoryItem->getLastAddress();
+        MemoryConnectionItem* comparisonItemLastConnection = comparisonMemoryItem->getLastConnection();
+        if (comparisonItemLastConnection)
+        {
+            comparisonBaseAddress += comparisonItemLastConnection->getRangeStartValue().toULongLong(0, 16);
+            comparisonLastAddress = comparisonItemLastConnection->getRangeEndValue().toULongLong(0, 16);
+        }
+        if (itemCollidesWithAnotherItem(
+            selectedMapRect, selectedMapPenWidth, comparisonRectangle, mapItemLineWidth) ||
+            (mapBaseAddress >= comparisonBaseAddress && mapBaseAddress <= comparisonLastAddress) ||
+            (comparisonBaseAddress >= mapBaseAddress && comparisonBaseAddress <= mapLastAddress))
         {
             return true;
         }
@@ -1066,21 +1067,11 @@ void MemoryDesignerDiagram::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::reDrawConnections()
 //-----------------------------------------------------------------------------
-void MemoryDesignerDiagram::reDrawConnections()
+void MemoryDesignerDiagram::reDrawConnections(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems)
 {
-    QVector<MemoryColumn*> addressSpaceColumns =
-        getSpecifiedColumns(MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME);
-
-    foreach (MemoryColumn* singleSpaceColumn, addressSpaceColumns)
+    foreach (MainMemoryGraphicsItem* spaceItem, *placedSpaceItems)
     {
-        foreach (QGraphicsItem* graphicsItem, singleSpaceColumn->getItems())
-        {
-            MainMemoryGraphicsItem* memoryGraphicsItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
-            if (memoryGraphicsItem)
-            {
-                memoryGraphicsItem->reDrawConnections();
-            }
-        }
+        spaceItem->reDrawConnections();
     }
 }
 
@@ -1350,27 +1341,35 @@ void MemoryDesignerDiagram::repositionCompressedMemoryMaps(
         MemoryColumn* originalColumn = dynamic_cast<MemoryColumn*>(mapParentItem);
         if (originalColumn && originalColumn != memoryMapColumn)
         {
+            quint64 mapBaseAddress = mapItem->getBaseAddress();
+            quint64 mapLastAddress = mapItem->getLastAddress();
+
             QRectF mapRectangle = mapItem->sceneBoundingRect();
             int mapPenWidth = mapItem->pen().width();
+
+            if (mapItem->hasExtensionItem())
+            {
+                mapRectangle.setHeight(mapRectangle.height() + mapItem->getExtensionItem()->boundingRect().height());
+            }
 
             int columnWidth = originalColumn->sceneBoundingRect().width();
 
             QPointF columnPoint (originalColumn->pos().x() - columnWidth, mapRectangle.y());
-            GraphicsColumn* comparisonColumn = layout_->findColumnAt(columnPoint);
+            MemoryColumn* comparisonColumn = dynamic_cast<MemoryColumn*>(layout_->findColumnAt(columnPoint));
             if (comparisonColumn)
             {
-                while (comparisonColumn != spaceColumn)
+                while (comparisonColumn && comparisonColumn != spaceColumn)
                 {
                     mapRectangle.setX(mapRectangle.x() - columnWidth);
 
-                    if (!memoryMapCollidesWithMemoryMapsInColumn(mapRectangle, mapPenWidth, mapItem,
-                        comparisonColumn, placedMapItems))
+                    if (!memoryMapOverlapsInColumn(comparisonColumn, mapItem, mapBaseAddress, mapLastAddress,
+                        mapRectangle, mapPenWidth, placedMapItems))
                     {
                         originalColumn->removeItem(mapItem);
                         comparisonColumn->addItem(mapItem, true);
 
-                        if (originalColumn->getItems().isEmpty() &&
-                            originalColumn->name() != MemoryDesignerConstants::MEMORYMAPOVERLAPCOLUMN_NAME)
+                        if (originalColumn->getItems().isEmpty() && originalColumn->name().contains(
+                            MemoryDesignerConstants::MEMORYMAPOVERLAPCOLUMN_NAME, Qt::CaseInsensitive))
                         {
                             layout_->removeColumn(originalColumn);
                         }
@@ -1378,38 +1377,12 @@ void MemoryDesignerDiagram::repositionCompressedMemoryMaps(
                         break;
                     }
 
-                    columnPoint.setX(mapRectangle.x());
-                    comparisonColumn = layout_->findColumnAt(columnPoint);
+                    columnPoint.setX(columnPoint.x() - columnWidth);
+                    comparisonColumn = dynamic_cast<MemoryColumn*>(layout_->findColumnAt(columnPoint));
                 }
             }
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryDesignerDiagram::memoryMapCollidesWithIMemoryMapsInColumn()
-//-----------------------------------------------------------------------------
-bool MemoryDesignerDiagram::memoryMapCollidesWithMemoryMapsInColumn(QRectF mapRectangle, int mapPenWidth,
-    MainMemoryGraphicsItem* mapItem, GraphicsColumn* comparisonColumn,
-    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems)
-{
-    foreach (QGraphicsItem* comparisonChild, comparisonColumn->getItems())
-    {
-        MemoryMapGraphicsItem* comparisonMap =
-            dynamic_cast<MemoryMapGraphicsItem*>(comparisonChild);
-        if (comparisonMap && comparisonMap != mapItem && placedMapItems->contains(comparisonMap))
-        {
-            QRectF comparisonRectangle = comparisonMap->sceneBoundingRect();
-            int comparisonPenWidth = comparisonMap->pen().width();
-
-            if (itemCollidesWithAnotherItem(mapRectangle, mapPenWidth, comparisonRectangle, comparisonPenWidth))
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
 }
 
 //-----------------------------------------------------------------------------

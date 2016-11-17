@@ -107,15 +107,19 @@ private:
      *  Get the y-coordinate transfer for the connected memory items.
      *
      *      @param [in] currentConnectionBaseAddress    Base address of the current connection.
+     *      @param [in] previousConnectionBaseAddress   Base address of the previous connection.
+     *      @param [in] previousConnectionRangeEnd      Range end of the previous connection.
      *      @param [in] connectionRangeEnd              Range end of the current connection.
      *      @param [in] previousConnectionLow           Scene low point of the connection item.
      *      @param [in] connectionItem                  The connection item.
+     *      @param [in] previousConnection              The previous connection item.
      *      @param [in] yTransfer                       Previous y-coordinate transfer.
      *
      *      @return The y-coordinate transfer.
      */
-    qreal getTransferY(quint64 currentConnectionBaseAddress, quint64 connectionRangeEnd,
-        quint64 previousConnectionLow, MemoryConnectionItem* connectionItem, qreal yTransfer) const;
+    qreal getTransferY(quint64 currentConnectionBaseAddress, quint64 previousConnectionBaseAddress,
+        quint64 previousConnectionRangeEnd, quint64 previousConnectionLow, MemoryConnectionItem* connectionItem,
+        MemoryConnectionItem* previousConnection, qreal yTransfer) const;
 
     /*!
      *  Move the selected memory connection item.
@@ -146,11 +150,10 @@ private:
      *  Get the last address of the connection or connected end item.
      *
      *      @param [in] connectionItem      The selected connection item.
-     *      @param [in] previousEndPoint    The previously connected end point.
      *
      *      @return The last address of the selected connection or connected end item.
      */
-    quint64 getConnectionRangeEndValue(MemoryConnectionItem* connectionItem, quint64 previousEndPoint) const;
+    quint64 getConnectionRangeEndValue(MemoryConnectionItem* connectionItem) const;
 
     /*!
      *  Get the filtered compressed height of an address space graphics item.
@@ -169,6 +172,8 @@ private:
      *
      *      @param [in] connectionItem          The selected memory connection graphics item.
      *      @param [in] connectionBaseAddress   Base address of the selected connection.
+     *      @param [in] previousConnection      The previous memory connection graphics item.
+     *      @param [in] previousBaseAddress     Base address of the previous connection.
      *      @param [in] connectionRangeEnd      End address of the selected connection.
      *      @param [in] previousConnectionLow   The low y-coordinate of the previous memory connection item.
      *      @param [in] oldTransferY            The old y-coordinate transfer value.
@@ -176,7 +181,8 @@ private:
      *      @return Y-transfer of the memory connection item in a filtered address space graphics item.
      */
     qreal getFilteredConnectionYTransfer(MemoryConnectionItem* connectionItem, quint64 connectionBaseAddress,
-        quint64 connectionRangeEnd, quint64 previousConnectionLow, qreal oldTransferY) const;
+        MemoryConnectionItem* previousConnection, quint64 previousBaseAddress, quint64 connectionRangeEnd,
+        quint64 previousConnectionLow, qreal oldTransferY) const;
 
     /*!
      *  Get the low y-coordinate of a memory connection item in a filtered address space item.

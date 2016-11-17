@@ -144,11 +144,6 @@ public:
     void setConnectionWidth();
 
     /*!
-     *  Reposition this item according to other connection items originating from the start memory item.
-     */
-    void repositionConnectionToStartItemConnections();
-
-    /*!
      *  Reposition range labels that are colliding with range labels of other memory connection items.
      */
     void repositionCollidingRangeLabels();
