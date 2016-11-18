@@ -52,14 +52,6 @@ public:
 	QSharedPointer<QStringList> fileSetNames() const;
 
     /*!
-     *  Returns the name of default view, based on the target language.
-     *  If there is no suitable view with suitable component instantiation, return empty string.
-     *
-     *       @return The name of the view.
-	 */
-	QString getDefaultView();
-
-    /*!
      *  Sets the view for the top component in generation.
      *
      *      @param [in] view   The active view.
@@ -75,10 +67,13 @@ public:
 
     /*!
      *  Gets the active view for the top component.
-     *
-     *      @return The active view.
      */
 	QSharedPointer<View> getView() const;
+
+    /*!
+     *  Gets the name of the active view for the top component.
+     */
+	QString getViewName() const;
 	
     /*!
      *  Sets the component instantiation for the active view.

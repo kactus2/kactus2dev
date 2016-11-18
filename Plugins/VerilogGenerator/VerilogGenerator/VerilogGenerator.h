@@ -77,30 +77,24 @@ public:
     ~VerilogGenerator();
 
     /*!
-     *  Parses a given component for generation.
+     *  Prepares a given HDL component for generation, creating writers for the task.
      *
      *      @param [in] outputPath			The path to the output file.
-     *      @param [in] component           The component to parse for generation.
-     *      @param [in] topComponentView    The component view to parse for generation.
+     *      @param [in] component           The component to which is prepared for generation.
      *
-     *      @remark If parsing is not called before generation, nothing is generated.
+     *      @return False, something went wrong.
      */
-    void parseComponent(QString const& outputPath, QSharedPointer<GenerationComponent> gc);
+    bool prepareComponent(QString const& outputPath, QSharedPointer<GenerationComponent> component);
 
     /*!
-     *  Parses a given design for generation.
+     *  Prepares the given set of HDL designs for generation, creating writers for the task.
      *
      *      @param [in] outputPath			The path to the output file.
-     *      @param [in] component           The component of the design.
-     *      @param [in] topComponentView    The component view to parse for generation.
-	 *      @param [in] design              The design to parse for generation.
-	 *      @param [in] designConf          The design configuration to parse for generation.
+     *      @param [in] designs             The designs to which are prepared for generation.
      *
      *      @remark If parsing is not called before generation, nothing is generated.
      */
-    void parseDesign(QString const& outputPath, QList<QSharedPointer<GenerationDesign> >& designs);
-
-    void createDesignWriters(QSharedPointer<GenerationDesign> design, QSharedPointer<VerilogDocument> document);
+    void prepareDesign(QString const& outputPath, QList<QSharedPointer<GenerationDesign> >& designs);
 
     /*!
      *  Parses the module implementation out of verilog file given as output, if it already exists.
@@ -120,12 +114,15 @@ public:
 	 *      @param [in] kactusVersion		The version of the current Kactus build.
 	 *      @param [in] generatorVersion	The current version of the generator.
      *
-     *      @remark If parse() is not called before generate(), nothing is generated.
+     *      @remark If prepares are not called before generate(), nothing is generated.
      */
 	void generate(QString const& generatorVersion,
         QString const& kactusVersion) const;
-
-    QSharedPointer<QList<QSharedPointer<VerilogDocument> > > getDocuments(){return documents_;}
+    
+    /*!
+     *  Returns pointer to the list of the documents that are to be written.
+     */
+    QSharedPointer<QList<QSharedPointer<VerilogDocument> > > getDocuments();
 
 signals:
 	
@@ -141,16 +138,26 @@ private:
     VerilogGenerator& operator=(VerilogGenerator const& rhs);
 
     /*!
-     *  Initializes writers for parsing.
-     */
-	QSharedPointer<VerilogDocument> initializeWriters(QSharedPointer<GenerationComponent> topComponent);
-
-    /*!
     *  Checks if the generator should write nothing.
     *
     *      @return True, if the generator has nothing to write, otherwise false.
     */
     bool nothingToWrite() const;
+
+    /*!
+     *  Initializes writers for the given top component.
+
+     *      @return The document, which has writers associated with the component writing.
+     */
+    QSharedPointer<VerilogDocument> initializeComponentWriters(QSharedPointer<GenerationComponent> topComponent);
+    
+    /*!
+    *  Initializes writers for the given design.
+     *
+	 *      @param [in] desing		        The design, which data will be written.
+	 *      @param [in] document        	The document, which will get writers for design writing.
+     */
+    void initializeDesignWriters(QSharedPointer<GenerationDesign> design, QSharedPointer<VerilogDocument> document);
    
      /*!
       *  Adds the generated writers to the top writer in correct order.            

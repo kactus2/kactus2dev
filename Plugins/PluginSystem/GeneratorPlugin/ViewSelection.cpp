@@ -41,6 +41,23 @@ ViewSelection::ViewSelection( QString targetLanguage,
 	{
 		fileSets_[fileSet->name()] = fileSet;
 	}
+
+    // Try to find a view that has the target language in its instantiation.
+    foreach(QSharedPointer<View> view, views_)
+    {
+        QSharedPointer<ComponentInstantiation> cimp = instantiations_[view->getComponentInstantiationRef()];
+
+        if (cimp && cimp->getLanguage() == targetLanguage_)
+        {
+            view_ = view;
+        }
+    }
+
+    // If none found, just pick the first one.
+    if (!view_ && views_.size() > 0)
+    {
+        view_ = views_.first();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -80,24 +97,6 @@ QSharedPointer<QStringList> ViewSelection::fileSetNames() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewSelection::getDefaultView()
-//-----------------------------------------------------------------------------
-QString ViewSelection::getDefaultView()
-{
-   foreach(QSharedPointer<View> view, views_)
-   {
-       QSharedPointer<ComponentInstantiation> cimp = instantiations_[view->getComponentInstantiationRef()];
-
-       if (cimp && cimp->getLanguage() == targetLanguage_)
-       {
-            return view->name();
-       }
-   }
-
-   return "";
-}
-
-//-----------------------------------------------------------------------------
 // Function: ViewSelection::setView()
 //-----------------------------------------------------------------------------
 void ViewSelection::setView(QSharedPointer<View> view)
@@ -121,6 +120,14 @@ void ViewSelection::setView(QString viewName)
 QSharedPointer<View> ViewSelection::getView() const
 {
     return view_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewSelection::getActiveViewName()
+//-----------------------------------------------------------------------------
+QString ViewSelection::getViewName() const
+{
+    return view_->name();
 }
 
 //-----------------------------------------------------------------------------

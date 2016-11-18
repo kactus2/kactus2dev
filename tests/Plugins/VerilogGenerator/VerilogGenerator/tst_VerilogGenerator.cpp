@@ -271,11 +271,11 @@ void tst_VerilogGenerator::runGenerator(bool useDesign)
 
 	if (useDesign)
 	{
-		generator.parseDesign(outputPath, parsedDesigns_);
+		generator.prepareDesign(outputPath, parsedDesigns_);
 	}
 	else
 	{
-		generator.parseComponent(outputPath, topComponent_);
+		generator.prepareComponent(outputPath, topComponent_);
 	}
 
     generationTime_ =  QDateTime::currentDateTime();

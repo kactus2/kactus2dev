@@ -62,34 +62,48 @@ bool GeneratorConfiguration::validSelections(QString &warning)
 //-----------------------------------------------------------------------------
 void GeneratorConfiguration::parseDocuments()
 {
+    // Clear the existing list of file names.
     fileOutput_->getFileNames()->clear();
 
+    // Parse the top level component.
     componentParser_->parseComponent(viewSelection_->getView());
 
+    // List of VLNVs: Ordered to correspond the file names.
     QStringList vlnvs;
 
     if (designParser_)
     {
+        // Parse the designs hierarchy.
         designParser_->parseDesign(componentParser_->getParsedComponent(), viewSelection_->getView());
 
+        // Go through the parsed designs.
         foreach(QSharedPointer<GenerationDesign> design, designParser_->getParsedDesigns())
         {
+            // Point to the parsed file name.
             QString* fileName = &design->topComponent_->fileName_;
+            // Add the file suffix to it.
             *fileName = design->topComponent_->moduleName_ + ".v";
+            // Inform the names to the model.
             fileOutput_->getFileNames()->append(fileName);
 
+            // Append the VLNV to the list.
             vlnvs.append(design->topComponent_->component->getVlnv().toString());
         }
     }
     else
     {
+        // Point to the parsed file name.
         QString* fileName = &componentParser_->getParsedComponent()->fileName_;
+        // Add the file suffix to it.
         *fileName = componentParser_->getParsedComponent()->moduleName_ + ".v";
+        // Inform the names to the model.
         fileOutput_->getFileNames()->append(fileName);
 
+        // Append the VLNV to the list.
         vlnvs.append(componentParser_->getParsedComponent()->component->getVlnv().toString());
     }
 
+    // Emit the signal.
     emit outputFilesChanged(vlnvs);
 }
 
@@ -110,14 +124,6 @@ QSharedPointer<FileOuput> GeneratorConfiguration::getFileOuput() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::getInterfaceGeneration()
-//-----------------------------------------------------------------------------
-bool GeneratorConfiguration::getInterfaceGeneration() const
-{
-    return generateInterface_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::setInterfaceGeneration()
 //-----------------------------------------------------------------------------
 void GeneratorConfiguration::setInterfaceGeneration(bool shouldGenerate)
@@ -126,11 +132,11 @@ void GeneratorConfiguration::setInterfaceGeneration(bool shouldGenerate)
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::getMemoryGeneration()
+// Function: GeneratorConfiguration::getInterfaceGeneration()
 //-----------------------------------------------------------------------------
-bool GeneratorConfiguration::getMemoryGeneration() const
+bool GeneratorConfiguration::getInterfaceGeneration() const
 {
-    return generateMemory_;
+    return generateInterface_;
 }
 
 //-----------------------------------------------------------------------------
@@ -139,4 +145,12 @@ bool GeneratorConfiguration::getMemoryGeneration() const
 void GeneratorConfiguration::setMemoryGeneration(bool shouldGenerate)
 {
     generateMemory_ = shouldGenerate;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getMemoryGeneration()
+//-----------------------------------------------------------------------------
+bool GeneratorConfiguration::getMemoryGeneration() const
+{
+    return generateMemory_;
 }

@@ -40,12 +40,12 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     QCheckBox* generateMemory = new QCheckBox("Generate memory");
     optionLayout->addWidget(generateMemory);
 
-	// Layout for thing coming to the bottom part of the dialog.
+	// Layout for things coming to the bottom part of the dialog.
 	QHBoxLayout* bottomLayout = new QHBoxLayout();
 
 	// Add Ok and cancel give the dialog results.
     QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
-        Qt::Horizontal, this);
+        Qt::Horizontal);
 
 	bottomLayout->addWidget(generalWarningLabel_);
 	bottomLayout->addWidget(dialogButtons);

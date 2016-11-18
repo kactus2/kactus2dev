@@ -47,7 +47,6 @@ public:
     //! The destructor.
     ~HDLDesignParser();
 
-
     void parseDesign(QSharedPointer<GenerationComponent> topComponent, QSharedPointer<View> topComponentView,
         QSharedPointer<GenerationInstance> topInstance = QSharedPointer<GenerationInstance>());
 

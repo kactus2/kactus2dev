@@ -67,7 +67,7 @@ private:
     //! Widget for output file information.
     FileOutputWidget* fileOutput_;
 
-	//! Warning is display here, namely for an existing file being overwritten.
+    //! General warnings are displayed here.
 	QLabel* generalWarningLabel_;
 };
 

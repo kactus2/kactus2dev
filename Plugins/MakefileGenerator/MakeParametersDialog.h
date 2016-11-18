@@ -13,19 +13,16 @@
 #define MAKEPARAMETERSDIALOG_H
 
 #include <QDialog>
-#include <QListWidget>
-#include <QLabel>
-
-#include <QPushButton>
-#include <QHBoxLayout>
 #include <QVBoxLayout>
-#include <QHeaderView>
+#include <QTableWidget>
 
 #include "MakefileParser.h"
-#include "QTableWidget"
+#include <Plugins/PluginSystem/GeneratorPlugin/FileOutputWidget.h>
+
+class MakeConfiguration;
 
 //-----------------------------------------------------------------------------
-//! CompileConflictDialog class.
+//! MakeParametersDialog class.
 //-----------------------------------------------------------------------------
 class MakeParametersDialog : public QDialog
 {
@@ -35,13 +32,17 @@ public:
     /*!
      *  Constructor.
      */
-    MakeParametersDialog(QStringList replacedFiles,
-		QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, bool* addLauncher, QWidget* parent);
+    MakeParametersDialog(QSharedPointer<MakeConfiguration> configuration,
+        QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, QWidget* parent);
 
     /*!
      *  Destructor.
      */
     ~MakeParametersDialog();
+
+    public slots:
+
+        virtual void accept();
 
 private slots:
 
@@ -54,7 +55,18 @@ private:
 
     void createConflictTable(QVBoxLayout* instanceLayout, QSharedPointer<MakeFileData> makeData);
 
-    bool* addLauncher_;
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The configuration for the generation.
+    QSharedPointer<MakeConfiguration> configuration_;
+
+    //! Widget for output file information.
+    FileOutputWidget* fileOutput_;
+
+    //! General warnings are displayed here.
+    QLabel* generalWarningLabel_;
 };
 
 //-----------------------------------------------------------------------------

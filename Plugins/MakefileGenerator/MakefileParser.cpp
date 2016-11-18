@@ -296,43 +296,9 @@ void MakefileParser::findConflicts(QSharedPointer<MakeFileData> makeData)
 			// Absolute path is same means that the file is definitely same.
 			// Must also consider the filename, as it is omitted from the path.
 			if (modCompare->path == mod->path && modCompare->fileName == mod->fileName)
-			{					
-				bool conflict = true;
-
-				// First see if the compilers are the same, and the include file setting.
-				if (modCompare->compiler == mod->compiler &&
-					modCompare->file->isIncludeFile() == mod->file->isIncludeFile())
-				{
-					// Create list of flags.
-					QStringList flagList = mod->flags.split(" ", QString::SkipEmptyParts);
-					QStringList flagListCompare = modCompare->flags.split(" ", QString::SkipEmptyParts);
-
-					if (flagList.size() == flagListCompare.size())
-					{
-						// Are the same size -> Proceed to check if content is the same.
-						flagList.sort(Qt::CaseSensitive);
-						flagListCompare.sort(Qt::CaseSensitive);
-						conflict = false;
-
-						// Now go through the lists and see if they are the same.
-						int flagCount = flagList.size();
-						for (int i = 0; i < flagCount && !conflict; i++)
-						{
-							if (flagList[i] != flagListCompare[i])
-							{
-								conflict = true;
-								break;
-							}
-						}
-					}
-				}
-
-				// Conflict confirmed: Add to the list.
-				if (conflict)
-				{
-					conflictingFiles.insert(modCompare);
-				}
-			}
+			{
+                conflictingFiles.insert(modCompare);
+            }
 		}
 
 		// One side of the conflict is the file compared to others, there has to be two conflicting files.

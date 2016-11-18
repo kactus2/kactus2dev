@@ -10,58 +10,56 @@
 //-----------------------------------------------------------------------------
 
 #include "MakeParametersDialog.h"
-#include <QtWidgets/QScrollArea>
+#include "MakeConfiguration.h"
+
+#include <QScrollArea>
 #include <QFormLayout>
 #include <QCheckBox>
+#include <QHeaderView>
+#include <QDialogButtonBox>
+#include <QGroupBox>
 
 //-----------------------------------------------------------------------------
-// Function: CompileConflictDialog()
+// Function: MakeParametersDialog()
 //-----------------------------------------------------------------------------
-MakeParametersDialog::MakeParametersDialog(QStringList replacedFiles,
-	QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, bool* addLauncher, QWidget* parent) :
-	addLauncher_(addLauncher), QDialog(parent,Qt::CustomizeWindowHint)
+MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> configuration,
+	QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData, QWidget* parent) :
+    configuration_(configuration), fileOutput_(new FileOutputWidget(configuration->getFileOuput())),
+    generalWarningLabel_(new QLabel), QDialog(parent)
 {
-	QScrollArea* scrollArea = new QScrollArea(this);
+	QScrollArea* scrollArea = new QScrollArea;
 
 	QWidget* widgetList = new QWidget;
-	widgetList->resize(750, 800);
 	QVBoxLayout* listLayout = new QVBoxLayout(widgetList);
-	scrollArea->setWidget(widgetList);
-
-	// The list displaying all files that will be replaced in the generation.
-	QListWidget* replaceList = new QListWidget(this);
-
-	// Add to the list the files that will be replaced.
-	foreach (QString file, replacedFiles)
-	{
-		replaceList->addItem( file );
-    }
 
     // Generating launcher script is optional.
-    QCheckBox* addCheck = new QCheckBox("Generate launcher script:");
 
-	// Add "ok" and "cancel" button in neat horizontal order.
-	QPushButton* btnOK = new QPushButton(tr("Generate"), this);
-	QPushButton* btnCancel = new QPushButton(tr("Cancel"), this);
-	QHBoxLayout* buttonLayout = new QHBoxLayout;
-	buttonLayout->addStretch(1);
-	buttonLayout->addWidget(btnOK);
-	buttonLayout->addWidget(btnCancel);
+    // Optional generation features.
+    QGroupBox* optionGroup = new QGroupBox("Optional features:");
+    QHBoxLayout* optionLayout = new QHBoxLayout();
+    optionGroup->setLayout(optionLayout);
 
-	connect(btnOK, SIGNAL(clicked()), this, SLOT(accept()));
-	connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+    // Check to generate a launcher script.
+    QCheckBox* addCheck = new QCheckBox("Generate launcher script");
+    optionLayout->addWidget(addCheck);
 
-	// Add things to main layout in vertical order.
-	QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(addCheck);
-	mainLayout->addWidget(new QLabel(tr("Following top component files will be overwritten in the generation:"),
-		this));
-	mainLayout->addWidget(replaceList, Qt::AlignTop);
-	mainLayout->addLayout(buttonLayout);
-    mainLayout->addWidget(scrollArea);
-
+    // Connect the check box to a slot.
     connect(addCheck, SIGNAL(stateChanged(int)), 
         this, SLOT(onLauncherGenerationStateChanged(int)), Qt::UniqueConnection);
+
+    // Layout for things coming to the bottom part of the dialog.
+    QHBoxLayout* bottomLayout = new QHBoxLayout();
+
+    // Add Ok and cancel give the dialog results.
+    QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
+        Qt::Horizontal);
+
+    bottomLayout->addWidget(generalWarningLabel_);
+    bottomLayout->addWidget(dialogButtons);
+
+    // Connect the buttons to correct slots.
+    connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
+    connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
 
 	foreach (QSharedPointer<MakeFileData> makeData, *parsedData)
 	{
@@ -69,22 +67,47 @@ MakeParametersDialog::MakeParametersDialog(QStringList replacedFiles,
 		listLayout->addWidget(instanceWidget);
 		QVBoxLayout* instanceLayout = new QVBoxLayout(instanceWidget);
 
-		instanceLayout->addWidget(new QLabel(makeData->name, this));
+        QString topInstance = "Topmost instance: " + makeData->name;
+		instanceLayout->addWidget(new QLabel(topInstance));
 
         if (makeData->conflicts.size() > 0)
         {
             createConflictTable(instanceLayout, makeData);
         }
-	}
+    }
 
-	//resize(800, sizeHint().height());
+    scrollArea->setWidget(widgetList);
+
+    // Add things to main layout in vertical order.
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(new QLabel("Detected software stacks yielding makefiles:"));
+    mainLayout->addWidget(scrollArea);
+    mainLayout->addWidget(optionGroup);
+    mainLayout->addWidget(fileOutput_);
+    mainLayout->addLayout(bottomLayout);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~CompileConflictDialog()
+// Function: ~MakeParametersDialog()
 //-----------------------------------------------------------------------------
 MakeParametersDialog::~MakeParametersDialog()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: MakeParametersDialog::accept()
+//-----------------------------------------------------------------------------
+void MakeParametersDialog::accept()
+{
+    // Check it is sane.
+    QString warning;
+    if (!configuration_->validSelections(warning))
+    {
+        generalWarningLabel_->setText(warning);
+        return;
+    }
+
+    QDialog::accept();
 }
 
 //-----------------------------------------------------------------------------
@@ -92,7 +115,7 @@ MakeParametersDialog::~MakeParametersDialog()
 //-----------------------------------------------------------------------------
 void MakeParametersDialog::createConflictTable(QVBoxLayout* instanceLayout, QSharedPointer<MakeFileData> makeData)
 {
-    instanceLayout->addWidget(new QLabel(tr("Conflicting file configurations:"), this));
+    instanceLayout->addWidget(new QLabel(tr("File dublicates in the stack:"), this));
 
     //! Table used to display all detected conflicts and their participants.
     QTableWidget* conflictTable = new QTableWidget;
@@ -163,6 +186,9 @@ void MakeParametersDialog::createConflictTable(QVBoxLayout* instanceLayout, QSha
             ++row;
         }
     }
+
+    // Refit the columns.
+    conflictTable->resizeColumnsToContents();
 }
 
 //-----------------------------------------------------------------------------
@@ -170,5 +196,5 @@ void MakeParametersDialog::createConflictTable(QVBoxLayout* instanceLayout, QSha
 //-----------------------------------------------------------------------------
 void MakeParametersDialog::onLauncherGenerationStateChanged(int state)
 {
-    *addLauncher_ = (state == Qt::Checked);
+    configuration_->setAddLauncher(state == Qt::Checked);
 }

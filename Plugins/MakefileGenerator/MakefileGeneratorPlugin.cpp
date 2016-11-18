@@ -12,6 +12,7 @@
 #include "MakefileGenerator.h"
 #include "MakefileGeneratorPlugin.h"
 #include "MakeParametersDialog.h"
+#include "MakeConfiguration.h"
 
 #include <QCoreApplication>
 #include <QFileInfo>
@@ -119,53 +120,69 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
     QSharedPointer<Document> libDesConf,
     QSharedPointer<Document> libDes)
 {
-	// Convert the documents to their proper data types.
-    QSharedPointer<const Design> design = libDes.dynamicCast<Design const>();
+    // First state we are running. Tell the version.
+    utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
+
+    // Convert the documents to their proper data types.
     QSharedPointer<Component> topComponent = libComp.dynamicCast<Component>();
-    QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
+    QSharedPointer<Design> design = libDes.dynamicCast<Design>();
+    QSharedPointer<DesignConfiguration> desgConf = libDesConf.dynamicCast<DesignConfiguration>();
+
+    // Everything must exist
+    if (!topComponent || !design || !desgConf)
+    {
+        utility->printError("Document broken.");
+        return;
+    }
+
 	// Library interface is utilized.
     LibraryInterface* library = utility->getLibraryInterface();
-
-	// Target directory is under the path of the design.
-    QString targetDir = QFileInfo(library->getPath(libDes->getVlnv())).absolutePath(); 
-	// Also the directory of the top component is needed for the generated files.
-	QString topDir = QFileInfo(library->getPath(libComp->getVlnv())).absolutePath(); 
 
 	// Find the name of the system view pointing to the design configuration.
 	QString sysViewName;
 
-	foreach ( QSharedPointer<SystemView> view, topComponent->getSystemViews() )
+	foreach (QSharedPointer<SystemView> view, topComponent->getSystemViews())
 	{
-		if ( view->getHierarchyRef() == desgConf->getVlnv() )
+		if (view->getHierarchyRef() == desgConf->getVlnv())
 		{
 			sysViewName = view->name();
 			break;
 		}
-	}
+    }
+
+    // System view must exist.
+    if (sysViewName.isEmpty())
+    {
+        utility->printError("The design configuration did not match any system view. VLNV: " + desgConf->getVlnv().toString());
+        return;
+    }
 
 	// Parse the design for buildable software stacks.
-	SWStackParser stackParser( library );
-	stackParser.parse( topComponent, desgConf, design, sysViewName, targetDir );
+    SWStackParser stackParser(library, topComponent, design, desgConf);
+    stackParser.parse(sysViewName);
 
-	// Parse the stacks for buildable objects.
-	MakefileParser makeParser( library, stackParser );
-	makeParser.parse( topComponent );
+    // Parse the stacks for buildable objects.
+    MakefileParser makeParser(library, stackParser);
+    makeParser.parse(topComponent);
 
 	// Show the dialog.
     bool addLauncher = false;
-	MakeParametersDialog dialog(stackParser.getReplacedFiles(), makeParser.getParsedData(), &addLauncher,
-		utility->getParentWidget());
+    QSharedPointer<MakeConfiguration> configuration(new MakeConfiguration(&stackParser));
+    configuration->getFileOuput()->setOutputPath(QFileInfo(library->getPath(libDes->getVlnv())).absolutePath());
+	MakeParametersDialog dialog(configuration, makeParser.getParsedData(), utility->getParentWidget());
 
 	// Return, if user did not want to proceed after seeing it.
 	if ( dialog.exec() == QDialog::Rejected )
 	{
 		utility->printError( "Makefile generation rejected by user.");
 		return;
-	}
+    }
 
 	// Generate files from parsed data.
-    MakefileGenerator generator( makeParser, utility, stackParser.getGeneralFileSet() );
-    int exe_count = generator.generate(targetDir, topDir, sysViewName, addLauncher);
+    MakefileGenerator generator(makeParser, utility, stackParser.getGeneralFileSet());
+	// Also the directory of the top component is needed for the generated files.
+	QString topDir = QFileInfo(library->getPath(libComp->getVlnv())).absolutePath(); 
+    int exe_count = generator.generate(configuration->getFileOuput()->getOutputPath(), topDir, sysViewName, addLauncher);
 
 	// Did we actually generate anything?
 	if ( exe_count > 0 )

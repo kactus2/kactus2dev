@@ -71,16 +71,18 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<ViewSelection> configura
 	connect(fileSetSelection_, SIGNAL(currentTextChanged(QString const&)),
 		this, SLOT(onFileSetChanged(QString const&)), Qt::UniqueConnection);
 
-	// Initially at the top of the list.
-    QString defaultView = configuration_->getDefaultView();
+	// Get the selected view.
+    int defaultViewIndex = viewSelection_->findText(configuration_->getViewName());
 
-    if (defaultView.isEmpty())
+    if (defaultViewIndex == -1)
     {
+        // If none, just pick the topmost.
 	    viewSelection_->setCurrentIndex(0);
     }
     else
     {
-        viewSelection_->setCurrentIndex(viewSelection_->findText(defaultView));
+        // Else set the selection accordingly.
+        viewSelection_->setCurrentIndex(defaultViewIndex);
     }
 
 	// Finally, evaluate the fields.

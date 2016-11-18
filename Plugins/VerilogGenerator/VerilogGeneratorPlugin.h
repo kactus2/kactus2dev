@@ -91,7 +91,7 @@ public:
     /*!
      *  This is used to access the settings modified by function getSettingsWidget().
      */
-    virtual PluginSettingsModel* getSettingsModel(){return NULL;}
+    virtual PluginSettingsModel* getSettingsModel();
 
     /*!
      *  Returns the external program requirements of the plugin.
@@ -244,7 +244,7 @@ private:
     //! The top component for which to run the generation.
     QSharedPointer<Component> topComponent_;
 
-    //! The configuration for file generation.
+    //! The configuration for the generation.
     QSharedPointer<GeneratorConfiguration> configuration_;
 };
 

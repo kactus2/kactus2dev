@@ -308,7 +308,7 @@ bool tst_VerilogGenerator::couldConfigure(QSharedPointer<QList<QSharedPointer<Vi
 QSharedPointer<GeneratorConfiguration> tst_VerilogGenerator::getConfiguration()
 {
     configuration_->getViewSelection()->setSaveToFileset(true);
-	configuration_->setOutputPath(".");
+	configuration_->getFileOuput()->setOutputPath(".");
 	configuration_->getViewSelection()->setFileSet("testFileSet");
 
     configuration_->parseDocuments();

@@ -99,6 +99,14 @@ QWidget* VerilogGeneratorPlugin::getSettingsWidget()
 }
 
 //-----------------------------------------------------------------------------
+// Function: VerilogGeneratorPlugin::getSettingsModel()
+//-----------------------------------------------------------------------------
+PluginSettingsModel* VerilogGeneratorPlugin::getSettingsModel()
+{
+    return NULL;
+}
+
+//-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getProgramRequirements()
 //-----------------------------------------------------------------------------
 QList<IPlugin::ExternalProgramRequirement> VerilogGeneratorPlugin::getProgramRequirements()
@@ -136,6 +144,7 @@ bool VerilogGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Document const
         return designConfig->getImplementation() == KactusAttribute::HW;
     }
     
+    // Else the availability is determined based on the top component.
     return targetComponent && targetComponent->getImplementation() == KactusAttribute::HW;    
 }
 
@@ -147,16 +156,20 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     QSharedPointer<Document> libDesConf,
     QSharedPointer<Document> libDes)
 {
+    // First state we are running. Tell the version.
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
+    // For later use.
     utility_ = utility;
 
+    // Must have a top component under any condition.
     if (!libComp)
     {
         utility->printError(tr("Null top component given as a parameter."));
         return;
     }
 
+    // It must be castable to the proper type.
     topComponent_ = libComp.dynamicCast<Component>();
 
     if (!topComponent_)
@@ -165,9 +178,11 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         return;
     }
 
+    // Try to cast design and design configuration as well.
     QSharedPointer<Design> design = libDes.dynamicCast<Design>();
     QSharedPointer<DesignConfiguration> designConfig = libDesConf.dynamicCast<DesignConfiguration>();
 
+    // Return errors if it does not work.
     if (libDes && !design)
     {
         utility->printError(tr("A design was specified, but could not cast it to the proper type! VLNV: %1").arg(libDes->getVlnv().toString()));
@@ -180,17 +195,28 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         return;
     }
 
+    // This generation requires both design and design configuration.
     if ((design && !designConfig) || (!design && designConfig))
     {
         utility->printError(tr("The design must be accompanied by a design configuration and vice versa."));
         return;
     }
 
+    // The design configuration must point to the deisgn for sanity.
+    if (design && designConfig && designConfig->getDesignRef() != design->getVlnv())
+    {
+        utility->printError(tr("The provided design configuration does not point to the provided design!"));
+        return;
+    }
+
+    // If design parameters are defined, it is assumed as a generation for design.
     bool designGeneration = (design || designConfig);
 
+    // Create a parser for the top level HDL component.
     HDLComponentParser* componentParser = new HDLComponentParser(utility_->getLibraryInterface(), topComponent_);
     HDLDesignParser* designParser = 0;
 
+    // Create parser for HDL designs only if generating for a design.
     if (designGeneration)
     {
         designParser = new HDLDesignParser(utility_->getLibraryInterface(), design, designConfig);
@@ -198,7 +224,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
             this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
     }
 
-	// Try to configure the generation, giving possible views and instantiations as parameters.
+	// Try to configure the generation, if it is rejected, abort the generation.
     if (!couldConfigure(findPossibleViews(topComponent_, design, designConfig),
 		topComponent_->getComponentInstantiations(), topComponent_->getFileSets(), componentParser, designParser))
     {
@@ -209,24 +235,33 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 	// Get the resulting configuration, it is obtained with this way to make it compatible with the tests.
     QSharedPointer<GeneratorConfiguration> configuration = getConfiguration();
 
+    // Generation is configured: Starting the generation.
     utility_->printInfo(tr("Generation started %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
         
+    // Initialize the generator, catch its error signals.
 	VerilogGenerator generator(utility->getLibraryInterface(), configuration->getInterfaceGeneration(), configuration->getMemoryGeneration());
 	connect(&generator, SIGNAL(reportError(const QString&)), 
 		this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
 
+    // Prepare the generator.
     if (designGeneration)
     {
+        // Design generation gets parsed designs as a parameter, and the output path.
         QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
-        generator.parseDesign(configuration->getFileOuput()->getOutputPath(), designs);
+        generator.prepareDesign(configuration->getFileOuput()->getOutputPath(), designs);
     }
     else
     {
-        generator.parseComponent(configuration->getFileOuput()->getOutputPath(), componentParser->getParsedComponent());
+        // Component generation gets the parsed component as a parameter, and the output path.
+        if (!generator.prepareComponent(configuration->getFileOuput()->getOutputPath(), componentParser->getParsedComponent()))
+        {
+            // If it says no-go, abort the generation.
+            return;
+        }
     }
 
+    // Now execute the generation.
 	generator.generate(getVersion(), utility_->getKactusVersion());
-
     utility_->printInfo(tr("Finished writing the file(s)."));
 
 	// If so desired in the configuration, the resulting file will be added to the file set.
@@ -235,8 +270,8 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         addGeneratedFileToFileSet(configuration->getViewSelection(), generator.getDocuments());
     }
 
+    // Finally, save the changes to the affected file.
     saveChanges();
-
     utility_->printInfo(tr("Generation complete."));
 }
 
@@ -247,7 +282,7 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::findPossib
 	QSharedPointer<Component> targetComponent, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) const
 {
 	// If the generation is targeted to a design, return views referring to the design or a design configuration.
-    if (designConf && design && designConf->getDesignRef() == design->getVlnv())
+    if (designConf)
     {
         return findReferencingViews(targetComponent, designConf->getVlnv());
     }
@@ -281,6 +316,7 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
     HDLComponentParser* componentParser,
     HDLDesignParser* designParser)
 {
+    // Must have at least one eligible view.
     if (possibleViews->isEmpty())
 	{
 		utility_->printError(tr("No usable views in the component for generation: Hierarchical views"
@@ -288,17 +324,22 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 		return false;
 	}
 
+    // Initialize model for view selection: It must be knowledgeable about possible views, instantiations and file sets.
     QSharedPointer<ViewSelection> viewSelect(
         new ViewSelection("verilog", possibleViews, possibleInstantiations, possibleFileSets));
 
+    // The default view is the first one.
 	viewSelect->setView(possibleViews->first());
 
     viewSelect->setSaveToFileset(outputFileShouldBeAddedToTopComponent());
 
+    // Create model for the configuration widget.
     configuration_ = QSharedPointer<GeneratorConfiguration>(
         new GeneratorConfiguration(viewSelect, componentParser, designParser));
+    // Set the default output path for convenience.
     configuration_->getFileOuput()->setOutputPath(defaultOutputPath());
 
+    // Create the dialog and execute: The user will ultimately accept the configuration.
     GeneratorConfigurationDialog dialog(configuration_, utility_->getParentWidget());
     return dialog.exec() == QDialog::Accepted;
 }
@@ -374,7 +415,7 @@ void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<ViewSelect
     // Go through each generated file.
     foreach(QSharedPointer<VerilogDocument> doc, *documents)
     {
-	    // Need path for the file.
+	    // Need a path for the file: It must be relative to the file path of the document.
 	    QString filePath = relativePathFromXmlToFile(doc->filePath_);
 	    // Add the new file to the file set.
 	    QSettings settings;
@@ -396,16 +437,21 @@ void VerilogGeneratorPlugin::addGeneratedFileToFileSet(QSharedPointer<ViewSelect
 //-----------------------------------------------------------------------------
 void VerilogGeneratorPlugin::insertFileDescription(QSharedPointer<File> file)
 {
+    // Get the current description.
     QString desc = file->getDescription();
 
+    // Find the existing generation time statement.
     QRegularExpression regExp = QRegularExpression("(Generated at).+(by Kactus2. *)");
-    QDateTime generationTime = QDateTime::currentDateTime();
-
+    // Rip it off.
     QRegularExpressionMatch match = regExp.match(desc);
     desc = desc.remove(match.capturedStart(), match.capturedLength());
+
+    // Form string time and date string.
+    QDateTime generationTime = QDateTime::currentDateTime();
     QString date = generationTime.date().toString("dd.MM.yyyy");
     QString time = generationTime.time().toString("hh:mm:ss");
 
+    // Append the generation time description to the description.
     file->setDescription("Generated at " + time + " on " + date + " by Kactus2. " + desc);
 }
 
@@ -414,15 +460,20 @@ void VerilogGeneratorPlugin::insertFileDescription(QSharedPointer<File> file)
 //-----------------------------------------------------------------------------
 void VerilogGeneratorPlugin::saveChanges() const
 {
+    // The component VLNV in string format.
     QString component = topComponent_->getVlnv().toString();
 
-    bool saveSucceeded = utility_->getLibraryInterface()->writeModelToFile(topComponent_);            
+    // Try to save.
+    bool saveSucceeded = utility_->getLibraryInterface()->writeModelToFile(topComponent_);
+
     if (saveSucceeded)
     {
+        // Success: Inform the user.
         utility_->printInfo(tr("Saved changes to component %1.").arg(component));
     }    
     else
     {
+        // Fail: Report the error, including the path.
         QString savePath = utility_->getLibraryInterface()->getPath(topComponent_->getVlnv());
         utility_->printError(tr("Could not write component %1 to file %2.").arg(component, savePath));
     }
@@ -434,15 +485,20 @@ void VerilogGeneratorPlugin::saveChanges() const
 QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::
 	findReferencingViews(QSharedPointer<Component> containingComponent, VLNV targetReference) const
 {
+    // Create a new list object.
 	QSharedPointer<QList<QSharedPointer<View> > > views = QSharedPointer<QList<QSharedPointer<View> > >
 		(new QList<QSharedPointer<View> >);
+
+    // Go through each view of the containing component and pick the eligible ones.
     foreach(QSharedPointer<View> view, *containingComponent->getViews())
     {
+        // Find the relevant instantiations of the inspected view.
 		QSharedPointer<DesignConfigurationInstantiation> disg = containingComponent->getModel()->
 			findDesignConfigurationInstantiation(view->getDesignConfigurationInstantiationRef());
 		QSharedPointer<DesignInstantiation> dis = containingComponent->getModel()->
 			findDesignInstantiation(view->getDesignInstantiationRef());
 
+        // If either of the exists AND targets the correct VLNV, the view is eligible.
         if (disg && *disg->getDesignConfigurationReference() == targetReference
 			|| dis && *dis->getDesignReference() == targetReference)
         {
@@ -450,5 +506,6 @@ QSharedPointer<QList<QSharedPointer<View> > > VerilogGeneratorPlugin::
         }
     }
 
+    // Finally, return the pickings.
     return views;
 }
