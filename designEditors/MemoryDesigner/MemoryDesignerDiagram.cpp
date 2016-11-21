@@ -102,6 +102,22 @@ bool MemoryDesignerDiagram::addressSpaceSegmentsAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::setFilterAddressBlocks()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::setFilterAddressBlocks(bool filterBlocks)
+{
+    filterAddressBlocks_ = filterBlocks;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::addressBlocksAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerDiagram::addressBlocksAreFiltered() const
+{
+    return filterAddressBlocks_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::setFilterAddressBlockRegisters()
 //-----------------------------------------------------------------------------
 void MemoryDesignerDiagram::setFilterAddressBlockRegisters(bool filterRegisters)
@@ -602,8 +618,8 @@ void MemoryDesignerDiagram::createConnection(QVector<QSharedPointer<Connectivity
                 }
                 else
                 {
-                    checkMemoryMapRepositionToOverlapColumn(
-                        placedMapItems, connectionEndItem, memoryMapColumn, startAddress, endAddress);
+                    checkMemoryMapRepositionToOverlapColumn(placedMapItems, connectionEndItem, memoryMapColumn,
+                        startAddress, endAddress, connectionStartItem);
                 }
 
                 QPointF startItemPositionAfter = connectionStartItem->pos();
@@ -860,7 +876,8 @@ void MemoryDesignerDiagram::setHeightForConnectionChain(QVector<MemoryConnection
 //-----------------------------------------------------------------------------
 void MemoryDesignerDiagram::checkMemoryMapRepositionToOverlapColumn(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps, MainMemoryGraphicsItem* memoryItem,
-    MemoryColumn* originalColumn, QString const& startAddress, QString const& endAddress)
+    MemoryColumn* originalColumn, QString const& startAddress, QString const& endAddress,
+    MainMemoryGraphicsItem* connectionStartItem)
 {
     QRectF selectedItemRect = memoryItem->sceneBoundingRect();
 
@@ -869,8 +886,11 @@ void MemoryDesignerDiagram::checkMemoryMapRepositionToOverlapColumn(
 
     int selectedItemPenWidth = memoryItem->pen().width();
 
+    QVector<MainMemoryGraphicsItem*> connectedSpaceItems;
+    connectedSpaceItems.append(connectionStartItem);
+
     if (memoryMapOverlapsInColumn(originalColumn, memoryItem, mapBaseAddress, mapLastAddress, selectedItemRect,
-        selectedItemPenWidth, placedMaps))
+        selectedItemPenWidth, placedMaps, connectedSpaceItems))
     {
         foreach (GraphicsColumn* column, layout_->getColumns())
         {
@@ -882,7 +902,7 @@ void MemoryDesignerDiagram::checkMemoryMapRepositionToOverlapColumn(
                     selectedItemRect.setX(selectedItemRect.x() + memoryColumn->boundingRect().width());
 
                     if (!memoryMapOverlapsInColumn(memoryColumn, memoryItem, mapBaseAddress, mapLastAddress,
-                        selectedItemRect, selectedItemPenWidth, placedMaps))
+                        selectedItemRect, selectedItemPenWidth, placedMaps, connectedSpaceItems))
                     {
                         originalColumn->removeItem(memoryItem);
                         memoryColumn->addItem(memoryItem);
@@ -903,12 +923,14 @@ void MemoryDesignerDiagram::checkMemoryMapRepositionToOverlapColumn(
 //-----------------------------------------------------------------------------
 bool MemoryDesignerDiagram::memoryMapOverlapsInColumn(MemoryColumn* memoryColumn,
     MainMemoryGraphicsItem* memoryItem, quint64 mapBaseAddress, quint64 mapLastAddress, QRectF memoryItemRect,
-    int memoryPenWidth, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const
+    int memoryPenWidth, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
+    QVector<MainMemoryGraphicsItem*> connectedSpaceItems) const
 {
     foreach (QGraphicsItem* graphicsItem, memoryColumn->childItems())
     {
-        MainMemoryGraphicsItem* comparisonMemoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
+        MemoryMapGraphicsItem* comparisonMemoryItem = dynamic_cast<MemoryMapGraphicsItem*>(graphicsItem);
         if (comparisonMemoryItem && comparisonMemoryItem != memoryItem &&
+            comparisonMemoryItem->isConnectedToSpaceItems(connectedSpaceItems) &&
             placedMaps->contains(comparisonMemoryItem) &&
             memoryMapOverlapsAnotherMemoryMap(
                 mapBaseAddress, mapLastAddress, memoryItemRect, memoryPenWidth, comparisonMemoryItem))
@@ -1352,6 +1374,16 @@ void MemoryDesignerDiagram::repositionCompressedMemoryMaps(
                 mapRectangle.setHeight(mapRectangle.height() + mapItem->getExtensionItem()->boundingRect().height());
             }
 
+            QVector<MainMemoryGraphicsItem*> connectedSpaceItems;
+            foreach (MemoryConnectionItem* connectionItem, mapItem->getMemoryConnections())
+            {
+                MainMemoryGraphicsItem* connectionStartItem = connectionItem->getConnectionStartItem();
+                if (!connectedSpaceItems.contains(connectionStartItem))
+                {
+                    connectedSpaceItems.append(connectionStartItem);
+                }
+            }
+
             int columnWidth = originalColumn->sceneBoundingRect().width();
 
             QPointF columnPoint (originalColumn->pos().x() - columnWidth, mapRectangle.y());
@@ -1363,7 +1395,7 @@ void MemoryDesignerDiagram::repositionCompressedMemoryMaps(
                     mapRectangle.setX(mapRectangle.x() - columnWidth);
 
                     if (!memoryMapOverlapsInColumn(comparisonColumn, mapItem, mapBaseAddress, mapLastAddress,
-                        mapRectangle, mapPenWidth, placedMapItems))
+                        mapRectangle, mapPenWidth, placedMapItems, connectedSpaceItems))
                     {
                         originalColumn->removeItem(mapItem);
                         comparisonColumn->addItem(mapItem, true);

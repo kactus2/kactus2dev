@@ -254,6 +254,23 @@ bool MemoryDesignDocument::addressSpaceSegmentsAreFilterted() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::filterAddressBlocks()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::filterAddressBlocks(bool filterBlocks)
+{
+    diagram_->setFilterAddressBlocks(filterBlocks);
+    refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::addressBlocksAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDocument::addressBlocksAreFiltered() const
+{
+    return diagram_->addressBlocksAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignDocument::filterAddressBlockRegisters()
 //-----------------------------------------------------------------------------
 void MemoryDesignDocument::filterAddressBlockRegisters(bool filterRegisters)

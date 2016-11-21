@@ -136,6 +136,13 @@ public:
     bool addressSpaceSegmentsAreFilterted() const;
 
     /*!
+     *  Check whether the address blocks are filtered or not.
+     *
+     *      @return True, if address blocks are filtered, otherwise false.
+     */
+    bool addressBlocksAreFiltered() const;
+
+    /*!
      *  Check whether the address block registers are filtered or not.
      *
      *      @return True, if address block registers are filtered, otherwise false.
@@ -150,6 +157,13 @@ public slots:
      *      @param [in] filterSegments  Value for filtering the segments.
      */
     void filterAddressSpaceSegments(bool filterSegments);
+
+    /*!
+     *  Filter the address blocks.
+     *
+     *      @param [in] filterBlocks    Value for filtering the address blocks.
+     */
+    void filterAddressBlocks(bool filterBlocks);
 
     /*!
      *  Filter the address block registers.

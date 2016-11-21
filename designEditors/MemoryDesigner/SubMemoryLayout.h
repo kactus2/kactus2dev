@@ -89,11 +89,27 @@ public:
 protected:
 
     /*!
+     *  Set a new value for filtering memory sub items.
+     *
+     *      @param [in] filterValue     New filtering value for the memory sub items.
+     */
+    void setFilterSubItems(bool filterValue);
+
+    /*!
+     *  Get the type of the memory sub items.
+     *
+     *      @return The type of the memory sub items.
+     */
+    QString getSubItemType() const;
+
+    /*!
      *  Setup the sub memory items.
      *
      *      @param [in] subItemPositionX    X position of the sub memory items.
+     *      @param [in] subItemType         Type of the memory sub items.
+     *      @param [in] memoryItem          The memory item containing the sub items.
      */
-    void setupSubItems(qreal subItemPositionX);
+    void setupSubItems(qreal subItemPositionX, QString const& subItemType, QSharedPointer<MemoryItem> memoryItem);
 
     /*!
      *  Compress the sub items.
@@ -167,7 +183,7 @@ protected:
      *      @return The height for the sub memory item to fit in the selected memory connection item.
      */
     quint64 getSubItemHeightForConnection(SubMemoryLayout* mainItem, quint64 subItemBaseAddress,
-        quint64 subItemLastAddress, MemoryDesignerChildGraphicsItem* subItem, MemoryConnectionItem* connectionItem,
+        quint64 subItemLastAddress, MemoryDesignerGraphicsItem* subItem, MemoryConnectionItem* connectionItem,
         quint64 yPosition, quint64 newSubItemHeight, qreal minimumSubItemHeight) const;
 
 private:

@@ -15,8 +15,10 @@
 
 #include <designEditors/MemoryDesigner/MemoryItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
+#include <designEditors/MemoryDesigner/MainMemoryGraphicsItem.h>
 
 #include <QBrush>
 #include <QPen>
@@ -44,22 +46,31 @@ SubMemoryLayout::~SubMemoryLayout()
 }
 
 //-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::getSubItemType()
+//-----------------------------------------------------------------------------
+QString SubMemoryLayout::getSubItemType() const
+{
+    return subItemType_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::setupSubItems()
 //-----------------------------------------------------------------------------
-void SubMemoryLayout::setupSubItems(qreal subItemPositionX)
+void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subItemType,
+    QSharedPointer<MemoryItem> memoryItem)
 {
     if (!filterSubItems_)
     {
         quint64 itemBaseAddress = mainGraphicsItem_->getBaseAddress();
         quint64 itemLastAddress = mainGraphicsItem_->getLastAddress();
 
-        if (!memoryItem_->getChildItems().isEmpty())
+        if (!memoryItem->getChildItems().isEmpty())
         {
             QMap<quint64, MemoryDesignerChildGraphicsItem*> subItemsInOrder;
 
-            foreach (QSharedPointer<MemoryItem> subMemoryItem, memoryItem_->getChildItems())
+            foreach (QSharedPointer<MemoryItem> subMemoryItem, memoryItem->getChildItems())
             {
-                if (subMemoryItem->getType().compare(subItemType_, Qt::CaseInsensitive) == 0)
+                if (subMemoryItem->getType().compare(subItemType, Qt::CaseInsensitive) == 0)
                 {
                     MemoryDesignerChildGraphicsItem* newSubItem = createNewSubItem(subMemoryItem, false);
 
@@ -310,6 +321,13 @@ quint64 SubMemoryLayout::getCompressedHeight(qreal minimumSubItemHeight, SubMemo
     if (filterSubItems_)
     {
         newHeight = getFilteredCompressedHeight(mainItem, newSubItemHeight, minimumSubItemHeight);
+
+        MemoryDesignerGraphicsItem* graphicsItem = dynamic_cast<MemoryDesignerGraphicsItem*>(this);
+        quint64 itemHeight = graphicsItem->boundingRect().height();
+        if (newHeight > itemHeight)
+        {
+            newHeight = itemHeight;
+        }
     }
     else
     {
@@ -377,7 +395,7 @@ qreal SubMemoryLayout::getSubItemHeight(SubMemoryLayout* mainItem, MemoryDesigne
 // Function: SubMemoryLayout::getSubItemHeightForConnection()
 //-----------------------------------------------------------------------------
 quint64 SubMemoryLayout::getSubItemHeightForConnection(SubMemoryLayout* mainItem, quint64 subItemBaseAddress,
-    quint64 subItemLastAddress, MemoryDesignerChildGraphicsItem* subItem, MemoryConnectionItem* connectionItem,
+    quint64 subItemLastAddress, MemoryDesignerGraphicsItem* subItem, MemoryConnectionItem* connectionItem,
     quint64 yPosition, quint64 newSubItemHeight, qreal minimumSubItemHeight) const
 {
     qreal subItemConnectionHeight = 0;
@@ -509,24 +527,54 @@ qreal SubMemoryLayout::getAvailableArea(SubMemoryLayout* mainItem, quint64 yPosi
 quint64 SubMemoryLayout::getFilteredCompressedHeight(SubMemoryLayout* parentLayout, quint64 yPosition,
     qreal minimumSubItemHeight)
 {
-    quint64 filteredHeight = 0;
+    qreal filteredHeight = 0;
 
-    MemoryDesignerChildGraphicsItem* subItem = dynamic_cast<MemoryDesignerChildGraphicsItem*>(this);
-    if (subItem)
+    MemoryDesignerGraphicsItem* memoryItem = dynamic_cast<MemoryDesignerGraphicsItem*>(this);
+    if (memoryItem)
     {
-        quint64 baseAddress = subItem->getBaseAddress();
-        quint64 lastAddress = subItem->getLastAddress();
+        quint64 baseAddress = memoryItem->getBaseAddress();
+        quint64 lastAddress = memoryItem->getLastAddress();
 
-        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(subItem->getMemoryConnections());
+        QString itemType = memoryItem_->getType();
+        bool isMainItem = itemType.compare(MemoryDesignerConstants::ADDRESSSPACE_TYPE, Qt::CaseInsensitive) == 0 ||
+            itemType.compare(MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0;
+
+        quint64 previousConnectionBaseAddress = 0;
+
+        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(memoryItem->getMemoryConnections());
         while (connectionIterator.hasNext())
         {
             connectionIterator.next();
             MemoryConnectionItem* connectionItem = connectionIterator.value();
 
-            filteredHeight = getSubItemHeightForConnection(parentLayout, baseAddress, lastAddress, subItem,
-                connectionItem, yPosition, filteredHeight, minimumSubItemHeight);
-        }
+            quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
 
+            if (isMainItem)
+            {
+                lastAddress += connectionBaseAddress;
+
+                filteredHeight =
+                    connectionItem->sceneBoundingRect().bottom() - memoryItem->sceneBoundingRect().top() - 1;
+
+                quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
+                if (lastAddress < connectionLastAddress)
+                {
+                    filteredHeight -= MemoryDesignerConstants::RANGEINTERVAL * 2;
+                }
+
+                previousConnectionBaseAddress = connectionBaseAddress;
+            }
+            else
+            {
+                filteredHeight = getSubItemHeightForConnection(parentLayout, baseAddress, lastAddress, memoryItem,
+                    connectionItem, yPosition, filteredHeight, minimumSubItemHeight);
+            }
+        }
+    }
+
+    if (filteredHeight == 0)
+    {
+        filteredHeight = minimumSubItemHeight;
     }
 
     return filteredHeight;
@@ -538,4 +586,12 @@ quint64 SubMemoryLayout::getFilteredCompressedHeight(SubMemoryLayout* parentLayo
 bool SubMemoryLayout::subItemsAreFiltered() const
 {
     return filterSubItems_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::setFilterSubItems()
+//-----------------------------------------------------------------------------
+void SubMemoryLayout::setFilterSubItems(bool filterValue)
+{
+    filterSubItems_ = filterValue;
 }

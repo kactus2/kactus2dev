@@ -78,6 +78,15 @@ public:
      */
     virtual qreal getMinimumRequiredHeight(quint64 connectionBaseAddress, quint64 connectionEndAddress) const;
 
+    /*!
+     *  Check if the memory map is connected to any of the selected address spaces.
+     *
+     *      @param [in] spaceItems  List of the selected address space graphics items.
+     *
+     *      @return True, if the memory map is connected to any of the selected address spaces.
+     */
+    bool isConnectedToSpaceItems(QVector<MainMemoryGraphicsItem*> spaceItems) const;
+
 private:
     // Disable copying.
     MemoryMapGraphicsItem(MemoryMapGraphicsItem const& rhs);
@@ -134,12 +143,32 @@ private:
      */
     int getMinimumHeightForSubItems() const;
 
+    /*!
+     *  Setup sub items for the memory map.
+     *
+     *      @param [in] blockXPosition  X coordinate of the memory sub items.
+     *      @param [in] memoryItem      The memory map memory item.
+     */
+    void setupSubItems(qreal blockXPosition, QSharedPointer<MemoryItem> memoryItem);
+
+    /*!
+     *  Get the width of the memory map sub items.
+     *
+     *      @param [in] subItemSubItemsAreFiltered  Value for filtering the memory map sub items.
+     *
+     *      @return Width of the memory map sub items.
+     */
+    qreal getSubItemWidth(bool subItemSubItemsAreFiltered) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The address unit bits of a memory map.
     QString addressUnitBits_;
+
+    //! Value for filtering address blocks.
+    bool filterAddressBlocks_;
 
     //! Value for filtering address block registers.
     bool filterRegisters_;

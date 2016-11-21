@@ -54,7 +54,7 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), 
     setLabelPositions();
 
     qreal segmentPositionX = - boundingRect().width() / 4;
-    setupSubItems(segmentPositionX);
+    setupSubItems(segmentPositionX, getSubItemType(), memoryItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -292,6 +292,10 @@ qreal AddressSpaceGraphicsItem::getTransferY(quint64 currentConnectionBaseAddres
         }
 
         newYTransfer = previousConnectionLow - connectionItem->sceneBoundingRect().top() - addressTransfer;
+
+        qreal maximumTransfer = previousConnection->sceneBoundingRect().top() -
+            connectionItem->sceneBoundingRect().top() + MemoryDesignerConstants::RANGEINTERVAL;
+        newYTransfer = qMax(newYTransfer, maximumTransfer);
     }
 
     return newYTransfer;
@@ -377,7 +381,6 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(SubMemoryLayout*, 
                     if (connectionLastAddress > itemLastAddress + connectionBaseAddress)
                     {
                         connectionsLowY -= MemoryDesignerConstants::RANGEINTERVAL * 2;
-                        break;
                     }
                 }
             }

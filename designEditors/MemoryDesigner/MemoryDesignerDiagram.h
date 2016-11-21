@@ -85,6 +85,20 @@ public:
     bool addressSpaceSegmentsAreFiltered() const;
 
     /*!
+     *  Set a new value for filtering the address blocks.
+     *
+     *      @param [in] filterBlocks    Value for filtering address blocks.
+     */
+    void setFilterAddressBlocks(bool filterBlocks);
+
+    /*!
+     *  Check if the address blocks are filtered.
+     *
+     *      @return True, if the address blocks are filtered, false otherwise.
+     */
+    bool addressBlocksAreFiltered() const;
+
+    /*!
      *  Set a new value for filtering the address block registers.
      *
      *      @param [in] filterSegments  Value for filtering address block registers.
@@ -263,32 +277,36 @@ private:
     /*!
      *  Check and reposition a memory map to a memory map overlap column if needed.
      *
-     *      @param [in] placedMaps      A list of placed memory map items.
-     *      @param [in] memoryItem      The selected memory map item.
-     *      @param [in] originalColumn  The original column of the memory map item.
-     *      @param [in] startAddress    The start address of the connection.
-     *      @param [in] endAddress      The end address of the connection.
+     *      @param [in] placedMaps              A list of placed memory map items.
+     *      @param [in] memoryItem              The selected memory map item.
+     *      @param [in] originalColumn          The original column of the memory map item.
+     *      @param [in] startAddress            The start address of the connection.
+     *      @param [in] endAddress              The end address of the connection.
+     *      @param [in] connectionStartItem     The start item of the memory map connection.
      */
     void checkMemoryMapRepositionToOverlapColumn(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
         MainMemoryGraphicsItem* memoryItem, MemoryColumn* originalColumn, QString const& startAddress,
-        QString const& endAddress);
+        QString const& endAddress, MainMemoryGraphicsItem* connectionStartItem);
 
     /*!
      *  Check if a selected memory map item overlaps another memory map item within the selected column.
      *
-     *      @param [in] memoryColumn    The selected memory map column.
-     *      @param [in] memoryItem      The selected memory map graphics item.
-     *      @param [in] mapBaseAddress  Base address of the memory map.
-     *      @param [in] mapLastAddress  Last address of the memory map.
-     *      @param [in] memoryItemRect  Graphics rectangle of the memory map item.
-     *      @param [in] memoryPenWidth  Pen Width of the memory map item.
-     *      @param [in] placedMaps      List of memory maps that have already been placed.
+     *      @param [in] memoryColumn            The selected memory map column.
+     *      @param [in] memoryItem              The selected memory map graphics item.
+     *      @param [in] mapBaseAddress          Base address of the memory map.
+     *      @param [in] mapLastAddress          Last address of the memory map.
+     *      @param [in] memoryItemRect          Graphics rectangle of the memory map item.
+     *      @param [in] memoryPenWidth          Pen Width of the memory map item.
+     *      @param [in] placedMaps              List of memory maps that have already been placed.
+     *      @param [in] connectedSpaceItems     List of the address space graphics items connected to the selected
+     *                                          memory map graphics item.
      *
      *      @return True, if the memory map overlaps another memory map, false otherwise.
      */
     bool memoryMapOverlapsInColumn(MemoryColumn* memoryColumn, MainMemoryGraphicsItem* memoryItem,
         quint64 mapBaseAddress, quint64 mapLastAddress, QRectF memoryItemRect, int memoryPenWidth,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const;
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
+        QVector<MainMemoryGraphicsItem*> connectedSpaceItems) const;
 
     /*!
      *  Check if a memory map overlaps another memory map in the same column.

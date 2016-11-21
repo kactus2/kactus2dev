@@ -573,15 +573,15 @@ qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* co
     {
         if (comparisonConnection->getConnectionEndItem() == startItem_)
         {
-            if (comparisonConnection->boundingRect().height() - 1 == connectionHeight)
+            qreal comparisonHeight = comparisonConnection->boundingRect().height() - 1;
+            if (comparisonHeight >= connectionHeight)
             {
                 quint64 comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
                 if (comparisonLastAddress < connectionLastAddress)
                 {
-                    connectionHeight += MemoryDesignerConstants::RANGEINTERVAL * 2;
+                    connectionHeight = comparisonHeight + MemoryDesignerConstants::RANGEINTERVAL * 2;
                 }
             }
-            break;
         }
     }
 

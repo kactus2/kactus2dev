@@ -22,6 +22,8 @@ namespace MemoryDesignerConstants
     //! Minimum interval of address space graphics items.
     const qreal SPACEITEMINTERVAL = GridSize * 8;
 
+    const QString RESERVED_NAME = QLatin1String("Reserved");
+
     const QString MEMORYMAP_TYPE = QLatin1String("memoryMap");
     const QString ADDRESSBLOCK_TYPE = QLatin1String("addressBlock");
     const QString REGISTER_TYPE = QLatin1String("register");

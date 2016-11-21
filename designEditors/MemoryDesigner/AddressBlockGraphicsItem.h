@@ -41,10 +41,11 @@ public:
      *      @param [in] blockItem           Memory item containing the address block data.
      *      @param [in] isEmptyBlock        Boolean value for existing blocks.
      *      @param [in] filterRegisters     Filtering value for address block registers.
+     *      @param [in] addressBlockWidth   Width of the address block graphics item.
      *      @param [in] memoryMapItem       The parent memory map item.
      */
     AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock, bool filterRegisters,
-        MemoryMapGraphicsItem* memoryMapItem);
+        qreal addressBlockWidth, MemoryMapGraphicsItem* memoryMapItem);
 
 	/*!
      *  The destructor.
@@ -115,6 +116,13 @@ private:
      *      @return The width of the available area used by the address block item.
      */
     virtual qreal getItemWidth() const;
+
+    /*!
+     *  Get the width for the register graphics items.
+     *
+     *      @return Width for the register graphics items.
+     */
+    qreal getRegisterWidth() const;
 
     //-----------------------------------------------------------------------------
     // Data.

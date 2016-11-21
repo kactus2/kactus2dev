@@ -26,9 +26,9 @@
 // Function: AddressBlockGraphicsItem::AddressBlockGraphicsItem()
 //-----------------------------------------------------------------------------
 AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock,
-    bool filterRegisters, MemoryMapGraphicsItem* memoryMapItem):
+    bool filterRegisters, qreal addressBlockWidth, MemoryMapGraphicsItem* memoryMapItem):
 MemoryDesignerChildGraphicsItem(blockItem->getName(), "address block", blockItem->getAddress().toULongLong(),
-    blockItem->getRange().toULongLong(), getBlockWidth(memoryMapItem, filterRegisters), memoryMapItem),
+    blockItem->getRange().toULongLong(), addressBlockWidth, memoryMapItem),
 SubMemoryLayout(blockItem, MemoryDesignerConstants::REGISTER_TYPE, filterRegisters, this),
 addressUnitBits_(blockItem->getAUB())
 {
@@ -36,7 +36,7 @@ addressUnitBits_(blockItem->getAUB())
     setLabelPositions();
 
     qreal xPosition = boundingRect().width() / 6 - 1;
-    setupSubItems(xPosition);
+    setupSubItems(xPosition, getSubItemType(), blockItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -45,24 +45,6 @@ addressUnitBits_(blockItem->getAUB())
 AddressBlockGraphicsItem::~AddressBlockGraphicsItem()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockGraphicsItem::getBlockWidth()
-//-----------------------------------------------------------------------------
-qreal AddressBlockGraphicsItem::getBlockWidth(MemoryMapGraphicsItem* memoryMapItem, bool registersAreFiltered)
-    const
-{
-    int blockWidth = 0;
-    if (registersAreFiltered)
-    {
-        blockWidth = memoryMapItem->boundingRect().width() / 2 + 1;
-    }
-    else
-    {
-        blockWidth = memoryMapItem->boundingRect().width() / 4 * 3 + 1;
-    }
-    return blockWidth;
 }
 
 //-----------------------------------------------------------------------------
@@ -102,7 +84,16 @@ void AddressBlockGraphicsItem::setLabelPositions()
 MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createNewSubItem(
     QSharedPointer<MemoryItem> subMemoryItem, bool isEmpty)
 {
-    return new RegisterGraphicsItem(subMemoryItem, isEmpty, this);
+    return new RegisterGraphicsItem(subMemoryItem, isEmpty, getRegisterWidth(), this);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphicsItem::getRegisterWidth()
+//-----------------------------------------------------------------------------
+qreal AddressBlockGraphicsItem::getRegisterWidth() const
+{
+    int registerWidth = boundingRect().width() / 3 * 2 + 1;
+    return registerWidth;
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +110,8 @@ MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createEmptySubItem(qu
     int intAUB = addressUnitBits_.toInt();
     quint64 registerSize = emptyRegisterRangeInt * intAUB;
 
-    QSharedPointer<MemoryItem> emptyRegister (new MemoryItem("Reserved", MemoryDesignerConstants::REGISTER_TYPE));
+    QSharedPointer<MemoryItem> emptyRegister (
+        new MemoryItem(MemoryDesignerConstants::RESERVED_NAME, MemoryDesignerConstants::REGISTER_TYPE));
     emptyRegister->setAddress(emptyRegisterBaseAddress);
     emptyRegister->setSize(QString::number(registerSize));
     emptyRegister->setAUB(addressUnitBits_);

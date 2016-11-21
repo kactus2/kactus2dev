@@ -16,6 +16,7 @@
 #include <designEditors/MemoryDesigner/MemoryItem.h>
 #include <designEditors/MemoryDesigner/ConnectivityComponent.h>
 #include <designEditors/MemoryDesigner/AddressBlockGraphicsItem.h>
+#include <designEditors/MemoryDesigner/RegisterGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 
@@ -36,6 +37,7 @@ MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryIt
 MainMemoryGraphicsItem(memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSBLOCK_TYPE,
     filterAddressBlocks, parent),
 addressUnitBits_(memoryItem->getAUB()),
+filterAddressBlocks_(filterAddressBlocks),
 filterRegisters_(filterRegisters)
 {
     quint64 baseAddress = getMemoryMapStart(memoryItem);
@@ -46,7 +48,7 @@ filterRegisters_(filterRegisters)
 
     quint64 memoryHeight = (lastAddress - baseAddress + 1);
     int memoryWidth = 500;
-    if (filterRegisters_)
+    if (filterRegisters_ || filterAddressBlocks)
     {
         memoryWidth = memoryWidth / 2;
     }
@@ -56,7 +58,7 @@ filterRegisters_(filterRegisters)
     setLabelPositions();
     
     qreal blockXPosition = 0;
-    if (filterRegisters_)
+    if (filterRegisters_ || filterAddressBlocks)
     {
         blockXPosition = boundingRect().width() / 4;
     }
@@ -64,7 +66,7 @@ filterRegisters_(filterRegisters)
     {
         blockXPosition = boundingRect().width() / 8;
     }
-    setupSubItems(blockXPosition);
+    setupSubItems(blockXPosition, memoryItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,6 +75,37 @@ filterRegisters_(filterRegisters)
 MemoryMapGraphicsItem::~MemoryMapGraphicsItem()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::setupSubItems()
+//-----------------------------------------------------------------------------
+void MemoryMapGraphicsItem::setupSubItems(qreal blockXPosition, QSharedPointer<MemoryItem> memoryItem)
+{
+    QString subItemType = getSubItemType();
+    QSharedPointer<MemoryItem> usedMemoryItem = memoryItem;
+
+    if (filterAddressBlocks_ && !filterRegisters_)
+    {
+        setFilterSubItems(filterRegisters_);
+
+        subItemType = MemoryDesignerConstants::REGISTER_TYPE;
+        usedMemoryItem = QSharedPointer<MemoryItem>(new MemoryItem(memoryItem->getName(), memoryItem->getType()));
+        usedMemoryItem->setAUB(memoryItem->getAUB());
+
+        foreach (QSharedPointer<MemoryItem> subItem, memoryItem->getChildItems())
+        {
+            if (subItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
+            {
+                foreach (QSharedPointer<MemoryItem> registerItem, subItem->getChildItems())
+                {
+                    usedMemoryItem->addChild(registerItem);
+                }
+            }
+        }
+    }
+
+    SubMemoryLayout::setupSubItems(blockXPosition, subItemType, usedMemoryItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -159,7 +192,36 @@ void MemoryMapGraphicsItem::setLabelPositions()
 MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QSharedPointer<MemoryItem> subMemoryItem,
     bool isEmpty)
 {
-    return new AddressBlockGraphicsItem(subMemoryItem, isEmpty, filterRegisters_, this);
+    MemoryDesignerChildGraphicsItem* childItem = 0;
+
+    if (!filterAddressBlocks_)
+    {
+        childItem = new AddressBlockGraphicsItem(
+            subMemoryItem, isEmpty, filterRegisters_, getSubItemWidth(filterRegisters_), this);
+    }
+    else if (!filterRegisters_)
+    {
+        childItem = new RegisterGraphicsItem(subMemoryItem, isEmpty, getSubItemWidth(true), this);
+    }
+
+    return childItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::getSubItemWidth()
+//-----------------------------------------------------------------------------
+qreal MemoryMapGraphicsItem::getSubItemWidth(bool subItemSubItemsAreFiltered) const
+{
+    int subItemWidth = 0;
+    if (!subItemSubItemsAreFiltered)
+    {
+        subItemWidth = boundingRect().width() / 4 * 3 + 1;
+    }
+    else
+    {
+        subItemWidth = boundingRect().width() / 2 + 1;
+    }
+    return subItemWidth;
 }
 
 //-----------------------------------------------------------------------------
@@ -167,16 +229,37 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QShared
 //-----------------------------------------------------------------------------
 MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint64 beginAddress, quint64 rangeEnd)
 {
-    QString emptyBlockBaseAddress = QString::number(beginAddress);
-    QString emptyBlockRange = QString::number(rangeEnd - beginAddress + 1);
+    QSharedPointer<MemoryItem> emptyItem;
 
-    QSharedPointer<MemoryItem> emptyBlockItem
-        (new MemoryItem("Reserved", MemoryDesignerConstants::ADDRESSBLOCK_TYPE));
-    emptyBlockItem->setAddress(emptyBlockBaseAddress);
-    emptyBlockItem->setRange(emptyBlockRange);
-    emptyBlockItem->setAUB(addressUnitBits_);
+    if (!filterAddressBlocks_)
+    {
+        QString emptyBlockBaseAddress = QString::number(beginAddress);
+        QString emptyBlockRange = QString::number(rangeEnd - beginAddress + 1);
 
-    return createNewSubItem(emptyBlockItem, true);
+        emptyItem = QSharedPointer<MemoryItem>(
+            new MemoryItem(MemoryDesignerConstants::RESERVED_NAME, MemoryDesignerConstants::ADDRESSBLOCK_TYPE));
+        emptyItem->setAddress(emptyBlockBaseAddress);
+        emptyItem->setRange(emptyBlockRange);
+        emptyItem->setAUB(addressUnitBits_);
+    }
+    else if (!filterRegisters_)
+    {
+        quint64 emptyRegisterRangeInt = rangeEnd - beginAddress + 1;
+
+        QString emptyRegisterBaseAddress = QString::number(beginAddress);
+        QString emptyRegisterRange = QString::number(emptyRegisterRangeInt);
+
+        int intAUB = addressUnitBits_.toInt();
+        quint64 registerSize = emptyRegisterRangeInt * intAUB;
+
+        emptyItem = QSharedPointer<MemoryItem>(
+            new MemoryItem(MemoryDesignerConstants::RESERVED_NAME, MemoryDesignerConstants::REGISTER_TYPE));
+        emptyItem->setAddress(emptyRegisterBaseAddress);
+        emptyItem->setSize(QString::number(registerSize));
+        emptyItem->setAUB(addressUnitBits_);
+    }
+
+    return createNewSubItem(emptyItem, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -252,4 +335,20 @@ int MemoryMapGraphicsItem::getMinimumHeightForSubItems() const
     }
 
     return blockHeight;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::isConnectedToSpaceItem()
+//-----------------------------------------------------------------------------
+bool MemoryMapGraphicsItem::isConnectedToSpaceItems(QVector<MainMemoryGraphicsItem*> spaceItems) const
+{
+    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
+    {
+        if (spaceItems.contains(connectionItem->getConnectionStartItem()))
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

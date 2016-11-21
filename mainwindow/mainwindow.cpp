@@ -4816,18 +4816,26 @@ void MainWindow::setupMemoryFilteringMenu(TabDocument* document)
         QAction* filterSegmentsAction = new QAction(tr(qPrintable("Filter Address Space Segments")), this);
         filterSegmentsAction->setCheckable(true);
         filterSegmentsAction->setChecked(memoryDocument->addressSpaceSegmentsAreFilterted());
-        connect(filterSegmentsAction, SIGNAL(triggered(bool)), memoryDocument,
-            SLOT(filterAddressSpaceSegments(bool)), Qt::UniqueConnection);
+        connect(filterSegmentsAction, SIGNAL(triggered(bool)),
+            memoryDocument, SLOT(filterAddressSpaceSegments(bool)), Qt::UniqueConnection);
+
+        QAction* filterAddressBlocksAction = new QAction(tr(qPrintable("Filter Address Blocks")), this);
+        filterAddressBlocksAction->setCheckable(true);
+        filterAddressBlocksAction->setChecked(memoryDocument->addressBlocksAreFiltered());
+        connect(filterAddressBlocksAction, SIGNAL(triggered(bool)),
+            memoryDocument, SLOT(filterAddressBlocks(bool)), Qt::UniqueConnection);
 
         QAction* filterRegistersAction = new QAction(tr(qPrintable("Filter Address Block Registers")), this);
         filterRegistersAction->setCheckable(true);
         filterRegistersAction->setChecked(memoryDocument->addressBlockRegistersAreFiltered());
-        connect(filterRegistersAction, SIGNAL(triggered(bool)), memoryDocument,
-            SLOT(filterAddressBlockRegisters(bool)), Qt::UniqueConnection);
+        connect(filterRegistersAction, SIGNAL(triggered(bool)),
+            memoryDocument, SLOT(filterAddressBlockRegisters(bool)), Qt::UniqueConnection);
 
         filterActionGroup->addAction(filterSegmentsAction);
+        filterActionGroup->addAction(filterAddressBlocksAction);
         filterActionGroup->addAction(filterRegistersAction);
         memoryFilteringMenu_.addAction(filterSegmentsAction);
+        memoryFilteringMenu_.addAction(filterAddressBlocksAction);
         memoryFilteringMenu_.addAction(filterRegistersAction);
     }
 }

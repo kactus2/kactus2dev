@@ -17,7 +17,7 @@
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
 class MemoryItem;
-class AddressBlockGraphicsItem;
+class MemoryDesignerGraphicsItem;
 
 #include <QSharedPointer>
 
@@ -36,10 +36,11 @@ public:
      *
      *      @param [in] registerItem        Memory item containing the register data.
      *      @param [in] isEmptyRegister     Boolean value to represent empty registers.
-     *      @param [in] blockItem           The parent address block item.
+     *      @param [in] registerWidth       Width of the register graphics item.
+     *      @param [in] parentItem          The parent memory graphics item.
      */
-    RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister,
-        AddressBlockGraphicsItem* blockItem);
+    RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister, qreal registerWidth,
+        MemoryDesignerGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.
@@ -69,15 +70,6 @@ private:
      *  Setup the label positions.
      */
     virtual void setLabelPositions();
-
-    /*!
-     *  Get the width of the register item.
-     *
-     *      @param [in] blockItem   The parent address block item.
-     *
-     *      @return The width of the register graphics item.
-     */
-    qreal getRegisterWidth(AddressBlockGraphicsItem* blockItem) const;
 };
 
 //-----------------------------------------------------------------------------

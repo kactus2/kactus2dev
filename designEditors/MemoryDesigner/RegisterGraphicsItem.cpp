@@ -14,7 +14,6 @@
 #include <common/KactusColors.h>
 
 #include <designEditors/MemoryDesigner/MemoryItem.h>
-#include <designEditors/MemoryDesigner/AddressBlockGraphicsItem.h>
 
 #include <QBrush>
 #include <QFont>
@@ -23,9 +22,9 @@
 // Function: RegisterGraphicsItem::RegisterGraphicsItem()
 //-----------------------------------------------------------------------------
 RegisterGraphicsItem::RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister,
-    AddressBlockGraphicsItem* blockItem):
+    qreal registerWidth, MemoryDesignerGraphicsItem* parentItem):
 MemoryDesignerChildGraphicsItem(registerItem->getName(), "register", registerItem->getAddress().toULongLong(),
-    getRegisterEnd(registerItem), getRegisterWidth(blockItem), blockItem)
+    getRegisterEnd(registerItem), registerWidth, parentItem)
 {
     setColors(KactusColors::REGISTER_COLOR, isEmptyRegister);
     setLabelPositions();
@@ -73,13 +72,4 @@ void RegisterGraphicsItem::setLabelPositions()
 
     getRangeStartLabel()->setPos(rangeStartX, rangeStartY);
     getRangeEndLabel()->setPos(rangeStartX, rangeEndY);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterGraphicsItem::getRegisterWidth()
-//-----------------------------------------------------------------------------
-qreal RegisterGraphicsItem::getRegisterWidth(AddressBlockGraphicsItem* blockItem) const
-{
-    int registerWidth = blockItem->boundingRect().width() / 3 * 2 + 1;
-    return registerWidth;
 }
