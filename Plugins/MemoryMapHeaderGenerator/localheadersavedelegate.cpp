@@ -40,7 +40,7 @@ QWidget* LocalHeaderSaveDelegate::createEditor( QWidget* parent, const QStyleOpt
 {
     if (index.column() == LocalHeaderSaveModel::SW_VIEW_NAME)
     {
-        ViewSelector* viewSelector = new ViewSelector(ViewSelector::SW_VIEWS, component_, parent, false);
+        ViewSelector* viewSelector = new ViewSelector(ViewSelector::BOTH_HW_VIEWS, component_, parent, false);
         viewSelector->refresh();
         viewSelector->addItem(tr("all"));
         viewSelector->setEditable(true);

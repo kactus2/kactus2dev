@@ -26,8 +26,6 @@
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 
-#include <IPXACTmodels/kactusExtensions/SWView.h>
-
 #include <QCoreApplication>
 #include <QDate>
 #include <QSettings>
@@ -140,11 +138,16 @@ void BaseMemoryMapHeaderWriter::addHeaderFile(QSharedPointer<Component> componen
         "This file contains the register and memory addresses defined in the memory map(s)"));
     file->setIncludeFile(true);
 
-    foreach (QSharedPointer<SWView> swView, component->getSWViews())
+    foreach (QSharedPointer<View> swView, *component->getViews())
     {
         if (swViewNames.contains(swView->name()))
         {
-            swView->addFileSetRef(filesetName);
+            QSharedPointer<ComponentInstantiation> insta = component->getModel()->findComponentInstantiation(swView->getComponentInstantiationRef());
+
+            if (insta)
+            {
+                insta->getFileSetReferences()->append(filesetName);
+            }
         }
     }
 

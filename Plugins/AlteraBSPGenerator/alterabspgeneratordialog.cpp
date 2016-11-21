@@ -41,7 +41,7 @@ generatedPaths_() {
 	setMinimumWidth(600);
 	setMinimumHeight(400);
 
-	viewSelector_ = new ViewSelector(ViewSelector::SW_VIEWS, component, this, false);
+	viewSelector_ = new ViewSelector(ViewSelector::BOTH_HW_VIEWS, component, this, false);
 	viewSelector_->refresh();
 	connect(viewSelector_, SIGNAL(viewSelected(const QString&)),
 		this, SLOT(onViewChange(const QString&)), Qt::UniqueConnection);
@@ -86,14 +86,8 @@ AlteraBSPGeneratorDialog::~AlteraBSPGeneratorDialog() {
 }
 
 void AlteraBSPGeneratorDialog::onViewChange( const QString& viewName ) {
-	foreach( QSharedPointer<SWView> swView, component_->getSWViews() )
-	{
-		if ( swView->name() == viewName )
-		{
-			currentView_ = swView;
-			break;
-		}
-	}
+
+    currentView_ = component_->getModel()->findView(viewName);
 
 	Q_ASSERT(currentView_);
 
@@ -118,13 +112,22 @@ void AlteraBSPGeneratorDialog::updateCommand() {
 	QString cpuName("[CPU_NAME MISSING]");
 
 	Q_ASSERT(currentView_);
-	QSharedPointer<BSPBuildCommand> com = currentView_->getBSPBuildCommand();
 
-	if (com) {
+    QString instaRef = currentView_->getComponentInstantiationRef();
 
+    QSharedPointer<ComponentInstantiation> insta = component_->getModel()->findComponentInstantiation(instaRef);
+    QSharedPointer<FileBuilder> com;
+
+    if (insta && insta->getDefaultFileBuilders()->size() > 0)
+    {
+	    com = insta->getDefaultFileBuilders()->first();
+    }
+
+	if (com)
+    {
 		// only the defined elements are set
-
-		if (!com->getCommand().isEmpty()) {
+		if (!com->getCommand().isEmpty())
+        {
 			command = com->getCommand();
 		}
 
@@ -133,21 +136,19 @@ void AlteraBSPGeneratorDialog::updateCommand() {
 		QStringList sourceFiles = component_->findFilesByFileType(sourceFileType);
 		
 		// if theres exactly one file that matches
-		if (sourceFiles.size() == 1) {
+		if (sourceFiles.size() == 1)
+        {
 			QString xmlPath = handler_->getPath(component_->getVlnv());
 			sourceFile = General::getAbsolutePath(xmlPath, sourceFiles.first());
 		}
 		// if there are several source files.
-		else if (sourceFiles.size() > 1) {
+		else if (sourceFiles.size() > 1)
+        {
 			sourceFile = tr("[SEVERAL SOURCE FILES FOUND]");
 		}
 
 		// arguments may not be necessary
-		args = com->getArguments();
-		
-		if (!com->getCPUName().isEmpty()) {
-			cpuName = com->getCPUName();
-		}
+		args = com->getFlags();
 	}
 
 // 	QString wholeCommand = QString("%1 %2 %3 %4 --cpu-name %5").arg(command).arg(targetDir_).arg(
@@ -156,7 +157,7 @@ void AlteraBSPGeneratorDialog::updateCommand() {
 	commandLabel_->setText(command);
 	outPutDirLabel_->setText(targetDir_);
 	sourceLabel_->setText(sourceFile);
-	argLabel_->setText(QString("%1 --cpu-name %2").arg(args).arg(cpuName));
+	argLabel_->setText(args);
 }
 
 void AlteraBSPGeneratorDialog::onRunClicked() {

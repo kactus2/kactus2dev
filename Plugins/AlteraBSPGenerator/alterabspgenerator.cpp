@@ -71,10 +71,12 @@ bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<Document const> l
 	QSharedPointer<Document const> libDes /*= QSharedPointer<Document const>()*/ ) const {
 	
 	// BSP package can only be run on component editor 
-	if (libDesConf || libDes) {
+	if (libDesConf || libDes)
+    {
 		return false;
 	}
 
+    // Must have a component.
 	QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
 
     if (comp == 0)
@@ -82,20 +84,14 @@ bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<Document const> l
         return false;
     }
 	
-	switch (comp->getImplementation()) {
-	
-		// HW component must be CPU and contain at least one SW view which specifies the BSP command
-	case KactusAttribute::HW: {
-		return comp->hasSWViews() && comp->isCpu();
-											}
-	// only HW components can contain BSP
-	default: {
-		return false;
-				}
-	}
+	// HW component must be CPU and contain at least one view.
+	if (comp->getImplementation() == KactusAttribute::HW)
+    {
+		return comp->isCpu() && comp->getViews()->size() > 0;
+    }
 
-	// generator can be run if component contains at least one sw view
-	return comp->hasSWViews();
+	// By default, always return false.
+	return false;
 }
 
 void AlteraBSPGenerator::runGenerator(IPluginUtility* utility,
@@ -151,18 +147,17 @@ void AlteraBSPGenerator::runGenerator(IPluginUtility* utility,
 			addEntry(entry, xmlPath, fileSet, settings);
 		}
 
-		QSharedPointer<SWView> swView;
-		foreach( QSharedPointer<SWView> pview, comp->getSWViews() )
-		{
-			if ( pview->name() == opt.swViewName_ )
-			{
-				swView = pview;
-				break;
-			}
-		}
 
-		Q_ASSERT(swView);
-		swView->addFileSetRef(fileSetName);
+        QSharedPointer<View> swView = comp->getModel()->findView(opt.swViewName_);
+        Q_ASSERT(swView);
+
+
+        QSharedPointer<ComponentInstantiation> insta = comp->getModel()->findComponentInstantiation(swView->getComponentInstantiationRef());
+
+        if (insta)
+        {
+            insta->getFileSetReferences()->append(fileSetName);
+        }
 	}
 
 	if (modified) {

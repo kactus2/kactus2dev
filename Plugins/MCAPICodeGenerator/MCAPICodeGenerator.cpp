@@ -19,7 +19,6 @@
 
 #include <IPXACTmodels/Component/FileSet.h>
 
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include "common/dialogs/comboSelector/comboselector.h"
 
 //-----------------------------------------------------------------------------
@@ -147,34 +146,38 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
 		file->addFileType( "cSource" );
     }
 
-    int viewCount = component->getSWViews().size();
+    int viewCount = component->getViews()->size();
+    QSharedPointer<View> view;
 
     if ( viewCount > 1 )
     {
         // Add fileSet to selected software view
         ComboSelector cs(utility_->getParentWidget());
-        cs.setComboBoxItems( component->getSWViewNames() );
-        cs.setLabelText( QObject::tr("Select a software view which shall include reference to the generated MCAPI") );
+        cs.setComboBoxItems( component->getViewNames() );
+        cs.setLabelText( QObject::tr("Select a view which shall include reference to the generated MCAPI") );
 
         QString viewName = cs.execDialog();
 
         if ( !viewName.isEmpty() )
         {
-            QSharedPointer<SWView> view;
-			
-			foreach( QSharedPointer<SWView> pview, component->getSWViews() )
-			{
-				view = pview;
-				break;
-			}
-
-            view->addFileSetRef( fileSet->name() );
+            view = component->getModel()->findView(viewName);
         }
     }
     else if ( viewCount > 0 )
     {
-        // Add fileSet to the existing software view
-        component->getSWViews().first()->addFileSetRef( fileSet->name() );
+        component->getModel()->getViews()->first();
+    }
+
+    // Add fileSet to the component instantiation.
+    if (view)
+    {
+        QSharedPointer<ComponentInstantiation> insta = component->getModel()->
+            findComponentInstantiation(view->getComponentInstantiationRef());
+
+        if(insta)
+        {
+           insta->getFileSetReferences()->append(fileSet->name());
+        }
     }
 }
 

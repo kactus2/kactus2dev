@@ -50,7 +50,7 @@ void LocalHeaderSaveModel::setComponent(QSharedPointer<Component> component)
 	table_.clear();
 
 	QString defSWView;
-	QStringList swViewNames = component->getSWViewNames();
+	QStringList swViewNames = component->getViewNames();
 	
 	// if there are no sw views then use default name to create one
 	if (swViewNames.isEmpty())

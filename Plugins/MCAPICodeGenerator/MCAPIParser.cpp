@@ -19,7 +19,6 @@
 
 #include "common/dialogs/comboSelector/comboselector.h"
 
-#include "IPXACTmodels/kactusExtensions/SWView.h"
 #include "IPXACTmodels/kactusExtensions/SystemView.h"
 
 #include <IPXACTmodels/Design/PortReference.h>

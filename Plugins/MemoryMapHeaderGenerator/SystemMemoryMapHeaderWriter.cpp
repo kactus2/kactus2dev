@@ -16,7 +16,6 @@
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/MemoryMapHeaderGenerator/fileSaveDialog/filesavedialog.h>
 
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
 #include <IPXACTmodels/Component/FileSet.h>
@@ -91,18 +90,17 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
         QString activeView = designConfiguration->getActiveView(instance->getInstanceName());
 		if (!activeView.isEmpty())
         {
-			QSharedPointer<SWView> swView;
-            foreach (QSharedPointer<SWView> view, instComponent->getSWViews())
-            {
-                if (view->name() == activeView)
-                {
-                    swView = view;
-                }                
-            }
+			QSharedPointer<View> swView = component->getModel()->findView(activeView);
+            QSharedPointer<ComponentInstantiation> insta;
 
             if (swView)
             {
-                QStringList fileSets = swView->getFileSetRefs();
+                insta = component->getModel()->findComponentInstantiation(swView->getComponentInstantiationRef());
+            }
+
+            if (insta)
+            {
+                QStringList fileSets = *insta->getFileSetReferences().data();
 
                 // the files that are included in the active view
                 QStringList files = instComponent->getFilesFromFileSets(fileSets, usedFileTypes);

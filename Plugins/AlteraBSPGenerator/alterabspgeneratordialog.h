@@ -12,7 +12,6 @@
 #include <common/widgets/viewSelector/viewselector.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/kactusExtensions/SWView.h>
 
 class LibraryInterface;
 
@@ -139,7 +138,7 @@ private:
 	QString targetDir_;
 
 	//! \brief The currently selected SW view.
-	QSharedPointer<SWView> currentView_;
+	QSharedPointer<View> currentView_;
 
 	//! \brief Contains the paths to directories where the generator is run.
 	QList<GenerationOptions> generatedPaths_;

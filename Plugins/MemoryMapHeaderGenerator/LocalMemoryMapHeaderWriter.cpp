@@ -137,7 +137,7 @@ void LocalMemoryMapHeaderWriter::writeMemoryMapHeader(QList<LocalHeaderSaveModel
 		// if user selected to add the reference to all SW views.
 		if (swViewRef == QObject::tr("all"))
         {
-			swViewRefs = component_->getSWViewNames();
+			swViewRefs = component_->getViewNames();
 		}
 		// if user selected only a single view
 		else
