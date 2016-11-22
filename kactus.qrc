@@ -108,6 +108,7 @@
 	    <file>common/graphics/memoryDesigner.png</file>
       <file>common/graphics/addressSpaceFilter.png</file>
       <file>common/graphics/memorySubItemFilter.png</file>
+      <file>common/graphics/compressMemoryItems.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>common/graphics/splash.png</file>

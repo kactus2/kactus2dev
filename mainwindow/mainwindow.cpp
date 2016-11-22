@@ -211,6 +211,7 @@ configurationToolsGroup_(0),
 actionConfigureViews_(0),
 filteringGroup_(0),
 actionFilterAddressSpaceChains_(0),
+actionCondenseMemoryItems_(0),
 actionFilterMemoryItems_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
@@ -890,6 +891,13 @@ void MainWindow::setupActions()
     connect(actionFilterAddressSpaceChains_, SIGNAL(triggered(bool)),
         this, SLOT(onFilterAddressSpaceChains(bool)), Qt::UniqueConnection);
 
+    //! Initialize the action to condense memory graphics items.
+    actionCondenseMemoryItems_ = new QAction(QIcon(":icons/common/graphics/compressMemoryItems.png"),
+        tr("Compress Memory Items"), this);
+    actionCondenseMemoryItems_->setCheckable(true);
+    connect(actionCondenseMemoryItems_, SIGNAL(triggered(bool)),
+        this, SLOT(onCondenseMemoryItems(bool)), Qt::UniqueConnection);
+
     //! Initialize the action to manage memory item filtering control.
     actionFilterMemoryItems_ = new QAction(QIcon(":icons/common/graphics/memorySubItemFilter.png"),
         tr("Filter Memory Items"), this);
@@ -1020,9 +1028,11 @@ void MainWindow::setupMenus()
     filteringGroup_ = ribbon_->addGroup(tr("Filtering Tools"));
     filteringGroup_->setVisible(false);
     filteringGroup_->setEnabled(true);
+    filteringGroup_->addAction(actionCondenseMemoryItems_);
     filteringGroup_->addAction(actionFilterAddressSpaceChains_);
     filteringGroup_->addAction(actionFilterMemoryItems_);
 
+    filteringGroup_->widgetForAction(actionCondenseMemoryItems_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionFilterAddressSpaceChains_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionFilterMemoryItems_)->installEventFilter(ribbon_);
 
@@ -1703,10 +1713,12 @@ void MainWindow::updateMenuStrip()
         generationGroup_->setVisible(false);
 
         actionFilterAddressSpaceChains_->setChecked(memoryDocument->addressSpaceChainsAreFiltered());
+        actionCondenseMemoryItems_->setChecked(memoryDocument->memoryItemsAreCondensed());
     }
 
     filteringGroup_->setVisible(doc != 0 && isMemoryDesign);
     actionFilterAddressSpaceChains_->setVisible(isMemoryDesign);
+    actionCondenseMemoryItems_->setVisible(isMemoryDesign);
     actionFilterMemoryItems_->setVisible(isMemoryDesign);
 }
 
@@ -4786,18 +4798,28 @@ void MainWindow::onConfigureViews()
 }
 
 //-----------------------------------------------------------------------------
+// Function: mainwindow::onCondenseMemoryItems()
+//-----------------------------------------------------------------------------
+void MainWindow::onCondenseMemoryItems(bool condenseMemoryItems)
+{
+    MemoryDesignDocument* doc = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (doc && !doc->isProtected())
+    {
+        doc->setCondenseMemoryItems(condenseMemoryItems);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: mainwindow::onFilterAddressSpaceChains()
 //-----------------------------------------------------------------------------
 void MainWindow::onFilterAddressSpaceChains(bool filterChains)
 {
     MemoryDesignDocument* doc = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
 
-    if (!doc || doc->isProtected())
+    if (doc && !doc->isProtected())
     {
-        return;
+        doc->filterAddressSpaceChains(filterChains);
     }
-
-    doc->filterAddressSpaceChains(filterChains);
 }
 
 //-----------------------------------------------------------------------------

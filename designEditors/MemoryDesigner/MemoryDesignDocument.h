@@ -115,6 +115,20 @@ public:
     virtual void setProtection(bool locked);
 
     /*!
+     *  Change the condensing of memory graphics items.
+     *
+     *      @param [in] condenseItems   Value for condensing memory graphics items.
+     */
+    void setCondenseMemoryItems(bool condenseItems);
+
+    /*!
+     *  Check whether the memory graphics items are condensed or not.
+     *
+     *      @return True, if the memory graphics items are condensed, otherwise false.
+     */
+    bool memoryItemsAreCondensed() const;
+
+    /*!
      *  Change the filtering of chained address space memory connections.
      *
      *      @param [in] filterChains    Value for filtering chained address space memory connections.

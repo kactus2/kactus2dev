@@ -220,6 +220,23 @@ void MemoryDesignDocument::setProtection(bool /*locked*/)
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::setCondenseMemoryItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::setCondenseMemoryItems(bool condenseItems)
+{
+    diagram_->setCondenseMemoryItems(condenseItems);
+    refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::memoryItemsAreCondensed()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDocument::memoryItemsAreCondensed() const
+{
+    return diagram_->memoryItemsAreCondensed();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignDocument::filterAddressSpaces()
 //-----------------------------------------------------------------------------
 void MemoryDesignDocument::filterAddressSpaceChains(bool filterChains)

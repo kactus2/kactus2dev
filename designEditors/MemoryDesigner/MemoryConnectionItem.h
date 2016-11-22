@@ -29,17 +29,18 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] startItem           The start item of the connection (address space).
-     *      @param [in] firstStartValue     Start address in the start item.
-     *      @param [in] firstEndValue       End address in the start item.
-     *      @param [in] endItem             The end item of the connection (memory map).
-     *      @param [in] containingScene     Graphics scene containing the memory connection item.
-     *      @param [in] yTransfer           Y transfer of the memory connection.
-     *      @param [in] parent              Parent item of the connection.
+     *      @param [in] startItem                   The start item of the connection (address space).
+     *      @param [in] firstStartValue             Start address in the start item.
+     *      @param [in] firstEndValue               End address in the start item.
+     *      @param [in] endItem                     The end item of the connection (memory map).
+     *      @param [in] containingScene             Graphics scene containing the memory connection item.
+     *      @param [in] memoryItemsAreCondensed     Value for displaying condensed memory connections.
+     *      @param [in] yTransfer                   Y transfer of the memory connection.
+     *      @param [in] parent                      Parent item of the connection.
      */
     MemoryConnectionItem(MainMemoryGraphicsItem* startItem, QString const& firstStartValue,
         QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
-        int yTransfer = 0, QGraphicsItem* parent = 0);
+        bool memoryItemsAreCondensed, int yTransfer = 0, QGraphicsItem* parent = 0);
 
 	/*!
      *  The Destructor.
@@ -262,6 +263,9 @@ private:
 
     //! Width of the memory connection item.
     qreal connectionWidth_;
+
+    //! Value for displaying condensed memory connections.
+    bool memoryItemsAreCondensed_;
 };
 
 //-----------------------------------------------------------------------------

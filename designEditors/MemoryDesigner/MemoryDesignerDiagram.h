@@ -57,6 +57,20 @@ public:
     ~MemoryDesignerDiagram();
 
     /*!
+     *  Change the condensing of memory graphics items.
+     *
+     *      @param [in] condenseItems   Value for condensing memory graphics items.
+     */
+    void setCondenseMemoryItems(bool condenseMemoryItems);
+
+    /*!
+     *  Check whether the memory graphics items are condensed or not.
+     *
+     *      @return True, if the memory graphics items are condensed, otherwise false.
+     */
+    bool memoryItemsAreCondensed() const;
+
+    /*!
      *  Set the filtering for chained address space memory connections.
      *
      *      @param [in] filterChains    Value for the chained address space memory connection filtering.
@@ -550,6 +564,9 @@ private:
 
     //! The created connection graph.
     QSharedPointer<ConnectivityGraph> connectionGraph_;
+
+    //! Value for displaying condensed memory connections.
+    bool condenseMemoryItems_;
 
     //! Value for filtering the chained address space memory connections.
     bool filterAddressSpaceChains_;

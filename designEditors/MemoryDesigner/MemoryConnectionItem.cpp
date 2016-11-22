@@ -28,8 +28,8 @@
 // Function: MemoryConnectionItem::MemoryConnectionItem()
 //-----------------------------------------------------------------------------
 MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem, QString const& firstStartValue,
-    QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, int yTransfer,
-    QGraphicsItem* parent):
+    QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
+    bool memoryItemsAreCondensed, int yTransfer, QGraphicsItem* parent):
 QGraphicsPathItem(parent),
 amountOfNumbers_(getAmountOfNumbers(firstStartValue, firstEndValue)),
 firstItemStartLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstStartValue), this)),
@@ -41,7 +41,8 @@ endItem_(endItem),
 yTransfer_(yTransfer),
 rangeStart_(firstStartValue),
 rangeEnd_(firstEndValue),
-connectionWidth_(0)
+connectionWidth_(0),
+memoryItemsAreCondensed_(memoryItemsAreCondensed)
 {
     if (firstStartValue.compare(firstEndValue) == 0)
     {
@@ -108,34 +109,37 @@ qreal MemoryConnectionItem::getConnectionWidth() const
     qreal connectionWidth =
         (rangeEnd_.toULongLong() - rangeStart_.toULongLong() + 1) * MemoryDesignerConstants::RANGEINTERVAL;
 
-    quint64 connectionBaseAddress = getRangeStartValue().toULongLong(0, 16);
-    quint64 connectionLastAddress = getRangeEndValue().toULongLong(0, 16);
-
-    qreal endItemHeight = endItem_->getMinimumRequiredHeight(connectionBaseAddress, connectionLastAddress);
-    qreal startItemHeight = startItem_->getMinimumRequiredHeight(connectionBaseAddress, connectionLastAddress);
-
-    qreal comparisonHeight = endItemHeight;
-    if (startItemHeight > endItemHeight)
+    if (memoryItemsAreCondensed_)
     {
-        comparisonHeight = startItemHeight;
-    }
+        quint64 connectionBaseAddress = getRangeStartValue().toULongLong(0, 16);
+        quint64 connectionLastAddress = getRangeEndValue().toULongLong(0, 16);
 
-    if (comparisonHeight < connectionWidth)
-    {
-        connectionWidth = comparisonHeight;
+        qreal endItemHeight = endItem_->getMinimumRequiredHeight(connectionBaseAddress, connectionLastAddress);
+        qreal startItemHeight = startItem_->getMinimumRequiredHeight(connectionBaseAddress, connectionLastAddress);
 
-        quint64 connectionSize = connectionLastAddress - connectionBaseAddress;
-
-        quint64 startLastAddress = startItem_->getLastAddress();
-        quint64 startBaseAddress = startItem_->getBaseAddress();
-        quint64 endLastAddress = endItem_->getLastAddress();
-        quint64 endBaseAddress = endItem_->getBaseAddress();
-
-        quint64 startItemSize = startLastAddress - startBaseAddress;
-        quint64 endItemSize = endLastAddress - endBaseAddress;
-        if (connectionSize > startItemSize || connectionSize > endItemSize)
+        qreal comparisonHeight = endItemHeight;
+        if (startItemHeight > endItemHeight)
         {
-            connectionWidth += MemoryDesignerConstants::RANGEINTERVAL * 2;
+            comparisonHeight = startItemHeight;
+        }
+
+        if (comparisonHeight < connectionWidth)
+        {
+            connectionWidth = comparisonHeight;
+
+            quint64 connectionSize = connectionLastAddress - connectionBaseAddress;
+
+            quint64 startLastAddress = startItem_->getLastAddress();
+            quint64 startBaseAddress = startItem_->getBaseAddress();
+            quint64 endLastAddress = endItem_->getLastAddress();
+            quint64 endBaseAddress = endItem_->getBaseAddress();
+
+            quint64 startItemSize = startLastAddress - startBaseAddress;
+            quint64 endItemSize = endLastAddress - endBaseAddress;
+            if (connectionSize > startItemSize || connectionSize > endItemSize)
+            {
+                connectionWidth += MemoryDesignerConstants::RANGEINTERVAL * 2;
+            }
         }
     }
 
@@ -545,41 +549,43 @@ void MemoryConnectionItem::setConnectionWidth()
 //-----------------------------------------------------------------------------
 qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* connectionItem) const
 {
-    MainMemoryGraphicsItem* connectionEndItem = connectionItem->getConnectionEndItem();
-
     qreal connectionHeight = connectionItem->getConnectionWidth();
-    qreal containedConnectionsHeight = 0;
-
-    quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
-    quint64 comparisonLastAddress = 0;
-
-    foreach (MemoryConnectionItem* comparisonConnection, connectionEndItem->getMemoryConnections())
+    if (memoryItemsAreCondensed_)
     {
-        if (comparisonConnection->getConnectionStartItem() == connectionEndItem)
+        qreal containedConnectionsHeight = 0;
+
+        quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
+        quint64 comparisonLastAddress = 0;
+
+        MainMemoryGraphicsItem* connectionEndItem = connectionItem->getConnectionEndItem();
+        foreach (MemoryConnectionItem* comparisonConnection, connectionEndItem->getMemoryConnections())
         {
-            containedConnectionsHeight += getComparedConnectionHeight(comparisonConnection);
-            comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
-        }
-    }
-
-    if (connectionLastAddress < comparisonLastAddress)
-    {
-        containedConnectionsHeight -= MemoryDesignerConstants::RANGEINTERVAL * 2;
-    }
-
-    connectionHeight = qMax(connectionHeight, containedConnectionsHeight);
-
-    foreach (MemoryConnectionItem* comparisonConnection, startItem_->getMemoryConnections())
-    {
-        if (comparisonConnection->getConnectionEndItem() == startItem_)
-        {
-            qreal comparisonHeight = comparisonConnection->boundingRect().height() - 1;
-            if (comparisonHeight >= connectionHeight)
+            if (comparisonConnection->getConnectionStartItem() == connectionEndItem)
             {
-                quint64 comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
-                if (comparisonLastAddress < connectionLastAddress)
+                containedConnectionsHeight += getComparedConnectionHeight(comparisonConnection);
+                comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
+            }
+        }
+
+        if (connectionLastAddress < comparisonLastAddress)
+        {
+            containedConnectionsHeight -= MemoryDesignerConstants::RANGEINTERVAL * 2;
+        }
+
+        connectionHeight = qMax(connectionHeight, containedConnectionsHeight);
+
+        foreach (MemoryConnectionItem* comparisonConnection, startItem_->getMemoryConnections())
+        {
+            if (comparisonConnection->getConnectionEndItem() == startItem_)
+            {
+                qreal comparisonHeight = comparisonConnection->boundingRect().height() - 1;
+                if (comparisonHeight >= connectionHeight)
                 {
-                    connectionHeight = comparisonHeight + MemoryDesignerConstants::RANGEINTERVAL * 2;
+                    quint64 comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
+                    if (comparisonLastAddress < connectionLastAddress)
+                    {
+                        connectionHeight = comparisonHeight + MemoryDesignerConstants::RANGEINTERVAL * 2;
+                    }
                 }
             }
         }

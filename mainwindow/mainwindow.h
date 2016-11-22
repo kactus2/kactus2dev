@@ -511,6 +511,13 @@ private slots:
      */
     void onFilterAddressSpaceChains(bool filterChains);
 
+    /*!
+     *  Set the condensing of memory graphics items within a memory design.
+     *
+     *      @param [in] condenseMemoryItems     Value for condensing the memory graphics items.
+     */
+    void onCondenseMemoryItems(bool condenseMemoryItems);
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
@@ -966,6 +973,9 @@ private:
 
     //! The action to filter chained address space memory connections in a memory designer.
     QAction* actionFilterAddressSpaceChains_;
+
+    //! The action to condense memory graphics items in a memory designer.
+    QAction* actionCondenseMemoryItems_;
 
     //! The action to filter memory items.
     QAction* actionFilterMemoryItems_;

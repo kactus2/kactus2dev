@@ -53,6 +53,7 @@ parentDocument_(parent),
 layout_(new GraphicsColumnLayout(this)),
 libraryHandler_(library),
 instanceLocator_(library),
+condenseMemoryItems_(true),
 filterAddressSpaceChains_(false),
 filterAddressSpaceSegments_(false),
 filterAddressBlocks_(false),
@@ -67,6 +68,22 @@ filterRegisters_(false)
 MemoryDesignerDiagram::~MemoryDesignerDiagram()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::setCondenseMemoryItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::setCondenseMemoryItems(bool condenseMemoryItems)
+{
+    condenseMemoryItems_ = condenseMemoryItems;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::memoryItemsAreCondensed()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerDiagram::memoryItemsAreCondensed() const
+{
+    return condenseMemoryItems_;
 }
 
 //-----------------------------------------------------------------------------
@@ -475,7 +492,10 @@ void MemoryDesignerDiagram::createMemoryConnections()
     }
 
     compressGraphicsItems(placedSpaceItems, spaceYPlacement, spaceColumn);
-    repositionCompressedMemoryMaps(placedMapItems, memoryMapColumn, spaceColumn);
+    if (condenseMemoryItems_)
+    {
+        repositionCompressedMemoryMaps(placedMapItems, memoryMapColumn, spaceColumn);
+    }
 
     moveUnconnectedAddressSpaces(placedSpaceItems, spaceYPlacement, spaceColumn);
     moveUnconnectedMemoryMaps(placedMapItems, memoryMapColumn);
@@ -645,7 +665,7 @@ void MemoryDesignerDiagram::createConnection(QVector<QSharedPointer<Connectivity
             qreal spaceItemEndPointBefore = connectionStartItem->getSceneEndPoint();
 
             MemoryConnectionItem* newConnectionItem = new MemoryConnectionItem(connectionStartItem, startAddress,
-                endAddress, connectionEndItem, spaceColumn->scene(), yTransfer);
+                endAddress, connectionEndItem, spaceColumn->scene(), condenseMemoryItems_, yTransfer);
             connectionChain.append(newConnectionItem);
             setHeightForConnectionChain(connectionChain);
 
@@ -743,8 +763,8 @@ MemoryConnectionItem* MemoryDesignerDiagram::createSpaceConnection(MainMemoryGra
 
         if (!placedSpaceItems->contains(connectionMiddleItem) || !placedSpaceItems->contains(connectionStartItem))
         {
-            addressSpaceConnection = new MemoryConnectionItem(connectionStartItem,
-                middleItemRangeStart, middleItemRangeEnd, connectionMiddleItem, spaceColumn->scene(), yTransfer);
+            addressSpaceConnection = new MemoryConnectionItem(connectionStartItem, middleItemRangeStart,
+                middleItemRangeEnd, connectionMiddleItem, spaceColumn->scene(), condenseMemoryItems_, yTransfer);
         }
         else
         {
@@ -1308,7 +1328,10 @@ void MemoryDesignerDiagram::compressGraphicsItems(
                 {
                     int memoryItemLowBefore = memoryItem->getSceneEndPoint();
 
-                    memoryItem->condenseItemAndChildItems(movedConnectionItems);
+                    if (condenseMemoryItems_)
+                    {
+                        memoryItem->condenseItemAndChildItems(movedConnectionItems);
+                    }
 
                     MemoryConnectionItem* lastConnection = memoryItem->getLastConnection();
                     if (lastConnection)
@@ -1316,34 +1339,37 @@ void MemoryDesignerDiagram::compressGraphicsItems(
                         extendMemoryItem(memoryItem, lastConnection, spaceYPlacement);
                     }
 
-                    AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
-                    if (spaceItem && placedSpaceItems->contains(memoryItem) && memoryColumn == spaceColumn)
+                    if (condenseMemoryItems_)
                     {
-                        quint64 spaceItemTop = spaceItem->sceneBoundingRect().top();
-
-                        if (spaceItemTop + spaceItem->pen().width() != spaceItemLowAfter)
+                        AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
+                        if (spaceItem && placedSpaceItems->contains(memoryItem) && memoryColumn == spaceColumn)
                         {
-                            qint64 spaceInterval = (spaceItemTop + yTransfer) - spaceItemLowAfter;
+                            quint64 spaceItemTop = spaceItem->sceneBoundingRect().top();
 
-                            if (spaceInterval < MemoryDesignerConstants::SPACEITEMINTERVAL)
+                            if (spaceItemTop + spaceItem->pen().width() != spaceItemLowAfter)
                             {
-                                quint64 yMovementAddition = MemoryDesignerConstants::SPACEITEMINTERVAL -
-                                    ((spaceItemTop + yTransfer) - spaceItemLowAfter);
-                                yTransfer += yMovementAddition;
+                                qint64 spaceInterval = (spaceItemTop + yTransfer) - spaceItemLowAfter;
+
+                                if (spaceInterval < MemoryDesignerConstants::SPACEITEMINTERVAL)
+                                {
+                                    quint64 yMovementAddition = MemoryDesignerConstants::SPACEITEMINTERVAL -
+                                        ((spaceItemTop + yTransfer) - spaceItemLowAfter);
+                                    yTransfer += yMovementAddition;
+                                }
+
+                                spaceItem->moveConnectedItems(yTransfer);
+
                             }
 
-                            spaceItem->moveConnectedItems(yTransfer);
+                            spaceItemLowAfter = spaceItem->getSceneEndPoint();
 
+                            yTransfer = spaceItemLowAfter - memoryItemLowBefore;
+
+                            spaceYPlacement = spaceItemLowAfter + MemoryDesignerConstants::SPACEITEMINTERVAL;
                         }
 
-                        spaceItemLowAfter = spaceItem->getSceneEndPoint();
-
-                        yTransfer = spaceItemLowAfter - memoryItemLowBefore;
-
-                        spaceYPlacement = spaceItemLowAfter + MemoryDesignerConstants::SPACEITEMINTERVAL;
+                        memoryItem->resizeSubItemNameLabels();
                     }
-
-                    memoryItem->resizeSubItemNameLabels();
                 }
             }
         }
