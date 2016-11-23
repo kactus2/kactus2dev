@@ -28,24 +28,10 @@ MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> con
     generalWarningLabel_(new QLabel), QDialog(parent)
 {
 	QScrollArea* scrollArea = new QScrollArea;
+    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
 	QWidget* widgetList = new QWidget;
 	QVBoxLayout* listLayout = new QVBoxLayout(widgetList);
-
-    // Generating launcher script is optional.
-
-    // Optional generation features.
-    QGroupBox* optionGroup = new QGroupBox("Optional features:");
-    QHBoxLayout* optionLayout = new QHBoxLayout();
-    optionGroup->setLayout(optionLayout);
-
-    // Check to generate a launcher script.
-    QCheckBox* addCheck = new QCheckBox("Generate launcher script");
-    optionLayout->addWidget(addCheck);
-
-    // Connect the check box to a slot.
-    connect(addCheck, SIGNAL(stateChanged(int)), 
-        this, SLOT(onLauncherGenerationStateChanged(int)), Qt::UniqueConnection);
 
     // Layout for things coming to the bottom part of the dialog.
     QHBoxLayout* bottomLayout = new QHBoxLayout();
@@ -72,19 +58,27 @@ MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> con
 
         if (makeData->conflicts.size() > 0)
         {
-            createConflictTable(instanceLayout, makeData);
+            createConflictTables(instanceLayout, makeData);
         }
     }
 
     scrollArea->setWidget(widgetList);
 
-    // Add things to main layout in vertical order.
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(new QLabel("Detected software stacks yielding makefiles:"));
-    mainLayout->addWidget(scrollArea);
-    mainLayout->addWidget(optionGroup);
-    mainLayout->addWidget(fileOutput_);
-    mainLayout->addLayout(bottomLayout);
+    fileOutput_->onOutputFilesChanged();
+
+    // Add things in vertical order to two columns.
+    QVBoxLayout* leftLayout = new QVBoxLayout();
+    QVBoxLayout* rightLayout = new QVBoxLayout();
+    QHBoxLayout* mainLayout = new QHBoxLayout(this);
+
+    leftLayout->addWidget(new QLabel("Detected software stacks yielding makefiles:"));
+    leftLayout->addWidget(scrollArea);
+
+    rightLayout->addWidget(fileOutput_);
+    rightLayout->addLayout(bottomLayout);
+
+    mainLayout->addLayout(leftLayout);
+    mainLayout->addLayout(rightLayout);
 }
 
 //-----------------------------------------------------------------------------
@@ -111,90 +105,105 @@ void MakeParametersDialog::accept()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MakeParametersDialog::createConflictTable()
+// Function: MakeParametersDialog::createConflictTables()
 //-----------------------------------------------------------------------------
-void MakeParametersDialog::createConflictTable(QVBoxLayout* instanceLayout, QSharedPointer<MakeFileData> makeData)
+void MakeParametersDialog::createConflictTables(QVBoxLayout* instanceLayout, QSharedPointer<MakeFileData> makeData)
 {
-    instanceLayout->addWidget(new QLabel(tr("File dublicates in the stack:"), this));
-
-    //! Table used to display all detected conflicts and their participants.
-    QTableWidget* conflictTable = new QTableWidget;
-    instanceLayout->addWidget(conflictTable);
-
-    // Conflict table has 6 columns.
-    conflictTable->setColumnCount( 6 );
-
-    // The headers for each of the columns.
-    QStringList headers;
-    headers.append(tr("File name"));
-    headers.append(tr("Instance"));
-    headers.append(tr("File set"));
-    headers.append(tr("Include file"));
-    headers.append(tr("Compiler"));
-    headers.append(tr("Flags"));
-
-    // Put the headers in to effect.
-    conflictTable->setHorizontalHeaderLabels(headers);
-
-    // Vertical headers are not used.
-    conflictTable->verticalHeader()->hide();
-
-    // Easier to see the different rows from one another.
-    conflictTable->setAlternatingRowColors(true);
-
-    // The last column is stretched take the available space in the widget.
-    conflictTable->horizontalHeader()->setStretchLastSection(true);
-
-    // No editing this table.
-    conflictTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-    // Populate the table with conflict participants.
-    int row = 0;
+    instanceLayout->addWidget(new QLabel(tr("File duplicates in the stack:"), this));
 
     foreach (QSet<QSharedPointer<MakeObjectData> > conflictSet, makeData->conflicts)
     {
-        conflictTable->setRowCount(conflictSet.size() + conflictTable->rowCount());
+        // Sanity check: Must have at least two items in conflict.
+        if (conflictSet.size() < 2)
+        {
+            continue;
+        }
+
+        instanceLayout->addWidget(new QLabel((*conflictSet.begin())->fileName));
+
+        //! Table used to display all detected conflicts and their participants.
+        QTableWidget* conflictTable = new QTableWidget;
+        instanceLayout->addWidget(conflictTable);
+
+        // Conflict table has 6 columns.
+        conflictTable->setColumnCount( 6 );
+
+        // The headers for each of the columns.
+        QStringList headers;
+        headers.append(tr("Choose"));
+        headers.append(tr("Instance"));
+        headers.append(tr("File set"));
+        headers.append(tr("Include file"));
+        headers.append(tr("Compiler"));
+        headers.append(tr("Flags"));
+
+        // Put the headers in to effect.
+        conflictTable->setHorizontalHeaderLabels(headers);
+
+        // Vertical headers are not used.
+        conflictTable->verticalHeader()->hide();
+
+        // Easier to see the different rows from one another.
+        conflictTable->setAlternatingRowColors(true);
+
+        // The last column is stretched take the available space in the widget.
+        conflictTable->horizontalHeader()->setStretchLastSection(true);
+
+        // Populate the table with conflict participants.
+        int row = 0;
+        int rowCount = conflictSet.size() + conflictTable->rowCount();
+
+        conflictTable->setRowCount(rowCount);
 
         foreach (QSharedPointer<MakeObjectData> partisipant, conflictSet)
         {
             // Insert item corresponding the column to each cell of the row.
-            conflictTable->setItem(row, 0, new QTableWidgetItem( partisipant->fileName ));
-            conflictTable->setItem(row, 1, new QTableWidgetItem( partisipant->stackPart->instanceName ));
-            conflictTable->setItem(row, 2, new QTableWidgetItem( partisipant->fileSet->name() ));
-            conflictTable->setItem(row, 4, new QTableWidgetItem( partisipant->compiler ));
-            conflictTable->setItem(row, 5, new QTableWidgetItem( partisipant->flags ));
+
+            QTableWidgetItem* instanceNameItem = new QTableWidgetItem(partisipant->stackPart->instanceName);
+            instanceNameItem->setToolTip(partisipant->stackPart->instanceName);
+            conflictTable->setItem(row, 1, instanceNameItem);
+            instanceNameItem->setFlags(Qt::ItemIsSelectable);
+
+            QTableWidgetItem* fileSetNameItem = new QTableWidgetItem(partisipant->fileSet->name());
+            fileSetNameItem->setToolTip(partisipant->fileSet->name());
+            conflictTable->setItem(row, 2, fileSetNameItem);
+            fileSetNameItem->setFlags(Qt::ItemIsSelectable);
 
             // The boolean variable include file is presented as a check box.
-            QTableWidgetItem* defCheckItem = new QTableWidgetItem();
+            QTableWidgetItem* isIncludeItem = new QTableWidgetItem();
+            isIncludeItem->setFlags(Qt::ItemIsSelectable);
 
-            if ( partisipant->file->isIncludeFile() )
+            if (partisipant->file->isIncludeFile())
             {
-                defCheckItem->setCheckState(Qt::Checked);
+                isIncludeItem->setCheckState(Qt::Checked);
             }
             else
             {
-                defCheckItem->setCheckState(Qt::Unchecked);
+                isIncludeItem->setCheckState(Qt::Unchecked);
             }
 
-            // Disable editing.
-            defCheckItem->setFlags( Qt::ItemIsSelectable );
-
             // Finally, set it to the table.
-            conflictTable->setItem(row, 3, defCheckItem );
+            conflictTable->setItem(row, 3, isIncludeItem);
+
+            conflictTable->setItem(row, 4, new QTableWidgetItem(partisipant->compiler));
+
+            QTableWidgetItem* flagsItem = new QTableWidgetItem(partisipant->flags);
+            flagsItem->setToolTip(partisipant->flags);
+            conflictTable->setItem(row, 5, flagsItem);
+            flagsItem->setFlags( Qt::ItemIsSelectable );
 
             // The next one goes to the next row.
             ++row;
         }
+
+        // Resize the height to match the contents: This table is not intended to be vertically scrolled.
+        int nRowHeight = conflictTable->rowHeight(0);
+        int nTableHeight = (rowCount * nRowHeight) + conflictTable->horizontalHeader()->height() +
+            2 * conflictTable->frameWidth() + 20;
+        conflictTable->setMinimumHeight(nTableHeight);
+        conflictTable->setMaximumHeight(nTableHeight);
+
+        // Refit the columns.
+        conflictTable->resizeColumnsToContents();
     }
-
-    // Refit the columns.
-    conflictTable->resizeColumnsToContents();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakeParametersDialog::onInterfaceGenerationStateChanged()
-//-----------------------------------------------------------------------------
-void MakeParametersDialog::onLauncherGenerationStateChanged(int state)
-{
-    configuration_->setAddLauncher(state == Qt::Checked);
 }

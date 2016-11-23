@@ -144,8 +144,8 @@ void tst_MakefileGenerator::baseCase()
     addFileToSet(fileSet, "array.c");
     addCmd2Insta(softInsta, "gcc", "cSource", "-sw", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, outputDir_ );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser( &library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -188,8 +188,8 @@ void tst_MakefileGenerator::fileBuildOverride()
 
     setFileBuilder(file, "python", "-l", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -230,8 +230,8 @@ void tst_MakefileGenerator::fileSetBuildOverride()
     addCmd2Insta(softInsta, "gcc -o", "cSource", "-sw", false);
     addFileSetBuilder(fileSet, "javac -beef", "cSource", "-lrt", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -274,8 +274,8 @@ void tst_MakefileGenerator::fileFlagReplace()
 
     setFileBuilder(file, "", "-u", true);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -316,8 +316,8 @@ void tst_MakefileGenerator::fileSetFlagReplace()
     addCmd2Insta(softInsta, "gcc", "cSource", "-sw", false);
     addFileSetBuilder(fileSet, "javac -beef", "cSource", "-lrt", true);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -358,8 +358,8 @@ void tst_MakefileGenerator::swSWViewFlagReplace()
     addCmd2Insta(hardInsta, "gcc", "cSource", "-hw", false);
     addCmd2Insta(softInsta, "gcc", "cSource", "-sw", true);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -401,8 +401,8 @@ void tst_MakefileGenerator::hwBuilder()
 
     setFileBuilder(file, "", "-u", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -444,8 +444,8 @@ void tst_MakefileGenerator::hwBuilderWithNosoftInsta()
 
     setFileBuilder(file, "", "-u", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 
 	QCOMPARE( stackParser.getParsedData()->size(), 0 );
 
@@ -486,8 +486,8 @@ void tst_MakefileGenerator::hwRef()
     getFile(file, hw, "array.c");
     setFileBuilder(file, "", "-u", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser( &library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -541,8 +541,8 @@ void tst_MakefileGenerator::hwandswRef()
     getFile(sfile, sw, "sarray.c");
     setFileBuilder(sfile, "", "-su", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser( &library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -601,8 +601,8 @@ void tst_MakefileGenerator::instanceHeaders()
     addCmd2Insta(hardInsta, "gcc", "cSource", "-hw", false);
     addCmd2Insta(softInsta, "gcc", "cSource", "-sw", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser( &library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -654,8 +654,8 @@ void tst_MakefileGenerator::multipleFiles()
     getFile(file, sw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -715,8 +715,8 @@ void tst_MakefileGenerator::multipleFileSets()
     getFile(file, sw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser( &library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -775,8 +775,8 @@ void tst_MakefileGenerator::multipleComponents()
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -850,8 +850,8 @@ void tst_MakefileGenerator::multipleHardWare()
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -935,8 +935,8 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
     getFile(file, asw, "support.c");
     setFileBuilder(file, "continental", "-y", false);
 
-	SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1001,8 +1001,8 @@ void tst_MakefileGenerator::multipleInstances()
 	addCmd2Insta(hardInsta, "hopo", "cSource", "-hw", false);
 	addCmd2Insta(softInsta, "asm-meister", "cSource", "-bmw", false);
 
-	SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1035,8 +1035,8 @@ void tst_MakefileGenerator::noHardWare()
     addFileToSet(fileSet, "array.c");
     addCmd2Insta(softInsta, "gcc", "cSource", "-sw", false);
 
-	SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1074,8 +1074,8 @@ void tst_MakefileGenerator::noFilesComponent()
 	addCmd2Insta(hardInsta, "hopo", "cSource", "-hw", false);
 	addCmd2Insta(bsoftInsta, "asm-meister", "cSource", "-bmw", false);
 
-	SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser( &library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1119,8 +1119,8 @@ void tst_MakefileGenerator::noFileType()
 	addCmd2Insta(hardInsta, "gcc", "cSource", "-hw", false);
 	addCmd2Insta(softInsta, "gcc", "cSource", "-sw", false);
 
-	SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1171,10 +1171,10 @@ void tst_MakefileGenerator::apiUsage()
     addFileToSet(bfileSet, "hiterbehn.c");
     addFileToSet(bfileSet, "support.h", "cSource", true);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse(topComponent, desgconf, design, "tsydemi");
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse( topComponent );
+	makeParser.parse(topComponent);
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE(datas->size(), 1);
@@ -1240,8 +1240,8 @@ void tst_MakefileGenerator::threeLevelStack()
     addFileToSet(cfileSet, "ok.c");
     addFileToSet(cfileSet, "ok.h", "cSource", true);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1314,8 +1314,8 @@ void tst_MakefileGenerator::fullCircularapiUsage()
     addFileToSet(cfileSet, "ok.c");
     addFileToSet(cfileSet, "ok.h", "cSource", true);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1383,8 +1383,8 @@ void tst_MakefileGenerator::circularapiUsage()
     addFileToSet(cfileSet, "ok.c");
     addFileToSet(cfileSet, "ok.h", "cSource", true);
 
-    SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+    SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1440,8 +1440,8 @@ void tst_MakefileGenerator::sameFileSeparateExe()
 	addCmd2Insta(hardInsta, "hopo", "cSource", "-hw", false);
 	addCmd2Insta(bsoftInsta, "asm-meister", "cSource", "-bmw", false);
 
-	SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1484,8 +1484,8 @@ void tst_MakefileGenerator::sameFileDiffCompiler()
 	addFileSetBuilder(afileSet, "javac -beef", "cSource", "-lrt -pthread", false);
 	addFileSetBuilder(bfileSet, "", "cSource", "-pthread -lrt", false);
 
-	SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1544,8 +1544,8 @@ void tst_MakefileGenerator::sameFileDiffFlags()
 	addFileSetBuilder(afileSet, "javac -beef", "cSource", "-lrt -pthread", false);
 	addFileSetBuilder(bfileSet, "javac -beef", "cSource", "-pthread", false);
 
-	SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
 	makeParser.parse( topComponent );
 
@@ -1570,7 +1570,7 @@ void tst_MakefileGenerator::sameFileDiffFlags()
 	QCOMPARE( eka->fileName, QString("support.c") );
 }
 
-// No conflict, ff the files are completely same, having the same flags, compiler, and include status.
+// Conflict is reported even if the file is actually completely same.
 void tst_MakefileGenerator::sameFile()
 {
 	QSharedPointer<Design> design;
@@ -1602,34 +1602,38 @@ void tst_MakefileGenerator::sameFile()
 	addCmd2Insta(softInsta, "gcc", "cSource", "-sw", false);
 
 	addFileSetBuilder(afileSet, "javac -beef", "cSource", "-lrt -pthread", false);
-	addFileSetBuilder(bfileSet, "javac -beef", "cSource", "-pthread -lrt", false);
+	addFileSetBuilder(bfileSet, "javac -beef", "cSource", "-lrt -pthread", false);
 
-	SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, "tsydemi" );
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 	MakefileParser makeParser( &library_, stackParser );
 	makeParser.parse( topComponent );
 
 	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.getParsedData()->first()->conflicts;
 
-	QCOMPARE( conflicts.size(), 0 );
+	QCOMPARE(conflicts.size(), 2);
 }
 
 // See if a really basic generation case works.
 void tst_MakefileGenerator::basicGeneration()
 {
-	SWStackParser stackParser( &library_ );
+    QSharedPointer<Design> design;
+    QSharedPointer<DesignConfiguration> desgconf;
+    QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
 	MakefileParser makeParser( &library_, stackParser );
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	auto makeData = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData);
 
 	makeData->hardPart = QSharedPointer<StackPart>( new StackPart );
-	makeData->hardPart->buildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder );
+	makeData->hardPart->buildCmd = QSharedPointer<FileBuilder>( new FileBuilder );
 	makeData->hardPart->buildCmd->setCommand("gcc");
 	makeData->name = "software_0";
 	makeData->hardPart->buildCmd->setFlags("-joku");
 	makeData->componentInstantiationFlags.append("-jotain");
-	makeData->targetPath = outputDir_ + "/sw_tsydemi/" + makeData->name;
+	makeData->makeName = makeData->name + ".mak";
 
 	QSharedPointer<MakeObjectData> mod( new MakeObjectData );
 	makeData->swObjects.append( mod );
@@ -1654,17 +1658,21 @@ void tst_MakefileGenerator::basicGeneration()
 // Must be able to generate multiple objects.
 void tst_MakefileGenerator::multiObjectGeneration()
 {
-	SWStackParser stackParser( &library_ );
+    QSharedPointer<Design> design;
+    QSharedPointer<DesignConfiguration> desgconf;
+    QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
 	MakefileParser makeParser( &library_, stackParser );
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	auto makeData = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData);
 
 	makeData->hardPart = QSharedPointer<StackPart>( new StackPart );
-	makeData->hardPart->buildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData->hardPart->buildCmd = QSharedPointer<FileBuilder>( new FileBuilder() );
 	makeData->hardPart->buildCmd->setCommand("gcc");
-	makeData->name = "software_0";
-	makeData->targetPath = outputDir_ + "/sw_tsydemi/" + makeData->name;
+    makeData->name = "software_0";
+    makeData->makeName = makeData->name + ".mak";
 
 	QSharedPointer<MakeObjectData> mod1( new MakeObjectData );
 	makeData->swObjects.append( mod1 );
@@ -1691,19 +1699,23 @@ void tst_MakefileGenerator::multiObjectGeneration()
 // Must be able to generate multiple files.
 void tst_MakefileGenerator::multiFileGeneration()
 {
-	SWStackParser stackParser( &library_ );
+    QSharedPointer<Design> design;
+    QSharedPointer<DesignConfiguration> desgconf;
+    QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
 	MakefileParser makeParser( &library_, stackParser );
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	auto makeData1 = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData1);
 
 	makeData1->hardPart = QSharedPointer<StackPart>( new StackPart );
-	makeData1->hardPart->buildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData1->hardPart->buildCmd = QSharedPointer<FileBuilder>( new FileBuilder() );
 	makeData1->hardPart->buildCmd->setCommand("gcc");
 	makeData1->name = "software_0";
 	makeData1->hardPart->buildCmd->setFlags("-joku");
-	makeData1->componentInstantiationFlags.append("-jotain");
-	makeData1->targetPath = outputDir_ + "/sw_tsydemi/" + makeData1->name;
+    makeData1->componentInstantiationFlags.append("-jotain");
+    makeData1->makeName = makeData1->name + ".mak";
 
 	QSharedPointer<MakeObjectData> mod1( new MakeObjectData );
 	makeData1->swObjects.append( mod1 );
@@ -1714,13 +1726,13 @@ void tst_MakefileGenerator::multiFileGeneration()
 	auto makeData2 = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData2);
 
-	makeData2->hardPart = QSharedPointer<StackPart>( new StackPart );
-	makeData2->hardPart->buildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData2->hardPart = QSharedPointer<StackPart>(new StackPart);
+	makeData2->hardPart->buildCmd = QSharedPointer<FileBuilder>(new FileBuilder());
 	makeData2->hardPart->buildCmd->setCommand("j33");
 	makeData2->name = "crapware_0";
 	makeData2->hardPart->buildCmd->setFlags("-yks");
 	makeData2->componentInstantiationFlags.append("-kaks");
-	makeData2->targetPath = outputDir_ + "/sw_tsydemi/" + makeData2->name;
+	makeData2->makeName = makeData2->name + ".mak";
 
 	QSharedPointer<MakeObjectData> mod2( new MakeObjectData );
 	makeData2->swObjects.append( mod2 );
@@ -1749,14 +1761,18 @@ void tst_MakefileGenerator::multiFileGeneration()
 // File with no compiler must not be in makefile!
 void tst_MakefileGenerator::noCompiler()
 {
-	SWStackParser stackParser( &library_ );
+    QSharedPointer<Design> design;
+    QSharedPointer<DesignConfiguration> desgconf;
+    QSharedPointer<Component> topComponent = createDesign(design, desgconf);
+
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
 	MakefileParser makeParser( &library_, stackParser );
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	auto makeData = QSharedPointer<MakeFileData>( new MakeFileData );
 	datas->append(makeData);
 
 	makeData->hardPart = QSharedPointer<StackPart>( new StackPart );
-	makeData->hardPart->buildCmd = QSharedPointer<SWFileBuilder>( new SWFileBuilder() );
+	makeData->hardPart->buildCmd = QSharedPointer<FileBuilder>( new FileBuilder() );
 	makeData->hardPart->buildCmd->setCommand("gcc");
 	makeData->name = "software_0";
 
@@ -1799,8 +1815,8 @@ void tst_MakefileGenerator::allTheWay()
 	addFileToSet(fileSet, "array.c");
 	addCmd2Insta(softInsta, "gcc", "cSource", "-sw", false);
 
-	SWStackParser stackParser( &library_ );
-	stackParser.parse( topComponent, desgconf, design, outputDir_ );
+	SWStackParser stackParser(&library_, topComponent, design, desgconf);
+	stackParser.parse("tsydemi");
 
 	MakefileParser makeParser( &library_, stackParser );
 	makeParser.parse( topComponent );
@@ -1928,7 +1944,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createHW(QString const& hwInsta
 //-----------------------------------------------------------------------------
 void tst_MakefileGenerator::verifyOutputContains(QString instanceName, QString const& expectedOutput)
 {
-    QFile outputFile(outputDir_ + "/sw_tsydemi/" + instanceName + "/" + MAKEFILE_NAME);
+    QFile outputFile(outputDir_ + "/" + instanceName + MAKEFILE_FRAGMENT_SUFFIX);
 
     QVERIFY(outputFile.open(QIODevice::ReadOnly));
 

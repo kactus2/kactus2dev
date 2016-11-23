@@ -85,7 +85,7 @@ signals:
     /*!
      *  Emitted when output files have changed.
      */
-	void outputFilesChanged(QStringList) const;
+	void outputFilesChanged() const;
 
 private:
 

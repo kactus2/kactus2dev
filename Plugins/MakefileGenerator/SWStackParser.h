@@ -48,9 +48,11 @@ public:
      *  Parses all software components from the design for the data needed in makefiles.
      *
 	 *      @param [in] sysViewName  Name of the system view pointing to used design configuration.
-	 *      @param [in] targetPath  Path where the generated files will be placed.
      */
     void parse(QString sysViewName);
+
+    //! The would be master makefile.
+    QString* masterName_;
 
 private:
 

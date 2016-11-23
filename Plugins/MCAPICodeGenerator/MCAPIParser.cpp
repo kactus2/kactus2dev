@@ -163,7 +163,10 @@ bool MCAPIParser::canGenerateMCAPIComponent(QSharedPointer<Component> component)
         QSharedPointer<Document> libCom = utility_->getLibraryInterface()->getModel(comIf->getComType());
         QSharedPointer<ComDefinition> comDef = libCom.dynamicCast<ComDefinition>();
 
-        checkRequiredPropertiesSet(component->getVlnv().toString(), comDef, comIf, errorList);
+        if (comDef)
+        {
+            checkRequiredPropertiesSet(component->getVlnv().toString(), comDef, comIf, errorList);
+        }
     }
 
     // If errors exist, print about it and return false.

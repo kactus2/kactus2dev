@@ -31,7 +31,7 @@ public:
 
 public slots:
 
-    void onOutputFilesChanged(QStringList vlvns);
+    void onOutputFilesChanged();
 
 private slots:
 
@@ -56,7 +56,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	// The "model" for the widget.
-    QSharedPointer<FileOuput> configuration_;
+    QSharedPointer<FileOuput> model_;
 
     //! Editor for the path of the generated file.
     QLineEdit* pathEditor_;

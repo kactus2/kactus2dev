@@ -46,6 +46,11 @@ public:
      *  Gets reference to the output file paths.
      */
     QSharedPointer<QList<QString*> > getFileNames();
+    
+    /*!
+     *  Gets reference to the VLNVs of the components corresponding the files.
+     */
+    QSharedPointer<QStringList> getVLNVs();
 
     /*!
      *  Sets the path for the output file for the generation.
@@ -79,6 +84,8 @@ private:
     QString outputPath_;
     //! The names of the potential new files.
     QSharedPointer<QList<QString*> > fileNames_;
+    //! The VLNVs corresponding the files.
+    QSharedPointer<QStringList> vlnvs_;
 };
 
 #endif // FILEOUTPUT_H

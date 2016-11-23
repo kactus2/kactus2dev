@@ -28,7 +28,7 @@ SWStackParser::SWStackParser(LibraryInterface* library, QSharedPointer<Component
     QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) :
     library_(library), topComponent_(topComponent), design_(design), designConf_(designConf),
         parsedData_( QSharedPointer<QList<QSharedPointer<MakeFileData> > >
-        ( new QList<QSharedPointer<MakeFileData> > ) )
+        ( new QList<QSharedPointer<MakeFileData> > ) ), masterName_(NULL)
 {
 }
 
@@ -144,17 +144,10 @@ void SWStackParser::parse(QString sysViewName)
             return;
         }
 
-		// They want the name of the instance.
-		QString instanceName = hardInstance->getDisplayName();
-		if (instanceName.isEmpty())
-		{
-			instanceName = hardInstance->getInstanceName();
-		}
-
 		// Get the hardware data.
 		makeData->hardPart = QSharedPointer<StackPart>(new StackPart);
 		makeData->hardPart->component = hardComponent;
-		makeData->hardPart->instanceName = instanceName;
+		makeData->hardPart->instanceName = hardInstance->getInstanceName();
 		makeData->hardPart->view = hardView;
         makeData->hardPart->instantiation = hardInstantiation;
 
@@ -184,17 +177,19 @@ void SWStackParser::parse(QString sysViewName)
 		makeData->parts.append(makeData->hardPart);
 
 		// We need a file set for makefile. It shall be the header set of the topmost instance.
-		makeData->instanceHeaders = makeData->parts.first()->instanceHeaders;
+		makeData->instanceFileSet = makeData->parts.first()->instanceHeaders;
 
 		// Since every software stack gets its own makefile, naming is after the instance name.
 		makeData->name = makeData->parts.first()->instanceName;
 
-		// We need the absolute path of the file.
-		makeData->targetPath = basePath + makeData->name + "/makefile";
+		// We a name for the file, possibly via subfolder,
+		makeData->makeName = makeData->name + "/" + makeData->name + ".mak";
 
 		// Finally, append to the list of parsed stuff.
 		parsedData_->append(makeData);
 	}
+
+    masterName_ = new QString(MAKEFILE_MASTER_NAME);
 }
 
 //-----------------------------------------------------------------------------

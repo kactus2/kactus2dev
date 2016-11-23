@@ -62,14 +62,12 @@ bool GeneratorConfiguration::validSelections(QString &warning)
 //-----------------------------------------------------------------------------
 void GeneratorConfiguration::parseDocuments()
 {
-    // Clear the existing list of file names.
+    // Clear the existing list of file names and VLNVs.
     fileOutput_->getFileNames()->clear();
+    fileOutput_->getVLNVs()->clear();
 
     // Parse the top level component.
     componentParser_->parseComponent(viewSelection_->getView());
-
-    // List of VLNVs: Ordered to correspond the file names.
-    QStringList vlnvs;
 
     if (designParser_)
     {
@@ -87,7 +85,7 @@ void GeneratorConfiguration::parseDocuments()
             fileOutput_->getFileNames()->append(fileName);
 
             // Append the VLNV to the list.
-            vlnvs.append(design->topComponent_->component->getVlnv().toString());
+            fileOutput_->getVLNVs()->append(design->topComponent_->component->getVlnv().toString());
         }
     }
     else
@@ -100,11 +98,11 @@ void GeneratorConfiguration::parseDocuments()
         fileOutput_->getFileNames()->append(fileName);
 
         // Append the VLNV to the list.
-        vlnvs.append(componentParser_->getParsedComponent()->component->getVlnv().toString());
+        fileOutput_->getVLNVs()->append(componentParser_->getParsedComponent()->component->getVlnv().toString());
     }
 
     // Emit the signal.
-    emit outputFilesChanged(vlnvs);
+    emit outputFilesChanged();
 }
 
 //-----------------------------------------------------------------------------

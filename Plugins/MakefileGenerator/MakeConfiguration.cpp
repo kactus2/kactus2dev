@@ -23,21 +23,23 @@ MakeConfiguration::MakeConfiguration(SWStackParser* parser) : parser_(parser),
     }
 
     fileOutput_->getFileNames()->clear();
+    fileOutput_->getVLNVs()->clear();
 
-    QStringList vlnvs;
+    fileOutput_->getFileNames()->append(parser_->masterName_);
+    fileOutput_->getVLNVs()->append(":::");
 
     foreach (QSharedPointer<MakeFileData> mfd, *parser_->getParsedData())
     {
-        QString* fileName = &mfd->targetPath;
+        QString* fileName = &mfd->makeName;
         fileOutput_->getFileNames()->append(fileName);
 
         if (mfd->parts.size() > 0)
         {
-            vlnvs.append(mfd->parts.first()->component->getVlnv().toString());
+            fileOutput_->getVLNVs()->append(mfd->parts.first()->component->getVlnv().toString());
         }
         else
         {
-            vlnvs.append(":::");
+            fileOutput_->getVLNVs()->append(":::");
         }
     }
 }

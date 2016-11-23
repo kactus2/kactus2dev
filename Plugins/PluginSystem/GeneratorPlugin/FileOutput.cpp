@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileOuput::FileOuput()
 //-----------------------------------------------------------------------------
-FileOuput::FileOuput() : outputPath_(), fileNames_(new QList<QString*>)
+FileOuput::FileOuput() : outputPath_(), fileNames_(new QList<QString*>), vlnvs_(new QStringList)
 {
 }
 
@@ -76,6 +76,14 @@ bool FileOuput::validSelections(QString &warning)
 QSharedPointer<QList<QString*> > FileOuput::getFileNames()
 {
     return fileNames_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileOuput::getVLNVs()
+//-----------------------------------------------------------------------------
+QSharedPointer<QStringList> FileOuput::getVLNVs()
+{
+    return vlnvs_;
 }
 
 //-----------------------------------------------------------------------------

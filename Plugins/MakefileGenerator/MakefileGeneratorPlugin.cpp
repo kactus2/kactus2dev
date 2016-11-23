@@ -17,6 +17,7 @@
 #include <QCoreApplication>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QDir>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
@@ -49,7 +50,7 @@ QString MakefileGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString MakefileGeneratorPlugin::getVersion() const
 {
-    return "1.1";
+    return "1.2";
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +110,7 @@ bool MakefileGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document con
 {
     QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
 
-    return ( libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM );
+    return (libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM);
 }
 
 //-----------------------------------------------------------------------------
@@ -165,27 +166,36 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
     MakefileParser makeParser(library, stackParser);
     makeParser.parse(topComponent);
 
+    QString targetPath = QFileInfo(library->getPath(libDes->getVlnv())).absolutePath() + "/sw_" + sysViewName;
+
+    QDir path;
+    if (!path.mkpath(targetPath))
+    {
+        utility->printError("Could not create path for the makefiles: " + targetPath);
+        return;
+    }
+
 	// Show the dialog.
-    bool addLauncher = false;
     QSharedPointer<MakeConfiguration> configuration(new MakeConfiguration(&stackParser));
-    configuration->getFileOuput()->setOutputPath(QFileInfo(library->getPath(libDes->getVlnv())).absolutePath());
+    configuration->getFileOuput()->setOutputPath(targetPath);
 	MakeParametersDialog dialog(configuration, makeParser.getParsedData(), utility->getParentWidget());
 
 	// Return, if user did not want to proceed after seeing it.
-	if ( dialog.exec() == QDialog::Rejected )
+	if (dialog.exec() == QDialog::Rejected)
 	{
-		utility->printError( "Makefile generation rejected by user.");
+		utility->printError("Makefile generation rejected by user.");
 		return;
     }
 
 	// Generate files from parsed data.
     MakefileGenerator generator(makeParser, utility, stackParser.getGeneralFileSet());
+    generator.mainMakeName_ = *stackParser.masterName_;
 	// Also the directory of the top component is needed for the generated files.
 	QString topDir = QFileInfo(library->getPath(libComp->getVlnv())).absolutePath(); 
-    int exe_count = generator.generate(configuration->getFileOuput()->getOutputPath(), topDir, sysViewName, addLauncher);
+    int exe_count = generator.generate(configuration->getFileOuput()->getOutputPath(), topDir, sysViewName);
 
 	// Did we actually generate anything?
-	if ( exe_count > 0 )
+	if (exe_count > 0)
 	{
 		// Top component and the design may have been affected by changes -> save.
 		library->writeModelToFile(libComp);
@@ -204,6 +214,7 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::getProgramRequirements()
 //-----------------------------------------------------------------------------
-QList<IPlugin::ExternalProgramRequirement> MakefileGeneratorPlugin::getProgramRequirements() {
+QList<IPlugin::ExternalProgramRequirement> MakefileGeneratorPlugin::getProgramRequirements()
+{
     return QList<IPlugin::ExternalProgramRequirement>();
 }

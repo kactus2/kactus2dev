@@ -100,8 +100,9 @@ private:
 	 void findConflicts(QSharedPointer<MakeFileData> makeData);
 
 	 //! The library containing all components in the design.
-	 LibraryInterface* library_;
-	 SWStackParser& swStackParser_;
+     LibraryInterface* library_;
+     //! The parser containing parsed stack data.
+     SWStackParser& swStackParser_;
      //! Collection of data sets, one for each makefile.
 	 QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData_;
 };

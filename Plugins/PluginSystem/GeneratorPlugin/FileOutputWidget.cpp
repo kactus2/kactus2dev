@@ -27,7 +27,7 @@
 // Function: FileOutputWidget::FileOutputWidget()
 //-----------------------------------------------------------------------------
 FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) : 
-    configuration_(configuration),
+    model_(configuration),
     pathEditor_(new QLineEdit(this)),
     generalWarningLabel_(new QLabel),
     fileTable_(new QTableWidget)
@@ -38,7 +38,7 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) :
     pathSelectionLayout->addWidget(pathEditor_);
 
     // Get the default output path from the generation configuration.
-    pathEditor_->setText(configuration_->getOutputPath());
+    pathEditor_->setText(model_->getOutputPath());
 
     // Add button for choosing the path via dialog.
     QPushButton* browseButton = new QPushButton(tr("Browse"), this);
@@ -104,26 +104,26 @@ FileOutputWidget::~FileOutputWidget()
 //-----------------------------------------------------------------------------
 // Function: FileOutputWidget::onOutputFilesChanged()
 //-----------------------------------------------------------------------------
-void FileOutputWidget::onOutputFilesChanged(QStringList vlvns)
+void FileOutputWidget::onOutputFilesChanged()
 {
     // Remove the old stuff, set number of rows as number of files.
     fileTable_->clearContents();
-    fileTable_->setRowCount(configuration_->getFileNames()->size());
+    fileTable_->setRowCount(model_->getFileNames()->size());
 
     // Populate the table.
     int row = 0;
 
-    foreach(QString* fileName, *configuration_->getFileNames())
+    foreach(QString* fileName, *model_->getFileNames())
     {
         // Insert VLNV string to the row.
-        QString vlnv = vlvns.at(row);
+        QString vlnv = model_->getVLNVs()->at(row);
         QTableWidgetItem* vlnvItem = new QTableWidgetItem(vlnv);
         vlnvItem->setToolTip(vlnv);
         fileTable_->setItem(row, COLUMN_VLNV, vlnvItem);
 
         // Create existence check box and insert to the row.
-        QTableWidgetItem* defCheckItem = new QTableWidgetItem(Qt::Checked);
-        fileTable_->setItem(row, COLUMN_EXISTS, defCheckItem);
+        QTableWidgetItem* fileExistsItem = new QTableWidgetItem(Qt::Checked);
+        fileTable_->setItem(row, COLUMN_EXISTS, fileExistsItem);
 
         // Insert filename to the row.
         QTableWidgetItem* fileNameItem = new QTableWidgetItem(*fileName);
@@ -132,7 +132,7 @@ void FileOutputWidget::onOutputFilesChanged(QStringList vlvns)
 
         // Disable editing.
         vlnvItem->setFlags(Qt::ItemIsSelectable);
-        defCheckItem->setFlags(Qt::ItemIsSelectable);
+        fileExistsItem->setFlags(Qt::ItemIsSelectable);
 
         // The next one goes to the next row.
         ++row;
@@ -148,7 +148,7 @@ void FileOutputWidget::onOutputFilesChanged(QStringList vlvns)
 void FileOutputWidget::onPathEdited(const QString &text)
 {
     // Tell the path to the configuration.
-    configuration_->setOutputPath(text);
+    model_->setOutputPath(text);
 
     // Path of of all files changed -> update existence status.
     checkExistence();
@@ -180,7 +180,7 @@ void FileOutputWidget::onItemChanged(QTableWidgetItem *item)
         return;
     }
 
-    configuration_->setOutputFileName(item->text(),item->row());
+    model_->setOutputFileName(item->text(),item->row());
 
     // A name of a file changed -> update existence status.
     checkExistence();
@@ -196,28 +196,28 @@ void FileOutputWidget::checkExistence()
     for(int row = 0; row < fileTable_->rowCount(); ++row)
     {
         QTableWidgetItem* pathItem = fileTable_->item(row, COLUMN_FILENAME);
-        QTableWidgetItem* defCheckItem = fileTable_->item(row, COLUMN_EXISTS);
+        QTableWidgetItem* fileExistsItem = fileTable_->item(row, COLUMN_EXISTS);
 
         // Both must exist
-        if (!defCheckItem || !pathItem)
+        if (!fileExistsItem || !pathItem)
         {
             continue;
         }
 
         // Select correct check state: Does it exist or not.
-        QFile fileCandidate(configuration_->getOutputPath() + "/" + pathItem->text());
+        QFile fileCandidate(model_->getOutputPath() + "/" + pathItem->text());
 
         if (fileCandidate.exists())
         {
             // Check and set a warning color.
-            defCheckItem->setCheckState(Qt::Checked);
+            fileExistsItem->setCheckState(Qt::Checked);
             pathItem->setTextColor(QColor(Qt::red));
             existingFiles = true;
         }
         else
         {
             // Uncheck and set regular color.
-            defCheckItem->setCheckState(Qt::Unchecked);
+            fileExistsItem->setCheckState(Qt::Unchecked);
             pathItem->setTextColor(QApplication::palette().brush(QPalette::Text).color());
         }
     }

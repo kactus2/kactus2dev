@@ -23,10 +23,15 @@ public:
     /*!
      *  The constructor.
      *
-	 *      @param [in] generalFileSet  The file set, where design configuration specific things belong to.
-	*/
-	MakefileGenerator( MakefileParser& parser, IPluginUtility* utility, QSharedPointer<FileSet> generalFileSet );
-
+     *      @param [in] parser          The parser which parsed the meta data to data structures directly usable by the generator.
+     *      @param [in] utility         The provided plugin utility.
+     *      @param [in] generalFileSet  The file set, where design configuration specific things belong to.
+     */
+    MakefileGenerator( MakefileParser& parser, IPluginUtility* utility, QSharedPointer<FileSet> generalFileSet );
+    
+    /*!
+     *  The destructor.
+     */
     ~MakefileGenerator();
 
     /*!
@@ -38,36 +43,33 @@ public:
 	 *
 	 *      @return How many executables got a makefile.
 	 */
-	int generate(QString targetPath, QString topPath, QString sysViewName, bool addLauncher = false);
+	int generate(QString targetPath, QString topPath, QString sysViewName);
+
+    QString mainMakeName_;
 
 private:
 
     /*!
      *  Creates a makefile for a single software instance, and thus for a single executable.
-     *  The makefile is also placed to the instance headers.
+     *  The makefile is also placed to the instance headers. Will add the name to makeNames.
      *
-     *      @param [in] basePath    The path, where the makefiles are created.
-     *      @param [in] mfd   The make data associated with the makefile as whole.
-     *      @param [in] makeNames   The directory of the created makefile must be added here.
+     *      @param [in] targetPath  The path, where the makefiles are created.
+     *      @param [in] componentPath     The path of the component which will be associated with the created make file.
+     *      @param [in] makeData    The make data associated with the makefile as whole.
+     *      @param [in/out] makeNames   The directory of the created makefile must be added here.
      */
-    void generateInstanceMakefile(QString topPath,
+    void generateInstanceMakefile(QString targetPath, QString componentPath,
 		QSharedPointer<MakeFileData> makeData, QStringList &makeNames);
 
     /*!
      *  Creates a makefile calling all the other makefiles associated with the design.
+     *  The makefile is also placed to the instance headers.
      *
-     *      @param [in] basePath   The path, where the makefile is created.
-     *      @param [in] makeNames   The paths of all other makefiles.
+     *      @param [in] basePath        The path, where the makefile is created.
+     *      @param [in] componentPath   The path of the component which will be associated with the created make file.
+     *      @param [in] makeNames   The names of all created make files so far.
      */
-    void generateMainMakefile(QString basePath, QString topPath, QStringList makeNames) const;
-
-     /*!
-      *  Creates a launcher script starting executables created by the makefiles.
-      *
-      *      @param [in] basePath   The path, where the launcher is created.
-      *      @param [in] makeNames   The paths of all other makefiles.
-      */
-    void generateLauncher(QString basePath, QString topPath, QStringList makeNames) const;
+    void generateMainMakefile(QString targetePath, QString componentPath, QStringList& makeNames) const;
 
     /*!
      *  Writes data used in building the executable to the stream.
@@ -102,43 +104,12 @@ private:
     /*!
      *  Writes the build rules for the object files of the makefile.
      *
-     *      @param [in] mfd  The make data associated with the makefile as whole.
      *      @param [in] outStream   The stream where the makefile is written.
      *      @param [in] objects   The list of the objects written.
      *      @param [in] instancePath   Path of the makefile and thus the path where it is called from.
      */
      void writeMakeObjects(QTextStream& outStream,
 		 QList<QSharedPointer<MakeObjectData> >& objects, QString instancePath) const;
-
-     /*!
-      *  Writes list of launched executables.
-      *
-      *      @param [in] outStream   The stream where the launcher is written.
-      *      @param [in] basePath   The path, where the launcher is created.
-      *      @param [in] makeNames   The paths of all other makefiles.
-      */
-      void writeProcessList(QTextStream& outStream, QStringList makeNames, QString basePath) const;
-
-     /*!
-      *  Writes shell functions called from the script.
-      *
-      *      @param [in] outStream   The stream where the launcher is written.
-      */
-      void writeShellFunctions(QTextStream& outStream) const;
-
-     /*!
-      *  Writes a loop starting the processes.
-      *
-      *      @param [in] outStream   The stream where the launcher is written.
-      */
-      void writeProcessLaunch(QTextStream& outStream) const;
-
-     /*!
-      *  Write lines needed to terminate processes and wait call.
-      *
-      *      @param [in] outStream   The stream where the launcher is written.
-      */
-      void writeLauncherEnding(QTextStream& outStream) const;
 
       //! Collection of data sets, one for each makefile.
       QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData_;

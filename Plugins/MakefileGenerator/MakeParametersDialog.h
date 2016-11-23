@@ -44,16 +44,12 @@ public:
 
         virtual void accept();
 
-private slots:
-
-    void onLauncherGenerationStateChanged(int state);
-
 private:
     // Disable copying.
     MakeParametersDialog(MakeParametersDialog const& rhs);
     MakeParametersDialog& operator=(MakeParametersDialog const& rhs);
 
-    void createConflictTable(QVBoxLayout* instanceLayout, QSharedPointer<MakeFileData> makeData);
+    void createConflictTables(QVBoxLayout* instanceLayout, QSharedPointer<MakeFileData> makeData);
 
     //-----------------------------------------------------------------------------
     // Data.
