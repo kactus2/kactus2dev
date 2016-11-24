@@ -277,7 +277,7 @@ void MakefileGenerator::writeObjectList(QSharedPointer<MakeFileData> mfd, QTextS
 
     foreach (QSharedPointer<MakeObjectData> mod, mfd->swObjects)
     {
-        if (( !mod->file || !mod->file->isIncludeFile() ) && !mod->compiler.isEmpty())
+        if (!mod->compiler.isEmpty())
         {
             outStream << " " << mod->fileName << ".o";
         }
@@ -325,8 +325,8 @@ void MakefileGenerator::writeMakeObjects(QTextStream& outStream,
 {
     foreach (QSharedPointer<MakeObjectData> mod, objects)
     {
-        // Skip the include files, as they do not get object files. Also compilerless files are skipped.
-        if ((mod->file && mod->file->isIncludeFile()) || mod->compiler.isEmpty())
+        // Compilerless files are skipped. Moreover, use may have opted for exclusion.
+        if (!mod->isChosen || mod->compiler.isEmpty())
         {
             continue;
         }

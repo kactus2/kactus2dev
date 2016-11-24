@@ -126,17 +126,26 @@ void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QSharedPointer<M
 	foreach( QSharedPointer<File> file, *fset->getFiles())
 	{
 		// First of all, the selected build commands must support the file type.
-		if ( !file->getFileTypes()->contains( stackPart->buildCmd->getFileType() ) )
+		if (!file->getFileTypes()->contains(stackPart->buildCmd->getFileType()))
 		{
 			continue;
 		}
 
-		// Initialize the data to the collection associated with the makefile data.
-		QSharedPointer<MakeObjectData> objectData( new MakeObjectData );
-		makeData->swObjects.append(objectData);
+		// Get info about the file path.
+        QFileInfo fileQfi = QFileInfo(componentPath + file->name());
 
-		// Get info about the file.
-		QFileInfo fileQfi = QFileInfo( componentPath + file->name() );
+        // In case of an include file:
+        if (file->isIncludeFile())
+        {
+            // Path is added to the collection of the include paths.
+            makeData->includeDirectories.append(fileQfi.absolutePath());
+            // They do not yield anything else.
+            continue;
+        }
+
+        // Initialize the data to the collection associated with the makefile data.
+        QSharedPointer<MakeObjectData> objectData( new MakeObjectData );
+        makeData->swObjects.append(objectData);
 
 		// Set the needed fields.
 		objectData->file = file;
@@ -146,18 +155,12 @@ void MakefileParser::parseFileSet(QSharedPointer<FileSet> fset, QSharedPointer<M
 		objectData->fileSet = fset;
 		objectData->swBuildCmd = stackPart->buildCmd;
 		objectData->stackPart = stackPart;
-
-		// In case of an include file:
-		if ( file->isIncludeFile() )
-		{
-			// Its path is added to the collection of the include paths.
-			makeData->includeDirectories.append(fileQfi.absolutePath());
-		}
+        objectData->isChosen = true;
 
 		// A fileSet builder associated with the file type is also a possible field.
-		foreach( QSharedPointer<FileBuilder> builder, *fset->getDefaultFileBuilders() )
+		foreach(QSharedPointer<FileBuilder> builder, *fset->getDefaultFileBuilders())
 		{
-			if ( file->getFileTypes()->contains( builder->getFileType() ) )
+			if (file->getFileTypes()->contains(builder->getFileType()))
 			{
 				objectData->fileSetBuildCmd = builder;
 				break;

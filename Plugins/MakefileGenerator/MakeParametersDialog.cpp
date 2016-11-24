@@ -19,6 +19,8 @@
 #include <QDialogButtonBox>
 #include <QGroupBox>
 
+#define COLUMN_CHOOSE 0
+
 //-----------------------------------------------------------------------------
 // Function: MakeParametersDialog()
 //-----------------------------------------------------------------------------
@@ -69,7 +71,7 @@ MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> con
     // Add things in vertical order to two columns.
     QVBoxLayout* leftLayout = new QVBoxLayout();
     QVBoxLayout* rightLayout = new QVBoxLayout();
-    QHBoxLayout* mainLayout = new QHBoxLayout(this);
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
     leftLayout->addWidget(new QLabel("Detected software stacks yielding makefiles:"));
     leftLayout->addWidget(scrollArea);
@@ -78,6 +80,7 @@ MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> con
     rightLayout->addLayout(bottomLayout);
 
     mainLayout->addLayout(leftLayout);
+    mainLayout->addSpacing(10);
     mainLayout->addLayout(rightLayout);
 }
 
@@ -105,6 +108,34 @@ void MakeParametersDialog::accept()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MakeParametersDialog::onItemChanged()
+//-----------------------------------------------------------------------------
+void MakeParametersDialog::onItemChanged(QTableWidgetItem *item)
+{
+    // Must belong to the correct column.
+    if (item->column() != COLUMN_CHOOSE)
+    {
+        return;
+    }
+
+    // Must be able to obtain the corresponding data.
+    QMap<QTableWidgetItem*,QSharedPointer<MakeObjectData> >::iterator iter = objectMapping_.find(item);
+
+    if (iter == objectMapping_.end())
+    {
+        return;
+    }
+
+    QSharedPointer<MakeObjectData> object = *iter;
+
+    if (object)
+    {
+        // If found, set the corresponding state.
+        object->isChosen = item->checkState() == Qt::Checked;
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: MakeParametersDialog::createConflictTables()
 //-----------------------------------------------------------------------------
 void MakeParametersDialog::createConflictTables(QVBoxLayout* instanceLayout, QSharedPointer<MakeFileData> makeData)
@@ -125,15 +156,14 @@ void MakeParametersDialog::createConflictTables(QVBoxLayout* instanceLayout, QSh
         QTableWidget* conflictTable = new QTableWidget;
         instanceLayout->addWidget(conflictTable);
 
-        // Conflict table has 6 columns.
-        conflictTable->setColumnCount( 6 );
+        // Conflict table has 5 columns.
+        conflictTable->setColumnCount(5);
 
         // The headers for each of the columns.
         QStringList headers;
         headers.append(tr("Choose"));
         headers.append(tr("Instance"));
         headers.append(tr("File set"));
-        headers.append(tr("Include file"));
         headers.append(tr("Compiler"));
         headers.append(tr("Flags"));
 
@@ -151,13 +181,32 @@ void MakeParametersDialog::createConflictTables(QVBoxLayout* instanceLayout, QSh
 
         // Populate the table with conflict participants.
         int row = 0;
-        int rowCount = conflictSet.size() + conflictTable->rowCount();
+        int rowCount = conflictSet.size();
 
         conflictTable->setRowCount(rowCount);
+
+        connect(conflictTable, SIGNAL(itemChanged(QTableWidgetItem*)),
+            this, SLOT(onItemChanged(QTableWidgetItem*)), Qt::UniqueConnection);
 
         foreach (QSharedPointer<MakeObjectData> partisipant, conflictSet)
         {
             // Insert item corresponding the column to each cell of the row.
+
+            // The user may choose here which of the items comes to the build.
+            QTableWidgetItem* chooseItem = new QTableWidgetItem();
+
+            if (partisipant->isChosen)
+            {
+                chooseItem->setCheckState(Qt::Checked);
+            }
+            else
+            {
+                chooseItem->setCheckState(Qt::Unchecked);
+            }
+
+            // Finally, set it to the table, and the mapping.
+            conflictTable->setItem(row, COLUMN_CHOOSE, chooseItem);
+            objectMapping_[chooseItem] = partisipant;
 
             QTableWidgetItem* instanceNameItem = new QTableWidgetItem(partisipant->stackPart->instanceName);
             instanceNameItem->setToolTip(partisipant->stackPart->instanceName);
@@ -169,28 +218,14 @@ void MakeParametersDialog::createConflictTables(QVBoxLayout* instanceLayout, QSh
             conflictTable->setItem(row, 2, fileSetNameItem);
             fileSetNameItem->setFlags(Qt::ItemIsSelectable);
 
-            // The boolean variable include file is presented as a check box.
-            QTableWidgetItem* isIncludeItem = new QTableWidgetItem();
-            isIncludeItem->setFlags(Qt::ItemIsSelectable);
-
-            if (partisipant->file->isIncludeFile())
-            {
-                isIncludeItem->setCheckState(Qt::Checked);
-            }
-            else
-            {
-                isIncludeItem->setCheckState(Qt::Unchecked);
-            }
-
-            // Finally, set it to the table.
-            conflictTable->setItem(row, 3, isIncludeItem);
-
-            conflictTable->setItem(row, 4, new QTableWidgetItem(partisipant->compiler));
+            QTableWidgetItem* compilerItem = new QTableWidgetItem(partisipant->compiler);
+            conflictTable->setItem(row, 3, compilerItem);
+            compilerItem->setFlags(Qt::ItemIsSelectable);
 
             QTableWidgetItem* flagsItem = new QTableWidgetItem(partisipant->flags);
             flagsItem->setToolTip(partisipant->flags);
-            conflictTable->setItem(row, 5, flagsItem);
-            flagsItem->setFlags( Qt::ItemIsSelectable );
+            conflictTable->setItem(row, 4, flagsItem);
+            flagsItem->setFlags(Qt::ItemIsSelectable);
 
             // The next one goes to the next row.
             ++row;

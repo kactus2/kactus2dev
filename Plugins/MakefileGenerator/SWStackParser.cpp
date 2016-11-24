@@ -100,7 +100,7 @@ void SWStackParser::parse(QString sysViewName)
 		}
 
         // Initialize the data of makefile to collection of parsed entities.
-        QSharedPointer<MakeFileData> makeData( new MakeFileData );
+        QSharedPointer<MakeFileData> makeData(new MakeFileData);
 
 		// Parse files of the underlying hardware.
 		QSharedPointer<ComponentInstance> hardInstance;

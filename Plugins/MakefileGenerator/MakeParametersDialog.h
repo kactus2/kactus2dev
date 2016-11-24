@@ -44,6 +44,10 @@ public:
 
         virtual void accept();
 
+    private slots:
+
+        void onItemChanged(QTableWidgetItem *item);
+
 private:
     // Disable copying.
     MakeParametersDialog(MakeParametersDialog const& rhs);
@@ -63,6 +67,9 @@ private:
 
     //! General warnings are displayed here.
     QLabel* generalWarningLabel_;
+
+    //! Make objects mapped to table items.
+    QMap<QTableWidgetItem*,QSharedPointer<MakeObjectData> > objectMapping_;
 };
 
 //-----------------------------------------------------------------------------

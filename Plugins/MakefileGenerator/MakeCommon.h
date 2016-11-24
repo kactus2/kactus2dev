@@ -70,6 +70,8 @@ struct MakeObjectData
 	QSharedPointer<FileSet> fileSet;
 	// The part of the stack where this is based to.
 	QSharedPointer<StackPart> stackPart;
+    // True, if this object will be generated to the makefile.
+    bool isChosen;
 };
 
 // A struct containing needed data of a single makefile.
