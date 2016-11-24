@@ -140,7 +140,7 @@ void MakefileGenerator::generateInstanceMakefile(QString targetPath, QString com
 	outStream << "profile: $(ENAME)" << endl << endl;
 
 	// Rule to include generated dependency files to the compilation.
-	outStream << "-include $(OBJ:%.o=%.d)" << endl;
+	outStream << "-include $(OBJ:%.o=%.d)";
 
 	// Write the compilation rules for the object files.
     writeMakeObjects(outStream, makeData->swObjects, absolutePathString);
@@ -342,9 +342,9 @@ void MakefileGenerator::writeMakeObjects(QTextStream& outStream,
         QString fileName = mod->fileName;
 
         // Write the rule for building the individual object file, including dependencies.
-        outStream << endl;
+        outStream << endl << endl;
         outStream << "$(ODIR)/" << fileName << ".o: $(DEPS) " << relPath << "/" << fileName << endl;
         outStream << "\t" << mod->compiler << " " << DEFAULT_OBJECT_FLAGS << " $(ODIR)/" << fileName << ".o " <<
-            relPath << "/" << fileName << " " << cFlags << endl;
+            relPath << "/" << fileName << " " << cFlags;
     }
 }

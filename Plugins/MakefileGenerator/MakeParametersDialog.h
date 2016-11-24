@@ -14,7 +14,7 @@
 
 #include <QDialog>
 #include <QVBoxLayout>
-#include <QTableWidget>
+#include <QTreeWidget>
 
 #include "MakefileParser.h"
 #include <Plugins/PluginSystem/GeneratorPlugin/FileOutputWidget.h>
@@ -40,20 +40,20 @@ public:
      */
     ~MakeParametersDialog();
 
-    public slots:
+public slots:
 
-        virtual void accept();
+    virtual void accept();
 
-    private slots:
+private slots:
 
-        void onItemChanged(QTableWidgetItem *item);
+    void onItemChanged(QTreeWidgetItem *item, int column);
 
 private:
     // Disable copying.
     MakeParametersDialog(MakeParametersDialog const& rhs);
     MakeParametersDialog& operator=(MakeParametersDialog const& rhs);
 
-    void createConflictTables(QVBoxLayout* instanceLayout, QSharedPointer<MakeFileData> makeData);
+    QTreeWidget* createConflictTree(QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -69,7 +69,7 @@ private:
     QLabel* generalWarningLabel_;
 
     //! Make objects mapped to table items.
-    QMap<QTableWidgetItem*,QSharedPointer<MakeObjectData> > objectMapping_;
+    QMap<QTreeWidgetItem*, QSharedPointer<MakeObjectData> > objectMapping_;
 };
 
 //-----------------------------------------------------------------------------

@@ -46,7 +46,7 @@ private slots:
     void hwBuilderWithNosoftInsta();
     void hwRef();
     void hwandswRef();
-    void instanceHeaders();
+    void instanceFiles();
 
 	// Multiple things.
     void multipleFiles();
@@ -563,8 +563,8 @@ void tst_MakefileGenerator::hwandswRef()
 	QCOMPARE( data->componentInstantiationFlags.contains("-sw"), true );
 }
 
-// Instance specific header files must be included to the makefile.
-void tst_MakefileGenerator::instanceHeaders()
+// Instance specific files must be included to the makefile.
+void tst_MakefileGenerator::instanceFiles()
 {
     QSharedPointer<Design> design;
     QSharedPointer<DesignConfiguration> desgconf;
@@ -594,7 +594,7 @@ void tst_MakefileGenerator::instanceHeaders()
 	QSharedPointer<SWInstance> referrringInstance = design->getSWInstances().first();
 	referrringInstance->setFileSetRef( topFileSetName );
 
-    QString topFileSetName2 = "esa-pekka";
+    QString topFileSetName2 = "testFileSet";
     QSharedPointer<FileSet> topFileSet2 = addFileSet(topComponent, topFileSetName2, QSharedPointer<ComponentInstantiation>());
     addFileToSet(topFileSet2, "joku.h", "cSource", true);
 
@@ -608,13 +608,7 @@ void tst_MakefileGenerator::instanceHeaders()
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
-	QSharedPointer<MakeFileData> data = datas->first();
-	QCOMPARE( data->swObjects.size(), 2 );
-
-	QCOMPARE( data->swObjects.first()->file->isIncludeFile(), true );
-	QCOMPARE( data->swObjects.first()->compiler, QString("gcc") );
-	QCOMPARE( data->swObjects.first()->fileName, QString("array.h") );
-	QCOMPARE( data->swObjects.first()->flags.simplified(), QString("-sw -hw") );
+    QVERIFY( stackParser.getParsedData()->first()->instanceFileSet );
 }
 
 // Generate makefile with multiple source and header files.
@@ -662,7 +656,7 @@ void tst_MakefileGenerator::multipleFiles()
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
 	QSharedPointer<MakeFileData> data = datas->first();
-	QCOMPARE( data->swObjects.size(), 6 );
+	QCOMPARE( data->swObjects.size(), 4 );
 
 	QCOMPARE( data->swObjects.at(0)->compiler, QString("gcc" ) );
 	QCOMPARE( data->swObjects.at(0)->fileName, QString("array.c") );
@@ -672,10 +666,6 @@ void tst_MakefileGenerator::multipleFiles()
 	QCOMPARE( data->swObjects.at(1)->flags.simplified(), QString("-y -sw -hw") );
 	QCOMPARE( data->swObjects.at(2)->fileName, QString("additional.c") );
 	QCOMPARE( data->swObjects.at(3)->fileName, QString("hiterbehn.c") );
-	QCOMPARE( data->swObjects.at(4)->fileName, QString("array.h") );
-	QCOMPARE( data->swObjects.at(4)->file->isIncludeFile(), true );
-	QCOMPARE( data->swObjects.at(5)->fileName, QString("support.h") );
-	QCOMPARE( data->swObjects.at(5)->file->isIncludeFile(), true );
 }
 
 // Generate makefile when multiple file sets are featured.
@@ -723,7 +713,7 @@ void tst_MakefileGenerator::multipleFileSets()
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
 	QSharedPointer<MakeFileData> data = datas->first();
-	QCOMPARE( data->swObjects.size(), 6 );
+	QCOMPARE( data->swObjects.size(), 4 );
 
 	QCOMPARE( data->swObjects.at(0)->compiler, QString("gcc" ) );
 	QCOMPARE( data->swObjects.at(0)->fileName, QString("array.c") );
@@ -731,12 +721,8 @@ void tst_MakefileGenerator::multipleFileSets()
 	QCOMPARE( data->swObjects.at(1)->compiler, QString("continental" ) );
 	QCOMPARE( data->swObjects.at(1)->fileName, QString("support.c") );
 	QCOMPARE( data->swObjects.at(1)->flags.simplified(), QString("-y -sw -hw") );
-	QCOMPARE( data->swObjects.at(2)->fileName, QString("array.h") );
-	QCOMPARE( data->swObjects.at(2)->file->isIncludeFile(), true );
-	QCOMPARE( data->swObjects.at(3)->fileName, QString("additional.c") );
-	QCOMPARE( data->swObjects.at(4)->fileName, QString("hiterbehn.c") );
-	QCOMPARE( data->swObjects.at(5)->fileName, QString("support.h") );
-	QCOMPARE( data->swObjects.at(5)->file->isIncludeFile(), true );
+	QCOMPARE( data->swObjects.at(2)->fileName, QString("additional.c") );
+	QCOMPARE( data->swObjects.at(3)->fileName, QString("hiterbehn.c") );
 }
 
 // Generate makefile when multiple components are featured.
@@ -778,12 +764,12 @@ void tst_MakefileGenerator::multipleComponents()
     SWStackParser stackParser(&library_, topComponent, design, desgconf);
 	stackParser.parse("tsydemi");
 	MakefileParser makeParser(&library_, stackParser );
-	makeParser.parse( topComponent );
+	makeParser.parse(topComponent);
 
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 2 );
 	QSharedPointer<MakeFileData> data1 = datas->first();
-	QCOMPARE( data1->swObjects.size(), 3 );
+	QCOMPARE( data1->swObjects.size(), 2 );
 	QCOMPARE( data1->componentInstantiationFlags.contains("-amw"), true );
 	QCOMPARE( data1->name, QString("crapware_0") );
 
@@ -793,11 +779,9 @@ void tst_MakefileGenerator::multipleComponents()
 	QCOMPARE( data1->swObjects.at(1)->compiler, QString("continental" ) );
 	QCOMPARE( data1->swObjects.at(1)->fileName, QString("support.c") );
 	QCOMPARE( data1->swObjects.at(1)->flags.simplified(), QString("-y -amw -hw") );
-	QCOMPARE( data1->swObjects.at(2)->fileName, QString("array.h") );
-	QCOMPARE( data1->swObjects.at(2)->file->isIncludeFile(), true );
 
 	QSharedPointer<MakeFileData> data2 = datas->last();
-	QCOMPARE( data2->swObjects.size(), 3 );
+	QCOMPARE( data2->swObjects.size(), 2 );
 	QCOMPARE( data2->componentInstantiationFlags.contains("-bmw"), true );
 	QCOMPARE( data2->name, QString("stackware_0") );
 
@@ -807,8 +791,6 @@ void tst_MakefileGenerator::multipleComponents()
 	QCOMPARE( data2->swObjects.at(1)->fileName, QString("hiterbehn.c") );
 	QCOMPARE( data2->swObjects.at(1)->compiler, QString("asm-meister" ) );
 	QCOMPARE( data2->swObjects.at(1)->flags.simplified(), QString("-bmw -hw") );
-	QCOMPARE( data2->swObjects.at(2)->fileName, QString("support.h") );
-	QCOMPARE( data2->swObjects.at(2)->file->isIncludeFile(), true );
 }
 
 // Must work if there is multiple hardware where instances are mapped to.
@@ -858,7 +840,7 @@ void tst_MakefileGenerator::multipleHardWare()
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 2 );
 	QSharedPointer<MakeFileData> data1 = datas->first();
-	QCOMPARE( data1->swObjects.size(), 3 );
+	QCOMPARE( data1->swObjects.size(), 2 );
 	QCOMPARE( data1->name, QString("crapware_0") );
 	QCOMPARE( data1->hardPart->buildCmd->getCommand(), QString("hopo") );
 	QCOMPARE( data1->hardPart->buildCmd->getFlags(), QString("-ahw") );
@@ -869,11 +851,9 @@ void tst_MakefileGenerator::multipleHardWare()
 	QCOMPARE( data1->swObjects.at(1)->compiler, QString("continental" ) );
 	QCOMPARE( data1->swObjects.at(1)->fileName, QString("support.c") );
 	QCOMPARE( data1->swObjects.at(1)->flags.simplified(), QString("-y -ahw") );
-	QCOMPARE( data1->swObjects.at(2)->fileName, QString("array.h") );
-	QCOMPARE( data1->swObjects.at(2)->file->isIncludeFile(), true );
 
 	QSharedPointer<MakeFileData> data2 = datas->last();
-	QCOMPARE( data2->swObjects.size(), 3 );
+	QCOMPARE( data2->swObjects.size(), 2 );
 	QCOMPARE( data2->componentInstantiationFlags.contains("-bmw"), true );
 	QCOMPARE( data2->name, QString("stackware_0") );
 	QCOMPARE( data2->hardPart->buildCmd->getCommand(), QString("juu -f") );
@@ -886,8 +866,6 @@ void tst_MakefileGenerator::multipleHardWare()
 	QCOMPARE( data2->swObjects.at(1)->fileName, QString("hiterbehn.c") );
 	QCOMPARE( data2->swObjects.at(1)->compiler, QString("asm-meister" ) );
 	QCOMPARE( data2->swObjects.at(1)->flags.simplified(), QString("-bmw -bhw") );
-	QCOMPARE( data2->swObjects.at(2)->fileName, QString("support.h") );
-	QCOMPARE( data2->swObjects.at(2)->file->isIncludeFile(), true );
 }
 
 // Multiple hardware, along with their references to their own files.
@@ -943,22 +921,19 @@ void tst_MakefileGenerator::multipleHardWareMedRefs()
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 2 );
 	QSharedPointer<MakeFileData> data1 = datas->first();
-	QCOMPARE( data1->swObjects.size(), 4 );
+	QCOMPARE( data1->swObjects.size(), 3 );
 	QCOMPARE( data1->name, QString("crapware_0") );
 
 	QCOMPARE( data1->swObjects.at(0)->fileName, QString("array.c") );
 	QCOMPARE( data1->swObjects.at(1)->fileName, QString("support.c") );
-	QCOMPARE( data1->swObjects.at(2)->fileName, QString("array.h") );
-	QCOMPARE( data1->swObjects.at(2)->file->isIncludeFile(), true );
-	QCOMPARE( data1->swObjects.at(3)->fileName, QString("harray.c") );
+	QCOMPARE( data1->swObjects.at(2)->fileName, QString("harray.c") );
 
 	QSharedPointer<MakeFileData> data2 = datas->last();
-	QCOMPARE( data2->swObjects.size(), 3 );
+	QCOMPARE( data2->swObjects.size(), 2 );
 	QCOMPARE( data2->name, QString("stackware_0") );
 
 	QCOMPARE( data2->swObjects.at(0)->fileName, QString("additional.c") );
 	QCOMPARE( data2->swObjects.at(1)->fileName, QString("hiterbehn.c") );
-	QCOMPARE( data2->swObjects.at(2)->fileName, QString("support.h") );
 }
 
 // Must work with multiple instances of the same component.
@@ -1009,11 +984,11 @@ void tst_MakefileGenerator::multipleInstances()
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 2 );
 	QSharedPointer<MakeFileData> data1 = datas->first();
-	QCOMPARE( data1->swObjects.size(), 4 );
+	QCOMPARE( data1->swObjects.size(), 2 );
 	QCOMPARE( data1->name, QString("stackware_0") );
 
 	QSharedPointer<MakeFileData> data2 = datas->last();
-	QCOMPARE( data2->swObjects.size(), 4 );
+	QCOMPARE( data2->swObjects.size(), 2 );
 	QCOMPARE( data2->name, QString("stackware_1") );
 }
 
@@ -1082,11 +1057,10 @@ void tst_MakefileGenerator::noFilesComponent()
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
 	QSharedPointer<MakeFileData> data = datas->first();
-	QCOMPARE( data->swObjects.size(), 3 );
+	QCOMPARE( data->swObjects.size(), 2 );
 
 	QCOMPARE( data->swObjects.at(0)->fileName, QString("additional.c") );
 	QCOMPARE( data->swObjects.at(1)->fileName, QString("hiterbehn.c") );
-	QCOMPARE( data->swObjects.at(2)->fileName, QString("support.h") );
 }
 
 // File with unsupported file does not appear in our lists.
@@ -1127,10 +1101,9 @@ void tst_MakefileGenerator::noFileType()
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
 	QSharedPointer<MakeFileData> data = datas->first();
-	QCOMPARE( data->swObjects.size(), 2 );
+	QCOMPARE( data->swObjects.size(), 1 );
 
 	QCOMPARE( data->swObjects.at(0)->fileName, QString("array.c") );
-	QCOMPARE( data->swObjects.at(1)->fileName, QString("support.h") );
 }
 
 // Must include API dependencies to the makefile.
@@ -1179,16 +1152,12 @@ void tst_MakefileGenerator::apiUsage()
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE(datas->size(), 1);
 	QSharedPointer<MakeFileData> data = datas->first();
-	QCOMPARE(data->swObjects.size(), 6);
+	QCOMPARE(data->swObjects.size(), 4);
 
 	QCOMPARE(data->swObjects.at(0)->fileName, QString("array.c"));
 	QCOMPARE(data->swObjects.at(1)->fileName, QString("support.c"));
-	QCOMPARE(data->swObjects.at(2)->fileName, QString("array.h"));
-	QCOMPARE(data->swObjects.at(2)->file->isIncludeFile(), true);
-	QCOMPARE(data->swObjects.at(3)->fileName, QString("additional.c"));
-	QCOMPARE(data->swObjects.at(4)->fileName, QString("hiterbehn.c"));
-	QCOMPARE(data->swObjects.at(5)->fileName, QString("support.h"));
-	QCOMPARE(data->swObjects.at(5)->file->isIncludeFile(), true);
+	QCOMPARE(data->swObjects.at(2)->fileName, QString("additional.c"));
+	QCOMPARE(data->swObjects.at(3)->fileName, QString("hiterbehn.c"));
 }
 
 // A more complex situation with API dependency.
@@ -1248,19 +1217,13 @@ void tst_MakefileGenerator::threeLevelStack()
 	QSharedPointer<QList<QSharedPointer<MakeFileData> > > datas = makeParser.getParsedData();
 	QCOMPARE( datas->size(), 1 );
 	QSharedPointer<MakeFileData> data = datas->first();
-	QCOMPARE( data->swObjects.size(), 8 );
+	QCOMPARE( data->swObjects.size(), 5 );
 
 	QCOMPARE( data->swObjects.at(0)->fileName, QString("array.c") );
 	QCOMPARE( data->swObjects.at(1)->fileName, QString("support.c") );
-	QCOMPARE( data->swObjects.at(2)->fileName, QString("array.h") );
-	QCOMPARE( data->swObjects.at(2)->file->isIncludeFile(), true );
-	QCOMPARE( data->swObjects.at(3)->fileName, QString("additional.c") );
-	QCOMPARE( data->swObjects.at(4)->fileName, QString("hiterbehn.c") );
-	QCOMPARE( data->swObjects.at(5)->fileName, QString("support.h") );
-	QCOMPARE( data->swObjects.at(5)->file->isIncludeFile(), true );
-	QCOMPARE( data->swObjects.at(6)->fileName, QString("ok.c") );
-	QCOMPARE( data->swObjects.at(7)->fileName, QString("ok.h") );
-	QCOMPARE( data->swObjects.at(7)->file->isIncludeFile(), true );
+	QCOMPARE( data->swObjects.at(2)->fileName, QString("additional.c") );
+	QCOMPARE( data->swObjects.at(3)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data->swObjects.at(4)->fileName, QString("ok.c") );
 }
 
 // If no top level in the stack, there can be no build!
@@ -1392,19 +1355,13 @@ void tst_MakefileGenerator::circularapiUsage()
 	QCOMPARE( datas->size(), 1 );
 
 	QSharedPointer<MakeFileData> data = datas->first();
-	QCOMPARE( data->swObjects.size(), 8 );
+	QCOMPARE( data->swObjects.size(), 5 );
 
 	QCOMPARE( data->swObjects.at(0)->fileName, QString("array.c") );
 	QCOMPARE( data->swObjects.at(1)->fileName, QString("support.c") );
-	QCOMPARE( data->swObjects.at(2)->fileName, QString("array.h") );
-	QCOMPARE( data->swObjects.at(2)->file->isIncludeFile(), true );
-	QCOMPARE( data->swObjects.at(3)->fileName, QString("additional.c") );
-	QCOMPARE( data->swObjects.at(4)->fileName, QString("hiterbehn.c") );
-	QCOMPARE( data->swObjects.at(5)->fileName, QString("support.h") );
-	QCOMPARE( data->swObjects.at(5)->file->isIncludeFile(), true );
-	QCOMPARE( data->swObjects.at(6)->fileName, QString("ok.c") );
-	QCOMPARE( data->swObjects.at(7)->fileName, QString("ok.h") );
-	QCOMPARE( data->swObjects.at(7)->file->isIncludeFile(), true );
+	QCOMPARE( data->swObjects.at(2)->fileName, QString("additional.c") );
+	QCOMPARE( data->swObjects.at(3)->fileName, QString("hiterbehn.c") );
+	QCOMPARE( data->swObjects.at(4)->fileName, QString("ok.c") );
 }
 
 // Same file in separate executables should not cause conflict
@@ -1611,7 +1568,7 @@ void tst_MakefileGenerator::sameFile()
 
 	QVector<QSet<QSharedPointer<MakeObjectData> > > conflicts = makeParser.getParsedData()->first()->conflicts;
 
-	QCOMPARE(conflicts.size(), 2);
+	QCOMPARE(conflicts.size(), 1);
 }
 
 // See if a really basic generation case works.

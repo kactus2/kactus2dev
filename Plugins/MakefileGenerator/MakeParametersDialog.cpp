@@ -12,7 +12,6 @@
 #include "MakeParametersDialog.h"
 #include "MakeConfiguration.h"
 
-#include <QScrollArea>
 #include <QFormLayout>
 #include <QCheckBox>
 #include <QHeaderView>
@@ -20,6 +19,10 @@
 #include <QGroupBox>
 
 #define COLUMN_CHOOSE 0
+#define COLUMN_INSTANCE_NAME 1
+#define COLUMN_FILESET 2
+#define COLUMN_COMPILER 3
+#define COLUMN_FLAGS 4
 
 //-----------------------------------------------------------------------------
 // Function: MakeParametersDialog()
@@ -29,11 +32,8 @@ MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> con
     configuration_(configuration), fileOutput_(new FileOutputWidget(configuration->getFileOuput())),
     generalWarningLabel_(new QLabel), QDialog(parent)
 {
-	QScrollArea* scrollArea = new QScrollArea;
-    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-
-	QWidget* widgetList = new QWidget;
-	QVBoxLayout* listLayout = new QVBoxLayout(widgetList);
+    // Create tree widget to display conflicts.
+    QTreeWidget* conflictTree = createConflictTree(parsedData);
 
     // Layout for things coming to the bottom part of the dialog.
     QHBoxLayout* bottomLayout = new QHBoxLayout();
@@ -42,6 +42,7 @@ MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> con
     QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
         Qt::Horizontal);
 
+    // Add things in order.
     bottomLayout->addWidget(generalWarningLabel_);
     bottomLayout->addWidget(dialogButtons);
 
@@ -49,39 +50,16 @@ MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> con
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
 
-	foreach (QSharedPointer<MakeFileData> makeData, *parsedData)
-	{
-		QWidget* instanceWidget = new QWidget;
-		listLayout->addWidget(instanceWidget);
-		QVBoxLayout* instanceLayout = new QVBoxLayout(instanceWidget);
-
-        QString topInstance = "Topmost instance: " + makeData->name;
-		instanceLayout->addWidget(new QLabel(topInstance));
-
-        if (makeData->conflicts.size() > 0)
-        {
-            createConflictTables(instanceLayout, makeData);
-        }
-    }
-
-    scrollArea->setWidget(widgetList);
-
+    // Signal the file output to react to the files.
     fileOutput_->onOutputFilesChanged();
 
-    // Add things in vertical order to two columns.
-    QVBoxLayout* leftLayout = new QVBoxLayout();
-    QVBoxLayout* rightLayout = new QVBoxLayout();
+    // Add things in order.
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
-    leftLayout->addWidget(new QLabel("Detected software stacks yielding makefiles:"));
-    leftLayout->addWidget(scrollArea);
-
-    rightLayout->addWidget(fileOutput_);
-    rightLayout->addLayout(bottomLayout);
-
-    mainLayout->addLayout(leftLayout);
-    mainLayout->addSpacing(10);
-    mainLayout->addLayout(rightLayout);
+    mainLayout->addWidget(new QLabel("Detected stacks with redundant source files:"));
+    mainLayout->addWidget(conflictTree);
+    mainLayout->addWidget(fileOutput_);
+    mainLayout->addLayout(bottomLayout);
 }
 
 //-----------------------------------------------------------------------------
@@ -110,16 +88,16 @@ void MakeParametersDialog::accept()
 //-----------------------------------------------------------------------------
 // Function: MakeParametersDialog::onItemChanged()
 //-----------------------------------------------------------------------------
-void MakeParametersDialog::onItemChanged(QTableWidgetItem *item)
+void MakeParametersDialog::onItemChanged(QTreeWidgetItem *item, int column)
 {
     // Must belong to the correct column.
-    if (item->column() != COLUMN_CHOOSE)
+    if (column != COLUMN_CHOOSE)
     {
         return;
     }
 
     // Must be able to obtain the corresponding data.
-    QMap<QTableWidgetItem*,QSharedPointer<MakeObjectData> >::iterator iter = objectMapping_.find(item);
+    QMap<QTreeWidgetItem*,QSharedPointer<MakeObjectData> >::iterator iter = objectMapping_.find(item);
 
     if (iter == objectMapping_.end())
     {
@@ -131,114 +109,113 @@ void MakeParametersDialog::onItemChanged(QTableWidgetItem *item)
     if (object)
     {
         // If found, set the corresponding state.
-        object->isChosen = item->checkState() == Qt::Checked;
+        object->isChosen = item->checkState(COLUMN_CHOOSE) == Qt::Checked;
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: MakeParametersDialog::createConflictTables()
+// Function: MakeParametersDialog::createConflictTree()
 //-----------------------------------------------------------------------------
-void MakeParametersDialog::createConflictTables(QVBoxLayout* instanceLayout, QSharedPointer<MakeFileData> makeData)
+QTreeWidget* MakeParametersDialog::createConflictTree(QSharedPointer<QList<QSharedPointer<MakeFileData> > > parsedData)
 {
-    instanceLayout->addWidget(new QLabel(tr("File duplicates in the stack:"), this));
+    QTreeWidget* conflictTree = new QTreeWidget;
 
-    foreach (QSet<QSharedPointer<MakeObjectData> > conflictSet, makeData->conflicts)
+    // Conflict tree has 5 columns.
+    conflictTree->setColumnCount(5);
+
+    // The headers for each of the columns.
+    QStringList headers;
+    headers.append(tr("Choose"));
+    headers.append(tr("Instance"));
+    headers.append(tr("File set"));
+    headers.append(tr("Compiler"));
+    headers.append(tr("Flags"));
+
+    // Put the headers in to effect.
+    conflictTree->setHeaderLabels(headers);
+
+    // Easier to see the different rows from one another.
+    conflictTree->setAlternatingRowColors(true);
+
+    // Connect the conflict tree, so that we may react to changes in it.
+    connect(conflictTree, SIGNAL(itemChanged(QTreeWidgetItem*, int)),
+        this, SLOT(onItemChanged(QTreeWidgetItem*, int)), Qt::UniqueConnection);
+
+    // Add eligible makefiles to the tree.
+    foreach (QSharedPointer<MakeFileData> makeData, *parsedData)
     {
-        // Sanity check: Must have at least two items in conflict.
-        if (conflictSet.size() < 2)
+        // Must have at least one conflict. Else it takes needlessly space from tree.
+        if (makeData->conflicts.size() < 1)
         {
             continue;
         }
 
-        instanceLayout->addWidget(new QLabel((*conflictSet.begin())->fileName));
+        // The upmost level shall have the topmost instance of stack.
+        QString topInstance = makeData->name;
+        QTreeWidgetItem* instanceItem = new QTreeWidgetItem;
+        // Set the name as the text, append to the tree structure.
+        instanceItem->setText(0,topInstance);
+        conflictTree->addTopLevelItem(instanceItem);
+        // There shall be no other columns, so lets use the whole row.
+        instanceItem->setFirstColumnSpanned(true);
 
-        //! Table used to display all detected conflicts and their participants.
-        QTableWidget* conflictTable = new QTableWidget;
-        instanceLayout->addWidget(conflictTable);
-
-        // Conflict table has 5 columns.
-        conflictTable->setColumnCount(5);
-
-        // The headers for each of the columns.
-        QStringList headers;
-        headers.append(tr("Choose"));
-        headers.append(tr("Instance"));
-        headers.append(tr("File set"));
-        headers.append(tr("Compiler"));
-        headers.append(tr("Flags"));
-
-        // Put the headers in to effect.
-        conflictTable->setHorizontalHeaderLabels(headers);
-
-        // Vertical headers are not used.
-        conflictTable->verticalHeader()->hide();
-
-        // Easier to see the different rows from one another.
-        conflictTable->setAlternatingRowColors(true);
-
-        // The last column is stretched take the available space in the widget.
-        conflictTable->horizontalHeader()->setStretchLastSection(true);
-
-        // Populate the table with conflict participants.
-        int row = 0;
-        int rowCount = conflictSet.size();
-
-        conflictTable->setRowCount(rowCount);
-
-        connect(conflictTable, SIGNAL(itemChanged(QTableWidgetItem*)),
-            this, SLOT(onItemChanged(QTableWidgetItem*)), Qt::UniqueConnection);
-
-        foreach (QSharedPointer<MakeObjectData> partisipant, conflictSet)
+        foreach (QSet<QSharedPointer<MakeObjectData> > conflictSet, makeData->conflicts)
         {
-            // Insert item corresponding the column to each cell of the row.
-
-            // The user may choose here which of the items comes to the build.
-            QTableWidgetItem* chooseItem = new QTableWidgetItem();
-
-            if (partisipant->isChosen)
+            // Sanity check: Must have at least two items in conflict.
+            if (conflictSet.size() < 2)
             {
-                chooseItem->setCheckState(Qt::Checked);
-            }
-            else
-            {
-                chooseItem->setCheckState(Qt::Unchecked);
+                continue;
             }
 
-            // Finally, set it to the table, and the mapping.
-            conflictTable->setItem(row, COLUMN_CHOOSE, chooseItem);
-            objectMapping_[chooseItem] = partisipant;
+            // Individual fiels shall be the next level.
+            QTreeWidgetItem* conflictItem = new QTreeWidgetItem;
+            // Set the path as the text, append to the tree structure.
+            conflictItem->setText(0, (*conflictSet.begin())->path + "/" + (*conflictSet.begin())->fileName);
+            instanceItem->addChild(conflictItem);
+            // There shall be no other columns, so lets use the whole row.
+            conflictItem->setFirstColumnSpanned(true);
 
-            QTableWidgetItem* instanceNameItem = new QTableWidgetItem(partisipant->stackPart->instanceName);
-            instanceNameItem->setToolTip(partisipant->stackPart->instanceName);
-            conflictTable->setItem(row, 1, instanceNameItem);
-            instanceNameItem->setFlags(Qt::ItemIsSelectable);
+            // Append all interpretations of the file.
+            foreach (QSharedPointer<MakeObjectData> partisipant, conflictSet)
+            {
+                // Append to the tree structure.
+                QTreeWidgetItem* participantItem = new QTreeWidgetItem;
+                conflictItem->addChild(participantItem);
+                // Must map the object file data to the item.
+                objectMapping_[participantItem] = partisipant;
 
-            QTableWidgetItem* fileSetNameItem = new QTableWidgetItem(partisipant->fileSet->name());
-            fileSetNameItem->setToolTip(partisipant->fileSet->name());
-            conflictTable->setItem(row, 2, fileSetNameItem);
-            fileSetNameItem->setFlags(Qt::ItemIsSelectable);
+                // Column about letting user to choose this specific object file for generation.
+                if (partisipant->isChosen)
+                {
+                    participantItem->setCheckState(COLUMN_CHOOSE, Qt::Checked);
+                }
+                else
+                {
+                    participantItem->setCheckState(COLUMN_CHOOSE, Qt::Unchecked);
+                }
 
-            QTableWidgetItem* compilerItem = new QTableWidgetItem(partisipant->compiler);
-            conflictTable->setItem(row, 3, compilerItem);
-            compilerItem->setFlags(Qt::ItemIsSelectable);
+                // Column telling the instance where the object file comes from.
+                participantItem->setText(COLUMN_INSTANCE_NAME, partisipant->stackPart->instanceName);
+                participantItem->setToolTip(COLUMN_INSTANCE_NAME, partisipant->stackPart->instanceName);
 
-            QTableWidgetItem* flagsItem = new QTableWidgetItem(partisipant->flags);
-            flagsItem->setToolTip(partisipant->flags);
-            conflictTable->setItem(row, 4, flagsItem);
-            flagsItem->setFlags(Qt::ItemIsSelectable);
+                // Column telling the file set where the object file comes from.
+                participantItem->setText(COLUMN_FILESET, partisipant->fileSet->name());
+                participantItem->setToolTip(COLUMN_FILESET, partisipant->fileSet->name());
 
-            // The next one goes to the next row.
-            ++row;
+                // Column telling the deducted compiler for the object file.
+                participantItem->setText(COLUMN_COMPILER, partisipant->compiler);
+                participantItem->setToolTip(COLUMN_COMPILER, partisipant->compiler);
+
+                // Column telling the deducted compilation flags for the object file.
+                participantItem->setText(COLUMN_FLAGS, partisipant->flags);
+                participantItem->setToolTip(COLUMN_FLAGS, partisipant->flags);
+            }
         }
-
-        // Resize the height to match the contents: This table is not intended to be vertically scrolled.
-        int nRowHeight = conflictTable->rowHeight(0);
-        int nTableHeight = (rowCount * nRowHeight) + conflictTable->horizontalHeader()->height() +
-            2 * conflictTable->frameWidth() + 20;
-        conflictTable->setMinimumHeight(nTableHeight);
-        conflictTable->setMaximumHeight(nTableHeight);
-
-        // Refit the columns.
-        conflictTable->resizeColumnsToContents();
     }
+
+    // Refit the columns.
+    conflictTree->resizeColumnToContents(COLUMN_FILESET);
+    conflictTree->resizeColumnToContents(COLUMN_COMPILER);
+
+    return conflictTree;
 }

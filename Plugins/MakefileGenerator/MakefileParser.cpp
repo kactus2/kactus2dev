@@ -180,13 +180,13 @@ QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod,
 
 	// This mesh does following:
 	// 1. No file builder -> use fileSet builder
-	// 2. No fileSet builder -> use builder of the software view of the software instance
-	// 3. If nothing else, use the builder of the software view of the hardware instance
-	if ( mod->fileBuildCmd == 0 || mod->fileBuildCmd->getCommand().isEmpty() )
+	// 2. No fileSet builder -> use builder of the software instance
+	// 3. If nothing else, use the builder of the hardware instance
+	if (mod->fileBuildCmd == 0 || mod->fileBuildCmd->getCommand().isEmpty())
 	{
-		if ( mod->fileSetBuildCmd == 0 || mod->fileSetBuildCmd->getCommand().isEmpty() )
+		if (mod->fileSetBuildCmd == 0 || mod->fileSetBuildCmd->getCommand().isEmpty())
 		{
-			if ( mod->swBuildCmd == 0 || mod->swBuildCmd->getCommand().isEmpty() )
+			if (mod->swBuildCmd == 0 || mod->swBuildCmd->getCommand().isEmpty())
 			{
 				swbc = hardBuilder;
 			}
@@ -195,7 +195,7 @@ QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod,
 				swbc = mod->swBuildCmd;
 			}
 		}
-		else if ( mod->fileSetBuildCmd != 0 )
+		else if (mod->fileSetBuildCmd != 0)
 		{
 			compiler = mod->fileSetBuildCmd->getCommand();
 		}
@@ -206,7 +206,7 @@ QString MakefileParser::getFileCompiler(QSharedPointer<MakeObjectData> mod,
 	}
 
 	// Verify that file has a type matching the build command.
-	if ( swbc != 0 && mod->file->getFileTypes()->contains( swbc->getFileType() ) )
+	if (swbc != 0 && mod->file->getFileTypes()->contains(swbc->getFileType()))
 	{
 		compiler = swbc->getCommand();
 	}
@@ -229,7 +229,7 @@ QString MakefileParser::getFileFlags(QSharedPointer<Component> component,
 	QSharedPointer<IPXactSystemVerilogParser> expressionParser (new IPXactSystemVerilogParser(finder));
 	
 	// At any rate, the file may have its own flags.
-	if ( mod->fileBuildCmd != 0 )
+	if (mod->fileBuildCmd != 0)
 	{
 		cFlags += mod->fileBuildCmd->getFlags();
 		fileReplaceFlags =
@@ -237,7 +237,7 @@ QString MakefileParser::getFileFlags(QSharedPointer<Component> component,
 	}
 
 	// See if file set flags replace anything.
-	if ( mod->fileSetBuildCmd != 0 )
+	if (mod->fileSetBuildCmd != 0)
 	{
 		fileSetReplaceFlags =
 			expressionParser->parseExpression(mod->fileSetBuildCmd->getReplaceDefaultFlags()).toInt();
@@ -247,22 +247,22 @@ QString MakefileParser::getFileFlags(QSharedPointer<Component> component,
 	// 1. If file does not override flags, may use fileSet flags
 	// 2. If fileSet does not override flags, may use software flags
 	// 2. If software does not override flags, may use hardware flags
-	if ( mod->fileBuildCmd == 0 || fileReplaceFlags != 1 )
+	if (mod->fileBuildCmd == 0 || fileReplaceFlags != 1)
 	{
-		if ( mod->fileSetBuildCmd != 0 )
+		if (mod->fileSetBuildCmd != 0 )
 		{
 			cFlags += " " + mod->fileSetBuildCmd->getFlags();
 		}
 
-		if ( mod->fileSetBuildCmd == 0 || fileSetReplaceFlags != 1 )
+		if (mod->fileSetBuildCmd == 0 || fileSetReplaceFlags != 1)
 		{
-			if ( mod->swBuildCmd != 0 )
+			if (mod->swBuildCmd != 0)
 			{
 				cFlags += " " + mod->swBuildCmd->getFlags();
 			}   
 
-			if ( ( mod->swBuildCmd == 0 || mod->swBuildCmd->getReplaceDefaultFlags().toInt() != 1 )
-                && makeData->hardPart->buildCmd != 0 && makeData->hardPart->buildCmd != mod->swBuildCmd )
+			if ((mod->swBuildCmd == 0 || mod->swBuildCmd->getReplaceDefaultFlags().toInt() != 1)
+                && makeData->hardPart->buildCmd != 0 && makeData->hardPart->buildCmd != mod->swBuildCmd)
 			{
 				cFlags += " " + makeData->hardPart->buildCmd->getFlags();
 			}
@@ -301,6 +301,7 @@ void MakefileParser::findConflicts(QSharedPointer<MakeFileData> makeData)
 			if (modCompare->path == mod->path && modCompare->fileName == mod->fileName)
 			{
                 conflictingFiles.insert(modCompare);
+                objects.removeOne(modCompare);
             }
 		}
 
