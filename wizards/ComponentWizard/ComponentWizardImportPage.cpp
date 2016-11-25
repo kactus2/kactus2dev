@@ -75,5 +75,5 @@ void ComponentWizardImportPage::initializePage()
 //-----------------------------------------------------------------------------
 bool ComponentWizardImportPage::isComplete() const
 {
-	return editor_->checkEditorValidity();
+	return true;
 }

@@ -544,14 +544,14 @@ void ComponentReader::parseSwViews(QDomNode const& swViewsNode, QSharedPointer<C
         QDomElement hierarchyElement = singleSWViewElement.firstChildElement(QStringLiteral("kactus2:hierarchyRef"));
         if (!hierarchyElement.isNull())
         {
-            VLNV hierarhcyReference = parseVLNVAttributes(hierarchyElement, VLNV::DESIGN);
+            VLNV hierarhcyReference = parseVLNVAttributes(hierarchyElement, VLNV::DESIGNCONFIGURATION);
 
             QSharedPointer<ConfigurableVLNVReference> ref(new ConfigurableVLNVReference(hierarhcyReference));
-            QSharedPointer<DesignInstantiation> designInstaniation(new DesignInstantiation);
-            designInstaniation->setDesignReference(ref);
-            designInstaniation->setName(newSWView->name() + QLatin1String("_sw_design_instantiation"));
-            newComponent->getDesignInstantiations()->append(designInstaniation);
-            newSWView->setDesignInstantiationRef(designInstaniation->name());
+            QSharedPointer<DesignConfigurationInstantiation> designConfInstaniation(new DesignConfigurationInstantiation);
+            designConfInstaniation->setDesignConfigurationReference(ref);
+            designConfInstaniation->setName(newSWView->name() + QLatin1String("_sw_design_configuration_instantiation"));
+            newComponent->getDesignConfigurationInstantiations()->append(designConfInstaniation);
+            newSWView->setDesignConfigurationInstantiationRef(designConfInstaniation->name());
         }
 
         QDomNodeList fileSetRefNodeList = singleSWViewElement.elementsByTagName(QStringLiteral("kactus2:fileSetRef"));

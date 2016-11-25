@@ -981,7 +981,7 @@ void tst_ComponentReader::readSwViews()
     QCOMPARE(swView->displayName(), QString("displayed"));
     QCOMPARE(swView->description(), QString("described"));
     QCOMPARE(swView->getComponentInstantiationRef(), QString("sampleSoftView_sw_component_instantiation"));
-    QCOMPARE(swView->getDesignInstantiationRef(), QString("sampleSoftView_sw_design_instantiation"));
+    QCOMPARE(swView->getDesignConfigurationInstantiationRef(), QString("sampleSoftView_sw_design_configuration_instantiation"));
 
     QCOMPARE(testComponent->getComponentInstantiations()->size(), 1);
 
@@ -998,13 +998,13 @@ void tst_ComponentReader::readSwViews()
     QCOMPARE(builder->getFlags(),QString("-DhwA"));
     QCOMPARE(builder->getReplaceDefaultFlags(),QString("1"));
 
-    QCOMPARE(testComponent->getDesignInstantiations()->size(), 1);
+    QCOMPARE(testComponent->getDesignConfigurationInstantiations()->size(), 1);
 
-    QSharedPointer<DesignInstantiation> designInstantiation =
-        testComponent->getDesignInstantiations()->first();
-    QCOMPARE(designInstantiation->name(), swView->getDesignInstantiationRef());
+    QSharedPointer<DesignConfigurationInstantiation> designConfInstantiation =
+        testComponent->getDesignConfigurationInstantiations()->first();
+    QCOMPARE(designConfInstantiation->name(), swView->getDesignConfigurationInstantiationRef());
 
-    QSharedPointer<ConfigurableVLNVReference> designRef = designInstantiation->getDesignReference();
+    QSharedPointer<ConfigurableVLNVReference> designRef = designConfInstantiation->getDesignConfigurationReference();
 
     QVERIFY(designRef);
     QCOMPARE(designRef->getVendor(), QString("TUT"));
