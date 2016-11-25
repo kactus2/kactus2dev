@@ -49,16 +49,6 @@ public:
      */
 	QSharedPointer<FileOuput> getFileOuput() const;
 
-    /*!
-     *  Sets true for generating, false for not generating.
-     */
-    void setAddLauncher(bool value);
-
-    /*!
-     *  Returns true for generating, false for not generating.
-     */
-    bool getAddLauncher() const;
-
 signals:
 	
     /*!
@@ -72,14 +62,8 @@ private:
 	MakeConfiguration(MakeConfiguration const& rhs);
 	MakeConfiguration& operator=(MakeConfiguration const& rhs);
 
-    //! The parsers are executed interactively with the configuration
-    SWStackParser* parser_;
-
     //! The file output configuration.
     QSharedPointer<FileOuput> fileOutput_;
-
-    //! If true, a launcher script is generated in conjunction with other files.
-    bool addLauncher_;
 };
 
 #endif // MAKECONFIGURATION_H

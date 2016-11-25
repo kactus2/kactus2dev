@@ -51,7 +51,7 @@ public:
      */
     void parse(QString sysViewName);
 
-    //! The would be master makefile.
+    //! The name of the would-be master makefile.
     QString* masterName_;
 
 private:

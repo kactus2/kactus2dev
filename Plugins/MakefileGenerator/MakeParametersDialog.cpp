@@ -19,7 +19,7 @@
 #include <QGroupBox>
 
 #define COLUMN_CHOOSE 0
-#define COLUMN_INSTANCE_NAME 1
+#define COLUMN_INSTANCE 1
 #define COLUMN_FILESET 2
 #define COLUMN_COMPILER 3
 #define COLUMN_FLAGS 4
@@ -34,6 +34,9 @@ MakeParametersDialog::MakeParametersDialog(QSharedPointer<MakeConfiguration> con
 {
     // Create tree widget to display conflicts.
     QTreeWidget* conflictTree = createConflictTree(parsedData);
+
+    // Expand it right away.
+    conflictTree->expandAll();
 
     // Layout for things coming to the bottom part of the dialog.
     QHBoxLayout* bottomLayout = new QHBoxLayout();
@@ -195,8 +198,8 @@ QTreeWidget* MakeParametersDialog::createConflictTree(QSharedPointer<QList<QShar
                 }
 
                 // Column telling the instance where the object file comes from.
-                participantItem->setText(COLUMN_INSTANCE_NAME, partisipant->stackPart->instanceName);
-                participantItem->setToolTip(COLUMN_INSTANCE_NAME, partisipant->stackPart->instanceName);
+                participantItem->setText(COLUMN_INSTANCE, partisipant->stackPart->instanceName);
+                participantItem->setToolTip(COLUMN_INSTANCE, partisipant->stackPart->instanceName);
 
                 // Column telling the file set where the object file comes from.
                 participantItem->setText(COLUMN_FILESET, partisipant->fileSet->name());
@@ -214,8 +217,11 @@ QTreeWidget* MakeParametersDialog::createConflictTree(QSharedPointer<QList<QShar
     }
 
     // Refit the columns.
+    conflictTree->resizeColumnToContents(COLUMN_CHOOSE);
+    conflictTree->resizeColumnToContents(COLUMN_INSTANCE);
     conflictTree->resizeColumnToContents(COLUMN_FILESET);
     conflictTree->resizeColumnToContents(COLUMN_COMPILER);
+    conflictTree->resizeColumnToContents(COLUMN_FLAGS);
 
     return conflictTree;
 }

@@ -12,11 +12,16 @@
         simulation and synthesis. This editor is used to edit the details of single view.
     </p>
     <p>
+      <b>View type</b> is not editable in this editor, but it is determined in the view editor of the 
+      corresponding view. The view type defines whether the view is <i>hierarchical</i> or not. Hierarchical view 
+      refers to <b>a design instantiation</b> or <b>adesign configuration instantiation</b>. <i>Non-hierarchical</i> view does not have any hierarchical reference, but may still refer to <b>a component instantiation</b>.
+    </p>
+    <p>
         View has <b>name</b> and textual <b>description</b>. <b>Display name</b> can be more detailed or 
         user-friendly than name, but usually only few words.
     </p>
     <p>
-        <b>Environment identifiers</b> in mandatory textual information about how this view is deployed in 
+        <b>Environment identifiers</b> in textual information about how this view is deployed in 
         different tool environments.
         <ul>
             <li><b>Language</b> indicates this view may be compatible with a particular tool, but only if that 
@@ -24,8 +29,9 @@
             more languages.</li>
 
             <li><b>Tool</b> indicates that this view contains tool-information, e.g., HDL models that use 
-            simulator-specific extensions. The tool can have a generic value such as "*Simulation" and 
-            "*Synthesis".</li>
+            simulator-specific extensions. This should contain tool name and company name, separated by dots.
+            For example: <code>designcompiler.bogus.tld</code> Alternatively, the tool can have a generic value
+            such as <code>*Simulation</code> or <code>*Synthesis</code></li>
 
             <li><b>VendorSpecific</b> can further qualify tool and language compatibility, e.g. if some 
             appropriate simulator mode must be enabled.</li>

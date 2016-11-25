@@ -14,25 +14,30 @@
 //-----------------------------------------------------------------------------
 // Function: MakeConfiguration::MakeConfiguration()
 //-----------------------------------------------------------------------------
-MakeConfiguration::MakeConfiguration(SWStackParser* parser) : parser_(parser),
-    fileOutput_(new FileOuput), addLauncher_(false)
+MakeConfiguration::MakeConfiguration(SWStackParser* parser) :
+    fileOutput_(new FileOuput)
 {
-    if (!parser_)
+    // Must have the parser for the data.
+    if (!parser)
     {
         return;
     }
 
+    // Clear the old ones.
     fileOutput_->getFileNames()->clear();
     fileOutput_->getVLNVs()->clear();
 
-    fileOutput_->getFileNames()->append(parser_->masterName_);
+    // Append to the master make file to the list, no VLNV is directly associated with it.
+    fileOutput_->getFileNames()->append(parser->masterName_);
     fileOutput_->getVLNVs()->append(":::");
 
-    foreach (QSharedPointer<MakeFileData> mfd, *parser_->getParsedData())
+    foreach (QSharedPointer<MakeFileData> mfd, *parser->getParsedData())
     {
+        // Append reference to the each proposed name of a makefile.
         QString* fileName = &mfd->makeName;
         fileOutput_->getFileNames()->append(fileName);
 
+        // Pick the VLNV from the first stack component if exists.
         if (mfd->parts.size() > 0)
         {
             fileOutput_->getVLNVs()->append(mfd->parts.first()->component->getVlnv().toString());
@@ -71,20 +76,4 @@ bool MakeConfiguration::validSelections(QString &warning)
 QSharedPointer<FileOuput> MakeConfiguration::getFileOuput() const
 {
     return fileOutput_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakeConfiguration::setAddLauncher()
-//-----------------------------------------------------------------------------
-void MakeConfiguration::setAddLauncher(bool value)
-{
-    addLauncher_ = value;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MakeConfiguration::getAddLauncher()
-//-----------------------------------------------------------------------------
-bool MakeConfiguration::getAddLauncher() const
-{
-    return addLauncher_;
 }

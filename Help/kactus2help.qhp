@@ -17,7 +17,7 @@
 					<section title="Accessing Documents" ref="gettingStarted/accessingDocuments.html">
                     </section>
 				</section>
-			    <section title="General Help" ref="general/general.html">
+			    <section title="General Help" ref="general/generalHelp.html">
 					<section title="Default Application" ref="general/defaultApplication.html">
                     </section>
 					<section title="Workspace" ref="general/workSpace.html">
@@ -35,7 +35,6 @@
 						</section>
 					</section>
 					<section title="Choices" ref="componenteditor/choices.html" />
-					<section title="Model parameters" ref="componenteditor/modelparams.html" />
 					<section title="Parameters" ref="componenteditor/params.html" />
 					<section title="Memory maps" ref="componenteditor/memorymaps.html">
 						<section title="Memory map" ref="componenteditor/memorymap.html">
@@ -70,9 +69,6 @@
           </section>
 					<section title="Views" ref="componenteditor/views.html">
 						<section title="View" ref="componenteditor/view.html" />
-					</section>
-					<section title="Software views" ref="componenteditor/swviews.html">
-						<section title="Software view" ref="componenteditor/swview.html" />
 					</section>
 					<section title="System views" ref="componenteditor/systemviews.html">
 						<section title="System view" ref="componenteditor/systemview.html" />
