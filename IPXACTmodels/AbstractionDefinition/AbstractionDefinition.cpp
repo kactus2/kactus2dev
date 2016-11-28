@@ -159,7 +159,7 @@ QStringList AbstractionDefinition::getDependentFiles() const
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinition::hasPort()
 //-----------------------------------------------------------------------------
-bool AbstractionDefinition::hasPort(QString const& portName, General::InterfaceMode mode/*=General::INTERFACE_MODE_COUNT*/)
+bool AbstractionDefinition::hasPort(QString const& portName, General::InterfaceMode mode) const
 {
     if (logicalPorts_)
     {

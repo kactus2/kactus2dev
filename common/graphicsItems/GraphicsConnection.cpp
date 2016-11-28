@@ -84,13 +84,11 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
 //-----------------------------------------------------------------------------
 GraphicsConnection::GraphicsConnection(QPointF const& p1, QVector2D const& dir1,
                                        QPointF const& p2, QVector2D const& dir2,
-                                       QString const& /*displayName*/,
-                                       QString const& description,
                                        DesignDiagram* parent)
     : QGraphicsPathItem(),
       parent_(parent),
       name_(),
-      description_(description),
+      description_(),
       endpoint1_(0), 
       endpoint2_(0),
       pathPoints_(),

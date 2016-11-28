@@ -102,14 +102,12 @@ void HWComponentItem::updateComponent()
 {
     ComponentItem::updateComponent();
 
-    VLNV vlnv = componentModel()->getVlnv();
-
     // Check whether the component is packaged (valid vlnv) or not.
     if (isDraft())
     {
         setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
     }
-    else if (getLibraryInterface()->contains(vlnv))
+    else if (getLibraryInterface()->contains(componentModel()->getVlnv()))
     {
         if (componentModel()->isBus())
         {
@@ -664,10 +662,11 @@ void HWComponentItem::positionBusInterfaceTerminals()
         {
             QSharedPointer<BusInterface> busInterface(new BusInterface());
             busInterface->setName(interfaceName);
+            componentModel()->getBusInterfaces()->append(busInterface);
 
             BusPortItem *port = new BusPortItem(busInterface, getLibraryInterface(), this);
 
-            port->setPos(instancePositions.value(busInterface->name()));
+            port->setPos(instancePositions.value(interfaceName));
             port->setTemporary(true);
             addPortToSideByPosition(port);
         }

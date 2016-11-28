@@ -2363,12 +2363,12 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
     if (startPoint->isCom())
     {
         connection = new ComGraphicsConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
-            QVector2D(0.0f, 0.0f), QString(), QString(), this);
+            QVector2D(0.0f, 0.0f), this);
     }
     else
     {
         connection = new ApiGraphicsConnection(startPoint->scenePos(), startPoint->getDirection(), endPoint,
-            QVector2D(0.0f, 0.0f), QString(), QString(), this);
+            QVector2D(0.0f, 0.0f), this);
     }
 
     connection->setZValue(1000);

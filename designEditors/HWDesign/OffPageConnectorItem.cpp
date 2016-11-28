@@ -64,13 +64,6 @@ OffPageConnectorItem::~OffPageConnectorItem()
 {
 }
 
-//-----------------------------------------------------------------------------
-// Function: OffPageConnectorItem::setTypes()
-//-----------------------------------------------------------------------------
-void OffPageConnectorItem::setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode)
-{
-    parent_->setTypes(busType, absType, mode);
-}
 
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::updateInterface()
@@ -255,6 +248,14 @@ bool OffPageConnectorItem::isHierarchical() const
 void OffPageConnectorItem::setInterfaceMode(General::InterfaceMode mode)
 {
     parent_->setInterfaceMode(mode);
+}
+
+//-----------------------------------------------------------------------------
+// Function: OffPageConnectorItem::getInterfaceMode()
+//-----------------------------------------------------------------------------
+General::InterfaceMode OffPageConnectorItem::getInterfaceMode() const
+{
+    return parent_->getInterfaceMode();
 }
 
 //-----------------------------------------------------------------------------

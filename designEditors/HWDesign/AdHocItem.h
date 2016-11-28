@@ -142,7 +142,9 @@ public:
      *
      *      @param [in] mode The mode to set.
      */
-	virtual void setInterfaceMode(General::InterfaceMode mode);
+    virtual void setInterfaceMode(General::InterfaceMode mode);
+
+    virtual General::InterfaceMode getInterfaceMode() const;
 
     /*!
      *  Get the off page connector item.

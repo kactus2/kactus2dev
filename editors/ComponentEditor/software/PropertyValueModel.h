@@ -60,11 +60,11 @@ public:
     QMap<QString, QString> getData() const;
 
     /*!
-     *  Validates the data and print errors/warnings if there is invalid data.
+     *  Disables/enables editing.
      *
-     *      @return True, if any errors were found. Otherwise false.
+     *      @param [in] locked   True if model is locked i.e. disabled, otherwise false.
      */
-    bool isValid() const;
+    void setLock(bool locked);
 
     /*!
      *  Returns the number of rows in the model.
@@ -148,6 +148,7 @@ private:
     PropertyValueModel(PropertyValueModel const& rhs);
     PropertyValueModel& operator=(PropertyValueModel const& rhs);
     
+
     //! NameValuePair type.
     typedef QPair<QString, QString> NameValuePair;
 
@@ -163,6 +164,9 @@ private:
 
     //! The list of allowed properties.
     QList< QSharedPointer<ComProperty> > allowedProperties_;
+
+    //! Lock for disabling editing.
+    bool locked_;
 };
 
 //-----------------------------------------------------------------------------

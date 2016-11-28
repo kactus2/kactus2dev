@@ -53,7 +53,6 @@ public:
      */
     GraphicsConnection(QPointF const& p1, QVector2D const& dir1,
                        QPointF const& p2, QVector2D const& dir2,
-                       QString const& displayName, QString const& description,
                        DesignDiagram* parent);
 
     /*!

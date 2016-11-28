@@ -65,9 +65,6 @@ private:
 
     //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
-
-    //! If true, port copy operation is a part of this undo command.
-    bool portsCopied_;
 };
 
 #endif // ADHOCCONNECTION_ADD_COMMAND_H

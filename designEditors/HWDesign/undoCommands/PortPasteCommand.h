@@ -1,4 +1,13 @@
-
+//-----------------------------------------------------------------------------
+// File: PortPasteCommand.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Esko Pekkarinen
+// Date: 15.02.2016
+//
+// Description:
+// Paste undo/redo command for interface items in component instances.
+//-----------------------------------------------------------------------------
 
 #include <QGraphicsScene>
 #include <QUndoCommand>
@@ -19,12 +28,10 @@ public:
 	 *      Creates the child commands for adding physical ports to the component model. 
 	 *
      *      @param [in] destComponent  The component to which to copy a port.
-     *      @param [in] srcComponent   The component from which the port is copied.
 	 *      @param [in] port           The port to paste.
      *      @param [in] parent         The parent command.
      */
-    PortPasteCommand(HWComponentItem* destComponent,  QSharedPointer<Component> srcComponent, 
-		BusPortItem* port, QUndoCommand* parent = 0);
+    PortPasteCommand(HWComponentItem* destComponent, BusPortItem* port, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.

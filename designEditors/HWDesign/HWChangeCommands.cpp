@@ -341,19 +341,13 @@ void ComponentPacketizeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: EndpointChangeCommand::EndpointChangeCommand()
 //-----------------------------------------------------------------------------
-EndpointChangeCommand::EndpointChangeCommand(HWConnectionEndpoint* endpoint, 
-											 QString const& newName,
+EndpointChangeCommand::EndpointChangeCommand(ConnectionEndpoint* endpoint, 
                                              General::InterfaceMode newMode,
-											 QString const& newDescription,
 											 QUndoCommand* parent):
 QUndoCommand(parent), 
 endpoint_(endpoint),
-oldName_(endpoint->name()), 
 oldMode_(endpoint->getBusInterface()->getInterfaceMode()),
-oldDescription_(endpoint->description()),
-newName_(newName),
-newMode_(newMode),
-newDescription_(newDescription)
+newMode_(newMode)
 {
 }
 
@@ -369,11 +363,11 @@ EndpointChangeCommand::~EndpointChangeCommand()
 //-----------------------------------------------------------------------------
 void EndpointChangeCommand::undo()
 {
+    QUndoCommand::undo();
+
     endpoint_->getBusInterface()->setInterfaceMode(oldMode_);
-    endpoint_->setDescription(oldDescription_);
-    endpoint_->setName(oldName_);
     endpoint_->revalidateConnections();
-    //endpoint_->updateInterface();
+    endpoint_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
@@ -381,11 +375,11 @@ void EndpointChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void EndpointChangeCommand::redo()
 {
+    QUndoCommand::redo();
+
     endpoint_->getBusInterface()->setInterfaceMode(newMode_);
-    endpoint_->setDescription(newDescription_);
-    endpoint_->setName(newName_);
     endpoint_->revalidateConnections();
-    //endpoint_->updateInterface();
+    endpoint_->updateInterface();
 }
 
 //-----------------------------------------------------------------------------
@@ -393,18 +387,21 @@ void EndpointChangeCommand::redo()
 //-----------------------------------------------------------------------------
 EndpointNameChangeCommand::EndpointNameChangeCommand(ConnectionEndpoint* endpoint, 
                                                      QString const& newName,
+                                                     QList<QSharedPointer<HierInterface> > activeIntefaces,
                                                      QUndoCommand* parent)
     : QUndoCommand(parent), 
        endpoint_(endpoint),
        oldName_(endpoint->name()), 
-       newName_(newName)
+       newName_(newName),
+       activeIntefaces_(activeIntefaces)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: EndpointNameChangeCommand::~EndpointNameChangeCommand()
 //-----------------------------------------------------------------------------
-EndpointNameChangeCommand::~EndpointNameChangeCommand() {
+EndpointNameChangeCommand::~EndpointNameChangeCommand()
+{
 }
 
 //-----------------------------------------------------------------------------
@@ -412,7 +409,13 @@ EndpointNameChangeCommand::~EndpointNameChangeCommand() {
 //-----------------------------------------------------------------------------
 void EndpointNameChangeCommand::undo()
 {
+    QUndoCommand::undo();
+
     endpoint_->setName(oldName_);
+    foreach (QSharedPointer<HierInterface> interface, activeIntefaces_)
+    {
+        interface->setBusReference(oldName_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -420,7 +423,13 @@ void EndpointNameChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void EndpointNameChangeCommand::redo()
 {
+    QUndoCommand::redo();
+
     endpoint_->setName(newName_);
+    foreach (QSharedPointer<HierInterface> interface, activeIntefaces_)
+    {
+        interface->setBusReference(newName_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -619,37 +628,24 @@ void EndpointPropertyValuesChangeCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: EndPointTypesCommand::EndPointTypesCommand()
 //-----------------------------------------------------------------------------
-EndPointTypesCommand::EndPointTypesCommand(HWConnectionEndpoint* endpoint,
-                                           VLNV const& oldBusType, VLNV const& oldAbsType,
-                                           General::InterfaceMode oldMode,
-                                           QString const& oldName, QUndoCommand* parent)
-    : QUndoCommand(parent), endpoint_(endpoint), oldBusType_(oldBusType), oldAbsType_(oldAbsType),
-      oldMode_(oldMode), oldName_(oldName), newBusType_(), newAbsType_(),
-      newMode_(General::MASTER), newName_(""), connModes_()
+EndPointTypesCommand::EndPointTypesCommand(ConnectionEndpoint* endpoint, VLNV const& busType, VLNV const& absType, 
+    QUndoCommand* parent):
+QUndoCommand(parent),
+    endpoint_(endpoint),
+    oldBusType_(),
+    oldAbsType_(),
+    newBusType_(busType),
+    newAbsType_(absType)
 {
     if (endpoint_->getBusInterface() != 0)
     {
-        newBusType_ = endpoint_->getBusInterface()->getBusType();
-        newAbsType_ = *endpoint_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef();
-        newMode_ = endpoint_->getBusInterface()->getInterfaceMode();
-        newName_ = endpoint_->getBusInterface()->name();
-    }
+        oldBusType_ = endpoint_->getBusInterface()->getBusType();
 
-    // Save the interface modes for each connection.
-    foreach (GraphicsConnection* conn, endpoint_->getConnections())
-    {
-        ConnectionEndpoint* endpoint = conn->endpoint1();
-
-        if (conn->endpoint1() == endpoint_)
+        if (endpoint_->getBusInterface()->getAbstractionTypes() && 
+            !endpoint_->getBusInterface()->getAbstractionTypes()->isEmpty() &&
+            endpoint_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef())
         {
-            endpoint = conn->endpoint2();
-        }
-        
-        QSharedPointer<BusInterface> busIf = endpoint->getBusInterface();
-
-        if (busIf != 0 && busIf->getBusType().isValid())
-        {
-            connModes_.insert(endpoint, busIf->getInterfaceMode());
+            oldAbsType_ = *endpoint_->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef();
         }
     }
 }
@@ -666,12 +662,10 @@ EndPointTypesCommand::~EndPointTypesCommand()
 //-----------------------------------------------------------------------------
 void EndPointTypesCommand::undo()
 {
-    if (endpoint_->getBusInterface() != 0 && oldName_ != newName_)
-    {
-        endpoint_->getBusInterface()->setName(oldName_);
-    }
+    QUndoCommand::undo();
 
-    endpoint_->setTypes(oldBusType_, oldAbsType_, oldMode_);
+    setTypes(oldBusType_, oldAbsType_);
+
     endpoint_->updateInterface();
 }
 
@@ -680,35 +674,77 @@ void EndPointTypesCommand::undo()
 //-----------------------------------------------------------------------------
 void EndPointTypesCommand::redo()
 {
-    if (oldName_ != newName_)
+    QUndoCommand::redo();
+
+    setTypes(newBusType_, newAbsType_);
+
+    endpoint_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: EndPointTypesCommand::setTypes()
+//-----------------------------------------------------------------------------
+void EndPointTypesCommand::setTypes(VLNV const& busType, VLNV const& absType)
+{
+    if (endpoint_->getBusInterface()->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
     {
-        endpoint_->getBusInterface()->setName(newName_);
+        // Disconnect the connections.
+        foreach(GraphicsConnection* conn, endpoint_->getConnections())
+        {
+            if (conn->endpoint1() != endpoint_)
+            {
+                conn->endpoint1()->onDisconnect(endpoint_);
+            }
+            else
+            {
+                conn->endpoint2()->onDisconnect(endpoint_);
+            }
+        }
     }
 
-    endpoint_->setTypes(newBusType_, newAbsType_, newMode_);
-    endpoint_->updateInterface();
+    endpoint_->getBusInterface()->setBusType(busType);
 
-    // Set interface modes for the other end points.
-    QMap<ConnectionEndpoint*, General::InterfaceMode>::iterator cur = connModes_.begin();
+    QSharedPointer<AbstractionType> abstraction(new AbstractionType());
+    abstraction->setAbstractionRef(QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(absType)));
 
-    while (cur != connModes_.end())
+    endpoint_->getBusInterface()->getAbstractionTypes()->clear();
+    endpoint_->getBusInterface()->getAbstractionTypes()->append(abstraction);
+
+    endpoint_->setTypeLocked(busType.isValid());
+
+    if (busType.isValid())
     {
-        cur.key()->getBusInterface()->setInterfaceMode(cur.value());
-        cur.key()->updateInterface();
-        cur++;
+        // Undefined end points of the connections can now be defined.
+        foreach(GraphicsConnection* conn, endpoint_->getConnections())
+        {
+            if (conn->endpoint1() != endpoint_)
+            {
+                conn->endpoint1()->onConnect(endpoint_);
+                conn->endpoint2()->onConnect(conn->endpoint1());
+            }
+            else
+            {
+                conn->endpoint2()->onConnect(endpoint_);
+                conn->endpoint1()->onConnect(conn->endpoint2());
+            }
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: EndPointPortMapCommand::EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
-EndPointPortMapCommand::EndPointPortMapCommand(HWConnectionEndpoint* endpoint,
-                                               QList< QSharedPointer<PortMap> > newPortMaps,
-                                               QUndoCommand* parent)
-    : QUndoCommand(parent), endpoint_(endpoint),
-      oldPortMaps_(*endpoint->getBusInterface()->getPortMaps()),
-      newPortMaps_(newPortMaps)
+EndPointPortMapCommand::EndPointPortMapCommand(ConnectionEndpoint* endpoint,
+    QList< QSharedPointer<PortMap> > newPortMaps, QUndoCommand* parent) :
+QUndoCommand(parent),
+    endpoint_(endpoint),
+    oldPortMaps_(),
+    newPortMaps_(newPortMaps)
 {
+    if (endpoint->getBusInterface()->getPortMaps())
+    {
+        oldPortMaps_ = *endpoint->getBusInterface()->getPortMaps();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -723,7 +759,7 @@ EndPointPortMapCommand::~EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
 void EndPointPortMapCommand::undo()
 {
-    if (endpoint_->isHierarchical())
+    if (endpoint_->isBus())
     {
         endpoint_->getBusInterface()->getPortMaps()->clear();
         endpoint_->getBusInterface()->getPortMaps()->append(oldPortMaps_);
@@ -736,7 +772,7 @@ void EndPointPortMapCommand::undo()
 //-----------------------------------------------------------------------------
 void EndPointPortMapCommand::redo()
 {
-    if (endpoint_->isHierarchical())
+    if (endpoint_->isBus())
     {
         endpoint_->getBusInterface()->getPortMaps()->clear();
         endpoint_->getBusInterface()->getPortMaps()->append(newPortMaps_);

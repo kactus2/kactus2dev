@@ -11,13 +11,16 @@
 
 #include "HWConnectionEndpoint.h"
 
+#include <common/KactusColors.h>
+
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <QPen>
 
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndpont::HWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-HWConnectionEndpoint::HWConnectionEndpoint(QGraphicsItem* parent, QVector2D const& dir)
-    : ConnectionEndpoint(parent)
+HWConnectionEndpoint::HWConnectionEndpoint(QGraphicsItem* parent, QVector2D const& dir): ConnectionEndpoint(parent)
 {
     setDirection(dir);
 }
@@ -27,6 +30,53 @@ HWConnectionEndpoint::HWConnectionEndpoint(QGraphicsItem* parent, QVector2D cons
 //-----------------------------------------------------------------------------
 HWConnectionEndpoint::~HWConnectionEndpoint()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndpoint::updateInterface()
+//-----------------------------------------------------------------------------
+void HWConnectionEndpoint::updateInterface()
+{
+    ConnectionEndpoint::updateInterface();
+
+    General::InterfaceMode mode = getInterfaceMode();
+
+    if (isInvalid())
+    {
+        setBrush(QBrush(Qt::red));
+    }
+    else if (mode == General::MASTER)
+    {
+        setBrush(QBrush(KactusColors::MASTER_INTERFACE));
+    }
+    else if (mode == General::SLAVE)
+    {
+        setBrush(QBrush(KactusColors::SLAVE_INTERFACE));
+    }
+    else if (mode == General::MIRROREDMASTER)
+    {
+        setBrush(QBrush(KactusColors::MIRROREDMASTER_INTERFACE));
+    }
+    else if (mode == General::MIRROREDSLAVE)
+    {
+        setBrush(QBrush(KactusColors::MIRROREDSLAVE_INTERFACE));
+    }
+    else if (mode == General::SYSTEM)
+    {
+        setBrush(QBrush(KactusColors::SYSTEM_INTERFACE));
+    }
+    else if (mode == General::MIRROREDSYSTEM)
+    {
+        setBrush(QBrush(KactusColors::MIRROREDSYSTEM_INTERFACE));
+    }
+    else if (mode == General::MONITOR)
+    {
+        setBrush(QBrush(KactusColors::MONITOR_INTERFACE));
+    }
+    else // if undefined
+    {
+        setBrush(QBrush(Qt::black));
+    }
 }
 
 //-----------------------------------------------------------------------------

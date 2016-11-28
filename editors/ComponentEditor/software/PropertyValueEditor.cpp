@@ -72,3 +72,11 @@ QMap<QString, QString> PropertyValueEditor::getData() const
 {
     return model_.getData();
 }
+
+//-----------------------------------------------------------------------------
+// Function: PropertyValueEditor::setLock()
+//-----------------------------------------------------------------------------
+void PropertyValueEditor::setLock(bool locked)
+{
+    model_.setLock(locked);
+}

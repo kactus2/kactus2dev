@@ -179,12 +179,12 @@ HEADERS += ./VersionHelper.h \
     ./Help/HelpSystem/ContextHelpBrowser.h \
     ./Help/HelpSystem/HelpSearchWidget.h \
     ./Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h \
+    ./Plugins/PluginSystem/PluginSettingsModel.h \
     ./Plugins/PluginSystem/IPlugin.h \
     ./Plugins/PluginSystem/IPluginUtility.h \
     ./Plugins/PluginSystem/ISourceAnalyzerPlugin.h \
     ./Plugins/PluginSystem/PluginInfoWidget.h \
     ./Plugins/PluginSystem/PluginManager.h \
-    ./Plugins/PluginSystem/PluginSettingsModel.h \
     ./Plugins/PluginSystem/NewPluginsDialog.h \
     ./Plugins/PluginSystem/PluginListDialog.h \
     ./Plugins/PluginSystem/PluginUtilityAdapter.h \

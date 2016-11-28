@@ -32,8 +32,6 @@ public:
   
     AdHocConnectionItem(QPointF const& p1, QVector2D const& dir1,
                            QPointF const& p2, QVector2D const& dir2,
-                           QString const& displayName,
-                           QString const& description,
                            DesignDiagram* parent);
 
     AdHocConnectionItem(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2,
@@ -53,13 +51,6 @@ public:
 
     QSharedPointer<ConnectionRoute> getRouteExtension() const;
 
-    /*!
-     *  Sets the bus width label visible/invisible.
-     *
-     *      @param [in] visible If true, the label is set visible. Otherwise false.
-     */
-    void setBusWidthVisible(bool visible);
-
     /*! 
      *  Connects the ends of the interconnection.
      *
@@ -73,15 +64,10 @@ public:
      */
     virtual void toggleOffPage();
 
-    /*! \brief Set the routing of the interconnection
+    /*! Set the routing of the interconnection
      *
      */
     virtual void setRoute(QList<QPointF> path);
-
-    /*! \brief Update the end positions when connected endpoints are moved
-     *
-     */
-    virtual void updatePosition();
 
     /*!
      *  Sets the left bound of the ad-hoc endpoint involved in the connection.
@@ -156,43 +142,9 @@ private:
         }
     };
 
-    /*!
-     *  Updates the width label based on the endpoints.
-     */
-    void updateWidthLabel();
-
-    /*!
-     *  Finds the position for bus width label.
-     *     
-     *      @return The optimal position of the bus width label.
-     */
-    QPointF findWidthLabelPosition() const;
-
-    /*!
-     *  Finds the position for bus width label above the longest horizontal segment.
-     *     
-     *      @return The optimal position of the bus width label.
-     */
-    QPointF findWidthLabelVertically() const;
-
-    /*!
-     *  Finds the position for bus width label next to the longest vertical segment.
-     *     
-     *      @return The optimal position of the bus width label.
-     */
-    QPointF findWidthLabelHorizontally() const;
-
-    /*!
-     *  Sets th default font for the bus width label.
-     */
-    void setWidthLabelDefaultFont();
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The connection width label.
-    QGraphicsTextItem* widthLabel_;
 
     //! The ad-hoc port bounds.
     AdHocPortBound portBounds_[2];

@@ -65,16 +65,6 @@ private:
     //! The interconnection.
     HWConnection* connection_;
 
-    //! The interface modes for the endpoints.
-    General::InterfaceMode mode1_;
-    General::InterfaceMode mode2_;
-
-    //! The port maps for the hierarchical end point (if any).
-    QList< QSharedPointer<PortMap> > portMaps_;
-
-    //! If true, port copy operation is a part of this undo command.
-    bool portsCopied_;
-
     //! The graphics scene.
     DesignDiagram* diagram_;
 

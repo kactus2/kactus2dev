@@ -12,7 +12,6 @@
 #include "PortmapDialog.h"
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h>
-#include <editors/ComponentEditor/common/NullParser.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -35,14 +34,14 @@
 //-----------------------------------------------------------------------------
 // Function: PortmapDialog()
 //-----------------------------------------------------------------------------
-PortmapDialog::PortmapDialog(LibraryInterface* libInterface, QSharedPointer<Component> component,
+PortmapDialog::PortmapDialog(LibraryInterface* library, QSharedPointer<Component> component,
                              QSharedPointer<BusInterface> busIf, QSharedPointer<BusInterface> otherBusIf,
                              QWidget* parent) :
 QDialog(parent),
     busIf_(busIf),
     otherBusIf_(otherBusIf)
 {
-    Q_ASSERT(libInterface != 0);
+    Q_ASSERT(library != 0);
     Q_ASSERT(component != 0);
     Q_ASSERT(busIf != 0);
     Q_ASSERT(otherBusIf != 0);
@@ -53,11 +52,10 @@ QDialog(parent),
     QSharedPointer<ExpressionFormatter> expressionFormatter(new ExpressionFormatter(parameterFinder));
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    QSharedPointer<PortMapValidator> portMapValidator(
-        new PortMapValidator(expressionParser, component->getPorts(), libInterface));
+    QSharedPointer<PortMapValidator> portMapValidator(new PortMapValidator(expressionParser, component->getPorts(), library));
 
     // Create the port map widget.
-    portmapWidget_ = new BusInterfacePortMapTab(libInterface, component, busIf, expressionParser,
+    portmapWidget_ = new BusInterfacePortMapTab(library, component, busIf, expressionParser,
         expressionFormatter, parameterFinder, portMapValidator, this);
 
     portmapWidget_->setAbsType(*busIf->getAbstractionTypes()->first()->getAbstractionRef(),

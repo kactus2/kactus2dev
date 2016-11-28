@@ -8,9 +8,7 @@
 
 #include "XmlUtils.h"
 
-#include <QDomNode>
 #include <QString>
-#include <QDomNodeList>
 #include <QDomNamedNodeMap>
 #include <QSharedPointer>
 #include <QObject>
@@ -97,7 +95,7 @@ General::PortAlignment& General::PortAlignment::operator=( const PortAlignment& 
 
 QString General::port2String(const QString& portName, int leftBound, int rightBound) {
 	QString str(portName);
-	str.append(QStringLiteral("[%1..%2]")).arg(leftBound).arg(rightBound);
+	str.append(QStringLiteral("[%1..%2]").arg(leftBound).arg(rightBound));
 	return str;
 }
 

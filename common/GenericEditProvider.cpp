@@ -70,7 +70,6 @@ void GenericEditProvider::undo()
         return;
     }
 
-    states_.clear();
     undoing_ = true;
 
     // Pop and undo the topmost command in the undo stack.
@@ -98,7 +97,6 @@ void GenericEditProvider::redo()
         return;
     }
 
-    states_.clear();
     redoing_ = true;
 
     // Pop and redo the topmost command in the redo stack.
@@ -144,22 +142,5 @@ void GenericEditProvider::clear()
 {
     undoStack_.clear();
     redoStack_.clear();
-    states_.clear();
     emit editStateChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: GenericEditProvider::setState()
-//-----------------------------------------------------------------------------
-void GenericEditProvider::setState(QString const& name, QVariant const& value)
-{
-    states_[name] = value;
-}
-
-//-----------------------------------------------------------------------------
-// Function: GenericEditProvider::getState()
-//-----------------------------------------------------------------------------
-QVariant GenericEditProvider::getState(QString const& name) const
-{
-    return states_.value(name, QVariant());
 }

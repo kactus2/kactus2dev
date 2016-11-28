@@ -39,32 +39,16 @@ InterfaceDeleteCommand::InterfaceDeleteCommand(DesignDiagram* diagram, BusInterf
 QUndoCommand(parent),
 interface_(interface),
 busIf_(interface_->getBusInterface()),
-busType_(interface_->getBusInterface()->getBusType()),
-absType_(),
-ports_(),
-mode_(interface_->getBusInterface()->getInterfaceMode()),
-portMaps_(),
 parent_(static_cast<GraphicsColumn*>(interface->parentItem())),
 diagram_(diagram),
-del_(true),
-removePorts_(removePorts)
+del_(true)
 {
-    if (!busIf_->getAbstractionTypes()->isEmpty())
-    {
-        absType_ = busIf_->getAbstractionTypes()->first();
-        if (!busIf_->getPortMaps()->isEmpty())
-        {
-            portMaps_ = busIf_->getPortMaps();
-        }
-    }
-
-    if (removePorts_)
+    if (removePorts)
     {
         // Create copies of the related ports and remove commands for them.
         QList<QSharedPointer<Port> > ports = interface_->getPorts();
         foreach (QSharedPointer<Port> port, ports)
         {
-            ports_.append(QSharedPointer<Port>(new Port(*port.data())));
             DeletePhysicalPortCommand* delCmd = new DeletePhysicalPortCommand(interface_->getOwnerComponent(), port, this);
 
             // If the port is visible as ad-hoc in the current design, it must be hidden.
@@ -110,18 +94,7 @@ void InterfaceDeleteCommand::undo()
     // Redefine the interface.
     if (busIf_ != 0)
     {
-        busIf_->setInterfaceMode(mode_);
-        busIf_->setBusType(busType_);
-
-        if (absType_)
-        {
-            QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes
-                (new QList<QSharedPointer<AbstractionType> > ());
-            abstractionTypes->append(absType_);
-            busIf_->setAbstractionTypes(abstractionTypes);
-        }
-
-        interface_->define(busIf_, false, ports_);
+        interface_->define(busIf_);
 
         diagram_->getDesign()->getVendorExtensions()->append(interface_->getDataExtension());
     }
@@ -139,12 +112,6 @@ void InterfaceDeleteCommand::redo()
 {
     // Execute child commands.
     QUndoCommand::redo();
-
-    // Undefine the interface.
-    if (busIf_ != 0)
-    {
-        interface_->undefine(removePorts_);
-    }
 
     // Remove the interface from the scene.
     parent_->removeItem(interface_);

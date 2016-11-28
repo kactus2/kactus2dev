@@ -6,7 +6,7 @@
 // Date: 10.10.2011
 //
 // Description:
-// Editor to display/edit the details of a bus interface.
+// Editor to display/edit the details of a bus/api/com interface.
 //-----------------------------------------------------------------------------
 
 #ifndef INTERFACEEDITOR_H
@@ -22,20 +22,23 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QLabel>
-#include <QTableWidget>
 #include <QPlainTextEdit>
+#include <QStackedWidget>
+
+class ActiveInterface;
+class ComDefinition;
+class Design;
+class HierInterface;
 
 class ConnectionEndpoint;
-class ComDefinition;
-class InterfacePortMapModel;
 class EditableTableView;
-class ActiveInterface;
-class Design;
+class IEditProvider;
+class InterfacePortMapModel;
 
 //-----------------------------------------------------------------------------
-//! Editor to display/edit the details of a bus interface.
+//! Editor to display/edit the details of a bus/api/com interface.
 //-----------------------------------------------------------------------------
-class InterfaceEditor : public QWidget
+class InterfaceEditor : public QStackedWidget
 {
 	Q_OBJECT
 
@@ -44,7 +47,7 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent      Pointer to the owner of this widget.
+	 *      @param [in] parent      The owner of this widget.
      *      @param [in] handler     The library handler.
 	 */
 	InterfaceEditor(QWidget *parent, LibraryInterface* handler);
@@ -55,29 +58,24 @@ public:
 	/*!
      *  Set the interface for the editor.
 	 *
-	 *      @param [in] interface           Pointer to the interface.
+	 *      @param [in] interface           The interface to edit.
      *      @param [in] containingDesign    The design containing the end point.
 	 */
-	void setInterface(ConnectionEndpoint* interface, QSharedPointer<Design> containingDesign);
+	void setInterface(ConnectionEndpoint* interface, QSharedPointer<Design> containingDesign,
+        QSharedPointer<IEditProvider> editProvider, bool locked);
 
 signals:
 
-    /*!
-     *  Informs of a content change in the editor.
-     */
+    //! Informs of a content change in the editor.
     void contentChanged();
 
 public slots:
 
-	/*!
-     *  Clear the editor so no interface details are shown
-	 */
-	void clear();
-
-	/*!
-     *  Refresh the editor contents without changing the interface.
-	 */
+	//! Refresh the editor contents without changing the interface.
 	void refresh();
+
+	//! Clear the editor so no interface details are shown
+    void clear();
 
 private slots:
 
@@ -86,19 +84,14 @@ private slots:
 	 *
 	 *      @param [in] newName     The new name of the interface.
 	 */
-	void onInterfaceNameChanged(const QString& newName);
+	void onInterfaceNameChanged(QString const& newName);
 
 	/*!
      *  Handler for change in interface mode.
 	 *
 	 *      @param [in] newMode     The new mode of the interface.
 	 */
-	void onInterfaceModeChanged(const QString& newMode);
-
-	/*!
-     *  Handler for changes in the port map.
-	 */
-	void onPortMapChanged();
+	void onInterfaceModeChanged(QString const& newMode);
 
 	/*!
      *  Handler for changes in the description editor.
@@ -124,16 +117,23 @@ private:
 	//! No assignment.
 	InterfaceEditor& operator=(const InterfaceEditor& other);
 
+    // Sets the editor for editing a bus interface.
+    void setBusInterface();
+        
+    /*!
+     *  Sets the name and description of the interface to the given editors.
+     *
+     *      @param [in] nameEditor          The name editor to use.
+     *      @param [in] descriptionEditor   The description editor to use.
+     */
+    void setNameAndDescription(QLineEdit* nameEditor, QPlainTextEdit* descriptionEditor);
+
     /*!
      *  Get a list of active interfaces referencing the selected interface.
      *
-     *      @param [in] endPoint    The selected interface end point.
-     *      @param [in] design      The containing design.
-     *
      *      @return A list of active interfaces referencing the selected interface.
      */
-    QList<QSharedPointer<ActiveInterface> > getActiveInterfaces(ConnectionEndpoint* endPoint,
-        QSharedPointer<Design> design);
+    QList<QSharedPointer<ActiveInterface> > getActiveInterfaces() const;
 
     /*!
      *  Check if the selected active interface contains a reference to the selected end point.
@@ -143,57 +143,43 @@ private:
      *
      *      @return True, if the active interface contains a reference to the end point, otherwise false.
      */
-    bool activeInterfaceReferencesBusInterface(QSharedPointer<ActiveInterface> currentInterface,
-        ConnectionEndpoint* endPoint) const;
+    bool activeInterfaceReferencesBusInterface(QSharedPointer<ActiveInterface> currentInterface) const;
+
+    QList<QSharedPointer<HierInterface> > getDesignInterfaces() const;
+
+    // Sets the editor for editing a COM interface.
+    void setComInterface();
+
+    // Sets the editor for editing an API interface.
+    void setApiInterface();
+
+    // Initializes the editor for editing a bus interface.
+    void setupBusEditor();
+
+    // Initializes the editor for editing a COM interface.
+    void setupComEditor();
+
+    // Initializes the editor for editing an API interface.
+    void setupApiEditor();
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Widget to display the bus/API/COM type.
-	VLNVDisplayer type_;
+    //! The instance that manages the library.
+    LibraryInterface* library_;
+
+	//! Widget to display the bus type.
+	VLNVDisplayer busType_;
 
 	//! Widget to display the abstraction type.
 	VLNVDisplayer absType_;
 
-	//! The editor for the interface name.
-	QLineEdit nameEdit_;
+    //! The editor for the bus interface name.
+    QLineEdit busNameEditor_;
 
-	//! The label for the name editor.
-	QLabel nameLabel_;
-
-	//! The editor for the interface mode.
-	QComboBox modeEdit_;
-
-	//! The label for the mode editor.
-	QLabel modeLabel_;
-
-    //! The label for dependency direction.
-    QLabel dependencyDirLabel_;
-
-    //! The editor for dependency direction.
-    QComboBox dependencyDirCombo_;
-
-    //! The label for direction editor.
-    QLabel comDirectionLabel_;
-
-    //! The editor for direction.
-    QComboBox comDirectionCombo_;
-
-    //! Label for transfer type editor.
-    QLabel transferTypeLabel_;
-
-    //! Data type editor.
-    QComboBox transferTypeCombo_;
-
-	//! Pointer to the interface being edited.
-	ConnectionEndpoint* interface_;
-
-    //! COM definition related to the interface (if COM).
-    QSharedPointer<ComDefinition const> comDef_;
-
-	//! Label for the mappings of logical and physical ports
-	QLabel mappingsLabel_;
+    //! The editor for the interface mode.
+    QComboBox modeEdit_;
 
     //! The view for the port mappings.
     EditableTableView portMapsView_;
@@ -201,26 +187,50 @@ private:
     //! The model for the port mappings.
     InterfacePortMapModel* portMapsModel_;
 
-	//! Label for the description editor
-	QLabel descriptionLabel_;
+    //! Editor for the description of the interface.
+    QPlainTextEdit busDescriptionEditor_;
 
-	//! Editor for the description of the interface.
-	QPlainTextEdit descriptionEdit_;
+    //! Widget to display the COM type.
+    VLNVDisplayer comType_;
 
-    //! Label for the property value editor.
-    QLabel propertyValueLabel_;
+    //! The editor for the COM interface name.
+    QLineEdit comNameEditor_;
+    
+    //! Data type editor for COM interface.
+    QComboBox transferTypeCombo_;
+
+    //! The editor for the COM direction.
+    QComboBox comDirectionCombo_;
+
+    //! Editor for the description of the COM interface.
+    QPlainTextEdit comDescriptionEditor_;
+
+    //! Widget to display the API type.
+    VLNVDisplayer apiType_;
+
+    //! The editor for the api interface name.
+    QLineEdit apiNameEditor_;
+
+    //! The editor for dependency direction.
+    QComboBox dependencyDirCombo_;
+
+    //! Editor for the description of the interface.
+    QPlainTextEdit apiDescriptionEditor_;
 
     //! Property value editor for SW properties.
     PropertyValueEditor propertyValueEditor_;
 
-    //! Empty dummy widget for adding stretch for API interface view.
-    QWidget dummyWidget_;
-
-	//! Pointer to the instance that manages the library.
-	LibraryInterface* handler_;
+    //! The interface being edited.
+    ConnectionEndpoint* interface_;
 
     //! The design containing the selected interface.
     QSharedPointer<Design> containingDesign_;
+
+    //! Undo/redo manager to use.
+    QSharedPointer<IEditProvider> editProvider_;
+
+    //! Set when the widget should be locked.
+    bool locked_;
 };
 
 #endif // INTERFACEEDITOR_H

@@ -1549,7 +1549,8 @@ void MainWindow::onInterfaceSelected(ConnectionEndpoint* interface)
             DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(designWidget->getDiagram());
             if (diagram)
             {
-                interfaceEditor_->setInterface(interface, diagram->getDesign());
+                interfaceEditor_->setInterface(interface, diagram->getDesign(), designWidget->getEditProvider(),
+                    designWidget->isProtected());
             }
         }
 
@@ -4435,7 +4436,6 @@ bool MainWindow::hasInvalidReferences(QList<VLNV> hierRefs, VLNV const& referenc
                 "be opened in design view. Edit component with component editor to "
                 "remove invalid references.").arg(referencingVlnv.toString(":")).arg(ref.toString(":")));
             invalidReferences = true;
-            continue;
         }
 
         // if the reference is to a wrong object type
@@ -4447,7 +4447,6 @@ bool MainWindow::hasInvalidReferences(QList<VLNV> hierRefs, VLNV const& referenc
                 " can not be opened in design view. Edit component with component editor to"
                 " remove invalid references.").arg(referencingVlnv.toString(":")).arg(ref.toString(":")));
             invalidReferences = true;
-            continue;
         }
 
         // if the reference is for a design configuration then check that also
@@ -4463,16 +4462,12 @@ bool MainWindow::hasInvalidReferences(QList<VLNV> hierRefs, VLNV const& referenc
             // if the referenced design was not found in the library
             if (!designVLNV.isValid())
             {
-                emit errorMessage(tr("Component %1 has hierarchical reference to object %2,"
-                    " which is design configuration and references to design %3. This "
+                emit errorMessage(tr("Component %1 has hierarchical reference to object %2, "
+                    "which is design configuration and references to design %3. This "
                     "design is not found in library so component can not be opened in "
-                    "design view. Edit component with component editor to remove "
-                    "invalid references").arg(
-                    referencingVlnv.toString(":")).arg(
-                    ref.toString(":")).arg(
-                    refToDesign.toString(":")));
+                    "design view. Edit component with component editor to remove invalid references").arg(
+                    referencingVlnv.toString(":"), ref.toString(":"), refToDesign.toString(":")));
                 invalidReferences = true;
-                continue;
             }
         }
     }

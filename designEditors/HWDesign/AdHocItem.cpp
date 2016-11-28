@@ -202,6 +202,13 @@ void AdHocItem::setInterfaceMode(General::InterfaceMode )
 {
 
 }
+//-----------------------------------------------------------------------------
+// Function: AdHocItem::getInterfaceMode()
+//-----------------------------------------------------------------------------
+General::InterfaceMode AdHocItem::getInterfaceMode() const
+{
+    return General::INTERFACE_MODE_COUNT;
+}
 
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::getOffPageConnector()

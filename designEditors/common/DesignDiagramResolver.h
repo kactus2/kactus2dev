@@ -40,6 +40,10 @@ public:
      */
     ~DesignDiagramResolver();
 
+    void setContext(QSharedPointer<Component const> component);
+
+    QString parseToConstant(QString const& expression) const;
+
     /*!
      *  Resolve and draw a symbol for tie off in an ad hoc port item.
      *
@@ -58,13 +62,13 @@ private:
      *  Get the parsed value from a tie off value.
      *
      *      @param [in] tieOffValue     The unparsed tie off value.
-     *      @param [in] ownerComponent  The encompassing component of the ad hoc port containing the tie off value.
-     *      @param [in] portItem        The ad hoc port item.
+     *      @param [in] portName        The ad hoc port name.
+     *      @param [in] ownerComponent  The encompassing component of the ad hoc port containing the tie off value.     
      *
      *      @return Parsed tie off value.
      */
-    QString getParsedTieOffValue(QString const& tieOffValue, QSharedPointer<Component> ownerComponent,
-        AdHocItem* portItem) const;
+    QString getParsedTieOffValue(QString const& tieOffValue,
+        QString const& portName, QSharedPointer<Component const> ownerComponent) const;
 
     //-----------------------------------------------------------------------------
     // Data.

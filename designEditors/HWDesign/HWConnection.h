@@ -34,32 +34,16 @@ public:
     enum { Type = GFX_TYPE_DIAGRAM_INTERCONNECTION };
 
     /*!
-     *  [Description].
-     *
-     *      @param [in] endpoint1       The first end point.
-     *      @param [in] endpoint2       The second end point.
-     *      @param [in] autoConnect     Automatically connect the end points.
-     *      @param [in] name            The name of the connection.
-     *      @param [in] displayName     Display name of the connection.
-     *      @param [in] description     Description of the connection.
-     *      @param [in] parent          Owner of this connection item..
-     */
-    HWConnection(ConnectionEndpoint *endpoint1, ConnectionEndpoint *endpoint2, bool autoConnect,
-        QString const& name, QString const& displayName, QString const& description, DesignDiagram* parent);
-
-    /*!
      *  Constructor which creates an open-ended diagram interconnection.
      *
      *      @param [in] p1              The first end point.
      *      @param [in] dir1            Direction of the first end point.
      *      @param [in] p2              The second end point.
      *      @param [in] dir2            Direction of the second end point.
-     *      @param [in] displayName     Display name of the connection.
-     *      @param [in] description     Description of the connection.
      *      @param [in] parent          Owner of the connection item.
      */
     HWConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2, QVector2D const& dir2,
-        QString const& displayName, QString const& description, DesignDiagram* parent);
+         DesignDiagram* parent);
 
     /*!
      *  Constructor.
@@ -122,13 +106,6 @@ public:
     QSharedPointer<ConnectionRoute> getRouteExtension() const;
 
     /*!
-     *  Sets the bus width label visible/invisible.
-     *
-     *      @param [in] visible If true, the label is set visible. Otherwise false.
-     */
-    void setBusWidthVisible(bool visible);
-
-    /*!
      *  Toggles the connection between normal and off-page.
      */
     virtual void toggleOffPage();
@@ -139,11 +116,6 @@ public:
      *      @param [in] path    List of points for the path.
      */
     virtual void setRoute(QList<QPointF> path);
-
-    /*!
-     *  Update the end positions when connected endpoints are moved
-     */
-    virtual void updatePosition();
 
     /*!
      *  Returns true if the connection is a bus connection. Returns false if it isn't (i.e. it is an ad-hoc
@@ -168,60 +140,9 @@ public:
 
 private:
 
-    /*!
-     *  Change the component interface of the selected component interface.
-     *
-     *      @param [in] referencingInterface    The selected interface.
-     *      @param [in] oldComponent            The old componnet reference.
-     *      @param [in] newComponent            The new component reference.
-     */
-    void changeInterfaceReference(QSharedPointer<ActiveInterface> referencingInterface,
-        QString const& oldComponent, QString const& newComponent);
-
-    /*!
-     *  Updates the width label based on the endpoints.
-     */
-    void updateWidthLabel();
-
-    /*!
-     *  Finds the position for bus width label.
-     *     
-     *      @return The optimal position of the bus width label.
-     */
-    QPointF findWidthLabelPosition() const;
-
-    /*!
-     *  Finds the position for bus width label above the longest horizontal segment.
-     *     
-     *      @return The optimal position of the bus width label.
-     */
-    QPointF findWidthLabelVertically() const;
-
-    /*!
-     *  Finds the position for bus width label next to the longest vertical segment.
-     *     
-     *      @return The optimal position of the bus width label.
-     */
-    QPointF findWidthLabelHorizontally() const;
-
-    /*!
-     *  Calculates the total bus width.
-     *
-     *      @return The bus width.
-     */
-    int calculateBusWidth() const;
-
-    /*!
-     *  Sets th default font for the bus width label.
-     */
-    void setWidthLabelDefaultFont();
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The connection width label.
-    QGraphicsTextItem* widthLabel_;
 
     //! The contained interconnection.
     QSharedPointer<Interconnection> interconnection_;

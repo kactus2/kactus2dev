@@ -19,16 +19,15 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Design/AdHocConnection.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignDiagramResolver::DesignDiagramResolver()
 //-----------------------------------------------------------------------------
 DesignDiagramResolver::DesignDiagramResolver():
 componentFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
-expressionParser_(new IPXactSystemVerilogParser(componentFinder_)),
-expressionFormatter_(new ExpressionFormatter(componentFinder_)),
-valueFormatter_()
+    expressionParser_(new IPXactSystemVerilogParser(componentFinder_)),
+    expressionFormatter_(new ExpressionFormatter(componentFinder_)),
+    valueFormatter_()
 {
 
 }
@@ -42,6 +41,27 @@ DesignDiagramResolver::~DesignDiagramResolver()
 }
 
 //-----------------------------------------------------------------------------
+// Function: DesignDiagramResolver::setContext()
+//-----------------------------------------------------------------------------
+void DesignDiagramResolver::setContext(QSharedPointer<Component const> component)
+{
+    componentFinder_->setComponent(component);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignDiagramResolver::parse()
+//-----------------------------------------------------------------------------
+QString DesignDiagramResolver::parseToConstant(QString const& expression) const
+{
+    if (expression.isEmpty())
+    {
+        return QString();
+    }
+
+    return expressionParser_->parseExpression(expression);
+}
+
+//-----------------------------------------------------------------------------
 // Function: DesignDiagramResolver::resolveAdhocTieOff()
 //-----------------------------------------------------------------------------
 void DesignDiagramResolver::resolveAdhocTieOff(QString const& tieOff, AdHocItem* tieOffPort)
@@ -49,9 +69,9 @@ void DesignDiagramResolver::resolveAdhocTieOff(QString const& tieOff, AdHocItem*
     if (tieOffPort && !tieOff.isEmpty())
     {
         QSharedPointer<Component> ownerComponent = tieOffPort->getOwnerComponent();
-        componentFinder_->setComponent(ownerComponent);
-
-        QString parsedTieOff = getParsedTieOffValue(tieOff, ownerComponent, tieOffPort);
+        
+        setContext(ownerComponent);
+        QString parsedTieOff = getParsedTieOffValue(tieOff, tieOffPort->name(), ownerComponent);
 
         bool canConvertToInt = true; 
         parsedTieOff.toInt(&canConvertToInt);
@@ -71,13 +91,13 @@ void DesignDiagramResolver::resolveAdhocTieOff(QString const& tieOff, AdHocItem*
 //-----------------------------------------------------------------------------
 // Function: DesignDiagramResolver::getParsedTieOffValue()
 //-----------------------------------------------------------------------------
-QString DesignDiagramResolver::getParsedTieOffValue(QString const& tieOffValue,
-    QSharedPointer<Component> ownerComponent, AdHocItem* portItem) const
+QString DesignDiagramResolver::getParsedTieOffValue(QString const& tieOffValue, QString const& portName,
+    QSharedPointer<Component const> ownerComponent) const
 {
     QString parsedTieOff;
     if (QString::compare(tieOffValue, "default", Qt::CaseInsensitive) == 0)
     {
-        QSharedPointer<Port> adhocPort = ownerComponent->getPort(portItem->name());
+        QSharedPointer<Port> adhocPort = ownerComponent->getPort(portName);
         QString portDefaultValue = adhocPort->getDefaultValue();
         parsedTieOff = expressionParser_->parseExpression(portDefaultValue);
     }

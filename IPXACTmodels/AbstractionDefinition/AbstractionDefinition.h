@@ -102,7 +102,7 @@ public:
      *
      *      @return True, if the port definition is found, otherwise false.
      */
-    bool hasPort(QString const& portName, General::InterfaceMode mode=General::INTERFACE_MODE_COUNT);
+    bool hasPort(QString const& portName, General::InterfaceMode mode=General::INTERFACE_MODE_COUNT) const;
 
     /*!
      *  Gets the names of the ports defined in the abstraction definition.

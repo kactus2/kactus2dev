@@ -49,22 +49,15 @@ public:
      */
     virtual ~HWConnectionEndpoint();
 
-    /*!
-     *  Sets the bus and abstraction types and the interface mode for the endpoint.
-     *
-     *      @param [in] busType  The bus type (bus definition VLNV).
-     *      @param [in] absType  The abstraction type (abstraction definition VLNV).
-     *      @param [in] mode     The interface mode.
-     */
-    virtual void setTypes(VLNV const& busType, VLNV const& absType,
-                          General::InterfaceMode mode) = 0;
+    virtual void updateInterface();
 
     /*! Set the interface mode for the endpoint.
 	 *
 	 *      @param [in] mode The interface mode to set.
-	 *
 	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode) = 0;
+
+    virtual General::InterfaceMode getInterfaceMode() const = 0;
 
 	/*!
 	 *  Gives the length of the text in the name label.
@@ -82,6 +75,7 @@ private:
     // Disable copying.
     HWConnectionEndpoint(HWConnectionEndpoint const& rhs);
     HWConnectionEndpoint& operator=(HWConnectionEndpoint const& rhs);
+
 
 };
 

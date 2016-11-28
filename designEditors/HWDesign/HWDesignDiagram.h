@@ -16,6 +16,8 @@
 
 #include <designEditors/common/ComponentDesignDiagram.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/kactusExtensions/ColumnDesc.h>
 
@@ -194,14 +196,6 @@ public:
      */
     HWComponentItem* getComponentItem(QString const& instanceName);
 
-    /*!
-     *  Changes the state of a visibility control.
-     *
-     *      @param [in] name   The name of the visibility control.
-     *      @param [in] state  The new state for the visibility control.
-     */
-    virtual void setVisibilityControlState(QString const& name, bool state);
-
 	/*!
      *  Reflects the changes in the design to the top-level component.
      */
@@ -281,13 +275,6 @@ protected:
     //! Handler for mouse double click events.
     void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
-    /*!
-     *  Adds a new bus to library based on the given endpoint.
-     *
-     *      @param [in] endpoint   The endpoint to create the bus from.
-     */
-    void addBusToLibrary(HWConnectionEndpoint* endpoint);
-
     //! Handler for drag enter event. 
     void dragEnterEvent(QGraphicsSceneDragDropEvent *event);
 
@@ -302,7 +289,7 @@ protected:
      *
      *      @param [in] droppedVLNV     The selected VLNV.
      */
-    void setInterfaceVLNVatEndpoint(VLNV &droppedVLNV);
+    void setInterfaceVLNVatEndpoint(VLNV const& droppedVLNV);
 
     /*!
      *  Replace the component item at the selected position.
@@ -451,7 +438,117 @@ private:
      *      @return The created add command.
      */
     virtual QSharedPointer<QUndoCommand> createAddCommandForConnection(GraphicsConnection* connection);
-   
+
+    /*!
+     *  Copies the interface definition to hierarchical interface from a defined interface.
+     *
+     *      @param [in] definedPoint        The interface item to copy definitions from.
+     *      @param [in] undefinedPoint      The interface item to copy definitions into.
+     *      @param [in] definingConnection  The connection between the points initiating the copy.
+     *      @param [in] parentCommand       The parent undo command.
+     *
+     *      @return True, if the copy was accepted by the user, otherwise false.
+     */
+    bool copyDefinitions(ConnectionEndpoint* definedPoint, ConnectionEndpoint* undefinedPoint,
+        HWConnection* definingConnection, QUndoCommand* parentCommand);
+
+    /*!
+     *  Checks if the given bus interface item has a default name.
+     *
+     *      @param [in] connectionPoint   The bus interface item to check.
+     *
+     *      @return True, if the name is default pattern, otherwise false.
+     */
+    bool hasDefaultName(ConnectionEndpoint const* undefinedPoint) const;
+    
+    /*!
+     *  Copies the interface name to hierarchical interface from a defined interface.
+     *
+     *      @param [in] sourceInterface     The interface item to copy name from.
+     *      @param [in] targetInterface     The interface item to copy the name into.
+     *      @param [in] definingConnection  The connection between the points initiating the copy.
+     *      @param [in] parentCommand       The parent undo command.
+     */
+    void copyInterfaceName(ConnectionEndpoint* sourceInterface, ConnectionEndpoint* targetInterface,
+        HWConnection* definingConnection, QUndoCommand* parentCommand);
+
+    /*!
+     *  Finds the hierInterfaces corresponding to the given interface name.
+     *
+     *      @param [in] previousName    The name to search for.
+     *      @param [in] connection      The interconnection to search in.
+     *
+     *      @return The hierInterfaces with the given name.
+     */
+    QList<QSharedPointer<HierInterface> > findInterfacesByName(QString const& previousName, 
+        QSharedPointer<Interconnection> connection) const;
+
+    /*!
+     *  Copies the interface type to hierarchical interface from a defined interface.
+     *
+     *      @param [in] definedPoint        The interface item to copy type from.
+     *      @param [in] draftPoint          The interface item to copy type into.
+     *      @param [in] parentCommand       The parent undo command.
+     */
+    void copyType(ConnectionEndpoint* definedPoint, ConnectionEndpoint* draftPoint, QUndoCommand* parentCommand);
+     
+    /*!
+     *  Copies the interface mode to hierarchical interface from a defined interface.
+     *
+     *      @param [in] sourceInterface     The interface item to copy mode from.
+     *      @param [in] targetInterface     The interface item to copy mode into.
+     *      @param [in] parentCommand       The parent undo command.
+     */
+    void copyMode(ConnectionEndpoint* sourceInterface, ConnectionEndpoint* targetInterface,
+        QUndoCommand* parentCommand);
+
+    /*!
+     *  Copies the port maps and ports into a hierarchical bus interface.
+     *
+     *      @param [in] sourcePoint         The interface item to copy from.
+     *      @param [in] targetPoint         The interface item to copy into.
+     *      @param [in] parentCommand       The parent undo command.
+     *
+     *      @return True, if the copy was accepted by the user, otherwise false.
+     */
+    bool copyPortsAndMapsForHierarchicalPoint(ConnectionEndpoint* sourcePoint, ConnectionEndpoint* targetPoint,
+        QUndoCommand* parentCommand);
+
+    /*!
+     *  Copies port and port maps from the given bus interface into a bus interface item.
+     *
+     *      @param [in] sourceComponent     The component containing the bus interface to copy from.
+     *      @param [in] sourceInterface     The bus interface to copy from.
+     *      @param [in] target              The bus interface item to copy into.
+     *      @param [in] parentCommand       The parent undo command.
+     */
+    void copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sourceComponent, 
+        QSharedPointer<BusInterface> sourceInterface, ConnectionEndpoint* target, QUndoCommand* parentCommand);
+
+    /*!
+     *  Creates a connecting port for opposing the given port.
+     *
+     *      @param [in] sourcePort      The port whose opposing port to create.
+     *      @param [in] portDirection   The port direction for the created port.
+     *      @param [in] reservedNames   The names of existing ports in the target component.
+     *
+     *      @return The newly created port matching the source port in size and type.
+     */
+    QSharedPointer<Port> createConnectingPhysicalPort(QSharedPointer<Port> sourcePort, 
+        DirectionTypes::Direction portDirection, QStringList const& reservedNames);
+
+    /*!
+     *  Creates the port maps for hierarchical interface by user selection.
+     *
+     *      @param [in] sourcePoint     The bus interface whose mode and definitions to use as a starting point.
+     *      @param [in] targetPoint     The interface whose port maps to create.
+     *      @param [in] parentCommand   The parent undo command.
+     *
+     *      @return True, if the selection was accepted by the user, otherwise false.
+     */
+    bool createPortMapsManually(ConnectionEndpoint* sourcePoint, ConnectionEndpoint* targetPoint,
+        QUndoCommand* parentCommand);
+
     /*!
      *  Adds a new interface to the given diagram column.
      *
@@ -459,15 +556,6 @@ private:
      *      @param [in] pos    The interface position.
      */
     virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos);
-
-    /*!
-     *  Create a new name for a hierarchical draft interface.
-     *
-     *      @param [in] defaultName     The default name of the interface.
-     *
-     *      @return The new name for the hierarchical draft interface.
-     */
-    QString createNameForHierarchicalDraftInterface(QString const& defaultName) const;
 
     /*!
      *  Handler for draft tool clicks. Creates a draft component instance or a draft interface according to the
@@ -688,6 +776,24 @@ private:
      *      @param [in] portItem    The selected ad hoc port item.
      */
     virtual void hideAdhocPort(AdHocItem* portItem);
+
+    /*!
+     *  Generates a unique name.
+     *
+     *      @param [in] name            The base for the name.
+     *      @param [in] reservedNames   The existing names that should not be generated.
+     *
+     *      @return A unique name.
+     */
+    QString generateUniqueName(QString const& name, QStringList const& reservedNames) const;
+
+    /*!
+     *  Finds the name of hierarchical interfaces in the design.
+     *
+     *      @return The names of the hierarchical interfaces.
+     */
+    QStringList getTopLevelInterfaceNames() const;
+
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -78,19 +78,6 @@ private:
     //! The bus interface.
     QSharedPointer<BusInterface> busIf_;
 
-    //! Bus and abs types.
-    VLNV busType_;
-    QSharedPointer<AbstractionType> absType_;
-
-    //! The ports.
-    QList< QSharedPointer<Port> > ports_;
-
-    //! The interface mode.
-    General::InterfaceMode mode_;
-
-    //! The port maps.
-    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
-
     //! The port's parent.
     GraphicsColumn* parent_;
 
@@ -99,9 +86,6 @@ private:
 
     //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
-
-    //! If true, the command also removes the ports that are part of the bus interface.
-    bool removePorts_;
 };
 
 #endif // INTERFACEDELETECOMMANDS_H

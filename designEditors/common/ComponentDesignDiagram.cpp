@@ -773,8 +773,7 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
             tempConnection_ = newTempConnection;
         }
 
-        if (//tempConnection_->connectEnds())
-            tempConnection_->endpoint1()->canConnect(tempConnection_->endpoint2()) &&
+        if (tempConnection_->endpoint1()->canConnect(tempConnection_->endpoint2()) &&
             tempConnection_->endpoint2()->canConnect(tempConnection_->endpoint1()))
         {
             QSharedPointer<QUndoCommand> cmd = createAddCommandForConnection(tempConnection_);

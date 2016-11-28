@@ -35,9 +35,8 @@ route_()
 // Function: ComGraphicsConnection::ComGraphicsConnection()
 //-----------------------------------------------------------------------------
 ComGraphicsConnection::ComGraphicsConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2,
-                                             QVector2D const& dir2, QString const& displayName,
-                                             QString const& description, DesignDiagram* parent):
-GraphicsConnection(p1, dir1, p2, dir2, displayName, description, parent),
+                                             QVector2D const& dir2, DesignDiagram* parent):
+GraphicsConnection(p1, dir1, p2, dir2,  parent),
 comInterconnection_(),
 route_()
 {

@@ -50,15 +50,6 @@ public:
      */
 	virtual ~OffPageConnectorItem();
 
-    /*!
-     *  Sets the bus and abstraction types and the interface mode for the endpoint.
-     *
-     *      @param [in] busType  The bus type (bus definition VLNV).
-     *      @param [in] absType  The abstraction type (abstraction definition VLNV).
-     *      @param [in] mode     The interface mode.
-     */
-    void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
-
     /*! 
      *  Updates the graphics to match the IP-XACT bus interface.
      */
@@ -198,7 +189,9 @@ public:
      *      @param [in] The interface mode to set.
 	 *
 	*/
-	virtual void setInterfaceMode(General::InterfaceMode mode);
+    virtual void setInterfaceMode(General::InterfaceMode mode);
+
+    virtual General::InterfaceMode getInterfaceMode() const;
 
 protected:
     virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);

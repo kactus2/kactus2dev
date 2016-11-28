@@ -42,9 +42,11 @@ class GraphicsConnection;
 class HWComponentItem;
 class HWConnection;
 class HWConnectionEndpoint;
+
+class AdHocConnection;
 class ComponentInstance;
 class Design;
-class AdHocConnection;
+class HierInterface;
 class ViewConfiguration;
 
 //-----------------------------------------------------------------------------
@@ -411,15 +413,11 @@ public:
      *  Constructor.
      *
      *      @param [in] endpoint          The diagram connection end point.
-     *      @param [in] newName           The end point's new name.
      *      @param [in] newInterfaceMode  The end point's new interface mode.
-     *      @param [in] newDescription	  The end point's new description.
      *      @param [in] parent            The parent command.
      */
-	EndpointChangeCommand(HWConnectionEndpoint* endpoint,
-		QString const& newName,
+	EndpointChangeCommand(ConnectionEndpoint* endpoint,
 		General::InterfaceMode newMode,
-		QString const& newDescription,
 		QUndoCommand* parent = 0);
 
     /*!
@@ -447,25 +445,14 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    HWConnectionEndpoint* endpoint_;
-
-    //! The end point's old name.
-    QString oldName_;
+    ConnectionEndpoint* endpoint_;
 
     //! The end point's old interface mode.
     General::InterfaceMode oldMode_;
 
-	//! \brief The end point's old description.
-	QString oldDescription_;
-
-    //! The end point's new name.
-    QString newName_;
-
     //! The end point's new interface mode.
     General::InterfaceMode newMode_;
 
-	//! \brief The end point's new description.
-	QString newDescription_;
 };
 
 //-----------------------------------------------------------------------------
@@ -481,7 +468,10 @@ public:
      *      @param [in] newName   The endpoint's new name.
      *      @param [in] parent    The parent command.
      */
-	EndpointNameChangeCommand(ConnectionEndpoint* endpoint, QString const& newName, QUndoCommand* parent = 0);
+    EndpointNameChangeCommand(ConnectionEndpoint* endpoint, 
+        QString const& newName,
+        QList<QSharedPointer<HierInterface> > activeIntefaces,
+        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -515,6 +505,9 @@ private:
 
     //! The endpoint's new name.
     QString newName_;
+
+    //! The interfaces affected by the name change.
+    QList<QSharedPointer<HierInterface> > activeIntefaces_;
 };
 
 //-----------------------------------------------------------------------------
@@ -784,9 +777,7 @@ public:
      *      @param [in] oldName           The end point's old name.
      *      @param [in] parent            The parent command.
      */
-    EndPointTypesCommand(HWConnectionEndpoint* endpoint, VLNV const& oldBusType,
-                         VLNV const& oldAbsType, General::InterfaceMode oldMode,
-                         QString const& oldName, QUndoCommand* parent = 0);
+    EndPointTypesCommand(ConnectionEndpoint* endpoint, VLNV const& busType, VLNV const& absType, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -803,17 +794,21 @@ public:
      */
     virtual void redo();
 
+
+
 private:
     // Disable copying.
     EndPointTypesCommand(EndPointTypesCommand const& rhs);
     EndPointTypesCommand& operator=(EndPointTypesCommand const& rhs);
+
+    void setTypes(VLNV const& busType, VLNV const& absType);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    HWConnectionEndpoint* endpoint_;
+    ConnectionEndpoint* endpoint_;
 
     //! The end point's old bus type.
     VLNV oldBusType_;
@@ -821,26 +816,11 @@ private:
     //! The end point's old abs type.
     VLNV oldAbsType_;
 
-    //! The end point's old interface mode.
-    General::InterfaceMode oldMode_;
-
-    //! The end point's old name.
-    QString oldName_;
-
     //! The end point's new bus type.
     VLNV newBusType_;
 
     //! The end point's new abs type.
     VLNV newAbsType_;
-
-    //! The end point's new interface mode.
-    General::InterfaceMode newMode_;
-
-    //! The end point's new name.
-    QString newName_;
-
-    //! The interface modes for the other end points of the connections.
-    QMap<ConnectionEndpoint*, General::InterfaceMode> connModes_;
 };
 
 //-----------------------------------------------------------------------------
@@ -856,7 +836,7 @@ public:
      *      @param [in] newPortMaps       The new port maps for the end point.
      *      @param [in] parent            The parent command.
      */
-    EndPointPortMapCommand(HWConnectionEndpoint* endpoint,
+    EndPointPortMapCommand(ConnectionEndpoint* endpoint,
                            QList< QSharedPointer<PortMap> > newPortMaps,
                            QUndoCommand* parent = 0);
 
@@ -885,7 +865,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The diagram connection end point.
-    HWConnectionEndpoint* endpoint_;
+    ConnectionEndpoint* endpoint_;
 
     //! The end point's old port maps.
     QList< QSharedPointer<PortMap> > oldPortMaps_;

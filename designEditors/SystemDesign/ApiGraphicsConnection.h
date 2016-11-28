@@ -57,12 +57,10 @@ public:
      *      @param [in] dir1            Direction of the start point.
      *      @param [in] p2              The end point of the connection.
      *      @param [in] dir2            Direction of the end point.
-     *      @param [in] displayName     Display name of the connection.
-     *      @param [in] description     Description of the connection.
      *      @param [in] parent          The design diagram containing the connection.
      */
     ApiGraphicsConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2, QVector2D const& dir2,
-                          QString const& displayName, QString const& description, DesignDiagram* parent);
+                          DesignDiagram* parent);
 
     /*!
      *  The constructor containing the API interconnection.

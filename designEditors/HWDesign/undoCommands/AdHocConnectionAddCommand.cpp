@@ -11,8 +11,6 @@
 
 #include "AdHocConnectionAddCommand.h"
 
-#include <common/GenericEditProvider.h>
-
 #include <designEditors/common/DesignDiagram.h>
 
 #include <designEditors/HWDesign/AdHocConnectionItem.h>
@@ -29,11 +27,9 @@ AdHocConnectionAddCommand::AdHocConnectionAddCommand(DesignDiagram* scene,
     connection_(connection),
     scene_(scene),
     design_(design),   
-    del_(false),
-    portsCopied_(false)
+    del_(false)
 {
-    QSharedPointer<GenericEditProvider> editProvider = scene->getEditProvider().dynamicCast<GenericEditProvider>();
-    portsCopied_ = editProvider->getState("portsCopied").toBool();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -52,10 +48,6 @@ AdHocConnectionAddCommand::~AdHocConnectionAddCommand()
 //-----------------------------------------------------------------------------
 void AdHocConnectionAddCommand::undo()
 {
-    QSharedPointer<GenericEditProvider> editProvider =
-        scene_->getEditProvider().dynamicCast<GenericEditProvider>();
-    editProvider->setState("portsCopied", portsCopied_);
-
     // Disconnect the ends.
     connection_->disconnectEnds();
     connection_->setSelected(false);
@@ -76,10 +68,6 @@ void AdHocConnectionAddCommand::undo()
 //-----------------------------------------------------------------------------
 void AdHocConnectionAddCommand::redo()
 {
-    QSharedPointer<GenericEditProvider> editProvider = 
-        scene_->getEditProvider().dynamicCast<GenericEditProvider>();
-    editProvider->setState("portsCopied", portsCopied_);
-
     // Execute child commands.
     QUndoCommand::redo();
 

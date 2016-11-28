@@ -84,8 +84,6 @@ expressionParser_()
     getDiagram()->setProtection(false);
     getDiagram()->setMode(MODE_SELECT);
     
-	addVisibilityControl("Bus Widths", false);
-
     QSharedPointer<ComponentParameterFinder> parameterFinder (new ComponentParameterFinder(getEditedComponent()));
     expressionParser_ = QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(parameterFinder));
 }
@@ -424,7 +422,7 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
         else if (type == BusInterfaceItem::Type)
         {
             // Enumerate all ports that are part of the selected bus interfaces.
-            QList< QSharedPointer<Port> > ports;
+            QStringList ports;
 
             foreach (QGraphicsItem* selected, selectedItems)
             {
@@ -432,9 +430,9 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 
                 foreach(QSharedPointer<Port> port, diagIf->getPorts())
                 {
-                    if (!ports.contains(port))
+                    if (!ports.contains(port->name()))
                     {
-                        ports.append(port);
+                        ports.append(port->name());
                     }
                 }
             }
@@ -450,9 +448,9 @@ void HWDesignWidget::keyPressEvent(QKeyEvent *event)
 
                 QStringList textList("Interface ports:");
 
-                foreach(QSharedPointer<Port> port, ports)
+                foreach(QString port, ports)
                 {
-                    textList.append("* " + port->name());
+                    textList.append("* " + port);
                 }
 
                 msgBox.setDetailedText(textList.join("\n"));

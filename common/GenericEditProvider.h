@@ -49,16 +49,6 @@ public:
     void addCommand(QSharedPointer<QUndoCommand> command);
 
     /*!
-     *  Saves a state variable to be used by undo commands.
-     */
-    void setState(QString const& name, QVariant const& value);
-
-    /*!
-     *  Returns the value of the given state variable.
-     */
-    QVariant getState(QString const& name) const;
-
-    /*!
      *  Clears the undo & redo stacks.
      */
     void clear();
@@ -115,9 +105,6 @@ private:
 
     //! Boolean flag for redoing.
     bool redoing_;
-
-    //! The state registry.
-    QMap<QString, QVariant> states_;
 };
 
 //-----------------------------------------------------------------------------

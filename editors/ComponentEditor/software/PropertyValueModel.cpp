@@ -24,10 +24,10 @@ QString const PropertyValueModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::PropertyValueModel()
 //-----------------------------------------------------------------------------
-PropertyValueModel::PropertyValueModel(QObject *parent)
-    : QAbstractTableModel(parent),
-      allowedProperties_()
+PropertyValueModel::PropertyValueModel(QObject *parent): QAbstractTableModel(parent), allowedProperties_(), 
+    locked_(false)
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -35,6 +35,7 @@ PropertyValueModel::PropertyValueModel(QObject *parent)
 //-----------------------------------------------------------------------------
 PropertyValueModel::~PropertyValueModel()
 {
+
 }
 
 //-----------------------------------------------------------------------------
@@ -51,24 +52,22 @@ void PropertyValueModel::setAllowedProperties(QList< QSharedPointer<ComProperty>
     {
         if (comProperty->isRequired())
         {
-            int i = 0;
+            bool foundInTable = false;
 
-            for (; i < table_.size(); ++i)
+            for (int i = 0; i < table_.size() && !foundInTable; i++)
             {
-                if (table_.at(i).first == comProperty->name())
+                if (table_.at(i).first.compare(comProperty->name()) == 0)
                 {
-                    break;
+                    foundInTable = true;
                 }
             }
 
-            // If the value was not found, add it.
-            if (i == table_.size())
+            if (!foundInTable)
             {
                 table_.append(NameValuePair(comProperty->name(), comProperty->getDefaultValue()));
             }
         }
     }
-
 
     endResetModel();
 }
@@ -83,7 +82,6 @@ void PropertyValueModel::setData(QMap<QString, QString> const& propertyValues)
     table_.clear();
 
     QMapIterator<QString, QString> iter(propertyValues);
-
     while (iter.hasNext())
     {
         iter.next();
@@ -106,6 +104,14 @@ QMap<QString, QString> PropertyValueModel::getData() const
     }
 
     return values;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PropertyValueModel::setLock()
+//-----------------------------------------------------------------------------
+void PropertyValueModel::setLock(bool locked)
+{
+    locked_ = locked;
 }
 
 //-----------------------------------------------------------------------------
@@ -159,6 +165,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
     }
+
     else if (role == Qt::FontRole && index.column() == 0)
     {
         foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
@@ -173,6 +180,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
 
         return QVariant();
     }
+
     else if (role == Qt::TextColorRole)
     {
         if (index.column() == 0)
@@ -184,7 +192,6 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
                 {
                     return QColor(Qt::black);
                 }
-
             }
 
             // Use red to indicate property values that are not found in the allowed properties.
@@ -241,23 +248,19 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 QVariant PropertyValueModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
-        return QVariant();
+        if (section == 0)
+        {
+            return tr("Name");
+        }
+        else if (section == 1)
+        {
+            return tr("Value");
+        }
     }
-
-    if (section == 0)
-    {
-        return tr("Name");
-    }
-    else if (section == 1)
-    {
-        return tr("Value");
-    }
-    else
-    {
-        return QVariant();
-    }
+       
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------
@@ -272,17 +275,24 @@ Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
 
     if (index.column() == 0)
     {
+        QString const& propertyName = table_.at(index.row()).first;
+
         foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
         {
-            if (comProperty->name() == table_.at(index.row()).first && comProperty->isRequired())
+            if (comProperty->name().compare(propertyName) == 0 && comProperty->isRequired())
             {
                 return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
             }
         }
-
     }
 
-    return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    Qt::ItemFlags indexFlags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    if (!locked_)
+    {
+        indexFlags |= Qt::ItemIsEditable;
+    }
+
+    return indexFlags;
 }
 
 //-----------------------------------------------------------------------------
@@ -290,7 +300,7 @@ Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool PropertyValueModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= table_.size() || role != Qt::EditRole)
+    if (locked_ || !index.isValid() || index.row() < 0 || index.row() >= table_.size() || role != Qt::EditRole)
     {
         return false;
     }
@@ -344,13 +354,7 @@ void PropertyValueModel::onAddItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 void PropertyValueModel::onRemoveItem(QModelIndex const& index)
 {
-    // don't remove anything if index is invalid
-    if (!index.isValid())
-    {
-        return;
-    }
-    // make sure the row number if valid
-    else if (index.row() < 0 || index.row() >= table_.size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= table_.size())
     {
         return;
     }
@@ -370,31 +374,4 @@ void PropertyValueModel::onRemoveItem(QModelIndex const& index)
     endRemoveRows();
 
     emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: PropertyValueModel::isValid()
-//-----------------------------------------------------------------------------
-bool PropertyValueModel::isValid() const
-{
-    // Validate the property values against the allowed properties.
-    foreach (NameValuePair const& pair, table_)
-    {
-        int i = 0;
-        for (; i < allowedProperties_.size(); ++i)
-        {
-            if (allowedProperties_.at(i)->name() == pair.first)
-            {
-                break;
-            }
-        }
-
-        // Check if the property was not found.
-        if (i == allowedProperties_.size())
-        {
-            emit noticeMessage(tr("Property value '%1' not found in the COM definition").arg(pair.first));                                                                                             
-        }
-    }
-
-    return true;
 }

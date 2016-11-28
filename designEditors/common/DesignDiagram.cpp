@@ -552,7 +552,7 @@ QString DesignDiagram::createInstanceName(QString const& baseName)
 {
     QSettings settings; // this reads the application settings automatically
     QString format = settings.value("Policies/InstanceNames", "").toString();
-    if (format == "")
+    if (format.isEmpty())
     {
         format = "$ComponentName$_$InstanceNumber$";
     }

@@ -48,6 +48,8 @@ public:
      */
     virtual ~InterfacePortMapModel();
 
+    void setLock(bool locked);
+
     /*!
      *  Sets the interface data source being edited.
      *
@@ -138,7 +140,7 @@ private:
      *      @return True, if the selected port is excluded, otherwise false.
      */
     bool portIsExcluded(QString const& portName) const;
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -182,6 +184,8 @@ private:
 
     //! The selected end point.
     ConnectionEndpoint* endPoint_;
+
+    bool locked_;
 };
 
 //-----------------------------------------------------------------------------

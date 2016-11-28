@@ -44,13 +44,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] lh          The library in use.
      *      @param [in] component   The component containing the bus interface this item represents.
      *      @param [in] busIf       The bus interface this item represents.
      *      @param [in] dataGroup   The container for the item data.
      *      @param [in] parent      The parent object.
      */
-    BusInterfaceItem(LibraryInterface* lh, QSharedPointer<Component> component,
+    BusInterfaceItem(QSharedPointer<Component> component,
                      QSharedPointer<BusInterface> busIf,
                      QSharedPointer<InterfaceGraphicsData> dataGroup,
                      QGraphicsItem *parent = 0);
@@ -59,18 +58,9 @@ public:
 	virtual ~BusInterfaceItem();
 
     /*!
-     *  Sets the bus and abstraction types and the interface mode for the end point.
-     *
-     *      @param [in] busType  The bus type (bus definition VLNV).
-     *      @param [in] absType  The abstraction type (abstraction definition VLNV).
-     *      @param [in] mode     The interface mode.
-     */
-    void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
-
-    /*!
      *  Update the graphics to match the IP-XACT bus interface
      */
-    void updateInterface();
+    virtual void updateInterface();
 
     /*!
      *  Defines the interface.
@@ -79,26 +69,12 @@ public:
      *      @param [in] addPorts  If true, the given ports are added to the parent component.
      *      @param [in] ports     The related ports.
      */
-    void define(QSharedPointer<BusInterface> busIf, bool addPorts,
-                QList< QSharedPointer<Port> > ports = QList< QSharedPointer<Port> >());
-
-    /*!
-     *  Sets the interface undefined.
-     *
-     *      @param [in] removePorts If true, the ports that are part of the bus interface are
-     *                  removed from the parent component.
-     */
-    void undefine(bool removePorts);
+    void define(QSharedPointer<BusInterface> busIf);
 
     /*!
      *  Returns the ports in the top-level component that are related to the bus interface.
      */
 	QList<QSharedPointer<Port> > getPorts() const;
-
-    /*!
-     *  Returns true if the bus interface has been created by copying the ports.
-     */
-    bool hasPortsCopied() const;
 
     int type() const { return Type; }
 
@@ -212,6 +188,8 @@ public:
 	 */
 	virtual void setInterfaceMode(General::InterfaceMode mode);
 
+    virtual General::InterfaceMode getInterfaceMode() const;
+
     /*!
      *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
      */
@@ -228,10 +206,6 @@ public:
      *      @return The data vendor extension.
      */
     QSharedPointer<VendorExtension> getDataExtension() const;
-
-signals:
-    //! Send an error message to the user.
-    void errorMessage(const QString& errorMessage);
 
 protected:
     
@@ -268,14 +242,6 @@ protected:
 private:
 
     /*!
-     *  Clones the port maps and required ports from the source end point.
-     *
-     *      @param [out] busIf   The destination bus interface.
-     *      @param [in]  source  The source end point.
-     */
-    bool clonePortMaps(QSharedPointer<BusInterface> busIf, ConnectionEndpoint const* source);
-
-    /*!
      *  Creates the shape of a up-pointing arrow for the item.
      *
      *      @return The shape for the item.
@@ -302,13 +268,10 @@ private:
      *      @return The direction of the bus interface.
      */
     DirectionTypes::Direction getInterfaceDirection() const;
-    
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The library interface.
-    LibraryInterface* library_;
 
     //! The name label.
 	QGraphicsTextItem nameLabel_;
@@ -333,12 +296,6 @@ private:
 
     //! The off-page connector.
     OffPageConnectorItem* offPageConnector_;
-
-    //! If true, the ports were copied during end point connection.
-    bool portsCopied_;
-
-    //! The name of the interface before connecting.
-    QString oldName_;
 };
 
 #endif // BUSINTERFACEITEM_H

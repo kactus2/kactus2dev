@@ -38,7 +38,8 @@ mappingItems_(),
 componentFinder_(new ComponentParameterFinder(QSharedPointer<Component>())),
 parser_(new IPXactSystemVerilogParser(componentFinder_)),
 activeInterfaces_(),
-endPoint_()
+endPoint_(),
+locked_(true)
 {
 
 }
@@ -49,6 +50,13 @@ endPoint_()
 InterfacePortMapModel::~InterfacePortMapModel()
 {
 
+}
+//-----------------------------------------------------------------------------
+// Function: InterfacePortMapModel::setLock()
+//-----------------------------------------------------------------------------
+void InterfacePortMapModel::setLock(bool locked)
+{
+    locked_ = locked;
 }
 
 //-----------------------------------------------------------------------------
@@ -85,8 +93,7 @@ void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem,
         QSharedPointer<AbstractionDefinition> absDef;
         if (libraryHandler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
         {
-            QSharedPointer<Document> libComp = libraryHandler_->getModel(absDefVLNV);
-            absDef = libComp.staticCast<AbstractionDefinition>();
+            absDef =  libraryHandler_->getModel(absDefVLNV).staticCast<AbstractionDefinition>();
         }
 
         // get the component that contains the selected interface
@@ -95,37 +102,37 @@ void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem,
 
         foreach (QSharedPointer<PortMap> portMap, portMaps)
         {
-            MappingItem newItem;
-
-            QString logicalPortName = portMap->getLogicalPort()->name_;
-
-            newItem.logicalIsOk_ = absDef && absDef->hasPort(logicalPortName, busInterface->getInterfaceMode());
-
-            int logicalSize = 1;
-            // if the logical port is vectored
-            if (portMap->getLogicalPort() && portMap->getLogicalPort()->range_)
+            if (portMap->getLogicalPort() && portMap->getPhysicalPort())
             {
-                QString logicalLeft = parser_->parseExpression(portMap->getLogicalPort()->range_->getLeft());
-                QString logicalRight = parser_->parseExpression(portMap->getLogicalPort()->range_->getRight());
+                MappingItem newItem;
 
-                logicalSize = abs(logicalLeft.toInt() - logicalRight.toInt()) + 1;
+                QString logicalPortName = portMap->getLogicalPort()->name_;
 
-                logicalPortName += "[" + logicalLeft + ".." + logicalRight + "]";
-            }
+                newItem.logicalIsOk_ = absDef && absDef->hasPort(logicalPortName, busInterface->getInterfaceMode());
 
-            // display at least the name of physical port
-            QString physicalPortName = portMap->getPhysicalPort()->name_;
+                int logicalSize = 1;
+                // if the logical port is vectored
+                if (portMap->getLogicalPort()->range_)
+                {
+                    QString logicalLeft = parser_->parseExpression(portMap->getLogicalPort()->range_->getLeft());
+                    QString logicalRight = parser_->parseExpression(portMap->getLogicalPort()->range_->getRight());
 
-            newItem.physicalPortName_ = physicalPortName;
+                    logicalSize = abs(logicalLeft.toInt() - logicalRight.toInt()) + 1;
 
-            newItem.physicalIsOk_ = (component && component->hasPort(physicalPortName));
+                    logicalPortName += "[" + logicalLeft + ".." + logicalRight + "]";
+                }
+                               
+                newItem.logicalPort_ = logicalPortName;
 
-            int physicalSize = 1;
+                // display at least the name of physical port
+                QString physicalPortName = portMap->getPhysicalPort()->name_;
+                newItem.physicalPortName_ = physicalPortName;
+                newItem.physicalIsOk_ = (component && component->hasPort(physicalPortName));
 
-            int physicalLeft = 0;
-            int physicalRight = 0;
-            if (portMap->getPhysicalPort())
-            {
+                int physicalSize = 1;
+
+                int physicalLeft = 0;
+                int physicalRight = 0;
                 QSharedPointer<PortMap::PhysicalPort> physicalPort = portMap->getPhysicalPort();
                 if (portMap->getPhysicalPort()->partSelect_)
                 {
@@ -134,32 +141,31 @@ void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem,
 
                     physicalSize = abs(physicalLeft - physicalRight) + 1;
                 }
+                // if port map does not contain physical vector but port is found on the component
+                else if (component->hasPort(physicalPortName))
+                {
+                    QSharedPointer<Port> componentPort = component->getPort(physicalPortName);
+
+                    physicalLeft = parser_->parseExpression(componentPort->getLeftBound()).toInt();
+                    physicalRight = parser_->parseExpression(componentPort->getRightBound()).toInt();
+
+                    physicalSize = abs(physicalLeft - physicalRight) + 1;
+                }
+
+                physicalPortName += "[" + QString::number(physicalLeft) + ".." + QString::number(physicalRight) + "]";
+
+                if (logicalSize != physicalSize)
+                {
+                    newItem.logicalIsOk_ = false;
+                    newItem.physicalIsOk_ = false;
+                }
+
+                newItem.physicalPort_ = physicalPortName;
+
+                newItem.isExcluded_ = portIsExcluded(newItem.physicalPortName_);
+
+                mappingItems_.append(newItem);
             }
-            // if port map does not contain physical vector but port is found on the component
-            else if (component->hasPort(physicalPortName))
-            {
-                QSharedPointer<Port> componentPort = component->getPort(physicalPortName);
-
-                physicalLeft = parser_->parseExpression(componentPort->getLeftBound()).toInt();
-                physicalRight = parser_->parseExpression(componentPort->getRightBound()).toInt();
-
-                physicalSize = abs(physicalLeft - physicalRight) + 1;
-            }
-
-            physicalPortName += "[" + QString::number(physicalLeft) + ".." + QString::number(physicalRight) + "]";
-
-            if (logicalSize != physicalSize)
-            {
-                newItem.logicalIsOk_ = false;
-                newItem.physicalIsOk_ = false;
-            }
-
-            newItem.logicalPort_ = logicalPortName;
-            newItem.physicalPort_ = physicalPortName;
-
-            newItem.isExcluded_ = portIsExcluded(newItem.physicalPortName_);
-
-            mappingItems_.append(newItem);
         }
     }
 
@@ -244,8 +250,6 @@ QVariant InterfacePortMapModel::data(QModelIndex const& index, int role) const
         {
             return QColor("red");
         }
-
-        return QColor("black");
     }
     else if (role == Qt::BackgroundRole)
     {
@@ -283,22 +287,19 @@ QVariant InterfacePortMapModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 QVariant InterfacePortMapModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation == Qt::Horizontal)
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
-        if (role == Qt::DisplayRole)
+        if (section == InterfacePortMapColumns::INTERFACE_LOGICAL_NAME)
         {
-            if (section == InterfacePortMapColumns::INTERFACE_LOGICAL_NAME)
-            {
-                return tr("Logical name");
-            }
-            else if (section == InterfacePortMapColumns::INTERFACE_PHYSICAL_NAME)
-            {
-                return tr("Physical name");
-            }
-            else if (section == InterfacePortMapColumns::INTERFACE_EXCLUDE)
-            {
-                return tr("Exclude");
-            }
+            return tr("Logical name");
+        }
+        else if (section == InterfacePortMapColumns::INTERFACE_PHYSICAL_NAME)
+        {
+            return tr("Physical name");
+        }
+        else if (section == InterfacePortMapColumns::INTERFACE_EXCLUDE)
+        {
+            return tr("Exclude");
         }
     }
 
@@ -310,14 +311,14 @@ QVariant InterfacePortMapModel::headerData(int section, Qt::Orientation orientat
 //-----------------------------------------------------------------------------
 bool InterfacePortMapModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
-    if (!index.isValid() || index.row() < 0 || index.row() >= mappingItems_.size())
+    if (locked_ || !index.isValid() || index.row() < 0 || index.row() >= mappingItems_.size())
     {
         return false;
     }
 
     if (role == Qt::CheckStateRole)
     {
-        bool excludeValue = value == Qt::Checked;
+        bool excludeValue = (value == Qt::Checked);
 
         mappingItems_[index.row()].isExcluded_ = excludeValue;
 
@@ -331,6 +332,7 @@ bool InterfacePortMapModel::setData(const QModelIndex& index, const QVariant& va
             }
         }
 
+        emit dataChanged(index, index);
         emit contentChanged();
 
         return true;
@@ -349,7 +351,7 @@ Qt::ItemFlags InterfacePortMapModel::flags(const QModelIndex& index) const
         return Qt::NoItemFlags;
     }
 
-    Qt::ItemFlags itemFlags = Qt::ItemIsEnabled;
+    Qt::ItemFlags itemFlags = Qt::NoItemFlags;
 
     if (index.column() == InterfacePortMapColumns::INTERFACE_EXCLUDE)
     {
@@ -360,6 +362,11 @@ Qt::ItemFlags InterfacePortMapModel::flags(const QModelIndex& index) const
         else
         {
             itemFlags |= Qt::ItemIsUserCheckable;
+            
+            if (!locked_)
+            {
+                itemFlags |= Qt::ItemIsEnabled;
+            }
         }
     }
 

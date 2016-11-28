@@ -53,6 +53,9 @@ public:
      */
     QMap<QString, QString> getData() const;
 
+    //! Disables editing while still enabling scrolling.
+    void setLock(bool locked);
+
 public slots:
     /*!
      *  Sets the data for editing.

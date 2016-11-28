@@ -101,11 +101,11 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] scene  The scene.
-     *      @param [in] conn   The interconnection to add.
-     *      @param [in] parent The parent command.
+     *      @param [in] scene           The scene.
+     *      @param [in] connectionItem  The interconnection to add.
+     *      @param [in] parent          The parent command.
      */
-    ConnectionAddCommand(QGraphicsScene* scene, HWConnection* conn, QSharedPointer<Design> design,
+    ConnectionAddCommand(QGraphicsScene* scene, HWConnection* connectionItem, QSharedPointer<Design> design,
                          QUndoCommand* parent = 0);
 
     /*!
@@ -128,11 +128,6 @@ private:
     ConnectionAddCommand(ConnectionAddCommand const& rhs);
     ConnectionAddCommand& operator=(ConnectionAddCommand const& rhs);
 
-    /*!
-     *  Change the bus reference of an interconnection containing a hierarchical interface.
-     */
-    void changeHierarchicalInterfaceBusReference();
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -142,22 +137,11 @@ private:
 
     QSharedPointer<Design> design_;
 
-    //! The interface modes for the endpoints.
-    General::InterfaceMode mode1_;
-    General::InterfaceMode mode2_;
-
-    //! The port maps for the hierarchical end point (if any).
-    QList< QSharedPointer<PortMap> > portMaps_;
-
     //! The graphics scene.
     QGraphicsScene* scene_;
 
-
     //! Boolean flag for indicating if the connection should be deleted in the destructor.
     bool del_;
-
-    //! If true, port copy operation is a part of this undo command.
-    bool portsCopied_;
 };
 
 //-----------------------------------------------------------------------------
@@ -172,35 +156,14 @@ public:
 	 *      Creates the child commands for adding physical ports to the component model. 
 	 *
      *      @param [in] destComponent  The component to which to copy an interface.
-     *      @param [in] srcComponent   The component from which the interface is copied.
 	 *      @param [in] interface      The interface item to paste.
 	 *      @param [in] column         The target column.
      *      @param [in] diagram        The target design diagram.
      *      @param [in] parent         The parent command.
      */
-    BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
-        QSharedPointer<Component> destComponent,
+    BusInterfacePasteCommand(QSharedPointer<Component> destComponent,
         BusInterfaceItem* interfaceItem,
         GraphicsColumn* column, DesignDiagram* diagram, QUndoCommand* parent = 0);
-
-    /*!
-     *  Constructor.
-     *
-	 *      Creates the child commands for adding pre-defined physical ports to the component model. 
-	 *
-     *      @param [in] destComponent  The component to which to copy an interface.
-     *      @param [in] srcComponent   The component from which the interface is copied.
-	 *      @param [in] interface      The interface item to paste.
-	 *      @param [in] column         The target column.
-     *      @param [in] diagram        The target design diagram.
-	 *      @param [in] ports          The ports for the interface.
-     *      @param [in] parent         The parent command.
-     */
-    BusInterfacePasteCommand(QSharedPointer<Component> srcComponent, 
-        QSharedPointer<Component> destComponent,
-        BusInterfaceItem* interfaceItem,
-        GraphicsColumn* column, DesignDiagram* diagram, QList<QSharedPointer<Port> > ports,
-        QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -225,9 +188,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The component to copy from.
-    QSharedPointer<Component> srcComponent_;
 
     //! The component to copy to.
     QSharedPointer<Component> destComponent_;

@@ -67,7 +67,7 @@ namespace General
     /*!
     *  Returns an interface mode that is compatible with the given interface mode.
     */
-    InterfaceMode getCompatibleInterfaceMode(General::InterfaceMode mode);
+    IPXACTMODELS_EXPORT InterfaceMode getCompatibleInterfaceMode(General::InterfaceMode mode);
 
     /*!
     * Specifies the required driver type

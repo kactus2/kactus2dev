@@ -48,15 +48,6 @@ public:
 	//! The destructor
 	virtual ~BusPortItem();
 
-    /*!
-     *  Sets the bus and abstraction types and the interface mode for the end point.
-     *
-     *      @param [in] busType  The bus type (bus definition VLNV).
-     *      @param [in] absType  The abstraction type (abstraction definition VLNV).
-     *      @param [in] mode     The interface mode.
-     */
-    void setTypes(VLNV const& busType, VLNV const& absType, General::InterfaceMode mode);
-
     /*! Update the graphics to match the IP-XACT bus interface
      *
      */
@@ -102,21 +93,6 @@ public:
      *      @return False if there was an error in the connection. Otherwise true.
      */
     virtual bool onConnect(ConnectionEndpoint const* other);
-
-    /*!
-     *  Finds the mode for the interface and generated ports (if any).
-     *
-     *      @param [in] other The other end point of the connection.
-     *      @param [out] mode The interface mode determined or selected by user.
-     *      @param [out] ports Ports generated with the connection.
-     *      @param [out] portMaps Port maps generated with the connection.
-     *
-     *      @return False if there was an error in the connection or user rejected 
-     *              the mode dialog. Otherwise true.
-     */
-    bool getModeAndPorts(ConnectionEndpoint const* other, General::InterfaceMode& mode, 
-                           QList< QSharedPointer<Port> >& ports,
-                           QList< QSharedPointer<PortMap> >& portMaps);
 
     /*!
      *  Called when a connection has been removed from between this and another end point.
@@ -180,6 +156,8 @@ public:
 	 *      @param mode [in]    The interface mode to set.
 	*/
 	virtual void setInterfaceMode(General::InterfaceMode mode);
+
+    virtual General::InterfaceMode getInterfaceMode() const;
 
     /*!
      *  Returns the corresponding off-page connector or a null pointer if the end point does not have one.
@@ -264,9 +242,6 @@ private:
 
     //! The off-page connector.
     OffPageConnectorItem* offPageConnector_;
-
-    //! Name of the bus interface before injection from another.
-    QString oldName_;
 };
 
 #endif // BUSPORTITEM_H
