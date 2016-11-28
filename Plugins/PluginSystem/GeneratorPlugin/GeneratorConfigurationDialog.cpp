@@ -66,8 +66,8 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
         this, SLOT(onMemoryGenerationStateChanged(int)), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
-    connect(configuration_.data(), SIGNAL(outputFilesChanged), 
-        fileOutput_, SLOT(onOutputFilesChanged), Qt::UniqueConnection);
+    connect(configuration_.data(), SIGNAL(outputFilesChanged()), 
+        fileOutput_, SLOT(onOutputFilesChanged()), Qt::UniqueConnection);
 
     configuration_->parseDocuments();
 }
