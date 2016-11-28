@@ -1026,7 +1026,7 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView()
     QCOMPARE(importComponentInstantiation->getModuleName(), modelName);
     QCOMPARE(importComponentInstantiation->getLanguage(), QString("verilog"));
 	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->language, QString("verilog"));
-	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->tool, QString("Kactus2"));
+	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->tool, QString("kactus2.tut.fi"));
 
     verifyDeclarationIsHighlighted(fileContent.lastIndexOf(modelName), modelName.length(), ImportColors::VIEWNAME);
 }

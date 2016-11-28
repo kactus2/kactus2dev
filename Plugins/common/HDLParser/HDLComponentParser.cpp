@@ -74,12 +74,12 @@ void HDLComponentParser::parseComponent(QSharedPointer<View> activeView)
     if (activeInstantiation_ && !activeInstantiation_->getModuleName().isEmpty())
     {
         // If there is a named component instantiation, its module shall be used.
-        retval_->fileName_ = activeInstantiation_->getModuleName();
+        retval_->moduleName_ = activeInstantiation_->getModuleName();
     }
     else
     {
-        // Else take file name from the VLNV of the component.
-        retval_->fileName_ = retval_->component->getVlnv().getName();
+        // Else take module name from the VLNV of the component.
+        retval_->moduleName_ = retval_->component->getVlnv().getName();
     }
 
     // Initialize the parameter finder.

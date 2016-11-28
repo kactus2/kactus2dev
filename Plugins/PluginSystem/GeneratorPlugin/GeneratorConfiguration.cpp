@@ -80,7 +80,7 @@ void GeneratorConfiguration::parseDocuments()
             // Point to the parsed file name.
             QString* fileName = &design->topComponent_->fileName_;
             // Add the file suffix to it.
-            *fileName = *fileName + ".v";
+            *fileName = design->topComponent_->moduleName_ + ".v";
             // Inform the names to the model.
             fileOutput_->getFileNames()->append(fileName);
 
@@ -93,7 +93,7 @@ void GeneratorConfiguration::parseDocuments()
         // Point to the parsed file name.
         QString* fileName = &componentParser_->getParsedComponent()->fileName_;
         // Add the file suffix to it.
-        *fileName = *fileName + ".v";
+        *fileName = componentParser_->getParsedComponent()->moduleName_ + ".v";
         // Inform the names to the model.
         fileOutput_->getFileNames()->append(fileName);
 

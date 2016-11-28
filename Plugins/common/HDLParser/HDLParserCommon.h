@@ -122,6 +122,8 @@ struct GenerationComponent
 
     //! The filename for the document.
     QString fileName_;
+    //! The module name for HDL.
+    QString moduleName_;
 
     //! The parsed remap states.
     QList<QSharedPointer<GenerationRemapState> > remapStates;

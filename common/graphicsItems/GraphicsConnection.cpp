@@ -629,8 +629,10 @@ void GraphicsConnection::setItemSettings()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::createRoute(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2)
 {
-    Q_ASSERT(endpoint1 != 0);
-    Q_ASSERT(endpoint2 != 0);
+    if (!endpoint1 || !endpoint2)
+    {
+        return;
+    }
 
     QPointF p1 = endpoint1->scenePos();
     QPointF p2 = endpoint2->scenePos();

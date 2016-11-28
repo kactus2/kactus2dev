@@ -136,7 +136,7 @@ bool ComponentVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeModuleDeclaration(QTextStream& outputStream) const
 {
-    outputStream << "module " << component_->fileName_;
+    outputStream << "module " << component_->moduleName_;
     
     writeParameterDeclarations(outputStream);
 

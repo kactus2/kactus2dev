@@ -131,7 +131,7 @@ void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topCompone
 
         foreach(QSharedPointer<GenerationDesign> gd, parsedDesigns_)
         {
-            QString name = gd->topComponent_->fileName_;
+            QString name = gd->topComponent_->moduleName_;
 
             // Find the name from the set of existing names.
             QMap<QString,int>::iterator nameIter = names.find(name);
@@ -150,7 +150,7 @@ void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topCompone
             }
 
             // Set the module name as the existing module name + number of encounter before this one.
-            gd->topComponent_->fileName_ = name + "_" + QString::number(count);
+            gd->topComponent_->moduleName_ = name + "_" + QString::number(count);
         }
     }
 }

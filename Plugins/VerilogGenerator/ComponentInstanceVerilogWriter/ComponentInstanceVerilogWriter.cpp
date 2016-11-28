@@ -52,7 +52,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
-    instanceString.replace("<component>", instance_->component->fileName_);
+    instanceString.replace("<component>", instance_->component->moduleName_);
     instanceString.replace("<parameters>", parameterAssignments());
     instanceString.replace("<instanceName>", formattedInstanceName());
     instanceString.replace("<portConnections>", portConnections());

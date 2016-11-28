@@ -947,7 +947,7 @@ void ComponentDesignDiagram::hideOffPageConnections()
     {
         GraphicsConnection* connection = dynamic_cast<GraphicsConnection*>(item);
 
-        if (connection != 0 && connection->endpoint1()->type() == offpageConnectorType())
+        if (connection && connection->endpoint1() && connection->endpoint1()->type() == offpageConnectorType())
         {
             connection->hide();
         }
