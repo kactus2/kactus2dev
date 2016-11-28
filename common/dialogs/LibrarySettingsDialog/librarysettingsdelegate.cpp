@@ -11,17 +11,29 @@
 #include <QMouseEvent>
 #include <QEvent>
 
-LibrarySettingsDelegate::LibrarySettingsDelegate(QObject *parent):
-QStyledItemDelegate(parent) {
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDelegate::LibrarySettingsDelegate()
+//-----------------------------------------------------------------------------
+LibrarySettingsDelegate::LibrarySettingsDelegate(QObject *parent): QStyledItemDelegate(parent)
+{
 }
 
-LibrarySettingsDelegate::~LibrarySettingsDelegate() {
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDelegate::~LibrarySettingsDelegate()
+//-----------------------------------------------------------------------------
+LibrarySettingsDelegate::~LibrarySettingsDelegate()
+{
 }
 
-void LibrarySettingsDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const {
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDelegate::paint()
+//-----------------------------------------------------------------------------
+void LibrarySettingsDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option,
+    QModelIndex const& index) const
+{
 	QStyleOptionViewItemV4 viewItemOption(option);
 
-	if ((index.column() == DEF_COLUMN) || (index.column() == ACTIVE_COL))
+	if (index.column() == DEF_COLUMN ||index.column() == ACTIVE_COL)
 	{
 		painter->fillRect(option.rect, Qt::white);
 
@@ -37,7 +49,12 @@ void LibrarySettingsDelegate::paint( QPainter *painter, const QStyleOptionViewIt
 	QStyledItemDelegate::paint(painter, viewItemOption, index);
 }
 
-bool LibrarySettingsDelegate::editorEvent( QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index ) {
+//-----------------------------------------------------------------------------
+// Function: LibrarySettingsDelegate::editorEvent()
+//-----------------------------------------------------------------------------
+bool LibrarySettingsDelegate::editorEvent(QEvent* event, QAbstractItemModel* model,
+    QStyleOptionViewItem const& option, QModelIndex const& index)
+{
 	Q_ASSERT(event);
 	Q_ASSERT(model);
 
@@ -75,11 +92,21 @@ bool LibrarySettingsDelegate::editorEvent( QEvent *event, QAbstractItemModel *mo
 			return false;
 		}
 
- 		newState = (static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked ? Qt::Unchecked : Qt::Checked);
+        if (static_cast<Qt::CheckState>(value.toInt()) == Qt::Checked)
+        {
+            newState = Qt::Unchecked;
+        }
+        else
+        {
+            newState = Qt::Checked;
+        }
+
+         model->setData(index, newState, Qt::CheckStateRole);
 	}
-	else {
+	else
+    {
 		return false;
 	}
 
-	return model->setData(index, newState, Qt::CheckStateRole);
+	return QStyledItemDelegate::editorEvent(event, model, option, index);
 }

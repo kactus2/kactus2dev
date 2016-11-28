@@ -19,11 +19,9 @@
 #include <QTableWidget>
 #include <QTableWidgetItem>
 
-#include <QListWidgetItem>
-
-/*! \brief The dialog to display library locations and select active and default library paths.
-* 
-*/
+//-----------------------------------------------------------------------------
+//! The dialog to display library locations and select active and default library paths.
+//-----------------------------------------------------------------------------
 class LibrarySettingsDialog : public QDialog
 {
     Q_OBJECT
@@ -38,9 +36,7 @@ public:
      */
     LibrarySettingsDialog(QSettings& settings, QWidget* parent = 0);
 
-    /*!
-     *  Destructor.
-     */
+    //! Destructor.
     ~LibrarySettingsDialog();
 
     /*!
@@ -50,9 +46,7 @@ public:
      */
     bool validate();
 
-    /*!
-     *  Applies the changes that were done in the page.
-     */
+    //! Applies the changes that were done in the page.
     void apply();
 
 public slots:
@@ -63,38 +57,26 @@ public slots:
     //! Removes the currently selected library location.
     void removeLocation();
 
-	/*! \brief Called when a location is selected in the locations list.
+	/*! Called when a location is selected in the locations list.
 	 *
-	 * Method: 		onSelectLocation
-	 * Full name:	LibrarySettingsDialog::onSelectLocation
-	 * Access:		public 
-	 *
-	 * \param cur Pointer to the selected item.
-	 * \param prev Pointer to the previously selected item.
-	 *
+	 *      @param [in] cur     Pointer to the selected item.
+	 *      @param [in] prev    Pointer to the previously selected item.
 	*/
 	void onSelectLocation(QTableWidgetItem* cur, QTableWidgetItem* prev);
 
 signals:
-	//! \brief Emitted when the library settings has changed and a scan should be performed.
+	//! Emitted when the library settings has changed and a scan should be performed.
 	void scanLibrary();
 
 private slots:
 
-	/*! \brief Handler for item clicks on the lib locations list.
+	/*! Handler for item clicks on the lib locations list.
 	 *
-	 * Method: 		onItemClicked
-	 * Full name:	LibrarySettingsDialog::onItemClicked
-	 * Access:		private 
-	 *
-	 * \param item Pointer to the clicked item.
-	 *
+	 *      @param [in] item Pointer to the clicked item.
 	*/
 	void onItemClicked(QTableWidgetItem* item);
 
-    /*!
-     *  Called when the user presses OK.
-     */
+    //! Called when the user presses OK.
     virtual void accept();
 
 private:
@@ -107,6 +89,15 @@ private:
      */
     void loadSettings();
 
+    /*!
+     *  Creates a row in the library path table for the given directory.
+     *
+     *      @param [in] directory   The directory to add as library path.
+     *      @param [in] isActive    Is the directory is set active or not.
+     *      @param [in] isDefault   Is the directory is set default or not.
+     */
+    void createRowForDirectory(QString const& directory, bool isActive, bool isDefault);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -114,7 +105,7 @@ private:
     //! The settings store.
 	 QSettings& settings_;
 
-	 //! \brief Library locations table
+	 //! Library locations table
 	 QTableWidget* libLocationsTable_;
 
 	 //! Add location button.
@@ -126,7 +117,7 @@ private:
 	 //! OK button.
 	 QPushButton* okButton_;
 
-	 //! \brief Holds the info on if the user has changed the library or not.
+	 //! Holds the info on if the user has changed the library or not.
 	 bool changed_;
 };
 
