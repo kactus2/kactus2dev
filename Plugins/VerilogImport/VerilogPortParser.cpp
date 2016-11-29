@@ -56,7 +56,7 @@ namespace
         "(" + VerilogSyntax::NAMES + ")(?:" + PORT_DECLARATION_END + ")");
 
     //! Verilog ports in Verilog-1995 style.
-    const QRegularExpression PORT_1995("(" + PORT_DIRECTION + ")\\s+(" + VerilogSyntax::RANGE + ")?\\s*"
+    const QRegularExpression PORT_1995("(" + PORT_DIRECTION + ")\\s+(?:(" + PORT_TYPE + ")\\s+)?(" + VerilogSyntax::RANGE + ")?\\s*"
         "(" + VerilogSyntax::NAMES + ")\\s*[;](?:[ \\t]*"+ VerilogSyntax::COMMENT + ")?");
 }
 

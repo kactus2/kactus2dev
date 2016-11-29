@@ -89,10 +89,11 @@ private:
      *  Finds parameter declarations from the inspected string with provided rule.
      *
      *      @param [in] inspect           The input text containing the declarations.
+     *      @param [in] findTerminator    If true, finds a declaration ending by semicolon if needed.
      *
      *      @return   The resulting list of declarations.
      */
-    QStringList findDeclarations(QString const& inspect);
+    QStringList findDeclarations(QString const& inspect, bool findTerminator);
 
     /*!
      *  Create an IP-XACT type for the parameter according to the given data type.

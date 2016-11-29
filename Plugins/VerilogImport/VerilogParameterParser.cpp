@@ -127,7 +127,7 @@ QStringList VerilogParameterParser::findANSIDeclarations(QString const& input)
         inspect = inspect.left(loc);
     }
 
-    return findDeclarations(inspect);
+    return findDeclarations(inspect, false);
 }
 
 //-----------------------------------------------------------------------------
@@ -143,7 +143,7 @@ QStringList VerilogParameterParser::findOldDeclarations(QString const& input)
     QString inspect = input.mid(startIndex, length);
     inspect = VerilogSyntax::cullStrayComments(inspect);
 
-    return findDeclarations(inspect);
+    return findDeclarations(inspect, true);
 }
 
 //-----------------------------------------------------------------------------
@@ -220,7 +220,7 @@ QString VerilogParameterParser::createTypeFromDataType(QString const& dataType)
 //-----------------------------------------------------------------------------
 // Function: VerilogParameterParser::findDeclarations()
 //-----------------------------------------------------------------------------
-QStringList VerilogParameterParser::findDeclarations(QString const& inspect)
+QStringList VerilogParameterParser::findDeclarations(QString const& inspect, bool findTerminator)
 {
     // Rule used to detect parameter declarations.
     QRegularExpression declarationRule("\\bparameter\\s+", QRegularExpression::CaseInsensitiveOption);
@@ -239,10 +239,35 @@ QStringList VerilogParameterParser::findDeclarations(QString const& inspect)
         // The next of the previous iteration is now the current.
         currentStart = nextStart;
         // Find the location of the next parameter for this iteration.
-        nextStart = inspect.indexOf(declarationRule, nextStart + 1);
+        nextStart = inspect.indexOf(declarationRule, currentStart + 1);
 
-        // Everything between current and next are the declaration.
-        QString declaration = inspect.mid(currentStart, nextStart - currentStart);
+        // Must find where the declaration ends: By default, its the next declaration.
+        int splitLocation = nextStart;
+
+        if (splitLocation < 0 && findTerminator)
+        {
+            // If next declaration is not found, find the next terminator.
+            splitLocation = inspect.indexOf(";", currentStart + 1);
+
+            // Then take the rest of the line, so that we get the comments as well.
+            splitLocation = inspect.indexOf("\n", splitLocation);
+        }
+
+        QString declaration;
+
+        if (splitLocation >= 0)
+        {
+            // Everything between current and split location are the declaration.
+            int length = splitLocation - currentStart;
+
+            declaration = inspect.mid(currentStart, length);
+        }
+        else
+        {
+            // No split location found means that take the rest of the sting.
+            declaration = inspect.mid(currentStart);
+        }
+
         // Also remove extra white space.
         declaration = declaration.trimmed();
 

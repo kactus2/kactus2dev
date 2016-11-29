@@ -135,12 +135,6 @@ void tst_VerilogPortParser::testNothingIsParsedFromMalformedInput_data()
         ");\n"
         "endmodule";
 
-    QTest::newRow("Typed 1995-style port") <<
-        "module test (data);\n"
-        "    output reg data;\n"
-        "\n"
-        "endmodule";
-
     QTest::newRow("Signed 1995-style port.") <<
         "module test (data);\n"
         "    output wire signed [2:0] data; // 2's complement data.\n"
@@ -283,6 +277,7 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed()
 {
     QFETCH(QString, input);
     QFETCH(QString, expectedPortName);
+    QFETCH(QString, expectedType);
     QFETCH(DirectionTypes::Direction, expectedDirection);
     QFETCH(QString, expectedLeft);
     QFETCH(QString, expectedRight);
@@ -295,7 +290,7 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed()
     QSharedPointer<Port> createdPort = importComponent_->getPorts()->first();
 
     QCOMPARE(createdPort->name(), expectedPortName);
-    QCOMPARE(createdPort->getTypeName(), QString(""));
+    QCOMPARE(createdPort->getTypeName(), expectedType);
     QCOMPARE(createdPort->getDirection(), expectedDirection);
     QCOMPARE(createdPort->getLeftBound(), expectedLeft);
     QCOMPARE(createdPort->getRightBound(), expectedRight);
@@ -309,6 +304,7 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed_data()
 {
     QTest::addColumn<QString>("input");
     QTest::addColumn<QString>("expectedPortName");
+    QTest::addColumn<QString>("expectedType");
     QTest::addColumn<DirectionTypes::Direction>("expectedDirection");
     QTest::addColumn<QString>("expectedLeft");
     QTest::addColumn<QString>("expectedRight");
@@ -319,28 +315,28 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed_data()
         "    input clk;\n"
         "\n"
         "endmodule"
-        << "clk" << DirectionTypes::IN << "" << "" << "";
+        << "clk" << "" << DirectionTypes::IN << "" << "" << "";
 
     QTest::newRow("Little-endian port") <<
     "module test (data);\n"
-    "    input [7:0] data;\n"
+    "    input reg [7:0] data;\n"
     "\n"
     "endmodule"
-    << "data" <<  DirectionTypes::IN << "7" << "0" << "";
+    << "data" << "reg" <<  DirectionTypes::IN << "7" << "0" << "";
 
     QTest::newRow("Big-endian port") <<
     "module test (data);\n"
     "    input [0:7] data;\n"
     "\n"
     "endmodule"
-    << "data" <<  DirectionTypes::IN << "0" << "7" << "";
+    << "data" << "" <<  DirectionTypes::IN << "0" << "7" << "";
     
     QTest::newRow("Comment as a description.") <<
     "module test (rst_n);\n"
-    "    input rst_n; // Active low reset.\n"
+    "    input wire rst_n; // Active low reset.\n"
     "\n"
     "endmodule"
-    << "rst_n" <<  DirectionTypes::IN << "" << "" << "Active low reset.";
+    << "rst_n" << "wire" <<  DirectionTypes::IN << "" << "" << "Active low reset.";
 
     QTest::newRow("Additional whitespaces in port declaration") <<
     "module test (cs);output \n"
@@ -349,7 +345,7 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed_data()
     "    cs  ;  //Chip select\n"
     "\n"
     "endmodule"
-    << "cs" <<  DirectionTypes::OUT << "1" << "0" << "Chip select";
+    << "cs" << "" <<  DirectionTypes::OUT << "1" << "0" << "Chip select";
 
     QTest::newRow("Module with parameters.") <<
     "module test (clk);\n"
@@ -357,7 +353,7 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed_data()
     "    input clk;\n"
     "\n"
     "endmodule"
-    << "clk" <<  DirectionTypes::IN << "" << "" << "";
+    << "clk" << "" <<  DirectionTypes::IN << "" << "" << "";
     
 }
 
