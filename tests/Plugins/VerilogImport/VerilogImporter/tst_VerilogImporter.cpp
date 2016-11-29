@@ -18,6 +18,7 @@
 #include <IPXACTmodels/Component/Model.h>
 
 #include <Plugins/VerilogImport/VerilogImporter.h>
+#include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/PluginSystem/ImportPlugin/ImportColors.h>
 #include <Plugins/common/NameGenerationPolicy.h>
 
@@ -1026,7 +1027,7 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView()
     QCOMPARE(importComponentInstantiation->getModuleName(), modelName);
     QCOMPARE(importComponentInstantiation->getLanguage(), QString("verilog"));
 	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->language, QString("verilog"));
-	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->tool, QString("kactus2.tut.fi"));
+	QCOMPARE(importComponent_->getViews()->first()->getEnvIdentifiers()->first()->tool, VerilogSyntax::TOOL_NAME);
 
     verifyDeclarationIsHighlighted(fileContent.lastIndexOf(modelName), modelName.length(), ImportColors::VIEWNAME);
 }
