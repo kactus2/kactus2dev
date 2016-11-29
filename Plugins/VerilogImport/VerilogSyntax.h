@@ -16,6 +16,9 @@
 
 namespace VerilogSyntax
 {
+    //! Used to identify the tool in environment identifiers.
+    QString const TOOL_NAME = QString("kactus2.cs.tut.fi");
+
 	//! Warning that is generated to generated files.
 	const QString TAG_OVERRIDE("WARNING: EVERYTHING ON AND ABOVE THIS LINE MAY BE OVERWRITTEN BY KACTUS2!!!");
 

@@ -252,7 +252,7 @@ void VerilogImporter::setLanguageAndEnvironmentalIdentifiers(QSharedPointer<Comp
 	// Create environment identifiers for the view as needed.
     QSharedPointer<View::EnvironmentIdentifier> envIdentifierForImport(new View::EnvironmentIdentifier);
 	envIdentifierForImport->language = "verilog";
-	envIdentifierForImport->tool = "kactus2.tut.fi";
+	envIdentifierForImport->tool = VerilogSyntax::TOOL_NAME;
 
     if (!flatView->hasEnvIdentifier(envIdentifierForImport))
     {
