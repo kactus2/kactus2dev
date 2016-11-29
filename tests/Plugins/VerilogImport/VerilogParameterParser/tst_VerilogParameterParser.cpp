@@ -45,13 +45,17 @@ private slots:
     void evilDescription();
     
     void otherParameterAsParameterValue();
+    void testAnsiArrayValue();
+    void testAnsiArrayValue_data();
 
     void oldParameter();
     void multipleOldParameters();
     void variantOldParameters();
     void multiOldParameters();
     void oldWithEndModule();
-    void doubleMultiOldParameters();
+    void doubleMultiOldParameters();       
+    void testOldArrayValue();
+    void testOldArrayValue_data();
 
     void parametersToComponent();
     void oldParametersToComponent();
@@ -446,6 +450,64 @@ void tst_VerilogParameterParser::otherParameterAsParameterValue()
     verifyParameter(second, "second", first->getValueId(), "", "");
 }
 
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogParameterParser::testArrayValue()
+//-----------------------------------------------------------------------------
+void tst_VerilogParameterParser::testAnsiArrayValue()
+{
+    QFETCH(QString, input);
+    QFETCH(QString, expectedValue);
+
+    VerilogParameterParser parser;
+    QStringList declarations = parser.findANSIDeclarations(input);
+
+    QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
+    verifyParameter(parameters[0], "bits", expectedValue, "", "Array of bit vectors.");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogParameterParser::testAnsiArrayValue_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogParameterParser::testAnsiArrayValue_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expectedValue");
+
+    QTest::newRow("Array on a single rows")
+        << "module arrayTest #(\n"
+        "parameter [15:0] bits = {4'h0,4'h4,4'h8,4'hF} // Array of bit vectors.\n"
+        ") ();\n"
+        "endmodule"
+        << "{4'h0,4'h4,4'h8,4'hF}";
+
+    QTest::newRow("Array on multiple rows")
+        << "module arrayTest #(\n"
+        "parameter [15:0] bits = {4'h0,\n"
+        "4'h4,\n"
+        "4'h8,\n"
+        "4'hF} // Array of bit vectors.\n"
+        ") ();\n"
+        "endmodule"
+        << "{4'h0, 4'h4, 4'h8, 4'hF}";
+
+    QTest::newRow("Array on multiple rows with trailing comments")
+        << "module arrayTest #(\n"
+        "parameter [15:0] bits = {4'h0, // Comment #2\n"
+        "4'h4, // Comment #2.\n"
+        "4'h8,\n"
+        "4'hF} // Array of bit vectors.\n"
+        ") ();\n"
+        "endmodule"
+        << "{4'h0, 4'h4, 4'h8, 4'hF}";
+
+    QTest::newRow("Empty array")
+        << "module arrayTest #(\n"
+        "parameter [15:0] bits = {} // Array of bit vectors.\n"
+        ") ();\n"
+        "endmodule"
+        << "{}";
+}
+
 void tst_VerilogParameterParser::oldParameter()
 {
     QString input = "module shifter #(\n"
@@ -564,6 +626,59 @@ void tst_VerilogParameterParser::doubleMultiOldParameters()
     verifyParameter( parameters[3], "seppox", "5", "", "" );
     verifyParameter( parameters[4], "jari", "1234", "", "" );
     verifyParameter( parameters[5], "jorma", "7", "", "" );
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogParameterParser::testOldArrayValue()
+//-----------------------------------------------------------------------------
+void tst_VerilogParameterParser::testOldArrayValue()
+{
+    QFETCH(QString, input);
+    QFETCH(QString, expectedValue);
+
+    VerilogParameterParser parser;
+    QStringList declarations = parser.findOldDeclarations(input);
+
+    QList<QSharedPointer<ModuleParameter> > parameters = parser.parseParameters(declarations[0]);
+    verifyParameter(parameters[0], "bits", expectedValue, "", "Array of bit vectors.");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogParameterParser::testOldArrayValue_data()
+//-----------------------------------------------------------------------------
+void tst_VerilogParameterParser::testOldArrayValue_data()
+{
+    QTest::addColumn<QString>("input");
+    QTest::addColumn<QString>("expectedValue");
+
+    QTest::newRow("Array on a single rows")
+        << "module arrayTest();\n"
+        "parameter [15:0] bits = {4'h0,4'h4,4'h8,4'hF}; // Array of bit vectors.\n"
+        "endmodule"
+        << "{4'h0,4'h4,4'h8,4'hF}";
+
+    QTest::newRow("Array on multiple rows")
+        << "module arrayTest();\n"
+        "parameter [15:0] bits = {4'h0,\n"
+        "4'h4,\n"
+        "4'h8,\n"
+        "4'hF}; // Array of bit vectors.\n"
+        "endmodule"
+        << "{4'h0, 4'h4, 4'h8, 4'hF}";
+
+    QTest::newRow("Array on multiple rows with trailing comments")
+        << "module arrayTest();\n"
+        "parameter [15:0] bits = {4'h0, // Comment #1.\n"
+        "4'h4,\n"
+        "4'h8, // Comment #2\n"
+        "4'hF}; // Array of bit vectors.\n"        
+        << "{4'h0, 4'h4, 4'h8, 4'hF}";
+
+    QTest::newRow("Empty array")
+        << "module arrayTest();\n"
+        "parameter [15:0] bits = {}; // Array of bit vectors.\n"
+        "endmodule"
+        << "{}";
 }
 
 void tst_VerilogParameterParser::parametersToComponent()

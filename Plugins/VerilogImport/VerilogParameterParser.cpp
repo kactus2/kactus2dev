@@ -63,8 +63,7 @@ void VerilogParameterParser::import(QString const& input, QSharedPointer<Compone
     declarations.append(findOldDeclarations(input));
 
     QList<QSharedPointer<ModuleParameter> > parsedParameters;
-
-    foreach (QString declaration, declarations)
+    foreach (QString const& declaration, declarations)
     {
         parsedParameters.append(parseParameters(declaration));
     }
@@ -162,41 +161,42 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
     QString arrayRight = parseArrayRight(input);
     QString description = parseDescription(input);
 
-    // Must have name-value pair, possibly multiple times separated by comma. May have comments between.
-    QRegularExpression parameterRule("(" + VerilogSyntax::NAME_VALUE + "(\\s*,\\s*(" + VerilogSyntax::COMMENT +
-        ")?\\s*" + VerilogSyntax::NAME_VALUE + ")*)", QRegularExpression::CaseInsensitiveOption);
+    QString inputWithoutComments = input;
+    inputWithoutComments.remove(QRegularExpression(VerilogSyntax::COMMENT));
 
-    QString parametersString = parameterRule.match(input).captured();
+    QString parameterDefinition =  "(" + VerilogSyntax::NAMES + ")\\s*=((\\s*(" + 
+        VerilogSyntax::OPERATION_OR_ALPHANUMERIC + ")+\\s*)+)";
+
+    QRegularExpression parameterRule(parameterDefinition + "(\\s*,\\s*" + parameterDefinition + ")*", 
+        QRegularExpression::CaseInsensitiveOption);    
+
+    QRegularExpression splitRule(parameterDefinition, QRegularExpression::CaseInsensitiveOption);
+
+    QString parametersString = parameterRule.match(inputWithoutComments).captured();
 
     // We know for sure that each name value pair is separated by comma, and as such we get a list of them.
-    foreach (QString parameter, parametersString.split(","))
+    // Names are defined before the = operator.
+    foreach (QString const& parameter, 
+        parametersString.split(QRegularExpression(",(?=.*=)", QRegularExpression::DotMatchesEverythingOption)))
     {
         // After acquiring a name value pair, we separate the name and the value from each other.
-        QRegularExpression splitRule("(\\w+)\\s*=((\\s*(" + VerilogSyntax::OPERATION_OR_ALPHANUMERIC + "))+)", 
-            QRegularExpression::CaseInsensitiveOption);
-
         QString name = splitRule.match(parameter).captured(1).trimmed();
-        QString value = splitRule.match(parameter).captured(2);
+        QString value = splitRule.match(parameter).captured(2).simplified();
 
-        QRegularExpression cullRule("//", QRegularExpression::CaseInsensitiveOption);
-        int cullIndex = value.indexOf(cullRule);
-        value = value.left(cullIndex).trimmed();
+        // Each name value pair produces a new module parameter, but the type and the description is recycled.
+        QSharedPointer<ModuleParameter> moduleParameter =  QSharedPointer<ModuleParameter>(new ModuleParameter());      
+        moduleParameter->setName(name);
+        moduleParameter->setDataType(type);
+        moduleParameter->setType(createTypeFromDataType(type));
+        moduleParameter->setValue(value);
+        moduleParameter->setUsageType("nontyped");
+        moduleParameter->setVectorLeft(bitWidthLeft);
+        moduleParameter->setVectorRight(bitWidthRight);
+        moduleParameter->setArrayLeft(arrayLeft);
+        moduleParameter->setArrayRight(arrayRight);
+        moduleParameter->setDescription(description);
 
-        // Each name value pair produces a new model parameter, but the type and the description is recycled.
-        QSharedPointer<ModuleParameter> modelParameter =  QSharedPointer<ModuleParameter>(new ModuleParameter());
-           
-        modelParameter->setName(name);
-        modelParameter->setDataType(type);
-        modelParameter->setType(createTypeFromDataType(type));
-        modelParameter->setValue(value);
-        modelParameter->setUsageType("nontyped");
-        modelParameter->setVectorLeft(bitWidthLeft);
-        modelParameter->setVectorRight(bitWidthRight);
-        modelParameter->setArrayLeft(arrayLeft);
-        modelParameter->setArrayRight(arrayRight);
-        modelParameter->setDescription(description);
-
-        parameters.append(modelParameter);
+        parameters.append(moduleParameter);
     }
 
     return parameters;
@@ -207,21 +207,14 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
 //-----------------------------------------------------------------------------
 QString VerilogParameterParser::createTypeFromDataType(QString const& dataType)
 {
-    if (dataType == QLatin1String("bit") ||
-        dataType == QLatin1String("byte") ||
-        dataType == QLatin1String("shortint") ||
-        dataType == QLatin1String("int") ||
-        dataType == QLatin1String("longint") ||
-        dataType == QLatin1String("shortreal") ||
-        dataType == QLatin1String("real") ||
-        dataType == QLatin1String("string"))
+    QRegularExpression knownTypes(QStringLiteral("bit|byte|shortint|int|longint|shortreal|real|string"));
+
+    if (knownTypes.match(dataType).hasMatch())
     {
         return dataType;
     }
-    else
-    {
-        return QString("");
-    }
+
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -272,10 +265,7 @@ QStringList VerilogParameterParser::findDeclarations(QString const& inspect)
 QString VerilogParameterParser::parseType(QString const& input)
 {
     // The type is assumed to be the first word in the declaration.
-    QRegularExpression typeRule("(\\w+)\\s+(?:" + VerilogSyntax::RANGE + "\\s*){0,2}" +  VerilogSyntax::NAME_VALUE, 
-        QRegularExpression::CaseInsensitiveOption);
     QString type = TYPE_RULE.match(input).captured(1);
-
     if (type == "parameter")
     {
         type.clear();
@@ -369,10 +359,10 @@ void VerilogParameterParser::copyIdsFromOldModelParameters(QList<QSharedPointer<
 {
     foreach (QSharedPointer<ModuleParameter> parameter, parsedParameters)
     {
-		foreach ( QSharedPointer<ModuleParameter> existingParameter,
-			*targetComponentInstantiation->getModuleParameters() )
+		foreach (QSharedPointer<ModuleParameter> existingParameter,
+            *targetComponentInstantiation->getModuleParameters())
 		{
-			if ( existingParameter->name() == parameter->name() )
+			if (existingParameter->name().compare(parameter->name()) == 0)
 			{
 				parameter->setValueId(existingParameter->getValueId());
 				break;
