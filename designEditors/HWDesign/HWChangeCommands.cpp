@@ -264,19 +264,8 @@ ComponentPacketizeCommand::ComponentPacketizeCommand(DesignDiagram* diagram,
     QUndoCommand* parent) : QUndoCommand(parent),
     diagram_(diagram),
     componentItem_(component),
-    vlnv_(vlnv),
-    endpointLockedStates_()
+    vlnv_(vlnv)
 {
-    // Save the locked states of each endpoint.
-    foreach (QGraphicsItem* item, componentItem_->childItems())
-    {
-        ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
-
-        if (endpoint != 0)
-        {
-            endpointLockedStates_.insert(endpoint, endpoint->isTypeLocked());
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -291,23 +280,13 @@ ComponentPacketizeCommand::~ComponentPacketizeCommand()
 //-----------------------------------------------------------------------------
 void ComponentPacketizeCommand::undo()
 {
+    QUndoCommand::undo();
+
     diagram_->getParent()->removeRelatedVLNV(vlnv_);
 
     componentItem_->setDraft();
     componentItem_->getComponentInstance()->getComponentRef()->setVLNV(VLNV());
     componentItem_->componentModel()->setVlnv(VLNV());    
-
-    // Mark all endpoints as temporary.
-    foreach (QGraphicsItem* item, componentItem_->childItems())
-    {
-        ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
-
-        if (endpoint != 0)
-        {
-            endpoint->setTemporary(true);
-            endpoint->setTypeLocked(endpointLockedStates_.value(endpoint));
-        }
-    }
 
     componentItem_->updateComponent();
 }
@@ -317,23 +296,13 @@ void ComponentPacketizeCommand::undo()
 //-----------------------------------------------------------------------------
 void ComponentPacketizeCommand::redo()
 {
+    QUndoCommand::redo();
+
     componentItem_->componentModel()->setVlnv(vlnv_);
     componentItem_->getComponentInstance()->getComponentRef()->setVLNV(vlnv_);
     componentItem_->setPackaged();
 
     diagram_->getParent()->addRelatedVLNV(vlnv_);
-
-    // Mark all endpoints as non-temporary.
-    foreach (QGraphicsItem* item, componentItem_->childItems())
-    {
-        ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
-
-        if (endpoint != 0)
-        {
-            endpoint->setTemporary(false);
-            endpoint->setTypeLocked(true);
-        }
-    }
 
     componentItem_->updateComponent();
 }
@@ -686,9 +655,9 @@ void EndPointTypesCommand::redo()
 //-----------------------------------------------------------------------------
 void EndPointTypesCommand::setTypes(VLNV const& busType, VLNV const& absType)
 {
+    // Disconnect the connections.
     if (endpoint_->getBusInterface()->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
     {
-        // Disconnect the connections.
         foreach(GraphicsConnection* conn, endpoint_->getConnections())
         {
             if (conn->endpoint1() != endpoint_)
@@ -712,9 +681,9 @@ void EndPointTypesCommand::setTypes(VLNV const& busType, VLNV const& absType)
 
     endpoint_->setTypeLocked(busType.isValid());
 
+    // Undefined end points of the connections can now be defined.
     if (busType.isValid())
     {
-        // Undefined end points of the connections can now be defined.
         foreach(GraphicsConnection* conn, endpoint_->getConnections())
         {
             if (conn->endpoint1() != endpoint_)

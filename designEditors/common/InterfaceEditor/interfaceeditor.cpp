@@ -143,7 +143,7 @@ void InterfaceEditor::setInterface(ConnectionEndpoint* interface, QSharedPointer
 	connect(interface_, SIGNAL(destroyed(ConnectionEndpoint*)), this, SLOT(clear()), Qt::UniqueConnection);
 	connect(interface_, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 
-    bool editingEnabled = !locked_ && !interface_->isTypeLocked();
+    bool editingEnabled = !locked_ && (interface_->isTemporary() || !interface_->isTypeLocked());
 
     busNameEditor_.setEnabled(editingEnabled);
     busDescriptionEditor_.setEnabled(editingEnabled);

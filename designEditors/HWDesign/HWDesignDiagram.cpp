@@ -523,7 +523,7 @@ void HWDesignDiagram::onAddToLibraryAction()
         return;
     }
 
-    /*QGraphicsItem* selection = selectedItems().first();
+    QGraphicsItem* selection = selectedItems().first();
     if (selection != 0 && selection->type() == HWComponentItem::Type)
     {
         selection->setSelected(true);
@@ -542,22 +542,56 @@ void HWDesignDiagram::onAddToLibraryAction()
         if (dialog.exec() == QDialog::Accepted)
         {
             VLNV vlnv = dialog.getVLNV();
+                
+            QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(this, componentItem, vlnv));
+
             targetComponent->setVlnv(vlnv);
             targetComponent->setHierarchy(dialog.getProductHierarchy());
             targetComponent->setFirmness(dialog.getFirmness());
 
             targetComponent->getViews()->append(QSharedPointer<View>(new View("flat")));
 
+            foreach (ConnectionEndpoint* interfacePoint, componentItem->getEndpoints())
+            {
+                interfacePoint->setSelectionHighlight(true);
+                interfacePoint->setTemporary(false);
+
+                ConnectionEndpoint* definedPoint(0);
+
+                foreach (GraphicsConnection* connection, interfacePoint->getConnections())
+                {
+                    if (connection->endpoint1() != interfacePoint && !connection->endpoint1()->isTemporary())
+                    {
+                        definedPoint = connection->endpoint1();
+                        break;
+                    }
+                    else if (connection->endpoint2() != interfacePoint && !connection->endpoint2()->isTemporary())
+                    {
+                        definedPoint = connection->endpoint2();
+                        break;
+                    }
+                }
+
+                if (definedPoint)
+                {
+                    copyMode(definedPoint, interfacePoint, cmd.data());
+                    copyType(definedPoint, interfacePoint, cmd.data());                    
+                    copyPortMapsAndPhysicalPorts(definedPoint->getOwnerComponent(), definedPoint->getBusInterface(), interfacePoint, cmd.data());
+                }
+
+                interfacePoint->setSelectionHighlight(false);
+                interfacePoint->updateInterface();
+            }
+
             getLibraryInterface()->writeModelToFile(dialog.getPath(), targetComponent);
 
-            QSharedPointer<QUndoCommand> cmd(new ComponentPacketizeCommand(this, componentItem, vlnv));
             getEditProvider()->addCommand(cmd);
             cmd->redo();
 
             QMessageBox msgBox(QMessageBox::Question, QCoreApplication::applicationName(),
-                "Do you want to continue packaging the component completely?",
+                tr("Do you want to continue packaging the component completely?"),
                 QMessageBox::NoButton, getParent());
-            msgBox.setInformativeText("Pressing Continue opens up the component editor.");
+            msgBox.setInformativeText(tr("Pressing Continue opens up the component editor."));
 
             QPushButton* btnContinue = msgBox.addButton(tr("Continue"), QMessageBox::ActionRole);
             msgBox.addButton(tr("Skip"), QMessageBox::RejectRole);
@@ -569,7 +603,7 @@ void HWDesignDiagram::onAddToLibraryAction()
                 openInComponentEditor(componentItem);
             }
         }
-    }*/
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1325,14 +1359,14 @@ QSharedPointer<QUndoCommand> HWDesignDiagram::createAddCommandForConnection(Grap
 bool HWDesignDiagram::copyDefinitions(ConnectionEndpoint* definedPoint, ConnectionEndpoint* undefinedPoint,
     HWConnection* definingConnection, QUndoCommand* parentCommand)
 {    
-    if (hasDefaultName(undefinedPoint))
+    if (undefinedPoint->isHierarchical() && hasDefaultName(undefinedPoint))
     {
         copyInterfaceName(definedPoint, undefinedPoint, definingConnection, parentCommand);
     }
     
-    copyType(definedPoint, undefinedPoint, parentCommand);
-
     copyMode(definedPoint, undefinedPoint, parentCommand);
+
+    copyType(definedPoint, undefinedPoint, parentCommand);
    
     return copyPortsAndMapsForHierarchicalPoint(definedPoint, undefinedPoint, parentCommand);
 }
@@ -1384,6 +1418,32 @@ QList<QSharedPointer<HierInterface> > HWDesignDiagram::findInterfacesByName(QStr
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::copyMode()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::copyMode(ConnectionEndpoint* sourceInterface, ConnectionEndpoint* targetInterface,
+    QUndoCommand* parentCommand)
+{
+    General::InterfaceMode selectedMode = targetInterface->getBusInterface()->getInterfaceMode();
+
+    if (selectedMode == General::INTERFACE_MODE_COUNT)
+    {
+        General::InterfaceMode sourceMode = sourceInterface->getBusInterface()->getInterfaceMode();
+
+        if (targetInterface->isHierarchical() || sourceInterface->isHierarchical())
+        {
+            selectedMode = sourceMode;
+        }
+        else
+        {
+            selectedMode = General::getCompatibleInterfaceMode(sourceMode);
+        }
+    }    
+
+    QUndoCommand* modeChangeCommand = new EndpointChangeCommand(targetInterface, selectedMode, parentCommand);
+    modeChangeCommand->redo();
+}
+
+//-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::copyType()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::copyType(ConnectionEndpoint* definedPoint, ConnectionEndpoint* draftPoint,
@@ -1399,18 +1459,6 @@ void HWDesignDiagram::copyType(ConnectionEndpoint* definedPoint, ConnectionEndpo
     
     QUndoCommand* typeChangeCommand = new EndPointTypesCommand(draftPoint, busVLNV, absVLNV, parentCommand);    
     typeChangeCommand->redo();
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignDiagram::copyMode()
-//-----------------------------------------------------------------------------
-void HWDesignDiagram::copyMode(ConnectionEndpoint* sourceInterface, ConnectionEndpoint* targetInterface,
-    QUndoCommand* parentCommand)
-{
-    General::InterfaceMode copiedMode = sourceInterface->getBusInterface()->getInterfaceMode();
-
-    QUndoCommand* modeChangeCommand = new EndpointChangeCommand(targetInterface, copiedMode, parentCommand);
-    modeChangeCommand->redo();
 }
 
 //-----------------------------------------------------------------------------
@@ -1491,7 +1539,8 @@ void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sou
                 QSharedPointer<Port> clonePort = createConnectingPhysicalPort(sourcePort, directionOverride, reservedNames);
                 nameTranslations.insert(physicalName, clonePort->name());
 
-                new AddPhysicalPortCommand(target->getOwnerComponent(), clonePort, copyCommand);                
+                QUndoCommand* portCopyCommand = new AddPhysicalPortCommand(target->getOwnerComponent(), clonePort, copyCommand);
+                portCopyCommand->redo();
             }
 
             QSharedPointer<PortMap> cloneMap(new PortMap(*portMap));
@@ -1517,7 +1566,8 @@ void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sou
         }
     }
 
-    new EndPointPortMapCommand(target, newPortMaps, copyCommand);
+    QUndoCommand* portMapCreationCommand = new EndPointPortMapCommand(target, newPortMaps, copyCommand);
+    portMapCreationCommand->redo();
 }
 
 //-----------------------------------------------------------------------------
@@ -2442,36 +2492,48 @@ void HWDesignDiagram::pasteInterfaces(BusInterfaceCollectionCopyData const& coll
 
     foreach(BusInterfaceCopyData const& instance, collection.instances)
     {        
-        // Bus interface must have a unique name within the component.
         QString uniqueBusName = generateUniqueName(instance.busInterface->name(), reservedNames);        	      
         reservedNames.append(uniqueBusName);
 
-        QSharedPointer<BusInterface> cloneBusInterface(new BusInterface(*instance.busInterface));
-        cloneBusInterface->setName(uniqueBusName);
+        QSharedPointer<BusInterface> interfaceCopy;
+        if (!component->isDraft())
+        {
+            interfaceCopy = QSharedPointer<BusInterface>(new BusInterface(*instance.busInterface));            
+        }
+        else
+        {
+            interfaceCopy = QSharedPointer<BusInterface>(new BusInterface());
+            interfaceCopy->setInterfaceMode(instance.busInterface->getInterfaceMode());
+        }
 
-        BusPortItem* interfaceItem = new BusPortItem(cloneBusInterface, getLibraryInterface(), component);     
+        interfaceCopy->setName(uniqueBusName);
+
+        BusPortItem* interfaceItem = new BusPortItem(interfaceCopy, getLibraryInterface(), component);     
         interfaceItem->setPos(snapPointToGrid(component->mapFromScene(contextMenuPosition())));
         
         // Lock the interface type for non-draft interfaces.
         interfaceItem->setTemporary(true);
-        interfaceItem->setTypeLocked(cloneBusInterface->getInterfaceMode() != General::INTERFACE_MODE_COUNT);
+        interfaceItem->setTypeLocked(interfaceCopy->getInterfaceMode() != General::INTERFACE_MODE_COUNT);
 
         QMap<QString, QPointF> oldLocations = component->getBusInterfacePositions();
 
         PortPasteCommand* pasteCmd = new PortPasteCommand(component, interfaceItem, cmd);
  
-        copyPortMapsAndPhysicalPorts(instance.srcComponent, instance.busInterface, interfaceItem, pasteCmd);
-
+        if (!component->isDraft())
+        {
+            copyPortMapsAndPhysicalPorts(instance.srcComponent, instance.busInterface, interfaceItem, pasteCmd);
+        }
+        
         pasteCmd->redo();
 
-        QMap<QString, QPointF>::iterator cur = oldLocations.begin();
-        while (cur != oldLocations.end())
+        QMap<QString, QPointF>::iterator current = oldLocations.begin();
+        while (current != oldLocations.end())
         {
-            if (component->getBusPort(cur.key())->pos() != cur.value())
+            if (component->getBusPort(current.key())->pos() != current.value())
             {
-                new PortMoveCommand(component->getBusPort(cur.key()), cur.value(), pasteCmd);
+                new PortMoveCommand(component->getBusPort(current.key()), current.value(), pasteCmd);
             }
-            cur++;
+            current++;
         }  
     }
 }

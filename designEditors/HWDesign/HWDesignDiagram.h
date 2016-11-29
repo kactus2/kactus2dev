@@ -482,16 +482,7 @@ private:
      */
     QList<QSharedPointer<HierInterface> > findInterfacesByName(QString const& previousName, 
         QSharedPointer<Interconnection> connection) const;
-
-    /*!
-     *  Copies the interface type to hierarchical interface from a defined interface.
-     *
-     *      @param [in] definedPoint        The interface item to copy type from.
-     *      @param [in] draftPoint          The interface item to copy type into.
-     *      @param [in] parentCommand       The parent undo command.
-     */
-    void copyType(ConnectionEndpoint* definedPoint, ConnectionEndpoint* draftPoint, QUndoCommand* parentCommand);
-     
+    
     /*!
      *  Copies the interface mode to hierarchical interface from a defined interface.
      *
@@ -501,6 +492,15 @@ private:
      */
     void copyMode(ConnectionEndpoint* sourceInterface, ConnectionEndpoint* targetInterface,
         QUndoCommand* parentCommand);
+
+    /*!
+     *  Copies the interface type to hierarchical interface from a defined interface.
+     *
+     *      @param [in] definedPoint        The interface item to copy type from.
+     *      @param [in] draftPoint          The interface item to copy type into.
+     *      @param [in] parentCommand       The parent undo command.
+     */
+    void copyType(ConnectionEndpoint* definedPoint, ConnectionEndpoint* draftPoint, QUndoCommand* parentCommand);
 
     /*!
      *  Copies the port maps and ports into a hierarchical bus interface.

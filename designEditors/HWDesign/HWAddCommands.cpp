@@ -266,8 +266,12 @@ void AddPhysicalPortCommand::undo()
 void AddPhysicalPortCommand::redo()
 {
 	Q_ASSERT(component_ != 0 && port_ != 0);
-    component_->getPorts()->append(port_);
-
+    
+    if (!component_->getPorts()->contains(port_))
+    {
+        component_->getPorts()->append(port_);
+    }
+  
 	// Execute child commands.
     QUndoCommand::redo();
 }

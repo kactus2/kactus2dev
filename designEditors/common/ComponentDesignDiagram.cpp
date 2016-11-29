@@ -743,7 +743,7 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
     clearPotentialEndpoints();
 
     ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(point, this, GridSize);
-
+    
     // Check if there is an end point close enough to the cursor and the
     // end points can be connected together.
     if (isPossibleEndpointForCurrentConnection(endpoint))
