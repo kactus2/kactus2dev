@@ -433,8 +433,6 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
-    ./editors/ComponentEditor/treeStructure/componenteditorswviewitem.h \
-    ./editors/ComponentEditor/treeStructure/componenteditorswviewsitem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditortreemodel.h \

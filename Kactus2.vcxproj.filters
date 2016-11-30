@@ -2359,12 +2359,6 @@
     <ClCompile Include="GeneratedFiles\moc_componenteditorswpropertiesitem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componenteditorswviewitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_componenteditorswviewsitem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ComponentEditorSystemViewItem.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -5077,12 +5071,6 @@
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditorswpropertiesitem.h">
-      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditorswviewitem.h">
-      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\treeStructure\componenteditorswviewsitem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\treeStructure\ComponentEditorSystemViewItem.h">
