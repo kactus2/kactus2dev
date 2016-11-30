@@ -96,7 +96,7 @@ private:
      *      @param [in] wire            The wire which bounds are possibly enlarged.
      *      @param [in] boundCand		The candidate for new bounds.
      */
-    void assignLargerBounds(QSharedPointer<GenerationWire> wire, QPair<int,int> &boundCand);
+    void assignLargerBounds(QSharedPointer<GenerationWire> wire, QPair<QString,QString> const& boundCand);
     
     /*!
      *  Finds ad hoc interconnections within the design and which interfaces they connect to.

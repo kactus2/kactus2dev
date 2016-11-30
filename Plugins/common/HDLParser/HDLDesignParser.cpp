@@ -528,7 +528,7 @@ void HDLDesignParser::parsePortMaps(QSharedPointer<AbstractionType> absType,
                 absDefWidth = portAbs->getWire()->getWidth(busInterface->getInterfaceMode());
             }
 
-            QPair<int,int> boundCand;
+            QPair<QString,QString> boundCand;
 
             // If found, the width shall dictate wire bounds, else it is the same as port bounds.
             if (!absDefWidth.isEmpty())
@@ -544,13 +544,13 @@ void HDLDesignParser::parsePortMaps(QSharedPointer<AbstractionType> absType,
                 // Parse the bounds.
                 IPXactSystemVerilogParser portParser(multiFinder);
 
-                boundCand.first = parseExpression(portParser, absDefWidth + "-1").toInt();
-                boundCand.second = 0;
+                boundCand.first = parseExpression(portParser, absDefWidth + "-1");
+                boundCand.second = QLatin1String("0");
             }
             else
             {
-                boundCand.first = portBounds.first.toInt();
-                boundCand.second = portBounds.second.toInt();
+                boundCand.first = portBounds.first;
+                boundCand.second = portBounds.second;
             }
 
             // Assign larger bounds for wire, if applicable.
@@ -565,34 +565,40 @@ void HDLDesignParser::parsePortMaps(QSharedPointer<AbstractionType> absType,
 //-----------------------------------------------------------------------------
 // Function: HDLDesignParser::assignLargerBounds()
 //-----------------------------------------------------------------------------
-void HDLDesignParser::assignLargerBounds(QSharedPointer<GenerationWire> wire, QPair<int,int> &boundCand)
+void HDLDesignParser::assignLargerBounds(QSharedPointer<GenerationWire> wire, QPair<QString,QString> const& boundCand)
 {
-    // Do the comparison only there are existing bounds.
+    // Do the comparison only if there are existing bounds.
     if (!wire->bounds.first.isEmpty() && !wire->bounds.second.isEmpty())
     {
+        QPair<int,int> newBounds;
+
         // Check the size of the new bounds.
-        int maxAlignment1 = qMax(boundCand.first, boundCand.second);
-        int minAlignment1 = qMin(boundCand.first, boundCand.second);
+        newBounds.first = boundCand.first.toInt();
+        newBounds.second = boundCand.second.toInt();;
+
+        // Find the widest alignment order of the new bounds.
+        int maxAlignment1 = qMax(newBounds.first, newBounds.second);
+        int minAlignment1 = qMin(newBounds.first, newBounds.second);
 
         QPair<int,int> existingBound;
 
-        // Check the size of the new bounds.
+        // Check the size of the existing bounds.
         existingBound.first = wire->bounds.first.toInt();
         existingBound.second = wire->bounds.second.toInt();;
 
-        // Compare.
+        // Find the widest alignment order of the existing bounds.
         int maxAlignment2 = qMax(existingBound.first, existingBound.second);
         int minAlignment2 = qMin(existingBound.first, existingBound.second);
 
-        // Assign.
+        // Finally, compare and assign.
         wire->bounds.first = QString::number(qMax(maxAlignment1,maxAlignment2));
         wire->bounds.second = QString::number(qMin(minAlignment1,minAlignment2));
     }
     else
     {
         // No existing bounds -> This shall be the new one.
-        wire->bounds.first = QString::number(boundCand.first);
-        wire->bounds.second = QString::number(boundCand.second);
+        wire->bounds.first = boundCand.first;
+        wire->bounds.second = boundCand.second;
     }
 }
 
@@ -720,15 +726,10 @@ void HDLDesignParser::assignInternalAdHocs()
 
 					// Since it is an ad-hoc connection, a physical connection is the only choice.
 					QPair<QString,QString> bounds = physicalPortBoundsInInstance(gi, ourPort);
-					gpa->bounds = bounds;
 
-					// Also, if no prior bounds in wire, use these.
-					// According to IP-XACT, number bits of connected ah-hoc ports is the same,
-					// so we trust in validation here.
-					if (gw->bounds.first.isEmpty() || gw->bounds.second.isEmpty())
-					{
-                        gw->bounds = bounds;
-					}
+                    // Assign if they are larger than existing ones.
+                    assignLargerBounds(gw, bounds);
+                    gpa->bounds = gw->bounds;
 				}
 			}
 		}
