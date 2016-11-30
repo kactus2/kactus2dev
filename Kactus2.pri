@@ -619,8 +619,6 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/HWDesign/SelectItemTypeDialog.h \
     ./designEditors/HWDesign/columnview/ColumnEditDialog.h \
     ./designEditors/HWDesign/columnview/HWColumn.h \
-    ./designEditors/HWDesign/models/PortGenerationRow.h \
-    ./designEditors/HWDesign/models/PortGenerationTableModel.h \
     ./designEditors/HWDesign/views/CellEditTableView.h \
     ./designEditors/HWDesign/AddressEditor/AddressEntry.h \
     ./designEditors/HWDesign/AddressEditor/AddressDelegate.h \
@@ -1182,8 +1180,6 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/HWDesign/SelectItemTypeDialog.cpp \
     ./designEditors/HWDesign/columnview/ColumnEditDialog.cpp \
     ./designEditors/HWDesign/columnview/HWColumn.cpp \
-    ./designEditors/HWDesign/models/PortGenerationRow.cpp \
-    ./designEditors/HWDesign/models/PortGenerationTableModel.cpp \
     ./designEditors/HWDesign/views/CellEditTableView.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressDelegate.cpp \
     ./designEditors/HWDesign/AddressEditor/AddressEditor.cpp \

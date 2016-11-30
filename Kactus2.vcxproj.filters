@@ -455,9 +455,6 @@
     <Filter Include="Header Files\designEditors\HWDesign\columnview">
       <UniqueIdentifier>{2e991942-2fbe-4171-b89b-94025cd93d8d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\designEditors\HWDesign\models">
-      <UniqueIdentifier>{d1459f0b-805f-49e0-9ae8-f22d06f393ba}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\designEditors\HWDesign\views">
       <UniqueIdentifier>{e816ee4a-4cb7-4a04-b2b8-799d8faf2a4e}</UniqueIdentifier>
     </Filter>
@@ -469,9 +466,6 @@
     </Filter>
     <Filter Include="Source Files\designEditors\HWDesign\columnview">
       <UniqueIdentifier>{c21389eb-a9ff-4cf1-a557-cd50fb8dd980}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\designEditors\HWDesign\models">
-      <UniqueIdentifier>{c77be009-f4ad-47dd-9e59-b4214e96b6aa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\designEditors\HWDesign\views">
       <UniqueIdentifier>{e1474097-f2ce-4192-b117-062308149fda}</UniqueIdentifier>
@@ -1678,23 +1672,11 @@
     <ClCompile Include="GeneratedFiles\moc_HWColumn.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortGenerationRow.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_PortGenerationTableModel.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_CellEditTableView.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\HWDesign\views\CellEditTableView.cpp">
       <Filter>Source Files\designEditors\HWDesign\views</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\models\PortGenerationRow.cpp">
-      <Filter>Source Files\designEditors\HWDesign\models</Filter>
-    </ClCompile>
-    <ClCompile Include="designEditors\HWDesign\models\PortGenerationTableModel.cpp">
-      <Filter>Source Files\designEditors\HWDesign\models</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\HWDesign\columnview\ColumnEditDialog.cpp">
       <Filter>Source Files\designEditors\HWDesign\columnview</Filter>
@@ -4610,12 +4592,6 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\columnview\HWColumn.h">
       <Filter>Header Files\designEditors\HWDesign\columnview</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\models\PortGenerationRow.h">
-      <Filter>Header Files\designEditors\HWDesign\models</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\HWDesign\models\PortGenerationTableModel.h">
-      <Filter>Header Files\designEditors\HWDesign\models</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\HWDesign\views\CellEditTableView.h">
       <Filter>Header Files\designEditors\HWDesign\views</Filter>
