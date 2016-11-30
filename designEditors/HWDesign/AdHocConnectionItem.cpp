@@ -6,7 +6,7 @@
 // Date: 02.10.2015
 //
 // Description:
-// <Short description of the class/file contents>
+// Graphical item to represent ad-hoc connections in a design.
 //-----------------------------------------------------------------------------
 
 #include "AdHocConnectionItem.h"
@@ -223,7 +223,7 @@ void AdHocConnectionItem::changeConnectionComponentReference(QString const& oldN
 {
     foreach (QSharedPointer<PortReference> portReference, *adHocConnection_->getInternalPortReferences())
     {
-        if (portReference->getComponentRef() == oldName)
+        if (portReference->getComponentRef().compare(oldName) == 0)
         {
             portReference->setComponentRef(newName);
         }

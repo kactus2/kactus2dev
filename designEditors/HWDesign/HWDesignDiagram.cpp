@@ -45,6 +45,7 @@
 
 #include <designEditors/HWDesign/AdHocItem.h>
 #include <designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.h>
+#include <designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h>
 #include <designEditors/HWDesign/undoCommands/PortPasteCommand.h>
 #include <designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h>
@@ -786,10 +787,10 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         }
 
         // Create the component model.
-        QSharedPointer<Component> droppedComponent = getLibraryInterface()->getModel(droppedVLNV).staticCast<Component>();
+        QSharedPointer<Component> dropComponent = getLibraryInterface()->getModel(droppedVLNV).staticCast<Component>();
 
         // Disallow instantiation of components marked as template.
-        if (droppedComponent->getFirmness() == KactusAttribute::TEMPLATE)
+        if (dropComponent->getFirmness() == KactusAttribute::TEMPLATE)
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("Template component cannot be directly instantiated in a design. "
@@ -802,11 +803,20 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         // Act based on the selected drop action.
         if (event->dropAction() == Qt::CopyAction)
         {
-            createComponentItem(droppedComponent, event->scenePos());
+            QSharedPointer<QUndoCommand> addCommand(new QUndoCommand());
+            QString instanceName = createInstanceName(dropComponent->getVlnv().getName());
+
+            HWComponentItem* createdItem = createComponentItem(dropComponent, instanceName,
+                event->scenePos(), addCommand.data());
+
+            if (createdItem)
+            {
+                getEditProvider()->addCommand(addCommand);
+            }
         }
         else if (event->dropAction() == Qt::MoveAction)
         {
-            replaceComponentItemAtPositionWith(event->scenePos(), droppedComponent);
+            replaceComponentItemAtPositionWith(event->scenePos(), dropComponent);
         }
     }
     else if (dragBus_ && dragEndPoint_ != 0)
@@ -868,40 +878,47 @@ void HWDesignDiagram::setInterfaceVLNVatEndpoint(VLNV const& droppedVLNV)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::replaceComponentItemAt()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::replaceComponentItemAtPositionWith(QPointF position, QSharedPointer<Component> comp)
+void HWDesignDiagram::replaceComponentItemAtPositionWith(QPointF position, QSharedPointer<Component> component)
 {
     // Replace the underlying component with the new one.
-    HWComponentItem* oldCompItem = static_cast<HWComponentItem*>(getTopmostComponent(position));
-    Q_ASSERT(oldCompItem != 0);
+    HWComponentItem* previousItem = static_cast<HWComponentItem*>(getTopmostComponent(position));
+    Q_ASSERT(previousItem != 0);
 
     QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
         tr("Component instance '%1' is about to be replaced with an instance of %2. Continue and replace?").arg(
-        oldCompItem->name(), comp->getVlnv().toString()), QMessageBox::Yes | QMessageBox::No, getParent());
+        previousItem->name(), component->getVlnv().toString()), QMessageBox::Yes | QMessageBox::No, getParent());
 
     if (msgBox.exec() == QMessageBox::Yes)
     {
-        // Create the component item.
-        QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
-        componentInstance->setInstanceName(createInstanceName(comp->getVlnv().getName()));
+        QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
 
-        QSharedPointer<ConfigurableVLNVReference> componentReference
-            (new ConfigurableVLNVReference(comp->getVlnv()));
-        componentInstance->setComponentRef(componentReference);
-
-        GraphicsColumn* column = getLayout()->findColumnAt(oldCompItem->scenePos());
-        HWComponentItem* newCompItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp, column);
+        // Create instance of the dropped component.
+        HWComponentItem* newCompItem = createComponentItem(component, previousItem->name(), previousItem->scenePos(),
+            parentCommand.data());
 
         // Perform the replacement.
-        QSharedPointer<ReplaceComponentCommand> replaceCommand(new ReplaceComponentCommand(this, oldCompItem,
-            newCompItem, false, false));
+        ReplaceComponentCommand* replaceCommand(new ReplaceComponentCommand(previousItem, newCompItem, getDesign(),
+            parentCommand.data()));
 
-        connect(replaceCommand.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+        connect(replaceCommand, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-        connect(replaceCommand.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        connect(replaceCommand, SIGNAL(componentInstanceRemoved(ComponentItem*)),
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-        getEditProvider()->addCommand(replaceCommand);
         replaceCommand->redo();
+
+        // Remove the old component.
+        ComponentDeleteCommand* deleteCmd = new ComponentDeleteCommand(this, 
+            getLayout()->findColumnAt(previousItem->scenePos()), previousItem, parentCommand.data());
+
+        connect(deleteCmd, SIGNAL(componentInstantiated(ComponentItem*)),
+            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
+        connect(deleteCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
+            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
+
+        deleteCmd->redo();
+
+        getEditProvider()->addCommand(parentCommand);
     }
 }
 
@@ -1826,8 +1843,8 @@ void HWDesignDiagram::replace(ComponentItem* destComp, ComponentItem* sourceComp
 
     if (destHWComponent && sourceHWComponent)
     {
-        QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(this,
-            destHWComponent, sourceHWComponent, true, true));
+        QSharedPointer<ReplaceComponentCommand> cmd(new ReplaceComponentCommand(destHWComponent, sourceHWComponent,
+            getDesign()));
 
         connect(cmd.data(), SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -1892,7 +1909,8 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createComponentItem()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::createComponentItem(QSharedPointer<Component> comp, QPointF position)
+HWComponentItem* HWDesignDiagram::createComponentItem(QSharedPointer<Component> comp, QString const& instanceName,
+    QPointF position, QUndoCommand* parentCommand)
 {
     GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(position));
 
@@ -1900,25 +1918,27 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<Component> comp, QPoint
     {
         // Create the diagram component.                            
         QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
-        componentInstance->setComponentRef(
-            QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(comp->getVlnv())));
+        componentInstance->setComponentRef(QSharedPointer<ConfigurableVLNVReference>(
+            new ConfigurableVLNVReference(comp->getVlnv())));
 
-        QString instanceName = createInstanceName(comp->getVlnv().getName());
         componentInstance->setInstanceName(instanceName);
 
-        HWComponentItem *newItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
+        HWComponentItem* newItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
         newItem->setPos(snapPointToGrid(position));
 
-        QSharedPointer<HWComponentAddCommand> addCommand(new HWComponentAddCommand(getDesign(), column, newItem));
+        HWComponentAddCommand* addCommand(new HWComponentAddCommand(getDesign(), column, newItem, parentCommand));
 
-        connect(addCommand.data(), SIGNAL(componentInstantiated(ComponentItem*)),
+        connect(addCommand, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-        connect(addCommand.data(), SIGNAL(componentInstanceRemoved(ComponentItem*)),
+        connect(addCommand, SIGNAL(componentInstanceRemoved(ComponentItem*)),
             this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
 
-        getEditProvider()->addCommand(addCommand);
         addCommand->redo();
+
+        return newItem;
     }
+
+    return 0;
 }
 
 //-----------------------------------------------------------------------------

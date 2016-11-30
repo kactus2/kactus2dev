@@ -43,39 +43,38 @@ del_(true)
     // Create child commands for removing interconnections.
     QList<GraphicsConnection*> connections;
 
-    foreach (QGraphicsItem *item, componentItem_->childItems())
+    foreach (ConnectionEndpoint* endpoint, componentItem_->getEndpoints())
     {
-        HWConnectionEndpoint* endpoint = dynamic_cast<HWConnectionEndpoint*>(item);
-        if (endpoint)
+        //HWConnectionEndpoint* endpoint = dynamic_cast<HWConnectionEndpoint*>(item);
+
+        QList<GraphicsConnection*> portConnections = endpoint->getConnections();
+        if (endpoint->getOffPageConnector() != 0)
         {
-            QList<GraphicsConnection*> portConnections = endpoint->getConnections();
-            if (endpoint->getOffPageConnector() != 0)
-            {
-                portConnections.append(endpoint->getOffPageConnector()->getConnections());
-            }
+            portConnections.append(endpoint->getOffPageConnector()->getConnections());
+        }
 
-            foreach (GraphicsConnection* connection, portConnections)
+        foreach (GraphicsConnection* connection, portConnections)
+        {
+            if (!connections.contains(connection))
             {
-                if (!connections.contains(connection))
+                HWConnection* hwConnection = dynamic_cast<HWConnection*>(connection);
+                if (hwConnection)
                 {
-                    HWConnection* hwConnection = dynamic_cast<HWConnection*>(connection);
-                    if (hwConnection)
-                    {
-                        new ConnectionDeleteCommand(diagram_, hwConnection, this);
-                    }
-                    else
-                    {
-                        AdHocConnectionItem* adHocConnection = dynamic_cast<AdHocConnectionItem*>(connection);
-                        if (adHocConnection)
-                        {
-                            new AdHocConnectionDeleteCommand(diagram_, adHocConnection, this);
-                        }
-                    }
-
-                    connections.append(connection);
+                    new ConnectionDeleteCommand(diagram_, hwConnection, this);
                 }
+                else
+                {
+                    AdHocConnectionItem* adHocConnection = dynamic_cast<AdHocConnectionItem*>(connection);
+                    if (adHocConnection)
+                    {
+                        new AdHocConnectionDeleteCommand(diagram_, adHocConnection, this);
+                    }
+                }
+
+                connections.append(connection);
             }
         }
+
     }
 }
 

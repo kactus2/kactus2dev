@@ -33,70 +33,42 @@
 #include <designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h>
 #include <designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h>
+#include <designEditors/HWDesign/HWChangeCommands.h>
 
 //-----------------------------------------------------------------------------
 // Function: ReplaceComponentCommand::ReplaceComponentCommand()
 //-----------------------------------------------------------------------------
-ReplaceComponentCommand::ReplaceComponentCommand(DesignDiagram* diagram, HWComponentItem* oldComp,
-    HWComponentItem* newComp, bool existing, bool keepOld, QUndoCommand* parent):
+ReplaceComponentCommand::ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp,
+    QSharedPointer<Design> design,
+    QUndoCommand* parent ) :
 QUndoCommand(parent),
-oldComp_(oldComp),
-newComp_(newComp)
+    position_(oldComp->scenePos()),
+    newComp_(newComp)
 {
-    // Create a move/add command for the new component.
-    if (existing)
-    {
-        new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(), oldComp_->scenePos(),
-            oldComp_->getParentStack(), this);
+    new ItemMoveCommand(newComp_, newComp_->scenePos(), newComp_->getParentStack(), position_,
+        oldComp->getParentStack(), this);
 
-        if (keepOld)
-        {
-            new ItemMoveCommand(oldComp_, oldComp_->scenePos(), oldComp_->getParentStack(), newComp_->scenePos(),
-                newComp_->getParentStack(), this);
-        }
-    }
-    else
-    {
-        HWComponentAddCommand* addCmd =
-            new HWComponentAddCommand(diagram->getDesign(), oldComp_->getParentStack(), newComp_, this);
-
-        connect(addCmd, SIGNAL(componentInstantiated(ComponentItem*)),
-            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-        connect(addCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-    }
+    new ItemMoveCommand(oldComp, position_, oldComp->getParentStack(), newComp_->scenePos(),
+        newComp_->getParentStack(), this);
 
     QStringList connectionNames;
+    changeConnections(oldComp, newComp_, connectionNames);
+    changeConnections(newComp_, oldComp, connectionNames);
 
-    changeConnections(existing, connectionNames, oldComp_, newComp_, diagram);
-
-    // Create a delete command for the old component if it should not be kept.
-    if (!keepOld)
+    foreach(Association* association, oldComp->getAssociations())
     {
-        GraphicsColumn* column = diagram->getLayout()->findColumnAt(oldComp_->scenePos());
-        ComponentDeleteCommand* deleteCmd = new ComponentDeleteCommand(diagram, column, oldComp_, this);
-
-        connect(deleteCmd, SIGNAL(componentInstantiated(ComponentItem*)),
-            this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
-        connect(deleteCmd, SIGNAL(componentInstanceRemoved(ComponentItem*)),
-            this, SIGNAL(componentInstanceRemoved(ComponentItem*)), Qt::UniqueConnection);
-
-        foreach(Association* association, oldComp_->getAssociations())
-        {
-            new AssociationChangeEndpointCommand(association, oldComp_, newComp_, this);
-        }
+        new AssociationChangeEndpointCommand(association, oldComp, newComp_, this);
     }
-    else
-    {
-        changeConnections(true, connectionNames, newComp_, oldComp_, diagram);
-    }
+
+    new ComponentChangeNameCommand(oldComp, newComp_->name(), design, this);
+    new ComponentChangeNameCommand(newComp_, oldComp->name(), design, this);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ReplaceComponentCommand::changeConnections()
 //-----------------------------------------------------------------------------
-void ReplaceComponentCommand::changeConnections(bool keepExistingComponent, QStringList& connectionNames,
-    HWComponentItem* oldComponentItem, HWComponentItem* newComponentItem, DesignDiagram* diagram)
+void ReplaceComponentCommand::changeConnections(HWComponentItem* oldComponentItem, 
+    HWComponentItem* newComponentItem, QStringList& connectionNames)
 {
     foreach (ConnectionEndpoint* oldEndpoint, oldComponentItem->getEndpoints())
     {
@@ -116,11 +88,7 @@ void ReplaceComponentCommand::changeConnections(bool keepExistingComponent, QStr
 
             if (newEndpoint != 0)
             {
-                createConnectionExchangeCommands(connectionNames, oldEndpoint, newEndpoint);
-            }
-            else if (keepExistingComponent)
-            {
-                createConnectionDeleteCommands(connectionNames, oldEndpoint, diagram);
+                createConnectionExchangeCommands(oldEndpoint, newEndpoint, connectionNames);
             }
         }
     }
@@ -129,8 +97,8 @@ void ReplaceComponentCommand::changeConnections(bool keepExistingComponent, QStr
 //-----------------------------------------------------------------------------
 // Function: ReplaceComponentCommand::createConnectionExchangeCommands()
 //-----------------------------------------------------------------------------
-void ReplaceComponentCommand::createConnectionExchangeCommands(QStringList& connectionNames,
-    ConnectionEndpoint* oldEndpoint, HWConnectionEndpoint* newEndpoint)
+void ReplaceComponentCommand::createConnectionExchangeCommands(ConnectionEndpoint* oldEndpoint, 
+    HWConnectionEndpoint* newEndpoint, QStringList& connectionNames)
 {
     // Create a move command to move the port to the same place where it is in the old component.
     new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), this);
@@ -161,53 +129,6 @@ void ReplaceComponentCommand::createConnectionExchangeCommands(QStringList& conn
 }
 
 //-----------------------------------------------------------------------------
-// Function: ReplaceComponentCommand::createConnectionDeleteCommands()
-//-----------------------------------------------------------------------------
-void ReplaceComponentCommand::createConnectionDeleteCommands(QStringList& connectionNames,
-    ConnectionEndpoint* deletedEndPoint, DesignDiagram* diagram)
-{
-    foreach (GraphicsConnection* connection, deletedEndPoint->getConnections())
-    {
-        createSingleConnectionDeleteCommand(connectionNames, connection, diagram);
-    }
-
-    if (deletedEndPoint->getOffPageConnector() && 
-        !deletedEndPoint->getOffPageConnector()->getConnections().isEmpty())
-    {
-        foreach (GraphicsConnection* connection, deletedEndPoint->getOffPageConnector()->getConnections())
-        {
-            createSingleConnectionDeleteCommand(connectionNames, connection, diagram);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ReplaceComponentCommand::createSingleConnectionDeleteCommand()
-//-----------------------------------------------------------------------------
-void ReplaceComponentCommand::createSingleConnectionDeleteCommand(QStringList& connectionNames,
-    GraphicsConnection* connection, DesignDiagram* diagram)
-{
-    if (!connectionNames.contains(connection->name()))
-    {
-        HWConnection* hwConnection = dynamic_cast<HWConnection*>(connection);
-        if (hwConnection)
-        {
-            new ConnectionDeleteCommand(diagram, hwConnection, this);
-            connectionNames.append(connection->name());
-        }
-        else
-        {
-            AdHocConnectionItem* adHocConnection = dynamic_cast<AdHocConnectionItem*>(connection);
-            if (adHocConnection)
-            {
-                new AdHocConnectionDeleteCommand(diagram, adHocConnection, this);
-                connectionNames.append(connection->name());
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: ReplaceComponentCommand::~ReplaceComponentCommand()
 //-----------------------------------------------------------------------------
 ReplaceComponentCommand::~ReplaceComponentCommand()
@@ -230,7 +151,7 @@ void ReplaceComponentCommand::redo()
 {
     // Place the new component to the exact same location as the old one.
     newComp_->setParentItem(0);
-    newComp_->setPos(oldComp_->scenePos());
+    newComp_->setPos(position_);
 
     // Execute child commands.
     QUndoCommand::redo();

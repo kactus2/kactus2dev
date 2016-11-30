@@ -295,17 +295,20 @@ protected:
      *  Replace the component item at the selected position.
      *
      *      @param [in] position    The position of the replaced component item.
-     *      @param [in] comp        The component item to replace the item at position.
+     *      @param [in] component   The component to replace the item at position.
      */
-    void replaceComponentItemAtPositionWith(QPointF position, QSharedPointer<Component> comp);
+    void replaceComponentItemAtPositionWith(QPointF position, QSharedPointer<Component> component);
 
     /*!
      *  Create a new component item.
      *
-     *      @param [in] comp        The selected component.
-     *      @param [in] position    Position of the new component item.
+     *      @param [in] comp            The selected component.
+     *      @param [in] instanceName    The name of the instance to create.
+     *      @param [in] position        Position of the new component item.
+     *      @param [in] parentCommand   Parent undo command for item creation.
      */
-    void createComponentItem(QSharedPointer<Component> comp, QPointF position);
+    HWComponentItem* createComponentItem(QSharedPointer<Component> comp, QString const& instanceName,
+        QPointF position, QUndoCommand* parentCommand);
 
     //! Updates the dropAction and highlight according to underlying element.
     virtual void updateDropAction(QGraphicsSceneDragDropEvent* event);

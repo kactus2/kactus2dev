@@ -143,5 +143,5 @@ bool HWConnection::isBus() const
 //-----------------------------------------------------------------------------
 void HWConnection::changeConnectionComponentReference(QString const& oldName, QString const& newName)
 {
-    interconnection_->changetInterfaceComponentReferences(oldName, newName);
+    interconnection_->changeInterfaceComponentReferences(oldName, newName);
 }

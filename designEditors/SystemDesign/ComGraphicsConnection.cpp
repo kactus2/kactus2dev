@@ -161,5 +161,5 @@ void ComGraphicsConnection::setRoute(QList<QPointF> path)
 //-----------------------------------------------------------------------------
 void ComGraphicsConnection::changeConnectionComponentReference(QString const& oldName, QString const& newName)
 {
-    comInterconnection_->changetInterfaceComponentReferences(oldName, newName);
+    comInterconnection_->changeInterfaceComponentReferences(oldName, newName);
 }

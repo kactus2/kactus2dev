@@ -132,7 +132,7 @@ public:
      *      @param [in] oldName     The old component reference.
      *      @param [in] newName     The new component reference.
      */
-    void changetInterfaceComponentReferences(QString const& oldComponent, QString const& newComponent);
+    void changeInterfaceComponentReferences(QString const& oldComponent, QString const& newComponent);
 
 private:
 

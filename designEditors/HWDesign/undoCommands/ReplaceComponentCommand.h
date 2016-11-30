@@ -14,6 +14,10 @@
 
 #include <QUndoCommand>
 
+#include <QPointF>
+
+class Design;
+
 class ComponentItem;
 class DesignDiagram;
 class HWComponentItem;
@@ -38,12 +42,10 @@ public:
 	 *      @param [in] diagram     The containing design diagram.
 	 *      @param [in] oldComp     The replaced component.
 	 *      @param [in] newComp     The new component.
-	 *      @param [in] existing    Flag for existence checking.
-	 *      @param [in] keepOld     Flag for keeping the old item.
 	 *      @param [in] parent      Owner of this command.
 	 */
-	ReplaceComponentCommand(DesignDiagram* diagram, HWComponentItem* oldComp, HWComponentItem* newComp,
-                            bool existing, bool keepOld, QUndoCommand* parent = 0);
+	ReplaceComponentCommand(HWComponentItem* oldComp, HWComponentItem* newComp, QSharedPointer<Design> design,
+        QUndoCommand* parent = 0);
 
 	/*!
      *  Destructor.
@@ -81,8 +83,7 @@ private:
      *      @param [in] newComponentItem        The new component.
      *      @param [in] diagram                 The containing design diagram.
      */
-    void changeConnections(bool keepExistingComponent, QStringList& connectionNames,
-        HWComponentItem* oldComponentItem, HWComponentItem* newComponentItem, DesignDiagram* diagram);
+    void changeConnections(HWComponentItem* oldComponentItem, HWComponentItem* newComponentItem, QStringList& connectionNames);
 
     /*!
      *  Create exchange commands for connections between the end points.
@@ -91,35 +92,15 @@ private:
      *      @param [in] oldEndpoint         The replaced end point.
      *      @param [in] newEndpoint         The new end point.
      */
-    void createConnectionExchangeCommands(QStringList& connectionNames, ConnectionEndpoint* oldEndpoint,
-        HWConnectionEndpoint* newEndpoint);
-
-    /*!
-     *  Create delete commands for connections in the selected end point.
-     *
-     *      @param [in] connectionNames     Names of the changed connections.
-     *      @param [in] deletedEndPoint     The selected end point.
-     *      @param [in] diagram             The containing design diagram.
-     */
-    void createConnectionDeleteCommands(QStringList& connectionNames, ConnectionEndpoint* deletedEndPoint,
-        DesignDiagram* diagram);
-
-    /*!
-     *  Create a single delete command for the selected connection.
-     *
-     *      @param [in] connectionNames     Names of the deleted connections.
-     *      @param [in] connection          The selected connection.
-     *      @param [in] diagram             The containing design diagram.
-     */
-    void createSingleConnectionDeleteCommand(QStringList& connectionNames, GraphicsConnection* connection,
-        DesignDiagram* diagram);
+    void createConnectionExchangeCommands(ConnectionEndpoint* oldEndpoint,
+        HWConnectionEndpoint* newEndpoint, QStringList& connectionNames);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
 	//! The old component to replace.
-    HWComponentItem* oldComp_;
+    QPointF position_;
 
     //! The new component that replaces the old one.
     HWComponentItem* newComp_;

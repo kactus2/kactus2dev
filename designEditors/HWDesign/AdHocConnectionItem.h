@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: AdHocConnection.h
+// File: AdHocConnectionItem.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 02.10.2015
 //
 // Description:
-// <Short description of the class/file contents>
+// Graphical item to represent ad-hoc connections in a design.
 //-----------------------------------------------------------------------------
 
 #ifndef ADHOCCONNECTIONITEM_H
@@ -22,7 +22,9 @@
 class AdHocConnection;
 class ConnectionRoute;
 
-
+//-----------------------------------------------------------------------------
+//! Graphical item to represent ad-hoc connections in a design.
+//-----------------------------------------------------------------------------
 class AdHocConnectionItem : public GraphicsConnection
 {
     Q_OBJECT
@@ -47,6 +49,7 @@ public:
     virtual void setDescription(QString const& description);
 
     virtual QString description() const;
+
     QSharedPointer<AdHocConnection> getAdHocConnection();
 
     QSharedPointer<ConnectionRoute> getRouteExtension() const;

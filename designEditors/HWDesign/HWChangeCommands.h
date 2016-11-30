@@ -87,12 +87,12 @@ private:
     ComponentChangeNameCommand& operator=(ComponentChangeNameCommand const& rhs);
 
     /*!
-     *  Change the component reference of interfaces within an ad hoc connection with a tied value.
+     *  Renames the component instance and change the component reference in connections.
      *
      *      @param [in] oldReference    The old component reference.
      *      @param [in] newReference    The new component reference.
      */
-    void changeAdHocTieOffConnectionReferences(QString const& oldReference, QString const& newReference);
+    void renameInstanceAndConnections(QString const& previousName, QString const& newReference);
 
     /*!
      *  Change the default name of an ad hoc connection.

@@ -89,24 +89,27 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design
         QSharedPointer<Component const> instancedComponent = 
             library_->getModelReadOnly(*componentInstance->getComponentRef()).dynamicCast<Component const>();
 
-        parameterFinder_->setComponent(instancedComponent);
-
-        QString activeView;
-        if (designConfiguration)
+        if (instancedComponent)
         {
-            activeView = designConfiguration->getActiveView(componentInstance->getInstanceName());
-        }
+            parameterFinder_->setComponent(instancedComponent);
 
-        QSharedPointer<ConnectivityComponent> instanceNode = createInstanceData(componentInstance, 
-            instancedComponent, activeView, graph);
+            QString activeView;
+            if (designConfiguration)
+            {
+                activeView = designConfiguration->getActiveView(componentInstance->getInstanceName());
+            }
 
-        QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces =
-            createInterfacesForInstance(instancedComponent, instanceNode, graph);
-        
-        createInteralConnectionsAndDesigns(instancedComponent, componentInstance->getInstanceName(), activeView, 
-            instanceInterfaces, graph);
+            QSharedPointer<ConnectivityComponent> instanceNode = createInstanceData(componentInstance, 
+                instancedComponent, activeView, graph);
 
-        interfacesInDesign += instanceInterfaces;
+            QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces =
+                createInterfacesForInstance(instancedComponent, instanceNode, graph);
+
+            createInteralConnectionsAndDesigns(instancedComponent, componentInstance->getInstanceName(), activeView, 
+                instanceInterfaces, graph);
+
+            interfacesInDesign += instanceInterfaces;
+        }        
     }
 
     foreach (QSharedPointer<Interconnection> interconnection, *design->getInterconnections())

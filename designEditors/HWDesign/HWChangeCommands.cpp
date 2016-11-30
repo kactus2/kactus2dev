@@ -48,20 +48,21 @@
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 
 //-----------------------------------------------------------------------------
-// Function: ComponentChangeNameCommand()
+// Function: ComponentChangeNameCommand::ComponentChangeNameCommand()
 //-----------------------------------------------------------------------------
 ComponentChangeNameCommand::ComponentChangeNameCommand(ComponentItem* component, QString const& newName,
     QSharedPointer<Design> design, QUndoCommand* parent):
 QUndoCommand(parent),
-component_(component),
-oldName_(component->name()),
-newName_(newName),
-containingDesign_(design)
+    component_(component),
+    oldName_(component->name()),
+    newName_(newName),
+    containingDesign_(design)
 {
+    Q_ASSERT(design);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ComponentChangeNameCommand()
+// Function: ComponentChangeNameCommand::~ComponentChangeNameCommand()
 //-----------------------------------------------------------------------------
 ComponentChangeNameCommand::~ComponentChangeNameCommand()
 {
@@ -72,13 +73,7 @@ ComponentChangeNameCommand::~ComponentChangeNameCommand()
 //-----------------------------------------------------------------------------
 void ComponentChangeNameCommand::undo()
 {
-    component_->setName(oldName_);
-
-    HWComponentItem* hwItem = dynamic_cast<HWComponentItem*>(component_);
-    if (hwItem)
-    {
-        changeAdHocTieOffConnectionReferences(newName_, oldName_);
-    }
+    renameInstanceAndConnections(newName_, oldName_);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,46 +81,62 @@ void ComponentChangeNameCommand::undo()
 //-----------------------------------------------------------------------------
 void ComponentChangeNameCommand::redo()
 {
-    component_->setName(newName_);
-
-    HWComponentItem* hwItem = dynamic_cast<HWComponentItem*>(component_);
-    if (hwItem)
-    {
-        changeAdHocTieOffConnectionReferences(oldName_, newName_);
-    }
+    renameInstanceAndConnections(oldName_, newName_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWChangeCommands::changeAdHocTieOffConnectionReferences()
+// Function: HWChangeCommands::renameInstanceAndConnections()
 //-----------------------------------------------------------------------------
-void ComponentChangeNameCommand::changeAdHocTieOffConnectionReferences(QString const& oldReference,
-    QString const& newReference)
+void ComponentChangeNameCommand::renameInstanceAndConnections(QString const& previousName,
+    QString const& newName)
 {
-    if (containingDesign_)
+    QList<GraphicsConnection*> allConnections;
+
+    // Update component reference in interconnections and ad-hoc connections.
+    foreach (ConnectionEndpoint* endpoint, component_->getEndpoints())
     {
-        foreach (QSharedPointer<AdHocConnection> connection, *containingDesign_->getAdHocConnections())
+        allConnections.append(endpoint->getConnections()); 
+        allConnections.append(endpoint->getOffPageConnector()->getConnections());
+    }
+
+    foreach (GraphicsConnection* connection, allConnections)
+    {
+         connection->changeConnectionComponentReference(previousName, newName);
+    }
+
+    // Find all connections, including ad-hoc, that are using the default naming and should be renamed.
+    QList<GraphicsConnection*> renamedConnections;
+    foreach (GraphicsConnection* connection, allConnections)
+    {
+        if (connection->hasDefaultName())
         {
-            if (!connection->getTiedValue().isEmpty())
+            renamedConnections.append(connection);
+        }
+    }
+
+    // Rename component instance.
+    component_->setName(newName);
+
+    // Instance must be renamed before renaming the connections with automatic naming.
+    foreach (GraphicsConnection* connection, renamedConnections)
+    {
+        connection->setName(connection->createDefaultName());
+    }
+
+    // Rename ad-hoc connections defining tie-offs for the component instance.
+    foreach (QSharedPointer<AdHocConnection> adhocConnection, *containingDesign_->getAdHocConnections())
+    {
+        if (!adhocConnection->getTiedValue().isEmpty())
+        {
+            foreach (QSharedPointer<PortReference> internalReference, *adhocConnection->getInternalPortReferences())
             {
-                foreach (QSharedPointer<PortReference> internalReference, *connection->getInternalPortReferences())
+                if (internalReference->getComponentRef().compare(previousName) == 0)
                 {
-                    if (internalReference->getComponentRef().compare(oldReference) == 0)
-                    {
-                        internalReference->setComponentRef(newReference);
-                        changeAdHocConnectionDefaultName(connection, internalReference->getPortRef(), oldReference,
-                            newReference);
-                    }
+                    internalReference->setComponentRef(newName);
+                    changeAdHocConnectionDefaultName(adhocConnection, internalReference->getPortRef(),
+                        previousName, newName);
                 }
-                foreach (QSharedPointer<PortReference> externalReference, *connection->getExternalPortReferences())
-                {
-                    if (externalReference->getComponentRef().compare(oldReference) == 0)
-                    {
-                        externalReference->setComponentRef(newReference);
-                        changeAdHocConnectionDefaultName(connection, externalReference->getPortRef(), oldReference,
-                            newReference);
-                    }
-                }
-            }
+            }           
         }
     }
 }
