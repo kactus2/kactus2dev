@@ -12,12 +12,12 @@
 #ifndef IPLUGIN_H
 #define IPLUGIN_H
 
-#include "QWidget.h"
 #include "PluginSettingsModel.h"
 
 #include <QString>
 #include <QList>
 #include <QtPlugin>
+#include <QWidget>
 
 //-----------------------------------------------------------------------------
 //! All plugin interfaces inherit from a common IPlugin interface which all plugins must implement.
