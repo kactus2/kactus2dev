@@ -919,16 +919,25 @@ void ComponentConfElementChangeCommand::setNewValues(
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsChangeCommand::AdHocBoundsChangeCommand()
 //-----------------------------------------------------------------------------
-AdHocBoundsChangeCommand::AdHocBoundsChangeCommand(AdHocConnectionItem* connection,
-                                                   bool right, int endpointIndex,
-                                                   QString const& oldValue, QString const& newValue, 
-                                                   QUndoCommand* parent) : QUndoCommand(parent),
-      connection_(connection),
+AdHocBoundsChangeCommand::AdHocBoundsChangeCommand(QSharedPointer<PortReference> portReference,
+                                                   bool right,
+                                                   QString const& newBound, 
+                                                   QUndoCommand* parent /*= 0*/) : QUndoCommand(parent),
+      port_(portReference),
       right_(right),
-      endpointIndex_(endpointIndex),
-      oldValue_(oldValue),
-      newValue_(newValue)
+      oldValue_(),
+      newValue_(newBound)
 {
+    QSharedPointer<PartSelect> part = port_->getPartSelect();
+
+    if (part && right)
+    {
+        oldValue_ = part->getRightRange();
+    }
+    else if (part)
+    {
+        oldValue_ = part->getLeftRange();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -944,13 +953,18 @@ AdHocBoundsChangeCommand::~AdHocBoundsChangeCommand()
 //-----------------------------------------------------------------------------
 void AdHocBoundsChangeCommand::undo()
 {
-    if (right_)
+    QSharedPointer<PartSelect> part = port_->getPartSelect();
+
+    if (part)
     {
-        connection_->setAdHocRightBound(endpointIndex_, oldValue_);
-    }
-    else
-    {
-        connection_->setAdHocLeftBound(endpointIndex_, oldValue_);
+        if (right_)
+        {
+            part->setRightRange(oldValue_);
+        }
+        else
+        {
+            part->setLeftRange(oldValue_);
+        }
     }
 }
 
@@ -959,12 +973,19 @@ void AdHocBoundsChangeCommand::undo()
 //-----------------------------------------------------------------------------
 void AdHocBoundsChangeCommand::redo()
 {
+    QSharedPointer<PartSelect> part = port_->getPartSelect();
+    if (part == 0)
+    {
+        part = QSharedPointer<PartSelect>(new PartSelect());
+        port_->setPartSelect(part);
+    }
+
     if (right_)
     {
-        connection_->setAdHocRightBound(endpointIndex_, newValue_);
+        part->setRightRange(newValue_);
     }
     else
     {
-        connection_->setAdHocLeftBound(endpointIndex_, newValue_);
+       part->setLeftRange(newValue_);
     }
 }

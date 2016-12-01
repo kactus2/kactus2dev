@@ -11,7 +11,6 @@
 
 #include "connectioneditor.h"
 
-#include "AdHocBoundsDelegate.h"
 #include "AdHocBoundColumns.h"
 
 #include <common/IEditProvider.h>
@@ -104,20 +103,17 @@ QWidget(parent),
     // Set settings for the table view.
     adHocBoundsTable_.setSortingEnabled(true);
     adHocBoundsTable_.setSelectionMode(QAbstractItemView::SingleSelection);
-    adHocBoundsTable_.setItemDelegate(new AdHocBoundsDelegate(this));
     adHocBoundsTable_.verticalHeader()->hide();
 
     QSortFilterProxyModel* adHocPortProxy = new QSortFilterProxyModel(this);
     adHocPortProxy->setSourceModel(&adHocBoundsModel_);
     adHocBoundsTable_.setModel(adHocPortProxy);
 
-    adHocBoundsTable_.setColumnWidth(AdHocBoundColumns::ADHOC_BOUNDS_COL_LEFT, 70);
-    adHocBoundsTable_.setColumnWidth(AdHocBoundColumns::ADHOC_BOUNDS_COL_RIGHT, 70);
+    adHocBoundsTable_.setColumnWidth(AdHocBoundColumns::LEFT_BOUND, 70);
+    adHocBoundsTable_.setColumnWidth(AdHocBoundColumns::RIGHT_BOUND, 70);
     adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::ADHOC_BOUNDS_COL_LEFT, 
-        QHeaderView::Fixed);
-    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::ADHOC_BOUNDS_COL_RIGHT,
-        QHeaderView::Fixed);
+    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::LEFT_BOUND, QHeaderView::Fixed);
+    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::RIGHT_BOUND, QHeaderView::Fixed);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&type_);

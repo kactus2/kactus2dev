@@ -38,7 +38,6 @@ AdHocConnectionItem::AdHocConnectionItem(ConnectionEndpoint* endpoint1, Connecti
     adhocConnection->name(),
     adhocConnection->displayName(),
     adhocConnection->description(), parent),
-    portBounds_(),
     adHocConnection_(adhocConnection),
     route_(route)
 {
@@ -54,7 +53,6 @@ AdHocConnectionItem::AdHocConnectionItem(QPointF const& p1, QVector2D const& dir
     QPointF const& p2, QVector2D const& dir2,
     DesignDiagram* parent):
 GraphicsConnection(p1, dir1, p2, dir2, parent),
-    portBounds_(),
     adHocConnection_(),
     route_()
 {
@@ -132,26 +130,6 @@ bool AdHocConnectionItem::connectEnds()
         return false;
     }
 
-    if (getAdHocLeftBound(0).isEmpty())
-    {
-        setAdHocLeftBound(0, endpoint1()->getPort()->getLeftBound());
-    }
-
-    if (getAdHocRightBound(0).isEmpty())
-    {
-        setAdHocRightBound(0, endpoint1()->getPort()->getRightBound());
-    }
-
-    if (getAdHocLeftBound(1).isEmpty())
-    {
-        setAdHocLeftBound(1, endpoint2()->getPort()->getLeftBound());
-    }
-
-    if (getAdHocRightBound(1).isEmpty())
-    {
-        setAdHocRightBound(1, endpoint2()->getPort()->getRightBound());
-    }
-
     return true;
 }
 
@@ -180,40 +158,6 @@ void AdHocConnectionItem::setRoute(QList<QPointF> path)
 bool AdHocConnectionItem::isBus() const
 {
     return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::getAdHocLeftBound()
-//-----------------------------------------------------------------------------
-QString AdHocConnectionItem::getAdHocLeftBound(int endpointIndex) const
-{
-    return portBounds_[endpointIndex].left_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::getAdHocRightBound()
-//-----------------------------------------------------------------------------
-QString AdHocConnectionItem::getAdHocRightBound(int endpointIndex) const
-{
-    return portBounds_[endpointIndex].right_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::setAdHocLeftBound()
-//-----------------------------------------------------------------------------
-void AdHocConnectionItem::setAdHocLeftBound(int endpointIndex, QString const& leftBound)
-{
-    portBounds_[endpointIndex].left_ = leftBound;
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::setAdHocRightBound()
-//-----------------------------------------------------------------------------
-void AdHocConnectionItem::setAdHocRightBound(int endpointIndex, QString const& rightBound)
-{
-    portBounds_[endpointIndex].right_ = rightBound;
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

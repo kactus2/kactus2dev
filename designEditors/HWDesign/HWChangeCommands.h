@@ -21,6 +21,7 @@
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
 #include <QUndoCommand>
+#include <QSharedPointer>
 #include <QGraphicsItem>
 #include <QGraphicsScene>
 #include <QString>
@@ -48,6 +49,8 @@ class ComponentInstance;
 class Design;
 class HierInterface;
 class ViewConfiguration;
+class PortReference;
+
 
 //-----------------------------------------------------------------------------
 //! ComponentChangeNameCommand class.
@@ -881,8 +884,7 @@ public:
 	/*!
      *  Constructor.
 	 */
-	AdHocBoundsChangeCommand(AdHocConnectionItem* connection, bool right, int endpointIndex,
-                             QString const& oldValue, QString const& newValue, QUndoCommand* parent = 0);
+	AdHocBoundsChangeCommand(QSharedPointer<PortReference> portReference, bool right, QString const& newBound, QUndoCommand* parent = 0);
 
 	/*!
      *  Destructor.
@@ -908,8 +910,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the connection to change.
-	AdHocConnectionItem* connection_;
+	//! The internal/external port to change.
+	QSharedPointer<PortReference> port_;
 
     //! If true, the change concerns the right bound. Otherwise it concerns the left bound.
     bool right_;

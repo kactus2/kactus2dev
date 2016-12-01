@@ -73,40 +73,6 @@ public:
     virtual void setRoute(QList<QPointF> path);
 
     /*!
-     *  Sets the left bound of the ad-hoc endpoint involved in the connection.
-     *
-     *      @param [in] endpointIndex Which endpoint is concerned. Either 1 or 2.
-     *      @param [in] leftBound     The left bound.
-     */
-    void setAdHocLeftBound(int endpointIndex, QString const& leftBound);
-
-    /*!
-     *  Sets the right bound of the ad-hoc endpoint involved in the connection.
-     *
-     *      @param [in] endpointIndex Which endpoint is concerned. Either 1 or 2.
-     *      @param [in] rightBound    The right bound.
-     */
-    void setAdHocRightBound(int endpointIndex, QString const& rightBound);
-
-    /*!
-     *  Returns the left bound of the ad-hoc endpoint involved in the connection.
-     *
-     *      @param [in] endpointIndex Which endpoint is concerned. Either 1 or 2.
-     *
-     *      @return The left bound of the endpoint.
-     */
-    QString getAdHocLeftBound(int endpointIndex) const;
-
-    /*!
-     *  Returns the left bound of the ad-hoc endpoint involved in the connection.
-     *
-     *      @param [in] endpointIndex Which endpoint data is concerned. Either 1 or 2.
-     *
-     *      @return The right bound of the endpoint.
-     */
-    QString getAdHocRightBound(int endpointIndex) const;
-
-    /*!
      *  Returns true if the connection is a bus connection. Returns false if it isn't (i.e. it is an ad-hoc
      *  connection).
      */
@@ -130,27 +96,8 @@ public:
 private:
 
     //-----------------------------------------------------------------------------
-    //! Structure for storing ad-hoc port bounds.
-    //-----------------------------------------------------------------------------
-    struct AdHocPortBound
-    {
-        QString left_;
-        QString right_;
-
-        /*!
-         *  Default constructor.
-         */
-        AdHocPortBound() : left_(), right_()
-        {
-        }
-    };
-
-    //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The ad-hoc port bounds.
-    AdHocPortBound portBounds_[2];
 
     QSharedPointer<AdHocConnection> adHocConnection_;
 

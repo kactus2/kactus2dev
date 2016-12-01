@@ -663,7 +663,6 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/common/ComponentInstanceEditor/componentinstanceeditor.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementdelegate.h \
     ./designEditors/common/ComponentInstanceEditor/configurableelementeditor.h \
-    ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.h \
     ./designEditors/common/ConnectionEditor/AdHocBoundsModel.h \
     ./designEditors/common/ConnectionEditor/connectioneditor.h \
     ./designEditors/common/InterfaceEditor/InterfacePortMapModel.h \
@@ -1271,7 +1270,6 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsFilter.cpp \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsModel.cpp \
     ./designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.cpp \
-    ./designEditors/common/ConnectionEditor/AdHocBoundsDelegate.cpp \
     ./designEditors/common/ConnectionEditor/AdHocBoundsModel.cpp \
     ./designEditors/common/ConnectionEditor/connectioneditor.cpp \
     ./designEditors/common/InterfaceEditor/interfaceeditor.cpp \

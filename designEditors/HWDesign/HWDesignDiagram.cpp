@@ -2433,20 +2433,6 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
 
     connection->setRoute(adHocConnection->getRoute());
 
-    QSharedPointer<PartSelect> internalPart = internalPort->getPartSelect();
-    if (!internalPart.isNull())
-    {
-        connection->setAdHocLeftBound(0, internalPart->getLeftRange());
-        connection->setAdHocRightBound(0, internalPart->getRightRange());
-    }
-
-    QSharedPointer<PartSelect> primaryPart = primaryPort->getPartSelect();
-    if (!primaryPart.isNull())
-    {
-        connection->setAdHocLeftBound(1, primaryPart->getLeftRange());
-        connection->setAdHocRightBound(1, primaryPart->getRightRange());
-    }
-
     if (route->isOffpage())
     {
         connection->hide();

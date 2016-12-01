@@ -6,7 +6,7 @@
 // Date: 20.2.2012
 //
 // Description:
-// Table model for visualizing ad-hoc visibility for connection ports.
+// Table model for visualizing ad-hoc bounds for connection ports.
 //-----------------------------------------------------------------------------
 
 #include "AdHocBoundsModel.h"
@@ -21,7 +21,12 @@
 
 #include <common/IEditProvider.h>
 
+#include <IPXACTmodels/common/PartSelect.h>
+
 #include <IPXACTmodels/Component/Port.h>
+
+#include <IPXACTmodels/Design/AdHocConnection.h>
+#include <IPXACTmodels/Design/PortReference.h>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsModel::AdHocBoundsModel()
@@ -57,12 +62,12 @@ void AdHocBoundsModel::setConnection(AdHocConnectionItem* connection, QSharedPoi
 //-----------------------------------------------------------------------------
 int AdHocBoundsModel::rowCount(QModelIndex const& parent) const
 {
-    if (parent.isValid() || connection_ == 0)
+    if (parent.isValid())
     {
         return 0;
     }
 
-    return 2;
+    return getEndpointCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +80,7 @@ int AdHocBoundsModel::columnCount(QModelIndex const& parent) const
         return 0;
     }
 
-    return AdHocBoundColumns::ADHOC_BOUNDS_COL_COUNT;
+    return AdHocBoundColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -84,98 +89,62 @@ int AdHocBoundsModel::columnCount(QModelIndex const& parent) const
 QVariant AdHocBoundsModel::data(QModelIndex const& index, int role) const
 {
     // Check for invalid index.
-    if (!index.isValid() || connection_ == 0 || index.row() < 0 || index.row() >= 2)
+    if (!index.isValid() || connection_ == 0 || index.row() > getEndpointCount())
     {
         return QVariant();
     }
 
-    if (role == Qt::DisplayRole)
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
-        if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_NAME)
-        {
-            if (index.row() == 0)
-            {
-                return connection_->endpoint1()->name();
-            }
-            else
-            {
-                return connection_->endpoint2()->name();
-            }
-        }
+        QSharedPointer<PortReference> port = getEndpoint(index.row());
 
-        else if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_LEFT)
+        if (index.column() == AdHocBoundColumns::NAME)
         {
-            QString value = connection_->getAdHocLeftBound(index.row());
-
-            if (value.isEmpty())
+            QString portName = port->getPortRef();
+            if (port->getComponentRef().isEmpty())
             {
-                if (index.row() == 0)
-                {
-                    return connection_->endpoint1()->getPort()->getLeftBound();
-                }
-                else
-                {
-                    return connection_->endpoint2()->getPort()->getLeftBound();
-                }
+                portName.append(QStringLiteral(" (external)"));
             }
 
-            return value;
+            return portName;
         }
 
-        else if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_RIGHT)
+        else if (index.column() == AdHocBoundColumns::LEFT_BOUND)
         {
-            QString value = connection_->getAdHocRightBound(index.row());
+            QSharedPointer<PartSelect> part = port->getPartSelect();
 
-            if (value.isEmpty())
+            if (part)
             {
-                if (index.row() == 0)
-                {
-                    return connection_->endpoint1()->getPort()->getRightBound();
-                }
-                else
-                {
-                    return connection_->endpoint2()->getPort()->getRightBound();
-                }
+                return part->getLeftRange();
             }
-
-            return value;
-        }
-
-        else
-        {
-            return QVariant();
-        }
-    }
-    else if (role == AdHocBoundColumns::UpperPortBoundRole)
-    {
-        if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_LEFT || 
-            index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_RIGHT)
-        {
-            if (index.row() == 0)
+            else if (index.row() == 0)
             {
                 return connection_->endpoint1()->getPort()->getLeftBound();
             }
-            else
+            else if (index.row() == 1)
             {
                 return connection_->endpoint2()->getPort()->getLeftBound();
             }
         }
-    }
-    else if (role == AdHocBoundColumns::LowerPortBoundRole)
-    {
-        if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_LEFT || 
-            index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_RIGHT)
+
+        else if (index.column() == AdHocBoundColumns::RIGHT_BOUND)
         {
-            if (index.row() == 0)
+            QSharedPointer<PartSelect> part = port->getPartSelect();
+
+            if (part)
+            {
+                return part->getRightRange();
+            }
+            else if (index.row() == 0)
             {
                 return connection_->endpoint1()->getPort()->getRightBound();
             }
-            else
+            else if (index.row() == 1)
             {
                 return connection_->endpoint2()->getPort()->getRightBound();
             }
         }
-    }
+    }   
 
     return QVariant();
 }
@@ -192,15 +161,15 @@ QVariant AdHocBoundsModel::headerData(int section, Qt::Orientation orientation, 
 
     if (orientation == Qt::Horizontal)
     {
-        if (section == AdHocBoundColumns::ADHOC_BOUNDS_COL_NAME)
+        if (section == AdHocBoundColumns::NAME)
         {
-            return tr("Port");
+            return tr("Port name");
         }
-        else if (section == AdHocBoundColumns::ADHOC_BOUNDS_COL_LEFT)
+        else if (section == AdHocBoundColumns::LEFT_BOUND)
         {
             return tr("Left Bound");
         }
-        else if (section == AdHocBoundColumns::ADHOC_BOUNDS_COL_RIGHT)
+        else if (section == AdHocBoundColumns::RIGHT_BOUND)
         {
             return tr("Right Bound");
         }
@@ -219,31 +188,35 @@ QVariant AdHocBoundsModel::headerData(int section, Qt::Orientation orientation, 
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsModel::setData()
 //-----------------------------------------------------------------------------
-bool AdHocBoundsModel::setData(const QModelIndex& index, const QVariant& value, int role)
+bool AdHocBoundsModel::setData(QModelIndex const& index, QVariant const& value, int role)
 {
     // Check for invalid index.
-    if (!index.isValid() || connection_ == 0 || index.row() < 0 || index.row() >= 2)
+    if (!index.isValid() || connection_ == 0 || index.row() < 0 || index.row() > getEndpointCount())
     {
         return false;
     }
 
     if (role == Qt::EditRole)
     {
-        if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_LEFT)
+        QSharedPointer<PortReference> port = getEndpoint(index.row());
+
+        if (index.column() == AdHocBoundColumns::LEFT_BOUND)
         {
-            QSharedPointer<QUndoCommand> cmd(new AdHocBoundsChangeCommand(connection_, false, index.row(),
-                connection_->getAdHocLeftBound(index.row()), value.toString()));
+            QSharedPointer<QUndoCommand> cmd(new AdHocBoundsChangeCommand(port, false, value.toString()));
             editProvider_->addCommand(cmd);
             cmd->redo();
+
+            emit dataChanged(index, index);
             return true;
         }
 
-        else if (index.column() == AdHocBoundColumns::ADHOC_BOUNDS_COL_RIGHT)
+        else if (index.column() == AdHocBoundColumns::RIGHT_BOUND)
         {
-            QSharedPointer<QUndoCommand> cmd(new AdHocBoundsChangeCommand(connection_, true, index.row(),
-                connection_->getAdHocRightBound(index.row()), value.toString()));
+            QSharedPointer<QUndoCommand> cmd(new AdHocBoundsChangeCommand(port, true, value.toString()));
             editProvider_->addCommand(cmd);
             cmd->redo();
+
+            emit dataChanged(index, index);
             return true;
         }
 
@@ -259,12 +232,51 @@ bool AdHocBoundsModel::setData(const QModelIndex& index, const QVariant& value, 
 //-----------------------------------------------------------------------------
 // Function: AdHocBoundsModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags AdHocBoundsModel::flags(const QModelIndex& index) const
+Qt::ItemFlags AdHocBoundsModel::flags(QModelIndex const& index) const
 {
     if (!index.isValid())
     {
         return Qt::NoItemFlags;
     }
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    if (index.column() == AdHocBoundColumns::NAME)
+    {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
+    else if (index.column() == AdHocBoundColumns::LEFT_BOUND || index.column() == AdHocBoundColumns::RIGHT_BOUND)
+    {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    }
+    
+    return Qt::NoItemFlags;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsModel::getEndpointCount()
+//-----------------------------------------------------------------------------
+int AdHocBoundsModel::getEndpointCount() const
+{
+    if (connection_ == 0 || connection_->getAdHocConnection() == 0)
+    {
+        return 0;
+    }
+
+    return connection_->getAdHocConnection()->getInternalPortReferences()->count() +
+        connection_->getAdHocConnection()->getExternalPortReferences()->count();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdHocBoundsModel::getEndpoint()
+//-----------------------------------------------------------------------------
+QSharedPointer<PortReference> AdHocBoundsModel::getEndpoint(int row) const
+{
+    int internalPortCount = connection_->getAdHocConnection()->getInternalPortReferences()->count();
+    if (row < internalPortCount)
+    {
+        return connection_->getAdHocConnection()->getInternalPortReferences()->at(row);
+    }
+    else
+    {
+        return connection_->getAdHocConnection()->getExternalPortReferences()->at(row - internalPortCount);
+    }
 }

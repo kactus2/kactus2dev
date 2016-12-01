@@ -6,7 +6,7 @@
 // Date: 20.2.2012
 //
 // Description:
-// Table model for visualizing ad-hoc visibility for component ports.
+// Table model for visualizing ad-hoc bounds for component ports.
 //-----------------------------------------------------------------------------
 
 #ifndef ADHOCBOUNDSMODEL_H
@@ -15,8 +15,11 @@
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
+class PortReference;
+
 class AdHocConnectionItem;
 class IEditProvider;
+
 //-----------------------------------------------------------------------------
 //! Table model for visualizing ad-hoc visibility for component ports.
 //-----------------------------------------------------------------------------
@@ -30,14 +33,11 @@ public:
      *  Constructor.
 	 *
      *      @param [in] editProvider  The edit provider managing the undo/redo stack.
-	 *      @param [in] parent        Pointer to the owner of this model.
-	 *
+	 *      @param [in] parent        The owner of this model.
 	 */
 	AdHocBoundsModel(QObject *parent);
 	
-	/*!
-     *  Destructor.
-     */
+	//! The destructor.
 	virtual ~AdHocBoundsModel();
 
     /*!
@@ -96,7 +96,7 @@ public:
 	 *
 	 *      @return True if data was successfully set, otherwise false.
 	 */
-	virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+	virtual bool setData(QModelIndex const& index, QVariant const& value, int role = Qt::EditRole);
 
 	/*!
      *  Returns information on how specified item can be handled.
@@ -105,8 +105,9 @@ public:
 	 *
 	 *      @return Qt::ItemFlags that define how object can be handled.
 	 */
-	virtual Qt::ItemFlags flags(const QModelIndex& index) const;
+	virtual Qt::ItemFlags flags(QModelIndex const& index) const;
 
+    
 signals:
 	//! Emitted when contents of the model change
 	void contentChanged();
@@ -115,6 +116,22 @@ private:
     // Disable copying.
     AdHocBoundsModel(AdHocBoundsModel const& rhs);
     AdHocBoundsModel& operator=(AdHocBoundsModel const& rhs);
+
+    /*!
+     *  Finds the number of endpoint in the ad-hoc connection.
+     *
+     *      @return The number of endpoints defined in the connection.
+     */
+    int getEndpointCount() const;
+
+    /*!
+     *  Gets the port reference on the given row.
+     *
+     *      @param [in] row   The row to find.
+     *
+     *      @return The port reference on the given row.
+     */
+    QSharedPointer<PortReference> getEndpoint(int row) const;
 
     //-----------------------------------------------------------------------------
     // Data.

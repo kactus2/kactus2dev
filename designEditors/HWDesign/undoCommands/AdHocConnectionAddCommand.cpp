@@ -79,6 +79,8 @@ void AdHocConnectionAddCommand::redo()
     design_->getAdHocConnections()->append(connection_->getAdHocConnection());
     design_->addRoute(connection_->getRouteExtension());
 
+    connection_->connectEnds();
+
     scene_->clearSelection();
     connection_->setVisible(true);
     del_ = false;

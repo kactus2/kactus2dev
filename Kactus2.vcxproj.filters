@@ -1849,17 +1849,11 @@
     <ClCompile Include="designEditors\common\ComponentInstanceEditor\configurableelementeditor.cpp">
       <Filter>Source Files\designEditors\common\ComponentInstanceEditor</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\common\ConnectionEditor\AdHocBoundsDelegate.cpp">
-      <Filter>Source Files\designEditors\common\ConnectionEditor</Filter>
-    </ClCompile>
     <ClCompile Include="designEditors\common\ConnectionEditor\AdHocBoundsModel.cpp">
       <Filter>Source Files\designEditors\common\ConnectionEditor</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\common\ConnectionEditor\connectioneditor.cpp">
       <Filter>Source Files\designEditors\common\ConnectionEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_AdHocBoundsDelegate.cpp">
-      <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_AdHocBoundsModel.cpp">
       <Filter>Generated Files</Filter>
@@ -4652,9 +4646,6 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\common\ComponentInstanceEditor\configurableelementeditor.h">
       <Filter>Header Files\designEditors\common\ComponentInstanceEditor</Filter>
-    </CustomBuild>
-    <CustomBuild Include="designEditors\common\ConnectionEditor\AdHocBoundsDelegate.h">
-      <Filter>Header Files\designEditors\common\ConnectionEditor</Filter>
     </CustomBuild>
     <CustomBuild Include="designEditors\common\ConnectionEditor\AdHocBoundsModel.h">
       <Filter>Header Files\designEditors\common\ConnectionEditor</Filter>
