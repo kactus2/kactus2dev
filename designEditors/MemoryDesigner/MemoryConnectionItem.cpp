@@ -388,8 +388,11 @@ QString MemoryConnectionItem::getRangeEndValue() const
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::reDrawConnection()
 {
-    createPath();
-    repositionLabels();
+    if (sceneBoundingRect().right() != getConnectionEndItem()->sceneBoundingRect().left())
+    {
+        createPath();
+        repositionLabels();
+    }
 }
 
 //-----------------------------------------------------------------------------

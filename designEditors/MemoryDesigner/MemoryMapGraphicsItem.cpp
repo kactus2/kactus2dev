@@ -19,6 +19,7 @@
 #include <designEditors/MemoryDesigner/RegisterGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
+#include <designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
 
 #include <QBrush>
 #include <QFont>
@@ -47,10 +48,14 @@ filterRegisters_(filterRegisters)
     setBrush(memoryMapBrush);
 
     quint64 memoryHeight = (lastAddress - baseAddress + 1);
-    int memoryWidth = 500;
-    if (filterRegisters_ || filterAddressBlocks)
+    int memoryWidth = 1280;
+    if (filterRegisters_)
     {
-        memoryWidth = memoryWidth / 2;
+        memoryWidth = 250;
+    }
+    else if (filterAddressBlocks_)
+    {
+        memoryWidth -= MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 + 1;
     }
 
     setGraphicsRectangle(memoryWidth, memoryHeight);
@@ -58,13 +63,13 @@ filterRegisters_(filterRegisters)
     setLabelPositions();
     
     qreal blockXPosition = 0;
-    if (filterRegisters_ || filterAddressBlocks)
+    if (filterRegisters_)
     {
         blockXPosition = boundingRect().width() / 4;
     }
     else
     {
-        blockXPosition = boundingRect().width() / 8;
+        blockXPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX;
     }
     setupSubItems(blockXPosition, memoryItem);
 }
@@ -197,11 +202,11 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QShared
     if (!filterAddressBlocks_)
     {
         childItem = new AddressBlockGraphicsItem(
-            subMemoryItem, isEmpty, filterRegisters_, getSubItemWidth(filterRegisters_), this);
+            subMemoryItem, isEmpty, filterRegisters_, getSubItemWidth(), this);
     }
     else if (!filterRegisters_)
     {
-        childItem = new RegisterGraphicsItem(subMemoryItem, isEmpty, getSubItemWidth(true), this);
+        childItem = new RegisterGraphicsItem(subMemoryItem, isEmpty, getSubItemWidth(), this);
     }
 
     return childItem;
@@ -210,16 +215,16 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QShared
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::getSubItemWidth()
 //-----------------------------------------------------------------------------
-qreal MemoryMapGraphicsItem::getSubItemWidth(bool subItemSubItemsAreFiltered) const
+qreal MemoryMapGraphicsItem::getSubItemWidth() const
 {
     int subItemWidth = 0;
-    if (!subItemSubItemsAreFiltered)
+    if (filterRegisters_)
     {
-        subItemWidth = boundingRect().width() / 4 * 3 + 1;
+        subItemWidth = boundingRect().width() / 2 + 1;
     }
     else
     {
-        subItemWidth = boundingRect().width() / 2 + 1;
+        subItemWidth = (boundingRect().width() - MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2) + 1;
     }
     return subItemWidth;
 }
@@ -351,4 +356,52 @@ bool MemoryMapGraphicsItem::isConnectedToSpaceItems(QVector<MainMemoryGraphicsIt
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::changeWidth()
+//-----------------------------------------------------------------------------
+void MemoryMapGraphicsItem::changeWidth(qreal widthChange)
+{
+    qreal newWidth = boundingRect().width() + widthChange - 1;
+    setRect(-newWidth / 2, 0, newWidth, boundingRect().height() - 1);
+    setLabelPositions();
+
+    qreal xPosition = pos().x() + widthChange / 2;
+    setX(xPosition);
+
+    if (getExtensionItem())
+    {
+        getExtensionItem()->setRect(
+            -newWidth / 2, boundingRect().bottom() - 1, newWidth, getExtensionItem()->boundingRect().height() - 1);
+    }
+
+    if (!subItemsAreFiltered() && !getSubMemoryItems().isEmpty())
+    {
+        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        while (subItemIterator.hasNext())
+        {
+            subItemIterator.next();
+            MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+
+            subItem->setX(subItem->pos().x() - widthChange / 2);
+
+            if (!filterAddressBlocks_)
+            {
+                AddressBlockGraphicsItem* blockItem = dynamic_cast<AddressBlockGraphicsItem*>(subItem);
+                if (blockItem)
+                {
+                    blockItem->changeWidth(widthChange);
+                }
+            }
+            else if (!filterRegisters_)
+            {
+                RegisterGraphicsItem* registerItem = dynamic_cast<RegisterGraphicsItem*>(subItem);
+                if (registerItem)
+                {
+                    registerItem->changeWidth(widthChange);
+                }
+            }
+        }
+    }
 }

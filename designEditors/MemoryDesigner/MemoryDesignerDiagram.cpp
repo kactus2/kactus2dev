@@ -57,7 +57,12 @@ condenseMemoryItems_(true),
 filterAddressSpaceChains_(false),
 filterAddressSpaceSegments_(false),
 filterAddressBlocks_(false),
-filterRegisters_(false)
+filterRegisters_(false),
+spaceColumnWidth_(MemoryDesignerConstants::SPACECOLUMNWIDTH),
+memoryMapColumnWidth_(MemoryDesignerConstants::MEMORYMAPCOLUMNWIDTH),
+widthBoundary_(0),
+connectionsToMemoryMaps_(),
+memoryCollisions_()
 {
     setSceneRect(0, 0, 100000, 100000);
 }
@@ -157,6 +162,22 @@ bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Compo
     QString const& viewName)
 {
     clearScene();
+    connectionsToMemoryMaps_.clear();
+    memoryCollisions_.clear();
+
+    if (filterRegisters_)
+    {
+        memoryMapColumnWidth_ = MemoryDesignerConstants::SPACECOLUMNWIDTH;
+    }
+    else if (filterAddressBlocks_)
+    {
+        memoryMapColumnWidth_ =
+            MemoryDesignerConstants::MEMORYMAPCOLUMNWIDTH - (MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 - 5);
+    }
+    else
+    {
+        memoryMapColumnWidth_ = MemoryDesignerConstants::MEMORYMAPCOLUMNWIDTH;
+    }
 
     if (createConnectionGraph(component, viewName))
     {
@@ -316,8 +337,8 @@ MemoryColumn* MemoryDesignerDiagram::createAddressSpaceColumn()
 
     QSharedPointer<ColumnDesc> addressSpaceColumnDescription(new ColumnDesc());
     addressSpaceColumnDescription->setName(SPACENAME);
-    addressSpaceColumnDescription->setMinimumWidth(COLUMNWIDTH);
-    addressSpaceColumnDescription->setWidth(COLUMNWIDTH);
+    addressSpaceColumnDescription->setMinimumWidth(spaceColumnWidth_);
+    addressSpaceColumnDescription->setWidth(spaceColumnWidth_);
 
     QPointF columnPosition (0,0);
 
@@ -358,8 +379,8 @@ void MemoryDesignerDiagram::createMemoryColumns()
 
     QSharedPointer<ColumnDesc> memoryMapColumnDescription(new ColumnDesc());
     memoryMapColumnDescription->setName(MemoryDesignerConstants::MEMORYMAPCOLUM_NAME);
-    memoryMapColumnDescription->setMinimumWidth(COLUMNWIDTH);
-    memoryMapColumnDescription->setWidth(COLUMNWIDTH);
+    memoryMapColumnDescription->setMinimumWidth(memoryMapColumnWidth_);
+    memoryMapColumnDescription->setWidth(memoryMapColumnWidth_);
 
     MemoryColumn* memoryMapColumn(new MemoryColumn(memoryMapColumnDescription, layout_.data(), 0));
 
@@ -378,8 +399,8 @@ MemoryColumn* MemoryDesignerDiagram::createMemoryOverlapColumn()
 
     QSharedPointer<ColumnDesc> memoryMapOverlapColumnDescription(new ColumnDesc());
     memoryMapOverlapColumnDescription->setName(overlapName);
-    memoryMapOverlapColumnDescription->setMinimumWidth(COLUMNWIDTH);
-    memoryMapOverlapColumnDescription->setWidth(COLUMNWIDTH);
+    memoryMapOverlapColumnDescription->setMinimumWidth(memoryMapColumnWidth_);
+    memoryMapOverlapColumnDescription->setWidth(memoryMapColumnWidth_);
 
     int overlapCounter = 0;
     int columnXPosition = 0;
@@ -399,12 +420,9 @@ MemoryColumn* MemoryDesignerDiagram::createMemoryOverlapColumn()
     }
 
     MemoryColumn* memoryMapOverlapColumn(new MemoryColumn(memoryMapOverlapColumnDescription, layout_.data(), 0));
-    layout_->addColumn(memoryMapOverlapColumn);
-
     QPointF columnPosition (columnXPosition, 0);
     memoryMapOverlapColumn->setPos(columnPosition);
-    layout_->onMoveColumn(memoryMapOverlapColumn);
-    layout_->onReleaseColumn(memoryMapOverlapColumn);
+    layout_->addColumn(memoryMapOverlapColumn);
 
     return memoryMapOverlapColumn;
 }
@@ -494,7 +512,7 @@ void MemoryDesignerDiagram::createMemoryConnections()
     compressGraphicsItems(placedSpaceItems, spaceYPlacement, spaceColumn);
     if (condenseMemoryItems_)
     {
-        repositionCompressedMemoryMaps(placedMapItems, memoryMapColumn, spaceColumn);
+        repositionCompressedMemoryMaps(placedMapItems, memoryMapColumn);
     }
 
     moveUnconnectedAddressSpaces(placedSpaceItems, spaceYPlacement, spaceColumn);
@@ -627,7 +645,7 @@ void MemoryDesignerDiagram::createConnection(QVector<QSharedPointer<Connectivity
             if (!placedMapItems->contains(connectionEndItem))
             {
                 connectionEndItem->hideMemoryRangeLabels();
-                connectionEndItem->setPos(connectionStartItem->x(), connectionStartItem->y() + yTransfer);
+                connectionEndItem->setPos(connectionEndItem->pos().x(), connectionStartItem->pos().y() + yTransfer);
 
                 QPointF startItemPositionBefore = connectionStartItem->pos();
 
@@ -668,6 +686,7 @@ void MemoryDesignerDiagram::createConnection(QVector<QSharedPointer<Connectivity
                 endAddress, connectionEndItem, spaceColumn->scene(), condenseMemoryItems_, yTransfer);
             connectionChain.append(newConnectionItem);
             setHeightForConnectionChain(connectionChain);
+            connectionsToMemoryMaps_.append(newConnectionItem);
 
             qreal spaceItemEndPointAfter = connectionStartItem->getSceneEndPoint();
 
@@ -783,8 +802,8 @@ void MemoryDesignerDiagram::changeMasterAddressSpaceColumn(MainMemoryGraphicsIte
 {
     originalColumn->removeItem(masterSpaceItem);
 
-    qreal currentColumnPosition = originalColumn->pos().x() - originalColumn->boundingRect().width();
     qreal columnWidth = originalColumn->boundingRect().width();
+    qreal currentColumnPosition = originalColumn->pos().x() - columnWidth;
     GraphicsColumn* currentColumn = 0;
     while (currentColumnPosition >= 0)
     {
@@ -1031,7 +1050,7 @@ void MemoryDesignerDiagram::repositionMemoryMap(QSharedPointer<QVector<MainMemor
             endConnectionItem->setPos(endConnectionItem->x(), mapItemYTransfer);
 
             startConnectionItem->setPos(
-                endConnectionItem->pos().x(), endConnectionItem->pos().y() - memoryMapYTransfer);
+                startConnectionItem->pos().x(), endConnectionItem->pos().y() - memoryMapYTransfer);
 
             repositionSpaceItemToMemoryMap(
                 placedSpaceItems, startConnectionItem, endConnectionItem, addressSpaceColumn, memoryMapYTransfer);
@@ -1088,7 +1107,7 @@ void MemoryDesignerDiagram::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* 
             MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME, Qt::CaseInsensitive))
         {
             currentSpaceColumn->addItem(spaceItem);
-            spaceItem->setPos(targetItem->pos().x(), targetItem->pos().y() + yTransfer);
+            spaceItem->setPos(spaceItem->pos().x(), targetItem->pos().y() + yTransfer);
 
             if (spaceItemCollidesWithOtherSpaceItems(spaceItem))
             {
@@ -1103,7 +1122,7 @@ void MemoryDesignerDiagram::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* 
 
     MemoryColumn* newSpaceColumn = createAddressSpaceColumn();
     newSpaceColumn->addItem(spaceItem);
-    spaceItem->setPos(targetItem->pos());
+    spaceItem->setPos(spaceItem->pos().x(), targetItem->pos().y());
 }
 
 //-----------------------------------------------------------------------------
@@ -1271,6 +1290,7 @@ void MemoryDesignerDiagram::createOverlappingConnectionMarkers(
                         MemoryCollisionItem* newCollisionItem =
                             new MemoryCollisionItem(selectedItem, comparisonItem, spaceItem->scene());
                         spaceItem->addConnectionCollision(newCollisionItem);
+                        memoryCollisions_.append(newCollisionItem);
                     }
                 }
             }
@@ -1380,8 +1400,7 @@ void MemoryDesignerDiagram::compressGraphicsItems(
 // Function: MemoryDesignerDiagram::repositionCompressedMemoryMaps()
 //-----------------------------------------------------------------------------
 void MemoryDesignerDiagram::repositionCompressedMemoryMaps(
-    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems, MemoryColumn* memoryMapColumn,
-    MemoryColumn* spaceColumn)
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems, MemoryColumn* memoryMapColumn)
 {
     foreach (MainMemoryGraphicsItem* mapItem, *placedMapItems)
     {
@@ -1416,7 +1435,8 @@ void MemoryDesignerDiagram::repositionCompressedMemoryMaps(
             MemoryColumn* comparisonColumn = dynamic_cast<MemoryColumn*>(layout_->findColumnAt(columnPoint));
             if (comparisonColumn)
             {
-                while (comparisonColumn && comparisonColumn != spaceColumn)
+                while (comparisonColumn && !comparisonColumn->name().contains(
+                    MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME, Qt::CaseInsensitive))
                 {
                     mapRectangle.setX(mapRectangle.x() - columnWidth);
 
@@ -1487,6 +1507,41 @@ void MemoryDesignerDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
     {
         // Set the zoom level and center the view.
         parentDocument_->setZoomLevel(parentDocument_->getZoomLevel() + event->delta() / 12);
+
+        event->accept();
+    }
+    else if (event->modifiers() == Qt::ALT && !addressBlockRegistersAreFiltered())
+    {
+        qreal deltaWidth = event->delta();
+        deltaWidth = -deltaWidth;
+
+        qreal previousWidthBoundary = widthBoundary_;
+        widthBoundary_ += deltaWidth;
+        if (widthBoundary_ < 0)
+        {
+            deltaWidth = previousWidthBoundary;
+            widthBoundary_ = 0;
+        }
+
+        if (deltaWidth != 0)
+        {
+            foreach (GraphicsColumn* column, layout_->getColumns())
+            {
+                MemoryColumn* memoryColumn = dynamic_cast<MemoryColumn*>(column);
+                if (memoryColumn && memoryColumn->containsMemoryMapItems())
+                {
+                    memoryColumn->changeWidth(deltaWidth);
+                }
+            }
+            foreach (MemoryConnectionItem* connectionItem, connectionsToMemoryMaps_)
+            {
+                connectionItem->reDrawConnection();
+            }
+            foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
+            {
+                collisionItem->reDrawCollision();
+            }
+        }
 
         event->accept();
     }

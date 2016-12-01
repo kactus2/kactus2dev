@@ -89,7 +89,7 @@ public:
      *
      *      @param [in] newItemHeight   The new height of the graphics item.
      */
-    void condense(qreal newItemHeight);
+    virtual void condense(qreal newItemHeight);
 
     /*!
      *  Add a memory connection graphics item.

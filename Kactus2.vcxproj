@@ -486,6 +486,7 @@ CreateHelp
     <ClCompile Include="designEditors\MemoryDesigner\ConnectivityGraph.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\ConnectivityGraphFactory.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\ConnectivityInterface.cpp" />
+    <ClCompile Include="designEditors\MemoryDesigner\FieldGraphicsItem.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MainMemoryGraphicsItem.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MasterSlavePathSearch.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryCollisionItem.cpp" />
@@ -2778,6 +2779,7 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="designEditors\MemoryDesigner\FieldGraphicsItem.h" />
     <ClInclude Include="designEditors\MemoryDesigner\MasterSlavePathSearch.h" />
     <CustomBuild Include="designEditors\MemoryDesigner\MemoryConnectionItem.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>

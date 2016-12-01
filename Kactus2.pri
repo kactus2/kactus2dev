@@ -695,7 +695,8 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./designEditors/MemoryDesigner/FieldGraphicsItem.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -1302,5 +1303,6 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
+    ./designEditors/MemoryDesigner/FieldGraphicsItem.cpp
 RESOURCES += kactus.qrc

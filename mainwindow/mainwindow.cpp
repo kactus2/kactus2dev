@@ -4830,19 +4830,19 @@ void MainWindow::setupMemoryFilteringMenu(TabDocument* document)
         QActionGroup* filterActionGroup = new QActionGroup(this);
         filterActionGroup->setExclusive(false);
 
-        QAction* filterSegmentsAction = new QAction(tr(qPrintable("Filter Address Space Segments")), this);
+        QAction* filterSegmentsAction = new QAction(tr(qPrintable("Segments")), this);
         filterSegmentsAction->setCheckable(true);
         filterSegmentsAction->setChecked(memoryDocument->addressSpaceSegmentsAreFilterted());
         connect(filterSegmentsAction, SIGNAL(triggered(bool)),
             memoryDocument, SLOT(filterAddressSpaceSegments(bool)), Qt::UniqueConnection);
 
-        QAction* filterAddressBlocksAction = new QAction(tr(qPrintable("Filter Address Blocks")), this);
+        QAction* filterAddressBlocksAction = new QAction(tr(qPrintable("Address Blocks")), this);
         filterAddressBlocksAction->setCheckable(true);
         filterAddressBlocksAction->setChecked(memoryDocument->addressBlocksAreFiltered());
         connect(filterAddressBlocksAction, SIGNAL(triggered(bool)),
             memoryDocument, SLOT(filterAddressBlocks(bool)), Qt::UniqueConnection);
 
-        QAction* filterRegistersAction = new QAction(tr(qPrintable("Filter Address Block Registers")), this);
+        QAction* filterRegistersAction = new QAction(tr(qPrintable("Registers")), this);
         filterRegistersAction->setCheckable(true);
         filterRegistersAction->setChecked(memoryDocument->addressBlockRegistersAreFiltered());
         connect(filterRegistersAction, SIGNAL(triggered(bool)),

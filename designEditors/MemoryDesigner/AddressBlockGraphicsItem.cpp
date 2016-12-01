@@ -35,7 +35,7 @@ addressUnitBits_(blockItem->getAUB())
     setColors(KactusColors::ADDR_BLOCK_COLOR, isEmptyBlock);
     setLabelPositions();
 
-    qreal xPosition = boundingRect().width() / 6 - 1;
+    qreal xPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX - 1;
     setupSubItems(xPosition, getSubItemType(), blockItem);
 }
 
@@ -59,7 +59,8 @@ void AddressBlockGraphicsItem::setLabelPositions()
     }
     else
     {
-        nameX = (-boundingRect().width() / 6) - getNameLabel()->boundingRect().width();
+        nameX = boundingRect().left() + MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 -
+            getNameLabel()->boundingRect().width();
     }
     qreal nameY = (boundingRect().height() / 2) - (getNameLabel()->boundingRect().height() / 2);
 
@@ -92,7 +93,7 @@ MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createNewSubItem(
 //-----------------------------------------------------------------------------
 qreal AddressBlockGraphicsItem::getRegisterWidth() const
 {
-    int registerWidth = boundingRect().width() / 3 * 2 + 1;
+    int registerWidth = boundingRect().width() - MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 + 1;
     return registerWidth;
 }
 
@@ -152,4 +153,25 @@ qreal AddressBlockGraphicsItem::getItemWidth() const
     }
     qreal itemBoundingWidth = boundingRect().width() - registerWidth;
     return itemBoundingWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphicsItem::changeWidth()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphicsItem::changeWidth(qreal widthChange)
+{
+    if (!subItemsAreFiltered())
+    {
+        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        while (subItemIterator.hasNext())
+        {
+            subItemIterator.next();
+            MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+            RegisterGraphicsItem* registerItem = dynamic_cast<RegisterGraphicsItem*>(subItem);
+            if (registerItem)
+            {
+                registerItem->changeWidth(widthChange);
+            }
+        }
+    }
 }

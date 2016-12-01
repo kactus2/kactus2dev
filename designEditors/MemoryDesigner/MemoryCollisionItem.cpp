@@ -28,31 +28,21 @@
 MemoryCollisionItem::MemoryCollisionItem(MemoryConnectionItem* firstItem, MemoryConnectionItem* secondItem,
     QGraphicsScene* containingScene):
 QObject(),
-QGraphicsRectItem()
+QGraphicsRectItem(),
+firstConnection_(firstItem),
+secondConnection_(secondItem),
+firstRangeStart_(firstItem->getRangeStartValue()),
+firstRangeEnd_(firstItem->getRangeEndValue()),
+secondRangeStart_(secondItem->getRangeStartValue()),
+secondRangeEnd_(secondItem->getRangeEndValue())
 {
-    const qreal LINEWIDTH = 1;
-
-    QRectF firstItemRect = firstItem->sceneBoundingRect();
-    QRectF secondItemRect = secondItem->sceneBoundingRect();
-
-    qreal startX = qMax(firstItemRect.left(), secondItemRect.left());
-    qreal startY = qMax(firstItemRect.top(), secondItemRect.top()) + LINEWIDTH / 2;
-    qreal endX = qMax(firstItemRect.right(), secondItemRect.right());
-    qreal endY = qMin(firstItemRect.bottom(), secondItemRect.bottom() + LINEWIDTH / 2);
-
-    qreal itemWidth = endX - startX;
-    qreal itemHeight = endY - startY;
-
-    QPointF spaceItemStartPoint (startX, startY);
-
-    setRect(spaceItemStartPoint.x(), spaceItemStartPoint.y(), itemWidth, itemHeight - 1);
+    setRectangle();
 
     containingScene->addItem(this);
 
     setCollisionBrush();
 
-    setLabels(firstItem->getRangeStartValue(), firstItem->getRangeEndValue(), secondItem->getRangeStartValue(),
-        secondItem->getRangeEndValue());
+    setLabels();
 }
 
 //-----------------------------------------------------------------------------
@@ -100,26 +90,25 @@ void MemoryCollisionItem::setCollisionBrush()
 //-----------------------------------------------------------------------------
 // Function: MemoryCollisionItem::setLabels()
 //-----------------------------------------------------------------------------
-void MemoryCollisionItem::setLabels(QString firstRangeStart, QString firstRangeEnd, QString secondRangeStart,
-    QString secondRangeEnd)
+void MemoryCollisionItem::setLabels()
 {
     QPointF topLeft = boundingRect().topLeft();
     QPointF lowLeft = boundingRect().bottomLeft();
 
-    int firstStartInInt = firstRangeStart.toInt(0, 16);
-    int secondStartInInt = secondRangeStart.toInt(0, 16);
-    QString collisionRangeStart = firstRangeStart;
+    int firstStartInInt = firstRangeStart_.toInt(0, 16);
+    int secondStartInInt = secondRangeStart_.toInt(0, 16);
+    QString collisionRangeStart = firstRangeStart_;
     if (secondStartInInt > firstStartInInt)
     {
-        collisionRangeStart = secondRangeStart;
+        collisionRangeStart = secondRangeStart_;
     }
 
-    int firstEndInInt = firstRangeEnd.toInt(0, 16);
-    int secondEndInInt = secondRangeEnd.toInt(0, 16);
-    QString collisionRangeEnd = firstRangeEnd;
+    int firstEndInInt = firstRangeEnd_.toInt(0, 16);
+    int secondEndInInt = secondRangeEnd_.toInt(0, 16);
+    QString collisionRangeEnd = firstRangeEnd_;
     if (secondEndInInt < firstEndInInt)
     {
-        collisionRangeEnd = secondRangeEnd;
+        collisionRangeEnd = secondRangeEnd_;
     }
 
     QGraphicsTextItem* startPointRangeStart = new QGraphicsTextItem(collisionRangeStart, this);
@@ -199,4 +188,46 @@ void MemoryCollisionItem::setLabels(QString firstRangeStart, QString firstRangeE
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryCollisionItem::reDrawCollision()
+//-----------------------------------------------------------------------------
+void MemoryCollisionItem::reDrawCollision()
+{
+    QRectF collisionRectangle = sceneBoundingRect();
+
+    setRectangle();
+
+    int childItemCount = childItems().size();
+    for (int childItemIndex = 0; childItemIndex < childItemCount; ++childItemIndex)
+    {
+        QGraphicsItem* childItem = childItems().at(0);
+        delete childItem;
+    }
+
+    setLabels();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryCollisionItem::setRectangle()
+//-----------------------------------------------------------------------------
+void MemoryCollisionItem::setRectangle()
+{
+    const qreal LINEWIDTH = 1;
+
+    QRectF firstItemRectangle = firstConnection_->sceneBoundingRect();
+    QRectF secondItemRectangle = secondConnection_->sceneBoundingRect();
+
+    qreal startX = qMax(firstItemRectangle.left(), secondItemRectangle.left());
+    qreal startY = qMax(firstItemRectangle.top(), secondItemRectangle.top()) + LINEWIDTH / 2;
+    qreal endX = qMax(firstItemRectangle.right(), secondItemRectangle.right());
+    qreal endY = qMin(firstItemRectangle.bottom(), secondItemRectangle.bottom() + LINEWIDTH / 2);
+
+    qreal itemWidth = endX - startX;
+    qreal itemHeight = endY - startY;
+
+    QPointF spaceItemStartPoint (startX, startY);
+
+    setRect(spaceItemStartPoint.x(), spaceItemStartPoint.y(), itemWidth, itemHeight - 1);
 }

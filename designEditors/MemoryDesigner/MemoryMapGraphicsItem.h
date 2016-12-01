@@ -87,6 +87,13 @@ public:
      */
     bool isConnectedToSpaceItems(QVector<MainMemoryGraphicsItem*> spaceItems) const;
 
+    /*!
+     *  Change the width of this item and the contained register graphics items.
+     *
+     *      @param [in] widthChange     The change in width.
+     */
+    void changeWidth(qreal widthChange);
+
 private:
     // Disable copying.
     MemoryMapGraphicsItem(MemoryMapGraphicsItem const& rhs);
@@ -154,11 +161,9 @@ private:
     /*!
      *  Get the width of the memory map sub items.
      *
-     *      @param [in] subItemSubItemsAreFiltered  Value for filtering the memory map sub items.
-     *
      *      @return Width of the memory map sub items.
      */
-    qreal getSubItemWidth(bool subItemSubItemsAreFiltered) const;
+    qreal getSubItemWidth() const;
 
     //-----------------------------------------------------------------------------
     // Data.

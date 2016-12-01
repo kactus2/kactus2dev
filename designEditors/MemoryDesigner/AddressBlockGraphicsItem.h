@@ -71,6 +71,13 @@ public:
      */
     virtual void addMemoryConnection(MemoryConnectionItem* connectionItem);
 
+    /*!
+     *  Change the width of the contained register graphics items.
+     *
+     *      @param [in] widthChange     The given change in width.
+     */
+    void changeWidth(qreal widthChange);
+
 private:
     // Disable copying.
     AddressBlockGraphicsItem(AddressBlockGraphicsItem const& rhs);

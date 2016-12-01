@@ -98,6 +98,8 @@
 				<section title="SW Design" ref="swsysdesign/swdesign.html">
                     <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
         </section>
+              <section title="Memory Design" ref="memoryDesign/memoryDesign.html">
+              </section>
 				<!--section title="System Design" ref="swsysdesign/systemdesign.html"/-->				
         <section title="Keyboard and Mouse Shortcuts" ref="shortcuts.html"/>	
         <section title="Community Guidelines" ref="communityGuideLines.html"/>
@@ -114,6 +116,7 @@
             <file>definitions/*.html</file>
             <file>hwdesign/*.html</file>
             <file>swsysdesign/*.html</file>
+            <file>memoryDesign/*.html</file>
             <file>gettingStarted/*.html</file>
 			<file>images/*.png</file>
         </files>

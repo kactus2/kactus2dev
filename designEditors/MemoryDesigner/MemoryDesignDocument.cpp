@@ -207,6 +207,7 @@ void MemoryDesignDocument::onVerticalScroll(int y)
 //-----------------------------------------------------------------------------
 void MemoryDesignDocument::showEvent(QShowEvent* event)
 {
+    emit helpUrlRequested(QLatin1String("memoryDesign/memoryDesign.html"));
     TabDocument::showEvent(event);
     diagram_->onShow();
 }

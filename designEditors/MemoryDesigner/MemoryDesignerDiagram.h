@@ -33,6 +33,7 @@ class MemoryItem;
 class MainMemoryGraphicsItem;
 class MemoryConnectionItem;
 class MemoryMapGraphicsItem;
+class MemoryCollisionItem;
 
 //-----------------------------------------------------------------------------
 //! Declares the memory design diagram class.
@@ -453,10 +454,9 @@ private:
      *
      *      @param [in] placedMapItems      A list of the placed memory map items.
      *      @param [in] memoryMapColumn     The main memory map column.
-     *      @param [in] spaceColumn         The address space column.
      */
     void repositionCompressedMemoryMaps(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
-        MemoryColumn* memoryMapColumn, MemoryColumn* spaceColumn);
+        MemoryColumn* memoryMapColumn);
 
     /*!
      *  Get the specified columns.
@@ -559,9 +559,6 @@ private:
     //! Factory for creating the connectivity graph.
     ConnectivityGraphFactory instanceLocator_;
 
-    //! Width of the memory columns.
-    static const int COLUMNWIDTH = 619;
-
     //! The created connection graph.
     QSharedPointer<ConnectivityGraph> connectionGraph_;
 
@@ -579,6 +576,21 @@ private:
 
     //! Value for filtering address block registers.
     bool filterRegisters_;
+
+    //! Width of the address space graphics item columns.
+    int spaceColumnWidth_;
+
+    //! Width of the memory map graphics item columns.
+    int memoryMapColumnWidth_;
+
+    //! The current width change from the original widths.
+    qreal widthBoundary_;
+
+    //! A list of memory connections made to memory maps.
+    QVector<MemoryConnectionItem*> connectionsToMemoryMaps_;
+
+    //! A list of memory collisions.
+    QVector<MemoryCollisionItem*> memoryCollisions_;
 };
 
 //-----------------------------------------------------------------------------

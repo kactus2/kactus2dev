@@ -85,6 +85,20 @@ public:
      */
     QMap<qreal, MainMemoryGraphicsItem*> getGraphicsItemInOrder() const;
 
+    /*!
+     *  Check if the memory column contains memory map graphics items.
+     *
+     *      @return True, if the column contains memory map graphics items, false otherwise.
+     */
+    bool containsMemoryMapItems() const;
+
+    /*!
+     *  Change the width of the memory column and the contained memory map graphics items.
+     *
+     *      @param [in] deltaWidth  Change of width.
+     */
+    void changeWidth(qreal deltaWidth);
+
 protected:
 
     /*!

@@ -4177,6 +4177,9 @@
     <ClCompile Include="GeneratedFiles\moc_businterfaceeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\FieldGraphicsItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6298,6 +6301,9 @@
     </ClInclude>
     <ClInclude Include="Plugins\PluginSystem\PluginSettingsModel.h">
       <Filter>Header Files\Plugins\PluginSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\FieldGraphicsItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,7 @@
 #include <designEditors/MemoryDesigner/MemoryMapGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MainMemoryGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -130,4 +131,39 @@ QMap<qreal, MainMemoryGraphicsItem*> MemoryColumn::getGraphicsItemInOrder() cons
     }
 
     return orderedGraphicsItems;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::containsMemoryMapItems()
+//-----------------------------------------------------------------------------
+bool MemoryColumn::containsMemoryMapItems() const
+{
+    return name().contains(MemoryDesignerConstants::MEMORYMAPCOLUMNCOMMON_NAME);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::changeWidth()
+//-----------------------------------------------------------------------------
+void MemoryColumn::changeWidth(qreal deltaWidth)
+{
+    bool columnHasItems = getItems().size() > 0;
+
+    int previousXPosition = 0;
+    if (columnHasItems)
+    {
+        previousXPosition = getItems().first()->pos().x();
+    }
+
+    int previousWidth = getColumnDesc()->getWidth();
+    setWidth(previousWidth + deltaWidth);
+
+    foreach (QGraphicsItem* subItem, getItems())
+    {
+        MemoryMapGraphicsItem* mapItem = dynamic_cast<MemoryMapGraphicsItem*>(subItem);
+        if (mapItem)
+        {
+            mapItem->setX(previousXPosition);
+            mapItem->changeWidth(deltaWidth);
+        }
+    }
 }

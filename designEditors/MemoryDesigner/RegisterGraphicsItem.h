@@ -18,6 +18,7 @@
 
 class MemoryItem;
 class MemoryDesignerGraphicsItem;
+class FieldGraphicsItem;
 
 #include <QSharedPointer>
 
@@ -52,6 +53,20 @@ public:
      */
     int type() const { return Type; }
 
+    /*!
+     *  Condense this item and the contained field graphics items.
+     *
+     *      @param [in] newItemHeight   The condensed height.
+     */
+    virtual void condense(qreal newItemHeight);
+
+    /*!
+     *  Change the width of this item and the contained field graphics items.
+     *
+     *      @param [in] widthChange     The change in width.
+     */
+    void changeWidth(qreal widthChange);
+
 private:
     // Disable copying.
     RegisterGraphicsItem(RegisterGraphicsItem const& rhs);
@@ -70,6 +85,69 @@ private:
      *  Setup the label positions.
      */
     virtual void setLabelPositions();
+
+    /*!
+     *  Setup the field graphics items.
+     *
+     *      @param [in] registerItem    The selected register memory item.
+     *      @param [in] registerEnd     End of the register memory item.
+     */
+    void setupFields(QSharedPointer<MemoryItem> registerItem, quint64 registerEnd);
+
+    /*!
+     *  Get the field memory items of the selected register memory item in the order of their offset.
+     *
+     *      @param [in] registerItem    The selected register memory item.
+     *
+     *      @return Map containing field offset and field memory item pairs.
+     */
+    QMap<quint64, QSharedPointer<MemoryItem> > getFieldItemsInOffsetOrder(QSharedPointer<MemoryItem> registerItem)
+        const;
+
+    /*!
+     *  Create an empty field graphics item.
+     *
+     *      @param [in] currentOffset           Offset of the field.
+     *      @param [in] lastBit                 Last bit used by the field.
+     *      @param [in] oneBitWidth             Width of a one bit.
+     *      @param [in] registerEnd             End of the containing register.
+     *      @param [in] previousEndPosition     The end coordinate of the previous field graphics item.
+     *      @param [in] widthRemainder          Current remainder of the used widths.
+     */
+    void createEmptyFieldItem(quint64 currentOffset, quint64 lastBit, qreal oneBitWidth, quint64 registerEnd,
+        qreal& previousEndPosition, qreal& widthRemainder);
+
+    /*!
+     *  Create a field graphics item.
+     *
+     *      @param [in] fieldName               Name of the field.
+     *      @param [in] fieldOffset             Offset of the field.
+     *      @param [in] fieldWidth              Width of the field.
+     *      @param [in] isEmptyField            Holds whether the field is empty or not.
+     *      @param [in] oneBitWidth             Width of a one bit.
+     *      @param [in] registerEnd             End of the containing register.
+     *      @param [in] previousEndPosition     The end coordinate of the previous field graphics item.
+     *      @param [in] widthRemainder          Current remainder of the used widths.
+     */
+    void createFieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldWidth,
+        bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal& previousEndPosition,
+        qreal& widthRemainder);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! List of the field graphics items contained within.
+    QVector<FieldGraphicsItem*> fieldItems_;
+
+    //! Value for empty registers.
+    bool isEmpty_;
+
+    //! Width of the register.
+    qreal registerWidth_;
+
+    //! Register memory item used to construct this graphics item.
+    QSharedPointer<MemoryItem> registerMemoryItem_;
 };
 
 //-----------------------------------------------------------------------------

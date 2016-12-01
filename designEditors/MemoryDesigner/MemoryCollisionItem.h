@@ -41,6 +41,11 @@ public:
      */
     virtual ~MemoryCollisionItem();
 
+    /*!
+     *  Redraw the memory connection collision item.
+     */
+    void reDrawCollision();
+
 private:
     // Disable copying.
     MemoryCollisionItem(MemoryCollisionItem const& rhs);
@@ -53,14 +58,35 @@ private:
 
     /*!
      *  Set the labels.
-     *
-     *      @param [in] firstRangeStart     The base address of the first connection.
-     *      @param [in] firstRangeEnd       The end address of the first connection.
-     *      @param [in] secondRangeStart    The base address of the second connection.
-     *      @param [in] secondRangeEnd      The end address of the second connection.
      */
-    void setLabels(QString firstRangeStart, QString firstRangeEnd, QString secondRangeStart,
-        QString secondRangeEnd);
+    void setLabels();
+
+    /*!
+     *  Set the collision rectangle.
+     */
+    void setRectangle();
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The first memory connection graphics item.
+    MemoryConnectionItem* firstConnection_;
+
+    //! The second memory connection graphics item.
+    MemoryConnectionItem* secondConnection_;
+
+    //! Start of the memory range of the first memory connection.
+    QString firstRangeStart_;
+
+    //! End of the memory range of the first memory connection.
+    QString firstRangeEnd_;
+
+    //! Start of the memory range of the second memory connection.
+    QString secondRangeStart_;
+
+    //! End of the memory range of the second memory connection.
+    QString secondRangeEnd_;
 };
 
 //-----------------------------------------------------------------------------
