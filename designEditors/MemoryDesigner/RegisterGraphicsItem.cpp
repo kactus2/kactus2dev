@@ -24,18 +24,19 @@
 // Function: RegisterGraphicsItem::RegisterGraphicsItem()
 //-----------------------------------------------------------------------------
 RegisterGraphicsItem::RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister,
-    qreal registerWidth, MemoryDesignerGraphicsItem* parentItem):
+    qreal registerWidth, bool filterFields, MemoryDesignerGraphicsItem* parentItem):
 MemoryDesignerChildGraphicsItem(registerItem->getName(), "register", registerItem->getAddress().toULongLong(),
     getRegisterEnd(registerItem), registerWidth, parentItem),
 fieldItems_(),
 isEmpty_(isEmptyRegister),
 registerWidth_(registerWidth),
-registerMemoryItem_(registerItem)
+registerMemoryItem_(registerItem),
+filterFields_(filterFields)
 {
     setColors(KactusColors::REGISTER_COLOR, isEmptyRegister);
     setLabelPositions();
 
-    if (!isEmptyRegister)
+    if (!isEmptyRegister && !filterFields)
     {
         setupFields(registerItem, getRegisterEnd(registerItem));
     }
@@ -67,8 +68,16 @@ quint64 RegisterGraphicsItem::getRegisterEnd(QSharedPointer<MemoryItem> register
 //-----------------------------------------------------------------------------
 void RegisterGraphicsItem::setLabelPositions()
 {
-    qreal nameX = boundingRect().left() + MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 -
-        getNameLabel()->boundingRect().width();
+    qreal nameX = 0;
+    if (filterFields_)
+    {
+        nameX = boundingRect().right() - getNameLabel()->boundingRect().width();
+    }
+    else
+    {
+        nameX = boundingRect().left() + MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 -
+            getNameLabel()->boundingRect().width();
+    }
 
     qreal nameY = (boundingRect().height() / 2) - (getNameLabel()->boundingRect().height() / 2);
 
@@ -114,40 +123,31 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem, 
     qreal previousEndPosition = boundingRect().left() + fieldsStartPosition;
     qreal widthRemainder = 0;
 
-    if (isEmpty_)
+    QMapIterator<quint64, QSharedPointer<MemoryItem> > subItemIterator(getFieldItemsInOffsetOrder(registerItem));
+    subItemIterator.toBack();
+    while (subItemIterator.hasPrevious())
     {
-        oneBitWidth = 55;
-        createEmptyFieldItem(
-            firstUnusedBit, firstUnusedBit, oneBitWidth, registerEnd, previousEndPosition, widthRemainder);
-    }
-    else
-    {
-        QMapIterator<quint64, QSharedPointer<MemoryItem> > subItemIterator(getFieldItemsInOffsetOrder(registerItem));
-        subItemIterator.toBack();
-        while (subItemIterator.hasPrevious())
+        subItemIterator.previous();
+        QSharedPointer<MemoryItem> fieldItem = subItemIterator.value();
+        quint64 fieldOffset = subItemIterator.key();
+        quint64 fieldWidth = fieldItem->getWidth().toULongLong();
+        qint64 lastBit = fieldOffset + fieldWidth - 1;
+        if (lastBit < firstUnusedBit - 1)
         {
-            subItemIterator.previous();
-            QSharedPointer<MemoryItem> fieldItem = subItemIterator.value();
-            quint64 fieldOffset = subItemIterator.key();
-            quint64 fieldWidth = fieldItem->getWidth().toULongLong();
-            qint64 lastBit = fieldOffset + fieldWidth - 1;
-            if (lastBit < firstUnusedBit - 1)
-            {
-                createEmptyFieldItem(lastBit + 1, firstUnusedBit - 1, oneBitWidth, registerEnd,
-                    previousEndPosition, widthRemainder);
-            }
-
-            createFieldGraphicsItem(fieldItem->getName(), fieldOffset, fieldWidth, false, oneBitWidth, registerEnd,
+            createEmptyFieldItem(lastBit + 1, firstUnusedBit - 1, oneBitWidth, registerEnd,
                 previousEndPosition, widthRemainder);
-
-            firstUnusedBit = fieldOffset;
         }
 
-        if (firstUnusedBit > 0)
-        {
-            createEmptyFieldItem(
-                0, firstUnusedBit - 1, oneBitWidth, registerEnd, previousEndPosition, widthRemainder);
-        }
+        createFieldGraphicsItem(fieldItem->getName(), fieldOffset, fieldWidth, false, oneBitWidth, registerEnd,
+            previousEndPosition, widthRemainder);
+
+        firstUnusedBit = fieldOffset;
+    }
+
+    if (firstUnusedBit > 0)
+    {
+        createEmptyFieldItem(
+            0, firstUnusedBit - 1, oneBitWidth, registerEnd, previousEndPosition, widthRemainder);
     }
 }
 
@@ -208,7 +208,7 @@ void RegisterGraphicsItem::createFieldGraphicsItem(QString const& fieldName, qui
     }
 
     FieldGraphicsItem* newField = new FieldGraphicsItem(fieldName, fieldOffset, fieldLastBit, fieldItemWidth,
-        registerEnd, isEmptyField, isEmpty_, this);
+        registerEnd, isEmptyField, this);
     fieldItems_.append(newField);
 
     int overlapModifier = 0;

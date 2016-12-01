@@ -304,3 +304,20 @@ bool MemoryDesignDocument::addressBlockRegistersAreFiltered() const
 {
     return diagram_->addressBlockRegistersAreFiltered();
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::filterFields()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::filterFields(bool filterFields)
+{
+    diagram_->setFilterFields(filterFields);
+    refresh();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::fieldsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDocument::fieldsAreFiltered() const
+{
+    return diagram_->fieldsAreFiltered();
+}

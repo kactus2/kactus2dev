@@ -128,6 +128,20 @@ public:
     bool addressBlockRegistersAreFiltered() const;
 
     /*!
+     *  Set a new value for filtering the register fields.
+     *
+     *      @param [in] filterFields    Value for filtering register fields.
+     */
+    void setFilterFields(bool filterFields);
+
+    /*!
+     *  Check if the register fields are filtered.
+     *
+     *      @return True, if the register fields are filtered, false otherwise.
+     */
+    bool fieldsAreFiltered() const;
+
+    /*!
      *  Load a design using the selected view.
      *
      *      @param [in] component   Component containing the view.
@@ -576,6 +590,9 @@ private:
 
     //! Value for filtering address block registers.
     bool filterRegisters_;
+
+    //! Value for filtering register fields.
+    bool filterFields_;
 
     //! Width of the address space graphics item columns.
     int spaceColumnWidth_;

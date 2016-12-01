@@ -4848,11 +4848,19 @@ void MainWindow::setupMemoryFilteringMenu(TabDocument* document)
         connect(filterRegistersAction, SIGNAL(triggered(bool)),
             memoryDocument, SLOT(filterAddressBlockRegisters(bool)), Qt::UniqueConnection);
 
+        QAction* filterFieldsAction = new QAction(tr(qPrintable("Fields")), this);
+        filterFieldsAction->setCheckable(true);
+        filterFieldsAction->setChecked(memoryDocument->fieldsAreFiltered());
+        connect(filterFieldsAction, SIGNAL(triggered(bool)), memoryDocument,
+            SLOT(filterFields(bool)), Qt::UniqueConnection);
+
         filterActionGroup->addAction(filterSegmentsAction);
         filterActionGroup->addAction(filterAddressBlocksAction);
         filterActionGroup->addAction(filterRegistersAction);
+        filterActionGroup->addAction(filterFieldsAction);
         memoryFilteringMenu_.addAction(filterSegmentsAction);
         memoryFilteringMenu_.addAction(filterAddressBlocksAction);
         memoryFilteringMenu_.addAction(filterRegistersAction);
+        memoryFilteringMenu_.addAction(filterFieldsAction);
     }
 }

@@ -34,12 +34,14 @@ namespace MemoryMapItemConstants
 // Function: MemoryMapGraphicsItem::MemoryMapGraphicsItem()
 //-----------------------------------------------------------------------------
 MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem, bool filterAddressBlocks,
-    bool filterRegisters, QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
+    bool filterRegisters, bool filterFields, QSharedPointer<ConnectivityComponent> containingInstance,
+    QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSBLOCK_TYPE,
     filterAddressBlocks, parent),
 addressUnitBits_(memoryItem->getAUB()),
 filterAddressBlocks_(filterAddressBlocks),
-filterRegisters_(filterRegisters)
+filterRegisters_(filterRegisters),
+filterFields_(filterFields)
 {
     quint64 baseAddress = getMemoryMapStart(memoryItem);
     quint64 lastAddress = getMemoryMapEnd(memoryItem);
@@ -49,9 +51,13 @@ filterRegisters_(filterRegisters)
 
     quint64 memoryHeight = (lastAddress - baseAddress + 1);
     int memoryWidth = 1280;
-    if (filterRegisters_)
+    if (filterRegisters_ || (filterAddressBlocks_ && filterFields_))
     {
         memoryWidth = 250;
+    }
+    else if (filterFields_)
+    {
+        memoryWidth = MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 6;
     }
     else if (filterAddressBlocks_)
     {
@@ -202,11 +208,11 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QShared
     if (!filterAddressBlocks_)
     {
         childItem = new AddressBlockGraphicsItem(
-            subMemoryItem, isEmpty, filterRegisters_, getSubItemWidth(), this);
+            subMemoryItem, isEmpty, filterRegisters_, filterFields_, getSubItemWidth(), this);
     }
     else if (!filterRegisters_)
     {
-        childItem = new RegisterGraphicsItem(subMemoryItem, isEmpty, getSubItemWidth(), this);
+        childItem = new RegisterGraphicsItem(subMemoryItem, isEmpty, getSubItemWidth(), filterFields_, this);
     }
 
     return childItem;

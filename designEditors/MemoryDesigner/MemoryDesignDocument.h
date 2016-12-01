@@ -163,6 +163,13 @@ public:
      */
     bool addressBlockRegistersAreFiltered() const;
 
+    /*!
+     *  Check whether the register fields are filtered or not.
+     *
+     *      @return True, if register fields are filtered, otherwise false.
+     */
+    bool fieldsAreFiltered() const;
+
 public slots:
 
     /*!
@@ -185,6 +192,13 @@ public slots:
      *      @param [in] filterRegisters     Value for filtering the registers.
      */
     void filterAddressBlockRegisters(bool filterRegisters);
+
+    /*!
+     *  Filter the register fields.
+     *
+     *      @param [in] filterFields    Value for filtering the fields.
+     */
+    void filterFields(bool filterFields);
 
     //! Called when the vertical scrollbar is scrolled.
     void onVerticalScroll(int y);

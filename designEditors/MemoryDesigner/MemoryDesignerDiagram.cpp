@@ -58,6 +58,7 @@ filterAddressSpaceChains_(false),
 filterAddressSpaceSegments_(false),
 filterAddressBlocks_(false),
 filterRegisters_(false),
+filterFields_(false),
 spaceColumnWidth_(MemoryDesignerConstants::SPACECOLUMNWIDTH),
 memoryMapColumnWidth_(MemoryDesignerConstants::MEMORYMAPCOLUMNWIDTH),
 widthBoundary_(0),
@@ -156,6 +157,22 @@ bool MemoryDesignerDiagram::addressBlockRegistersAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::setFilterFields()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::setFilterFields(bool filterFields)
+{
+    filterFields_ = filterFields;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::fieldsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerDiagram::fieldsAreFiltered() const
+{
+    return filterFields_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::loadDesign()
 //-----------------------------------------------------------------------------
 bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Component> component,
@@ -165,9 +182,14 @@ bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Compo
     connectionsToMemoryMaps_.clear();
     memoryCollisions_.clear();
 
-    if (filterRegisters_)
+    if (filterRegisters_ || (filterAddressBlocks_ && filterFields_))
     {
         memoryMapColumnWidth_ = MemoryDesignerConstants::SPACECOLUMNWIDTH;
+    }
+    else if (filterFields_)
+    {
+        memoryMapColumnWidth_ =
+            MemoryDesignerConstants::SPACECOLUMNWIDTH + (MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 - 5);
     }
     else if (filterAddressBlocks_)
     {
@@ -477,7 +499,7 @@ void MemoryDesignerDiagram::createMemoryMapItem(QSharedPointer<MemoryItem> mapIt
     if (containingColumn)
     {
         MemoryMapGraphicsItem* mapGraphicsItem = new MemoryMapGraphicsItem(
-            mapItem, filterAddressBlocks_, filterRegisters_, containingInstance, containingColumn);
+            mapItem, filterAddressBlocks_, filterRegisters_, filterFields_, containingInstance, containingColumn);
         containingColumn->addItem(mapGraphicsItem);
     }
 }
@@ -1510,7 +1532,7 @@ void MemoryDesignerDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 
         event->accept();
     }
-    else if (event->modifiers() == Qt::ALT && !addressBlockRegistersAreFiltered())
+    else if (event->modifiers() == Qt::ALT && !addressBlockRegistersAreFiltered() && !fieldsAreFiltered())
     {
         qreal deltaWidth = event->delta();
         deltaWidth = -deltaWidth;

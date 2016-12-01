@@ -38,10 +38,11 @@ public:
      *      @param [in] registerItem        Memory item containing the register data.
      *      @param [in] isEmptyRegister     Boolean value to represent empty registers.
      *      @param [in] registerWidth       Width of the register graphics item.
+     *      @param [in] filterFields        Value for filtering register fields.
      *      @param [in] parentItem          The parent memory graphics item.
      */
     RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister, qreal registerWidth,
-        MemoryDesignerGraphicsItem* parentItem);
+        bool filterFields, MemoryDesignerGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.
@@ -148,6 +149,9 @@ private:
 
     //! Register memory item used to construct this graphics item.
     QSharedPointer<MemoryItem> registerMemoryItem_;
+
+    //! Value for filtering fields.
+    bool filterFields_;
 };
 
 //-----------------------------------------------------------------------------

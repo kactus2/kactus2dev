@@ -26,11 +26,12 @@
 // Function: AddressBlockGraphicsItem::AddressBlockGraphicsItem()
 //-----------------------------------------------------------------------------
 AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock,
-    bool filterRegisters, qreal addressBlockWidth, MemoryMapGraphicsItem* memoryMapItem):
+    bool filterRegisters, bool filterFields, qreal addressBlockWidth, MemoryMapGraphicsItem* memoryMapItem):
 MemoryDesignerChildGraphicsItem(blockItem->getName(), "address block", blockItem->getAddress().toULongLong(),
     blockItem->getRange().toULongLong(), addressBlockWidth, memoryMapItem),
 SubMemoryLayout(blockItem, MemoryDesignerConstants::REGISTER_TYPE, filterRegisters, this),
-addressUnitBits_(blockItem->getAUB())
+addressUnitBits_(blockItem->getAUB()),
+filterFields_(filterFields)
 {
     setColors(KactusColors::ADDR_BLOCK_COLOR, isEmptyBlock);
     setLabelPositions();
@@ -85,7 +86,7 @@ void AddressBlockGraphicsItem::setLabelPositions()
 MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createNewSubItem(
     QSharedPointer<MemoryItem> subMemoryItem, bool isEmpty)
 {
-    return new RegisterGraphicsItem(subMemoryItem, isEmpty, getRegisterWidth(), this);
+    return new RegisterGraphicsItem(subMemoryItem, isEmpty, getRegisterWidth(), filterFields_, this);
 }
 
 //-----------------------------------------------------------------------------
