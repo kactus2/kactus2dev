@@ -143,16 +143,6 @@ struct GenerationWire
 	QString name;
 };
 
-struct GenerationAdHoc
-{
-    //! The ports of the ad-hoc interconnection.
-	QList<QPair<QString,QString> > ports;
-    //! The wire of the ad-hoc connection.
-	QSharedPointer<GenerationWire> wire;
-    //! If this is actually tied value assignment, this is non-empty. 
-	QString tieOff;
-};
-
 struct GenerationInterconnection
 {
     //! The interfaces assigned to the interconnection.
@@ -189,6 +179,14 @@ struct GenerationPortAssignMent
     QString tieOff;
     //! True, if the port is assigned to ad-hoc interconnection, else false.
     bool adhoc;
+};
+
+struct GenerationAdHoc
+{
+    //! The ports of the ad-hoc interconnection.
+	QList<QSharedPointer<GenerationPortAssignMent> > ports;
+    //! The wire of the ad-hoc connection.
+	QSharedPointer<GenerationWire> wire;
 };
 
 struct GenerationInstance

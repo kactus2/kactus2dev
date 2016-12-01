@@ -67,6 +67,7 @@ private slots:
     void testPortMapsWithoutBoundsInInterconnection();
     void testAdhocConnectionBetweenComponentInstances();    
     void testAdhocConnectionToVaryingSizePorts();    
+    void testAdhocConnectionWithPartSelect();
     void testAdhocTieOffInComponentInstance();
     void testMultipleAdhocConnectionsBetweenComponentInstances();
     void testAdHocConnectionBetweenComponentInstancesWithExpressions();
@@ -1723,7 +1724,76 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["enable_out"];
     QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
     QCOMPARE( gpa->bounds.first, QString("16") );
+    QCOMPARE( gpa->bounds.second, QString("4") );
+
+    gpa = gi1->portAssignments_["enable_in"];
+    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds.first, QString("0") );
     QCOMPARE( gpa->bounds.second, QString("0") );
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_HDLParser::testAdhocConnectionWithPartSelect()
+//-----------------------------------------------------------------------------
+void tst_HDLParser::testAdhocConnectionWithPartSelect()
+{
+    QSharedPointer<View> activeView(new View("rtl"));
+    activeView->setComponentInstantiationRef("instance1");
+
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    library_.addComponent(senderComponent);
+    addInstanceToDesign("sender", senderVLNV, activeView);
+    senderComponent->getViews()->append(activeView);
+
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("enable_out", DirectionTypes::OUT));
+    senderPort->setLeftBound("16");
+    senderPort->setRightBound("4");
+    senderComponent->getPorts()->append(senderPort);
+
+    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
+    QSharedPointer<View> receiverView = addReceiverComponentToLibrary(receiverVLNV, General::SLAVE);
+    addInstanceToDesign("receiver", receiverVLNV, receiverView);
+
+    addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver", "enable_in");
+
+    QSharedPointer<PartSelect> ps(new PartSelect);
+    ps->setLeftRange("5");
+    ps->setRightRange("3");
+    design_->getAdHocConnections()->first()->getInternalPortReferences()->first()->setPartSelect(ps);
+
+    QSharedPointer<HDLComponentParser> componentParser =
+        QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+        QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+    designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
+
+    QCOMPARE( design->adHocs_.size(), 1 );
+
+    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire;
+
+    QCOMPARE( gw0->bounds.first, QString("5") );
+    QCOMPARE( gw0->bounds.second, QString("0") );
+
+    QCOMPARE( design->instances_.size(), 2 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];;
+    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver"];
+
+    QCOMPARE( gi0->portAssignments_.size(), 1 );
+    QCOMPARE( gi1->portAssignments_.size(), 1 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["enable_out"];
+    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds.first, QString("5") );
+    QCOMPARE( gpa->bounds.second, QString("3") );
 
     gpa = gi1->portAssignments_["enable_in"];
     QCOMPARE( gpa->wire->name, QString("enableAdHoc") );

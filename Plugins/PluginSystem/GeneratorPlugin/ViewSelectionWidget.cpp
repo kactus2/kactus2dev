@@ -150,7 +150,7 @@ void ViewSelectionWidget::setLanguage(QString selectedLanguage)
     }
 
 	// Select color depending on match.
-	if (selectedLanguage == configuration_->getTargetLanguage())
+	if (selectedLanguage.toLower() == configuration_->getTargetLanguage().toLower())
 	{
 		instantiationLanguage_->setStyleSheet("QLabel { color : green; }");
 	}

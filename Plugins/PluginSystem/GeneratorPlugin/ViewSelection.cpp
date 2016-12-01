@@ -47,9 +47,10 @@ ViewSelection::ViewSelection( QString targetLanguage,
     {
         QSharedPointer<ComponentInstantiation> cimp = instantiations_[view->getComponentInstantiationRef()];
 
-        if (cimp && cimp->getLanguage() == targetLanguage_)
+        if (cimp && cimp->getLanguage().toLower() == targetLanguage_.toLower())
         {
             view_ = view;
+            break;
         }
     }
 

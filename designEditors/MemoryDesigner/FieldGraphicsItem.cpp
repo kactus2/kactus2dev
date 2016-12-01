@@ -115,7 +115,7 @@ QString FieldGraphicsItem::removeZerosFromRangeValue(quint64 rangeValue) const
     QString formattedValue = getValueFormattedToHexadecimal(rangeValue);
     if (formattedValue.size() > 0)
     {
-        while (formattedValue.size() > 1 && formattedValue.at(0) == "0")
+        while (formattedValue.size() > 1 && formattedValue.at(0) == '0')
         {
             formattedValue = formattedValue.right(formattedValue.size() - 1);
         }

@@ -5,9 +5,15 @@ echo ""
 QTBIN_PATH=""
 
 print_success() { 
-    echo ""
-    echo "Kactus2 has now been configured. Run make to start the build."
-    echo "To install, run make install after the build has completed."
+    if [ -f "Makefile" ];
+    then
+        echo ""
+        echo "Kactus2 has now been configured. Run make to start the build."
+        echo "To install, run make install after the build has completed."
+    else
+       echo ""
+       echo "The makefile was not created."
+    fi
 }
 
 # Generate compressed help files.
@@ -15,16 +21,16 @@ echo "Generating compressed help files..."
 ${QTBIN_PATH}qhelpgenerator Help/kactus2help.qhp -o Help/Kactus2Help.qch
 ${QTBIN_PATH}qcollectiongenerator Help/kactus2help.qhcp -o Help/Kactus2Help.qhc
 
-#Run qmake using qtchooser.
 if command -v ${QTBIN_PATH}qtchooser >/dev/null 2>&1; then
+   #Run qmake using qtchooser.
    echo "Qtchooser found. Running qmake through qtchooser..."
    ${QTBIN_PATH}qtchooser -run-tool=${QTBIN_PATH}qmake -qt=qt5 Kactus2_Solution.pro
    print_success
 elif command -v ${QTBIN_PATH}qmake >/dev/null 2>&1; then
+   #Run qmake directly.
    echo "Qtchooser not found. Running qmake directly..."
    ${QTBIN_PATH}qmake Kactus2_Solution.pro
    print_success
 else
     echo "Qmake not found. Please set variable QTBIN_PATH to Qt binary files."
 fi
-

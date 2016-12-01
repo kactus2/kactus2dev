@@ -90,7 +90,7 @@ void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topCompone
 	findInternalAdhocs();
 	assignInternalAdHocs();
 
-    // Hiearchical ad hocs need to be considered separately.
+    // Hierarchical ad-hocs need to be considered separately.
 	parseHierarchicallAdhocs();
 
     // Finally add the parsed design to the list.
@@ -574,7 +574,7 @@ void HDLDesignParser::assignLargerBounds(QSharedPointer<GenerationWire> wire, QP
 
         // Check the size of the new bounds.
         newBounds.first = boundCand.first.toInt();
-        newBounds.second = boundCand.second.toInt();;
+        newBounds.second = boundCand.second.toInt();
 
         // Find the widest alignment order of the new bounds.
         int maxAlignment1 = qMax(newBounds.first, newBounds.second);
@@ -584,7 +584,7 @@ void HDLDesignParser::assignLargerBounds(QSharedPointer<GenerationWire> wire, QP
 
         // Check the size of the existing bounds.
         existingBound.first = wire->bounds.first.toInt();
-        existingBound.second = wire->bounds.second.toInt();;
+        existingBound.second = wire->bounds.second.toInt();
 
         // Find the widest alignment order of the existing bounds.
         int maxAlignment2 = qMax(existingBound.first, existingBound.second);
@@ -620,57 +620,93 @@ void HDLDesignParser::findInternalAdhocs()
 		QSharedPointer<GenerationAdHoc> gah;
 
 		// ...and ports connected to it.
-		QList<QPair<QString,QString> > foundPorts;
+		QList<QSharedPointer<GenerationPortAssignMent> > foundPorts;
 
 		// Go through the port references within the ad-hoc connection.
 		foreach(QSharedPointer<PortReference> internalPort, *adHocConnection->getInternalPortReferences())
-		{
-			// Pair the instance and the port.
-			QPair<QString,QString> port;
-			port.first = internalPort->getComponentRef();
-			port.second = internalPort->getPortRef();
-			foundPorts.append(port);
+        {
+            QSharedPointer<GenerationInstance> gi = retval_->instances_.value(internalPort->getComponentRef());
 
-			// Go through existing detected ad-hocs.
-			foreach(QSharedPointer<GenerationAdHoc> existing, retval_->adHocs_)
-			{
-				typedef QPair<QString, QString> customPair;
-				foreach(customPair theirPort, existing->ports)
-				{
-					// If both instance and port matches, we use this ad-hoc connection.
-					if (theirPort.first == port.first && theirPort.second == port.second)
-					{
-						gah = existing;
-						break;
-					}
-				}
+            // If instance could not be found, the port reference must be discarded.
+            if (!gi)
+            {
+                continue;
+            }
 
-				if(gah)
-				{
-					break;
-				}
-			}
+            // If the referred port is not found from the component of the instance, it cannot be used.
+            QSharedPointer<GenerationPort> ourPort = gi->component->ports.value(internalPort->getPortRef());
+
+            if (!ourPort)
+            {
+                continue;
+            }
+
+            // Find the matching port assignment.
+            QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_.value(ourPort->port->name());
+
+            // Create a new one if not found.
+            if (!gpa)
+            {
+                gpa = QSharedPointer<GenerationPortAssignMent>(new GenerationPortAssignMent);
+                gi->portAssignments_.insert(ourPort->port->name(),gpa);
+                gpa->port = ourPort;
+                gpa->adhoc = true;
+
+                // Try to apply a tie-off value.
+                gpa->tieOff = connectTieOff(adHocConnection->getTiedValue(), ourPort, DirectionTypes::IN);
+
+                // Assigning bounds.
+                QPair<QString,QString> bounds;
+
+                if (internalPort->getPartSelect() && !internalPort->getPartSelect()->getLeftRange().isEmpty()
+                    && !internalPort->getPartSelect()->getRightRange().isEmpty())
+                {
+                    // If Part select exists, it shall be used.
+                    bounds.first = internalPort->getPartSelect()->getLeftRange();
+                    bounds.second = internalPort->getPartSelect()->getRightRange();
+                }
+                else
+                {
+                    // Otherwise, since it is an ad-hoc connection, a physical port is the only choice.
+                    bounds = physicalPortBoundsInInstance(gi, ourPort);
+                }
+
+                // Assign the bounds.
+                gpa->bounds = bounds;
+            }
+
+            // Go through existing detected ad-hocs.
+            foreach(QSharedPointer<GenerationAdHoc> existing, retval_->adHocs_)
+            {
+                if (existing->ports.contains(gpa))
+                {
+                    gah = existing;
+                    break;
+                }
+            }
+
+            if (!foundPorts.contains(gpa))
+            {
+                foundPorts.append(gpa);
+            }
 		}
 
-		// If the instance and its port was not found in existing ones, create a new.
 		if (!gah)
-		{
-			gah = QSharedPointer<GenerationAdHoc>(new GenerationAdHoc);
+        {
+            // If the instance and its port was not found in existing ones, create a new.
+            gah = QSharedPointer<GenerationAdHoc>(new GenerationAdHoc);
 
-			// Create the wire of the ad hoc connection.
-			QSharedPointer<GenerationWire> gw(new GenerationWire);
-			gw->name = adHocConnection->name();
-			gah->wire = gw;
-
-			// If any tied value exists, it will be recorded as well.
-			gah->tieOff = adHocConnection->getTiedValue();
+            // Create the wire of the ad hoc connection.
+            QSharedPointer<GenerationWire> gw(new GenerationWire);
+            gw->name = adHocConnection->name();
+            gah->wire = gw;
 
 			// Add to the pool of existing ones.
-			retval_->adHocs_.append(gah);
-		}
+            retval_->adHocs_.append(gah);
+        }
 
-		// Finally, the found pairs are appended to the connection.
-		gah->ports.append(foundPorts);
+        // Finally, the found pairs are appended to the connection.
+        gah->ports.append(foundPorts);
 	}
 }
 
@@ -679,58 +715,20 @@ void HDLDesignParser::findInternalAdhocs()
 //-----------------------------------------------------------------------------
 void HDLDesignParser::assignInternalAdHocs()
 {
-	// Go through each instance.
-	foreach (QSharedPointer<GenerationInstance> gi, retval_->instances_)
+	// Go through each detected internal adhoc interconnection.
+	foreach(QSharedPointer<GenerationAdHoc> existing, retval_->adHocs_)
 	{
-		// Go through each detected internal adhoc interconnection.
-		foreach(QSharedPointer<GenerationAdHoc> existing, retval_->adHocs_)
+		// Go through each port reference associated with the interconnection.
+		foreach(QSharedPointer<GenerationPortAssignMent> theirPort, existing->ports)
 		{
-			// Go through each port reference associated with the interconnection.
-			typedef QPair<QString, QString> customPair;
-			foreach(customPair theirPort, existing->ports)
+			if (theirPort->tieOff.isEmpty())
 			{
-				// If the instance name does not match, it does not belong to this instance.
-				if (theirPort.first != gi->componentInstance_->getInstanceName())
-				{
-					continue;
-				}
+				// If no tie-off connection cannot be applied, the wire is used.
+				QSharedPointer<GenerationWire> gw = existing->wire;
+				theirPort->wire = gw;
 
-				// If the port is not found from the component of the instance, it cannot be used.
-                QSharedPointer<GenerationPort> ourPort = gi->component->ports.value(theirPort.second);
-
-				if (!ourPort)
-				{
-					continue;
-				}
-
-				// Find the matching port assignment.
-				QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_.value(ourPort->port->name());
-
-				// Create a new one if not found.
-				if (!gpa)
-				{
-					gpa = QSharedPointer<GenerationPortAssignMent>(new GenerationPortAssignMent);
-					gi->portAssignments_.insert(ourPort->port->name(),gpa);
-                    gpa->port = ourPort;
-                    gpa->adhoc = true;
-				}
-
-                // Try to apply a tie off value.
-                gpa->tieOff = connectTieOff(existing->tieOff, ourPort, DirectionTypes::IN);
-
-				if (gpa->tieOff.isEmpty())
-				{
-					// If no tie-off connection cannot be applied, the wire is used.
-					QSharedPointer<GenerationWire> gw = existing->wire;
-					gpa->wire = gw;
-
-					// Since it is an ad-hoc connection, a physical connection is the only choice.
-					QPair<QString,QString> bounds = physicalPortBoundsInInstance(gi, ourPort);
-
-                    // Assign if they are larger than existing ones.
-                    assignLargerBounds(gw, bounds);
-                    gpa->bounds = gw->bounds;
-				}
+                // Assign if they are larger than existing ones.
+                assignLargerBounds(gw, theirPort->bounds);
 			}
 		}
 	}
