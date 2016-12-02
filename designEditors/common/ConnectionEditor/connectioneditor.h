@@ -30,11 +30,13 @@
 #include <QSharedPointer>
 
 class DesignDiagram;
+class ExpressionParser;
 class GraphicsConnection;
 class LibraryInterface;
+
+class BusInterface;
 class Component;
 
-class ExpressionParser;
 
 //-----------------------------------------------------------------------------
 //! Editor to display/edit details of a connection.
@@ -47,11 +49,11 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] parent  The owner of this editor.
-	 *      @param [in] handler The instance that manages the library
+	 *      @param [in] library     The instance that manages the library
+     *      @param [in] parent      The owner of this editor.
 	 *
 	*/
-	ConnectionEditor(QWidget *parent, LibraryInterface* handler);
+	ConnectionEditor(LibraryInterface* library, QWidget* parent);
 	
 	//! The destructor
 	virtual ~ConnectionEditor();
@@ -77,7 +79,7 @@ public slots:
 
 private slots:
 
-
+    //! Called when name or description is edited.
 	void onNameOrDescriptionChanged();
 
 private:
@@ -87,10 +89,31 @@ private:
 	//! No assignment
 	ConnectionEditor& operator=(const ConnectionEditor& other);
 
-	/*! Set port maps so that editor displays the connected physical ports.
-	 *
-	*/
+    /*!
+     *  Finds the VLNV for the bus abstraction.
+     *
+     *      @param [in] busInterface   The bus interface whose abstraction definition VLNV to find.
+     *
+     *      @return The VLNV for the given bus interface abstraction definition.
+     */
+    VLNV findAbstractionVLNV(QSharedPointer<BusInterface> busInterface) const;
+
+	//! Set port maps so that editor displays the connected physical ports.
 	void setPortMaps();
+
+    //! Sets the headers for the port connection table.
+    void setTableHeaders();
+
+    /*!
+     *  Finds the names of all logical ports mapped in the given port maps.
+     *
+     *      @param [in] portMaps1   Port maps for first interface.
+     *      @param [in] portMaps2   Port maps for second interface.
+     *
+     *      @return The names of all logical ports.
+     */
+    QStringList getAllLogicalPorts(QList<QSharedPointer<PortMap> > const& portMaps1, 
+        QList<QSharedPointer<PortMap> > const& portMaps2) const;
 
 	/*! Add a mapping for physical ports to port widget for two given port maps.
 	 *
@@ -102,8 +125,21 @@ private:
 	 *      @param [in]     component2      The component that contains the port map2.
 	 *
 	 */
-	void addMap(int& row, bool invalid, QSharedPointer<PortMap> portMap1, QSharedPointer<Component> component1,
-        QSharedPointer<PortMap> portMap2, QSharedPointer<Component> component2);
+	void addMap(QSharedPointer<PortMap> portMap1, QSharedPointer<Component> component1,
+        QSharedPointer<PortMap> portMap2, QSharedPointer<Component> component2, 
+        QSharedPointer<ExpressionParser> expressionParser, bool validAbstraction);
+
+    /*!
+     *  Creates an item for the port connectivity table.
+     *
+     *      @param [in] portName    The name of the port.
+     *      @param [in] left        The left bound of the port.
+     *      @param [in] right       The right bound of the port.
+     *      @param [in] isValid     Is the port connectivity valid or not.
+     *
+     *      @return Item for the port connectivity table representing the given port.
+     */
+    QTableWidgetItem* createPortItem(QString const& portName, int left, int right, bool isValid);
 
     /*!
      *  Calculate mapped physical port bounds.
@@ -126,7 +162,7 @@ private:
      *
      *      @return True, if the physical port is not valid, otherwise false.
      */
-    bool isMappedPhysicalInvalid (bool invalid, QSharedPointer<PortMap> containingPortMap,
+    bool isValidPhysicalPort (QSharedPointer<PortMap> containingPortMap,
         QSharedPointer<Component> containingComponent);
 
     /*!
@@ -139,18 +175,9 @@ private:
      */
     QPair<int, int> calculateMappedLogicalPortBounds(QSharedPointer<ExpressionParser> parser,
         QSharedPointer<PortMap> containingPortMap);
-
-    /*!
-     *  Adds the selected port items to the port widget.
-     *
-     *      @param [in] firstPortItem       The first port item.
-     *      @param [in] secondPortItem      The second port item.
-     *      @param [in] firstIsNotValid     The validity of the first item.
-     *      @param [in] secondIsNotValid    The validity of the second item.
-     *      @param [in] row                 The row on which to add the items.
-     */
-    void addPortItemsToPortWidget(QTableWidgetItem* firstPortItem, QTableWidgetItem* secondPortItem,
-        bool firstIsNotValid, bool secondIsNotValid, int& row);
+    
+    //! Sets the editor layout.
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -192,10 +219,11 @@ private:
 	//! The connection being edited.
 	GraphicsConnection* connection_;
 
+    //! The diagram containing the connection.
     DesignDiagram* diagram_;
 
 	//! The instance that manages the library
-	LibraryInterface* handler_;
+	LibraryInterface* library_;
 
     //! The port ad-hoc bounds table.
     QTableView adHocBoundsTable_;

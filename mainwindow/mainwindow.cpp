@@ -1389,7 +1389,7 @@ void MainWindow::setupConnectionEditor()
 	connectionDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 	connectionDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-	connectionEditor_ = new ConnectionEditor(connectionDock_, libraryHandler_);
+	connectionEditor_ = new ConnectionEditor(libraryHandler_, connectionDock_);
 	connectionDock_->setWidget(connectionEditor_);
 	addDockWidget(Qt::RightDockWidgetArea, connectionDock_);
 }
@@ -2122,19 +2122,13 @@ void MainWindow::closeEvent(QCloseEvent* event)
 	// disconnect the signals that would otherwise change the window states to be saved.
 	disconnectVisibilityControls();
 
-	// Go through all tab documents and ask the user what to do if they are not saved.
-    int tabsToClose = designTabs_->count();
-    for (int i = 0; i < tabsToClose; i++)
-    {
-        int openTabCountBeforeClosingCurrent = designTabs_->count();
+    // Go through all tab documents and ask the user what to do if they are not saved.
+    designTabs_->closeAll();
 
-        designTabs_->closeAndRemoveDocument(designTabs_->currentIndex());
-        
-        if (openTabCountBeforeClosingCurrent == designTabs_->count())
-        {
-            event->ignore();
-            return;
-        }
+    if (designTabs_->count() != 0)
+    {
+        event->ignore();
+        return;
     }
 
     QSettings settings;

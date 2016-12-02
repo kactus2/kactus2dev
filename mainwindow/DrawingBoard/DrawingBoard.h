@@ -33,11 +33,6 @@ public:
 
     //! The destructor.
     ~DrawingBoard();
-
-    /*!
-     *  Filters and handles keyboard shortcut events.
-     */
-    virtual bool event(QEvent* event);
        
     /*!
      *  Registers a tab document (connects common signals etc.).
@@ -70,6 +65,26 @@ public slots:
      *      @param [in] index   The document index to close.
      */
     void closeAndRemoveDocument(int index);
+
+    //! Closes all open documents.
+    void closeAll();
+
+protected:
+    
+    /*!
+     *  Filters and handles keyboard shortcut events.
+     */
+    virtual bool event(QEvent* event);
+
+    /*!
+     *  Filters the events for given target. Used to create context menu for closing tabs.
+     *
+     *      @param [in] target      The target object whose event to filter.
+     *      @param [in] event       The event captured before passing to target.
+     *
+     *      @return True, if the event was filtered and should not be passed further, otherwise false.
+     */
+    virtual bool eventFilter(QObject* target, QEvent* event);
 
 signals:
     

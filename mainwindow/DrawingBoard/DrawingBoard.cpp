@@ -19,6 +19,8 @@
 #include <QKeyEvent>
 #include <QObject>
 #include <QMessageBox>
+#include <QMenu>
+#include <QTabBar>
 
 //-----------------------------------------------------------------------------
 // Function: DrawingBoard::DrawingBoard()
@@ -26,6 +28,8 @@
 DrawingBoard::DrawingBoard(QWidget* parent) : QTabWidget(parent)
 {
     connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(closeAndRemoveDocument(int)), Qt::UniqueConnection);
+
+    tabBar()->installEventFilter(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -228,6 +232,23 @@ void DrawingBoard::closeAndRemoveDocument(int index)
 }
 
 //-----------------------------------------------------------------------------
+// Function: DrawingBoard::closeAll()
+//-----------------------------------------------------------------------------
+void DrawingBoard::closeAll()
+{
+    int tabCount = count();
+    for (int i = tabCount - 1; i >= 0; i--)
+    {
+        closeAndRemoveDocument(i);
+
+        if (i != count())
+        {
+            return;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: DrawingBoard::eventFilter()
 //-----------------------------------------------------------------------------
 bool DrawingBoard::event(QEvent* event)
@@ -257,6 +278,24 @@ bool DrawingBoard::event(QEvent* event)
     }
 
     return QTabWidget::event(event);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DrawingBoard::eventFilter()
+//-----------------------------------------------------------------------------
+bool DrawingBoard::eventFilter(QObject* target, QEvent* event)
+{
+    if (target == tabBar() && event->type() == QEvent::ContextMenu)
+    {
+        QContextMenuEvent* menuEvent = static_cast<QContextMenuEvent*>(event);
+        
+        QMenu contextMenu;
+        contextMenu.addAction(tr("Close All Tabs"), this, SLOT(closeAll()));
+        contextMenu.exec(menuEvent->globalPos());
+        return true;
+    }
+
+    return QTabWidget::eventFilter(target, event);
 }
 
 //-----------------------------------------------------------------------------

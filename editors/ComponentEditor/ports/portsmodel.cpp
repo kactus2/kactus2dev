@@ -132,21 +132,19 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
         {
             return QColor("gray");
         }
-        /*else if (portOnRow(index.row())->isValid(model_->hasViews()))
-        {
-            return blackForValidOrRedForInvalidIndex(index);
-        }*/
         else
         {
             return blackForValidOrRedForInvalidIndex(index);
-            //return QColor("red");
         }
     }
 	else if (Qt::BackgroundRole == role)
     {
+        QSharedPointer<Port> port = portOnRow(index.row());
         if (index.column() == PortColumns::ROW_NUMBER ||
+            (index.column() == PortColumns::DEFAULT_VALUE && (port->getDirection() != DirectionTypes::IN &&
+                port->getDirection() != DirectionTypes::INOUT)) ||
             (index.column() == PortColumns::WIDTH && hasExpressionInLeftOrRightBound(portOnRow(index.row()))) ||
-            (index.column() == PortColumns::TYPE_DEF && !portOnRow(index.row())->hasType()))
+            (index.column() == PortColumns::TYPE_DEF && !port->hasType()))
         {
             return QColor("whiteSmoke");
         }
@@ -865,7 +863,7 @@ bool PortsModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == PortColumns::DEFAULT_VALUE)
     {
-        return isValuePlainOrExpression(port->getDefaultValue());
+        return portValidator_->hasValidDefaultValue(port);
     }
     else if (index.column() == PortColumns::ARRAY_LEFT)
     {

@@ -52,7 +52,7 @@ void PortValidator::componentChange(QSharedPointer<QList<QSharedPointer<View> > 
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortValidator::validateInstantiation()
+// Function: PortValidator::validate()
 //-----------------------------------------------------------------------------
 bool PortValidator::validate(QSharedPointer<Port> port) const
 {
@@ -65,16 +65,10 @@ bool PortValidator::validate(QSharedPointer<Port> port) const
 //-----------------------------------------------------------------------------
 bool PortValidator::hasValidName(QString const& name) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
+    QRegularExpression nameExpression;
+    nameExpression.setPattern(QStringLiteral("^[a-zA-Z:_]+[a-zA-Z0-9:_.-]*$"));
 
-    if (name.isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return nameExpression.match(name).hasMatch();
 }
 
 //-----------------------------------------------------------------------------
@@ -148,7 +142,7 @@ bool PortValidator::hasValidWire(QSharedPointer<Port> port) const
             return false;
         }
 
-		if ( !wire->getVectorLeftBound().isEmpty() || !wire->getVectorRightBound().isEmpty() )
+		if (!wire->getVectorLeftBound().isEmpty() || !wire->getVectorRightBound().isEmpty())
 		{
 			// Bounds must be valid if defined.
 			if (!portBoundIsValid(wire->getVectorLeftBound()) || !portBoundIsValid(wire->getVectorRightBound()))
@@ -156,6 +150,11 @@ bool PortValidator::hasValidWire(QSharedPointer<Port> port) const
 				return false;
 			}
 		}
+
+        if (!hasValidDefaultValue(port))
+        {
+            return false;
+        }
 
         // Any view reference must point to an existing view.
         foreach (QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs())
@@ -174,11 +173,27 @@ bool PortValidator::hasValidWire(QSharedPointer<Port> port) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortValidator::hasValidDefaultValue()
+//-----------------------------------------------------------------------------
+bool PortValidator::hasValidDefaultValue(QSharedPointer<Port> port) const
+{
+    QSharedPointer<Wire> wire = port->getWire();
+
+    if (!wire)
+    {
+        return true;
+    }
+
+    bool inDirection = wire->getDirection() == DirectionTypes::IN || wire->getDirection() == DirectionTypes::INOUT;
+    return inDirection || wire->getDefaultDriverValue().isEmpty();        
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortValidator::wireHasValidDirection()
 //-----------------------------------------------------------------------------
 bool PortValidator::wireHasValidDirection(QSharedPointer<Wire> wire) const
 {
-    return !(wire->getDirection() == DirectionTypes::DIRECTION_INVALID);
+    return wire->getDirection() != DirectionTypes::DIRECTION_INVALID;
 }
 
 //-----------------------------------------------------------------------------
@@ -225,41 +240,41 @@ bool PortValidator::hasValidTransactionalPort(QSharedPointer<Port> port) const
         QSharedPointer<Transactional> trans = port->getTransactional();
 
         // There must a known initiative type.
-        if (!TransactionalTypes::isIpXactInitiativeType( trans->getInitiative()))
+        if (!TransactionalTypes::isIpXactInitiativeType(trans->getInitiative()))
         {
             return false;
         }
 
         // If defined, kind must a known one.
-        if ( !trans->getKind().isEmpty() && !TransactionalTypes::isIpXactKindType( trans->getKind() ) )
+        if (!trans->getKind().isEmpty() && !TransactionalTypes::isIpXactKindType(trans->getKind()))
         {
             return false;
         }
 
         // If defined, bus width must be a valid expression.
-        if ( !trans->getBusWidth().isEmpty() && !expressionParser_->isValidExpression( trans->getBusWidth() ) )
+        if (!trans->getBusWidth().isEmpty() && !expressionParser_->isValidExpression(trans->getBusWidth()))
         {
             return false;
         }
 
         // If defined, max connections width must be a valid expression.
-        if ( !trans->getMaxConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMaxConnections() ) )
+        if (!trans->getMaxConnections().isEmpty() && !expressionParser_->isValidExpression(trans->getMaxConnections()))
         {
             return false;
         }
 
         // If defined, min connections width must be a valid expression.
-        if ( !trans->getMinConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMinConnections() ) )
+        if (!trans->getMinConnections().isEmpty() && !expressionParser_->isValidExpression(trans->getMinConnections()))
         {
             return false;
         }
 
         // Any view reference must point to an existing view.
-        foreach ( QSharedPointer<WireTypeDef> typeDef, *trans->getTransTypeDef() )
+        foreach (QSharedPointer<WireTypeDef> typeDef, *trans->getTransTypeDef())
         {
-            foreach ( QString viewRef, typeDef->getViewRefs() )
+            foreach (QString viewRef, typeDef->getViewRefs())
             {
-                if ( !referencedViewExists(viewRef) )
+                if (!referencedViewExists(viewRef))
                 {
                     return false;
                 }
@@ -269,11 +284,11 @@ bool PortValidator::hasValidTransactionalPort(QSharedPointer<Port> port) const
         QSharedPointer<Protocol> protocol = trans->getProtocol();
 
         // Protocol must be valid if it exists.
-        if ( protocol )
+        if (protocol)
         {
-            ProtocolValidator protoVal;
+            ProtocolValidator protocolValidator;
 
-            if ( !protoVal.validate(protocol) )
+            if (!protocolValidator.validate(protocol))
             {
                 return false;
             }
@@ -288,10 +303,8 @@ bool PortValidator::hasValidTransactionalPort(QSharedPointer<Port> port) const
 //-----------------------------------------------------------------------------
 void PortValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Port> port, QString const& context) const
 {
-// 	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
-
 	// Name must be valid.
-	if ( !hasValidName( port->name() ) )
+	if (!hasValidName(port->name()))
 	{
         errors.append(QObject::tr("Invalid name set for port %1 within %2").arg(port->name()).arg(context));
 	}
@@ -308,81 +321,24 @@ void PortValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Port> 
 	{
         if (!arrayValueIsValid(array->getLeft()))
 		{
-			errors.append(QObject::tr("The left of array is invalid: %1 in port %2")
-                .arg(array->getLeft()).arg(port->name()));
+			errors.append(QObject::tr("The left of array is invalid: %1 in port %2").arg(array->getLeft(), 
+                port->name()));
 		}
         if (!arrayValueIsValid(array->getRight()))
 		{
-			errors.append(QObject::tr("The right of array is invalid: %1 in port %2")
-                .arg(array->getRight()).arg(port->name()));
+			errors.append(QObject::tr("The right of array is invalid: %1 in port %2").arg(
+                array->getRight(), port->name()));
 		}
 	}
 
-	if ( port->getWire() )
+	if (port->getWire())
 	{
         findErrorsInWire(errors, port, context);
 	}
 
-	if ( port->getTransactional() )
+	if (port->getTransactional())
 	{
-		QSharedPointer<Transactional> trans = port->getTransactional();
-
-		// There must a known initiative type.
-		if ( !TransactionalTypes::isIpXactInitiativeType( trans->getInitiative() ) )
-		{
-			errors.append(QObject::tr("The transactional initiative is invalid: %1 in port %2")
-                .arg(trans->getInitiative()).arg(port->name()));
-		}
-
-		// If defined, kind must a known one.
-		if ( !trans->getKind().isEmpty() && !TransactionalTypes::isIpXactKindType( trans->getKind() ) )
-		{
-			errors.append(QObject::tr("The transactional kind is invalid: %1 in port %2")
-                .arg(trans->getInitiative()).arg(port->name()));
-		}
-
-		// If defined, bus width must be a valid expression.
-		if ( !trans->getBusWidth().isEmpty() && !expressionParser_->isValidExpression( trans->getBusWidth() ) )
-		{
-			errors.append(QObject::tr("The transactional bus width is invalid: %1 in port %2")
-                .arg(trans->getBusWidth()).arg(port->name()));
-		}
-
-		// If defined, max connections width must be a valid expression.
-		if ( !trans->getMaxConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMaxConnections() ) )
-		{
-			errors.append(QObject::tr("The transactional max connections is invalid: %1 in port %2")
-                .arg(trans->getMaxConnections()).arg(port->name()));
-		}
-
-		// If defined, min connections width must be a valid expression.
-		if ( !trans->getMinConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMinConnections() ) )
-		{
-			errors.append(QObject::tr("The transactional min connections is invalid: %1 in port %2")
-                .arg(trans->getMinConnections()).arg(port->name()));
-		}
-
-		// Any view reference must point to an existing view.
-		foreach ( QSharedPointer<WireTypeDef> typeDef, *trans->getTransTypeDef() )
-		{
-			foreach ( QString viewRef, typeDef->getViewRefs() )
-			{
-				if ( !referencedViewExists(viewRef) )
-				{
-					errors.append(QObject::tr("A referenced view does not exist: %1 in port %2")
-                        .arg(viewRef).arg(port->name()));
-				}
-			}
-		}
-
-		QSharedPointer<Protocol> protocol = trans->getProtocol();
-
-		// Protocol must be valid if it exists.
-		if ( protocol )
-		{
-			ProtocolValidator protoVal;
-			protoVal.findErrorsIn(errors, protocol, context);
-		}
+        findErrorsInTransactional(errors, port, context);
 	}
 }
 
@@ -394,19 +350,19 @@ void PortValidator::findErrorsInWire(QVector<QString>& errors, QSharedPointer<Po
 {
     QSharedPointer<Wire> wire = port->getWire();
 
-	if ( !wire->getVectorLeftBound().isEmpty() || !wire->getVectorRightBound().isEmpty() )
+	if (!wire->getVectorLeftBound().isEmpty() || !wire->getVectorRightBound().isEmpty())
 	{
 		// Bounds must be valid.
-		if ( !portBoundIsValid(wire->getVectorLeftBound()))
+		if (!portBoundIsValid(wire->getVectorLeftBound()))
 		{
-			errors.append(QObject::tr("The left of vector is invalid: %1 in port %2")
-				.arg(wire->getVectorLeftBound()).arg(port->name()));
+			errors.append(QObject::tr("The left of vector is invalid: %1 in port %2").arg(
+                wire->getVectorLeftBound(), port->name()));
 		}
 
 		if (!portBoundIsValid(wire->getVectorRightBound()))
 		{
-			errors.append(QObject::tr("The right of vector is invalid: %1 in port %2")
-				.arg(wire->getVectorRightBound()).arg(port->name()));
+			errors.append(QObject::tr("The right of vector is invalid: %1 in port %2").arg(
+                wire->getVectorRightBound(), port->name()));
 		}
 	}
 
@@ -415,16 +371,89 @@ void PortValidator::findErrorsInWire(QVector<QString>& errors, QSharedPointer<Po
         errors.append(QObject::tr("Invalid direction set for port %1 within %2").arg(port->name()).arg(context));
     }
 
-    // Any view reference must point to an existing view.
-    foreach ( QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs() )
+    if (!hasValidDefaultValue(port))
     {
-        foreach ( QString viewRef, typeDef->getViewRefs() )
+        errors.append(QObject::tr("Default value cannot be set for direction %1 for port %2 within %3.").arg(
+            DirectionTypes::direction2Str(port->getDirection()), port->name(), context));
+    }
+
+    // Any view reference must point to an existing view.
+    foreach (QSharedPointer<WireTypeDef> typeDef, *wire->getWireTypeDefs())
+    {
+        foreach (QString viewRef, typeDef->getViewRefs())
         {
-            if ( !referencedViewExists(viewRef) )
+            if (!referencedViewExists(viewRef))
             {
-                errors.append(QObject::tr("A view reference does not exist: %1 in port %2")
-                    .arg(viewRef).arg(port->name()));
+                errors.append(QObject::tr("A view reference does not exist: %1 in port %2").arg(viewRef,
+                    port->name()));
             }
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: PortValidator::findErrorsInTransactional()
+//-----------------------------------------------------------------------------
+void PortValidator::findErrorsInTransactional(QVector<QString> &errors, QSharedPointer<Port> port, 
+    QString const& context) const
+{
+    QSharedPointer<Transactional> trans = port->getTransactional();
+
+    // There must a known initiative type.
+    if (!TransactionalTypes::isIpXactInitiativeType( trans->getInitiative() ) )
+    {
+        errors.append(QObject::tr("The transactional initiative is invalid: %1 in port %2")
+            .arg(trans->getInitiative()).arg(port->name()));
+    }
+
+    // If defined, kind must a known one.
+    if ( !trans->getKind().isEmpty() && !TransactionalTypes::isIpXactKindType( trans->getKind() ) )
+    {
+        errors.append(QObject::tr("The transactional kind is invalid: %1 in port %2")
+            .arg(trans->getInitiative()).arg(port->name()));
+    }
+
+    // If defined, bus width must be a valid expression.
+    if ( !trans->getBusWidth().isEmpty() && !expressionParser_->isValidExpression( trans->getBusWidth() ) )
+    {
+        errors.append(QObject::tr("The transactional bus width is invalid: %1 in port %2")
+            .arg(trans->getBusWidth()).arg(port->name()));
+    }
+
+    // If defined, max connections width must be a valid expression.
+    if ( !trans->getMaxConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMaxConnections() ) )
+    {
+        errors.append(QObject::tr("The transactional max connections is invalid: %1 in port %2")
+            .arg(trans->getMaxConnections()).arg(port->name()));
+    }
+
+    // If defined, min connections width must be a valid expression.
+    if ( !trans->getMinConnections().isEmpty() && !expressionParser_->isValidExpression( trans->getMinConnections() ) )
+    {
+        errors.append(QObject::tr("The transactional min connections is invalid: %1 in port %2")
+            .arg(trans->getMinConnections()).arg(port->name()));
+    }
+
+    // Any view reference must point to an existing view.
+    foreach (QSharedPointer<WireTypeDef> typeDef, *trans->getTransTypeDef())
+    {
+        foreach (QString viewRef, typeDef->getViewRefs())
+        {
+            if (!referencedViewExists(viewRef))
+            {
+                errors.append(QObject::tr("A referenced view does not exist: %1 in port %2").arg(viewRef,
+                    port->name()));
+            }
+        }
+    }
+
+    QSharedPointer<Protocol> protocol = trans->getProtocol();
+
+    // Protocol must be valid if it exists.
+    if (protocol)
+    {
+        ProtocolValidator protocolValidator;
+        protocolValidator.findErrorsIn(errors, protocol, context);
+    }
+}
+

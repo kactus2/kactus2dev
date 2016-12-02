@@ -841,8 +841,8 @@ private:
 
     Ribbon* ribbon_;
 
-	//! Create a new hierarchical component in the IP-Xact library
-	QAction *actNew_;
+	//! Create a new document in the IP-Xact library
+	QAction* actNew_;
 
     //! Action to save the current design.
     QAction* actSave_;

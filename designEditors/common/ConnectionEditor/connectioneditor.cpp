@@ -25,7 +25,8 @@
 #include <designEditors/HWDesign/HWConnectionEndpoint.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ParameterCache.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <library/LibraryManager/libraryinterface.h>
@@ -56,7 +57,7 @@
 //-----------------------------------------------------------------------------
 // Function: ConnectionEditor::ConnectionEditor()
 //-----------------------------------------------------------------------------
-ConnectionEditor::ConnectionEditor(QWidget *parent, LibraryInterface* handler):
+ConnectionEditor::ConnectionEditor(LibraryInterface* library, QWidget *parent):
 QWidget(parent),
     type_(this),
     absType_(this),
@@ -71,12 +72,12 @@ QWidget(parent),
     portWidget_(this),
     connection_(NULL),
     diagram_(0),
-    handler_(handler),
+    library_(library),
     adHocBoundsTable_(this),
     adHocBoundsModel_(this)
 {
 	Q_ASSERT(parent);
-	Q_ASSERT(handler);
+	Q_ASSERT(library_);
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
@@ -115,20 +116,7 @@ QWidget(parent),
     adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::LEFT_BOUND, QHeaderView::Fixed);
     adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::RIGHT_BOUND, QHeaderView::Fixed);
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&type_);
-	layout->addWidget(&absType_);
-	layout->addWidget(&instanceLabel_);
-	layout->addWidget(&connectedInstances_);
-	layout->addWidget(&separator_);
-	layout->addWidget(&nameLabel_);
-	layout->addWidget(&nameEdit_);
-	layout->addWidget(&descriptionLabel_);
-	layout->addWidget(&descriptionEdit_);
-	layout->addWidget(&portsLabel_);
-	layout->addWidget(&portWidget_, 1);
-    layout->addWidget(&adHocBoundsTable_, 1);
-    layout->addStretch(1);
+    setupLayout();
 
 	clear();
 }
@@ -247,14 +235,12 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
     else if (endpoint1->isBus())
     {
         type_.setTitle(tr("Bus type VLNV"));
-	    type_.setVLNV(endpoint1->getBusInterface()->getBusType(), true);
-        if (endpoint1->getBusInterface()->getAbstractionTypes() && 
-            !endpoint1->getBusInterface()->getAbstractionTypes()->isEmpty() &&
-            endpoint1->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef())
-        {
-            absType_.setVLNV(*endpoint1->getBusInterface()->getAbstractionTypes()->first()->getAbstractionRef(), 
-                true);
-        }	    
+        type_.setVLNV(endpoint1->getBusInterface()->getBusType(), true);
+
+        absType_.setVLNV(findAbstractionVLNV(endpoint1->getBusInterface()), true);
+
+        setPortMaps();
+        portWidget_.scrollToTop();
     }
     else if (endpoint1->isAdHoc())
     {
@@ -278,39 +264,25 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
 	connect(connection, SIGNAL(destroyed(GraphicsConnection*)),	this, SLOT(clear()), Qt::UniqueConnection);
 	connect(connection, SIGNAL(contentChanged()), this, SLOT(refresh()), Qt::UniqueConnection);
 
-    if (endpoint1->isBus())
-    {
-	    setPortMaps();
-    }
-
     bool locked = diagram_->isProtected();
 	
-	// if either end point is hierarchical then there is no description to set
-    if (connection_->getConnectionType() != ConnectionEndpoint::ENDPOINT_TYPE_ADHOC &&
-        (endpoint1->isHierarchical() || connection->endpoint2()->isHierarchical()))
-    {		
-		// description exists only for normal interconnections
-		descriptionEdit_.setDisabled(true);
-		descriptionLabel_.hide();
-		descriptionEdit_.hide();
+    bool isAdHocConnection = connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_ADHOC;
+    bool hideNameAndDescription = connection_->getConnectionType() != ConnectionEndpoint::ENDPOINT_TYPE_ADHOC &&
+        (endpoint1->isHierarchical() || connection->endpoint2()->isHierarchical());
 
-        // name exists for only normal interconnections
-        nameEdit_.setDisabled(true);
-		nameLabel_.hide();
-		nameEdit_.hide();
-	}
-	else
-    {
-		descriptionEdit_.setEnabled(!locked);
-		descriptionLabel_.show();
-		descriptionEdit_.show();
+    // name exists for only normal interconnections
+    nameEdit_.setDisabled(hideNameAndDescription || locked);
+    nameLabel_.setHidden(hideNameAndDescription);
+    nameEdit_.setHidden(hideNameAndDescription);
 
-		nameEdit_.setEnabled(!locked);
-        nameLabel_.show();
-		nameEdit_.show();
-	}
+    // if either end point is hierarchical then there is no description to set
+    // description exists only for normal interconnections
+    descriptionEdit_.setDisabled(hideNameAndDescription || locked);
+    descriptionLabel_.setHidden(hideNameAndDescription);
+    descriptionEdit_.setHidden(hideNameAndDescription);
 
     adHocBoundsTable_.setEnabled(!locked);
+    adHocBoundsTable_.setVisible(isAdHocConnection);
 
 	// set the objects visible
     instanceLabel_.show();
@@ -319,12 +291,12 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
 
     type_.setVisible(endpoint1->getType() != ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED &&
                      endpoint2->getType() != ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED &&
-                     !endpoint1->isAdHoc());
+                     !isAdHocConnection);
+
     absType_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
 
     portsLabel_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
     portWidget_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_BUS);
-    adHocBoundsTable_.setVisible(connection_->getConnectionType() == ConnectionEndpoint::ENDPOINT_TYPE_ADHOC);
 
 	parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
 }
@@ -348,130 +320,100 @@ void ConnectionEditor::onNameOrDescriptionChanged()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConnectionEditor::findAbstractionVLNV()
+//-----------------------------------------------------------------------------
+VLNV ConnectionEditor::findAbstractionVLNV(QSharedPointer<BusInterface> busInterface) const
+{
+    VLNV abstraction;
+
+    if (busInterface->getAbstractionTypes() && !busInterface->getAbstractionTypes()->isEmpty() &&
+        busInterface->getAbstractionTypes()->first()->getAbstractionRef())
+    {
+        abstraction = *busInterface->getAbstractionTypes()->first()->getAbstractionRef();
+    }   
+
+    return abstraction;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectionEditor::setPortMaps()
 //-----------------------------------------------------------------------------
 void ConnectionEditor::setPortMaps()
 {
-	Q_ASSERT(connection_);
-	
 	portWidget_.clearContents();
+    portWidget_.setSortingEnabled(false);
+    portWidget_.setRowCount(0);
 
-	// get the interface and component for end point 1
+    Q_ASSERT(connection_);
+    if (!connection_)
+    {
+        return;
+    }
+
 	QSharedPointer<BusInterface> busIf1 = connection_->endpoint1()->getBusInterface();
-	Q_ASSERT(busIf1);
-	QList<QSharedPointer<PortMap> > portMaps1;
+    QSharedPointer<BusInterface> busIf2 = connection_->endpoint2()->getBusInterface();
+
+    QSharedPointer<Component> component1 = connection_->endpoint1()->getOwnerComponent();
+	QSharedPointer<Component> component2 = connection_->endpoint2()->getOwnerComponent();
+
+    Q_ASSERT(busIf1);
+    Q_ASSERT(component1);
+    Q_ASSERT(busIf2);
+    Q_ASSERT(component2);
+
+    setTableHeaders();
+
+    QSharedPointer<ComponentParameterFinder> firstFinder(new ParameterCache(component1));
+    QSharedPointer<ComponentParameterFinder> secondFinder(new ParameterCache(component2));
+
+    QSharedPointer<MultipleParameterFinder> parameterFinder(new MultipleParameterFinder());
+    parameterFinder->addFinder(firstFinder);
+    parameterFinder->addFinder(secondFinder);
+
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
+
+    QList<QSharedPointer<PortMap> > portMaps1;
     if (busIf1->getPortMaps())
     {
         portMaps1 = *busIf1->getPortMaps();
     }
 
-	QSharedPointer<Component> comp1 = connection_->endpoint1()->getOwnerComponent();
-	Q_ASSERT(comp1);
-
-	// get the interface and component for end point 2
-	QSharedPointer<BusInterface> busIf2 = connection_->endpoint2()->getBusInterface();
-	Q_ASSERT(busIf2);
-	QList<QSharedPointer<PortMap> > portMaps2;
+    QList<QSharedPointer<PortMap> > portMaps2;
     if (busIf2->getPortMaps())
     {
         portMaps2 = *busIf2->getPortMaps();
     }
 
-	QSharedPointer<Component> comp2 = connection_->endpoint2()->getOwnerComponent();
-	Q_ASSERT(comp2);
-
-	// set the header for end point 1
-	ComponentItem* diacomp1 = connection_->endpoint1()->encompassingComp();
-	// if endpoint1 was a component instance
-	if (diacomp1)
-    {
-		portWidget_.horizontalHeaderItem(0)->setText(diacomp1->name());
-	}
-	else // if was the interface of a top component
-    {
-		portWidget_.horizontalHeaderItem(0)->setText(comp1->getVlnv().getName());
-	}
-
-	// set the header for end point 2
-	ComponentItem* diacomp2 = connection_->endpoint2()->encompassingComp();
-	// if endpoint1 was a component instance
-	if (diacomp2)
-    {
-		portWidget_.horizontalHeaderItem(1)->setText(diacomp2->name());
-	}
-	else // if was the interface of a top component
-    {
-		portWidget_.horizontalHeaderItem(1)->setText(comp2->getVlnv().getName());
-	}
-
-	// turn off sorting when adding items
-	portWidget_.setSortingEnabled(false);
-
-	// set the size to be the max value 
-	portWidget_.setRowCount(0);
-
-	// get list of all used logical ports
-	QStringList logicalNames;
-	foreach (QSharedPointer<PortMap> map, portMaps1)
-    {
-		if (!logicalNames.contains(map->getLogicalPort()->name_))
-        {
-			logicalNames.append(map->getLogicalPort()->name_);
-		}
-	}
-	foreach (QSharedPointer<PortMap> map, portMaps2)
-    {
-		if (!logicalNames.contains(map->getLogicalPort()->name_))
-        {
-			logicalNames.append(map->getLogicalPort()->name_);
-		}
-	}
-
-    // get the abstraction def for the interfaces
-    VLNV absDefVLNV;
-    if (busIf1->getAbstractionTypes() && !busIf1->getAbstractionTypes()->isEmpty() &&
-        busIf1->getAbstractionTypes()->first()->getAbstractionRef())
-    {
-        absDefVLNV = *busIf1->getAbstractionTypes()->first()->getAbstractionRef();
-    }
+    // Get the abstraction def for the interfaces.
+    VLNV absDefVLNV = findAbstractionVLNV(busIf1);
     
     QSharedPointer<AbstractionDefinition> absDef;
-    if (handler_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
+    if (library_->getDocumentType(absDefVLNV) == VLNV::ABSTRACTIONDEFINITION)
     {
-        absDef = handler_->getModel(absDefVLNV).staticCast<AbstractionDefinition>();
+        absDef = library_->getModel(absDefVLNV).staticCast<AbstractionDefinition>();
     }
 
-    General::InterfaceMode interfaceMode1 = busIf1->getInterfaceMode();
-    General::InterfaceMode interfaceMode2 = busIf2->getInterfaceMode();
+    General::InterfaceMode mode1 = busIf1->getInterfaceMode();
+    General::InterfaceMode mode2 = busIf2->getInterfaceMode();
 
-	int row = 0;
 	// find the physical ports mapped to given logical port
-	foreach (QString const& logicalPort, logicalNames)
+	foreach (QString const& logicalPort, getAllLogicalPorts(portMaps1, portMaps2))
     {
-		bool invalid = false;
-
-		// check that the logical signal is contained in both interface modes used
-        if (absDef)
-        {
-            if (!absDef->hasPort(logicalPort, interfaceMode1) || !absDef->hasPort(logicalPort, interfaceMode2))
-            {
-                invalid = true;
-            }
-        }
+		bool validAbstraction = absDef && absDef->hasPort(logicalPort, mode1) && absDef->hasPort(logicalPort, mode2);
 
 		foreach (QSharedPointer<PortMap> map1, portMaps1)
         {
-			if (map1->getLogicalPort()->name_ == logicalPort) 
+			if (map1->getLogicalPort()->name_.compare(logicalPort) == 0)
             {
 				foreach (QSharedPointer<PortMap> map2, portMaps2)
                 {
-					if (map2->getLogicalPort()->name_ == logicalPort)
+					if (map2->getLogicalPort()->name_.compare(logicalPort) == 0)
                     {
-                        //! To do: add checking for mapped tied values.
+                        //! TODO: add checking for mapped tied values.
                         if (map1->getLogicalPort() && map1->getPhysicalPort() &&
                             map2->getLogicalPort() && map2->getPhysicalPort())
                         {
-                            addMap(row, invalid, map1, comp1, map2, comp2);
+                            addMap(map1, component1, map2, component2, expressionParser, validAbstraction);
                         }
 					}
 				}
@@ -479,133 +421,143 @@ void ConnectionEditor::setPortMaps()
 		}
 	}
 
-	// finally set sorting back on
+	// Finally, set sorting back on.
 	portWidget_.setSortingEnabled(true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEditor::setTableHeaders()
+//-----------------------------------------------------------------------------
+void ConnectionEditor::setTableHeaders()
+{
+    ComponentItem* componentItem1 = connection_->endpoint1()->encompassingComp();
+    if (componentItem1)
+    {
+        portWidget_.horizontalHeaderItem(0)->setText(componentItem1->name());
+    }
+    else // if was the interface of a top component
+    {
+        QSharedPointer<Component> component1 = connection_->endpoint1()->getOwnerComponent();
+        portWidget_.horizontalHeaderItem(0)->setText(component1->getVlnv().getName());
+    }
+
+    ComponentItem* componentItem2 = connection_->endpoint2()->encompassingComp();
+    if (componentItem2)
+    {
+        portWidget_.horizontalHeaderItem(1)->setText(componentItem2->name());
+    }
+    else // if was the interface of a top component
+    {
+        QSharedPointer<Component> component2 = connection_->endpoint2()->getOwnerComponent();
+        portWidget_.horizontalHeaderItem(1)->setText(component2->getVlnv().getName());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEditor::getAllLogicalPorts()
+//-----------------------------------------------------------------------------
+QStringList ConnectionEditor::getAllLogicalPorts(QList<QSharedPointer<PortMap> > const& portMaps1,
+    QList<QSharedPointer<PortMap> > const& portMaps2) const
+{
+    QStringList logicalNames;
+
+    foreach (QSharedPointer<PortMap> map, portMaps1)
+    {
+        logicalNames.append(map->getLogicalPort()->name_);
+    }
+    foreach (QSharedPointer<PortMap> map, portMaps2)
+    {
+        logicalNames.append(map->getLogicalPort()->name_);
+    }
+    logicalNames.removeDuplicates();
+    
+    return logicalNames;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConnectionEditor::addMap()
 //-----------------------------------------------------------------------------
-void ConnectionEditor::addMap(int& row, bool invalid, QSharedPointer<PortMap> portMap1,
-    QSharedPointer<Component> component1, QSharedPointer<PortMap> portMap2, QSharedPointer<Component> component2)
+void ConnectionEditor::addMap(QSharedPointer<PortMap> portMap1,
+    QSharedPointer<Component> component1, QSharedPointer<PortMap> portMap2, QSharedPointer<Component> component2, 
+    QSharedPointer<ExpressionParser> expressionParser, bool validAbstraction)
 {
-    QSharedPointer<ComponentParameterFinder> firstFinder (new ComponentParameterFinder(component1));
-    QSharedPointer<IPXactSystemVerilogParser> firstParser(new IPXactSystemVerilogParser(firstFinder));
-    QSharedPointer<ComponentParameterFinder> secondFinder (new ComponentParameterFinder(component2));
-    QSharedPointer<IPXactSystemVerilogParser> secondParser(new IPXactSystemVerilogParser(secondFinder));
+    QPair<int, int> firstMappedBounds = calculateMappedPhysicalPortBounds(expressionParser, portMap1, component1);
+    int left1 = qMax(firstMappedBounds.first, firstMappedBounds.second);
+    int right1 = qMin(firstMappedBounds.first, firstMappedBounds.second);
 
-    QPair<int, int> firstMappedBounds = calculateMappedPhysicalPortBounds(firstParser, portMap1, component1);
-    int phys1Left = qMax(firstMappedBounds.first, firstMappedBounds.second);
-    int phys1Right = qMin(firstMappedBounds.first, firstMappedBounds.second);
-    bool phys1Invalid = isMappedPhysicalInvalid(invalid, portMap1, component1);
-
-    QPair<int, int> secondMappedBounds = calculateMappedPhysicalPortBounds(secondParser, portMap2, component2);
-    int phys2Left = qMax(secondMappedBounds.first, secondMappedBounds.second);
-    int phys2Right = qMin(secondMappedBounds.first, secondMappedBounds.second);
-    bool phys2Invalid = isMappedPhysicalInvalid(invalid, portMap2, component2);
-
-    // check the sizes of the physical ports
-	int size1 = phys1Left - phys1Right + 1;
-	int size2 = phys2Left - phys2Right + 1;
-
-	QTableWidgetItem* port1Item;
-	QTableWidgetItem* port2Item;
-
-    QSharedPointer<PortMap::LogicalPort> firstLogical = portMap1->getLogicalPort();
-    QPair<int, int> firstLogicalBounds = calculateMappedLogicalPortBounds(firstParser, portMap1);
-    int firstLogicalHigh = firstLogicalBounds.first;
-    int firstLogicalLow = firstLogicalBounds.second;
-
-    QSharedPointer<PortMap::LogicalPort> secondLogical = portMap2->getLogicalPort();
-    QPair<int, int> secondLogicalBounds = calculateMappedLogicalPortBounds(secondParser, portMap2);
-    int secondLogicalHigh = secondLogicalBounds.first;
-    int secondLogicalLow = secondLogicalBounds.second;
-    if (firstLogical && firstLogical->range_ && secondLogical && secondLogical->range_)
+    QPair<int, int> secondMappedBounds = calculateMappedPhysicalPortBounds(expressionParser, portMap2, component2);
+    int left2 = qMax(secondMappedBounds.first, secondMappedBounds.second);
+    int right2 = qMin(secondMappedBounds.first, secondMappedBounds.second);
+    
+    if (portMap1->getLogicalPort()->range_ && portMap2->getLogicalPort()->range_)
     {
+        QPair<int, int> firstLogicalBounds = calculateMappedLogicalPortBounds(expressionParser, portMap1);
+        int firstLogicalHigh = firstLogicalBounds.first;
+        int firstLogicalLow = firstLogicalBounds.second;
+
+        QPair<int, int> secondLogicalBounds = calculateMappedLogicalPortBounds(expressionParser, portMap2);
+        int secondLogicalHigh = secondLogicalBounds.first;
+        int secondLogicalLow = secondLogicalBounds.second;
+
         if (firstLogicalLow > secondLogicalHigh || firstLogicalHigh < secondLogicalLow)
         {
+            // If the maps have 0 common logical bits, do not create a row.
             return;
         }
 
+        // Find the matching ranges for the physical ports based on the logical ranges.
         int logicalHigh = qMin(firstLogicalHigh, secondLogicalHigh);
         int logicalLow = qMax(firstLogicalLow, secondLogicalLow);
 
         int firstDownSize = abs(firstLogicalHigh - logicalHigh);
         int firstUpSize = abs(logicalLow - firstLogicalLow);
 
-        size1 = (phys1Left - firstDownSize) - (phys1Right + firstUpSize) + 1;
-
-        QString port1 = General::port2String(
-            portMap1->getPhysicalPort()->name_, phys1Left - firstDownSize, phys1Right + firstUpSize);
+        left1 = (left1 - firstDownSize);
+        right1 = (right1 + firstUpSize);
 
         int secondDownSize = abs(secondLogicalHigh - logicalHigh);
         int secondUpSize = abs(logicalLow - secondLogicalLow);
 
-        size2 = (phys2Left - secondDownSize) - (phys2Right + secondUpSize) + 1;
-
-        QString port2 = General::port2String(
-            portMap2->getPhysicalPort()->name_, phys2Left - secondDownSize, phys2Right + secondUpSize);
-
-        if (size1 != size2)
-        {
-            phys1Invalid = true;
-            phys2Invalid = true;
-        }
-
-        port1Item = new QTableWidgetItem(port1);
-        port2Item = new QTableWidgetItem(port2);
+        left2 = (left2 - secondDownSize);
+        right2 = (right2 + secondUpSize);
     }
-    else if (portMap1->getLogicalPort() && portMap1->getLogicalPort()->range_ && portMap2->getLogicalPort() &&
-        !portMap2->getLogicalPort()->range_)
+
+    int size1 = abs(left1 - right1) + 1;
+    int size2 = abs(left2 - right2) + 1;
+
+    bool hasMatchingSizes = (size1 == size2);
+    bool phys1IsValid = validAbstraction && hasMatchingSizes && isValidPhysicalPort(portMap1, component1);
+    bool phys2IsValid = validAbstraction && hasMatchingSizes && isValidPhysicalPort(portMap2, component2);
+
+    QTableWidgetItem* port1Item = createPortItem(portMap1->getPhysicalPort()->name_, left1, right1, phys1IsValid);
+    QTableWidgetItem* port2Item = createPortItem(portMap2->getPhysicalPort()->name_, left2, right2, phys2IsValid);
+
+    int row = portWidget_.rowCount();
+    portWidget_.insertRow(row);
+    portWidget_.setItem(row, 0, port1Item);
+    portWidget_.setItem(row, 1, port2Item);   
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEditor::createPortItem()
+//-----------------------------------------------------------------------------
+QTableWidgetItem* ConnectionEditor::createPortItem(QString const& portName, int left, int right, bool isValid)
+{
+    QString itemText = General::port2String(portName, left, right);
+    QTableWidgetItem* portItem = new QTableWidgetItem(itemText);
+
+    portItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+
+    if (isValid)
     {
-        QString port1 = General::port2String(portMap1->getPhysicalPort()->name_, phys1Left, phys1Right);
-        port1Item = new QTableWidgetItem(port1);
-
-        QString port2 = General::port2String(portMap2->getPhysicalPort()->name_, firstLogicalHigh, firstLogicalLow);
-
-        int firstLogicalSize = abs(firstLogicalHigh - firstLogicalLow) + 1;
-        if (firstLogicalSize != size2)
-        {
-            phys1Invalid = true;
-            phys2Invalid = true;
-        }
-
-        port2Item = new QTableWidgetItem(port2);
+        portItem->setForeground(QBrush(Qt::black));
     }
-    else if (portMap1->getLogicalPort() && !portMap1->getLogicalPort()->range_ && portMap2->getLogicalPort() &&
-        !portMap2->getLogicalPort()->range_)
+    else 
     {
-        QString port1 =
-            General::port2String(portMap1->getPhysicalPort()->name_, secondLogicalHigh, secondLogicalLow);
-
-        int secondLogicalSize = abs(secondLogicalHigh - secondLogicalLow) + 1;
-        if (secondLogicalSize != size1)
-        {
-            phys1Invalid = true;
-            phys2Invalid = true;
-        }
-        
-        port1Item = new QTableWidgetItem(port1);
-
-        QString port2 = General::port2String(portMap2->getPhysicalPort()->name_, phys2Left, phys2Right);
-        port2Item = new QTableWidgetItem(port2);
+        portItem->setForeground(QBrush(Qt::red));
     }
-    else
-    {
-        QString port1 = General::port2String(portMap1->getPhysicalPort()->name_, phys1Left, phys1Right);
-        port1Item = new QTableWidgetItem(port1);
 
-        QString port2 = General::port2String(portMap2->getPhysicalPort()->name_, phys2Left, phys2Right);
-        port2Item = new QTableWidgetItem(port2);
-
-        if (size1 != size2)
-        {
-            phys1Invalid = true;
-            phys2Invalid = true;
-        }
-    }
-    
-    addPortItemsToPortWidget(port1Item, port2Item, phys1Invalid, phys2Invalid, row);
+    return portItem;
 }
 
 //-----------------------------------------------------------------------------
@@ -625,10 +577,9 @@ QPair<int, int> ConnectionEditor::calculateMappedPhysicalPortBounds(QSharedPoint
     }
     else if (containingComponent->hasPort(physicalPort->name_))
     {
-        physicalLeft =
-            parser->parseExpression(containingComponent->getPort(physicalPort->name_)->getLeftBound()).toInt();
-        physicalRight =
-            parser->parseExpression(containingComponent->getPort(physicalPort->name_)->getRightBound()).toInt();
+        QSharedPointer<Port> componentPort = containingComponent->getPort(physicalPort->name_);
+        physicalLeft =  parser->parseExpression(componentPort->getLeftBound()).toInt();
+        physicalRight = parser->parseExpression(componentPort->getRightBound()).toInt();
     }
 
     QPair<int, int> portBounds(physicalLeft, physicalRight);
@@ -636,18 +587,12 @@ QPair<int, int> ConnectionEditor::calculateMappedPhysicalPortBounds(QSharedPoint
 }
 
 //-----------------------------------------------------------------------------
-// Function: connectioneditor::isPhysicalInvalid()
+// Function: connectioneditor::isValidPhysicalPort()
 //-----------------------------------------------------------------------------
-bool ConnectionEditor::isMappedPhysicalInvalid(bool invalid, QSharedPointer<PortMap> containingPortMap,
+bool ConnectionEditor::isValidPhysicalPort(QSharedPointer<PortMap> containingPortMap,
     QSharedPointer<Component> containingComponent)
 {
-    if (containingPortMap->getPhysicalPort() &&
-        !containingComponent->hasPort(containingPortMap->getPhysicalPort()->name_))
-    {
-        return true;
-    }
-
-    return invalid;
+    return containingComponent->hasPort(containingPortMap->getPhysicalPort()->name_);
 }
 
 //-----------------------------------------------------------------------------
@@ -659,7 +604,7 @@ QPair<int, int> ConnectionEditor::calculateMappedLogicalPortBounds(QSharedPointe
     int logicalHigh = 0;
     int logicalLow = 0;
 
-    if (containingPortMap->getLogicalPort() && containingPortMap->getLogicalPort()->range_)
+    if (containingPortMap->getLogicalPort()->range_)
     {
         int logicalLeft = parser->parseExpression(containingPortMap->getLogicalPort()->range_->getLeft()).toInt();
         int logicalRight = parser->parseExpression(containingPortMap->getLogicalPort()->range_->getRight()).toInt();
@@ -673,33 +618,21 @@ QPair<int, int> ConnectionEditor::calculateMappedLogicalPortBounds(QSharedPointe
 }
 
 //-----------------------------------------------------------------------------
-// Function: connectioneditor::addPortItemsToPortWidget()
+// Function: ConnectionEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void ConnectionEditor::addPortItemsToPortWidget(QTableWidgetItem* firstPortItem, QTableWidgetItem* secondPortItem,
-    bool firstIsNotValid, bool secondIsNotValid, int& row)
+void ConnectionEditor::setupLayout()
 {
-    firstPortItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-    secondPortItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-
-    if (firstIsNotValid)
-    {
-        firstPortItem->setForeground(QBrush(Qt::red));
-    }
-    else
-    {
-        firstPortItem->setForeground(QBrush(Qt::black));
-    }
-    if (secondIsNotValid)
-    {
-        secondPortItem->setForeground(QBrush(Qt::red));
-    }
-    else
-    {
-        secondPortItem->setForeground(QBrush(Qt::black));
-    }
-
-    portWidget_.insertRow(row);
-    portWidget_.setItem(row, 0, firstPortItem);
-    portWidget_.setItem(row, 1, secondPortItem);
-    ++row;
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(&type_);
+    layout->addWidget(&absType_);
+    layout->addWidget(&instanceLabel_);
+    layout->addWidget(&connectedInstances_);
+    layout->addWidget(&separator_);
+    layout->addWidget(&nameLabel_);
+    layout->addWidget(&nameEdit_);
+    layout->addWidget(&descriptionLabel_);
+    layout->addWidget(&descriptionEdit_);
+    layout->addWidget(&portsLabel_);
+    layout->addWidget(&portWidget_, 1);
+    layout->addWidget(&adHocBoundsTable_, 1);
 }
