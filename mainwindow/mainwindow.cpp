@@ -920,12 +920,12 @@ void MainWindow::setupMenus()
 	QDockWidget* menuDock = new QDockWidget(tr("Menu"), this);
 	menuDock->setObjectName(tr("Menu"));
 	menuDock->setTitleBarWidget(new QWidget(this));
-    menuDock->setAllowedAreas(Qt::TopDockWidgetArea | Qt::BottomDockWidgetArea);
+    menuDock->setAllowedAreas(Qt::TopDockWidgetArea);
 	menuDock->setFeatures(QDockWidget::NoDockWidgetFeatures);
 
     ribbon_ = new Ribbon(menuDock);
     menuDock->setWidget(ribbon_);
-    addDockWidget(Qt::BottomDockWidgetArea, menuDock);
+    addDockWidget(Qt::TopDockWidgetArea, menuDock);
 	
 	// The "File" group.
 	RibbonGroup* fileGroup = ribbon_->addGroup(tr("File"));
