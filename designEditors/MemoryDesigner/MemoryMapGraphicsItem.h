@@ -96,6 +96,14 @@ public:
      */
     void changeWidth(qreal widthChange);
 
+    /*!
+     *  Get the maximum needed change in width to fully display the name labels of all the field items within the
+     *  address block items.
+     *
+     *      @return The maximum needed change in width to display the name labels of all the field items.
+     */
+    qreal getMaximumNeededChangeInFieldWidth() const;
+
 private:
     // Disable copying.
     MemoryMapGraphicsItem(MemoryMapGraphicsItem const& rhs);

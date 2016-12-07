@@ -86,6 +86,16 @@ public:
     bool addressSpaceChainsAreFiltered() const;
 
     /*!
+     *  Condense all the field graphics items to their original width.
+     */
+    void condenseFieldItems();
+
+    /*!
+     *  Extend all the field graphics items to fully display their name label.
+     */
+    void extendFieldItems();
+
+    /*!
      *  Set a new value for filtering the address space segments.
      *
      *      @param [in] filterSegments  Value for filtering address space segments.
@@ -556,6 +566,13 @@ private:
      *      @param [in] connectionChain     Connection chain of address space items.
      */
     void setHeightForConnectionChain(QVector<MemoryConnectionItem*> connectionChain);
+
+    /*!
+     *  Change the width of the memory map columns and their contained memory map graphics items.
+     *
+     *      @param [in] deltaWidth  The change in width.
+     */
+    void changeMemoryMapWidths(qreal deltaWidth);
 
     //-----------------------------------------------------------------------------
     // Data.

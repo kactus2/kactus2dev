@@ -109,6 +109,52 @@ bool MemoryDesignerDiagram::addressSpaceChainsAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::condenseFieldItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::condenseFieldItems()
+{
+    if (!addressBlockRegistersAreFiltered() && !fieldsAreFiltered()  && widthBoundary_ > 0)
+    {
+        changeMemoryMapWidths(-widthBoundary_);
+        widthBoundary_ = 0;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::extendFieldItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::extendFieldItems()
+{
+    if (!addressBlockRegistersAreFiltered() && !fieldsAreFiltered())
+    {
+        qreal widthChange = 0;
+
+        foreach (GraphicsColumn* column, layout_->getColumns())
+        {
+            MemoryColumn* memoryColumn = dynamic_cast<MemoryColumn*>(column);
+            if (memoryColumn && memoryColumn->containsMemoryMapItems())
+            {
+                widthChange = qMax(widthChange, memoryColumn->getMaximumNeededChangeInWidth());
+            }
+        }
+
+        if (widthChange > widthBoundary_)
+        {
+            int futureColumnWidth = memoryMapColumnWidth_ + widthChange;
+            int widthRemainder = futureColumnWidth % 10;
+            if (widthRemainder != 9)
+            {
+                widthRemainder = 9 - widthRemainder;
+                widthChange += widthRemainder;
+            }
+
+            changeMemoryMapWidths(widthChange);
+            widthBoundary_ += widthChange;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::setFilterAddressSpaceSegments()
 //-----------------------------------------------------------------------------
 void MemoryDesignerDiagram::setFilterAddressSpaceSegments(bool filterSegments)
@@ -181,6 +227,7 @@ bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Compo
     clearScene();
     connectionsToMemoryMaps_.clear();
     memoryCollisions_.clear();
+    widthBoundary_ = 0;
 
     if (filterRegisters_ || (filterAddressBlocks_ && filterFields_))
     {
@@ -1547,22 +1594,7 @@ void MemoryDesignerDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
 
         if (deltaWidth != 0)
         {
-            foreach (GraphicsColumn* column, layout_->getColumns())
-            {
-                MemoryColumn* memoryColumn = dynamic_cast<MemoryColumn*>(column);
-                if (memoryColumn && memoryColumn->containsMemoryMapItems())
-                {
-                    memoryColumn->changeWidth(deltaWidth);
-                }
-            }
-            foreach (MemoryConnectionItem* connectionItem, connectionsToMemoryMaps_)
-            {
-                connectionItem->reDrawConnection();
-            }
-            foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
-            {
-                collisionItem->reDrawCollision();
-            }
+            changeMemoryMapWidths(deltaWidth);
         }
 
         event->accept();
@@ -1570,6 +1602,29 @@ void MemoryDesignerDiagram::wheelEvent(QGraphicsSceneWheelEvent *event)
     else
     {
         QGraphicsScene::wheelEvent(event);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::changeWidths()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::changeMemoryMapWidths(qreal deltaWidth)
+{
+    foreach (GraphicsColumn* column, layout_->getColumns())
+    {
+        MemoryColumn* memoryColumn = dynamic_cast<MemoryColumn*>(column);
+        if (memoryColumn && memoryColumn->containsMemoryMapItems())
+        {
+            memoryColumn->changeWidth(deltaWidth);
+        }
+    }
+    foreach (MemoryConnectionItem* connectionItem, connectionsToMemoryMaps_)
+    {
+        connectionItem->reDrawConnection();
+    }
+    foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
+    {
+        collisionItem->reDrawCollision();
     }
 }
 

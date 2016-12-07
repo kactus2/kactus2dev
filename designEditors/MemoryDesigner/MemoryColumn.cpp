@@ -167,3 +167,21 @@ void MemoryColumn::changeWidth(qreal deltaWidth)
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::getMaximumNeededChangeInWidth()
+//-----------------------------------------------------------------------------
+qreal MemoryColumn::getMaximumNeededChangeInWidth() const
+{
+    qreal maximumWidthChange = 0;
+    foreach (QGraphicsItem* subItem, getItems())
+    {
+        MemoryMapGraphicsItem* mapItem = dynamic_cast<MemoryMapGraphicsItem*>(subItem);
+        if (mapItem)
+        {
+            maximumWidthChange = qMax(maximumWidthChange, mapItem->getMaximumNeededChangeInFieldWidth());
+        }
+    }
+
+    return maximumWidthChange;
+}

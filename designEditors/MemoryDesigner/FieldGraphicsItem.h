@@ -69,6 +69,13 @@ public:
      */
     void changeWidth(qreal widthChange);
 
+    /*!
+     *  Get the needed change in width to fully display the name label within this item.
+     *
+     *      @return The needed change in width to fully display the name label within this item.
+     */
+    qreal getNeededWithChangeToDisplayFullName() const;
+
 private:
     // Disable copying.
     FieldGraphicsItem(FieldGraphicsItem const& rhs);

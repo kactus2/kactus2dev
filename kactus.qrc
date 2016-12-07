@@ -109,6 +109,8 @@
       <file>common/graphics/addressSpaceFilter.png</file>
       <file>common/graphics/memorySubItemFilter.png</file>
       <file>common/graphics/compressMemoryItems.png</file>
+      <file>common/graphics/compressFields.png</file>
+      <file>common/graphics/extendFields.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>common/graphics/splash.png</file>

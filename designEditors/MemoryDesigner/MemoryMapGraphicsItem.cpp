@@ -411,3 +411,37 @@ void MemoryMapGraphicsItem::changeWidth(qreal widthChange)
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::getMaximumNeededChangeInFieldWidth()
+//-----------------------------------------------------------------------------
+qreal MemoryMapGraphicsItem::getMaximumNeededChangeInFieldWidth() const
+{
+    qreal maximumNeededWithChange = 0;
+    if (!filterFields_)
+    {
+        foreach (MemoryDesignerChildGraphicsItem* subItem, getSubMemoryItems())
+        {
+            if (!filterAddressBlocks_)
+            {
+                AddressBlockGraphicsItem* blockItem = dynamic_cast<AddressBlockGraphicsItem*>(subItem);
+                if (blockItem)
+                {
+                    maximumNeededWithChange =
+                        qMax(maximumNeededWithChange, blockItem->getMaximumNeededChangeInFieldWidth());
+                }
+            }
+            else
+            {
+                RegisterGraphicsItem* registerItem = dynamic_cast<RegisterGraphicsItem*>(subItem);
+                if (registerItem)
+                {
+                    maximumNeededWithChange =
+                        qMax(maximumNeededWithChange, registerItem->getMaximumNeededChangeInFieldWidth());
+                }
+            }
+        }
+    }
+
+    return maximumNeededWithChange;
+}

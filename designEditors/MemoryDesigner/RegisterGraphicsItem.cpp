@@ -255,3 +255,21 @@ void RegisterGraphicsItem::changeWidth(qreal widthChange)
         setLabelPositions();
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::getMaximumNeededChangeInFieldWidth()
+//-----------------------------------------------------------------------------
+qreal RegisterGraphicsItem::getMaximumNeededChangeInFieldWidth() const
+{
+    qreal maximumWidthChange = 0;
+
+    foreach (FieldGraphicsItem* fieldItem, fieldItems_)
+    {
+        maximumWidthChange = qMax(maximumWidthChange, fieldItem->getNeededWithChangeToDisplayFullName());
+    }
+
+    quint64 registerSize = registerMemoryItem_->getSize().toULongLong();
+    maximumWidthChange = registerSize * maximumWidthChange;
+
+    return maximumWidthChange;
+}

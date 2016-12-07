@@ -212,6 +212,8 @@ actionConfigureViews_(0),
 filteringGroup_(0),
 actionFilterAddressSpaceChains_(0),
 actionCondenseMemoryItems_(0),
+actionCondenseFieldItems_(0),
+actionExtendFieldItems_(0),
 actionFilterMemoryItems_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
@@ -884,6 +886,13 @@ void MainWindow::setupActions()
         tr("View Configuration"), this);
     connect(actionConfigureViews_, SIGNAL(triggered()), this, SLOT(onConfigureViews()), Qt::UniqueConnection);
 
+    //! Initialize the action to condense memory graphics items.
+    actionCondenseMemoryItems_ = new QAction(QIcon(":icons/common/graphics/compressMemoryItems.png"),
+        tr("Compress Memory Items"), this);
+    actionCondenseMemoryItems_->setCheckable(true);
+    connect(actionCondenseMemoryItems_, SIGNAL(triggered(bool)),
+        this, SLOT(onCondenseMemoryItems(bool)), Qt::UniqueConnection);
+
     //! Initialize the action to filter chained address space memory connections.
     actionFilterAddressSpaceChains_ = new QAction(QIcon(":/icons/common/graphics/addressSpaceFilter.png"),
         tr("Address Space Filter"), this);
@@ -891,12 +900,16 @@ void MainWindow::setupActions()
     connect(actionFilterAddressSpaceChains_, SIGNAL(triggered(bool)),
         this, SLOT(onFilterAddressSpaceChains(bool)), Qt::UniqueConnection);
 
-    //! Initialize the action to condense memory graphics items.
-    actionCondenseMemoryItems_ = new QAction(QIcon(":icons/common/graphics/compressMemoryItems.png"),
-        tr("Compress Memory Items"), this);
-    actionCondenseMemoryItems_->setCheckable(true);
-    connect(actionCondenseMemoryItems_, SIGNAL(triggered(bool)),
-        this, SLOT(onCondenseMemoryItems(bool)), Qt::UniqueConnection);
+    //! Initialize the action to condense field graphics items.
+    actionCondenseFieldItems_ = new QAction(QIcon(":icons/common/graphics/compressFields.png"),
+        tr("Compress Field Items"), this);
+    connect(actionCondenseFieldItems_, SIGNAL(triggered()),
+        this, SLOT(onCondenseFieldItems()), Qt::UniqueConnection);
+
+    //! Initialize the action to extend field graphics items.
+    actionExtendFieldItems_ = new QAction(QIcon(":icons/common/graphics/extendFields.png"),
+        tr("Extend Field Items"), this);
+    connect(actionExtendFieldItems_, SIGNAL(triggered()), this, SLOT(onExtendFieldItems()), Qt::UniqueConnection);
 
     //! Initialize the action to manage memory item filtering control.
     actionFilterMemoryItems_ = new QAction(QIcon(":icons/common/graphics/memorySubItemFilter.png"),
@@ -1028,12 +1041,16 @@ void MainWindow::setupMenus()
     filteringGroup_ = ribbon_->addGroup(tr("Filtering Tools"));
     filteringGroup_->setVisible(false);
     filteringGroup_->setEnabled(true);
-    filteringGroup_->addAction(actionCondenseMemoryItems_);
     filteringGroup_->addAction(actionFilterAddressSpaceChains_);
+    filteringGroup_->addAction(actionCondenseMemoryItems_);
+    filteringGroup_->addAction(actionCondenseFieldItems_);
+    filteringGroup_->addAction(actionExtendFieldItems_);
     filteringGroup_->addAction(actionFilterMemoryItems_);
 
-    filteringGroup_->widgetForAction(actionCondenseMemoryItems_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionFilterAddressSpaceChains_)->installEventFilter(ribbon_);
+    filteringGroup_->widgetForAction(actionCondenseMemoryItems_)->installEventFilter(ribbon_);
+    filteringGroup_->widgetForAction(actionCondenseFieldItems_)->installEventFilter(ribbon_);
+    filteringGroup_->widgetForAction(actionExtendFieldItems_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionFilterMemoryItems_)->installEventFilter(ribbon_);
 
 	//! The "Workspace" group.
@@ -1720,6 +1737,8 @@ void MainWindow::updateMenuStrip()
     filteringGroup_->setVisible(doc != 0 && isMemoryDesign);
     actionFilterAddressSpaceChains_->setVisible(isMemoryDesign);
     actionCondenseMemoryItems_->setVisible(isMemoryDesign);
+    actionCondenseFieldItems_->setVisible(isMemoryDesign);
+    actionExtendFieldItems_->setVisible(isMemoryDesign);
     actionFilterMemoryItems_->setVisible(isMemoryDesign);
 }
 
@@ -4791,10 +4810,10 @@ void MainWindow::onConfigureViews()
 //-----------------------------------------------------------------------------
 void MainWindow::onCondenseMemoryItems(bool condenseMemoryItems)
 {
-    MemoryDesignDocument* doc = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
-    if (doc && !doc->isProtected())
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
     {
-        doc->setCondenseMemoryItems(condenseMemoryItems);
+        memoryDocument->setCondenseMemoryItems(condenseMemoryItems);
     }
 }
 
@@ -4803,11 +4822,34 @@ void MainWindow::onCondenseMemoryItems(bool condenseMemoryItems)
 //-----------------------------------------------------------------------------
 void MainWindow::onFilterAddressSpaceChains(bool filterChains)
 {
-    MemoryDesignDocument* doc = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
-
-    if (doc && !doc->isProtected())
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
     {
-        doc->filterAddressSpaceChains(filterChains);
+        memoryDocument->filterAddressSpaceChains(filterChains);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onCondenseFieldItems()
+//-----------------------------------------------------------------------------
+void MainWindow::onCondenseFieldItems()
+{
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
+    {
+        memoryDocument->condenseFieldItems();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onExtendFieldItems()
+//-----------------------------------------------------------------------------
+void MainWindow::onExtendFieldItems()
+{
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
+    {
+        memoryDocument->extendFieldItems();
     }
 }
 

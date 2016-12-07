@@ -176,3 +176,24 @@ void AddressBlockGraphicsItem::changeWidth(qreal widthChange)
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphicsItem::getMaximumNeededChangeInFieldWidth()
+//-----------------------------------------------------------------------------
+qreal AddressBlockGraphicsItem::getMaximumNeededChangeInFieldWidth() const
+{
+    qreal maximumWidthChange = 0;
+    if (!filterFields_)
+    {
+        foreach (MemoryDesignerChildGraphicsItem* subItem, getSubMemoryItems())
+        {
+            RegisterGraphicsItem* registerItem = dynamic_cast<RegisterGraphicsItem*>(subItem);
+            if (registerItem)
+            {
+                maximumWidthChange = qMax(maximumWidthChange, registerItem->getMaximumNeededChangeInFieldWidth());
+            }
+        }
+    }
+
+    return maximumWidthChange;
+}

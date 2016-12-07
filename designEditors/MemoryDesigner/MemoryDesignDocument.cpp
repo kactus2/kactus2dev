@@ -255,6 +255,22 @@ bool MemoryDesignDocument::addressSpaceChainsAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::condenseFieldItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::condenseFieldItems()
+{
+    diagram_->condenseFieldItems();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::extendFieldItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::extendFieldItems()
+{
+    diagram_->extendFieldItems();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignDocument::filterAddressSpaceSegments()
 //-----------------------------------------------------------------------------
 void MemoryDesignDocument::filterAddressSpaceSegments(bool filterSegments)

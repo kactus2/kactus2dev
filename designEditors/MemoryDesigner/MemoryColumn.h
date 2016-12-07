@@ -99,6 +99,14 @@ public:
      */
     void changeWidth(qreal deltaWidth);
 
+    /*!
+     *  Get the maximum needed change in width to display the name labels of all the field items contained within
+     *  the memory map items.
+     *
+     *      @return The maximum needed change in width to display the name labels of all the field items.
+     */
+    qreal getMaximumNeededChangeInWidth() const;
+
 protected:
 
     /*!

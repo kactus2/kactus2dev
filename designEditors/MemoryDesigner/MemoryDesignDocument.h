@@ -143,6 +143,16 @@ public:
     bool addressSpaceChainsAreFiltered() const;
 
     /*!
+     *  Condense all the field graphics items to their original width.
+     */
+    void condenseFieldItems();
+
+    /*!
+     *  Extend all the field graphics items to fully display their name label.
+     */
+    void extendFieldItems();
+
+    /*!
      *  Check whether the address space segments are filtered or not.
      *
      *      @return True, if address space segments are filtered, otherwise false.

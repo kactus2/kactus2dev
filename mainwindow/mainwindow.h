@@ -518,6 +518,16 @@ private slots:
      */
     void onCondenseMemoryItems(bool condenseMemoryItems);
 
+    /*!
+     *  Condense all the field graphics items to their original width.
+     */
+    void onCondenseFieldItems();
+
+    /*!
+     *  Extend all the field graphics items to fully display their name label.
+     */
+    void onExtendFieldItems();
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);
@@ -976,6 +986,12 @@ private:
 
     //! The action to condense memory graphics items in a memory designer.
     QAction* actionCondenseMemoryItems_;
+
+    //! The action to condense field graphics items in a memory designer.
+    QAction* actionCondenseFieldItems_;
+
+    //! The action to extend field graphics items in a memory designer.
+    QAction* actionExtendFieldItems_;
 
     //! The action to filter memory items.
     QAction* actionFilterMemoryItems_;

@@ -179,3 +179,27 @@ void FieldGraphicsItem::changeWidth(qreal widthChange)
 
     fitNameToBoundaries(nameLabel);
 }
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::getMaximumNeededWidthChange()
+//-----------------------------------------------------------------------------
+qreal FieldGraphicsItem::getNeededWithChangeToDisplayFullName() const
+{
+    qreal neededWithChangeToDisplayFullName = 0;
+
+    QString currentName = getNameLabel()->toPlainText();
+    if (currentName.compare(fieldName_, Qt::CaseInsensitive) != 0)
+    {
+        qreal currentWidth = boundingRect().width();
+
+        getNameLabel()->setPlainText(fieldName_);
+        qreal nameLabelWidth = getNameLabel()->boundingRect().width();
+
+        neededWithChangeToDisplayFullName = nameLabelWidth - currentWidth + 12;
+
+        quint64 fieldWidth = getLastAddress() - getBaseAddress() + 1;
+        neededWithChangeToDisplayFullName = neededWithChangeToDisplayFullName / fieldWidth;
+    }
+
+    return neededWithChangeToDisplayFullName;
+}
