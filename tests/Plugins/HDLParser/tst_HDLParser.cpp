@@ -69,6 +69,7 @@ private slots:
     void testAdhocConnectionToVaryingSizePorts();    
     void testAdhocConnectionWithPartSelect();
     void testAdhocTieOffInComponentInstance();
+    void testPortDefaultValueInComponentInstance();
     void testMultipleAdhocConnectionsBetweenComponentInstances();
     void testAdHocConnectionBetweenComponentInstancesWithExpressions();
     void testHierarchicalAdhocConnection();
@@ -1305,7 +1306,7 @@ void tst_HDLParser::testSlicedInterconnection()
     QSharedPointer<GenerationDesign> design = designs.first();
 
     QCOMPARE( design->interConnections_.size(), 1 );
-    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 2 );
+    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 1 );
 
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.last();
 
@@ -1899,6 +1900,69 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     QCOMPARE( gpa->tieOff, QString("") );
     gpa = gi0->portAssignments_["tieOffInOut"];
     QCOMPARE( gpa->tieOff, QString("1") );
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_HDLParser::testPortDefaultValueInComponentInstance()
+//-----------------------------------------------------------------------------
+void tst_HDLParser::testPortDefaultValueInComponentInstance()
+{
+    VLNV tieOffVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestTieOff", "1.0");
+    QSharedPointer<Component> tieOffComponent(new Component(tieOffVLNV));
+
+    QSharedPointer<View> activeView(new View("rtl"));
+    activeView->setComponentInstantiationRef("instance1");
+
+    QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
+    tieOffComponent->getComponentInstantiations()->append(instantiation);
+    tieOffComponent->getViews()->append(activeView);
+
+    QString instanceName = "tieOffer";
+
+    QString unconnnectedIn = "unconnnectedIn";
+    QString unconnnectedInOut = "unconnnectedInOut";
+    QString unconnnectedOut = "unconnnectedOut";
+
+    addPort(unconnnectedIn, 1, DirectionTypes::IN, tieOffComponent);
+    addPort(unconnnectedInOut, 2, DirectionTypes::INOUT, tieOffComponent);
+    addPort(unconnnectedOut, 3, DirectionTypes::OUT, tieOffComponent);
+
+    library_.addComponent(tieOffComponent);
+
+    addInstanceToDesign(instanceName, tieOffVLNV, activeView);
+
+    QSharedPointer<Port> defaultPort1 = tieOffComponent->getPort("unconnnectedIn");
+    defaultPort1->setDefaultValue("1");
+    QSharedPointer<Port> defaultPort2 = tieOffComponent->getPort("unconnnectedInOut");
+    defaultPort2->setDefaultValue("35");
+    QSharedPointer<Port> defaultPort3 = tieOffComponent->getPort("unconnnectedOut");
+    defaultPort3->setDefaultValue("23");
+
+    QSharedPointer<HDLComponentParser> componentParser =
+        QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+
+    componentParser->parseComponent(topView_);
+    QSharedPointer<HDLDesignParser> designParser =
+        QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
+    designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+
+    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+
+    QCOMPARE( designs.size(), 1 );
+    QSharedPointer<GenerationDesign> design = designs.first();
+
+    QCOMPARE( design->instances_.size(), 1 );
+
+    QSharedPointer<GenerationInstance> gi0 = design->instances_["tieOffer"];
+
+    QCOMPARE( gi0->portAssignments_.size(), 2 );
+
+    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["unconnnectedIn"];
+    QCOMPARE(gpa->tieOff, QString("1"));
+    gpa = gi0->portAssignments_["unconnnectedInOut"];
+    QCOMPARE(gpa->tieOff, QString("35"));
+    gpa = gi0->portAssignments_.value("unconnnectedOut");
+    QVERIFY(!gpa);
 }
 
 //-----------------------------------------------------------------------------

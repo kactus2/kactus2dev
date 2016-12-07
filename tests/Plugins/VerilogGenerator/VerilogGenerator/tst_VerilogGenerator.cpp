@@ -412,7 +412,6 @@ void tst_VerilogGenerator::addInterfaceToComponent(QString const& interfaceName,
     QSharedPointer<GenerationComponent> component)
 {
     QSharedPointer<GenerationInterface> gi(new GenerationInterface());
-    gi->name = interfaceName;
     component->interfaces.insert(interfaceName,gi);
 
     QSharedPointer<BusInterface> bi = QSharedPointer<BusInterface>(new BusInterface);

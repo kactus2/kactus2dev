@@ -91,8 +91,6 @@ struct GenerationInterface
     QString mode;
     //! The description of the interface.
     QString description;
-    //! The name of the interface.
-    QString name;
 };
 
 struct GenerationPort
@@ -143,28 +141,6 @@ struct GenerationWire
 	QString name;
 };
 
-struct GenerationInterconnection
-{
-    //! The interfaces assigned to the interconnection.
-	QList<QSharedPointer<GenerationInterface> > interfaces;
-    //! The wires parsed for the interconnection.
-	QMap<QString,QSharedPointer<GenerationWire> > wires_;
-    //! An interface of the top component assigned to the interconnection. Is null if there is none.
-	QSharedPointer<GenerationInterface> topInterface_;
-    //! The name of the interconnection, to tell it apart from other interconnections of the design.
-    QString name;
-    //! The defined type name of the interconnection.
-    QString typeName;
-};
-
-struct GenerationInterfaceAssignment
-{
-    //! The interface which is assigned.
-    QSharedPointer<GenerationInterface> interface_;
-    //! The interconnection where the interface is assigned to.
-    QSharedPointer<GenerationInterconnection> interConnection_;
-};
-
 struct GenerationPortAssignMent
 {
     //! The port which is assigned.
@@ -179,6 +155,32 @@ struct GenerationPortAssignMent
     QString tieOff;
     //! True, if the port is assigned to ad-hoc interconnection, else false.
     bool adhoc;
+    //! The width used in the corresponding abstraction port wire.
+    QString abstractionWidth;
+};
+
+struct GenerationInterconnection
+{
+    //! The interfaces assigned to the interconnection.
+    QList<QSharedPointer<GenerationInterface> > interfaces;
+    //! The assignments of the ports that are mapped to the interconnection, keyed by logical port name.
+    QMultiMap<QString,QSharedPointer<GenerationPortAssignMent> > ports;
+    //! The wires parsed for the interconnection.
+    QMap<QString,QSharedPointer<GenerationWire> > wires_;
+    //! An interface of the top component assigned to the interconnection. Is null if there is none.
+    QSharedPointer<GenerationInterface> topInterface_;
+    //! The name of the interconnection, to tell it apart from other interconnections of the design.
+    QString name;
+    //! The defined type name of the interconnection.
+    QString typeName;
+};
+
+struct GenerationInterfaceAssignment
+{
+    //! The interface which is assigned.
+    QSharedPointer<GenerationInterface> interface_;
+    //! The interconnection where the interface is assigned to.
+    QSharedPointer<GenerationInterconnection> interConnection_;
 };
 
 struct GenerationAdHoc

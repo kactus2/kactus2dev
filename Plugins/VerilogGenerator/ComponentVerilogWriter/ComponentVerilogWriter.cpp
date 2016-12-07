@@ -213,7 +213,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
         foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces)
         {
             QString typeName = gif->interface->getBusType().getName();
-            outputStream << endl << typeName << "." << gif->mode << " " << gif->name << ",";
+            outputStream << endl << typeName << "." << gif->mode << " " << gif->interface->name() << ",";
         }
     }
 

@@ -142,11 +142,11 @@ QString ComponentInstanceVerilogWriter::portConnections() const
         {
             if (gifa->interConnection_->topInterface_)
             {
-                portAssignments.append( "." + gifa->interface_->name + "(" + gifa->interConnection_->topInterface_->name + ")");
+                portAssignments.append( "." + gifa->interface_->interface->name() + "(" + gifa->interConnection_->topInterface_->interface->name() + ")");
             }
             else
             {
-                portAssignments.append( "." + gifa->interface_->name + "("+ gifa->interConnection_->name + ")");
+                portAssignments.append( "." + gifa->interface_->interface->name() + "("+ gifa->interConnection_->name + ")");
             }
         }
     }
@@ -234,17 +234,7 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<Generat
 {
     QString assignment;
 
-	// If an tied value is assigned to a physical port, it shall be used.
-    if (!gab->tieOff.isEmpty())
-    {
-		// Format its value as needed.
-        assignment = gab->tieOff;
-        if (assignment.isEmpty())
-        {
-            assignment = " ";
-        }
-    }
-    else
+    if (!gab->topPort.isEmpty() || gab->wire)
     {
 		assignment = "<signalName>[<left>:<right>]";
 
@@ -275,6 +265,15 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<Generat
 		{
 			return "";
 		}
+    }
+    else if (!gab->tieOff.isEmpty())
+    {
+        // If an tied value is assigned to a physical port, it shall be used.
+        assignment = gab->tieOff;
+        if (assignment.isEmpty())
+        {
+            assignment = " ";
+        }
     }
 
     return assignment;

@@ -252,13 +252,13 @@ DirectionTypes::Direction AbstractionDefinition::getPortDirection(QString const&
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinition::getPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<PortAbstraction> AbstractionDefinition::getPort(QString const& portName, General::InterfaceMode mode)
+QSharedPointer<PortAbstraction> AbstractionDefinition::getPort(QString const& portName)
 {
     if (logicalPorts_)
     {
         foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
         {
-            if (port->getLogicalName() == portName && port->getWire() && port->getWire()->hasMode(mode))
+            if (port->getLogicalName() == portName)
             {
                 return port;            
             } 

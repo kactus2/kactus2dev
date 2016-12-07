@@ -14,7 +14,6 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/kactusExtensions/ApiInterface.h \
     ../../../../IPXACTmodels/common/Array.h \
     ../../../../IPXACTmodels/common/Assertion.h \
-    ../../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.h \
     ../../../../IPXACTmodels/common/BooleanValue.h \
     ../../../../IPXACTmodels/Component/BuildCommand.h \
     ../../../../IPXACTmodels/common/BuildModel.h \
@@ -43,6 +42,7 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/Component/Field.h \
     ../../../../IPXACTmodels/Component/File.h \
     ../../../../IPXACTmodels/common/FileBuilder.h \
+    ../../../../IPXACTmodels/kactusExtensions/FileDependency.h \
     ../../../../IPXACTmodels/Component/FileSet.h \
     ../../../../IPXACTmodels/common/FileTypes.h \
     ../../../../IPXACTmodels/Component/Function.h \
@@ -74,8 +74,6 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/Component/RegisterDefinition.h \
     ../../../../IPXACTmodels/Component/RemapPort.h \
     ../../../../IPXACTmodels/Component/RemapState.h \
-    ../../../../IPXACTmodels/kactusExtensions/SWFileBuilder.h \
-    ../../../../IPXACTmodels/kactusExtensions/SWView.h \
     ../../../../IPXACTmodels/Component/Segment.h \
     ../../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
@@ -89,8 +87,7 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/Component/Wire.h \
     ../../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../../IPXACTmodels/Component/WriteValueConstraint.h \
-    ../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../../IPXACTmodels/kactusExtensions/FileDependency.h
+    ../../../../IPXACTmodels/generaldeclarations.h
 SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../IPXACTmodels/Component/AddressSpace.cpp \
@@ -98,7 +95,6 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/kactusExtensions/ApiInterface.cpp \
     ../../../../IPXACTmodels/common/Array.cpp \
     ../../../../IPXACTmodels/common/Assertion.cpp \
-    ../../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
     ../../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../../IPXACTmodels/Component/BuildCommand.cpp \
     ../../../../IPXACTmodels/common/BuildModel.cpp \
@@ -127,6 +123,7 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/Component/Field.cpp \
     ../../../../IPXACTmodels/Component/File.cpp \
     ../../../../IPXACTmodels/common/FileBuilder.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/FileDependency.cpp \
     ../../../../IPXACTmodels/Component/FileSet.cpp \
     ../../../../IPXACTmodels/common/FileTypes.cpp \
     ../../../../IPXACTmodels/Component/Function.cpp \
@@ -158,8 +155,6 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/Component/RegisterDefinition.cpp \
     ../../../../IPXACTmodels/Component/RemapPort.cpp \
     ../../../../IPXACTmodels/Component/RemapState.cpp \
-    ../../../../IPXACTmodels/kactusExtensions/SWFileBuilder.cpp \
-    ../../../../IPXACTmodels/kactusExtensions/SWView.cpp \
     ../../../../IPXACTmodels/Component/Segment.cpp \
     ../../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
@@ -174,5 +169,4 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_BusDefinitionValidator.cpp \
-    ../../../../IPXACTmodels/kactusExtensions/FileDependency.cpp
+    ./tst_BusDefinitionValidator.cpp

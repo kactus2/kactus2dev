@@ -225,11 +225,10 @@ void HDLComponentParser::parseInterfaces()
         QSharedPointer<GenerationInterface> gif(new GenerationInterface);
         gif->description = busInterface->description();
         gif->mode = interfaceMode2Str(busInterface->getInterfaceMode());
-        gif->name = busInterface->name();
         gif->interface = busInterface;
 
         // Insert to the interface to the list.
-        retval_->interfaces.insert(gif->name, gif);
+        retval_->interfaces.insert(busInterface->name(), gif);
 
         // Find the correct abstraction type.
         if (busInterface->getAbstractionTypes()->count() < 1)
