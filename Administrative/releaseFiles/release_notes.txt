@@ -8,6 +8,57 @@
               * Changed or Information
 ===============================================================================
 
+09/12/2016 3.3.0
+----------------------------------------------------
+
++ Improved features for Memory Designer:
+    * Added register fields
+    * Compression of items to minimize the required space
+	* Multiple address spaces can now be shown as part of the same connection
+	* Filtering options added
++ Memory connectivity analysis now manages also instances with identical names
++ Paths for files within filesets accept URI expressions
++ Files can be drag-dropped to filesets from file system
++ Memory map visualization items have now bigger area for expand/collapse
++ Added checking for port direction when using default value
++ Port map invert and tieoff are also shown on logical level of tree hierarchy
++ Improved zooming by centering on mouse location
++ Improved usage of drafts in design
+    * Fixed copying bus interface definitions when connecting hierarchical draft interface
+	* Removed copying of bus interface definitions when connecting non-hierarchical draft interface
+	* Changed bus interface definitions and ports to be copied to draft interfaces on
+	  packaging of the containing draft component instance
+	* Changed pasting bus interface to a draft component instance to only copy the name and mode 
+	  for interface
++ Added notification on trying to read XML files of previous standard versions
++ Improvements to Verilog generation
+    * Simplified generation setup dialog
+    * Register definition creation set as optional
+	* Module name is correctly used for component instances
++ Improvements to Verilog import
+    * Improved parsing of port types
+	* Improved parsing of consecutive parameters
+    * Changed the created environmental identifier
++ Improved features for MakefileGenerator 
+    * Added selection for conflicting files
+	* Changed the created environmental identifier
+	* Changed creation of launcher script to optional
+	
+- Fixed bus interface creation wizard from preventing user to proceed from the general
+  settings page due to missing port maps.
+- Replaced software views with normal views and component instantiations
+- Fixed component instance replace in design to better preserve existing connections
+- Fixed setting port bounds for ad-hoc connections in design
+- Fixed reading of Author information from XML
+- Fixed usage of symbolic file links for XML files
+- Fixed issue where toolbar was placed at the bottom of main window
+
+* Community guidelines included in manual
+* Changed automatic port mapping to less aggressively connect ports
+
+KNOWN UNRESOLVED ISSUES:
+* UI issue: paste command does not update usage count of referenced parameters
+
 05/10/2016 3.2.35
 ----------------------------------------------------
 
