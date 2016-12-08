@@ -37,7 +37,6 @@
 #include <tests/MockObjects/LibraryMock.h>
 
 #include <QtTest>
-#include "IPXACTmodels/kactusExtensions/SWView.h"
 
 class tst_DesignConfigurationValidator : public QObject
 {
@@ -86,9 +85,6 @@ private slots:
 
     void testViewConfigurationHasValidViewReference();
 	void testViewConfigurationHasValidViewReference_data();
-
-	void testSWViewConfigurationHasValidViewReference();
-	void testSWViewConfigurationHasValidViewReference_data();
 
     void testHasValidViewConfigurations();
     void testHasValidViewConfigurations_data();
@@ -1162,11 +1158,9 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReferenc
     if (viewExists)
     {
 		QSharedPointer<View> testView (new View(viewReference));
-		QSharedPointer<SWView> testSWView (new SWView(viewReference));
         if (viewReference.isEmpty())
         {
 			testView->setName("Champloo");
-			testSWView->setName("TestSofwareView");
         }
 
         QSharedPointer<ConfigurableVLNVReference> componentVLNV
@@ -1174,10 +1168,6 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReferenc
 
         QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
 		testComponent->getViews()->append(testView);
-
-		QList<QSharedPointer<SWView> > swViews = testComponent->getSWViews();
-		swViews.append(testSWView);
-		testComponent->setSWViews(swViews);
 
         mockLibrary->addComponent(testComponent);
 
@@ -1228,85 +1218,6 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReferenc
     QTest::newRow("View configuration without a view reference is not valid") << "" << true << false;
     QTest::newRow("View configuration referencing non-existing view is not valid") <<
 		"Shishigami" << false << false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_DesignConfigurationValidator::testSWViewConfigurationHasValidViewReference()
-//-----------------------------------------------------------------------------
-void tst_DesignConfigurationValidator::testSWViewConfigurationHasValidViewReference()
-{
-	QFETCH(QString, viewReference);
-	QFETCH(bool, viewExists);
-	QFETCH(bool, isValid);
-
-	LibraryMock* mockLibrary (new LibraryMock(this));
-
-	QSharedPointer<ViewConfiguration> testSWConfiguration (new ViewConfiguration("SwViewConfiguration"));
-	testSWConfiguration->setViewReference(viewReference);
-	testSWConfiguration->setInstanceName("swUser");
-
-	QSharedPointer<QList<QSharedPointer<ComponentInstance> > > instances
-		(new QList<QSharedPointer<ComponentInstance> > ());
-
-	if (viewExists)
-	{
-		QSharedPointer<SWView> testSWView (new SWView(viewReference));
-		if (viewReference.isEmpty())
-		{
-			testSWView->setName("TestSoftwareView");
-		}
-
-		QSharedPointer<ConfigurableVLNVReference> componentVLNV
-			(new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "vendor", "library", "testComponent", "1")));
-
-        QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
-
-		QList<QSharedPointer<SWView> > swViews = testComponent->getSWViews();
-		swViews.append(testSWView);
-		testComponent->setSWViews(swViews);
-
-		mockLibrary->addComponent(testComponent);
-
-		QSharedPointer<ComponentInstance> testSWInstance (
-			new ComponentInstance(testSWConfiguration->getInstanceName(), componentVLNV));
-
-		instances->append(testSWInstance);
-	}
-
-	QSharedPointer<ViewConfigurationValidator> validator = createViewConfigurationValidator(mockLibrary);
-	validator->changeComponentInstances(instances);
-
-	QCOMPARE(validator->hasValidViewReference(testSWConfiguration), isValid);
-
-	if (!isValid)
-	{
-		QVector<QString> foundErrors;
-		validator->findErrorsIn(foundErrors, testSWConfiguration, "test");
-
-		QString expectedError = QObject::tr("Invalid view reference '%1' set for view configuration %2 within %3")
-			.arg(viewReference).arg(testSWConfiguration->getInstanceName()).arg("test");
-
-		if (errorIsNotFoundInErrorList(expectedError, foundErrors))
-		{
-			QFAIL("No error message found");
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_DesignConfigurationValidator::testSWViewConfigurationHasValidViewReference_data()
-//-----------------------------------------------------------------------------
-void tst_DesignConfigurationValidator::testSWViewConfigurationHasValidViewReference_data()
-{
-	QTest::addColumn<QString>("viewReference");
-	QTest::addColumn<bool>("viewExists");
-	QTest::addColumn<bool>("isValid");
-
-	QTest::newRow("View configuration with a view reference to an existing view is valid") <<
-		"sampleSWView" << true << true;
-	QTest::newRow("View configuration without a view reference is not valid") << "" << true << false;
-	QTest::newRow("View configuration referencing non-existing view is not valid") <<
-		"sampleSWView" << false << false;
 }
 
 //-----------------------------------------------------------------------------

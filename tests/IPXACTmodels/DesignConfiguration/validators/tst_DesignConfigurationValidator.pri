@@ -16,7 +16,6 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/common/Array.h \
     ../../../../IPXACTmodels/common/Assertion.h \
     ../../../../IPXACTmodels/common/validators/AssertionValidator.h \
-    ../../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.h \
     ../../../../IPXACTmodels/common/BooleanValue.h \
     ../../../../IPXACTmodels/Component/BuildCommand.h \
     ../../../../IPXACTmodels/common/BuildModel.h \
@@ -51,6 +50,7 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/Design/Interconnection.h \
     ../../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.h \
     ../../../../IPXACTmodels/designConfiguration/validators/InterconnectionConfigurationValidator.h \
+    ../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h \
     ../../../../IPXACTmodels/designConfiguration/InterfaceRef.h \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.h \
@@ -81,8 +81,6 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/common/Range.h \
     ../../../../IPXACTmodels/Component/RemapPort.h \
     ../../../../IPXACTmodels/Component/RemapState.h \
-    ../../../../IPXACTmodels/kactusExtensions/SWFileBuilder.h \
-    ../../../../IPXACTmodels/kactusExtensions/SWView.h \
     ../../../../IPXACTmodels/Component/Segment.h \
     ../../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
@@ -100,8 +98,7 @@ HEADERS += ../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../IPXACTmodels/XmlUtils.h \
     ../../../../IPXACTmodels/generaldeclarations.h \
     ../../../MockObjects/LibraryMock.h \
-    ../../../../IPXACTmodels/validators/namevalidator.h \
-    ../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h
+    ../../../../IPXACTmodels/validators/namevalidator.h
 SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/designConfiguration/AbstractorInstance.cpp \
     ../../../../IPXACTmodels/Design/ActiveInterface.cpp \
@@ -111,7 +108,6 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/common/Array.cpp \
     ../../../../IPXACTmodels/common/Assertion.cpp \
     ../../../../IPXACTmodels/common/validators/AssertionValidator.cpp \
-    ../../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
     ../../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../../IPXACTmodels/Component/BuildCommand.cpp \
     ../../../../IPXACTmodels/common/BuildModel.cpp \
@@ -146,6 +142,7 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/Design/Interconnection.cpp \
     ../../../../IPXACTmodels/designConfiguration/InterconnectionConfiguration.cpp \
     ../../../../IPXACTmodels/designConfiguration/validators/InterconnectionConfigurationValidator.cpp \
+    ../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.cpp \
     ../../../../IPXACTmodels/designConfiguration/InterfaceRef.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../../IPXACTmodels/kactusExtensions/Kactus2Placeholder.cpp \
@@ -177,8 +174,6 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/common/Range.cpp \
     ../../../../IPXACTmodels/Component/RemapPort.cpp \
     ../../../../IPXACTmodels/Component/RemapState.cpp \
-    ../../../../IPXACTmodels/kactusExtensions/SWFileBuilder.cpp \
-    ../../../../IPXACTmodels/kactusExtensions/SWView.cpp \
     ../../../../IPXACTmodels/Component/Segment.cpp \
     ../../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
@@ -196,5 +191,4 @@ SOURCES += ../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../IPXACTmodels/XmlUtils.cpp \
     ../../../../IPXACTmodels/generaldeclarations.cpp \
     ../../../../IPXACTmodels/validators/namevalidator.cpp \
-    ./tst_DesignConfigurationValidator.cpp \
-    ../../../../IPXACTmodels/kactusExtensions/InterfaceGraphicsData.cpp
+    ./tst_DesignConfigurationValidator.cpp
