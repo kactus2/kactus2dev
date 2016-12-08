@@ -1099,10 +1099,6 @@ void tst_DesignWriter::testWriteSWInstances()
 //-----------------------------------------------------------------------------
 void tst_DesignWriter::testWritePortAdHocVisibilitiesAndPositions()
 {
-    QMap<QString, bool> adHocVisibilities;
-    adHocVisibilities.insert("testPort", true);
-    testDesign_->setPortAdHocVisibilities(adHocVisibilities);
-
     QPointF portPosition;
     portPosition.setX(4);
     portPosition.setY(25);

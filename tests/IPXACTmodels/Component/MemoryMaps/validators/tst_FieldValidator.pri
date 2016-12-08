@@ -8,13 +8,13 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../../../IPXACTmodels/Component/AbstractionType.h \
+    ../../../../../IPXACTmodels/common/AccessTypes.h \
     ../../../../../IPXACTmodels/Component/AddressBlock.h \
     ../../../../../IPXACTmodels/Component/AddressSpace.h \
     ../../../../../IPXACTmodels/Component/AlternateRegister.h \
     ../../../../../IPXACTmodels/kactusExtensions/ApiInterface.h \
     ../../../../../IPXACTmodels/common/Array.h \
     ../../../../../IPXACTmodels/common/Assertion.h \
-    ../../../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.h \
     ../../../../../IPXACTmodels/common/BooleanValue.h \
     ../../../../../IPXACTmodels/Component/BuildCommand.h \
     ../../../../../IPXACTmodels/common/BuildModel.h \
@@ -74,8 +74,6 @@ HEADERS += ../../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../../IPXACTmodels/Component/RegisterDefinition.h \
     ../../../../../IPXACTmodels/Component/RemapPort.h \
     ../../../../../IPXACTmodels/Component/RemapState.h \
-    ../../../../../IPXACTmodels/kactusExtensions/SWFileBuilder.h \
-    ../../../../../IPXACTmodels/kactusExtensions/SWView.h \
     ../../../../../IPXACTmodels/Component/Segment.h \
     ../../../../../IPXACTmodels/Component/SlaveInterface.h \
     ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
@@ -89,16 +87,15 @@ HEADERS += ../../../../../IPXACTmodels/Component/AbstractionType.h \
     ../../../../../IPXACTmodels/Component/Wire.h \
     ../../../../../IPXACTmodels/Component/WireTypeDef.h \
     ../../../../../IPXACTmodels/Component/WriteValueConstraint.h \
-    ../../../../../IPXACTmodels/generaldeclarations.h \
-    ../../../../../IPXACTmodels/common/AccessTypes.h
+    ../../../../../IPXACTmodels/generaldeclarations.h
 SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
+    ../../../../../IPXACTmodels/common/AccessTypes.cpp \
     ../../../../../IPXACTmodels/Component/AddressBlock.cpp \
     ../../../../../IPXACTmodels/Component/AddressSpace.cpp \
     ../../../../../IPXACTmodels/Component/AlternateRegister.cpp \
     ../../../../../IPXACTmodels/kactusExtensions/ApiInterface.cpp \
     ../../../../../IPXACTmodels/common/Array.cpp \
     ../../../../../IPXACTmodels/common/Assertion.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/BSPBuildCommand.cpp \
     ../../../../../IPXACTmodels/common/BooleanValue.cpp \
     ../../../../../IPXACTmodels/Component/BuildCommand.cpp \
     ../../../../../IPXACTmodels/common/BuildModel.cpp \
@@ -158,8 +155,6 @@ SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/Component/RegisterDefinition.cpp \
     ../../../../../IPXACTmodels/Component/RemapPort.cpp \
     ../../../../../IPXACTmodels/Component/RemapState.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/SWFileBuilder.cpp \
-    ../../../../../IPXACTmodels/kactusExtensions/SWView.cpp \
     ../../../../../IPXACTmodels/Component/Segment.cpp \
     ../../../../../IPXACTmodels/Component/SlaveInterface.cpp \
     ../../../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
@@ -174,5 +169,4 @@ SOURCES += ../../../../../IPXACTmodels/Component/AbstractionType.cpp \
     ../../../../../IPXACTmodels/Component/WireTypeDef.cpp \
     ../../../../../IPXACTmodels/Component/WriteValueConstraint.cpp \
     ../../../../../IPXACTmodels/generaldeclarations.cpp \
-    ./tst_FieldValidator.cpp \
-    ../../../../../IPXACTmodels/common/AccessTypes.cpp
+    ./tst_FieldValidator.cpp
