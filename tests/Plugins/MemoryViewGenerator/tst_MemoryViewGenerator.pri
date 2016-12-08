@@ -16,14 +16,15 @@ HEADERS += ../../../designEditors/MemoryDesigner/ConnectivityComponent.h \
     ../../../designEditors/MemoryDesigner/MasterSlavePathSearch.h \
     ../../../designEditors/MemoryDesigner/MemoryItem.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../MockObjects/LibraryMock.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.h \
     ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../editors/ComponentEditor/common/ParameterCache.h \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.h
-SOURCES += ../../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
+SOURCES += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
@@ -34,8 +35,7 @@ SOURCES += ../../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.cpp \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.cpp \
     ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./tst_MemoryViewGenerator.cpp \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../editors/ComponentEditor/common/ParameterCache.cpp \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp
