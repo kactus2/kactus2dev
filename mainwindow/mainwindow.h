@@ -426,9 +426,6 @@ private slots:
     //! Opens the visibility control menu.
     void openVisibilityControlMenu();
 
-    //! Opens the memory item filtering menu.
-    void openMemoryItemFilteringMenu();
-
     //! Opens the workspace management menu.
     void openWorkspaceMenu();
 
@@ -527,6 +524,34 @@ private slots:
      *  Extend all the field graphics items to fully display their name label.
      */
     void onExtendFieldItems();
+
+    /*!
+     *  Set the filtering of address space segments within a memory design.
+     *
+     *      @param [in] filterSegments  Value for the filter.
+     */
+    void onFilterSegments(bool filterSegments);
+
+    /*!
+     *  Set the filtering of address blocks within a memory design.
+     *
+     *      @param [in] filterBlocks    Value for the filter.
+     */
+    void onFilterAddressBlocks(bool filterBlocks);
+
+    /*!
+     *  Set the filtering of registers within a memory design.
+     *
+     *      @param [in] filterRegisters     Value for the filter.
+     */
+    void onFilterRegisters(bool filterRegisters);
+
+    /*!
+     *  Set the filtering of fields within a memory design.
+     *
+     *      @param [in] filterFields    Value for the filter.
+     */
+    void onFilterFields(bool filterFields);
 
 private:
 	// Disable copying.
@@ -757,13 +782,6 @@ private:
 	 */
 	void setPluginVisibilities();
 
-    /*!
-     *  Setup the memory filtering menu for the selected tab document.
-     *
-     *      @param [in] document    The selected tab document.
-     */
-    void setupMemoryFilteringMenu(TabDocument* document);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -987,8 +1005,17 @@ private:
     //! The action to extend field graphics items in a memory designer.
     QAction* actionExtendFieldItems_;
 
-    //! The action to filter memory items.
-    QAction* actionFilterMemoryItems_;
+    //! The action to filter address space segments in a memory designer.
+    QAction* actionFilterSegments_;
+
+    //! The action to filter address blocks in a memory designer.
+    QAction* actionFilterAddressBlocks_;
+
+    //! The action to filter registers in a memory designer.
+    QAction* actionFilterRegisters_;
+
+    //! The action to filter fields in a memory designer.
+    QAction* actionFilterFields_;
 
 	//! The menu containing the actions to select which windows to display.
 	QMenu windowsMenu_;
@@ -998,9 +1025,6 @@ private:
 
     //! Menu which contains the actions for managing workspaces.
     QMenu workspaceMenu_;
-
-    //! Menu which contains the actions for managing memory item filtering.
-    QMenu memoryFilteringMenu_;
 
     //! The name of the currently active workspace.
     QString curWorkspaceName_;

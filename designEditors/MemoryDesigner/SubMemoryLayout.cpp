@@ -290,8 +290,8 @@ bool SubMemoryLayout::addressRangeIsWithinLimit(quint64 baseAddress, quint64 las
 //-----------------------------------------------------------------------------
 void SubMemoryLayout::addConnectionToSubItems(MemoryConnectionItem* connectionItem)
 {
-    quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
-    quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
+    quint64 connectionBaseAddress = connectionItem->getRangeStartValue();
+    quint64 connectionLastAddress = connectionItem->getRangeEndValue();
 
     QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subMemoryItems_);
     while (subItemIterator.hasNext())
@@ -485,7 +485,7 @@ qreal SubMemoryLayout::getAvailableArea(SubMemoryLayout* mainItem, quint64 yPosi
     QVector<MemoryDesignerChildGraphicsItem*> subItemsInConnection, quint64 newSubItemHeight,
     MemoryConnectionItem* connectionItem) const
 {
-    quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
+    quint64 connectionLastAddress = connectionItem->getRangeEndValue();
 
     quint64 subItemLastAddress = 0;
 
@@ -547,7 +547,7 @@ quint64 SubMemoryLayout::getFilteredCompressedHeight(SubMemoryLayout* parentLayo
             connectionIterator.next();
             MemoryConnectionItem* connectionItem = connectionIterator.value();
 
-            quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
+            quint64 connectionBaseAddress = connectionItem->getRangeStartValue();
 
             if (isMainItem)
             {
@@ -556,7 +556,7 @@ quint64 SubMemoryLayout::getFilteredCompressedHeight(SubMemoryLayout* parentLayo
                 filteredHeight =
                     connectionItem->sceneBoundingRect().bottom() - memoryItem->sceneBoundingRect().top() - 1;
 
-                quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
+                quint64 connectionLastAddress = connectionItem->getRangeEndValue();
                 if (lastAddress < connectionLastAddress)
                 {
                     filteredHeight -= MemoryDesignerConstants::RANGEINTERVAL * 2;

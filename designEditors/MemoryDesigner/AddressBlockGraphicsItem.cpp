@@ -54,22 +54,23 @@ AddressBlockGraphicsItem::~AddressBlockGraphicsItem()
 void AddressBlockGraphicsItem::setLabelPositions()
 {
     qreal nameX = 0;
+    QRectF blockRectangle = boundingRect();
+    QRectF nameRectangle = getNameLabel()->boundingRect();
     if (subItemsAreFiltered())
     {
-        nameX = boundingRect().right() - getNameLabel()->boundingRect().width();
+        nameX = blockRectangle.right() - nameRectangle.width();
     }
     else
     {
-        nameX = boundingRect().left() + MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 -
-            getNameLabel()->boundingRect().width();
+        nameX = blockRectangle.left() + MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2 - nameRectangle.width();
     }
-    qreal nameY = (boundingRect().height() / 2) - (getNameLabel()->boundingRect().height() / 2);
+    qreal nameY = (blockRectangle.height() / 2) - (nameRectangle.height() / 2);
 
     getNameLabel()->setPos(nameX, nameY);
 
-    qreal rangeStartX = boundingRect().left();
-    qreal rangeStartY = boundingRect().top();
-    qreal rangeEndY = boundingRect().bottom() - getRangeEndLabel()->boundingRect().height();
+    qreal rangeStartX = blockRectangle.left();
+    qreal rangeStartY = blockRectangle.top();
+    qreal rangeEndY = blockRectangle.bottom() - getRangeEndLabel()->boundingRect().height();
 
     if (!getRangeStartLabel()->isVisible())
     {

@@ -31,27 +31,12 @@ MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memory
 MemoryDesignerGraphicsItem(memoryItem->getName(), parent),
 SubMemoryLayout(memoryItem, subItemType, filterSubItems, this),
 instanceNameLabel_(new QGraphicsTextItem(instanceName, this)),
-aubLabel_(new QGraphicsTextItem("", this)),
 instanceName_(instanceName),
 memoryItem_(memoryItem),
 memoryCollisions_(),
 compressed_(false),
 extensionItem_(0)
 {
-    QString addressUnitBits = memoryItem->getAUB();
-    QString aubText = "AUB: ";
-
-    if (addressUnitBits.isEmpty())
-    {
-        aubText.append("8");
-    }
-    else
-    {
-        aubText.append(addressUnitBits);
-    }
-
-    aubLabel_->setPlainText(aubText);
-
     // setFlag(ItemIsSelectable);
     // setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
@@ -59,7 +44,6 @@ extensionItem_(0)
 
     QFont labelFont = getNameLabel()->font();
     instanceNameLabel_->setFont(labelFont);
-    aubLabel_->setFont(labelFont);
 }
 
 //-----------------------------------------------------------------------------
@@ -76,14 +60,6 @@ MainMemoryGraphicsItem::~MainMemoryGraphicsItem()
 QGraphicsTextItem* MainMemoryGraphicsItem::getInstanceNameLabel() const
 {
     return instanceNameLabel_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::getAUBLabel()
-//-----------------------------------------------------------------------------
-QGraphicsTextItem* MainMemoryGraphicsItem::getAUBLabel() const
-{
-    return aubLabel_;
 }
 
 //-----------------------------------------------------------------------------
@@ -297,7 +273,7 @@ MemoryConnectionItem* MainMemoryGraphicsItem::getLastConnection() const
         connectionIterator.next();
 
         MemoryConnectionItem* connection = connectionIterator.value();
-        quint64 connectionRangeEnd = connection->getRangeEndValue().toULongLong(0, 16);
+        quint64 connectionRangeEnd = connection->getRangeEndValue();
         if (connectionRangeEnd > lastConnectionRangeEnd)
         {
             lastConnection = connection;
@@ -391,4 +367,35 @@ void MainMemoryGraphicsItem::hideFirstAndLastSegmentRange()
 QSharedPointer<MemoryItem> MainMemoryGraphicsItem::getMemoryItem() const
 {
     return memoryItem_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getItemWidth()
+//-----------------------------------------------------------------------------
+qreal MainMemoryGraphicsItem::getItemWidth() const
+{
+    qreal itemWidth = boundingRect().width() - 1;
+    if (!subItemsAreFiltered())
+    {
+        qreal subItemWidth = getSubMemoryItems().first()->boundingRect().width();
+        itemWidth = itemWidth - subItemWidth;
+    }
+
+    return itemWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::labelCollidesWithRangeLabels()
+//-----------------------------------------------------------------------------
+bool MainMemoryGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem* label) const
+{
+    foreach (MemoryConnectionItem* connection, getMemoryConnections())
+    {
+        if (connection->labelCollidesWithRanges(label, this))
+        {
+            return true;
+        }
+    }
+
+    return MemoryDesignerGraphicsItem::labelCollidesWithRangeLabels(label);
 }

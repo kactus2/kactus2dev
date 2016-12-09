@@ -68,14 +68,14 @@ public:
      *
      *      @return The start value of the connection.
      */
-    QString getRangeStartValue() const;
+    quint64 getRangeStartValue() const;
 
     /*!
      *  Get the end value of the connection.
      *
      *      @return The end value of the connection.
      */
-    QString getRangeEndValue() const;
+    quint64 getRangeEndValue() const;
 
     /*!
      *  Redraw the path of this connection.
@@ -148,6 +148,16 @@ public:
      *  Reposition range labels that are colliding with range labels of other memory connection items.
      */
     void repositionCollidingRangeLabels();
+
+    /*!
+     *  Check if the selected label collides with the range labels.
+     *
+     *      @param [in] label           The selected label.
+     *      @param [in] connectedItem   Owner of the selected label.
+     *
+     *      @return True, if the selected label collides with the range labels, false otherwise.
+     */
+    bool labelCollidesWithRanges(QGraphicsTextItem* label, const MainMemoryGraphicsItem* connectedItem) const;
 
 private:
     // Disable copying.
@@ -253,10 +263,10 @@ private:
     MainMemoryGraphicsItem* endItem_;
 
     //! Connection start range.
-    QString rangeStart_;
+    quint64 connectionBaseAddress_;
 
     //! Connection end range.
-    QString rangeEnd_;
+    quint64 connectionLastAddress_;
 
     //! Y transfer of the connection.
     int yTransfer_;

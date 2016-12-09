@@ -111,6 +111,10 @@
       <file>common/graphics/compressMemoryItems.png</file>
       <file>common/graphics/compressFields.png</file>
       <file>common/graphics/extendFields.png</file>
+      <file>common/graphics/filterSegments.png</file>
+      <file>common/graphics/filterAddressBlocks.png</file>
+      <file>common/graphics/filterRegisters.png</file>
+      <file>common/graphics/filterFields.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>common/graphics/splash.png</file>

@@ -85,6 +85,20 @@ public:
     quint64 getLastAddress() const;
 
     /*!
+     *  Set a new base address.
+     *
+     *      @param [in] newBaseAddress  The new base address.
+     */
+    void setBaseAddress(quint64 newBaseAddress);
+
+    /*!
+     *  Set a new last address.
+     *
+     *      @param [in] newLastAddress  The new last address.
+     */
+    void setLastAddress(quint64 newLastAddress);
+
+    /*!
      *  Compress this graphics item.
      *
      *      @param [in] newItemHeight   The new height of the graphics item.
@@ -112,6 +126,13 @@ public:
      */
     QVector<MemoryConnectionItem*> getConnectionsInVector() const;
 
+    /*!
+     *  Fit the selected label to this item.
+     *
+     *      @param [in] label   The selected label.
+     */
+    virtual void fitLabel(QGraphicsTextItem* label);
+
 protected:
 
     /*!
@@ -123,13 +144,19 @@ protected:
     void setGraphicsRectangle(qreal rectangleWidth, qreal rectangleHeight);
 
     /*!
+     *  Setup range labels.
+     *
+     *      @param [in] memoryStart     The range start.
+     *      @param [in] memoryEnd       The range end.
+     */
+    void setupLabels(quint64 memoryStart, quint64 memoryEnd);
+
+    /*!
      *  Setup the tooltip and the memory range labels.
      *
      *      @param [in] identifier      Selected identifier.
-     *      @param [in] memoryStart     Start address of the memory item.
-     *      @param [in] memoryEnd       End address of the memory item.
      */
-    void setupToolTip(QString const& identifier, quint64 memoryStart, quint64 memoryEnd);
+    void setupToolTip(QString const& identifier);
 
     /*!
      *  Get the name label.
@@ -161,6 +188,15 @@ protected:
      */
     QString getValueFormattedToHexadecimal(quint64 range) const;
 
+    /*!
+     *  Check if the selected label collides with range labels.
+     *
+     *      @param [in] label   The selected label.
+     *
+     *      @return True, if the selected label collides with range labels, otherwise false.
+     */
+    virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label) const;
+
 private:
     // Disable copying.
     MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& rhs);
@@ -181,6 +217,13 @@ private:
      */
     int getAmountOfLabelNumbers(quint64 memoryStart, quint64 memoryEnd) const;
 
+    /*!
+     *  Get the available width of this item.
+     *
+     *      @return The available width of this item.
+     */
+    virtual qreal getItemWidth() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -193,6 +236,12 @@ private:
 
     //! The range end label.
     QGraphicsTextItem* endRangeLabel_;
+
+    //! The base address.
+    quint64 baseAddress_;
+
+    //! The last address.
+    quint64 lastAddress_;
 
     //! Name of the item.
     QString itemName_;

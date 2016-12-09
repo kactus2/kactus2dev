@@ -66,6 +66,15 @@ private:
      */
     void setRectangle();
 
+    /*!
+     *  Format the selected value into hexadecimal.
+     *
+     *      @param [in] value   The selected value.
+     *
+     *      @return The given value in hexadecimal form.
+     */
+    QString formatValueToHexadecimal(quint64 value) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -77,16 +86,16 @@ private:
     MemoryConnectionItem* secondConnection_;
 
     //! Start of the memory range of the first memory connection.
-    QString firstRangeStart_;
+    quint64 firstRangeStart_;
 
     //! End of the memory range of the first memory connection.
-    QString firstRangeEnd_;
+    quint64 firstRangeEnd_;
 
     //! Start of the memory range of the second memory connection.
-    QString secondRangeStart_;
+    quint64 secondRangeStart_;
 
     //! End of the memory range of the second memory connection.
-    QString secondRangeEnd_;
+    quint64 secondRangeEnd_;
 };
 
 //-----------------------------------------------------------------------------

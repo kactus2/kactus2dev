@@ -201,13 +201,6 @@ protected:
     QGraphicsTextItem* getInstanceNameLabel() const;
 
     /*!
-     *  Get the AUB label.
-     *
-     *      @return Graphics text item containing the address unit bits.
-     */
-    QGraphicsTextItem* getAUBLabel() const;
-
-    /*!
      *  Called when the user moves the column with the mouse.
      */
     void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
@@ -229,15 +222,28 @@ private:
     MainMemoryGraphicsItem(MainMemoryGraphicsItem const& rhs);
     MainMemoryGraphicsItem& operator=(MainMemoryGraphicsItem const& rhs);
 
+    /*!
+     *  Get the available width for this item.
+     *
+     *      @return Available width for this item.
+     */
+    virtual qreal getItemWidth() const;
+
+    /*!
+     *  Check if the selected label collides with range labels.
+     *
+     *      @param [in] label   The selected label.
+     *
+     *      @return True, if the selected label collides with range labels, false otherwise.
+     */
+    virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The label containing the name of the containing component instance.
     QGraphicsTextItem* instanceNameLabel_;
-
-    //! The label containing the address unit bits of the memory item.
-    QGraphicsTextItem* aubLabel_;
 
     //! The name of the containing component instance.
     QString instanceName_;

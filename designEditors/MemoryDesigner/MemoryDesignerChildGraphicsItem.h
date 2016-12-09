@@ -58,7 +58,7 @@ public:
     /*!
      *  Fit the name label to the available space.
      */
-    virtual void fitNameLabel();
+    void fitNameLabel();
 
 protected:
 

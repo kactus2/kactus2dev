@@ -29,7 +29,8 @@ MemoryDesignerGraphicsItem(itemName, parent)
     setGraphicsRectangle(blockWidth, range);
 
     quint64 rangeEnd = baseAddress + range - 1;
-    setupToolTip(toolTipType, baseAddress, rangeEnd);
+    setupLabels(baseAddress, rangeEnd);
+    setupToolTip(toolTipType);
 }
 
 //-----------------------------------------------------------------------------
@@ -65,10 +66,10 @@ void MemoryDesignerChildGraphicsItem::setColors(QColor itemColor, bool itemIsEmp
 void MemoryDesignerChildGraphicsItem::changeAddressRange(quint64 offset)
 {
     quint64 newBaseAddress = getBaseAddress() + offset;
-    getRangeStartLabel()->setPlainText(getValueFormattedToHexadecimal(newBaseAddress));
+    setBaseAddress(newBaseAddress);
 
     quint64 newLastAddress = getLastAddress() + offset;
-    getRangeEndLabel()->setPlainText(getValueFormattedToHexadecimal(newLastAddress));
+    setLastAddress(newLastAddress);
 }
 
 //-----------------------------------------------------------------------------
@@ -76,40 +77,7 @@ void MemoryDesignerChildGraphicsItem::changeAddressRange(quint64 offset)
 //-----------------------------------------------------------------------------
 void MemoryDesignerChildGraphicsItem::fitNameLabel()
 {
-    qreal nameLabelWidth = getNameLabel()->boundingRect().width();
-    qreal itemBoundingWidth = getItemWidth();
-
-    bool nameCollidesWithRange = getNameLabel()->collidesWithItem(getRangeStartLabel()) ||
-        getNameLabel()->collidesWithItem(getRangeEndLabel());
-
-    if (nameCollidesWithRange || nameLabelWidth > itemBoundingWidth)
-    {
-        qreal rangeStartLabelWidth = 0;
-        if (nameCollidesWithRange)
-        {
-            rangeStartLabelWidth = getRangeStartLabel()->boundingRect().width();
-        }
-
-        qreal originalNameWidth = nameLabelWidth;
-
-        QString nameText = getNameLabel()->toPlainText();
-        nameText = nameText.left(nameText.size() - 3);
-        nameText.append("...");
-
-        getNameLabel()->setPlainText(nameText);
-        nameLabelWidth = getNameLabel()->boundingRect().width();
-
-        while (rangeStartLabelWidth + nameLabelWidth > itemBoundingWidth && nameText != "...")
-        {
-            nameText = nameText.left(nameText.size() - 4);
-            nameText.append("...");
-            getNameLabel()->setPlainText(nameText);
-            nameLabelWidth = getNameLabel()->boundingRect().width();
-        }
-
-        qreal widthDifference = originalNameWidth - nameLabelWidth;
-        getNameLabel()->setPos(getNameLabel()->pos().x() + widthDifference, getNameLabel()->pos().y());
-    }
+    fitLabel(getNameLabel());
 }
 
 //-----------------------------------------------------------------------------

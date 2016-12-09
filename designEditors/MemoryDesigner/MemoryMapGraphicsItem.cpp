@@ -41,7 +41,8 @@ MainMemoryGraphicsItem(memoryItem, containingInstance->getName(), MemoryDesigner
 addressUnitBits_(memoryItem->getAUB()),
 filterAddressBlocks_(filterAddressBlocks),
 filterRegisters_(filterRegisters),
-filterFields_(filterFields)
+filterFields_(filterFields),
+subItemWidth_(0)
 {
     quint64 baseAddress = getMemoryMapStart(memoryItem);
     quint64 lastAddress = getMemoryMapEnd(memoryItem);
@@ -65,8 +66,8 @@ filterFields_(filterFields)
     }
 
     setGraphicsRectangle(memoryWidth, memoryHeight);
-    setupToolTip("memory map", baseAddress, lastAddress);
-    setLabelPositions();
+    setupLabels(baseAddress, lastAddress);
+    setupToolTip("memory map");
     
     qreal blockXPosition = 0;
     if (filterRegisters_)
@@ -77,7 +78,11 @@ filterFields_(filterFields)
     {
         blockXPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX;
     }
+
+    subItemWidth_ = getSubItemWidth();
+
     setupSubItems(blockXPosition, memoryItem);
+    setLabelPositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -183,14 +188,37 @@ quint64 MemoryMapGraphicsItem::getMemoryMapEnd(QSharedPointer<MemoryItem> memory
 //-----------------------------------------------------------------------------
 void MemoryMapGraphicsItem::setLabelPositions()
 {
-    QPointF instanceLabelPosition = boundingRect().topRight();
-    getInstanceNameLabel()->setPos(instanceLabelPosition);
+    qreal nameLabelY = boundingRect().height() / 2 - (getNameLabel()->boundingRect().height() * 3 / 4);
+    qreal instanceNameLabelY = nameLabelY + getNameLabel()->boundingRect().height() / 2 + 1;
 
-    qreal labelYPosition = getInstanceNameLabel()->boundingRect().height() - GridSize / 2;
-    getNameLabel()->setPos(instanceLabelPosition.x(), instanceLabelPosition.y() + labelYPosition);
+    qreal nameLabelX = 0;
+    qreal instanceNameLabelX = 0;
+    if (filterRegisters_)
+    {
+        if (filterAddressBlocks_)
+        {
+            nameLabelX = boundingRect().right() - getNameLabel()->boundingRect().width();
+            instanceNameLabelX = boundingRect().right() - getInstanceNameLabel()->boundingRect().width();
+        }
+        else
+        {
+            nameLabelX = - getNameLabel()->boundingRect().width();
+            instanceNameLabelX = -getInstanceNameLabel()->boundingRect().width();
+        }
+    }
+    else
+    {
+        nameLabelX = boundingRect().left() + (MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2) -
+            getNameLabel()->boundingRect().width();
+        instanceNameLabelX = boundingRect().left() + (MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2) -
+            getInstanceNameLabel()->boundingRect().width();
+    }
 
-    labelYPosition = labelYPosition + getNameLabel()->boundingRect().height() - GridSize / 2;
-    getAUBLabel()->setPos(instanceLabelPosition.x(), instanceLabelPosition.y() + labelYPosition);
+    getNameLabel()->setPos(nameLabelX, nameLabelY);
+    getInstanceNameLabel()->setPos(instanceNameLabelX, instanceNameLabelY);
+
+    fitLabel(getNameLabel());
+    fitLabel(getInstanceNameLabel());
 
     qreal rangeEndLabelYPosition = boundingRect().bottom() - getRangeEndLabel()->boundingRect().height();
     getRangeStartLabel()->setPos(boundingRect().topLeft());
@@ -208,11 +236,11 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QShared
     if (!filterAddressBlocks_)
     {
         childItem = new AddressBlockGraphicsItem(
-            subMemoryItem, isEmpty, filterRegisters_, filterFields_, getSubItemWidth(), this);
+            subMemoryItem, isEmpty, filterRegisters_, filterFields_, subItemWidth_, this);
     }
     else if (!filterRegisters_)
     {
-        childItem = new RegisterGraphicsItem(subMemoryItem, isEmpty, getSubItemWidth(), filterFields_, this);
+        childItem = new RegisterGraphicsItem(subMemoryItem, isEmpty, subItemWidth_, filterFields_, this);
     }
 
     return childItem;

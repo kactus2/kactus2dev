@@ -190,6 +190,9 @@ private:
 
     //! Value for filtering register fields.
     bool filterFields_;
+
+    //! Width of the contained memory sub items.
+    qreal subItemWidth_;
 };
 
 //-----------------------------------------------------------------------------

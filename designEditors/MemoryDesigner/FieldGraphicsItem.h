@@ -40,10 +40,11 @@ public:
      *      @param [in] fieldWidth          Width of the field.
      *      @param [in] fieldHeight         Height of the field.
      *      @param [in] isEmptyField        Value for empty fields.
+     *      @param [in] labelFont           Font for the field labels.
      *      @param [in] parentItem          The parent graphics item.
      */
     FieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldLastBit, qreal fieldWidth,
-        quint64 fieldHeight, bool isEmptyField, MemoryDesignerGraphicsItem* parentItem);
+        quint64 fieldHeight, bool isEmptyField, QFont labelFont, MemoryDesignerGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.
@@ -85,15 +86,6 @@ private:
      *  Set the label positions.
      */
     virtual void setLabelPositions();
-
-    /*!
-     *  Get the last address of the field item.
-     *
-     *      @param [in] fieldItem   The selected field memory item.
-     *
-     *      @return The field last address.
-     */
-    quint64 getFieldLastAddress(QSharedPointer<MemoryItem> fieldItem) const;
 
     /*!
      *  Remove zeros from the front of a given value.

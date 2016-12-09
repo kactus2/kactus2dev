@@ -32,26 +32,28 @@ MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem, QS
     bool memoryItemsAreCondensed, int yTransfer, QGraphicsItem* parent):
 QGraphicsPathItem(parent),
 amountOfNumbers_(getAmountOfNumbers(firstStartValue, firstEndValue)),
-firstItemStartLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstStartValue), this)),
-firstItemEndLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstEndValue), this)),
-secondItemStartLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstStartValue), this)),
-secondItemEndLabel_(new QGraphicsTextItem(formatValueToHexadecimal(firstEndValue), this)),
+firstItemStartLabel_(new QGraphicsTextItem(this)),
+firstItemEndLabel_(new QGraphicsTextItem(this)),
+secondItemStartLabel_(new QGraphicsTextItem(this)),
+secondItemEndLabel_(new QGraphicsTextItem(this)),
 startItem_(startItem),
 endItem_(endItem),
 yTransfer_(yTransfer),
-rangeStart_(firstStartValue),
-rangeEnd_(firstEndValue),
+connectionBaseAddress_(firstStartValue.toULongLong()),
+connectionLastAddress_(firstEndValue.toULongLong()),
 connectionWidth_(0),
 memoryItemsAreCondensed_(memoryItemsAreCondensed)
 {
-    if (firstStartValue.compare(firstEndValue) == 0)
+    QString startValueInHexa = formatValueToHexadecimal(firstStartValue);
+    QString endValueInHexa = formatValueToHexadecimal(firstEndValue);
+    firstItemStartLabel_->setPlainText(startValueInHexa);
+    firstItemEndLabel_->setPlainText(endValueInHexa);
+    secondItemStartLabel_->setPlainText(startValueInHexa);
+    secondItemEndLabel_->setPlainText(endValueInHexa);
+
+    if (connectionBaseAddress_ == connectionLastAddress_)
     {
         firstItemEndLabel_->hide();
-        secondItemEndLabel_->hide();
-    }
-
-    if (rangeStart_.toInt() - rangeEnd_.toInt() == 1)
-    {
         secondItemEndLabel_->hide();
     }
 
@@ -107,15 +109,13 @@ void MemoryConnectionItem::createPath()
 qreal MemoryConnectionItem::getConnectionWidth() const
 {
     qreal connectionWidth =
-        (rangeEnd_.toULongLong() - rangeStart_.toULongLong() + 1) * MemoryDesignerConstants::RANGEINTERVAL;
+        (connectionLastAddress_ - connectionBaseAddress_ + 1) * MemoryDesignerConstants::RANGEINTERVAL;
 
     if (memoryItemsAreCondensed_)
     {
-        quint64 connectionBaseAddress = getRangeStartValue().toULongLong(0, 16);
-        quint64 connectionLastAddress = getRangeEndValue().toULongLong(0, 16);
-
-        qreal endItemHeight = endItem_->getMinimumRequiredHeight(connectionBaseAddress, connectionLastAddress);
-        qreal startItemHeight = startItem_->getMinimumRequiredHeight(connectionBaseAddress, connectionLastAddress);
+        qreal endItemHeight = endItem_->getMinimumRequiredHeight(connectionBaseAddress_, connectionLastAddress_);
+        qreal startItemHeight =
+            startItem_->getMinimumRequiredHeight(connectionBaseAddress_, connectionLastAddress_);
 
         qreal comparisonHeight = endItemHeight;
         if (startItemHeight > endItemHeight)
@@ -127,7 +127,7 @@ qreal MemoryConnectionItem::getConnectionWidth() const
         {
             connectionWidth = comparisonHeight;
 
-            quint64 connectionSize = connectionLastAddress - connectionBaseAddress;
+            quint64 connectionSize = connectionLastAddress_ - connectionBaseAddress_;
 
             quint64 startLastAddress = startItem_->getLastAddress();
             quint64 startBaseAddress = startItem_->getBaseAddress();
@@ -171,22 +171,23 @@ void MemoryConnectionItem::avoidCollisionsOnPath(QPointF highStartPoint, QPointF
                 MemoryColumn* itemColumn = dynamic_cast<MemoryColumn*>(memoryItem->parentItem());
                 if (itemColumn && startColumn && endColumn && itemColumn != startColumn && itemColumn != endColumn)
                 {
-                    QPointF highCollisionStart = memoryItem->sceneBoundingRect().topLeft();
+                    QRectF itemSceneRect = memoryItem->sceneBoundingRect();
+                    QPointF highCollisionStart = itemSceneRect.topLeft();
                     if (highCollisionStart.y() < highStartPoint.y())
                     {
                         highCollisionStart.setY(highStartPoint.y());
-                        QPointF highCollisionEnd = memoryItem->sceneBoundingRect().topRight();
+                        QPointF highCollisionEnd = itemSceneRect.topRight();
                         highCollisionEnd.setY(highStartPoint.y());
 
                         QPair<QPointF, QPointF> collisionPoints(highCollisionStart, highCollisionEnd);
                         highCollisionPoints.append(collisionPoints);
                     }
 
-                    QPointF lowCollisionStart = memoryItem->sceneBoundingRect().bottomLeft();
+                    QPointF lowCollisionStart = itemSceneRect.bottomLeft();
                     if (lowCollisionStart.y() > lowStartPoint.y())
                     {
                         lowCollisionStart.setY(lowStartPoint.y());
-                        QPointF lowCollisionEnd = memoryItem->sceneBoundingRect().bottomRight();
+                        QPointF lowCollisionEnd = itemSceneRect.bottomRight();
                         lowCollisionEnd.setY(lowStartPoint.y());
 
                         QPair<QPointF, QPointF> collisionPoints(lowCollisionStart, lowCollisionEnd);
@@ -242,10 +243,12 @@ void MemoryConnectionItem::repositionLabels()
     secondItemStartLabel_->setFont(labelFont);
     secondItemEndLabel_->setFont(labelFont);
 
-    QPointF topLeft = boundingRect().topLeft();
-    QPointF topRight = boundingRect().topRight();
-    QPointF lowerLeft = boundingRect().bottomLeft();
-    QPointF lowerRight = boundingRect().bottomRight();
+    QRectF connectionRect = boundingRect();
+
+    QPointF topLeft = connectionRect.topLeft();
+    QPointF topRight = connectionRect.topRight();
+    QPointF lowerLeft = connectionRect.bottomLeft();
+    QPointF lowerRight = connectionRect.bottomRight();
 
     const int YCORRECTION = 20;
 
@@ -370,17 +373,17 @@ void MemoryConnectionItem::moveConnectedItem(MainMemoryGraphicsItem* movementOri
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::getRangeStartValue()
 //-----------------------------------------------------------------------------
-QString MemoryConnectionItem::getRangeStartValue() const
+quint64 MemoryConnectionItem::getRangeStartValue() const
 {
-    return formatValueToHexadecimal(rangeStart_);
+    return connectionBaseAddress_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::getRangeEndValue()
 //-----------------------------------------------------------------------------
-QString MemoryConnectionItem::getRangeEndValue() const
+quint64 MemoryConnectionItem::getRangeEndValue() const
 {
-    return formatValueToHexadecimal(rangeEnd_);
+    return connectionLastAddress_;
 }
 
 //-----------------------------------------------------------------------------
@@ -479,10 +482,9 @@ void MemoryConnectionItem::compressEndItem(QSharedPointer<QVector<MemoryConnecti
 //-----------------------------------------------------------------------------
 quint64 MemoryConnectionItem::getConnectedEndItemLastAddress() const
 {
-    quint64 baseAddress = getRangeStartValue().toULongLong(0, 16);
-    quint64 lastAddress = getRangeEndValue().toULongLong(0, 16);
-    
-    quint64 endItemLastAddress = endItem_->getLastAddress() + baseAddress;
+    quint64 lastAddress = connectionLastAddress_;
+
+    quint64 endItemLastAddress = endItem_->getLastAddress() + connectionBaseAddress_;
     if (endItemLastAddress > lastAddress)
     {
         lastAddress = endItemLastAddress;
@@ -557,7 +559,6 @@ qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* co
     {
         qreal containedConnectionsHeight = 0;
 
-        quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
         quint64 comparisonLastAddress = 0;
 
         MainMemoryGraphicsItem* connectionEndItem = connectionItem->getConnectionEndItem();
@@ -566,11 +567,11 @@ qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* co
             if (comparisonConnection->getConnectionStartItem() == connectionEndItem)
             {
                 containedConnectionsHeight += getComparedConnectionHeight(comparisonConnection);
-                comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
+                comparisonLastAddress = comparisonConnection->getRangeEndValue();
             }
         }
 
-        if (connectionLastAddress < comparisonLastAddress)
+        if (connectionLastAddress_ < comparisonLastAddress)
         {
             containedConnectionsHeight -= MemoryDesignerConstants::RANGEINTERVAL * 2;
         }
@@ -584,8 +585,8 @@ qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* co
                 qreal comparisonHeight = comparisonConnection->boundingRect().height() - 1;
                 if (comparisonHeight >= connectionHeight)
                 {
-                    quint64 comparisonLastAddress = comparisonConnection->getRangeEndValue().toULongLong(0, 16);
-                    if (comparisonLastAddress < connectionLastAddress)
+                    quint64 comparisonLastAddress = comparisonConnection->getRangeEndValue();
+                    if (comparisonLastAddress < connectionLastAddress_)
                     {
                         connectionHeight = comparisonHeight + MemoryDesignerConstants::RANGEINTERVAL * 2;
                     }
@@ -621,4 +622,24 @@ bool MemoryConnectionItem::itemCollidesWithAnotherItem(QRectF firstRectangle, in
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::labelCollidesWithRanges()
+//-----------------------------------------------------------------------------
+bool MemoryConnectionItem::labelCollidesWithRanges(QGraphicsTextItem* label,
+    const MainMemoryGraphicsItem* connectedItem) const
+{
+    if (connectedItem == startItem_)
+    {
+        return label->collidesWithItem(firstItemStartLabel_) || label->collidesWithItem(firstItemEndLabel_);
+    }
+    else if (connectedItem == endItem_)
+    {
+        return label->collidesWithItem(secondItemStartLabel_) || label->collidesWithItem(secondItemEndLabel_);
+    }
+    else
+    {
+        return false;
+    }
 }

@@ -46,15 +46,16 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), 
 
     setGraphicsRectangle(spaceWidth + 1, spaceRangeInt);
 
-    setupToolTip("address space", 0, spaceRangeInt - 1);
+    setupLabels(0, spaceRangeInt - 1);
+    setupToolTip("address space");
 
     cpuIcon_->setPos(spaceWidth / 2 - cpuIcon_->pixmap().width() - GridSize, GridSize * 3);
     cpuIcon_->setVisible(false);
 
-    setLabelPositions();
-
     qreal segmentPositionX = - boundingRect().width() / 4;
     setupSubItems(segmentPositionX, getSubItemType(), memoryItem);
+
+    setLabelPositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -70,13 +71,20 @@ AddressSpaceGraphicsItem::~AddressSpaceGraphicsItem()
 //-----------------------------------------------------------------------------
 void AddressSpaceGraphicsItem::setLabelPositions()
 {
-    qreal aubLabelY = boundingRect().top() - getAUBLabel()->boundingRect().height();
-    qreal namelabelY = aubLabelY - getNameLabel()->boundingRect().height() + GridSize / 2;
-    qreal instanceNameLabelY = namelabelY - getInstanceNameLabel()->boundingRect().height() + GridSize / 2;
+    qreal nameLabelY = boundingRect().height() / 2 - (getNameLabel()->boundingRect().height() * 3 / 4);
+    qreal instanceNameLabelY = nameLabelY + (getNameLabel()->boundingRect().height() / 2);
 
-    getInstanceNameLabel()->setPos(-getInstanceNameLabel()->boundingRect().width() / 2, instanceNameLabelY);
-    getNameLabel()->setPos(-getNameLabel()->boundingRect().width() / 2, namelabelY);
-    getAUBLabel()->setPos(-getAUBLabel()->boundingRect().width() / 2, aubLabelY);
+    qreal nameLabelX = 0;
+    if (subItemsAreFiltered())
+    {
+        nameLabelX = boundingRect().left();
+    }
+
+    getNameLabel()->setPos(nameLabelX, nameLabelY);
+    getInstanceNameLabel()->setPos(nameLabelX, instanceNameLabelY);
+
+    fitLabel(getNameLabel());
+    fitLabel(getInstanceNameLabel());
 
     qreal rangeStartLabelX = boundingRect().right() - getRangeStartLabel()->boundingRect().width();
     qreal rangeStartLabelY = boundingRect().top();
@@ -153,7 +161,7 @@ qreal AddressSpaceGraphicsItem::getSubItemHeight(SubMemoryLayout* mainItem,
     if (mainItem == this)
     {
         MemoryConnectionItem* firstConnection = subItem->getMemoryConnections().first();
-        quint64 connectionRangeEnd = firstConnection->getRangeEndValue().toULongLong(0, 16);
+        quint64 connectionRangeEnd = firstConnection->getRangeEndValue();
         qreal yTransfer = (sceneBoundingRect().top() + yPosition) - firstConnection->sceneBoundingRect().top();
         quint64 previousConnectionLow = firstConnection->sceneBoundingRect().bottom();
 
@@ -165,14 +173,14 @@ qreal AddressSpaceGraphicsItem::getSubItemHeight(SubMemoryLayout* mainItem,
         quint64 connectionLowPoint = firstConnection->sceneBoundingRect().bottom();
         quint64 connectionHighPoint = firstConnection->sceneBoundingRect().top();
 
-        quint64 previousConnectionBaseAddress = firstConnection->getRangeStartValue().toULongLong(0, 16);
+        quint64 previousConnectionBaseAddress = firstConnection->getRangeStartValue();
         MemoryConnectionItem* previousConnection = firstConnection;
 
         foreach (MemoryConnectionItem* connectionItem, subItem->getMemoryConnections())
         {
             if (connectionItem->getConnectionStartItem() == mainItem)
             {
-                quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
+                quint64 connectionBaseAddress = connectionItem->getRangeStartValue();
 
                 yTransfer = getTransferY(connectionBaseAddress, previousConnectionBaseAddress,
                     connectionRangeEnd, previousConnectionLow, connectionItem, previousConnection, yTransfer);
@@ -199,7 +207,7 @@ qreal AddressSpaceGraphicsItem::getSubItemHeight(SubMemoryLayout* mainItem,
 
                     if (connectionItem != firstConnection && connectionHighPoint < connectionLowPoint)
                     {
-                        quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
+                        quint64 connectionLastAddress = connectionItem->getRangeEndValue();
                         if (subItemLastAddress >= connectionLastAddress)
                         {
                             intervalBetweenConnections =
@@ -235,7 +243,7 @@ quint64 AddressSpaceGraphicsItem::getConnectionRangeEndValue(MemoryConnectionIte
     qreal endItemHeight = connectionItem->getConnectionEndItem()->boundingRect().height();
     if (connectionHeight == endItemHeight)
     {
-        newConnectionEnd = connectionItem->getRangeEndValue().toULongLong(0, 16);
+        newConnectionEnd = connectionItem->getRangeEndValue();
     }
     else
     {
@@ -320,7 +328,7 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(SubMemoryLayout*, 
     qreal minimumSubItemHeight)
 {
     MemoryConnectionItem* firstConnection = getMemoryConnections().first();
-    quint64 connectionRangeEnd = firstConnection->getRangeEndValue().toULongLong(0, 16);
+    quint64 connectionRangeEnd = firstConnection->getRangeEndValue();
     qreal yTransfer = (sceneBoundingRect().top()) - firstConnection->sceneBoundingRect().top();
     quint64 previousConnectionLow = firstConnection->sceneBoundingRect().bottom();
 
@@ -334,14 +342,14 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(SubMemoryLayout*, 
 
     QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections (new QVector<MemoryConnectionItem*>());
 
-    quint64 previousConnectionBaseAddress = firstConnection->getRangeStartValue().toULongLong(0, 16);
+    quint64 previousConnectionBaseAddress = firstConnection->getRangeStartValue();
     MemoryConnectionItem* previousConnection = firstConnection;
 
     foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
     {
         if (connectionItem->getConnectionStartItem() == this)
         {
-            quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
+            quint64 connectionBaseAddress = connectionItem->getRangeStartValue();
 
             yTransfer = getFilteredConnectionYTransfer(connectionItem, connectionBaseAddress, previousConnection,
                 previousConnectionBaseAddress, connectionRangeEnd, previousConnectionLow, yTransfer);
@@ -359,8 +367,8 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(SubMemoryLayout*, 
 
                 connectionHighPoint = connectionItem->sceneBoundingRect().top();
 
-                quint64 connectionLastAddress = connectionItem->getRangeEndValue().toULongLong(0, 16);
-                quint64 connectionBaseAddress = connectionItem->getRangeStartValue().toULongLong(0, 16);
+                quint64 connectionLastAddress = connectionItem->getRangeEndValue();
+                quint64 connectionBaseAddress = connectionItem->getRangeStartValue();
                 if (connectionItem != firstConnection && connectionHighPoint < connectionLowPoint)
                 {
                     if (itemLastAddress >= connectionLastAddress)

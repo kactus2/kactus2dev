@@ -121,9 +121,10 @@ private:
      *      @param [in] registerEnd             End of the containing register.
      *      @param [in] previousEndPosition     The end coordinate of the previous field graphics item.
      *      @param [in] widthRemainder          Current remainder of the used widths.
+     *      @param [in] fieldFont               Font used in fields.
      */
     void createEmptyFieldItem(quint64 currentOffset, quint64 lastBit, qreal oneBitWidth, quint64 registerEnd,
-        qreal& previousEndPosition, qreal& widthRemainder);
+        qreal& previousEndPosition, qreal& widthRemainder, QFont fieldFont);
 
     /*!
      *  Create a field graphics item.
@@ -136,10 +137,11 @@ private:
      *      @param [in] registerEnd             End of the containing register.
      *      @param [in] previousEndPosition     The end coordinate of the previous field graphics item.
      *      @param [in] widthRemainder          Current remainder of the used widths.
+     *      @param [in] fieldFont               Font used in fields.
      */
     void createFieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldWidth,
         bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal& previousEndPosition,
-        qreal& widthRemainder);
+        qreal& widthRemainder, QFont fieldFont);
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -204,11 +204,13 @@ actionFilterAddressSpaceChains_(0),
 actionCondenseMemoryItems_(0),
 actionCondenseFieldItems_(0),
 actionExtendFieldItems_(0),
-actionFilterMemoryItems_(0),
+actionFilterSegments_(0),
+actionFilterAddressBlocks_(0),
+actionFilterRegisters_(0),
+actionFilterFields_(0),
 windowsMenu_(this),
 visibilityMenu_(this),
 workspaceMenu_(this),
-memoryFilteringMenu_(this),
 curWorkspaceName_("Default"),
 pluginMgr_(),
 helpWnd_(0),
@@ -798,13 +800,31 @@ void MainWindow::setupActions()
         tr("Extend Field Items"), this);
     connect(actionExtendFieldItems_, SIGNAL(triggered()), this, SLOT(onExtendFieldItems()), Qt::UniqueConnection);
 
-    //! Initialize the action to manage memory item filtering control.
-    actionFilterMemoryItems_ = new QAction(QIcon(":icons/common/graphics/memorySubItemFilter.png"),
-        tr("Filter Memory Items"), this);
+    //! Initialize the action to filter address space segments.
+    actionFilterSegments_ = new QAction(QIcon(":icons/common/graphics/filterSegments.png"),
+        tr("Filter Segments"), this);
+    actionFilterSegments_->setCheckable(true);
+    connect(actionFilterSegments_, SIGNAL(triggered(bool)),
+        this, SLOT(onFilterSegments(bool)), Qt::UniqueConnection);
 
-    actionFilterMemoryItems_->setMenu(&memoryFilteringMenu_);
-    connect(actionFilterMemoryItems_, SIGNAL(triggered()),
-        this, SLOT(openMemoryItemFilteringMenu()), Qt::UniqueConnection);
+    //! Initialize the action to filter memory map address blocks.
+    actionFilterAddressBlocks_ = new QAction(QIcon(":icons/common/graphics/filterAddressBlocks.png"),
+        tr("Filter Address Blocks"), this);
+    actionFilterAddressBlocks_->setCheckable(true);
+    connect(actionFilterAddressBlocks_, SIGNAL(triggered(bool)),
+        this, SLOT(onFilterAddressBlocks(bool)), Qt::UniqueConnection);
+
+    //! Initialize the action to filter address block registers.
+    actionFilterRegisters_ = new QAction(QIcon(":icons/common/graphics/filterRegisters.png"),
+        tr("Filter Registers"), this);
+    actionFilterRegisters_->setCheckable(true);
+    connect(actionFilterRegisters_, SIGNAL(triggered(bool)),
+        this, SLOT(onFilterRegisters(bool)), Qt::UniqueConnection);
+
+    //! Initialize the action to filter register fields.
+    actionFilterFields_ = new QAction(QIcon(":icons/common/graphics/filterFields.png"), tr("Filter Fields"), this);
+    actionFilterFields_->setCheckable(true);
+    connect(actionFilterFields_, SIGNAL(triggered(bool)), this, SLOT(onFilterFields(bool)), Qt::UniqueConnection);
 
 	// Initialize the action to zoom in.
 	actZoomIn_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_in.png"), tr("Zoom In"), this);
@@ -980,17 +1000,23 @@ void MainWindow::setupMenus()
     filteringGroup_ = ribbon_->addGroup(tr("Filtering Tools"));
     filteringGroup_->setVisible(false);
     filteringGroup_->setEnabled(true);
+    filteringGroup_->addAction(actionFilterSegments_);
+    filteringGroup_->addAction(actionFilterAddressBlocks_);
+    filteringGroup_->addAction(actionFilterRegisters_);
+    filteringGroup_->addAction(actionFilterFields_);
     filteringGroup_->addAction(actionFilterAddressSpaceChains_);
     filteringGroup_->addAction(actionCondenseMemoryItems_);
     filteringGroup_->addAction(actionCondenseFieldItems_);
     filteringGroup_->addAction(actionExtendFieldItems_);
-    filteringGroup_->addAction(actionFilterMemoryItems_);
 
+    filteringGroup_->widgetForAction(actionFilterSegments_)->installEventFilter(ribbon_);
+    filteringGroup_->widgetForAction(actionFilterAddressBlocks_)->installEventFilter(ribbon_);
+    filteringGroup_->widgetForAction(actionFilterRegisters_)->installEventFilter(ribbon_);
+    filteringGroup_->widgetForAction(actionFilterFields_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionFilterAddressSpaceChains_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionCondenseMemoryItems_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionCondenseFieldItems_)->installEventFilter(ribbon_);
     filteringGroup_->widgetForAction(actionExtendFieldItems_)->installEventFilter(ribbon_);
-    filteringGroup_->widgetForAction(actionFilterMemoryItems_)->installEventFilter(ribbon_);
 
 	//! The "View" group.
 	RibbonGroup* viewGroup = ribbon_->addGroup(tr("View"));
@@ -1635,6 +1661,10 @@ void MainWindow::updateMenuStrip()
 
         actionFilterAddressSpaceChains_->setChecked(memoryDocument->addressSpaceChainsAreFiltered());
         actionCondenseMemoryItems_->setChecked(memoryDocument->memoryItemsAreCondensed());
+        actionFilterSegments_->setChecked(memoryDocument->addressSpaceSegmentsAreFilterted());
+        actionFilterAddressBlocks_->setChecked(memoryDocument->addressBlocksAreFiltered());
+        actionFilterRegisters_->setChecked(memoryDocument->addressBlockRegistersAreFiltered());
+        actionFilterFields_->setChecked(memoryDocument->fieldsAreFiltered());
     }
 
     filteringGroup_->setVisible(isMemoryDesign);
@@ -1962,7 +1992,6 @@ void MainWindow::onDocumentChanged(int index)
     {
 		updateWindows();
         updateVisibilityControlMenu(doc);
-        setupMemoryFilteringMenu(doc);
 	}
 
 	// if the new tab is designWidget
@@ -4254,14 +4283,6 @@ void MainWindow::openVisibilityControlMenu()
 }
 
 //-----------------------------------------------------------------------------
-// Function: mainwindow::openMemoryItemFilteringMenu()
-//-----------------------------------------------------------------------------
-void MainWindow::openMemoryItemFilteringMenu()
-{
-    memoryFilteringMenu_.exec(QCursor::pos());
-}
-
-//-----------------------------------------------------------------------------
 // Function: onVisibilityControlToggled()
 //-----------------------------------------------------------------------------
 void MainWindow::onVisibilityControlToggled(QAction* action)
@@ -4711,49 +4732,49 @@ void MainWindow::onExtendFieldItems()
 }
 
 //-----------------------------------------------------------------------------
-// Function: mainwindow::setupMemoryFilteringMenu()
+// Function: mainwindow::onFilterSegments()
 //-----------------------------------------------------------------------------
-void MainWindow::setupMemoryFilteringMenu(TabDocument* document)
+void MainWindow::onFilterSegments(bool filterSegments)
 {
-    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(document);
-    if (memoryDocument)
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
     {
-        memoryFilteringMenu_.clear();
+        memoryDocument->filterAddressSpaceSegments(filterSegments);
+    }
+}
 
-        QActionGroup* filterActionGroup = new QActionGroup(this);
-        filterActionGroup->setExclusive(false);
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onFilterAddressBlocks()
+//-----------------------------------------------------------------------------
+void MainWindow::onFilterAddressBlocks(bool filterBlocks)
+{
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
+    {
+        memoryDocument->filterAddressBlocks(filterBlocks);
+    }
+}
 
-        QAction* filterSegmentsAction = new QAction(tr("Segments"), this);
-        filterSegmentsAction->setCheckable(true);
-        filterSegmentsAction->setChecked(memoryDocument->addressSpaceSegmentsAreFilterted());
-        connect(filterSegmentsAction, SIGNAL(triggered(bool)),
-            memoryDocument, SLOT(filterAddressSpaceSegments(bool)), Qt::UniqueConnection);
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onFilterRegisters()
+//-----------------------------------------------------------------------------
+void MainWindow::onFilterRegisters(bool filterRegisters)
+{
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
+    {
+        memoryDocument->filterAddressBlockRegisters(filterRegisters);
+    }
+}
 
-        QAction* filterAddressBlocksAction = new QAction(tr("Address Blocks"), this);
-        filterAddressBlocksAction->setCheckable(true);
-        filterAddressBlocksAction->setChecked(memoryDocument->addressBlocksAreFiltered());
-        connect(filterAddressBlocksAction, SIGNAL(triggered(bool)),
-            memoryDocument, SLOT(filterAddressBlocks(bool)), Qt::UniqueConnection);
-
-        QAction* filterRegistersAction = new QAction(tr("Registers"), this);
-        filterRegistersAction->setCheckable(true);
-        filterRegistersAction->setChecked(memoryDocument->addressBlockRegistersAreFiltered());
-        connect(filterRegistersAction, SIGNAL(triggered(bool)),
-            memoryDocument, SLOT(filterAddressBlockRegisters(bool)), Qt::UniqueConnection);
-
-        QAction* filterFieldsAction = new QAction(tr("Fields"), this);
-        filterFieldsAction->setCheckable(true);
-        filterFieldsAction->setChecked(memoryDocument->fieldsAreFiltered());
-        connect(filterFieldsAction, SIGNAL(triggered(bool)), memoryDocument,
-            SLOT(filterFields(bool)), Qt::UniqueConnection);
-
-        filterActionGroup->addAction(filterSegmentsAction);
-        filterActionGroup->addAction(filterAddressBlocksAction);
-        filterActionGroup->addAction(filterRegistersAction);
-        filterActionGroup->addAction(filterFieldsAction);
-        memoryFilteringMenu_.addAction(filterSegmentsAction);
-        memoryFilteringMenu_.addAction(filterAddressBlocksAction);
-        memoryFilteringMenu_.addAction(filterRegistersAction);
-        memoryFilteringMenu_.addAction(filterFieldsAction);
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onFilterFields()
+//-----------------------------------------------------------------------------
+void MainWindow::onFilterFields(bool filterFields)
+{
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
+    {
+        memoryDocument->filterFields(filterFields);
     }
 }

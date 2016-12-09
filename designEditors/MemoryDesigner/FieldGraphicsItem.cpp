@@ -19,12 +19,14 @@
 
 #include <QBrush>
 #include <QFont>
+#include <QFontMetrics>
 
 //-----------------------------------------------------------------------------
 // Function: FieldGraphicsItem::FieldGraphicsItem()
 //-----------------------------------------------------------------------------
 FieldGraphicsItem::FieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldLastBit,
-    qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, MemoryDesignerGraphicsItem* parentItem):
+    qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QFont labelFont,
+    MemoryDesignerGraphicsItem* parentItem):
 MemoryDesignerChildGraphicsItem(
     fieldName, MemoryDesignerConstants::FIELD_TYPE, fieldOffset, fieldHeight, fieldWidth, parentItem),
 isEmpty_(isEmptyField),
@@ -32,12 +34,11 @@ combinedRangeLabel_(new QGraphicsTextItem("", this)),
 fieldHeight_(fieldHeight),
 fieldName_(fieldName)
 {
-    QFont labelFont = getNameLabel()->font();
-    labelFont.setPointSizeF(labelFont.pointSizeF() - 1.6);
     getNameLabel()->setFont(labelFont);
     combinedRangeLabel_->setFont(labelFont);
 
-    setupToolTip(MemoryDesignerConstants::FIELD_TYPE, fieldOffset, fieldLastBit);
+    setupLabels(fieldOffset, fieldLastBit);
+    setupToolTip(MemoryDesignerConstants::FIELD_TYPE);
     setLabelPositions();
     setColors(KactusColors::FIELD_COLOR, isEmptyField);
     if (isEmptyField)
@@ -52,17 +53,6 @@ fieldName_(fieldName)
 FieldGraphicsItem::~FieldGraphicsItem()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldGraphicsItem::getFieldLastAddress()
-//-----------------------------------------------------------------------------
-quint64 FieldGraphicsItem::getFieldLastAddress(QSharedPointer<MemoryItem> fieldItem) const
-{
-    quint64 fieldOffset = fieldItem->getOffset().toULongLong();
-    quint64 fieldLastAddress = fieldOffset + fieldItem->getWidth().toULongLong();
-
-    return fieldLastAddress;
 }
 
 //-----------------------------------------------------------------------------
@@ -81,7 +71,7 @@ void FieldGraphicsItem::setLabelPositions()
 
         quint64 fieldBaseAddress = getBaseAddress();
         quint64 fieldLastAddress = getLastAddress();
-        if (fieldBaseAddress - fieldLastAddress == 0)
+        if (fieldBaseAddress == fieldLastAddress)
         {
             rangeValue = removeZerosFromRangeValue(fieldBaseAddress);
         }
@@ -98,10 +88,9 @@ void FieldGraphicsItem::setLabelPositions()
 
     qreal nameY = boundingRect().height() / 2 - nameLabel->boundingRect().height() / 2 - 6;
     qreal rangeY = nameY + nameLabel->boundingRect().height() / 2 + 1;
-    qreal nameX = - nameLabel->boundingRect().width() / 2;
     qreal rangeX = - combinedRangeLabel_->boundingRect().width() / 2;
 
-    nameLabel->setPos(nameX, nameY);
+    nameLabel->setY(nameY);
     combinedRangeLabel_->setPos(rangeX, rangeY);
 
     fitNameToBoundaries(nameLabel);
@@ -129,24 +118,14 @@ QString FieldGraphicsItem::removeZerosFromRangeValue(quint64 rangeValue) const
 //-----------------------------------------------------------------------------
 void FieldGraphicsItem::fitNameToBoundaries(QGraphicsTextItem* nameLabel)
 {
-    qreal nameLabelWidth = nameLabel->boundingRect().width();
-    qreal itemBoundingWidth = boundingRect().width() - 10;
+    const int NAME_MARGIN = 14;
 
-    if (nameLabelWidth > itemBoundingWidth)
-    {
-        QString nameText = nameLabel->toPlainText();
-        nameText.append(QLatin1String("..."));
-        while (nameLabelWidth > itemBoundingWidth && nameText.compare(QLatin1String("...")) != 0)
-        {
-            nameText = nameText.left(nameText.size() - 4);
-            nameText.append(QLatin1String("..."));
+    QFontMetrics nameFontMetrics(nameLabel->font());
+    unsigned int itemBoundingWidth = boundingRect().width() - NAME_MARGIN;
 
-            nameLabel->setPlainText(nameText);
-            nameLabelWidth = nameLabel->boundingRect().width();
-        }
-
-        nameLabel->setX(-nameLabel->boundingRect().width() / 2);
-    }
+    QString elidedName = nameFontMetrics.elidedText(fieldName_, Qt::ElideRight, itemBoundingWidth);
+    nameLabel->setPlainText(elidedName);
+    nameLabel->setX(-nameLabel->boundingRect().width() / 2);
 }
 
 //-----------------------------------------------------------------------------

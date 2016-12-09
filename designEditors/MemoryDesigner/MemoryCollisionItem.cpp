@@ -95,23 +95,13 @@ void MemoryCollisionItem::setLabels()
     QPointF topLeft = boundingRect().topLeft();
     QPointF lowLeft = boundingRect().bottomLeft();
 
-    int firstStartInInt = firstRangeStart_.toInt(0, 16);
-    int secondStartInInt = secondRangeStart_.toInt(0, 16);
-    QString collisionRangeStart = firstRangeStart_;
-    if (secondStartInInt > firstStartInInt)
-    {
-        collisionRangeStart = secondRangeStart_;
-    }
+    quint64 collisionRangeStart = qMax(firstRangeStart_, firstRangeEnd_);
+    QString collisionBaseInHexa = formatValueToHexadecimal(collisionRangeStart);
 
-    int firstEndInInt = firstRangeEnd_.toInt(0, 16);
-    int secondEndInInt = secondRangeEnd_.toInt(0, 16);
-    QString collisionRangeEnd = firstRangeEnd_;
-    if (secondEndInInt < firstEndInInt)
-    {
-        collisionRangeEnd = secondRangeEnd_;
-    }
+    quint64 collisionRangeEnd = qMin(firstRangeEnd_, secondRangeEnd_);
+    QString collisionLastInHexa = formatValueToHexadecimal(collisionRangeEnd);
 
-    QGraphicsTextItem* startPointRangeStart = new QGraphicsTextItem(collisionRangeStart, this);
+    QGraphicsTextItem* startPointRangeStart = new QGraphicsTextItem(collisionBaseInHexa, this);
 
     QFont labelFont = startPointRangeStart->font();
     labelFont.setWeight(QFont::Bold);
@@ -119,15 +109,12 @@ void MemoryCollisionItem::setLabels()
 
     QColor faultyTextColor(255, 0, 0);
     startPointRangeStart->setDefaultTextColor(faultyTextColor);
-
-    int rangeStartInt = collisionRangeStart.toInt(0, 16);
-    int rangeEndInt = collisionRangeEnd.toInt(0, 16);
     
     int startPointYCorrection = -3;
     qreal endPointYCorrection = 0;
-    if (rangeEndInt - rangeStartInt > 0)
+    if (collisionRangeEnd - collisionRangeStart > 0)
     {
-        QGraphicsTextItem* startPointRangeEnd = new QGraphicsTextItem(collisionRangeEnd, this);
+        QGraphicsTextItem* startPointRangeEnd = new QGraphicsTextItem(collisionLastInHexa, this);
 
         if (boundingRect().height() <= MemoryDesignerConstants::RANGEINTERVAL + 1)
         {
@@ -143,7 +130,6 @@ void MemoryCollisionItem::setLabels()
         startPointRangeEnd->setPos(lowLeft.x() + 2, lowLeft.y() - endPointYCorrection);
         startPointRangeEnd->setFont(labelFont);
         startPointRangeEnd->setDefaultTextColor(faultyTextColor);
-
     }
 
     startPointRangeStart->setPos(topLeft.x() + 2, topLeft.y() + startPointYCorrection);
@@ -167,16 +153,16 @@ void MemoryCollisionItem::setLabels()
             {
                 QPointF mapTopLeft = mapFromItem(mapGraphicsItem, mapGraphicsItem->boundingRect().topLeft());
 
-                QGraphicsTextItem* collidingMapRangeStart = new QGraphicsTextItem(collisionRangeStart, this);
+                QGraphicsTextItem* collidingMapRangeStart = new QGraphicsTextItem(collisionBaseInHexa, this);
                 collidingMapRangeStart->setDefaultTextColor(faultyTextColor);
                 collidingMapRangeStart->setFont(labelFont);
                 collidingMapRangeStart->setPos(
                     mapTopLeft.x() - (collidingMapRangeStart->boundingRect().width() + 2),
                     topLeft.y() + startPointYCorrection);
 
-                if (rangeEndInt - rangeStartInt > 0)
+                if (collisionRangeEnd - collisionRangeStart > 0)
                 {
-                    QGraphicsTextItem* collidingMapRangeEnd = new QGraphicsTextItem(collisionRangeEnd, this);
+                    QGraphicsTextItem* collidingMapRangeEnd = new QGraphicsTextItem(collisionLastInHexa, this);
                     collidingMapRangeEnd->setDefaultTextColor(faultyTextColor);
                     collidingMapRangeEnd->setFont(labelFont);
                     collidingMapRangeEnd->setPos(
@@ -188,6 +174,24 @@ void MemoryCollisionItem::setLabels()
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryCollisionItem::formatValueToHexadecimal()
+//-----------------------------------------------------------------------------
+QString MemoryCollisionItem::formatValueToHexadecimal(quint64 value) const
+{
+    QString formattedRange = QString::number(value, 16).toUpper();
+
+    int rangeSize = formattedRange.size();
+
+    while (rangeSize % 4 != 0)
+    {
+        formattedRange.prepend('0');
+        rangeSize++;
+    }
+
+    return formattedRange;
 }
 
 //-----------------------------------------------------------------------------

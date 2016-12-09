@@ -54,11 +54,11 @@ layout_(new GraphicsColumnLayout(this)),
 libraryHandler_(library),
 instanceLocator_(library),
 condenseMemoryItems_(true),
-filterAddressSpaceChains_(false),
-filterAddressSpaceSegments_(false),
-filterAddressBlocks_(false),
-filterRegisters_(false),
-filterFields_(false),
+filterAddressSpaceChains_(true),
+filterAddressSpaceSegments_(true),
+filterAddressBlocks_(true),
+filterRegisters_(true),
+filterFields_(true),
 spaceColumnWidth_(MemoryDesignerConstants::SPACECOLUMNWIDTH),
 memoryMapColumnWidth_(MemoryDesignerConstants::MEMORYMAPCOLUMNWIDTH),
 widthBoundary_(0),
@@ -1080,8 +1080,8 @@ bool MemoryDesignerDiagram::memoryMapOverlapsAnotherMemoryMap(quint64 mapBaseAdd
         MemoryConnectionItem* comparisonItemLastConnection = comparisonMemoryItem->getLastConnection();
         if (comparisonItemLastConnection)
         {
-            comparisonBaseAddress += comparisonItemLastConnection->getRangeStartValue().toULongLong(0, 16);
-            comparisonLastAddress = comparisonItemLastConnection->getRangeEndValue().toULongLong(0, 16);
+            comparisonBaseAddress += comparisonItemLastConnection->getRangeStartValue();
+            comparisonLastAddress = comparisonItemLastConnection->getRangeEndValue();
         }
         if (itemCollidesWithAnotherItem(
             selectedMapRect, selectedMapPenWidth, comparisonRectangle, mapItemLineWidth) ||
