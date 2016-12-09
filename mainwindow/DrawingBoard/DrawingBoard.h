@@ -38,9 +38,11 @@ public:
      *  Registers a tab document (connects common signals etc.).
      *
      *      @param [in] doc            The document to register.
-     *      @param [in] forceUnlocked  If true the document is initially unlocked.
      */
-    void addAndOpenDocument(TabDocument* doc, bool forceUnlocked);
+    void addAndOpenDocument(TabDocument* doc);
+
+    //! Apply program settings to all open documents.
+    void applySettings();
 
 public slots:
     

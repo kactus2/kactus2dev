@@ -100,68 +100,67 @@ void AdHocEditor::setupLayout()
 void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingDiagram,
     QSharedPointer<IEditProvider> editProvider)
 {
-    if(endPoint->isAdHoc())
+    if(!endPoint->isAdHoc())
     {
-        designDiagram_ = containingDiagram;
-        editProvider_ = editProvider;
-        containedPortItem_ = endPoint;
+        return;
+    }
 
-        portName_->show();
-        portDirection_->show();
-        leftBoundValue_->show();
-        rightBoundValue_->show();
-        tiedValueEditor_->show();
+    designDiagram_ = containingDiagram;
+    editProvider_ = editProvider;
+    containedPortItem_ = endPoint;
 
-        AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(containedPortItem_);
-        AdHocInterfaceItem* adhocInterfaceItem = dynamic_cast<AdHocInterfaceItem*>(containedPortItem_);
+    portName_->show();
+    portDirection_->show();
+    leftBoundValue_->show();
+    rightBoundValue_->show();
+    tiedValueEditor_->show();
 
-        QString containingItemName = "";
-        QSharedPointer<Port> referencedPort = containedPortItem_->getPort();
+    AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(containedPortItem_);
+    AdHocInterfaceItem* adhocInterfaceItem = dynamic_cast<AdHocInterfaceItem*>(containedPortItem_);
+    
+    QString containingItemName = "";
+    QSharedPointer<Port> referencedPort = containedPortItem_->getPort();
 
-        if (adhocPortItem)
+    if (adhocPortItem)
+    {
+        ComponentItem* instanceItem = adhocPortItem->encompassingComp();
+        if (instanceItem)
         {
-            ComponentItem* instanceItem = adhocPortItem->encompassingComp();
-            if (instanceItem)
-            {
-                containingItemName = instanceItem->name();
-            }
+            containingItemName = instanceItem->name();
+        }
+    }
+
+    if (referencedPort)
+    {
+        componentFinder_->setComponent(containedPortItem_->getOwnerComponent());
+
+        DirectionTypes::Direction direction = referencedPort->getDirection();
+
+        portName_->setText(referencedPort->name());
+        portDirection_->setText(DirectionTypes::direction2Str(direction));
+        leftBoundValue_->setText(formattedValueFor(referencedPort->getLeftBound()));
+        rightBoundValue_->setText(formattedValueFor(referencedPort->getRightBound()));
+
+        QString tiedValue = "";
+
+        if ((adhocPortItem && direction == DirectionTypes::IN) ||
+            (adhocInterfaceItem && direction == DirectionTypes::OUT) ||
+            direction == DirectionTypes::INOUT)
+        {
+            tiedValue = getTiedValue(containingItemName);
+            tiedValueEditor_->setEnabled(!designDiagram_->isProtected());
+        }
+        else
+        {
+            tiedValueEditor_->setEnabled(false);
         }
 
-        if (referencedPort)
-        {
-            componentFinder_->setComponent(containedPortItem_->getOwnerComponent());
+        tiedValueEditor_->blockSignals(true);
+        tiedValueEditor_->setExpression(tiedValue);
+        setTiedValueEditorToolTip(tiedValue);
+        tiedValueEditor_->blockSignals(false);
 
-            DirectionTypes::Direction direction = referencedPort->getDirection();
-
-            portName_->setText(referencedPort->name());
-            portDirection_->setText(DirectionTypes::direction2Str(direction));
-            leftBoundValue_->setText(expressionParser_->parseExpression(referencedPort->getLeftBound()));
-            rightBoundValue_->setText(expressionParser_->parseExpression(referencedPort->getRightBound()));
-
-            QString tiedValue = "";
-
-            if ((adhocPortItem && direction == DirectionTypes::IN) ||
-                (adhocInterfaceItem && direction == DirectionTypes::OUT) ||
-                direction == DirectionTypes::INOUT)
-            {
-                bool locked = designDiagram_->isProtected();
-
-                tiedValue = getTiedValue(containingItemName);
-
-                tiedValueEditor_->setEnabled(!locked);
-            }
-            else
-            {
-                tiedValueEditor_->setEnabled(false);
-            }
-
-            tiedValueEditor_->blockSignals(true);
-            tiedValueEditor_->setExpression(tiedValue);
-            setTiedValueEditorToolTip(tiedValue);
-            tiedValueEditor_->blockSignals(false);
-
-            parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
-        }
+        parentWidget()->setMaximumHeight(QWIDGETSIZE_MAX);
     }
 }
 
@@ -175,10 +174,8 @@ QString AdHocEditor::getTiedValue(QString const& instanceName) const
     {
         return connection->getTiedValue();
     }
-    else
-    {
-        return QString("");
-    }
+
+    return QString();
 }
 
 //-----------------------------------------------------------------------------

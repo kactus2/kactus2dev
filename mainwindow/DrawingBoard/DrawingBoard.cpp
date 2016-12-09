@@ -43,17 +43,10 @@ DrawingBoard::~DrawingBoard()
 //-----------------------------------------------------------------------------
 // Function: DrawingBoard::addAndOpenDocument()
 //-----------------------------------------------------------------------------
-void DrawingBoard::addAndOpenDocument(TabDocument* doc, bool forceUnlocked)
-{
-    if (forceUnlocked)
-    {
-        doc->setProtection(false);
-    }
-    else
-    {
-        // Open in unlocked mode by default only if the version is draft.
-        doc->setProtection(doc->getDocumentVLNV().getVersion() != "draft");
-    }
+void DrawingBoard::addAndOpenDocument(TabDocument* doc)
+{    
+    // Open in unlocked mode by default only if the version is draft.
+    doc->setProtection(doc->getDocumentVLNV().getVersion() != "draft");
 
     connect(doc, SIGNAL(errorMessage(QString const&)),
         this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);
@@ -77,6 +70,23 @@ void DrawingBoard::addAndOpenDocument(TabDocument* doc, bool forceUnlocked)
 
     addTab(doc, doc->getTitle());
     setCurrentWidget(doc);
+}
+
+//-----------------------------------------------------------------------------
+// Function: DrawingBoard::applySettings()
+//-----------------------------------------------------------------------------
+void DrawingBoard::applySettings()
+{
+    QSettings settings;
+
+    // Apply the settings to the open documents.
+    for (int i = 0; i < count(); ++i)
+    {
+        TabDocument* doc = static_cast<TabDocument*>(widget(i));
+        Q_ASSERT(doc != 0);
+
+        doc->applySettings(settings);
+    }
 }
 
 //-----------------------------------------------------------------------------

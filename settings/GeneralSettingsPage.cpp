@@ -32,10 +32,15 @@ usernameEdit_(0)
     QString username = settings.value("General/Username", Utils::getCurrentUser()).toString();
     usernameEdit_ = new QLineEdit(username, this);
 
+    QLabel* settingsFileLabel = new QLabel(tr("Settings file:"), this);
+    QLabel* settingsLabel = new QLabel(settings.fileName(), this);
+
     // Setup the layout.
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(usernameLabel);
     layout->addWidget(usernameEdit_);
+    layout->addWidget(settingsFileLabel);
+    layout->addWidget(settingsLabel);
     layout->addStretch(1);
 }
 

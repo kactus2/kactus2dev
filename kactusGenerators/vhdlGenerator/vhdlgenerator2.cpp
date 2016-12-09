@@ -222,11 +222,11 @@ void VhdlGenerator2::generate( const QString& outputFileName)
 	libraries_.removeDuplicates();
 
 	// declare the libraries used.
-	foreach (QString library, libraries_)
+	foreach (QString const& library, libraries_)
     {
 		if (!library.isEmpty())
         {
-			vhdlStream << "library " << library <<";" << endl;
+			vhdlStream << "library " << library << ";" << endl;
 
 			typeDefinitions_.append(QString("%1.all").arg(library));
 		}
@@ -236,19 +236,15 @@ void VhdlGenerator2::generate( const QString& outputFileName)
 	typeDefinitions_.append("IEEE.std_logic_1164.all");
 	typeDefinitions_.removeDuplicates();
 
-	// write all type defs needed
-	foreach (QString portTypeDef, typeDefinitions_)
+    // write all type defs needed
+    foreach (QString const& portTypeDef, typeDefinitions_)
     {
-		if (!portTypeDef.isEmpty())
-        {
-			vhdlStream << "use " << portTypeDef << ";" << endl;
-		}
-	}
+        vhdlStream << "use " << portTypeDef << ";" << endl;
+    }
 	vhdlStream << endl;
 
 	// write the top-level entity
-	vhdlStream << "entity " << topLevelEntity_ << " is" << endl;
-	vhdlStream << endl;
+	vhdlStream << "entity " << topLevelEntity_ << " is" << endl << endl;
 
 	// write the top-level generics
 	writeGenerics(vhdlStream);
@@ -258,7 +254,6 @@ void VhdlGenerator2::generate( const QString& outputFileName)
 
 	// end top-level entity definition
 	vhdlStream << "end " << topLevelEntity_ << ";" << endl << endl;
-
 
 	// if view has description
 	QString viewDescription;
@@ -274,37 +269,29 @@ void VhdlGenerator2::generate( const QString& outputFileName)
 
 	VhdlGeneral::writeDescription(viewDescription, vhdlStream);
 
-	QString archName;
-	// if view name is not specified then "structural" is used
-	if (viewName_.isEmpty()) {
-		archName = "structural";
+	QString architectureName = viewName_;
+	if (architectureName.isEmpty())
+    {
+		architectureName = "structural";
 	}
-	else {
-		archName = viewName_;
-	}
-	// write the architecture of the entity
-	vhdlStream << "architecture " << archName << " of " << topLevelEntity_ << " is"
-		<< endl << endl;
 
-	// write declarations for signals connecting the ports
+	// write the architecture of the entity
+	vhdlStream << "architecture " << architectureName << " of " << topLevelEntity_ << " is" << endl << endl;
+
 	writeSignalDeclarations(vhdlStream);
 
-	// write all component declarations
 	writeComponentDeclarations(vhdlStream);
 
-	// write the user modifiable code 
 	writeUserModifiedDeclarations(vhdlStream);
 
 	// start writing architecture component instances
 	vhdlStream << endl << "begin" << endl << endl;
 
-	// write the user modifiable code
 	writeUserModifiedAssignments(vhdlStream);
 
-	// write the component instances
 	writeComponentInstances(vhdlStream);
 
-	vhdlStream << "end " << archName << ";" << endl << endl;
+	vhdlStream << "end " << architectureName << ";" << endl << endl;
 
 	file.close();
 
@@ -334,21 +321,18 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName )
 		return false;
 	}
 
-	QString fileSetName;
+	QString fileSetName = "vhdlSource";
 	if (!viewName_.isEmpty())
     {
 		fileSetName = QString("%1_vhdlSource").arg(viewName_);
 	}
-	else
-    {
-		fileSetName = QString("vhdlSource");
-	}
+
 	QSharedPointer<FileSet> topFileSet = component_->getFileSet(fileSetName);
 
 	// if the top vhdl file set was not found. Create one
 	if (!topFileSet)
     {
-		topFileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, QString("sourceFiles")));
+		topFileSet = QSharedPointer<FileSet>(new FileSet(fileSetName, "sourceFiles"));
 		component_->getFileSets()->append(topFileSet);
 
 		QSharedPointer<FileBuilder> vhdlBuilder(new FileBuilder("vhdlSource"));
@@ -379,7 +363,7 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName )
 	topVhdlFile->setIncludeFile(true);
 	topVhdlFile->setLogicalName("work");
 	topVhdlFile->setCommand(QString("vcom"));
-	topVhdlFile->setBuildFlags(QString("-quiet -check_synthesis -work work"), "true");
+	topVhdlFile->setBuildFlags("-quiet -check_synthesis -work work", "true");
 
 	QString newViewName;
 	if (!viewName_.isEmpty())
@@ -390,58 +374,32 @@ bool VhdlGenerator2::addRTLView( const QString& vhdlFileName )
     {
 		newViewName = "rtl";
 	}
-	QSharedPointer<View> rtlView( new View(newViewName) );
 
-	// add the spirit:envIdentifier. Only language is defined, not tool
-	// specific settings
+	QSharedPointer<View> rtlView(new View(newViewName));
+
 	QSharedPointer<View::EnvironmentIdentifier> envId( new View::EnvironmentIdentifier );
 	envId->language = "VHDL";
 	envId->tool = "Kactus2";
 	rtlView->addEnvIdentifier(envId);
 
 	QSharedPointer<ComponentInstantiation> componentInstantiation(new ComponentInstantiation);
+    componentInstantiation->setName(newViewName);
+	componentInstantiation->setLanguage("vhdl");
 
-	// Set the language of the instantiation.
-	componentInstantiation->setLanguage(QString("vhdl"));
-
-	// set the model name to be the top_level architecture of the top-level
-	// entity
-	QString archName;
-	if (viewName_.isEmpty())
+	// Set the model name to be the top_level architecture of the top-level entity.
+	QString architectureName = viewName_;
+	if (architectureName.isEmpty())
     {
-		archName = "rtl";
+		architectureName = "rtl";
 	}
-	else
-    {
-		archName = viewName_;
-	}
-	QString topEntity(QString("%1(%2)").arg(topLevelEntity_).arg(archName));
-	componentInstantiation->setModuleName(topEntity);
 
-	// set a reference to a file set
+	componentInstantiation->setModuleName(topLevelEntity_);
+    componentInstantiation->setArchitectureName(architectureName);
+
 	componentInstantiation->getFileSetReferences()->append(fileSetName);
 
-	// Add the view and component instantiation to component.
 	component_->getViews()->append(rtlView);
 	component_->getComponentInstantiations()->append(componentInstantiation);
-
-	// find the active view used to generate the vhdl
-	QSharedPointer<View> activeView;
-
-	foreach (QSharedPointer<View> currentView, *component_->getViews())
-	{
-		if (currentView->name() == viewName_)
-		{
-			activeView = currentView;
-			break;
-		}
-	}
-	
-	// if the view does not exist or it is not hierarchical
-	if (!activeView || !activeView->isHierarchical())
-    {
-		return true;
-	}
 
 	return true;
 }

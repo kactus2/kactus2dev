@@ -103,7 +103,7 @@ public slots:
      *      @param [in] viewName       The name of the view to open.
      *      @param [in] forceUnlocked  Forces the design to be opened in unlocked mode.
      */
-    void openDesign(VLNV const& vlnv = VLNV(), QString const& viewName = QString(), bool forceUnlocked = false);
+    void openDesign(VLNV const& vlnv = VLNV(), QString const& viewName = QString());
 
     /*!
      *  Opens the memory design of the current HW design.
@@ -118,8 +118,7 @@ public slots:
      *      @param [in] viewName        Name of the view to open.
      *      @param [in] forceUnlocked   Forces the design to be opened in unlocked mode.
      */
-    void openMemoryDesign(const VLNV& vlnv, const QString& viewName = QString(),
-        bool forceUnlocked = true);    
+    void openMemoryDesign(const VLNV& vlnv, const QString& viewName = QString());    
 
     /*!
      *  Opens a SW design.
@@ -128,7 +127,7 @@ public slots:
      *      @param [in] viewName       The name of the view to open.
      *      @param [in] forceUnlocked  Forces the design to be opened in unlocked mode.
      */
-	void openSWDesign(const VLNV& vlnv = VLNV(), QString const& viewName = QString(), bool forceUnlocked = false);
+	void openSWDesign(const VLNV& vlnv = VLNV(), QString const& viewName = QString());
 
     /*!
      *  Opens a system design.
@@ -137,7 +136,7 @@ public slots:
      *      @param [in] viewName       The name of the view to open.
      *      @param [in] forceUnlocked  Forces the system to be opened in unlocked mode.
      */
-    void openSystemDesign(VLNV const &vlnv, QString const& viewName = QString(), bool forceUnlocked = false);
+    void openSystemDesign(VLNV const &vlnv, QString const& viewName = QString());
 
     /*!
      *  Open bus to be edited
@@ -145,8 +144,7 @@ public slots:
 	 *      @param [in] vlnv           Identifies the bus definition
      *      @param [in] forceUnlocked  Forces the bus to be opened in unlocked mode.
 	 */
-	void openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV = VLNV(), bool disableBusDef = false,
-        bool forceUnlocked = false);
+	void openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV = VLNV(), bool disableBusDef = false);
 
 	/*!
      *  Open component editor to edit a component details.
@@ -154,7 +152,7 @@ public slots:
 	 *      @param [in] vlnv           Identifies the component to edit.
      *      @param [in] forceUnlocked  Forces the component to be opened in unlocked mode.
 	 */
-	void openComponent(const VLNV& vlnv, bool forceUnlocked = false);
+	void openComponent(const VLNV& vlnv);
 
     /*!
      *  Opens a COM definition for editing.
@@ -162,7 +160,7 @@ public slots:
      *      @param [in] vlnv           The VLNV of the COM definition to open.
      *      @param [in] forceUnlocked  Forces the COM definition to be opened in unlocked mode.
      */
-    void openComDefinition(VLNV const& vlnv, bool forceUnlocked = false);
+    void openComDefinition(VLNV const& vlnv);
 
     /*!
      *  Opens an API definition for editing.
@@ -170,7 +168,7 @@ public slots:
      *      @param [in] vlnv           The VLNV of the API definition to open.
      *      @param [in] forceUnlocked  Forces the API definition to be opened in unlocked mode.
      */
-    void openApiDefinition(VLNV const& vlnv, bool forceUnlocked = false);
+    void openApiDefinition(VLNV const& vlnv);
 
     //! Called when user closes the last design tab.
     void onLastDocumentClosed();
@@ -302,6 +300,8 @@ public slots:
      *      @remarks The HW design editor is opened automatically after successful creation.
      */
     void createDesignForExistingComponent(VLNV const& vlnv);
+
+    void unlockNewlyCreatedDocument(VLNV const& vlnv);
 
     /*!
      *  Creates a new hierarchical SW component with an SW design.
@@ -585,12 +585,6 @@ private:
      *      @param [in] workspaceName The name of the workspace.
      */
     void loadWorkspace(QString const& workspaceName);
-
-
-	/*!
-	 *  Apply the settings to all the documents.
-	 */
-	void applySettingsToOpenDocuments();
 
     /*!
      *  Saves the settings for the given workspace.
