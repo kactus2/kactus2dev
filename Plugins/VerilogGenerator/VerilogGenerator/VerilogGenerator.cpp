@@ -246,12 +246,12 @@ QSharedPointer<VerilogDocument> VerilogGenerator::initializeComponentWriters(QSh
 {
     QSettings settings;
     QString currentUser = settings.value("General/Username").toString();
-    QString componentXmlPath = library_->getPath(topComponent->component->getVlnv());
+    QString componentXmlPath = library_->getPath(topComponent->component_->getVlnv());
 
     QSharedPointer<VerilogDocument> retval(new VerilogDocument);
 
-    retval->headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent->component->getVlnv(), 
-        componentXmlPath, currentUser, topComponent->component->getDescription()));
+    retval->headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent->component_->getVlnv(), 
+        componentXmlPath, currentUser, topComponent->component_->getDescription()));
 
     retval->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent, useInterfaces_, generateMemory_));
 
@@ -329,7 +329,7 @@ void VerilogGenerator::initializeDesignWriters(QSharedPointer<GenerationDesign> 
     QList<QSharedPointer<GenerationWire> > usedWire;
     foreach (QSharedPointer<GenerationAdHoc> adHoc, design->adHocs_)
     {
-        QSharedPointer<GenerationWire> gw = adHoc->wire;
+        QSharedPointer<GenerationWire> gw = adHoc->wire_;
 
         if (usedWire.contains(gw))
         {
@@ -384,7 +384,7 @@ QSharedPointer<Writer> VerilogGenerator::createHeaderWriterForInstance(QSharedPo
         header.append("\n");
     }
 
-    header.append("IP-XACT VLNV: " + instance->component->component->getVlnv().toString());
+    header.append("IP-XACT VLNV: " + instance->component_->component_->getVlnv().toString());
 
     QSharedPointer<CommentWriter> headerWriter(new CommentWriter(header));
     headerWriter->setIndent(4);

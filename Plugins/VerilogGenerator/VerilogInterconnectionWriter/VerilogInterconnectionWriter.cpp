@@ -34,9 +34,9 @@ void VerilogInterconnectionWriter::write(QTextStream& output) const
 {
     QString instanceString = "<typeName> <parameters><instanceName>();";
 
-    instanceString.replace("<typeName>", interconnection_->typeName);
+    instanceString.replace("<typeName>", interconnection_->typeName_);
     instanceString.replace("<parameters>", parameterAssignments());
-    instanceString.replace("<instanceName>", interconnection_->name);
+    instanceString.replace("<instanceName>", interconnection_->name_);
 
     output<< indentation() << instanceString << endl;
 }

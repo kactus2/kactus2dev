@@ -52,7 +52,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
-    instanceString.replace("<component>", instance_->component->moduleName_);
+    instanceString.replace("<component>", instance_->component_->moduleName_);
     instanceString.replace("<parameters>", parameterAssignments());
     instanceString.replace("<instanceName>", formattedInstanceName());
     instanceString.replace("<portConnections>", portConnections());
@@ -100,12 +100,12 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
 
 	QStringList assignments;
 
-	if (instance_->parameters.count() < 1)
+	if (instance_->parameters_.count() < 1)
 	{
 		return "";
 	}
 
-	foreach(QSharedPointer<Parameter> parameter, instance_->parameters)
+	foreach(QSharedPointer<Parameter> parameter, instance_->parameters_)
 	{
         // If the parameters are not user resolved nor generated, then there cannot be any override by the design.
         if (parameter->getValueResolve() != "user" && parameter->getValueResolve() != "generated")
@@ -142,28 +142,28 @@ QString ComponentInstanceVerilogWriter::portConnections() const
         {
             if (gifa->interConnection_->topInterface_)
             {
-                portAssignments.append( "." + gifa->interface_->interface->name() + "(" + gifa->interConnection_->topInterface_->interface->name() + ")");
+                portAssignments.append( "." + gifa->interface_->interface_->name() + "(" + gifa->interConnection_->topInterface_->interface_->name() + ")");
             }
             else
             {
-                portAssignments.append( "." + gifa->interface_->interface->name() + "("+ gifa->interConnection_->name + ")");
+                portAssignments.append( "." + gifa->interface_->interface_->name() + "("+ gifa->interConnection_->name_ + ")");
             }
         }
     }
 
-	foreach(QString portName, sorter_->sortedPortNames(instance_->component->component))
+	foreach(QString portName, sorter_->sortedPortNames(instance_->component_->component_))
     {
         // Seek for a port assignment.
         QSharedPointer<GenerationPortAssignMent> gpa = instance_->portAssignments_.value(portName);
 
         // If none found, or is not applicable, skip.
-        if (!gpa || (useInterfaces_ && !gpa->adhoc))
+        if (!gpa || (useInterfaces_ && !gpa->adhoc_))
         {
             continue;
         }
         
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-        instance_->component->component->getInterfacesUsedByPort(portName);
+        instance_->component_->component_->getInterfacesUsedByPort(portName);
 		QString interfaceName;
 
 		if (busInterfaces->size() == 1)
@@ -234,14 +234,14 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<Generat
 {
     QString assignment;
 
-    if (!gab->topPort.isEmpty() || gab->wire)
+    if (!gab->topPort_.isEmpty() || gab->wire_)
     {
 		assignment = "<signalName>[<left>:<right>]";
 
-		QPair<QString,QString> connectionBounds = gab->bounds;
+		QPair<QString,QString> connectionBounds = gab->bounds_;
 
 		// Use bounds only if they are not the same.
-		if (gab->wire && gab->wire->bounds.first == gab->wire->bounds.second)
+		if (gab->wire_ && gab->wire_->bounds_.first == gab->wire_->bounds_.second)
 		{
 			assignment = "<signalName>";
 		}
@@ -253,23 +253,23 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<Generat
 
 		// Connect the physical port to either corresponding top port or a wire.
 		// If neither is available, return empty.
-		if (!gab->topPort.isEmpty())
+		if (!gab->topPort_.isEmpty())
 		{
-			assignment.replace("<signalName>", gab->topPort);
+			assignment.replace("<signalName>", gab->topPort_);
 		}
-		else if (gab->wire)
+		else if (gab->wire_)
 		{
-			assignment.replace("<signalName>", gab->wire->name);
+			assignment.replace("<signalName>", gab->wire_->name_);
 		}
 		else
 		{
 			return "";
 		}
     }
-    else if (!gab->tieOff.isEmpty())
+    else if (!gab->tieOff_.isEmpty())
     {
         // If an tied value is assigned to a physical port, it shall be used.
-        assignment = gab->tieOff;
+        assignment = gab->tieOff_;
         if (assignment.isEmpty())
         {
             assignment = " ";

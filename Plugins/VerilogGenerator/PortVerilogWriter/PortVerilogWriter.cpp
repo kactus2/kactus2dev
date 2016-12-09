@@ -45,7 +45,7 @@ void PortVerilogWriter::write( QTextStream& outputStream ) const
 bool PortVerilogWriter::nothingToWrite() const
 {
     return port_.isNull() || 
-        port_->port->getDirection() == DirectionTypes::DIRECTION_PHANTOM || port_->port->getDirection() == DirectionTypes::DIRECTION_INVALID;
+        port_->port_->getDirection() == DirectionTypes::DIRECTION_PHANTOM || port_->port_->getDirection() == DirectionTypes::DIRECTION_INVALID;
 }
 
 //-----------------------------------------------------------------------------
@@ -56,9 +56,9 @@ QString PortVerilogWriter::createDeclaration() const
     QString portDeclaration("<direction> <type> <bounds> <name>");
 
     portDeclaration.replace("<direction>", direction().leftJustified(6));
-    portDeclaration.replace("<type>", port_->port->getTypeName().leftJustified(7));
+    portDeclaration.replace("<type>", port_->port_->getTypeName().leftJustified(7));
     portDeclaration.replace("<bounds>", arrayAndVectorBounds().leftJustified(20));
-    portDeclaration.replace("<name>", port_->port->name());
+    portDeclaration.replace("<name>", port_->port_->name());
 
     return portDeclaration;
 }
@@ -70,15 +70,15 @@ QString PortVerilogWriter::direction() const
 {
     QString directionString;
 
-    if (port_->port->getDirection() == DirectionTypes::IN)
+    if (port_->port_->getDirection() == DirectionTypes::IN)
     {
         directionString = "input";
     }
-    else if (port_->port->getDirection() == DirectionTypes::OUT)    
+    else if (port_->port_->getDirection() == DirectionTypes::OUT)    
     {
         directionString = "output";
     }
-    else if (port_->port->getDirection() == DirectionTypes::INOUT)   
+    else if (port_->port_->getDirection() == DirectionTypes::INOUT)   
     {
         directionString = "inout";
     }
@@ -91,7 +91,7 @@ QString PortVerilogWriter::direction() const
 //-----------------------------------------------------------------------------
 QString PortVerilogWriter::arrayAndVectorBounds() const
 {
-    QString arrayDefinition = "[" + port_->arrayBounds.first + ":" + port_->arrayBounds.second + "]";
+    QString arrayDefinition = "[" + port_->arrayBounds_.first + ":" + port_->arrayBounds_.second + "]";
 
     arrayDefinition.remove(" ");
 
@@ -100,7 +100,7 @@ QString PortVerilogWriter::arrayAndVectorBounds() const
         arrayDefinition.clear();
     }
 
-    QString vectorDefinition = "[" + port_->vectorBounds.first + ":" + port_->vectorBounds.second + "]";
+    QString vectorDefinition = "[" + port_->vectorBounds_.first + ":" + port_->vectorBounds_.second + "]";
 
     vectorDefinition.remove(" ");
 

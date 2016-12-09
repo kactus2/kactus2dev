@@ -65,10 +65,10 @@ void HDLComponentParser::parseComponent(QSharedPointer<View> activeView)
     }
 
     retval_ = QSharedPointer<GenerationComponent>(new GenerationComponent);
-    retval_->component = component_;
+    retval_->component_ = component_;
 
     // Try to find a component instantiation for the view.
-    activeInstantiation_ = retval_->component->getModel()->
+    activeInstantiation_ = retval_->component_->getModel()->
         findComponentInstantiation(activeView_->getComponentInstantiationRef());
 
     if (activeInstantiation_ && !activeInstantiation_->getModuleName().isEmpty())
@@ -79,11 +79,11 @@ void HDLComponentParser::parseComponent(QSharedPointer<View> activeView)
     else
     {
         // Else take module name from the VLNV of the component.
-        retval_->moduleName_ = retval_->component->getVlnv().getName();
+        retval_->moduleName_ = retval_->component_->getVlnv().getName();
     }
 
     // Initialize the parameter finder.
-    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(retval_->component));
+    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(retval_->component_));
     parameterFinder->setActiveView(activeView);
     formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
 
@@ -183,9 +183,9 @@ void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& refPa
 void HDLComponentParser::findParameters()
 {
     // Cull all the component parameters for the original parameters.
-    foreach(QSharedPointer<Parameter> parameter, *retval_->component->getParameters())
+    foreach(QSharedPointer<Parameter> parameter, *retval_->component_->getParameters())
     {
-        retval_->originalParameters.append(parameter);
+        retval_->originalParameters_.append(parameter);
     }
 
     // If there is an active component instantiaion, take its module parameters as well.
@@ -193,15 +193,15 @@ void HDLComponentParser::findParameters()
     {
         foreach(QSharedPointer<ModuleParameter> parameter, *activeInstantiation_->getModuleParameters())
         {
-            retval_->originalParameters.append(parameter);
+            retval_->originalParameters_.append(parameter);
         }
     }
 
     // Create a new list of the parameters.
-    QList<QSharedPointer<Parameter> > sortedParameters = QList<QSharedPointer<Parameter> >(retval_->originalParameters);
+    QList<QSharedPointer<Parameter> > sortedParameters = QList<QSharedPointer<Parameter> >(retval_->originalParameters_);
 
     // Sort the parameters.
-    sortParameters(retval_->originalParameters, sortedParameters);
+    sortParameters(retval_->originalParameters_, sortedParameters);
 
     foreach(QSharedPointer<Parameter> parameterOrig, sortedParameters)
     {
@@ -210,7 +210,7 @@ void HDLComponentParser::findParameters()
 
         parameterCpy->setValue(formatter_->formatReferringExpression(parameterOrig->getValue()));
 
-        retval_->formattedParameters.append(parameterCpy);
+        retval_->formattedParameters_.append(parameterCpy);
     }
 }
 
@@ -219,16 +219,16 @@ void HDLComponentParser::findParameters()
 //-----------------------------------------------------------------------------
 void HDLComponentParser::parseInterfaces()
 {
-    foreach(QSharedPointer<BusInterface> busInterface, *retval_->component->getBusInterfaces())
+    foreach(QSharedPointer<BusInterface> busInterface, *retval_->component_->getBusInterfaces())
     {
         // Create "our" interface for each IP-XACT interface. Take the relevant values.
-        QSharedPointer<GenerationInterface> gif(new GenerationInterface);
-        gif->description = busInterface->description();
-        gif->mode = interfaceMode2Str(busInterface->getInterfaceMode());
-        gif->interface = busInterface;
+        QSharedPointer<GenerationInterface> gInterface(new GenerationInterface);
+        gInterface->description_ = busInterface->description();
+        gInterface->mode_ = interfaceMode2Str(busInterface->getInterfaceMode());
+        gInterface->interface_ = busInterface;
 
         // Insert to the interface to the list.
-        retval_->interfaces.insert(busInterface->name(), gif);
+        retval_->interfaces_.insert(busInterface->name(), gInterface);
 
         // Find the correct abstraction type.
         if (busInterface->getAbstractionTypes()->count() < 1)
@@ -237,7 +237,7 @@ void HDLComponentParser::parseInterfaces()
         }
 
         QSharedPointer<AbstractionType> absType = busInterface->getAbstractionTypes()->first();
-        gif->absType = absType;
+        gInterface->absType_ = absType;
 
         // An abstraction definition is needed. It comes through VLNV reference.
         QSharedPointer<ConfigurableVLNVReference> absRef = absType->getAbstractionRef();
@@ -249,7 +249,7 @@ void HDLComponentParser::parseInterfaces()
 
             if (absDef)
             {
-                gif->absDef = absDef;
+                gInterface->absDef_ = absDef;
             }
         }
     }
@@ -260,23 +260,23 @@ void HDLComponentParser::parseInterfaces()
 //-----------------------------------------------------------------------------
 void HDLComponentParser::parsePorts()
 {
-    foreach (QSharedPointer<Port> cport, *retval_->component->getPorts())
+    foreach (QSharedPointer<Port> cport, *retval_->component_->getPorts())
     {
         // Create generation port.
         QSharedPointer<GenerationPort> gport(new GenerationPort);
 
         // Needs a reference to the IP-XACT port.
-        gport->port = cport;
+        gport->port_ = cport;
 
         // Both vector and array bounds may be needed.
-        gport->arrayBounds.first = formatter_->formatReferringExpression(cport->getArrayLeft());
-        gport->arrayBounds.second = formatter_->formatReferringExpression(cport->getArrayRight());
+        gport->arrayBounds_.first = formatter_->formatReferringExpression(cport->getArrayLeft());
+        gport->arrayBounds_.second = formatter_->formatReferringExpression(cport->getArrayRight());
 
-        gport->vectorBounds.first = formatter_->formatReferringExpression(cport->getLeftBound());
-        gport->vectorBounds.second = formatter_->formatReferringExpression(cport->getRightBound());
+        gport->vectorBounds_.first = formatter_->formatReferringExpression(cport->getLeftBound());
+        gport->vectorBounds_.second = formatter_->formatReferringExpression(cport->getRightBound());
 
         // Add to the list.
-        retval_->ports.insert(cport->name(),gport);
+        retval_->ports_.insert(cport->name(),gport);
     }
 }
 
@@ -286,19 +286,19 @@ void HDLComponentParser::parsePorts()
 void HDLComponentParser::parseMemoryMaps()
 {
     // TODO: replace with a foreach structure
-    if (retval_->component->getMemoryMaps()->size() < 1)
+    if (retval_->component_->getMemoryMaps()->size() < 1)
     {
         return;
     }
 
-	QSharedPointer<MemoryMap> memmap = retval_->component->getMemoryMaps()->first();
+	QSharedPointer<MemoryMap> memmap = retval_->component_->getMemoryMaps()->first();
 
 	// The AUB is shared between all remap states.
-	retval_->aub = memmap->getAddressUnitBits();
+	retval_->aub_ = memmap->getAddressUnitBits();
 
     QSharedPointer<GenerationRemap> defaultRemap(new GenerationRemap);
-    retval_->remaps.append(defaultRemap);
-    defaultRemap->name = memmap->name() + "_default";
+    retval_->remaps_.append(defaultRemap);
+    defaultRemap->name_ = memmap->name() + "_default";
 
 	foreach (QSharedPointer<MemoryBlockBase> mbb, *memmap->getMemoryBlocks())
 	{
@@ -311,19 +311,19 @@ void HDLComponentParser::parseMemoryMaps()
 		}
 
         // Get the total sum of ranges.
-		retval_->totalRange += ab->getRange();
+		retval_->totalRange_ += ab->getRange();
 
         parseAddressBlock(ab, defaultRemap);
 	}
 
     // The default map defines the size. We assume that any remaps respect there boundaries.
-    retval_->totalRange = formatter_->formatReferringExpression(retval_->totalRange);
+    retval_->totalRange_ = formatter_->formatReferringExpression(retval_->totalRange_);
 
 	foreach (QSharedPointer<MemoryRemap> remap, *memmap->getMemoryRemaps())
     {
         QSharedPointer<GenerationRemap> rm(new GenerationRemap);
-        rm->name = remap->name();
-        retval_->remaps.append(rm);
+        rm->name_ = remap->name();
+        retval_->remaps_.append(rm);
 
 		foreach (QSharedPointer<MemoryBlockBase> mbb, *remap->getMemoryBlocks())
 	    {
@@ -350,10 +350,10 @@ void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSha
 
     // Its base address and name are needed.
     gab->baseAddress_ = formatter_->formatReferringExpression(ab->getBaseAddress());
-    gab->name = ab->name();
+    gab->name_ = ab->name();
 
     // Append to the list.
-    target->blocks.append(gab);
+    target->blocks_.append(gab);
 
     foreach (QSharedPointer<RegisterBase> rb, *ab->getRegisterData())
     {
@@ -381,10 +381,10 @@ void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSha
         // Pick also other needed values via formatter, except the name.
         gr->offset_ = formatter_->formatReferringExpression(r->getAddressOffset());
         gr->size_ = formatter_->formatReferringExpression(r->getSize());
-        gr->name = r->name();
+        gr->name_ = r->name();
 
         // Append to the list.
-        gab->registers.append(gr);
+        gab->registers_.append(gr);
 
         foreach (QSharedPointer<Field> f, *r->getFields())
         {
@@ -393,10 +393,10 @@ void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSha
             // Pick also the values needed by a field via formatter, except the name.
             gf->bitOffset_ = formatter_->formatReferringExpression(f->getBitOffset());
             gf->bitWidth_ = formatter_->formatReferringExpression(f->getBitWidth());
-            gf->name = f->name();
+            gf->name_ = f->name();
 
             // Append to the list.
-            gr->fields.append(gf);
+            gr->fields_.append(gf);
         }
     }
 }
@@ -407,12 +407,12 @@ void HDLComponentParser::parseAddressBlock(QSharedPointer<AddressBlock> ab, QSha
 void HDLComponentParser::parseRemapStates()
 {
     // TODO: replace with a foreach structure
-    if (retval_->component->getMemoryMaps()->size() < 1)
+    if (retval_->component_->getMemoryMaps()->size() < 1)
     {
         return;
     }
 
-    QSharedPointer<MemoryMap> memmap = retval_->component->getMemoryMaps()->first();
+    QSharedPointer<MemoryMap> memmap = retval_->component_->getMemoryMaps()->first();
 
     // Each remap is may have a remap state.
     foreach (QSharedPointer<MemoryRemap> remap, *memmap->getMemoryRemaps())
@@ -422,7 +422,7 @@ void HDLComponentParser::parseRemapStates()
         QSharedPointer<RemapState> state;
         
         // Try to match the remap state reference to a remap state within the component.
-        foreach(QSharedPointer<RemapState> currentState, *retval_->component->getRemapStates())
+        foreach(QSharedPointer<RemapState> currentState, *retval_->component_->getRemapStates())
         {
             if (currentState->name() == stateName)
             {
@@ -439,8 +439,8 @@ void HDLComponentParser::parseRemapStates()
 
         // Create new remap state for the generation.
         QSharedPointer<GenerationRemapState> grms(new GenerationRemapState);
-        grms->stateName = stateName;
-        retval_->remapStates.append(grms);
+        grms->stateName_ = stateName;
+        retval_->remapStates_.append(grms);
 
         // Each port referred by the state must be listed.
         foreach(QSharedPointer<RemapPort> rmport, *state->getRemapPorts())
@@ -448,10 +448,10 @@ void HDLComponentParser::parseRemapStates()
            QSharedPointer<QPair<QSharedPointer<Port>,QString> > parsedPort(new QPair<QSharedPointer<Port>,QString>);
            
            // Pick the port name, and the value needed for it to remap state become effective.
-           parsedPort->first = retval_->component->getPort(rmport->getPortNameRef());
+           parsedPort->first = retval_->component_->getPort(rmport->getPortNameRef());
            parsedPort->second = formatter_->formatReferringExpression(rmport->getValue());
 
-           grms->ports.append(parsedPort);
+           grms->ports_.append(parsedPort);
         }
     }
 }

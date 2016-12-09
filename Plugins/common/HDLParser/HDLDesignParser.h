@@ -111,13 +111,18 @@ private:
     /*!
      *  Creates special port assignments for hierarchical ad hoc connections.
      */
-	void parseHierarchicallAdhocs();
+    void parseHierarchicallAdhocs();
+    
+    /*!
+     *  Assigns default values to port assignments with no other connection.
+     */
+    void assignDefaultPortValues();
 
     /*!
      *  Finds the physical bounds for a port map in an instance.
      *
      *      @param [in] instanceName    The name of the instance.
-     *      @param [in] port			The port for the which to find the physicalbounds.
+     *      @param [in] port			The port for the which to find the physical bounds.
      *
      *      @return The port bounds for the port map in an instance.
      */

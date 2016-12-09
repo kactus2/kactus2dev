@@ -9,13 +9,11 @@
 // The structures utilized as intermediate storage for data for HDL generation.
 //-----------------------------------------------------------------------------
 
-#ifndef VERILOGGENERATORCOMMON_H
-#define VERILOGGENERATORCOMMON_H
+#ifndef HDLPARSERCOMMON_H
+#define HDLPARSERCOMMON_H
 
 #include <QSharedPointer>
 #include <QString>
-
-#include <IPXACTmodels/common/DirectionTypes.h>
 
 class Component;
 class ComponentInstance;
@@ -36,7 +34,7 @@ struct GenerationField
 	//! The width of the field in bits.
     QString bitWidth_;
     //! The name of the field.
-    QString name;
+    QString name_;
 };
 
 struct GenerationRegister
@@ -48,75 +46,73 @@ struct GenerationRegister
     //! The size of register in bits.
     QString size_;
     //! The fields within the register.
-    QList<QSharedPointer<GenerationField> > fields;
+    QList<QSharedPointer<GenerationField> > fields_;
     //! The name of the register.
-    QString name;
+    QString name_;
 };
 
 struct GenerationAddressBlock
 {
     //! The registers within the address block.
-    QList<QSharedPointer<GenerationRegister> > registers;
+    QList<QSharedPointer<GenerationRegister> > registers_;
     //! The base address of the address block.
     QString baseAddress_;
     //! The name of the address block.
-    QString name;
+    QString name_;
 };
 
 struct GenerationRemap
 {
     //! Addresses within the remap.
-    QList<QSharedPointer<GenerationAddressBlock> > blocks;
+    QList<QSharedPointer<GenerationAddressBlock> > blocks_;
     //! The name of the remap.
-    QString name;
+    QString name_;
 };
 
 struct GenerationRemapState
 {
     //! Ports that are to be used as condition for using the remap.
-    QList<QSharedPointer<QPair<QSharedPointer<Port>, QString> > > ports;
+    QList<QSharedPointer<QPair<QSharedPointer<Port>, QString> > > ports_;
     //! The name of the remap state.
-    QString stateName;
+    QString stateName_;
 };
 
 struct GenerationInterface
 {
     //! The matching IP-XACT interface.
-    QSharedPointer<BusInterface> interface;
+    QSharedPointer<BusInterface> interface_;
     //! The used abstraction type.
-    QSharedPointer<AbstractionType> absType;
-    //! The abstractino definition of the abstraction type.
-    QSharedPointer<AbstractionDefinition> absDef;
+    QSharedPointer<AbstractionType> absType_;
+    //! The abstraction definition of the abstraction type.
+    QSharedPointer<AbstractionDefinition> absDef_;
     //! The used interface mode.
-    QString mode;
+    QString mode_;
     //! The description of the interface.
-    QString description;
+    QString description_;
 };
 
 struct GenerationPort
 {
     //! The matching IP-XACT port.
-    QSharedPointer<Port> port;
-    //! The interfaces detected using the port.
-    //QList<QSharedPointer<GenerationInterface> > interfaces;
+    QSharedPointer<Port> port_;
     //! The bounds for the port.
-    QPair<QString,QString> vectorBounds;
+    QPair<QString,QString> vectorBounds_;
     //! The array bounds, if the port is arranged as an array.
-    QPair<QString,QString> arrayBounds;
+    QPair<QString,QString> arrayBounds_;
 };
 
 struct GenerationComponent
 {
     //! The matching IP-XACT component.
-    QSharedPointer<Component> component;
+    QSharedPointer<Component> component_;
     //! The original, non-formatted parameters of the component.
-    QList<QSharedPointer<Parameter> > originalParameters;
-    //! The formatted paramaters of the component, ready for writing.
-    QList<QSharedPointer<Parameter> > formattedParameters;
+    QList<QSharedPointer<Parameter> > originalParameters_;
+    //! The formatted parameters of the component, ready for writing.
+    QList<QSharedPointer<Parameter> > formattedParameters_;
     //! The parsed interfaces of the component, keyed with its name.
-    QMap<QString,QSharedPointer<GenerationInterface> > interfaces;
+    QMap<QString,QSharedPointer<GenerationInterface> > interfaces_;
     //! The parsed ports of the component keyed with its physical name.
-    QMap<QString,QSharedPointer<GenerationPort> > ports;
+    QMap<QString,QSharedPointer<GenerationPort> > ports_;
 
     //! The filename for the document.
     QString fileName_;
@@ -124,55 +120,55 @@ struct GenerationComponent
     QString moduleName_;
 
     //! The parsed remap states.
-    QList<QSharedPointer<GenerationRemapState> > remapStates;
+    QList<QSharedPointer<GenerationRemapState> > remapStates_;
     //! The parsed remaps, including the default memory map.
-    QList<QSharedPointer<GenerationRemap> > remaps;
+    QList<QSharedPointer<GenerationRemap> > remaps_;
     //! The addressable unit bits to be used within the component.
-    QString aub;
+    QString aub_;
     //! Total memory within the component counted in AUBs.
-    QString totalRange;
+    QString totalRange_;
 };
 
 struct GenerationWire
 {
     //! The bounds of the wire.
-    QPair<QString,QString> bounds;
+    QPair<QString,QString> bounds_;
     //! The name of the wire, to tell it apart from other wires of the same interconnection.
-	QString name;
+	QString name_;
 };
 
 struct GenerationPortAssignMent
 {
     //! The port which is assigned.
-	QSharedPointer<GenerationPort> port;
+	QSharedPointer<GenerationPort> port_;
     //! The bounds of the assignment.
-	QPair<QString,QString> bounds;
+	QPair<QString,QString> bounds_;
     //! The wire of interconnection where port is assigned. Is null if there is none.
-	QSharedPointer<GenerationWire> wire;
+	QSharedPointer<GenerationWire> wire_;
     //! The name of the physical port of the top component where the port is assigned. Is empty if there is none.
-	QString topPort;
+	QString topPort_;
     //! The assigned tie-off value. Is empty if there is none.
-    QString tieOff;
+    QString tieOff_;
     //! True, if the port is assigned to ad-hoc interconnection, else false.
-    bool adhoc;
+    bool adhoc_;
     //! The width used in the corresponding abstraction port wire.
-    QString abstractionWidth;
+    QString abstractionWidth_;
 };
 
 struct GenerationInterconnection
 {
     //! The interfaces assigned to the interconnection.
-    QList<QSharedPointer<GenerationInterface> > interfaces;
+    QList<QSharedPointer<GenerationInterface> > interfaces_;
     //! The assignments of the ports that are mapped to the interconnection, keyed by logical port name.
-    QMultiMap<QString,QSharedPointer<GenerationPortAssignMent> > ports;
+    QMultiMap<QString,QSharedPointer<GenerationPortAssignMent> > ports_;
     //! The wires parsed for the interconnection.
     QMap<QString,QSharedPointer<GenerationWire> > wires_;
     //! An interface of the top component assigned to the interconnection. Is null if there is none.
     QSharedPointer<GenerationInterface> topInterface_;
     //! The name of the interconnection, to tell it apart from other interconnections of the design.
-    QString name;
+    QString name_;
     //! The defined type name of the interconnection.
-    QString typeName;
+    QString typeName_;
 };
 
 struct GenerationInterfaceAssignment
@@ -186,34 +182,30 @@ struct GenerationInterfaceAssignment
 struct GenerationAdHoc
 {
     //! The ports of the ad-hoc interconnection.
-	QList<QSharedPointer<GenerationPortAssignMent> > ports;
+	QList<QSharedPointer<GenerationPortAssignMent> > ports_;
     //! The wire of the ad-hoc connection.
-	QSharedPointer<GenerationWire> wire;
+	QSharedPointer<GenerationWire> wire_;
 };
 
 struct GenerationInstance
 {
     //! The component referenced by the instance.
-	QSharedPointer<GenerationComponent> component;
+    QSharedPointer<GenerationComponent> component_;
+    //! The active view of the instance.
+    QSharedPointer<View> activeView_;
+    //! The matching IP-XACT component instance.
+    QSharedPointer<ComponentInstance> componentInstance_;
 
-	//! The matching IP-XACT component instance.
-	QSharedPointer<ComponentInstance> componentInstance_;
-
-	//! The design and design configuration corresponding the active view.
-    QSharedPointer<Design> design_;
-    QSharedPointer<DesignConfiguration> designConfiguration_;
-
-	//! The assigned port connections.
+    //! The parsed parameters that are to be used with the instance. CEVs used where applicable.
+    QList<QSharedPointer<Parameter> > parameters_;
+    //! The assigned port connections.
     QMap<QString,QSharedPointer<GenerationPortAssignMent> > portAssignments_;
-
     //! The assigned interface connections.
     QList<QSharedPointer<GenerationInterfaceAssignment> > interfaceAssignments_;
 
-    //! The active view of the instance.
-	QSharedPointer<View> activeView_;
-
-    //! The parsed parameters that are to be used with the instance. CEVs used where applicable.
-	QList<QSharedPointer<Parameter> > parameters;
+	//! The design and design configuration corresponding the active view, if hierarchical.
+    QSharedPointer<Design> design_;
+    QSharedPointer<DesignConfiguration> designConfiguration_;
 };
 
 struct GenerationDesign
@@ -224,6 +216,7 @@ struct GenerationDesign
     QSharedPointer<GenerationInstance> topInstance_;
     //! Parsed instances in the design, keyed with their names.
     QMap<QString, QSharedPointer<GenerationInstance> > instances_;
+
     //! The detected and parsed interconnections between the instances.
     QList<QSharedPointer<GenerationInterconnection> > interConnections_;
     //! The detected and parsed ad-hoc connections between the instances.
@@ -232,4 +225,4 @@ struct GenerationDesign
     QMap<QString, QString> portTiedValues_;
 };
 
-#endif // VERILOGGENERATORCOMMON_H
+#endif // HDLPARSERCOMMON_H

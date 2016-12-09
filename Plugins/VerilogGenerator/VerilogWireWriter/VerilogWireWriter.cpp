@@ -42,7 +42,7 @@ QString VerilogWireWriter::createDeclaration() const
 {
     QString declaration("wire <size> <name>;");    
     declaration.replace("<size>", formattedSize().leftJustified(6));
-    declaration.replace("<name>", wire_->name);
+    declaration.replace("<name>", wire_->name_);
 
     return declaration;
 }
@@ -54,9 +54,9 @@ QString VerilogWireWriter::formattedSize() const
 {
 	QString sizeString;
 
-	if (wire_->bounds.first != wire_->bounds.second)
+	if (wire_->bounds_.first != wire_->bounds_.second)
 	{
-		sizeString = "[" + wire_->bounds.first + ":" + wire_->bounds.second + "]";
+		sizeString = "[" + wire_->bounds_.first + ":" + wire_->bounds_.second + "]";
 	}
 
     return sizeString;

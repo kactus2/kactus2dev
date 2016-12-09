@@ -217,24 +217,24 @@ void tst_HDLParser::testTopLevelComponent()
     componentParser->parseComponent(topView_);
     QSharedPointer<GenerationComponent> parsed = componentParser->getParsedComponent();
 
-    QCOMPARE( parsed->formattedParameters.size(), 2 );
-    QCOMPARE( parsed->formattedParameters.at(0)->name(), QString("dataWidth") );
-    QCOMPARE( parsed->formattedParameters.at(0)->getValue(), QString("8") );
-    QCOMPARE( parsed->formattedParameters.at(1)->name(), QString("freq") );
-    QCOMPARE( parsed->formattedParameters.at(1)->getValue(), QString("100000") );
+    QCOMPARE( parsed->formattedParameters_.size(), 2 );
+    QCOMPARE( parsed->formattedParameters_.at(0)->name(), QString("dataWidth") );
+    QCOMPARE( parsed->formattedParameters_.at(0)->getValue(), QString("8") );
+    QCOMPARE( parsed->formattedParameters_.at(1)->name(), QString("freq") );
+    QCOMPARE( parsed->formattedParameters_.at(1)->getValue(), QString("100000") );
 
-    QCOMPARE( parsed->ports.size(), 4 );
-    QCOMPARE( parsed->ports["clk"]->port->getDirection(), DirectionTypes::IN );
+    QCOMPARE( parsed->ports_.size(), 4 );
+    QCOMPARE( parsed->ports_["clk"]->port_->getDirection(), DirectionTypes::IN );
 
-    QCOMPARE( parsed->ports["dataIn"]->port->getDirection(), DirectionTypes::IN );
-    QCOMPARE( parsed->ports["dataIn"]->vectorBounds.first, QString("7") );
-    QCOMPARE( parsed->ports["dataIn"]->vectorBounds.second, QString("0") );
+    QCOMPARE( parsed->ports_["dataIn"]->port_->getDirection(), DirectionTypes::IN );
+    QCOMPARE( parsed->ports_["dataIn"]->vectorBounds_.first, QString("7") );
+    QCOMPARE( parsed->ports_["dataIn"]->vectorBounds_.second, QString("0") );
 
-    QCOMPARE( parsed->ports["rst_n"]->port->getDirection(), DirectionTypes::IN );
+    QCOMPARE( parsed->ports_["rst_n"]->port_->getDirection(), DirectionTypes::IN );
 
-    QCOMPARE( parsed->ports["dataOut"]->port->getDirection(), DirectionTypes::OUT );
-    QCOMPARE( parsed->ports["dataOut"]->vectorBounds.first, QString("7") );
-    QCOMPARE( parsed->ports["dataOut"]->vectorBounds.second, QString("0") );
+    QCOMPARE( parsed->ports_["dataOut"]->port_->getDirection(), DirectionTypes::OUT );
+    QCOMPARE( parsed->ports_["dataOut"]->vectorBounds_.first, QString("7") );
+    QCOMPARE( parsed->ports_["dataOut"]->vectorBounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -243,10 +243,10 @@ void tst_HDLParser::testTopLevelComponent()
 void tst_HDLParser::testTopLevelComponentExpressions()
 {
     addModuleParameter("module", "10");
-    topComponent_->getComponentInstantiations()->first()->getModuleParameters()->first()->setValueId("MODEL-ID");
+    topComponent_->getComponentInstantiations()->first()->getModuleParameters()->first()->setValueId("MODEL_ID");
 
     QSharedPointer<Port> port = QSharedPointer<Port>(new Port("clk", DirectionTypes::IN));
-    port->setLeftBound("MODEL-ID*2");
+    port->setLeftBound("MODEL_ID*2");
     port->setRightBound("2+5");
     topComponent_->getPorts()->append(port);
 
@@ -255,14 +255,14 @@ void tst_HDLParser::testTopLevelComponentExpressions()
     componentParser->parseComponent(topView_);
     QSharedPointer<GenerationComponent> parsed = componentParser->getParsedComponent();
 
-    QCOMPARE( parsed->formattedParameters.size(), 1 );
-    QCOMPARE( parsed->formattedParameters.at(0)->name(), QString("module") );
-    QCOMPARE( parsed->formattedParameters.at(0)->getValue(), QString("10") );
+    QCOMPARE( parsed->formattedParameters_.size(), 1 );
+    QCOMPARE( parsed->formattedParameters_.at(0)->name(), QString("module") );
+    QCOMPARE( parsed->formattedParameters_.at(0)->getValue(), QString("10") );
 
-    QCOMPARE( parsed->ports.size(), 1 );
-    QCOMPARE( parsed->ports["clk"]->port->getDirection(), DirectionTypes::IN );
-    QCOMPARE( parsed->ports["clk"]->vectorBounds.first, QString("module*2") );
-    QCOMPARE( parsed->ports["clk"]->vectorBounds.second, QString("2+5") );
+    QCOMPARE( parsed->ports_.size(), 1 );
+    QCOMPARE( parsed->ports_["clk"]->port_->getDirection(), DirectionTypes::IN );
+    QCOMPARE( parsed->ports_["clk"]->vectorBounds_.first, QString("module*2") );
+    QCOMPARE( parsed->ports_["clk"]->vectorBounds_.second, QString("2+5") );
 }
 
 //-----------------------------------------------------------------------------
@@ -345,24 +345,24 @@ void tst_HDLParser::testHierarchicalConnections()
     QCOMPARE( gi->portAssignments_.size(), 4 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_["clk"];
-    QCOMPARE( gpa->topPort, QString("top_clk") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->topPort_, QString("top_clk") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi->portAssignments_["data_in"];
-    QCOMPARE( gpa->topPort, QString("data_to_instance") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->topPort_, QString("data_to_instance") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi->portAssignments_["enable"];
-    QCOMPARE( gpa->topPort, QString("enable_to_instance") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->topPort_, QString("enable_to_instance") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi->portAssignments_["full"];
-    QCOMPARE( gpa->topPort, QString("full_from_instance") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->topPort_, QString("full_from_instance") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -446,16 +446,16 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
     QSharedPointer<GenerationInstance> gi = design->instances_["instance1"];
 
     QCOMPARE( gi->componentInstance_->getInstanceName(), QString("instance1") );
-    QCOMPARE( gi->parameters.size(), 1 );
+    QCOMPARE( gi->parameters_.size(), 1 );
     QCOMPARE( gi->portAssignments_.size(), 1 );
 
-    QCOMPARE( gi->parameters.at(0)->name(), QString("componentParameter") );
-    QCOMPARE( gi->parameters.at(0)->getValue(), QString("1") );
+    QCOMPARE( gi->parameters_.at(0)->name(), QString("componentParameter") );
+    QCOMPARE( gi->parameters_.at(0)->getValue(), QString("1") );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_["instance_clk"];
-    QCOMPARE( gpa->topPort, QString("top_clk") );
-    QCOMPARE( gpa->bounds.first, QString("2") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->topPort_, QString("top_clk") );
+    QCOMPARE( gpa->bounds_.first, QString("2") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -499,19 +499,19 @@ void tst_HDLParser::testSlicedHierarchicalConnection()
     QCOMPARE( gi->portAssignments_.size(), 4 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi->portAssignments_["data_in"];
-    QCOMPARE( gpa->topPort, QString("data_to_instance") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->topPort_, QString("data_to_instance") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi->portAssignments_["enable"];
-    QCOMPARE( gpa->topPort, QString("enable_to_instance") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->topPort_, QString("enable_to_instance") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi->portAssignments_["full"];
-    QCOMPARE( gpa->topPort, QString("full_from_instance") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->topPort_, QString("full_from_instance") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -699,11 +699,11 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
     QSharedPointer<GenerationWire> gw1 = design->interConnections_.at(0)->wires_.last();
 
-    QCOMPARE( gw0->bounds.first, QString("7") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("7") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
-    QCOMPARE( gw1->bounds.first, QString("0") );
-    QCOMPARE( gw1->bounds.second, QString("0") );
+    QCOMPARE( gw1->bounds_.first, QString("0") );
+    QCOMPARE( gw1->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 2 );
 
@@ -714,22 +714,22 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
     QCOMPARE( gi1->portAssignments_.size(), 2 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi0->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi1->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -806,8 +806,8 @@ void tst_HDLParser::testEmptyBounds()
 
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
 
-    QCOMPARE( gw0->bounds.first, QString("0") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("0") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 2 );
 
@@ -818,14 +818,14 @@ void tst_HDLParser::testEmptyBounds()
     QCOMPARE( gi1->portAssignments_.size(), 1 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -902,8 +902,8 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
 
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
 
-    QCOMPARE( gw0->bounds.first, QString("14") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("14") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 2 );
 
@@ -914,14 +914,14 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     QCOMPARE( gi1->portAssignments_.size(), 1 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("8") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("8") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("14") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("14") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1036,11 +1036,11 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.last();
     QSharedPointer<GenerationWire> gw1 = design->interConnections_.at(0)->wires_.first();
 
-    QCOMPARE( gw0->bounds.first, QString("0") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("0") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
-    QCOMPARE( gw1->bounds.first, QString("7") );
-    QCOMPARE( gw1->bounds.second, QString("0") );
+    QCOMPARE( gw1->bounds_.first, QString("7") );
+    QCOMPARE( gw1->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 3 );
 
@@ -1053,31 +1053,31 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     QCOMPARE( gi2->portAssignments_.size(), 2 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver1_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver1_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver1_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver1_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi2->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver1_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi2->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver1_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver1_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1125,12 +1125,12 @@ void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
     QCOMPARE( design->interConnections_.at(0)->wires_.size(), 2 );
 
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
-    QCOMPARE( gw0->bounds.first, QString("15") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("15") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
     QSharedPointer<GenerationWire> gw1 = design->interConnections_.at(0)->wires_.last();
-    QCOMPARE( gw1->bounds.first, QString("0") );
-    QCOMPARE( gw1->bounds.second, QString("0") );
+    QCOMPARE( gw1->bounds_.first, QString("0") );
+    QCOMPARE( gw1->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 4 );
 
@@ -1145,40 +1145,40 @@ void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
     QCOMPARE( gi3->portAssignments_.size(), 2 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, gw0->name );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, gw0->name_ );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire->name, gw1->name );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, gw1->name_ );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, gw0->name );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, gw0->name_ );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, gw1->name );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, gw1->name_ );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi2->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, gw0->name );
-    QCOMPARE( gpa->bounds.first, QString("3") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, gw0->name_ );
+    QCOMPARE( gpa->bounds_.first, QString("3") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi2->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, gw1->name );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, gw1->name_ );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi3->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, gw0->name );
-    QCOMPARE( gpa->bounds.first, QString("15") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, gw0->name_ );
+    QCOMPARE( gpa->bounds_.first, QString("15") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi3->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, gw1->name );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, gw1->name_ );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1311,8 +1311,8 @@ void tst_HDLParser::testSlicedInterconnection()
 
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.last();
 
-    QCOMPARE( gw0->bounds.first, QString("1") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("1") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 2 );
 
@@ -1323,18 +1323,18 @@ void tst_HDLParser::testSlicedInterconnection()
     QCOMPARE( gi1->portAssignments_.size(), 2 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["enable_out_high"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("1") );
-    QCOMPARE( gpa->bounds.second, QString("1") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("1") );
+    QCOMPARE( gpa->bounds_.second, QString("1") );
     gpa = gi0->portAssignments_["enable_out_low"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("1") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("1") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1420,10 +1420,10 @@ void tst_HDLParser::testAbsDefDefault()
     QCOMPARE( gi1->portAssignments_.size(), 2 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi1->portAssignments_["enable_in"];
-    QVERIFY(!gpa->wire);
-    QCOMPARE(gpa->bounds.first, QString("2"));
-    QCOMPARE(gpa->bounds.second, QString("0"));
-    QCOMPARE(gpa->tieOff, QString("5"));
+    QVERIFY(!gpa->wire_);
+    QCOMPARE(gpa->bounds_.first, QString("2"));
+    QCOMPARE(gpa->bounds_.second, QString("0"));
+    QCOMPARE(gpa->tieOff_, QString("5"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1518,8 +1518,8 @@ void tst_HDLParser::testAbsDefWidth()
 
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.last();
 
-    QCOMPARE( gw0->bounds.first, QString("12") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("12") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1557,11 +1557,11 @@ void tst_HDLParser::testMasterInterconnectionToMirroredMaster()
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
     QSharedPointer<GenerationWire> gw1 = design->interConnections_.at(0)->wires_.last();
 
-    QCOMPARE( gw0->bounds.first, QString("7") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("7") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
-    QCOMPARE( gw1->bounds.first, QString("0") );
-    QCOMPARE( gw1->bounds.second, QString("0") );
+    QCOMPARE( gw1->bounds_.first, QString("0") );
+    QCOMPARE( gw1->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 2 );
 
@@ -1572,22 +1572,22 @@ void tst_HDLParser::testMasterInterconnectionToMirroredMaster()
     QCOMPARE( gi1->portAssignments_.size(), 2 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1627,11 +1627,11 @@ void tst_HDLParser::testMirroredSlaveInterconnectionToSlaves()
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
     QSharedPointer<GenerationWire> gw1 = design->interConnections_.at(0)->wires_.last();
 
-    QCOMPARE( gw0->bounds.first, QString("7") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("7") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
-    QCOMPARE( gw1->bounds.first, QString("0") );
-    QCOMPARE( gw1->bounds.second, QString("0") );
+    QCOMPARE( gw1->bounds_.first, QString("0") );
+    QCOMPARE( gw1->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 3 );
 
@@ -1642,21 +1642,21 @@ void tst_HDLParser::testMirroredSlaveInterconnectionToSlaves()
     QCOMPARE( gi1->portAssignments_.size(), 2 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_bus1_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_bus1_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_bus1_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_bus1_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_bus1_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_bus1_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_bus1_ENABLE") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_bus1_ENABLE") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1756,8 +1756,8 @@ void tst_HDLParser::testPortMapsWithoutBoundsInInterconnection()
 
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
 
-    QCOMPARE( gw0->bounds.first, QString("7") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("7") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 2 );
 
@@ -1768,14 +1768,14 @@ void tst_HDLParser::testPortMapsWithoutBoundsInInterconnection()
     QCOMPARE( gi1->portAssignments_.size(), 1 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1812,14 +1812,14 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
 
     QCOMPARE( design->adHocs_.size(), 2 );
 
-    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire;
-    QSharedPointer<GenerationWire> gw1 = design->adHocs_.at(1)->wire;
+    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire_;
+    QSharedPointer<GenerationWire> gw1 = design->adHocs_.at(1)->wire_;
 
-    QCOMPARE( gw0->bounds.first, QString("0") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("0") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
-    QCOMPARE( gw1->bounds.first, QString("7") );
-    QCOMPARE( gw1->bounds.second, QString("0") );
+    QCOMPARE( gw1->bounds_.first, QString("7") );
+    QCOMPARE( gw1->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 3 );
 
@@ -1832,27 +1832,27 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
     QCOMPARE( gi2->portAssignments_.size(), 1 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, QString("dataAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("dataAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("dataAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("dataAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
     gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi2->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1895,10 +1895,10 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
 
     QCOMPARE( design->adHocs_.size(), 1 );
 
-    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire;
+    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire_;
 
-    QCOMPARE( gw0->bounds.first, QString("16") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("16") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 2 );
 
@@ -1909,14 +1909,14 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
     QCOMPARE( gi1->portAssignments_.size(), 1 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("16") );
-    QCOMPARE( gpa->bounds.second, QString("4") );
+    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("16") );
+    QCOMPARE( gpa->bounds_.second, QString("4") );
 
     gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -1964,10 +1964,10 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
 
     QCOMPARE( design->adHocs_.size(), 1 );
 
-    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire;
+    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire_;
 
-    QCOMPARE( gw0->bounds.first, QString("5") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("5") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 2 );
 
@@ -1978,14 +1978,14 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
     QCOMPARE( gi1->portAssignments_.size(), 1 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("5") );
-    QCOMPARE( gpa->bounds.second, QString("3") );
+    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("5") );
+    QCOMPARE( gpa->bounds_.second, QString("3") );
 
     gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2069,23 +2069,23 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     QCOMPARE( gi0->portAssignments_.size(), 9 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["defaultTieOff"];
-    QCOMPARE( gpa->tieOff, QString("20") );
+    QCOMPARE( gpa->tieOff_, QString("20") );
     gpa = gi0->portAssignments_["expressionTieOff"];
-    QCOMPARE( gpa->tieOff, QString("expID - 4") );
+    QCOMPARE( gpa->tieOff_, QString("expID - 4") );
     gpa = gi0->portAssignments_["n/aTieOff"];
-    QCOMPARE( gpa->tieOff, QString("abc") );
+    QCOMPARE( gpa->tieOff_, QString("abc") );
     gpa = gi0->portAssignments_["numberedTieOff"];
-    QCOMPARE( gpa->tieOff, QString("12") );
+    QCOMPARE( gpa->tieOff_, QString("12") );
     gpa = gi0->portAssignments_["oneTieOff"];
-    QCOMPARE( gpa->tieOff, QString("1") );
+    QCOMPARE( gpa->tieOff_, QString("1") );
     gpa = gi0->portAssignments_["openTieOff"];
-    QCOMPARE( gpa->tieOff, QString("") );
+    QCOMPARE( gpa->tieOff_, QString("") );
     gpa = gi0->portAssignments_["zeroTieOff"];
-    QCOMPARE( gpa->tieOff, QString("0") );
+    QCOMPARE( gpa->tieOff_, QString("0") );
     gpa = gi0->portAssignments_["tieOffOut"];
-    QCOMPARE( gpa->tieOff, QString("") );
+    QCOMPARE( gpa->tieOff_, QString("") );
     gpa = gi0->portAssignments_["tieOffInOut"];
-    QCOMPARE( gpa->tieOff, QString("1") );
+    QCOMPARE( gpa->tieOff_, QString("1") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2144,9 +2144,9 @@ void tst_HDLParser::testPortDefaultValueInComponentInstance()
     QCOMPARE( gi0->portAssignments_.size(), 2 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["unconnnectedIn"];
-    QCOMPARE(gpa->tieOff, QString("1"));
+    QCOMPARE(gpa->tieOff_, QString("1"));
     gpa = gi0->portAssignments_["unconnnectedInOut"];
-    QCOMPARE(gpa->tieOff, QString("35"));
+    QCOMPARE(gpa->tieOff_, QString("35"));
     gpa = gi0->portAssignments_.value("unconnnectedOut");
     QVERIFY(!gpa);
 }
@@ -2184,10 +2184,10 @@ void tst_HDLParser::testMultipleAdhocConnectionsBetweenComponentInstances()
 
     QCOMPARE( design->adHocs_.size(), 1 );
 
-    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire;
+    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire_;
 
-    QCOMPARE( gw0->bounds.first, QString("0") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("0") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 3 );
 
@@ -2201,19 +2201,19 @@ void tst_HDLParser::testMultipleAdhocConnectionsBetweenComponentInstances()
 
     QSharedPointer<GenerationPortAssignMent> gpa;
     gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_enable_to_receiver1_enable") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_enable_to_receiver1_enable") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_enable_to_receiver1_enable") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_enable_to_receiver1_enable") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi2->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_enable_to_receiver1_enable") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_enable_to_receiver1_enable") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2277,10 +2277,10 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
 
     QCOMPARE( design->adHocs_.size(), 1 );
 
-    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire;
+    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire_;
 
-    QCOMPARE( gw0->bounds.first, QString("4") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->bounds_.first, QString("4") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 3 );
 
@@ -2294,19 +2294,19 @@ void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions(
 
     QSharedPointer<GenerationPortAssignMent> gpa;
     gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("4") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("4") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("4") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("4") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi2->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire->name, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds.first, QString("4") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
+    QCOMPARE( gpa->bounds_.first, QString("4") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2396,14 +2396,14 @@ void tst_HDLParser::testHierarchicalAdhocConnection()
     QCOMPARE( gi0->portAssignments_.size(), 2 );
 
     QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->topPort, QString("data_from_sender") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->topPort_, QString("data_from_sender") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->topPort, QString("enable_from_sender") );
-    QCOMPARE( gpa->bounds.first, QString("0") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->topPort_, QString("enable_from_sender") );
+    QCOMPARE( gpa->bounds_.first, QString("0") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2598,19 +2598,19 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
 
     QSharedPointer<GenerationPortAssignMent> gpa;
     gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, QString("data_from_sender") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("data_from_sender") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi1->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("data_from_sender") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("data_from_sender") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
     gpa = gi2->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("data_from_sender") );
-    QCOMPARE( gpa->bounds.first, QString("7") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("data_from_sender") );
+    QCOMPARE( gpa->bounds_.first, QString("7") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2670,12 +2670,12 @@ void tst_HDLParser::testInstanceParametersAreCulled()
 
     QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
-    QCOMPARE( gi0->parameters.size(), 2 );
+    QCOMPARE( gi0->parameters_.size(), 2 );
 
-    QCOMPARE( gi0->parameters.at(0)->name(), QString("componentParameter") );
-    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("3") );
-    QCOMPARE( gi0->parameters.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters.at(1)->getValue(), QString("2") );
+    QCOMPARE( gi0->parameters_.at(0)->name(), QString("componentParameter") );
+    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("3") );
+    QCOMPARE( gi0->parameters_.at(1)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters_.at(1)->getValue(), QString("2") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2735,10 +2735,10 @@ void tst_HDLParser::testTopComponentParametersAreUtilized()
 
     QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
-    QCOMPARE( gi0->parameters.size(), 1 );
+    QCOMPARE( gi0->parameters_.size(), 1 );
 
-    QCOMPARE( gi0->parameters.at(0)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("1337") );
+    QCOMPARE( gi0->parameters_.at(0)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("1337") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2799,12 +2799,12 @@ void tst_HDLParser::testInstanceComponentParametersAreUtilized()
 
     QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
-    QCOMPARE( gi0->parameters.size(), 2 );
+    QCOMPARE( gi0->parameters_.size(), 2 );
 
-    QCOMPARE( gi0->parameters.at(0)->name(), QString("componentParameter") );
-    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("55") );
-    QCOMPARE( gi0->parameters.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters.at(1)->getValue(), QString("55") );
+    QCOMPARE( gi0->parameters_.at(0)->name(), QString("componentParameter") );
+    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("55") );
+    QCOMPARE( gi0->parameters_.at(1)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters_.at(1)->getValue(), QString("55") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2863,10 +2863,10 @@ void tst_HDLParser::testParameterPropagationFromTop()
 
     QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
-    QCOMPARE( gi0->parameters.size(), 1 );
+    QCOMPARE( gi0->parameters_.size(), 1 );
 
-    QCOMPARE( gi0->parameters.at(0)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("10") );
+    QCOMPARE( gi0->parameters_.at(0)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("10") );
 }
 
 //-----------------------------------------------------------------------------
@@ -2933,12 +2933,12 @@ void tst_HDLParser::testParameterPropagationFromTop2()
 
     QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
-    QCOMPARE( gi0->parameters.size(), 2 );
+    QCOMPARE( gi0->parameters_.size(), 2 );
 
-    QCOMPARE( gi0->parameters.at(0)->name(), QString("senderParameter") );
-    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("10") );
-    QCOMPARE( gi0->parameters.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters.at(1)->getValue(), QString("10") );
+    QCOMPARE( gi0->parameters_.at(0)->name(), QString("senderParameter") );
+    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("10") );
+    QCOMPARE( gi0->parameters_.at(1)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters_.at(1)->getValue(), QString("10") );
 }
 
 //-----------------------------------------------------------------------------
@@ -3041,9 +3041,9 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
 
     QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
 
-    QCOMPARE( gw0->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gw0->bounds.first, QString("70") );
-    QCOMPARE( gw0->bounds.second, QString("0") );
+    QCOMPARE( gw0->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gw0->bounds_.first, QString("70") );
+    QCOMPARE( gw0->bounds_.second, QString("0") );
 
     QCOMPARE( design->instances_.size(), 2 );
 
@@ -3052,21 +3052,21 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
 
     QSharedPointer<GenerationPortAssignMent> gpa;
     gpa = gi0->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("8") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("8") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 
-    QCOMPARE( gi1->parameters.size(), 2 );
+    QCOMPARE( gi1->parameters_.size(), 2 );
 
-    QCOMPARE( gi1->parameters.at(0)->name(), QString("senderParameter") );
-    QCOMPARE( gi1->parameters.at(0)->getValue(), QString("10") );
-    QCOMPARE( gi1->parameters.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi1->parameters.at(1)->getValue(), QString("10") );
+    QCOMPARE( gi1->parameters_.at(0)->name(), QString("senderParameter") );
+    QCOMPARE( gi1->parameters_.at(0)->getValue(), QString("10") );
+    QCOMPARE( gi1->parameters_.at(1)->name(), QString("moduleParameter") );
+    QCOMPARE( gi1->parameters_.at(1)->getValue(), QString("10") );
 
     gpa = gi1->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire->name, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds.first, QString("70") );
-    QCOMPARE( gpa->bounds.second, QString("0") );
+    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
+    QCOMPARE( gpa->bounds_.first, QString("70") );
+    QCOMPARE( gpa->bounds_.second, QString("0") );
 }
 
 //-----------------------------------------------------------------------------
@@ -3171,12 +3171,12 @@ void tst_HDLParser::testMultiLevelHierachy()
 
     QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
 
-    QCOMPARE( gi0->parameters.size(), 2 );
+    QCOMPARE( gi0->parameters_.size(), 2 );
 
-    QCOMPARE( gi0->parameters.at(0)->name(), QString("senderParameter") );
-    QCOMPARE( gi0->parameters.at(0)->getValue(), QString("76") );
-    QCOMPARE( gi0->parameters.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters.at(1)->getValue(), QString("76") );
+    QCOMPARE( gi0->parameters_.at(0)->name(), QString("senderParameter") );
+    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("76") );
+    QCOMPARE( gi0->parameters_.at(1)->name(), QString("moduleParameter") );
+    QCOMPARE( gi0->parameters_.at(1)->getValue(), QString("76") );
 }
 
 //-----------------------------------------------------------------------------

@@ -85,7 +85,7 @@ void GeneratorConfiguration::parseDocuments()
             fileOutput_->getFileNames()->append(fileName);
 
             // Append the VLNV to the list.
-            fileOutput_->getVLNVs()->append(design->topComponent_->component->getVlnv().toString());
+            fileOutput_->getVLNVs()->append(design->topComponent_->component_->getVlnv().toString());
         }
     }
     else
@@ -98,7 +98,7 @@ void GeneratorConfiguration::parseDocuments()
         fileOutput_->getFileNames()->append(fileName);
 
         // Append the VLNV to the list.
-        fileOutput_->getVLNVs()->append(componentParser_->getParsedComponent()->component->getVlnv().toString());
+        fileOutput_->getVLNVs()->append(componentParser_->getParsedComponent()->component_->getVlnv().toString());
     }
 
     // Emit the signal.
