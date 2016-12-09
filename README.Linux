@@ -21,8 +21,8 @@
 
     A) An installation for all users, using admin privileges:
     Open file .qmake.conf and check that paths are compatible with your Linux distribution.
-    The defaults work with Ubuntu 64-bit, but for instance, 32-bit distributions might require renaming
-    from /usr/lib64 to /usr/lib.
+    The defaults work with Ubuntu 64-bit, but for instance, CentOS 7 64-bit requires renaming
+    from /usr/lib to /usr/lib64.
     
     Now use the following commands in the given order:
     ./configure
