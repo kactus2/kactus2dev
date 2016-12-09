@@ -85,7 +85,7 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) :
     topLayout->addLayout(bottomLayout);
 
     // Use red to make it more warny.
-    generalWarningLabel_->setStyleSheet("QLabel { color : red; }");
+    generalWarningLabel_->setStyleSheet("QLabel { color : rgb(255, 102, 45); }");
 
     connect(pathEditor_, SIGNAL(textChanged(const QString &)), this,
         SLOT(onPathEdited(const QString &)), Qt::UniqueConnection);
@@ -211,7 +211,7 @@ void FileOutputWidget::checkExistence()
         {
             // Check and set a warning color.
             fileExistsItem->setCheckState(Qt::Checked);
-            pathItem->setTextColor(QColor(Qt::red));
+            pathItem->setTextColor(QColor(255, 102, 45));
             existingFiles = true;
         }
         else

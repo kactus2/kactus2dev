@@ -156,7 +156,7 @@ void ViewSelectionWidget::setLanguage(QString selectedLanguage)
 	}
 	else
 	{
-		instantiationLanguage_->setStyleSheet("QLabel { color : red; }");
+		instantiationLanguage_->setStyleSheet("QLabel { color : rgb(255, 102, 45); }");
 	}
 }
 
