@@ -1,0 +1,69 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Expressions</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<h2>Expressions</h2>
+
+<p>Many fields within Kactus2 accept expresions as their input value for easy
+and fast configuration. The function sign <i>f(x)</i> is used to identify
+these fields. The input should conform to the SystemVerilog
+syntax to be acceptable.
+</p>
+
+<h3>Constant values</h3>
+<p>
+Constant numeric values can be given as decimal values (e.g. 15) or by explicitly
+defining the base (e.g. 'h0F for 15 in hexadecimal). The possible bases are
+<b>'b</b> (binary), <b>'o</b> (octal), <b>'d</b> (decimal) and <b>'h</b>
+(hexadecimal).
+Also fractional numbers (e.g. 0.25) can be used where applicable.
+Other numeric formats, e.g. 0x000F and 0b0010, will not be accepted.
+</p>
+
+<p>
+String values must be given within double quotes e.g. "This is a string value".
+</p>
+
+<p>
+Boolean true and false are accepted and will be interpret as 1 and 0, respectively.
+</p>
+	
+<h3>Operations</h3>
+<p>Kactus2 supports the following operations:</p>    
+<table border="1">
+	<tr>
+	  <th>Operator(s)</th>
+	  <th>Description</th>
+	  <th>Example</th>	  
+	</tr>
+	<tr>
+	  <td>+,-,*,/</td>
+	  <td>Basic arithmetic operations</td>
+	  <td>2*4 (8)</td>
+	</tr>
+	<tr>
+	  <td>**</td>
+	  <td>Power operation</td>
+	  <td>2**4 (16)</td>
+	</tr>
+	<tr>
+	  <td>&lt;,&gt;,&lt;=,&gt;=,==,!=</td>
+	  <td>Comparison of two values</td>
+	  <td>4 &gt;= 2 (true)</td>
+	</tr>	
+	<tr>
+	  <td>$clog2()</td>
+	  <td>Ceiling of logarithm of base 2</td>
+	  <td>$clog(9) (4)</td>
+	</tr>
+</table>
+
+<p></p>
+
+</body>
+</html>

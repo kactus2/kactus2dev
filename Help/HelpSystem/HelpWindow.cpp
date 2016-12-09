@@ -35,12 +35,13 @@ HelpWindow::HelpWindow(QHelpEngine* engine, QWidget* parent /*= 0*/)
 
     // Create the menu bar and all its menus and actions.
     QMenu* fileMenu = menu_->addMenu(tr("File"));
-    fileMenu->addAction(tr("Exit"), this, SLOT(close()));
+    fileMenu->addAction(tr("Close"), this, SLOT(close()));
 
     setMenuBar(menu_);
 
     // Add the table of contents dock.
     tocDock_->setWidget(engine_->contentWidget());
+    tocDock_->setFeatures(QDockWidget::NoDockWidgetFeatures);
     addDockWidget(Qt::LeftDockWidgetArea, tocDock_);
 
     setCentralWidget(browser_);

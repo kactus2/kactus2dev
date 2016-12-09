@@ -12,6 +12,12 @@
 #include "ExpressionFormatter.h"
 
 #include <QStringList>
+#include <QRegularExpression>
+
+namespace
+{
+    const QRegularExpression NON_ALPHA_CHARACTERS("[^a-zA-Z0-9:_.]+");
+}
 
 //-----------------------------------------------------------------------------
 // Function: ExpressionFormatter::ExpressionFormatter()
@@ -37,9 +43,9 @@ QString ExpressionFormatter::formatReferringExpression(QString const& expression
 {
     QString formattedExpression = expression;
 
-    foreach (QString valueID, parameterFinder_->getAllParameterIds())
+    foreach (QString const& valueID, expression.split(NON_ALPHA_CHARACTERS, QString::SkipEmptyParts))
     {
-        if (expression.contains(valueID))
+        if (parameterFinder_->hasId(valueID))
         {
             formattedExpression.replace(valueID, parameterFinder_->nameForId(valueID));
         }

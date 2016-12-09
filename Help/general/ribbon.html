@@ -71,7 +71,7 @@
         </ul>
     </p>
     <p>
-    The <b>Generation</b> group consists of available generator plugins, but also following items:
+    The <b>Generation</b> group shows all the available generator plugins and also the following items:
         <ul>
             <li>
             <img src="../images/documentation.png"><br><b>Document generator.</b> Generates documentation
@@ -143,6 +143,54 @@
             </li>
         </ul>
     </p>
+	<p>
+    The <b>Filtering Tools</b> group has actions for filtering and adjusting the visualization of the memory
+	layout for current component hierarchy. Available only in the Memory Designer.
+        <ul>
+		    <li>
+                <img src="../images/filterSegments.png" /><br />
+                <b>Filter Segments.</b> Show/hide the segments within the address spaces.
+            </li>
+			<br />
+			<li>
+                <img src="../images/filterAddressBlocks.png" /><br />
+                <b>Filter Address Blocks.</b> Show/hide the address blocks within the memory maps.
+            </li>
+			<br />
+			<li>
+                <img src="../images/filterRegisters.png" /><br />
+                <b>Filter Registers.</b> Show/hide the registers within the address blocks.
+            </li>
+			<br />
+			<li>
+                <img src="../images/filterFields.png" /><br />
+                <b>Filter Fields.</b> Show/hide the bit fields within the registers.
+            </li>
+			<br />
+            <li>
+                <img src="../images/addressSpaceFilter.png" /><br />
+                <b>Address Space Filter.</b> Show/hide the address space items on the path
+				from the furthest address space to the connected memory maps.
+            </li>
+			<br />
+			<li>
+                <img src="../images/compressMemoryItems.png" /><br />
+                <b>Compress Memory Items.</b> Minimize the vertical space taken by the
+				memory items. When disabled, the item height is relative to the contained address range.
+            </li>
+			<br />
+			<li>
+                <img src="../images/compressFields.png" /><br />
+                <b>Compress Field Items.</b> Minimize the horizontal space taken by the bit field items.
+            </li>
+			<li>
+                <img src="../images/extendFields.png" /><br />
+                <b>Extend Field Items.</b> Extend the horizontal space taken by the bit field items.
+				This ensures the full name is visible for every item.
+            </li>
+            <br />
+        </ul>
+    </p>
     <p>
     The <b>View</b> group has actions for defining the view of the current design. Visible Windows -button
     is always available.
@@ -175,6 +223,10 @@
             <li>
             <img src="../images/visibility.png"><br><b>Visibilities.</b> Change the visibilities of
             design items.
+            </li>
+			<li>
+            <img src="../images/memory.png"><br><b>Open Memory Designer.</b> Opens a view of the memory layout
+			of the underlying component hierarchy. Available only in Hardware Design view.
             </li>
         </ul>
     </p>

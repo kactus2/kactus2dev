@@ -242,7 +242,6 @@ visibilities_()
     setupInstanceEditor();
     setupAdHocVisibilityEditor();
     setupAdHocEditor();
-    //setupAddressEditor();
 	setupConfigurationEditor();
     setupSystemDetailsEditor();
 	setupInterfaceEditor();
@@ -1255,7 +1254,7 @@ void MainWindow::setupContextHelp()
     contextHelpBrowser_->setStyleSheet(style);
 
     contextHelpDock_->setWidget(contextHelpBrowser_);
-    addDockWidget(Qt::BottomDockWidgetArea, contextHelpDock_);
+    addDockWidget(Qt::RightDockWidgetArea, contextHelpDock_);
 
     connect(this, SIGNAL(helpUrlRequested(QString const&)),
             contextHelpBrowser_, SLOT(onHelpRequested(QString const&)), Qt::UniqueConnection);
