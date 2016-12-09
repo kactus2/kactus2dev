@@ -11,50 +11,52 @@
 09/12/2016 3.3.0
 ----------------------------------------------------
 
-+ Improved features for Memory Designer:
-    * Added register fields
++ Enhanced features for Memory Designer:
+    * Register fields added 
     * Compression of items to minimize the required space
 	* Multiple address spaces can now be shown as part of the same connection
 	* Filtering options added
 + Memory connectivity analysis now manages also instances with identical names
-+ Paths for files within filesets accept URI expressions
-+ Files can be drag-dropped to filesets from file system
++ File paths within filesets now accept URI expressions
++ Files can be drag-dropped to filesets from the file system
 + Memory map visualization items have now bigger area for expand/collapse
-+ Added checking for port direction when using default value
-+ Port map invert and tieoff are also shown on logical level of tree hierarchy
-+ Improved zooming by centering on mouse location
-+ Improved usage of drafts in design
-    * Fixed copying bus interface definitions when connecting hierarchical draft interface
-	* Removed copying of bus interface definitions when connecting non-hierarchical draft interface
-	* Changed bus interface definitions and ports to be copied to draft interfaces on
++ Port direction is now checked when a default value is set
++ Port map invert and tieoff are now also shown on the top level of tree hierarchy
++ Zooming now follows mouse location in design
++ Enhanced usage of drafts in design:
+    * Bus interface definitions copying when connecting hierarchical draft interface fixed
+	* Bus interface definitions copying when connecting non-hierarchical draft interface removed
+	* Bus interface definitions and port copying to draft instances changed to take place on
 	  packaging of the containing draft component instance
-	* Changed pasting bus interface to a draft component instance to only copy the name and mode 
-	  for interface
-+ Added notification on trying to read XML files of previous standard versions
-+ Improvements to Verilog generation
-    * Simplified generation setup dialog
+	* Copy-paste of bus interface to a draft component instance changed to copy only the name and 
+	  the mode of the interface
++ Notification on trying to read XML files of previous standard versions added
++ Improvements to Verilog generation:
+    * Generation setup dialog simplified
     * Register definition creation set as optional
 	* Module name is correctly used for component instances
-+ Improvements to Verilog import
-    * Improved parsing of port types
-	* Improved parsing of consecutive parameters
-    * Changed the created environmental identifier
-+ Improved features for MakefileGenerator 
-    * Added selection for conflicting files
-	* Changed the created environmental identifier
-	* Changed creation of launcher script to optional
+    * Environmental identifier created by the generator changed
++ Improvements to Verilog import:
+    * Port type parsing improved for Verilog-2001 style ports
+	* Parameter parsing improved for lists of parameters
+	* Environmental identifier created by the import changed
++ Improved features for MakefileGenerator:
+    * Conflicting file selection added
+	* Launcher script creation set to optional
 	
-- Fixed bus interface creation wizard from preventing user to proceed from the general
-  settings page due to missing port maps.
-- Replaced software views with normal views and component instantiations
-- Fixed component instance replace in design to better preserve existing connections
-- Fixed setting port bounds for ad-hoc connections in design
-- Fixed reading of Author information from XML
-- Fixed usage of symbolic file links for XML files
-- Fixed issue where toolbar was placed at the bottom of main window
+- Bus interface creation wizard fixed from preventing user to proceed from the general
+  settings page due to missing port maps
+- Component instance replace in design changed to better preserve existing connections
+- Port bounds for ad-hoc connections in design fixed
+- Author information read from XML fixed
+- Symbolic file link usage for XML files fixed
+- Toolbar placement at the bottom of main window fixed
+- Software views are replaced by views and component instantiations
 
 * Community guidelines included in manual
-* Changed automatic port mapping to less aggressively connect ports
+* Settings file path is now shown on the General page of Settings
+* Automatic port mapping changed to less aggressively connect ports
+* Component instance architecture changed to be correctly set by VHDL generator
 
 KNOWN UNRESOLVED ISSUES:
 * UI issue: paste command does not update usage count of referenced parameters
