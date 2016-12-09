@@ -557,7 +557,6 @@ void HDLDesignParser::assignInterconnections()
                             assignLargerBounds(gw, gpa->bounds);
                         }
 
-
                         // This wire shall be the wire of the port assignment.
                         gpa->wire = gw;
                     }
@@ -721,13 +720,13 @@ void HDLDesignParser::findInternalAdhocs()
 
                 // Assigning bounds.
                 QPair<QString,QString> bounds;
+                QSharedPointer<PartSelect> ps = internalPort->getPartSelect();
 
-                if (internalPort->getPartSelect() && !internalPort->getPartSelect()->getLeftRange().isEmpty()
-                    && !internalPort->getPartSelect()->getRightRange().isEmpty())
+                if (ps && !ps->getLeftRange().isEmpty() && !ps->getRightRange().isEmpty())
                 {
                     // If Part select exists, it shall be used.
-                    bounds.first = internalPort->getPartSelect()->getLeftRange();
-                    bounds.second = internalPort->getPartSelect()->getRightRange();
+                    bounds.first = ps->getLeftRange();
+                    bounds.second = ps->getRightRange();
                 }
                 else
                 {
@@ -824,8 +823,18 @@ void HDLDesignParser::parseHierarchicallAdhocs()
                 retval_->portTiedValues_.insert(topPort->port->name(), value);
 			}
 
+            QPair<QString,QString> externalBounds;
+            QSharedPointer<PartSelect> externalPart = externalPort->getPartSelect();
+
+            if (externalPart && !externalPart->getLeftRange().isEmpty() && !externalPart->getRightRange().isEmpty())
+            {
+                // If part select exists, it shall be used.
+                externalBounds.first = externalPart->getLeftRange();
+                externalBounds.second = externalPart->getRightRange();
+            }
+
 			// Find connected instances.
-			foreach (QSharedPointer<GenerationInstance> gi, retval_->instances_)
+			foreach(QSharedPointer<GenerationInstance> gi, retval_->instances_)
 			{
 				// Go through connected internal ports.
 				foreach(QSharedPointer<PortReference> internalPort, *adHocConnection->getInternalPortReferences())
@@ -854,8 +863,14 @@ void HDLDesignParser::parseHierarchicallAdhocs()
                     gpa->adhoc = true;
 
 					// Since it is ad hoc, the physical bounds will be used.
-					QPair<QString,QString> bounds = physicalPortBoundsInInstance(gi, ourPort);
-					gpa->bounds = bounds;
+					if (!externalBounds.first.isEmpty() && !externalBounds.second.isEmpty())
+                    {
+                        gpa->bounds = externalBounds;
+                    }
+                    else
+                    {
+                        gpa->bounds = physicalPortBoundsInInstance(gi, ourPort);
+                    }
 				}
 			}
 		}

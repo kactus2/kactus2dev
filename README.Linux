@@ -20,6 +20,11 @@
     There are two ways to build:
 
     A) An installation for all users, using admin privileges:
+    Open file .qmake.conf and check that paths are compatible with your Linux distribution.
+    The defaults work with Ubuntu 64-bit, but for instance, 32-bit distributions might require renaming
+    from /usr/lib64 to /usr/lib.
+    
+    Now use the following commands in the given order:
     ./configure
     make
     make install

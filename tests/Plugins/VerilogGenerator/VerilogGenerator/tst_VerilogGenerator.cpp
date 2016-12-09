@@ -357,11 +357,11 @@ void tst_VerilogGenerator::testHierarchicalConnections()
         "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
         "    TestInstance instance1(\n"
         "        // Interface: clk\n"
-        "        .clk                 (top_clk),\n"
+        "        .clk                 (top_clk[0:0]),\n"
         "        // Interface: data\n"
         "        .data_in             (data_to_instance[7:0]),\n"
-        "        .enable              (enable_to_instance),\n"
-        "        .full                (full_from_instance),\n"
+        "        .enable              (enable_to_instance[0:0]),\n"
+        "        .full                (full_from_instance[0:0]),\n"
         "        // These ports are not in any interface\n"
         "        .data_out            ());\n"
         "\n"
@@ -802,7 +802,7 @@ void tst_VerilogGenerator::testHierarchicalAdhocConnection()
         "    TestSender sender(\n"
         "        // Interface: data_bus\n"
         "        .data_out            (data_from_sender[7:0]),\n"
-        "        .enable_out          (enable_from_sender)");
+        "        .enable_out          (enable_from_sender[0:0])");
 }
 
 //-----------------------------------------------------------------------------
