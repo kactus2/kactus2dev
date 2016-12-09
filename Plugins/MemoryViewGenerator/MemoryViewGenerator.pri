@@ -14,14 +14,14 @@ HEADERS += ../../designEditors/MemoryDesigner/ConnectivityComponent.h \
     ../../designEditors/MemoryDesigner/ConnectivityInterface.h \
     ../../designEditors/MemoryDesigner/MasterSlavePathSearch.h \
     ../../designEditors/MemoryDesigner/MemoryItem.h \
+    ../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../editors/ComponentEditor/common/ExpressionParser.h \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ./MemoryViewGenerator.h \
     ./memoryviewgenerator_global.h \
-    ./MemoryViewGeneratorPlugin.h \
-    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../editors/ComponentEditor/common/ParameterCache.h \
-    ../../editors/ComponentEditor/common/ComponentParameterFinder.h
+    ./MemoryViewGeneratorPlugin.h
 SOURCES += ../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
     ../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
@@ -29,10 +29,10 @@ SOURCES += ../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../designEditors/MemoryDesigner/ConnectivityInterface.cpp \
     ../../designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
     ../../designEditors/MemoryDesigner/MemoryItem.cpp \
+    ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../editors/ComponentEditor/common/ParameterCache.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./MemoryViewGenerator.cpp \
-    ./MemoryViewGeneratorPlugin.cpp \
-    ../../editors/ComponentEditor/common/ParameterCache.cpp \
-    ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../editors/ComponentEditor/common/ComponentParameterFinder.cpp
+    ./MemoryViewGeneratorPlugin.cpp
 RESOURCES += MemoryViewGenerator.qrc

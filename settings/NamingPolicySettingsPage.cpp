@@ -56,8 +56,8 @@ NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings)
     layout->addStretch(1);
 
     // Setup connections.
-    connect(categoryCombo_, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onCategoryChanged(int)), Qt::UniqueConnection);
+    connect(categoryCombo_, SIGNAL(currentIndexChanged(int)), 
+        this, SLOT(onCategoryChanged(int)), Qt::UniqueConnection);
 
     // Read current values from settings and fill in the combo box.
     for (int i = 0; i < categories_.size(); ++i)
@@ -101,7 +101,6 @@ void NamingPolicySettingsPage::onCategoryChanged(int index)
     if (categories_.at(index).type == POLICY_ENUMERATION)
     {
         valuesList_->initialize(categories_.at(index).values);
-        //valuesList_->setItems(categories_.at(index).values);
 
         formatGroup_->setVisible(false);
         valuesList_->setVisible(true);

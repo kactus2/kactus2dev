@@ -577,6 +577,7 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/MemoryDesigner/ConnectivityGraph.h \
     ./designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
     ./designEditors/MemoryDesigner/ConnectivityInterface.h \
+    ./designEditors/MemoryDesigner/FieldGraphicsItem.h \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.h \
     ./designEditors/MemoryDesigner/MemoryDesignerConstants.h \
     ./designEditors/MemoryDesigner/MemoryItem.h \
@@ -695,8 +696,7 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/MemoryDesigner/FieldGraphicsItem.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -1211,6 +1211,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/MemoryDesigner/ConnectivityGraph.cpp \
     ./designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
     ./designEditors/MemoryDesigner/ConnectivityInterface.cpp \
+    ./designEditors/MemoryDesigner/FieldGraphicsItem.cpp \
     ./designEditors/MemoryDesigner/MainMemoryGraphicsItem.cpp \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
     ./designEditors/MemoryDesigner/MemoryCollisionItem.cpp \
@@ -1303,6 +1304,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./designEditors/MemoryDesigner/FieldGraphicsItem.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc

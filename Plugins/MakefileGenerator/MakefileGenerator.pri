@@ -17,21 +17,21 @@ HEADERS += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ./MakefileParser.h \
     ./SWStackParser.h \
     ./makefilegenerator_global.h \
-    ./MakeParametersDialog.h \
-    ./MakefileGeneratorPlugin.h \
     ../PluginSystem/GeneratorPlugin/FileOutput.h \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
-    ./MakeConfiguration.h
+    ./MakeConfiguration.h \
+    ./MakeParametersDialog.h \
+    ./MakefileGeneratorPlugin.h
 SOURCES += ../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../common/NameGenerationPolicy.cpp \
+    ../PluginSystem/GeneratorPlugin/FileOutput.cpp \
+    ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
+    ./MakeConfiguration.cpp \
     ./MakefileGenerator.cpp \
     ./MakefileGeneratorPlugin.cpp \
     ./MakefileParser.cpp \
     ./MakeParametersDialog.cpp \
-    ./SWStackParser.cpp \
-    ../PluginSystem/GeneratorPlugin/FileOutput.cpp \
-    ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
-    ./MakeConfiguration.cpp
+    ./SWStackParser.cpp
 RESOURCES += MakefileGenerator.qrc
