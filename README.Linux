@@ -57,13 +57,13 @@ Success reports
 Tested on CentOS 7.2.1511 64-bit on 7th Dec 2016
     Installed using admin privileges
     Manually installed Qt 5.7.0 for all users
-	Installed Kactus2 3.2.298 64-bit for all users
-	Required installation of package mesa-libGL-devel
+    Installed Kactus2 3.2.298 64-bit for all users
+    Required installation of package mesa-libGL-devel
 Tested on Ubuntu 16.04.1 64-bit on 2nd Dec 2016
     Installed using admin privileges
-	Installed Qt 5.5.1 from packages
-	Installed Kactus2 3.2.283 64-bit for all users
+    Installed Qt 5.5.1 from packages
+    Installed Kactus2 3.2.283 64-bit for all users
 Tested on Ubuntu 16.04.1 64-bit on 1st Dec 2016
-	Locally and manually installed Qt 5.7.0
-	Locally installed Kactus2 3.2.283 64-bit
-	Required installation of package libglu1-mesa-dev with admin privileges
+    Locally and manually installed Qt 5.7.0
+    Locally installed Kactus2 3.2.283 64-bit
+    Required installation of package libglu1-mesa-dev with admin privileges
