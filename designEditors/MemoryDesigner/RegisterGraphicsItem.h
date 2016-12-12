@@ -39,10 +39,11 @@ public:
      *      @param [in] isEmptyRegister     Boolean value to represent empty registers.
      *      @param [in] registerWidth       Width of the register graphics item.
      *      @param [in] filterFields        Value for filtering register fields.
+     *      @param [in] containingInstance  Name of the containing component instance.
      *      @param [in] parentItem          The parent memory graphics item.
      */
     RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister, qreal registerWidth,
-        bool filterFields, MemoryDesignerGraphicsItem* parentItem);
+        bool filterFields, QString const& containingInstance, MemoryDesignerGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.
@@ -142,6 +143,13 @@ private:
     void createFieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldWidth,
         bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal& previousEndPosition,
         qreal& widthRemainder, QFont fieldFont);
+
+    /*!
+     *  Get the width available for the register item.
+     *
+     *      @return The width available for the register item.
+     */
+    virtual qreal getItemWidth() const;
 
     //-----------------------------------------------------------------------------
     // Data.

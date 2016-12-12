@@ -33,10 +33,11 @@ public:
      *      @param [in] baseAddress     Base address of the memory item.
      *      @param [in] range           Range of the memory item.
      *      @param [in] blockWidth      Width of the memory item.
+     *      @param [in] instanceName    Name of the containing component instance.
      *      @param [in] parent          The parent item.
      */
     MemoryDesignerChildGraphicsItem(QString const& itemName, QString const& toolTipType, quint64 baseAddress,
-        quint64 range, qreal blockWidth, QGraphicsItem* parent);
+        quint64 range, qreal blockWidth, QString const& instanceName, QGraphicsItem* parent);
 
 	/*!
      *  The destructor.

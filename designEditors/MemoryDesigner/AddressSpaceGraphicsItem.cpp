@@ -47,7 +47,7 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), 
     setGraphicsRectangle(spaceWidth + 1, spaceRangeInt);
 
     setupLabels(0, spaceRangeInt - 1);
-    setupToolTip("address space");
+    setupToolTip(QStringLiteral("Address Space"));
 
     cpuIcon_->setPos(spaceWidth / 2 - cpuIcon_->pixmap().width() - GridSize, GridSize * 3);
     cpuIcon_->setVisible(false);
@@ -101,7 +101,7 @@ void AddressSpaceGraphicsItem::setLabelPositions()
 MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createNewSubItem(
     QSharedPointer<MemoryItem> subMemoryItem, bool isEmpty)
 {
-    return new AddressSegmentGraphicsItem(subMemoryItem, isEmpty, this);
+    return new AddressSegmentGraphicsItem(subMemoryItem, isEmpty, getContainingInstance(), this);
 }
 
 //-----------------------------------------------------------------------------

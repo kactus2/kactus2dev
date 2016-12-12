@@ -26,9 +26,11 @@
 // Function: AddressBlockGraphicsItem::AddressBlockGraphicsItem()
 //-----------------------------------------------------------------------------
 AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock,
-    bool filterRegisters, bool filterFields, qreal addressBlockWidth, MemoryMapGraphicsItem* memoryMapItem):
-MemoryDesignerChildGraphicsItem(blockItem->getName(), "address block", blockItem->getAddress().toULongLong(),
-    blockItem->getRange().toULongLong(), addressBlockWidth, memoryMapItem),
+    bool filterRegisters, bool filterFields, qreal addressBlockWidth, QString const& containingInstanceName,
+    MemoryMapGraphicsItem* memoryMapItem):
+MemoryDesignerChildGraphicsItem(blockItem->getName(), QStringLiteral("Address Block"),
+    blockItem->getAddress().toULongLong(), blockItem->getRange().toULongLong(), addressBlockWidth,
+    containingInstanceName, memoryMapItem),
 SubMemoryLayout(blockItem, MemoryDesignerConstants::REGISTER_TYPE, filterRegisters, this),
 addressUnitBits_(blockItem->getAUB()),
 filterFields_(filterFields)
@@ -87,7 +89,8 @@ void AddressBlockGraphicsItem::setLabelPositions()
 MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createNewSubItem(
     QSharedPointer<MemoryItem> subMemoryItem, bool isEmpty)
 {
-    return new RegisterGraphicsItem(subMemoryItem, isEmpty, getRegisterWidth(), filterFields_, this);
+    return new RegisterGraphicsItem(
+        subMemoryItem, isEmpty, getRegisterWidth(), filterFields_, getContainingInstance(), this);
 }
 
 //-----------------------------------------------------------------------------

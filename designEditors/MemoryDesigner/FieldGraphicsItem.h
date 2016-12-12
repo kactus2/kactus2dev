@@ -41,10 +41,12 @@ public:
      *      @param [in] fieldHeight         Height of the field.
      *      @param [in] isEmptyField        Value for empty fields.
      *      @param [in] labelFont           Font for the field labels.
+     *      @param [in] containingInstance  Name of the containing component instance.
      *      @param [in] parentItem          The parent graphics item.
      */
     FieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldLastBit, qreal fieldWidth,
-        quint64 fieldHeight, bool isEmptyField, QFont labelFont, MemoryDesignerGraphicsItem* parentItem);
+        quint64 fieldHeight, bool isEmptyField, QFont labelFont, QString const& containingInstance,
+        MemoryDesignerGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.

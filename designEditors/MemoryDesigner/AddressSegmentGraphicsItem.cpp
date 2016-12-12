@@ -23,9 +23,10 @@
 // Function: AddressSegmentGraphicsItem::AddressSegmentGraphicsItem()
 //-----------------------------------------------------------------------------
 AddressSegmentGraphicsItem::AddressSegmentGraphicsItem(QSharedPointer<MemoryItem> segmentItem, bool isEmptySegment,
-    AddressSpaceGraphicsItem* spaceItem):
-MemoryDesignerChildGraphicsItem(segmentItem->getName(), "segment", segmentItem->getOffset().toULongLong(),
-    segmentItem->getRange().toULongLong(), getSegmentItemWidth(spaceItem), spaceItem)
+    QString const& containingInstance, AddressSpaceGraphicsItem* spaceItem):
+MemoryDesignerChildGraphicsItem(segmentItem->getName(), QStringLiteral("Segment"),
+    segmentItem->getOffset().toULongLong(), segmentItem->getRange().toULongLong(), getSegmentItemWidth(spaceItem),
+    containingInstance, spaceItem)
 {
     setColors(KactusColors::ADDRESS_SEGMENT, isEmptySegment);
     setLabelPositions();

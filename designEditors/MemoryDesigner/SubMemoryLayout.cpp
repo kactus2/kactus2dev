@@ -595,3 +595,24 @@ void SubMemoryLayout::setFilterSubItems(bool filterValue)
 {
     filterSubItems_ = filterValue;
 }
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::resizeSubItemNameLabels()
+//-----------------------------------------------------------------------------
+void SubMemoryLayout::resizeSubItemNameLabels()
+{
+    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+    while (subItemIterator.hasNext())
+    {
+        subItemIterator.next();
+
+        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+        subItem->fitNameLabel();
+
+        SubMemoryLayout* subItemLayout = dynamic_cast<SubMemoryLayout*>(subItem);
+        if (subItemLayout)
+        {
+            subItemLayout->resizeSubItemNameLabels();
+        }
+    }
+}

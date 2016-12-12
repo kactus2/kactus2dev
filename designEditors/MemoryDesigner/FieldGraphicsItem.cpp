@@ -25,10 +25,10 @@
 // Function: FieldGraphicsItem::FieldGraphicsItem()
 //-----------------------------------------------------------------------------
 FieldGraphicsItem::FieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldLastBit,
-    qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QFont labelFont,
+    qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QFont labelFont, QString const& containingInstance,
     MemoryDesignerGraphicsItem* parentItem):
-MemoryDesignerChildGraphicsItem(
-    fieldName, MemoryDesignerConstants::FIELD_TYPE, fieldOffset, fieldHeight, fieldWidth, parentItem),
+MemoryDesignerChildGraphicsItem(fieldName, QStringLiteral("Field"), fieldOffset, fieldHeight, fieldWidth,
+    containingInstance, parentItem),
 isEmpty_(isEmptyField),
 combinedRangeLabel_(new QGraphicsTextItem("", this)),
 fieldHeight_(fieldHeight),
@@ -38,7 +38,7 @@ fieldName_(fieldName)
     combinedRangeLabel_->setFont(labelFont);
 
     setupLabels(fieldOffset, fieldLastBit);
-    setupToolTip(MemoryDesignerConstants::FIELD_TYPE);
+    setupToolTip(QStringLiteral("Field"));
     setLabelPositions();
     setColors(KactusColors::FIELD_COLOR, isEmptyField);
     if (isEmptyField)

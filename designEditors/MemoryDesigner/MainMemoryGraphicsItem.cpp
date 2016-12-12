@@ -28,10 +28,9 @@
 //-----------------------------------------------------------------------------
 MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QString const& instanceName,
     QString const& subItemType, bool filterSubItems, QGraphicsItem* parent):
-MemoryDesignerGraphicsItem(memoryItem->getName(), parent),
+MemoryDesignerGraphicsItem(memoryItem->getName(), instanceName, parent),
 SubMemoryLayout(memoryItem, subItemType, filterSubItems, this),
 instanceNameLabel_(new QGraphicsTextItem(instanceName, this)),
-instanceName_(instanceName),
 memoryItem_(memoryItem),
 memoryCollisions_(),
 compressed_(false),
@@ -193,14 +192,6 @@ void MainMemoryGraphicsItem::moveConnectedItems(qreal yTransfer)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::getContainingInstanceName()
-//-----------------------------------------------------------------------------
-QString MainMemoryGraphicsItem::getContainingInstanceName() const
-{
-    return instanceName_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::addMemoryConnection()
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::addMemoryConnection(MemoryConnectionItem* connectionItem)
@@ -301,21 +292,6 @@ void MainMemoryGraphicsItem::setCompressed(bool newCompressValue)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::resizeSubItemNameLabels()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::resizeSubItemNameLabels()
-{
-    QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
-    while (subItemIterator.hasNext())
-    {
-        subItemIterator.next();
-
-        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
-        subItem->fitNameLabel();
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::setExtensionItem()
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::setExtensionItem(MemoryExtensionGraphicsItem* newExtensionItem)
@@ -389,9 +365,15 @@ qreal MainMemoryGraphicsItem::getItemWidth() const
 //-----------------------------------------------------------------------------
 bool MainMemoryGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem* label) const
 {
+    quint64 labelStartY = label->scenePos().y();
+
     foreach (MemoryConnectionItem* connection, getMemoryConnections())
     {
-        if (connection->labelCollidesWithRanges(label, this))
+        quint64 connectionStart = connection->sceneBoundingRect().top();
+        quint64 connectionEnd = connection->sceneBoundingRect().bottom();
+
+        if (labelStartY > connectionStart && labelStartY < connectionEnd
+            && connection->labelCollidesWithRanges(label, this))
         {
             return true;
         }

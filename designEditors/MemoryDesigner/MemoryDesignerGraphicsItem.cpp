@@ -25,7 +25,8 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem()
 //-----------------------------------------------------------------------------
-MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem(QString const& itemName, QGraphicsItem* parent):
+MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem(QString const& itemName, QString const& instanceName,
+    QGraphicsItem* parent):
 QGraphicsRectItem(parent),
 nameLabel_(new QGraphicsTextItem(itemName, this)),
 startRangeLabel_(new QGraphicsTextItem(this)),
@@ -34,14 +35,13 @@ baseAddress_(0),
 lastAddress_(0),
 itemName_(itemName),
 amountOfLabelNumbers_(0),
-memoryConnections_()
+memoryConnections_(),
+instanceName_(instanceName)
 {
     QFont labelFont = nameLabel_->font();
     labelFont.setWeight(QFont::Bold);
 
     nameLabel_->setFont(labelFont);
-    startRangeLabel_->setDefaultTextColor(QColor(80, 80, 80));
-    endRangeLabel_->setDefaultTextColor(QColor(80, 80, 80));
 }
 
 //-----------------------------------------------------------------------------
@@ -125,9 +125,13 @@ void MemoryDesignerGraphicsItem::setupLabels(quint64 memoryStart, quint64 memory
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::setupToolTip(QString const& identifier)
 {
-    QString toolTip = "Generic ranges of " + identifier + " " + itemName_ + ":\n" +
-        startRangeLabel_->toPlainText() + "\n" + endRangeLabel_->toPlainText();
-    setToolTip(toolTip);
+    QString toolTipText =
+        QStringLiteral("<b>") + identifier + QStringLiteral(":</b> ") + name() + QStringLiteral("<br>") +
+        QStringLiteral("<b>Component Instance:</b> ") + instanceName_ + QStringLiteral("<br><br>") +
+        QStringLiteral("<b>Generic Base Address:</b> ") + getRangeStartLabel()->toPlainText() +
+        QStringLiteral("<br>") +
+        QStringLiteral("<b>Generic Last Address:</b> ") + getRangeEndLabel()->toPlainText();
+    setToolTip(toolTipText);
 }
 
 //-----------------------------------------------------------------------------
@@ -311,4 +315,12 @@ qreal MemoryDesignerGraphicsItem::getItemWidth() const
 bool MemoryDesignerGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem* label) const
 {
     return label->collidesWithItem(getRangeStartLabel()) || label->collidesWithItem(getRangeEndLabel());
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::getContainingInstance()
+//-----------------------------------------------------------------------------
+QString MemoryDesignerGraphicsItem::getContainingInstance() const
+{
+    return instanceName_;
 }

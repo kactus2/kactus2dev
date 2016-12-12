@@ -46,13 +46,6 @@ public:
     virtual ~MainMemoryGraphicsItem();
 
     /*!
-     *  Get the name of the containing instance.
-     *
-     *      @return The name of the containing instance.
-     */
-    QString getContainingInstanceName() const;
-
-    /*!
      *  Add a memory connection to this item.
      *
      *      @param [in] connectionItem  The selected memory connection item.
@@ -154,11 +147,6 @@ public:
     bool isCompressed() const;
 
     /*!
-     *  Resize the name labels of the contained memory sub items.
-     */
-    void resizeSubItemNameLabels();
-
-    /*!
      *  Set a memory extension item for this graphics item.
      *
      *      @param [in] newExtensionItem    The new memory extension item.
@@ -244,9 +232,6 @@ private:
 
     //! The label containing the name of the containing component instance.
     QGraphicsTextItem* instanceNameLabel_;
-
-    //! The name of the containing component instance.
-    QString instanceName_;
 
     //! The memory item from which this graphics item has been constructed from.
     QSharedPointer<MemoryItem> memoryItem_;

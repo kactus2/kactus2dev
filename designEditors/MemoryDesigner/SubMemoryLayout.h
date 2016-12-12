@@ -86,6 +86,11 @@ public:
      */
     bool subItemsAreFiltered() const;
 
+    /*!
+     *  Resize the name labels for the sub memory items.
+     */
+    void resizeSubItemNameLabels();
+
 protected:
 
     /*!

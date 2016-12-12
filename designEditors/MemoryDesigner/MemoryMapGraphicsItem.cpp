@@ -67,8 +67,8 @@ subItemWidth_(0)
 
     setGraphicsRectangle(memoryWidth, memoryHeight);
     setupLabels(baseAddress, lastAddress);
-    setupToolTip("memory map");
-    
+    setupToolTip(QStringLiteral("Memory Map"));
+
     qreal blockXPosition = 0;
     if (filterRegisters_)
     {
@@ -236,11 +236,12 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QShared
     if (!filterAddressBlocks_)
     {
         childItem = new AddressBlockGraphicsItem(
-            subMemoryItem, isEmpty, filterRegisters_, filterFields_, subItemWidth_, this);
+            subMemoryItem, isEmpty, filterRegisters_, filterFields_, subItemWidth_, getContainingInstance(), this);
     }
     else if (!filterRegisters_)
     {
-        childItem = new RegisterGraphicsItem(subMemoryItem, isEmpty, subItemWidth_, filterFields_, this);
+        childItem = new RegisterGraphicsItem(
+            subMemoryItem, isEmpty, subItemWidth_, filterFields_, getContainingInstance(), this);
     }
 
     return childItem;

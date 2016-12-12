@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 MemoryExtensionGraphicsItem::MemoryExtensionGraphicsItem(qreal positionX, qreal positionY, qreal extensionWidth,
     qreal extensionHeight, QGraphicsItem* parentItem):
-MemoryDesignerGraphicsItem("", parentItem)
+MemoryDesignerGraphicsItem(QStringLiteral(""), QStringLiteral(""), parentItem)
 {
     setRect(positionX, positionY, extensionWidth, extensionHeight);
     setPenAndBrush();

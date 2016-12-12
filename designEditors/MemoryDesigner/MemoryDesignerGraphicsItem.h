@@ -33,10 +33,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] itemName    Name of the memory graphics item.
-     *      @param [in] parent      The parent item.
+     *      @param [in] itemName        Name of the memory graphics item.
+     *      @param [in] instanceName    Name of the containing component instance.
+     *      @param [in] parent          The parent item.
      */
-    MemoryDesignerGraphicsItem(QString const& itemName, QGraphicsItem* parent = 0);
+    MemoryDesignerGraphicsItem(QString const& itemName, QString const& instanceName, QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.
@@ -132,6 +133,13 @@ public:
      *      @param [in] label   The selected label.
      */
     virtual void fitLabel(QGraphicsTextItem* label);
+
+    /*!
+     *  Get the name of the containing component instance.
+     *
+     *      @return Name of the containing component instance.
+     */
+    QString getContainingInstance() const;
 
 protected:
 
@@ -248,6 +256,9 @@ private:
 
     //! The amount of numbers used to display memory ranges.
     int amountOfLabelNumbers_;
+
+    //! Name of the containing component instance.
+    QString instanceName_;
 
     //! Map containing memory connection items and their base addresses.
     QMap<quint64, MemoryConnectionItem*> memoryConnections_;

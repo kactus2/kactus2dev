@@ -24,9 +24,11 @@
 // Function: RegisterGraphicsItem::RegisterGraphicsItem()
 //-----------------------------------------------------------------------------
 RegisterGraphicsItem::RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister,
-    qreal registerWidth, bool filterFields, MemoryDesignerGraphicsItem* parentItem):
-MemoryDesignerChildGraphicsItem(registerItem->getName(), "register", registerItem->getAddress().toULongLong(),
-    getRegisterEnd(registerItem), registerWidth, parentItem),
+    qreal registerWidth, bool filterFields, QString const& containingInstance,
+    MemoryDesignerGraphicsItem* parentItem):
+MemoryDesignerChildGraphicsItem(registerItem->getName(), QStringLiteral("Register"),
+    registerItem->getAddress().toULongLong(), getRegisterEnd(registerItem), registerWidth, containingInstance,
+    parentItem),
 fieldItems_(),
 isEmpty_(isEmptyRegister),
 registerWidth_(registerWidth),
@@ -213,7 +215,7 @@ void RegisterGraphicsItem::createFieldGraphicsItem(QString const& fieldName, qui
     }
 
     FieldGraphicsItem* newField = new FieldGraphicsItem(fieldName, fieldOffset, fieldLastBit, fieldItemWidth,
-        registerEnd, isEmptyField, fieldFont, this);
+        registerEnd, isEmptyField, fieldFont, getContainingInstance(), this);
     fieldItems_.append(newField);
 
     int overlapModifier = 0;
@@ -277,4 +279,18 @@ qreal RegisterGraphicsItem::getMaximumNeededChangeInFieldWidth() const
     maximumWidthChange = registerSize * maximumWidthChange;
 
     return maximumWidthChange;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::getItemWidth()
+//-----------------------------------------------------------------------------
+qreal RegisterGraphicsItem::getItemWidth() const
+{
+    qreal itemWidth = boundingRect().width();
+    if (!fieldItems_.isEmpty())
+    {
+        itemWidth = MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2;
+    }
+
+    return itemWidth;
 }
