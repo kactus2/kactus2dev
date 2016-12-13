@@ -332,7 +332,6 @@ CreateHelp
     <ClCompile Include="common\dialogs\listSelectDialog\ListSelectDialog.cpp" />
     <ClCompile Include="common\dialogs\NewDesignDialog\NewDesignDialog.cpp" />
     <ClCompile Include="common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.cpp" />
-    <ClCompile Include="common\dialogs\TableViewDialog\TableViewDialog.cpp" />
     <ClCompile Include="common\validators\AddressValidator.cpp" />
     <ClCompile Include="common\validators\LibraryPathValidator\librarypathvalidator.cpp" />
     <ClCompile Include="common\views\EditableTableView\ColumnFreezableTable.cpp" />
@@ -1320,6 +1319,7 @@ CreateHelp
     <ClCompile Include="library\LibraryManager\librarytreeview.cpp" />
     <ClCompile Include="library\LibraryManager\librarytreewidget.cpp" />
     <ClCompile Include="library\LibraryManager\LibraryUtils.cpp" />
+    <ClCompile Include="library\LibraryManager\TableViewDialog.cpp" />
     <ClCompile Include="library\LibraryManager\VLNVDialer\dialerwidget.cpp" />
     <ClCompile Include="library\LibraryManager\VLNVDialer\filterwidget.cpp" />
     <ClCompile Include="library\LibraryManager\VLNVDialer\firmnessgroup.cpp" />
@@ -5970,6 +5970,7 @@ CreateHelp
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
     </CustomBuild>
+    <ClInclude Include="library\LibraryManager\TableViewDialog.h" />
     <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h" />
     <ClInclude Include="mainwindow\SaveHierarchy\DocumentTreeBuilder.h" />
     <CustomBuild Include="mainwindow\SaveHierarchy\HierarchicalSaveBuildStrategy.h">
@@ -14149,7 +14150,6 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
     </CustomBuild>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h" />
-    <ClInclude Include="common\dialogs\TableViewDialog\TableViewDialog.h" />
     <ClInclude Include="common\graphicsItems\ConnectionUndoCommands.h" />
     <ClInclude Include="common\graphicsItems\GraphicsColumnUndoCommands.h" />
     <ClInclude Include="common\graphicsItems\GraphicsItemTypes.h" />

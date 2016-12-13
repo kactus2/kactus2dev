@@ -13,13 +13,14 @@
 
 #include "LibraryFilter.h"
 #include "LibraryErrorModel.h"
+#include "TableViewDialog.h"
 
 #include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovemodel.h>
-#include <common/dialogs/TableViewDialog/TableViewDialog.h>
+
 
 #include <IPXACTmodels/common/Document.h>
 
@@ -68,6 +69,7 @@ QTabWidget(parent),
     hierarchyModel_(new HierarchyModel(data_.data(), this, this)),
     treeWidget_(0),
     hierarchyWidget_(0),
+    integrityWidget_(0),
     objects_(),
     objectValidity_(),
     saveInProgress_(false),
@@ -283,6 +285,7 @@ void LibraryHandler::searchForIPXactFiles()
 {
     objects_.clear();
     objectValidity_.clear();
+
     data_->parseLibrary();
 }
 
@@ -716,21 +719,59 @@ void LibraryHandler::onShowErrors(VLNV const& vlnv)
 
     if (document != 0)
     {
-        LibraryErrorModel* model = new LibraryErrorModel(this);
-        model->addErrors(data_->findErrorsInDocument(document, data_->getPath(vlnv)));
 
         // Show error list in a dialog.
         TableViewDialog* dialog = new TableViewDialog(this);
         dialog->setWindowTitle(tr("Errors in %1").arg(vlnv.toString()));
-		dialog->setDescription(tr("The following errors were found:"));
-		dialog->resize(700, 350);
+        dialog->setDescription(tr("The following errors were found:"));
+        dialog->resize(700, 350);
 
-		dialog->show();
+        LibraryErrorModel* model = new LibraryErrorModel(dialog);
+        model->addErrors(data_->findErrorsInDocument(document), vlnv.toString());
 
-        dialog->setModel(model);
-        
+        dialog->show();
+
+        dialog->setModel(model);               
+
         connect(dialog, SIGNAL(finished(int)), dialog, SLOT(deleteLater()));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::onGenerateIntegrityReport()
+//-----------------------------------------------------------------------------
+void LibraryHandler::onGenerateIntegrityReport()
+{
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+    if (!integrityWidget_)
+    {
+        integrityWidget_ = new TableViewDialog(this);
+        integrityWidget_->setWindowTitle(tr("Library Integrity Report"));
+        integrityWidget_->setDescription(tr("The following errors were found:"));
+        integrityWidget_->resize(1000, 800);
+
+        LibraryErrorModel* model = new LibraryErrorModel(integrityWidget_);
+
+        foreach (VLNV const& vlnv, data_->getItems())
+        {
+            QSharedPointer<Document> document = getModel(vlnv);
+            if (document != 0)
+            {
+                model->addErrors(data_->findErrorsInDocument(document), vlnv.toString());
+            }
+        }             
+
+        integrityWidget_->setModel(model);
+
+        integrityWidget_->show();       
+
+        connect(integrityWidget_, SIGNAL(finished(int)), this, SLOT(onCloseIntegrityReport()));
+    }
+
+    QApplication::restoreOverrideCursor();   
+
+    integrityWidget_->raise();
 }
 
 //-----------------------------------------------------------------------------
@@ -1234,6 +1275,15 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
 
     treeModel_->onDocumentSaved(vlnv);
     hierarchyModel_->onDocumentSaved(savedItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::closeIntegrityReport()
+//-----------------------------------------------------------------------------
+void LibraryHandler::onCloseIntegrityReport()
+{
+    integrityWidget_->deleteLater();
+    integrityWidget_ = 0;
 }
 
 //-----------------------------------------------------------------------------

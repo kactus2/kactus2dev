@@ -77,7 +77,7 @@ QObject(parent),
     }
     else
     {
-        emit errorMessage(tr("VLNV %1 was not for supported item").arg(vlnv.toString()));
+        //emit errorMessage(tr("VLNV %1 was not for supported item").arg(vlnv.toString()));
         isValid_ = false;
     }
 }
@@ -124,7 +124,7 @@ void HierarchyItem::createChild(VLNV const& vlnv)
 	// if the child does not exist in library
 	if (!library_->contains(vlnv))
     {
-		emit errorMessage(tr("The vlnv %1 was not found in the library.").arg(vlnv.toString()));
+		//emit errorMessage(tr("The vlnv %1 was not found in the library.").arg(vlnv.toString()));
 		return;
 	}
 
@@ -705,8 +705,8 @@ VLNV HierarchyItem::findDesignReference(QSharedPointer<View> view)
                 }
                 else if (library_->getDocumentType(configurationVLNV) != VLNV::DESIGNCONFIGURATION)
                 {
-                    emit errorMessage(tr("Design Configuration reference %1 was for wrong type of object.").arg(
-                        configurationVLNV.toString()));
+                    //emit errorMessage(tr("Design Configuration reference %1 was for wrong type of object.").arg(
+                    //    configurationVLNV.toString()));
                     isValid_ = false;
                     return VLNV();
                 }
@@ -732,12 +732,12 @@ void HierarchyItem::createChildItemForDesign(VLNV const& designVLNV,
     {
         if (!library_->contains(designVLNV))
         {
-            emit errorMessage(tr("VLNV %1 was not found in the library").arg(designVLNV.toString()));
+            //emit errorMessage(tr("VLNV %1 was not found in the library").arg(designVLNV.toString()));
             isValid_ = false;
         }                
         else if (library_->getDocumentType(designVLNV) != VLNV::DESIGN)
         {
-            emit errorMessage(tr("VLNV %1 was not valid hierarchy reference.").arg(designVLNV.toString()));
+            //emit errorMessage(tr("VLNV %1 was not valid hierarchy reference.").arg(designVLNV.toString()));
             isValid_ = false;
         }
         else if (!hasChild(designVLNV)) 
@@ -901,13 +901,13 @@ bool HierarchyItem::isValidComponentInstanceVLNV(VLNV const& componentVLNV)
 {
     if (!library_->contains(componentVLNV))
     {
-        emit errorMessage(tr("VLNV %1 was not found in the library").arg(componentVLNV.toString()));
+        //emit errorMessage(tr("VLNV %1 was not found in the library").arg(componentVLNV.toString()));
         return false;
     }
 
     else if (library_->getDocumentType(componentVLNV) != VLNV::COMPONENT)
     {
-        emit errorMessage(tr("VLNV %1 was not for component").arg(componentVLNV.toString()));
+        //emit errorMessage(tr("VLNV %1 was not for component").arg(componentVLNV.toString()));
         return false;
     }
 

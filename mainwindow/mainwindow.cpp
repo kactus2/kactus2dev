@@ -708,19 +708,19 @@ void MainWindow::setupActions()
 	connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
 
 	actLibraryLocations_ = new QAction(QIcon(":/icons/common/graphics/library-config.png"),
-		tr("Configure library"), this);
+		tr("Configure Library"), this);
 	connect(actLibraryLocations_, SIGNAL(triggered()), this, SLOT(setLibraryLocations()), Qt::UniqueConnection);
 
 	// the action to search for IP-Xact documents in file system
 	actLibrarySearch_ = new QAction(QIcon(":/icons/common/graphics/library-refresh.png"),
-		tr("Refresh library"), this);
+		tr("Refresh Library"), this);
 	connect(actLibrarySearch_, SIGNAL(triggered()),	this, SLOT(onLibrarySearch()), Qt::UniqueConnection);
 
 	// Check the library integrity
 	actCheckIntegrity_ = new QAction(QIcon(":/icons/common/graphics/checkIntegrity.png"),
-		tr("Check Integrity"), this);
+		tr("View Library Integrity Report"), this);
 	connect(actCheckIntegrity_, SIGNAL(triggered()),
-		libraryHandler_, SLOT(onCheckLibraryIntegrity()), Qt::UniqueConnection);
+		libraryHandler_, SLOT(onGenerateIntegrityReport()), Qt::UniqueConnection);
 
 	// Initialize the action to generate VHDL.
 	actGenVHDL_ = new QAction(QIcon(":/icons/common/graphics/vhdl_gen.png"),
