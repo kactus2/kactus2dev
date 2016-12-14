@@ -153,15 +153,17 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign()
     QFETCH(QString, viewName);
 
     QSharedPointer<Component> targetComponent = createTestComponent();
+
     QSharedPointer<Design> targetDesign = createTestDesign();
     QSharedPointer<DesignConfiguration> targetConfiguration = createTestDesignConfig();
+    targetConfiguration->setDesignRef(targetDesign->getVlnv());
 
     QSharedPointer<View> structuralView( new View(viewName) );
-	QSharedPointer<DesignInstantiation> di( new DesignInstantiation("test_design_insta") );
-	structuralView->setDesignInstantiationRef(di->name());
-	QSharedPointer<ConfigurableVLNVReference> cvr( new ConfigurableVLNVReference( targetDesign->getVlnv() ) );
-	di->setDesignReference(cvr);
-    targetComponent->getDesignInstantiations()->append(di);
+	QSharedPointer<DesignConfigurationInstantiation> di( new DesignConfigurationInstantiation("test_design_conf_insta") );
+	structuralView->setDesignConfigurationInstantiationRef(di->name());
+	QSharedPointer<ConfigurableVLNVReference> cvr( new ConfigurableVLNVReference( targetConfiguration->getVlnv() ) );
+	di->setDesignConfigurationReference(cvr);
+    targetComponent->getDesignConfigurationInstantiations()->append(di);
     targetComponent->getViews()->append(structuralView);
 
     runGenerator(&utilityMock_, targetComponent, targetConfiguration, targetDesign);
@@ -294,10 +296,7 @@ bool tst_VerilogGenerator::couldConfigure(QSharedPointer<QList<QSharedPointer<Vi
 	configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration(viewSelect,
         componentParser, designParser));
 
-	if (!possibleViews->isEmpty())
-	{
-		viewSelect->setView(possibleViews->first());
-	}
+	viewSelect->setView(possibleViews->first());
 
     return true;
 }
