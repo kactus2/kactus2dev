@@ -140,6 +140,7 @@ private:
 	//! The design configuration for which the generator is run.
 	QSharedPointer<DesignConfiguration> designConf_;
 
+    //! The view of the top component chosen as the active view.
 	QSharedPointer<View> topView_;
 
     //! The test mock for library interface.
@@ -149,7 +150,7 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::tst_HDLParser()
 //-----------------------------------------------------------------------------
-tst_HDLParser::tst_HDLParser(): topComponent_(), design_(), designConf_(), library_(this)
+tst_HDLParser::tst_HDLParser(): topComponent_(), design_(), designConf_(), topView_(), library_(this)
 {
 
 }

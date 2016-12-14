@@ -1384,7 +1384,6 @@ void tst_VerilogGenerator::testImplementationSelectionWithNoModuleHeaderEnd()
 	QVERIFY(!success);
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::testImplementationSelectionWithNoModuleEnd()
 //-----------------------------------------------------------------------------

@@ -2,7 +2,7 @@
 # File: unittest.pro
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
-# Author: Esko Pekkarinen
+# Author: Janne Virtanen
 # Date: 24.7.2014
 #
 # Description:
