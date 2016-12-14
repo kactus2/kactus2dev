@@ -178,6 +178,7 @@ void FileDependencyEditor::scan()
 
     // Phase 1. Scan all files and folders in the source paths recursively.
     progWidget_ = new ScanProgressWidget(this);
+    progWidget_->setWindowTitle(tr("Scanning file dependencies..."));
     progWidget_->setRange(0, 1);
     progWidget_->setValue(1);
     progWidget_->setMessage(tr("Scanning source directories..."));

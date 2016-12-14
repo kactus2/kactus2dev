@@ -17,28 +17,34 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
 
+#include <QFileDialog>
 #include <QGroupBox>
-#include <QLabel>
 #include <QHBoxLayout>
+#include <QLabel>
 
 //-----------------------------------------------------------------------------
 // Function: FileBuildCommand::FileBuildCommand()
 //-----------------------------------------------------------------------------
-FileBuildCommand::FileBuildCommand(QWidget *parent, LibraryInterface* handler, QSharedPointer<Component> component,
-                                   QSharedPointer<File> file, QSharedPointer<ParameterFinder> parameterFinder,
-                                   QSharedPointer<ExpressionParser> expressionParser):
+FileBuildCommand::FileBuildCommand(QSharedPointer<File> file,
+    QString const& componentPath,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser, QWidget *parent):
 QGroupBox(tr("Build command"), parent),
-file_(file),
-buildCommand_(),
-commandEditor_(this),
-flagsEditor_(this),
-replaceDefaultEditor_(new ExpressionEditor(parameterFinder, this)),
-targetEditor_(this, handler, component),
-expressionParser_(expressionParser)
+    file_(file),
+    buildCommand_(),
+    componentPath_(componentPath),
+    commandEditor_(this),
+    flagsEditor_(this),
+    replaceDefaultEditor_(new ExpressionEditor(parameterFinder, this)),
+    targetEditor_(this),
+    browseTargetButton_(tr("Browse..."), this),
+    expressionParser_(expressionParser)
 {
     Q_ASSERT_X(file, "FileBuildCommand constructor", "Null File-pointer given to the constructor");
 
@@ -52,11 +58,14 @@ expressionParser_(expressionParser)
 
     replaceDefaultEditor_->setAppendingCompleter(replaceCompleter);
 
+    targetEditor_.setAcceptDrops(true);
+
     setupLayout();
 
 	refresh();
 
-    connect(&targetEditor_, SIGNAL(contentChanged()), this, SLOT(onTargetChanged()), Qt::UniqueConnection);
+    connect(&targetEditor_, SIGNAL(editingFinished()), this, SLOT(onTargetChanged()), Qt::UniqueConnection);
+    connect(&browseTargetButton_, SIGNAL(clicked()), this, SLOT(onBrowseTarget()), Qt::UniqueConnection);
     connect(&commandEditor_, SIGNAL(textEdited(QString const& )), 
         this, SLOT(onCommandChanged()), Qt::UniqueConnection);
     connect(&flagsEditor_, SIGNAL(textEdited(QString const& )), this, SLOT(onFlagsChanged()), Qt::UniqueConnection);
@@ -191,6 +200,26 @@ void FileBuildCommand::updateFileBuildCommand()
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileBuildCommand::onBrowseTarget()
+//-----------------------------------------------------------------------------
+void FileBuildCommand::onBrowseTarget()
+{
+    QFileDialog browseDialog(this, tr("Set a target file"), componentPath_);
+    if (browseDialog.exec() == QDialog::Accepted)
+    {
+        QStringList selectedFiles = browseDialog.selectedFiles();
+
+        if (!selectedFiles.isEmpty())
+        {
+            QString relativePath = General::getRelativeSavePath(componentPath_, selectedFiles.first());
+
+            targetEditor_.setText(relativePath);
+            onTargetChanged();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileBuildCommand::setupLayout()
 //-----------------------------------------------------------------------------
 void FileBuildCommand::setupLayout()
@@ -203,7 +232,8 @@ void FileBuildCommand::setupLayout()
     targetEditor_.setToolTip(targetToolTip);
 
     topLayout->addWidget(targetLabel, 0, 0, 1, 1);
-    topLayout->addWidget(&targetEditor_, 0, 1, 1, 2);
+    topLayout->addWidget(&targetEditor_, 0, 1, 1, 1);
+    topLayout->addWidget(&browseTargetButton_, 0, 2, 1, 1);
 
     QString commandToolTip(tr("Command defines a compiler or assembler tool that processes files of this type."));
     QLabel* commandLabel = new QLabel(tr("Command:"), this);
@@ -231,6 +261,7 @@ void FileBuildCommand::setupLayout()
 
     topLayout->addWidget(replaceLabel, 3, 0, 1, 1);
     topLayout->addWidget(replaceDefaultEditor_, 3, 1, 1, 2);
+    topLayout->setColumnStretch(1, 1);
 
     setContentsMargins(0, 0, 0, 0);
 }

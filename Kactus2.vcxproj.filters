@@ -2191,9 +2191,6 @@
     <ClCompile Include="GeneratedFiles\moc_filetypeeditordelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_targetnameedit.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_filebuildcommand.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2633,9 +2630,6 @@
       <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\fileSet\file\filetypeeditordelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\file\targetnameedit.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\general\desceditor.cpp">
@@ -4897,9 +4891,6 @@
       <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\fileSet\file\filetypeeditordelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\fileSet\file\targetnameedit.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\fileSet\file\filebuildcommand.h">

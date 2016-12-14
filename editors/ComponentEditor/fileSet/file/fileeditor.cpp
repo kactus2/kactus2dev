@@ -31,7 +31,7 @@ editButton_(new QPushButton(QIcon(":/icons/common/graphics/settings-code_editor.
 runButton_(new QPushButton(QIcon(":/icons/common/graphics/plugin-generator.png"), tr("Run file"), this)),
 generalEditor_(this, file),
 fileTypeEditor_(this, file),
-buildCommand_(this, handler, component, file, parameterFinder, expressionParser),
+buildCommand_(file, handler->getDirectoryPath(component->getVlnv()), parameterFinder, expressionParser, this),
 dependenciesEditor_(tr("Dependencies"), handler, component, this),
 exportedNamesEditor_(tr("Exported names"), this),
 imageTypesEditor_(tr("Image types"), this)
