@@ -291,12 +291,10 @@ bool tst_VerilogGenerator::couldConfigure(QSharedPointer<QList<QSharedPointer<Vi
     HDLDesignParser* designParser)
 {
     QSharedPointer<ViewSelection> viewSelect(
-        new ViewSelection("verilog", possibleViews, possibleInstantiations, possibleFileSets));
+        new ViewSelection("verilog", "", "", possibleViews, possibleInstantiations, possibleFileSets));
 
 	configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration(viewSelect,
         componentParser, designParser));
-
-	viewSelect->setView(possibleViews->first());
 
     return true;
 }
@@ -306,7 +304,6 @@ bool tst_VerilogGenerator::couldConfigure(QSharedPointer<QList<QSharedPointer<Vi
 //-----------------------------------------------------------------------------
 QSharedPointer<GeneratorConfiguration> tst_VerilogGenerator::getConfiguration()
 {
-    configuration_->getViewSelection()->setSaveToFileset(true);
 	configuration_->getFileOuput()->setOutputPath(".");
 	configuration_->getViewSelection()->setFileSet("testFileSet");
 

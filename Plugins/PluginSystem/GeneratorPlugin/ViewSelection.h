@@ -28,10 +28,10 @@ class ViewSelection
 public:
 
 	//! The constructor.
-	ViewSelection( QString targetLanguage,
-		QSharedPointer<QList<QSharedPointer<View> > > views, 
-		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, 
-		QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets);
+	ViewSelection(QString const& targetLanguage, QString const& defaultViewName, QString const& defaultFileSetName,
+        QSharedPointer<QList<QSharedPointer<View> > > views,
+        QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations,
+        QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets);
 
 	//! The destructor.
 	~ViewSelection();
@@ -49,21 +49,14 @@ public:
     /*!
      *  Gets the names of the file sets.
      */
-	QSharedPointer<QStringList> fileSetNames() const;
-
-    /*!
-     *  Sets the view for the top component in generation.
-     *
-     *      @param [in] view   The active view.
-	 */
-	void setView(QSharedPointer<View> view);
+	QStringList fileSetNames() const;
 
     /*!
      *  Sets the view for the top component in generation, if it exists.
      *
 	 *      @param [in] viewName   The name of the active view.
 	 */
-    void setView(QString viewName);
+    void setView(QString const& viewName);
 
     /*!
      *  Gets the active view for the top component.
@@ -74,15 +67,6 @@ public:
      *  Gets the name of the active view for the top component.
      */
 	QString getViewName() const;
-	
-    /*!
-     *  Sets the component instantiation for the active view.
-     *
-	 *      @param [in] instantiation   The ComponentInstantiation.
-
-	 *      @return True, if the instantiation exists, else false.
-	 */
-	bool setInstantiation(QString name);
 	
     /*!
      *  Gets the selected component instantiation.
@@ -112,20 +96,6 @@ public:
      *  Gets the name of the selected file set, even if it does not exist.
      */
     QString getFileSetName() const;
-
-    /*!
-     *  Sets whether the output file should be added to top component file sets or not.
-     *
-     *      @param [in] shouldSave   True for saving, false for not saving.
-     */
-    void setSaveToFileset(bool shouldSave);
-
-    /*!
-     *  Checks if the output file should be added to top component file sets.
-     *
-     *      @return True, if file should be saved, false otherwise.
-     */
-    bool getSaveToFileset() const;
 	
     /*!
      *  Gets the target language of the generation.

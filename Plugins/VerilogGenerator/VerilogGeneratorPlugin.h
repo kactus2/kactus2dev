@@ -185,13 +185,6 @@ private:
      *      @return The default output path.
      */
     QString defaultOutputPath() const;
-
-    /*!
-     *  Checks if the generated file should be added to a file set in the top component.
-     *
-     *      @return True, if the file should be added to file set, otherwise false.
-     */
-    virtual bool outputFileShouldBeAddedToTopComponent() const;
     
     /*!
      *  Gets the relative path from the top component xml file to the given absolute path.
@@ -246,6 +239,12 @@ private:
 
     //! The configuration for the generation.
     QSharedPointer<GeneratorConfiguration> configuration_;
+
+    //! The last values used by the generation.
+    bool generateInterface_;
+    bool generateMemory_;
+    QString lastViewName_;
+    QString lastFileSetName_;
 };
 
 #endif // VERILOGGENERATORPLUGIN_H

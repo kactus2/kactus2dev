@@ -38,8 +38,6 @@ signals:
 
 private slots:
 
-    void onFileSetStateChanged(bool on);
-
 	void onViewChanged(QString const& selectedViewName);
 
 	void setLanguage(QString selectedLanguage);
@@ -62,9 +60,6 @@ private:
 
 	// The combobox to select the desired view.
 	QComboBox* viewSelection_;
-
-	// The group box for file set selection
-	QGroupBox* addToFileset_;
 
 	// The combobox to select the desired component instantiation.
 	QLabel* instantiationSelection_;

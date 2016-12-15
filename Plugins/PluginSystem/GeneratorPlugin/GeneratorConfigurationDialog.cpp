@@ -40,6 +40,16 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     QCheckBox* generateMemory = new QCheckBox("Generate memory (experimental)");
     optionLayout->addWidget(generateMemory);
 
+    if (configuration_->getInterfaceGeneration())
+    {
+        useInterfaces->setCheckState(Qt::Checked);
+    }
+
+    if (configuration_->getMemoryGeneration())
+    {
+        generateMemory->setCheckState(Qt::Checked);
+    }
+
 	// Layout for things coming to the bottom part of the dialog.
 	QHBoxLayout* bottomLayout = new QHBoxLayout();
 

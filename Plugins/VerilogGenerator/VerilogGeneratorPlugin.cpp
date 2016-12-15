@@ -32,7 +32,8 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::VerilogGeneratorPlugin()
 //-----------------------------------------------------------------------------
-VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0), utility_(0), topComponent_(0)
+VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0), utility_(0), topComponent_(0),
+    generateInterface_(false), generateMemory_(false), lastViewName_(), lastFileSetName_()
 {
 }
 
@@ -56,7 +57,7 @@ QString VerilogGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVersion() const
 {
-    return "1.5b";
+    return "1.5c";
 }
 
 //-----------------------------------------------------------------------------
@@ -202,7 +203,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
         return;
     }
 
-    // The design configuration must point to the deisgn for sanity.
+    // The design configuration must point to the design for sanity.
     if (design && designConfig && designConfig->getDesignRef() != design->getVlnv())
     {
         utility->printError(tr("The provided design configuration does not point to the provided design!"));
@@ -264,13 +265,20 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 	generator.generate(getVersion(), utility_->getKactusVersion());
     utility_->printInfo(tr("Finished writing the file(s)."));
 
-	// If so desired in the configuration, the resulting file will be added to the file set.
-    if (configuration->getViewSelection()->getSaveToFileset())
+	// The resulting file will be added to the file set.
+    addGeneratedFileToFileSet(configuration->getViewSelection(), generator.getDocuments());
+
+    // Remember the values.
+    generateInterface_ = configuration->getInterfaceGeneration();
+    generateMemory_ = configuration->getMemoryGeneration();
+    lastFileSetName_ = configuration->getViewSelection()->getFileSetName();
+
+    if (configuration->getViewSelection()->getView())
     {
-        addGeneratedFileToFileSet(configuration->getViewSelection(), generator.getDocuments());
+        lastViewName_ = configuration->getViewSelection()->getView()->name();
     }
 
-    // Finally, save the changes to the affected file.
+    // Finally, save the changes to the affected document.
     saveChanges();
     utility_->printInfo(tr("Generation complete."));
 }
@@ -324,20 +332,18 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 		return false;
 	}
 
-    // Initialize model for view selection: It must be knowledgeable about possible views, instantiations and file sets.
+    // Initialize model for view selection.
     QSharedPointer<ViewSelection> viewSelect(
-        new ViewSelection("verilog", possibleViews, possibleInstantiations, possibleFileSets));
-
-    // The default view is the first one.
-	viewSelect->setView(possibleViews->first());
-
-    viewSelect->setSaveToFileset(outputFileShouldBeAddedToTopComponent());
+        new ViewSelection("verilog", lastViewName_, lastFileSetName_,
+        possibleViews, possibleInstantiations, possibleFileSets));
 
     // Create model for the configuration widget.
     configuration_ = QSharedPointer<GeneratorConfiguration>(
         new GeneratorConfiguration(viewSelect, componentParser, designParser));
-    // Set the default output path for convenience.
+    // Set the defaults for convenience.
     configuration_->getFileOuput()->setOutputPath(defaultOutputPath());
+    configuration_->setInterfaceGeneration(generateInterface_);
+    configuration_->setMemoryGeneration(generateMemory_);
 
     // Create the dialog and execute: The user will ultimately accept the configuration.
     GeneratorConfigurationDialog dialog(configuration_, utility_->getParentWidget());
@@ -372,14 +378,6 @@ QString VerilogGeneratorPlugin::defaultOutputPath() const
     suggestedFile = xmlDir;
 
     return suggestedFile;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGeneratorPlugin::outputFileShouldBeAddedToTopComponent()
-//-----------------------------------------------------------------------------
-bool VerilogGeneratorPlugin::outputFileShouldBeAddedToTopComponent() const
-{
-    return true;
 }
 
 //-----------------------------------------------------------------------------

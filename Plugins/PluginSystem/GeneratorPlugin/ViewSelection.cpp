@@ -18,7 +18,9 @@
 //-----------------------------------------------------------------------------
 // Function: ViewSelection::ViewSelection()
 //-----------------------------------------------------------------------------
-ViewSelection::ViewSelection( QString targetLanguage,
+ViewSelection::ViewSelection(QString const& targetLanguage, 
+	QString const& defaultViewName, 
+	QString const& defaultFileSetName,
 	QSharedPointer<QList<QSharedPointer<View> > > views, 
 	QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > instantiations, 
 	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets) :
@@ -42,15 +44,23 @@ ViewSelection::ViewSelection( QString targetLanguage,
 		fileSets_[fileSet->name()] = fileSet;
 	}
 
-    // Try to find a view that has the target language in its instantiation.
-    foreach(QSharedPointer<View> view, views_)
-    {
-        QSharedPointer<ComponentInstantiation> cimp = instantiations_[view->getComponentInstantiationRef()];
+    // Try to find the default view from the mapping.
+    view_ = views_.value(defaultViewName);
 
-        if (cimp && cimp->getLanguage().toLower() == targetLanguage_.toLower())
+    if (!view_)
+    {
+        // If not found, try to find a view that has the target language in its instantiation.
+        foreach(QSharedPointer<View> view, views_)
         {
-            view_ = view;
-            break;
+            QSharedPointer<ComponentInstantiation> cimp = instantiations_.value(view->getComponentInstantiationRef());
+
+            if (cimp && cimp->getLanguage().toLower() == targetLanguage_.toLower())
+            {
+                // If this is a match, pick both view and instantiation.
+                view_ = view;
+                instantiation_ = cimp;
+                break;
+            }
         }
     }
 
@@ -58,6 +68,35 @@ ViewSelection::ViewSelection( QString targetLanguage,
     if (!view_ && views_.size() > 0)
     {
         view_ = views_.first();
+    }
+
+    // If view is found, but not the instantiation, try to pick instantiation referenced by the view.
+    if (view_ && !instantiation_)
+    {
+        instantiation_ = instantiations_.value(view_->getComponentInstantiationRef());
+    }
+
+    // Also try find a default file set.
+    fileSet_ = fileSets_.value(defaultFileSetName);
+
+    // If instantiation exists and it has file set references, but none of them is the default,
+    // pick the first one.
+    if (instantiation_ && instantiation_->getFileSetReferences()->size() > 0 &&
+        (!fileSet_ || !instantiation_->getFileSetReferences()->contains(fileSet_->name())))
+    {
+        fileSet_ = fileSets_.value(instantiation_->getFileSetReferences()->first());
+    }
+    
+    // If no other match, pick the first file set on the mapping.
+    if (!fileSet_ && fileSets_.size() > 0)
+    {
+        fileSet_ = fileSets_.first();
+    }
+
+    // If a file set was found, take its name as the reference.
+    if (fileSet_)
+    {
+        fileSetRef_ = fileSet_->name();
     }
 }
 
@@ -87,32 +126,37 @@ QStringList ViewSelection::instantiationNames() const
 //-----------------------------------------------------------------------------
 // Function: ViewSelection::fileSetNames()
 //-----------------------------------------------------------------------------
-QSharedPointer<QStringList> ViewSelection::fileSetNames() const
+QStringList ViewSelection::fileSetNames() const
 {
-	if (instantiation_)
-	{
-		return instantiation_->getFileSetReferences();
-	}
-
-	return QSharedPointer<QStringList>(new QStringList);
+	return QStringList(fileSets_.keys());
 }
 
 //-----------------------------------------------------------------------------
 // Function: ViewSelection::setView()
 //-----------------------------------------------------------------------------
-void ViewSelection::setView(QSharedPointer<View> view)
+void ViewSelection::setView(QString const& viewName)
 {
-	view_ = view;
-}
+    view_ = views_.value(viewName);
 
-//-----------------------------------------------------------------------------
-// Function: ViewSelection::setView()
-//-----------------------------------------------------------------------------
-void ViewSelection::setView(QString viewName)
-{
-    view_ = views_[viewName];
+    if (view_)
+    {
+        instantiation_ = instantiations_.value(view_->getComponentInstantiationRef());
 
-    instantiation_ = instantiations_.value(view_->getComponentInstantiationRef());
+        if (instantiation_ && instantiation_->getFileSetReferences()->size() > 0)
+        {
+            QSharedPointer<FileSet> newFileSet = fileSets_.value(instantiation_->getFileSetReferences()->first());
+
+            if (newFileSet)
+            {
+                fileSet_ = newFileSet;
+                fileSetRef_ = newFileSet->name();
+            }
+        }
+    }
+    else
+    {
+        instantiation_ = QSharedPointer<ComponentInstantiation>();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -152,7 +196,7 @@ QString ViewSelection::getInstantiationName() const
 //-----------------------------------------------------------------------------
 bool ViewSelection::setFileSet(QString const& fileSetRef)
 {
-	fileSet_ = fileSets_[fileSetRef];
+	fileSet_ = fileSets_.value(fileSetRef);
 	fileSetRef_ = fileSetRef;
 
 	if (fileSet_)
@@ -177,22 +221,6 @@ QSharedPointer<FileSet> ViewSelection::getFileSet() const
 QString ViewSelection::getFileSetName() const
 {
 	return fileSetRef_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewSelection::getAddToFileset()
-//-----------------------------------------------------------------------------
-bool ViewSelection::getSaveToFileset() const
-{
-    return saveToFileset_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewSelection::setAddToFileset()
-//-----------------------------------------------------------------------------
-void ViewSelection::setSaveToFileset(bool shouldSave)
-{
-   saveToFileset_ = shouldSave;
 }
 
 //-----------------------------------------------------------------------------

@@ -37,15 +37,11 @@ GeneratorConfiguration::~GeneratorConfiguration()
 //-----------------------------------------------------------------------------
 bool GeneratorConfiguration::validSelections(QString &warning)
 {
-    // If the file is not saved to a file set, no selections needed.
-    if (viewSelection_->getSaveToFileset())
+    // Must have a file set as well.
+    if (viewSelection_->getFileSetName().isEmpty())
     {
-        // Must have a file set as well.
-        if (viewSelection_->getFileSetName().isEmpty())
-        {
-            warning = QLatin1String("<b>Define the file set.</b>");
-            return false;
-        }
+        warning = QLatin1String("<b>Define the file set.</b>");
+        return false;
     }
 
     // Must have valid file output.
