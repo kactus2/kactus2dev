@@ -567,7 +567,7 @@ void GraphicsConnection::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             connectEnds();
         }
     }
-    else if (selectionType_ == SEGMENT)
+    else if (selectionType_ == SEGMENT && !parent_->isProtected())
     {
         simplifyPath();
         fixOverlap();
@@ -894,8 +894,11 @@ void GraphicsConnection::beginUpdatePosition()
 //-----------------------------------------------------------------------------
 QUndoCommand* GraphicsConnection::endUpdatePosition(QUndoCommand* parent)
 {
-    simplifyPath();
-    fixOverlap();
+    if (!parent_->isProtected())
+    {
+        simplifyPath();
+        fixOverlap();
+    }
 
     if (route() != oldRoute_)
     {        
