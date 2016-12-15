@@ -4180,6 +4180,9 @@
     <ClCompile Include="designEditors\MemoryDesigner\FieldGraphicsItem.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerConstants.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />

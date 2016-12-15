@@ -38,9 +38,9 @@ public:
      *      @param [in] yTransfer                   Y transfer of the memory connection.
      *      @param [in] parent                      Parent item of the connection.
      */
-    MemoryConnectionItem(MainMemoryGraphicsItem* startItem, QString const& firstStartValue,
-        QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
-        bool memoryItemsAreCondensed, int yTransfer = 0, QGraphicsItem* parent = 0);
+    MemoryConnectionItem(MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
+        MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, bool memoryItemsAreCondensed,
+        int yTransfer = 0, QGraphicsItem* parent = 0);
 
 	/*!
      *  The Destructor.
@@ -165,6 +165,14 @@ private:
     MemoryConnectionItem& operator=(MemoryConnectionItem const& rhs);
 
     /*!
+     *  Setup the range labels.
+     *
+     *      @param [in] startValue  Base address of the connection.
+     *      @param [in] endValue    Last address of the connection.
+     */
+    void setupLabels(quint64 startValue, quint64 endValue);
+
+    /*!
      *  Create the connection path.
      */
     void createPath();
@@ -185,11 +193,12 @@ private:
     void repositionLabels();
 
     /*!
-     *  Format a value to hexadecimal.
+     *  Format the selected value to hexadecimal.
      *
-     *      @param [in] value   The given value.
+     *      @param [in] value               The selected value.
+     *      @param [in] amountOfNumbers     The amount of numbers used for the range.
      */
-    QString formatValueToHexadecimal(QString const& value) const;
+    void addZerosToValue(QString& value, int amountOfNumbers) const;
 
     /*!
      *  Get the width of the connection.
@@ -218,19 +227,6 @@ private:
     qreal getComparedConnectionHeight(MemoryConnectionItem* comparisonConnection) const;
 
     /*!
-     *  Check if an item collides with another item.
-     *
-     *      @param [in] firstRectangle      Scene bounding rectangle of the first item.
-     *      @param [in] firstPenWidth       Line width of the first item.
-     *      @param [in] secondRectangle     Scene bounding rectangle of the second item.
-     *      @param [in] secondPenWidth      Line width of the second item.
-     *
-     *      @return True, if the item collides with another item, false otherwise.
-     */
-    bool itemCollidesWithAnotherItem(QRectF firstRectangle, int firstPenWidth, QRectF secondRectangle,
-        int secondPenWidth) const;
-
-    /*!
      *  Reposition a single colliding range label.
      *
      *      @param [in] textLabel   The selected range label.
@@ -240,9 +236,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The amount of numbers used to display ranges.
-    int amountOfNumbers_;
 
     //! The label containing the first item start range.
     QGraphicsTextItem* firstItemStartLabel_;

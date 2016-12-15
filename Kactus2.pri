@@ -1304,5 +1304,6 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
+    ./designEditors/MemoryDesigner/MemoryDesignerConstants.cpp
 RESOURCES += kactus.qrc

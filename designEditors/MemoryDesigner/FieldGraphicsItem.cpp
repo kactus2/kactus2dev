@@ -67,7 +67,7 @@ void FieldGraphicsItem::setLabelPositions()
 
     if (combinedRangeLabel_->toPlainText().isEmpty())
     {
-        QString rangeValue = QLatin1String("");
+        QString rangeValue = QStringLiteral("");
 
         quint64 fieldBaseAddress = getBaseAddress();
         quint64 fieldLastAddress = getLastAddress();
@@ -80,7 +80,7 @@ void FieldGraphicsItem::setLabelPositions()
             QString offset = removeZerosFromRangeValue(fieldBaseAddress);
             QString lastBit = removeZerosFromRangeValue(fieldLastAddress);
 
-            rangeValue = lastBit + QLatin1String("..") + offset;
+            rangeValue = lastBit + QStringLiteral("..") + offset;
         }
 
         combinedRangeLabel_->setPlainText(rangeValue);

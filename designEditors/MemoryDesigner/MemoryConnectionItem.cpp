@@ -27,11 +27,10 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::MemoryConnectionItem()
 //-----------------------------------------------------------------------------
-MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem, QString const& firstStartValue,
-    QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
+MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem, quint64 firstStartValue,
+    quint64 firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
     bool memoryItemsAreCondensed, int yTransfer, QGraphicsItem* parent):
 QGraphicsPathItem(parent),
-amountOfNumbers_(getAmountOfNumbers(firstStartValue, firstEndValue)),
 firstItemStartLabel_(new QGraphicsTextItem(this)),
 firstItemEndLabel_(new QGraphicsTextItem(this)),
 secondItemStartLabel_(new QGraphicsTextItem(this)),
@@ -39,17 +38,12 @@ secondItemEndLabel_(new QGraphicsTextItem(this)),
 startItem_(startItem),
 endItem_(endItem),
 yTransfer_(yTransfer),
-connectionBaseAddress_(firstStartValue.toULongLong()),
-connectionLastAddress_(firstEndValue.toULongLong()),
+connectionBaseAddress_(firstStartValue),
+connectionLastAddress_(firstEndValue),
 connectionWidth_(0),
 memoryItemsAreCondensed_(memoryItemsAreCondensed)
 {
-    QString startValueInHexa = formatValueToHexadecimal(firstStartValue);
-    QString endValueInHexa = formatValueToHexadecimal(firstEndValue);
-    firstItemStartLabel_->setPlainText(startValueInHexa);
-    firstItemEndLabel_->setPlainText(endValueInHexa);
-    secondItemStartLabel_->setPlainText(startValueInHexa);
-    secondItemEndLabel_->setPlainText(endValueInHexa);
+    setupLabels(firstStartValue, firstEndValue);
 
     if (connectionBaseAddress_ == connectionLastAddress_)
     {
@@ -261,6 +255,24 @@ void MemoryConnectionItem::repositionLabels()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::setupLabels()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::setupLabels(quint64 startValue, quint64 endValue)
+{
+    QString startValueInHexa = QString::number(startValue, 16).toUpper();
+    QString endValueInHexa = QString::number(endValue, 16).toUpper();
+
+    int amountOfNumbers = getAmountOfNumbers(startValueInHexa, endValueInHexa);
+    addZerosToValue(startValueInHexa, amountOfNumbers);
+    addZerosToValue(endValueInHexa, amountOfNumbers);
+
+    firstItemStartLabel_->setPlainText(startValueInHexa);
+    firstItemEndLabel_->setPlainText(endValueInHexa);
+    secondItemStartLabel_->setPlainText(startValueInHexa);
+    secondItemEndLabel_->setPlainText(endValueInHexa);
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::getAmountOfNumbers()
 //-----------------------------------------------------------------------------
 int MemoryConnectionItem::getAmountOfNumbers(QString const& rangeStart, QString const& rangeEnd) const
@@ -283,24 +295,17 @@ int MemoryConnectionItem::getAmountOfNumbers(QString const& rangeStart, QString 
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::formatValueToHexadecimal()
+// Function: MemoryConnectionItem::addZerosToValue()
 //-----------------------------------------------------------------------------
-QString MemoryConnectionItem::formatValueToHexadecimal(QString const& value) const
+void MemoryConnectionItem::addZerosToValue(QString& value, int amountOfNumbers) const
 {
-    quint64 intValue = value.toULongLong();
-
-    QString formattedRange = QString::number(intValue, 16).toUpper();
-
-    int rangeSize = formattedRange.size();
-
-    int amountOfZeros = amountOfNumbers_ - rangeSize;
+    int rangeSize = value.size();
+    int amountOfZeros = amountOfNumbers - rangeSize;
     while (amountOfZeros > 0)
     {
-        formattedRange.prepend('0');
+        value.prepend('0');
         amountOfZeros--;
     }
-
-    return formattedRange;
 }
 
 //-----------------------------------------------------------------------------
@@ -429,7 +434,7 @@ void MemoryConnectionItem::repositionSingleRangeLabel(QGraphicsTextItem* rangeLa
             collidingRectangle.setTop(collidingRectangle.top() + RECTANGLEMODIFIER);
             collidingRectangle.setBottom(collidingRectangle.bottom() - RECTANGLEMODIFIER);
 
-            if (itemCollidesWithAnotherItem(labelRectangle, 0, collidingRectangle, 0))
+            if (MemoryDesignerConstants::itemOverlapsAnotherItem(labelRectangle, 0, collidingRectangle, 0))
             {
                 quint64 itemValue = rangeLabel->toPlainText().toULongLong(0, 16);
                 quint64 collidingValue = collidingLabel->toPlainText().toULongLong(0, 16);
@@ -596,32 +601,6 @@ qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* co
     }
 
     return connectionHeight;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::itemCollidesWithAnotherItem()
-//-----------------------------------------------------------------------------
-bool MemoryConnectionItem::itemCollidesWithAnotherItem(QRectF firstRectangle, int firstPenWidth,
-    QRectF secondRectangle, int secondPenWidth) const
-{
-    qreal firstItemTop = firstRectangle.top() + firstPenWidth;
-    qreal firstItemLow = firstRectangle.bottom() - firstPenWidth;
-    qreal secondItemTop = secondRectangle.top() + secondPenWidth;
-    qreal secondItemLow = secondRectangle.bottom() - secondPenWidth;
-
-    if (
-        ((firstItemTop > secondItemTop && firstItemTop < secondItemLow) ||
-        (firstItemLow < secondItemLow && firstItemLow > secondItemTop) ||
-
-        (secondItemTop > firstItemTop && secondItemTop < firstItemLow) ||
-        (secondItemLow < firstItemLow && secondItemLow > firstItemTop) ||
-
-        (firstItemTop == secondItemTop && firstItemLow == secondItemLow)))
-    {
-        return true;
-    }
-
-    return false;
 }
 
 //-----------------------------------------------------------------------------

@@ -19,6 +19,7 @@
 #include <designEditors/MemoryDesigner/MemoryCollisionItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 
 #include <QFont>
 #include <QGraphicsSceneMouseEvent>
@@ -202,22 +203,17 @@ void MainMemoryGraphicsItem::addMemoryConnection(MemoryConnectionItem* connectio
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::addConnectionCollision()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::addConnectionCollision(MemoryCollisionItem* collisionItem)
-{
-    memoryCollisions_.append(collisionItem);
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::reDrawConnections()
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::reDrawConnections()
 {
     foreach (MemoryConnectionItem* connection, getMemoryConnections())
     {
-        connection->reDrawConnection();
-        connection->repositionCollidingRangeLabels();
+        if (connection->getConnectionStartItem() == this)
+        {
+            connection->reDrawConnection();
+            connection->repositionCollidingRangeLabels();
+        }
     }
 }
 
@@ -380,4 +376,73 @@ bool MainMemoryGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem* lab
     }
 
     return MemoryDesignerGraphicsItem::labelCollidesWithRangeLabels(label);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::itemCollidesWithSimilarItems()
+//-----------------------------------------------------------------------------
+bool MainMemoryGraphicsItem::itemCollidesWithSimilarItems() const
+{
+    foreach (QGraphicsItem* collidingItem, collidingItems(Qt::IntersectsItemShape))
+    {
+        MainMemoryGraphicsItem* collidingMainItem = dynamic_cast<MainMemoryGraphicsItem*>(collidingItem);
+        if (collidingMainItem)
+        {
+            return true;
+        }
+        else
+        {
+            MemoryExtensionGraphicsItem* collidingExtensionItem =
+                dynamic_cast<MemoryExtensionGraphicsItem*>(collidingItem);
+            if (collidingExtensionItem)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::createOverlappingConnectionMarkers()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::createOverlappingConnectionMarkers()
+{
+    if (getMemoryConnections().size() > 1)
+    {
+        QVector<MemoryConnectionItem*> spaceConnections = getConnectionsInVector();
+
+        for (int selectedIndex = 0; selectedIndex < getMemoryConnections().size() - 1;
+            ++selectedIndex)
+        {
+            for (int comparisonIndex = selectedIndex + 1;
+                comparisonIndex < getMemoryConnections().size(); ++comparisonIndex)
+            {
+                MemoryConnectionItem* selectedItem = spaceConnections.at(selectedIndex);
+                MemoryConnectionItem* comparisonItem = spaceConnections.at(comparisonIndex);
+
+                QRectF connectionRect = selectedItem->sceneBoundingRect();
+                QRectF comparisonRect = comparisonItem->sceneBoundingRect();
+
+                if (selectedItem && comparisonItem && selectedItem != comparisonItem &&
+                    selectedItem->endItemIsMemoryMap() && comparisonItem->endItemIsMemoryMap() &&
+                    MemoryDesignerConstants::itemOverlapsAnotherItem(connectionRect,
+                    selectedItem->pen().width(), comparisonRect, comparisonItem->pen().width()))
+                {
+                    MemoryCollisionItem* newCollisionItem =
+                        new MemoryCollisionItem(selectedItem, comparisonItem, scene());
+                    memoryCollisions_.append(newCollisionItem);
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getMemoryCollisions()
+//-----------------------------------------------------------------------------
+QVector<MemoryCollisionItem*> MainMemoryGraphicsItem::getMemoryCollisions() const
+{
+    return memoryCollisions_;
 }

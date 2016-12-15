@@ -95,7 +95,7 @@ void MemoryCollisionItem::setLabels()
     QPointF topLeft = boundingRect().topLeft();
     QPointF lowLeft = boundingRect().bottomLeft();
 
-    quint64 collisionRangeStart = qMax(firstRangeStart_, firstRangeEnd_);
+    quint64 collisionRangeStart = qMax(firstRangeStart_, secondRangeStart_);
     QString collisionBaseInHexa = formatValueToHexadecimal(collisionRangeStart);
 
     quint64 collisionRangeEnd = qMin(firstRangeEnd_, secondRangeEnd_);

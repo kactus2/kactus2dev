@@ -30,8 +30,11 @@ MemoryDesignerGraphicsItem(itemName, instanceName, parent)
     setGraphicsRectangle(blockWidth, range);
 
     quint64 rangeEnd = baseAddress + range - 1;
-    setupLabels(baseAddress, rangeEnd);
-    setupToolTip(toolTipType);
+    if (toolTipType.compare(QStringLiteral("Field")) != 0)
+    {
+        setupLabels(baseAddress, rangeEnd);
+        setupToolTip(toolTipType);
+    }
 }
 
 //-----------------------------------------------------------------------------

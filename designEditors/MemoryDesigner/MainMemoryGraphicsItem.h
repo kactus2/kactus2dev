@@ -53,11 +53,11 @@ public:
     virtual void addMemoryConnection(MemoryConnectionItem* connectionItem);
 
     /*!
-     *  Add a memory connection collision to this item.
+     *  Get the memory collision items contained within this item.
      *
-     *      @param [in] collisionItem   The selected memory collision item.
+     *      @return Memory collision items contained within this item.
      */
-    void addConnectionCollision(MemoryCollisionItem* collisionItem);
+    QVector<MemoryCollisionItem*> getMemoryCollisions() const;
 
     /*!
      *  Move the connected memory connections.
@@ -178,6 +178,18 @@ public:
      *      @return The contained memory item.
      */
     QSharedPointer<MemoryItem> getMemoryItem() const;
+
+    /*!
+     *  Check if this item collides with similar items.
+     *
+     *      @return True, if the item collides with another item, false otherwise.
+     */
+    bool itemCollidesWithSimilarItems() const;
+
+    /*!
+     *  Create collision markers for overlapping connections.
+     */
+    void createOverlappingConnectionMarkers();
 
 protected:
 
