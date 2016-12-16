@@ -213,6 +213,9 @@ public slots:
 	//! When export is selected in search view
 	void onExportItem(QModelIndex const& index);
 
+    //! When delete is selected.
+    void onDeleteItem(QModelIndex const& index);
+
     //! Shows errors about the item at the given index.
     void onShowErrors(QModelIndex const& index);
 
@@ -279,6 +282,9 @@ signals:
 
 	//! Export an item to a new location.
 	void exportItem(const VLNV vlnv);
+
+    //! Remove the specified VLNV from the library
+    void removeVLNV(QList<VLNV> vlnv);
 
     //! Shows errors about the item at the given index.
     void showErrors(VLNV const& vlnv);

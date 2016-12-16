@@ -61,6 +61,7 @@ QTreeView(parent),
     createNewDesignAction_(new QAction(tr("New HW Design..."), this)),
     createNewSWDesignAction_(new QAction(tr("New SW Design..."), this)),
     createNewSystemDesignAction_(new QAction(tr("New System Design..."), this)),
+    deleteAction_(new QAction(tr("Delete Item..."), this)), 
     exportAction_(new QAction(tr("Export"), this)),
     showErrorsAction_(new QAction(tr("Show Errors"), this)),
     openBusAction_(new QAction(tr("Open Bus"), this)),
@@ -137,6 +138,10 @@ void HierarchyView::setupActions()
     createNewSystemDesignAction_->setToolTip(tr("Create new System design"));
     connect(createNewSystemDesignAction_, SIGNAL(triggered()),
         this, SLOT(onCreateSystemDesign()), Qt::UniqueConnection);
+
+    deleteAction_->setStatusTip(tr("Delete item from the library"));
+    deleteAction_->setToolTip(tr("Delete the item from the library"));
+    connect(deleteAction_, SIGNAL(triggered()),	this, SLOT(onDeleteAction()), Qt::UniqueConnection);
 
 	exportAction_->setStatusTip(tr("Export item and it's sub-items to another location"));
 	exportAction_->setToolTip(tr("Export item and it's sub-items to another location"));
@@ -325,6 +330,14 @@ void HierarchyView::onCreateApiDef()
 }
 
 //-----------------------------------------------------------------------------
+// Function: HierarchyView::onDeleteAction()
+//-----------------------------------------------------------------------------
+void HierarchyView::onDeleteAction()
+{	
+    emit deleteItem(filter_->mapToSource(currentIndex()));
+}
+
+//-----------------------------------------------------------------------------
 // Function: HierarchyView::onExportAction()
 //-----------------------------------------------------------------------------
 void HierarchyView::onExportAction()
@@ -502,6 +515,7 @@ void HierarchyView::contextMenuEvent(QContextMenuEvent* event)
     }
 
     menu.addAction(exportAction_);
+    menu.addAction(deleteAction_);
 
 	menu.exec(event->globalPos());
 }

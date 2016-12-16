@@ -1655,6 +1655,9 @@ void LibraryHandler::syncronizeModels()
     connect(hierarchyModel_.data(), SIGNAL(exportItem(const VLNV)),
         this, SLOT(onExportItem(const VLNV)), Qt::UniqueConnection);
 
+    connect(hierarchyModel_.data(), SIGNAL(removeVLNV(QList<VLNV>)),
+        this, SLOT(onRemoveVLNV(QList<VLNV>)), Qt::UniqueConnection);
+
     connect(hierarchyModel_.data(), SIGNAL(showErrors(const VLNV)),
         this, SLOT(onShowErrors(const VLNV)), Qt::UniqueConnection);
 }

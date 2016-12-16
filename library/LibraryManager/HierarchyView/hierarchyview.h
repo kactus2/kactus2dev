@@ -77,6 +77,9 @@ public slots:
 
     //! Create new system design
     void onCreateSystemDesign();
+    
+    //! Delete item from library.
+    void onDeleteAction();
 
 	//! Called when user selects "Export item and sub-items" in contextMenu
 	void onExportAction();
@@ -109,7 +112,7 @@ public slots:
     //! Create new API definition.
     void onCreateApiDef();
 
-	//! Open the xml of the selected IP-Xact element.
+    //! Open the xml of the selected IP-Xact element.
 	void onOpenXml();
 
     //! Opens the folder that contains the IP-XACT object.
@@ -157,6 +160,9 @@ signals:
 
     //! Create new system design.
     void createNewSystemDesign(QModelIndex const& index);
+
+    //! Delete the selected item
+    void deleteItem(QModelIndex const& index);
 
 	//! Export the selected item and it's sub-items.
 	void exportItem(const QModelIndex& index);
@@ -249,6 +255,9 @@ private:
 
     //! Create new system design for a component
     QAction* createNewSystemDesignAction_;
+
+    //! Delete the item from the library
+    QAction* deleteAction_;
 
 	//! Export the item(s) to a new location in file system
 	QAction* exportAction_;
