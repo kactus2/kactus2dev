@@ -25,7 +25,7 @@
 LibrarySelectorWidget::LibrarySelectorWidget(QWidget* parent):
     QWidget(parent),
     librarySelector_(new LibraryPathSelector(this)),
-    browseButton_(new QPushButton(tr("Browse"),this)),
+    browseButton_(new QPushButton(tr("Browse..."),this)),
     directorySet_(false)
 {
     connect(browseButton_, SIGNAL(clicked()),this, SLOT(onBrowse()), Qt::UniqueConnection);

@@ -15,7 +15,7 @@
 #include <QHeaderView>
 #include <QDialogButtonBox>
 #include <QPushButton>
-
+#include <QSizePolicy>
 //-----------------------------------------------------------------------------
 // Function: TableViewDialog::TableViewDialog()
 //-----------------------------------------------------------------------------
@@ -29,6 +29,8 @@ QDialog(parent),
     view_->setModel(sortProxy_);
     view_->horizontalHeader()->setStretchLastSection(true);
     view_->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+    view_->setWordWrap(true);
+    //view_->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
     view_->verticalHeader()->hide();
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Close, Qt::Horizontal, this);
@@ -37,8 +39,8 @@ QDialog(parent),
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(label_);
-    layout->addWidget(view_);
-    layout->addWidget(buttonBox);
+    layout->addWidget(view_, 1);
+    layout->addWidget(buttonBox);    
 }
 
 //-----------------------------------------------------------------------------
@@ -63,5 +65,8 @@ void TableViewDialog::setModel(QAbstractTableModel* model)
 {
     sortProxy_->setSourceModel(model);
 
-    view_->resizeColumnsToContents();
+    view_->resizeColumnToContents(0);
+    view_->setColumnWidth(1, 500);
+    view_->resizeColumnToContents(2);
+    view_->resizeRowsToContents();
 }
