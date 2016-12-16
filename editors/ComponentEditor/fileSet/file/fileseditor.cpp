@@ -40,7 +40,7 @@ model_(handler, component, fileSet, this)
     view_.setAcceptDrops(true);
     view_.setDropIndicatorShown(true);
     
-	view_.setAllowImportExport(false);
+	view_.setAllowImportExport(true);
 
 	view_.setModel(&model_);
 
