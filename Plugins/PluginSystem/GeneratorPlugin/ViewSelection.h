@@ -35,6 +35,13 @@ public:
 
 	//! The destructor.
 	~ViewSelection();
+    
+    /*!
+     *  Checks if the view configuration is valid.
+     *
+     *      @param [out] warning   The stated reason for not accepting.
+     */
+    bool validSelections(QString &warning);
 	
     /*!
      *  Gets the names of the possible views .

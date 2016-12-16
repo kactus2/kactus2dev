@@ -43,6 +43,8 @@ private slots:
 
     void onViewChanged();
 
+    void onSelectedFileChanged();
+
     void onInterfaceGenerationStateChanged(int state);
 
     void onMemoryGenerationStateChanged(int state);

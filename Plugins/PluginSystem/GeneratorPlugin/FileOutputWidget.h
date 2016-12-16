@@ -24,22 +24,37 @@ class FileOutputWidget : public QWidget
 public:
 
 	//! The constructor.
-	FileOutputWidget(QSharedPointer<FileOuput> configuration);
+	FileOutputWidget(QSharedPointer<FileOuput> model);
 
 	//! The destructor.
     ~FileOutputWidget();
 
+signals:
+	
+    /*!
+    *  Emitted when the selected file is changed.
+     */
+	void selectedFileChanged() const;
+
 public slots:
 
+    // Informs that the output files have changes. Will query new ones from the model and reconstruct the table.
     void onOutputFilesChanged();
 
 private slots:
 
+    // Informs that the user chosen new output path.
+    // Will tell to model and call checkExistence().
     void onPathEdited(const QString &text);
 
+    // Received when user click the browse button. Opens a dialog and updates the changes to the path editor.
     void onBrowse();
 
+    // Received when user makes a change to the table.
     void onItemChanged(QTableWidgetItem *item);
+
+    // Received when user selects an item on the table.
+    void onItemActivated();
 
 private:
 

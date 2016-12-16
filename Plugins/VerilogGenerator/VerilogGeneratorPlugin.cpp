@@ -371,13 +371,13 @@ void VerilogGeneratorPlugin::onErrorReport(const QString& report)
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::defaultOutputPath() const
 {
-    QString suggestedFile = "";
+    QString suggestedDir = "";
 
     QString topComponentPath = utility_->getLibraryInterface()->getPath(topComponent_->getVlnv());
     QString xmlDir =  QFileInfo(topComponentPath).canonicalPath();
-    suggestedFile = xmlDir;
+    suggestedDir = xmlDir;
 
-    return suggestedFile;
+    return suggestedDir;
 }
 
 //-----------------------------------------------------------------------------

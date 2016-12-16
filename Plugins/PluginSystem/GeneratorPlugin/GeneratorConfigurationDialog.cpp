@@ -16,6 +16,7 @@
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QCheckBox>
+#include <QTextEdit>
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
@@ -60,12 +61,16 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 	bottomLayout->addWidget(generalWarningLabel_);
 	bottomLayout->addWidget(dialogButtons);
 
-	// Add everything it their proper position in the final layout.
-	QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addWidget(viewSelection_);
-    topLayout->addWidget(optionGroup);
-    topLayout->addWidget(fileOutput_);
-    topLayout->addLayout(bottomLayout);
+    // Add everything it their proper position in the final layout.
+	QVBoxLayout* leftLayout = new QVBoxLayout();
+    leftLayout->addWidget(viewSelection_);
+    leftLayout->addWidget(optionGroup);
+    leftLayout->addWidget(fileOutput_);
+    leftLayout->addLayout(bottomLayout);
+
+    QHBoxLayout* topLayout = new QHBoxLayout(this);
+    topLayout->addLayout(leftLayout);
+    topLayout->addWidget(new QTextEdit);
 
     // Finally, connect the relevant events to their handler functions.
     connect(viewSelection_, SIGNAL(viewChanged()), 
@@ -98,6 +103,7 @@ void GeneratorConfigurationDialog::accept()
     QString warning;
     if (!configuration_->validSelections(warning))
 	{
+        // If not, tell user why not.
 		generalWarningLabel_->setText(warning);
 		return;
 	}

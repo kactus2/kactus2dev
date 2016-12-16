@@ -92,6 +92,8 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) :
     connect(browseButton, SIGNAL(clicked(bool)), this, SLOT(onBrowse()), Qt::UniqueConnection);
     connect(fileTable_, SIGNAL(itemChanged(QTableWidgetItem*)),
         this, SLOT(onItemChanged(QTableWidgetItem*)), Qt::UniqueConnection);
+    connect(fileTable_, SIGNAL(itemSelectionChanged()),
+        this, SLOT(onItemActivated()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -175,15 +177,26 @@ void FileOutputWidget::onBrowse()
 //-----------------------------------------------------------------------------
 void FileOutputWidget::onItemChanged(QTableWidgetItem *item)
 {
+    // Must be in the filename column.
     if (item->column() != COLUMN_FILENAME)
     {
         return;
     }
 
+    // Inform the change to the model.
     model_->setOutputFileName(item->text(),item->row());
 
     // A name of a file changed -> update existence status.
     checkExistence();
+}
+#include <QDebug>
+//-----------------------------------------------------------------------------
+// Function: FileOutputWidget::onItemActivated()
+//-----------------------------------------------------------------------------
+void FileOutputWidget::onItemActivated()
+{
+    QTableWidgetItem* item = fileTable_->selectedItems().last();
+    qDebug() << "x " << item->column() << " y " << item->row() << endl;
 }
 
 //-----------------------------------------------------------------------------

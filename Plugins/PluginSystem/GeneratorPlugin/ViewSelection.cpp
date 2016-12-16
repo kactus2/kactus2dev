@@ -108,6 +108,21 @@ ViewSelection::~ViewSelection()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ViewSelection::validSelections()
+//-----------------------------------------------------------------------------
+bool ViewSelection::validSelections(QString &warning)
+{
+    // Must have a file set as well.
+    if (fileSetRef_.isEmpty())
+    {
+        warning = QLatin1String("<b>Define the file set.</b>");
+        return false;
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ViewSelection::viewNames()
 //-----------------------------------------------------------------------------
 QStringList ViewSelection::viewNames() const

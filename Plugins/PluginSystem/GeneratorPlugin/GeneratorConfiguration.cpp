@@ -38,9 +38,8 @@ GeneratorConfiguration::~GeneratorConfiguration()
 bool GeneratorConfiguration::validSelections(QString &warning)
 {
     // Must have a file set as well.
-    if (viewSelection_->getFileSetName().isEmpty())
+    if (!viewSelection_->validSelections(warning))
     {
-        warning = QLatin1String("<b>Define the file set.</b>");
         return false;
     }
 
@@ -50,7 +49,7 @@ bool GeneratorConfiguration::validSelections(QString &warning)
         return false;
     }
 
-   return true;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
