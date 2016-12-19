@@ -119,21 +119,6 @@ void MainMemoryGraphicsItem::moveConnectedConnections(QPointF beforePosition)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::moveConnectedConnectionsInY()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::moveConnectedConnectionsInY(qreal yTransfer)
-{
-    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
-    {
-        connectionItem->onMoveConnectionInY(this, yTransfer);
-    }
-    foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
-    {
-        collisionItem->moveBy(0, yTransfer);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::moveByConnection()
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::moveByConnection(MemoryConnectionItem* movementOrigin, QPointF movementDelta)
@@ -155,27 +140,6 @@ void MainMemoryGraphicsItem::moveByConnection(MemoryConnectionItem* movementOrig
     {
         qreal newCollisionY = collisionItem->pos().y() + movementDelta.y();
         collisionItem->setPos(0, newCollisionY);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::moveByConnectionInY()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::moveByConnectionInY(MemoryConnectionItem* movementOrigin, qreal yTransfer)
-{
-    moveBy(0, yTransfer);
-
-    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
-    {
-        if (connectionItem != movementOrigin)
-        {
-            connectionItem->onMoveConnectionInY(this, yTransfer);
-        }
-    }
-
-    foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
-    {
-        collisionItem->moveBy(0, yTransfer);
     }
 }
 
@@ -224,12 +188,18 @@ quint64 MainMemoryGraphicsItem::getSceneEndPoint() const
 {
     quint64 sceneEndPoint = sceneBoundingRect().bottom();
 
-    foreach (MemoryConnectionItem* connectionItem, getConnectionsInVector())
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
+    while (connectionIterator.hasNext())
     {
-        quint64 connectionEndPoint = connectionItem->getSceneEndPoint();
-        if (connectionEndPoint > sceneEndPoint)
+        connectionIterator.next();
+        MemoryConnectionItem* connectionItem = connectionIterator.value();
+        if (connectionItem)
         {
-            sceneEndPoint = connectionEndPoint;
+            quint64 connectionEndPoint = connectionItem->getSceneEndPoint();
+            if (connectionEndPoint > sceneEndPoint)
+            {
+                sceneEndPoint = connectionEndPoint;
+            }
         }
     }
 
@@ -359,23 +329,17 @@ qreal MainMemoryGraphicsItem::getItemWidth() const
 //-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::labelCollidesWithRangeLabels()
 //-----------------------------------------------------------------------------
-bool MainMemoryGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem* label) const
+bool MainMemoryGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem* label, qreal fontHeight) const
 {
-    quint64 labelStartY = label->scenePos().y();
-
     foreach (MemoryConnectionItem* connection, getMemoryConnections())
     {
-        quint64 connectionStart = connection->sceneBoundingRect().top();
-        quint64 connectionEnd = connection->sceneBoundingRect().bottom();
-
-        if (labelStartY > connectionStart && labelStartY < connectionEnd
-            && connection->labelCollidesWithRanges(label, this))
+        if (connection->labelCollidesWithRanges(label, fontHeight, this))
         {
             return true;
         }
     }
 
-    return MemoryDesignerGraphicsItem::labelCollidesWithRangeLabels(label);
+    return MemoryDesignerGraphicsItem::labelCollidesWithRangeLabels(label, fontHeight);
 }
 
 //-----------------------------------------------------------------------------
@@ -411,16 +375,18 @@ void MainMemoryGraphicsItem::createOverlappingConnectionMarkers()
 {
     if (getMemoryConnections().size() > 1)
     {
-        QVector<MemoryConnectionItem*> spaceConnections = getConnectionsInVector();
-
-        for (int selectedIndex = 0; selectedIndex < getMemoryConnections().size() - 1;
-            ++selectedIndex)
+        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
+        while (connectionIterator.hasNext())
         {
-            for (int comparisonIndex = selectedIndex + 1;
-                comparisonIndex < getMemoryConnections().size(); ++comparisonIndex)
+            connectionIterator.next();
+
+            QMapIterator<quint64, MemoryConnectionItem*> comparisonIterator(connectionIterator);
+            while (comparisonIterator.hasNext())
             {
-                MemoryConnectionItem* selectedItem = spaceConnections.at(selectedIndex);
-                MemoryConnectionItem* comparisonItem = spaceConnections.at(comparisonIndex);
+                comparisonIterator.next();
+
+                MemoryConnectionItem* selectedItem = connectionIterator.value();
+                MemoryConnectionItem* comparisonItem = comparisonIterator.value();
 
                 QRectF connectionRect = selectedItem->sceneBoundingRect();
                 QRectF comparisonRect = comparisonItem->sceneBoundingRect();

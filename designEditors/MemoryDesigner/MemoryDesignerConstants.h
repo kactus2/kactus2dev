@@ -61,6 +61,26 @@ namespace MemoryDesignerConstants
      */
     bool itemOverlapsAnotherItem(QRectF firstRectangle, int firstLineWidth, QRectF secondRectangle,
         int secondLineWidth);
+
+    /*!
+     *  Get the amount of numbers required for the given ranges.
+     *
+     *      @param [in] rangeStart  The selected address range start.
+     *      @param [in] rangeEnd    The selected address range end.
+     *
+     *      @return The amount of numbers used to display the address ranges.
+     */
+    int getAmountOfNumbersInRange(QString const& rangeStart, QString const& rangeEnd);
+
+    /*!
+     *  Change the selected value into a value with zeros appended to the beginning.
+     *
+     *      @param [in] value               The selected value.
+     *      @param [in] amountOfNumbers     Amount of numbers used to display the value.
+     *
+     *      @return The value with zeros appended to display the value.
+     */
+    QString getValueWithZerosAdded(QString const& value, int amountOfNumbers);
 }
 
 #endif // MEMORYDESIGNERCONSTANTS_H
