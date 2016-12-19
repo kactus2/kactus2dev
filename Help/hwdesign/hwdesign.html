@@ -1,1 +1,70 @@
-<html><head>    <link href="../style.css" rel="stylesheet" type="text/css"></head><body>    <h2>HW Design</h2>    <p>      User can describe the structure of the HW drag-dropping <i>HW      components</i> from the library and connecting them. The main part      shows the instances and connections graphically. Selecting one      of them, shows the associated parametes on panel on the      right. <br>The ribbon on top has icons for    </p>    <ul>      <li> <b>Generation</b>: create automatically e.g. VHDL, synthesis and      simulation scripts, and HTML documentation.</li>      <li> <b>Diagram tools</b>: add columns, connections, IO pads, and      draft components; or convert a connection into an off-page      connection. For Further information, see Toolbar Help documentation.      </li>      <li> <b>View</b>: zoom in and out, select the shown windows and      parameters. </li>    </ul>    <p>      The design area is divided into typed <b>columns</b> in order to      create cleaner layouts. There are 4 column types: 'components',      'IO', 'buses', and 'custom'. Only matching items can be placed      on a column, but user can add new columns from the ribbon and      reorganize the existing ones freely. <br>Icon <b>Visible      windows</b> control what information is shown, e.g. library,      component preview, contecxt help and so on. Moreover, user can      reorganize the windows of Kactus and save the layout as      <b>workspace</b>. It is handy for quickly changing the layout      depending on purpose, e.g. design editing vs. component      packetization. Icon <b>Visibility control</b> allows selecting      whether design details, such as 'bus widths', are shown.    </p>    <p>      The panel on the right is divided into 5 windows, and 3 of them      are related to selected item (component instance, interface of a      component, connection between components). Two 2 panels related      to whole design are    <p>      <ol>      <li> <b>Ad-hoc visibility</b> controls how IOs in the graphical      block diagram looks like. By default, the design IO is shown      only as bus interfaces, but individual ports are also shown if      they marked as <b>ad-hoc</b>. This list is empty if there is no      IO.</li>      <li><b> Design configuration</b> is additional information about      an IP-XACT design. Each design can have multiple      configurations. Design configuration defines which is the      <b>active view</b> if component has many (such as simulation and      synthesis). Settings for generator chains or interface      abstractor are not yet implemented in Kactus</li>      </ol>    </body></html>
+<html>
+<head>
+    <link href="../style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <h2>Hardware Design</h2>
+    <p>
+        A <i>design</i> describes the structure of a hardware component by instantiating other components from the 
+        library and connecting them. 
+    </p>
+    <p>
+        The design area in the center is divided into typed columns to create cleaner
+        layouts. There are four column types: 'Components', 'IO', 'Buses', and 'Custom'. Only items with matching
+        types can be placed on a column. New columns can be created using the <b>Add Column</b> button in the 
+        toolbar. The column and its allowed types can edited by double-clicking the column header. 
+        The column order can be changed by drag-dropping the columns by the header.
+    </p>
+    <p>
+        New <i>component instances</i> can be added by by drag-dropping <i>components</i> from
+        the library into the design area. <br />
+        <img src="../images/hierarchy.png"> A hierarchy icon is shown on the top right corner of the instance,
+        if it has a design of its own. Double-clicking the instance opens the design. If the component
+        does not have a design, the <b>Component Editor</b> is opened instead. Both options are also available
+        by right-clicking the instance. All the <i>bus interfaces</i> in the component will be
+        shown on the component instance and can be connected to other instances by creating an
+        <i>interconnection</i> with the <b>Interconnection Tool</b>. 
+        Instances can be copy-pasted within the design or into other designs.
+        Selecting an item in the design shows more details in the windows on the right.
+    </p>
+
+    <h3>Ad-hoc Visibility</h3>
+    <p>
+        The Ad-hoc Visibility window is always visible in the design. It lists all the physical ports on the 
+        selected component instance. If no instance is selected, the ports of the top-level component are
+        listed instead. Setting the <b>ad-hoc</b> option for a port shows the individual port on the 
+        component instance symbol or in the IO column, if it is a top-level port.
+    </p>
+
+    <h3>Design Configuration Details</h3>
+    <p>
+        The Design Configuration Details window is always visible in the design. A <i>design configuration</i> 
+        contains additional information about an IP-XACT design. Each design can have multiple configurations. 
+        Design configuration defines what are the <b>active views</b> of the component instances in the design.
+    </p>
+ 
+    <h3>Toolbar</h3>
+   
+    <p>
+        <b>Generation</b> group has the tools for automatic generation of e.g. VHDL, Verilog, synthesis and 
+        simulation scripts, and HTML documentation.
+    </p>
+    <p>
+        <b>Diagram tools</b> has all the design-specific actions including adding columns, connections and
+        IO pads. Individual connections can be changed to off-page for cleaner diagrams with 
+        <b>Toggle Off-Page Tool</b>. Preliminary components can be designed with the <b>Drafting Tool</b>.
+    </p>
+    <p>
+        <b>View</b> has the tools for zooming in and out in the design. Zooming is also possible by holding
+        the Ctrl-key while scrolling with the mouse wheel. <b>Visible Windows</b> controls what information
+        is shown i.e. IP-XACT library, component preview, context help and design specific windows on the right.
+        <b>Visibility control</b> allows selection whether design details, such as 'sticky notes', are shown 
+        or not.
+    </p>
+    <p>
+        <b>Workspaces</b> store the window layout and visibilty settings. It is handy for quickly changing the 
+        layout depending on purpose, e.g. design editing vs. component packetization.
+    </p>
+   
+</body>
+</html>

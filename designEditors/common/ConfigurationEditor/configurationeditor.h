@@ -133,7 +133,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Pointer to the instance that manages the library.
-	LibraryInterface* handler_;
+	LibraryInterface* library_;
 
 	//! Button to add new configurations to top component.
 	QPushButton addNewButton_;

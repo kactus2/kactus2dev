@@ -1,63 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QtHelpProject version="1.0">
-    <namespace>com.tut.kactus2.2.0</namespace>
-    <virtualFolder>doc</virtualFolder>
-    <customFilter name="Kactus2 2.0">
-        <filterAttribute>kactus2</filterAttribute>
-        <filterAttribute>2.0</filterAttribute>
-    </customFilter>
-    <filterSection>
-        <filterAttribute>kactus2</filterAttribute>
-        <filterAttribute>2.0</filterAttribute>
-        <toc>
-            <section title="Kactus2 Manual" ref="index.html">
-			    <section title="Getting Started">
-					<section title="Configuring Library" ref="gettingStarted/configureLibrary.html">
-                    </section>
-					<section title="Accessing Documents" ref="gettingStarted/accessingDocuments.html">
-                    </section>
-				</section>
-			    <section title="General Help" ref="general/generalHelp.html">
-					<section title="Toolbar" ref="general/ribbon.html">
-                    </section>
-					<section title="Expressions" ref="general/expressions.html">
-                    </section>
-					<section title="Workspace" ref="general/workSpace.html">
-                    </section>
-					<section title="Default Applications" ref="general/defaultApplication.html">
-                    </section>
-				</section>
-          <section title="Bus Editor" ref="definitions/busdefinition.html">
+  <namespace>com.tut.kactus2.2.0</namespace>
+  <virtualFolder>doc</virtualFolder>
+  <customFilter name="Kactus2 2.0">
+    <filterAttribute>kactus2</filterAttribute>
+    <filterAttribute>2.0</filterAttribute>
+  </customFilter>
+  <filterSection>
+    <filterAttribute>kactus2</filterAttribute>
+    <filterAttribute>2.0</filterAttribute>
+    <toc>
+      <section title="Kactus2 Manual" ref="index.html">
+        <section title="Getting Started">
+          <section title="Configuring Library" ref="gettingStarted/configureLibrary.html">
           </section>
-          <section title="Component Editor" ref="componenteditor/componenteditor.html">
-					<section title="General" ref="componenteditor/general.html" />
-					<section title="File sets" ref="componenteditor/filesets.html">
+          <section title="Accessing Documents" ref="gettingStarted/accessingDocuments.html">
+          </section>
+        </section>
+        <section title="General Help" ref="general/generalHelp.html">
+          <section title="Toolbar" ref="general/ribbon.html">
+          </section>
+          <section title="Expressions" ref="general/expressions.html">
+          </section>
+          <section title="Workspace" ref="general/workSpace.html">
+          </section>
+          <section title="Default Applications" ref="general/defaultApplication.html">
+          </section>
+        </section>
+        <section title="Bus Editor" ref="definitions/busdefinition.html">
+        </section>
+        <section title="Component Editor" ref="componenteditor/componenteditor.html">
+          <section title="General" ref="componenteditor/general.html" />
+          <section title="File sets" ref="componenteditor/filesets.html">
             <section title="File set" ref="componenteditor/fileset.html">
               <section title="File" ref="componenteditor/filegeneral.html" />
-						</section>
-					</section>
-					<section title="Choices" ref="componenteditor/choices.html" />
-					<section title="Parameters" ref="componenteditor/params.html" />
-					<section title="Memory maps" ref="componenteditor/memorymaps.html">
-						<section title="Memory map" ref="componenteditor/memorymap.html">
-							<section title="Address block" ref="componenteditor/addressblock.html">
-								<section title="Register" ref="componenteditor/register.html">
-									<section title="Field" ref="componenteditor/field.html" />
-								</section>
-							</section>
-						</section>
-					</section>
-					<section title="Address spaces" ref="componenteditor/addressspaces.html">
-						<section title="Address space" ref="componenteditor/addressspace.html">
-							<section title="Memory map" ref="componenteditor/memorymap.html">
-							<section title="Address block" ref="componenteditor/addressblock.html">
-								<section title="Register" ref="componenteditor/register.html">
-									<section title="Field" ref="componenteditor/field.html" />
-								</section>
-							</section>
-						</section>
-						</section>
-					</section>
+            </section>
+          </section>
+          <section title="Choices" ref="componenteditor/choices.html" />
+          <section title="Parameters" ref="componenteditor/params.html" />
+          <section title="Memory maps" ref="componenteditor/memorymaps.html">
+            <section title="Memory map" ref="componenteditor/memorymap.html">
+              <section title="Address block" ref="componenteditor/addressblock.html">
+                <section title="Register" ref="componenteditor/register.html">
+                  <section title="Field" ref="componenteditor/field.html" />
+                </section>
+              </section>
+            </section>
+          </section>
+          <section title="Address spaces" ref="componenteditor/addressspaces.html">
+            <section title="Address space" ref="componenteditor/addressspace.html">
+              <section title="Memory map" ref="componenteditor/memorymap.html">
+                <section title="Address block" ref="componenteditor/addressblock.html">
+                  <section title="Register" ref="componenteditor/register.html">
+                    <section title="Field" ref="componenteditor/field.html" />
+                  </section>
+                </section>
+              </section>
+            </section>
+          </section>
           <section title="Instantiations" ref="componenteditor/instantiations.html">
             <section title="Component instantiations" ref="componenteditor/componentInstantiations.html">
               <section title="Component instantiation" ref="componenteditor/componentInstantiation.html" />
@@ -69,58 +69,62 @@
               <section title="Design instantiation" ref="componenteditor/designInstantiation.html" />
             </section>
           </section>
-					<section title="Views" ref="componenteditor/views.html">
-						<section title="View" ref="componenteditor/view.html" />
-					</section>
-					<section title="System views" ref="componenteditor/systemviews.html">
-						<section title="System view" ref="componenteditor/systemview.html" />
-					</section>
-                    <section title="Ports" ref="componenteditor/ports.html" />
-					<section title="Bus interfaces" ref="componenteditor/businterfaces.html">
-						<section title="Bus interface" ref="componenteditor/businterfacegeneral.html" />
-						<section title="Portmaps" ref="componenteditor/portmaps.html" />
-					</section>
-					<section title="Channels" ref="componenteditor/channels.html" />
+          <section title="Views" ref="componenteditor/views.html">
+            <section title="View" ref="componenteditor/view.html" />
+          </section>
+          <section title="System views" ref="componenteditor/systemviews.html">
+            <section title="System view" ref="componenteditor/systemview.html" />
+          </section>
+          <section title="Ports" ref="componenteditor/ports.html" />
+          <section title="Bus interfaces" ref="componenteditor/businterfaces.html">
+            <section title="Bus interface" ref="componenteditor/businterfacegeneral.html" />
+            <section title="Portmaps" ref="componenteditor/portmaps.html" />
+          </section>
+          <section title="Channels" ref="componenteditor/channels.html" />
           <section title="Remap states" ref="componenteditor/remapStates.html">
             <section title="Single remap state" ref="componenteditor/singleRemapState.html" />
           </section>
           <section title="CPUs" ref="componenteditor/cpus.html" />
-					<section title="Other clock drivers" ref="componenteditor/otherclockdrivers.html" />
-					<section title="COM interfaces" ref="componenteditor/cominterfaces.html">
-						<section title="COM interface" ref="componenteditor/cominterface.html" />
-					</section>
-					<section title="API interfaces" ref="componenteditor/apiinterfaces.html">
-						<section title="API interface" ref="componenteditor/apiinterface.html" />
-					</section>
-					<section title="Software properties" ref="componenteditor/swproperties.html" />
-                </section>
-                <section title="HW Design" ref="hwdesign/hwdesign.html">
-                    <section title="HW Component Instance" ref="hwdesign/hwinstance.html" />
-                </section>
-				<section title="SW Design" ref="swsysdesign/swdesign.html">
-                    <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
+          <section title="Other clock drivers" ref="componenteditor/otherclockdrivers.html" />
+          <section title="COM interfaces" ref="componenteditor/cominterfaces.html">
+            <section title="COM interface" ref="componenteditor/cominterface.html" />
+          </section>
+          <section title="API interfaces" ref="componenteditor/apiinterfaces.html">
+            <section title="API interface" ref="componenteditor/apiinterface.html" />
+          </section>
+          <section title="Software properties" ref="componenteditor/swproperties.html" />
         </section>
-              <section title="Memory Design" ref="memoryDesign/memoryDesign.html">
-              </section>
-				<!--section title="System Design" ref="swsysdesign/systemdesign.html"/-->				
-        <section title="Keyboard and Mouse Shortcuts" ref="shortcuts.html"/>	
+        <section title="HW Design" ref="hwdesign/hwdesign.html">
+          <section title="Component Instance" ref="hwdesign/hwinstance.html" />
+		  <section title="Bus Interface" ref="hwdesign/busport.html" />
+		  <section title="Interconnection" ref="hwdesign/connection.html" />
+		  <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
+		  <section title="Ad-hoc Connection" ref="hwdesign/adhocconnection.html" />
+        </section>
+        <section title="SW Design" ref="swsysdesign/swdesign.html">
+          <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
+        </section>
+        <section title="Memory Design" ref="memoryDesign/memoryDesign.html">
+        </section>
+        <!--section title="System Design" ref="swsysdesign/systemdesign.html"/-->
+        <section title="Keyboard and Mouse Shortcuts" ref="shortcuts.html"/>
         <section title="Community Guidelines" ref="communityGuideLines.html"/>
-        </section>			
-        </toc>
-        <keywords>
-            <keyword name="HW Design" id="Kactus2::hwdesign" ref="hwdesign/hwdesign.html" />
-        </keywords>
-        <files>
-            <file>style.css</file>
-            <file>*.html</file>
-            <file>general/*.html</file>
-            <file>componenteditor/*.html</file>
-            <file>definitions/*.html</file>
-            <file>hwdesign/*.html</file>
-            <file>swsysdesign/*.html</file>
-            <file>memoryDesign/*.html</file>
-            <file>gettingStarted/*.html</file>
-			<file>images/*.png</file>
-        </files>
-    </filterSection>
+      </section>
+    </toc>
+    <keywords>
+      <keyword name="HW Design" id="Kactus2::hwdesign" ref="hwdesign/hwdesign.html" />
+    </keywords>
+    <files>
+      <file>style.css</file>
+      <file>*.html</file>
+      <file>general/*.html</file>
+      <file>componenteditor/*.html</file>
+      <file>definitions/*.html</file>
+      <file>hwdesign/*.html</file>
+      <file>swsysdesign/*.html</file>
+      <file>memoryDesign/*.html</file>
+      <file>gettingStarted/*.html</file>
+      <file>images/*.png</file>
+    </files>
+  </filterSection>
 </QtHelpProject>

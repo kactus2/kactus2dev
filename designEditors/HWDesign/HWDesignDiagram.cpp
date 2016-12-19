@@ -1165,7 +1165,7 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
         {
             BusInterfaceItem* interface = qgraphicsitem_cast<BusInterfaceItem*>(newSelection);
             emit interfaceSelected(interface);
-            emit helpUrlRequested("hwdesign/businterface.html");
+            emit helpUrlRequested("hwdesign/busport.html");
         }
         // Check if the selected item was an ad-hoc port.
         else if (newSelection->type() == AdHocPortItem::Type)
@@ -1179,7 +1179,7 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
         {
             AdHocInterfaceItem* adHocIf = static_cast<AdHocInterfaceItem*>(newSelection);
             emit interfaceSelected(adHocIf);
-            emit helpUrlRequested("hwdesign/adhocinterface.html");
+            emit helpUrlRequested("hwdesign/adhocport.html");
         }
 		// check if the selected item was a connection
 		else if (newSelection->type() == HWConnection::Type)
@@ -1192,7 +1192,7 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
         {
             AdHocConnectionItem* connection = qgraphicsitem_cast<AdHocConnectionItem*>(newSelection);
             emit connectionSelected(connection);
-            emit helpUrlRequested("hwdesign/connection.html");
+            emit helpUrlRequested("hwdesign/adhocconnection.html");
         }
         else
         {

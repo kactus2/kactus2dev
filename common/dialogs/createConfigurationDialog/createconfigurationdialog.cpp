@@ -48,7 +48,6 @@ createNewDescLabel_(new QLabel(tr("Creates a new empty design and a configuratio
 createCopyRadio_(new QRadioButton(tr("Copy old design to new configuration"), this)),
 createCopyDescLabel_(new QLabel(tr("Duplicates the current design with a new VLNV and creates a configuration for it."), this)),
 vlnvEdit_(new VLNVEditor(VLNV::DESIGNCONFIGURATION, handler, this, this, true)),
-implementationCombo_(new QComboBox(this)),
 okButton_(new QPushButton(tr("OK"), this)),
 cancelButton_(new QPushButton(tr("Cancel"), this))
 {
@@ -59,12 +58,18 @@ cancelButton_(new QPushButton(tr("Cancel"), this))
     configNameEdit_->setContentMatcher(&configNameMatcher_);
 
     QSettings settings;
+    QString initialName;
 
     if (configType == KactusAttribute::HW)
     {
         QStringList suggestions = settings.value("Policies/HWViewNames").toStringList();
         configNameMatcher_.setItems(suggestions);
 
+        if (!suggestions.isEmpty())
+        {
+            initialName = suggestions.first();
+        }
+       
         configNameEdit_->setDisallowedInputs(component->getHierViews());
         configNameEdit_->setMessageTemplate("View '%1' already exists!");
     }
@@ -72,6 +77,11 @@ cancelButton_(new QPushButton(tr("Cancel"), this))
     {
         QStringList suggestions = settings.value("Policies/SWViewNames").toStringList();
         configNameMatcher_.setItems(suggestions);
+
+        if (!suggestions.isEmpty())
+        {
+            initialName = suggestions.first();
+        }
 
         configNameEdit_->setDisallowedInputs(component->getHierViews());
         configNameEdit_->setMessageTemplate("View '%1' already exists!");
@@ -81,12 +91,23 @@ cancelButton_(new QPushButton(tr("Cancel"), this))
         QStringList suggestions = settings.value("Policies/SysViewNames").toStringList();
         configNameMatcher_.setItems(suggestions);
 
+        if (!suggestions.isEmpty())
+        {
+            initialName = suggestions.first();
+        }
+
         configNameEdit_->setDisallowedInputs(component->getSystemViewNames());
         configNameEdit_->setMessageTemplate("System view '%1' already exists!");
     }
     else
     {
         Q_ASSERT(false);
+    }
+
+    if (!initialName.isEmpty())
+    {
+        configNameEdit_->setText(initialName);
+        onConfNameChanged(initialName);
     }
 
     QFont font = useExistingRadio_->font();
@@ -107,10 +128,6 @@ cancelButton_(new QPushButton(tr("Cancel"), this))
     createNewDescLabel_->setWordWrap(true);
     createCopyDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
     createCopyDescLabel_->setWordWrap(true);
-
-	// set the views to the combo box
-	implementationCombo_->addItem(QString(""));
-	implementationCombo_->addItems(component->getViewNames());
 
 	// set the title for vlnv editor
 	vlnvEdit_->setTitle(tr("Configuration VLNV"));
@@ -141,6 +158,10 @@ CreateConfigurationDialog::~CreateConfigurationDialog()
 //-----------------------------------------------------------------------------
 void CreateConfigurationDialog::setupLayout()
 {
+    QHBoxLayout* nameLayout = new QHBoxLayout();
+	nameLayout->addWidget(new QLabel(tr("Name:"), this));
+    nameLayout->addWidget(configNameEdit_);
+
     QGroupBox* radioGroup = new QGroupBox(tr("Action"), this);
 
 	QVBoxLayout* radioLayout = new QVBoxLayout(radioGroup);
@@ -150,22 +171,16 @@ void CreateConfigurationDialog::setupLayout()
     radioLayout->addWidget(createNewDescLabel_);
 	radioLayout->addWidget(createCopyRadio_);
     radioLayout->addWidget(createCopyDescLabel_);
-	
-	QFormLayout* comboLayout = new QFormLayout();
-	comboLayout->addRow(tr("Reference to this component's top-level\n"
-		                   "implementation view (optional)"), implementationCombo_);
 
 	QHBoxLayout* buttonLayout = new QHBoxLayout();
 	buttonLayout->addStretch();
 	buttonLayout->addWidget(okButton_, 0, Qt::AlignRight);
 	buttonLayout->addWidget(cancelButton_, 0, Qt::AlignRight);
 
-	QVBoxLayout* topLayout = new QVBoxLayout(this);
-	topLayout->addWidget(new QLabel(tr("Configuration name:"), this));
-    topLayout->addWidget(configNameEdit_);
+	QVBoxLayout* topLayout = new QVBoxLayout(this);   
+    topLayout->addLayout(nameLayout);
     topLayout->addWidget(radioGroup);
 	topLayout->addWidget(vlnvEdit_);
-	topLayout->addLayout(comboLayout);
 	topLayout->addLayout(buttonLayout);
 }
 
@@ -229,14 +244,6 @@ QString CreateConfigurationDialog::getConfigurationName() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: createconfigurationdialog::getImplementationViewName()
-//-----------------------------------------------------------------------------
-QString CreateConfigurationDialog::getImplementationViewName() const
-{
-	return implementationCombo_->currentText();
-}
-
-//-----------------------------------------------------------------------------
 // Function: createconfigurationdialog::getDesignVLNV()
 //-----------------------------------------------------------------------------
 VLNV CreateConfigurationDialog::getDesignVLNV() const
@@ -247,16 +254,16 @@ VLNV CreateConfigurationDialog::getDesignVLNV() const
 
 	// remove the possible ".designcfg" from the end
 	QString name = designVLNV.getName().remove(QString(".designcfg"));
+    name.append(".design");
 
-	// add .design to the end
-	designVLNV.setName(name + ".design");
+	designVLNV.setName(name);
 	return designVLNV;
 }
 
 //-----------------------------------------------------------------------------
 // Function: createconfigurationdialog::onConfNameChanged()
 //-----------------------------------------------------------------------------
-void CreateConfigurationDialog::onConfNameChanged( const QString& newName )
+void CreateConfigurationDialog::onConfNameChanged(QString const& newName)
 {
 	vlnvEdit_->setName(component_->getVlnv().getName() + "." + newName + ".designcfg");
 }

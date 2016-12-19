@@ -1337,8 +1337,8 @@ void MainWindow::setupAdHocVisibilityEditor()
 //-----------------------------------------------------------------------------
 void MainWindow::setupAdHocEditor()
 {
-    adhocDock_ = new QDockWidget(tr("Ad hoc port details"));
-    adhocDock_->setObjectName(tr("Ad hoc port details"));
+    adhocDock_ = new QDockWidget(tr("Ad hoc Port Details"));
+    adhocDock_->setObjectName(tr("Ad hoc Port Details"));
     adhocDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     adhocDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 

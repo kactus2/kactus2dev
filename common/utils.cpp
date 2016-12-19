@@ -100,33 +100,6 @@ qint64 Utils::str2Int( const QString& str ) {
 	}
 }
 
-Utils::Mapping::Mapping(): portName_(QString("---")), left_(0), right_(0){
-}
-
-Utils::Mapping::Mapping( const QString& name ): 
-portName_(name), left_(0), right_(0) {
-}
-
-Utils::Mapping::Mapping( const QString& name, int left, int right ):
-portName_(name), left_(left), right_(right) {
-}
-
-bool Utils::Mapping::operator==( const Mapping& other ) const {
-	return (portName_ == other.portName_);
-}
-
-bool Utils::Mapping::operator!=( const Mapping& other ) const {
-	return (portName_ != other.portName_);
-}
-
-bool Utils::Mapping::operator<( const Mapping& other ) const {
-	return portName_ < other.portName_;
-}
-
-bool Utils::Mapping::operator>( const Mapping& other ) const {
-	return portName_ > other.portName_;
-}
-
 Utils::ImplementationOptions::ImplementationOptions():
 hw_(true),
 sw_(true),
