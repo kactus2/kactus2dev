@@ -21,6 +21,7 @@
 #include <designEditors/MemoryDesigner/AddressSpaceGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryMapGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MainMemoryGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 
@@ -184,4 +185,222 @@ qreal MemoryColumn::getMaximumNeededChangeInWidth() const
     }
 
     return maximumWidthChange;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::compressGraphicsItems()
+//-----------------------------------------------------------------------------
+void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPlacement, MemoryColumn* spaceColumn,
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
+    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnectionItems)
+{
+    int yTransfer = 0;
+    quint64 spaceItemLowAfter = 0;
+
+    foreach (QGraphicsItem* graphicsItem, getGraphicsItemInOrder())
+    {
+        MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
+        if (memoryItem)
+        {
+            int memoryItemLowBefore = memoryItem->getSceneEndPoint();
+
+            if (condenseMemoryItems)
+            {
+                memoryItem->condenseItemAndChildItems(movedConnectionItems);
+            }
+
+            MemoryConnectionItem* lastConnection = memoryItem->getLastConnection();
+            if (lastConnection)
+            {
+                extendMemoryItem(memoryItem, lastConnection, spaceYPlacement);
+            }
+
+            if (condenseMemoryItems)
+            {
+                AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
+                if (spaceItem && placedSpaceItems->contains(memoryItem) && this == spaceColumn)
+                {
+                    quint64 spaceItemTop = spaceItem->sceneBoundingRect().top();
+
+                    if (spaceItemTop + spaceItem->pen().width() != spaceItemLowAfter)
+                    {
+                        qint64 spaceInterval = (spaceItemTop + yTransfer) - spaceItemLowAfter;
+
+                        if (spaceInterval < MemoryDesignerConstants::SPACEITEMINTERVAL)
+                        {
+                            quint64 yMovementAddition = MemoryDesignerConstants::SPACEITEMINTERVAL -
+                                ((spaceItemTop + yTransfer) - spaceItemLowAfter);
+                            yTransfer += yMovementAddition;
+                        }
+
+                        spaceItem->moveConnectedItems(yTransfer);
+
+                    }
+
+                    spaceItemLowAfter = spaceItem->getSceneEndPoint();
+
+                    yTransfer = spaceItemLowAfter - memoryItemLowBefore;
+
+                    spaceYPlacement = spaceItemLowAfter + MemoryDesignerConstants::SPACEITEMINTERVAL;
+                }
+            }
+
+            memoryItem->resizeSubItemNameLabels();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::extendMemoryItem()
+//-----------------------------------------------------------------------------
+void MemoryColumn::extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, MemoryConnectionItem* connectionItem,
+    int& spaceYPlacement)
+{
+    QPointF spaceTopLeft = graphicsItem->boundingRect().topLeft();
+    QPointF spaceLowRight = graphicsItem->boundingRect().bottomRight();
+
+    qreal connectionLow =
+        graphicsItem->mapFromItem(connectionItem, connectionItem->boundingRect().bottomRight()).y();
+
+    if (connectionLow > spaceLowRight.y())
+    {
+        qreal positionX = spaceTopLeft.x() + 0.5;
+        qreal extensionWidth = spaceLowRight.x() - spaceTopLeft.x() - 1;
+        qreal positionY = spaceLowRight.y() - 0.5;
+        qreal extensionHeight = connectionLow - spaceLowRight.y();
+
+        MemoryExtensionGraphicsItem* extensionItem = new MemoryExtensionGraphicsItem(
+            positionX, positionY, extensionWidth, extensionHeight, graphicsItem);
+        graphicsItem->setExtensionItem(extensionItem);
+
+        spaceYPlacement += extensionHeight;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::moveUnconnectedMemoryItems()
+//-----------------------------------------------------------------------------
+void MemoryColumn::moveUnconnectedMemoryItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems)
+{
+    int firstPosition = getUnconnectedItemPosition(placedItems);
+
+    foreach (QGraphicsItem* graphicsItem, getItems())
+    {
+        MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
+        if (memoryItem && memoryItem->isVisible() && !placedItems->contains(memoryItem))
+        {
+            moveGraphicsItem(memoryItem, firstPosition, MemoryDesignerConstants::UNCONNECTED_ITEM_INTERVAL);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::getLastItemLow()
+//-----------------------------------------------------------------------------
+quint64 MemoryColumn::getUnconnectedItemPosition(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems)
+    const
+{
+    qreal lastItemLowLinePosition = 0;
+    foreach (MainMemoryGraphicsItem* graphicsItem, *placedItems)
+    {
+        int extensionHeight = 0;
+        MemoryExtensionGraphicsItem* extensionItem = graphicsItem->getExtensionItem();
+        if (extensionItem)
+        {
+            extensionHeight = extensionItem->sceneBoundingRect().height();
+        }
+
+        qreal itemLow = graphicsItem->sceneBoundingRect().bottom() + extensionHeight;
+        if (itemLow > lastItemLowLinePosition)
+        {
+            lastItemLowLinePosition = itemLow;
+        }
+    }
+
+    quint64 positionY = lastItemLowLinePosition + MemoryDesignerConstants::CONNECTED_UNCONNECTED_INTERVAL;
+
+    return positionY;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::moveGraphicsItem()
+//-----------------------------------------------------------------------------
+void MemoryColumn::moveGraphicsItem(MainMemoryGraphicsItem* memoryItem, int& placementY, const qreal itemInterval)
+{
+    memoryItem->setY(placementY);
+    if (!containsMemoryMapItems())
+    {
+        onMoveItem(memoryItem);
+        onReleaseItem(memoryItem);
+    }
+
+    placementY += memoryItem->boundingRect().height() + itemInterval;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::memoryMapOverlapsInColumn()
+//-----------------------------------------------------------------------------
+bool MemoryColumn::memoryMapOverlapsInColumn(MainMemoryGraphicsItem* memoryGraphicsItem, quint64 mapBaseAddress,
+    quint64 mapLastAddress, QRectF memoryItemRect, int memoryPenWidth,
+    QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const
+{
+    foreach (QGraphicsItem* graphicsItem, childItems())
+    {
+        MemoryMapGraphicsItem* comparisonMemoryItem = dynamic_cast<MemoryMapGraphicsItem*>(graphicsItem);
+        if (comparisonMemoryItem && comparisonMemoryItem != memoryGraphicsItem &&
+            comparisonMemoryItem->isConnectedToSpaceItems(connectedSpaceItems) &&
+            placedMaps->contains(comparisonMemoryItem) &&
+            itemOverlapsAnotherItem(
+            mapBaseAddress, mapLastAddress, memoryItemRect, memoryPenWidth, comparisonMemoryItem))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::itemOverlapsAnotherItem()
+//-----------------------------------------------------------------------------
+bool MemoryColumn::itemOverlapsAnotherItem(quint64 itemBaseAddress, quint64 itemLastAddress, QRectF memoryItemRect,
+    int memoryPenWidth, MainMemoryGraphicsItem* comparisonMemoryItem) const
+{
+    QRectF comparisonRectangle = comparisonMemoryItem->sceneBoundingRect();
+
+    if (memoryItemRect.x() == comparisonRectangle.x())
+    {
+        int mapItemLineWidth = comparisonMemoryItem->pen().width();
+
+        qreal comparisonItemEnd = comparisonRectangle.bottom();
+
+        foreach (MemoryConnectionItem* connectionItem, comparisonMemoryItem->getMemoryConnections())
+        {
+            qreal connectionLow = connectionItem->sceneBoundingRect().bottom();
+            if (connectionLow > comparisonItemEnd)
+            {
+                comparisonItemEnd = connectionLow;
+            }
+        }
+
+        comparisonRectangle.setBottom(comparisonItemEnd);
+
+        quint64 comparisonBaseAddress = comparisonMemoryItem->getBaseAddress();
+        quint64 comparisonLastAddress = comparisonMemoryItem->getLastAddress();
+        MemoryConnectionItem* comparisonItemLastConnection = comparisonMemoryItem->getLastConnection();
+        if (comparisonItemLastConnection)
+        {
+            comparisonBaseAddress += comparisonItemLastConnection->getRangeStartValue();
+            comparisonLastAddress = comparisonItemLastConnection->getRangeEndValue();
+        }
+        if (MemoryDesignerConstants::itemOverlapsAnotherItem(
+            memoryItemRect, memoryPenWidth, comparisonRectangle, mapItemLineWidth) ||
+            (itemBaseAddress >= comparisonBaseAddress && itemBaseAddress <= comparisonLastAddress) ||
+            (comparisonBaseAddress >= itemBaseAddress && comparisonBaseAddress <= itemLastAddress))
+        {
+            return true;
+        }
+    }
+    return false;
 }

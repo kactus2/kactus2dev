@@ -176,11 +176,15 @@ qreal AddressSpaceGraphicsItem::getSubItemHeight(SubMemoryLayout* mainItem,
         quint64 previousConnectionBaseAddress = firstConnection->getRangeStartValue();
         MemoryConnectionItem* previousConnection = firstConnection;
 
-        foreach (MemoryConnectionItem* connectionItem, subItem->getMemoryConnections())
+        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(subItem->getMemoryConnections());
+        while (connectionIterator.hasNext())
         {
+            connectionIterator.next();
+            MemoryConnectionItem* connectionItem = connectionIterator.value();
+
             if (connectionItem->getConnectionStartItem() == mainItem)
             {
-                quint64 connectionBaseAddress = connectionItem->getRangeStartValue();
+                quint64 connectionBaseAddress = connectionIterator.key();
 
                 yTransfer = getTransferY(connectionBaseAddress, previousConnectionBaseAddress,
                     connectionRangeEnd, previousConnectionLow, connectionItem, previousConnection, yTransfer);
@@ -345,11 +349,15 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(SubMemoryLayout*, 
     quint64 previousConnectionBaseAddress = firstConnection->getRangeStartValue();
     MemoryConnectionItem* previousConnection = firstConnection;
 
-    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
+    while (connectionIterator.hasNext())
     {
+        connectionIterator.next();
+        MemoryConnectionItem* connectionItem = connectionIterator.value();
+
         if (connectionItem->getConnectionStartItem() == this)
         {
-            quint64 connectionBaseAddress = connectionItem->getRangeStartValue();
+            quint64 connectionBaseAddress = connectionIterator.key();
 
             yTransfer = getFilteredConnectionYTransfer(connectionItem, connectionBaseAddress, previousConnection,
                 previousConnectionBaseAddress, connectionRangeEnd, previousConnectionLow, yTransfer);

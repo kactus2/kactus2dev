@@ -60,27 +60,26 @@ FieldGraphicsItem::~FieldGraphicsItem()
 //-----------------------------------------------------------------------------
 void FieldGraphicsItem::setLabelPositions()
 {
-    getRangeStartLabel()->hide();
-    getRangeEndLabel()->hide();
-    
+    hideMemoryRangeLabels();
+
     QGraphicsTextItem* nameLabel = getNameLabel();
 
     if (combinedRangeLabel_->toPlainText().isEmpty())
     {
-        QString rangeValue = QLatin1String("");
+        QString rangeValue = QStringLiteral("");
 
         quint64 fieldBaseAddress = getBaseAddress();
         quint64 fieldLastAddress = getLastAddress();
         if (fieldBaseAddress == fieldLastAddress)
         {
-            rangeValue = removeZerosFromRangeValue(fieldBaseAddress);
+            rangeValue = QString::number(fieldBaseAddress, 16).toUpper();
         }
         else
         {
-            QString offset = removeZerosFromRangeValue(fieldBaseAddress);
-            QString lastBit = removeZerosFromRangeValue(fieldLastAddress);
+            QString offset = QString::number(fieldBaseAddress, 16).toUpper();
+            QString lastBit = QString::number(fieldLastAddress, 16).toUpper();
 
-            rangeValue = lastBit + QLatin1String("..") + offset;
+            rangeValue = lastBit + QStringLiteral("..") + offset;
         }
 
         combinedRangeLabel_->setPlainText(rangeValue);
@@ -94,23 +93,6 @@ void FieldGraphicsItem::setLabelPositions()
     combinedRangeLabel_->setPos(rangeX, rangeY);
 
     fitNameToBoundaries(nameLabel);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldGraphicsItem::removeZerosFromRangeValue()
-//-----------------------------------------------------------------------------
-QString FieldGraphicsItem::removeZerosFromRangeValue(quint64 rangeValue) const
-{
-    QString formattedValue = getValueFormattedToHexadecimal(rangeValue);
-    if (formattedValue.size() > 0)
-    {
-        while (formattedValue.size() > 1 && formattedValue.at(0) == '0')
-        {
-            formattedValue = formattedValue.right(formattedValue.size() - 1);
-        }
-    }
-
-    return formattedValue;
 }
 
 //-----------------------------------------------------------------------------

@@ -110,22 +110,13 @@ private:
     MemoryMapGraphicsItem& operator=(MemoryMapGraphicsItem const& rhs);
 
     /*!
-     *  Get the memory map start.
+     *  Get the ranges of the selected memory map.
      *
-     *      @param [in] memoryItem  The memory item containing memory map data.
+     *      @param [in] memoryItem  Memory item containing the selected memory map.
      *
-     *      @return The memory map start address.
+     *      @return The memory range. First is base address, second is last address.
      */
-    quint64 getMemoryMapStart(QSharedPointer<MemoryItem> memoryItem) const;
-
-    /*!
-     *  Get the memory map end address.
-     *
-     *      @param [in] memoryItem  The memory item containing memory map data.
-     *
-     *      @return The memory map end address.
-     */
-    quint64 getMemoryMapEnd(QSharedPointer<MemoryItem> memoryItem) const;
+    QPair<quint64, quint64> getMemoryRanges(QSharedPointer<MemoryItem> memoryItem) const;
 
     /*!
      *  Set the label positions.

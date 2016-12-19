@@ -39,7 +39,6 @@ Create HW designs with hierarchy
  * Configure all designs
  * Generate everything ready for HDL synthesis and SW build for all processors
 
-
 Contributors
 ----------------------------------------------------
 

@@ -493,6 +493,7 @@ CreateHelp
     <ClCompile Include="designEditors\MemoryDesigner\MemoryConnectionItem.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignDocument.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerChildGraphicsItem.cpp" />
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerConstants.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerDiagram.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerGraphicsItem.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryExtensionGraphicsItem.cpp" />

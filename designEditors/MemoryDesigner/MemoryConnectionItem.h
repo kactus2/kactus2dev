@@ -38,9 +38,9 @@ public:
      *      @param [in] yTransfer                   Y transfer of the memory connection.
      *      @param [in] parent                      Parent item of the connection.
      */
-    MemoryConnectionItem(MainMemoryGraphicsItem* startItem, QString const& firstStartValue,
-        QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
-        bool memoryItemsAreCondensed, int yTransfer = 0, QGraphicsItem* parent = 0);
+    MemoryConnectionItem(MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
+        MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, bool memoryItemsAreCondensed,
+        int yTransfer = 0, QGraphicsItem* parent = 0);
 
 	/*!
      *  The Destructor.
@@ -153,16 +153,26 @@ public:
      *  Check if the selected label collides with the range labels.
      *
      *      @param [in] label           The selected label.
+     *      @param [in] fontHeight      Height of the font used in the selected label.
      *      @param [in] connectedItem   Owner of the selected label.
      *
      *      @return True, if the selected label collides with the range labels, false otherwise.
      */
-    bool labelCollidesWithRanges(QGraphicsTextItem* label, const MainMemoryGraphicsItem* connectedItem) const;
+    bool labelCollidesWithRanges(QGraphicsTextItem* label, qreal fontHeight,
+        const MainMemoryGraphicsItem* connectedItem) const;
 
 private:
     // Disable copying.
     MemoryConnectionItem(MemoryConnectionItem const& rhs);
     MemoryConnectionItem& operator=(MemoryConnectionItem const& rhs);
+
+    /*!
+     *  Setup the range labels.
+     *
+     *      @param [in] startValue  Base address of the connection.
+     *      @param [in] endValue    Last address of the connection.
+     */
+    void setupLabels(quint64 startValue, quint64 endValue);
 
     /*!
      *  Create the connection path.
@@ -185,28 +195,11 @@ private:
     void repositionLabels();
 
     /*!
-     *  Format a value to hexadecimal.
-     *
-     *      @param [in] value   The given value.
-     */
-    QString formatValueToHexadecimal(QString const& value) const;
-
-    /*!
      *  Get the width of the connection.
      *
      *      @return The width of the connection.
      */
     qreal getConnectionWidth() const;
-
-    /*!
-     *  Get the amount of numbers used to display ranges.
-     *
-     *      @param [in] rangeStart  Range start.
-     *      @param [in] rangeEnd    Range end.
-     *
-     *      @return The amount of numbers used to display ranges.
-     */
-    int getAmountOfNumbers(QString const& rangeStart, QString const& rangeEnd) const;
 
     /*!
      *  Get the height of the memory connection item to match the connection chain.
@@ -218,19 +211,6 @@ private:
     qreal getComparedConnectionHeight(MemoryConnectionItem* comparisonConnection) const;
 
     /*!
-     *  Check if an item collides with another item.
-     *
-     *      @param [in] firstRectangle      Scene bounding rectangle of the first item.
-     *      @param [in] firstPenWidth       Line width of the first item.
-     *      @param [in] secondRectangle     Scene bounding rectangle of the second item.
-     *      @param [in] secondPenWidth      Line width of the second item.
-     *
-     *      @return True, if the item collides with another item, false otherwise.
-     */
-    bool itemCollidesWithAnotherItem(QRectF firstRectangle, int firstPenWidth, QRectF secondRectangle,
-        int secondPenWidth) const;
-
-    /*!
      *  Reposition a single colliding range label.
      *
      *      @param [in] textLabel   The selected range label.
@@ -240,9 +220,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The amount of numbers used to display ranges.
-    int amountOfNumbers_;
 
     //! The label containing the first item start range.
     QGraphicsTextItem* firstItemStartLabel_;

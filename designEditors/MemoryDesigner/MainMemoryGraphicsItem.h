@@ -20,6 +20,8 @@
 class MemoryItem;
 class MemoryExtensionGraphicsItem;
 
+#include <QFontMetrics>
+
 //-----------------------------------------------------------------------------
 //! Parent class for memory map and address space graphics items in memory designer.
 //-----------------------------------------------------------------------------
@@ -53,11 +55,11 @@ public:
     virtual void addMemoryConnection(MemoryConnectionItem* connectionItem);
 
     /*!
-     *  Add a memory connection collision to this item.
+     *  Get the memory collision items contained within this item.
      *
-     *      @param [in] collisionItem   The selected memory collision item.
+     *      @return Memory collision items contained within this item.
      */
-    void addConnectionCollision(MemoryCollisionItem* collisionItem);
+    QVector<MemoryCollisionItem*> getMemoryCollisions() const;
 
     /*!
      *  Move the connected memory connections.
@@ -67,27 +69,12 @@ public:
     void moveConnectedConnections(QPointF beforePosition);
 
     /*!
-     *  Move the connected memory connections in y-coordinate.
-     *
-     *      @param [in] yTransfer   The amount moved by.
-     */
-    void moveConnectedConnectionsInY(qreal yTransfer);
-
-    /*!
      *  Move the memory item through a moving memory connection.
      *
      *      @param [in] movementOrigin  The origin of the movement.
      *      @param [in] movementDelta   The movement delta.
      */
     void moveByConnection(MemoryConnectionItem* movementOrigin, QPointF movementDelta);
-
-    /*!
-     *  Move the memory item in y-coordinate through a moving memory connection.
-     *
-     *      @param [in] movementOrigin  The origin of the movement.
-     *      @param [in] yTransfer       The movement amount.
-     */
-    void moveByConnectionInY(MemoryConnectionItem* movementOrigin, qreal yTransfer);
 
     /*!
      *  Change the ranges of the child items.
@@ -179,6 +166,18 @@ public:
      */
     QSharedPointer<MemoryItem> getMemoryItem() const;
 
+    /*!
+     *  Check if this item collides with similar items.
+     *
+     *      @return True, if the item collides with another item, false otherwise.
+     */
+    bool itemCollidesWithSimilarItems() const;
+
+    /*!
+     *  Create collision markers for overlapping connections.
+     */
+    void createOverlappingConnectionMarkers();
+
 protected:
 
     /*!
@@ -221,10 +220,11 @@ private:
      *  Check if the selected label collides with range labels.
      *
      *      @param [in] label   The selected label.
+     *      @param [in] height  Height of the label text.
      *
      *      @return True, if the selected label collides with range labels, false otherwise.
      */
-    virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label) const;
+    virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label, qreal fontHeight) const;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -30,8 +30,11 @@ MemoryDesignerGraphicsItem(itemName, instanceName, parent)
     setGraphicsRectangle(blockWidth, range);
 
     quint64 rangeEnd = baseAddress + range - 1;
-    setupLabels(baseAddress, rangeEnd);
-    setupToolTip(toolTipType);
+    if (toolTipType.compare(QStringLiteral("Field")) != 0)
+    {
+        setupLabels(baseAddress, rangeEnd);
+        setupToolTip(toolTipType);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -67,10 +70,9 @@ void MemoryDesignerChildGraphicsItem::setColors(QColor itemColor, bool itemIsEmp
 void MemoryDesignerChildGraphicsItem::changeAddressRange(quint64 offset)
 {
     quint64 newBaseAddress = getBaseAddress() + offset;
-    setBaseAddress(newBaseAddress);
-
     quint64 newLastAddress = getLastAddress() + offset;
-    setLastAddress(newLastAddress);
+
+    setupLabels(newBaseAddress, newLastAddress);
 }
 
 //-----------------------------------------------------------------------------

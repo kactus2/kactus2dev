@@ -66,15 +66,6 @@ private:
      */
     void setRectangle();
 
-    /*!
-     *  Format the selected value into hexadecimal.
-     *
-     *      @param [in] value   The selected value.
-     *
-     *      @return The given value in hexadecimal form.
-     */
-    QString formatValueToHexadecimal(quint64 value) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

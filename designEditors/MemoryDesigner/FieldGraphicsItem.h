@@ -90,15 +90,6 @@ private:
     virtual void setLabelPositions();
 
     /*!
-     *  Remove zeros from the front of a given value.
-     *
-     *      @param [in] rangeValue  The selected value.
-     *
-     *      @return The range value in string format with zeros removed from the front.
-     */
-    QString removeZerosFromRangeValue(quint64 rangeValue) const;
-
-    /*!
      *  Fit the name label to the boundaries of the item.
      *
      *      @param [in] nameLabel   The selected name label.

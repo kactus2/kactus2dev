@@ -261,8 +261,11 @@ private:
 
     /*!
      *  Create the memory items found in the design.
+     *
+     *      @param [in] spaceColumn         Column for the address space graphics items.
+     *      @param [in] memoryMapColumn     Column for the memory map graphics items.
      */
-    void createMemoryItems();
+    void createMemoryItems(MemoryColumn* spaceColumn, MemoryColumn* memoryMapColumn);
 
     /*!
      *  Create an address space item.
@@ -286,8 +289,11 @@ private:
 
     /*!
      *  Create the memory connections.
+     *
+     *      @param [in] spaceColumn         Column containing the address space graphics items.
+     *      @param [in] memoryMapColumn     Column containing the memory map graphics items.
      */
-    void createMemoryConnections();
+    void createMemoryConnections(MemoryColumn* spaceColumn, MemoryColumn* memoryMapColumn);
 
     /*!
      *  Get the selected memory column.
@@ -319,47 +325,13 @@ private:
      *      @param [in] placedMaps              A list of placed memory map items.
      *      @param [in] memoryItem              The selected memory map item.
      *      @param [in] originalColumn          The original column of the memory map item.
-     *      @param [in] startAddress            The start address of the connection.
-     *      @param [in] endAddress              The end address of the connection.
+     *      @param [in] mapBaseAddress          Base address of the remapped memory map.
+     *      @param [in] mapLastAddress          Last address of the remapped memory map.
      *      @param [in] connectionStartItem     The start item of the memory map connection.
      */
     void checkMemoryMapRepositionToOverlapColumn(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
-        MainMemoryGraphicsItem* memoryItem, MemoryColumn* originalColumn, QString const& startAddress,
-        QString const& endAddress, MainMemoryGraphicsItem* connectionStartItem);
-
-    /*!
-     *  Check if a selected memory map item overlaps another memory map item within the selected column.
-     *
-     *      @param [in] memoryColumn            The selected memory map column.
-     *      @param [in] memoryItem              The selected memory map graphics item.
-     *      @param [in] mapBaseAddress          Base address of the memory map.
-     *      @param [in] mapLastAddress          Last address of the memory map.
-     *      @param [in] memoryItemRect          Graphics rectangle of the memory map item.
-     *      @param [in] memoryPenWidth          Pen Width of the memory map item.
-     *      @param [in] placedMaps              List of memory maps that have already been placed.
-     *      @param [in] connectedSpaceItems     List of the address space graphics items connected to the selected
-     *                                          memory map graphics item.
-     *
-     *      @return True, if the memory map overlaps another memory map, false otherwise.
-     */
-    bool memoryMapOverlapsInColumn(MemoryColumn* memoryColumn, MainMemoryGraphicsItem* memoryItem,
-        quint64 mapBaseAddress, quint64 mapLastAddress, QRectF memoryItemRect, int memoryPenWidth,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
-        QVector<MainMemoryGraphicsItem*> connectedSpaceItems) const;
-
-    /*!
-     *  Check if a memory map overlaps another memory map in the same column.
-     *
-     *      @param [in] mapBaseAddress          Base address of the selected memory map.
-     *      @param [in] lastAddress             Last address of the selected memory map.
-     *      @param [in] selectedMapRect         Bounding rectangle of the selected memory map item.
-     *      @param [in] selectedMapPenWidth     Line width of the selected memory map item.
-     *      @param [in] comparisonMemoryItem    The compared memory map item.
-     *
-     *      @return True, if the selected memory map overlaps another memory map, false otherwise.
-     */
-    bool memoryMapOverlapsAnotherMemoryMap(quint64 mapBaseAddress, quint64 mapLastAddress, QRectF selectedMapRect,
-        int selectedMapPenWidth, MainMemoryGraphicsItem* comparisonMemoryItem) const;
+        MainMemoryGraphicsItem* memoryItem, MemoryColumn* originalColumn, quint64 mapBaseAddress,
+        quint64 mapLastAddress, MainMemoryGraphicsItem* connectionStartItem);
 
     /*!
      *  Reposition the selected memory map item.
@@ -397,15 +369,6 @@ private:
     void reDrawConnections(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
 
     /*!
-     *  Move an address space item.
-     *
-     *      @param [in] spaceItem           The selected address space item.
-     *      @param [in] spaceColumn         Column containing the address spaces.
-     *      @param [in] spaceYPlacement     Y placement of the address space item.
-     */
-    void moveAddressSpaceItem(MainMemoryGraphicsItem* spaceItem, MemoryColumn* spaceColumn, int& spaceYPlacement);
-
-    /*!
      *  Place the address space item to another address space column.
      *
      *      @param [in] spaceItem       The selected address space item.
@@ -417,24 +380,13 @@ private:
         MainMemoryGraphicsItem* targetItem, int yTransfer);
 
     /*!
-     *  Extend a memory item.
-     *
-     *      @param [in] memoryGraphicsItem  The selected memory graphics item.
-     *      @param [in] connectionItem      The connection of the selected memory graphics item.
-     *      @param [in] spaceYplacement     Y placement of the address space item.
-     */
-    void extendMemoryItem(MainMemoryGraphicsItem* memoryGraphicsItem, MemoryConnectionItem* connectionItem,
-        int& spaceYplacement);
-
-    /*!
      *  Move the unconnected address space items to the bottom of the address space column.
      *
      *      @param [in] placedSpaceItems    List of the placed address space items.
-     *      @param [in] spaceYPlacement     Y placement of the last address space item.
      *      @param [in] spaceColumn         Column containing the address space items.
      */
     void moveUnconnectedAddressSpaces(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        int& spaceYPlacement, MemoryColumn* spaceColumn);
+        MemoryColumn* spaceColumn);
 
     /*!
      *  Move the unconnected memory map items to the bottom of the memory map column.
@@ -451,17 +403,6 @@ private:
      *      @param [in] placedSpaceItems    List of the placed address space items.
      */
     void createOverlappingConnectionMarkers(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
-
-    /*!
-     *  Check if an items bounding rectangle collides with another item.
-     *
-     *      @param [in] firstRectangle      Bounding rectangle of the selected item.
-     *      @param [in] firstLineWidth      Line width of the selected item.
-     *      @param [in] secondRectangle     Bounding rectangle of the comparison item.
-     *      @param [in] secondLineWidth     Line width of the comparison item.
-     */
-    bool itemCollidesWithAnotherItem(QRectF firstRectangle, int firstLineWidth, QRectF secondRectangle,
-        int secondLineWidth) const;
 
     /*!
      *  Compress the graphics items.
@@ -530,15 +471,6 @@ private:
      */
     void changeMasterAddressSpaceColumn(MainMemoryGraphicsItem* masterSpaceItem, qreal spaceItemY,
         GraphicsColumn* originalColumn, QVector<MainMemoryGraphicsItem*> spaceItemChain);
-
-    /*!
-     *  Check if an address space item collides with an other address space item.
-     *
-     *      @param [in] spaceItem   The selected address space item.
-     *
-     *      @return True, if the address space item collides with an other address space item, false otherwise.
-     */
-    bool spaceItemCollidesWithOtherSpaceItems(MainMemoryGraphicsItem* spaceItem) const;
 
     /*!
      *  Change the column of a colliding master address space item.

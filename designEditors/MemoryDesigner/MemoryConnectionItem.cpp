@@ -27,11 +27,10 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::MemoryConnectionItem()
 //-----------------------------------------------------------------------------
-MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem, QString const& firstStartValue,
-    QString const& firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
+MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem, quint64 firstStartValue,
+    quint64 firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
     bool memoryItemsAreCondensed, int yTransfer, QGraphicsItem* parent):
 QGraphicsPathItem(parent),
-amountOfNumbers_(getAmountOfNumbers(firstStartValue, firstEndValue)),
 firstItemStartLabel_(new QGraphicsTextItem(this)),
 firstItemEndLabel_(new QGraphicsTextItem(this)),
 secondItemStartLabel_(new QGraphicsTextItem(this)),
@@ -39,17 +38,12 @@ secondItemEndLabel_(new QGraphicsTextItem(this)),
 startItem_(startItem),
 endItem_(endItem),
 yTransfer_(yTransfer),
-connectionBaseAddress_(firstStartValue.toULongLong()),
-connectionLastAddress_(firstEndValue.toULongLong()),
+connectionBaseAddress_(firstStartValue),
+connectionLastAddress_(firstEndValue),
 connectionWidth_(0),
 memoryItemsAreCondensed_(memoryItemsAreCondensed)
 {
-    QString startValueInHexa = formatValueToHexadecimal(firstStartValue);
-    QString endValueInHexa = formatValueToHexadecimal(firstEndValue);
-    firstItemStartLabel_->setPlainText(startValueInHexa);
-    firstItemEndLabel_->setPlainText(endValueInHexa);
-    secondItemStartLabel_->setPlainText(startValueInHexa);
-    secondItemEndLabel_->setPlainText(endValueInHexa);
+    setupLabels(firstStartValue, firstEndValue);
 
     if (connectionBaseAddress_ == connectionLastAddress_)
     {
@@ -261,46 +255,21 @@ void MemoryConnectionItem::repositionLabels()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::getAmountOfNumbers()
+// Function: MemoryConnectionItem::setupLabels()
 //-----------------------------------------------------------------------------
-int MemoryConnectionItem::getAmountOfNumbers(QString const& rangeStart, QString const& rangeEnd) const
+void MemoryConnectionItem::setupLabels(quint64 startValue, quint64 endValue)
 {
-    int startSize = rangeStart.size();
-    int endSize = rangeEnd.size();
+    QString startValueInHexa = QString::number(startValue, 16).toUpper();
+    QString endValueInHexa = QString::number(endValue, 16).toUpper();
 
-    int amountOfNumbers = endSize;
-    if (startSize > endSize)
-    {
-        amountOfNumbers = startSize;
-    }
+    int amountOfNumbers = MemoryDesignerConstants::getAmountOfNumbersInRange(startValueInHexa, endValueInHexa);
+    startValueInHexa = MemoryDesignerConstants::getValueWithZerosAdded(startValueInHexa, amountOfNumbers);
+    endValueInHexa = MemoryDesignerConstants::getValueWithZerosAdded(endValueInHexa, amountOfNumbers);
 
-    while (amountOfNumbers % 4)
-    {
-        amountOfNumbers++;
-    }
-
-    return amountOfNumbers;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::formatValueToHexadecimal()
-//-----------------------------------------------------------------------------
-QString MemoryConnectionItem::formatValueToHexadecimal(QString const& value) const
-{
-    quint64 intValue = value.toULongLong();
-
-    QString formattedRange = QString::number(intValue, 16).toUpper();
-
-    int rangeSize = formattedRange.size();
-
-    int amountOfZeros = amountOfNumbers_ - rangeSize;
-    while (amountOfZeros > 0)
-    {
-        formattedRange.prepend('0');
-        amountOfZeros--;
-    }
-
-    return formattedRange;
+    firstItemStartLabel_->setPlainText(startValueInHexa);
+    firstItemEndLabel_->setPlainText(endValueInHexa);
+    secondItemStartLabel_->setPlainText(startValueInHexa);
+    secondItemEndLabel_->setPlainText(endValueInHexa);
 }
 
 //-----------------------------------------------------------------------------
@@ -429,7 +398,7 @@ void MemoryConnectionItem::repositionSingleRangeLabel(QGraphicsTextItem* rangeLa
             collidingRectangle.setTop(collidingRectangle.top() + RECTANGLEMODIFIER);
             collidingRectangle.setBottom(collidingRectangle.bottom() - RECTANGLEMODIFIER);
 
-            if (itemCollidesWithAnotherItem(labelRectangle, 0, collidingRectangle, 0))
+            if (MemoryDesignerConstants::itemOverlapsAnotherItem(labelRectangle, 0, collidingRectangle, 0))
             {
                 quint64 itemValue = rangeLabel->toPlainText().toULongLong(0, 16);
                 quint64 collidingValue = collidingLabel->toPlainText().toULongLong(0, 16);
@@ -599,47 +568,28 @@ qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* co
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::itemCollidesWithAnotherItem()
-//-----------------------------------------------------------------------------
-bool MemoryConnectionItem::itemCollidesWithAnotherItem(QRectF firstRectangle, int firstPenWidth,
-    QRectF secondRectangle, int secondPenWidth) const
-{
-    qreal firstItemTop = firstRectangle.top() + firstPenWidth;
-    qreal firstItemLow = firstRectangle.bottom() - firstPenWidth;
-    qreal secondItemTop = secondRectangle.top() + secondPenWidth;
-    qreal secondItemLow = secondRectangle.bottom() - secondPenWidth;
-
-    if (
-        ((firstItemTop > secondItemTop && firstItemTop < secondItemLow) ||
-        (firstItemLow < secondItemLow && firstItemLow > secondItemTop) ||
-
-        (secondItemTop > firstItemTop && secondItemTop < firstItemLow) ||
-        (secondItemLow < firstItemLow && secondItemLow > firstItemTop) ||
-
-        (firstItemTop == secondItemTop && firstItemLow == secondItemLow)))
-    {
-        return true;
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::labelCollidesWithRanges()
 //-----------------------------------------------------------------------------
-bool MemoryConnectionItem::labelCollidesWithRanges(QGraphicsTextItem* label,
+bool MemoryConnectionItem::labelCollidesWithRanges(QGraphicsTextItem* label, qreal fontHeight,
     const MainMemoryGraphicsItem* connectedItem) const
 {
-    if (connectedItem == startItem_)
+    QGraphicsTextItem* comparedStartLabel = firstItemStartLabel_;
+    QGraphicsTextItem* comparedEndLabel = firstItemEndLabel_;
+
+    if (connectedItem == endItem_)
     {
-        return label->collidesWithItem(firstItemStartLabel_) || label->collidesWithItem(firstItemEndLabel_);
+        comparedStartLabel = secondItemStartLabel_;
+        comparedEndLabel = secondItemEndLabel_;
     }
-    else if (connectedItem == endItem_)
-    {
-        return label->collidesWithItem(secondItemStartLabel_) || label->collidesWithItem(secondItemEndLabel_);
-    }
-    else
-    {
-        return false;
-    }
+
+    QRectF labelRectangle = label->sceneBoundingRect();
+    QRectF comparedStartRectangle = comparedStartLabel->sceneBoundingRect();
+    QRectF comparedEndRectangle = comparedEndLabel->sceneBoundingRect();
+
+    labelRectangle.setHeight(fontHeight);
+    comparedStartRectangle.setHeight(fontHeight);
+    comparedEndRectangle.setHeight(fontHeight);
+
+    return MemoryDesignerConstants::itemOverlapsAnotherItem(labelRectangle, 0, comparedStartRectangle, 0) ||
+        MemoryDesignerConstants::itemOverlapsAnotherItem(labelRectangle, 0, comparedEndRectangle, 0);
 }

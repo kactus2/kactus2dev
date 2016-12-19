@@ -195,7 +195,8 @@ bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, in
             }
 		case FILE_TYPES_COL_EDIT_IN_KACTUS:
 			{
-				entries_[index.row()].editInKactus = value.toBool();
+                entries_[index.row()].editInKactus = value.toBool();
+                break;
 			}
         case FILE_TYPES_COL_EXTENSIONS:
             {

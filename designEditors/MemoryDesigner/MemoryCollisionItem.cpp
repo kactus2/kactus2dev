@@ -95,11 +95,16 @@ void MemoryCollisionItem::setLabels()
     QPointF topLeft = boundingRect().topLeft();
     QPointF lowLeft = boundingRect().bottomLeft();
 
-    quint64 collisionRangeStart = qMax(firstRangeStart_, firstRangeEnd_);
-    QString collisionBaseInHexa = formatValueToHexadecimal(collisionRangeStart);
-
+    quint64 collisionRangeStart = qMax(firstRangeStart_, secondRangeStart_);
     quint64 collisionRangeEnd = qMin(firstRangeEnd_, secondRangeEnd_);
-    QString collisionLastInHexa = formatValueToHexadecimal(collisionRangeEnd);
+
+    QString collisionBaseInHexa = QString::number(collisionRangeStart, 16).toUpper();
+    QString collisionLastInHexa = QString::number(collisionRangeEnd, 16).toUpper();
+
+    int amountOfNumbers =
+        MemoryDesignerConstants::getAmountOfNumbersInRange(collisionBaseInHexa, collisionLastInHexa);
+    collisionBaseInHexa = MemoryDesignerConstants::getValueWithZerosAdded(collisionBaseInHexa, amountOfNumbers);
+    collisionLastInHexa = MemoryDesignerConstants::getValueWithZerosAdded(collisionLastInHexa, amountOfNumbers);
 
     QGraphicsTextItem* startPointRangeStart = new QGraphicsTextItem(collisionBaseInHexa, this);
 
@@ -174,24 +179,6 @@ void MemoryCollisionItem::setLabels()
             }
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryCollisionItem::formatValueToHexadecimal()
-//-----------------------------------------------------------------------------
-QString MemoryCollisionItem::formatValueToHexadecimal(quint64 value) const
-{
-    QString formattedRange = QString::number(value, 16).toUpper();
-
-    int rangeSize = formattedRange.size();
-
-    while (rangeSize % 4 != 0)
-    {
-        formattedRange.prepend('0');
-        rangeSize++;
-    }
-
-    return formattedRange;
 }
 
 //-----------------------------------------------------------------------------
