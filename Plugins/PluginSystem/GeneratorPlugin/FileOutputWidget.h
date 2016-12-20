@@ -31,9 +31,7 @@ public:
 
 signals:
 	
-    /*!
-    *  Emitted when the selected file is changed.
-     */
+    // Emitted when the selected file is changed.
 	void selectedFileChanged() const;
 
 public slots:
@@ -54,7 +52,7 @@ private slots:
     void onItemChanged(QTableWidgetItem *item);
 
     // Received when user selects an item on the table.
-    void onItemActivated();
+    void onItemSelectionChanged();
 
 private:
 

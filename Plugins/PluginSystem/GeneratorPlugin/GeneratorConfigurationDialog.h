@@ -37,6 +37,7 @@ public:
 
 public slots:
 
+    // Received when the OK button is pressed. NOTICE: Overrides slot accept() of the parent class.
     virtual void accept();
 
 private slots:

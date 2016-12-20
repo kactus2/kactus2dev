@@ -73,16 +73,26 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     topLayout->addWidget(new QTextEdit);
 
     // Finally, connect the relevant events to their handler functions.
+    connect(configuration_.data(), SIGNAL(outputFilesChanged()), 
+        fileOutput_, SLOT(onOutputFilesChanged()), Qt::UniqueConnection);
+
+    // Connect the view selection.
     connect(viewSelection_, SIGNAL(viewChanged()), 
         this, SLOT(onViewChanged()), Qt::UniqueConnection);
+
+    // Connect the optional features.
     connect(useInterfaces, SIGNAL(stateChanged(int)), 
         this, SLOT(onInterfaceGenerationStateChanged(int)), Qt::UniqueConnection);
     connect(generateMemory, SIGNAL(stateChanged(int)), 
         this, SLOT(onMemoryGenerationStateChanged(int)), Qt::UniqueConnection);
+
+    // Connect file output.
+    connect(fileOutput_, SIGNAL(selectedFileChanged()), 
+        this, SLOT(onSelectedFileChanged()), Qt::UniqueConnection);
+
+    // Connect the dialog buttons to their respective functions.
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
-    connect(configuration_.data(), SIGNAL(outputFilesChanged()), 
-        fileOutput_, SLOT(onOutputFilesChanged()), Qt::UniqueConnection);
 
     configuration_->parseDocuments();
 }
@@ -109,6 +119,14 @@ void GeneratorConfigurationDialog::accept()
 	}
 
     QDialog::accept();
+}
+#include <QDebug>
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfigurationDialog::onSelectedFileChanged()
+//-----------------------------------------------------------------------------
+void GeneratorConfigurationDialog::onSelectedFileChanged()
+{
+    qDebug() << "x vv" << endl;
 }
 
 //-----------------------------------------------------------------------------

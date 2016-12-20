@@ -13,9 +13,6 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
-#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
-
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>

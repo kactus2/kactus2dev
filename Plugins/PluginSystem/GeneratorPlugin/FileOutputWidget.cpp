@@ -93,7 +93,7 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) :
     connect(fileTable_, SIGNAL(itemChanged(QTableWidgetItem*)),
         this, SLOT(onItemChanged(QTableWidgetItem*)), Qt::UniqueConnection);
     connect(fileTable_, SIGNAL(itemSelectionChanged()),
-        this, SLOT(onItemActivated()), Qt::UniqueConnection);
+        this, SLOT(onItemSelectionChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -191,12 +191,19 @@ void FileOutputWidget::onItemChanged(QTableWidgetItem *item)
 }
 #include <QDebug>
 //-----------------------------------------------------------------------------
-// Function: FileOutputWidget::onItemActivated()
+// Function: FileOutputWidget::onItemSelectionChanged()
 //-----------------------------------------------------------------------------
-void FileOutputWidget::onItemActivated()
+void FileOutputWidget::onItemSelectionChanged()
 {
+    if (fileTable_->selectedItems().size() < 1)
+    {
+        return;
+    }
+
     QTableWidgetItem* item = fileTable_->selectedItems().last();
     qDebug() << "x " << item->column() << " y " << item->row() << endl;
+
+    emit selectedFileChanged();
 }
 
 //-----------------------------------------------------------------------------
