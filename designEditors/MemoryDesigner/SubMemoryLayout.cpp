@@ -73,11 +73,10 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
                 if (subMemoryItem->getType().compare(subItemType, Qt::CaseInsensitive) == 0)
                 {
                     MemoryDesignerChildGraphicsItem* newSubItem = createNewSubItem(subMemoryItem, false);
+                    quint64 subItemBaseAddress = newSubItem->getBaseAddress();
 
-                    positionNewSubItem(
-                        subItemPositionX, itemBaseAddress, newSubItem->getBaseAddress(), newSubItem);
-
-                    subItemsInOrder.insert(newSubItem->getBaseAddress(), newSubItem);
+                    positionNewSubItem(subItemPositionX, itemBaseAddress, subItemBaseAddress, newSubItem);
+                    subItemsInOrder.insert(subItemBaseAddress, newSubItem);
                 }
             }
 

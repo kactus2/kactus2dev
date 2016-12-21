@@ -89,8 +89,10 @@ void AddressBlockGraphicsItem::setLabelPositions()
 MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createNewSubItem(
     QSharedPointer<MemoryItem> subMemoryItem, bool isEmpty)
 {
+    int registerWidth = getRegisterWidth();
+
     return new RegisterGraphicsItem(
-        subMemoryItem, isEmpty, getRegisterWidth(), filterFields_, getContainingInstance(), this);
+        subMemoryItem, isEmpty, registerWidth, filterFields_, getContainingInstance(), this);
 }
 
 //-----------------------------------------------------------------------------
@@ -111,7 +113,6 @@ MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createEmptySubItem(qu
     quint64 emptyRegisterRangeInt = rangeEnd - beginAddress + 1;
 
     QString emptyRegisterBaseAddress = QString::number(beginAddress);
-    QString emptyRegisterRange = QString::number(emptyRegisterRangeInt);
 
     int intAUB = addressUnitBits_.toInt();
     quint64 registerSize = emptyRegisterRangeInt * intAUB;

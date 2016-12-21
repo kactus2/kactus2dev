@@ -29,9 +29,7 @@ FieldGraphicsItem::FieldGraphicsItem(QString const& fieldName, quint64 fieldOffs
     MemoryDesignerGraphicsItem* parentItem):
 MemoryDesignerChildGraphicsItem(fieldName, QStringLiteral("Field"), fieldOffset, fieldHeight, fieldWidth,
     containingInstance, parentItem),
-isEmpty_(isEmptyField),
 combinedRangeLabel_(new QGraphicsTextItem("", this)),
-fieldHeight_(fieldHeight),
 fieldName_(fieldName)
 {
     getNameLabel()->setFont(labelFont);
@@ -41,10 +39,6 @@ fieldName_(fieldName)
     setupToolTip(QStringLiteral("Field"));
     setLabelPositions();
     setColors(KactusColors::FIELD_COLOR, isEmptyField);
-    if (isEmptyField)
-    {
-        combinedRangeLabel_->setDefaultTextColor(getNameLabel()->defaultTextColor());
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -53,6 +47,14 @@ fieldName_(fieldName)
 FieldGraphicsItem::~FieldGraphicsItem()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::setEmptyItemRangeColors()
+//-----------------------------------------------------------------------------
+void FieldGraphicsItem::setEmptyItemRangeColors(QColor emptyItemRangeColour)
+{
+    combinedRangeLabel_->setDefaultTextColor(emptyItemRangeColour);
 }
 
 //-----------------------------------------------------------------------------

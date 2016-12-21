@@ -27,12 +27,13 @@ RegisterGraphicsItem::RegisterGraphicsItem(QSharedPointer<MemoryItem> registerIt
     qreal registerWidth, bool filterFields, QString const& containingInstance,
     MemoryDesignerGraphicsItem* parentItem):
 MemoryDesignerChildGraphicsItem(registerItem->getName(), QStringLiteral("Register"),
-    registerItem->getAddress().toULongLong(), getRegisterEnd(registerItem), registerWidth, containingInstance,
-    parentItem),
+    registerItem->getAddress().toULongLong(),
+    getRegisterEnd(registerItem->getAUB().toUInt(), registerItem->getSize().toULongLong()), registerWidth,
+    containingInstance, parentItem),
 fieldItems_(),
 isEmpty_(isEmptyRegister),
-registerWidth_(registerWidth),
-registerMemoryItem_(registerItem),
+registerSize_(registerItem->getSize().toULongLong()),
+addressUnitBits_(registerItem->getAUB().toUInt()),
 filterFields_(filterFields)
 {
     setColors(KactusColors::REGISTER_COLOR, isEmptyRegister);
@@ -40,7 +41,7 @@ filterFields_(filterFields)
 
     if (!isEmptyRegister && !filterFields)
     {
-        setupFields(registerItem, getRegisterEnd(registerItem));
+        setupFields(registerItem);
     }
 }
 
@@ -55,12 +56,8 @@ RegisterGraphicsItem::~RegisterGraphicsItem()
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::getRegisterEnd()
 //-----------------------------------------------------------------------------
-quint64 RegisterGraphicsItem::getRegisterEnd(QSharedPointer<MemoryItem> registerItem) const
+quint64 RegisterGraphicsItem::getRegisterEnd(unsigned int addressUnitBits, quint64 registerSize) const
 {
-    int addressUnitBits = registerItem->getAUB().toInt();
-
-    quint64 registerSize = registerItem->getSize().toULongLong();
-
     quint64 registerEnd = registerSize / addressUnitBits;
     return registerEnd;
 }
@@ -116,14 +113,15 @@ void RegisterGraphicsItem::condense(qreal newItemHeight)
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::setupFields()
 //-----------------------------------------------------------------------------
-void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem, quint64 registerEnd)
+void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem)
 {
-    quint64 registerSize = registerItem->getSize().toULongLong();
-    qint64 firstUnusedBit = registerSize;
+    quint64 registerEnd = getRegisterEnd(addressUnitBits_, registerSize_);
+    QString registerName = getNameLabel()->toPlainText();
 
+    qint64 firstUnusedBit = registerSize_;
     qreal registerWidth = boundingRect().width();
     qreal fieldsStartPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2;
-    qreal oneBitWidth = (registerWidth - fieldsStartPosition) / registerSize;
+    qreal oneBitWidth = (registerWidth - fieldsStartPosition) / registerSize_;
     qreal previousEndPosition = boundingRect().left() + fieldsStartPosition;
     qreal widthRemainder = 0;
 
@@ -167,7 +165,6 @@ QMap<quint64, QSharedPointer<MemoryItem> > RegisterGraphicsItem::getFieldItemsIn
     QMap<quint64, QSharedPointer<MemoryItem> > fieldMap;
 
     quint64 registerOffset = registerItem->getAddress().toULongLong();
-    unsigned int mapAUB = registerItem->getAUB().toUInt();
 
     foreach (QSharedPointer<MemoryItem> fieldItem, registerItem->getChildItems())
     {
@@ -176,7 +173,7 @@ QMap<quint64, QSharedPointer<MemoryItem> > RegisterGraphicsItem::getFieldItemsIn
             quint64 fieldAddress = fieldItem->getAddress().toULongLong();
             quint64 fieldRegisteredOffset = fieldItem->getOffset().toULongLong();
 
-            quint64 fieldOffset = (fieldAddress - registerOffset) * mapAUB + fieldRegisteredOffset;
+            quint64 fieldOffset = (fieldAddress - registerOffset) * addressUnitBits_ + fieldRegisteredOffset;
             fieldMap.insertMulti(fieldOffset, fieldItem);
         }
     }
@@ -237,8 +234,7 @@ void RegisterGraphicsItem::changeWidth(qreal widthChange)
 {
     if (!isEmpty_)
     {
-        quint64 registerSize = registerMemoryItem_->getSize().toULongLong();
-        qreal changePerBit = widthChange / registerSize;
+        qreal changePerBit = widthChange / registerSize_;
         qreal previousEndPosition = boundingRect().left() + MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2;
 
         foreach (FieldGraphicsItem* fieldItem, fieldItems_)
@@ -275,8 +271,7 @@ qreal RegisterGraphicsItem::getMaximumNeededChangeInFieldWidth() const
         maximumWidthChange = qMax(maximumWidthChange, fieldItem->getNeededWithChangeToDisplayFullName());
     }
 
-    quint64 registerSize = registerMemoryItem_->getSize().toULongLong();
-    maximumWidthChange = registerSize * maximumWidthChange;
+    maximumWidthChange = registerSize_ * maximumWidthChange;
 
     return maximumWidthChange;
 }
