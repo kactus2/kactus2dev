@@ -10,11 +10,24 @@
     <p>
       Views editor provides a summary of the views of the
       component. The editor can be used to add and remove views.
-      <i>View</i> specifies a representation level of a component,
+	</p>
+    <p>
+	  A <i>view</i> specifies a representation level of a component,
       e.g. there might be different views for simulation and
-      synthesis. Component must have at least 1 view. It can also have
-      many views and one of them activated when component is
-      instantiated in a <i>design</i>.
+      synthesis. A component can have multiple views and one of them 
+	  is selected as active when component is instantiated in a <i>design</i>.
+    </p>
+	<p>
+	    <b>Name</b> is a mandatory identifier for the <i>view</i>.
+    </p>
+    <p>
+        <b>View type</b> is automatically determined by the view definition. 
+		A non-hierarchical view defines an independent one-level representation of 
+		the component. A hierarchical view implies there is a <i>design</i> 
+		describing the sub-components that together compose this component.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>view</i>.		
     </p>
     <p>
       The editor contains a context menu that contains following options:

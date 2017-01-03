@@ -49,7 +49,6 @@ LibrarySettingsDialog::LibrarySettingsDialog(QSettings& settings, QWidget* paren
 
     // Cells are resized to match contents.
     libLocationsTable_->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-
     libLocationsTable_->horizontalHeader()->setStretchLastSection(true);
     libLocationsTable_->setAlternatingRowColors(true);
     libLocationsTable_->verticalHeader()->hide();
@@ -129,9 +128,8 @@ void LibrarySettingsDialog::addLocation()
     {
         bool isDefault = libLocationsTable_->rowCount() == 0;
         createRowForDirectory(directory, true, isDefault);
+        changed_ = true;
     }
-
-    changed_ = true;
 }
 
 //-----------------------------------------------------------------------------

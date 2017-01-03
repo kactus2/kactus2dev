@@ -33,8 +33,9 @@
 
 typedef QVector<QFileInfo> fileList;
 
-class LibraryItem;
 class Document;
+class LibraryItem;
+class TableViewDialog;
 class VLNVDialer;
 
 //-----------------------------------------------------------------------------
@@ -283,7 +284,10 @@ public slots:
      */
     virtual void onShowErrors(VLNV const& vlnv);
 
-	/*! Selects the given vlnv item in the library
+    //!  Shows a report of all errors within the library items.
+    void onGenerateIntegrityReport();
+
+    /*! Selects the given vlnv item in the library
 	 *
 	 *      @param [in] vlnv Specifies the item in the library to select
 	 *
@@ -469,6 +473,9 @@ private slots:
 	*/
 	void onItemSaved(VLNV const& vlnv);
 
+    //! Closes the integrity report widget.
+    void onCloseIntegrityReport();
+
 private:
 
     //! No copying
@@ -554,7 +561,7 @@ private:
 	 *
 	*/
 	bool containsPath(const QString& path, const QStringList& pathsToSearch) const;
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -573,6 +580,8 @@ private:
 
 	//! The widget that contains the GUI items for the hierarchy tab
 	HierarchyWidget* hierarchyWidget_;
+
+    TableViewDialog* integrityWidget_;
 
 	/*! Contains the library objects that have been parsed.
 	 *

@@ -86,20 +86,6 @@ public:
     quint64 getLastAddress() const;
 
     /*!
-     *  Set a new base address.
-     *
-     *      @param [in] newBaseAddress  The new base address.
-     */
-    void setBaseAddress(quint64 newBaseAddress);
-
-    /*!
-     *  Set a new last address.
-     *
-     *      @param [in] newLastAddress  The new last address.
-     */
-    void setLastAddress(quint64 newLastAddress);
-
-    /*!
      *  Compress this graphics item.
      *
      *      @param [in] newItemHeight   The new height of the graphics item.
@@ -121,11 +107,13 @@ public:
     QMap<quint64, MemoryConnectionItem*> getMemoryConnections() const;
 
     /*!
-     *  Get the connected memory connection items in vector formate.
+     *  Check if the graphics item is connected to the selected connection item.
      *
-     *      @return The connected memory connection items in vector format.
+     *      @param [in] comparisonConnectionItem    The selected connection item.
+     *
+     *      @return True, if the graphics item is connected to the selected connection item, false otherwise.
      */
-    QVector<MemoryConnectionItem*> getConnectionsInVector() const;
+    bool hasConnection(MemoryConnectionItem* comparisonConnectionItem) const;
 
     /*!
      *  Fit the selected label to this item.
@@ -188,22 +176,14 @@ protected:
     QGraphicsTextItem* getRangeEndLabel() const;
 
     /*!
-     *  Format the selected value to a hexadecimal value.
-     *
-     *      @param [in] range   The selected value.
-     *
-     *      @return The value formatted to hexadecimal.
-     */
-    QString getValueFormattedToHexadecimal(quint64 range) const;
-
-    /*!
      *  Check if the selected label collides with range labels.
      *
-     *      @param [in] label   The selected label.
+     *      @param [in] label       The selected label.
+     *      @param [in] fontHeight  Height of the text used in the selected label.
      *
      *      @return True, if the selected label collides with range labels, otherwise false.
      */
-    virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label) const;
+    virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label, qreal fontHeight) const;
 
 private:
     // Disable copying.
@@ -214,16 +194,6 @@ private:
      *  Set the label positions.
      */
     virtual void setLabelPositions() = 0;
-
-    /*!
-     *  Get the amount numbers used to display memory ranges.
-     *
-     *      @param [in] memoryStart     Range start.
-     *      @param [in] memoryEnd       Range end.
-     *
-     *      @return The amount of numbers used to display memory ranges.
-     */
-    int getAmountOfLabelNumbers(quint64 memoryStart, quint64 memoryEnd) const;
 
     /*!
      *  Get the available width of this item.
@@ -253,9 +223,6 @@ private:
 
     //! Name of the item.
     QString itemName_;
-
-    //! The amount of numbers used to display memory ranges.
-    int amountOfLabelNumbers_;
 
     //! Name of the containing component instance.
     QString instanceName_;

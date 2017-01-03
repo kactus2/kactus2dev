@@ -29,9 +29,7 @@ FieldGraphicsItem::FieldGraphicsItem(QString const& fieldName, quint64 fieldOffs
     MemoryDesignerGraphicsItem* parentItem):
 MemoryDesignerChildGraphicsItem(fieldName, QStringLiteral("Field"), fieldOffset, fieldHeight, fieldWidth,
     containingInstance, parentItem),
-isEmpty_(isEmptyField),
 combinedRangeLabel_(new QGraphicsTextItem("", this)),
-fieldHeight_(fieldHeight),
 fieldName_(fieldName)
 {
     getNameLabel()->setFont(labelFont);
@@ -41,10 +39,6 @@ fieldName_(fieldName)
     setupToolTip(QStringLiteral("Field"));
     setLabelPositions();
     setColors(KactusColors::FIELD_COLOR, isEmptyField);
-    if (isEmptyField)
-    {
-        combinedRangeLabel_->setDefaultTextColor(getNameLabel()->defaultTextColor());
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -56,13 +50,20 @@ FieldGraphicsItem::~FieldGraphicsItem()
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::setEmptyItemRangeColors()
+//-----------------------------------------------------------------------------
+void FieldGraphicsItem::setEmptyItemRangeColors(QColor emptyItemRangeColour)
+{
+    combinedRangeLabel_->setDefaultTextColor(emptyItemRangeColour);
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldGraphicsItem::setLabelPositions()
 //-----------------------------------------------------------------------------
 void FieldGraphicsItem::setLabelPositions()
 {
-    getRangeStartLabel()->hide();
-    getRangeEndLabel()->hide();
-    
+    hideMemoryRangeLabels();
+
     QGraphicsTextItem* nameLabel = getNameLabel();
 
     if (combinedRangeLabel_->toPlainText().isEmpty())
@@ -73,12 +74,12 @@ void FieldGraphicsItem::setLabelPositions()
         quint64 fieldLastAddress = getLastAddress();
         if (fieldBaseAddress == fieldLastAddress)
         {
-            rangeValue = removeZerosFromRangeValue(fieldBaseAddress);
+            rangeValue = QString::number(fieldBaseAddress, 16).toUpper();
         }
         else
         {
-            QString offset = removeZerosFromRangeValue(fieldBaseAddress);
-            QString lastBit = removeZerosFromRangeValue(fieldLastAddress);
+            QString offset = QString::number(fieldBaseAddress, 16).toUpper();
+            QString lastBit = QString::number(fieldLastAddress, 16).toUpper();
 
             rangeValue = lastBit + QStringLiteral("..") + offset;
         }
@@ -94,23 +95,6 @@ void FieldGraphicsItem::setLabelPositions()
     combinedRangeLabel_->setPos(rangeX, rangeY);
 
     fitNameToBoundaries(nameLabel);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldGraphicsItem::removeZerosFromRangeValue()
-//-----------------------------------------------------------------------------
-QString FieldGraphicsItem::removeZerosFromRangeValue(quint64 rangeValue) const
-{
-    QString formattedValue = getValueFormattedToHexadecimal(rangeValue);
-    if (formattedValue.size() > 0)
-    {
-        while (formattedValue.size() > 1 && formattedValue.at(0) == '0')
-        {
-            formattedValue = formattedValue.right(formattedValue.size() - 1);
-        }
-    }
-
-    return formattedValue;
 }
 
 //-----------------------------------------------------------------------------

@@ -15,7 +15,6 @@
 
 #include <designEditors/MemoryDesigner/MemoryColumn.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
-#include <designEditors/MemoryDesigner/MemoryCollisionItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 
 #include <QFont>
@@ -34,7 +33,6 @@ endRangeLabel_(new QGraphicsTextItem(this)),
 baseAddress_(0),
 lastAddress_(0),
 itemName_(itemName),
-amountOfLabelNumbers_(0),
 memoryConnections_(),
 instanceName_(instanceName)
 {
@@ -115,9 +113,17 @@ QGraphicsTextItem* MemoryDesignerGraphicsItem::getRangeEndLabel() const
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::setupLabels(quint64 memoryStart, quint64 memoryEnd)
 {
-    amountOfLabelNumbers_ = getAmountOfLabelNumbers(memoryStart, memoryEnd);
-    setBaseAddress(memoryStart);
-    setLastAddress(memoryEnd);
+    QString baseAddressInHexa = QString::number(memoryStart, 16).toUpper();
+    QString lastAddressInHexa = QString::number(memoryEnd, 16).toUpper();
+
+    int amountOfNumbers = MemoryDesignerConstants::getAmountOfNumbersInRange(baseAddressInHexa, lastAddressInHexa);
+    baseAddressInHexa = MemoryDesignerConstants::getValueWithZerosAdded(baseAddressInHexa, amountOfNumbers);
+    lastAddressInHexa = MemoryDesignerConstants::getValueWithZerosAdded(lastAddressInHexa, amountOfNumbers);
+
+    baseAddress_ = memoryStart;
+    lastAddress_ = memoryEnd;
+    startRangeLabel_->setPlainText(baseAddressInHexa);
+    endRangeLabel_->setPlainText(lastAddressInHexa);
 }
 
 //-----------------------------------------------------------------------------
@@ -132,49 +138,6 @@ void MemoryDesignerGraphicsItem::setupToolTip(QString const& identifier)
         QStringLiteral("<br>") +
         QStringLiteral("<b>Generic Last Address:</b> ") + getRangeEndLabel()->toPlainText();
     setToolTip(toolTipText);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryDesignerGraphicsItem::getAmountOfLabelNumbers()
-//-----------------------------------------------------------------------------
-int MemoryDesignerGraphicsItem::getAmountOfLabelNumbers(quint64 memoryStart, quint64 memoryEnd) const
-{
-    QString formattedStart = QString::number(memoryStart, 16).toUpper();
-    QString formattedEnd = QString::number(memoryEnd, 16).toUpper();
-
-    int startSize = formattedStart.size();
-    int endSize = formattedEnd.size();
-
-    int amountOfNumbers = endSize;
-    if (startSize > endSize)
-    {
-        amountOfNumbers = startSize;
-    }
-
-    while (amountOfNumbers % 4)
-    {
-        amountOfNumbers++;
-    }
-
-    return amountOfNumbers;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryDesignerGraphicsItem::getFormattedRangeValue()
-//-----------------------------------------------------------------------------
-QString MemoryDesignerGraphicsItem::getValueFormattedToHexadecimal(quint64 range) const
-{
-    QString formattedRange = QString::number(range, 16).toUpper();
-
-    int rangeSize = formattedRange.size();
-    int amountOfZeros = amountOfLabelNumbers_ - rangeSize;
-    while (amountOfZeros > 0)
-    {
-        formattedRange.prepend('0');
-        amountOfZeros--;
-    }
-
-    return formattedRange;
 }
 
 //-----------------------------------------------------------------------------
@@ -199,24 +162,6 @@ quint64 MemoryDesignerGraphicsItem::getBaseAddress() const
 quint64 MemoryDesignerGraphicsItem::getLastAddress() const
 {
     return lastAddress_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryDesignerGraphicsItem::setBaseAddress()
-//-----------------------------------------------------------------------------
-void MemoryDesignerGraphicsItem::setBaseAddress(quint64 newBaseAddress)
-{
-    baseAddress_ = newBaseAddress;
-    startRangeLabel_->setPlainText(getValueFormattedToHexadecimal(newBaseAddress));
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryDesignerGraphicsItem::setLastAddress()
-//-----------------------------------------------------------------------------
-void MemoryDesignerGraphicsItem::setLastAddress(quint64 newLastAddress)
-{
-    lastAddress_ = newLastAddress;
-    endRangeLabel_->setPlainText(getValueFormattedToHexadecimal(newLastAddress));
 }
 
 //-----------------------------------------------------------------------------
@@ -253,21 +198,11 @@ QMap<quint64, MemoryConnectionItem*> MemoryDesignerGraphicsItem::getMemoryConnec
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryDesignerGraphicsItem::getConnectionsInVector()
+// Function: MemoryDesignerGraphicsItem::hasConnection()
 //-----------------------------------------------------------------------------
-QVector<MemoryConnectionItem*> MemoryDesignerGraphicsItem::getConnectionsInVector() const
+bool MemoryDesignerGraphicsItem::hasConnection(MemoryConnectionItem* comparisonConnectionItem) const
 {
-    QVector<MemoryConnectionItem*> vectoredConnections;
-
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(memoryConnections_);
-    while (connectionIterator.hasNext())
-    {
-        connectionIterator.next();
-
-        vectoredConnections.append(connectionIterator.value());
-    }
-
-    return vectoredConnections;
+    return getMemoryConnections().values().contains(comparisonConnectionItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -275,10 +210,13 @@ QVector<MemoryConnectionItem*> MemoryDesignerGraphicsItem::getConnectionsInVecto
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::fitLabel(QGraphicsTextItem* label)
 {
-    qreal originalLabelWidth = label->boundingRect().width();
+    QString labelText = label->toPlainText();
+
+    QFontMetrics fontMetrics(label->font());
+    qreal originalLabelWidth = fontMetrics.width(labelText);
     qreal availableArea = getItemWidth() - 6;
 
-    bool collidesWithRange = labelCollidesWithRangeLabels(label);
+    bool collidesWithRange = labelCollidesWithRangeLabels(label, fontMetrics.height());
 
     if (collidesWithRange || originalLabelWidth > availableArea)
     {
@@ -288,13 +226,13 @@ void MemoryDesignerGraphicsItem::fitLabel(QGraphicsTextItem* label)
         }
 
         QFontMetrics labelMetrics (label->font());
-        QString shortened = labelMetrics.elidedText(label->toPlainText(), Qt::ElideRight, availableArea);
+        QString shortened = labelMetrics.elidedText(labelText, Qt::ElideRight, availableArea);
 
         label->setPlainText(shortened);
 
         if (label->pos().x() < 0)
         {
-            int shortenedWidth = label->boundingRect().width();
+            qreal shortenedWidth = fontMetrics.width(shortened);
             qreal widthDifference = originalLabelWidth - shortenedWidth;
             label->setX(label->pos().x() + widthDifference);
         }
@@ -312,9 +250,24 @@ qreal MemoryDesignerGraphicsItem::getItemWidth() const
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::labelCollidesWithRangeLabels()
 //-----------------------------------------------------------------------------
-bool MemoryDesignerGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem* label) const
+bool MemoryDesignerGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem* label, qreal fontHeight)
+    const
 {
-    return label->collidesWithItem(getRangeStartLabel()) || label->collidesWithItem(getRangeEndLabel());
+    if (label->collidesWithItem(getRangeStartLabel()) || label->collidesWithItem(getRangeEndLabel()))
+    {
+        QRectF labelRectangle = label->sceneBoundingRect();
+        QRectF startRangeRectangle = getRangeStartLabel()->sceneBoundingRect();
+        QRectF endRangeRectangle = getRangeEndLabel()->sceneBoundingRect();
+
+        labelRectangle.setHeight(fontHeight);
+        startRangeRectangle.setHeight(fontHeight);
+        endRangeRectangle.setHeight(fontHeight);
+
+        return MemoryDesignerConstants::itemOverlapsAnotherItem(labelRectangle, 0, startRangeRectangle, 0) ||
+            MemoryDesignerConstants::itemOverlapsAnotherItem(labelRectangle, 0, endRangeRectangle, 0);
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

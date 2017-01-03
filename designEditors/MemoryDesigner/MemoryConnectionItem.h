@@ -153,11 +153,13 @@ public:
      *  Check if the selected label collides with the range labels.
      *
      *      @param [in] label           The selected label.
+     *      @param [in] fontHeight      Height of the font used in the selected label.
      *      @param [in] connectedItem   Owner of the selected label.
      *
      *      @return True, if the selected label collides with the range labels, false otherwise.
      */
-    bool labelCollidesWithRanges(QGraphicsTextItem* label, const MainMemoryGraphicsItem* connectedItem) const;
+    bool labelCollidesWithRanges(QGraphicsTextItem* label, qreal fontHeight,
+        const MainMemoryGraphicsItem* connectedItem) const;
 
 private:
     // Disable copying.
@@ -193,29 +195,11 @@ private:
     void repositionLabels();
 
     /*!
-     *  Format the selected value to hexadecimal.
-     *
-     *      @param [in] value               The selected value.
-     *      @param [in] amountOfNumbers     The amount of numbers used for the range.
-     */
-    void addZerosToValue(QString& value, int amountOfNumbers) const;
-
-    /*!
      *  Get the width of the connection.
      *
      *      @return The width of the connection.
      */
     qreal getConnectionWidth() const;
-
-    /*!
-     *  Get the amount of numbers used to display ranges.
-     *
-     *      @param [in] rangeStart  Range start.
-     *      @param [in] rangeEnd    Range end.
-     *
-     *      @return The amount of numbers used to display ranges.
-     */
-    int getAmountOfNumbers(QString const& rangeStart, QString const& rangeEnd) const;
 
     /*!
      *  Get the height of the memory connection item to match the connection chain.

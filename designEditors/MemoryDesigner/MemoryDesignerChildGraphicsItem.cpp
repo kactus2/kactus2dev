@@ -58,10 +58,18 @@ void MemoryDesignerChildGraphicsItem::setColors(QColor itemColor, bool itemIsEmp
 
         QColor emptyTextColor (180, 180, 180);
         getNameLabel()->setDefaultTextColor(emptyTextColor);
-        getRangeStartLabel()->setDefaultTextColor(emptyTextColor);
-        getRangeEndLabel()->setDefaultTextColor(emptyTextColor);
+        setEmptyItemRangeColors(emptyTextColor);
     }
     setBrush(itemBrush);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerChildGraphicsItem::setEmptyItemRangeColors()
+//-----------------------------------------------------------------------------
+void MemoryDesignerChildGraphicsItem::setEmptyItemRangeColors(QColor emptyItemRangeColour)
+{
+    getRangeStartLabel()->setDefaultTextColor(emptyItemRangeColour);
+    getRangeEndLabel()->setDefaultTextColor(emptyItemRangeColour);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,10 +78,9 @@ void MemoryDesignerChildGraphicsItem::setColors(QColor itemColor, bool itemIsEmp
 void MemoryDesignerChildGraphicsItem::changeAddressRange(quint64 offset)
 {
     quint64 newBaseAddress = getBaseAddress() + offset;
-    setBaseAddress(newBaseAddress);
-
     quint64 newLastAddress = getLastAddress() + offset;
-    setLastAddress(newLastAddress);
+
+    setupLabels(newBaseAddress, newLastAddress);
 }
 
 //-----------------------------------------------------------------------------

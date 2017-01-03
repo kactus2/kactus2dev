@@ -208,6 +208,17 @@ private:
         bool isEmpty) = 0;
 
     /*!
+     *  Create an empty sub memory graphics item and position it.
+     *
+     *      @param [in] subItemBaseAddress      Base address of the empty sub memory item.
+     *      @param [in] subItemLastAddress      Last address of the empty sub memory item.
+     *      @param [in] subItemPositionX        X coordinate of the empty sub memory item.
+     *      @param [in] mainItemBaseAddress     Base address of the main memory item.
+     */
+    void createAndPositionNewEmptySubItem(quint64 subItemBaseAddress, quint64 subItemLastAddress,
+        qreal subItemPositionX, quint64 mainItemBaseAddress);
+
+    /*!
      *  Create an empty sub memory graphics item.
      *
      *      @param [in] beginAddress    Base address of the empty sub memory graphics item.
@@ -222,9 +233,10 @@ private:
      *
      *      @param [in] subItemXPosition        X position of the sub memory item.
      *      @param [in] mainItemBaseAddress     Base address of the main memory item.
+     *      @param [in] subItemOffset           Offset of the sub memory item.
      *      @param [in] newSubItem              The selected sub memory item.
      */
-    void positionNewSubItem(qreal subItemXPosition, quint64 mainItemBaseAddress,
+    void positionNewSubItem(qreal subItemXPosition, quint64 mainItemBaseAddress, quint64 subItemOffset,
         MemoryDesignerChildGraphicsItem* newSubItem);
 
     /*!
@@ -256,17 +268,17 @@ private:
     /*!
      *  Get the height of the available area for the memory sub item.
      *
-     *      @param [in] mainItem                The main sub memory layout.
-     *      @param [in] yPosition               Y-coordinate of the memory sub item.
-     *      @param [in] subItemsInConnection    The memory sub items connected to the selected memory connection.
-     *      @param [in] newSubItemHeight        The current height of the memory sub item.
-     *      @param [in] connectionItem          The selected memory connection item.
+     *      @param [in] mainItem                        The main sub memory layout.
+     *      @param [in] yPosition                       Y-coordinate of the memory sub item.
+     *      @param [in] newSubItemHeight                The current height of the memory sub item.
+     *      @param [in] connectionItem                  The selected memory connection item.
+     *      @param [in] connectedSubItemLastAddress     Last address of all the sub items connected to the same
+     *                                                  memory connection.
      *
      *      @return The available area for the memory sub item.
      */
-    qreal getAvailableArea(SubMemoryLayout* mainItem, quint64 yPosition,
-        QVector<MemoryDesignerChildGraphicsItem*> subItemsInConnection, quint64 newSubItemHeight,
-        MemoryConnectionItem* connectionItem) const;
+    qreal getAvailableArea(SubMemoryLayout* mainItem, quint64 yPosition, quint64 newSubItemHeight,
+        MemoryConnectionItem* connectionItem, quint64 connectedSubItemLastAddress) const;
 
     /*!
      *  Get the height of a filtered sub memory layout.
@@ -287,8 +299,8 @@ private:
     //! A map containing the sub memory items and their base addresses.
     QMap<quint64, MemoryDesignerChildGraphicsItem*> subMemoryItems_;
 
-    //! Memory item containing main memory item data.
-    QSharedPointer<MemoryItem> memoryItem_;
+    //! Type of the contained memory item.
+    QString itemType_;
 
     //! The main graphics memory item.
     MemoryDesignerGraphicsItem* mainGraphicsItem_;

@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::LibraryErrorModel()
 //-----------------------------------------------------------------------------
-LibraryErrorModel::LibraryErrorModel(QObject* parent): QAbstractTableModel(parent), errors_()
+LibraryErrorModel::LibraryErrorModel(QObject* parent): QAbstractTableModel(parent), errors_(), errorSources_()
 {
 
 }
@@ -29,10 +29,17 @@ LibraryErrorModel::~LibraryErrorModel()
 //-----------------------------------------------------------------------------
 // Function: LibraryErrorModel::addErrors()
 //-----------------------------------------------------------------------------
-void LibraryErrorModel::addErrors(QVector<QString> const& errorList)
+void LibraryErrorModel::addErrors(QVector<QString> const& errorList, QString const& vlnv)
 {
     beginResetModel();
-    errors_ = errorList;
+    errors_ += errorList;
+
+    int errorCount = errorList.count();
+    for (int i = 0; i < errorCount; i++)
+    {
+        errorSources_.append(vlnv);
+    }
+
     endResetModel();
 }
 
@@ -46,7 +53,7 @@ int LibraryErrorModel::rowCount(QModelIndex const& parent) const
         return 0;
     }
 
-    return errors_.size();
+    return errors_.count();
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +75,7 @@ int LibraryErrorModel::columnCount(QModelIndex const& parent) const
 QVariant LibraryErrorModel::data(QModelIndex const& index, int role) const
 {
     // Check for invalid index.
-    if (!index.isValid() || index.row() < 0 || index.row() >= errors_.size() || role != Qt::DisplayRole)
+    if (!index.isValid() || index.row() < 0 || role != Qt::DisplayRole)
     {
         return QVariant();
     }
@@ -77,10 +84,16 @@ QVariant LibraryErrorModel::data(QModelIndex const& index, int role) const
     {
         return index.row();
     }
-    else //if (index.column() == COLUMN_DESCRIPTION)
+    else if (index.column() == DESCRIPTION)
     {
         return errors_.at(index.row());
     }
+    else if (index.column() == VLNV_COLUMN)
+    {
+        return errorSources_.at(index.row());
+    }
+
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------
@@ -97,9 +110,13 @@ QVariant LibraryErrorModel::headerData(int section, Qt::Orientation orientation,
     {
         return "#";
     }
-    else if (section == COLUMN_DESCRIPTION)
+    else if (section == DESCRIPTION)
     {
         return tr("Description");
+    }
+    else if (section == VLNV_COLUMN)
+    {
+        return tr("Document");
     }
 
     return QVariant();

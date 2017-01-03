@@ -35,9 +35,6 @@
     <Filter Include="Source Files\common\dialogs\LibrarySettingsDialog">
       <UniqueIdentifier>{7dec263d-8a76-4954-89df-3c0936f40a92}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\common\dialogs\TableViewDialog">
-      <UniqueIdentifier>{0889d42d-bc18-4217-b72f-92b4a136bec9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\common\validators">
       <UniqueIdentifier>{9599a4e0-6552-4be6-8137-6e14f125627f}</UniqueIdentifier>
     </Filter>
@@ -281,9 +278,6 @@
     </Filter>
     <Filter Include="Header Files\common\dialogs\LibrarySettingsDialog">
       <UniqueIdentifier>{585407e1-18a2-4d99-b824-49e1d45a1c12}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\common\dialogs\TableViewDialog">
-      <UniqueIdentifier>{8b3322f9-844b-47af-ad0d-4f0ac50556ad}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\mainwindow">
       <UniqueIdentifier>{4de4886d-eb93-4769-b4b0-303692e58ea9}</UniqueIdentifier>
@@ -951,9 +945,6 @@
     </ClCompile>
     <ClCompile Include="common\dialogs\LibrarySettingsDialog\LibrarySettingsDialog.cpp">
       <Filter>Source Files\common\dialogs\LibrarySettingsDialog</Filter>
-    </ClCompile>
-    <ClCompile Include="common\dialogs\TableViewDialog\TableViewDialog.cpp">
-      <Filter>Source Files\common\dialogs\TableViewDialog</Filter>
     </ClCompile>
     <ClCompile Include="common\validators\AddressValidator.cpp">
       <Filter>Source Files\common\validators</Filter>
@@ -2200,9 +2191,6 @@
     <ClCompile Include="GeneratedFiles\moc_filetypeeditordelegate.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_targetnameedit.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_filebuildcommand.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2642,9 +2630,6 @@
       <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\fileSet\file\filetypeeditordelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\file\targetnameedit.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\general\desceditor.cpp">
@@ -4180,6 +4165,9 @@
     <ClCompile Include="designEditors\MemoryDesigner\FieldGraphicsItem.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
+    <ClCompile Include="library\LibraryManager\TableViewDialog.cpp">
+      <Filter>Source Files\library\LibraryManager</Filter>
+    </ClCompile>
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerConstants.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
@@ -4906,9 +4894,6 @@
       <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\fileSet\file\filetypeeditordelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\fileSet\file\targetnameedit.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\fileSet\file\filebuildcommand.h">
@@ -5759,9 +5744,6 @@
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
       <Filter>Header Files\common\dialogs\listSelectDialog</Filter>
     </ClInclude>
-    <ClInclude Include="common\dialogs\TableViewDialog\TableViewDialog.h">
-      <Filter>Header Files\common\dialogs\TableViewDialog</Filter>
-    </ClInclude>
     <ClInclude Include="common\graphicsItems\ConnectionUndoCommands.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </ClInclude>
@@ -6307,6 +6289,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\MemoryDesigner\FieldGraphicsItem.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="library\LibraryManager\TableViewDialog.h">
+      <Filter>Header Files\library\LibraryManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

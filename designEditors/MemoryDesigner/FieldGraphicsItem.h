@@ -85,18 +85,16 @@ private:
     FieldGraphicsItem& operator=(FieldGraphicsItem const& rhs);
 
     /*!
+     *  Set colors for ranges in an empty field graphics item.
+     *
+     *      @param [in] emptyItemRangeColour    The color for the empty field item ranges.
+     */
+    virtual void setEmptyItemRangeColors(QColor emptyItemRangeColour);
+
+    /*!
      *  Set the label positions.
      */
     virtual void setLabelPositions();
-
-    /*!
-     *  Remove zeros from the front of a given value.
-     *
-     *      @param [in] rangeValue  The selected value.
-     *
-     *      @return The range value in string format with zeros removed from the front.
-     */
-    QString removeZerosFromRangeValue(quint64 rangeValue) const;
 
     /*!
      *  Fit the name label to the boundaries of the item.
@@ -109,14 +107,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Value for empty fields.
-    bool isEmpty_;
-
     //! Label for the combined range value.
     QGraphicsTextItem* combinedRangeLabel_;
-
-    //! Height of the field.
-    qreal fieldHeight_;
 
     //! The original name of the field.
     QString fieldName_;

@@ -1,71 +1,71 @@
-/* 
- *  	Created on: 8.2.2012
- *      Author: Antti Kamppi
- * 		filename: scanprogresswidget.h
- *		Project: Kactus 2
- */
-
+//-----------------------------------------------------------------------------
+// File: scanprogresswidget.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 08.02.2012
+//
+// Description:
+// Displays a progress bar and a message of what is being scanned.
+//-----------------------------------------------------------------------------
 #ifndef SCANPROGRESSWIDGET_H
 #define SCANPROGRESSWIDGET_H
 
-#include <QWidget>
 #include <QDialog>
-#include <QProgressBar>
 #include <QLabel>
+#include <QProgressBar>
 #include <QString>
+#include <QWidget>
 
-/*! \brief Displays a progress bar and a message of what is being scanned.
- *
- */
-class ScanProgressWidget : public QDialog {
+//-----------------------------------------------------------------------------
+//! Displays a progress bar and a message of what is being scanned.
+//-----------------------------------------------------------------------------
+class ScanProgressWidget : public QDialog
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parent Pointer to the owner of this widget.
-	 *
+	 *      @param [in] parent  The owner of this widget.
 	*/
 	ScanProgressWidget(QWidget *parent = 0);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~ScanProgressWidget();
 
-	/*! \brief Set the range of the progress bar.
+	/*! Set the range of the progress bar.
 	 *
-	 * \param min The minimum value to display.
-	 * \param max The maximum value to display.
-	 *
+	 *      @param [in] min     The minimum value to display.
+	 *      @param [in] max     The maximum value to display.
 	*/
 	void setRange(int min, int max);
 
-	/*! \brief Set the scan message.
+	/*! Set the scan message.
 	 *
-	 * \param message The message to be displayed.
-	 *
+	 *      @param [in] message     The message to be displayed.
 	*/
 	void setMessage(const QString& message);
 
-	/*! \brief Set current value for the progress bar.
+	/*! Set current value for the progress bar.
 	 *
-	 * \param value The value to set.
-	 *
+	 *      @param [in] value   The value to set.
 	*/
 	void setValue(int value);
 
 private:
 
-	//! \brief No copying
+	//! No copying
 	ScanProgressWidget(const ScanProgressWidget& other);
 
-	//! \brief No assignment
+	//! No assignment
 	ScanProgressWidget& operator=(const ScanProgressWidget& other);
 
-	//! \brief The vertical bar to display the progress of scan.
-	QProgressBar progBar_;
+	//! The vertical bar to display the progress of scan.
+	QProgressBar progressBar_;
 
-	//! \brief Contains the currently scanned message.
+	//! Contains the currently scanned message.
 	QLabel messageLabel_;
 };
 

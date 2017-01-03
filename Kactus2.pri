@@ -100,7 +100,6 @@ HEADERS += ./VersionHelper.h \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.h \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.h \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
-    ./common/dialogs/TableViewDialog/TableViewDialog.h \
     ./common/dialogs/createConfigurationDialog/createconfigurationdialog.h \
     ./common/dialogs/NewBusDialog/NewBusDialog.h \
     ./mainwindow/SplashScreen.h \
@@ -197,6 +196,7 @@ HEADERS += ./VersionHelper.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
     ./Plugins/common/NameGenerationPolicy.h \
+    ./library/LibraryManager/TableViewDialog.h \
     ./library/LibraryManager/libraryinterface.h \
     ./library/LibraryManager/LibraryUtils.h \
     ./library/LibraryManager/LibraryFilter.h \
@@ -364,7 +364,6 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/fileSet/file/filesview.h \
     ./editors/ComponentEditor/fileSet/file/filetypeeditor.h \
     ./editors/ComponentEditor/fileSet/file/filetypeeditordelegate.h \
-    ./editors/ComponentEditor/fileSet/file/targetnameedit.h \
     ./editors/ComponentEditor/fileSet/file/filebuildcommand.h \
     ./editors/ComponentEditor/fileSet/file/filedefinemodel.h \
     ./editors/ComponentEditor/fileSet/file/filedefineview.h \
@@ -712,7 +711,6 @@ SOURCES += ./VersionHelper.cpp \
     ./common/dialogs/NewDesignDialog/NewDesignDialog.cpp \
     ./common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.cpp \
     ./common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
-    ./common/dialogs/TableViewDialog/TableViewDialog.cpp \
     ./common/dialogs/NewBusDialog/NewBusDialog.cpp \
     ./common/validators/AddressValidator.cpp \
     ./common/validators/LibraryPathValidator/librarypathvalidator.cpp \
@@ -864,6 +862,7 @@ SOURCES += ./VersionHelper.cpp \
     ./library/LibraryManager/librarytreeview.cpp \
     ./library/LibraryManager/librarytreewidget.cpp \
     ./library/LibraryManager/LibraryUtils.cpp \
+    ./library/LibraryManager/TableViewDialog.cpp \
     ./library/LibraryManager/VLNVDialer/dialerwidget.cpp \
     ./library/LibraryManager/VLNVDialer/filterwidget.cpp \
     ./library/LibraryManager/VLNVDialer/firmnessgroup.cpp \
@@ -940,7 +939,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/fileSet/file/filesview.cpp \
     ./editors/ComponentEditor/fileSet/file/filetypeeditor.cpp \
     ./editors/ComponentEditor/fileSet/file/filetypeeditordelegate.cpp \
-    ./editors/ComponentEditor/fileSet/file/targetnameedit.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyDelegate.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyEditor.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyGraphView.cpp \

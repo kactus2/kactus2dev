@@ -103,52 +103,6 @@ namespace Utils {
 		TypeOptions();
 	};
 
-	//! The struct to handle a port name and its left and right boundary.
-	struct Mapping {
-
-	//! The name of the port.
-		QString portName_;
-
-	//! The left bound of the port.
-		int left_;
-
-	//! The right bound of the port.
-		int right_;
-
-		/*! The default constructor
-		 *
-		*/
-		Mapping();
-
-		/*! The constructor
-		 *
-		 * \param name The name for the port in the mapping.
-		 *
-		*/
-		Mapping(const QString& name);
-
-		/*! The constructor
-		 *
-		 * \param name The name for the port in the mapping.
-		 * \param left The left bound for the port.
-		 * \param right The right bound for the port.
-		 *
-		*/
-		Mapping(const QString& name, int left, int right);
-
-		//! Operator that returns true if the port names are identical.
-		bool operator==(const Mapping& other) const;
-
-		//! Operator that returns true if the port names are not identical.
-		bool operator!=(const Mapping& other) const;
-
-		//! Operator for sorting mappings by the name
-		bool operator<(const Mapping& other) const;
-
-		//! Operator for sorting mappings by name
-		bool operator>(const Mapping& other) const;
-	};
-
 	/*! Convert a string to unsigned int format.
 	 * 
 	 * The multiples in the string are converted as following:

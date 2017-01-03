@@ -10,18 +10,26 @@
     <p>
       The cpus editor lists the programmable cores the component
       contains. This way the tools can recognize them and distinguish
-      from hardwired components. One component can have many cores.
+      from hardwired components. One component can have multiple cores.
+    </p>
+	<p>
+	    <b>Name</b> is a mandatory identifier for the <i>cpu</i>.
     </p>
     <p>
-      Each CPU has a mandatory <b>name</b> and optional textual
-      <b>description</b>. <b>Address space</b> references specify the
-      logical address space of the cpu. When a <i>master interface</i>
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+	  <b>Address space</b> references specify the
+      logical address space of the cpu. When a master <i>bus interface</i>
       of a component references the same address spaces, there's a
       link link between the programmable core and the interface. This
       information helps in generating a board support
       package (BSP) and picking appropriate programmable components
       into system design. CPU definition should not be repeated on a
       higher level component (one that instantiates a CPU).
+    </p>
+	<p>
+        <b>Description</b> is an optional field for textual description of the <i>cpu</i>.		
     </p>
     <p>
       Cpus editor provides a context menu (right mouse button) with

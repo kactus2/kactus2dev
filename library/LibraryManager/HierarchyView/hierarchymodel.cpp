@@ -753,6 +753,24 @@ void HierarchyModel::onExportItem(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryTreeModel::onDeleteItem()
+//-----------------------------------------------------------------------------
+void HierarchyModel::onDeleteItem(QModelIndex const& index)
+{
+    if (!index.isValid())
+    {
+        return;
+    }
+
+	HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
+   
+    QList<VLNV> removedVLNVs;
+    removedVLNVs.append(item->getVLNV());
+    
+    emit removeVLNV(removedVLNVs);
+}
+
+//-----------------------------------------------------------------------------
 // Function: HierarchyModel::onRemoveVLNV()
 //-----------------------------------------------------------------------------
 void HierarchyModel::onRemoveVLNV(VLNV const& vlnv)

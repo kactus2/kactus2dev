@@ -243,9 +243,9 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
 
                     spaceYPlacement = spaceItemLowAfter + MemoryDesignerConstants::SPACEITEMINTERVAL;
                 }
-
-                memoryItem->resizeSubItemNameLabels();
             }
+
+            memoryItem->resizeSubItemNameLabels();
         }
     }
 }

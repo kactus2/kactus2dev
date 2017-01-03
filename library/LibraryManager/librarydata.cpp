@@ -71,17 +71,13 @@ QObject(parent),
 parentWidget_(parentWidget),
 libraryItems_(),
 handler_(parent),
-progWidget_(0),
+progressWidget_(0),
 timerSteps_(0),
 timerStep_(0),
 timer_(0),
 locations_(),
 iterObjects_(),
-errors_(0),
 failedObjects_(0),
-syntaxErrors_(0),
-vlnvErrors_(0),
-fileErrors_(0),
 fileCount_(0),
 urlTester_(new QRegularExpressionValidator(Utils::URL_VALIDITY_REG_EXP, this)),
 componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
@@ -218,43 +214,34 @@ void LibraryData::resetLibrary()
 //-----------------------------------------------------------------------------
 void LibraryData::checkLibraryIntegrity()
 {
-	int max = libraryItems_.size();
-	errors_ = 0;
 	failedObjects_ = 0;
-	syntaxErrors_ = 0;
-	vlnvErrors_ = 0;
-	fileErrors_ = 0;
 	fileCount_ = 0;
 
-	emit noticeMessage(tr("------ Library Integrity Check ------"));
-
     timerStep_ = 0;
-    timerSteps_ = max;
+    timerSteps_ = libraryItems_.size();
     iterObjects_ = libraryItems_.begin();
 
     // Create the progress bar that displays the progress of the check.
-    progWidget_ = new ScanProgressWidget(parentWidget_);
-    progWidget_->setWindowTitle(tr("Checking integrity..."));
-    progWidget_->setRange(0, max);
-    progWidget_->setMessage(tr("Processing item %1 of %2...").arg(QString::number(timerStep_ + 1),
-        QString::number(libraryItems_.size())));
+    progressWidget_ = new ScanProgressWidget(parentWidget_);
+    progressWidget_->setWindowTitle(tr("Checking integrity..."));
+    progressWidget_->setRange(0, timerSteps_);
+    progressWidget_->setMessage(tr("Validating %1 items. Please wait...").arg(QString::number(timerSteps_)));
+
     timer_ = new QTimer(this);
     connect(timer_, SIGNAL(timeout()), this, SLOT(performIntegrityCheckStep()));
+    connect(progressWidget_, SIGNAL(rejected()), timer_, SLOT(stop()));
     timer_->start();
 
-    progWidget_->exec();
+    progressWidget_->exec();
 
 	emit noticeMessage(tr("========== Library integrity check complete =========="));
 	emit noticeMessage(tr("Total library object count: %1").arg(libraryItems_.size()));
 	emit noticeMessage(tr("Total file count in the library: %1").arg(fileCount_));
 
 	// if errors were found then print the summary of error types
-	if (errors_ > 0)
+	if (failedObjects_ > 0)
     {
-		emit noticeMessage(tr("Found %1 errors within %2 item(s):").arg(errors_).arg(failedObjects_));
-		emit noticeMessage(tr("Structural errors within item(s): %1").arg(syntaxErrors_));
-		emit noticeMessage(tr("Invalid VLNV references: %1").arg(vlnvErrors_));
-		emit noticeMessage(tr("Invalid file references: %1\n").arg(fileErrors_));
+		emit errorMessage(tr("Total items containing errors: %1").arg(failedObjects_));
 	}
 }
 
@@ -266,27 +253,35 @@ void LibraryData::parseLibrary()
 	// clear the previous items in the library
 	libraryItems_.clear();
 
-	QSettings settings(this);
+	QSettings settings;
 
 	locations_ = settings.value("Library/ActiveLocations", QStringList()).toStringList();
 	if (!locations_.isEmpty()) 
     {
-        // create the progress bar that displays the progress of the scan
-        progWidget_ = new ScanProgressWidget(parentWidget_);
-        progWidget_->setRange(0, locations_.size());
-        progWidget_->setMessage("Scanning location: \n" + locations_.first());
         timerStep_ = 0;
         timerSteps_ = locations_.size();
 
+        // create the progress bar that displays the progress of the scan
+        progressWidget_ = new ScanProgressWidget(parentWidget_);
+        progressWidget_->setRange(0, timerSteps_);
+        progressWidget_->setMessage("Scanning location: \n" + locations_.first());
+
         timer_ = new QTimer(this);
         connect(timer_, SIGNAL(timeout()), this, SLOT(performParseLibraryStep()));
+        connect(progressWidget_, SIGNAL(rejected()), timer_, SLOT(stop()));
         timer_->start();
 
-        progWidget_->exec();
-    }
+        progressWidget_->exec();
+    }  
 
-    // check the integrity of the items in the library
-	checkLibraryIntegrity();
+    if (timerStep_ == timerSteps_)
+    {
+        checkLibraryIntegrity();
+    }
+    else
+    {
+        emit resetModel();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -331,7 +326,7 @@ void LibraryData::parseFile(QString const& filePath)
 	QFile docFile(filePath);
 	if (!docFile.open(QFile::ReadOnly))
     {
-		emit errorMessage(tr("Could not open file %1 for reading.").arg(filePath));
+		//emit errorMessage(tr("Could not open file %1 for reading.").arg(filePath));
 		return;
 	}
 	
@@ -396,7 +391,7 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
 	QDomDocument doc;
     if (!doc.setContent(&file))
     {
-		emit errorMessage(tr("The document %1 in file %2 could not be opened.").arg(toCreate.toString(), path));
+		//emit errorMessage(tr("The document %1 in file %2 could not be opened.").arg(toCreate.toString(), path));
 		return QSharedPointer<Document>();
     }
     file.close();
@@ -439,7 +434,7 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
     }
     else
     {
-        emit noticeMessage(tr("Document was not supported type"));
+        //emit noticeMessage(tr("Document was not supported type"));
         return QSharedPointer<Document>();
     }
 }
@@ -449,38 +444,31 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void LibraryData::performParseLibraryStep()
 {
-	if (timerStep_ == timerSteps_)
-	{
-		return;
-	}
+    QString const& location = locations_.at(timerStep_);
+    QFileInfo locationInfo(location);
 
-	QString const& location = locations_.at(timerStep_);
-	QFileInfo locationInfo(location);
+    if (locationInfo.isDir())
+    {
+        parseDirectory(location);
+    }
+    else if (locationInfo.isFile())
+    {
+        parseFile(location);
+    }
 
-	if (locationInfo.isDir())
-	{
-		parseDirectory(location);
-	}
-	else if (locationInfo.isFile())
-	{
-		parseFile(location);
-	}
-
-	timerStep_++;
-
-	// Check if all steps have been completed.
-	if (timerStep_ == timerSteps_)
-	{
-		timer_->stop();
-		delete timer_;
-		delete progWidget_;
-	}
-	else
-	{
-		// Update the value and message for the next round.
-		progWidget_->setMessage("Scanning location: \n" + locations_.at(timerStep_));
-		progWidget_->setValue(timerStep_ + 1);
-	}
+    timerStep_++;
+    
+    if  (timerStep_ < timerSteps_)
+    {
+        progressWidget_->setMessage("Scanning location: \n" + locations_.at(timerStep_));
+        progressWidget_->setValue(timerStep_ + 1);
+    }
+    else
+    {
+        timer_->stop();
+        delete timer_;
+        delete progressWidget_;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -488,68 +476,48 @@ void LibraryData::performParseLibraryStep()
 //-----------------------------------------------------------------------------
 void LibraryData::performIntegrityCheckStep()
 {
-	if (timerStep_ > timerSteps_)
-	{
-		return;
-	}
-
-	if (timerStep_ < timerSteps_)
-	{
-		QSharedPointer<Document> document = getModel(iterObjects_.key());
-		// if the object could not be parsed
-		if (!document)
+    if (timerStep_ < timerSteps_)
+    {
+        QSharedPointer<Document> document = getModel(iterObjects_.key());
+        // if the object could not be parsed
+        if (!document)
         {
-			// remove the pair from the map and move on
-			QMap<VLNV, QString>::iterator i = libraryItems_.find(iterObjects_.key());
-			iterObjects_++;
+            // remove the pair from the map and move on
+            QMap<VLNV, QString>::iterator i = libraryItems_.find(iterObjects_.key());
+            iterObjects_++;
             libraryItems_.erase(i);
-		}
+        }
         else
         {
-            QVector<QString> errors = findErrorsInDocument(document, iterObjects_.value());
-            if (!errors.isEmpty())
+            if (!validateDocument(document))
             {
-                emit noticeMessage(tr("The following errors were found while processing item %1:").arg(
-                    document->getVlnv().toString()));
-
-				emit errorMessage(QStringList(errors.toList()).join('\n'));
-
                 failedObjects_++;
             }
             iterObjects_++;
         }
-	}
-	else
-	{
-		// inform tree model that it needs to reset model also
-		emit resetModel();
-	}
+    }
+    else if (timerStep_ == timerSteps_)
+    {
+        // inform tree model that it needs to reset model also
+        emit resetModel();
+    }
 
-	timerStep_++;
+    timerStep_++;
+    progressWidget_->setValue(timerStep_);
 
-	// Update the message and value for the next round.
-	if (timerStep_ < timerSteps_)
-	{
-		progWidget_->setMessage(tr("Processing item %1 of %2...").arg(QString::number(timerStep_ + 1),
-			QString::number(libraryItems_.size())));
-	}
-	else
-	{
-		progWidget_->setMessage(tr("Updating library view..."));
-	}
+    if (timerStep_ == timerSteps_)
+    {
+        progressWidget_->setMessage(tr("Updating library view..."));
+    }
+    else if (timerStep_ > timerSteps_)
+    {
+        timer_->stop();
+        delete timer_;
+        timer_ = 0;
 
-	progWidget_->setValue(timerStep_);
-
-	// Check if all steps have been completed.
-	if (timerStep_ > timerSteps_)
-	{
-		timer_->stop();
-		delete timer_;
-		timer_ = 0;
-
-		delete progWidget_;
-		progWidget_ = 0;
-	}
+        delete progressWidget_;
+        progressWidget_ = 0;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -639,16 +607,16 @@ void LibraryData::changeComponentValidatorParameterFinder(QSharedPointer<Compone
 //-----------------------------------------------------------------------------
 // Function: LibraryData::findErrorsInDocument()
 //-----------------------------------------------------------------------------
-QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> document, QString const& path)
+QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> document)
 {
     Q_ASSERT(document);
 
     QVector<QString> errorList;
 
+    QString path = getPath(document->getVlnv());
 	if (!QFileInfo(path).exists())
     {
         errorList.append(tr("File %1 for the document was not found.").arg(path));
-		errors_++;
 	}
 
 	// Check if the document xml is valid and if not then print errors of the document.
@@ -688,18 +656,8 @@ QVector<QString> LibraryData::findErrorsInDocument(QSharedPointer<Document> docu
 void LibraryData::findErrorsInBusDefinition(QSharedPointer<BusDefinition> busDefinition,
     QVector<QString>& errorList)
 {
-    int errorsBeforeValidation = errorList.size();
-    
     BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
     validator.findErrorsIn(errorList, busDefinition);
-
-    int errorsInBusDefinition = errorList.size() - errorsBeforeValidation;
-
-    if (errorsInBusDefinition != 0)
-    {
-        errors_ += errorsInBusDefinition;
-        syntaxErrors_ += errorsInBusDefinition;
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -707,19 +665,9 @@ void LibraryData::findErrorsInBusDefinition(QSharedPointer<BusDefinition> busDef
 //-----------------------------------------------------------------------------
 void LibraryData::findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDefinition> abstraction, QVector<QString>& errorList)
 {
-    int errorsBeforeValidation = errorList.size();
-
     AbstractionDefinitionValidator validator(handler_, 
         QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
     validator.findErrorsIn(errorList, abstraction);
-
-    int errorsInBusDefinition = errorList.size() - errorsBeforeValidation;
-
-    if (errorsInBusDefinition != 0)
-    {
-        errors_ += errorsInBusDefinition;
-        syntaxErrors_ += errorsInBusDefinition;
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -727,18 +675,9 @@ void LibraryData::findErrorsInAbstractionDefinition(QSharedPointer<AbstractionDe
 //-----------------------------------------------------------------------------
 void LibraryData::findErrorsInComponent(QSharedPointer<Component> component, QVector<QString>& errorList)
 {
-    int errorsBeforeValidation = errorList.size();
-
     changeComponentValidatorParameterFinder(component);
 
     componentValidator_.findErrorsIn(errorList, component);
-
-    int errorsInComponent = errorList.size() - errorsBeforeValidation;
-    if (errorsInComponent != 0)
-    {
-        errors_ += errorsInComponent;
-        syntaxErrors_ += errorsInComponent;
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -746,16 +685,7 @@ void LibraryData::findErrorsInComponent(QSharedPointer<Component> component, QVe
 //-----------------------------------------------------------------------------
 void LibraryData::findErrorsInDesign(QSharedPointer<Design> design, QVector<QString>& errorList)
 {
-    int errorsBeforeValidation = errorList.size();
-
     designValidator_.findErrorsIn(errorList, design);
-
-    int errorsInDesign = errorList.size() - errorsBeforeValidation;
-    if (errorsInDesign != 0)
-    {
-        errors_ += errorsInDesign;
-        syntaxErrors_ += errorsInDesign;
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -764,8 +694,6 @@ void LibraryData::findErrorsInDesign(QSharedPointer<Design> design, QVector<QStr
 void LibraryData::findErrorsInDesignConfiguration(QSharedPointer<DesignConfiguration> configuration,
     QVector<QString>& errorList)
 {
-    int errorsBeforeValidation = errorList.size();
-
     if (configuration->getImplementation() == KactusAttribute::SYSTEM)
     {
         systemDesignConfigurationValidator_.findErrorsIn(errorList, configuration);
@@ -773,13 +701,6 @@ void LibraryData::findErrorsInDesignConfiguration(QSharedPointer<DesignConfigura
     else
     {
         designConfigurationValidator_.findErrorsIn(errorList, configuration);
-    }
-
-    int errorsInDesignConfiguration = errorList.size() - errorsBeforeValidation;
-    if (errorsInDesignConfiguration != 0)
-    {
-        errors_ += errorsInDesignConfiguration;
-        syntaxErrors_ += errorsInDesignConfiguration;
     }
 }
 
@@ -810,8 +731,6 @@ void LibraryData::findErrorsInDependentVLNVReferencences(QSharedPointer<const Do
         if (!libraryItems_.contains(vlnv))
         {
             errorList.append(tr("The referenced VLNV was not found in the library: %1").arg(vlnv.toString()));
-            errors_++;
-            vlnvErrors_++;
         }
     }
 }
@@ -848,8 +767,6 @@ void LibraryData::findErrorsInDependentDirectories(QSharedPointer<const Document
         if (!QFileInfo(dirPath).exists())
         {
             errorList.append(tr("\tDirectory %1 was not found in the file system.").arg(dirPath));
-            errors_++;
-            fileErrors_++;
         }
     }
 }
@@ -913,8 +830,6 @@ void LibraryData::findErrorsInDependentFiles(QSharedPointer<const Document> docu
             else
             {
                 errorList.append(tr("File %1 was not found in the file system.").arg(filePath));               
-                errors_++;
-                fileErrors_++;
             }
         }
     }

@@ -12,6 +12,7 @@
 #ifndef LIBRARYERRORMODEL_H
 #define LIBRARYERRORMODEL_H
 
+
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QList>
@@ -42,7 +43,7 @@ public:
     /*!
      *  Adds errors to the model.
      */
-    void addErrors(QVector<QString> const& errorList);
+    void addErrors(QVector<QString> const& errorList, QString const& vlnv);
 
     /*!
      *  Returns the number of rows to be displayed.
@@ -99,7 +100,8 @@ private:
     enum Column
     {
         COLUMN_NUMBER = 0,
-        COLUMN_DESCRIPTION,
+        DESCRIPTION,
+        VLNV_COLUMN,
         COLUMN_COUNT
     };
 
@@ -109,6 +111,8 @@ private:
 
     //! The list of errors.
     QVector<QString> errors_;
+
+    QStringList errorSources_;
 };
 
 //-----------------------------------------------------------------------------

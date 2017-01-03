@@ -136,7 +136,7 @@ public:
 	 *
 	 *      @return Any errors within the document.
 	*/
-	QVector<QString> findErrorsInDocument(QSharedPointer<Document> document, QString const& path);
+	QVector<QString> findErrorsInDocument(QSharedPointer<Document> document);
    
 signals:
 
@@ -317,7 +317,7 @@ private:
 	LibraryHandler *handler_;
 
     //! The progress dialog widget for scans.
-    ScanProgressWidget* progWidget_;
+    ScanProgressWidget* progressWidget_;
 
     //! The number of timer steps.
     int timerSteps_;
@@ -334,41 +334,29 @@ private:
     //! The iterator for integrity check scan.
     QMap<VLNV, QString>::iterator iterObjects_;
 
-    //! Number of errors found during the integrity check.
-    int errors_;
-
     //! Number of failed objects found during the integrity check.
     int failedObjects_;
 
-    //! Number of syntax errors found during the integrity check.
-    int syntaxErrors_;
+    //! The total number of files all library components contain.
+    int fileCount_;
 
-    //! Number of VLNV errors found during the integrity check.
-    int vlnvErrors_;
+    //! Checks if the given string is a URL (invalids are allowed) or not.
+    QRegularExpressionValidator* urlTester_;
 
-    //! Number of file errors found during the integrity check.
-    int fileErrors_;
+    //! The parameter finder used in the component validator.
+    QSharedPointer<ComponentParameterFinder> componentValidatorFinder_;
 
-	//! The total number of files all library components contain.
-	 int fileCount_;
+    //! The used component validator.
+    ComponentValidator componentValidator_;
 
-	//! Checks if the given string is a URL (invalids are allowed) or not.
-	 QRegularExpressionValidator* urlTester_;
+    //! The used design validator.
+    DesignValidator designValidator_;
 
-     //! The parameter finder used in the component validator.
-     QSharedPointer<ComponentParameterFinder> componentValidatorFinder_;
+    //! The used design configuration validator.
+    DesignConfigurationValidator designConfigurationValidator_;
 
-     //! The used component validator.
-     ComponentValidator componentValidator_;
-
-     //! The used design validator.
-     DesignValidator designValidator_;
-
-     //! The used design configuration validator.
-     DesignConfigurationValidator designConfigurationValidator_;
-
-     //! The used system design configuration validator.
-     SystemDesignConfigurationValidator systemDesignConfigurationValidator_;
+    //! The used system design configuration validator.
+    SystemDesignConfigurationValidator systemDesignConfigurationValidator_;
 };
 
 #endif // LIBRARYDATA_H

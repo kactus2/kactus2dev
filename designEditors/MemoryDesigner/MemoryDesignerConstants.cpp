@@ -35,3 +35,43 @@ bool MemoryDesignerConstants::itemOverlapsAnotherItem(QRectF firstRectangle, int
 
     return false;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerConstants::getAmountOfNumbersInRange()
+//-----------------------------------------------------------------------------
+int MemoryDesignerConstants::getAmountOfNumbersInRange(QString const& rangeStart, QString const& rangeEnd)
+{
+    int startSize = rangeStart.size();
+    int endSize = rangeEnd.size();
+
+    int amountOfNumbers = endSize;
+    if (startSize > endSize)
+    {
+        amountOfNumbers = startSize;
+    }
+
+    while (amountOfNumbers % 4)
+    {
+        amountOfNumbers++;
+    }
+
+    return amountOfNumbers;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerConstants::getValueWithZerosAdded()
+//-----------------------------------------------------------------------------
+QString MemoryDesignerConstants::getValueWithZerosAdded(QString const& value, int amountOfNumbers)
+{
+    QString zeroedValue = value;
+
+    int rangeSize = zeroedValue.size();
+    int amountOfZeros = amountOfNumbers - rangeSize;
+    while (amountOfZeros > 0)
+    {
+        zeroedValue.prepend('0');
+        amountOfZeros--;
+    }
+
+    return zeroedValue;
+}

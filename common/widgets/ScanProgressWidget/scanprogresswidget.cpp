@@ -1,44 +1,71 @@
-/* 
- *  	Created on: 8.2.2012
- *      Author: Antti Kamppi
- * 		filename: scanprogresswidget.cpp
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: scanprogresswidget.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 08.02.2012
+//
+// Description:
+// Displays a progress bar and a message of what is being scanned.
+//-----------------------------------------------------------------------------
 
 #include "scanprogresswidget.h"
 
 #include <QVBoxLayout>
+#include <QDialogButtonBox>
 
+//-----------------------------------------------------------------------------
+// Function: ScanProgressWidget::ScanProgressWidget()
+//-----------------------------------------------------------------------------
 ScanProgressWidget::ScanProgressWidget(QWidget *parent):
 QDialog(parent),
-progBar_(this),
-messageLabel_(this) {
-
+    progressBar_(this),
+    messageLabel_(this)
+{
 	setWindowTitle(tr("Scanning library..."));
-    setWindowFlags(windowFlags() & ~Qt::WindowCloseButtonHint);
+
+    QDialogButtonBox* buttons = new QDialogButtonBox(QDialogButtonBox::Cancel, this);
+    connect(buttons, SIGNAL(rejected()), this, SLOT(reject()));
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(&progBar_);
+	layout->addWidget(&progressBar_);
 	layout->addWidget(&messageLabel_);
+    layout->addWidget(buttons);
 	layout->addStretch();
 
-	progBar_.setOrientation(Qt::Horizontal);
+	progressBar_.setOrientation(Qt::Horizontal);
 
 	setFixedWidth(800);
-    setFixedHeight(80);
+    setFixedHeight(105);
 }
 
-ScanProgressWidget::~ScanProgressWidget() {
+//-----------------------------------------------------------------------------
+// Function: ScanProgressWidget::~ScanProgressWidget()
+//-----------------------------------------------------------------------------
+ScanProgressWidget::~ScanProgressWidget()
+{
 }
 
-void ScanProgressWidget::setRange( int min, int max ) {
-	progBar_.setRange(min, max);
+//-----------------------------------------------------------------------------
+// Function: ScanProgressWidget::ScanProgressWidget()
+//-----------------------------------------------------------------------------
+void ScanProgressWidget::setRange(int min, int max)
+{
+	progressBar_.setRange(min, max);
 }
 
-void ScanProgressWidget::setMessage( const QString& message ) {
+//-----------------------------------------------------------------------------
+// Function: ScanProgressWidget::ScanProgressWidget()
+//-----------------------------------------------------------------------------
+void ScanProgressWidget::setMessage(QString const& message)
+{
 	messageLabel_.setText(message);
 }
 
-void ScanProgressWidget::setValue( int value ) {
-	progBar_.setValue(value);
+//-----------------------------------------------------------------------------
+// Function: ScanProgressWidget::ScanProgressWidget()
+//-----------------------------------------------------------------------------
+void ScanProgressWidget::setValue(int value)
+{
+	progressBar_.setValue(value);
 }

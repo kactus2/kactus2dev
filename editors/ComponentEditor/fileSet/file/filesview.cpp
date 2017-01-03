@@ -65,6 +65,13 @@ void FilesView::contextMenuEvent(QContextMenuEvent* event)
         menu.addAction(&pasteAction_);
     }
 
+    if (importExportAllowed())
+    {
+        menu.addSeparator();
+        menu.addAction(&importAction_);
+        menu.addAction(&exportAction_);
+    }
+
     menu.exec(event->globalPos());
 
     event->accept();

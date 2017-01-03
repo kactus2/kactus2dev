@@ -20,6 +20,8 @@
 class MemoryItem;
 class MemoryExtensionGraphicsItem;
 
+#include <QFontMetrics>
+
 //-----------------------------------------------------------------------------
 //! Parent class for memory map and address space graphics items in memory designer.
 //-----------------------------------------------------------------------------
@@ -67,27 +69,12 @@ public:
     void moveConnectedConnections(QPointF beforePosition);
 
     /*!
-     *  Move the connected memory connections in y-coordinate.
-     *
-     *      @param [in] yTransfer   The amount moved by.
-     */
-    void moveConnectedConnectionsInY(qreal yTransfer);
-
-    /*!
      *  Move the memory item through a moving memory connection.
      *
      *      @param [in] movementOrigin  The origin of the movement.
      *      @param [in] movementDelta   The movement delta.
      */
     void moveByConnection(MemoryConnectionItem* movementOrigin, QPointF movementDelta);
-
-    /*!
-     *  Move the memory item in y-coordinate through a moving memory connection.
-     *
-     *      @param [in] movementOrigin  The origin of the movement.
-     *      @param [in] yTransfer       The movement amount.
-     */
-    void moveByConnectionInY(MemoryConnectionItem* movementOrigin, qreal yTransfer);
 
     /*!
      *  Change the ranges of the child items.
@@ -233,10 +220,11 @@ private:
      *  Check if the selected label collides with range labels.
      *
      *      @param [in] label   The selected label.
+     *      @param [in] height  Height of the label text.
      *
      *      @return True, if the selected label collides with range labels, false otherwise.
      */
-    virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label) const;
+    virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label, qreal fontHeight) const;
 
     //-----------------------------------------------------------------------------
     // Data.

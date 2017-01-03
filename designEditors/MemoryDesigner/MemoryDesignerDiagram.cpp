@@ -941,7 +941,7 @@ MemoryConnectionItem* MemoryDesignerDiagram::getAddressSpaceChainConnection(
         connectionIterator.next();
 
         MemoryConnectionItem* connectionItem = connectionIterator.value();
-        if (connectionMiddleItem->getConnectionsInVector().contains(connectionItem))
+        if (connectionMiddleItem->hasConnection(connectionItem))
         {
             return connectionItem;
         }

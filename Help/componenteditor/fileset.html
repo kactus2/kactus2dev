@@ -12,37 +12,46 @@
       group files together to be referenced by other sections of a component.
     </p>
     <p>
-      <b>Name</b>, <b>display name</b>, and <b>description</b> of the
-      file set are shown on top. Name is mandatory as it identifies
-      the file set within a component. Display name is typically a few
-      words providing a more detailed and/or user-friendly name for
-      display. Description contains a textual description of the file
-      set.
+        <b>Name</b> is a mandatory identifier for the <i>file set</i>.
     </p>
-    <h3>Group identifiers</h3>
+    <p>
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>file set</i>.
+    </p>
     <p>
       <b>Group identifier</b> can be used to describe the function or purpose of the file set with a single
       unbounded word. <i>Group identifiers</i> can contain several identifiers and the number of possible 
       identifiers is not limited. However, the editor suggests the following options:
     </p>
     <ul>
-      <li>Diagnostics</li>
-      <li>Documentation</li>
-      <li>ProjectFiles</li>
-      <li>Simulation</li>
+      <li>diagnostics</li>
+      <li>documentation</li>
+      <li>projectFiles</li>
+      <li>simulation</li>
       <li>sourceFiles</li>
     </ul>
+
     <h3>Files</h3>
     <p>
-      <b>Files</b> editor lists the files contained within the file set.
-      Each file has a <b>name</b> identifying the file. The name is mandatory and it is determined automatically 
-      from the file path.
-      <br /><b>File path</b> is defined either as relative to the component's xml-file, as an absolute path or as 
-      an external URI. If an URI is used, the schema must be explicitly defined (e.g. http://...). 
-      The file path is mandatory.
-      <br /><b>File type</b> links files to their build command (see below). File type is mandatory, and one 
-      file can have many types.
-      <br /><b>Description</b> is a freely formatted text describing a single file.
+      Files editor lists the files contained within the file set.
+	</p>
+	<p>
+      Each <i>file</i> has a <b>file name</b> identifying the file. The name is mandatory and it is 
+	  determined automatically from the file path.
+    </p>
+    <p>
+      <b>File path</b> is mandatory and defined as relative to the component XML-file, 
+	  as an absolute path or as an external URI. If an URI is used, the schema must be explicitly 
+	  defined (e.g. http://...).
+    </p>
+    <p>
+      <b>File type</b> is mandatory and helps categorize the file and links files to their build command (see below). 
+	  A file can have more than one type.
+    </p>
+    <p>
+      <b>Description</b> is a freely formatted text describing a single file.
     </p>
     <p>
       New files can be added by creating new rows, browsing the files using the context menu option described below
@@ -59,6 +68,8 @@
       <li>Clear the selected cells</li>
       <li>Copy the contents of the selected cells to clipboard</li>
       <li>Paste the contents of the clipboard to the selected cells</li>
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>	  
     </ul>
     <h3>Default build commands</h3>
     <p>
@@ -66,13 +77,16 @@
       for C files or vcom for VHDL.
     </p>
     <p>
-      <b>File type</b> defines which files are build by the given <b>command</b>.
-      <br /><b>Flags</b> define the command line options for the <i>command</i> e.g. -Wall.
-      <br />The defined command can either <b>replace default flags</b> defined in the target <i>file</i> or be 
-      appended to it. The <i>replace default flags</i> value can be given as an expression, but must evaluate
-      either to 1 or 0.
-      <br />This table has a similar context menu as the files editor.
+      <b>File type</b> defines which files are build by the given <i>command</i>.
     </p>
+    <p>
+      <b>Flags</b> define the command line options for the <i>command</i> e.g. -Wall.
+    </p>
+    <p>
+      The defined command can either <b>replace default flags</b> defined in the target <i>file</i> or be 
+      appended to it. The value can be given as an expression, but must evaluate to 1 or 0.
+    </p>
+
     <h3>Dependent directories</h3>
     <p>
       <b>Dependent directories</b> can specify a freetext list of paths to directories on which this file

@@ -10,22 +10,26 @@
     <p>
       Address space editor can be used to edit the details of an
       address space within component.  <i>Address space</i> defines a
-      logical address space seen by a master bus interface. It can be
+      logical address space seen by a master <i>bus interface</i>. It can be
       split into smaller <i>sgements</i>.
-      <br />In the elements, f(x) means that the value can be given as an expression.  
     </p>
     <p>
       On the left side are the editor fields that can be used to set
-      the details of an address space.  The right side contains a
-      visualization displaying the address space in its current state.
+      the details of an address space. The right side contains a
+      visualization displaying the address space in its current state and
+	  automatically updates on changes.
+	  It displays how the segments are positioned within the address space. 
+	  Mismatches, e.g. sum of segment ranges being greater than address block range, can 
+      be easily spotted from the visualization.
+    </p>
+	<p>
+	    <b>Name</b> is a mandatory identifier for the <i>address space</i>.
     </p>
     <p>
-      Address space has a unique <b>name</b> and textual <b>description</b>.
-      <b>Display name</b> can be more detailed or user-friendly than
-      name, but usually only a few words.
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
     </p>
     <p>
-      The general group contains the same settings that can be set through the address spaces summary.
+        <b>Description</b> is an optional field for textual description of the <i>address space</i>.		
     </p>
     <p>
         <b>Addressable unit bits</b> (AUB) specifies the number of bits each address increment contains, 
@@ -39,29 +43,34 @@
       <b>Width</b> is the data width of a row in bits. It defines the maximum size for a single transfer.
     </p>
     <p>
-        <b>Master interface binding</b> ties the address space to a master interface. The binding can be set
-        in the <i>bus interface</i> editor.
+      <b>Master interface binding</b> shows the master <i>bus interfaces</i> bound to the address space. 
+	  The binding can be set in the bus interface editor.
     </p>
+	
     <h3>Segments</h3>
     <p>
-      <b>Segments</b> editor can be used to describe portions of the address space, i.e. split it into smaller
-        segments. Elements with an f(x) can be given as an expression.
+      <b>Segments</b> editor can be used to describe sections of the address space, i.e. split it into smaller
+        segments.
+    </p>
+	<p>
+	    <b>Name</b> is a mandatory identifier for the <i>segment</i>.
     </p>
     <p>
-      Each segment has the starting <b>offset</b> address, given in address unit bits, a <b>range</b> (size) 
-      given in AUBs, and a textual <b>description</b>.
+      <b>Offset</b> is mandatory and defines the starting address of the <i>segment</i> in address unit bits.
+	</p>
+	<p>
+		<b>Range</b> is mandatory and defines the size of the <i>segment</i> in address unit bits.
     </p>
-    <p>
-      The visualization on the right side reacts to the changes and displays how the segments are situated in 
-      the address space. Mismatches, e.g. sum of segment ranges being greater than address block range, can 
-      be easily spotted from the visualization.
+	 <p>
+        <b>Description</b> is an optional field for textual description of the <i>segment</i>.		
     </p>
+
     <h3>Local memory map</h3>
     <p>
       <b>Local memory map</b> is optional but some processors require specifying a memory map that is local
-      to the component.  This consists of <b>Address blocks</b> similarly to the memory map of a slave
-      interface. Hence, address blocks can contain either memory or registers, and registers can contain bit
-      fields.
+      to the component. It consists of <i>address blocks</i> similarly to the <i>memory map</i> of a slave
+      <i>bus interface</i>.
+	  Hence, the address blocks can contain either memory or registers, and registers can contain bit fields.
     </p>
     <p>
       Local memory map is useful for storing the programmer's view to interrupts registers, timers,
@@ -69,9 +78,6 @@
       (e.g. timers) and the memory maps of other units (e.g. registers of accelerator A, registers of
       accelerator B etc.)
     </p>
-    <p>
-      The address block editor can be used to define address blocks for the address space. The editor is
-      similar to the address blocks table in <i>memory map</i> editor.
-    </p>
+	
   </body>
 </html>

@@ -10,37 +10,37 @@
     <p>
       Address spaces editor contains the summary of the address spaces
       of the component. This editor can be used to add and remove
-      address spaces to the containing component. Double-click adds a new <b>address space</b>.
-      <br />In the elements, f(x) means that the value can be given as an expression.  
+      address spaces to the containing component. 
     </p>
     <p>
-      <b>Address space</b> defines the addressable memory space that can be accessed via a <i>master
-      interface</i>. It is the programmer's view to the rest of the system.
-      <br />Note that address spaces are actually instance-specific concepts (what other units are 
+      <b>Address space</b> defines the addressable memory space that can be accessed through
+	  a master <i>bus interface</i>. It is the programmer's view to the rest of the system.
+      <br />Note: Address spaces are actually instance-specific concepts (what other units are 
       there and what are their addresses) rather than component-specific. Nevertheless, IP-XACT standard 
       defines address space inside a component, although it is seldom a reusable element.
     </p>
-    <p>
-      Each address space has a mandatory unique <b>name</b> and an optional textual <b>description</b>.
+	<p>
+	    <b>Name</b> is a mandatory identifier for the <i>address space</i>.
     </p>
     <p>
       <b>Addressable unit bits</b> specifies the number of bits each address increment contains, 
-      e.g. 8 bits or 32 bits. The AUB is mandatory if the address space contains a local memory map default 
-      AUB is 8.
+      e.g. 8 bits or 32 bits. The AUB is mandatory if the address space contains a <i>local memory map</i>. 
+	  AUB is 8 by default.
     </p>
     <p>
-      <b>Range</b> (mandatory) means the size of the address space expressed as addressable units. In other 
-      words, it is the number of separate addresses.
+      <b>Range</b> is mandatory and defines the size of the address space in addressable units. In other 
+      words, it is the number of separate addresses in the address space.
     </p>
     <p>
-      <b>Width</b> (mandatory) is the data width of a row in bits, defining the maximum size for a single transfer.
+      <b>Width</b> is mandatory and defines the data width of a row in bits thus
+	  defining the maximum size for a single transfer.
     </p>
     <p>
-      <b>Master interface binding</b> ties the address space to a master interface. The binding can be set in 
-      the <i>bus interface</i> editor.
+      <b>Master interface binding</b> shows the master <i>bus interfaces</i> bound to the address space. 
+	  The binding can be set in the bus interface editor.
     </p>
-    <p>
-      <img src="../images/addr_space.png" alt="addr space's idea">
+	<p>
+        <b>Description</b> is an optional field for textual description of the <i>address space</i>.		
     </p>
     <p>
       Address spaces editor contains a context menu (right mouse button) providing following options:
@@ -54,5 +54,13 @@
       <li>Import a csv-file to the editor</li>
       <li>Export the contents of the editor to a csv-file</li>
     </ul>
+	<hr>
+	<p>
+		EXAMPLE. The address space AS0 defines the available address space of the whole system
+		when accessed through bus interface MainIF. This is what the component CPU0 requires
+		of the system, but the components connected to MainIF may be different.
+		<br>
+		<img src="../images/addr_space.png" alt="addr space's idea">
+    </p>
   </body>
 </html>

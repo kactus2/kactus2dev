@@ -73,10 +73,10 @@ containingDesign_()
     swGroup_->hide();
 	configurableElements_->hide();
     propertyValueEditor_->hide();
-
+    
     configurableElements_->setMinimumHeight(230);
 
-	vlnvDisplayer_->setTitle(tr("Instance model VLNV"));
+	vlnvDisplayer_->setTitle(tr("Component VLNV"));
 	vlnvDisplayer_->setFlat(false);
 
     QVBoxLayout* swGroupLayout = new QVBoxLayout(swGroup_);

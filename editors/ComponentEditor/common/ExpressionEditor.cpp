@@ -34,6 +34,8 @@ parameterFinder_(parameterFinder),
 notSelectingText_(true),
 reservedWords_()
 {
+    reservedWords_ << "true" << "false";
+
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setUndoRedoEnabled(false);

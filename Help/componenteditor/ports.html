@@ -11,7 +11,6 @@
       Ports editor provides a table containing all the <i>ports</i> of
       a component. This editor is used to add, remove and edit the
       ports.
-      <br />In the elements, f(x) means that the value can be given as an expression.  
     </p>
     <p>
       <b>Port name</b> is a unique identifier and must match
@@ -59,22 +58,23 @@
       port in the design.
     </p>
     <p>
-      <b>Array left</b> and <b>array right</b> are optional Kactus2 extensions.
-      They define the indices of an array port. The values can be given as an 
+      <b>Array left</b> and <b>array right</b> are optional and define 
+	  the indices of an array port. The values can be given as an 
       equation, but it must resolve into a decimal number. 
-      If either value is given, the port is considered to be of an array type.
-      <br>
-      <img src="../images/appicon.png" alt="Kactus-extension">
+      If either left or right value is given, the port is considered to 
+	  be of an array type.
+    
     </p>
     <p>
         <b>Port tags</b> column displays the optional tags for a port. These can be used to group ports together 
         to, for example, create bus interfaces.
+		<br><img src="../images/appicon.png" alt="Kactus-extension">
     </p>
     <p>
       <b>Ad-hoc</b> column is a Kactus2-specific extension which is used in the graphical user interface of a 
       hierarchical design. Ad-hoc determines wether the port is an ad-hoc port or not.
       <br><img src="../images/appicon.png" alt="Kactus-extension">
-      <br><br> <img src="../images/adHocPorts.PNG" alt="Component
+      <br> <img src="../images/adHocPorts.PNG" alt="Component
       instance with ad-Hoc ports"><br> The component instances are
       drawn as rectangles and their external interfaces are drawn to
       the edges of the rectangle. There are different symbols for

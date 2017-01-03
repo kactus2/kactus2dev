@@ -8,43 +8,65 @@
   <body>
     <h2>File editor</h2>
     <p>
-      File editor can be used to edit the details of a single file
-      within a file set.
+      File editor can be used to edit the details of a single file within a file set.
+    </p>
+
+    <p>
+      <b>Name</b> field contains the relative file path from the containing component XML-file to this file.
+      The name can be changed in the file set editor.
     </p>
     <p>
-      <b>Name</b> field contains the relative file path from the containing component's xml-file to this file.
-      The name cannot be changed after creating a file item.
-      <br /><b>Description</b> shows a used given description regarding the currently active file.
-      <br /><b>File types</b> list specifies the type of the file. File type can be used i.e. when specifying
-      build commands for a group of files. A file can have multiple file types.
+      <b>Description</b> shows a used given description regarding the currently active file.
     </p>
+    <p>
+      <b>File types</b> list specifies the type of the file. File type can be used i.e. when specifying
+      build commands for a group of files. A file can have multiple file types.         
+    </p>
+
     <h3>General options</h3>
     <p>
-      <b>Logical name</b> specifies e.g. a VHDL library where the VHDL-file will be compiled to.
-      <br />If the checkbox <b>generators can override logical name </b> is ticked, the logical name can be 
-        overridden by another process. If the check box is unticked, then this logical name cannot be overrriden.
-      <br />The check box <b>File is structural RTL</b> informs that the file is a structural
-        <i>register transfer level</i> file.
-      <br />The check box <b>file is include file </b> can be used to specify the file is an include file.
-      <br />The check box <b>file contains external declarations</b> can be used to specify that the file contains 
-        external declarations and is needed by other files in this file set.
+      <b>Logical name</b> specifies e.g. a VHDL library where the VHDL-file will be compiled to.<br />
+      <b>Generators can override logical name </b> defines if the logical name can be 
+        overridden by another process.
     </p>
+    <p>
+      <b>File is structural RTL</b> indicates if the file contains only a structural
+        Register Transfer Level (RTL) description i.e. no behavioral code.
+    </p>
+    <p>
+      <b>File is include file </b> indicates if the file is an include file e.g. C-header file.
+    </p>
+    <p>
+      <b>File contains external declarations</b> can be used to indicate that the file contains 
+       external declarations and is needed by other files in this file set.
+    </p>
+
     <h3>Build command</h3>
     <p>
       <b>Target file</b> specifies a path to the file that is derived from this file when build process is 
-      run.
-      <br /><b>Build command</b> can be used to define a specific build <b>command</b> and <b>flags</b> 
-      for this file.
-      <br /><b>Flags</b> can either <b>replace default flags</b> (e.g. those specified for this file type) 
-        in the build script or be appended to them. The value for <i>replace default flags</i> can be given as an 
-        expression, but must evaluate to 1 or 0.
+      run. A new file path can be entered or an existing file can be searched with "Browse...".
     </p>
+    <p>
+      <b>Build command</b> can be used to define a build <b>command</b> and <b>flags</b> specific to this file.
+	  For example, a C-source file could have a build command 'gcc' with flags '-O2'.
+    </p>
+    <p>
+      Flags can either <b>replace default flags</b> (e.g. those specified for this file type) 
+      in the build script or be appended to them. The value can be given as an 
+      expression, but must evaluate to 1 or 0.
+    </p>
+
     <h3>External dependencies and defines </h3>
     <p>
-      <b>Dependencies</b> contains a list of paths to directories containing (include) files on which the 
+      <b>Dependencies</b> contains a list of directory paths containing (include) files on which the 
       file depends.
-      <br /><b>Exported names</b> contains a list defining any names that can be referenced externally.
-      <br /><b>Image types</b> contains a list of the current files relations to executable image types in 
+    </p>
+    <p>
+      <b>Exported names</b> contains a list names defined within the file that can be 
+	  referenced externally.
+    </p>
+    <p>
+      <b>Image types</b> contains a list of the current files relations to executable image types in 
       the design.
     </p>
 	</body>

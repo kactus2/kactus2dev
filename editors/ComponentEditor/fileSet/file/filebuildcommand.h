@@ -12,13 +12,12 @@
 #ifndef FILEBUILDCOMMAND_H
 #define FILEBUILDCOMMAND_H
 
-#include "targetnameedit.h"
-
+#include <QCheckBox>
+#include <QFileInfo>
+#include <QGridLayout>
 #include <QGroupBox>
 #include <QLineEdit>
-#include <QCheckBox>
-#include <QGridLayout>
-#include <QFileInfo>
+#include <QPushButton>
 #include <QSharedPointer>
 
 class LibraryInterface;
@@ -41,16 +40,15 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent              Pointer to the owner of this widget.
-	 *      @param [in] handler             Pointer to the instance that manages the library.
-	 *      @param [in] component           Pointer to the component being edited.
-	 *      @param [in] file                Pointer to the file that is being edited.
+	 *      @param [in] file                The file that is being edited.
+     *      @param [in] componentPath       The path to the component containing the file.
      *      @param [in] parameterFinder     The used parameter finder.
      *      @param [in] expressionParser    Parser for calculating expressions.
+     *      @param [in] parent              The owner of this widget.
 	 */
-    FileBuildCommand(QWidget *parent, LibraryInterface* handler, QSharedPointer<Component> component,
-        QSharedPointer<File> file, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser);
+    FileBuildCommand(QSharedPointer<File> file, QString const& componentPath,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser, QWidget *parent);
 
 	//! The destructor.
 	virtual ~FileBuildCommand();
@@ -82,16 +80,19 @@ signals:
 private slots:
 
 	//! Handler for command changes.
-	void onCommandChanged();
+    void onCommandChanged();
+
     void updateFileBuildCommand();
 
-	//! Handler for flag changes.
-	void onFlagsChanged();
+    //! Handler for flag changes.
+    void onFlagsChanged();
 
-	//! Handler for target changes.
-	void onTargetChanged();
+    //! Handler for target changes.
+    void onTargetChanged();
 
     void onReplaceDefaultChanged();
+
+    void onBrowseTarget();
 
 private:
 
@@ -120,6 +121,9 @@ private:
 	//! The file's buildCommand.
     QSharedPointer<BuildCommand> buildCommand_; 
 
+    //! Path to the containing component.
+    QString componentPath_;
+
 	//! Editor to set file's build command.
 	QLineEdit commandEditor_;
 
@@ -130,7 +134,9 @@ private:
     ExpressionEditor* replaceDefaultEditor_;
 
 	//! Editor to set build command's target file.
-	TargetNameEdit targetEditor_;
+	QLineEdit targetEditor_;
+
+    QPushButton browseTargetButton_;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

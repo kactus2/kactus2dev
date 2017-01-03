@@ -54,15 +54,18 @@ qreal AddressSegmentGraphicsItem::getSegmentItemWidth(AddressSpaceGraphicsItem* 
 //-----------------------------------------------------------------------------
 void AddressSegmentGraphicsItem::setLabelPositions()
 {
-    qreal nameX = boundingRect().right() - getNameLabel()->boundingRect().width();
-    qreal nameY = (boundingRect().height() / 2) - (getNameLabel()->boundingRect().height() / 2);
+    QRectF itemRectangle = boundingRect();
+    QRectF nameRectange = getNameLabel()->boundingRect();
+
+    qreal nameX = itemRectangle.right() - nameRectange.width();
+    qreal nameY = (itemRectangle.height() / 2) - (nameRectange.height() / 2);
 
     getNameLabel()->setPos(nameX, nameY);
 
-    qreal rangeEndX = boundingRect().bottomLeft().x();
-    qreal rangeEndY = boundingRect().bottomLeft().y() - getRangeEndLabel()->boundingRect().height();
+    qreal rangeEndX = itemRectangle.bottomLeft().x();
+    qreal rangeEndY = itemRectangle.bottomLeft().y() - getRangeEndLabel()->boundingRect().height();
 
-    getRangeStartLabel()->setPos(boundingRect().topLeft());
+    getRangeStartLabel()->setPos(itemRectangle.topLeft());
     if (!getRangeStartLabel()->isVisible())
     {
         rangeEndY += 2;

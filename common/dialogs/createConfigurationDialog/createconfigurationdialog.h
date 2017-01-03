@@ -82,13 +82,6 @@ public:
 	QString getConfigurationName() const;
 
 	/*!
-     *  Get the name of the view that contains the implementation for the component.
-	 *
-	 *      @return QString contains the name for the implementation view.
-	 */
-	QString getImplementationViewName() const;
-
-	/*!
      *  Find out if user wanted to use existing design or create a new one.
 	 *
 	 *      @return CreateConfigurationDialog::DesignSelection specifies what kind of operation was selected.
@@ -154,9 +147,6 @@ private:
 
 	//! Editor to set the vlnv for the new configuration (and possibly design).
 	VLNVEditor* vlnvEdit_;
-
-	//! Select the top-level implementation for this configuration.
-	QComboBox* implementationCombo_;
 
 	//! Accept the dialog.
 	QPushButton* okButton_;
