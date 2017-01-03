@@ -84,11 +84,12 @@ private:
     /*!
      *  Get the register end.
      *
-     *      @param [in] registerItem    Memory item containing register data.
+     *      @param [in] addressUnitBits     Address unit bits of the register.
+     *      @param [in] registerSize        Size of the register.
      *
      *      @return The end range of the register item.
      */
-    quint64 getRegisterEnd(QSharedPointer<MemoryItem> registerItem) const;
+    quint64 getRegisterEnd(unsigned int addressUnitBits, quint64 registerSize) const;
 
     /*!
      *  Setup the label positions.
@@ -99,9 +100,8 @@ private:
      *  Setup the field graphics items.
      *
      *      @param [in] registerItem    The selected register memory item.
-     *      @param [in] registerEnd     End of the register memory item.
      */
-    void setupFields(QSharedPointer<MemoryItem> registerItem, quint64 registerEnd);
+    void setupFields(QSharedPointer<MemoryItem> registerItem);
 
     /*!
      *  Get the field memory items of the selected register memory item in the order of their offset.
@@ -161,11 +161,11 @@ private:
     //! Value for empty registers.
     bool isEmpty_;
 
-    //! Width of the register.
-    qreal registerWidth_;
+    //! Size of the register.
+    quint64 registerSize_;
 
-    //! Register memory item used to construct this graphics item.
-    QSharedPointer<MemoryItem> registerMemoryItem_;
+    //! Address unit bits of the register.
+    unsigned int addressUnitBits_;
 
     //! Value for filtering fields.
     bool filterFields_;

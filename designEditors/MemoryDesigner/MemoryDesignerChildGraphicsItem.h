@@ -77,6 +77,13 @@ private:
     MemoryDesignerChildGraphicsItem& operator=(MemoryDesignerChildGraphicsItem const& rhs);
 
     /*!
+     *  Set colors for ranges in an empty sub graphics item.
+     *
+     *      @param [in] emptyItemRangeColour    The color for the empty sub graphics item ranges.
+     */
+    virtual void setEmptyItemRangeColors(QColor emptyItemRangeColour);
+
+    /*!
      *  Get the width of the available area used by the memory sub item.
      *
      *      @return The width of the available area used by the memory sub item.
