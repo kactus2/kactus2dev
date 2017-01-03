@@ -12,13 +12,18 @@
         This editor can be used to edit the details of a component instantiation.
     </p>
     <p>
-        Component instantiation has a unique <b>name</b> and textual <b>description</b>.
-        <b>Display name</b> can be more detailed or user-friendly than name
+	    <b>Name</b> is a mandatory identifier for the <i>component instantiation</i>.
+    </p>
+    <p>
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>component instantiation</i>.		
     </p>
     <h3>Implementation details</h3>
     <p>
-        <b>Language</b> specifies the HDL used for a specific instantiation, for example, verilog or vhdl. The
-        checkbox <b>Strict</b> determines if the language shall be strictly enforced.
+        <b>Language</b> specifies the HDL used for a specific instantiation, for example, verilog or vhdl. 
+		<b>Strict</b> determines if the language shall be strictly enforced.
     </p>
     <p>
         <b>Library</b> specifies the library name in which the model should be compiled.
@@ -39,31 +44,34 @@
         design configuration VLNV name of the design configuration referenced in the view, or to the component 
         VLNV name concatenated with the postfix _rtl_cfg.
     </p>
+	
     <h3>File set references</h3>
     <p>
-        An unbounded list of references to <b>file set</b> names within the containing document.
+        File set references is an optional list of <i>file set</i> names that are associated with the
+		<i>component instance</i>. For example, the file set containing the RTL implementation file(s)
+		of the module detailed in Implementation details could be referenced.
     </p>
-    <p>
 
-    </p>
     <h3>Default file build commands</h3>
     <p>
-        <b>Default file build commands</b> is an unbounded list of build options for the <b>file sets</b> 
+        <b>Default file build commands</b> is a list of build options for the <b>file sets</b> 
         referenced in the containing <b>view</b>.
     </p>
     <p>
-        <b>File type</b> defines which files are build by the given <b>command</b>.
+        <b>File type</b> defines which files are build by the given command.
     </p>
     <p>
-        <b>Build command</b> defines how to build the files within the file set by e.g. running gcc for C files 
-        or vcom for VHDL.
+        <b>Build command</b> defines how to build the files within the file set by e.g. 
+		running 'gcc' for C files or 'vcom' for VHDL.
     </p>
     <p>
-        <b>Flags</b> define the command line options for the <i>command</i> e.g. -Wall.
+        <b>Flags</b> define the command line options for the command e.g. '-Wall'.
     </p>
     <p>
-        The defined command can either <b>replace default flags</b> defined in the target <i>file</i> or be 
-        appended to it. <i>Replace default flags</i> can be given as an expression, but it must evaluate to 1 or 0.
+        <b>Replace default flags</b> selects whether the given flags override the flags 
+		defined in the target <i>file</i> or are they 
+        appended to them. Replace default flags can be given as an expression, 
+		but it must evaluate to 1 or 0.
     </p>
     <p>
         The defult file build commands contains a context menu, with the following functionalities:
@@ -78,12 +86,11 @@
     <h3>Module parameters</h3>
     <p>
         Module parameters editor can be used to add, remove and modify module parameters. Module parameters are 
-        often used in HDL to configure component instances. They represent e.g VHDL  generics and Verilog module 
+        often used in HDL to configure component instances. They represent e.g VHDL  generics and Verilog 
         parameters.
     </p>
     <p>
         All columns of the editor are editable.  Double-clicking an empty space adds a new row.
-        <br />Columns with f(x) be given a value as an expression.  
     </p>
     <p>
         <b>Name</b> column is mandatory. <b>Display name</b> provides a more user-friendly name for the module 

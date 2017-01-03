@@ -9,18 +9,26 @@
     <h2>Channels editor</h2>
     <p>
       Channels editor provides a summary of the channels contained in
-      the bus component. <i>Channel</i> is used within a <i>bus
-      component</i> to describe which bus interfaces are connected
+      the bus component. <i>Channel</i> is used within a bus
+      component to describe which bus interfaces are connected
       together. This editor can be used to add, edit and remove
       channels.
     </p>
     <p>
-      Channel has a mandatory <b>name</b>, an optional <b>display name</b> and a textual <b>description</b>.
+	    <b>Name</b> is a mandatory identifier for the <i>channel</i>.
     </p>
     <p>
-      <b>Interface references</b> contain the names of the <i>mirrored</i> bus interfaces that are grouped to
-      a same channel. Picture below illustrates the connections
-      between mirrored bus interfaces.<br> <img
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>channel</i>.		
+    </p>
+    <p>
+      <b>Interface references</b> contain the names of the mirrored <i>bus interfaces</i> that are grouped to
+      a same channel. All the <i>bus interfaces</i> in the group are interconnected. 
+	  The figure below illustrates the connections between mirrored bus interfaces.
+	  <br>
+	  <img
       src="../images/ChannelVisualization.png" alt="A Channel
       connecting bus interfaces within a component"><br>
     </p>

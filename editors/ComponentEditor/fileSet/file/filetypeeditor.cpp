@@ -20,7 +20,7 @@
 // Function: filetypeeditor::FileTypeEditor()
 //-----------------------------------------------------------------------------
 FileTypeEditor::FileTypeEditor(QWidget *parent, QSharedPointer<File> file):
-ListManager(tr("Specified file types"), parent), 
+ListManager(tr("File types"), parent), 
 file_(file)
 {
 	Q_ASSERT_X(file_, "FileTypeEditor constructor", "Null File-pointer given as parameter");

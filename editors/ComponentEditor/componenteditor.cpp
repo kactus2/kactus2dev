@@ -136,9 +136,6 @@ validator_(expressionParser_, libHandler_)
 	// when starting the component editor open the general editor.
 	onItemActivated(proxy_.index(0, 0, QModelIndex()));
 
-    // Open in unlocked mode by default only if the version is draft.
-    setProtection(component_->getVlnv().getVersion() != "draft");
-
 	// navigation model may request an item to be expanded
 	connect(&navigationModel_, SIGNAL(expandItem(const QModelIndex&)),
 		this, SLOT(onExpand(const QModelIndex&)), Qt::UniqueConnection);
