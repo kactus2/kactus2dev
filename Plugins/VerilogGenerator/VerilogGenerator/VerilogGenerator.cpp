@@ -32,10 +32,13 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::VerilogGenerator()
 //-----------------------------------------------------------------------------
-VerilogGenerator::VerilogGenerator(LibraryInterface* library, bool useInterfaces, bool generateMemory) : QObject(0), 
+VerilogGenerator::VerilogGenerator(LibraryInterface* library, bool useInterfaces, bool generateMemory,
+    QString const& kactusVersion, QString const& generatorVersion) : QObject(0), 
 library_(library),
 useInterfaces_(useInterfaces),
 generateMemory_(generateMemory),
+kactusVersion_(kactusVersion),
+generatorVersion_(generatorVersion),
 sorter_(new InterfaceDirectionNameSorter()),
 documents_(new QList<QSharedPointer<VerilogDocument> >)
 {
@@ -121,8 +124,8 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 	}
 
 	// Read the content.
-	QTextStream outputStream(&outputFile);
-	QString fileContent = outputStream.readAll();
+	QTextStream inputStream(&outputFile);
+	QString fileContent = inputStream.readAll();
 
 	// We do not support multiple modules in the same file.
 	if (fileContent.count(VerilogSyntax::MODULE_KEY_WORD) > 1)
@@ -192,8 +195,7 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::generate()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::generate(QString const& generatorVersion,
-    QString const& kactusVersion) const
+void VerilogGenerator::generate() const
 {
     if (nothingToWrite())
 	{
@@ -212,8 +214,7 @@ void VerilogGenerator::generate(QString const& generatorVersion,
 
         QTextStream outputStream(&outputFile);
 
-        document->headerWriter_->write(outputStream, document->filePath_, generatorVersion, kactusVersion,
-            QDateTime::currentDateTime());
+        document->headerWriter_->write(outputStream, document->filePath_, QDateTime::currentDateTime());
         document->topWriter_->write(outputStream);
 
         outputFile.close();
@@ -248,7 +249,7 @@ QSharedPointer<VerilogDocument> VerilogGenerator::initializeComponentWriters(QSh
     QSharedPointer<VerilogDocument> retval(new VerilogDocument);
 
     retval->headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent->component_->getVlnv(), 
-        componentXmlPath, currentUser, topComponent->component_->getDescription()));
+        componentXmlPath, currentUser, topComponent->component_->getDescription(), kactusVersion_, generatorVersion_));
 
     retval->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent, useInterfaces_, generateMemory_));
 

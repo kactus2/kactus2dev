@@ -266,7 +266,7 @@ void tst_VerilogGenerator::addParameter(QString const& name, QString const& valu
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::runGenerator(bool useDesign)
 {
-    VerilogGenerator generator(&library_,false,false);
+    VerilogGenerator generator(&library_,false,false,"bogusToolVersion","bogusGeneratorVersion");
 	QString outputPath = ".";
 
 	if (useDesign)
@@ -280,7 +280,7 @@ void tst_VerilogGenerator::runGenerator(bool useDesign)
 
     generationTime_ =  QDateTime::currentDateTime();
 
-    generator.generate("bogusVersion", "bogusVersion");
+    generator.generate();
 }
 
 //-----------------------------------------------------------------------------
@@ -297,7 +297,7 @@ void tst_VerilogGenerator::testFileHeaderIsPrinted()
     settings.setValue("General/Username", "testUser");
 
     runGenerator(false);
-    
+
     verifyOutputContains(QString(
         "//-----------------------------------------------------------------------------\n"
         "// File          : ./generatorOutput.v\n"
@@ -307,8 +307,8 @@ void tst_VerilogGenerator::testFileHeaderIsPrinted()
         "//                 spanning multiple\n"
         "//                 lines.\n"
 		"// Created by    : testUser\n"
-		"// Tool : Kactus2 bogusVersion\n"
-		"// Plugin : Verilog generator bogusVersion\n"
+		"// Tool : Kactus2 bogusToolVersion\n"
+		"// Plugin : Verilog generator bogusGeneratorVersion\n"
 		"// This file was generated based on IP-XACT component Test:TestLibrary:TestComponent:1.0\n"
         "// whose XML file is C:/Test/TestLibrary/TestComponent/1.0/TestComponent.1.0.xml\n"
         "//-----------------------------------------------------------------------------\n"));
@@ -976,7 +976,7 @@ void tst_VerilogGenerator::testImplementationSelection()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false);
+	VerilogGenerator generator(&library_,false,false,"","");
 
 	QString implementation;
 	QString postModule;
@@ -1018,7 +1018,7 @@ void tst_VerilogGenerator::testImplementationSelectionWithEvilComments()
 
     existingFile.close();
 
-    VerilogGenerator generator(&library_,false,false);
+    VerilogGenerator generator(&library_,false,false,"","");
 
     QString implementation;
     QString postModule;
@@ -1061,7 +1061,7 @@ void tst_VerilogGenerator::testImplementationSelectionWithTag()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false);
+	VerilogGenerator generator(&library_,false,false,"","");
 
 	QString implementation;
 	QString postModule;
@@ -1101,7 +1101,7 @@ void tst_VerilogGenerator::testImplementationSelectionWithoutParameters()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false);
+	VerilogGenerator generator(&library_,false,false,"","");
 
 	QString implementation;
 	QString postModule;
@@ -1133,7 +1133,7 @@ void tst_VerilogGenerator::testImplementationSelectionWithoutPorts()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false);
+	VerilogGenerator generator(&library_,false,false,"","");
 
 	QString implementation;
 	QString postModule;
@@ -1186,7 +1186,7 @@ void tst_VerilogGenerator::testImplementationSelectionWithInstantiation()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false);
+	VerilogGenerator generator(&library_,false,false,"","");
 
 	QString actualImplementation;
 	QString postModule;
@@ -1237,7 +1237,7 @@ void tst_VerilogGenerator::testImplementationSelectionWithPostModule()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false);
+	VerilogGenerator generator(&library_,false,false,"","");
 
 	QString implementation;
 	QString actualPostModule;
@@ -1294,7 +1294,7 @@ void tst_VerilogGenerator::testImplementationSelectionWithTooManyModules()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false);
+	VerilogGenerator generator(&library_,false,false,"","");
 
 	QString implementation;
 	QString postModule;
@@ -1334,7 +1334,7 @@ void tst_VerilogGenerator::testImplementationSelectionWithNoModuleHeaderStart()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false);
+	VerilogGenerator generator(&library_,false,false,"","");
 
 	QString implementation;
 	QString postModule;
@@ -1374,7 +1374,7 @@ void tst_VerilogGenerator::testImplementationSelectionWithNoModuleHeaderEnd()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false);
+	VerilogGenerator generator(&library_,false,false,"","");
 
 	QString implementation;
 	QString postModule;
@@ -1414,7 +1414,7 @@ void tst_VerilogGenerator::testImplementationSelectionWithNoModuleEnd()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false);
+	VerilogGenerator generator(&library_,false,false,"","");
 
 	QString implementation;
 	QString postModule;

@@ -16,8 +16,10 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogHeaderWriter::()
 //-----------------------------------------------------------------------------
-VerilogHeaderWriter::VerilogHeaderWriter(VLNV const& vlnv, QString const& xmlPath, QString const& author, QString const& description) : 
-vlnv_(vlnv), xmlPath_(xmlPath), author_(author), description_(description)
+VerilogHeaderWriter::VerilogHeaderWriter(VLNV const& vlnv, QString const& xmlPath, QString const& author,
+    QString const& description, QString const& kactusVersion, QString const& generatorVersion) : 
+    vlnv_(vlnv), xmlPath_(xmlPath), author_(author), description_(description),
+     kactusVersion_(kactusVersion), generatorVersion_(generatorVersion)
 {
 
 }
@@ -33,8 +35,7 @@ VerilogHeaderWriter::~VerilogHeaderWriter()
 //-----------------------------------------------------------------------------
 // Function: VerilogHeaderWriter::write()
 //-----------------------------------------------------------------------------
-void VerilogHeaderWriter::write(QTextStream& outputStream, QString const& fileName, QString const& generatorVersion,
-	QString const& kactusVersion, QDateTime const& generationTime) const
+void VerilogHeaderWriter::write(QTextStream& outputStream, QString const& fileName, QDateTime const& generationTime) const
 {
     QStringList descriptionLines = description_.split("\n");
 
@@ -50,8 +51,8 @@ void VerilogHeaderWriter::write(QTextStream& outputStream, QString const& fileNa
     }
 
 	outputStream << "// Created by    : " << author_ << endl;
-	outputStream << "// Tool : Kactus2 " << kactusVersion << endl;
-	outputStream << "// Plugin : Verilog generator " << generatorVersion << endl;
+	outputStream << "// Tool : Kactus2 " << kactusVersion_ << endl;
+	outputStream << "// Plugin : Verilog generator " << generatorVersion_ << endl;
 	outputStream << "// This file was generated based on IP-XACT component " << vlnv_.toString() << endl;
     outputStream << "// whose XML file is " << xmlPath_ << endl;
     outputStream << "//-----------------------------------------------------------------------------" << endl;

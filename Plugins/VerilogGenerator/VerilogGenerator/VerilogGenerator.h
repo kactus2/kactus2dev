@@ -70,8 +70,10 @@ public:
 	 *      @param [in] library                 The component library.
      *      @param [in] useInterfaces           True, if interfaces are utilized separately from physical ports, else false.
      *      @param [in] generateMemory          If true, definitions for registers are generated as well, else it is false.
+	 *      @param [in] kactusVersion		    The version of the current Kactus build.
+	 *      @param [in] generatorVersion	    The current version of the generator.
 	 */
-    VerilogGenerator(LibraryInterface* library, bool useInterfaces, bool generateMemory);
+    VerilogGenerator(LibraryInterface* library, bool useInterfaces, bool generateMemory, QString const& kactusVersion, QString const& generatorVersion);
 
     //! The destructor.
     ~VerilogGenerator();
@@ -111,13 +113,9 @@ public:
     /*!
      *  Generates the component Verilog to a given file.
      *
-	 *      @param [in] kactusVersion		The version of the current Kactus build.
-	 *      @param [in] generatorVersion	The current version of the generator.
-     *
      *      @remark If prepares are not called before generate(), nothing is generated.
      */
-	void generate(QString const& generatorVersion,
-        QString const& kactusVersion) const;
+	void generate() const;
     
     /*!
      *  Returns pointer to the list of the documents that are to be written.
@@ -185,6 +183,12 @@ private:
 
     //! If true, definitions for registers are generated as well, else it is false.
     bool generateMemory_;
+
+    //! Version of the generator.
+    QString generatorVersion_;
+
+    //! Version of Kactus2.
+    QString kactusVersion_;
 
     //! Sorter for component ports.
     QSharedPointer<PortSorter> sorter_;

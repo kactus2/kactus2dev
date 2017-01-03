@@ -240,7 +240,8 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     utility_->printInfo(tr("Generation started %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
         
     // Initialize the generator, catch its error signals.
-	VerilogGenerator generator(utility->getLibraryInterface(), configuration->getInterfaceGeneration(), configuration->getMemoryGeneration());
+	VerilogGenerator generator(utility->getLibraryInterface(), configuration->getInterfaceGeneration(),
+        configuration->getMemoryGeneration(), utility_->getKactusVersion(), getVersion());
 	connect(&generator, SIGNAL(reportError(const QString&)), 
 		this, SLOT(onErrorReport(const QString&)), Qt::UniqueConnection);
 
@@ -262,7 +263,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     }
 
     // Now execute the generation.
-	generator.generate(getVersion(), utility_->getKactusVersion());
+	generator.generate();
     utility_->printInfo(tr("Finished writing the file(s)."));
 
 	// The resulting file will be added to the file set.
