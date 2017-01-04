@@ -294,7 +294,7 @@ bool tst_VerilogGenerator::couldConfigure(QSharedPointer<QList<QSharedPointer<Vi
         new ViewSelection("verilog", "", "", possibleViews, possibleInstantiations, possibleFileSets));
 
 	configuration_ = QSharedPointer<GeneratorConfiguration>(new GeneratorConfiguration(viewSelect,
-        componentParser, designParser));
+        componentParser, designParser, NULL));
 
     return true;
 }

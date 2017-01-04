@@ -107,8 +107,10 @@ void GeneratorConfiguration::parseDocuments()
 //-----------------------------------------------------------------------------
 QString GeneratorConfiguration::getPreview()
 {
+    return "";
+
     // Prepare the generator.
-    if (designGeneration)
+    /*if (designGeneration)
     {
         QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
         foreach (QSharedPointer<GenerationDesign> design, designs)
@@ -139,7 +141,7 @@ QString GeneratorConfiguration::getPreview()
 
     generate(outputStream, document);
 
-    outputFile.close();
+    outputFile.close();*/
 }
 
 //-----------------------------------------------------------------------------

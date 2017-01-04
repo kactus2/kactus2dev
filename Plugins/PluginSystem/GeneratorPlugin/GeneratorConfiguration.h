@@ -105,7 +105,7 @@ private:
     //! The parsers used to parse IP-XACT for data usable in generation.
     HDLComponentParser* componentParser_;
     HDLDesignParser* designParser_;
-    VerilogGenerator generator_;
+    VerilogGenerator* generator_;
 
     //! If true, interfaces should be utilized in generation, else it is false.
     bool generateInterface_;

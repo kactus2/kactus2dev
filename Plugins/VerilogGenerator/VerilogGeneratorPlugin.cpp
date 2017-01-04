@@ -344,7 +344,7 @@ bool VerilogGeneratorPlugin::couldConfigure(QSharedPointer<QList<QSharedPointer<
 
     // Create model for the configuration widget.
     configuration_ = QSharedPointer<GeneratorConfiguration>(
-        new GeneratorConfiguration(viewSelect, componentParser, designParser));
+        new GeneratorConfiguration(viewSelect, componentParser, designParser, NULL));
     // Set the defaults for convenience.
     configuration_->getFileOuput()->setOutputPath(defaultOutputPath());
     configuration_->setInterfaceGeneration(generateInterface_);
