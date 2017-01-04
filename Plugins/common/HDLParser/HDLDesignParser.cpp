@@ -94,9 +94,7 @@ void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topCompone
 	parseHierarchicallAdhocs();
 
     // Assign remaining unassigned ports.
-
     assignDefaultPortValues();
-
 
     // Finally add the parsed design to the list.
     parsedDesigns_.append(retval_);
@@ -136,6 +134,12 @@ void HDLDesignParser::parseDesign(QSharedPointer<GenerationComponent> topCompone
 
         foreach(QSharedPointer<GenerationDesign> gd, parsedDesigns_)
         {
+            // Skip the topmost one.
+            if (gd == parsedDesigns_.first())
+            {
+                continue;
+            }
+
             QString name = gd->topComponent_->moduleName_;
 
             // Find the name from the set of existing names.

@@ -168,9 +168,9 @@ void tst_VerilogGenerator::testFilesetIsCreatedWhenRunForDesign()
 
     runGenerator(&utilityMock_, targetComponent, targetConfiguration, targetDesign);
 
-    QVERIFY2(QFile::exists("test_0.v"), "No file created");
+    QVERIFY2(QFile::exists("test.v"), "No file created");
     QCOMPARE(targetComponent->getFileSets()->count(), 1);
-    QVERIFY2(targetComponent->getFileSets()->first()->getFileNames().contains("test_0.v"), 
+    QVERIFY2(targetComponent->getFileSets()->first()->getFileNames().contains("test.v"), 
         "No file added to fileset");
 }
 
