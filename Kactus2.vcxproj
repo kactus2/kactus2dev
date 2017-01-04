@@ -490,13 +490,17 @@ CreateHelp
     <ClCompile Include="designEditors\MemoryDesigner\MasterSlavePathSearch.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryCollisionItem.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryColumn.cpp" />
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryColumnHandler.cpp" />
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryConnectionHandler.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryConnectionItem.cpp" />
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignConstructor.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignDocument.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerChildGraphicsItem.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerConstants.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerDiagram.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerGraphicsItem.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryExtensionGraphicsItem.cpp" />
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryGraphicsItemHandler.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryItem.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\MemoryMapGraphicsItem.cpp" />
     <ClCompile Include="designEditors\MemoryDesigner\RegisterGraphicsItem.cpp" />
@@ -3052,7 +3056,54 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryDesignConstructor.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Command>
+    </CustomBuild>
+    <ClInclude Include="designEditors\MemoryDesigner\MemoryColumnHandler.h" />
+    <ClInclude Include="designEditors\MemoryDesigner\MemoryConnectionHandler.h" />
     <ClInclude Include="designEditors\MemoryDesigner\MemoryDesignerConstants.h" />
+    <ClInclude Include="designEditors\MemoryDesigner\MemoryGraphicsItemHandler.h" />
     <ClInclude Include="designEditors\MemoryDesigner\MemoryItem.h" />
     <CustomBuild Include="designEditors\MemoryDesigner\MemoryMapGraphicsItem.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
