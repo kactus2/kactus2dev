@@ -4171,6 +4171,18 @@
     <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignerConstants.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryDesignConstructor.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryColumnHandler.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryGraphicsItemHandler.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\MemoryConnectionHandler.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5739,6 +5751,9 @@
     <CustomBuild Include="editors\ComponentEditor\busInterfaces\businterfaceeditor.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryDesignConstructor.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6292,6 +6307,15 @@
     </ClInclude>
     <ClInclude Include="library\LibraryManager\TableViewDialog.h">
       <Filter>Header Files\library\LibraryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\MemoryColumnHandler.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\MemoryGraphicsItemHandler.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\MemoryConnectionHandler.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

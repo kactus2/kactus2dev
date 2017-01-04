@@ -695,7 +695,11 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./designEditors/MemoryDesigner/MemoryDesignConstructor.h \
+    ./designEditors/MemoryDesigner/MemoryColumnHandler.h \
+    ./designEditors/MemoryDesigner/MemoryGraphicsItemHandler.h \
+    ./designEditors/MemoryDesigner/MemoryConnectionHandler.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -1217,6 +1221,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/MemoryDesigner/MemoryConnectionItem.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignDocument.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/MemoryDesignerConstants.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignerDiagram.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignerGraphicsItem.cpp \
     ./designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.cpp \
@@ -1303,5 +1308,8 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./designEditors/MemoryDesigner/MemoryDesignerConstants.cpp
+    ./designEditors/MemoryDesigner/MemoryDesignConstructor.cpp \
+    ./designEditors/MemoryDesigner/MemoryColumnHandler.cpp \
+    ./designEditors/MemoryDesigner/MemoryGraphicsItemHandler.cpp \
+    ./designEditors/MemoryDesigner/MemoryConnectionHandler.cpp
 RESOURCES += kactus.qrc

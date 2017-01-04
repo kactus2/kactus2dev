@@ -19,21 +19,10 @@
 #include <QGraphicsScene>
 #include <QSharedPointer>
 
-class MemoryDesignDocument;
-class GraphicsColumnLayout;
-class Design;
-class DesignConfiguration;
-class Component;
-class View;
 class LibraryInterface;
-class MemoryColumn;
+class MemoryDesignDocument;
 class ConnectivityGraph;
-class ConnectivityComponent;
-class MemoryItem;
-class MainMemoryGraphicsItem;
-class MemoryConnectionItem;
-class MemoryMapGraphicsItem;
-class MemoryCollisionItem;
+class MemoryDesignConstructor;
 
 //-----------------------------------------------------------------------------
 //! Declares the memory design diagram class.
@@ -204,14 +193,15 @@ private:
     void clearLayout();
 
     /*!
-     *  Create the connection graph the selected view.
+     *  Create the connection graph from the selected view.
      *
      *      @param [in] component   The component containing the selected view.
      *      @param [in] viewName    Name of the selected view.
      *
-     *      @return True, if the connection graph could be created, false otherwise.
+     *      @return The created connection graph.
      */
-    bool createConnectionGraph(QSharedPointer<const Component> component, QString const& viewName);
+    QSharedPointer<ConnectivityGraph> createConnectionGraph(QSharedPointer<const Component> component,
+        QString const& viewName);
 
     /*!
      *  Get the design referenced by the selected view.
@@ -235,277 +225,6 @@ private:
     QSharedPointer<const DesignConfiguration> getContainingDesignConfiguration(
         QSharedPointer<const Component> component, QString const& viewName) const;
 
-    /*!
-     *  Create the initial memory columns.
-     */
-    void createInitialColumns();
-
-    /*!
-     *  Create an address space column.
-     *
-     *      @return The created address space column.
-     */
-    MemoryColumn* createAddressSpaceColumn();
-
-    /*!
-     *  Create the initial memory columns.
-     */
-    void createMemoryColumns();
-
-    /*!
-     *  Create a new memory overlap column.
-     *
-     *      @return The created memory overlap column.
-     */
-    MemoryColumn* createMemoryOverlapColumn();
-
-    /*!
-     *  Create the memory items found in the design.
-     *
-     *      @param [in] spaceColumn         Column for the address space graphics items.
-     *      @param [in] memoryMapColumn     Column for the memory map graphics items.
-     */
-    void createMemoryItems(MemoryColumn* spaceColumn, MemoryColumn* memoryMapColumn);
-
-    /*!
-     *  Create an address space item.
-     *
-     *      @param [in] spaceItem           Memory item containing address space data.
-     *      @param [in] containingInstance  The component instance containing the selected address space.
-     *      @param [in] containingColumn    The address space column.
-     */
-    void createAddressSpaceItem(QSharedPointer<MemoryItem> spaceItem,
-        QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* containingColumn);
-
-    /*!
-     *  Create a memory map item.
-     *
-     *      @param [in] mapItem             Memory item containing memory map data.
-     *      @param [in] containingInstance  The component instance containing the selected memory map.
-     *      @param [in] containingColumn    The memory map column.
-     */
-    void createMemoryMapItem(QSharedPointer<MemoryItem> mapItem,
-        QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* containingColumn);
-
-    /*!
-     *  Create the memory connections.
-     *
-     *      @param [in] spaceColumn         Column containing the address space graphics items.
-     *      @param [in] memoryMapColumn     Column containing the memory map graphics items.
-     */
-    void createMemoryConnections(MemoryColumn* spaceColumn, MemoryColumn* memoryMapColumn);
-
-    /*!
-     *  Get the selected memory column.
-     *
-     *      @param [in] columnName  Name of the selected memory column.
-     *
-     *      @return The found memory column.
-     */
-    MemoryColumn* findColumnByName(QString const& columnName) const;
-
-    /*!
-     *  Create a memory connection between an address space and a memory map.
-     *
-     *      @param [in] connectionPath      The path of the memory connection.
-     *      @param [in] placedMapItems      A list of placed memory map items.
-     *      @param [in] memoryMapColumn     The column containing the memory maps.
-     *      @param [in] spaceYPlacement     The Y placement of the next address space item.
-     *      @param [in] placedSpaceItems    A list of placed address space items.
-     *      @param [in] spaceColumn         The column containing the address spaces.
-     */
-    void createConnection(QVector<QSharedPointer<ConnectivityInterface> > connectionPath,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems, MemoryColumn* memoryMapColumn,
-        int& spaceYPlacement, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        MemoryColumn* spaceColumn);
-
-    /*!
-     *  Check and reposition a memory map to a memory map overlap column if needed.
-     *
-     *      @param [in] placedMaps              A list of placed memory map items.
-     *      @param [in] memoryItem              The selected memory map item.
-     *      @param [in] originalColumn          The original column of the memory map item.
-     *      @param [in] mapBaseAddress          Base address of the remapped memory map.
-     *      @param [in] mapLastAddress          Last address of the remapped memory map.
-     *      @param [in] connectionStartItem     The start item of the memory map connection.
-     */
-    void checkMemoryMapRepositionToOverlapColumn(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
-        MainMemoryGraphicsItem* memoryItem, MemoryColumn* originalColumn, quint64 mapBaseAddress,
-        quint64 mapLastAddress, MainMemoryGraphicsItem* connectionStartItem);
-
-    /*!
-     *  Reposition the selected memory map item.
-     *
-     *      @param [in] placedMapItems          List of the placed memory map items.
-     *      @param [in] placedSpaceItems        List of the placed address space items.
-     *      @param [in] startConnectionItem     The connection start item.
-     *      @param [in] addressSpaceColumn      Column containing the address spaces.
-     *      @param [in] endConnectionItem       The connection end item.
-     *      @param [in] memoryMapYTransfer      Y transfer of the memory map.
-     */
-    void repositionMemoryMap(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        MainMemoryGraphicsItem* startConnectionItem, MemoryColumn* addressSpaceColumn,
-        MainMemoryGraphicsItem* endConnectionItem, int memoryMapYTransfer);
-
-    /*!
-     *  Reposition an address space item to match a selected memory map.
-     *
-     *      @param [in] placedSpaceItems    List of the placed address space items.
-     *      @param [in] startItem           The connection start item.
-     *      @param [in] endItem             The connection end item.
-     *      @param [in] spaceColumn         Column containing the address spaces.
-     *      @param [in] memoryMapYTransfer  Y transfer of the memory map.
-     */
-    void repositionSpaceItemToMemoryMap(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        MainMemoryGraphicsItem* startItem, MainMemoryGraphicsItem* endItem, MemoryColumn* spaceColumn,
-        int memoryMapYTransfer);
-
-    /*!
-     *  Redraw the memory connections.
-     *
-     *      @param [in] placedSpaceItems    List of the space items that have been placed in the diagram.
-     */
-    void reDrawConnections(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
-
-    /*!
-     *  Place the address space item to another address space column.
-     *
-     *      @param [in] spaceItem       The selected address space item.
-     *      @param [in] originalColumn  The original column of the selected address space item.
-     *      @param [in] targetItem      The other item of the memory connection.
-     *      @param [in] yTransfer       Y transfer of the address space item.
-     */
-    void placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* spaceItem, MemoryColumn* originalColumn,
-        MainMemoryGraphicsItem* targetItem, int yTransfer);
-
-    /*!
-     *  Move the unconnected address space items to the bottom of the address space column.
-     *
-     *      @param [in] placedSpaceItems    List of the placed address space items.
-     *      @param [in] spaceColumn         Column containing the address space items.
-     */
-    void moveUnconnectedAddressSpaces(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        MemoryColumn* spaceColumn);
-
-    /*!
-     *  Move the unconnected memory map items to the bottom of the memory map column.
-     *
-     *      @param [in] placedMapItems      List of the placed memory map items.
-     *      @param [in] memoryMapColumn     Column containing the memory map items.
-     */
-    void moveUnconnectedMemoryMaps(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
-        MemoryColumn* memoryMapColumn);
-
-    /*!
-     *  Create markers for the overlapping connections.
-     *
-     *      @param [in] placedSpaceItems    List of the placed address space items.
-     */
-    void createOverlappingConnectionMarkers(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
-
-    /*!
-     *  Compress the graphics items.
-     *
-     *      @param [in] placedSpaceItems    A list of the placed address space items.
-     *      @param [in] spaceYPlacement     The last y-coordinate of the address space items.
-     *      @param [in] spaceColumn   [Description].
-     */
-    void compressGraphicsItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        int& spaceYPlacement, MemoryColumn* spaceColumn);
-
-    /*!
-     *  Reposition compressed memory maps to previous columns.
-     *
-     *      @param [in] placedMapItems      A list of the placed memory map items.
-     *      @param [in] memoryMapColumn     The main memory map column.
-     */
-    void repositionCompressedMemoryMaps(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
-        MemoryColumn* memoryMapColumn);
-
-    /*!
-     *  Get the specified columns.
-     *
-     *      @param [in] columnSpecification     Identifier for the wanted columns.
-     *
-     *      @return A vector containing the specified columns.
-     */
-    QVector<MemoryColumn*> getSpecifiedColumns(QString const& columnSpecification) const;
-
-    /*!
-     *  Get the main graphics item corresponding to the selected connection interface.
-     *
-     *      @param [in] connectionInterface     The selected connection interface.
-     *      @param [in] columnType              The column type of the main graphics item.
-     *
-     *      @return The found main graphics item.
-     */
-    MainMemoryGraphicsItem* getMainGraphicsItem(QSharedPointer<ConnectivityInterface> connectionInterface,
-        QString columnType) const;
-
-    /*!
-     *  Create a connection between two address space items.
-     *
-     *      @param [in] connectionStartItem     Start item of the connection.
-     *      @param [in] connectionMiddleItem    The second address space item.
-     *      @param [in] newSpaceInterface       Interface of the second address space item.
-     *      @param [in] spaceColumn             The address space column.
-     *      @param [in] placedSpaceItems        List of the placed address space items.
-     *      @param [in] spaceItemChain          Connection chain of address space items.
-     *      @param [in] spaceYPlacement         Y coordinate of the address space placement.
-     *
-     *      @return The created memory connection item.
-     */
-    MemoryConnectionItem* createSpaceConnection(MainMemoryGraphicsItem* connectionStartItem,
-        MainMemoryGraphicsItem* connectionMiddleItem, QSharedPointer<ConnectivityInterface> newSpaceInterface,
-        MemoryColumn* spaceColumn, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        QVector<MainMemoryGraphicsItem*> spaceItemChain, int& spaceYPlacement);
-
-    /*!
-     *  Change the column of the master address space item.
-     *
-     *      @param [in] masterSpaceItem     The selected master address space item.
-     *      @param [in] spaceItemY          Y-coordinate of the address space item.
-     *      @param [in] originalColumn      Original column of the master address space item.
-     *      @param [in] spaceItemChain      Connection chain of address space items.
-     */
-    void changeMasterAddressSpaceColumn(MainMemoryGraphicsItem* masterSpaceItem, qreal spaceItemY,
-        GraphicsColumn* originalColumn, QVector<MainMemoryGraphicsItem*> spaceItemChain);
-
-    /*!
-     *  Change the column of a colliding master address space item.
-     *
-     *      @param [in] currentColumn   The current column of the master address space item.
-     *      @param [in] spaceItemChain  Connection chain of address space items.
-     */
-    void changeCollidingMasterAddressSpaceColumn(GraphicsColumn* currentColumn,
-        QVector<MainMemoryGraphicsItem*> spaceItemChain);
-
-    /*!
-     *  Get an address space connection from placed start memory item and middle memory item.
-     *
-     *      @param [in] connectionStartItem     The memory connection start memory item.
-     *      @param [in] connectionMiddleItem    The memory connection middle memory item.
-     *
-     *      @return The placed memory connection between an already placed start memory item and middle memory item.
-     */
-    MemoryConnectionItem* getAddressSpaceChainConnection(MainMemoryGraphicsItem* connectionStartItem,
-        MainMemoryGraphicsItem* connectionMiddleItem) const;
-
-    /*!
-     *  Set the connection width for the memory connection items within a memory connection chain.
-     *
-     *      @param [in] connectionChain     Connection chain of address space items.
-     */
-    void setHeightForConnectionChain(QVector<MemoryConnectionItem*> connectionChain);
-
-    /*!
-     *  Change the width of the memory map columns and their contained memory map graphics items.
-     *
-     *      @param [in] deltaWidth  The change in width.
-     */
-    void changeMemoryMapWidths(qreal deltaWidth);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -522,41 +241,8 @@ private:
     //! Factory for creating the connectivity graph.
     ConnectivityGraphFactory instanceLocator_;
 
-    //! The created connection graph.
-    QSharedPointer<ConnectivityGraph> connectionGraph_;
-
-    //! Value for displaying condensed memory connections.
-    bool condenseMemoryItems_;
-
-    //! Value for filtering the chained address space memory connections.
-    bool filterAddressSpaceChains_;
-
-    //! Value for filtering address space segments.
-    bool filterAddressSpaceSegments_;
-
-    //! Value for filtering memory map address blocks.
-    bool filterAddressBlocks_;
-
-    //! Value for filtering address block registers.
-    bool filterRegisters_;
-
-    //! Value for filtering register fields.
-    bool filterFields_;
-
-    //! Width of the address space graphics item columns.
-    int spaceColumnWidth_;
-
-    //! Width of the memory map graphics item columns.
-    int memoryMapColumnWidth_;
-
-    //! The current width change from the original widths.
-    qreal widthBoundary_;
-
-    //! A list of memory connections made to memory maps.
-    QVector<MemoryConnectionItem*> connectionsToMemoryMaps_;
-
-    //! A list of memory collisions.
-    QVector<MemoryCollisionItem*> memoryCollisions_;
+    //! Constructor for memory design graphics items.
+    MemoryDesignConstructor* memoryConstructor_;
 };
 
 //-----------------------------------------------------------------------------
