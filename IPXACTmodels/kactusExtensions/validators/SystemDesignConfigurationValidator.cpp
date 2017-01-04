@@ -127,11 +127,12 @@ void SystemDesignConfigurationValidator::findErrorsInViewConfigurations(QVector<
             QSharedPointer<Design> referencedDesign =
                 getLibraryHandler()->getDesign(designConfiguration->getDesignRef());
 
-            QSharedPointer<QList<QSharedPointer<ComponentInstance> > > hwInstances =
-                referencedDesign->getComponentInstances();
+            QSharedPointer<QList<QSharedPointer<ComponentInstance> > > hwInstances;
 
             if (referencedDesign)
             {
+                hwInstances = referencedDesign->getComponentInstances();
+
                 getViewConfigurationValidator()->changeComponentInstances(hwInstances);
                 systemViewConfigurationValidator_->changeComponentInstances(referencedDesign->getSWInstances());
             }
@@ -153,7 +154,7 @@ void SystemDesignConfigurationValidator::findErrorsInViewConfigurations(QVector<
                     instanceNames.append(viewConfiguration->getInstanceName());
                 }
 
-                if (viewConfigurationReferencesHWInstance(viewConfiguration, hwInstances))
+                if (hwInstances && viewConfigurationReferencesHWInstance(viewConfiguration, hwInstances))
                 {
                     getViewConfigurationValidator()->findErrorsIn(errors, viewConfiguration, context);
                 }

@@ -1,112 +1,129 @@
 ﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-  <head>
-    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link href="../style.css" rel="Stylesheet" type="text/css">
     <title>Memory map editor</title>
-  </head>
-  <body>
+</head>
+<body>
     <h2>Memory map editor</h2>
     <p>
-      Memory map editor can be used to edit the details of a <i>memory map</i>. The <b>name</b>,
-      <b>display name</b> and a <b>description</b> contain identification information of a memory map.
+        Memory map editor can be used to edit the details of a <i>memory map</i>.
     </p>
     <p>
-      The <b>address unit bits</b> [AUB] defines the number of data bits each address increment of the 
-      memory map contains.
+        Memory maps visualization is shown on the right of the editor. The visualization
+        can be expandped and minimized by clicking the expand arrow
+        <img src="../images/triangle_arrow_right.png" alt="expand">
+        and the minimize arrow
+        <img src="../images/triangle_arrow_down.png" alt="minimize">. Selecting any part
+        of the visualization will open the editor set for that item. The visualization can
+        be resized by dragging the border between the editor and the visualization. Holding
+        Ctrl-key while scrolling with the mouse wheel increases/decreases the width of the
+        items.
+    </p>
+
+    <p>
+        <b>Name</b> is a mandatory identifier for the <i>memory map</i>.
     </p>
     <p>
-      <b>Remap state</b> identifies the name of the remap state for which the optional memory map elements
-        are active. <i>Memory maps</i> are labeled with a default remap state, while <i>memory remaps</i> must be 
-        given a remap state. For more information on the <i>remap states</i>, see the remap states editor.
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
     </p>
     <p>
-      Memory map is defined for a <b>slave interface</b>. It defines what the masters can access in this
-      component.
+        <b>Description</b> is an optional field for textual description of the <i>memory map</i>.
     </p>
+    <p>
+        <b>Address unit bits</b> (AUB) defines the number of data bits each address increment
+        of the <i>memory map</i> contains, e.g. 8b or 32b. The default setting for a <i>memory map</i>
+        is byte addressable (8 bits). E.g. if AUB=8, then 32-bit registers are at addresses
+        0x0, 0x4, 0x8... If AUB=32, they are in addresses 0x0, 0x1, 0x2... AUB is the unit
+        for base addresses and ranges within the address map.</p><p>
+		
+        <b>Remap state</b> identifies the name of the <i>remap state</i> for which the optional
+        <i>memory map</i> elements are active. <i>Memory maps</i> are labeled with a default remap
+        state, while <i>memory remaps</i> must be given a <i>remap state</i>. For more information
+        on the <i>remap states</i>, see the remap states editor.
+    </p>
+    <p>
+		
+        <b>Slave interface binding</b> shows which slave <i>bus interfaces</i> are used to access
+        the <i>memory map</i>. The binding can only be set in the bus interface editor, but is
+        shown here for convenience.
+    </p>
+
     <h3>Address blocks table</h3>
     <p>
-    <b>Address block</b> specifies a single contiguous block, either a set of registers or a block of memory.
-    (Moreover, IP-XACT allows <i>bank</i> or <i>subspaceMap</i> elements, but
-    they are not yet supportted by Kactus (v2.1, March 2013)).
-    <br />An <i>address block</i> can contain <b>registers</b> and each register can contain <b>bit fields</b>. 
-    <br />Address block has the following mandatory elements: name, base address, range, and width.
-    <br />In the columns, f(x) means that the value can be given as an expression.
-  </p>
-  <p>
-    Address block has a <b>name</b> and textual <b>description</b> to identify each address block.
-  </p>
-  <p>
-    <b>Base address</b> specifies the starting address for the address block. It is expressed as
-    <i>address unit bits</i> as defined in the containing memory map, e.g. 8b or 32b.
-  </p>
-  <p>
-    <b>Range</b> and specifies the size of the block in <i>address unit bits</i>.
-  </p>
-  <p>
-    <b>Width</b> is the data width in bits of a row in the address block. It sets the maximum allowed 
-    size of a single transfer and also defines the maximum size of a single register. Register can be 
-    smaller but not wider.
-  </p>
-  <p>
-    <b>Usage</b> column is used to specify the usage of the address block. The possible values are:
-  </p>
+        <b>Address block</b> specifies a single contiguous block, either a set of registers
+        or a block of memory. Registers within the <i>address block</i> are further divided
+        into bit <i>fields</i>. (IP-XACT allows <i>bank</i> or <i>subspaceMap</i> elements
+        within the <i>address block</i>, but they are not yet supported by Kactus2 (v3.3,
+        December 2016)).
+    </p>
+    <p>
+        <b>Name</b> is a mandatory identifier for the <i>address block</i>.
+    </p>
+    <p>
+        <b>Base address</b> is mandatory and specifies the starting address for the <i>address block</i>.
+        It is expressed as address unit bits as defined in the containing <i>memory map</i>, 
+		e.g. 8 or 32 bits.</p><p>
+
+        <b>Range</b> is mandatory and specifies the size of the block in address unit bits.
+    </p>
+    <p>
+
+        <b>Width</b> is mandatory and specifies the data width in bits of a row in the 
+		<i>address block</i>. It sets the
+        maximum allowed size of a single transfer and also defines the maximum size of a
+        single register. Register can be smaller but not wider than the value.
+    </p>
+    <p>
+        <b>Usage</b> is optional and is used to categorize the usage of the <i>address block</i>. The
+        possible values are:
+    </p>
     <ul>
-      <li><i>Memory</i> specifies the address block as memory. Cannot
-      contain registers.</li>
-
-      <li><i>Register</i> specifies the entire block to contain
-      registers.</li>
-
-      <li><i>Reserved</i> specifies the entire block as reserved for
-      usage that is unknown to IP-XACT. Cannot include registers.</li>
+        <li><b>Memory</b> specifies the <i>address block</i> as memory. 
+		A memory <i>address block</i> cannot contain registers.</li>
+        <li><b>Register</b> specifies the entire <i>address block</i> to contain registers.</li>
+        <li><b>Reserved</b> specifies the entire <i>address block</i> as reserved for usage 
+		that is unknown to IP-XACT. A reserved <i>address block</i> cannot include registers.</li>
     </ul>
-
     <p>
-        <b>Access</b> column is used to specify the accessibility of the block. The possible values are:
+        <b>Access</b> is optional and is used to specify the accessibility of the <i>address block</i>. 
+		The possible values are:
     </p>
-        <ul>
-            <li><i>read-write</i>. Both read and write transactions may have an effect on this address block.</li>
-            <li><i>read-only</i>. Only read transactions are allowed in this register.</li>
-            <li><i>write-only</i>. Only write transactions are allowed in this register.</li>
-            <li><i>read-writeOnce</i>. Read actions are allowed and the first write action may have an effect on 
-            this address block.</li>
-            <li><i>writeOnce</i>. Only the first write action affects the contents of this address block.</li>
-        </ul>
+    <ul>
+        <li><b>read-write</b>. Both read and write transactions may have an effect on this address
+            block.</li>
+        <li><b>read-only</b>. Only read transactions are allowed in this register.</li>
+        <li><b>write-only</b>. Only write transactions are allowed in this register.</li>
+        <li><b>read-writeOnce</b>. Read actions are allowed and the first write action may have
+            an effect on this address block.</li>
+        <li><b>writeOnce</b>. Only the first write action affects the contents of this address
+            block.</li>
+    </ul>
     <p>
-        <b>Volatile</b>=true indicates that the stored value may
-        change without master's write operation. For example, the timer
-        value gets updated automatically and master must always issue a
-        read to get the latest value.
+        <b>Volatile</b> is optional and indicates that the stored value may change without master's
+        write operation. For example, the timer value gets updated automatically and master
+        must always issue a read to get the latest value.
     </p>
     <p>
-        <b>Memory maps visualization</b> is shown on the right of the editor. The visualization can be expandped
-        and minimized by clicking the expand arrow <img src="../images/triangle_arrow_right.png" alt="expand"> 
-        and the minimize arrow <img src="../images/triangle_arrow_down.png" alt="minimize">. Selecting any part
-        of the visualization will open the editor set for that item.
+        <b>Description</b> is an optional field for textual description of the <i>address block</i>.
     </p>
     <hr>
     <p>
-      EXAMPLE. A simple IP could have 1 memory map, 1 address block
-      inside it, and three 32-bit registers: ctrl, data_in, and
-      data_out. Ctrl allows both read and write accesses, data_in is
-      write-only, and data_out is read-only.  The lower part of ctrl
-      register is divided into two 8-bit fields and designer can
-      describe how they are used. The upper bits are not used. Data
-      registers do not have field definitions.
-
-
-      <br><br>Number of Addresss unit bits(AUB) of the memory map is
-      set to 8 bits.  There are 3 registers with identical size (32b),
-      Hence, ranger = 12 = 3 * 32/AU = 3 * 32/8 = 3 * 4. Let's assume
-      base addr=0x100.  Since address block has 12 Bytes in total, it
-      reserves the (byte) addresses 0x100-0x10B. It is good to set the
-      width of the address block 32 b so that full register can be
-      accessed at once. Smaller accesses (e.g. 1 byte at a time) are
-      also allowed.
-      <img src="../images/mem_map_visualization.png" alt="screen_cap_of_mem_map_visualization">
-
+        EXAMPLE. A simple IP could have 1 memory map, 1 address block inside it, and three
+        32-bit registers: ctrl, data_in, and data_out. Ctrl allows both read and write accesses,
+        data_in is write-only, and data_out is read-only. The lower part of ctrl register
+        is divided into two 8-bit fields and designer can describe how they are used. The
+        upper bits are not used. Data registers do not have field definitions.
+        <br>
+        <br>
+        Number of Addresss unit bits(AUB) of the memory map is set to 8 bits. There are
+        3 registers with identical size (32b), Hence, range = 12 = 3 * 32/AUB = 3 * 32/8
+        = 3 * 4. Let's assume base address=0x100. Since address block has 12 Bytes in total,
+        it reserves the (byte) addresses 0x100-0x10B. It is good to set the width of the
+        address block 32 b so that full register can be accessed at once. Smaller accesses
+        (e.g. 1 byte at a time) are also allowed.
+        <img src="../images/mem_map_visualization.png" alt="screen_cap_of_mem_map_visualization">
     </p>
-
-  </body>
+</body>
 </html>

@@ -11,55 +11,62 @@
         <i>View</i> specifies a representation level of a component, e.g. there might be different views for 
         simulation and synthesis. This editor is used to edit the details of single view.
     </p>
-    <p>
-      <b>View type</b> is not editable in this editor, but it is determined in the view editor of the 
-      corresponding view. The view type defines whether the view is <i>hierarchical</i> or not. Hierarchical view 
-      refers to <b>a design instantiation</b> or <b>adesign configuration instantiation</b>. <i>Non-hierarchical</i> view does not have any hierarchical reference, but may still refer to <b>a component instantiation</b>.
+	<p>
+	    <b>Name</b> is a mandatory identifier for the <i>view</i>.
     </p>
     <p>
-        View has <b>name</b> and textual <b>description</b>. <b>Display name</b> can be more detailed or 
-        user-friendly than name, but usually only few words.
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
     </p>
     <p>
-        <b>Environment identifiers</b> in textual information about how this view is deployed in 
+        <b>Description</b> is an optional field for textual description of the <i>view</i>.		
+    </p>
+	
+    <h3>Environment identifiers</h3>
+    <p>
+        Environment identifiers is optional textual information about how this view is deployed in 
         different tool environments.
-        <ul>
-            <li><b>Language</b> indicates this view may be compatible with a particular tool, but only if that 
-            language is supported in that tool, e.g., different versions of some simulators may support two or 
-            more languages.</li>
-
-            <li><b>Tool</b> indicates that this view contains tool-information, e.g., HDL models that use 
-            simulator-specific extensions. This should contain tool name and company name, separated by dots.
-            For example: <code>designcompiler.bogus.tld</code> Alternatively, the tool can have a generic value
-            such as <code>*Simulation</code> or <code>*Synthesis</code></li>
-
-            <li><b>VendorSpecific</b> can further qualify tool and language compatibility, e.g. if some 
-            appropriate simulator mode must be enabled.</li>
-      </ul>
     </p>
+    <p>
+		<b>Language</b> indicates this view may be compatible with a particular tool, but only if that 
+        language is supported in that tool, e.g., different versions of some simulators may support two or 
+        more languages.
+    </p>
+    <p>
+          <b>Tool</b> indicates that this view contains tool-information, e.g., HDL models that use 
+          simulator-specific extensions. This should contain tool name and company name, separated by dots
+          e.g. 'designcompiler.designcompany.com'. Alternatively, the tool can have a generic value
+          such as '*Simulation' or '*Synthesis'.
+    </p>
+    <p>
+          <b>VendorSpecific</b> can further qualify tool and language compatibility, e.g. if some 
+          appropriate simulator mode must be enabled. 
+    </p>
+	
     <h3>Instantiations</h3>
     <p>
-        <b>Component instantiation</b> specifies the referenced <i>component instantiation</i>. Data regarding 
-        the selected component instantiation is displayed in the view editor. For more information on the 
-        component instantiation, see the component instantiation editor.
+        <b>Component instantiation</b> is optional and specifies the <i>component instantiation</i>
+		containing all the implementation details for the component with this view. For convenience, 
+        details of the component instantiation are shown in the view editor if a <i>component instantiation</i> 
+		has been selected. 
+		For more information on the  component instantiation, see the component instantiation editor.
     </p>
     <p>
-        <b>Design configuration instantiation</b> specifies the referenced <i>design configuration 
-        instantiation</i>. Data regarding the selected design configuration instantiation is displayed in the view
-        editor. For more information on the design configuration instantiation, see the design configuration 
+        <b>Design configuration instantiation</b> is optional and specifies the referenced <i>design configuration 
+        instantiation</i>. For convenience, the referenced <i>design configuration</i> is shown in the view 
+		editor if a <i>design configuration instantiation</i> has been selected.
+		When this view is active, this <i>design configuration</i> should be used to
+		configure the component structure. 
+		For more information on the design configuration instantiation, see the design configuration 
         instantiation editor.
     </p>
     <p>
-        <b>Design instantiation</b> details the referenced <i>design instantiation</i>. Data regarding the selected
-        design instantiation is displayed in the view editor. For more information on the design instantiation, see
-        the design instantiation editor.
+        <b>Design instantiation</b> is optional and specifies the referenced <i>design instantiation</i>. 		
+		For convenience, the referenced <i>design</i> is shown in the view 
+		editor if a <i>design instantiation</i> has been selected.
+		When this view is active, this <i>design</i> should be used to
+		describe the component structure. 
+		For more information on the design instantiation, see the design instantiation editor.
     </p>
-    <h3>Module parameters</h3>
-    <p>
-        <b>Module parameters</b> are optional elements that configure the model for this view. In IP-XACT, module
-        parameters are an element of the component instantiation. For convinience, they can be viewed in the view 
-        editor. The module parameters can be utilized as view-specific <i>parameters</i>. For further information 
-        on module parameters, see the component instantiation editor.
-    </p>
+    
   </body>
 </html>

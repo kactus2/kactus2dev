@@ -39,10 +39,10 @@ dependency_(0)
     leftLayout->addWidget(&descEdit_, 1);
 
     QVBoxLayout* rightLayout = new QVBoxLayout();
-    rightLayout->addWidget(new QLabel("", this));
-    rightLayout->addWidget(&directionButton_);
+    rightLayout->addWidget(new QLabel("", this));   
     rightLayout->addWidget(&directionCheck_);
     rightLayout->addWidget(&lockedCheck_);
+    rightLayout->addWidget(&directionButton_);
     rightLayout->addStretch(1);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
