@@ -270,8 +270,11 @@ void tst_VerilogGenerator::runGenerator(bool useDesign)
 	QString outputPath = ".";
 
 	if (useDesign)
-	{
-		generator.prepareDesign(outputPath, parsedDesigns_);
+    {
+        foreach (QSharedPointer<GenerationDesign> design, parsedDesigns_)
+        {
+		    generator.prepareDesign(outputPath, design);
+        }
 	}
 	else
 	{
@@ -280,7 +283,7 @@ void tst_VerilogGenerator::runGenerator(bool useDesign)
 
     generationTime_ =  QDateTime::currentDateTime();
 
-    generator.generate();
+    generator.write();
 }
 
 //-----------------------------------------------------------------------------

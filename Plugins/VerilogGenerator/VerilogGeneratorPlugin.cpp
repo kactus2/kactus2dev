@@ -67,6 +67,7 @@ QString VerilogGeneratorPlugin::getDescription() const
 {
     return tr("Generates a Verilog module for a component or a hierarchy of modules for a HW design.");
 }
+
 //-----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::getVendor()
 //-----------------------------------------------------------------------------
@@ -248,9 +249,12 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     // Prepare the generator.
     if (designGeneration)
     {
-        // Design generation gets parsed designs as a parameter, and the output path.
         QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
-        generator.prepareDesign(configuration->getFileOuput()->getOutputPath(), designs);
+        foreach (QSharedPointer<GenerationDesign> design, designs)
+        {
+            // Design generation gets parsed designs as a parameter, and the output path.
+            generator.prepareDesign(configuration->getFileOuput()->getOutputPath(), design);
+        }
     }
     else
     {
@@ -263,7 +267,7 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     }
 
     // Now execute the generation.
-	generator.generate();
+	generator.write();
     utility_->printInfo(tr("Finished writing the file(s)."));
 
 	// The resulting file will be added to the file set.

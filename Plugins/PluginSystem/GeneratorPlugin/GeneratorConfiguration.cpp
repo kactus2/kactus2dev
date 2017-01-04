@@ -19,8 +19,10 @@
 // Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
 GeneratorConfiguration::GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection,
-    HDLComponentParser* componentParser, HDLDesignParser* designParser) :
+    HDLComponentParser* componentParser, HDLDesignParser* designParser,
+    VerilogGenerator* generator) :
 	viewSelection_(viewSelection), componentParser_(componentParser), designParser_(designParser),
+    generator_(generator),
     fileOutput_(new FileOuput), generateInterface_(false), generateMemory_(false)
 {
 }
@@ -98,6 +100,46 @@ void GeneratorConfiguration::parseDocuments()
 
     // Emit the signal.
     emit outputFilesChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::getPreview()
+//-----------------------------------------------------------------------------
+QString GeneratorConfiguration::getPreview()
+{
+    // Prepare the generator.
+    if (designGeneration)
+    {
+        QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+        foreach (QSharedPointer<GenerationDesign> design, designs)
+        {
+            // Design generation gets parsed designs as a parameter, and the output path.
+            generator.prepareDesign(configuration->getFileOuput()->getOutputPath(), design);
+        }
+    }
+    else
+    {
+        // Component generation gets the parsed component as a parameter, and the output path.
+        if (!generator.prepareComponent(configuration->getFileOuput()->getOutputPath(), componentParser->getParsedComponent()))
+        {
+            // If it says no-go, abort the generation.
+            return "CANNOT PARSE";
+        }
+    }
+
+    VerilogDocument document = generator_->getDocuments()->first();
+    QFile outputFile(document->filePath_); 
+    if (!outputFile.open(QIODevice::WriteOnly))
+    {
+        emit reportError(tr("Could not open output file for writing: %1").arg(document->filePath_));
+        return;
+    }
+
+    QTextStream outputStream(&outputFile);
+
+    generate(outputStream, document);
+
+    outputFile.close();
 }
 
 //-----------------------------------------------------------------------------

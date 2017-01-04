@@ -84,7 +84,7 @@ public:
      *      @param [in] outputPath			The path to the output file.
      *      @param [in] component           The component to which is prepared for generation.
      *
-     *      @return False, something went wrong.
+     *      @return False, if something went wrong.
      */
     bool prepareComponent(QString const& outputPath, QSharedPointer<GenerationComponent> component);
 
@@ -96,7 +96,7 @@ public:
      *
      *      @remark If parsing is not called before generation, nothing is generated.
      */
-    void prepareDesign(QString const& outputPath, QList<QSharedPointer<GenerationDesign> >& designs);
+    void prepareDesign(QString const& outputPath, QSharedPointer<GenerationDesign> design);
 
     /*!
      *  Parses the module implementation out of verilog file given as output, if it already exists.
@@ -111,16 +111,24 @@ public:
 		QString& postModule) const;
     
     /*!
-     *  Generates the component Verilog to a given file.
+     *  Writes the Verilog to files.
      *
      *      @remark If prepares are not called before generate(), nothing is generated.
      */
-	void generate() const;
+	void write() const;
+    
+    /*!
+     *  Generates Verilog to the given stream.
+     */
+    void generate(QTextStream& outputStream, QSharedPointer<VerilogDocument> document) const;
     
     /*!
      *  Returns pointer to the list of the documents that are to be written.
      */
     QSharedPointer<QList<QSharedPointer<VerilogDocument> > > getDocuments();
+
+    //! Documents that are ready for writing
+    QSharedPointer<QList<QSharedPointer<VerilogDocument> > > documents_;
 
 signals:
 	
@@ -152,7 +160,7 @@ private:
     /*!
     *  Initializes writers for the given design.
      *
-	 *      @param [in] desing		        The design, which data will be written.
+	 *      @param [in] design		        The design, which data will be written.
 	 *      @param [in] document        	The document, which will get writers for design writing.
      */
     void initializeDesignWriters(QSharedPointer<GenerationDesign> design, QSharedPointer<VerilogDocument> document);
@@ -192,9 +200,6 @@ private:
 
     //! Sorter for component ports.
     QSharedPointer<PortSorter> sorter_;
-
-    //! Documents that are ready for writing
-    QSharedPointer<QList<QSharedPointer<VerilogDocument> > > documents_;
 };
 
 #endif // VERILOGGENERATOR_H

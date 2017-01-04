@@ -85,20 +85,17 @@ bool VerilogGenerator::prepareComponent(QString const& outputPath, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::prepareDesign()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::prepareDesign(QString const& outputPath, QList<QSharedPointer<GenerationDesign> >& designs)
+void VerilogGenerator::prepareDesign(QString const& outputPath, QSharedPointer<GenerationDesign> design)
 {
-    foreach (QSharedPointer<GenerationDesign> design, designs)
-    {
-        QSharedPointer<VerilogDocument> document = initializeComponentWriters(design->topComponent_);
-        document->filePath_ = outputPath + "/" + design->topComponent_->fileName_;
+    QSharedPointer<VerilogDocument> document = initializeComponentWriters(design->topComponent_);
+    document->filePath_ = outputPath + "/" + design->topComponent_->fileName_;
 
-        initializeDesignWriters(design, document);
+    initializeDesignWriters(design, document);
 
-        // Finally, add them to the top writer in desired order.
-        addWritersToTopInDesiredOrder(document);
+    // Finally, add them to the top writer in desired order.
+    addWritersToTopInDesiredOrder(document);
 
-        documents_->append(document);
-    }
+    documents_->append(document);
 }
 
 //-----------------------------------------------------------------------------
@@ -193,9 +190,9 @@ bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& 
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogGenerator::generate()
+// Function: VerilogGenerator::write()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::generate() const
+void VerilogGenerator::write() const
 {
     if (nothingToWrite())
 	{
@@ -214,11 +211,19 @@ void VerilogGenerator::generate() const
 
         QTextStream outputStream(&outputFile);
 
-        document->headerWriter_->write(outputStream, document->filePath_, QDateTime::currentDateTime());
-        document->topWriter_->write(outputStream);
+        generate(outputStream, document);
 
         outputFile.close();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogGenerator::generate()
+//-----------------------------------------------------------------------------
+void VerilogGenerator::generate(QTextStream& outputStream, QSharedPointer<VerilogDocument> document) const
+{
+    document->headerWriter_->write(outputStream, document->filePath_, QDateTime::currentDateTime());
+    document->topWriter_->write(outputStream);
 }
 
 //-----------------------------------------------------------------------------

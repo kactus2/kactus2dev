@@ -20,6 +20,7 @@
 #include "FileOutput.h"
 #include <Plugins/common/HDLParser/HDLComponentParser.h>
 #include <Plugins/common/HDLParser/HDLDesignParser.h>
+#include <Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h>
 
 //-----------------------------------------------------------------------------
 //! Container class for generator configuration.
@@ -33,7 +34,8 @@ public:
 	//! The constructor.
     GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection,
         HDLComponentParser* componentParser,
-        HDLDesignParser* designParser);
+        HDLDesignParser* designParser,
+        VerilogGenerator* generator);
 
 	//! The destructor.
     ~GeneratorConfiguration();
@@ -49,6 +51,8 @@ public:
      *  Parses the documents so that we know what will be generated.
      */
     void parseDocuments();
+
+    QString getPreview();
 	
     /*!
      *  Gets the view selection data.
@@ -101,6 +105,7 @@ private:
     //! The parsers used to parse IP-XACT for data usable in generation.
     HDLComponentParser* componentParser_;
     HDLDesignParser* designParser_;
+    VerilogGenerator generator_;
 
     //! If true, interfaces should be utilized in generation, else it is false.
     bool generateInterface_;

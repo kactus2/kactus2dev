@@ -126,6 +126,7 @@ void GeneratorConfigurationDialog::accept()
 //-----------------------------------------------------------------------------
 void GeneratorConfigurationDialog::onSelectedFileChanged()
 {
+
     qDebug() << "x vv" << endl;
 }
 
