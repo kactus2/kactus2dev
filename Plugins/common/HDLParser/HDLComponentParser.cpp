@@ -73,7 +73,7 @@ void HDLComponentParser::parseComponent(QSharedPointer<View> activeView)
 
     if (activeInstantiation_ && !activeInstantiation_->getModuleName().isEmpty())
     {
-        // If there is a named component instantiation, its module shall be used.
+        // If there is a named component instantiation, its module name shall be used.
         retval_->moduleName_ = activeInstantiation_->getModuleName();
     }
     else
@@ -188,7 +188,7 @@ void HDLComponentParser::findParameters()
         retval_->originalParameters_.append(parameter);
     }
 
-    // If there is an active component instantiaion, take its module parameters as well.
+    // If there is an active component instantiation, take its module parameters as well.
     if (activeInstantiation_)
     {
         foreach(QSharedPointer<ModuleParameter> parameter, *activeInstantiation_->getModuleParameters())

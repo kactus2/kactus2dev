@@ -455,12 +455,14 @@ void HDLDesignParser::assignInterconnections()
 
         foreach(QString key, keys)
         {
-            // A hierarchical interconnection detected: No wire is used, but the matching
-            // port from the connected top interface must be found.
+            // The top port found for the interconnection.
             QSharedPointer<PortMap> matchingTopPort;
 
             if (gInterconnect->topInterface_)
             {
+                // A hierarchical interconnection detected: No wire is used, but the matching
+                // port from the connected top interface must be found.
+
                 foreach(QSharedPointer<PortMap> topPortMap, *gInterconnect->topInterface_->interface_->getPortMaps())
                 {
                     // The logical port is the one that must match.
@@ -490,47 +492,45 @@ void HDLDesignParser::assignInterconnections()
                     // "Connect" the port assignment directly to the top port.
                     gPortAssignment->topPort_ = matchingTopPort->getPhysicalPort()->name_;
                 }
-                else
+                else if (ports.size() > 1)
                 {
                     // A non-hierarchical interconnection detected
-                    if (ports.size() > 1)
+                    
+                    // There are multiple ports connected: Create or detect a wire.
+                    QSharedPointer<GenerationWire> gWire = gInterconnect->wires_.value(key);
+
+                    if (!gWire)
                     {
-                        // There are multiple ports connected: Create or detect a wire.
-                        QSharedPointer<GenerationWire> gWire = gInterconnect->wires_.value(key);
-
-                        if (!gWire)
-                        {
-                            // Create a new one...
-                            gWire = QSharedPointer<GenerationWire>(new GenerationWire);
-                            // ...and use the logical port name as the key.
-                            gInterconnect->wires_[key] = gWire;
-                            // Form the name for the wire.
-                            gWire->name_ = gInterconnect->name_ + "_" + key;
-                        }
-
-                        if (!gPortAssignment->abstractionWidth_.isEmpty())
-                        {
-                            // If the port assignment is associated with some width for wire, try to apply.
-                            QPair<QString, QString> bounds;
-
-                            // Parse the bounds.
-                            IPXactSystemVerilogParser portParser(topFinder_);
-
-                            bounds.first = parseExpression(portParser, gPortAssignment->abstractionWidth_ + "-1");
-                            bounds.second = QLatin1String("0");
-
-                            // Assign larger bounds for wire, if applicable.
-                            assignLargerBounds(gWire, bounds);
-                        }
-                        else
-                        {
-                            // Else try to apply the bounds of the port.
-                            assignLargerBounds(gWire, gPortAssignment->bounds_);
-                        }
-
-                        // This wire shall be the wire of the port assignment.
-                        gPortAssignment->wire_ = gWire;
+                        // Create a new one...
+                        gWire = QSharedPointer<GenerationWire>(new GenerationWire);
+                        // ...and use the logical port name as the key.
+                        gInterconnect->wires_[key] = gWire;
+                        // Form the name for the wire.
+                        gWire->name_ = gInterconnect->name_ + "_" + key;
                     }
+
+                    if (!gPortAssignment->abstractionWidth_.isEmpty())
+                    {
+                        // If the port assignment is associated with some width for wire, try to apply.
+                        QPair<QString, QString> bounds;
+
+                        // Parse the bounds.
+                        IPXactSystemVerilogParser portParser(topFinder_);
+
+                        bounds.first = parseExpression(portParser, gPortAssignment->abstractionWidth_ + "-1");
+                        bounds.second = QLatin1String("0");
+
+                        // Assign larger bounds for wire, if applicable.
+                        assignLargerBounds(gWire, bounds);
+                    }
+                    else
+                    {
+                        // Else try to apply the bounds of the port.
+                        assignLargerBounds(gWire, gPortAssignment->bounds_);
+                    }
+
+                    // This wire shall be the wire of the port assignment.
+                    gPortAssignment->wire_ = gWire;
                 }
             }
         }
@@ -555,7 +555,7 @@ void HDLDesignParser::parsePortMaps(QSharedPointer<AbstractionType> absType,
             continue;
         }
 
-        // Must be a properly mapped port, or else there shall be no busines.
+        // Must be a properly mapped port, or else there shall be no business.
         if (portMap->getLogicalPort()->name_.isEmpty())
         {
             continue;
