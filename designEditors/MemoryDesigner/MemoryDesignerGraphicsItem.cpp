@@ -170,10 +170,10 @@ quint64 MemoryDesignerGraphicsItem::getLastAddress() const
 void MemoryDesignerGraphicsItem::condense(qreal newItemHeight)
 {
     QRectF itemRectangle = boundingRect();
-    int subItemPenWidth = pen().width();
+    int itemPenWidth = pen().width();
 
     qint16 itemXPosition = -itemRectangle.width() / 2;
-    quint64 itemWidth = itemRectangle.width() - subItemPenWidth;
+    qreal itemWidth = itemRectangle.width() - itemPenWidth;
 
     setRect(itemXPosition, 0, itemWidth, newItemHeight);
 

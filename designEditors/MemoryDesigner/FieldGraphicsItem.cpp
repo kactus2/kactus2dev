@@ -117,7 +117,12 @@ void FieldGraphicsItem::fitNameToBoundaries(QGraphicsTextItem* nameLabel)
 //-----------------------------------------------------------------------------
 void FieldGraphicsItem::condense(qreal newItemHeight)
 {
-    MemoryDesignerGraphicsItem::condense(newItemHeight);
+    QRectF itemRectangle = boundingRect();
+
+    qreal itemXPosition = -itemRectangle.width() / 2;
+    qreal itemWidth = itemRectangle.width() - 1;
+
+    setRect(itemXPosition, 0, itemWidth, newItemHeight);
     setLabelPositions();
 }
 

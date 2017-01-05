@@ -120,12 +120,11 @@ private:
      *      @param [in] lastBit                 Last bit used by the field.
      *      @param [in] oneBitWidth             Width of a one bit.
      *      @param [in] registerEnd             End of the containing register.
-     *      @param [in] previousEndPosition     The end coordinate of the previous field graphics item.
-     *      @param [in] widthRemainder          Current remainder of the used widths.
+     *      @param [in] fieldsStartPosition     The start coordinate for the field graphics items.
      *      @param [in] fieldFont               Font used in fields.
      */
     void createEmptyFieldItem(quint64 currentOffset, quint64 lastBit, qreal oneBitWidth, quint64 registerEnd,
-        qreal& previousEndPosition, qreal& widthRemainder, QFont fieldFont);
+        qreal fieldsStartPosition, QFont fieldFont);
 
     /*!
      *  Create a field graphics item.
@@ -136,13 +135,12 @@ private:
      *      @param [in] isEmptyField            Holds whether the field is empty or not.
      *      @param [in] oneBitWidth             Width of a one bit.
      *      @param [in] registerEnd             End of the containing register.
-     *      @param [in] previousEndPosition     The end coordinate of the previous field graphics item.
-     *      @param [in] widthRemainder          Current remainder of the used widths.
+     *      @param [in] fieldsStartPosition     The start coordinate for the field graphics items.
      *      @param [in] fieldFont               Font used in fields.
      */
     void createFieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldWidth,
-        bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal& previousEndPosition,
-        qreal& widthRemainder, QFont fieldFont);
+        bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal fieldsStartPosition,
+        QFont fieldFont);
 
     /*!
      *  Get the width available for the register item.

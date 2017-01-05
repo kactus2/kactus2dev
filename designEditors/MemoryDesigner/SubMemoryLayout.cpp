@@ -82,7 +82,7 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
 
             if (!subItemsInOrder.isEmpty())
             {
-                if (subItemsInOrder.firstKey() > 0)
+                if (subItemsInOrder.firstKey() > itemBaseAddress)
                 {
                     createAndPositionNewEmptySubItem(
                         0, subItemsInOrder.firstKey() - 1, subItemPositionX, itemBaseAddress);

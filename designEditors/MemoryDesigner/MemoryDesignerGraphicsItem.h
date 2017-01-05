@@ -185,15 +185,15 @@ protected:
      */
     virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label, qreal fontHeight) const;
 
-private:
-    // Disable copying.
-    MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& rhs);
-    MemoryDesignerGraphicsItem& operator=(MemoryDesignerGraphicsItem const& rhs);
-
     /*!
      *  Set the label positions.
      */
     virtual void setLabelPositions() = 0;
+
+private:
+    // Disable copying.
+    MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& rhs);
+    MemoryDesignerGraphicsItem& operator=(MemoryDesignerGraphicsItem const& rhs);
 
     /*!
      *  Get the available width of this item.
