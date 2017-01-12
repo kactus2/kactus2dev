@@ -91,6 +91,7 @@ void PortsView::contextMenuEvent(QContextMenuEvent* event)
     {
         menu.addAction(&removeAction_);
         menu.addAction(&clearAction_);
+        menu.addAction(&cutAction_);
         menu.addAction(&copyAction_);
         menu.addAction(&pasteAction_);
     }

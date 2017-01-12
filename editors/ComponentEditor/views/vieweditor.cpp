@@ -256,27 +256,27 @@ void ViewEditor::setupLayout()
     instancesLayout->addRow(tr("Design configuration instantiation:"), designConfigurationInstantiationSelector_);
     instancesLayout->addRow(tr("Design instantiation:"), designInstantiationSelector_);
 
-    QVBoxLayout* componentLayout = new QVBoxLayout();
-    componentLayout->addWidget(componentInstantiationDisplay_, Qt::AlignTop);
-
     QVBoxLayout* editorsLayout = new QVBoxLayout(hierarchyGroup_);
-    editorsLayout->addWidget(designConfigurationDisplay_, 0, Qt::AlignTop);
-    editorsLayout->addWidget(designDisplay_, 0, Qt::AlignTop);
+    editorsLayout->addWidget(designConfigurationDisplay_, 0);
+    editorsLayout->addWidget(designDisplay_, 0);
     editorsLayout->addStretch();
 
     // create the top widget and set it under the scroll area
     QWidget* topWidget = new QWidget(scrollArea);
-    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    scrollArea->setWidget(topWidget);
 
     // create the layout for the top widget
     QGridLayout* topLayout = new QGridLayout(topWidget);
-    topLayout->addWidget(nameEditor_, 0, 0, 1, 1, Qt::AlignTop);
-    topLayout->addWidget(envIdentifier_, 0, 1, 2, 1, Qt::AlignTop);
-    topLayout->addWidget(instantiationsGroup, 1, 0, 1, 1, Qt::AlignTop);
-    topLayout->addLayout(componentLayout, 2, 0, 1, 1);
+    topLayout->addWidget(nameEditor_, 0, 0, 1, 1);
+    topLayout->addWidget(envIdentifier_, 0, 1, 2, 1);
+    topLayout->addWidget(instantiationsGroup, 1, 0, 1, 1);
+    topLayout->addWidget(componentInstantiationDisplay_, 2, 0, 1, 1);
     topLayout->addWidget(hierarchyGroup_, 2, 1, 1, 1);
     topLayout->addWidget(moduleParameterEditor_, 3, 0, 1, 2);
-    topLayout->setRowStretch(3, 1);
+    topLayout->setRowStretch(0, 1);
+    topLayout->setRowStretch(1, 1);
+    topLayout->setRowStretch(2, 1);
+    topLayout->setRowStretch(3, 5);
     topLayout->setContentsMargins(0, 0, 0, 0);
+
+    scrollArea->setWidget(topWidget);
 }

@@ -119,7 +119,12 @@ QVariant FileSetsModel::data(QModelIndex const& index, int role) const
 	}
 
     QSharedPointer<FileSet> fileSet = fileSets_->at(index.row());
-    if (role == Qt::DisplayRole)
+    
+    if (index.column() == FileSetColumns::DESCRIPTION && (role == Qt::EditRole || role == Qt::ToolTipRole))
+    {
+        return fileSet->description();
+    }
+    else if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == FileSetColumns::NAME_COLUMN)
         {
@@ -139,11 +144,6 @@ QVariant FileSetsModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
     }
-    else if ((role == Qt::EditRole || role == Qt::ToolTipRole) && index.column() == FileSetColumns::DESCRIPTION)
-    {
-        return fileSet->description();
-    }
-
 	else if (Qt::BackgroundRole == role)
     {
         if (index.column() == FileSetColumns::NAME_COLUMN)

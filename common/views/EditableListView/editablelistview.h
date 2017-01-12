@@ -1,9 +1,13 @@
-/* 
- *  	Created on: 12.12.2011
- *      Author: Antti Kamppi
- * 		filename: editablelistview.h
- *		Project: Kactus 2
- */
+//-----------------------------------------------------------------------------
+// File: editablelistview.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 12.12.2011
+//
+// Description:
+// View-class with add, remove and move operations for lists of items.
+//-----------------------------------------------------------------------------
 
 #ifndef EDITABLELISTVIEW_H
 #define EDITABLELISTVIEW_H
@@ -11,98 +15,103 @@
 #include <QListView>
 #include <QPoint>
 #include <QMouseEvent>
-#include <QKeyEvent>
 #include <QContextMenuEvent>
 #include <QAction>
 
-class EditableListView : public QListView {
+//-----------------------------------------------------------------------------
+//! View-class with add, remove and move operations for lists of items.
+//-----------------------------------------------------------------------------
+class EditableListView : public QListView
+{
 	Q_OBJECT
 
 public:
 
-	/*! \brief The constructor
+	/*! The constructor
 	 *
-	 * \param parent Pointer to the owner of this view.
-	 *
-	*/
+	 *      @param [in] parent  The owner of this view.
+	 */
 	EditableListView(QWidget *parent);
 	
-	//! \brief The destructor
+	//! The destructor
 	virtual ~EditableListView();
 
 signals:
+
     //! Emitted when the selection has changed.
     void selectionChanged(QModelIndex const& index);
 
-	/*! \brief A new item should be added to given index.
+	/*! A new item should be added to given index.
 	 *
-	 * \param index The position where new item should be added at.
+	 *      @param [in] index The position where new item should be added at.
 	 *
 	*/
-	void addItem(const QModelIndex& index);
+	void addItem(QModelIndex const& index);
 
-	/*! \brief An item should be removed from the model.
+	/*! An item should be removed from the model.
 	 * 
-	 * \param index Identifies the item that should be removed.
+	 *      @param [in] index Identifies the item that should be removed.
 	 *
 	*/
-	void removeItem(const QModelIndex& index);
+	void removeItem(QModelIndex const& index);
 
-	/*! \brief Move item to another position.
+	/*! Move item to another position.
 	 *
-	 * \param originalPos Identifies the item that should be moved.
-	 * \param newPos The new position the item should be moved to.
+	 *      @param [in] originalPos Identifies the item that should be moved.
+	 *      @param [in] newPos The new position the item should be moved to.
 	 *
 	*/
-	void moveItem(const QModelIndex& originalPos, const QModelIndex& newPos);
+	void moveItem(QModelIndex const& originalPos, QModelIndex const& newPos);
 
 protected:
 
-	//! \brief Handler for mouse move events
-	virtual void mouseMoveEvent(QMouseEvent* e);
+	//! Handler for mouse move events
+	virtual void mouseMoveEvent(QMouseEvent* event);
 
-	//! \brief Handler for key press events
-	virtual void keyPressEvent(QKeyEvent* event);
-
-	//! \brief Handler for mouse double click events
+	//! Handler for mouse double click events
 	virtual void mouseDoubleClickEvent(QMouseEvent* event);
 
-	//! \brief Handler for mouse press events
+	//! Handler for mouse press events
 	virtual void mousePressEvent(QMouseEvent* event);
 
-	//! \brief Handler for mouse release events
+	//! Handler for mouse release events
 	virtual void mouseReleaseEvent(QMouseEvent* event);
 
-	//! \brief Handler for context menu events
+	//! Handler for context menu events
 	virtual void contextMenuEvent(QContextMenuEvent* event);
 
+    //! Handler for changes in current selection.
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
 
 private slots:
 
-	//! \brief Handler for add action
+	//! Handler for add action
 	void onAddAction();
 
-	//! \brief Handler for remove action
+	//! Handler for remove action
 	void onRemoveAction();
 
 private:
-	//! \brief No copying
+	//! No copying
 	EditableListView(const EditableListView& other);
 
-	//! \brief No assignment
+	//! No assignment
 	EditableListView& operator=(const EditableListView& other);
 
-	//! \brief Set up the actions for the context menu
+	//! Set up the actions for the context menu
 	void setupActions();
 
-	//! \brief The point where mouse was clicked
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+	//! The point where mouse was clicked
 	QPoint pressedPoint_;
 
-	//! \brief Action to add new item
+	//! Action to add new item
 	QAction addAction_;
 
-	//! \brief Action to remove item
+	//! Action to remove item
 	QAction removeAction_;
 };
 

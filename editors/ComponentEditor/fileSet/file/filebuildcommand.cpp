@@ -39,11 +39,11 @@ QGroupBox(tr("Build command"), parent),
     file_(file),
     buildCommand_(),
     componentPath_(componentPath),
+    targetEditor_(this),
+    browseTargetButton_(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this),
     commandEditor_(this),
     flagsEditor_(this),
     replaceDefaultEditor_(new ExpressionEditor(parameterFinder, this)),
-    targetEditor_(this),
-    browseTargetButton_(tr("Browse..."), this),
     expressionParser_(expressionParser)
 {
     Q_ASSERT_X(file, "FileBuildCommand constructor", "Null File-pointer given to the constructor");
@@ -59,6 +59,8 @@ QGroupBox(tr("Build command"), parent),
     replaceDefaultEditor_->setAppendingCompleter(replaceCompleter);
 
     targetEditor_.setAcceptDrops(true);
+    
+    browseTargetButton_.setToolTip(tr("Browse..."));
 
     setupLayout();
 

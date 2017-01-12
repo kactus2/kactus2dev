@@ -7,33 +7,70 @@
 
 #include "groupmanagerdelegate.h"
 
+#include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
+#include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
+
 #include <QComboBox>
 #include <QStringList>
 
+//-----------------------------------------------------------------------------
+// Function: GroupManagerDelegate::GroupManagerDelegate()
+//-----------------------------------------------------------------------------
 GroupManagerDelegate::GroupManagerDelegate(QObject *parent):
-ComboDelegate(parent) {
+QStyledItemDelegate(parent),
+    matcher_(new BasicLineContentMatcher())
+{
+    QStringList suggestedItems;
+    suggestedItems.append(tr("diagnostics"));
+    suggestedItems.append(tr("documentation"));
+    suggestedItems.append(tr("generatedFiles"));
+    suggestedItems.append(tr("projectFiles"));
+    suggestedItems.append(tr("simulation"));
+    suggestedItems.append(tr("sourceFiles"));
+
+    matcher_->setItems(suggestedItems);
 }
 
-GroupManagerDelegate::~GroupManagerDelegate() {
+//-----------------------------------------------------------------------------
+// Function: GroupManagerDelegate::~GroupManagerDelegate()
+//-----------------------------------------------------------------------------
+GroupManagerDelegate::~GroupManagerDelegate() 
+{
+    delete matcher_;
 }
 
-QWidget* GroupManagerDelegate::createEditor( QWidget* parent, 
-											const QStyleOptionViewItem& option,
-											const QModelIndex& index ) const {
-	
-	QComboBox* combo = qobject_cast<QComboBox*>(ComboDelegate::createEditor(parent, option, index));
-	Q_ASSERT(combo);
-	
-	// add the items to the box
-	QStringList comboItems;
-	comboItems.append(tr("diagnostics"));
-	comboItems.append(tr("documentation"));
-	comboItems.append(tr("generatedFiles"));
-	comboItems.append(tr("projectFiles"));
-	comboItems.append(tr("simulation"));
-	comboItems.append(tr("sourceFiles"));
+//-----------------------------------------------------------------------------
+// Function: GroupManagerDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget* GroupManagerDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& /*option*/,
+    QModelIndex const& /*index*/) const
+{
+    AssistedLineEdit* editor = new AssistedLineEdit(parent->window(), parent);
+    editor->setContentMatcher(matcher_);
 
-	combo->addItems(comboItems);
-	combo->setEditable(true);
-	return combo;
+    return editor;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GroupManagerDelegate::setEditorData()
+//-----------------------------------------------------------------------------
+void GroupManagerDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
+{
+    QString text = index.model()->data(index, Qt::EditRole).toString();
+
+    AssistedLineEdit* assistedEditor = qobject_cast<AssistedLineEdit*>(editor);
+    Q_ASSERT(assistedEditor);
+
+    assistedEditor->setText(text);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GroupManagerDelegate::setModelData()
+//-----------------------------------------------------------------------------
+void GroupManagerDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
+{
+    AssistedLineEdit* assistedEditor = qobject_cast<AssistedLineEdit*>(editor);
+    Q_ASSERT(assistedEditor);
+
+    model->setData(index, assistedEditor->text(), Qt::EditRole);
 }

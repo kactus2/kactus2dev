@@ -16,9 +16,9 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
+#include <QGridLayout>
+#include <QScrollArea>
 #include <QStringList>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: FileSetEditor::FileSetEditor()
@@ -106,25 +106,30 @@ void FileSetEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void FileSetEditor::setupLayout()
 {
-    // set the maximum heights to give more space for files editor
-    fileBuilderEditor_.setMaximumHeight(150);
-    groupsEditor_.setMaximumHeight(nameEditor_.maximumHeight());
-    dependencies_.setMaximumHeight(150);
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+    scrollArea->setContentsMargins(0, 0, 0, 0);
 
-    QHBoxLayout* nameAndGroupLayout = new QHBoxLayout();
-    nameAndGroupLayout->addWidget(&nameEditor_);
-    nameAndGroupLayout->addWidget(&groupsEditor_);
+    QVBoxLayout* scrollLayout = new QVBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-    QHBoxLayout* buildCommandsAndDependenciesLayout = new QHBoxLayout();
-    buildCommandsAndDependenciesLayout->addWidget(&fileBuilderEditor_);
-    buildCommandsAndDependenciesLayout->addWidget(&dependencies_);
+    QWidget* topWidget = new QWidget(scrollArea);
 
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    QGridLayout* topLayout = new QGridLayout(topWidget);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
-    topLayout->addLayout(nameAndGroupLayout);
-    topLayout->addWidget(&files_);
-    topLayout->addLayout(buildCommandsAndDependenciesLayout);
+    topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
+    topLayout->addWidget(&groupsEditor_, 0, 1, 1, 1);
+    topLayout->addWidget(&files_, 1, 0, 1, 2);
+    topLayout->addWidget(&fileBuilderEditor_, 2, 0, 1, 1);
+    topLayout->addWidget(&dependencies_, 2, 1, 1, 1);
+    topLayout->setRowStretch(0, 1);
+    topLayout->setRowStretch(1, 10);
+    topLayout->setRowStretch(2, 2);
+
+    scrollArea->setWidget(topWidget);
 }
 
 //-----------------------------------------------------------------------------

@@ -32,16 +32,16 @@ monitor_(QSharedPointer<BusInterface::MonitorInterface>(new BusInterface::Monito
 interfaceMode_(this, QSharedPointer<BusInterface>(), false),
 systemGroup_(this) {
 
-	QLabel* modeLabel = new QLabel(tr("Interface mode"), this);
-	QLabel* groupLabel = new QLabel(tr("Group"), this);
+	QLabel* modeLabel = new QLabel(tr("Interface mode:"), this);
+	QLabel* groupLabel = new QLabel(tr("Group:"), this);
 
 	QGridLayout* topLayout = new QGridLayout(this);
-	topLayout->addWidget(modeLabel, 0, 0, Qt::AlignLeft);
-	topLayout->addWidget(&interfaceMode_, 0, 1, Qt::AlignLeft);
-	topLayout->addWidget(groupLabel, 1, 0, Qt::AlignLeft);
-	topLayout->addWidget(&systemGroup_, 1, 1, Qt::AlignLeft);
-	topLayout->setColumnStretch(2, 1);
-	topLayout->setRowStretch(2, 1);
+	topLayout->addWidget(modeLabel, 0, 0, 1, 1);
+	topLayout->addWidget(&interfaceMode_, 0, 1, 1, 1);
+	topLayout->addWidget(groupLabel, 1, 0, 1, 1);
+	topLayout->addWidget(&systemGroup_, 1, 1, 1, 1);
+	topLayout->setColumnStretch(1, 1);
+	topLayout->setRowStretch(2, 10);
 
 	connect(&interfaceMode_, SIGNAL(modeSelected(General::InterfaceMode)),
 		this, SLOT(onInterfaceModeChange(General::InterfaceMode)), Qt::UniqueConnection);

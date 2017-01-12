@@ -26,23 +26,12 @@ public:
 	//! \brief The maximum height for the editor
 	static const int MAX_EDITOR_HEIGHT = 130;
 
-	/*! \brief The constructor
-	 *
-	 * \param nameGroup Reference to the name group to edit.
-	 * \param parent Pointer to the owner of this widget.
-	 * \param title The title for the group box.
-	 *
-	*/
-	NameGroupEditor(NameGroup& nameGroup,
-		QWidget *parent,
-		const QString& title = QString("Names"));
-
     NameGroupEditor(QSharedPointer<NameGroup> nameGroup,
         QWidget *parent,
         const QString& title = QString("Names"));
 
 	//! \brief The destructor
-	~NameGroupEditor();
+	virtual ~NameGroupEditor();
 
 	/*! \brief Get the name of the name group.
 	 *

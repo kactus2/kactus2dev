@@ -1,9 +1,13 @@
-/* 
- *
- *  Created on: 4.2.2011
- *      Author: Antti Kamppi
- * 		filename: groupmanager.cpp
- */
+//-----------------------------------------------------------------------------
+// File: groupmanager.cpp
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 04.02.2011
+//
+// Description:
+// GroupManager is a widget to manage group names within FileSet.
+//-----------------------------------------------------------------------------
 
 #include "groupmanager.h"
 
@@ -11,15 +15,28 @@
 
 #include <common/dialogs/comboSelector/comboselector.h>
 
-GroupManager::GroupManager(const QString title /*= tr("Group identifiers")*/, 
-						   QWidget *parent /*= 0*/):
-ListManager(title, parent) {
+//-----------------------------------------------------------------------------
+// Function: GroupManager::GroupManager()
+//-----------------------------------------------------------------------------
+GroupManager::GroupManager(QString const& title, QWidget* parent):
+ListManager(title, parent)
+{
+
 }
 
-GroupManager::~GroupManager() {
+//-----------------------------------------------------------------------------
+// Function: GroupManager::~GroupManager()
+//-----------------------------------------------------------------------------
+GroupManager::~GroupManager()
+{
+
 }
 
-void GroupManager::initialize( const QStringList& items /*= QStringList()*/ ) {
+//-----------------------------------------------------------------------------
+// Function: GroupManager::initialize()
+//-----------------------------------------------------------------------------
+void GroupManager::initialize(QStringList const& items)
+{
 	ListManager::initialize(items);
 
 	view_->setItemDelegate(new GroupManagerDelegate(this));

@@ -124,6 +124,12 @@ private:
     //! Path to the containing component.
     QString componentPath_;
 
+    //! Editor to set build command's target file.
+    QLineEdit targetEditor_;
+
+    //! Button for browsing the build command target file.
+    QPushButton browseTargetButton_;
+
 	//! Editor to set file's build command.
 	QLineEdit commandEditor_;
 
@@ -132,11 +138,6 @@ private:
 
 	//! Expression editor to set build command's replaceDefaultFlags setting.
     ExpressionEditor* replaceDefaultEditor_;
-
-	//! Editor to set build command's target file.
-	QLineEdit targetEditor_;
-
-    QPushButton browseTargetButton_;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

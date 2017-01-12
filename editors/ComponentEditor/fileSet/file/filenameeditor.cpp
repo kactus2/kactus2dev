@@ -25,7 +25,7 @@ fileNameLabel_(file->name(), this),
 descriptionEditor_(this),
 file_(file)
 {
-    setMaximumHeight(100);
+    setMaximumHeight(120);
     
     QLabel* nameLabel = new QLabel(tr("Name:"), this);
     nameLabel->setToolTip(tr("The name field contains an absolute or relative\n"
@@ -34,6 +34,7 @@ file_(file)
     QLabel* descriptionLabel = new QLabel(tr("Description:"), this);
 
     descriptionEditor_.setToolTip("Set the description for the file");
+    descriptionEditor_.setTabChangesFocus(true);
 
     QGridLayout* topLayout = new QGridLayout(this);
     topLayout->addWidget(nameLabel, 0, 0, 1, 1);

@@ -36,11 +36,18 @@ proxy_(this),
 dependencyEditor_(component, QFileInfo(libInterface->getPath(component->getVlnv())).path(), pluginMgr, &splitter_),
 firstShow_(true)
 {
-    splitter_.addWidget(&view_);
-    splitter_.addWidget(&dependencyEditor_);
-
 	// display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("File sets summary"), this);
+
+    QWidget* dependencyWidget = new QWidget(this);
+
+    QVBoxLayout* dependencyLayout = new QVBoxLayout(dependencyWidget);
+    dependencyLayout->setContentsMargins(0, 2, 0, 0);
+    dependencyLayout->addWidget(new SummaryLabel(tr("File Dependencies"), this), 0, Qt::AlignCenter);
+    dependencyLayout->addWidget(&dependencyEditor_);
+
+    splitter_.addWidget(&view_);
+    splitter_.addWidget(dependencyWidget);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);

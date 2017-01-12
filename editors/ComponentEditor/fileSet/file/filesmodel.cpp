@@ -156,7 +156,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
             QString filePath = file->name();
             if (filePath.isEmpty() && role == Qt::DisplayRole)
             {
-                filePath = tr("no path or URI specified");
+                filePath = tr("no path or URI defined");
             }
 
             return filePath;
@@ -196,8 +196,6 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         {
             return QColor("red");
         }
-
-        return QColor("black");
 	}
 
     else if (role == Qt::ToolTipRole)

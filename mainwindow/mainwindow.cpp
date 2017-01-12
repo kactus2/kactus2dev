@@ -736,14 +736,14 @@ void MainWindow::setupActions()
     actRunImport_ = new QAction(QIcon(":icons/common/graphics/import.png"), tr("Import File to Component"), this);
     connect(actRunImport_, SIGNAL(triggered()), this, SLOT(onRunImportWizard()), Qt::UniqueConnection);
 
+    // Initialize the action to set draw mode to selection mode.
+    actToolSelect_ = new QAction(QIcon(":/icons/common/graphics/tool-select.png"), tr("Select Tool"), this);
+    actToolSelect_->setCheckable(true);
+    actToolSelect_->setChecked(true);
+
 	// Initialize the action to add a new column.
 	actAddColumn_ = new QAction(QIcon(":/icons/common/graphics/diagram-add-column.png"), tr("Add Column"), this);
 	connect(actAddColumn_, SIGNAL(triggered()), this, SLOT(addColumn()), Qt::UniqueConnection);
-
-	// Initialize the action to set draw mode to selection mode.
-	actToolSelect_ = new QAction(QIcon(":/icons/common/graphics/tool-select.png"), tr("Select Tool"), this);
-	actToolSelect_->setCheckable(true);
-	actToolSelect_->setChecked(true);
 
 	// Initialize the action to set draw mode to connection mode.
 	actToolConnect_ = new QAction(QIcon(":/icons/common/graphics/tool-interconnection.png"),
@@ -894,6 +894,7 @@ void MainWindow::setupActions()
 
 	// Initialize the action to open the help window.
 	actHelp_= new QAction(QIcon(":/icons/common/graphics/system-help.png"), tr("Help"), this);
+    actHelp_->setShortcut(QKeySequence::HelpContents);
 	connect(actHelp_, SIGNAL(triggered()), this, SLOT(showHelp()), Qt::UniqueConnection);
 
 	// Initialize the action to exit the program.
@@ -978,8 +979,8 @@ void MainWindow::setupMenus()
     
 	//! The "Diagram Tools" group.
 	diagramToolsGroup_ = ribbon_->addGroup(tr("Diagram Tools"));
-	diagramToolsGroup_->addAction(actAddColumn_);
 	diagramToolsGroup_->addAction(actToolSelect_);
+    diagramToolsGroup_->addAction(actAddColumn_);
 	diagramToolsGroup_->addAction(actToolConnect_);
 	diagramToolsGroup_->addAction(actToolInterface_);
 	diagramToolsGroup_->addAction(actToolDraft_);

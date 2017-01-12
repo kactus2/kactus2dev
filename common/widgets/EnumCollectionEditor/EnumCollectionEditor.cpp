@@ -23,8 +23,6 @@ EnumCollectionEditor::EnumCollectionEditor(QWidget* parent): QFrame(parent),
     setFrameStyle(QFrame::StyledPanel);
     setAutoFillBackground(true);
     setFocusPolicy(Qt::StrongFocus);
-    
-    layout_->addStretch(1);
 }
 
 //-----------------------------------------------------------------------------
@@ -37,14 +35,13 @@ EnumCollectionEditor::~EnumCollectionEditor()
 //-----------------------------------------------------------------------------
 // Function: EnumCollectionEditor::addItem()
 //-----------------------------------------------------------------------------
-void EnumCollectionEditor::addItem(QString const& text, bool selected /*= false*/)
+void EnumCollectionEditor::addItem(QString const& text, bool selected)
 {
     QCheckBox* checkBox = new QCheckBox(text, this);
     checkBox->setChecked(selected);
-    checkBox->setFocusProxy(this);
     
     items_.append(checkBox);
-    layout_->insertWidget(layout_->count() - 1, checkBox);
+    layout_->addWidget(checkBox);
 
     setMinimumHeight(sizeHint().height());
 }

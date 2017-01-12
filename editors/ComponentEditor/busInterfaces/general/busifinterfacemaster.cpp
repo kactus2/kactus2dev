@@ -71,18 +71,18 @@ parameterFinder_(parameterFinder)
         Q_ASSERT(false);
     }
 
-	QLabel* addrSpaceLabel = new QLabel(tr("Address space"), this);
+	QLabel* addrSpaceLabel = new QLabel(tr("Address space:"), this);
 
     QString functionSymbol(0x0192);
-	QLabel* baseAddrLabel = new QLabel(tr("Base address") + ", " + functionSymbol +"(x)", this);
+	QLabel* baseAddrLabel = new QLabel(tr("Base address") + ", " + functionSymbol +"(x):", this);
 
 	QGridLayout* topLayout = new QGridLayout(this);
-	topLayout->addWidget(addrSpaceLabel, 0, 0, Qt::AlignLeft);
-	topLayout->addWidget(&addressSpaceReferenceSelector_, 0, 1, Qt::AlignLeft);
-	topLayout->addWidget(baseAddrLabel, 1, 0, Qt::AlignLeft);
-    topLayout->addWidget(baseAddressEditor_, 1, 1, Qt::AlignLeft);
-    topLayout->setColumnStretch(2, 1);
-	topLayout->setRowStretch(2, 1);
+	topLayout->addWidget(addrSpaceLabel, 0, 0, 1, 1);
+	topLayout->addWidget(&addressSpaceReferenceSelector_, 0, 1, 1, 1);
+	topLayout->addWidget(baseAddrLabel, 1, 0, 1, 1);
+    topLayout->addWidget(baseAddressEditor_, 1, 1, 1, 1);
+    topLayout->setColumnStretch(1, 1);
+	topLayout->setRowStretch(2, 10);
 
 	connect(&addressSpaceReferenceSelector_, SIGNAL(itemSelected(const QString&)),
 		this, SLOT(onAddressSpaceChange(const QString&)), Qt::UniqueConnection);

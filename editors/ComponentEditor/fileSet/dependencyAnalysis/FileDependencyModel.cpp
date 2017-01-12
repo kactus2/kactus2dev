@@ -384,8 +384,9 @@ Qt::ItemFlags FileDependencyModel::flags(QModelIndex const& index) const
     else if (index.column() == FileDependencyColumns::FILESETS)
     {
         FileDependencyItem* item = static_cast<FileDependencyItem*>(index.internalPointer());
-
-        if (item->getType() == FileDependencyItem::ITEM_TYPE_FILE || item->getChildCount() > 0)
+        
+        if ((item->getType() == FileDependencyItem::ITEM_TYPE_FILE && !item->isExternal()) || 
+            item->getChildCount() > 0)
         {
             return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
         }

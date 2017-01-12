@@ -248,7 +248,7 @@ void LineContentAssistWidget::moveClose(int /*cursorPos*/)
     QPoint pos = target_->mapTo(parentWidget(), QPoint(0, 0)) + QPoint(0,  target_->height());
     
     // Restrict x coordinate by the screen width.
-    pos.setX(qMin(qMax(0, pos.x()), parentWidth - width()));
+    pos.setX(qMin(qMax(0, pos.x()), qMax(0, parentWidth - width())));
 
     // Lift the widget above the line edit only if necessary to keep it fully in view.
     if (pos.y() + height() > parentHeight)

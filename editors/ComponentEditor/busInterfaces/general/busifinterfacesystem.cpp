@@ -51,8 +51,7 @@ BusIfInterfaceModeEditor(busif, component, tr("System"), parent),
 		this, SLOT(onGroupChange(QString const&)), Qt::UniqueConnection);
 
     QFormLayout* groupLayout = new QFormLayout(this);
-    groupLayout->addRow(tr("System group"), &groupEditor_);
-    groupLayout->setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
+    groupLayout->addRow(tr("System group:"), &groupEditor_);
 }
 
 //-----------------------------------------------------------------------------

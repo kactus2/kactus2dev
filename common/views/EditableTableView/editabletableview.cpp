@@ -11,55 +11,54 @@
 
 #include "editabletableview.h"
 
-#include <QHeaderView>
-#include <QMenu>
-#include <QKeySequence>
-#include <QClipboard>
-#include <QApplication>
-#include <QModelIndexList>
-#include <QMessageBox>
-#include <QFile>
-#include <QTextStream>
-#include <QFileDialog>
-#include <QSortFilterProxyModel>
 #include <QAbstractTableModel>
 #include <QApplication>
+#include <QClipboard>
+#include <QFile>
+#include <QFileDialog>
 #include <QFontMetrics>
-#include <QSize>
 #include <QHeaderView>
+#include <QKeySequence>
+#include <QMenu>
+#include <QMessageBox>
 #include <QMimeData>
+#include <QModelIndexList>
+#include <QSize>
+#include <QSortFilterProxyModel>
+#include <QTextStream>
 
 //-----------------------------------------------------------------------------
 // Function: EditableTableView::EditableTableView()
 //-----------------------------------------------------------------------------
 EditableTableView::EditableTableView(QWidget *parent):
 QTableView(parent),
-pressedPoint_(),
-addAction_(tr("Add row"), this),
-removeAction_(tr("Remove row"), this),
-copyAction_(tr("Copy"), this),
-pasteAction_(tr("Paste"), this),
-clearAction_(tr("Clear"), this),
-importAction_(tr("Import csv-file"), this),
-exportAction_(tr("Export csv-file"), this),
-copyElementAction_(tr("Copy element"), this),
-pasteElementAction_(tr("Paste element"), this),
-importExportEnabled_(false),
-elementCopyIsAllowed_(false),
-defImportExportPath_(),
-itemsDraggable_(true)
+    pressedPoint_(),
+    addAction_(tr("Add row"), this),
+    removeAction_(tr("Remove row"), this),
+    cutAction_(tr("Cut"), this),
+    copyAction_(tr("Copy"), this),
+    pasteAction_(tr("Paste"), this),
+    clearAction_(tr("Clear"), this),
+    importAction_(tr("Import csv-file"), this),
+    exportAction_(tr("Export csv-file"), this),
+    copyElementAction_(tr("Copy element"), this),
+    pasteElementAction_(tr("Paste element"), this),
+    importExportEnabled_(false),
+    elementCopyIsAllowed_(false),
+    defImportExportPath_(),
+    itemsDraggable_(true)
 {
-	// cells are resized to match contents 
-	horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
+    // cells are resized to match contents 
+    horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 
-	//last column is stretched take the available space in the widget
-	horizontalHeader()->setStretchLastSection(true);
+    //last column is stretched take the available space in the widget
+    horizontalHeader()->setStretchLastSection(true);
 
-	// vertical headers are not visible
-	verticalHeader()->hide();
+    // vertical headers are not visible
+    verticalHeader()->hide();
 
-	// set the height of a row to be smaller than default
-	verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
+    // set the height of a row to be smaller than default
+    verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
 
 	// easies to see the different rows from one another
 	setAlternatingRowColors(true);
@@ -141,8 +140,7 @@ void EditableTableView::mouseMoveEvent(QMouseEvent* event)
 				setCursor(QCursor(Qt::ClosedHandCursor));
 				emit moveItem(startIndex, thisIndex);
 
-				// update the pressed point so the dragging works also
-				// when moving further to another index
+				// update the pressed point so the dragging works also when moving further to another index
 				pressedPoint_ = event->pos();
 			}
 		}
@@ -156,35 +154,6 @@ void EditableTableView::mouseMoveEvent(QMouseEvent* event)
 		clearSelection();
 		setCurrentIndex(selected);
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: EditableTableView::keyPressEvent()
-//-----------------------------------------------------------------------------
-void EditableTableView::keyPressEvent(QKeyEvent* event)
-{
-	QTableView::keyPressEvent(event);
-
-	if (event->matches(QKeySequence::Copy))
-    {
-		onCopyAction();
-	}
-	if (event->matches(QKeySequence::Paste))
-    {
-		onPasteAction();
-	}
-	if (event->matches(QKeySequence::Delete))
-    {
-		onClearAction();
-	}
-	if (event->matches(QKeySequence::InsertLineSeparator))
-    {
-		onAddAction();
-	}
-    if (event->matches(QKeySequence::Cut))
-    {
-        onCutAction();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -242,25 +211,23 @@ void EditableTableView::contextMenuEvent(QContextMenuEvent* event)
 	QMenu menu(this);
 	menu.addAction(&addAction_);
 
+    bool validIndex = index.isValid();
+
 	// if at least one valid item is selected
-	if (index.isValid())
+	if (validIndex)
     {
 		menu.addAction(&removeAction_);
 		menu.addAction(&clearAction_);
+        menu.addAction(&cutAction_);
 		menu.addAction(&copyAction_);
         menu.addAction(&pasteAction_);
     }
     if (elementCopyIsAllowed_)
     {
-        bool validIndex = index.isValid();
-        bool containsMimeData = false;
-
         const QMimeData* clipMimeData = QApplication::clipboard()->mimeData();
         QString modelAcceptedMimeType = model()->mimeTypes().last();
-        if (clipMimeData->hasImage() && clipMimeData->hasFormat(modelAcceptedMimeType))
-        {
-            containsMimeData = true;
-        }
+
+        bool containsMimeData = (clipMimeData->hasImage() && clipMimeData->hasFormat(modelAcceptedMimeType));
 
         if (validIndex || containsMimeData)
         {
@@ -345,32 +312,6 @@ void EditableTableView::onAddAction()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EditableTableView::countRows()
-//-----------------------------------------------------------------------------
-int EditableTableView::countRows(QModelIndexList const& indexes)
-{
-    if (indexes.empty())
-    {
-        return 0;
-    }
-
-    int rows = 1;
-
-    int previousRow = indexes.first().row();
-    foreach (QModelIndex index, indexes)
-    {
-        if (index.row() != previousRow)
-        {
-            rows++;
-        }
-
-        previousRow = index.row();
-    }
-    
-    return rows;
-}
-
-//-----------------------------------------------------------------------------
 // Function: EditableTableView::onRemoveAction()
 //-----------------------------------------------------------------------------
 void EditableTableView::onRemoveAction()
@@ -442,53 +383,6 @@ void EditableTableView::onCutAction()
 
     QApplication::clipboard()->setText(copyText);
     QApplication::restoreOverrideCursor();
-}
-
-//-----------------------------------------------------------------------------
-// Function: EditableTableView::setupActions()
-//-----------------------------------------------------------------------------
-void EditableTableView::setupActions()
-{
-	addAction_.setToolTip(tr("Add a new row to table"));
-	addAction_.setStatusTip(tr("Add a new row to table"));
-	connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
-	addAction_.setShortcut(QKeySequence::InsertLineSeparator);
-
-	removeAction_.setToolTip(tr("Remove a row from the table"));
-	removeAction_.setStatusTip(tr("Remove a row from the table"));
-	connect(&removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
-    removeAction_.setShortcut(Qt::SHIFT + Qt::Key_Delete);
-
-	copyAction_.setToolTip(tr("Copy the contents of a cell from the table"));
-	copyAction_.setStatusTip(tr("Copy the contents of a cell from the table"));
-	connect(&copyAction_, SIGNAL(triggered()), this, SLOT(onCopyAction()), Qt::UniqueConnection);
-	copyAction_.setShortcut(QKeySequence::Copy);
-
-	pasteAction_.setToolTip(tr("Paste the contents of a cell to the table"));
-	pasteAction_.setStatusTip(tr("Paste the contents of a cell to the table"));
-	connect(&pasteAction_, SIGNAL(triggered()), this, SLOT(onPasteAction()), Qt::UniqueConnection);
-	pasteAction_.setShortcut(QKeySequence::Paste);
-
-	clearAction_.setToolTip(tr("Clear the contents of a cell"));
-	clearAction_.setStatusTip(tr("Clear the contents of a cell"));
-	connect(&clearAction_, SIGNAL(triggered()),	this, SLOT(onClearAction()), Qt::UniqueConnection);
-	clearAction_.setShortcut(QKeySequence::Delete);
-
-	importAction_.setToolTip(tr("Import a csv-file to table"));
-	importAction_.setStatusTip(tr("Import a csv-file to table"));
-	connect(&importAction_, SIGNAL(triggered()), this, SLOT(onCSVImport()), Qt::UniqueConnection);
-
-	exportAction_.setToolTip(tr("Export table to a csv-file"));
-	exportAction_.setStatusTip(tr("Export table to a csv-file"));
-	connect(&exportAction_, SIGNAL(triggered()), this, SLOT(onCSVExport()), Qt::UniqueConnection);
-
-    copyElementAction_.setToolTip(tr("Copy a row from the table"));
-    copyElementAction_.setStatusTip(tr("Copy a row from the table"));
-    connect(&copyElementAction_, SIGNAL(triggered()), this, SLOT(onCopyElementAction()), Qt::UniqueConnection);
-
-    pasteElementAction_.setToolTip(tr("Paste a row from the table"));
-    pasteElementAction_.setStatusTip(tr("Paste a row from the table"));
-    connect(&pasteElementAction_, SIGNAL(triggered()), this, SIGNAL(pasteRows()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -841,6 +735,100 @@ void EditableTableView::setModel(QAbstractItemModel* model)
         // set the width for the column
         setColumnWidth(i, qMax(contentSize, headerSize));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::setupActions()
+//-----------------------------------------------------------------------------
+void EditableTableView::setupActions()
+{
+    addAction(&addAction_);
+    addAction_.setToolTip(tr("Add a new row to table"));
+    addAction_.setStatusTip(tr("Add a new row to table"));
+    addAction_.setShortcut(QKeySequence::InsertLineSeparator);
+    addAction_.setShortcutContext(Qt::WidgetShortcut);
+    connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
+
+    addAction(&removeAction_);
+    removeAction_.setToolTip(tr("Remove a row from the table"));
+    removeAction_.setStatusTip(tr("Remove a row from the table"));    
+    removeAction_.setShortcut(Qt::SHIFT + Qt::Key_Delete);
+    removeAction_.setShortcutContext(Qt::WidgetShortcut);
+    connect(&removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
+
+    addAction(&cutAction_);
+    cutAction_.setToolTip(tr("Cut the contents of a cell from the table"));
+    cutAction_.setStatusTip(tr("Cut the contents of a cell from the table"));
+    cutAction_.setShortcut(QKeySequence::Cut);
+    cutAction_.setShortcutContext(Qt::WidgetShortcut);
+    connect(&cutAction_, SIGNAL(triggered()), this, SLOT(onCutAction()), Qt::UniqueConnection);
+
+    addAction(&copyAction_);
+    copyAction_.setToolTip(tr("Copy the contents of a cell from the table"));
+    copyAction_.setStatusTip(tr("Copy the contents of a cell from the table"));
+    copyAction_.setShortcut(QKeySequence::Copy);
+    copyAction_.setShortcutContext(Qt::WidgetShortcut);
+    connect(&copyAction_, SIGNAL(triggered()), this, SLOT(onCopyAction()), Qt::UniqueConnection);
+
+    addAction(&pasteAction_);
+    pasteAction_.setToolTip(tr("Paste the contents of a cell to the table"));
+    pasteAction_.setStatusTip(tr("Paste the contents of a cell to the table"));
+    pasteAction_.setShortcut(QKeySequence::Paste);
+    pasteAction_.setShortcutContext(Qt::WidgetShortcut);
+    connect(&pasteAction_, SIGNAL(triggered()), this, SLOT(onPasteAction()), Qt::UniqueConnection);
+
+    addAction(&clearAction_);
+    clearAction_.setToolTip(tr("Clear the contents of a cell"));
+    clearAction_.setStatusTip(tr("Clear the contents of a cell"));
+    clearAction_.setShortcut(QKeySequence::Delete);
+    clearAction_.setShortcutContext(Qt::WidgetShortcut);
+    connect(&clearAction_, SIGNAL(triggered()),	this, SLOT(onClearAction()), Qt::UniqueConnection);
+
+    addAction(&importAction_);
+    importAction_.setToolTip(tr("Import a csv-file to table"));
+    importAction_.setStatusTip(tr("Import a csv-file to table"));    
+    connect(&importAction_, SIGNAL(triggered()), this, SLOT(onCSVImport()), Qt::UniqueConnection);
+
+    addAction(&exportAction_);
+    exportAction_.setToolTip(tr("Export table to a csv-file"));
+    exportAction_.setStatusTip(tr("Export table to a csv-file"));
+    connect(&exportAction_, SIGNAL(triggered()), this, SLOT(onCSVExport()), Qt::UniqueConnection);
+
+    addAction(&copyElementAction_);
+    copyElementAction_.setToolTip(tr("Copy a row from the table"));
+    copyElementAction_.setStatusTip(tr("Copy a row from the table"));
+    connect(&copyElementAction_, SIGNAL(triggered()), this, SLOT(onCopyElementAction()), Qt::UniqueConnection);
+
+    addAction(&pasteElementAction_);
+    pasteElementAction_.setToolTip(tr("Paste a row from the table"));
+    pasteElementAction_.setStatusTip(tr("Paste a row from the table"));
+    connect(&pasteElementAction_, SIGNAL(triggered()), this, SIGNAL(pasteRows()), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::countRows()
+//-----------------------------------------------------------------------------
+int EditableTableView::countRows(QModelIndexList const& indexes)
+{
+    if (indexes.empty())
+    {
+        return 0;
+    }
+
+    int rows = 1;
+
+    int previousRow = indexes.first().row();
+    foreach (QModelIndex index, indexes)
+    {
+        if (index.row() != previousRow)
+        {
+            rows++;
+        }
+
+        previousRow = index.row();
+    }
+
+    return rows;
 }
 
 //-----------------------------------------------------------------------------

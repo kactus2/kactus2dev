@@ -58,7 +58,7 @@ QVariant ListManagerModel::data( const QModelIndex& index, int role) const {
 	}
 
 	// return data for display role
-	if (role == Qt::DisplayRole) {
+	if (role == Qt::DisplayRole || role == Qt::EditRole) {
 		return items_.at(index.row());
 	}
 	// if unsupported role

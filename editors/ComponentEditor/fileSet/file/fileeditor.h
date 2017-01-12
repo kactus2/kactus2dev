@@ -70,6 +70,9 @@ signals:
     //! Emitted when the file should be run.
     void runFile();
 
+    //! Emitted when the containing folder should be opened.
+    void openContainingFolder();
+
 protected:
 
     /*!
@@ -122,12 +125,6 @@ private:
     //! The editor for the file name and description.
     FileNameEditor nameEditor_;
 
-    //! The button for editing the current file.
-    QPushButton* editButton_;
-
-    //! The button for running the current file.
-    QPushButton* runButton_;
-
     //! Editor for the files general settings.
     FileGeneralEditor generalEditor_;
 
@@ -145,6 +142,15 @@ private:
 
     //! Editor for the image types of a file.
     ListManager imageTypesEditor_;
+
+    //! The button for editing the current file.
+    QPushButton* editButton_;
+
+    //! The button for running the current file.
+    QPushButton* runButton_;
+
+    //! The button for opening containing folder.
+    QPushButton* openFolderButton_;
 };
 
 #endif // FILEEDITOR_H

@@ -14,6 +14,8 @@ QWidget(parent),
 model_(this),
 view_(this) {
 
+    setFocusProxy(&view_);
+
 	// the signals from the view
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(remove(const QModelIndex&)), Qt::UniqueConnection);

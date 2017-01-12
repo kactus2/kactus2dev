@@ -18,6 +18,7 @@
 #include <QGridLayout>
 #include <QFormLayout>
 #include <QLabel>
+#include <QScrollArea>
 #include <QStringList>
 #include <QVBoxLayout>
 
@@ -195,9 +196,7 @@ void ComponentInstantiationEditor::onConfigurationChange()
 void ComponentInstantiationEditor::onFileSetRefChange()
 {
     componentInstantiation_->getFileSetReferences()->clear();
-
     componentInstantiation_->getFileSetReferences()->append(fileSetRefs_.items());
-
 
 	emit contentChanged();
 }
@@ -216,6 +215,19 @@ void ComponentInstantiationEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void ComponentInstantiationEditor::setupLayout()
 {
+    nameGroupEditor_.setMaximumHeight(QWIDGETSIZE_MAX);
+
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    QVBoxLayout* scrollLayout = new QVBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+
+    QWidget* topWidget = new QWidget(scrollArea);
+    topWidget->setContentsMargins(0, 0, 0, 0);
+
     QGroupBox* implementationGroup = new QGroupBox(tr("Implementation details"), this);
 
     QGridLayout* implementationLayout = new QGridLayout(implementationGroup);
@@ -238,17 +250,17 @@ void ComponentInstantiationEditor::setupLayout()
     implementationLayout->addWidget(new QLabel(tr("Configuration:"), this), 5, 0, 1, 1);
     implementationLayout->addWidget(&configurationEditor_, 5, 1, 1, 2);
 
-    QHBoxLayout* nameAndImplementationLayout = new QHBoxLayout();
-    nameAndImplementationLayout->addWidget(&nameGroupEditor_, 0, Qt::AlignTop);
-    nameAndImplementationLayout->addWidget(implementationGroup);
-
-    QHBoxLayout* fileSetAndBuildLayout = new QHBoxLayout();
-    fileSetAndBuildLayout->addWidget(&fileSetRefs_);
-    fileSetAndBuildLayout->addWidget(&fileBuilders_);
-
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addLayout(nameAndImplementationLayout);
-    topLayout->addLayout(fileSetAndBuildLayout);
-    topLayout->addWidget(&moduleParameters_, 1);
+    QGridLayout* topLayout = new QGridLayout(topWidget);
+    topLayout->addWidget(&nameGroupEditor_, 0, 0, 1, 1);
+    topLayout->addWidget(implementationGroup, 0, 1, 1, 1);
+    topLayout->addWidget(&fileSetRefs_, 1, 0, 1, 1);
+    topLayout->addWidget(&fileBuilders_, 1, 1, 1, 1);
+    topLayout->addWidget(&moduleParameters_, 2, 0, 1, 2);
     topLayout->setContentsMargins(0, 0, 0, 0);
+
+    topLayout->setRowStretch(0, 1);
+    topLayout->setRowStretch(1, 2);
+    topLayout->setRowStretch(2, 5);
+
+    scrollArea->setWidget(topWidget);
 }

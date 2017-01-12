@@ -139,28 +139,26 @@ int ConfigurableElementsModel::rowCount( const QModelIndex& parent /*= QModelInd
         return rootItems_.size();
     }
 
-    else
+    foreach (QString* rootItem, rootItems_)
     {
-        foreach (QString* rootItem, rootItems_)
+        if (rootItem == parent.internalPointer())
         {
-            if (rootItem == parent.internalPointer())
+            QString parentItemName = *rootItem;
+            int numberOfRows = 0;
+
+            foreach (QSharedPointer<Parameter> parameter, *configurableElements_)
             {
-                QString parentItemName = *rootItem;
-                int numberOfRows = 0;
-
-                foreach (QSharedPointer<Parameter> parameter, *configurableElements_)
+                if (parameter->getAttribute(QLatin1String("kactus2:rootItem")) == parentItemName)
                 {
-                    if (parameter->getAttribute("kactus2:rootItem") == parentItemName)
-                    {
-                        ++numberOfRows;
-                    }
+                    ++numberOfRows;
                 }
-
-                return numberOfRows;
             }
+
+            return numberOfRows;
         }
-        return 0;
     }
+
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -187,7 +185,7 @@ QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*=
         {
             QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
 
-            if (element->getValueAttribute("kactus2:defaultValue").isEmpty())
+            if (element->getValueAttribute(QLatin1String("kactus2:defaultValue")).isEmpty())
             {
                 return QColor(Qt::red);
             }
@@ -470,7 +468,7 @@ QSharedPointer<Parameter> ConfigurableElementsModel::getIndexedConfigurableEleme
 
             foreach (QSharedPointer<Parameter> element, *configurableElements_)
             {
-                if (element->getAttribute("kactus2:rootItem") == *rootItem)
+                if (element->getAttribute(QLatin1String("kactus2:rootItem")) == *rootItem)
                 {
                     if (childRow == row)
                     {
@@ -614,7 +612,7 @@ QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const&
         }
         else if (index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
         {
-            return element->getValueAttribute("kactus2:defaultValue");
+            return element->getValueAttribute(QLatin1String("kactus2:defaultValue"));
         }
     }
 
@@ -923,7 +921,7 @@ QModelIndex ConfigurableElementsModel::parent(const QModelIndex & child) const
     }
 
     Parameter* childItem = static_cast<Parameter*>(child.internalPointer());
-    QString parentName = childItem->getAttribute("kactus2:rootItem");
+    QString parentName = childItem->getAttribute(QLatin1String("kactus2:rootItem"));
 
     for (int i = 0; i < rootItems_.size(); ++i)
     {
@@ -957,7 +955,7 @@ bool ConfigurableElementsModel::isIndexValid(QModelIndex const& index) const
         int elementsWithThisParent = 0;
         foreach (QSharedPointer<Parameter> element, *configurableElements_)
         {
-            if (element->getAttribute("kactus2:rootItem") == parentName)
+            if (element->getAttribute(QLatin1String("kactus2:rootItem")).compare(parentName) == 0)
             {
                 ++elementsWithThisParent;
             }
@@ -979,7 +977,7 @@ bool ConfigurableElementsModel::isElementDeletable(QModelIndex const& index) con
 {
     QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
 
-    if (element->getValueAttribute("kactus2:defaultValue").isEmpty())
+    if (element->getValueAttribute(QLatin1String("kactus2:defaultValue")).isEmpty())
     {
         return true;
     }

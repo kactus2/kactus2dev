@@ -16,6 +16,7 @@
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/Component.h>
 
+#include <QScrollArea>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -25,29 +26,30 @@ FileEditor::FileEditor(LibraryInterface* handler, QSharedPointer<Component> comp
             QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
             QWidget *parent):
 ItemEditor(component, handler, parent),
-file_(file),
-nameEditor_(file_, this),
-editButton_(new QPushButton(QIcon(":/icons/common/graphics/settings-code_editor.png"), tr("Edit file"), this)),
-runButton_(new QPushButton(QIcon(":/icons/common/graphics/plugin-generator.png"), tr("Run file"), this)),
-generalEditor_(this, file),
-fileTypeEditor_(this, file),
-buildCommand_(file, handler->getDirectoryPath(component->getVlnv()), parameterFinder, expressionParser, this),
-dependenciesEditor_(tr("Dependencies"), handler, component, this),
-exportedNamesEditor_(tr("Exported names"), this),
-imageTypesEditor_(tr("Image types"), this)
+    file_(file),
+    nameEditor_(file_, this),
+    generalEditor_(this, file),
+    fileTypeEditor_(this, file),
+    buildCommand_(file, handler->getDirectoryPath(component->getVlnv()), parameterFinder, expressionParser, this),
+    dependenciesEditor_(tr("Dependencies"), handler, component, this),
+    exportedNamesEditor_(tr("Exported names"), this),
+    imageTypesEditor_(tr("Image types"), this),
+    editButton_(new QPushButton(QIcon(":/icons/common/graphics/settings-code_editor.png"), tr("Edit file"), this)),
+    runButton_(new QPushButton(QIcon(":/icons/common/graphics/plugin-generator.png"), tr("Run file"), this)),
+    openFolderButton_(new QPushButton(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), 
+        tr("Open containing folder"), this))
 {
     dependenciesEditor_.initialize();
     exportedNamesEditor_.initialize();
     imageTypesEditor_.initialize();
     fileTypeEditor_.initialize();
 
-    editButton_->setIconSize(QSize(16, 16));
-    runButton_->setIconSize(QSize(16, 16));
-
     setupLayout();
 
     connect(editButton_, SIGNAL(clicked(bool)), this, SIGNAL(editFile()), Qt::UniqueConnection);
     connect(runButton_, SIGNAL(clicked(bool)), this, SIGNAL(runFile()), Qt::UniqueConnection);
+    connect(openFolderButton_, SIGNAL(clicked(bool)), this, SIGNAL(openContainingFolder()), Qt::UniqueConnection);
+
     connect(&generalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&fileTypeEditor_, SIGNAL(contentChanged()), this, SLOT(onFileTypesChanged()), Qt::UniqueConnection);
     connect(&buildCommand_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -146,31 +148,41 @@ void FileEditor::onImageTypesChanged()
 //-----------------------------------------------------------------------------
 void FileEditor::setupLayout()
 {
+    QScrollArea* scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    QVBoxLayout* scrollLayout = new QVBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+
     QHBoxLayout* buttonLayout = new QHBoxLayout();
-    buttonLayout->addWidget(editButton_, 0, Qt::AlignTop);
-    buttonLayout->addWidget(runButton_, 0, Qt::AlignTop);
+    buttonLayout->addWidget(editButton_);
+    buttonLayout->addWidget(runButton_);
+    buttonLayout->addWidget(openFolderButton_);
     buttonLayout->addStretch(1);
 
-    nameEditor_.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    QWidget* topWidget = new QWidget(scrollArea);
+    topWidget->setContentsMargins(0, 0, 0, 0);
 
-    QVBoxLayout* leftSideLayout = new QVBoxLayout();
-    leftSideLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
-    leftSideLayout->addLayout(buttonLayout);
-    leftSideLayout->addWidget(&generalEditor_, 0, Qt::AlignTop);
-    leftSideLayout->addWidget(&buildCommand_, 0, Qt::AlignTop);
-
-    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addLayout(leftSideLayout);
-    topOfPageLayout->addWidget(&fileTypeEditor_);
-
-    QHBoxLayout* bottomLayout = new QHBoxLayout();
-    bottomLayout->addWidget(&dependenciesEditor_);
-    bottomLayout->addWidget(&exportedNamesEditor_);
-    bottomLayout->addWidget(&imageTypesEditor_);
-
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    QGridLayout* topLayout = new QGridLayout(topWidget);
     topLayout->setContentsMargins(0, 0, 0, 0);
-    topLayout->addLayout(topOfPageLayout);
-    topLayout->addLayout(bottomLayout);
-    topLayout->addStretch(1);
+
+    topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
+    topLayout->addWidget(&fileTypeEditor_, 0, 1, 1, 1);
+    topLayout->addWidget(&generalEditor_, 1, 0, 1, 1);
+    topLayout->addWidget(&dependenciesEditor_, 1, 1, 1, 1);
+    topLayout->addWidget(&buildCommand_, 2, 0, 1, 1);
+    topLayout->addWidget(&exportedNamesEditor_, 2, 1, 1, 1);
+    topLayout->addWidget(&imageTypesEditor_, 3, 0, 1, 1);
+    topLayout->addLayout(buttonLayout, 4, 0, 1, 2);
+
+    topLayout->setRowStretch(0, 1);
+    topLayout->setRowStretch(1, 1);
+    topLayout->setRowStretch(2, 1);
+    topLayout->setRowStretch(3, 2);
+    topLayout->setRowStretch(4, 1);
+    topLayout->setRowStretch(5, 6);    
+
+    scrollArea->setWidget(topWidget);
 }

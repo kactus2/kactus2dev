@@ -21,7 +21,7 @@ QWidget* ComboDelegate::createEditor( QWidget* parent,
 									 const QModelIndex&) const {
 
 	QComboBox* combo = new QComboBox(parent);
-	combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+	
 	combo->setMinimumHeight(ComboDelegate::MINIMUM_EDITOR_HEIGHT);
 	return combo;
 }

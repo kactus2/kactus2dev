@@ -26,6 +26,7 @@
 
 #include <IPXACTmodels/Component/validators/FileValidator.h>
 
+#include <QApplication>
 #include <QDesktopServices>
 #include <QFileInfo>
 #include <QFileDialog>
@@ -105,6 +106,7 @@ ItemEditor* ComponentEditorFileItem::editor()
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
         connect(editor_, SIGNAL(editFile()), this, SLOT(openItem()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(runFile()), this, SLOT(run()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(openContainingFolder()), this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
 	}
@@ -217,8 +219,12 @@ QString ComponentEditorFileItem::fileAbsolutePath() const
 //-----------------------------------------------------------------------------
 void ComponentEditorFileItem::runInApplication(QString const& applicationPath)
 {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
+
     QStringList arguments(fileAbsolutePath());
     QProcess::startDetached(applicationPath, arguments);
+
+    QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------
@@ -311,10 +317,12 @@ QString ComponentEditorFileItem::resolveEnvironmentVariables(QString const& text
 //-----------------------------------------------------------------------------
 void ComponentEditorFileItem::onOpenContainingFolder()
 {
+    QApplication::setOverrideCursor(Qt::WaitCursor);
 	QString path = QFileInfo(fileAbsolutePath()).absolutePath();
 
 	// Open the folder in the operating system's default file browser.
 	QDesktopServices::openUrl(QUrl::fromLocalFile(path));
+    QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------

@@ -14,21 +14,6 @@
 //-----------------------------------------------------------------------------
 // Function: NameGroupEditor::NameGroupEditor()
 //-----------------------------------------------------------------------------
-NameGroupEditor::NameGroupEditor( NameGroup& nameGroup,
-								 QWidget *parent,
-								 const QString& title /*= QString("Names")*/ ):
-QGroupBox(title, parent),
-nameGroup_(nameGroup),
-nameEdit_(this),
-displayNameEdit_(this),
-descriptionEdit_(this)
-{
-    setupLayout();
-}
-
-//-----------------------------------------------------------------------------
-// Function: NameGroupEditor::NameGroupEditor()
-//-----------------------------------------------------------------------------
 NameGroupEditor::NameGroupEditor(QSharedPointer<NameGroup> nameGroup, 
     QWidget* parent, const QString& title) :
 QGroupBox(title, parent),
@@ -37,6 +22,8 @@ QGroupBox(title, parent),
     displayNameEdit_(this),
     descriptionEdit_(this)
 {
+    descriptionEdit_.setTabChangesFocus(true);
+
     setupLayout();
 }
 

@@ -51,7 +51,7 @@ QWidget* FileSetsDelegate::createEditor(QWidget* parent, const QStyleOptionViewI
     {
         ListEditor* editor = new ListEditor(parent);
         editor->setMinimumHeight(FileSetsDelegate::LIST_EDITOR_MIN_HEIGHT);
-
+        
         // set the editing delegate for the editor
         GroupManagerDelegate* groupDelegate = new GroupManagerDelegate(parent);
         editor->setItemDelegate(groupDelegate);

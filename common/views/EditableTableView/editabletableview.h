@@ -147,9 +147,6 @@ protected:
 	//! Handler for mouse move events
 	virtual void mouseMoveEvent(QMouseEvent* e);
 
-	//! Handler for key press events
-	virtual void keyPressEvent(QKeyEvent* event);
-
 	//! Handler for mouse double click events
 	virtual void mouseDoubleClickEvent(QMouseEvent* event);
 
@@ -170,6 +167,9 @@ protected:
 
 	//! Action to remove item
 	QAction removeAction_;
+
+    //! Action to cut item
+    QAction cutAction_;
 
 	//! Action to copy item
 	QAction copyAction_;

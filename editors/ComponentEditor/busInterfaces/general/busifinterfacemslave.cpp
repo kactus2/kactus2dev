@@ -42,8 +42,8 @@ expressionParser_(expressionParser),
 parameterFinder_(parameterFinder)
 {
     QString functionSymbol(0x0192);
-	QLabel* remapLabel = new QLabel(tr("Remap address") + ", " + functionSymbol + "(x)", this);
-	QLabel* rangeLabel = new QLabel(tr("Range") + ", " + functionSymbol + "(x)", this);
+	QLabel* remapLabel = new QLabel(tr("Remap address") + ", " + functionSymbol + "(x):", this);
+	QLabel* rangeLabel = new QLabel(tr("Range") + ", " + functionSymbol + "(x):", this);
 
     remapEditor_->setFixedHeight(20);
     rangeEditor_->setFixedHeight(20);
@@ -63,12 +63,12 @@ parameterFinder_(parameterFinder)
     rangeEditor_->setAppendingCompleter(rangeCompleter);
 
 	QGridLayout* topLayout = new QGridLayout(this);
-	topLayout->addWidget(remapLabel, 0, 0, Qt::AlignLeft);
-    topLayout->addWidget(remapEditor_, 0, 1, Qt::AlignLeft);
-	topLayout->addWidget(rangeLabel, 1, 0, Qt::AlignLeft);
-    topLayout->addWidget(rangeEditor_, 1, 1, Qt::AlignLeft);
+	topLayout->addWidget(remapLabel, 0, 0, 1, 1);
+    topLayout->addWidget(remapEditor_, 0, 1, 1, 1);
+	topLayout->addWidget(rangeLabel, 1, 0, 1, 1);
+    topLayout->addWidget(rangeEditor_, 1, 1, 1, 1);
 
-	topLayout->setColumnStretch(2, 1);
+	topLayout->setColumnStretch(1, 1);
 	topLayout->setRowStretch(2, 1);
 
     connect(remapEditor_, SIGNAL(editingFinished()), this, SLOT(onRemapChange()), Qt::UniqueConnection);

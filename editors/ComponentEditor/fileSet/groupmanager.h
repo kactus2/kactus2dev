@@ -1,53 +1,50 @@
-/* 
- *
- *  Created on: 4.2.2011
- *      Author: Antti Kamppi
- * 		filename: groupmanager.h
- */
+//-----------------------------------------------------------------------------
+// File: groupmanager.h
+//-----------------------------------------------------------------------------
+// Project: Kactus 2
+// Author: Antti Kamppi
+// Date: 04.02.2011
+//
+// Description:
+// GroupManager is a widget to manage group names within FileSet.
+//-----------------------------------------------------------------------------
 
 #ifndef GROUPMANAGER_H
 #define GROUPMANAGER_H
 
 #include <common/widgets/listManager/listmanager.h>
 
-/*! \brief GroupManager is a widget to manage group names within FileSet.
- *
- * This widget inherits ListManager and redefines the onAdd and onEdit slots.
- */
-class GroupManager : public ListManager {
+//-----------------------------------------------------------------------------
+//! GroupManager is a widget to manage group names within FileSet.
+//-----------------------------------------------------------------------------
+class GroupManager : public ListManager
+{
 	Q_OBJECT
 
 public:
 
-	
-	/*! \brief The constructor.
+	/*! The constructor.
 	 *
-	 * \param title The title for the QGroupBox.
-	 * \param parent Pointer to the owner of this widget.
-	 *
-	*/
-	GroupManager(const QString title = tr("Group identifiers"), 
-		QWidget *parent = 0);
+	 *      @param [in] title   The title for the QGroupBox.
+	 *      @param [in] parent  The owner of this widget.
+	 */
+	GroupManager(QString const& title = tr("Group identifiers"), QWidget* parent = 0);
 
-	//! \brief The destructor
+	//! The destructor
 	virtual ~GroupManager();
 
-	/*! \brief Initialize the group manager.
+	/*! Initialize the group manager.
 	 *
-	 * This function must be called after creating the group manager and before
-	 * using it.
+	 * This function must be called after creating the group manager and before using it.
 	 * 
-	 * \param items QStringList that contains the items to add to the widget.
-	 *
+	 *      @param [in] items   The items to add to the widget.
 	*/
-	virtual void initialize(const QStringList& items = QStringList());
+	virtual void initialize(QStringList const& items = QStringList());
 
 private:
 
 	//! No copying
 	GroupManager(const GroupManager& other);
-
-	//! No assignment
 	GroupManager& operator=(const GroupManager& other);
 	
 };
