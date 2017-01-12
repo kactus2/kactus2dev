@@ -15,6 +15,9 @@
 #include <QSharedPointer>
 #include <QString>
 
+#include <QMap>
+#include <QMultiMap>
+
 class Component;
 class ComponentInstance;
 class ComponentInstantiation;
@@ -26,6 +29,70 @@ class AbstractionType;
 class AbstractionDefinition;
 class Port;
 class Parameter;
+
+struct  MetaPort;
+
+struct MetaWire
+{
+    //! The bounds of the wire.
+    QPair<QString,QString> bounds_;
+    //! The name of the wire, to tell it apart from other wires of the same interconnection.
+    QString name_;
+
+    QList<QSharedPointer<MetaPort> > hierPorts_;
+};
+
+struct MetaPortAssignMent
+{
+    //! The bounds of the assignment.
+    QPair<QString,QString> bounds_;
+    //! The wire of interconnection where port is assigned. Is null if there is none.
+    QSharedPointer<MetaWire> wire_;
+    //! The assigned and parsed default value: Either a tie-off or the abstraction definition default.
+    QString defaultValue_;
+};
+
+struct MetaPort
+{
+    //! The matching IP-XACT port.
+    QSharedPointer<Port> port_;
+    //! The parsed vector bounds for the port.
+    QPair<QString,QString> vectorBounds_;
+    //! The parsed array bounds for the port.
+    QPair<QString,QString> arrayBounds_;
+    //! The parsed default value for port.
+    QString defaultValue_;
+    
+    QMultiMap<QString, QSharedPointer<MetaPortAssignMent> > assignments_;
+};
+
+struct  MetaInterface;
+
+struct MetaInterconnection
+{
+    //! The name of the interconnection, to tell it apart from other interconnections of the design.
+    QString name_;
+
+    QMap<QString, QSharedPointer<MetaWire> > wires_;
+
+    QList<QSharedPointer<MetaInterface> > hierIfs_;
+};
+
+struct MetaInterface
+{
+    //! The matching IP-XACT interface.
+    QSharedPointer<BusInterface> interface_;
+    //! The used abstraction type.
+    QSharedPointer<AbstractionType> absType_;
+    //! The abstraction definition of the abstraction type.
+    QSharedPointer<AbstractionDefinition> absDef_;
+    //! The used interface mode.
+    QString mode_;
+    //! The parsed ports of the component keyed with its physical name.
+    QMap<QString, QSharedPointer<MetaPort> > ports_;
+    //! The interconnection attached to the interface.
+    QSharedPointer<MetaInterconnection> interconnection_;
+};
 
 struct GenerationField
 {
