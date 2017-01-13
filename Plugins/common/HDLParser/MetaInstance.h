@@ -41,7 +41,6 @@ public:
 	MetaInstance(LibraryInterface* library,
         QSharedPointer<Component> component,
         QSharedPointer<View> activeView,
-        QSharedPointer<ComponentInstance> componentInstance,
         QSharedPointer<ListParameterFinder> topFinder,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs);
 
@@ -54,6 +53,8 @@ public:
     QMap<QString,QSharedPointer<MetaInterface> > interfaces_;
     //! The parsed ad-hoc ports of the component keyed with its physical name.
     QMap<QString,QSharedPointer<MetaPort> > adHocPorts_;
+    //! The module name for HDL.
+    QString moduleName_;
 
 private:
 	// Disable copying.
@@ -110,14 +111,8 @@ private:
     //! The active view of the instance.
     QSharedPointer<View> activeView_;
 
-    //! The matching IP-XACT component instance.
-    QSharedPointer<ComponentInstance> componentInstance_;
-
     //! The component instantiation referred by the active view.
     QSharedPointer<ComponentInstantiation> activeInstantiation_;
-
-    //! The module name for HDL.
-    QString moduleName_;
 };
 
 #endif // METAINSTANCE_H

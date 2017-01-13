@@ -13,8 +13,6 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
 #include <IPXACTmodels/Design/Design.h>
@@ -29,6 +27,8 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/Component/Model.h>
+
+#include <QQueue>
 
 //-----------------------------------------------------------------------------
 // Function: MetaDesign::MetaDesign()
@@ -55,28 +55,90 @@ MetaDesign::~MetaDesign()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaDesign::parseDesign()
+// Function: MetaDesign::parseHierarchy()
 //-----------------------------------------------------------------------------
-void MetaDesign::parseDesign(QSharedPointer<GenerationComponent> topComponent,
-    QSharedPointer<View> topComponentView, QSharedPointer<GenerationInstance> topInstance)
+void MetaDesign::parseHierarchy(LibraryInterface* library, QSharedPointer<Component> topComponent,
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf,
+    QSharedPointer<View> topComponentView)
 {
-    parseInstances();
-    parseInsterconnections();
+    // Creating null parameters for function call.
+    QSharedPointer<ListParameterFinder> topFinder;
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs;
+
+    // Instantiate the top component with the selected design.
+    // Obviously it cannot have CEVs or parameters of any other component.
+    QSharedPointer<MetaInstance> topMostInstance(new MetaInstance
+        (library, topComponent, topComponentView, topFinder, cevs));
+
+    // Create the design associated with the top component.
+    QSharedPointer<MetaDesign> topMostDesign(new MetaDesign(library, design, designConf, topMostInstance));
+
+    // Add it to the queue of designs that are to be parsed.
+    QQueue<QSharedPointer<MetaDesign> > designs;
+    designs.enqueue(topMostDesign);
+
+    // How many sub designs are encountered while parsing.
+    int countOfSubDesigns = 0;
+    // How many sub design are allowed in a hierarchy in maximum.
+    const int MAXIMUM_SUBDESIGNS = 1000;
+
+    // Each module name, except the topmost instance, is associated with the count of the same name.
+    QMap<QString,int> names;
+
+    // Parse designs until no more are encountered.
+    while (!designs.isEmpty())
+    {
+         // In each iteration the next from the queue and parse it.
+         QSharedPointer<MetaDesign> currentDesign = designs.dequeue();
+         currentDesign->parseDesign();
+
+         // Now take the encountered sub designs into consideration.
+         countOfSubDesigns += currentDesign->subDesigns_.count();
+
+         // Must not have too many.
+         if (countOfSubDesigns >= MAXIMUM_SUBDESIGNS)
+         {
+             //emit reportError(tr("Hit the limit: %1 DESIGNS IN ONE HIERARCHY!!!").arg(MAXIMUM_SUBDESIGNS));
+             return;
+         }
+
+         foreach (QSharedPointer<MetaDesign> subDesign, currentDesign->subDesigns_)
+         {
+             // Put the sub design to the queue of designs that are to be parsed.
+             designs.enqueue(subDesign);
+
+             // Take the module name associated with the instantiated top component.
+             QString name = subDesign->topInstance_->moduleName_;
+
+             // Find the name from the set of existing names.
+             QMap<QString,int>::iterator nameIter = names.find(name);
+             int count = 0;
+
+             if (nameIter == names.end())
+             {
+                 // This is the first encounter, so insert it to the list.
+                 names.insert(name,1);
+             }
+             else
+             {
+                 // This is not the first one -> See how many there are so far and increase the count.
+                 count = *nameIter;
+                 *nameIter = count + 1;
+             }
+
+             // Set the module name as the existing module name + number of encounter before this one.
+             subDesign->topInstance_->moduleName_ = name + "_" + QString::number(count);
+         }
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaDesign::parseExpression()
+// Function: MetaDesign::parseDesign()
 //-----------------------------------------------------------------------------
-QString MetaDesign::parseExpression(IPXactSystemVerilogParser& parser, const QString& expression) const
+void MetaDesign::parseDesign()
 {
-    QString value = parser.parseExpression(expression);
-
-    if (value == "x")
-    {
-        return "0";
-    }
-
-    return value;
+    parseInstances();
+    parseInsterconnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +186,7 @@ void MetaDesign::parseInstances()
 
         // Now create the instance, using what we know as the parameters.
         QSharedPointer<MetaInstance> mInstance(new MetaInstance
-            (library_, component, activeView, instance, topFinder_, cevs));
+            (library_, component, activeView, topFinder_, cevs));
         // Map using the name.
         instances_.insert(instance->getInstanceName(), mInstance);
 
@@ -258,7 +320,7 @@ void MetaDesign::parseInsterconnections()
 
             foreach (QSharedPointer<PortAbstraction> pAbs, *absDef->getLogicalPorts())
             {
-                QSharedPointer<MetaWire> mWire = QSharedPointer<MetaWire>(new MetaWire);
+                QSharedPointer<MetaWire> mWire(new MetaWire);
                 mWire->name_ = mIterconnect->name_ + pAbs->getLogicalName();
 
                 foreach (QSharedPointer<MetaInterface> hierInterface, foundHierInterfaces)

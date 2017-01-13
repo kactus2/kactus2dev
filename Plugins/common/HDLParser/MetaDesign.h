@@ -20,8 +20,6 @@ class DesignConfiguration;
 class LibraryInterface;
 class ListParameterFinder;
 
-#include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
-
 //-----------------------------------------------------------------------------
 // An instantiated design with all its parameters, instances, and interconnections parsed.
 //-----------------------------------------------------------------------------
@@ -35,10 +33,9 @@ public:
     //! The destructor.
     ~MetaDesign();
 
-    void parseDesign(QSharedPointer<GenerationComponent> topComponent, QSharedPointer<View> topComponentView,
-        QSharedPointer<GenerationInstance> topInstance = QSharedPointer<GenerationInstance>());
-
-    QList<QSharedPointer<MetaDesign> > getSubDesigns(){return subDesigns_;}
+    static void parseHierarchy(LibraryInterface* library, QSharedPointer<Component> topComponent,
+        QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf,
+        QSharedPointer<View> topComponentView);
 
 private:
 
@@ -46,7 +43,7 @@ private:
     MetaDesign(MetaDesign const& rhs);
     MetaDesign& operator=(MetaDesign const& rhs);
 
-    QString parseExpression(IPXactSystemVerilogParser& parser, const QString& expression) const;
+    void parseDesign();
 
     void parseInstances();
 

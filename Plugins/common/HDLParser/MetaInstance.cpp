@@ -29,12 +29,10 @@
 MetaInstance::MetaInstance(LibraryInterface* library,
     QSharedPointer<Component> component,
     QSharedPointer<View> activeView,
-    QSharedPointer<ComponentInstance> componentInstance,
     QSharedPointer<ListParameterFinder> topFinder,
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs) :
     library_(library),
-    component_(component),
-    componentInstance_(componentInstance)
+    component_(component)
 {
     // Try to find a component instantiation for the view.
     if (activeView_)
@@ -128,6 +126,7 @@ void MetaInstance::cullParameters()
 void MetaInstance::parseParameters(IPXactSystemVerilogParser& parser,
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs)
 {
+    // If CEVs have been supplied, use them.
     if (cevs)
     {
         // Go through the culled parameters, find if any exists in CEVs.
