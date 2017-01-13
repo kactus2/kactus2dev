@@ -33,9 +33,15 @@ public:
     //! The destructor.
     ~MetaDesign();
 
-    static void parseHierarchy(LibraryInterface* library, QSharedPointer<Component> topComponent,
+    static QList<QSharedPointer<MetaDesign> > parseHierarchy(LibraryInterface* library, QSharedPointer<Component> topComponent,
         QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf,
         QSharedPointer<View> topComponentView);
+
+    QMap<QString,QSharedPointer<MetaInstance> > instances_;
+
+    QSharedPointer<MetaInstance> topInstance_;
+
+    QList<QSharedPointer<MetaInterconnection> > interconnections_;
 
 private:
 
@@ -70,12 +76,6 @@ private:
 
 	 //! The design configuration to parse.
 	 QSharedPointer<DesignConfiguration> designConf_;
-
-     QSharedPointer<MetaInstance> topInstance_;
-
-     QMap<QString,QSharedPointer<MetaInstance> > instances_;
-
-     QList<QSharedPointer<MetaInterconnection> > interconnections_;
      
      //! The list of all parsed designs that are below the current top are in this list.
      QList<QSharedPointer<MetaDesign> > subDesigns_;

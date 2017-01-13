@@ -73,6 +73,8 @@ MetaInstance::MetaInstance(LibraryInterface* library,
     IPXactSystemVerilogParser instanceParser(multiFinder);
 
     parseParameters(instanceParser, cevs);
+    parseInterfaces();
+    parsePorts(instanceParser);
 }
 
 //-----------------------------------------------------------------------------

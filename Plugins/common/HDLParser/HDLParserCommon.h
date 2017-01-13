@@ -66,7 +66,7 @@ struct MetaPort
     QMultiMap<QString, QSharedPointer<MetaPortAssignMent> > assignments_;
 };
 
-struct  MetaInterface;
+struct MetaInterface;
 
 struct MetaInterconnection
 {

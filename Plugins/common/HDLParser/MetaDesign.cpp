@@ -41,6 +41,7 @@ designConf_(designConf),
 topInstance_(topInstance),
 topFinder_(new ListParameterFinder)
 {
+    // Create the finder for the parameters coming from the top.
     QSharedPointer<QList<QSharedPointer<Parameter> > > toplist =
         QSharedPointer<QList<QSharedPointer<Parameter> > >
         (new QList<QSharedPointer<Parameter> >(topInstance->parameters_));
@@ -57,7 +58,7 @@ MetaDesign::~MetaDesign()
 //-----------------------------------------------------------------------------
 // Function: MetaDesign::parseHierarchy()
 //-----------------------------------------------------------------------------
-void MetaDesign::parseHierarchy(LibraryInterface* library, QSharedPointer<Component> topComponent,
+QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* library, QSharedPointer<Component> topComponent,
     QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf,
     QSharedPointer<View> topComponentView)
 {
@@ -85,12 +86,18 @@ void MetaDesign::parseHierarchy(LibraryInterface* library, QSharedPointer<Compon
     // Each module name, except the topmost instance, is associated with the count of the same name.
     QMap<QString,int> names;
 
+    // The list of parsed designs.
+    QList<QSharedPointer<MetaDesign> > retval;
+
     // Parse designs until no more are encountered.
     while (!designs.isEmpty())
     {
          // In each iteration the next from the queue and parse it.
          QSharedPointer<MetaDesign> currentDesign = designs.dequeue();
          currentDesign->parseDesign();
+
+         // Append to the list of returns.
+         retval.append(currentDesign);
 
          // Now take the encountered sub designs into consideration.
          countOfSubDesigns += currentDesign->subDesigns_.count();
@@ -99,7 +106,7 @@ void MetaDesign::parseHierarchy(LibraryInterface* library, QSharedPointer<Compon
          if (countOfSubDesigns >= MAXIMUM_SUBDESIGNS)
          {
              //emit reportError(tr("Hit the limit: %1 DESIGNS IN ONE HIERARCHY!!!").arg(MAXIMUM_SUBDESIGNS));
-             return;
+             return retval;
          }
 
          foreach (QSharedPointer<MetaDesign> subDesign, currentDesign->subDesigns_)
@@ -130,6 +137,8 @@ void MetaDesign::parseHierarchy(LibraryInterface* library, QSharedPointer<Compon
              subDesign->topInstance_->moduleName_ = name + "_" + QString::number(count);
          }
     }
+
+    return retval;
 }
 
 //-----------------------------------------------------------------------------
@@ -314,22 +323,6 @@ void MetaDesign::parseInsterconnections()
 
             // The interconnection needs to be knowledgeable of the hierarchical interfaces connected to it.
             mIterconnect->hierIfs_ = foundHierInterfaces;
-
-            // The abstraction definition of the interconnection is the one of the first interface.
-            QSharedPointer<AbstractionDefinition> absDef = foundInterfaces.first()->absDef_;
-
-            foreach (QSharedPointer<PortAbstraction> pAbs, *absDef->getLogicalPorts())
-            {
-                QSharedPointer<MetaWire> mWire(new MetaWire);
-                mWire->name_ = mIterconnect->name_ + pAbs->getLogicalName();
-
-                foreach (QSharedPointer<MetaInterface> hierInterface, foundHierInterfaces)
-                {
-                    mWire->hierPorts_.append(hierInterface->ports_.values());
-                }
-
-                mIterconnect->wires_.insert(pAbs->getLogicalName(), mWire);
-            }
         }
 
         // Associate the interfaces with the interconnect.
@@ -337,8 +330,44 @@ void MetaDesign::parseInsterconnections()
         {
             mInterface->interconnection_ = mIterconnect;
 
+            bool isHierarchical = foundHierInterfaces.contains(mInterface);
+
             // Associate the port assignments with the wires of the interconnect.
             foreach (QSharedPointer<MetaPort> mPort, mInterface->ports_)
+            {
+                foreach (QSharedPointer<PortAbstraction> pAbs, *mInterface->absDef_->getLogicalPorts())
+                {
+                    // ...get all port assignments in the interface utilizing its logical port...
+                    QList<QSharedPointer<MetaPortAssignMent> > assignments = mPort->assignments_.values(pAbs->getLogicalName());
+
+                    // ...and associate them with the wire.
+                    foreach (QSharedPointer<MetaPortAssignMent> mpa, assignments)
+                    {
+                        QSharedPointer<MetaWire> mWire = mIterconnect->wires_.value(pAbs->getLogicalName());
+
+                        if (!mWire)
+                        {
+                            mWire = QSharedPointer<MetaWire>(new MetaWire);
+                            mWire->name_ = mIterconnect->name_ + pAbs->getLogicalName();
+
+                            mIterconnect->wires_.insert(pAbs->getLogicalName(), mWire);
+                        }
+
+                        mpa->wire_ = mWire;
+                        // Also assign larger bounds for wire, if applicable.
+                        assignLargerBounds(mWire, mpa->bounds_);
+
+                        // Associate the wire with the hierarchical ports.
+                        if (isHierarchical && !mWire->hierPorts_.contains(mPort))
+                        {
+                            mWire->hierPorts_.append(mPort);
+                        }
+                    }
+                }
+            }
+
+            // Associate the port assignments with the wires of the interconnect.
+            /*foreach (QSharedPointer<MetaPort> mPort, mInterface->ports_)
             {
                 // For each wire in the interconnect...
                 QMap<QString, QSharedPointer<MetaWire> >::iterator iter =  mIterconnect->wires_.begin();
@@ -357,8 +386,14 @@ void MetaDesign::parseInsterconnections()
                         // Also assign larger bounds for wire, if applicable.
                         assignLargerBounds(mWire, mpa->bounds_);
                     }
+
+                    // Associate the wire with the hierarchical ports.
+                    if (assignments.size() > 0 && isHierarchical)
+                    {
+                        mWire->hierPorts_.append(mPort);
+                    }
                 }
-            }
+            }*/
         }
     }
 }
