@@ -2218,30 +2218,21 @@ void tst_HDLParser::testInstanceParametersAreCulled()
 
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(design->instances_.size(), 1);
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
+    QCOMPARE(mInstance->parameters_.size(), 2);
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
-
-    QCOMPARE( design->instances_.size(), 1 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
-
-    QCOMPARE( gi0->parameters_.size(), 2 );
-
-    QCOMPARE( gi0->parameters_.at(0)->name(), QString("componentParameter") );
-    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("3") );
-    QCOMPARE( gi0->parameters_.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters_.at(1)->getValue(), QString("2") );
+    QCOMPARE(mInstance->parameters_.at(0)->name(), QString("componentParameter"));
+    QCOMPARE(mInstance->parameters_.at(0)->getValue(), QString("3"));
+    QCOMPARE(mInstance->parameters_.at(1)->name(), QString("moduleParameter"));
+    QCOMPARE(mInstance->parameters_.at(1)->getValue(), QString("2"));
 }
 
 //-----------------------------------------------------------------------------
@@ -2283,28 +2274,19 @@ void tst_HDLParser::testTopComponentParametersAreUtilized()
 
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(design->instances_.size(), 1);
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
+    QCOMPARE(mInstance->parameters_.size(), 1);
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
-
-    QCOMPARE( design->instances_.size(), 1 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
-
-    QCOMPARE( gi0->parameters_.size(), 1 );
-
-    QCOMPARE( gi0->parameters_.at(0)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("1337") );
+    QCOMPARE(mInstance->parameters_.at(0)->name(), QString("moduleParameter"));
+    QCOMPARE(mInstance->parameters_.at(0)->getValue(), QString("1337"));
 }
 
 //-----------------------------------------------------------------------------
@@ -2347,30 +2329,21 @@ void tst_HDLParser::testInstanceComponentParametersAreUtilized()
 
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(design->instances_.size(), 1);
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
+    QCOMPARE(mInstance->parameters_.size(), 2);
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
-
-    QCOMPARE( design->instances_.size(), 1 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
-
-    QCOMPARE( gi0->parameters_.size(), 2 );
-
-    QCOMPARE( gi0->parameters_.at(0)->name(), QString("componentParameter") );
-    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("55") );
-    QCOMPARE( gi0->parameters_.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters_.at(1)->getValue(), QString("55") );
+    QCOMPARE(mInstance->parameters_.at(0)->name(), QString("componentParameter"));
+    QCOMPARE(mInstance->parameters_.at(0)->getValue(), QString("55"));
+    QCOMPARE(mInstance->parameters_.at(1)->name(), QString("moduleParameter"));
+    QCOMPARE(mInstance->parameters_.at(1)->getValue(), QString("55"));
 }
 
 //-----------------------------------------------------------------------------
@@ -2411,28 +2384,19 @@ void tst_HDLParser::testParameterPropagationFromTop()
 
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(design->instances_.size(), 1);
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
+    QCOMPARE(mInstance->parameters_.size(), 1);
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
-
-    QCOMPARE( design->instances_.size(), 1 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
-
-    QCOMPARE( gi0->parameters_.size(), 1 );
-
-    QCOMPARE( gi0->parameters_.at(0)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("10") );
+    QCOMPARE(mInstance->parameters_.at(0)->name(), QString("moduleParameter"));
+    QCOMPARE(mInstance->parameters_.at(0)->getValue(), QString("10"));
 }
 
 //-----------------------------------------------------------------------------
@@ -2481,30 +2445,21 @@ void tst_HDLParser::testParameterPropagationFromTop2()
 	parameterOverride->setConfigurableValue("topID");
     senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(design->instances_.size(), 1);
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
+    QCOMPARE(mInstance->parameters_.size(), 2);
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
-
-    QCOMPARE( design->instances_.size(), 1 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
-
-    QCOMPARE( gi0->parameters_.size(), 2 );
-
-    QCOMPARE( gi0->parameters_.at(0)->name(), QString("senderParameter") );
-    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("10") );
-    QCOMPARE( gi0->parameters_.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters_.at(1)->getValue(), QString("10") );
+    QCOMPARE(mInstance->parameters_.at(0)->name(), QString("senderParameter"));
+    QCOMPARE(mInstance->parameters_.at(0)->getValue(), QString("10"));
+    QCOMPARE(mInstance->parameters_.at(1)->name(), QString("moduleParameter"));
+    QCOMPARE(mInstance->parameters_.at(1)->getValue(), QString("10"));
 }
 
 //-----------------------------------------------------------------------------
@@ -2588,51 +2543,24 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
 
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(design->instances_.size(), 2);
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
+    QCOMPARE(mInstance->parameters_.size(), 2);
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
+    QSharedPointer<MetaPortAssignMent> mpa = mInstance->interfaces_.first()->ports_.first()->assignments_.first();
+    QCOMPARE(mpa->bounds_.first, QString("70"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
-    QCOMPARE( design->interConnections_.size(), 1 );
-    QCOMPARE( design->interConnections_.at(0)->wires_.size(), 1 );
-
-    QSharedPointer<GenerationWire> gw0 = design->interConnections_.at(0)->wires_.first();
-
-    QCOMPARE( gw0->name_, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gw0->bounds_.first, QString("70") );
-    QCOMPARE( gw0->bounds_.second, QString("0") );
-
-    QCOMPARE( design->instances_.size(), 2 );
-
-    QSharedPointer<GenerationInstance> gi1 = design->instances_["sender"];
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["receiver"];
-
-    QSharedPointer<GenerationPortAssignMent> gpa;
-    gpa = gi0->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds_.first, QString("8") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-
-    QCOMPARE( gi1->parameters_.size(), 2 );
-
-    QCOMPARE( gi1->parameters_.at(0)->name(), QString("senderParameter") );
-    QCOMPARE( gi1->parameters_.at(0)->getValue(), QString("10") );
-    QCOMPARE( gi1->parameters_.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi1->parameters_.at(1)->getValue(), QString("10") );
-
-    gpa = gi1->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire_->name_, QString("sender_to_receiver_DATA") );
-    QCOMPARE( gpa->bounds_.first, QString("70") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
+    QSharedPointer<MetaWire> mWire = design->interconnections_.first()->wires_.first();
+    QCOMPARE(mWire->bounds_.first, QString("70"));
+    QCOMPARE(mWire->bounds_.second, QString("0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -2720,29 +2648,21 @@ void tst_HDLParser::testMultiLevelHierachy()
     parameterOverride->setConfigurableValue("slaveTopID");
     senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 2);
+    QSharedPointer<MetaDesign> design = designs.last();
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-        QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-    designParser->parseDesign(componentParser->getParsedComponent(), topView_);
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QCOMPARE(design->instances_.size(), 1);
 
-    QCOMPARE( designs.size(), 2 );
-    QSharedPointer<GenerationDesign> design = designs.last();
+    QSharedPointer<MetaInstance> mInstance = design->instances_.first();
+    QCOMPARE(mInstance->parameters_.size(), 2);
 
-    QCOMPARE( design->instances_.size(), 1 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
-
-    QCOMPARE( gi0->parameters_.size(), 2 );
-
-    QCOMPARE( gi0->parameters_.at(0)->name(), QString("senderParameter") );
-    QCOMPARE( gi0->parameters_.at(0)->getValue(), QString("76") );
-    QCOMPARE( gi0->parameters_.at(1)->name(), QString("moduleParameter") );
-    QCOMPARE( gi0->parameters_.at(1)->getValue(), QString("76") );
+    QCOMPARE(mInstance->parameters_.at(0)->name(), QString("senderParameter"));
+    QCOMPARE(mInstance->parameters_.at(0)->getValue(), QString("76"));
+    QCOMPARE(mInstance->parameters_.at(1)->name(), QString("moduleParameter"));
+    QCOMPARE(mInstance->parameters_.at(1)->getValue(), QString("76"));
 }
 
 //-----------------------------------------------------------------------------

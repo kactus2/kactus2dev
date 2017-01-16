@@ -32,7 +32,8 @@ MetaInstance::MetaInstance(LibraryInterface* library,
     QSharedPointer<ListParameterFinder> topFinder,
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs) :
     library_(library),
-    component_(component)
+    component_(component),
+    activeView_(activeView)
 {
     // Try to find a component instantiation for the view.
     if (activeView_)
