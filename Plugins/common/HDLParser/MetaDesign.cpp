@@ -165,6 +165,7 @@ void MetaDesign::parseInstances()
 
         if (!component)
         {
+            // TODO: error
             //emit reportError(tr("Design %1: Component of instance %2 was not found: %3")
             //    .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
             continue;
@@ -291,9 +292,10 @@ void MetaDesign::parseInsterconnections()
             foundHierInterfaces.append(mInterface);
         }
 
-        // If no interfaces are in the interconnect, drop it.
-        if (foundInterfaces.size() < 1)
+        // If not enough interfaces are in the interconnect, drop it.
+        if (foundInterfaces.size() < 2)
         {
+            // TODO: error
             continue;
         }
 
@@ -365,35 +367,6 @@ void MetaDesign::parseInsterconnections()
                     }
                 }
             }
-
-            // Associate the port assignments with the wires of the interconnect.
-            /*foreach (QSharedPointer<MetaPort> mPort, mInterface->ports_)
-            {
-                // For each wire in the interconnect...
-                QMap<QString, QSharedPointer<MetaWire> >::iterator iter =  mIterconnect->wires_.begin();
-                QMap<QString, QSharedPointer<MetaWire> >::iterator end =  mIterconnect->wires_.end();
-                for (;iter != end; ++iter)
-                {
-                    QSharedPointer<MetaWire> mWire = iter.value();
-
-                    // ...get all port assignments in the interface utilizing its logical port...
-                    QList<QSharedPointer<MetaPortAssignMent> > assignments = mPort->assignments_.values(iter.key());
-
-                    // ...and associate them with the wire.
-                    foreach (QSharedPointer<MetaPortAssignMent> mpa, assignments)
-                    {
-                        mpa->wire_ = mWire;
-                        // Also assign larger bounds for wire, if applicable.
-                        assignLargerBounds(mWire, mpa->bounds_);
-                    }
-
-                    // Associate the wire with the hierarchical ports.
-                    if (assignments.size() > 0 && isHierarchical)
-                    {
-                        mWire->hierPorts_.append(mPort);
-                    }
-                }
-            }*/
         }
     }
 }

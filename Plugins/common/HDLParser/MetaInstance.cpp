@@ -163,6 +163,7 @@ void MetaInstance::parseInterfaces()
         // Find the correct abstraction type.
         if (busInterface->getAbstractionTypes()->count() < 1)
         {
+            // TODO: error
             continue;
         }
 
@@ -171,6 +172,7 @@ void MetaInstance::parseInterfaces()
 
         if (!absType)
         {
+            // TODO: error
             continue;
         }
 
@@ -179,6 +181,7 @@ void MetaInstance::parseInterfaces()
 
         if (!absRef)
         {
+            // TODO: error
             continue;
         }
 
@@ -188,6 +191,7 @@ void MetaInstance::parseInterfaces()
 
         if (!absDef)
         {
+            // TODO: error
             continue;
         }
 
@@ -239,6 +243,7 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
 
                     if (!portAbstraction)
                     {
+                        // TODO: error
                         continue;
                     }
 
