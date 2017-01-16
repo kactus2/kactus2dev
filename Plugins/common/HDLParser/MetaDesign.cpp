@@ -42,6 +42,7 @@ topInstance_(topInstance),
 topFinder_(new ListParameterFinder)
 {
     // Create the finder for the parameters coming from the top.
+    // TODO: The parameters must come through the proper chain, rather than directly from the top component!
     QSharedPointer<QList<QSharedPointer<Parameter> > > toplist =
         QSharedPointer<QList<QSharedPointer<Parameter> > >
         (new QList<QSharedPointer<Parameter> >(topInstance->parameters_));
@@ -148,6 +149,7 @@ void MetaDesign::parseDesign()
 {
     parseInstances();
     parseInsterconnections();
+    parseAdHocs();
 }
 
 //-----------------------------------------------------------------------------
@@ -261,6 +263,7 @@ void MetaDesign::parseInsterconnections()
 
             if (!mInstance)
             {
+                // TODO: error
                 continue;
             }
 
@@ -269,6 +272,7 @@ void MetaDesign::parseInsterconnections()
 
             if (!mInterface)
             {
+                // TODO: error
                 continue;
             }
 
@@ -279,11 +283,12 @@ void MetaDesign::parseInsterconnections()
         // Go through the hierarchical interfaces.
         foreach (QSharedPointer<HierInterface> connectionInterface, *connection->getHierInterfaces())
         {
+            // The interface must be found within the interfaces recognized for the top instance.
             QSharedPointer<MetaInterface> mInterface = topInstance_->interfaces_.value(connectionInterface->getBusReference());
 
-            // The interface must be found within the interfaces recognized for the top instance.
             if (!mInterface)
             {
+                // TODO: error
                 continue;
             }
 
@@ -367,6 +372,128 @@ void MetaDesign::parseInsterconnections()
                     }
                 }
             }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::parseAdHocs()
+//-----------------------------------------------------------------------------
+void MetaDesign::parseAdHocs()
+{
+    // Go through the ad hoc connections within the design.
+    foreach(QSharedPointer<AdHocConnection> connection, *design_->getAdHocConnections())
+    {
+        // Found ports for the interconnection.
+        QList<QSharedPointer<MetaPort> > foundPorts;
+        QList<QSharedPointer<MetaPort> > foundHierPorts;
+        // The part select is expected to be in the same index as its matching port reference.
+        QList<QSharedPointer<PartSelect> > matchingPartSelects;
+
+        // Go through the port references within the ad-hoc connection.
+        foreach(QSharedPointer<PortReference> portRef, *connection->getInternalPortReferences())
+        {
+            // The matching instance must exist.
+            QSharedPointer<MetaInstance> mInstance = instances_.value(portRef->getComponentRef());
+
+            if (!mInstance)
+            {
+                // TODO: error
+                continue;
+            }
+
+            // The port must be found within the ad-hoc ports recognized for the instance.
+            QSharedPointer<MetaPort> mPort = mInstance->ports_.value(portRef->getPortRef());
+
+            if (!mPort)
+            {
+                // TODO: error
+                continue;
+            }
+
+            // Append to the lists.
+            foundPorts.append(mPort);
+            matchingPartSelects.append(portRef->getPartSelect());
+        }
+
+        // Go through the hierarchical port references.
+        foreach(QSharedPointer<PortReference> portRef, *connection->getExternalPortReferences())
+        {
+            // The port must be found within the ad-hoc ports recognized for the top instance.
+            QSharedPointer<MetaPort> mPort = topInstance_->ports_.value(portRef->getPortRef());
+
+            if (!mPort)
+            {
+                // TODO: error
+                continue;
+            }
+
+            // Append to the lists.
+            foundPorts.append(mPort);
+            foundHierPorts.append(mPort);
+            matchingPartSelects.append(portRef->getPartSelect());
+        }
+
+        // If not enough ports are in the connection, drop it.
+        if (foundPorts.size() < 1)
+        {
+            // TODO: error
+            continue;
+        }
+
+        // Else create a new wire.
+        QSharedPointer<MetaWire> mWire = QSharedPointer<MetaWire>(new MetaWire);
+        mWire->name_ = connection->name();
+
+        // Append to the pool of detected interconnections.
+        adHocWires_.append(mWire);
+
+        // The interconnection needs to be knowledgeable of the hierarchical interfaces connected to it.
+        mWire->hierPorts_ = foundHierPorts;
+
+        // Go through each matching port.
+        for (int i = 0; i < foundPorts.size(); ++i)
+        {
+            QSharedPointer<MetaPort> mPort = foundPorts[i];
+            QSharedPointer<PartSelect> ps = matchingPartSelects[i];
+
+            // New port assignment must be created for the each port.
+            QSharedPointer<MetaPortAssignMent> mpa(new MetaPortAssignMent);
+
+            // Associate the port assignments with the wire.
+            mpa->wire_ = mWire;
+            // Map the port assignment to the port using the name of the wire.
+            mPort->assignments_.insert(mWire->name_, mpa);
+
+            // This is also the place for the tie-off.
+            if (connection->getTiedValue() == "open")
+            {
+                mpa->defaultValue_ = "";
+            }
+            else if (connection->getTiedValue() == "default")
+            {
+                mpa->defaultValue_ = mPort->defaultValue_;
+            }
+            else
+            {
+                mpa->defaultValue_ = connection->getTiedValue();
+            }
+
+            // Assigning bounds.
+            if (ps && !ps->getLeftRange().isEmpty() && !ps->getRightRange().isEmpty())
+            {
+                // If part select exists, it shall be used.
+                mpa->bounds_.first = ps->getLeftRange();
+                mpa->bounds_.second = ps->getRightRange();
+            }
+            else
+            {
+                // Else just choose the port bounds.
+                mpa->bounds_ = mPort->vectorBounds_;
+            }
+
+            // Also assign larger bounds for the wire, if applicable.
+            assignLargerBounds(mWire, mpa->bounds_);
         }
     }
 }

@@ -43,6 +43,8 @@ public:
 
     QList<QSharedPointer<MetaInterconnection> > interconnections_;
 
+    QList<QSharedPointer<MetaWire> > adHocWires_;
+
 private:
 
     // Disable copying.
@@ -54,6 +56,8 @@ private:
     void parseInstances();
 
     void parseInsterconnections();
+
+    void parseAdHocs();
     
     /*!
      *  Compares new bounds to existing bounds of the wire and then assigns the largest combination of two

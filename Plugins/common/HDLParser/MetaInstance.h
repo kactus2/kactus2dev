@@ -51,8 +51,8 @@ public:
     QList<QSharedPointer<Parameter> > parameters_;
     //! The parsed interfaces of the instance, keyed with its name.
     QMap<QString,QSharedPointer<MetaInterface> > interfaces_;
-    //! The parsed ad-hoc ports of the component keyed with its physical name.
-    QMap<QString,QSharedPointer<MetaPort> > adHocPorts_;
+    //! The ports of the component keyed with its physical name.
+    QMap<QString,QSharedPointer<MetaPort> > ports_;
     //! The module name for HDL.
     QString moduleName_;
 

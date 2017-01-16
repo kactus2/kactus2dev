@@ -228,8 +228,12 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
         mPort->vectorBounds_.first = parseExpression(parser, cport->getLeftBound());
         mPort->vectorBounds_.second = parseExpression(parser, cport->getRightBound());
 
+        // Parse the default value.
+        mPort->defaultValue_ = parseExpression(parser, cport->getDefaultValue());
+
         // Try to find an interface where port belongs to.
         bool anyIfUsesThePort = false;
+        ports_.insert(cport->name(), mPort);
 
         foreach (QSharedPointer<MetaInterface> mInterface, interfaces_)
         {
@@ -278,12 +282,6 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
                 mInterface->ports_.insert(cport->name(), mPort);
                 anyIfUsesThePort = true;
             }
-        }
-
-        // If the port is not within any interface, consider it as an ad-hoc port.
-        if (!anyIfUsesThePort)
-        {
-            adHocPorts_.insert(cport->name(), mPort);
         }
     }
 }

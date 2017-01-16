@@ -63,16 +63,13 @@ private slots:
     void testSlicedInterconnection();
     void testAbsDefDefault();
 
-    /*void testAdhocConnectionBetweenComponentInstances();    
+    void testAdhocConnectionBetweenComponentInstances();    
     void testAdhocConnectionToVaryingSizePorts();    
     void testAdhocConnectionWithPartSelect();
     void testAdhocTieOffInComponentInstance();
     void testPortDefaultValueInComponentInstance();
-    void testMultipleAdhocConnectionsBetweenComponentInstances();
-    void testAdHocConnectionBetweenComponentInstancesWithExpressions();
     void testHierarchicalAdhocConnection();
-    void testHierarchicalAdHocTieOffValues();
-    void testAdHocConnectionBetweenMultipleComponentInstances();*/
+    void testAdHocConnectionBetweenMultipleComponentInstances();
 
     void testInstanceParametersAreCulled();
 	void testTopComponentParametersAreUtilized();
@@ -1345,9 +1342,9 @@ void tst_HDLParser::testAbsDefDefault()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testAdhocConnectionBetweenTwoComponentInstances()
+// Function: tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
 //-----------------------------------------------------------------------------
-/*void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
+void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
 {
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
     QSharedPointer<View> senderView = addSenderComponentToLibrary(senderVLNV, General::MASTER);
@@ -1362,63 +1359,56 @@ void tst_HDLParser::testAbsDefDefault()
     addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver2", "enable_in");
     addAdhocConnection("dataAdHoc", "sender", "data_out", "receiver1", "data_in");
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(design->instances_.size(), 3);
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
+    QSharedPointer<MetaPort> mPort = mInstance->ports_["data_out"];
+    QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("dataAdHoc");
+    QCOMPARE(mpa->bounds_.first, QString("7"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
-    QCOMPARE( design->adHocs_.size(), 2 );
+    mPort = mInstance->ports_["enable_out"];
+    mpa = mPort->assignments_.value("enableAdHoc");
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
-    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire_;
-    QSharedPointer<GenerationWire> gw1 = design->adHocs_.at(1)->wire_;
+    mInstance = design->instances_["receiver1"];
 
-    QCOMPARE( gw0->bounds_.first, QString("0") );
-    QCOMPARE( gw0->bounds_.second, QString("0") );
+    mPort = mInstance->ports_["data_in"];
+    mpa = mPort->assignments_.value("dataAdHoc");
+    QCOMPARE(mpa->bounds_.first, QString("7"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
-    QCOMPARE( gw1->bounds_.first, QString("7") );
-    QCOMPARE( gw1->bounds_.second, QString("0") );
+    mPort = mInstance->ports_["enable_in"];
+    mpa = mPort->assignments_.value("enableAdHoc");
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
-    QCOMPARE( design->instances_.size(), 3 );
+    mInstance = design->instances_["receiver2"];
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];;
-    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver1"];
-    QSharedPointer<GenerationInstance> gi2 = design->instances_["receiver2"];
+    mPort = mInstance->ports_["enable_in"];
+    mpa = mPort->assignments_.value("enableAdHoc");
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
-    QCOMPARE( gi0->portAssignments_.size(), 2 );
-    QCOMPARE( gi1->portAssignments_.size(), 2 );
-    QCOMPARE( gi2->portAssignments_.size(), 1 );
+    QCOMPARE(design->adHocWires_.size(), 2);
+    QSharedPointer<MetaWire> mWire = design->adHocWires_.first();
 
-    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire_->name_, QString("dataAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("7") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-    gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("0") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
+    QCOMPARE(mWire->hierPorts_.size(), 0);
+    QCOMPARE(mWire->bounds_.first, QString("0"));
+    QCOMPARE(mWire->bounds_.second, QString("0"));
 
-    gpa = gi1->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire_->name_, QString("dataAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("7") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-    gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("0") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-
-    gpa = gi2->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("0") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
+    mWire = design->adHocWires_.last();
+    QCOMPARE(mWire->hierPorts_.size(), 0);
+    QCOMPARE(mWire->bounds_.first, QString("7"));
+    QCOMPARE(mWire->bounds_.second, QString("0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1435,7 +1425,7 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
     addInstanceToDesign("sender", senderVLNV, activeView);
     senderComponent->getViews()->append(activeView);
 
-    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("enable_out", DirectionTypes::OUT));
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
     senderPort->setLeftBound("16");
     senderPort->setRightBound("4");
     senderComponent->getPorts()->append(senderPort);
@@ -1444,45 +1434,29 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
     QSharedPointer<View> receiverView = addReceiverComponentToLibrary(receiverVLNV, General::SLAVE);
     addInstanceToDesign("receiver", receiverVLNV, receiverView);
 
-    addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver", "enable_in");
+    addAdhocConnection("dataAdHoc", "sender", "data_out", "receiver", "data_in");
 
-    QSharedPointer<HDLComponentParser> componentParser =
-        QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-        QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-    designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QCOMPARE(design->instances_.size(), 2);
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
 
-    QCOMPARE( design->adHocs_.size(), 1 );
+    QSharedPointer<MetaPort> mPort = mInstance->ports_["data_out"];
+    QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("dataAdHoc");
+    QCOMPARE(mpa->bounds_.first, QString("16"));
+    QCOMPARE(mpa->bounds_.second, QString("4"));
 
-    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire_;
+    QCOMPARE(design->adHocWires_.size(), 1);
+    QSharedPointer<MetaWire> mWire = design->adHocWires_.first();
 
-    QCOMPARE( gw0->bounds_.first, QString("16") );
-    QCOMPARE( gw0->bounds_.second, QString("0") );
-
-    QCOMPARE( design->instances_.size(), 2 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];;
-    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver"];
-
-    QCOMPARE( gi0->portAssignments_.size(), 1 );
-    QCOMPARE( gi1->portAssignments_.size(), 1 );
-
-    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("16") );
-    QCOMPARE( gpa->bounds_.second, QString("4") );
-
-    gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("0") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
+    mWire = design->adHocWires_.last();
+    QCOMPARE(mWire->bounds_.first, QString("16"));
+    QCOMPARE(mWire->bounds_.second, QString("0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1499,7 +1473,7 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
     addInstanceToDesign("sender", senderVLNV, activeView);
     senderComponent->getViews()->append(activeView);
 
-    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("enable_out", DirectionTypes::OUT));
+    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
     senderPort->setLeftBound("16");
     senderPort->setRightBound("4");
     senderComponent->getPorts()->append(senderPort);
@@ -1508,50 +1482,34 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
     QSharedPointer<View> receiverView = addReceiverComponentToLibrary(receiverVLNV, General::SLAVE);
     addInstanceToDesign("receiver", receiverVLNV, receiverView);
 
-    addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver", "enable_in");
+    addAdhocConnection("dataAdHoc", "sender", "data_out", "receiver", "data_in");
 
     QSharedPointer<PartSelect> ps(new PartSelect);
-    ps->setLeftRange("5");
+    ps->setLeftRange("8");
     ps->setRightRange("3");
     design_->getAdHocConnections()->first()->getInternalPortReferences()->first()->setPartSelect(ps);
 
-    QSharedPointer<HDLComponentParser> componentParser =
-        QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-        QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-    designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QCOMPARE(design->instances_.size(), 2);
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
 
-    QCOMPARE( design->adHocs_.size(), 1 );
+    QSharedPointer<MetaPort> mPort = mInstance->ports_["data_out"];
+    QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("dataAdHoc");
+    QCOMPARE(mpa->bounds_.first, QString("8"));
+    QCOMPARE(mpa->bounds_.second, QString("3"));
 
-    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire_;
+    QCOMPARE(design->adHocWires_.size(), 1);
+    QSharedPointer<MetaWire> mWire = design->adHocWires_.first();
 
-    QCOMPARE( gw0->bounds_.first, QString("5") );
-    QCOMPARE( gw0->bounds_.second, QString("0") );
-
-    QCOMPARE( design->instances_.size(), 2 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];;
-    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver"];
-
-    QCOMPARE( gi0->portAssignments_.size(), 1 );
-    QCOMPARE( gi1->portAssignments_.size(), 1 );
-
-    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("5") );
-    QCOMPARE( gpa->bounds_.second, QString("3") );
-
-    gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("0") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
+    mWire = design->adHocWires_.last();
+    QCOMPARE(mWire->bounds_.first, QString("8"));
+    QCOMPARE(mWire->bounds_.second, QString("0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1614,44 +1572,35 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     addTieOffAdhocConnectionToInstancePort("open", instanceName, openName, "open_connection");
     addTieOffAdhocConnectionToInstancePort("expID - 4", instanceName, expressionName, "expression_connection");
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
+    QCOMPARE(design->instances_.size(), 1);
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QSharedPointer<MetaInstance> mInstance = design->instances_["tieOffer"];
+    QCOMPARE( mInstance->ports_.size(), 9 );
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QSharedPointer<MetaPort> mPort = mInstance->ports_["defaultTieOff"];
+    QCOMPARE( mPort->defaultValue_, QString("20") );
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
-
-    QCOMPARE( design->instances_.size(), 1 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["tieOffer"];
-
-    QCOMPARE( gi0->portAssignments_.size(), 9 );
-
-    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["defaultTieOff"];
-    QCOMPARE( gpa->tieOff_, QString("20") );
-    gpa = gi0->portAssignments_["expressionTieOff"];
-    QCOMPARE( gpa->tieOff_, QString("expID - 4") );
-    gpa = gi0->portAssignments_["n/aTieOff"];
-    QCOMPARE( gpa->tieOff_, QString("abc") );
-    gpa = gi0->portAssignments_["numberedTieOff"];
-    QCOMPARE( gpa->tieOff_, QString("12") );
-    gpa = gi0->portAssignments_["oneTieOff"];
-    QCOMPARE( gpa->tieOff_, QString("1") );
-    gpa = gi0->portAssignments_["openTieOff"];
-    QCOMPARE( gpa->tieOff_, QString("") );
-    gpa = gi0->portAssignments_["zeroTieOff"];
-    QCOMPARE( gpa->tieOff_, QString("0") );
-    gpa = gi0->portAssignments_["tieOffOut"];
-    QCOMPARE( gpa->tieOff_, QString("") );
-    gpa = gi0->portAssignments_["tieOffInOut"];
-    QCOMPARE( gpa->tieOff_, QString("1") );
+    mPort = mInstance->ports_["expressionTieOff"];
+    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("expID - 4"));
+    mPort = mInstance->ports_["n/aTieOff"];
+    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("abc"));
+    mPort = mInstance->ports_["numberedTieOff"];
+    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("12"));
+    mPort = mInstance->ports_["oneTieOff"];
+    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("1"));
+    mPort = mInstance->ports_["openTieOff"];
+    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString(""));
+    mPort = mInstance->ports_["zeroTieOff"];
+    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("0"));
+    mPort = mInstance->ports_["tieOffOut"];
+    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("0"));
+    mPort = mInstance->ports_["tieOffInOut"];
+    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("1"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1690,189 +1639,22 @@ void tst_HDLParser::testPortDefaultValueInComponentInstance()
     QSharedPointer<Port> defaultPort3 = tieOffComponent->getPort("unconnnectedOut");
     defaultPort3->setDefaultValue("23");
 
-    QSharedPointer<HDLComponentParser> componentParser =
-        QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-        QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-    designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
+    QCOMPARE(design->instances_.size(), 1);
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["tieOffer"];
+    QCOMPARE(mInstance->ports_.size(), 3);
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
-
-    QCOMPARE( design->instances_.size(), 1 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["tieOffer"];
-
-    QCOMPARE( gi0->portAssignments_.size(), 2 );
-
-    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["unconnnectedIn"];
-    QCOMPARE(gpa->tieOff_, QString("1"));
-    gpa = gi0->portAssignments_["unconnnectedInOut"];
-    QCOMPARE(gpa->tieOff_, QString("35"));
-    gpa = gi0->portAssignments_.value("unconnnectedOut");
-    QVERIFY(!gpa);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testMultipleAdhocConnectionsBetweenComponentInstances()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testMultipleAdhocConnectionsBetweenComponentInstances()
-{
-    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
-    QSharedPointer<View> sendView = addSenderComponentToLibrary(senderVLNV, General::MASTER);
-    addInstanceToDesign("sender", senderVLNV, sendView);
-
-    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
-    QSharedPointer<View> recvView =  addReceiverComponentToLibrary(receiverVLNV, General::SLAVE);
-    addInstanceToDesign("receiver1", receiverVLNV, recvView);
-    addInstanceToDesign("receiver2", receiverVLNV, recvView);
-
-    addAdhocConnection("sender_enable_to_receiver1_enable", "sender", "enable_out", "receiver1", "enable_in");
-    addAdhocConnection("sender_enable_to_receiver2_enable", "sender", "enable_out", "receiver2", "enable_in");
-
-    QSharedPointer<HDLComponentParser> componentParser =
-
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
-
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
-
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
-
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
-
-    QCOMPARE( design->adHocs_.size(), 1 );
-
-    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire_;
-
-    QCOMPARE( gw0->bounds_.first, QString("0") );
-    QCOMPARE( gw0->bounds_.second, QString("0") );
-
-    QCOMPARE( design->instances_.size(), 3 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
-    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver1"];
-    QSharedPointer<GenerationInstance> gi2 = design->instances_["receiver2"];
-
-    QCOMPARE( gi0->portAssignments_.size(), 1 );
-    QCOMPARE( gi1->portAssignments_.size(), 1 );
-    QCOMPARE( gi2->portAssignments_.size(), 1 );
-
-    QSharedPointer<GenerationPortAssignMent> gpa;
-    gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire_->name_, QString("sender_enable_to_receiver1_enable") );
-    QCOMPARE( gpa->bounds_.first, QString("0") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-
-    gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire_->name_, QString("sender_enable_to_receiver1_enable") );
-    QCOMPARE( gpa->bounds_.first, QString("0") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-
-    gpa = gi2->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire_->name_, QString("sender_enable_to_receiver1_enable") );
-    QCOMPARE( gpa->bounds_.first, QString("0") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testAdHocConnectionBetweenComponentInstancesWithExpressions()
-{
-    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
-
-    QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("enable_out", DirectionTypes::OUT));
-    senderPort->setLeftBound("(10-9)*4");
-    senderPort->setRightBound("2-2");
-	senderComponent->getPorts()->append(senderPort);
-
-	QSharedPointer<View> sendView(new View("rtl"));
-	sendView->setComponentInstantiationRef("instance1");
-
-	QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
-	senderComponent->getComponentInstantiations()->append(instantiation);
-	senderComponent->getViews()->append(sendView);
-
-    library_.addComponent(senderComponent);
-    addInstanceToDesign("sender", senderVLNV, sendView);
-
-    VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
-    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
-
-    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("enable_in", DirectionTypes::IN));
-    receiverPort->setLeftBound("2+2");
-    receiverPort->setRightBound("0");
-    receiverComponent->getPorts()->append(receiverPort);
-
-	QSharedPointer<View> recvView(new View("rtl"));
-	recvView->setComponentInstantiationRef("instance2");
-
-	QSharedPointer<ComponentInstantiation> instantiation2(new ComponentInstantiation("instance2"));
-	receiverComponent->getComponentInstantiations()->append(instantiation2);
-	receiverComponent->getViews()->append(recvView);
-
-    library_.addComponent(receiverComponent);
-    addInstanceToDesign("receiver1", receiverVLNV, recvView);
-    addInstanceToDesign("receiver2", receiverVLNV, recvView);
-
-    addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver1", "enable_in");
-    addAdhocConnection("enableAdHoc", "sender", "enable_out", "receiver2", "enable_in");
-
-    QSharedPointer<HDLComponentParser> componentParser =
-
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
-
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
-
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
-
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
-
-    QCOMPARE( design->adHocs_.size(), 1 );
-
-    QSharedPointer<GenerationWire> gw0 = design->adHocs_.at(0)->wire_;
-
-    QCOMPARE( gw0->bounds_.first, QString("4") );
-    QCOMPARE( gw0->bounds_.second, QString("0") );
-
-    QCOMPARE( design->instances_.size(), 3 );
-
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
-    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver1"];
-    QSharedPointer<GenerationInstance> gi2 = design->instances_["receiver2"];
-
-    QCOMPARE( gi0->portAssignments_.size(), 1 );
-    QCOMPARE( gi1->portAssignments_.size(), 1 );
-    QCOMPARE( gi2->portAssignments_.size(), 1 );
-
-    QSharedPointer<GenerationPortAssignMent> gpa;
-    gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("4") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-
-    gpa = gi1->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("4") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-
-    gpa = gi2->portAssignments_["enable_in"];
-    QCOMPARE( gpa->wire_->name_, QString("enableAdHoc") );
-    QCOMPARE( gpa->bounds_.first, QString("4") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
+    QSharedPointer<MetaPort> mPort = mInstance->ports_["unconnnectedIn"];
+    QCOMPARE(mPort->defaultValue_, QString("1"));
+    mPort = mInstance->ports_["unconnnectedInOut"];
+    QCOMPARE(mPort->defaultValue_, QString("35"));
+    mPort = mInstance->ports_["unconnnectedOut"];
+    QCOMPARE(mPort->defaultValue_, QString("23"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1931,45 +1713,37 @@ void tst_HDLParser::addTieOffAdhocConnectionToInstancePort(QString const& tieOff
 //-----------------------------------------------------------------------------
 void tst_HDLParser::testHierarchicalAdhocConnection()
 {
-    addPort("enable_from_sender", 1, DirectionTypes::OUT, topComponent_);
     addPort("data_from_sender", 8, DirectionTypes::OUT, topComponent_);
 
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
     QSharedPointer<View> activeView = addSenderComponentToLibrary(senderVLNV, General::MASTER);
     addInstanceToDesign("sender", senderVLNV, activeView);
 
-    addHierAdhocConnection("enable_from_sender", "sender", "enable_out");
     addHierAdhocConnection("data_from_sender", "sender", "data_out");
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(design->instances_.size(), 1);
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QCOMPARE(design->adHocWires_.size(), 1);
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
+    QSharedPointer<MetaWire> mWire = design->adHocWires_.first();
 
-    QCOMPARE( design->instances_.size(), 1 );
+    QSharedPointer<MetaInstance> mInstance = design->instances_.first();
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
+    QSharedPointer<MetaPort> mPort = mInstance->ports_["data_out"];
+    QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.last();
+    QCOMPARE(mpa->wire_, mWire);
 
-    QCOMPARE( gi0->portAssignments_.size(), 2 );
-
-    QSharedPointer<GenerationPortAssignMent> gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->topPort_, QString("data_from_sender") );
-    QCOMPARE( gpa->bounds_.first, QString("7") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-
-    gpa = gi0->portAssignments_["enable_out"];
-    QCOMPARE( gpa->topPort_, QString("enable_from_sender") );
-    QCOMPARE( gpa->bounds_.first, QString("0") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
+    QSharedPointer<MetaPort> hierPort = design->topInstance_->ports_.first();
+    QCOMPARE(mpa->wire_->hierPorts_.first(), hierPort);
+    QSharedPointer<MetaPortAssignMent> hierAssignment = hierPort->assignments_.first();
+    QCOMPARE(hierAssignment->wire_, mWire);
+    QCOMPARE(hierAssignment->wire_->hierPorts_.first(), hierPort);
 }
 
 //-----------------------------------------------------------------------------
@@ -1987,92 +1761,6 @@ void tst_HDLParser::addHierAdhocConnection(QString const& topPort,
     connection->getInternalPortReferences()->append(instancePortReference);
 
     design_->getAdHocConnections()->append(connection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::testHierarchicalAdHocTieOffValues()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::testHierarchicalAdHocTieOffValues()
-{
-    QString zeroName = "zeroTieOff";
-    QString oneName = "oneTieOff";
-    QString naName = "n/aTieOff";
-    QString numberedName = "numberedTieOff";
-    QString inName = "tieOffIn";
-    QString inOutName = "inOutTieOff";
-    QString defaultName = "defaultTieOff";
-    QString openName = "openTieOff";
-    QString expressionName = "expressionTieOff";
-
-    addPort(zeroName, 2, DirectionTypes::OUT, topComponent_);
-    addPort(oneName, 4, DirectionTypes::OUT, topComponent_);
-    addPort(naName, 0, DirectionTypes::OUT, topComponent_);
-    addPort(numberedName, 10, DirectionTypes::OUT, topComponent_);
-    addPort(inName, 2, DirectionTypes::IN, topComponent_);
-    addPort(inOutName, 10, DirectionTypes::INOUT, topComponent_);
-    addPort(defaultName, 1, DirectionTypes::OUT, topComponent_);
-    addPort(openName, 1, DirectionTypes::OUT, topComponent_);
-    addPort(expressionName, 1, DirectionTypes::OUT, topComponent_);
-
-    QSharedPointer<Port> defaultPort = topComponent_->getPort("defaultTieOff");
-    defaultPort->setDefaultValue("20");
-
-    QSharedPointer<Parameter> expressionParameter (new Parameter());
-    expressionParameter->setName("expName");
-    expressionParameter->setValueId("expID");
-    expressionParameter->setValue("6");
-    topComponent_->getParameters()->append(expressionParameter);
-
-    addTieOffConnectionToTopComponentPort("0", zeroName, "zero_connection");
-    addTieOffConnectionToTopComponentPort("1", oneName, "one_connection");
-    addTieOffConnectionToTopComponentPort("abc", naName, "n/a_connection");
-    addTieOffConnectionToTopComponentPort("12", numberedName, "number_connection");
-    addTieOffConnectionToTopComponentPort("0", inName, "in_connection");
-    addTieOffConnectionToTopComponentPort("1", inOutName, "inOut_connection");
-    addTieOffConnectionToTopComponentPort("default", defaultName, "default_connection");
-    addTieOffConnectionToTopComponentPort("open", openName, "open_connection");
-    addTieOffConnectionToTopComponentPort("expID - 4", expressionName, "expression_connection");
-
-    QSharedPointer<HDLComponentParser> componentParser =
-
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
-
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
-
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
-
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
-
-    QCOMPARE( design->instances_.size(), 0 );
-
-    QCOMPARE( design->portTiedValues_.size(), 9 );
-
-    QCOMPARE( design->portTiedValues_["defaultTieOff"], QString("20") );
-    QCOMPARE( design->portTiedValues_["expressionTieOff"], QString("expID - 4") );
-    QCOMPARE( design->portTiedValues_["inOutTieOff"], QString("1") );
-    QCOMPARE( design->portTiedValues_["n/aTieOff"], QString("abc") );
-    QCOMPARE( design->portTiedValues_["numberedTieOff"], QString("12") );
-    QCOMPARE( design->portTiedValues_["oneTieOff"], QString("1") );
-    QCOMPARE( design->portTiedValues_["zeroTieOff"], QString("0") );
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_HDLParser::addTieOffConnectionToTopComponentPort()
-//-----------------------------------------------------------------------------
-void tst_HDLParser::addTieOffConnectionToTopComponentPort(QString const& tieOffValue,
-    QString const& portName, QString const& connectionName)
-{
-    QSharedPointer<PortReference> newPortReference (new PortReference(portName));
-
-    QSharedPointer<AdHocConnection> newConnection(new AdHocConnection(connectionName));
-    newConnection->setTiedValue(tieOffValue);
-    newConnection->getExternalPortReferences()->append(newPortReference);
-
-    design_->getAdHocConnections()->append(newConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -2124,7 +1812,7 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     addInstanceToDesign("receiver1", receiverVLNV, view2);
     addInstanceToDesign("receiver2", receiverVLNV, view2);
 
-    QSharedPointer<AdHocConnection> multiConnection(new AdHocConnection("data_from_sender"));
+    QSharedPointer<AdHocConnection> multiConnection(new AdHocConnection("dataAdHoc"));
 
     QSharedPointer<PortReference> startReference(new PortReference("data_out", "sender"));
     QSharedPointer<PortReference> endReference1(new PortReference("data_in", "receiver1"));
@@ -2136,48 +1824,45 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
 
     design_->getAdHocConnections()->append(multiConnection);
 
-    QSharedPointer<HDLComponentParser> componentParser =
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    componentParser->parseComponent(topView_);
-    QSharedPointer<HDLDesignParser> designParser =
-    QSharedPointer<HDLDesignParser>(new HDLDesignParser(&library_, design_, designConf_));
-	designParser->parseDesign(componentParser->getParsedComponent(), topView_);
+    QCOMPARE(design->instances_.size(), 3);
 
-    QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
+    QCOMPARE(design->adHocWires_.size(), 1);
+    QSharedPointer<MetaWire> mWire = design->adHocWires_.first();
+    mWire = design->adHocWires_.last();
+    QCOMPARE(mWire->hierPorts_.size(), 0);
+    QCOMPARE(mWire->bounds_.first, QString("7"));
+    QCOMPARE(mWire->bounds_.second, QString("0"));
 
-    QCOMPARE( designs.size(), 1 );
-    QSharedPointer<GenerationDesign> design = designs.first();
+    QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
 
-    QCOMPARE( design->adHocs_.size(), 1 );
+    QSharedPointer<MetaPort> mPort = mInstance->ports_["data_out"];
+    QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("dataAdHoc");
+    QCOMPARE(mpa->bounds_.first, QString("7"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
+    QCOMPARE(mpa->wire_, mWire);
 
-    QCOMPARE( design->instances_.size(), 3 );
+    mInstance = design->instances_["receiver1"];
 
-    QSharedPointer<GenerationInstance> gi0 = design->instances_["sender"];
-    QSharedPointer<GenerationInstance> gi1 = design->instances_["receiver1"];
-    QSharedPointer<GenerationInstance> gi2 = design->instances_["receiver2"];
+    mPort = mInstance->ports_["data_in"];
+    mpa = mPort->assignments_.value("dataAdHoc");
+    QCOMPARE(mpa->bounds_.first, QString("7"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
+    QCOMPARE(mpa->wire_, mWire);
 
-    QCOMPARE( gi0->portAssignments_.size(), 1 );
-    QCOMPARE( gi1->portAssignments_.size(), 1 );
-    QCOMPARE( gi2->portAssignments_.size(), 1 );
+    mInstance = design->instances_["receiver2"];
 
-    QSharedPointer<GenerationPortAssignMent> gpa;
-    gpa = gi0->portAssignments_["data_out"];
-    QCOMPARE( gpa->wire_->name_, QString("data_from_sender") );
-    QCOMPARE( gpa->bounds_.first, QString("7") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-
-    gpa = gi1->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire_->name_, QString("data_from_sender") );
-    QCOMPARE( gpa->bounds_.first, QString("7") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-
-    gpa = gi2->portAssignments_["data_in"];
-    QCOMPARE( gpa->wire_->name_, QString("data_from_sender") );
-    QCOMPARE( gpa->bounds_.first, QString("7") );
-    QCOMPARE( gpa->bounds_.second, QString("0") );
-}*/
+    mPort = mInstance->ports_["data_in"];
+    mpa = mPort->assignments_.value("dataAdHoc");
+    QCOMPARE(mpa->bounds_.first, QString("7"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
+    QCOMPARE(mpa->wire_, mWire);
+}
 
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::testInstanceParametersAreCulled()
