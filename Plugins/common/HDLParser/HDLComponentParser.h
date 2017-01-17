@@ -51,11 +51,6 @@ public:
     void parseComponent(QSharedPointer<View> activeView);
 
     /*!
-    *  Returns the parsed component.
-    */
-    QSharedPointer<GenerationComponent> getParsedComponent();
-
-    /*!
      *  Sorts list of parameters based on their interdependencies.
      *
      *      @param [in] refParameters		    The list containing the parameters, to be used as a reference.
@@ -64,25 +59,17 @@ public:
 	static void sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
 		QList<QSharedPointer<Parameter> >& sortParameters);
 
+    //! The formatted parameters of the component, ready for writing.
+    QList<QSharedPointer<Parameter> > parameters_;
+    //! The formatted parameters of the component, ready for writing.
+    QMap<QString, QSharedPointer<MetaPort> > ports_;
+    //! The module name for HDL.
+    QString moduleName_;
+
 private:
 	// Disable copying.
 	HDLComponentParser(HDLComponentParser const& rhs);
     HDLComponentParser& operator=(HDLComponentParser const& rhs);
-
-    /*!
-    *  Culls and formats parameter declarations for the component.
-    */
-    void findParameters();
-    
-    /*!
-    *  Culls the interfaces of the component.
-    */
-    void parseInterfaces();
-    
-    /*!
-    *  Culls, sorts and formats the ports of the component.
-    */
-    void parsePorts();
     
     /*!
     *  Culls the memory of the component.
@@ -109,9 +96,6 @@ private:
     //! The component parsed for generation.
     QSharedPointer<Component> component_;
 
-    //! The parsing result of component_.
-    QSharedPointer<GenerationComponent> retval_;
-
     //! The active view of the component.
     QSharedPointer<View> activeView_;
 
@@ -121,8 +105,14 @@ private:
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter_;
 
-    //! The interfaces utilized by the component.
-    QMap<QSharedPointer<BusInterface>, QSharedPointer<GenerationInterface> > interfaces_;
+    //! The parsed remap states.
+    QList<QSharedPointer<GenerationRemapState> > remapStates_;
+    //! The parsed remaps, including the default memory map.
+    QList<QSharedPointer<GenerationRemap> > remaps_;
+    //! The addressable unit bits to be used within the component.
+    QString aub_;
+    //! Total memory within the component counted in AUBs.
+    QString totalRange_;
 };
 
 #endif // HDLCOMPONENTPARSER_H

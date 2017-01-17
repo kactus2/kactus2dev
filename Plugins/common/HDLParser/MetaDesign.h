@@ -72,20 +72,20 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-     //! The component library.
-     LibraryInterface* library_;
+    //! The component library.
+    LibraryInterface* library_;
 
-     //! The design to parse.
-	 QSharedPointer<Design> design_;
+    //! The design to parse.
+    QSharedPointer<Design> design_;
 
-	 //! The design configuration to parse.
-	 QSharedPointer<DesignConfiguration> designConf_;
+    //! The design configuration to parse.
+    QSharedPointer<DesignConfiguration> designConf_;
      
-     //! The list of all parsed designs that are below the current top are in this list.
-     QList<QSharedPointer<MetaDesign> > subDesigns_;
+    //! The list of all parsed designs that are below the current top are in this list.
+    QList<QSharedPointer<MetaDesign> > subDesigns_;
 
-     //! The finder for top level parameters.
-     QSharedPointer<ListParameterFinder> topFinder_;
+    //! The finder for top level parameters.
+    QSharedPointer<ListParameterFinder> topFinder_;
 };
 
 #endif // METADESIGN_H

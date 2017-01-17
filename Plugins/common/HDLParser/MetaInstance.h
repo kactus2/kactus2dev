@@ -47,6 +47,9 @@ public:
 	//! The destructor.
     ~MetaInstance();
 
+    //! The matching IP-XACT component.
+    QSharedPointer<Component> component_;
+
     //! The parsed parameters that are to be used with the instance. CEVs used where applicable.
     QList<QSharedPointer<Parameter> > parameters_;
     //! The parsed interfaces of the instance, keyed with its name.
@@ -104,9 +107,6 @@ private:
 
     //! The component library.
     LibraryInterface* library_;
-
-    //! The matching IP-XACT component.
-    QSharedPointer<Component> component_;
 
     //! The active view of the instance.
     QSharedPointer<View> activeView_;

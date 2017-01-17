@@ -33,28 +33,27 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutputWidget.h \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
-    ../../../../Plugins/common/HDLParser/HDLDesignParser.h \
     ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
     ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
     ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.h \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.h \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutputWidget.h
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.h
 SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.cpp \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.cpp \
     ../../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
-    ../../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.cpp \
-    ../../../../Plugins/VerilogImport/VerilogSyntax.cpp \
     ../../../MockObjects/LibraryMock.cpp \
     ../../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
@@ -69,11 +68,10 @@ SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp 
     ../../../../Plugins/VerilogGenerator/VerilogGeneratorPlugin.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp \
+    ../../../../Plugins/VerilogImport/VerilogSyntax.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelection.cpp \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
-    ./tst_VerilogGeneratorPlugin.cpp \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.cpp \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutputWidget.cpp
+    ./tst_VerilogGeneratorPlugin.cpp

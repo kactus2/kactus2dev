@@ -27,12 +27,12 @@
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
 #include <Plugins/common/HDLParser/HDLComponentParser.h>
-#include <Plugins/common/HDLParser/HDLDesignParser.h>
 #include <Plugins/common/HDLParser/MetaDesign.h>
 
 class tst_HDLParser : public QObject
@@ -80,16 +80,16 @@ private slots:
     void testParameterPropagationFromTopWire();
     void testMultiLevelHierachy();
 
-	/*void testParameterSorting();
+	void testParameterSorting();
     void testParameterSorting2();
-    void testParameterSorting3();*/
+    void testParameterSorting3();
 
 private:
 
-    void addPort( QString const& portName, int portSize, DirectionTypes::Direction direction, 
+    void addPort(QString const& portName, int portSize, DirectionTypes::Direction direction, 
         QSharedPointer<Component> component);
 
-    void addModuleParameter( QString const& name, QString const& value );
+    void addModuleParameter(QString const& name, QString const& value);
 
     void createHierarchicalConnection(QString const& topInterfaceRef, QString const& instanceInterfaceRef);
 
@@ -242,26 +242,25 @@ void tst_HDLParser::testTopLevelComponent()
     QSharedPointer<HDLComponentParser> componentParser =
     QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
     componentParser->parseComponent(topView_);
-    QSharedPointer<GenerationComponent> parsed = componentParser->getParsedComponent();
 
-    QCOMPARE( parsed->formattedParameters_.size(), 2 );
-    QCOMPARE( parsed->formattedParameters_.at(0)->name(), QString("dataWidth") );
-    QCOMPARE( parsed->formattedParameters_.at(0)->getValue(), QString("8") );
-    QCOMPARE( parsed->formattedParameters_.at(1)->name(), QString("freq") );
-    QCOMPARE( parsed->formattedParameters_.at(1)->getValue(), QString("100000") );
+    QCOMPARE(componentParser->parameters_.size(), 2);
+    QCOMPARE(componentParser->parameters_.at(0)->name(), QString("dataWidth"));
+    QCOMPARE(componentParser->parameters_.at(0)->getValue(), QString("8"));
+    QCOMPARE(componentParser->parameters_.at(1)->name(), QString("freq"));
+    QCOMPARE(componentParser->parameters_.at(1)->getValue(), QString("100000"));
 
-    QCOMPARE( parsed->ports_.size(), 4 );
-    QCOMPARE( parsed->ports_["clk"]->port_->getDirection(), DirectionTypes::IN );
+    QCOMPARE(componentParser->ports_.size(), 4);
+    QCOMPARE(componentParser->ports_["clk"]->port_->getDirection(), DirectionTypes::IN);
 
-    QCOMPARE( parsed->ports_["dataIn"]->port_->getDirection(), DirectionTypes::IN );
-    QCOMPARE( parsed->ports_["dataIn"]->vectorBounds_.first, QString("7") );
-    QCOMPARE( parsed->ports_["dataIn"]->vectorBounds_.second, QString("0") );
+    QCOMPARE(componentParser->ports_["dataIn"]->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(componentParser->ports_["dataIn"]->vectorBounds_.first, QString("7"));
+    QCOMPARE(componentParser->ports_["dataIn"]->vectorBounds_.second, QString("0"));
 
-    QCOMPARE( parsed->ports_["rst_n"]->port_->getDirection(), DirectionTypes::IN );
+    QCOMPARE(componentParser->ports_["rst_n"]->port_->getDirection(), DirectionTypes::IN);
 
-    QCOMPARE( parsed->ports_["dataOut"]->port_->getDirection(), DirectionTypes::OUT );
-    QCOMPARE( parsed->ports_["dataOut"]->vectorBounds_.first, QString("7") );
-    QCOMPARE( parsed->ports_["dataOut"]->vectorBounds_.second, QString("0") );
+    QCOMPARE(componentParser->ports_["dataOut"]->port_->getDirection(), DirectionTypes::OUT);
+    QCOMPARE(componentParser->ports_["dataOut"]->vectorBounds_.first, QString("7"));
+    QCOMPARE(componentParser->ports_["dataOut"]->vectorBounds_.second, QString("0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -280,16 +279,15 @@ void tst_HDLParser::testTopLevelComponentExpressions()
     QSharedPointer<HDLComponentParser> componentParser =
     QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
     componentParser->parseComponent(topView_);
-    QSharedPointer<GenerationComponent> parsed = componentParser->getParsedComponent();
 
-    QCOMPARE( parsed->formattedParameters_.size(), 1 );
-    QCOMPARE( parsed->formattedParameters_.at(0)->name(), QString("module") );
-    QCOMPARE( parsed->formattedParameters_.at(0)->getValue(), QString("10") );
+    QCOMPARE(componentParser->parameters_.size(), 1);
+    QCOMPARE(componentParser->parameters_.at(0)->name(), QString("module"));
+    QCOMPARE(componentParser->parameters_.at(0)->getValue(), QString("10"));
 
-    QCOMPARE( parsed->ports_.size(), 1 );
-    QCOMPARE( parsed->ports_["clk"]->port_->getDirection(), DirectionTypes::IN );
-    QCOMPARE( parsed->ports_["clk"]->vectorBounds_.first, QString("module*2") );
-    QCOMPARE( parsed->ports_["clk"]->vectorBounds_.second, QString("2+5") );
+    QCOMPARE(componentParser->ports_.size(), 1);
+    QCOMPARE(componentParser->ports_["clk"]->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(componentParser->ports_["clk"]->vectorBounds_.first, QString("module*2"));
+    QCOMPARE(componentParser->ports_["clk"]->vectorBounds_.second, QString("2+5"));
 }
 
 //-----------------------------------------------------------------------------
@@ -306,7 +304,7 @@ void tst_HDLParser::addPort(QString const& portName, int portSize,
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::addModuleParameter()
 //-----------------------------------------------------------------------------
-void tst_HDLParser::addModuleParameter( QString const& name, QString const& value )
+void tst_HDLParser::addModuleParameter(QString const& name, QString const& value)
 {
     QSharedPointer<ModuleParameter> parameter = QSharedPointer<ModuleParameter>(new ModuleParameter());
     parameter->setName(name);
@@ -354,7 +352,7 @@ void tst_HDLParser::testHierarchicalConnections()
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
         (&library_, topComponent_, design_, designConf_, topView_);
 
-    QCOMPARE(designs.size(), 1 );
+    QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
     QCOMPARE(design->instances_.size(), 1);
@@ -459,11 +457,11 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
     QCOMPARE(mInstance->interfaces_.size(), 1);
     QCOMPARE(mInstance->parameters_.size(), 1);
 
-    QCOMPARE(mInstance->parameters_.at(0)->name(), QString("componentParameter") );
+    QCOMPARE(mInstance->parameters_.at(0)->name(), QString("componentParameter"));
     QCOMPARE(mInstance->parameters_.at(0)->getValue(), QString("1"));
 
     QSharedPointer<MetaInterface> mInterface = mInstance->interfaces_["instanceInterface"];
-    QCOMPARE( mInterface->ports_.size(), 1 );
+    QCOMPARE(mInterface->ports_.size(), 1);
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["instance_clk"];
     QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("CLK");
@@ -538,7 +536,7 @@ void tst_HDLParser::mapPortToInterface(QString const& portName, int left, int ri
 {
 	QSharedPointer<PortMap> portMap(new PortMap());
 	QSharedPointer<PortMap::LogicalPort> logPort(new PortMap::LogicalPort(logicalName));
-	QSharedPointer<PortMap::PhysicalPort> physPort(new PortMap::PhysicalPort(portName) );
+	QSharedPointer<PortMap::PhysicalPort> physPort(new PortMap::PhysicalPort(portName));
 	
     QSharedPointer<PartSelect> physicalPart (new PartSelect(QString::number(left), QString::number(right)));
     physPort->partSelect_ = physicalPart;
@@ -658,14 +656,14 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["data_out"];
     QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("7") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("7"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
     QCOMPARE(mInterface->ports_.size(), 2);
 
     mPort = mInterface->ports_["enable_out"];
     mpa = mPort->assignments_.value("ENABLE");
-    QCOMPARE(mpa->bounds_.first, QString("0") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mInstance = design->instances_["receiver"];
     QCOMPARE(mInstance->interfaces_.size(), 1);
@@ -675,13 +673,13 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
 
     mPort = mInterface->ports_["data_in"];
     mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("7") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("7"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mPort = mInterface->ports_["enable_in"];
     mpa = mPort->assignments_.value("ENABLE");
-    QCOMPARE(mpa->bounds_.first, QString("0") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
     
     QCOMPARE(design->interconnections_.size(), 1);
     QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
@@ -724,7 +722,7 @@ void tst_HDLParser::testEmptyBounds()
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
     QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
     QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
-    logPort->range_ = QSharedPointer<Range>( new Range("","") );
+    logPort->range_ = QSharedPointer<Range>(new Range("",""));
 
     library_.addComponent(senderComponent);
     addInstanceToDesign("sender", senderVLNV, senderView);
@@ -769,8 +767,8 @@ void tst_HDLParser::testEmptyBounds()
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["data_out"];
     QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("0") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mInstance = design->instances_["receiver"];
     QCOMPARE(mInstance->interfaces_.size(), 1);
@@ -780,8 +778,8 @@ void tst_HDLParser::testEmptyBounds()
 
     mPort = mInterface->ports_["data_in"];
     mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("0") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     QCOMPARE(design->interconnections_.size(), 1);
     QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
@@ -819,7 +817,7 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
     QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
     QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
-    logPort->range_ = QSharedPointer<Range>( new Range("7*2","0") );
+    logPort->range_ = QSharedPointer<Range>(new Range("7*2","0"));
 
     library_.addComponent(senderComponent);
     addInstanceToDesign("sender", senderVLNV, senderView);
@@ -864,8 +862,8 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["data_out"];
     QSharedPointer<MetaPortAssignMent> mpa = mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("14") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("14"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mInstance = design->instances_["receiver"];
     QCOMPARE(mInstance->interfaces_.size(), 1);
@@ -875,8 +873,8 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
 
     mPort = mInterface->ports_["data_in"];
     mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("8") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("8"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     QCOMPARE(design->interconnections_.size(), 1);
     QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
@@ -902,7 +900,7 @@ QSharedPointer<View> tst_HDLParser::addSenderComponentToLibrary(VLNV senderVLNV,
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
     QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
     QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
-	logPort->range_ = QSharedPointer<Range>( new Range("7","0") );
+	logPort->range_ = QSharedPointer<Range>(new Range("7","0"));
 
 	mapPortToInterface("enable_out", "ENABLE", "data_bus", senderComponent);
 
@@ -996,13 +994,13 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["data_in"];
     QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("7") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("7"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mPort = mInterface->ports_["enable_in"];
     mpa = mPort->assignments_.value("ENABLE");
-    QCOMPARE(mpa->bounds_.first, QString("0") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mInstance = design->instances_["receiver2"];
     QCOMPARE(mInstance->interfaces_.size(), 1);
@@ -1012,13 +1010,13 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
 
     mPort = mInterface->ports_["data_in"];
     mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("7") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("7"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mPort = mInterface->ports_["enable_in"];
     mpa = mPort->assignments_.value("ENABLE");
-    QCOMPARE(mpa->bounds_.first, QString("0") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     QCOMPARE(design->interconnections_.size(), 1);
     QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
@@ -1083,23 +1081,23 @@ void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
 
     QSharedPointer<MetaPort> mPort = mInstance0->interfaces_.first()->ports_["data_out"];
     QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("7") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("7"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mPort = mInstance1->interfaces_.first()->ports_["data_in"];
     mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("0") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mPort = mInstance2->interfaces_.first()->ports_["data_in"];
     mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("3") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("3"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mPort = mInstance3->interfaces_.first()->ports_["data_in"];
     mpa = mPort->assignments_.value("DATA");
-    QCOMPARE(mpa->bounds_.first, QString("15") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("15"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     QCOMPARE(design->interconnections_.size(), 1);
     QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
@@ -1165,7 +1163,7 @@ void tst_HDLParser::testSlicedInterconnection()
 
 	QSharedPointer<PortMap> enableHighPortMap(new PortMap());
 	QSharedPointer<PortMap::LogicalPort> logPortHigh(new PortMap::LogicalPort("ENABLE"));
-	QSharedPointer<PortMap::PhysicalPort> physPortHigh(new PortMap::PhysicalPort("enable_out_high") );
+	QSharedPointer<PortMap::PhysicalPort> physPortHigh(new PortMap::PhysicalPort("enable_out_high"));
     enableHighPortMap->setLogicalPort(logPortHigh);
     enableHighPortMap->setPhysicalPort(physPortHigh);
 
@@ -1239,18 +1237,18 @@ void tst_HDLParser::testSlicedInterconnection()
 
     QSharedPointer<MetaPort> mPort = mInstance0->interfaces_.first()->ports_["enable_out_high"];
     QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("ENABLE");
-    QCOMPARE(mpa->bounds_.first, QString("1") );
-    QCOMPARE(mpa->bounds_.second, QString("1") );
+    QCOMPARE(mpa->bounds_.first, QString("1"));
+    QCOMPARE(mpa->bounds_.second, QString("1"));
 
     mPort = mInstance0->interfaces_.first()->ports_["enable_out_low"];
     mpa = mPort->assignments_.value("ENABLE");
-    QCOMPARE(mpa->bounds_.first, QString("0") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("0"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     mPort = mInstance1->interfaces_.first()->ports_["enable_in"];
     mpa = mPort->assignments_.value("ENABLE");
-    QCOMPARE(mpa->bounds_.first, QString("1") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
+    QCOMPARE(mpa->bounds_.first, QString("1"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
 
     QCOMPARE(design->interconnections_.size(), 1);
     QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
@@ -1336,9 +1334,9 @@ void tst_HDLParser::testAbsDefDefault()
 
     QSharedPointer<MetaPort> mPort = mInstance->interfaces_.first()->ports_["enable_in"];
     QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.value("ENABLE");
-    QCOMPARE(mpa->bounds_.first, QString("2") );
-    QCOMPARE(mpa->bounds_.second, QString("0") );
-    QCOMPARE(mpa->defaultValue_, QString("5") );
+    QCOMPARE(mpa->bounds_.first, QString("2"));
+    QCOMPARE(mpa->bounds_.second, QString("0"));
+    QCOMPARE(mpa->defaultValue_, QString("5"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1580,10 +1578,10 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     QCOMPARE(design->instances_.size(), 1);
 
     QSharedPointer<MetaInstance> mInstance = design->instances_["tieOffer"];
-    QCOMPARE( mInstance->ports_.size(), 9 );
+    QCOMPARE(mInstance->ports_.size(), 9);
 
     QSharedPointer<MetaPort> mPort = mInstance->ports_["defaultTieOff"];
-    QCOMPARE( mPort->defaultValue_, QString("20") );
+    QCOMPARE(mPort->defaultValue_, QString("20"));
 
     mPort = mInstance->ports_["expressionTieOff"];
     QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("expID - 4"));
@@ -2194,7 +2192,7 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
     QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
     QSharedPointer<PortMap::LogicalPort> logPort = dataMap->getLogicalPort();
-    logPort->range_ = QSharedPointer<Range>( new Range("7*senderID","0") );
+    logPort->range_ = QSharedPointer<Range>(new Range("7*senderID","0"));
 
     library_.addComponent(senderComponent);
     QSharedPointer<ComponentInstance> senderInstance = addInstanceToDesign("sender", senderVLNV, senderView);
@@ -2353,7 +2351,7 @@ void tst_HDLParser::testMultiLevelHierachy()
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::testParameterSorting()
 //-----------------------------------------------------------------------------
-/*void tst_HDLParser::testParameterSorting()
+void tst_HDLParser::testParameterSorting()
 {
 	QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
 	moduleParameterFirst->setName("moduleParameterFirst");
@@ -2382,14 +2380,14 @@ void tst_HDLParser::testMultiLevelHierachy()
 	
     HDLComponentParser::sortParameters(parameters,sortedParameters);
 
-    QCOMPARE( sortedParameters.size(), 3 );
+    QCOMPARE(sortedParameters.size(), 3);
 
-    QCOMPARE( sortedParameters.at(0)->name(), QString("moduleParameterFirst") );
-    QCOMPARE( sortedParameters.at(0)->getValue(), QString("1") );
-    QCOMPARE( sortedParameters.at(1)->name(), QString("moduleParameterSecond") );
-    QCOMPARE( sortedParameters.at(1)->getValue(), QString("firstParameter") );
-    QCOMPARE( sortedParameters.at(2)->name(), QString("moduleParameterThird") );
-    QCOMPARE( sortedParameters.at(2)->getValue(), QString("secondParameter") );
+    QCOMPARE(sortedParameters.at(0)->name(), QString("moduleParameterFirst"));
+    QCOMPARE(sortedParameters.at(0)->getValue(), QString("1"));
+    QCOMPARE(sortedParameters.at(1)->name(), QString("moduleParameterSecond"));
+    QCOMPARE(sortedParameters.at(1)->getValue(), QString("firstParameter"));
+    QCOMPARE(sortedParameters.at(2)->name(), QString("moduleParameterThird"));
+    QCOMPARE(sortedParameters.at(2)->getValue(), QString("secondParameter"));
 }
 
 //-----------------------------------------------------------------------------
@@ -2431,16 +2429,16 @@ void tst_HDLParser::testParameterSorting2()
 
     HDLComponentParser::sortParameters(parameters,sortedParameters);
 
-    QCOMPARE( sortedParameters.size(), 4 );
+    QCOMPARE(sortedParameters.size(), 4);
 
-    QCOMPARE( sortedParameters.at(0)->name(), QString("moduleParameterSecond") );
-    QCOMPARE( sortedParameters.at(0)->getValue(), QString("1") );
-    QCOMPARE( sortedParameters.at(1)->name(), QString("moduleParameterFourth") );
-    QCOMPARE( sortedParameters.at(1)->getValue(), QString("4") );
-    QCOMPARE( sortedParameters.at(2)->name(), QString("moduleParameterFirst") );
-    QCOMPARE( sortedParameters.at(2)->getValue(), QString("secondParameter + fourthParameter") );
-    QCOMPARE( sortedParameters.at(3)->name(), QString("moduleParameterThird") );
-    QCOMPARE( sortedParameters.at(3)->getValue(), QString("firstParameter") );
+    QCOMPARE(sortedParameters.at(0)->name(), QString("moduleParameterSecond"));
+    QCOMPARE(sortedParameters.at(0)->getValue(), QString("1"));
+    QCOMPARE(sortedParameters.at(1)->name(), QString("moduleParameterFourth"));
+    QCOMPARE(sortedParameters.at(1)->getValue(), QString("4"));
+    QCOMPARE(sortedParameters.at(2)->name(), QString("moduleParameterFirst"));
+    QCOMPARE(sortedParameters.at(2)->getValue(), QString("secondParameter + fourthParameter"));
+    QCOMPARE(sortedParameters.at(3)->name(), QString("moduleParameterThird"));
+    QCOMPARE(sortedParameters.at(3)->getValue(), QString("firstParameter"));
 }
 
 //-----------------------------------------------------------------------------
@@ -2489,19 +2487,19 @@ void tst_HDLParser::testParameterSorting3()
 
     HDLComponentParser::sortParameters(parameters,sortedParameters);
 
-    QCOMPARE( sortedParameters.size(), 5 );
+    QCOMPARE(sortedParameters.size(), 5);
 
-    QCOMPARE( sortedParameters.at(0)->name(), QString("moduleParameterSecond") );
-    QCOMPARE( sortedParameters.at(0)->getValue(), QString("55") );
-    QCOMPARE( sortedParameters.at(1)->name(), QString("moduleParameterFirst") );
-    QCOMPARE( sortedParameters.at(1)->getValue(), QString("1") );
-    QCOMPARE( sortedParameters.at(2)->name(), QString("moduleParameterFourth") );
-    QCOMPARE( sortedParameters.at(2)->getValue(), QString("12") );
-    QCOMPARE( sortedParameters.at(3)->name(), QString("moduleParameterFifth") );
-    QCOMPARE( sortedParameters.at(3)->getValue(), QString("fourthParameter - firstParameter") );
-    QCOMPARE( sortedParameters.at(4)->name(), QString("moduleParameterThird") );
-    QCOMPARE( sortedParameters.at(4)->getValue(), QString("fifthParameter + secondParameter") );
-}*/
+    QCOMPARE(sortedParameters.at(0)->name(), QString("moduleParameterSecond"));
+    QCOMPARE(sortedParameters.at(0)->getValue(), QString("55"));
+    QCOMPARE(sortedParameters.at(1)->name(), QString("moduleParameterFirst"));
+    QCOMPARE(sortedParameters.at(1)->getValue(), QString("1"));
+    QCOMPARE(sortedParameters.at(2)->name(), QString("moduleParameterFourth"));
+    QCOMPARE(sortedParameters.at(2)->getValue(), QString("12"));
+    QCOMPARE(sortedParameters.at(3)->name(), QString("moduleParameterFifth"));
+    QCOMPARE(sortedParameters.at(3)->getValue(), QString("fourthParameter - firstParameter"));
+    QCOMPARE(sortedParameters.at(4)->name(), QString("moduleParameterThird"));
+    QCOMPARE(sortedParameters.at(4)->getValue(), QString("fifthParameter + secondParameter"));
+}
 
 QTEST_APPLESS_MAIN(tst_HDLParser)
 
