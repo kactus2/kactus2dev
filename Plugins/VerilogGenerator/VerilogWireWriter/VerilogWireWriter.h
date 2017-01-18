@@ -24,7 +24,7 @@ class VERILOGGENERATORPLUGIN_EXPORT VerilogWireWriter : public Writer
 public:
 
 	//! The constructor.
-	VerilogWireWriter(QSharedPointer<GenerationWire> wire);
+	VerilogWireWriter(QSharedPointer<MetaWire> wire);
 
 	//! The destructor.
 	virtual ~VerilogWireWriter();
@@ -57,7 +57,7 @@ private:
     QString formattedSize() const;
 
     //! The wire.
-    QSharedPointer<GenerationWire> wire_;
+    QSharedPointer<MetaWire> wire_;
 };
 
 #endif // VERILOGWIREWRITER_H

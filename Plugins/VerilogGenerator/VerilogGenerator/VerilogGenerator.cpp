@@ -24,7 +24,7 @@
 #include <Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.h>
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
-#include <Plugins/common/HDLParser/HDLDesignParser.h>
+#include <Plugins/common/HDLParser/MetaDesign.h>
 
 #include <QDateTime>
 #include <QFileInfo>
@@ -54,7 +54,7 @@ VerilogGenerator::~VerilogGenerator()
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::prepareComponent()
 //-----------------------------------------------------------------------------
-bool VerilogGenerator::prepareComponent(QString const& outputPath, QSharedPointer<GenerationComponent> component)
+bool VerilogGenerator::prepareComponent(QString const& outputPath, QSharedPointer<MetaInstance> component)
 {
     // If we are not generating based on a design, we must parse the existing implementation.
     QString implementation;
@@ -85,10 +85,10 @@ bool VerilogGenerator::prepareComponent(QString const& outputPath, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::prepareDesign()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::prepareDesign(QString const& outputPath, QSharedPointer<GenerationDesign> design)
+void VerilogGenerator::prepareDesign(QString const& outputPath, QSharedPointer<MetaDesign> design)
 {
-    QSharedPointer<VerilogDocument> document = initializeComponentWriters(design->topComponent_);
-    document->filePath_ = outputPath + "/" + design->topComponent_->fileName_;
+    QSharedPointer<VerilogDocument> document = initializeComponentWriters(design->topInstance_);
+    document->filePath_ = outputPath + "/" + design->topInstance_->fileName_;
 
     initializeDesignWriters(design, document);
 
@@ -245,7 +245,7 @@ bool VerilogGenerator::nothingToWrite() const
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::initializeComponentWriters()
 //-----------------------------------------------------------------------------
-QSharedPointer<VerilogDocument> VerilogGenerator::initializeComponentWriters(QSharedPointer<GenerationComponent> topComponent)
+QSharedPointer<VerilogDocument> VerilogGenerator::initializeComponentWriters(QSharedPointer<MetaInstance> topComponent)
 {
     QSettings settings;
     QString currentUser = settings.value("General/Username").toString();
@@ -272,10 +272,10 @@ QSharedPointer<VerilogDocument> VerilogGenerator::initializeComponentWriters(QSh
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::initializeDesignWriters()
 //-----------------------------------------------------------------------------
-void VerilogGenerator::initializeDesignWriters(QSharedPointer<GenerationDesign> design, QSharedPointer<VerilogDocument> document)
+void VerilogGenerator::initializeDesignWriters(QSharedPointer<MetaDesign> design, QSharedPointer<VerilogDocument> document)
 {
     // Create instance writers for the instances, complete with expression parsers and formatters.
-    foreach(QSharedPointer<GenerationInstance> gi, design->instances_)
+    foreach(QSharedPointer<MetaInstance> gi, design->instances_)
     {
         QSharedPointer<ComponentInstance> instance = gi->componentInstance_;
 
@@ -290,8 +290,8 @@ void VerilogGenerator::initializeDesignWriters(QSharedPointer<GenerationDesign> 
     if (useInterfaces_)
     {
         // Create interconnection writers for the interconnections
-        QList<QSharedPointer<GenerationInterconnection> > usedGic;
-        foreach (QSharedPointer<GenerationInterconnection> gic, design->interConnections_)
+        QList<QSharedPointer<MetaInterconnection> > usedGic;
+        foreach (QSharedPointer<MetaInterconnection> gic, design->interconnections_)
         {
             if (usedGic.contains(gic))
             {
@@ -307,50 +307,43 @@ void VerilogGenerator::initializeDesignWriters(QSharedPointer<GenerationDesign> 
     else
     {
         // Create wire writers for the interconnections
-        QList<QSharedPointer<GenerationInterconnection> > usedGic;
-        foreach (QSharedPointer<GenerationInterconnection> gic, design->interConnections_)
+        foreach (QSharedPointer<MetaInterconnection> gic, design->interconnections_)
         {
-            if (usedGic.contains(gic))
+            if (gic->hierIfs_.size() > 0)
             {
                 continue;
             }
 
-            QMap<QString, QSharedPointer<GenerationWire> >::iterator iter = gic->wires_.begin();
-            QMap<QString, QSharedPointer<GenerationWire> >::iterator end = gic->wires_.end();
+            QMap<QString, QSharedPointer<MetaWire> >::iterator iter = gic->wires_.begin();
+            QMap<QString, QSharedPointer<MetaWire> >::iterator end = gic->wires_.end();
             for (;iter != end; ++iter)
             {
-                QSharedPointer<GenerationWire> gw = *iter;
+                QSharedPointer<MetaWire> gw = *iter;
 
                 document->wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw)));
             }
-
-            usedGic.append(gic);
         }
     }
 
     // Create wire writers for the ad hoc connections as well.
-    QList<QSharedPointer<GenerationWire> > usedWire;
-    foreach (QSharedPointer<GenerationAdHoc> adHoc, design->adHocs_)
+    foreach (QSharedPointer<MetaWire> adHoc, design->adHocWires_)
     {
-        QSharedPointer<GenerationWire> gw = adHoc->wire_;
-
-        if (usedWire.contains(gw))
+        if (adHoc->hierPorts_.size() > 0)
         {
             continue;
         }
 
-        document->wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw)));
-
-        usedWire.append(gw);
+        document->wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(adHoc)));
     }
 
     // Create tied value writers for hierarchical tied values,
-    QMap<QString,QString>::iterator iter2 = design->portTiedValues_.begin();
+    // TODO: Re-enable
+    /*QMap<QString,QString>::iterator iter2 = design->portTiedValues_.begin();
     QMap<QString,QString>::iterator end2 = design->portTiedValues_.end();
     for (;iter2 != end2; ++iter2)
     {
         document->tiedValueWriter_->addPortTiedValue(iter2.key(), iter2.value());
-    }
+    }*/
 }
 
 //-----------------------------------------------------------------------------
@@ -379,7 +372,7 @@ void VerilogGenerator::addWritersToTopInDesiredOrder(QSharedPointer<VerilogDocum
 //-----------------------------------------------------------------------------
 // Function: VerilogGenerator::createHeaderWriterForInstance()
 //-----------------------------------------------------------------------------
-QSharedPointer<Writer> VerilogGenerator::createHeaderWriterForInstance(QSharedPointer<GenerationInstance> instance) const
+QSharedPointer<Writer> VerilogGenerator::createHeaderWriterForInstance(QSharedPointer<MetaInstance> instance) const
 {
     QString header = instance->componentInstance_->getDescription();
     if (!header.isEmpty())
@@ -387,7 +380,7 @@ QSharedPointer<Writer> VerilogGenerator::createHeaderWriterForInstance(QSharedPo
         header.append("\n");
     }
 
-    header.append("IP-XACT VLNV: " + instance->component_->component_->getVlnv().toString());
+    header.append("IP-XACT VLNV: " + instance->component_->getVlnv().toString());
 
     QSharedPointer<CommentWriter> headerWriter(new CommentWriter(header));
     headerWriter->setIndent(4);

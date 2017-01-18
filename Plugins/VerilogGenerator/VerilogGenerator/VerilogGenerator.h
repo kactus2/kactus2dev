@@ -15,7 +15,7 @@
 #include "../veriloggeneratorplugin_global.h"
 
 #include <QTextStream>
-#include <Plugins/common/HDLParser/HDLParserCommon.h>
+#include <Plugins/common/HDLParser/MetaDesign.h>
 
 class ComponentVerilogWriter;
 class ComponentInstanceVerilogWriter;
@@ -86,7 +86,7 @@ public:
      *
      *      @return False, if something went wrong.
      */
-    bool prepareComponent(QString const& outputPath, QSharedPointer<GenerationComponent> component);
+    bool prepareComponent(QString const& outputPath, QSharedPointer<MetaInstance> component);
 
     /*!
      *  Prepares the given set of HDL designs for generation, creating writers for the task.
@@ -96,7 +96,7 @@ public:
      *
      *      @remark If parsing is not called before generation, nothing is generated.
      */
-    void prepareDesign(QString const& outputPath, QSharedPointer<GenerationDesign> design);
+    void prepareDesign(QString const& outputPath, QSharedPointer<MetaDesign> design);
 
     /*!
      *  Parses the module implementation out of verilog file given as output, if it already exists.
@@ -155,7 +155,7 @@ private:
 
      *      @return The document, which has writers associated with the component writing.
      */
-    QSharedPointer<VerilogDocument> initializeComponentWriters(QSharedPointer<GenerationComponent> topComponent);
+    QSharedPointer<VerilogDocument> initializeComponentWriters(QSharedPointer<MetaInstance> topComponent);
     
     /*!
     *  Initializes writers for the given design.
@@ -163,7 +163,7 @@ private:
 	 *      @param [in] design		        The design, which data will be written.
 	 *      @param [in] document        	The document, which will get writers for design writing.
      */
-    void initializeDesignWriters(QSharedPointer<GenerationDesign> design, QSharedPointer<VerilogDocument> document);
+    void initializeDesignWriters(QSharedPointer<MetaDesign> design, QSharedPointer<VerilogDocument> document);
    
      /*!
       *  Adds the generated writers to the top writer in correct order.            
@@ -177,7 +177,7 @@ private:
      *
      *      @return A writer for the header.
      */
-    QSharedPointer<Writer> createHeaderWriterForInstance(QSharedPointer<GenerationInstance> instance) const;
+    QSharedPointer<Writer> createHeaderWriterForInstance(QSharedPointer<MetaInstance> instance) const;
 
     //-----------------------------------------------------------------------------
     // Data.

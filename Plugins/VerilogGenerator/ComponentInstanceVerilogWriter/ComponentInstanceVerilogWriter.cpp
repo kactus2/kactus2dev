@@ -23,7 +23,7 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter()
 //-----------------------------------------------------------------------------
-ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(QSharedPointer<GenerationInstance> instance,
+ComponentInstanceVerilogWriter::ComponentInstanceVerilogWriter(QSharedPointer<MetaInstance> instance,
 	QSharedPointer<const PortSorter> sorter,
 	bool useInterfaces) :
 instance_(instance), 
@@ -52,7 +52,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
-    instanceString.replace("<component>", instance_->component_->moduleName_);
+    instanceString.replace("<component>", instance_->moduleName_);
     instanceString.replace("<parameters>", parameterAssignments());
     instanceString.replace("<instanceName>", formattedInstanceName());
     instanceString.replace("<portConnections>", portConnections());
@@ -124,7 +124,7 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceVerilogWriter::createPortMaps()
+// Function: ComponentInstanceVerilogWriter::portConnections()
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::portConnections() const
 {
@@ -136,34 +136,43 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 
 	QString previousInterfaceName = "";
 
-    if (useInterfaces_)
+    foreach(QSharedPointer<MetaPort> mPort, instance_->ports_)
     {
-        foreach(QSharedPointer<GenerationInterfaceAssignment> gifa, instance_->interfaceAssignments_)
-        {
-            if (gifa->interConnection_->topInterface_)
-            {
-                portAssignments.append( "." + gifa->interface_->interface_->name() + "(" + gifa->interConnection_->topInterface_->interface_->name() + ")");
-            }
-            else
-            {
-                portAssignments.append( "." + gifa->interface_->interface_->name() + "("+ gifa->interConnection_->name_ + ")");
-            }
-        }
-    }
-
-	foreach(QString portName, sorter_->sortedPortNames(instance_->component_->component_))
-    {
-        // Seek for a port assignment.
-        QSharedPointer<GenerationPortAssignMent> gpa = instance_->portAssignments_.value(portName);
-
-        // If none found, or is not applicable, skip.
-        if (!gpa || (useInterfaces_ && !gpa->adhoc_))
+        // If not applicable, skip.
+        if (mPort->assignments_.size() < 1)
         {
             continue;
         }
+
+        QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.first();
+        QString interfaceName;
+
+        QString interfaceSeparatorLine = createInterfaceSeparator(interfaceName, previousInterfaceName);
+        previousInterfaceName = interfaceName;
+
+        QString portAssignment = interfaceSeparatorLine + indentation().repeated(2) + ".<port>(<connection>)";
+        portAssignment.replace("<port>", mPort->port_->name().leftJustified(20));
+        // TODO: use the list of port assignments rather than a single assignment,
+        portAssignment.replace("<connection>", assignmentForPort(mpa));
+
+        portAssignments.append(portAssignment);
+    }
+
+	/*foreach(QString portName, sorter_->sortedPortNames(instance_->component_))
+    {
+        // Seek for a port assignment.
+        QSharedPointer<MetaPort> mPort = instance_->ports_.value(portName);
+
+        // If none found, or is not applicable, skip.
+        if (!mPort || mPort->assignments_.size() < 1)
+        {
+            continue;
+        }
+
+        QSharedPointer<MetaPortAssignMent> mpa = mPort->assignments_.first();
         
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-        instance_->component_->component_->getInterfacesUsedByPort(portName);
+        instance_->component_->getInterfacesUsedByPort(portName);
 		QString interfaceName;
 
 		if (busInterfaces->size() == 1)
@@ -184,10 +193,11 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 
 		QString portAssignment = interfaceSeparatorLine + indentation().repeated(2) + ".<port>(<connection>)";
 		portAssignment.replace("<port>", portName.leftJustified(20));
-		portAssignment.replace("<connection>", assignmentForPort(gpa));
+        // TODO: use the list of port assignments rather than a single assignment,
+		portAssignment.replace("<connection>", assignmentForPort(mpa));
 
 		portAssignments.append(portAssignment);
-	}
+    }*/
 
     return portAssignments.join(",\n");
 }
@@ -230,15 +240,15 @@ QString ComponentInstanceVerilogWriter::createInterfaceSeparator(QString const& 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::assignmentForPort()
 //-----------------------------------------------------------------------------
-QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<GenerationPortAssignMent> gab) const
+QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<MetaPortAssignMent> mpa) const
 {
     QString assignment;
 
-    if (!gab->topPort_.isEmpty() || gab->wire_)
+    if (mpa->wire_)
     {
 		assignment = "<signalName>[<left>:<right>]";
 
-		QPair<QString,QString> connectionBounds = gab->bounds_;
+		QPair<QString,QString> connectionBounds = mpa->bounds_;
 
 		// Use bounds only if they are not the same.
 		if (connectionBounds.first == connectionBounds.second)
@@ -251,25 +261,26 @@ QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<Generat
 			assignment.replace("<right>", connectionBounds.second);
 		}
 
-		// Connect the physical port to either corresponding top port or a wire.
-		// If neither is available, return empty.
-		if (!gab->topPort_.isEmpty())
-		{
-			assignment.replace("<signalName>", gab->topPort_);
-		}
-		else if (gab->wire_)
-		{
-			assignment.replace("<signalName>", gab->wire_->name_);
-		}
-		else
-		{
-			return "";
-		}
+        // Pry for the hierarchical ports.
+        // TODO: Take into account the possibility of multiple hierarchical ports.
+        QSharedPointer<MetaPort> hierPort;
+
+        if (mpa->wire_->hierPorts_.size() > 0)
+        {
+            // Connect the physical port to a corresponding top port.
+            hierPort = mpa->wire_->hierPorts_.first();
+            assignment.replace("<signalName>", hierPort->port_->name());
+        }
+        else
+        {
+            // No hierarchical ports means we must write a wire as a connection.
+            assignment.replace("<signalName>", mpa->wire_->name_);
+        }
     }
-    else if (!gab->tieOff_.isEmpty())
+    else
     {
-        // If an tied value is assigned to a physical port, it shall be used.
-        assignment = gab->tieOff_;
+        // If a default value is assigned to a physical port, it shall be used.
+        assignment = mpa->defaultValue_;
         if (assignment.isEmpty())
         {
             assignment = " ";

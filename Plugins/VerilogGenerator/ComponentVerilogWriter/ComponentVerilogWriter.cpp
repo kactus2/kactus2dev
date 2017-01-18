@@ -31,7 +31,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
-ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<GenerationComponent> component,
+ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<MetaInstance> component,
     bool useInterfaces,
     bool generateMemory) :
 component_(component),
@@ -65,7 +65,7 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
     {
         QStringList fileNames;
 
-        foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces_)
+        foreach(QSharedPointer<MetaInterface> gif, component_->interfaces_)
         {
             fileNames.append(gif->interface_->name());
         }
@@ -84,14 +84,14 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 
 	if (implementation_)
     {
-        if (generateMemory_)
+        /*if (generateMemory_)
         {
             // Implementing -> may need remap states.
             writeRemapSates(outputStream);
 
             // Implementing -> may need registers.
             writeRegisters(outputStream);
-        }
+        }*/
 
 		// If an implementation exists, there must be a warning about overwriting as well.
 		outputStream << "// " << VerilogSyntax::TAG_OVERRIDE << endl;
@@ -148,16 +148,16 @@ void ComponentVerilogWriter::writeModuleDeclaration(QTextStream& outputStream) c
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStream) const
 {
-	if (component_->formattedParameters_.isEmpty())
+	if (component_->parameters_.isEmpty())
     {
         return;
     }
 
     outputStream << " #(" << endl;
 
-    foreach(QSharedPointer<Parameter> parameter, component_->formattedParameters_)
+    foreach(QSharedPointer<Parameter> parameter, component_->parameters_)
     {
-        bool isLastParameter = parameter == component_->formattedParameters_.last();
+        bool isLastParameter = parameter == component_->parameters_.last();
         writeParameter(outputStream, parameter, isLastParameter);
     }
 
@@ -208,49 +208,12 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 
     outputStream << "(";
 
-    if (useInterfaces_)
+    foreach(QSharedPointer<MetaPort> mPort, component_->ports_)
     {
-        foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces_)
-        {
-            QString typeName = gif->interface_->getBusType().getName();
-            outputStream << endl << typeName << "." << gif->mode_ << " " << gif->interface_->name() << ",";
-        }
-    }
-
-    // Pick the ports in sorted order.
-    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(component_->component_);
-
-    foreach(QSharedPointer<Port> cport, ports)
-    {   
-        QSharedPointer<GenerationPort> gport = component_->ports_[cport->name()];
         QString interfaceName;
-        QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-            component_->component_->getInterfacesUsedByPort(cport->name());
-
-        if (busInterfaces->count() < 1 )
-        {
-            interfaceName = "none";
-        }
-        else if (useInterfaces_)
-        {
-            continue;
-        }
-        else
-        {
-            if (busInterfaces->count() == 1)
-            {
-                interfaceName  = busInterfaces->first()->name();
-            }
-            else
-            {
-                interfaceName = "several";
-            }
-        }
-
-        writeInterfaceIntroduction(interfaceName, gport->port_->description(), previousInterfaceName, outputStream);
-
-        bool lastPortToWrite = cport == ports.last();
-        writePort(outputStream, gport, lastPortToWrite);
+        //writeInterfaceIntroduction(interfaceName, gport->port_->description(), previousInterfaceName, outputStream);
+        bool lastPortToWrite = mPort == component_->ports_.last();
+        writePort(outputStream, mPort, lastPortToWrite);
     }
     
     outputStream << ");" << endl;
@@ -289,7 +252,7 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::writePort()
 //-----------------------------------------------------------------------------
-void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer<GenerationPort> port, bool isLast) const
+void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer<MetaPort> port, bool isLast) const
 {
     outputStream << indentation();
 
@@ -324,7 +287,7 @@ void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter:writeRemapSates()
 //-----------------------------------------------------------------------------
-void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
+/*void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
 {
     foreach (QSharedPointer<GenerationRemapState> grms, component_->remapStates_)
     {
@@ -414,7 +377,7 @@ void ComponentVerilogWriter::writeRegisters(QTextStream& outputStream) const
     }
 
     outputStream << endl;
-}
+}*/
 
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::writeModuleEnd()

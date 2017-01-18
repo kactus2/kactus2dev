@@ -33,7 +33,9 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
     ../../../MockObjects/LibraryMock.h \
-    ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h
+    ../../../../Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h \
+    ../../../../Plugins/common/HDLParser/MetaDesign.h \
+    ../../../../Plugins/common/HDLParser/MetaInstance.h
 SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
@@ -57,4 +59,6 @@ SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp 
     ../../../../Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.cpp \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.cpp \
-    ./tst_VerilogGenerator.cpp
+    ./tst_VerilogGenerator.cpp \
+    ../../../../Plugins/common/HDLParser/MetaDesign.cpp \
+    ../../../../Plugins/common/HDLParser/MetaInstance.cpp

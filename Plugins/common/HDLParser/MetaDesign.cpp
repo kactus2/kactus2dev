@@ -57,6 +57,13 @@ MetaDesign::~MetaDesign()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MetaDesign::MetaDesign()
+//-----------------------------------------------------------------------------
+MetaDesign::MetaDesign()
+{
+}
+
+//-----------------------------------------------------------------------------
 // Function: MetaDesign::parseHierarchy()
 //-----------------------------------------------------------------------------
 QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* library, QSharedPointer<Component> topComponent,
@@ -64,13 +71,14 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
     QSharedPointer<View> topComponentView)
 {
     // Creating null parameters for function call.
+    QSharedPointer<ComponentInstance> componentInstance;
     QSharedPointer<ListParameterFinder> topFinder;
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs;
 
     // Instantiate the top component with the selected design.
     // Obviously it cannot have CEVs or parameters of any other component.
     QSharedPointer<MetaInstance> topMostInstance(new MetaInstance
-        (library, topComponent, topComponentView, topFinder, cevs));
+        (library, topComponent, topComponentView, componentInstance, topFinder, cevs));
 
     // Create the design associated with the top component.
     QSharedPointer<MetaDesign> topMostDesign(new MetaDesign(library, design, designConf, topMostInstance));
@@ -136,6 +144,7 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
 
              // Set the module name as the existing module name + number of encounter before this one.
              subDesign->topInstance_->moduleName_ = name + "_" + QString::number(count);
+             subDesign->topInstance_->fileName_ = subDesign->topInstance_->moduleName_;
          }
     }
 
@@ -198,7 +207,7 @@ void MetaDesign::parseInstances()
 
         // Now create the instance, using what we know as the parameters.
         QSharedPointer<MetaInstance> mInstance(new MetaInstance
-            (library_, component, activeView, topFinder_, cevs));
+            (library_, component, activeView, instance, topFinder_, cevs));
         // Map using the name.
         instances_.insert(instance->getInstanceName(), mInstance);
 

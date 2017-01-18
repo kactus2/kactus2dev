@@ -41,14 +41,20 @@ public:
 	MetaInstance(LibraryInterface* library,
         QSharedPointer<Component> component,
         QSharedPointer<View> activeView,
+        QSharedPointer<ComponentInstance> componentInstance,
         QSharedPointer<ListParameterFinder> topFinder,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs);
+
+    //! Alternative constructor.
+    MetaInstance();
 
 	//! The destructor.
     ~MetaInstance();
 
     //! The matching IP-XACT component.
     QSharedPointer<Component> component_;
+    //! The matching IP-XACT component instance.
+    QSharedPointer<ComponentInstance> componentInstance_;
 
     //! The parsed parameters that are to be used with the instance. CEVs used where applicable.
     QList<QSharedPointer<Parameter> > parameters_;
@@ -58,6 +64,8 @@ public:
     QMap<QString,QSharedPointer<MetaPort> > ports_;
     //! The module name for HDL.
     QString moduleName_;
+    //! TODO: replace with refactoring.
+    QString fileName_;
 
     //! The component library.
     LibraryInterface* library_;

@@ -24,7 +24,7 @@ class VERILOGGENERATORPLUGIN_EXPORT VerilogInterconnectionWriter : public Writer
 public:
 
 	//! The constructor.
-	VerilogInterconnectionWriter(QSharedPointer<GenerationInterconnection> interconnection);
+	VerilogInterconnectionWriter(QSharedPointer<MetaInterconnection> interconnection);
 
 	//! The destructor.
 	virtual ~VerilogInterconnectionWriter();
@@ -64,7 +64,7 @@ private:
     QString formattedSize() const;
 
     //! The interconnection.
-    QSharedPointer<GenerationInterconnection> interconnection_;
+    QSharedPointer<MetaInterconnection> interconnection_;
 };
 
 #endif // VERILOGINTERCONNECTIONWRITER_H

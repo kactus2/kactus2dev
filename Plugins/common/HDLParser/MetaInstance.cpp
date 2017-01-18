@@ -29,10 +29,12 @@
 MetaInstance::MetaInstance(LibraryInterface* library,
     QSharedPointer<Component> component,
     QSharedPointer<View> activeView,
+    QSharedPointer<ComponentInstance> componentInstance,
     QSharedPointer<ListParameterFinder> topFinder,
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs) :
     library_(library),
     component_(component),
+    componentInstance_(componentInstance),
     activeView_(activeView)
 {
     // Try to find a component instantiation for the view.
@@ -76,6 +78,13 @@ MetaInstance::MetaInstance(LibraryInterface* library,
     parseParameters(instanceParser, cevs);
     parseInterfaces();
     parsePorts(instanceParser);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaInstance::MetaInstance()
+//-----------------------------------------------------------------------------
+MetaInstance::MetaInstance()
+{
 }
 
 //-----------------------------------------------------------------------------

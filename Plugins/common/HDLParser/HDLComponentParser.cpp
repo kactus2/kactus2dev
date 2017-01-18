@@ -44,6 +44,7 @@ HDLComponentParser::HDLComponentParser(LibraryInterface* library, QSharedPointer
     MetaInstance(library,
         component,
         activeView,
+        QSharedPointer<ComponentInstance>::QSharedPointer(),
         QSharedPointer<ListParameterFinder>::QSharedPointer(),
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >::QSharedPointer())
 {

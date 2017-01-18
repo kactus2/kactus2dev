@@ -30,7 +30,7 @@ public:
      *
      *      @param [in] port                    The port to write to Verilog.
      */
-    PortVerilogWriter(QSharedPointer<GenerationPort> port);
+    PortVerilogWriter(QSharedPointer<MetaPort> port);
 
     //! The destructor.
     ~PortVerilogWriter();
@@ -82,7 +82,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The port to write to Verilog.
-    QSharedPointer<const GenerationPort> port_;
+    QSharedPointer<const MetaPort> port_;
 };
 
 #endif // PORTVERILOGWRITER_H

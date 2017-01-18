@@ -15,7 +15,7 @@
 //-----------------------------------------------------------------------------
 // Function: PortVerilogWriter::PortVerilogWriter()
 //-----------------------------------------------------------------------------
-PortVerilogWriter::PortVerilogWriter(QSharedPointer<GenerationPort> port) : port_(port)
+PortVerilogWriter::PortVerilogWriter(QSharedPointer<MetaPort> port) : port_(port)
 {
 
 }

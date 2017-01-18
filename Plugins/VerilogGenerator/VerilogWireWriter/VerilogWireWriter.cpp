@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogWireWriter::InterconnectionVerilogWriter()
 //-----------------------------------------------------------------------------
-VerilogWireWriter::VerilogWireWriter(QSharedPointer<GenerationWire> wire) : wire_(wire)
+VerilogWireWriter::VerilogWireWriter(QSharedPointer<MetaWire> wire) : wire_(wire)
 {
 
 }

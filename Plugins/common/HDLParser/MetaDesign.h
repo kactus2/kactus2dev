@@ -33,6 +33,9 @@ public:
     //! The destructor.
     ~MetaDesign();
 
+    //! The alternative constructor.
+    MetaDesign();
+
     static QList<QSharedPointer<MetaDesign> > parseHierarchy(LibraryInterface* library, QSharedPointer<Component> topComponent,
         QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf,
         QSharedPointer<View> topComponentView);
