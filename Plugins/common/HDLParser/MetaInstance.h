@@ -59,6 +59,37 @@ public:
     //! The module name for HDL.
     QString moduleName_;
 
+    //! The component library.
+    LibraryInterface* library_;
+
+    //! The active view of the instance.
+    QSharedPointer<View> activeView_;
+
+    //! The component instantiation referred by the active view.
+    QSharedPointer<ComponentInstantiation> activeInstantiation_;
+
+protected:
+    /*!
+    *  Culls and copies parameter declarations of the component and active instantiation if any exists.
+    */
+    virtual void cullParameters();
+
+    /*!
+    *  Parses the found parameter declarations.
+    */
+    virtual void parseParameters(IPXactSystemVerilogParser& parser,
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs);
+    
+    /*!
+    *  Culls the interfaces of the component.
+    */
+    virtual void parseInterfaces();
+    
+    /*!
+    *  Culls and parses the ports of the component.
+    */
+    virtual void parsePorts(IPXactSystemVerilogParser& parser);
+
 private:
 	// Disable copying.
 	MetaInstance(MetaInstance const& rhs);
@@ -68,27 +99,6 @@ private:
     *   Parses the expression using the parser and returns the result.
     */
     static QString parseExpression(IPXactSystemVerilogParser& parser, const QString& expression);
-
-    /*!
-    *  Culls and copies parameter declarations of the component and active instantiation if any exists.
-    */
-    void cullParameters();
-
-    /*!
-    *  Parses the found parameter declarations.
-    */
-    void parseParameters(IPXactSystemVerilogParser& parser,
-        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs);
-    
-    /*!
-    *  Culls the interfaces of the component.
-    */
-    void parseInterfaces();
-    
-    /*!
-    *  Culls and parses the ports of the component.
-    */
-    void parsePorts(IPXactSystemVerilogParser& parser);
 
     /*!
      *  Finds the mapped port bounds for a port map.
@@ -104,15 +114,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The component library.
-    LibraryInterface* library_;
-
-    //! The active view of the instance.
-    QSharedPointer<View> activeView_;
-
-    //! The component instantiation referred by the active view.
-    QSharedPointer<ComponentInstantiation> activeInstantiation_;
 };
 
 #endif // METAINSTANCE_H

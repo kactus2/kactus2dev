@@ -86,21 +86,6 @@ MetaInstance::~MetaInstance()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaInstance::parseExpression()
-//-----------------------------------------------------------------------------
-QString MetaInstance::parseExpression(IPXactSystemVerilogParser& parser, const QString& expression)
-{
-    QString value = parser.parseExpression(expression);
-
-    if (value == "x")
-    {
-        return "0";
-    }
-
-    return value;
-}
-
-//-----------------------------------------------------------------------------
 // Function: MetaInstance::findParameters()
 //-----------------------------------------------------------------------------
 void MetaInstance::cullParameters()
@@ -284,6 +269,21 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
             }
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaInstance::parseExpression()
+//-----------------------------------------------------------------------------
+QString MetaInstance::parseExpression(IPXactSystemVerilogParser& parser, const QString& expression)
+{
+    QString value = parser.parseExpression(expression);
+
+    if (value == "x")
+    {
+        return "0";
+    }
+
+    return value;
 }
 
 //-----------------------------------------------------------------------------

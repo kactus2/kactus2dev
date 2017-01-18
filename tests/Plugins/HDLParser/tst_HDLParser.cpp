@@ -48,7 +48,7 @@ private slots:
     void init();
     void cleanup();
 
-    // Test cases:
+    // Hierarchy test cases:
     void testTopLevelComponent();
     void testTopLevelComponentExpressions();
 
@@ -80,7 +80,11 @@ private slots:
     void testParameterPropagationFromTopWire();
     void testMultiLevelHierachy();
 
-	void testParameterSorting();
+    // Flat test cases:
+    void testFlatComponent();
+    void testFlatComponentExpressions();
+
+    void testParameterSorting();
     void testParameterSorting2();
     void testParameterSorting3();
 
@@ -89,7 +93,7 @@ private:
     void addPort(QString const& portName, int portSize, DirectionTypes::Direction direction, 
         QSharedPointer<Component> component);
 
-    void addModuleParameter(QString const& name, QString const& value);
+    void addModuleParameter(QString const& name, QString const& value, QString const& valueID);
 
     void createHierarchicalConnection(QString const& topInterfaceRef, QString const& instanceInterfaceRef);
 
@@ -236,31 +240,36 @@ void tst_HDLParser::testTopLevelComponent()
     addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
     addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
     addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
-    addModuleParameter("dataWidth", "8");
-    addModuleParameter("freq", "100000");
+    addModuleParameter("dataWidth", "8", "firstParameter");
+    addModuleParameter("freq", "100000", "secondParameter");
 
-    QSharedPointer<HDLComponentParser> componentParser =
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
-    componentParser->parseComponent(topView_);
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QCOMPARE(componentParser->parameters_.size(), 2);
-    QCOMPARE(componentParser->parameters_.at(0)->name(), QString("dataWidth"));
-    QCOMPARE(componentParser->parameters_.at(0)->getValue(), QString("8"));
-    QCOMPARE(componentParser->parameters_.at(1)->name(), QString("freq"));
-    QCOMPARE(componentParser->parameters_.at(1)->getValue(), QString("100000"));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(componentParser->ports_.size(), 4);
-    QCOMPARE(componentParser->ports_["clk"]->port_->getDirection(), DirectionTypes::IN);
+    QVERIFY(design->topInstance_);
+    QSharedPointer<MetaInstance> mInstance = design->topInstance_;
 
-    QCOMPARE(componentParser->ports_["dataIn"]->port_->getDirection(), DirectionTypes::IN);
-    QCOMPARE(componentParser->ports_["dataIn"]->vectorBounds_.first, QString("7"));
-    QCOMPARE(componentParser->ports_["dataIn"]->vectorBounds_.second, QString("0"));
+    QCOMPARE(mInstance->parameters_.size(), 2);
+    QCOMPARE(mInstance->parameters_.at(0)->name(), QString("dataWidth"));
+    QCOMPARE(mInstance->parameters_.at(0)->getValue(), QString("8"));
+    QCOMPARE(mInstance->parameters_.at(1)->name(), QString("freq"));
+    QCOMPARE(mInstance->parameters_.at(1)->getValue(), QString("100000"));
 
-    QCOMPARE(componentParser->ports_["rst_n"]->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(mInstance->ports_.size(), 4);
+    QCOMPARE(mInstance->ports_["clk"]->port_->getDirection(), DirectionTypes::IN);
 
-    QCOMPARE(componentParser->ports_["dataOut"]->port_->getDirection(), DirectionTypes::OUT);
-    QCOMPARE(componentParser->ports_["dataOut"]->vectorBounds_.first, QString("7"));
-    QCOMPARE(componentParser->ports_["dataOut"]->vectorBounds_.second, QString("0"));
+    QCOMPARE(mInstance->ports_["dataIn"]->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(mInstance->ports_["dataIn"]->vectorBounds_.first, QString("7"));
+    QCOMPARE(mInstance->ports_["dataIn"]->vectorBounds_.second, QString("0"));
+
+    QCOMPARE(mInstance->ports_["rst_n"]->port_->getDirection(), DirectionTypes::IN);
+
+    QCOMPARE(mInstance->ports_["dataOut"]->port_->getDirection(), DirectionTypes::OUT);
+    QCOMPARE(mInstance->ports_["dataOut"]->vectorBounds_.first, QString("7"));
+    QCOMPARE(mInstance->ports_["dataOut"]->vectorBounds_.second, QString("0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -268,26 +277,33 @@ void tst_HDLParser::testTopLevelComponent()
 //-----------------------------------------------------------------------------
 void tst_HDLParser::testTopLevelComponentExpressions()
 {
-    addModuleParameter("module", "10");
-    topComponent_->getComponentInstantiations()->first()->getModuleParameters()->first()->setValueId("MODEL_ID");
+    addModuleParameter("module", "10", "firstParameter");
+    addModuleParameter("freq", "firstParameter*3.14", "secondParameter");
 
     QSharedPointer<Port> port = QSharedPointer<Port>(new Port("clk", DirectionTypes::IN));
-    port->setLeftBound("MODEL_ID*2");
+    port->setLeftBound("secondParameter*2");
     port->setRightBound("2+5");
     topComponent_->getPorts()->append(port);
 
-    QSharedPointer<HDLComponentParser> componentParser =
-    QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_));
-    componentParser->parseComponent(topView_);
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, topComponent_, design_, designConf_, topView_);
 
-    QCOMPARE(componentParser->parameters_.size(), 1);
-    QCOMPARE(componentParser->parameters_.at(0)->name(), QString("module"));
-    QCOMPARE(componentParser->parameters_.at(0)->getValue(), QString("10"));
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(componentParser->ports_.size(), 1);
-    QCOMPARE(componentParser->ports_["clk"]->port_->getDirection(), DirectionTypes::IN);
-    QCOMPARE(componentParser->ports_["clk"]->vectorBounds_.first, QString("module*2"));
-    QCOMPARE(componentParser->ports_["clk"]->vectorBounds_.second, QString("2+5"));
+    QVERIFY(design->topInstance_);
+    QSharedPointer<MetaInstance> mInstance = design->topInstance_;
+
+    QCOMPARE(mInstance->parameters_.size(), 2);
+    QCOMPARE(mInstance->parameters_.at(0)->name(), QString("module"));
+    QCOMPARE(mInstance->parameters_.at(0)->getValue(), QString("10"));
+    QCOMPARE(mInstance->parameters_.at(1)->name(), QString("freq"));
+    QCOMPARE(mInstance->parameters_.at(1)->getValue(), QString("31.4"));
+
+    QCOMPARE(mInstance->ports_.size(), 1);
+    QCOMPARE(mInstance->ports_["clk"]->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(mInstance->ports_["clk"]->vectorBounds_.first, QString("62.8"));
+    QCOMPARE(mInstance->ports_["clk"]->vectorBounds_.second, QString("7"));
 }
 
 //-----------------------------------------------------------------------------
@@ -304,11 +320,12 @@ void tst_HDLParser::addPort(QString const& portName, int portSize,
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::addModuleParameter()
 //-----------------------------------------------------------------------------
-void tst_HDLParser::addModuleParameter(QString const& name, QString const& value)
+void tst_HDLParser::addModuleParameter(QString const& name, QString const& value, QString const& valueID)
 {
     QSharedPointer<ModuleParameter> parameter = QSharedPointer<ModuleParameter>(new ModuleParameter());
     parameter->setName(name);
     parameter->setValue(value);
+    parameter->setValueId(valueID);
 
     if (topComponent_->getComponentInstantiations()->isEmpty())
     {
@@ -2349,35 +2366,98 @@ void tst_HDLParser::testMultiLevelHierachy()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_HDLParser::testFlatComponent()
+//-----------------------------------------------------------------------------
+void tst_HDLParser::testFlatComponent()
+{
+    addPort("clk", 1, DirectionTypes::IN, topComponent_);
+    addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
+    addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
+    addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
+    addModuleParameter("dataWidth", "8", "firstParameter");
+    addModuleParameter("freq", "100000", "secondParameter");
+
+    QSharedPointer<HDLComponentParser> componentParser =
+        QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_, topView_));
+
+    QCOMPARE(componentParser->parameters_.size(), 2);
+    QCOMPARE(componentParser->parameters_.at(0)->name(), QString("dataWidth"));
+    QCOMPARE(componentParser->parameters_.at(0)->getValue(), QString("8"));
+    QCOMPARE(componentParser->parameters_.at(1)->name(), QString("freq"));
+    QCOMPARE(componentParser->parameters_.at(1)->getValue(), QString("100000"));
+
+    QCOMPARE(componentParser->ports_.size(), 4);
+    QCOMPARE(componentParser->ports_["clk"]->port_->getDirection(), DirectionTypes::IN);
+
+    QCOMPARE(componentParser->ports_["dataIn"]->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(componentParser->ports_["dataIn"]->vectorBounds_.first, QString("7"));
+    QCOMPARE(componentParser->ports_["dataIn"]->vectorBounds_.second, QString("0"));
+
+    QCOMPARE(componentParser->ports_["rst_n"]->port_->getDirection(), DirectionTypes::IN);
+
+    QCOMPARE(componentParser->ports_["dataOut"]->port_->getDirection(), DirectionTypes::OUT);
+    QCOMPARE(componentParser->ports_["dataOut"]->vectorBounds_.first, QString("7"));
+    QCOMPARE(componentParser->ports_["dataOut"]->vectorBounds_.second, QString("0"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_HDLParser::testFlatComponentExpressions()
+//-----------------------------------------------------------------------------
+void tst_HDLParser::testFlatComponentExpressions()
+{
+    addModuleParameter("module", "10", "firstParameter");
+    addModuleParameter("freq", "firstParameter*3.14", "secondParameter");
+
+    QSharedPointer<Port> port = QSharedPointer<Port>(new Port("clk", DirectionTypes::IN));
+    port->setLeftBound("secondParameter*2");
+    port->setRightBound("2+5");
+    topComponent_->getPorts()->append(port);
+
+    QSharedPointer<HDLComponentParser> componentParser =
+        QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, topComponent_, topView_));
+
+    QCOMPARE(componentParser->parameters_.size(), 2);
+    QCOMPARE(componentParser->parameters_.at(0)->name(), QString("module"));
+    QCOMPARE(componentParser->parameters_.at(0)->getValue(), QString("10"));
+    QCOMPARE(componentParser->parameters_.at(1)->name(), QString("freq"));
+    QCOMPARE(componentParser->parameters_.at(1)->getValue(), QString("module*3.14"));
+
+    QCOMPARE(componentParser->ports_.size(), 1);
+    QCOMPARE(componentParser->ports_["clk"]->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(componentParser->ports_["clk"]->vectorBounds_.first, QString("freq*2"));
+    QCOMPARE(componentParser->ports_["clk"]->vectorBounds_.second, QString("2+5"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_HDLParser::testParameterSorting()
 //-----------------------------------------------------------------------------
 void tst_HDLParser::testParameterSorting()
 {
-	QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
-	moduleParameterFirst->setName("moduleParameterFirst");
-	moduleParameterFirst->setValue("1");
-	moduleParameterFirst->setValueId("firstParameter");
-	moduleParameterFirst->setValueResolve("user");
+    QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
+    moduleParameterFirst->setName("moduleParameterFirst");
+    moduleParameterFirst->setValue("1");
+    moduleParameterFirst->setValueId("firstParameter");
+    moduleParameterFirst->setValueResolve("user");
 
-	QSharedPointer<ModuleParameter> moduleParameterSecond(new ModuleParameter());
-	moduleParameterSecond->setName("moduleParameterSecond");
-	moduleParameterSecond->setValue("firstParameter");
-	moduleParameterSecond->setValueId("secondParameter");
-	moduleParameterSecond->setValueResolve("user");
+    QSharedPointer<ModuleParameter> moduleParameterSecond(new ModuleParameter());
+    moduleParameterSecond->setName("moduleParameterSecond");
+    moduleParameterSecond->setValue("firstParameter");
+    moduleParameterSecond->setValueId("secondParameter");
+    moduleParameterSecond->setValueResolve("user");
 
-	QSharedPointer<ModuleParameter> moduleParameterThird(new ModuleParameter());
-	moduleParameterThird->setName("moduleParameterThird");
+    QSharedPointer<ModuleParameter> moduleParameterThird(new ModuleParameter());
+    moduleParameterThird->setName("moduleParameterThird");
     moduleParameterThird->setValue("secondParameter");
     moduleParameterThird->setValueId("thirdParameter");
-	moduleParameterThird->setValueResolve("user");
+    moduleParameterThird->setValueResolve("user");
 
-	QList<QSharedPointer<Parameter> > parameters;
-	parameters.append(moduleParameterThird);
-	parameters.append(moduleParameterFirst);
-	parameters.append(moduleParameterSecond);
+    QList<QSharedPointer<Parameter> > parameters;
+    parameters.append(moduleParameterThird);
+    parameters.append(moduleParameterFirst);
+    parameters.append(moduleParameterSecond);
 
     QList<QSharedPointer<Parameter> > sortedParameters(parameters);
-	
+
     HDLComponentParser::sortParameters(parameters,sortedParameters);
 
     QCOMPARE(sortedParameters.size(), 3);
@@ -2395,29 +2475,29 @@ void tst_HDLParser::testParameterSorting()
 //-----------------------------------------------------------------------------
 void tst_HDLParser::testParameterSorting2()
 {
-	QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
-	moduleParameterFirst->setName("moduleParameterFirst");
-	moduleParameterFirst->setValue("secondParameter + fourthParameter");
-	moduleParameterFirst->setValueId("firstParameter");
-	moduleParameterFirst->setValueResolve("user");
+    QSharedPointer<ModuleParameter> moduleParameterFirst(new ModuleParameter());
+    moduleParameterFirst->setName("moduleParameterFirst");
+    moduleParameterFirst->setValue("secondParameter + fourthParameter");
+    moduleParameterFirst->setValueId("firstParameter");
+    moduleParameterFirst->setValueResolve("user");
 
-	QSharedPointer<ModuleParameter> moduleParameterSecond(new ModuleParameter());
-	moduleParameterSecond->setName("moduleParameterSecond");
-	moduleParameterSecond->setValue("1");
-	moduleParameterSecond->setValueId("secondParameter");
-	moduleParameterSecond->setValueResolve("user");
+    QSharedPointer<ModuleParameter> moduleParameterSecond(new ModuleParameter());
+    moduleParameterSecond->setName("moduleParameterSecond");
+    moduleParameterSecond->setValue("1");
+    moduleParameterSecond->setValueId("secondParameter");
+    moduleParameterSecond->setValueResolve("user");
 
-	QSharedPointer<ModuleParameter> moduleParameterThird(new ModuleParameter());
-	moduleParameterThird->setName("moduleParameterThird");
+    QSharedPointer<ModuleParameter> moduleParameterThird(new ModuleParameter());
+    moduleParameterThird->setName("moduleParameterThird");
     moduleParameterThird->setValue("firstParameter");
     moduleParameterThird->setValueId("thirdParameter");
-	moduleParameterThird->setValueResolve("user");
+    moduleParameterThird->setValueResolve("user");
 
-	QSharedPointer<ModuleParameter> moduleParameterFourth(new ModuleParameter());
-	moduleParameterFourth->setName("moduleParameterFourth");
-	moduleParameterFourth->setValue("4");
-	moduleParameterFourth->setValueId("fourthParameter");
-	moduleParameterFourth->setValueResolve("user");
+    QSharedPointer<ModuleParameter> moduleParameterFourth(new ModuleParameter());
+    moduleParameterFourth->setName("moduleParameterFourth");
+    moduleParameterFourth->setValue("4");
+    moduleParameterFourth->setValueId("fourthParameter");
+    moduleParameterFourth->setValueResolve("user");
 
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(moduleParameterFirst);

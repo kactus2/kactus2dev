@@ -18,6 +18,7 @@
 
 #include <Plugins/common/PortSorter/PortSorter.h>
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
+#include <Plugins/common/HDLParser/MetaInstance.h>
 
 #include <QSharedPointer>
 #include <QTextStream>
@@ -30,7 +31,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 // Class used to parse relevant information from IP-XACT component for HDL generation.
 //-----------------------------------------------------------------------------
-class HDLComponentParser
+class HDLComponentParser : public MetaInstance
 {
 public:
 
@@ -40,15 +41,11 @@ public:
 	 *      @param [in] component               The component to write to Verilog.
      *      @param [in] activeView              The active view for the component.
 	 */
-	HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component);
+    HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component,
+        QSharedPointer<View> activeView);
 
 	//! The destructor.
 	~HDLComponentParser();
-    
-    /*!
-    *  Parses the component using the given view.
-    */
-    void parseComponent(QSharedPointer<View> activeView);
 
     /*!
      *  Sorts list of parameters based on their interdependencies.
@@ -59,12 +56,16 @@ public:
 	static void sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
 		QList<QSharedPointer<Parameter> >& sortParameters);
 
-    //! The formatted parameters of the component, ready for writing.
-    QList<QSharedPointer<Parameter> > parameters_;
-    //! The formatted parameters of the component, ready for writing.
-    QMap<QString, QSharedPointer<MetaPort> > ports_;
-    //! The module name for HDL.
-    QString moduleName_;
+protected:
+    /*!
+    *  Parses the found parameter declarations.
+    */
+    virtual void formatParameters();
+    
+    /*!
+    *  Culls and parses the ports of the component.
+    */
+    virtual void formatPorts();
 
 private:
 	// Disable copying.
@@ -89,18 +90,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The component library.
-    LibraryInterface* library_;
-
-    //! The component parsed for generation.
-    QSharedPointer<Component> component_;
-
-    //! The active view of the component.
-    QSharedPointer<View> activeView_;
-
-    //! The component instantiation referred by the active view.
-    QSharedPointer<ComponentInstantiation> activeInstantiation_;
 
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter_;

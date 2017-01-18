@@ -39,10 +39,27 @@
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::HDLComponentParser
 //-----------------------------------------------------------------------------
-HDLComponentParser::HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component) :
-library_(library),
-component_(component)
+HDLComponentParser::HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component,
+    QSharedPointer<View> activeView) :
+    MetaInstance(library,
+        component,
+        activeView,
+        QSharedPointer<ListParameterFinder>::QSharedPointer(),
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >::QSharedPointer())
 {
+    // Initialize the parameter finder and formatter.s
+    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(component_));
+    parameterFinder->setActiveView(activeView_);
+    formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
+
+    parameters_.clear();
+    cullParameters();
+    formatParameters();
+    formatPorts();
+
+    // Find and parse the component stuff that (currently) does not exists in the hierarchy parsing.
+    parseMemoryMaps();
+    parseRemapStates();
 }
 
 //-----------------------------------------------------------------------------
@@ -53,61 +70,15 @@ HDLComponentParser::~HDLComponentParser()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLComponentParser::parseComponent
+// Function: HDLComponentParser::formatParameters()
 //-----------------------------------------------------------------------------
-void HDLComponentParser::parseComponent(QSharedPointer<View> activeView)
+void HDLComponentParser::formatParameters()
 {
-    // Must have an active view.
-    activeView_ = activeView;
-
-    if (!activeView_)
-    {
-        // TODO: error
-        return;
-    }
-
-    // Try to find a component instantiation for the view.
-    activeInstantiation_ = component_->getModel()->
-        findComponentInstantiation(activeView_->getComponentInstantiationRef());
-
-    if (activeInstantiation_ && !activeInstantiation_->getModuleName().isEmpty())
-    {
-        // If there is a named component instantiation, its module name shall be used.
-        moduleName_ = activeInstantiation_->getModuleName();
-    }
-    else
-    {
-        // Else take module name from the VLNV of the component.
-        moduleName_ = component_->getVlnv().getName();
-    }
-
-    // Initialize the parameter finder and formatter.s
-    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(component_));
-    parameterFinder->setActiveView(activeView);
-    formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
-
-    // Cull all the component parameters for the original parameters.
-    foreach(QSharedPointer<Parameter> parameterOrig, *component_->getParameters())
-    {
-        QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
-        parameters_.append(parameterCpy);
-    }
-
-    // If there is an active component instantiation, take its module parameters as well.
-    if (activeInstantiation_)
-    {
-        foreach(QSharedPointer<ModuleParameter> parameterOrig, *activeInstantiation_->getModuleParameters())
-        {
-            QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
-            parameters_.append(parameterCpy);
-        }
-    }
-
     // Create reference parameters.
     QList<QSharedPointer<Parameter> > refParameters;
     refParameters.append(parameters_);
 
-    // Sort the parameters.
+    // Sort the parameters.!
     sortParameters(refParameters, parameters_);
 
     // Format the parameters.
@@ -115,7 +86,13 @@ void HDLComponentParser::parseComponent(QSharedPointer<View> activeView)
     {
         parameter->setValue(formatter_->formatReferringExpression(parameter->getValue()));
     }
+}
 
+//-----------------------------------------------------------------------------
+// Function: HDLComponentParser::formatPorts()
+//-----------------------------------------------------------------------------
+void HDLComponentParser::formatPorts()
+{
     foreach (QSharedPointer<Port> cport, *component_->getPorts())
     {
         // Create generation port.
@@ -134,10 +111,6 @@ void HDLComponentParser::parseComponent(QSharedPointer<View> activeView)
         // Add to the list.
         ports_.insert(cport->name(), mPort);
     }
-
-    // Find and parse the component stuff that (currently) does not exists in the hierarchy parsing.
-    parseMemoryMaps();
-    parseRemapStates();
 }
 
 //-----------------------------------------------------------------------------
