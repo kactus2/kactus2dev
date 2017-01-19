@@ -61,23 +61,6 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
         return;
     }
 
-    if (useInterfaces_)
-    {
-        QStringList fileNames;
-
-        foreach(QSharedPointer<MetaInterface> gif, component_->interfaces_)
-        {
-            fileNames.append(gif->interface_->name());
-        }
-
-        fileNames.removeDuplicates();
-
-        foreach(QString name, fileNames)
-        {
-            outputStream << "`include \"" << name << "\"" <<  endl;
-        }
-    }
-
     writeModuleDeclaration(outputStream);
 
     writeInternalWiresAndComponentInstances(outputStream);
@@ -208,11 +191,45 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 
     outputStream << "(";
 
-    foreach(QSharedPointer<MetaPort> mPort, component_->ports_)
+    // Pick the ports in sorted order.
+    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(component_->component_);
+
+    foreach(QSharedPointer<Port> cPort, ports)
     {
+        QSharedPointer<MetaPort> mPort = component_->ports_[cPort->name()];
+
+        if (!mPort)
+        {
+            // TODO: error
+            continue;
+        }
+
         QString interfaceName;
-        //writeInterfaceIntroduction(interfaceName, gport->port_->description(), previousInterfaceName, outputStream);
-        bool lastPortToWrite = mPort == component_->ports_.last();
+        QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
+            component_->component_->getInterfacesUsedByPort(cPort->name());
+
+        if (busInterfaces->count() < 1 )
+        {
+            interfaceName = "none";
+        }
+        else if (useInterfaces_)
+        {
+            continue;
+        }
+        else
+        {
+            if (busInterfaces->count() == 1)
+            {
+                interfaceName  = busInterfaces->first()->name();
+            }
+            else
+            {
+                interfaceName = "several";
+            }
+        }
+
+        writeInterfaceIntroduction(interfaceName, cPort->description(), previousInterfaceName, outputStream);
+        bool lastPortToWrite = cPort == ports.last();
         writePort(outputStream, mPort, lastPortToWrite);
     }
     

@@ -139,7 +139,7 @@ private:
     *
     *      @return The Verilog description of the instance port connection assignment.
     */
-    QString assignmentForPort(QSharedPointer<MetaPortAssignMent> mpa) const;
+    QString assignmentForPort(QSharedPointer<MetaPort> mPort) const;
 
     /*!
     *  Checks if a given port is not connected.
