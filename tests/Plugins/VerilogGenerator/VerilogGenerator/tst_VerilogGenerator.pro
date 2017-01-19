@@ -3,7 +3,7 @@
 #-----------------------------------------------------------------------------
 # Project: Kactus 2
 # Author: Esko Pekkarinen
-# Date: 24.27.2014
+# Date: 28.07.2014
 #
 # Description:
 # Qt project file for running unit tests for Verilog Generator.
