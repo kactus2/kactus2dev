@@ -16,13 +16,15 @@
 //-----------------------------------------------------------------------------
 // Function: EnumCollectionEditor::EnumCollectionEditor()
 //-----------------------------------------------------------------------------
-EnumCollectionEditor::EnumCollectionEditor(QWidget* parent): QFrame(parent),
+EnumCollectionEditor::EnumCollectionEditor(QWidget* parent):
+QFrame(parent),
       layout_(new QVBoxLayout(this)),
       items_()
 {
     setFrameStyle(QFrame::StyledPanel);
     setAutoFillBackground(true);
     setFocusPolicy(Qt::StrongFocus);
+    setAttribute(Qt::WA_NoMousePropagation);
 }
 
 //-----------------------------------------------------------------------------

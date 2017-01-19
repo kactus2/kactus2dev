@@ -14,20 +14,14 @@
 
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
-#include <library/LibraryManager/libraryinterface.h>
-
-#include <IPXACTmodels/Component/Component.h>
-
 #include <QHBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: dirlistmanager::DirListManager()
 //-----------------------------------------------------------------------------
-DirListManager::DirListManager( const QString title, LibraryInterface* handler,
-    QSharedPointer<Component> component, QWidget *parent /*= 0*/):
+DirListManager::DirListManager(QString const& title, QString const& basePath, QWidget *parent) :
 ListManager(title, parent), 
-handler_(handler), 
-component_(component)
+    basePath_(basePath)
 {
 
 }
@@ -58,7 +52,7 @@ void DirListManager::initialize( const QStringList& items /*= QStringList()*/ )
 	}
 
 	// create new model and view
-	model_ = new DirListManagerModel(handler_, component_, this, items);
+	model_ = new DirListManagerModel(basePath_, items, this);
 
 	view_ = new EditableListView(this);
 

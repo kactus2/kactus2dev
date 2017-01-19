@@ -125,23 +125,23 @@ private:
     //! The editor for the file name and description.
     FileNameEditor nameEditor_;
 
-    //! Editor for the files general settings.
-    FileGeneralEditor generalEditor_;
-
     //! Editor for the file types of a file.
     FileTypeEditor fileTypeEditor_;
 
-    //! Editor for the build commands of a file.
-    FileBuildCommand buildCommand_;
-
-    //! Editor for the dependencies of a file.
-    DirListManager dependenciesEditor_;
+    //! Editor for the files general settings.
+    FileGeneralEditor generalEditor_;
 
     //! Editor for the exported names of a file.
     ListManager exportedNamesEditor_;
 
+    //! Editor for the build commands of a file.
+    FileBuildCommand buildCommand_;
+
     //! Editor for the image types of a file.
     ListManager imageTypesEditor_;
+
+    //! Editor for the dependencies of a file.
+    DirListManager dependenciesEditor_;
 
     //! The button for editing the current file.
     QPushButton* editButton_;

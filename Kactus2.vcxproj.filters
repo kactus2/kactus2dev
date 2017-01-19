@@ -2164,9 +2164,6 @@
     <ClCompile Include="GeneratedFiles\moc_FileDependencyModel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_FileDependencySourceDialog.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_FileDependencySourceEditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2588,9 +2585,6 @@
       <Filter>Source Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySortFilter.cpp">
-      <Filter>Source Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceDialog.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceEditor.cpp">
@@ -4183,6 +4177,12 @@
     <ClCompile Include="designEditors\MemoryDesigner\MemoryConnectionHandler.cpp">
       <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\common\ComponentInstanceParameterFinder.cpp">
+      <Filter>Source Files\designEditors\common</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_ComponentInstanceParameterFinder.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -4876,9 +4876,6 @@
       <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyModel.h">
-      <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceDialog.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\dependencyAnalysis</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencySourceEditor.h">
@@ -5753,6 +5750,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\MemoryDesigner\MemoryDesignConstructor.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="designEditors\common\ComponentInstanceParameterFinder.h">
+      <Filter>Header Files\designEditors\common</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

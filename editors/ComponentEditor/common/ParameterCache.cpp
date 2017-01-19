@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: ParameterCache::ParameterCache()
 //-----------------------------------------------------------------------------
-ParameterCache::ParameterCache(QSharedPointer<Component> component) : QObject(0),
+ParameterCache::ParameterCache(QSharedPointer<const Component> component) : QObject(0),
 ComponentParameterFinder(component), availableParameters_()
 {
     resetCache();

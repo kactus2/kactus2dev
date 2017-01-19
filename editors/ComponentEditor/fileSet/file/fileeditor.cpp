@@ -28,23 +28,23 @@ FileEditor::FileEditor(LibraryInterface* handler, QSharedPointer<Component> comp
 ItemEditor(component, handler, parent),
     file_(file),
     nameEditor_(file_, this),
-    generalEditor_(this, file),
     fileTypeEditor_(this, file),
-    buildCommand_(file, handler->getDirectoryPath(component->getVlnv()), parameterFinder, expressionParser, this),
-    dependenciesEditor_(tr("Dependencies"), handler, component, this),
+    generalEditor_(this, file),
     exportedNamesEditor_(tr("Exported names"), this),
+    buildCommand_(file, handler->getDirectoryPath(component->getVlnv()), parameterFinder, expressionParser, this),
     imageTypesEditor_(tr("Image types"), this),
+    dependenciesEditor_(tr("Dependent directories"), handler->getDirectoryPath(component->getVlnv()), this),
     editButton_(new QPushButton(QIcon(":/icons/common/graphics/settings-code_editor.png"), tr("Edit file"), this)),
     runButton_(new QPushButton(QIcon(":/icons/common/graphics/plugin-generator.png"), tr("Run file"), this)),
     openFolderButton_(new QPushButton(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), 
         tr("Open containing folder"), this))
 {
-    dependenciesEditor_.initialize();
+    setupLayout();
+    
+    fileTypeEditor_.initialize();
     exportedNamesEditor_.initialize();
     imageTypesEditor_.initialize();
-    fileTypeEditor_.initialize();
-
-    setupLayout();
+    dependenciesEditor_.initialize();
 
     connect(editButton_, SIGNAL(clicked(bool)), this, SIGNAL(editFile()), Qt::UniqueConnection);
     connect(runButton_, SIGNAL(clicked(bool)), this, SIGNAL(runFile()), Qt::UniqueConnection);
@@ -171,10 +171,10 @@ void FileEditor::setupLayout()
     topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
     topLayout->addWidget(&fileTypeEditor_, 0, 1, 1, 1);
     topLayout->addWidget(&generalEditor_, 1, 0, 1, 1);
-    topLayout->addWidget(&dependenciesEditor_, 1, 1, 1, 1);
+    topLayout->addWidget(&exportedNamesEditor_, 1, 1, 1, 1);
     topLayout->addWidget(&buildCommand_, 2, 0, 1, 1);
-    topLayout->addWidget(&exportedNamesEditor_, 2, 1, 1, 1);
-    topLayout->addWidget(&imageTypesEditor_, 3, 0, 1, 1);
+    topLayout->addWidget(&imageTypesEditor_, 2, 1, 1, 1);
+    topLayout->addWidget(&dependenciesEditor_, 3, 0, 1, 1);
     topLayout->addLayout(buttonLayout, 4, 0, 1, 2);
 
     topLayout->setRowStretch(0, 1);

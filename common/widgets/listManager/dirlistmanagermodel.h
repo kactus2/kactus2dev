@@ -16,9 +16,6 @@
 
 #include <QSharedPointer>
 
-class LibraryInterface;
-class Component;
-
 //-----------------------------------------------------------------------------
 //! The model which re-implements the validity check of dir paths.
 //-----------------------------------------------------------------------------
@@ -31,13 +28,11 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] Component   Pointer to the component which is being edited.
-	 *      @param [in] parent      Pointer to the owner of the model.
+	 *      @param [in] basePath    Path to start the relative paths from.
 	 *      @param [in] items       QStringList which contains the items to add.
+     *      @param [in] parent      The owner of the model.
 	 */
-	DirListManagerModel(LibraryInterface* handler, QSharedPointer<Component> component, QObject *parent = 0,
-        const QStringList& items = QStringList());
+	DirListManagerModel(QString const& basePath, QStringList const& items = QStringList(), QObject* parent = 0);
 	
 	//! The destructor.
 	virtual ~DirListManagerModel();
@@ -48,7 +43,7 @@ public:
 	 *      @param [in] index   ModelIndex of the wanted item.
 	 *      @param [in] role    Specifies what kind of data is requested.
 	 */
-	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
 
 private:
 	
@@ -65,11 +60,8 @@ private:
      */
     bool directoryExistsForPath(QString const& relativePath) const;
 
-	//! Pointer to the instance which manages the library.
-	LibraryInterface* handler_;
-
-	//! Pointer to the component being edited.
-	QSharedPointer<Component> component_;
+	//! The path to start relative paths from.
+	QString basePath_;
 };
 
 #endif // DIRLISTMANAGERMODEL_H

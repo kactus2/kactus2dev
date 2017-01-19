@@ -19,9 +19,6 @@
 #include <QStringList>
 #include <QSharedPointer>
 
-class LibraryInterface;
-class Component;
-
 //-----------------------------------------------------------------------------
 //! DirListManager can be used to manage a list of relative directory paths.
 //-----------------------------------------------------------------------------
@@ -35,12 +32,10 @@ public:
      *  The constructor.
 	 *
 	 *      @param [in] title       Title to be set for the QGroupBox
-	 *      @param [in] handler     Pointer to the instance that manages the library.
-	 *      @param [in] component   Pointer to the component being edited.
-	 *      @param [in] parent      Pointer to the owner of this widget.
+	 *      @param [in] basePath    Path to start relative paths from.
+	 *      @param [in] parent      The owner of this widget.
 	 */
-	DirListManager(const QString title, LibraryInterface* handler, QSharedPointer<Component> component,
-        QWidget *parent = 0);
+	DirListManager(QString const& title, QString const& basePath, QWidget *parent = 0);
 
 	//! The destructor.
 	virtual ~DirListManager();
@@ -60,11 +55,8 @@ private:
 	DirListManager(const DirListManager& other);
 	DirListManager& operator=(const DirListManager& other);
 
-	//! Pointer to the instance that manages the library.
-	LibraryInterface* handler_;
-
-	//! Pointer to the component being edited.
-	QSharedPointer<Component> component_;
+    //! Path to start search for relative paths.
+    QString basePath_;
 };
 
 #endif // DIRLISTMANAGER_H

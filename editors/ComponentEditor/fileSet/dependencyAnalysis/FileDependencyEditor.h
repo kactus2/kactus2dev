@@ -14,6 +14,7 @@
 
 #include "FileDependencyGraphWidget.h"
 #include "FileDependencyInfoWidget.h"
+#include "FileDependencySourceEditor.h"
 #include "FileDependencyModel.h"
 
 #include <QGroupBox>
@@ -108,10 +109,6 @@ signals:
     void scanCompleted();
 
 private slots:
-    /*!
-     *  Opens up the source selection dialog.
-     */
-    void openSourceDialog();
 
     /*!
      *  Scans the source directories.
@@ -132,6 +129,9 @@ private slots:
      */
     void filterToggle(QAction* action);
 
+    //! Updated the source directories for analysis.
+    void onSourceDirectoriesChanged();
+
 private:
     // Disable copying.
     FileDependencyEditor(FileDependencyEditor const& rhs);
@@ -141,7 +141,12 @@ private:
      *  Resolves the correct file type for each extension specified in the settings.
      */
     void resolveExtensionFileTypes();
-
+    
+    /*!
+     *  Finishes the scan.
+     */
+    void finishScan();
+    
     /*!
      *  Scans recursively files in the given path and adds them to the component file sets.
      *
@@ -156,6 +161,9 @@ private:
      */
     bool isFileIPXact(QString const& filename) const;
 
+    //! Setups the toolbar for file dependency analysis.
+    void setupToolbar();
+    
     /*
      *  Adds a filter button to the toolbar.
      *
@@ -163,21 +171,10 @@ private:
      *      @param [in] iconText    The text displayed for the icon.
      *      @param [in] filter      The filter value for the button.
      */
-    void addFilterButton(QIcon icon, QString const& iconText, FileDependencyGraphView::DependencyFilter filter);
+    void addFilterButton(QIcon const& icon, QString const& iconText, FileDependencyGraphView::DependencyFilter filter);
 
-    /*!
-     *  Finishes the scan.
-     */
-    void finishScan();
-    
-    /*!
-     *  Get the files matching the file path.
-     *
-     *      @param [in] filePath    The file path.
-     *
-     *      @return Files located within the given file path.
-     */
-    QList<QSharedPointer<File> > getFiles(QString const& filePath) const;
+    //! Sets the widget layout.
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -194,6 +191,8 @@ private:
 
     //! The dependency info widget.
     FileDependencyInfoWidget infoWidget_;
+
+    FileDependencySourceEditor directoryEditor_;
 
     //! The component being edited.
     QSharedPointer<Component> component_;
@@ -221,9 +220,6 @@ private:
 
     //! Timer for file scanning.
     QTimer* timer_;
-
-    //! Progress widget for file scanning.
-    ScanProgressWidget* progWidget_;
 };
 
 //-----------------------------------------------------------------------------

@@ -71,7 +71,7 @@ private slots:
      *
      *      @param [in] state   The new state for the direction.
      */
-    void directionCheckBoxChanged(int state);
+    void directionChanged(int state);
 
     /*!
      *  Handles the change in the locked check.
@@ -83,7 +83,7 @@ private slots:
     /*!
      *  Handles the change in the description change.
      */
-    void descEditTextChanged();
+    void descriptionChanged();
 
     /*!
      *  Handles the reversing of the direction.
@@ -93,6 +93,8 @@ private slots:
 private:
     // Disable copying.
     FileDependencyInfoWidget(FileDependencyInfoWidget const& rhs);
+    void setupLayout();
+
     FileDependencyInfoWidget& operator=(FileDependencyInfoWidget const& rhs);
 
     /*!
@@ -115,7 +117,7 @@ private:
     QPlainTextEdit descEdit_;
 
     //! Check box for changing whether direction is bidirectional.
-    QCheckBox directionCheck_;
+    QCheckBox bidirectionalCheck_;
     
     //! Check box for locked state.
     QCheckBox lockedCheck_;

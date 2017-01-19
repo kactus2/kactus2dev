@@ -932,16 +932,19 @@ void PortsModel::setTypeNameAndDefinitionOnRow(QSharedPointer<Port> port, int ro
 //-----------------------------------------------------------------------------
 bool PortsModel::hasExpressionInLeftOrRightBound(QSharedPointer<Port> port) const
 {
-	if ( port->getLeftBound().isEmpty() && port->getRightBound().isEmpty() )
+    QString left = port->getLeftBound();
+    QString right = port->getRightBound();
+
+	if (left.isEmpty() && right.isEmpty())
 	{
-		return true;
+		return false;
 	}
 
     bool leftNumber = false;
     bool rightNumber = false;
 
-    port->getLeftBound().toInt(&leftNumber);
-    port->getRightBound().toInt(&rightNumber);
+    left.toInt(&leftNumber);
+    right.toInt(&rightNumber);
 
-    return !leftNumber || !rightNumber;
+    return leftNumber || rightNumber;
 }

@@ -19,14 +19,15 @@
 #include <QGroupBox>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QListView>
 #include <QStringListModel>
 #include <QFileDialog>
+
+#include <common/widgets/listManager/dirlistmanager.h>
 
 //-----------------------------------------------------------------------------
 //! Editor for changing source directories.
 //-----------------------------------------------------------------------------
-class FileDependencySourceEditor : public QGroupBox
+class FileDependencySourceEditor : public DirListManager
 {
     Q_OBJECT
 public:
@@ -51,17 +52,22 @@ public:
      *      @return The list of source directories.
      */
     QStringList getSourceDirectories() const;
+    	
+    /*!
+     *  Initializes the editor.
+	 * 
+	 *      @param [in] items   QStringList that contains the items to add to the widget.
+     *
+     *      @remark FileDependencySourceEditor calls initialize() in constructor.
+	 */
+    virtual void initialize(QStringList const& items = QStringList());
 
 private slots:
-    /*!
-     *  Adds a new source to the list. The source directory is prompted with a folder selection dialog.
-     */
-    void addSource();
 
     /*!
-     *  Removes the currently selected source from the list.
+     *  Adds a new source to the list.
      */
-    void removeSource();
+    void addSource();
 
 private:
     // Disable copying.
@@ -80,16 +86,7 @@ private:
      */
     QStringList getAbsoluteDirectories();
 
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
-
-    QPushButton* buttonAdd_;
-    QPushButton* buttonRemove_;
-    QVBoxLayout* verizontalMainLayout_;
-    QHBoxLayout* horizontalGroupBoxLayout_;
-    QListView* directoryListView_;
-    QStringListModel* directoryListModel_;
+    //! Path to start search for relative paths.
     QString basePath_;
 };
 

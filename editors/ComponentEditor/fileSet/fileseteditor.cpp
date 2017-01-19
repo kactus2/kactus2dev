@@ -34,7 +34,7 @@ nameEditor_(fileSet, this),
 groupsEditor_(tr("Group identifiers"), this),
 fileBuilderEditor_(fileSet->getDefaultFileBuilders(), parameterFinder, expressionParser, expressionFormatter, this),
 files_(component, fileSet, handler, this),
-dependencies_(tr("Dependent directories"), handler, component, this)
+dependencies_(tr("Dependent directories"), handler->getDirectoryPath(component->getVlnv()), this)
 {
     nameEditor_.setTitle("File set name and description");
 
@@ -122,9 +122,9 @@ void FileSetEditor::setupLayout()
 
     topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
     topLayout->addWidget(&groupsEditor_, 0, 1, 1, 1);
-    topLayout->addWidget(&files_, 1, 0, 1, 2);
-    topLayout->addWidget(&fileBuilderEditor_, 2, 0, 1, 1);
-    topLayout->addWidget(&dependencies_, 2, 1, 1, 1);
+    topLayout->addWidget(&files_, 1, 0, 1, 2);    
+    topLayout->addWidget(&dependencies_, 2, 0, 1, 1);
+    topLayout->addWidget(&fileBuilderEditor_, 2, 1, 1, 1);
     topLayout->setRowStretch(0, 1);
     topLayout->setRowStretch(1, 10);
     topLayout->setRowStretch(2, 2);

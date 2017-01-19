@@ -12,7 +12,6 @@
 #include "FileDependencyEditor.h"
 
 #include "FileDependencyColumns.h"
-#include "FileDependencySourceDialog.h"
 #include "FileDependencyItem.h"
 #include "FileDependencyDelegate.h"
 
@@ -41,23 +40,22 @@
 // Function: FileDependencyEditor::FileDependencyEditor()
 //-----------------------------------------------------------------------------
 FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
-                                           QString const& basePath,
-                                           PluginManager const& pluginMgr, QWidget* parent)
-    : QWidget(parent),
-      toolbar_(this),
-      progressBar_(this),
-      graphWidget_(this),
-      infoWidget_(this),
-      component_(component),
-      fileTypeLookup_(),
-      ignoreExtList_(),
-      model_(pluginMgr, component, basePath + "/"),
-      basePath_(basePath),
-      scanning_(false),
-      filterActions_(this),
-      runAnalysisAction_(0),
-      timer_(0),
-      progWidget_(0)
+    QString const& basePath, PluginManager const& pluginMgr, QWidget* parent):
+QWidget(parent),
+    toolbar_(this),
+    progressBar_(this),
+    graphWidget_(this),
+    infoWidget_(this),
+    directoryEditor_(basePath, component->getSourceDirectories(), this),
+    component_(component),
+    fileTypeLookup_(),
+    ignoreExtList_(),
+    model_(pluginMgr, component, basePath + "/"),
+    basePath_(basePath),
+    scanning_(false),
+    filterActions_(this),
+    runAnalysisAction_(0),
+    timer_(0)
 {
     // Initialize the widgets.
     progressBar_.setStyleSheet("QProgressBar:horizontal { margin: 0px; border: none; background: #cccccc; } "
@@ -79,54 +77,9 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
     graphWidget_.getView()->header()->setSectionResizeMode(FileDependencyColumns::STATUS, QHeaderView::Fixed);
     graphWidget_.getView()->header()->setSectionResizeMode(FileDependencyColumns::CREATE_DEPENDENCY, QHeaderView::Fixed);
 
-    filterActions_.setExclusive(false);
+    setupToolbar();
 
-    // Set up the toolbar
-    toolbar_.setFloatable(false);
-    toolbar_.setMovable(false);
-    toolbar_.setStyleSheet(QString("QToolBar { border: none; }"));
-
-    // Create the filter buttons in the toolbar.
-    addFilterButton(QIcon(":/icons/common/graphics/traffic-light_green.png"), tr("Show Unchanged Files"),
-        FileDependencyGraphView::FILTER_GREEN);
-    addFilterButton(QIcon(":/icons/common/graphics/traffic-light_yellow.png"), 
-        tr("Show Changed Files (Only Contents Changed)"),
-        FileDependencyGraphView::FILTER_YELLOW);
-    addFilterButton(QIcon(":/icons/common/graphics/traffic-light_red.png"), 
-        tr("Show Changed Files (Dependencies Changed)"),
-        FileDependencyGraphView::FILTER_RED);
-    addFilterButton(QIcon(":/icons/common/graphics/dependency_twoway.png"),
-        tr("Show Bidirectional Dependencies"),
-        FileDependencyGraphView::FILTER_TWO_WAY);
-    addFilterButton(QIcon(":/icons/common/graphics/dependency_oneway.png"), 
-        tr("Show Unidirectional Dependencies"),
-        FileDependencyGraphView::FILTER_ONE_WAY);
-    addFilterButton(QIcon(":/icons/common/graphics/dependency_manual.png"), 
-        tr("Show Manual Dependencies"),
-        FileDependencyGraphView::FILTER_MANUAL);
-    addFilterButton(QIcon(":/icons/common/graphics/dependency_auto.png"), 
-        tr("Show Analyzed Dependencies"),
-       FileDependencyGraphView::FILTER_AUTOMATIC);
-    addFilterButton(QIcon(":/icons/common/graphics/external.png"), tr("Show External"),
-                    FileDependencyGraphView::FILTER_EXTERNAL);
-    addFilterButton(QIcon(":/icons/common/graphics/diff.png"), tr("Show Differences"),
-                    FileDependencyGraphView::FILTER_DIFFERENCE);
-
-    connect(&filterActions_, SIGNAL(triggered(QAction*)), this, SLOT(filterToggle(QAction*)));
-
-    toolbar_.addSeparator();
-    toolbar_.addAction(QIcon(":/icons/common/graphics/import_folders.png"), tr("Import Source Directories..."),
-                       this, SLOT(openSourceDialog()));
-    runAnalysisAction_ = toolbar_.addAction(QIcon(":/icons/common/graphics/control-play.png"), tr("Rescan"),
-                                            this, SLOT(scan()));
-
-    // Create the layout.
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(&toolbar_);
-    layout->addWidget(&progressBar_);
-    layout->addWidget(&graphWidget_, 1);
-    layout->addWidget(&infoWidget_);
-    layout->setContentsMargins(0, 0, 0, 0);
+    setupLayout();
 
     connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&model_, SIGNAL(dependenciesChanged()), this, SIGNAL(dependenciesChanged()), Qt::UniqueConnection);
@@ -137,6 +90,10 @@ FileDependencyEditor::FileDependencyEditor(QSharedPointer<Component> component,
 
     connect(&infoWidget_, SIGNAL(dependencyChanged(FileDependency*)),
             &model_, SIGNAL(dependencyChanged(FileDependency*)), Qt::UniqueConnection);
+
+    connect(&directoryEditor_, SIGNAL(contentChanged()),
+        this, SLOT(onSourceDirectoriesChanged()), Qt::UniqueConnection);
+    connect(&directoryEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -148,18 +105,36 @@ FileDependencyEditor::~FileDependencyEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyEditor::openSourceDialog()
+// Function: FileDependencyEditor::setCompact()
 //-----------------------------------------------------------------------------
-void FileDependencyEditor::openSourceDialog()
+void FileDependencyEditor::setCompact(bool compact)
 {
-    // Show the source directories dialog.
-    FileDependencySourceDialog dialog(basePath_, component_->getSourceDirectories(), this);
+    toolbar_.setVisible(!compact);
+    infoWidget_.setVisible(!compact);
+}
 
-    if (dialog.exec() == QDialog::Accepted)
-    {
-        component_->setSourceDirectories(dialog.getSourceDirectories());
-        scan();
-    }
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::setDependenciesEditable()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::setDependenciesEditable(bool editable)
+{
+    graphWidget_.getView()->setDependenciesEditable(editable);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::isScanning()
+//-----------------------------------------------------------------------------
+bool FileDependencyEditor::isScanning() const
+{
+    return scanning_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::refresh()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::refresh()
+{
+    model_.refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -167,7 +142,7 @@ void FileDependencyEditor::openSourceDialog()
 //-----------------------------------------------------------------------------
 void FileDependencyEditor::scan()
 {
-    if (scanning_)
+    if (isScanning())
     {
         model_.stopAnalysis();
         return;
@@ -183,18 +158,9 @@ void FileDependencyEditor::scan()
     // Preparations. Resolve file types for each extension.
     resolveExtensionFileTypes();
 
-    // Phase 1. Scan all files and folders in the source paths recursively.
-    progWidget_ = new ScanProgressWidget(this);
-    progWidget_->setWindowTitle(tr("Scanning file dependencies..."));
-    progWidget_->setRange(0, 1);
-    progWidget_->setValue(1);
-    progWidget_->setMessage(tr("Scanning source directories..."));
-    
     timer_ = new QTimer(this);
     connect(timer_, SIGNAL(timeout()), this, SLOT(scanDirectories()));
     timer_->start();
-
-    progWidget_->exec();
 
     // Phase 2. Run the dependency analysis.
     if (isEnabled())
@@ -206,6 +172,109 @@ void FileDependencyEditor::scan()
     {
         finishScan();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::scanDirectories()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::scanDirectories()
+{
+    model_.beginReset();
+
+    // First scan the source directories.
+    if (isEnabled())
+    {
+        foreach (QString const& sourcePath, component_->getSourceDirectories())
+        {
+            scanFiles(sourcePath);
+        }
+    }
+
+    // Then add files that are part of the file sets but were not added in the file scan.
+    foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
+    {
+        foreach (QSharedPointer<File> file, *fileSet->getFiles())
+        {
+            // For non-url files, check if the model does not contain a corresponding file item.
+            if (!(Utils::URL_VALIDITY_REG_EXP.match(file->name()).hasMatch()) &&
+                model_.findFileItem(file->name()) == 0)
+            {
+                QFileInfo info(file->name());
+                QString folderPath = info.path();
+
+                // Create a folder item for the file if not already created.
+                FileDependencyItem* folderItem = model_.findFolderItem(folderPath);
+                if (folderItem == 0)
+                {
+                    folderItem = model_.addFolder(folderPath);
+                }
+
+                // Create a file item.
+                QList<QSharedPointer<File> > fileRefs;
+                foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
+                {
+                    foreach (QSharedPointer<File> filesetFile, *fileSet->getFiles())
+                    {
+                        if (filesetFile->name() == file->name())
+                        {
+                            fileRefs.append(filesetFile);
+                        }
+                    }
+                }
+
+                QString fileType = "";
+                if (!file->getFileTypes()->empty())
+                {
+                    fileType = file->getFileTypes()->first();
+                }
+
+                folderItem->addFile(component_, file->name(), fileType, fileRefs);
+            }
+        }
+    }
+
+    model_.endReset();
+
+    timer_->stop();
+    delete timer_;
+    timer_ = 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::updateProgressBar()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::updateProgressBar(int value)
+{
+    progressBar_.setValue(value);
+
+    if (value == 0)
+    {
+        finishScan();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::filterToggle()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::filterToggle(QAction* action)
+{
+    // Get current filters from the graph.
+    FileDependencyGraphView::DependencyFilters filters = graphWidget_.getView()->getFilters();
+
+    // Toggle the appropriate filter based on the button that was clicked.
+    filters ^= action->data().toUInt();
+
+    // Apply the new filter setup to the view.
+    graphWidget_.getView()->setFilters(filters);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::onSourceDirectoriesChanged()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::onSourceDirectoriesChanged()
+{
+    component_->setSourceDirectories(directoryEditor_.getSourceDirectories());
+    scan();
 }
 
 //-----------------------------------------------------------------------------
@@ -241,6 +310,20 @@ void FileDependencyEditor::resolveExtensionFileTypes()
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileDependencyEditor::finishScan()
+//-----------------------------------------------------------------------------
+void FileDependencyEditor::finishScan()
+{
+    scanning_ = false;
+    runAnalysisAction_->setIcon(QIcon(":/icons/common/graphics/control-play.png"));
+
+    QApplication::restoreOverrideCursor();
+
+    emit filesUpdated();
+    emit scanCompleted();
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileDependencyEditor::scanFiles()
 //-----------------------------------------------------------------------------
 void FileDependencyEditor::scanFiles(QString const& path)
@@ -260,8 +343,6 @@ void FileDependencyEditor::scanFiles(QString const& path)
         // Otherwise add the file if it does not belong to ignored extensions or is not an IP-XACT file.
         else if (!ignoreExtList_.contains(info.completeSuffix()) && !isFileIPXact(info.absoluteFilePath()))
         {
-            // Otherwise the entry is a file.
-            // Check which file type corresponds to the extension.
             QString fileType = fileTypeLookup_.value(info.completeSuffix(), "unknown");
 
             // Check if the file is already packaged into the metadata.
@@ -315,7 +396,6 @@ void FileDependencyEditor::scanFiles(QString const& path)
     }
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: FileDependencyEditor::isFileIPXact()
 //-----------------------------------------------------------------------------
@@ -348,37 +428,55 @@ bool FileDependencyEditor::isFileIPXact(QString const& filename) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyEditor::updateProgressBar()
+// Function: FileDependencyEditor::setupToolbar()
 //-----------------------------------------------------------------------------
-void FileDependencyEditor::updateProgressBar(int value)
+void FileDependencyEditor::setupToolbar()
 {
-    progressBar_.setValue(value);
+    filterActions_.setExclusive(false);
 
-    if (value == 0)
-    {
-        finishScan();
-    }
-}
+    // Set up the toolbar
+    toolbar_.setFloatable(false);
+    toolbar_.setMovable(false);
+    toolbar_.setStyleSheet(QString("QToolBar { border: none; }"));
 
-//-----------------------------------------------------------------------------
-// Function: FileDependencyEditor::filterToggle()
-//-----------------------------------------------------------------------------
-void FileDependencyEditor::filterToggle(QAction* action)
-{
-    // Get current filters from the graph.
-    FileDependencyGraphView::DependencyFilters filters = graphWidget_.getView()->getFilters();
+    // Create the filter buttons in the toolbar.
+    addFilterButton(QIcon(":/icons/common/graphics/traffic-light_green.png"), tr("Show Unchanged Files"),
+        FileDependencyGraphView::FILTER_GREEN);
+    addFilterButton(QIcon(":/icons/common/graphics/traffic-light_yellow.png"), 
+        tr("Show Changed Files (Only Contents Changed)"),
+        FileDependencyGraphView::FILTER_YELLOW);
+    addFilterButton(QIcon(":/icons/common/graphics/traffic-light_red.png"), 
+        tr("Show Changed Files (Dependencies Changed)"),
+        FileDependencyGraphView::FILTER_RED);
+    addFilterButton(QIcon(":/icons/common/graphics/dependency_twoway.png"),
+        tr("Show Bidirectional Dependencies"),
+        FileDependencyGraphView::FILTER_TWO_WAY);
+    addFilterButton(QIcon(":/icons/common/graphics/dependency_oneway.png"), 
+        tr("Show Unidirectional Dependencies"),
+        FileDependencyGraphView::FILTER_ONE_WAY);
+    addFilterButton(QIcon(":/icons/common/graphics/dependency_manual.png"), 
+        tr("Show Manual Dependencies"),
+        FileDependencyGraphView::FILTER_MANUAL);
+    addFilterButton(QIcon(":/icons/common/graphics/dependency_auto.png"), 
+        tr("Show Analyzed Dependencies"),
+        FileDependencyGraphView::FILTER_AUTOMATIC);
+    addFilterButton(QIcon(":/icons/common/graphics/external.png"), tr("Show External"),
+        FileDependencyGraphView::FILTER_EXTERNAL);
+    addFilterButton(QIcon(":/icons/common/graphics/diff.png"), tr("Show Differences"),
+        FileDependencyGraphView::FILTER_DIFFERENCE);
 
-    // Toggle the appropriate filter based on the button that was clicked.
-    filters ^= action->data().toUInt();
+    connect(&filterActions_, SIGNAL(triggered(QAction*)), this, SLOT(filterToggle(QAction*)));
 
-    // Apply the new filter setup to the view.
-    graphWidget_.getView()->setFilters(filters);
+    toolbar_.addSeparator();
+
+    runAnalysisAction_ = toolbar_.addAction(QIcon(":/icons/common/graphics/control-play.png"), tr("Rescan"),
+        this, SLOT(scan()));
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencyEditor::addFilterButton()
 //-----------------------------------------------------------------------------
-void FileDependencyEditor::addFilterButton(QIcon icon, QString const& iconText,
+void FileDependencyEditor::addFilterButton(QIcon const& icon, QString const& iconText,
     FileDependencyGraphView::DependencyFilter filter)
 {
     FileDependencyGraphView::DependencyFilters filters = graphWidget_.getView()->getFilters();
@@ -392,117 +490,19 @@ void FileDependencyEditor::addFilterButton(QIcon icon, QString const& iconText,
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyEditor::scanDirectories()
+// Function: FileDependencyEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void FileDependencyEditor::scanDirectories()
+void FileDependencyEditor::setupLayout()
 {
-    model_.beginReset();
+    // Create the layout.
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(&toolbar_, 0, 0, 1, 2);
+    layout->addWidget(&progressBar_, 1, 0, 1, 2);
+    layout->addWidget(&graphWidget_, 2, 0, 1, 2);    
+    layout->addWidget(&directoryEditor_, 3, 0, 1, 1);
+    layout->addWidget(&infoWidget_, 3, 1, 1, 1);
+    layout->setContentsMargins(0, 0, 0, 0);
 
-    // First scan the source directories.
-    if (isEnabled())
-    {
-        foreach (QString const& sourcePath, component_->getSourceDirectories())
-        {
-            scanFiles(sourcePath);
-        }
-    }
-
-    // Then add files that are part of the file sets but were not added in the file scan.
-    foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
-    {
-        foreach (QSharedPointer<File> file, *fileSet->getFiles())
-        {
-            // For non-url files, check if the model does not contain a corresponding file item.
-            if (!(Utils::URL_VALIDITY_REG_EXP.match(file->name()).hasMatch()) &&
-                model_.findFileItem(file->name()) == 0)
-            {
-                QFileInfo info(file->name());
-                QString folderPath = info.path();
-
-                // Create a folder item for the file if not already created.
-                FileDependencyItem* folderItem = model_.findFolderItem(folderPath);
-
-                if (folderItem == 0)
-                {
-                    folderItem = model_.addFolder(folderPath);
-                }
-
-                // Create a file item.
-                QList<QSharedPointer<File> > fileRefs;
-                foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
-                {
-                    foreach (QSharedPointer<File> filesetFile, *fileSet->getFiles())
-                    {
-                        if (filesetFile->name() == file->name())
-                        {
-                            fileRefs.append(filesetFile);
-                        }
-                    }
-                }
-
-                QString fileType = "";
-                if (!file->getFileTypes()->empty())
-                {
-                    fileType = file->getFileTypes()->first();
-                }
-
-                folderItem->addFile(component_, file->name(), fileType, fileRefs);
-            }
-        }
-    }
-
-    model_.endReset();
-
-    timer_->stop();
-    delete timer_;
-    timer_ = 0;
-    delete progWidget_;
-    progWidget_ = 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencyEditor::setCompact()
-//-----------------------------------------------------------------------------
-void FileDependencyEditor::setCompact(bool compact)
-{
-    toolbar_.setVisible(!compact);
-    infoWidget_.setVisible(!compact);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencyEditor::refresh()
-//-----------------------------------------------------------------------------
-void FileDependencyEditor::refresh()
-{
-    model_.refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencyEditor::setDependenciesEditable()
-//-----------------------------------------------------------------------------
-void FileDependencyEditor::setDependenciesEditable(bool editable)
-{
-    graphWidget_.getView()->setDependenciesEditable(editable);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencyEditor::isScanning()
-//-----------------------------------------------------------------------------
-bool FileDependencyEditor::isScanning() const
-{
-    return scanning_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencyEditor::finishScan()
-//-----------------------------------------------------------------------------
-void FileDependencyEditor::finishScan()
-{
-    scanning_ = false;
-    runAnalysisAction_->setIcon(QIcon(":/icons/common/graphics/control-play.png"));
-
-    QApplication::restoreOverrideCursor();
-
-    emit filesUpdated();
-    emit scanCompleted();
+    layout->setRowStretch(2, 4);
+    layout->setRowStretch(3, 1);
 }

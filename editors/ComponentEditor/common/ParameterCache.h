@@ -33,7 +33,7 @@ public:
      *
 	 *      @param [in] component		The component which parameters are being searched for.
      */
-    ParameterCache(QSharedPointer<Component> component);
+    ParameterCache(QSharedPointer<const Component> component);
 
     /*!
      *  Destructor.

@@ -13,8 +13,7 @@
 
 #include <IPXACTmodels/kactusExtensions/FileDependency.h>
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QGridLayout>
 #include <QLabel>
 #include <QFileInfo>
 
@@ -22,41 +21,23 @@
 // Function: FileDependencyInfoWidget::FileDependencyInfoWidget()
 //-----------------------------------------------------------------------------
 FileDependencyInfoWidget::FileDependencyInfoWidget(QWidget* parent):
-QGroupBox(tr("Dependency Information"), parent),
-descEdit_(this),
-directionCheck_(tr("Bidirectional"), this),
-lockedCheck_(tr("Locked"), this),
-directionButton_(tr("Reverse Direction"), this),
-dependency_(0)
+QGroupBox(tr("Dependency information"), parent),
+    descEdit_(this),
+    bidirectionalCheck_(tr("Bidirectional"), this),
+    lockedCheck_(tr("Locked"), this),
+    directionButton_(tr("Reverse direction"), this),
+    dependency_(0)
 {
-    directionCheck_.setFixedWidth(150);
-    descEdit_.setMaximumHeight(80);
-    
-    this->setTitle(tr("Dependency Information"));
+    setupLayout();
 
-    QVBoxLayout* leftLayout = new QVBoxLayout();
-    leftLayout->addWidget(new QLabel(tr("Description:"), this));
-    leftLayout->addWidget(&descEdit_, 1);
-
-    QVBoxLayout* rightLayout = new QVBoxLayout();
-    rightLayout->addWidget(new QLabel("", this));   
-    rightLayout->addWidget(&directionCheck_);
-    rightLayout->addWidget(&lockedCheck_);
-    rightLayout->addWidget(&directionButton_);
-    rightLayout->addStretch(1);
-
-    QHBoxLayout* layout = new QHBoxLayout(this);
-    layout->addLayout(leftLayout, 1);
-    layout->addLayout(rightLayout);
-
-    connect(&directionCheck_, SIGNAL(stateChanged(int)), this, SLOT(directionCheckBoxChanged(int)));
+    connect(&bidirectionalCheck_, SIGNAL(stateChanged(int)), this, SLOT(directionChanged(int)));
     connect(&lockedCheck_, SIGNAL(stateChanged(int)), this, SLOT(lockedCheckChanged(int)));
-    connect(&descEdit_, SIGNAL(textChanged()), this, SLOT(descEditTextChanged()));
+    connect(&descEdit_, SIGNAL(textChanged()), this, SLOT(descriptionChanged()));
     connect(&directionButton_, SIGNAL(clicked()), this, SLOT(directionReversed()));
 
     // Disabling the widgets.
     descEdit_.setEnabled(false);
-    directionCheck_.setEnabled(false);
+    bidirectionalCheck_.setEnabled(false);
     lockedCheck_.setEnabled(false);
     directionButton_.setEnabled(false);
 }
@@ -76,62 +57,41 @@ void FileDependencyInfoWidget::setEditedDependency(FileDependency* dependency)
 {
     dependency_ = dependency;
 
-    disconnect(&directionCheck_, SIGNAL(stateChanged(int)), this, SLOT(directionCheckBoxChanged(int)));
+    disconnect(&bidirectionalCheck_, SIGNAL(stateChanged(int)), this, SLOT(directionChanged(int)));
     disconnect(&lockedCheck_, SIGNAL(stateChanged(int)), this, SLOT(lockedCheckChanged(int)));
-    disconnect(&descEdit_, SIGNAL(textChanged()), this, SLOT(descEditTextChanged()));
+    disconnect(&descEdit_, SIGNAL(textChanged()), this, SLOT(descriptionChanged()));
     disconnect(&directionButton_, SIGNAL(clicked()), this, SLOT(directionReversed()));
-    
-    // Clearing the widgets.
+
+    setTitle(tr("Dependency information"));
+
+    descEdit_.setEnabled(dependency_ != 0);
     descEdit_.clear();
-    directionCheck_.setChecked(false);
-    lockedCheck_.setChecked(false);
-    this->setTitle(tr("Dependency Information"));
-    // Disabling the widgets.
-    descEdit_.setEnabled(false);
-    directionCheck_.setEnabled(false);
-    lockedCheck_.setEnabled(false);
-    directionButton_.setEnabled(false);
-    
-    if(dependency_ != 0)
+    if (dependency_ != 0)
     {
-        // Enabling the widgets.
-        descEdit_.setEnabled(true);
-        
-        // Enable editing for direction and locking only for manual dependencies.
-        if (dependency_->isManual())
-        {
-            directionCheck_.setEnabled(true);
-            lockedCheck_.setEnabled(true);
-        }
-
-        // Read locked state.
-        lockedCheck_.setChecked(dependency_->isLocked());
-        // Set previous text.
         descEdit_.setPlainText(dependency_->getDescription());
-        // Set direction checkbox and direction button.
-        if (dependency_->isBidirectional())
-        {
-            directionCheck_.setChecked(true);
-            directionButton_.setEnabled(false);
-        }
-        else if (dependency_->isManual())
-        {
-            directionCheck_.setChecked(false);
-            directionButton_.setEnabled(true);
-        }
+    }
 
+    bidirectionalCheck_.setEnabled(dependency_ != 0 && dependency_->isManual());
+    bidirectionalCheck_.setChecked(dependency_ != 0 && dependency_->isBidirectional());
+
+    lockedCheck_.setEnabled(dependency_ != 0 && dependency_->isManual() && !dependency_->isBidirectional());
+    lockedCheck_.setChecked(dependency_ != 0 && dependency_->isLocked());
+
+    directionButton_.setEnabled(dependency_ != 0 && dependency_->isManual());
+    
+    if (dependency_ != 0)
+    {
         if (dependency_->isManual())
         {
             lockEverything(lockedCheck_.isChecked());
         }
 
-        // Set informative file label.
         updateFileLabel();
     }
 
-    connect(&directionCheck_, SIGNAL(stateChanged(int)), this, SLOT(directionCheckBoxChanged(int)));
+    connect(&bidirectionalCheck_, SIGNAL(stateChanged(int)), this, SLOT(directionChanged(int)));
     connect(&lockedCheck_, SIGNAL(stateChanged(int)), this, SLOT(lockedCheckChanged(int)));
-    connect(&descEdit_, SIGNAL(textChanged()), this, SLOT(descEditTextChanged()));
+    connect(&descEdit_, SIGNAL(textChanged()), this, SLOT(descriptionChanged()));
     connect(&directionButton_, SIGNAL(clicked()), this, SLOT(directionReversed()));
 }
 
@@ -144,26 +104,17 @@ FileDependency* FileDependencyInfoWidget::getEditedDependency() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyInfoWidget::directionComboChanged()
+// Function: FileDependencyInfoWidget::directionChanged()
 //-----------------------------------------------------------------------------
-void FileDependencyInfoWidget::directionCheckBoxChanged(int /*state*/)
+void FileDependencyInfoWidget::directionChanged(int /*state*/)
 {
     if (!dependency_->isLocked())
     {
-        dependency_->setBidirectional(directionCheck_.isChecked());
+        dependency_->setBidirectional(bidirectionalCheck_.isChecked());
         emit dependencyChanged(dependency_);
         updateFileLabel();
 
-        // If dependency is bidirectional disable "Reverse direction"-button.
-        if(dependency_->isBidirectional())
-        {
-            directionButton_.setEnabled(false);
-        }
-        // Else enable it.
-        else
-        {
-            directionButton_.setEnabled(true);
-        }
+        directionButton_.setEnabled(!dependency_->isBidirectional());
     }
 }
 
@@ -177,9 +128,9 @@ void FileDependencyInfoWidget::lockedCheckChanged(int /*state*/)
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyInfoWidget::descEditTextChanged()
+// Function: FileDependencyInfoWidget::descriptionChanged()
 //-----------------------------------------------------------------------------
-void FileDependencyInfoWidget::descEditTextChanged()
+void FileDependencyInfoWidget::descriptionChanged()
 {
     if (!dependency_->isLocked())
     {
@@ -206,20 +157,24 @@ void FileDependencyInfoWidget::directionReversed()
 //-----------------------------------------------------------------------------
 void FileDependencyInfoWidget::updateFileLabel()
 {
-    QString fileLabelText = tr("Dependency Information: ");
+    QString fileLabelText = tr("Dependency information: ");
+
     QFileInfo fromInfo(dependency_->getFile1());
-    QFileInfo toInfo(dependency_->getFile2());
     fileLabelText += fromInfo.fileName();
-    if(dependency_->isBidirectional())
+
+    if (dependency_->isBidirectional())
     {
-        fileLabelText += " <--> ";
+        fileLabelText.append(QLatin1String(" <--> "));
     }
     else
     {
-        fileLabelText += " ---> ";
+        fileLabelText.append(QLatin1String(" ---> "));
     }
-    fileLabelText += toInfo.fileName();
-    this->setTitle(fileLabelText);
+
+    QFileInfo toInfo(dependency_->getFile2());
+    fileLabelText.append(toInfo.fileName());
+    
+    setTitle(fileLabelText);
 }
 
 //-----------------------------------------------------------------------------
@@ -227,23 +182,25 @@ void FileDependencyInfoWidget::updateFileLabel()
 //-----------------------------------------------------------------------------
 void FileDependencyInfoWidget::lockEverything(bool isLocked)
 {
-    if (isLocked)
-    {
-        descEdit_.setEnabled(false);
-        directionCheck_.setEnabled(false);
-        directionButton_.setEnabled(false);
-    }
-    else
-    {
-        descEdit_.setEnabled(true);
-        directionCheck_.setEnabled(true);
-        if (!directionCheck_.isChecked())
-        {
-            directionButton_.setEnabled(true);
-        }
-        else
-        {
-            directionButton_.setEnabled(false);
-        }
-    }
+    descEdit_.setEnabled(!isLocked);
+    bidirectionalCheck_.setEnabled(!isLocked);
+    directionButton_.setEnabled(!isLocked && !bidirectionalCheck_.isChecked());
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencyInfoWidget::setupLayout()
+//-----------------------------------------------------------------------------
+void FileDependencyInfoWidget::setupLayout()
+{
+    bidirectionalCheck_.setFixedWidth(150);
+    //descEdit_.setMaximumHeight(80);
+
+    QGridLayout* topLayout = new QGridLayout(this);
+    topLayout->addWidget(new QLabel(tr("Description:"), this), 0, 0, 1, 1);
+    topLayout->addWidget(&descEdit_, 1, 0, 4, 1);
+    topLayout->addWidget(&bidirectionalCheck_, 1, 1, 1, 1);
+    topLayout->addWidget(&lockedCheck_, 2, 1, 1, 1);
+    topLayout->addWidget(&directionButton_, 3, 1, 1, 1);
+
+    topLayout->setRowStretch(4, 5);
 }

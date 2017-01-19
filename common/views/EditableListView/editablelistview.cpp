@@ -107,7 +107,8 @@ void EditableListView::contextMenuEvent(QContextMenuEvent* event)
 	QMenu menu(this);
 	menu.addAction(&addAction_);
 	menu.addAction(&removeAction_);
-    removeAction_.setEnabled(currentIndex().isValid());
+    
+    removeAction_.setEnabled(selectionModel()->hasSelection());
 
 	menu.exec(event->globalPos());
 

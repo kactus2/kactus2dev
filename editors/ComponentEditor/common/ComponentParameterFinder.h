@@ -31,7 +31,7 @@ public:
      *
 	 *      @param [in] component		The component which parameters are being searched for.
      */
-    ComponentParameterFinder(QSharedPointer<Component> component);
+    ComponentParameterFinder(QSharedPointer<const Component> component);
 
     /*!
      *  Destructor.

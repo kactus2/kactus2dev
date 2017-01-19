@@ -377,7 +377,6 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyInfoWidget.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.h \
-    ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
     ./editors/ComponentEditor/memoryMaps/AddressBlockColumns.h \
     ./editors/ComponentEditor/memoryMaps/EnumeratedValueColumns.h \
@@ -578,7 +577,10 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/MemoryDesigner/ConnectivityInterface.h \
     ./designEditors/MemoryDesigner/FieldGraphicsItem.h \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.h \
+    ./designEditors/MemoryDesigner/MemoryColumnHandler.h \
+    ./designEditors/MemoryDesigner/MemoryConnectionHandler.h \
     ./designEditors/MemoryDesigner/MemoryDesignerConstants.h \
+    ./designEditors/MemoryDesigner/MemoryGraphicsItemHandler.h \
     ./designEditors/MemoryDesigner/MemoryItem.h \
     ./designEditors/MemoryDesigner/SubMemoryLayout.h \
     ./designEditors/MemoryDesigner/AddressSpaceGraphicsItem.h \
@@ -592,6 +594,7 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/MemoryDesigner/MemoryCollisionItem.h \
     ./designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h \
     ./designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h \
+    ./designEditors/MemoryDesigner/MemoryDesignConstructor.h \
     ./designEditors/MemoryDesigner/MemoryMapGraphicsItem.h \
     ./designEditors/MemoryDesigner/RegisterGraphicsItem.h \
     ./designEditors/MemoryDesigner/MemoryColumn.h \
@@ -653,6 +656,7 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/common/DiagramUtil.h \
     ./designEditors/common/DrawMode.h \
     ./designEditors/common/DesignCompletionModel.h \
+    ./designEditors/common/ComponentInstanceParameterFinder.h \
     ./designEditors/common/DesignDiagram.h \
     ./designEditors/common/DesignWidget.h \
     ./designEditors/common/ComponentDesignDiagram.h \
@@ -695,11 +699,7 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./designEditors/MemoryDesigner/MemoryDesignConstructor.h \
-    ./designEditors/MemoryDesigner/MemoryColumnHandler.h \
-    ./designEditors/MemoryDesigner/MemoryGraphicsItemHandler.h \
-    ./designEditors/MemoryDesigner/MemoryConnectionHandler.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -951,7 +951,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyItem.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySortFilter.cpp \
-    ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceDialog.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.cpp \
     ./editors/ComponentEditor/fileSet/groupmanagerdelegate.cpp \
     ./editors/ComponentEditor/general/desceditor.cpp \
@@ -1218,13 +1217,17 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
     ./designEditors/MemoryDesigner/MemoryCollisionItem.cpp \
     ./designEditors/MemoryDesigner/MemoryColumn.cpp \
+    ./designEditors/MemoryDesigner/MemoryColumnHandler.cpp \
+    ./designEditors/MemoryDesigner/MemoryConnectionHandler.cpp \
     ./designEditors/MemoryDesigner/MemoryConnectionItem.cpp \
+    ./designEditors/MemoryDesigner/MemoryDesignConstructor.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignDocument.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignerConstants.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignerDiagram.cpp \
     ./designEditors/MemoryDesigner/MemoryDesignerGraphicsItem.cpp \
     ./designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/MemoryGraphicsItemHandler.cpp \
     ./designEditors/MemoryDesigner/MemoryItem.cpp \
     ./designEditors/MemoryDesigner/MemoryMapGraphicsItem.cpp \
     ./designEditors/MemoryDesigner/RegisterGraphicsItem.cpp \
@@ -1262,6 +1265,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/SystemDesign/UndoCommands/SystemDeleteCommands.cpp \
     ./designEditors/SystemDesign/UndoCommands/SystemMoveCommands.cpp \
     ./designEditors/common/ComponentDesignDiagram.cpp \
+    ./designEditors/common/ComponentInstanceParameterFinder.cpp \
     ./designEditors/common/DesignCompletionModel.cpp \
     ./designEditors/common/DesignDiagram.cpp \
     ./designEditors/common/DesignDiagramResolver.cpp \
@@ -1307,9 +1311,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./designEditors/MemoryDesigner/MemoryDesignConstructor.cpp \
-    ./designEditors/MemoryDesigner/MemoryColumnHandler.cpp \
-    ./designEditors/MemoryDesigner/MemoryGraphicsItemHandler.cpp \
-    ./designEditors/MemoryDesigner/MemoryConnectionHandler.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc

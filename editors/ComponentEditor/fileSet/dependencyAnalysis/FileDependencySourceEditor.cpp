@@ -11,43 +11,26 @@
 
 #include "FileDependencySourceEditor.h"
 
+#include <common/views/EditableListView/editablelistview.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 
 //-----------------------------------------------------------------------------
 // Function: FileDependencySourceEditor::FileDependencySourceEditor()
 //-----------------------------------------------------------------------------
 FileDependencySourceEditor::FileDependencySourceEditor(QString const& basePath, QStringList const& sourceDirs,
-                                                       QWidget* parent)
-    : QGroupBox(tr("Directories"), parent)
-{
-    basePath_ = basePath;
-
-    buttonAdd_ = new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this);
-    buttonRemove_ = new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this);
-    buttonRemove_->setEnabled(false);
-
-    directoryListView_ = new QListView(this);
-
-    QDialogButtonBox* addRemoveButtonBox = new QDialogButtonBox(Qt::Vertical);
-    addRemoveButtonBox->addButton(buttonAdd_, QDialogButtonBox::ActionRole);
-    addRemoveButtonBox->addButton(buttonRemove_, QDialogButtonBox::ActionRole);
-
-    horizontalGroupBoxLayout_ = new QHBoxLayout(this);
-    horizontalGroupBoxLayout_->addWidget(directoryListView_);
-    horizontalGroupBoxLayout_->addWidget(addRemoveButtonBox);
-
-    connect(buttonAdd_, SIGNAL(clicked()), this, SLOT(addSource()));
-    connect(buttonRemove_, SIGNAL(clicked()), this, SLOT(removeSource()));
-    
-    if (sourceDirs.count() > 0)
+                                                       QWidget* parent):
+DirListManager(tr("File set source directories"), basePath, parent),
+    basePath_(basePath)
+{   
+    if (!basePath_.endsWith(QLatin1Char('/')))
     {
-        buttonRemove_->setEnabled(true);
+        basePath_.append(QLatin1Char('/'));
     }
 
-    directoryListModel_ = new QStringListModel(sourceDirs);
-    directoryListView_->setModel(directoryListModel_);
+    initialize(sourceDirs);
 }
-
+    
 //-----------------------------------------------------------------------------
 // Function: FileDependencySourceEditor::~FileDependencySourceEditor()
 //-----------------------------------------------------------------------------
@@ -60,7 +43,21 @@ FileDependencySourceEditor::~FileDependencySourceEditor()
 //-----------------------------------------------------------------------------
 QStringList FileDependencySourceEditor::getSourceDirectories() const
 {
-    return directoryListModel_->stringList();   
+    QStringList directories = items();
+    directories.removeAll(QString());
+
+    return directories;   
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileDependencySourceEditor::initialize()
+//-----------------------------------------------------------------------------
+void FileDependencySourceEditor::initialize(QStringList const& items)
+{
+    DirListManager::initialize(items);
+
+    disconnect(view_, SIGNAL(addItem(QModelIndex const&)), model_, SLOT(addItem(QModelIndex const&)));
+    connect(view_, SIGNAL(addItem(QModelIndex const&)), this, SLOT(addSource()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,14 +82,11 @@ void FileDependencySourceEditor::addSource()
 
     if (!checkIfSelectedDirectoryHasBeenPreviouslyAdded(newDirectory))
     {
-        // Now removing possibly unnecessary directories
         removeUnnecessaryDirectories(newDirectory);
 
-        // Adding the new directory to the list.
-        QStringList newDirectories = directoryListModel_->stringList();
+        QStringList newDirectories = items();
         newDirectories.push_back(newDirectory);
-        directoryListModel_->setStringList(newDirectories);
-        buttonRemove_->setEnabled(true);
+        setItems(newDirectories);
     }
 }
 
@@ -103,7 +97,7 @@ bool FileDependencySourceEditor::checkIfSelectedDirectoryHasBeenPreviouslyAdded(
 {
     QStringList oldDirectoriesAbs = getAbsoluteDirectories();
     
-    QString newDirAbs = QFileInfo(General::getAbsolutePath(basePath_ + "/", newDirectory)).canonicalFilePath();
+    QString newDirAbs = QFileInfo(General::getAbsolutePath(basePath_, newDirectory)).canonicalFilePath();
 
     // Check if the selected directory is part of any existing directory.
     for (int i = 0; i < oldDirectoriesAbs.count(); ++i)
@@ -125,9 +119,8 @@ void FileDependencySourceEditor::removeUnnecessaryDirectories(QString const& new
     // First change everything to absolute paths.
     QStringList oldDirectoriesAbs =  getAbsoluteDirectories();
     
-    QString newDirAbs = QFileInfo(General::getAbsolutePath(basePath_ + "/", newDirectory)).canonicalFilePath();
+    QString newDirAbs = QFileInfo(General::getAbsolutePath(basePath_, newDirectory)).canonicalFilePath();
 
-    // Temporary directory list for holding necessary directories.
     QStringList tempDirectoryList;
 
     // Checking if unnecessary directories exist in the list.
@@ -135,25 +128,12 @@ void FileDependencySourceEditor::removeUnnecessaryDirectories(QString const& new
     {
         if (!oldDirectoriesAbs.at(i).startsWith(newDirAbs))
         {
-            tempDirectoryList.append(directoryListModel_->stringList().at(i));
+            tempDirectoryList.append(items().at(i));
         }
     }
 
     // Update the source directory model.
-    directoryListModel_->setStringList(tempDirectoryList);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileDependencySourceEditor::removeSource()
-//-----------------------------------------------------------------------------
-void FileDependencySourceEditor::removeSource()
-{
-    directoryListModel_->removeRow(directoryListView_->selectionModel()->currentIndex().row());
-
-    if (directoryListModel_->stringList().count() < 1)
-    {
-        buttonRemove_->setEnabled(false);
-    }
+    setItems(tempDirectoryList);
 }
 
 //-----------------------------------------------------------------------------
@@ -163,11 +143,11 @@ QStringList FileDependencySourceEditor::getAbsoluteDirectories()
 {
     QStringList directories;
 
-    for (int i = 0; i < directoryListModel_->stringList().count(); ++i)
+    foreach (QString const& directory, items())
     {
-        QString path = QFileInfo(General::getAbsolutePath(basePath_ + "/", directoryListModel_->stringList().at(i))).canonicalFilePath();
+        QString absolutePath = General::getAbsolutePath(basePath_, directory);
 
-        directories.push_back(path);
+        directories.push_back(QFileInfo(absolutePath).canonicalFilePath());
     }
 
     return directories;

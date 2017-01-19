@@ -11,10 +11,7 @@
 
 #include "dirlistmanagermodel.h"
 
-#include <library/LibraryManager/libraryinterface.h>
-
 #include <IPXACTmodels/generaldeclarations.h>
-#include <IPXACTmodels/Component/Component.h>
 
 #include <QFileInfo>
 #include <QColor>
@@ -24,13 +21,14 @@
 //-----------------------------------------------------------------------------
 // Function: dirlistmanagermodel::DirListManagerModel()
 //-----------------------------------------------------------------------------
-DirListManagerModel::DirListManagerModel(LibraryInterface* handler, QSharedPointer<Component> component,
-    QObject *parent, const QStringList& items):
+DirListManagerModel::DirListManagerModel(QString const& basePath, QStringList const& items, QObject* parent):
 ListManagerModel(parent, items),
-handler_(handler),
-component_(component)
+    basePath_(basePath)
 {
-
+    if (!basePath_.endsWith(QLatin1Char('/')))
+    {
+        basePath_.append(QLatin1Char('/'));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -44,7 +42,7 @@ DirListManagerModel::~DirListManagerModel()
 //-----------------------------------------------------------------------------
 // Function: dirlistmanagermodel::data()
 //-----------------------------------------------------------------------------
-QVariant DirListManagerModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const
+QVariant DirListManagerModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
 {
 	if (!index.isValid())
     {
@@ -88,10 +86,8 @@ QVariant DirListManagerModel::data( const QModelIndex& index, int role /*= Qt::D
 //-----------------------------------------------------------------------------
 bool DirListManagerModel::directoryExistsForPath(QString const& relativePath) const
 {
-    QString xmlPath = handler_->getPath(component_->getVlnv());
-    QString absDirPath = General::getAbsolutePath(xmlPath, relativePath);
-
+    QString absDirPath = General::getAbsolutePath(basePath_, relativePath);
+    
     QFileInfo dirInfo(absDirPath);
-
     return dirInfo.exists();
 }

@@ -43,7 +43,7 @@ firstShow_(true)
 
     QVBoxLayout* dependencyLayout = new QVBoxLayout(dependencyWidget);
     dependencyLayout->setContentsMargins(0, 2, 0, 0);
-    dependencyLayout->addWidget(new SummaryLabel(tr("File Dependencies"), this), 0, Qt::AlignCenter);
+    dependencyLayout->addWidget(new SummaryLabel(tr("File dependencies"), this), 0, Qt::AlignCenter);
     dependencyLayout->addWidget(&dependencyEditor_);
 
     splitter_.addWidget(&view_);
