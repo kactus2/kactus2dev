@@ -20,7 +20,7 @@
 #include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 #include <Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h>
 #include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
-#include <Plugins/VerilogGenerator/VerilogTiedValueWriter/VerilogTiedValueWriter.h>
+#include <Plugins/VerilogGenerator/VerilogAssignmentWriter/VerilogAssignmentWriter.h>
 #include <Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.h>
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
@@ -264,7 +264,7 @@ QSharedPointer<VerilogDocument> VerilogGenerator::initializeComponentWriters(QSh
 
     retval->wireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
 
-    retval->tiedValueWriter_ = QSharedPointer<VerilogTiedValueWriter>(new VerilogTiedValueWriter);
+    retval->assignmentWriter_ = QSharedPointer<VerilogAssignmentWriter>(new VerilogAssignmentWriter);
 
     return retval;
 }
@@ -309,11 +309,6 @@ void VerilogGenerator::initializeDesignWriters(QSharedPointer<MetaDesign> design
         // Create wire writers for the interconnections
         foreach (QSharedPointer<MetaInterconnection> gic, design->interconnections_)
         {
-            if (gic->hierIfs_.size() > 0)
-            {
-                continue;
-            }
-
             QMap<QString, QSharedPointer<MetaWire> >::iterator iter = gic->wires_.begin();
             QMap<QString, QSharedPointer<MetaWire> >::iterator end = gic->wires_.end();
             for (;iter != end; ++iter)
@@ -328,22 +323,14 @@ void VerilogGenerator::initializeDesignWriters(QSharedPointer<MetaDesign> design
     // Create wire writers for the ad hoc connections as well.
     foreach (QSharedPointer<MetaWire> adHoc, design->adHocWires_)
     {
-        if (adHoc->hierPorts_.size() > 0)
-        {
-            continue;
-        }
-
         document->wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(adHoc)));
     }
 
-    // Create tied value writers for hierarchical tied values,
-    // TODO: Re-enable
-    /*QMap<QString,QString>::iterator iter2 = design->portTiedValues_.begin();
-    QMap<QString,QString>::iterator end2 = design->portTiedValues_.end();
-    for (;iter2 != end2; ++iter2)
+    // Create writers for 
+    foreach (QSharedPointer<MetaPort> mPort, design->topInstance_->ports_)
     {
-        document->tiedValueWriter_->addPortTiedValue(iter2.key(), iter2.value());
-    }*/
+        document->assignmentWriter_->addPort(mPort);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -355,7 +342,7 @@ void VerilogGenerator::addWritersToTopInDesiredOrder(QSharedPointer<VerilogDocum
 
     document->topWriter_->add(document->wireWriters_);
 
-    document->topWriter_->add(document->tiedValueWriter_);
+    document->topWriter_->add(document->assignmentWriter_);
 
     foreach(QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter, document->instanceWriters_)
     {

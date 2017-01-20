@@ -133,15 +133,6 @@ private:
     QString createInterfaceSeparator(QString const& interfaceName, QString const& previousInteface) const;
 
     /*!
-    *  Gets the connection assignment for a port.
-    *
-    *      @param [in] portName     The name of the port whose connection assignment to get.
-    *
-    *      @return The Verilog description of the instance port connection assignment.
-    */
-    QString assignmentForPort(QSharedPointer<MetaPort> mPort) const;
-
-    /*!
     *  Checks if a given port is not connected.
     *
     *      @param [in] portName     The name of the port to check.

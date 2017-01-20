@@ -109,14 +109,25 @@ private:
     static QString parseExpression(IPXactSystemVerilogParser& parser, const QString& expression);
 
     /*!
-     *  Finds the mapped port bounds for a port map.
+     *  Finds the mapped logical port bounds for a port map.
      *
      *      @param [in] parser          Used for parsing the bounds.
      *      @param [in] portMap         The port map for the which to find the logical bounds.
      *
      *      @return The port bounds for the port map in an instance.
      */
-	static QPair<QString, QString> portBoundsInMapping(IPXactSystemVerilogParser& parser,
+	static QPair<QString, QString> logicalPortBoundsInMapping(IPXactSystemVerilogParser& parser,
+        QSharedPointer<PortMap> portMap);
+    
+    /*!
+     *  Finds the mapped physical port bounds for a port map.
+     *
+     *      @param [in] parser          Used for parsing the bounds.
+     *      @param [in] portMap         The port map for the which to find the logical bounds.
+     *
+     *      @return The port bounds for the port map in an instance.
+     */
+    static QPair<QString, QString> physicalPortBoundsInMapping(IPXactSystemVerilogParser& parser,
         QSharedPointer<PortMap> portMap);
 
     //-----------------------------------------------------------------------------

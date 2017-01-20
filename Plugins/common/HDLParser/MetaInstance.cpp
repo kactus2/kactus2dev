@@ -255,18 +255,25 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
                     // The default value comes from the port abstraction.
                     mPortAssignment->defaultValue_ = portAbstraction->getDefaultValue();
 
-                    QPair<QString, QString> portBounds;
+                    // Parse the port map bounds.
+                    QPair<QString, QString> logicalBounds = logicalPortBoundsInMapping(parser, pMap);
+                    QPair<QString, QString> physicalBounds = physicalPortBoundsInMapping(parser, pMap);
 
-                    // Find the logical bounds of the port map.
-                    portBounds = portBoundsInMapping(parser, pMap);
-
-                    // If it does not exist, use instead the bounds of physical port.
-                    if (portBounds.first.isEmpty() || portBounds.second.isEmpty())
+                    // If physical bounds do not exist, they are the same as the port bounds.
+                    if (physicalBounds.first.isEmpty() || physicalBounds.second.isEmpty())
                     {
-                        portBounds = mPort->vectorBounds_;
+                        physicalBounds = mPort->vectorBounds_;
                     }
 
-                    mPortAssignment->bounds_ = portBounds;
+                    // If logical bounds do not exist, they are the same as the physical bounds.
+                    if (logicalBounds.first.isEmpty() || logicalBounds.second.isEmpty())
+                    {
+                        logicalBounds = physicalBounds;
+                    }
+
+                    // Assign the values.
+                    mPortAssignment->logicalBounds_ = logicalBounds;
+                    mPortAssignment->physicalBounds_ = physicalBounds;
                 }
             }
 
@@ -296,9 +303,9 @@ QString MetaInstance::parseExpression(IPXactSystemVerilogParser& parser, const Q
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaInstance::portBoundsInMapping()
+// Function: MetaInstance::logicalPortBoundsInMapping()
 //-----------------------------------------------------------------------------
-QPair<QString, QString> MetaInstance::portBoundsInMapping(IPXactSystemVerilogParser& parser,
+QPair<QString, QString> MetaInstance::logicalPortBoundsInMapping(IPXactSystemVerilogParser& parser,
     QSharedPointer<PortMap> portMap)
 {
     QPair<QString, QString> bounds("", "");
@@ -311,6 +318,17 @@ QPair<QString, QString> MetaInstance::portBoundsInMapping(IPXactSystemVerilogPar
         bounds.first = parseExpression(parser, logicalPort->range_->getLeft());
         bounds.second = parseExpression(parser, logicalPort->range_->getRight());
     }
+
+    return bounds;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaInstance::physicalPortBoundsInMapping()
+//-----------------------------------------------------------------------------
+QPair<QString, QString> MetaInstance::physicalPortBoundsInMapping(IPXactSystemVerilogParser& parser,
+    QSharedPointer<PortMap> portMap)
+{
+    QPair<QString, QString> bounds("", "");
 
     QSharedPointer<PortMap::PhysicalPort> physPort = portMap->getPhysicalPort();
 

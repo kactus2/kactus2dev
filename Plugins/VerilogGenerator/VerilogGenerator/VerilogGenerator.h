@@ -19,7 +19,7 @@
 
 class ComponentVerilogWriter;
 class ComponentInstanceVerilogWriter;
-class VerilogTiedValueWriter;
+class VerilogAssignmentWriter;
 class LibraryInterface;
 class PortSorter;
 class VerilogHeaderWriter;
@@ -36,7 +36,7 @@ struct VerilogDocument
     //! Writer for generating file header.
     QSharedPointer<VerilogHeaderWriter> headerWriter_;
 
-    //! Writer for the component, is to contain everyting that comes to document, except header writer.
+    //! Writer for the component, is to contain everything that comes to document, except header writer.
     QSharedPointer<ComponentVerilogWriter> topWriter_;
 
     //! Writers for Verilog interconnections.
@@ -45,8 +45,8 @@ struct VerilogDocument
     //! Writers for Verilog wires.
     QSharedPointer<WriterGroup> wireWriters_;
 
-    //! Writer for ad hoc tied values.
-    QSharedPointer<VerilogTiedValueWriter> tiedValueWriter_;
+    //! Writer for hierarchical assignments.
+    QSharedPointer<VerilogAssignmentWriter> assignmentWriter_;
 
     //! Writers for Verilog instances.
     QList<QSharedPointer<ComponentInstanceVerilogWriter> > instanceWriters_;

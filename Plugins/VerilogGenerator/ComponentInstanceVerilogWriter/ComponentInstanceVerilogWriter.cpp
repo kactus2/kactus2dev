@@ -11,6 +11,7 @@
 
 #include "ComponentInstanceVerilogWriter.h"
 
+#include <Plugins/VerilogGenerator/VerilogAssignmentWriter/VerilogAssignmentWriter.h>
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -172,7 +173,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 
         QString portAssignment = interfaceSeparatorLine + indentation().repeated(2) + ".<port>(<connection>)";
         portAssignment.replace("<port>", mPort->port_->name().leftJustified(20));
-        portAssignment.replace("<connection>", assignmentForPort(mPort));
+        portAssignment.replace("<connection>", VerilogAssignmentWriter::assignmentForPort(mPort, DirectionTypes::IN));
 
         portAssignments.append(portAssignment);
     }
@@ -213,94 +214,6 @@ QString ComponentInstanceVerilogWriter::createInterfaceSeparator(QString const& 
     }
 
     return interfaceIntroduction;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstanceVerilogWriter::assignmentForPort()
-//-----------------------------------------------------------------------------
-QString ComponentInstanceVerilogWriter::assignmentForPort(QSharedPointer<MetaPort> mPort) const
-{
-    bool isInOutPort =
-        (mPort->port_->getDirection() == DirectionTypes::IN || mPort->port_->getDirection() == DirectionTypes::INOUT);
-
-    // Use the default value of port, if no assignments exist.
-    if (mPort->assignments_.size() < 1)
-    {
-        if (isInOutPort)
-        {
-            return mPort->defaultValue_;
-        }
-
-        return "";
-    }
-
-    QString assignment;
-    
-    if (mPort->assignments_.size() > 1)
-    {
-       assignment = "{";
-    }
-
-    foreach (QSharedPointer<MetaPortAssignMent> mpa, mPort->assignments_)
-    {
-        QString subAssignment;
-
-        if (mpa->wire_)
-        {
-		    subAssignment = "<signalName>[<left>:<right>]";
-
-		    QPair<QString,QString> connectionBounds = mpa->bounds_;
-
-		    // Use bounds only if they are not the same.
-		    if (connectionBounds.first == connectionBounds.second)
-		    {
-			    subAssignment = "<signalName>";
-		    }
-		    else
-		    {
-			    subAssignment.replace("<left>", connectionBounds.first);
-			    subAssignment.replace("<right>", connectionBounds.second);
-		    }
-
-            // Pry for the hierarchical ports.
-            // TODO: Take into account the possibility of multiple hierarchical ports.
-            QSharedPointer<MetaPort> hierPort;
-
-            if (mpa->wire_->hierPorts_.size() > 0)
-            {
-                // Connect the physical port to a corresponding top port.
-                hierPort = mpa->wire_->hierPorts_.first();
-                subAssignment.replace("<signalName>", hierPort->port_->name());
-            }
-            else
-            {
-                // No hierarchical ports means we must write a wire as a connection.
-                subAssignment.replace("<signalName>", mpa->wire_->name_);
-            }
-        }
-        else if (isInOutPort)
-        {
-            // If a default value is assigned to a physical port, it shall be used.
-            subAssignment = mpa->defaultValue_;
-        }
-
-        if (!subAssignment.isEmpty())
-        {
-            assignment += subAssignment;
-
-            if (mpa != mPort->assignments_.last())
-            {
-                assignment += ", ";
-            }
-        }
-    }
-
-    if (mPort->assignments_.size() > 1)
-    {
-        assignment += "}";
-    }
-
-    return assignment;
 }
 
 //-----------------------------------------------------------------------------

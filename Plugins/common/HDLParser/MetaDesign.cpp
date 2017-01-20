@@ -371,7 +371,7 @@ void MetaDesign::parseInsterconnections()
 
                         mpa->wire_ = mWire;
                         // Also assign larger bounds for wire, if applicable.
-                        assignLargerBounds(mWire, mpa->bounds_);
+                        assignLargerBounds(mWire, mpa->logicalBounds_);
 
                         // Associate the wire with the hierarchical ports.
                         if (isHierarchical && !mWire->hierPorts_.contains(mPort))
@@ -492,17 +492,17 @@ void MetaDesign::parseAdHocs()
             if (ps && !ps->getLeftRange().isEmpty() && !ps->getRightRange().isEmpty())
             {
                 // If part select exists, it shall be used.
-                mpa->bounds_.first = ps->getLeftRange();
-                mpa->bounds_.second = ps->getRightRange();
+                mpa->physicalBounds_.first = ps->getLeftRange();
+                mpa->physicalBounds_.second = ps->getRightRange();
             }
             else
             {
                 // Else just choose the port bounds.
-                mpa->bounds_ = mPort->vectorBounds_;
+                mpa->physicalBounds_ = mPort->vectorBounds_;
             }
 
             // Also assign larger bounds for the wire, if applicable.
-            assignLargerBounds(mWire, mpa->bounds_);
+            assignLargerBounds(mWire, mpa->physicalBounds_);
         }
     }
 }

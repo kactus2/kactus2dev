@@ -44,8 +44,10 @@ struct MetaWire
 
 struct MetaPortAssignMent
 {
-    //! The bounds of the assignment.
-    QPair<QString,QString> bounds_;
+    //! The physical bounds of the assignment.
+    QPair<QString,QString> physicalBounds_;
+    //! The logical bounds of the assignment.
+    QPair<QString,QString> logicalBounds_;
     //! The wire of interconnection where port is assigned. Is null if there is none.
     QSharedPointer<MetaWire> wire_;
     //! The assigned and parsed default value: Either a tie-off or the abstraction definition default.
