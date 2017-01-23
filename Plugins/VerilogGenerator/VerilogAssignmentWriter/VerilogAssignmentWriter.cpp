@@ -51,22 +51,23 @@ void VerilogAssignmentWriter::write(QTextStream& output) const
 
     foreach (QSharedPointer<MetaPort> mPort, ports_)
     {
-        if (mPort->port_->getDirection() == DirectionTypes::OUT || mPort->port_->getDirection() == DirectionTypes::INOUT)
-        {
-            QString outputLine = "    assign " + mPort->port_->name() + " = " + assignmentForPort(mPort, DirectionTypes::OUT) + ";";
+        bool isOutPort =
+            (mPort->port_->getDirection() == DirectionTypes::OUT || mPort->port_->getDirection() == DirectionTypes::INOUT);
 
-            output << outputLine << endl;
+        if (mPort->assignments_.size() < 1 && isOutPort)
+        {
+            output << "    assign " << mPort->port_->name() << " = "  << mPort->defaultValue_ << ";" << endl;
+
+            continue;
         }
-        else if (mPort->port_->getDirection() == DirectionTypes::IN)
-        {
-            foreach (QSharedPointer<MetaPortAssignMent> mpa, mPort->assignments_)
-            {
-                QString outputLine = assignmentForWire(mpa, mPort->port_->name());
 
-                if (!outputLine.isEmpty())
-                {
-                    output << outputLine << endl;
-                }
+        foreach (QSharedPointer<MetaPortAssignMent> mpa, mPort->assignments_)
+        {
+            QString outputLine = assignmentForHierPort(mpa, mPort, isOutPort);
+
+            if (!outputLine.isEmpty())
+            {
+                output << outputLine << endl;
             }
         }
     }
@@ -75,108 +76,63 @@ void VerilogAssignmentWriter::write(QTextStream& output) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VerilogAssignmentWriter::assignmentForPort()
+// Function: VerilogAssignmentWriter::assignmentFsorHierPort()
 //-----------------------------------------------------------------------------
-QString VerilogAssignmentWriter::assignmentForPort(QSharedPointer<MetaPort> mPort,
-    DirectionTypes::Direction inOut)
-{
-    bool isInOutPort =
-        (mPort->port_->getDirection() == inOut || mPort->port_->getDirection() == DirectionTypes::INOUT);
-
-    // Use the default value of port, if no assignments exist.
-    if (mPort->assignments_.size() < 1)
-    {
-        if (isInOutPort)
-        {
-            return mPort->defaultValue_;
-        }
-
-        return "";
-    }
-
-    QString assignmentString;
-    
-    if (mPort->assignments_.size() > 1)
-    {
-       assignmentString = "{";
-    }
-
-    foreach (QSharedPointer<MetaPortAssignMent> mpa, mPort->assignments_)
-    {
-        QString subAssignment;
-
-        if (mpa->wire_)
-        {
-		    subAssignment = "<wireName>[<left>:<right>]";
-
-		    QPair<QString,QString> connectionBounds = mpa->physicalBounds_;
-
-		    // Use bounds only if they are not the same.
-		    if (connectionBounds.first == connectionBounds.second)
-		    {
-                subAssignment.remove("[<left>:<right>]");
-		    }
-		    else
-		    {
-			    subAssignment.replace("<left>", connectionBounds.first);
-			    subAssignment.replace("<right>", connectionBounds.second);
-		    }
-
-            // Write a wire as a connection.
-            subAssignment.replace("<wireName>", mpa->wire_->name_);
-        }
-        else if (isInOutPort)
-        {
-            // If a default value is assigned to a physical port, it shall be used.
-            subAssignment = mpa->defaultValue_;
-        }
-
-        if (!subAssignment.isEmpty())
-        {
-            assignmentString += subAssignment;
-
-            if (mpa != mPort->assignments_.last())
-            {
-                assignmentString += ", ";
-            }
-        }
-    }
-
-    if (mPort->assignments_.size() > 1)
-    {
-        assignmentString += "}";
-    }
-
-    return assignmentString;
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogAssignmentWriter::assignmentForWire()
-//-----------------------------------------------------------------------------
-QString VerilogAssignmentWriter::assignmentForWire(QSharedPointer<MetaPortAssignMent> mpa, QString portName)
+QString VerilogAssignmentWriter::assignmentForHierPort(QSharedPointer<MetaPortAssignMent> mpa,
+    QSharedPointer<MetaPort> mPort, bool isOutPort)
 {
     QString assignmentString;
+
+    if (isOutPort)
+    {
+        assignmentString = "    assign <portName>[<portLeft>:<portRight>] = <wireName>[<wireLeft>:<wireRight>];";
+    }
+    else
+    {
+        assignmentString = "    assign <wireName>[<wireLeft>:<wireRight>] = <portName>[<portLeft>:<portRight>];";
+    }
+
+    QPair<QString,QString> portBounds = mpa->physicalBounds_;
+
+    // Use bounds only if they are not the same.
+    if (portBounds.first == portBounds.second)
+    {
+        assignmentString.remove("[<portLeft>:<portRight>]");
+    }
+    else
+    {
+        assignmentString.replace("<portLeft>", portBounds.first);
+        assignmentString.replace("<portRight>", portBounds.second);
+    }
+
+    assignmentString.replace("<portName>", mPort->port_->name());
 
     if (mpa->wire_)
     {
-        assignmentString = "    assign <wireName>[<left>:<right>] = <portName>;";
-
-        QPair<QString,QString> connectionBounds = mpa->physicalBounds_;
+        QPair<QString,QString> wireBounds = mpa->logicalBounds_;
 
         // Use bounds only if they are not the same.
-        if (connectionBounds.first == connectionBounds.second)
+        if (wireBounds.first == wireBounds.second)
         {
-            assignmentString.remove("[<left>:<right>]");
+            assignmentString.remove("[<wireLeft>:<wireRight>]");
         }
         else
         {
-            assignmentString.replace("<left>", connectionBounds.first);
-            assignmentString.replace("<right>", connectionBounds.second);
+            assignmentString.replace("<wireLeft>", wireBounds.first);
+            assignmentString.replace("<wireRight>", wireBounds.second);
         }
 
-        // Write names.
         assignmentString.replace("<wireName>", mpa->wire_->name_);
-        assignmentString.replace("<portName>", portName);
+    }
+    else if (isOutPort)
+    {
+        // If a default value is assigned to a physical port, it shall be used.
+        assignmentString.remove("[<wireLeft>:<wireRight>]");
+        assignmentString.replace("<wireName>", mpa->defaultValue_);
+    }
+    else
+    {
+        assignmentString = "";
     }
 
     return assignmentString;

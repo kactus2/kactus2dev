@@ -47,6 +47,7 @@ private slots:
     void testTopSlicedHierarchicalConnections();
 
     void testMasterToSlaveInterconnection();
+    void testSlicedMasterToSlaveInterconnection();
     void testMasterToMultipleSlavesInterconnections();
 
     void testAdhocConnectionBetweenComponentInstances();    
@@ -78,7 +79,8 @@ private:
 
     void runGenerator(bool useDesign);
 
-    void createPortAssignment(QSharedPointer<MetaPort> mPort, QSharedPointer<MetaWire> wire, QString const& leftBound, QString const& rightBound);
+    void createPortAssignment(QSharedPointer<MetaPort> mPort, QSharedPointer<MetaWire> wire,
+        QString const& logicalLeft, QString const& logicalRight, QString const& physicalLeft, QString const& physicalRight);
 
     void createWirePortAssignment(QSharedPointer<MetaPort> port, QSharedPointer<MetaWire> wire, QSharedPointer<MetaInstance> instance, QString const& leftBound, QString const& rightBound);
 
@@ -343,15 +345,15 @@ void tst_VerilogGenerator::testHierarchicalConnections()
     QSharedPointer<MetaWire> gw3 = addWireToDesign("full_wire","0","0",mI1);
     gw3->hierPorts_.append(topFull);
 
-    createPortAssignment(mInstance->ports_["clk"], gw0, "0", "0");
-    createPortAssignment(mInstance->ports_["data_in"], gw1, "7", "0");
-    createPortAssignment(mInstance->ports_["enable"], gw2, "0", "0");
-    createPortAssignment(mInstance->ports_["full"], gw3, "0", "0");
+    createPortAssignment(mInstance->ports_["clk"], gw0, "0", "0", "0", "0");
+    createPortAssignment(mInstance->ports_["data_in"], gw1, "7", "0", "0", "0");
+    createPortAssignment(mInstance->ports_["enable"], gw2, "0", "0", "0", "0");
+    createPortAssignment(mInstance->ports_["full"], gw3, "0", "0", "0", "0");
 
-    createPortAssignment(topComponent_->ports_["top_clk"], gw0, "0", "0");
-    createPortAssignment(topComponent_->ports_["data_to_instance"], gw1, "7", "0");
-    createPortAssignment(topComponent_->ports_["enable_to_instance"], gw2, "0", "0");
-    createPortAssignment(topComponent_->ports_["full_from_instance"], gw3, "0", "0");
+    createPortAssignment(topComponent_->ports_["top_clk"], gw0, "0", "0", "0", "0");
+    createPortAssignment(topComponent_->ports_["data_to_instance"], gw1, "7", "0", "7", "0");
+    createPortAssignment(topComponent_->ports_["enable_to_instance"], gw2, "0", "0", "0", "0");
+    createPortAssignment(topComponent_->ports_["full_from_instance"], gw3, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -397,53 +399,60 @@ void tst_VerilogGenerator::testHierarchicalConnections()
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::testInstanceSlicedHierarchicalConnections()
 {
-    QSharedPointer<MetaInterface> topDataIf = addInterfaceToComponent("data_bus", topComponent_);
+    QSharedPointer<MetaInterface> topDataIf = addInterfaceToComponent("data_if", topComponent_);
 
-    QSharedPointer<MetaPort> topData = addPort("data_to_instance", 8, DirectionTypes::IN, topComponent_, topDataIf);
+    QSharedPointer<MetaPort> topiData = addPort("data_to_instance", 8, DirectionTypes::IN, topComponent_, topDataIf);
+    QSharedPointer<MetaPort> topoData = addPort("data_from_instance", 8, DirectionTypes::OUT, topComponent_, topDataIf);
 
     VLNV instanceVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestInstance", "1.0");
     QSharedPointer<Component> comp = addTestComponentToLibrary(instanceVlnv);
     QSharedPointer<MetaInstance> mInstance = addInstanceToDesign("instance1", comp);
-    addInterfacesToInstance(mInstance);
 
-    QSharedPointer<MetaInterface> instanceDataIf = mInstance->interfaces_["data_if"];
-    QSharedPointer<MetaPort> data2Port = addPort("data2", 4, DirectionTypes::IN, mInstance, instanceDataIf);
+    QSharedPointer<MetaInterface> instanceDataIf = addInterfaceToComponent("data_if", mInstance);
+    QSharedPointer<MetaPort> idata1Port = addPort("idata1", 4, DirectionTypes::IN, mInstance, instanceDataIf);
+    QSharedPointer<MetaPort> idata2Port = addPort("idata2", 4, DirectionTypes::IN, mInstance, instanceDataIf);
+    QSharedPointer<MetaPort> odata1Port = addPort("odata1", 4, DirectionTypes::OUT, mInstance, instanceDataIf);
+    QSharedPointer<MetaPort> odata2Port = addPort("odata2", 4, DirectionTypes::OUT, mInstance, instanceDataIf);
 
     QSharedPointer<MetaInterconnection> mI1 = addInterconnectToDesign(topDataIf, instanceDataIf);
     mI1->hierIfs_.append(topDataIf);
 
-    QSharedPointer<MetaWire> mWire = addWireToDesign("data_wire","7","0",mI1);
-    mWire->hierPorts_.append(topData);
+    QSharedPointer<MetaWire> imWire = addWireToDesign("idata_wire","7","0",mI1);
+    imWire->hierPorts_.append(topiData);
+    QSharedPointer<MetaWire> omWire = addWireToDesign("odata_wire","7","0",mI1);
+    omWire->hierPorts_.append(topoData);
 
-    createPortAssignment(mInstance->ports_["data_in"], mWire, "3", "0");
-    createPortAssignment(data2Port, mWire, "7", "4");
+    createPortAssignment(idata1Port, imWire, "3", "0", "0", "0");
+    createPortAssignment(idata2Port, imWire, "7", "4", "0", "0");
+    createPortAssignment(odata1Port, omWire, "3", "0", "0", "0");
+    createPortAssignment(odata2Port, omWire, "7", "4", "0", "0");
 
-    createPortAssignment(topComponent_->ports_["data_to_instance"], mWire, "7", "0");
+    createPortAssignment(topComponent_->ports_["data_to_instance"], imWire, "7", "0", "7", "0");
+    createPortAssignment(topComponent_->ports_["data_from_instance"], omWire, "7", "0", "7", "0");
 
     runGenerator(true);
 
     verifyOutputContains(QString(
         "module TestComponent(\n"
-        "    // Interface: data_bus\n"     
-        "    input          [7:0]                data_to_instance\n"
+        "    // Interface: data_if\n"     
+        "    input          [7:0]                data_to_instance,\n"
+        "    output         [7:0]                data_from_instance\n"
         ");\n"
         "\n"
-        "    wire [7:0]  data_wire;\n"
+        "    wire [7:0]  idata_wire;\n"
+        "    wire [7:0]  odata_wire;\n"
         "\n"
         "    // Assignments for the ports of the encompassing component\n"
-        "    assign data_wire[7:0] = data_to_instance[7:0];\n"
+        "    assign data_from_instance[7:0] = odata_wire[7:0];\n"
+        "    assign idata_wire[7:0] = data_to_instance[7:0];\n"
         "\n"
         "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
         "    TestInstance instance1(\n"
-        "        // Interface: clk_if\n"
-        "        .clk                 (),\n"
         "        // Interface: data_if\n"
-        "        .data2               (data_wire[7:4]),\n"
-        "        .data_in             (data_wire[3:0]),\n"
-        "        .enable              (),\n"
-        "        .full                (),\n"
-        "        // These ports are not in any interface\n"
-        "        .data_out            ());\n"
+        "        .idata1              (idata_wire[3:0]),\n"
+        "        .idata2              (idata_wire[7:4]),\n"
+        "        .odata1              (odata_wire[3:0]),\n"
+        "        .odata2              (odata_wire[7:4]));\n"
         "\n"
         "\n"
         "endmodule\n"));
@@ -465,7 +474,7 @@ void tst_VerilogGenerator::testTopSlicedHierarchicalConnections()
     QSharedPointer<Component> comp = addTestComponentToLibrary(instanceVlnv);
     QSharedPointer<MetaInstance> mInstance = addInstanceToDesign("instance1", comp);
 
-    QSharedPointer<MetaInterface> instanceDataIf = addInterfaceToComponent("data_if", topComponent_);
+    QSharedPointer<MetaInterface> instanceDataIf = addInterfaceToComponent("data_if", mInstance);
     QSharedPointer<MetaPort> idataPort = addPort("idata", 8, DirectionTypes::IN, mInstance, instanceDataIf);
     QSharedPointer<MetaPort> odataPort = addPort("odata", 8, DirectionTypes::OUT, mInstance, instanceDataIf);
 
@@ -480,38 +489,39 @@ void tst_VerilogGenerator::testTopSlicedHierarchicalConnections()
     omWire->hierPorts_.append(topoData1);
     omWire->hierPorts_.append(topoData2);
 
-    createPortAssignment(idataPort, imWire, "7", "0");
-    createPortAssignment(odataPort, omWire, "7", "0");
+    createPortAssignment(idataPort, imWire, "7", "0", "7", "0");
+    createPortAssignment(odataPort, omWire, "7", "0", "7", "0");
 
-    createPortAssignment(topiData1, imWire, "3", "0");
-    createPortAssignment(topiData2, imWire, "7", "4");
-    createPortAssignment(topoData1, omWire, "3", "0");
-    createPortAssignment(topoData2, omWire, "7", "4");
+    createPortAssignment(topiData1, imWire, "3", "0", "3", "0");
+    createPortAssignment(topiData2, imWire, "7", "4", "3", "0");
+    createPortAssignment(topoData1, omWire, "3", "0", "3", "0");
+    createPortAssignment(topoData2, omWire, "7", "4", "3", "0");
 
     runGenerator(true);
 
     verifyOutputContains(QString(
         "module TestComponent(\n"
-        "    // Interface: data_bus\n"     
-        "    input          [7:0]                data_to_instance\n"
+        "    // Interface: data_if\n"     
+        "    input          [3:0]                data_to_instance1,\n"
+        "    input          [3:0]                data_to_instance2,\n"
+        "    output         [3:0]                data_from_instance1,\n"
+        "    output         [3:0]                data_from_instance2\n"
         ");\n"
         "\n"
-        "    wire [7:0]  data_wire;\n"
+        "    wire [7:0]  idata_wire;\n"
+        "    wire [7:0]  odata_wire;\n"
         "\n"
         "    // Assignments for the ports of the encompassing component\n"
-        "    assign data_wire[7:0] = data_to_instance[7:0];\n"
+        "    assign data_from_instance1[3:0] = odata_wire[3:0];\n"
+        "    assign data_from_instance2[3:0] = odata_wire[7:4];\n"
+        "    assign idata_wire[3:0] = data_to_instance1[3:0];\n"
+        "    assign idata_wire[7:4] = data_to_instance2[3:0];\n"
         "\n"
         "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
         "    TestInstance instance1(\n"
-        "        // Interface: clk_if\n"
-        "        .clk                 (),\n"
         "        // Interface: data_if\n"
-        "        .data2               (data_wire[7:4]),\n"
-        "        .data_in             (data_wire[3:0]),\n"
-        "        .enable              (),\n"
-        "        .full                (),\n"
-        "        // These ports are not in any interface\n"
-        "        .data_out            ());\n"
+        "        .idata               (idata_wire[7:0]),\n"
+        "        .odata               (odata_wire[7:0]));\n"
         "\n"
         "\n"
         "endmodule\n"));
@@ -560,12 +570,16 @@ QSharedPointer<MetaWire> tst_VerilogGenerator::addWireToDesign(QString name,
 //-----------------------------------------------------------------------------
 void tst_VerilogGenerator::createPortAssignment(QSharedPointer<MetaPort> mPort,
     QSharedPointer<MetaWire> wire,
-    QString const& leftBound,
-    QString const& rightBound)
+    QString const& logicalLeft,
+    QString const& logicalRight,
+    QString const& physicalLeft,
+    QString const& physicalRight)
 {
     QSharedPointer<MetaPortAssignMent> mpa(new MetaPortAssignMent);
-    mpa->physicalBounds_.first = leftBound;
-    mpa->physicalBounds_.second = rightBound;
+    mpa->logicalBounds_.first = logicalLeft;
+    mpa->logicalBounds_.second = logicalRight;
+    mpa->physicalBounds_.first = physicalLeft;
+    mpa->physicalBounds_.second = physicalRight;
     mpa->wire_ = wire;
 
     mPort->assignments_.insert(wire->name_, mpa);
@@ -656,11 +670,11 @@ void tst_VerilogGenerator::testMasterToSlaveInterconnection()
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
 
-    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, "7", "0");
-    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, "0", "0");
+    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, "7", "0", "7", "0");
+    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, "0", "0", "0", "0");
 
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "7", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -679,6 +693,49 @@ void tst_VerilogGenerator::testMasterToSlaveInterconnection()
     "        // Interface: data_if\n"
     "        .data_out            (sender_to_receiver_DATA[7:0]),\n"
     "        .enable_out          (sender_to_receiver_ENABLE));");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogGenerator::testSlicedMasterToSlaveInterconnection()
+//-----------------------------------------------------------------------------
+void tst_VerilogGenerator::testSlicedMasterToSlaveInterconnection()
+{
+    QSharedPointer<MetaInstance> senderInstance = addSender("sender");
+    QSharedPointer<MetaInstance> receiverInstance = addReceiver("receiver");
+
+    QSharedPointer<MetaInterface> senderIf = senderInstance->interfaces_["data_if"];
+    QSharedPointer<MetaInterface> recvIf = receiverInstance->interfaces_["data_if"];
+
+    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf);
+
+    QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
+    QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
+
+    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, "7", "4", "7", "4");
+    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, "3", "0", "3", "0");
+    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, "0", "0", "0", "0");
+
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "4", "7", "4");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "3", "0", "3", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
+
+    runGenerator(true);
+
+    verifyOutputContains(
+        "    wire [7:0]  sender_to_receiver_DATA;\n"
+        "    wire        sender_to_receiver_ENABLE;\n"
+        "\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
+        "    TestReceiver receiver(\n"
+        "        // Interface: data_if\n"
+        "        .data_in             ({sender_to_receiver_DATA[3:0], sender_to_receiver_DATA[7:4]}),\n"
+        "        .enable_in           (sender_to_receiver_ENABLE));\n"
+        "\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
+        "    TestSender sender(\n"
+        "        // Interface: data_if\n"
+        "        .data_out            ({sender_to_receiver_DATA[3:0], sender_to_receiver_DATA[7:4]}),\n"
+        "        .enable_out          (sender_to_receiver_ENABLE));");
 }
 
 //-----------------------------------------------------------------------------
@@ -734,13 +791,13 @@ void tst_VerilogGenerator::testMasterToMultipleSlavesInterconnections()
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect1);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect2);
 
-    createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, "7", "0");
-    createPortAssignment(receiverInstance1->ports_["enable_in"], enaWire, "0", "0");
-    createPortAssignment(receiverInstance2->ports_["data_in"], dataWire, "7", "0");
-    createPortAssignment(receiverInstance2->ports_["enable_in"], enaWire, "0", "0");
+    createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(receiverInstance1->ports_["enable_in"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(receiverInstance2->ports_["data_in"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(receiverInstance2->ports_["enable_in"], enaWire, "0", "0", "0", "0");
 
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -775,13 +832,13 @@ void tst_VerilogGenerator::testAdhocConnectionBetweenComponentInstances()
     QSharedPointer<MetaWire> dataWire = addWireToDesign("dataAdHoc","7","0");
     QSharedPointer<MetaWire> enaWire = addWireToDesign("enableAdHoc","0","0");
 
-    createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, "7", "0");
-    createPortAssignment(receiverInstance1->ports_["enable_in"], enaWire, "0", "0");
-    createPortAssignment(receiverInstance2->ports_["data_in"], dataWire, "7", "0");
-    createPortAssignment(receiverInstance2->ports_["enable_in"], enaWire, "0", "0");
+    createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(receiverInstance1->ports_["enable_in"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(receiverInstance2->ports_["data_in"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(receiverInstance2->ports_["enable_in"], enaWire, "0", "0", "0", "0");
 
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -885,10 +942,10 @@ void tst_VerilogGenerator::testHierarchicalAdhocConnection()
     QSharedPointer<MetaWire> enaWire = addWireToDesign("enableAdHoc","0","0");
     enaWire->hierPorts_.append(topEna);
 
-    createPortAssignment(topData, dataWire, "7", "0");
-    createPortAssignment(topEna, enaWire, "0", "0");
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0");
+    createPortAssignment(topData, dataWire, "7", "0", "0", "0");
+    createPortAssignment(topEna, enaWire, "0", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -952,8 +1009,7 @@ void tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
         "    assign zeroTieOff = 0;\n"
         "\n"
         "\n"
-        "endmodule"
-        );
+        "endmodule");
 }
 
 //-----------------------------------------------------------------------------

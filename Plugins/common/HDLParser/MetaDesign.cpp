@@ -157,7 +157,7 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
 void MetaDesign::parseDesign()
 {
     parseInstances();
-    parseInsterconnections();
+    parseInterconnections();
     parseAdHocs();
 }
 
@@ -249,9 +249,9 @@ void MetaDesign::parseInstances()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaDesign::parseInsterconnections()
+// Function: MetaDesign::parseInterconnections()
 //-----------------------------------------------------------------------------
-void MetaDesign::parseInsterconnections()
+void MetaDesign::parseInterconnections()
 {
     // Go through each non-ad-hoc interconnection in the design.
     foreach (QSharedPointer<Interconnection> connection, *design_->getInterconnections())
@@ -501,8 +501,11 @@ void MetaDesign::parseAdHocs()
                 mpa->physicalBounds_ = mPort->vectorBounds_;
             }
 
+            // Logical bounds are still used to determine wire bounds.
+            mpa->logicalBounds_ = mpa->physicalBounds_;
+
             // Also assign larger bounds for the wire, if applicable.
-            assignLargerBounds(mWire, mpa->physicalBounds_);
+            assignLargerBounds(mWire, mpa->logicalBounds_);
         }
     }
 }

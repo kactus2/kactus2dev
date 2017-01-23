@@ -49,17 +49,18 @@ public:
      *      @param [in] output   The output to write to.
      */
     virtual void write(QTextStream& output) const;    
-
+    
     /*!
-    *  Gets the connection assignment for a port.
+    *  Gets an assignment for a hierarchical port.
     *
-    *      @param [in] portName     The name of the port whose connection assignment to get.
+    *      @param [in] mpa          The assignment that is currently under inspection.
+    *      @param [in] mPort        The port where the assignment belongs to.
+    *      @param [in] isOutPort    Must be true, if port is output or inout, else must be false.
     *
-    *      @return The Verilog description of the instance port connection assignment.
+    *      @return The Verilog description of the hierarchical port connection assignment.
     */
-    static QString assignmentForPort(QSharedPointer<MetaPort> mPort, DirectionTypes::Direction inOut);
-
-    static QString assignmentForWire(QSharedPointer<MetaPortAssignMent> mpa, QString portName);
+    static QString assignmentForHierPort(QSharedPointer<MetaPortAssignMent> mpa, QSharedPointer<MetaPort> mPort,
+        bool isOutPort);
 
 private:
 

@@ -168,6 +168,15 @@ private:
     */
     bool assignSingleBitInConnection(General::PortBounds const& signalBounds) const;
 
+    /*!
+    *  Gets the connection assignment for a port of a module instance.
+    *
+    *      @param [in] mPort            The meta port whose connection assignment to get.
+    *
+    *      @return The Verilog description of the instance port connection assignment.
+    */
+    static QString assignmentForInstancePort(QSharedPointer<MetaPort> mPort);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

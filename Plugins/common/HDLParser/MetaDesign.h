@@ -58,7 +58,7 @@ private:
 
     void parseInstances();
 
-    void parseInsterconnections();
+    void parseInterconnections();
 
     void parseAdHocs();
     
