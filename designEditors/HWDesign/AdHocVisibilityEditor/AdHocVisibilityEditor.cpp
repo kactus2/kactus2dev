@@ -111,12 +111,6 @@ void AdHocVisibilityEditor::setDataSource(AdHocEnabled* dataSource, QSharedPoint
 //-----------------------------------------------------------------------------
 void AdHocVisibilityEditor::clear()
 {
-	// If a previous data source has been specified, detach it from the editor.
-	if (dataSource_ != 0)
-    {
-		dataSource_->detach(this);
-	}
-
 	dataSource_ = 0;
     adHocModel_.setDataSource(0, QSharedPointer<IEditProvider>());
 
