@@ -259,16 +259,17 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
     else if (role == Qt::ForegroundRole)
     {
         if ((index.column() == LogicalPortColumns::NAME && port.abstraction_->getLogicalName().isEmpty()) ||
-            (index.column() == LogicalPortColumns::MODE && port.mode_ == General::INTERFACE_MODE_COUNT))
+            (index.column() == LogicalPortColumns::MODE && 
+                (port.mode_ == General::INTERFACE_MODE_COUNT || table_.count(port) > 1)))
         {
-            return QColor("red");
+            return  QColor("red");
         }
         else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
         {
             if (port.mode_ != General::SYSTEM || !busDefinition_ || 
                 !busDefinition_->getSystemGroupNames().contains(port.wire_->getSystemGroup()))
             {
-                return QColor("red");
+                return  QColor("red");
             }
         }
         else
@@ -296,16 +297,37 @@ bool BusPortsModel::setData(QModelIndex const& index, QVariant const& value, int
     {		
         QString newName = value.toString();
 
-        // Make sure there is not already port with same name.
-        if (absDef_->hasPort(newName))
+        // Merge port with existing port with the same name.
+        if (port.abstraction_->getLogicalName().compare(newName) != 0 && absDef_->hasPort(newName))
         {
-            return false;
+            int wirePortCount = 0;
+
+            QSharedPointer<WireAbstraction> wire = port.abstraction_->getWire();
+            if (wire->hasMasterPort())
+            {
+                wirePortCount++;
+            }
+            if (wire->hasSlavePort())
+            {
+                wirePortCount++;
+            }
+            wirePortCount += wire->getSystemPorts()->count();
+
+            //! Remove old abstraction, if left empty after merge.
+            if (wirePortCount <= 1)
+            {
+                absDef_->getLogicalPorts()->removeOne(port.abstraction_);
+            }
+
+            port.abstraction_ = absDef_->getPort(newName);
+        }
+        else
+        {
+            QString oldName = port.abstraction_->getLogicalName();
+            port.abstraction_->setLogicalName(newName);        
+            emit portRenamed(oldName, newName);
         }
 
-        QString oldName = port.abstraction_->getLogicalName();
-        port.abstraction_->setLogicalName(newName);        
-
-        emit portRenamed(oldName, newName);
     }
     else if (index.column() == LogicalPortColumns::QUALIFIER)
     {
@@ -394,7 +416,6 @@ void BusPortsModel::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
         }
     }
 
-    qSort(table_);
     endResetModel();
 }
 
@@ -411,23 +432,33 @@ void BusPortsModel::setBusDef(QSharedPointer<BusDefinition> busDefinition)
 //-----------------------------------------------------------------------------
 void BusPortsModel::save() 
 {
-    for (int i = 0; i < table_.size(); ++i) 
+    QVector<QSharedPointer<PortAbstraction> > savedPorts;
+
+    for (int i = 0; i < table_.size(); i++) 
     {
         BusPortsModel::SignalRow portOnRow = table_.at(i);
 
         QSharedPointer<PortAbstraction> portAbs = portOnRow.abstraction_;
-        portAbs->getWire()->setMasterPort(QSharedPointer<WirePort>());
-        portAbs->getWire()->setSlavePort(QSharedPointer<WirePort>());
-        portAbs->getWire()->getSystemPorts()->clear();
 
-        // Save the port for the first mode.
-        savePort(portAbs, i);
-
-        // Save different modes for the port abstraction.
-        while (i < table_.size() - 1 && table_.at(i + 1).abstraction_ == table_.at(i).abstraction_) 
+        if (!savedPorts.contains(portAbs))
         {
-            i++;
+            portAbs->getWire()->setMasterPort(QSharedPointer<WirePort>());
+            portAbs->getWire()->setSlavePort(QSharedPointer<WirePort>());
+            portAbs->getWire()->getSystemPorts()->clear();
+
+            // Save the port for the first mode.
             savePort(portAbs, i);
+
+            // Save different modes for the port abstraction.
+            for (int j = i + 1; j < table_.size(); j++)
+            {
+                if (table_.at(j).abstraction_ == portAbs)
+                {                    
+                    savePort(portAbs, j);
+                }
+            }
+
+            savedPorts.append(portAbs);
         }
     }
 }
@@ -444,8 +475,8 @@ void BusPortsModel::addSignal()
 
     absDef_->getLogicalPorts()->append(port.abstraction_);
 
-    beginInsertRows(QModelIndex(), 0, 0);
-    table_.prepend(port);
+    beginInsertRows(QModelIndex(), table_.count(), table_.count());
+    table_.append(port);
     endInsertRows();
 
     emit contentChanged();
@@ -503,8 +534,6 @@ void BusPortsModel::addSignalOptions(QModelIndexList const& indexes)
             table_.append(system);
         }
     }
-
-    qSort(table_);
 
     endResetModel();
 

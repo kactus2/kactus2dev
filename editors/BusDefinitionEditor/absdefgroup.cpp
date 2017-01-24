@@ -13,6 +13,7 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
+#include <QSortFilterProxyModel>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -21,10 +22,15 @@
 AbsDefGroup::AbsDefGroup(QWidget *parent): 
 QGroupBox(tr("Signals (Abstraction Definition)"), parent),
     portView_(this),
+    portProxy_(this),
     portModel_(this),
     portDelegate_(this)
 {
-	portView_.setModel(&portModel_);
+
+    portProxy_.setSourceModel(&portModel_);
+
+	portView_.setModel(&portProxy_);
+    portView_.setSortingEnabled(true);
 	portView_.setItemDelegate(&portDelegate_);
     portView_.setAllowImportExport(true);
     portView_.setItemsDraggable(false);
@@ -40,6 +46,8 @@ QGroupBox(tr("Signals (Abstraction Definition)"), parent),
 		this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(&portModel_, SIGNAL(portRenamed(const QString&, const QString&)), 
         this, SIGNAL(portRenamed(const QString&, const QString&)), Qt::UniqueConnection);
+    connect(&portModel_, SIGNAL(portRenamed(const QString&, const QString&)), 
+        &portProxy_, SLOT(invalidate()), Qt::UniqueConnection);
     connect(&portModel_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), 
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
@@ -63,7 +71,13 @@ AbsDefGroup::~AbsDefGroup()
 //-----------------------------------------------------------------------------
 void AbsDefGroup::onAddSignalOptions()
 {
-	portModel_.addSignalOptions(portView_.selected());
+    QModelIndexList selection;
+    foreach (QModelIndex index, portView_.selected())
+    {
+        selection.append(portProxy_.mapToSource(index));
+    }
+
+	portModel_.addSignalOptions(selection);
 }
 
 //-----------------------------------------------------------------------------

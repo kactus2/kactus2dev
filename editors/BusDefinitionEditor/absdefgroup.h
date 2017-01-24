@@ -21,6 +21,7 @@
 #include <QGroupBox>
 #include <QPushButton>
 #include <QSharedPointer>
+#include <QSortFilterProxyModel>
 
 class BusDefinition;
 
@@ -92,6 +93,9 @@ private:
     
 	//! The table view to display the logical signals
 	BusPortsView portView_;
+
+    //! Proxy model for sorting abstract ports.
+    QSortFilterProxyModel portProxy_;
 
 	//! The model that contains the logical signals of Abstraction Definition.
 	BusPortsModel portModel_;

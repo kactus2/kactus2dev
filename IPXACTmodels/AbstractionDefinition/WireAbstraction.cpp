@@ -234,7 +234,7 @@ bool WireAbstraction::requiresDriver() const
 //-----------------------------------------------------------------------------
 void WireAbstraction::setDriverType(General::DriverType driverType)
 {
-    setRequiresDriver(true);
+    setRequiresDriver(driverType != General::NO_DRIVER);
 
     driverType_ = driverType;
 }
