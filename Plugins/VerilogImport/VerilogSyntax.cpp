@@ -12,6 +12,7 @@
 #include "VerilogSyntax.h"
 
 #include <QTextStream>
+#include <QFile>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogSyntax::cullStrayComments()
@@ -93,4 +94,95 @@ QPair<int,int> VerilogSyntax::findModuleDeclaration(QString const& input)
     retval.second = moduleDeclarationEndIndex -  moduleDeclarationBeginIndex;
 
     return retval;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogSyntax::selectImplementation()
+//-----------------------------------------------------------------------------
+bool VerilogSyntax::selectImplementation(QString const& outputPath, QString& implementation,
+    QString& postModule, QString& error)
+{
+    // Check if the output file already exists.
+    QFile outputFile(outputPath); 
+
+    // If it does not, there is nothing do here.
+    if (!outputFile.exists())
+    {
+        return true;
+    }
+
+    // Must be able to open it for reading.
+    if (!outputFile.open(QIODevice::ReadOnly))
+    {
+        error = QObject::tr("The output file exists, but could not open it for reading. The path: %1").arg(outputPath);
+        return false;
+    }
+
+    // Read the content.
+    QTextStream inputStream(&outputFile);
+    QString fileContent = inputStream.readAll();
+
+    // We do not support multiple modules in the same file.
+    if (fileContent.count(VerilogSyntax::MODULE_KEY_WORD) > 1)
+    {
+        error = QObject::tr("There was more than one module headers in the output file!");
+        return false;
+    }
+
+    // Find the module header.
+    QPair<int,int> headerPosition = VerilogSyntax::findModuleDeclaration(fileContent);
+    int moduleDeclarationBeginIndex = headerPosition.first;
+    int moduleDeclarationLength = headerPosition.second;
+
+    // Must have it to proceed.
+    if (moduleDeclarationBeginIndex == -1)
+    {
+        error = QObject::tr("Could not find module header start from the output file.");
+        return false;
+    }
+
+    // Must have it to proceed.
+    if (moduleDeclarationLength == -1)
+    {
+        error = QObject::tr("Could not find module header end from the output file!");
+        return false;
+    }
+
+    // The end of the override tag line is the beginning of the implementation.
+    int implementationStart = fileContent.indexOf(VerilogSyntax::TAG_OVERRIDE);
+
+    if (implementationStart == -1)
+    {
+        // If does not exist, the end of the header is the beginning of the implementation.
+        implementationStart = moduleDeclarationBeginIndex + moduleDeclarationLength + 3;
+    }
+    else
+    {
+        // Else we should seek the position where tag line ends.
+        implementationStart += VerilogSyntax::TAG_OVERRIDE.size() + 1;
+    }
+
+    // The end of the module is the end of the implementation.
+    int implementationEnd = fileContent.indexOf(VerilogSyntax::MODULE_END);
+
+    // The module must end some where.
+    if (implementationEnd == -1)
+    {
+        error = QObject::tr("Could not find module end from the output file!");
+        return false;
+    }
+
+    // Rip the implementation once detected.
+    int implementationLength = implementationEnd - implementationStart;
+    implementation = fileContent.mid(implementationStart,implementationLength);
+
+    // Then take all the text that comes after the module, just in case.
+    int postStart = implementationEnd + 9;
+    postModule = fileContent.mid(postStart);
+
+    // Also trim away extra white space.
+    postModule = postModule.trimmed();
+
+    // The destructor shall close the file. All done here.
+    return true;
 }

@@ -55,13 +55,13 @@ QString VerilogAssignmentWriter::assignmentForPort() const
 
     QString assignmentString;
 
-    if ((!isInHierPort_ && isOutPort) || (isInHierPort_ && isInPort))
-    {
-        assignmentString = "<logicalWireName>[<logicalLeft>:<logicalRight>] = <portWireName>[<physicalLeft>:<physicalRight>]";
-    }
-    else if ((!isInHierPort_ && isInPort) || (isInHierPort_ && isOutPort))
+    if ((!isInHierPort_ && isInPort) || (isInHierPort_ && isOutPort))
     {
         assignmentString = "<portWireName>[<physicalLeft>:<physicalRight>] = <logicalWireName>[<logicalLeft>:<logicalRight>]";
+    }
+    else if ((!isInHierPort_ && isOutPort) || (isInHierPort_ && isInPort))
+    {
+        assignmentString = "<logicalWireName>[<logicalLeft>:<logicalRight>] = <portWireName>[<physicalLeft>:<physicalRight>]";
     }
     else
     {
@@ -85,7 +85,7 @@ QString VerilogAssignmentWriter::assignmentForPort() const
 
         assignmentString.replace("<logicalWireName>", mpa_->wire_->name_);
     }
-    else if (isOutPort)
+    else if ((!isInHierPort_ && isInPort) || (isInHierPort_ && isOutPort))
     {
         // If a default value is assigned to a physical port, it shall be used.
         assignmentString.remove("[<logicalLeft>:<logicalRight>]");

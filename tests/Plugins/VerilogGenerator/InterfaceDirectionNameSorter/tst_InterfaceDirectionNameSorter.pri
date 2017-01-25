@@ -8,5 +8,5 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.h
-SOURCES += ./tst_InterfaceDirectionNameSorter.cpp \
-    ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.cpp
+SOURCES += ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.cpp \
+    ./tst_InterfaceDirectionNameSorter.cpp

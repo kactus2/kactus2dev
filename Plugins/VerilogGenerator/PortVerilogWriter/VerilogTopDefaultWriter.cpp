@@ -30,7 +30,7 @@ VerilogTopDefaultWriter::~VerilogTopDefaultWriter()
 //-----------------------------------------------------------------------------
 void VerilogTopDefaultWriter::write(QTextStream& output) const
 {
-    if (mPort_->port_->getDirection() != DirectionTypes::OUT && mPort_->port_->getDirection() != DirectionTypes::INOUT);
+    if (mPort_->port_->getDirection() != DirectionTypes::OUT && mPort_->port_->getDirection() != DirectionTypes::INOUT)
     {
         return;
     }

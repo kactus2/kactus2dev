@@ -28,6 +28,8 @@ public:
 
 	/*!
      *  The constructor.
+     *
+     *      @param [in] mPort           The port, which default value assignment will be written, if applicable.
      */
     VerilogTopDefaultWriter(QSharedPointer<MetaPort> mPort);
 

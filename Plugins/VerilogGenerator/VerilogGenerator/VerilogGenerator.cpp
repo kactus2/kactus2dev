@@ -61,9 +61,11 @@ bool VerilogGenerator::prepareComponent(QString const& outputPath, QSharedPointe
     QString implementation;
     QString postModule;
     QString filePath = outputPath + "/" + component->fileName_;
+    QString error;
 
-    if (!selectImplementation(filePath, implementation, postModule))
+    if (!VerilogSyntax::selectImplementation(filePath, implementation, postModule, error))
     {
+        emit reportError(error);
         // If parser says no-go, we dare do nothing.
         return false;
     }
@@ -97,97 +99,6 @@ void VerilogGenerator::prepareDesign(QString const& outputPath, QSharedPointer<M
     addWritersToTopInDesiredOrder(document);
 
     documents_->append(document);
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogGenerator::selectImplementation()
-//-----------------------------------------------------------------------------
-bool VerilogGenerator::selectImplementation(QString const& outputPath, QString& implementation,
-	QString& postModule) const
-{
-	// Check if the output file already exists.
-	QFile outputFile(outputPath); 
-
-	// If it does not, there is nothing do here.
-	if (!outputFile.exists())
-	{
-		return true;
-	}
-
-	// Must be able to open it for reading.
-	if (!outputFile.open(QIODevice::ReadOnly))
-	{
-		emit reportError(tr("The output file exists, but could not open it for reading. The path: %1").arg(outputPath));
-		return false;
-	}
-
-	// Read the content.
-	QTextStream inputStream(&outputFile);
-	QString fileContent = inputStream.readAll();
-
-	// We do not support multiple modules in the same file.
-	if (fileContent.count(VerilogSyntax::MODULE_KEY_WORD) > 1)
-	{
-		emit reportError(tr("There was more than one module headers in the output file!"));
-		return false;
-	}
-
-    // Find the module header.
-    QPair<int,int> headerPosition = VerilogSyntax::findModuleDeclaration(fileContent);
-    int moduleDeclarationBeginIndex = headerPosition.first;
-    int moduleDeclarationLength = headerPosition.second;
-
-    // Must have it to proceed.
-	if (moduleDeclarationBeginIndex == -1)
-	{
-		emit reportError(tr("Could not find module header start from the output file."));
-		return false;
-	}
-
-    // Must have it to proceed.
-	if (moduleDeclarationLength == -1)
-	{
-		emit reportError(tr("Could not find module header end from the output file!"));
-		return false;
-	}
-
-	// The end of the override tag line is the beginning of the implementation.
-	int implementationStart = fileContent.indexOf(VerilogSyntax::TAG_OVERRIDE);
-
-	if (implementationStart == -1)
-	{
-		// If does not exist, the end of the header is the beginning of the implementation.
-		implementationStart = moduleDeclarationBeginIndex + moduleDeclarationLength + 3;
-	}
-	else
-	{
-		// Else we should seek the position where tag line ends.
-		implementationStart += VerilogSyntax::TAG_OVERRIDE.size() + 1;
-	}
-
-	// The end of the module is the end of the implementation.
-	int implementationEnd = fileContent.indexOf(VerilogSyntax::MODULE_END);
-
-	// The module must end some where.
-	if (implementationEnd == -1)
-	{
-		emit reportError(tr("Could not find module end from the output file!"));
-		return false;
-	}
-
-	// Rip the implementation once detected.
-	int implementationLength = implementationEnd - implementationStart;
-	implementation = fileContent.mid(implementationStart,implementationLength);
-
-	// Then take all the text that comes after the module, just in case.
-	int postStart = implementationEnd + 9;
-	postModule = fileContent.mid(postStart);
-
-	// Also trim away extra white space.
-	postModule = postModule.trimmed();
-
-	// The destructor shall close the file. All done here.
-	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -283,23 +194,31 @@ QSharedPointer<VerilogDocument> VerilogGenerator::initializeComponentWriters(QSh
 //-----------------------------------------------------------------------------
 void VerilogGenerator::initializeDesignWriters(QSharedPointer<MetaDesign> design, QSharedPointer<VerilogDocument> document)
 {
+    if (design->topInstance_->ports_.size() > 0)
+    {
+        QSharedPointer<CommentWriter> topAssignmentHeaderWriter(
+            new CommentWriter("Assignments for the ports of the encompassing component:"));
+        topAssignmentHeaderWriter->setIndent(4);
+        document->topAssignmentWriters_->add(topAssignmentHeaderWriter);
+    }
+
     // Create writers for 
     foreach (QSharedPointer<MetaPort> mPort, design->topInstance_->ports_)
     {
-        foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->assignments_)
+        if (mPort->assignments_.size() > 0)
         {
-            if (mPort->assignments_.size() > 0)
+            foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->assignments_)
             {
                 QSharedPointer<VerilogAssignmentWriter> topAssignment = QSharedPointer<VerilogAssignmentWriter>
                     (new VerilogAssignmentWriter(mPort->port_->name(), mpa, mPort->port_->getDirection(), true));
                 document->topAssignmentWriters_->add(topAssignment);
             }
-            else
-            {
-                QSharedPointer<VerilogTopDefaultWriter> topDefault = QSharedPointer<VerilogTopDefaultWriter>
-                    (new VerilogTopDefaultWriter(mPort));
-                document->topDefaultWriters_->add(topDefault);
-            }
+        }
+        else
+        {
+            QSharedPointer<VerilogTopDefaultWriter> topDefault = QSharedPointer<VerilogTopDefaultWriter>
+                (new VerilogTopDefaultWriter(mPort));
+            document->topDefaultWriters_->add(topDefault);
         }
     }
 
@@ -315,6 +234,19 @@ void VerilogGenerator::initializeDesignWriters(QSharedPointer<MetaDesign> design
 
         document->instanceHeaderWriters_.insert(instanceWriter, createHeaderWriterForInstance(mInstance));
 
+        if (mInstance->ports_.size() > 0)
+        {
+            QSharedPointer<CommentWriter> portWireHeaderWriter(
+                new CommentWriter(mInstance->componentInstance_->getInstanceName() + " port wires:"));
+            portWireHeaderWriter->setIndent(4);
+            document->portWireWriters_->add(portWireHeaderWriter);
+
+            QSharedPointer<CommentWriter> assignmentHeaderWriter(
+                new CommentWriter(mInstance->componentInstance_->getInstanceName() + " assignments:"));
+            assignmentHeaderWriter->setIndent(4);
+            document->instanceAssignmentWriters_->add(assignmentHeaderWriter);
+        }
+
         foreach (QSharedPointer<MetaPort> mPort, mInstance->ports_)
         {
             if (mPort->assignments_.size() < 1)
@@ -326,7 +258,7 @@ void VerilogGenerator::initializeDesignWriters(QSharedPointer<MetaDesign> design
                 mPort->port_->name();
 
             document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(
-                new VerilogWireWriter(physName, mPort->arrayBounds_)));
+                new VerilogWireWriter(physName, mPort->vectorBounds_)));
 
             foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->assignments_)
             {
@@ -338,12 +270,28 @@ void VerilogGenerator::initializeDesignWriters(QSharedPointer<MetaDesign> design
     }
 
     // Create wire writers for the interconnections
-    foreach (QSharedPointer<MetaInterconnection> gic, design->interconnections_)
+    foreach (QSharedPointer<MetaInterconnection> mInterconnect, design->interconnections_)
     {
-        foreach (QSharedPointer<MetaWire> gw, gic->wires_)
+        if (mInterconnect->wires_.size() > 0)
+        {
+            QSharedPointer<CommentWriter> connectionWireHeaderWriter(
+                new CommentWriter(mInterconnect->name_ + " wires:"));
+            connectionWireHeaderWriter->setIndent(4);
+            document->connectionWireWriters_->add(connectionWireHeaderWriter);
+        }
+
+        foreach (QSharedPointer<MetaWire> gw, mInterconnect->wires_)
         {
             document->connectionWireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw->name_, gw->bounds_)));
         }
+    }
+
+    if (design->adHocWires_.size() > 0)
+    {
+        QSharedPointer<CommentWriter> adHocWireHeaderWriter(
+            new CommentWriter("Ad-hoc wires:"));
+        adHocWireHeaderWriter->setIndent(4);
+       document->adHocWireWriters_->add(adHocWireHeaderWriter);
     }
 
     // Create wire writers for the ad hoc connections as well.

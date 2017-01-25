@@ -70,7 +70,8 @@ private slots:
 private:
 
     QSharedPointer<MetaInterconnection> addInterconnectToDesign(QSharedPointer<MetaInterface> first,
-        QSharedPointer<MetaInterface> second);
+        QSharedPointer<MetaInterface> second,
+        QString name);
 
     QSharedPointer<MetaWire> addWireToDesign(QString name, QString leftBound, QString rightBound, QSharedPointer<MetaInterconnection> mInterconnect = QSharedPointer<MetaInterconnection>::QSharedPointer());
 
@@ -217,7 +218,7 @@ void tst_VerilogGenerator::testTopLevelComponent()
 // Function: tst_VerilogGenerator::addPort()
 //-----------------------------------------------------------------------------
 QSharedPointer<MetaPort> tst_VerilogGenerator::addPort(QString const& portName, int portSize, 
-    DirectionTypes::Direction direction, QSharedPointer<MetaInstance> component,
+    DirectionTypes::Direction direction, QSharedPointer<MetaInstance> mInstance,
     QSharedPointer<MetaInterface> mInterface /*= QSharedPointer<MetaInterface>::QSharedPointer()*/)
 {
     QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName, direction));
@@ -226,8 +227,8 @@ QSharedPointer<MetaPort> tst_VerilogGenerator::addPort(QString const& portName, 
     gp->port_ = port;
     gp->vectorBounds_.first = QString::number(portSize-1);
     gp->vectorBounds_.second = "0";
-    component->ports_.insert(portName,gp);
-    component->component_->getPorts()->append(port);
+    mInstance->ports_.insert(portName,gp);
+    mInstance->component_->getPorts()->append(port);
 
     if (mInterface)
     {
@@ -333,9 +334,9 @@ void tst_VerilogGenerator::testHierarchicalConnections()
     QSharedPointer<MetaInterface> instanceClockIf = mInstance->interfaces_["clk_if"];
     QSharedPointer<MetaInterface> instanceDataIf = mInstance->interfaces_["data_if"];
 
-    QSharedPointer<MetaInterconnection> mI0 = addInterconnectToDesign(topClockIf, instanceClockIf);
+    QSharedPointer<MetaInterconnection> mI0 = addInterconnectToDesign(topClockIf, instanceClockIf, "clock_connection");
     mI0->hierIfs_.append(topClockIf);
-    QSharedPointer<MetaInterconnection> mI1 = addInterconnectToDesign(topDataIf, instanceDataIf);
+    QSharedPointer<MetaInterconnection> mI1 = addInterconnectToDesign(topDataIf, instanceDataIf, "data_connection");
     mI1->hierIfs_.append(topDataIf);
 
     QSharedPointer<MetaWire> gw0 = addWireToDesign("clk_wire","0","0",mI0);
@@ -364,36 +365,50 @@ void tst_VerilogGenerator::testHierarchicalConnections()
         "    // Interface: clk_if\n"
         "    input                               top_clk,\n"
         "\n"
-        "    // Interface: data_bus\n"     
+        "    // Interface: data_bus\n"
         "    input          [7:0]                data_to_instance,\n"
         "    input                               enable_to_instance,\n"
         "    output                              full_from_instance\n"
         ");\n"
         "\n"
+        "    // clock_connection wires:\n"
         "    wire        clk_wire;\n"
+        "    // data_connection wires:\n"
         "    wire [7:0]  data_wire;\n"
         "    wire        enable_wire;\n"
         "    wire        full_wire;\n"
         "\n"
-        "    // Assignments for the ports of the encompassing component\n"
+        "    // instance1 port wires:\n"
+        "    wire        instance1_clk;\n"
+        "    wire [7:0]  instance1_data_in;\n"
+        "    wire        instance1_enable;\n"
+        "    wire        instance1_full;\n"
+        "\n"
+        "    // Assignments for the ports of the encompassing component:\n"
         "    assign data_wire[7:0] = data_to_instance[7:0];\n"
         "    assign enable_wire = enable_to_instance;\n"
         "    assign full_from_instance = full_wire;\n"
         "    assign clk_wire = top_clk;\n"
         "\n"
+        "    // instance1 assignments:\n"
+        "    assign instance1_clk = clk_wire;\n"
+        "    assign instance1_data_in = data_wire[7:0];\n"
+        "    assign instance1_enable = enable_wire;\n"
+        "    assign full_wire = instance1_full;\n"
+        "\n"
         "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
         "    TestInstance instance1(\n"
         "        // Interface: clk_if\n"
-        "        .clk                 (clk_wire),\n"
+        "        .clk                 (instance1_clk),\n"
         "        // Interface: data_if\n"
-        "        .data_in             (data_wire[7:0]),\n"
-        "        .enable              (enable_wire),\n"
-        "        .full                (full_wire),\n"
+        "        .data_in             (instance1_data_in),\n"
+        "        .enable              (instance1_enable),\n"
+        "        .full                (instance1_full),\n"
         "        // These ports are not in any interface\n"
         "        .data_out            ());\n"
         "\n"
         "\n"
-        "endmodule\n"));
+        "endmodule"));
 }
 
 //-----------------------------------------------------------------------------
@@ -416,7 +431,7 @@ void tst_VerilogGenerator::testInstanceSlicedHierarchicalConnections()
     QSharedPointer<MetaPort> odata1Port = addPort("odata1", 4, DirectionTypes::OUT, mInstance, instanceDataIf);
     QSharedPointer<MetaPort> odata2Port = addPort("odata2", 4, DirectionTypes::OUT, mInstance, instanceDataIf);
 
-    QSharedPointer<MetaInterconnection> mI1 = addInterconnectToDesign(topDataIf, instanceDataIf);
+    QSharedPointer<MetaInterconnection> mI1 = addInterconnectToDesign(topDataIf, instanceDataIf, "data_connection");
     mI1->hierIfs_.append(topDataIf);
 
     QSharedPointer<MetaWire> imWire = addWireToDesign("idata_wire","7","0",mI1);
@@ -424,40 +439,42 @@ void tst_VerilogGenerator::testInstanceSlicedHierarchicalConnections()
     QSharedPointer<MetaWire> omWire = addWireToDesign("odata_wire","7","0",mI1);
     omWire->hierPorts_.append(topoData);
 
-    createPortAssignment(idata1Port, imWire, "3", "0", "0", "0");
-    createPortAssignment(idata2Port, imWire, "7", "4", "0", "0");
-    createPortAssignment(odata1Port, omWire, "3", "0", "0", "0");
-    createPortAssignment(odata2Port, omWire, "7", "4", "0", "0");
+    createPortAssignment(idata1Port, imWire, "3", "0", "3", "0");
+    createPortAssignment(idata2Port, imWire, "7", "4", "3", "0");
+    createPortAssignment(odata1Port, omWire, "3", "0", "3", "0");
+    createPortAssignment(odata2Port, omWire, "7", "4", "3", "0");
 
     createPortAssignment(topComponent_->ports_["data_to_instance"], imWire, "7", "0", "7", "0");
     createPortAssignment(topComponent_->ports_["data_from_instance"], omWire, "7", "0", "7", "0");
 
     runGenerator(true);
 
-    verifyOutputContains(QString(
-        "module TestComponent(\n"
-        "    // Interface: data_if\n"     
-        "    input          [7:0]                data_to_instance,\n"
-        "    output         [7:0]                data_from_instance\n"
-        ");\n"
-        "\n"
-        "    wire [7:0]  idata_wire;\n"
-        "    wire [7:0]  odata_wire;\n"
-        "\n"
-        "    // Assignments for the ports of the encompassing component\n"
-        "    assign data_from_instance[7:0] = odata_wire[7:0];\n"
-        "    assign idata_wire[7:0] = data_to_instance[7:0];\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
+    verifyOutputContains("input          [7:0]                data_to_instance");
+    verifyOutputContains("output         [7:0]                data_from_instance");
+
+    verifyOutputContains("wire [7:0]  idata_wire;");
+    verifyOutputContains("wire [7:0]  odata_wire;");
+
+    verifyOutputContains("wire [3:0]  instance1_idata1;");
+    verifyOutputContains("wire [3:0]  instance1_idata2");
+    verifyOutputContains("wire [3:0]  instance1_odata1;");
+    verifyOutputContains("wire [3:0]  instance1_odata2");
+
+    verifyOutputContains("assign data_from_instance[7:0] = odata_wire[7:0];");
+    verifyOutputContains("assign idata_wire[7:0] = data_to_instance[7:0];");
+
+    verifyOutputContains("assign instance1_idata1[3:0] = idata_wire[3:0];");
+    verifyOutputContains("assign instance1_idata2[3:0] = idata_wire[7:4];");
+    verifyOutputContains("assign odata_wire[3:0] = instance1_odata1[3:0];");
+    verifyOutputContains("assign odata_wire[7:4] = instance1_odata2[3:0];");
+
+    verifyOutputContains(
         "    TestInstance instance1(\n"
         "        // Interface: data_if\n"
-        "        .idata1              (idata_wire[3:0]),\n"
-        "        .idata2              (idata_wire[7:4]),\n"
-        "        .odata1              (odata_wire[3:0]),\n"
-        "        .odata2              (odata_wire[7:4]));\n"
-        "\n"
-        "\n"
-        "endmodule\n"));
+        "        .idata1              (instance1_idata1),\n"
+        "        .idata2              (instance1_idata2),\n"
+        "        .odata1              (instance1_odata1),\n"
+        "        .odata2              (instance1_odata2)");
 }
 
 //-----------------------------------------------------------------------------
@@ -480,7 +497,7 @@ void tst_VerilogGenerator::testTopSlicedHierarchicalConnections()
     QSharedPointer<MetaPort> idataPort = addPort("idata", 8, DirectionTypes::IN, mInstance, instanceDataIf);
     QSharedPointer<MetaPort> odataPort = addPort("odata", 8, DirectionTypes::OUT, mInstance, instanceDataIf);
 
-    QSharedPointer<MetaInterconnection> mI1 = addInterconnectToDesign(topDataIf, instanceDataIf);
+    QSharedPointer<MetaInterconnection> mI1 = addInterconnectToDesign(topDataIf, instanceDataIf, "data_connection");
     mI1->hierIfs_.append(topDataIf);
 
     QSharedPointer<MetaWire> imWire = addWireToDesign("idata_wire","7","0",mI1);
@@ -501,42 +518,41 @@ void tst_VerilogGenerator::testTopSlicedHierarchicalConnections()
 
     runGenerator(true);
 
-    verifyOutputContains(QString(
-        "module TestComponent(\n"
-        "    // Interface: data_if\n"     
-        "    input          [3:0]                data_to_instance1,\n"
-        "    input          [3:0]                data_to_instance2,\n"
-        "    output         [3:0]                data_from_instance1,\n"
-        "    output         [3:0]                data_from_instance2\n"
-        ");\n"
-        "\n"
-        "    wire [7:0]  idata_wire;\n"
-        "    wire [7:0]  odata_wire;\n"
-        "\n"
-        "    // Assignments for the ports of the encompassing component\n"
-        "    assign data_from_instance1[3:0] = odata_wire[3:0];\n"
-        "    assign data_from_instance2[3:0] = odata_wire[7:4];\n"
-        "    assign idata_wire[3:0] = data_to_instance1[3:0];\n"
-        "    assign idata_wire[7:4] = data_to_instance2[3:0];\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestInstance:1.0\n"
+    verifyOutputContains("input          [3:0]                data_to_instance1");
+    verifyOutputContains("input          [3:0]                data_to_instance2");
+    verifyOutputContains("output         [3:0]                data_from_instance1");
+    verifyOutputContains("output         [3:0]                data_from_instance2");
+
+    verifyOutputContains("wire [7:0]  idata_wire;");
+    verifyOutputContains("wire [7:0]  odata_wire;");
+
+    verifyOutputContains("wire [7:0]  instance1_idata;");
+    verifyOutputContains("wire [7:0]  instance1_odata;");
+
+    verifyOutputContains("assign data_from_instance1[3:0] = odata_wire[3:0];");
+    verifyOutputContains("assign data_from_instance2[3:0] = odata_wire[7:4];");
+    verifyOutputContains("assign idata_wire[3:0] = data_to_instance1[3:0];");
+    verifyOutputContains("assign idata_wire[7:4] = data_to_instance2[3:0];");
+
+    verifyOutputContains("assign instance1_idata[7:0] = idata_wire[7:0];");
+    verifyOutputContains("assign odata_wire[7:0] = instance1_odata[7:0];");
+
+    verifyOutputContains(
         "    TestInstance instance1(\n"
         "        // Interface: data_if\n"
-        "        .idata               (idata_wire[7:0]),\n"
-        "        .odata               (odata_wire[7:0]));\n"
-        "\n"
-        "\n"
-        "endmodule\n"));
+        "        .idata               (instance1_idata),\n"
+        "        .odata               (instance1_odata)");
 }
 
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogGenerator::addInterconnectToDesign()
 //-----------------------------------------------------------------------------
 QSharedPointer<MetaInterconnection> tst_VerilogGenerator::addInterconnectToDesign(QSharedPointer<MetaInterface> first,
-    QSharedPointer<MetaInterface> second)
+    QSharedPointer<MetaInterface> second, QString name)
 {
     QSharedPointer<MetaInterconnection> mInterconnect(new MetaInterconnection);
     design_->interconnections_.append(mInterconnect);
+    mInterconnect->name_ = name;
 
     first->interconnection_ = mInterconnect;
     second->interconnection_ = mInterconnect;
@@ -667,7 +683,7 @@ void tst_VerilogGenerator::testMasterToSlaveInterconnection()
     QSharedPointer<MetaInterface> senderIf = senderInstance->interfaces_["data_if"];
     QSharedPointer<MetaInterface> recvIf = receiverInstance->interfaces_["data_if"];
 
-    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf);
+    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf, "data_connection");
 
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
@@ -680,21 +696,30 @@ void tst_VerilogGenerator::testMasterToSlaveInterconnection()
 
     runGenerator(true);
 
+    verifyOutputContains("wire [7:0]  sender_to_receiver_DATA;");
+    verifyOutputContains("wire        sender_to_receiver_ENABLE;");
+
+    verifyOutputContains("wire [7:0]  receiver_data_in;");
+    verifyOutputContains("wire        receiver_enable_in;");
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+    verifyOutputContains("wire        sender_enable_out;");
+
+    verifyOutputContains("assign receiver_data_in[7:0] = sender_to_receiver_DATA[7:0];");
+    verifyOutputContains("assign receiver_enable_in = sender_to_receiver_ENABLE;");
+    verifyOutputContains("assign sender_to_receiver_DATA[7:0] = sender_data_out[7:0];");
+    verifyOutputContains("assign sender_to_receiver_ENABLE = sender_enable_out;");
+
     verifyOutputContains(
-    "    wire [7:0]  sender_to_receiver_DATA;\n"
-    "    wire        sender_to_receiver_ENABLE;\n"
-    "\n"
-    "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
-    "    TestReceiver receiver(\n"
-    "        // Interface: data_if\n"
-    "        .data_in             (sender_to_receiver_DATA[7:0]),\n"
-    "        .enable_in           (sender_to_receiver_ENABLE));\n"
-    "\n"
-    "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
-    "    TestSender sender(\n"
-    "        // Interface: data_if\n"
-    "        .data_out            (sender_to_receiver_DATA[7:0]),\n"
-    "        .enable_out          (sender_to_receiver_ENABLE));");
+        "    TestReceiver receiver(\n"
+        "        // Interface: data_if\n"
+        "        .data_in             (receiver_data_in),\n"
+        "        .enable_in           (receiver_enable_in)");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_if\n"
+        "        .data_out            (sender_data_out),\n"
+        "        .enable_out          (sender_enable_out)");
 }
 
 //-----------------------------------------------------------------------------
@@ -708,7 +733,7 @@ void tst_VerilogGenerator::testPhysicalSlicedMasterToSlaveInterconnection()
     QSharedPointer<MetaInterface> senderIf = senderInstance->interfaces_["data_if"];
     QSharedPointer<MetaInterface> recvIf = receiverInstance->interfaces_["data_if"];
 
-    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf);
+    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf, "data_connection");
 
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
@@ -723,21 +748,32 @@ void tst_VerilogGenerator::testPhysicalSlicedMasterToSlaveInterconnection()
 
     runGenerator(true);
 
+    verifyOutputContains("wire [7:0]  sender_to_receiver_DATA;");
+    verifyOutputContains("wire        sender_to_receiver_ENABLE;");
+
+    verifyOutputContains("wire [7:0]  receiver_data_in;");
+    verifyOutputContains("wire        receiver_enable_in;");
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+    verifyOutputContains("wire        sender_enable_out;");
+
+    verifyOutputContains("assign receiver_data_in[3:0] = sender_to_receiver_DATA[3:0];");
+    verifyOutputContains("assign receiver_data_in[7:4] = sender_to_receiver_DATA[7:4];");
+    verifyOutputContains("assign receiver_enable_in = sender_to_receiver_ENABLE;");
+    verifyOutputContains("assign sender_to_receiver_DATA[3:0] = sender_data_out[3:0];");
+    verifyOutputContains("assign sender_to_receiver_DATA[7:4] = sender_data_out[7:4];");
+    verifyOutputContains("assign sender_to_receiver_ENABLE = sender_enable_out;");
+
     verifyOutputContains(
-        "    wire [7:0]  sender_to_receiver_DATA;\n"
-        "    wire        sender_to_receiver_ENABLE;\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
         "    TestReceiver receiver(\n"
         "        // Interface: data_if\n"
-        "        .data_in             ({sender_to_receiver_DATA[3:0], sender_to_receiver_DATA[7:4]}),\n"
-        "        .enable_in           (sender_to_receiver_ENABLE));\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
+        "        .data_in             (receiver_data_in),\n"
+        "        .enable_in           (receiver_enable_in)");
+
+    verifyOutputContains(
         "    TestSender sender(\n"
         "        // Interface: data_if\n"
-        "        .data_out            ({sender_to_receiver_DATA[3:0], sender_to_receiver_DATA[7:4]}),\n"
-        "        .enable_out          (sender_to_receiver_ENABLE));");
+        "        .data_out            (sender_data_out),\n"
+        "        .enable_out          (sender_enable_out)");
 }
 
 //-----------------------------------------------------------------------------
@@ -751,7 +787,7 @@ void tst_VerilogGenerator::testLogicalSlicedMasterToSlaveInterconnection()
     QSharedPointer<MetaInterface> senderIf = senderInstance->interfaces_["data_if"];
     QSharedPointer<MetaInterface> recvIf = receiverInstance->interfaces_["data_if"];
 
-    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf);
+    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf, "data_connection");
 
     QSharedPointer<MetaWire> dataWire1 = addWireToDesign("sender_to_receiver_DATA1","3","0",mInterconnect);
     QSharedPointer<MetaWire> dataWire2 = addWireToDesign("sender_to_receiver_DATA2","3","0",mInterconnect);
@@ -767,23 +803,33 @@ void tst_VerilogGenerator::testLogicalSlicedMasterToSlaveInterconnection()
 
     runGenerator(true);
 
+    verifyOutputContains("wire [3:0]  sender_to_receiver_DATA1;");
+    verifyOutputContains("wire [3:0]  sender_to_receiver_DATA2;");
+    verifyOutputContains("wire        sender_to_receiver_ENABLE;");
+
+    verifyOutputContains("wire [7:0]  receiver_data_in;");
+    verifyOutputContains("wire        receiver_enable_in;");
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+    verifyOutputContains("wire        sender_enable_out;");
+
+    verifyOutputContains("assign receiver_data_in[3:0] = sender_to_receiver_DATA1[3:0];");
+    verifyOutputContains("assign receiver_data_in[7:4] = sender_to_receiver_DATA2[3:0];");
+    verifyOutputContains("assign receiver_enable_in = sender_to_receiver_ENABLE;");
+    verifyOutputContains("assign sender_to_receiver_DATA1[3:0] = sender_data_out[3:0];");
+    verifyOutputContains("assign sender_to_receiver_DATA2[3:0] = sender_data_out[7:4];");
+    verifyOutputContains("assign sender_to_receiver_ENABLE = sender_enable_out;");
+
     verifyOutputContains(
-        "    wire [7:0]  sender_to_receiver_DATA;\n"
-        "    wire        sender_to_receiver_ENABLE;\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
         "    TestReceiver receiver(\n"
         "        // Interface: data_if\n"
-        "        .data_in             (sender_to_receiver_DATA[7:4]),\n"
-        "        .data_in2            (sender_to_receiver_DATA[3:0]),\n"
-        "        .enable_in           (sender_to_receiver_ENABLE));\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
+        "        .data_in             (receiver_data_in),\n"
+        "        .enable_in           (receiver_enable_in)");
+
+    verifyOutputContains(
         "    TestSender sender(\n"
         "        // Interface: data_if\n"
-        "        .data_out2           (sender_to_receiver_DATA[3:0]),\n"
-        "        .data_out            (sender_to_receiver_DATA[7:4]),\n"
-        "        .enable_out          (sender_to_receiver_ENABLE));");
+        "        .data_out            (sender_data_out),\n"
+        "        .enable_out          (sender_enable_out)");
 }
 
 //-----------------------------------------------------------------------------
@@ -799,7 +845,7 @@ void tst_VerilogGenerator::testPortSlicedMasterToSlaveInterconnection()
     QSharedPointer<MetaInterface> recvIf = receiverInstance->interfaces_["data_if"];
     addPort("data_in2", 4, DirectionTypes::IN, receiverInstance, recvIf);
 
-    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf);
+    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf, "data_connection");
 
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
@@ -814,23 +860,36 @@ void tst_VerilogGenerator::testPortSlicedMasterToSlaveInterconnection()
 
     runGenerator(true);
 
+    verifyOutputContains("wire [7:0]  sender_to_receiver_DATA;");
+    verifyOutputContains("wire        sender_to_receiver_ENABLE;");
+
+    verifyOutputContains("wire [7:0]  receiver_data_in;");
+    verifyOutputContains("wire [3:0]  receiver_data_in2;");
+    verifyOutputContains("wire        receiver_enable_in;");
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+    verifyOutputContains("wire [3:0]  sender_data_out2;");
+    verifyOutputContains("wire        sender_enable_out;");
+
+    verifyOutputContains("assign receiver_data_in[3:0] = sender_to_receiver_DATA[7:4];");
+    verifyOutputContains("assign receiver_data_in2[3:0] = sender_to_receiver_DATA[3:0];");
+    verifyOutputContains("assign receiver_enable_in = sender_to_receiver_ENABLE;");
+    verifyOutputContains("assign sender_to_receiver_DATA[7:4] = sender_data_out[3:0];");
+    verifyOutputContains("assign sender_to_receiver_DATA[3:0] = sender_data_out2[3:0];");
+    verifyOutputContains("assign sender_to_receiver_ENABLE = sender_enable_out;");
+
     verifyOutputContains(
-        "    wire [7:0]  sender_to_receiver_DATA;\n"
-        "    wire        sender_to_receiver_ENABLE;\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestReceiver:1.0\n"
         "    TestReceiver receiver(\n"
         "        // Interface: data_if\n"
-        "        .data_in             (sender_to_receiver_DATA[7:4]),\n"
-        "        .data_in2            (sender_to_receiver_DATA[3:0]),\n"
-        "        .enable_in           (sender_to_receiver_ENABLE));\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
+        "        .data_in             (receiver_data_in),\n"
+        "        .data_in2            (receiver_data_in2),\n"
+        "        .enable_in           (receiver_enable_in)");
+
+    verifyOutputContains(
         "    TestSender sender(\n"
         "        // Interface: data_if\n"
-        "        .data_out2           (sender_to_receiver_DATA[3:0]),\n"
-        "        .data_out            (sender_to_receiver_DATA[7:4]),\n"
-        "        .enable_out          (sender_to_receiver_ENABLE));");
+        "        .data_out            (sender_data_out),\n"
+        "        .data_out2           (sender_data_out2),\n"
+        "        .enable_out          (sender_enable_out)");
 }
 
 //-----------------------------------------------------------------------------
@@ -880,11 +939,11 @@ void tst_VerilogGenerator::testMasterToMultipleSlavesInterconnections()
     QSharedPointer<MetaInterface> recvIf1 = receiverInstance1->interfaces_["data_if"];
     QSharedPointer<MetaInterface> recvIf2 = receiverInstance2->interfaces_["data_if"];
 
-    QSharedPointer<MetaInterconnection> mInterconnect1 = addInterconnectToDesign(senderIf, recvIf1);
-    QSharedPointer<MetaInterconnection> mInterconnect2 = addInterconnectToDesign(senderIf, recvIf2);
+    QSharedPointer<MetaInterconnection> data_connection = addInterconnectToDesign(senderIf, recvIf1, "data_connection");
+    QSharedPointer<MetaInterconnection> ena_connection = addInterconnectToDesign(senderIf, recvIf2, "ena_connection");
 
-    QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect1);
-    QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect2);
+    QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",data_connection);
+    QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",ena_connection);
 
     createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, "7", "0", "7", "0");
     createPortAssignment(receiverInstance1->ports_["enable_in"], enaWire, "0", "0", "0", "0");
@@ -899,20 +958,37 @@ void tst_VerilogGenerator::testMasterToMultipleSlavesInterconnections()
     verifyOutputContains("wire [7:0]  sender_to_receiver_DATA;");
     verifyOutputContains("wire        sender_to_receiver_ENABLE;");
 
-    verifyOutputContains("TestSender sender(\n"
-        "        // Interface: data_if\n"
-        "        .data_out            (sender_to_receiver_DATA[7:0]),\n"
-        "        .enable_out          (sender_to_receiver_ENABLE)");
+    verifyOutputContains("wire [7:0]  receiver1_data_in;");
+    verifyOutputContains("wire        receiver1_enable_in;");
+    verifyOutputContains("wire [7:0]  receiver2_data_in;");
+    verifyOutputContains("wire        receiver2_enable_in;");
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+    verifyOutputContains("wire        sender_enable_out;");
 
-    verifyOutputContains("TestReceiver receiver1(\n"
-        "        // Interface: data_if\n"
-        "        .data_in             (sender_to_receiver_DATA[7:0]),\n"
-        "        .enable_in           (sender_to_receiver_ENABLE)");
+    verifyOutputContains("assign receiver1_data_in[7:0] = sender_to_receiver_DATA[7:0];");
+    verifyOutputContains("assign receiver1_enable_in = sender_to_receiver_ENABLE;");
+    verifyOutputContains("assign receiver2_data_in[7:0] = sender_to_receiver_DATA[7:0];");
+    verifyOutputContains("assign receiver2_enable_in = sender_to_receiver_ENABLE;");
+    verifyOutputContains("assign sender_to_receiver_DATA[7:0] = sender_data_out[7:0];");
+    verifyOutputContains("assign sender_to_receiver_ENABLE = sender_enable_out;");
 
-    verifyOutputContains("TestReceiver receiver2(\n"
+    verifyOutputContains(
+        "    TestReceiver receiver1(\n"
         "        // Interface: data_if\n"
-        "        .data_in             (sender_to_receiver_DATA[7:0]),\n"
-        "        .enable_in           (sender_to_receiver_ENABLE)");
+        "        .data_in             (receiver1_data_in),\n"
+        "        .enable_in           (receiver1_enable_in)");
+
+    verifyOutputContains(
+        "    TestReceiver receiver2(\n"
+        "        // Interface: data_if\n"
+        "        .data_in             (receiver2_data_in),\n"
+        "        .enable_in           (receiver2_enable_in)");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_if\n"
+        "        .data_out            (sender_data_out),\n"
+        "        .enable_out          (sender_enable_out)");
 }
 
 //-----------------------------------------------------------------------------
@@ -927,36 +1003,50 @@ void tst_VerilogGenerator::testAdhocConnectionBetweenComponentInstances()
     QSharedPointer<MetaWire> dataWire = addWireToDesign("dataAdHoc","7","0");
     QSharedPointer<MetaWire> enaWire = addWireToDesign("enableAdHoc","0","0");
 
-    createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, "7", "0", "7", "0");
     createPortAssignment(receiverInstance1->ports_["enable_in"], enaWire, "0", "0", "0", "0");
-    createPortAssignment(receiverInstance2->ports_["data_in"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(receiverInstance2->ports_["data_in"], dataWire, "7", "0", "7", "0");
     createPortAssignment(receiverInstance2->ports_["enable_in"], enaWire, "0", "0", "0", "0");
 
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "7", "0");
     createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
 
     runGenerator(true);
 
-    verifyOutputContains("wire        enableAdHoc;");
     verifyOutputContains("wire [7:0]  dataAdHoc;");
+    verifyOutputContains("wire        enableAdHoc;");
 
-    verifyOutputContains(
-        "    TestSender sender(\n"
-        "        // Interface: data_if\n"
-        "        .data_out            (dataAdHoc[7:0]),\n"
-        "        .enable_out          (enableAdHoc)");
+    verifyOutputContains("wire [7:0]  receiver1_data_in;");
+    verifyOutputContains("wire        receiver1_enable_in;");
+    verifyOutputContains("wire [7:0]  receiver2_data_in;");
+    verifyOutputContains("wire        receiver2_enable_in;");
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+    verifyOutputContains("wire        sender_enable_out;");
+
+    verifyOutputContains("assign receiver1_data_in[7:0] = dataAdHoc[7:0];");
+    verifyOutputContains("assign receiver1_enable_in = enableAdHoc;");
+    verifyOutputContains("assign receiver2_data_in[7:0] = dataAdHoc[7:0];");
+    verifyOutputContains("assign receiver2_enable_in = enableAdHoc;");
+    verifyOutputContains("assign dataAdHoc[7:0] = sender_data_out[7:0];");
+    verifyOutputContains("assign enableAdHoc = sender_enable_out;");
 
     verifyOutputContains(
         "    TestReceiver receiver1(\n"
         "        // Interface: data_if\n"
-        "        .data_in             (dataAdHoc[7:0]),\n"
-        "        .enable_in           (enableAdHoc)");
+        "        .data_in             (receiver1_data_in),\n"
+        "        .enable_in           (receiver1_enable_in)");
 
     verifyOutputContains(
         "    TestReceiver receiver2(\n"
         "        // Interface: data_if\n"
-        "        .data_in             (dataAdHoc[7:0]),\n"
-        "        .enable_in           (enableAdHoc)");
+        "        .data_in             (receiver2_data_in),\n"
+        "        .enable_in           (receiver2_enable_in)");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_if\n"
+        "        .data_out            (sender_data_out),\n"
+        "        .enable_out          (sender_enable_out)");
 }
 
 //-----------------------------------------------------------------------------
@@ -977,6 +1067,7 @@ void tst_VerilogGenerator::testAdhocTieOffInComponentInstance()
     QString outName = "tieOffOut";
     QString inOutName = "tieOffInOut";
     QString openName = "openTieOff";
+    QString slicedName = "slicedTieOff";
 
     QSharedPointer<MetaPort> defaultPort = addPort(defaultName, 4, DirectionTypes::IN, mInstance);
     defaultPort->defaultValue_ = "15";
@@ -987,6 +1078,20 @@ void tst_VerilogGenerator::testAdhocTieOffInComponentInstance()
     addPort(outName, 2, DirectionTypes::OUT, mInstance);
     addPort(inOutName, 10, DirectionTypes::INOUT, mInstance);
     addPort(openName, 1, DirectionTypes::IN, mInstance);
+    QSharedPointer<MetaPort> slicedPort = addPort(slicedName, 5, DirectionTypes::IN, mInstance);
+
+    QSharedPointer<MetaPortAssignment> mpa1(new MetaPortAssignment);
+    mpa1->defaultValue_ = "2";
+    mpa1->physicalBounds_.first = "4";
+    mpa1->physicalBounds_.second = "3";
+
+    QSharedPointer<MetaPortAssignment> mpa0(new MetaPortAssignment);
+    mpa0->defaultValue_ = "7";
+    mpa0->physicalBounds_.first = "2";
+    mpa0->physicalBounds_.second = "0";
+
+    slicedPort->assignments_.insert("eka", mpa1);
+    slicedPort->assignments_.insert("toka", mpa0);
 
     library_.addComponent(tieOffComponent);
 
@@ -995,20 +1100,46 @@ void tst_VerilogGenerator::testAdhocTieOffInComponentInstance()
     addDefaultPortAssignmentToPort(mInstance->ports_[naName],"abc");
     addDefaultPortAssignmentToPort(mInstance->ports_[numberedName],"12");
     addDefaultPortAssignmentToPort(mInstance->ports_[outName],"0");
-    addDefaultPortAssignmentToPort(mInstance->ports_[inOutName],"1");;
+    addDefaultPortAssignmentToPort(mInstance->ports_[inOutName],"1");
 
     runGenerator(true);
 
     verifyOutputContains(
+        "module TestComponent();\n"
+        "\n"
+        "    // tieOffer port wires:\n"
+        "    wire [-1:0] tieOffer_n/aTieOff;\n"
+        "    wire [9:0]  tieOffer_numberedTieOff;\n"
+        "    wire [3:0]  tieOffer_oneTieOff;\n"
+        "    wire [4:0]  tieOffer_slicedTieOff;\n"
+        "    wire [9:0]  tieOffer_tieOffInOut;\n"
+        "    wire [1:0]  tieOffer_tieOffOut;\n"
+        "    wire [1:0]  tieOffer_zeroTieOff;\n"
+        "\n"
+        "    // tieOffer assignments:\n"
+        "    assign tieOffer_n/aTieOff[-1:0] = abc;\n"
+        "    assign tieOffer_numberedTieOff[9:0] = 12;\n"
+        "    assign tieOffer_oneTieOff[3:0] = 1;\n"
+        "    assign tieOffer_slicedTieOff[4:3] = 2;\n"
+        "    assign tieOffer_slicedTieOff[2:0] = 7;\n"
+        "    assign tieOffer_tieOffInOut[9:0] = 1;\n"
+        "    assign tieOffer_zeroTieOff[1:0] = 0;\n"
+        "\n"
+        "    // IP-XACT VLNV: Test:TestLibrary:TestTieOff:1.0\n"
+        "    TestTieOff tieOffer(\n"
         "        // These ports are not in any interface\n"
         "        .defaultValue        (15),\n"
-        "        .n/aTieOff           (abc),\n"
-        "        .numberedTieOff      (12),\n"
-        "        .oneTieOff           (1),\n"
+        "        .n/aTieOff           (tieOffer_n/aTieOff),\n"
+        "        .numberedTieOff      (tieOffer_numberedTieOff),\n"
+        "        .oneTieOff           (tieOffer_oneTieOff),\n"
         "        .openTieOff          (),\n"
-        "        .zeroTieOff          (0),\n"
-        "        .tieOffOut           (),\n"
-        "        .tieOffInOut         (1));");
+        "        .slicedTieOff        (tieOffer_slicedTieOff),\n"
+        "        .zeroTieOff          (tieOffer_zeroTieOff),\n"
+        "        .tieOffOut           (tieOffer_tieOffOut),\n"
+        "        .tieOffInOut         (tieOffer_tieOffInOut));\n"
+        "\n"
+        "\n"
+        "endmodule");
 }
 
 //-----------------------------------------------------------------------------
@@ -1019,6 +1150,7 @@ void tst_VerilogGenerator::addDefaultPortAssignmentToPort(QSharedPointer<MetaPor
 {
     QSharedPointer<MetaPortAssignment> mpa(new MetaPortAssignment);
     mpa->defaultValue_ = tieOff;
+    mpa->physicalBounds_ = port->vectorBounds_;
     port->assignments_.insert("eka", mpa);
 }
 
@@ -1037,9 +1169,9 @@ void tst_VerilogGenerator::testHierarchicalAdhocConnection()
     QSharedPointer<MetaWire> enaWire = addWireToDesign("enableAdHoc","0","0");
     enaWire->hierPorts_.append(topEna);
 
-    createPortAssignment(topData, dataWire, "7", "0", "0", "0");
+    createPortAssignment(topData, dataWire, "7", "0", "7", "0");
     createPortAssignment(topEna, enaWire, "0", "0", "0", "0");
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "7", "0");
     createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
 
     runGenerator(true);
@@ -1048,19 +1180,26 @@ void tst_VerilogGenerator::testHierarchicalAdhocConnection()
 
     QStringList outputList = output_.split("\n");
 
+    verifyOutputContains("output         [7:0]                data_from_sender");
+    verifyOutputContains("output                              enable_from_sender");
+
+    verifyOutputContains("wire [7:0]  dataAdHoc;");
+    verifyOutputContains("wire        enableAdHoc;");
+
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+    verifyOutputContains("wire        sender_enable_out;");
+
+    verifyOutputContains("assign data_from_sender[7:0] = dataAdHoc[7:0];");
+    verifyOutputContains("assign enable_from_sender = enableAdHoc;");
+
+    verifyOutputContains("assign dataAdHoc[7:0] = sender_data_out[7:0];");
+    verifyOutputContains("assign enableAdHoc = sender_enable_out;");
+
     verifyOutputContains(
-        "    wire [7:0]  dataAdHoc;\n"
-        "    wire        enableAdHoc;\n"
-        "\n"
-        "    // Assignments for the ports of the encompassing component\n"
-        "    assign data_from_sender = dataAdHoc[7:0];\n"
-        "    assign enable_from_sender = enableAdHoc;\n"
-        "\n"
-        "    // IP-XACT VLNV: Test:TestLibrary:TestSender:1.0\n"
         "    TestSender sender(\n"
         "        // Interface: data_if\n"
-        "        .data_out            (dataAdHoc[7:0]),\n"
-        "        .enable_out          (enableAdHoc)");
+        "        .data_out            (sender_data_out),\n"
+        "        .enable_out          (sender_enable_out)");
 }
 
 //-----------------------------------------------------------------------------
@@ -1075,6 +1214,7 @@ void tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
     QString numberedName = "numberedTieOff";
     QString inName = "tieOffIn";
     QString inOutName = "inOutTieOff";
+    QString slicedName = "slicedTieOff";
 
     QSharedPointer<MetaPort> defaultPort = addPort(defaultName, 5, DirectionTypes::OUT, topComponent_);
     defaultPort->defaultValue_ = "7";
@@ -1084,6 +1224,20 @@ void tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
     addPort(numberedName, 10, DirectionTypes::OUT, topComponent_);
     addPort(inName, 2, DirectionTypes::IN, topComponent_);
     addPort(inOutName, 10, DirectionTypes::INOUT, topComponent_);
+    QSharedPointer<MetaPort> slicedPort = addPort(slicedName, 5, DirectionTypes::OUT, topComponent_);
+
+    QSharedPointer<MetaPortAssignment> mpa1(new MetaPortAssignment);
+    mpa1->defaultValue_ = "2";
+    mpa1->physicalBounds_.first = "4";
+    mpa1->physicalBounds_.second = "3";
+
+    QSharedPointer<MetaPortAssignment> mpa0(new MetaPortAssignment);
+    mpa0->defaultValue_ = "7";
+    mpa0->physicalBounds_.first = "2";
+    mpa0->physicalBounds_.second = "0";
+
+    slicedPort->assignments_.insert("eka", mpa1);
+    slicedPort->assignments_.insert("toka", mpa0);
 
     addDefaultPortAssignmentToPort(topComponent_->ports_[zeroName],"0");
     addDefaultPortAssignmentToPort(topComponent_->ports_[oneName],"1");
@@ -1095,13 +1249,28 @@ void tst_VerilogGenerator::testHierarchicalAdHocTieOffValues()
     runGenerator(true);
 
     verifyOutputContains(
-        "    // Assignments for the ports of the encompassing component\n"
+        "module TestComponent(\n"
+        "    // These ports are not in any interface\n"
+        "    input          [1:0]                tieOffIn,\n"
+        "    output         [4:0]                defaultTieOff,\n"
+        "    output         [-1:0]               n/aTieOff,\n"
+        "    output         [9:0]                numberedTieOff,\n"
+        "    output         [3:0]                oneTieOff,\n"
+        "    output         [4:0]                slicedTieOff,\n"
+        "    output         [1:0]                zeroTieOff,\n"
+        "    inout          [9:0]                inOutTieOff\n"
+        ");\n"
+        "\n"
+        "    // Assignments for the ports of the encompassing component:\n"
+        "    assign inOutTieOff[9:0] = 1;\n"
+        "    assign n/aTieOff[-1:0] = abc;\n"
+        "    assign numberedTieOff[9:0] = 12;\n"
+        "    assign oneTieOff[3:0] = 1;\n"
+        "    assign slicedTieOff[4:3] = 2;\n"
+        "    assign slicedTieOff[2:0] = 7;\n"
+        "    assign zeroTieOff[1:0] = 0;\n"
+        "\n"
         "    assign defaultTieOff = 7;\n"
-        "    assign inOutTieOff = 1;\n"
-        "    assign n/aTieOff = abc;\n"
-        "    assign numberedTieOff = 12;\n"
-        "    assign oneTieOff = 1;\n"
-        "    assign zeroTieOff = 0;\n"
         "\n"
         "\n"
         "endmodule");

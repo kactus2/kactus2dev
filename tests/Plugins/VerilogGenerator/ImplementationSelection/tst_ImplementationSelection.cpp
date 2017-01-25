@@ -11,8 +11,6 @@
 
 #include <QtTest>
 
-#include <Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h>
-
 #include <tests/MockObjects/LibraryMock.h>
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
@@ -121,12 +119,13 @@ void tst_ImplementationSelection::testImplementationSelection()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false,"","");
+	
 
 	QString implementation;
-	QString postModule;
+    QString postModule;
+    QString error;
 
-	generator.selectImplementation("./generatorOutput.v", implementation, postModule);
+	VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
 
 	implementation = implementation.trimmed();
 
@@ -163,12 +162,13 @@ void tst_ImplementationSelection::testImplementationSelectionWithEvilComments()
 
     existingFile.close();
 
-    VerilogGenerator generator(&library_,false,false,"","");
+    
 
     QString implementation;
     QString postModule;
+    QString error;
 
-    generator.selectImplementation("./generatorOutput.v", implementation, postModule);
+    VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
 
     implementation = implementation.trimmed();
 
@@ -206,12 +206,13 @@ void tst_ImplementationSelection::testImplementationSelectionWithTag()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false,"","");
+	
 
 	QString implementation;
-	QString postModule;
+    QString postModule;
+    QString error;
 
-	generator.selectImplementation("./generatorOutput.v", implementation, postModule);
+	VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
 
 	implementation = implementation.trimmed();
 
@@ -246,12 +247,13 @@ void tst_ImplementationSelection::testImplementationSelectionWithoutParameters()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false,"","");
+	
 
 	QString implementation;
-	QString postModule;
+    QString postModule;
+    QString error;
 
-	generator.selectImplementation("./generatorOutput.v", implementation, postModule);
+	VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
 
 	implementation = implementation.trimmed();
 
@@ -278,12 +280,13 @@ void tst_ImplementationSelection::testImplementationSelectionWithoutPorts()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false,"","");
+	
 
 	QString implementation;
-	QString postModule;
+    QString postModule;
+    QString error;
 
-	generator.selectImplementation("./generatorOutput.v", implementation, postModule);
+	VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
 
 	implementation = implementation.trimmed();
 
@@ -331,12 +334,13 @@ void tst_ImplementationSelection::testImplementationSelectionWithInstantiation()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false,"","");
+	
 
 	QString actualImplementation;
-	QString postModule;
+    QString postModule;
+    QString error;
 
-	generator.selectImplementation("./generatorOutput.v", actualImplementation, postModule);
+	VerilogSyntax::selectImplementation("./generatorOutput.v", actualImplementation, postModule, error);
 
 	actualImplementation = actualImplementation.trimmed();
 
@@ -382,12 +386,13 @@ void tst_ImplementationSelection::testImplementationSelectionWithPostModule()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false,"","");
+	
 
 	QString implementation;
-	QString actualPostModule;
+    QString actualPostModule;
+    QString error;
 
-	generator.selectImplementation("./generatorOutput.v", implementation, actualPostModule);
+	VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, actualPostModule, error);
 
 	implementation = implementation.trimmed();
 	actualPostModule = actualPostModule.trimmed();
@@ -439,12 +444,13 @@ void tst_ImplementationSelection::testImplementationSelectionWithTooManyModules(
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false,"","");
+	
 
 	QString implementation;
-	QString postModule;
+    QString postModule;
+    QString error;
 
-	bool success = generator.selectImplementation("./generatorOutput.v", implementation, postModule);
+	bool success = VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
 
 	QVERIFY(!success);
 }
@@ -479,12 +485,13 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleHeaderS
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false,"","");
+	
 
 	QString implementation;
-	QString postModule;
+    QString postModule;
+    QString error;
 
-	bool success = generator.selectImplementation("./generatorOutput.v", implementation, postModule);
+	bool success = VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
 
 	QVERIFY(!success);
 }
@@ -519,12 +526,13 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleHeaderE
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false,"","");
+	
 
 	QString implementation;
-	QString postModule;
+    QString postModule;
+    QString error;
 
-	bool success = generator.selectImplementation("./generatorOutput.v", implementation, postModule);
+	bool success = VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
 
 	QVERIFY(!success);
 }
@@ -559,12 +567,13 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleEnd()
 
 	existingFile.close();
 
-	VerilogGenerator generator(&library_,false,false,"","");
+	
 
 	QString implementation;
-	QString postModule;
+    QString postModule;
+    QString error;
 
-	bool success = generator.selectImplementation("./generatorOutput.v", implementation, postModule);
+	bool success = VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
 
 	QVERIFY(!success);
 }
