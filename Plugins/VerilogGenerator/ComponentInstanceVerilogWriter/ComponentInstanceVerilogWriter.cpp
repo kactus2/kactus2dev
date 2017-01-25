@@ -234,15 +234,12 @@ bool ComponentInstanceVerilogWriter::assignSingleBitInConnection(General::PortBo
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::assignmentForPort()
 //-----------------------------------------------------------------------------
-QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer<MetaPort> mPort)
+QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer<MetaPort> mPort) const
 {
-    bool isInPort =
-        (mPort->port_->getDirection() == DirectionTypes::IN || mPort->port_->getDirection() == DirectionTypes::INOUT);
-
     // Use the default value of port, if no assignments exist.
     if (mPort->assignments_.size() < 1)
     {
-        if (isInPort)
+        if (mPort->port_->getDirection() == DirectionTypes::IN || mPort->port_->getDirection() == DirectionTypes::INOUT);
         {
             return mPort->defaultValue_;
         }
@@ -250,58 +247,5 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
         return "";
     }
 
-    QString assignmentString;
-
-    if (mPort->assignments_.size() > 1)
-    {
-        assignmentString = "{";
-    }
-
-    foreach (QSharedPointer<MetaPortAssignMent> mpa, mPort->assignments_)
-    {
-        QString subAssignment;
-
-        if (mpa->wire_)
-        {
-            subAssignment = "<wireName>[<left>:<right>]";
-
-            QPair<QString,QString> wireBounds = mpa->logicalBounds_;
-
-            // Use bounds only if they are not the same.
-            if (wireBounds.first == wireBounds.second)
-            {
-                subAssignment.remove("[<left>:<right>]");
-            }
-            else
-            {
-                subAssignment.replace("<left>", wireBounds.first);
-                subAssignment.replace("<right>", wireBounds.second);
-            }
-
-            // Write a wire as a connection.
-            subAssignment.replace("<wireName>", mpa->wire_->name_);
-        }
-        else if (isInPort)
-        {
-            // If a default value is assigned to a physical port, it shall be used.
-            subAssignment = mpa->defaultValue_;
-        }
-
-        if (!subAssignment.isEmpty())
-        {
-            assignmentString += subAssignment;
-
-            if (mpa != mPort->assignments_.last())
-            {
-                assignmentString += ", ";
-            }
-        }
-    }
-
-    if (mPort->assignments_.size() > 1)
-    {
-        assignmentString += "}";
-    }
-
-    return assignmentString;
+    return instance_->componentInstance_->getInstanceName() + "_" + mPort->port_->name();
 }

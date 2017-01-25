@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: VerilogWireWriter.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 21.08.2014
 //
@@ -12,9 +12,9 @@
 #include "VerilogWireWriter.h"
 
 //-----------------------------------------------------------------------------
-// Function: VerilogWireWriter::InterconnectionVerilogWriter()
+// Function: VerilogWireWriter::VerilogWireWriter()
 //-----------------------------------------------------------------------------
-VerilogWireWriter::VerilogWireWriter(QSharedPointer<MetaWire> wire) : wire_(wire)
+VerilogWireWriter::VerilogWireWriter(QString name, QPair<QString, QString> bounds) : name_(name), bounds_(bounds)
 {
 
 }
@@ -42,7 +42,7 @@ QString VerilogWireWriter::createDeclaration() const
 {
     QString declaration("wire <size> <name>;");    
     declaration.replace("<size>", formattedSize().leftJustified(6));
-    declaration.replace("<name>", wire_->name_);
+    declaration.replace("<name>", name_);
 
     return declaration;
 }
@@ -54,9 +54,9 @@ QString VerilogWireWriter::formattedSize() const
 {
 	QString sizeString;
 
-	if (wire_->bounds_.first != wire_->bounds_.second)
+	if (bounds_.first != bounds_.second)
 	{
-		sizeString = "[" + wire_->bounds_.first + ":" + wire_->bounds_.second + "]";
+		sizeString = "[" + bounds_.first + ":" + bounds_.second + "]";
 	}
 
     return sizeString;

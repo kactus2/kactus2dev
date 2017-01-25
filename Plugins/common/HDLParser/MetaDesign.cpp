@@ -354,10 +354,10 @@ void MetaDesign::parseInterconnections()
                 foreach (QSharedPointer<PortAbstraction> pAbs, *mInterface->absDef_->getLogicalPorts())
                 {
                     // ...get all port assignments in the interface utilizing its logical port...
-                    QList<QSharedPointer<MetaPortAssignMent> > assignments = mPort->assignments_.values(pAbs->getLogicalName());
+                    QList<QSharedPointer<MetaPortAssignment> > assignments = mPort->assignments_.values(pAbs->getLogicalName());
 
                     // ...and associate them with the wire.
-                    foreach (QSharedPointer<MetaPortAssignMent> mpa, assignments)
+                    foreach (QSharedPointer<MetaPortAssignment> mpa, assignments)
                     {
                         QSharedPointer<MetaWire> mWire = mIterconnect->wires_.value(pAbs->getLogicalName());
 
@@ -467,7 +467,7 @@ void MetaDesign::parseAdHocs()
             QSharedPointer<PartSelect> ps = matchingPartSelects[i];
 
             // New port assignment must be created for the each port.
-            QSharedPointer<MetaPortAssignMent> mpa(new MetaPortAssignMent);
+            QSharedPointer<MetaPortAssignment> mpa(new MetaPortAssignment);
 
             // Associate the port assignments with the wire.
             mpa->wire_ = mWire;

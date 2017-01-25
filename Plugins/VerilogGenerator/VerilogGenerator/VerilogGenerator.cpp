@@ -21,6 +21,7 @@
 #include <Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h>
 #include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
 #include <Plugins/VerilogGenerator/VerilogAssignmentWriter/VerilogAssignmentWriter.h>
+#include <Plugins/VerilogGenerator/PortVerilogWriter/VerilogTopDefaultWriter.h>
 #include <Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.h>
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
@@ -262,9 +263,17 @@ QSharedPointer<VerilogDocument> VerilogGenerator::initializeComponentWriters(QSh
 
     retval->interconnectionWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
 
-    retval->wireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+    retval->connectionWireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
 
-    retval->assignmentWriter_ = QSharedPointer<VerilogAssignmentWriter>(new VerilogAssignmentWriter);
+    retval->adHocWireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    retval->portWireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    retval->topAssignmentWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    retval->topDefaultWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    retval->instanceAssignmentWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
 
     return retval;
 }
@@ -274,62 +283,73 @@ QSharedPointer<VerilogDocument> VerilogGenerator::initializeComponentWriters(QSh
 //-----------------------------------------------------------------------------
 void VerilogGenerator::initializeDesignWriters(QSharedPointer<MetaDesign> design, QSharedPointer<VerilogDocument> document)
 {
-    // Create instance writers for the instances, complete with expression parsers and formatters.
-    foreach(QSharedPointer<MetaInstance> gi, design->instances_)
+    // Create writers for 
+    foreach (QSharedPointer<MetaPort> mPort, design->topInstance_->ports_)
     {
-        QSharedPointer<ComponentInstance> instance = gi->componentInstance_;
+        foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->assignments_)
+        {
+            if (mPort->assignments_.size() > 0)
+            {
+                QSharedPointer<VerilogAssignmentWriter> topAssignment = QSharedPointer<VerilogAssignmentWriter>
+                    (new VerilogAssignmentWriter(mPort->port_->name(), mpa, mPort->port_->getDirection(), true));
+                document->topAssignmentWriters_->add(topAssignment);
+            }
+            else
+            {
+                QSharedPointer<VerilogTopDefaultWriter> topDefault = QSharedPointer<VerilogTopDefaultWriter>
+                    (new VerilogTopDefaultWriter(mPort));
+                document->topDefaultWriters_->add(topDefault);
+            }
+        }
+    }
+
+    // Create instance writers for the instances, complete with expression parsers and formatters.
+    foreach(QSharedPointer<MetaInstance> mInstance, design->instances_)
+    {
+        QSharedPointer<ComponentInstance> instance = mInstance->componentInstance_;
 
         QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter(new ComponentInstanceVerilogWriter(
-            gi, sorter_, useInterfaces_));
+            mInstance, sorter_, useInterfaces_));
 
         document->instanceWriters_.append(instanceWriter);
 
-        document->instanceHeaderWriters_.insert(instanceWriter, createHeaderWriterForInstance(gi));
-    }
+        document->instanceHeaderWriters_.insert(instanceWriter, createHeaderWriterForInstance(mInstance));
 
-    if (useInterfaces_)
-    {
-        // Create interconnection writers for the interconnections
-        QList<QSharedPointer<MetaInterconnection> > usedGic;
-        foreach (QSharedPointer<MetaInterconnection> gic, design->interconnections_)
+        foreach (QSharedPointer<MetaPort> mPort, mInstance->ports_)
         {
-            if (usedGic.contains(gic))
+            if (mPort->assignments_.size() < 1)
             {
                 continue;
             }
 
-            document->interconnectionWriters_->add(QSharedPointer<VerilogInterconnectionWriter>
-                (new VerilogInterconnectionWriter(gic)));
+            QString physName = mInstance->componentInstance_->getInstanceName() + "_" +
+                mPort->port_->name();
 
-            usedGic.append(gic);
+            document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(
+                new VerilogWireWriter(physName, mPort->arrayBounds_)));
+
+            foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->assignments_)
+            {
+                QSharedPointer<VerilogAssignmentWriter> instanceAssignment = QSharedPointer<VerilogAssignmentWriter>
+                    (new VerilogAssignmentWriter(physName, mpa, mPort->port_->getDirection(), false));
+                document->instanceAssignmentWriters_->add(instanceAssignment);
+            }
         }
     }
-    else
-    {
-        // Create wire writers for the interconnections
-        foreach (QSharedPointer<MetaInterconnection> gic, design->interconnections_)
-        {
-            QMap<QString, QSharedPointer<MetaWire> >::iterator iter = gic->wires_.begin();
-            QMap<QString, QSharedPointer<MetaWire> >::iterator end = gic->wires_.end();
-            for (;iter != end; ++iter)
-            {
-                QSharedPointer<MetaWire> gw = *iter;
 
-                document->wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw)));
-            }
+    // Create wire writers for the interconnections
+    foreach (QSharedPointer<MetaInterconnection> gic, design->interconnections_)
+    {
+        foreach (QSharedPointer<MetaWire> gw, gic->wires_)
+        {
+            document->connectionWireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw->name_, gw->bounds_)));
         }
     }
 
     // Create wire writers for the ad hoc connections as well.
     foreach (QSharedPointer<MetaWire> adHoc, design->adHocWires_)
     {
-        document->wireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(adHoc)));
-    }
-
-    // Create writers for 
-    foreach (QSharedPointer<MetaPort> mPort, design->topInstance_->ports_)
-    {
-        document->assignmentWriter_->addPort(mPort);
+        document->adHocWireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(adHoc->name_, adHoc->bounds_)));
     }
 }
 
@@ -340,9 +360,17 @@ void VerilogGenerator::addWritersToTopInDesiredOrder(QSharedPointer<VerilogDocum
 {
     document->topWriter_->add(document->interconnectionWriters_);
 
-    document->topWriter_->add(document->wireWriters_);
+    document->topWriter_->add(document->connectionWireWriters_);
 
-    document->topWriter_->add(document->assignmentWriter_);
+    document->topWriter_->add(document->adHocWireWriters_);
+
+    document->topWriter_->add(document->portWireWriters_);
+
+    document->topWriter_->add(document->topAssignmentWriters_);
+
+    document->topWriter_->add(document->topDefaultWriters_);
+
+    document->topWriter_->add(document->instanceAssignmentWriters_);
 
     foreach(QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter, document->instanceWriters_)
     {

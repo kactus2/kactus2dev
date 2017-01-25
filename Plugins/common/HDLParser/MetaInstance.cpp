@@ -249,7 +249,7 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
                     thisIfUsesThePort = true;
 
                     // Every mapping using the port creates a new assignment for the port.
-                    QSharedPointer<MetaPortAssignMent> mPortAssignment(new MetaPortAssignMent);
+                    QSharedPointer<MetaPortAssignment> mPortAssignment(new MetaPortAssignment);
                     mPort->assignments_.insert(pMap->getLogicalPort()->name_, mPortAssignment);
 
                     // The default value comes from the port abstraction.

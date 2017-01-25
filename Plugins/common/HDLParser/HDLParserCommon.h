@@ -42,7 +42,7 @@ struct MetaWire
     QList<QSharedPointer<MetaPort> > hierPorts_;
 };
 
-struct MetaPortAssignMent
+struct MetaPortAssignment
 {
     //! The physical bounds of the assignment.
     QPair<QString,QString> physicalBounds_;
@@ -65,7 +65,7 @@ struct MetaPort
     //! The parsed default value for port.
     QString defaultValue_;
     
-    QMultiMap<QString, QSharedPointer<MetaPortAssignMent> > assignments_;
+    QMultiMap<QString, QSharedPointer<MetaPortAssignment> > assignments_;
 };
 
 struct MetaInterface;

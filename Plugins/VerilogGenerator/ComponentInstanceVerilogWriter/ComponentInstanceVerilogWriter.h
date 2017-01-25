@@ -175,7 +175,7 @@ private:
     *
     *      @return The Verilog description of the instance port connection assignment.
     */
-    static QString assignmentForInstancePort(QSharedPointer<MetaPort> mPort);
+    QString assignmentForInstancePort(QSharedPointer<MetaPort> mPort) const;
 
     //-----------------------------------------------------------------------------
     // Data.

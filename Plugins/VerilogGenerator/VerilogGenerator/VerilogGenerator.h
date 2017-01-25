@@ -39,19 +39,31 @@ struct VerilogDocument
     //! Writer for the component, is to contain everything that comes to document, except header writer.
     QSharedPointer<ComponentVerilogWriter> topWriter_;
 
+    //! Writer for top defaults.
+    QSharedPointer<WriterGroup> topDefaultWriters_;
+
     //! Writers for Verilog interconnections.
     QSharedPointer<WriterGroup> interconnectionWriters_;
 
-    //! Writers for Verilog wires.
-    QSharedPointer<WriterGroup> wireWriters_;
+    //! Writers for interconnection wires.
+    QSharedPointer<WriterGroup> connectionWireWriters_;
 
-    //! Writer for hierarchical assignments.
-    QSharedPointer<VerilogAssignmentWriter> assignmentWriter_;
+    //! Writers for interconnection wires.
+    QSharedPointer<WriterGroup> adHocWireWriters_;
+
+    //! Writers for port assignment wires.
+    QSharedPointer<WriterGroup> portWireWriters_;
+
+    //! Writers for hierarchical port assignments.
+    QSharedPointer<WriterGroup> topAssignmentWriters_;
+
+    //! Writers for instance port assignments.
+    QSharedPointer<WriterGroup> instanceAssignmentWriters_;
 
     //! Writers for Verilog instances.
     QList<QSharedPointer<ComponentInstanceVerilogWriter> > instanceWriters_;
 
-    //! Header writers for Verilog instances.
+    //! Witers for Verilog instances.
     QMap<QSharedPointer<ComponentInstanceVerilogWriter>, QSharedPointer<Writer> > instanceHeaderWriters_;
 };
 

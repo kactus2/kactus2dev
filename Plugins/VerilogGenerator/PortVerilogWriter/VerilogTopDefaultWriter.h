@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: VerilogAssignmentWriter.h
+// File: VerilogTopDefaultWriter.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
-// Date: 21.01.2017
+// Date: 24.01.2017
 //
 // Description:
-// Class for writing a Verilog assignments.
+// Class for writing default values for ports of the top component.
 //-----------------------------------------------------------------------------
 
-#ifndef VERILOGASSIGNMENTWRITER_H
-#define VERILOGASSIGNMENTWRITER_H
+#ifndef VERILOGTOPDEFAULTWRITER_H
+#define VERILOGTOPDEFAULTWRITER_H
 
 #include <Plugins/VerilogGenerator/common/Writer.h>
 #include "../veriloggeneratorplugin_global.h"
@@ -20,54 +20,41 @@
 #include <IPXACTmodels/Component/Port.h>
 
 //-----------------------------------------------------------------------------
-//!  Class for writing a Verilog assignments.
+// Class for writing default values for ports of the top component.
 //-----------------------------------------------------------------------------
-class VERILOGGENERATORPLUGIN_EXPORT VerilogAssignmentWriter : public Writer
+class VERILOGGENERATORPLUGIN_EXPORT VerilogTopDefaultWriter : public Writer
 {
 public:
 
 	/*!
      *  The constructor.
      */
-    VerilogAssignmentWriter(QString portWireName,
-        QSharedPointer<MetaPortAssignment> portAssignment,
-        DirectionTypes::Direction direction,
-        bool isInHierPort);
+    VerilogTopDefaultWriter(QSharedPointer<MetaPort> mPort);
 
 	/*!
      *  The destructor.
      */
-    virtual ~VerilogAssignmentWriter();
+    virtual ~VerilogTopDefaultWriter();
 
     /*!
      *  Writes the assignments to the given output.
      *
      *      @param [in] output   The output to write to.
      */
-    virtual void write(QTextStream& output) const;    
-    
-    /*!
-    *  Creates an assignment for a port.
-    *
-    *      @return The Verilog description of the port connection assignment.
-    */
-    QString assignmentForPort() const;
+    virtual void write(QTextStream& output) const;
 
 private:
 
 	// Disable copying.
-	VerilogAssignmentWriter(VerilogAssignmentWriter const& rhs);
-	VerilogAssignmentWriter& operator=(VerilogAssignmentWriter const& rhs);
+	VerilogTopDefaultWriter(VerilogTopDefaultWriter const& rhs);
+	VerilogTopDefaultWriter& operator=(VerilogTopDefaultWriter const& rhs);
        
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Ports
-    QString portWireName_;
-    QSharedPointer<MetaPortAssignment> mpa_;
-    DirectionTypes::Direction direction_;
-    bool isInHierPort_;
+    //! The port.
+    QSharedPointer<MetaPort> mPort_;
 };
 
-#endif // VERILOGASSIGNMENTWRITER_H
+#endif // VERILOGTOPDEFAULTWRITER_H
