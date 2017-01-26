@@ -36,7 +36,7 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     QHBoxLayout* optionLayout = new QHBoxLayout();
     optionGroup->setLayout(optionLayout);
 
-    QCheckBox* useInterfaces = new QCheckBox("Use interfaces (experimental)");
+    QCheckBox* useInterfaces = new QCheckBox("Use interfaces (disabled)");
     useInterfaces->setEnabled(false);
     optionLayout->addWidget(useInterfaces);
     QCheckBox* generateMemory = new QCheckBox("Generate memory (experimental)");

@@ -17,8 +17,14 @@
 #include <QSharedPointer>
 
 #include "ViewSelection.h"
-#include <Plugins/common/HDLParser/HDLComponentParser.h>
-#include <Plugins/common/HDLParser/HDLDesignParser.h>
+
+struct GenerationFile
+{
+    //! The name of the file for the document
+    QString fileName_;
+    QString vlnv_;
+    QString fileContent_;
+};
 
 //-----------------------------------------------------------------------------
 //! Container class for generator configuration.
@@ -45,12 +51,7 @@ public:
     /*!
      *  Gets reference to the output file paths.
      */
-    QSharedPointer<QList<QString*> > getFileNames();
-    
-    /*!
-     *  Gets reference to the VLNVs of the components corresponding the files.
-     */
-    QSharedPointer<QStringList> getVLNVs();
+    QSharedPointer<QList<QSharedPointer<GenerationFile> > > getFiles();
 
     /*!
      *  Sets the path for the output file for the generation.
@@ -82,10 +83,8 @@ private:
 
     //! The base directory for output paths.
     QString outputPath_;
-    //! The names of the potential new files.
-    QSharedPointer<QList<QString*> > fileNames_;
-    //! The VLNVs corresponding the files.
-    QSharedPointer<QStringList> vlnvs_;
+    //! The potential new files.
+    QSharedPointer<QList<QSharedPointer<GenerationFile> > > files_;
 };
 
 #endif // FILEOUTPUT_H

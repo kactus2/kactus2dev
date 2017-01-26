@@ -272,9 +272,9 @@ void tst_VerilogWriterFactory::runGenerator(bool useDesign)
 
     generationTime_ =  QDateTime::currentDateTime();
 
-    QTextStream outputStream(&output_);
+    document->write();
 
-    document->write(outputStream);
+    output_ = document->fileContent_;
 }
 
 //-----------------------------------------------------------------------------

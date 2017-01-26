@@ -20,7 +20,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileOuput::FileOuput()
 //-----------------------------------------------------------------------------
-FileOuput::FileOuput() : outputPath_(), fileNames_(new QList<QString*>), vlnvs_(new QStringList)
+FileOuput::FileOuput() : outputPath_(), files_(new QList<QSharedPointer<GenerationFile> >)
 {
 }
 
@@ -44,11 +44,11 @@ bool FileOuput::validSelections(QString &warning)
     }
 
     // Must not have same file name more than once!
-    for(int i = 0; i < fileNames_->size(); ++i)
+    for(int i = 0; i < files_->size(); ++i)
     {
-        QString* name = fileNames_->at(i);
+        QSharedPointer<GenerationFile> file = files_->at(i);
 
-        for(int j = 0; j < fileNames_->size(); ++j)
+        for(int j = 0; j < files_->size(); ++j)
         {
             // Do not compare with itself
             if (i==j)
@@ -56,12 +56,12 @@ bool FileOuput::validSelections(QString &warning)
                 continue;
             }
 
-            QString* name2compare = fileNames_->at(j);
+            QString name2compare = files_->at(j)->fileName_;
 
             // Is the same -> fail.
-            if (*name == *name2compare)
+            if (file->fileName_ == name2compare)
             {
-                warning = QLatin1String("<b>File name</b> ") + *name + QLatin1String(" <b>is listed more than once!</b>");
+                warning = QLatin1String("<b>File name</b> ") + file->fileName_ + QLatin1String(" <b>is listed more than once!</b>");
                 return false;
             }
         }
@@ -73,17 +73,9 @@ bool FileOuput::validSelections(QString &warning)
 //-----------------------------------------------------------------------------
 // Function: FileOuput::getFileNames()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QString*> > FileOuput::getFileNames()
+QSharedPointer<QList<QSharedPointer<GenerationFile> > > FileOuput::getFiles()
 {
-    return fileNames_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileOuput::getVLNVs()
-//-----------------------------------------------------------------------------
-QSharedPointer<QStringList> FileOuput::getVLNVs()
-{
-    return vlnvs_;
+    return files_;
 }
 
 //-----------------------------------------------------------------------------
@@ -107,11 +99,11 @@ QString FileOuput::getOutputPath() const
 //-----------------------------------------------------------------------------
 void FileOuput::setOutputFileName(QString newName, int index)
 {
-    if (index < 0 || index >= fileNames_->size())
+    if (index < 0 || index >= files_->size())
     {
         return;
     }
 
-    QString* modpath = fileNames_->at(index);
-    *modpath = newName;
+    QSharedPointer<GenerationFile> file = files_->at(index);
+    file->fileName_ = newName;
 }

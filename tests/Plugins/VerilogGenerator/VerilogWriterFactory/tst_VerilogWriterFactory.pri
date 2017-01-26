@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
+HEADERS += ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.h \
+    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
@@ -38,7 +39,8 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/VerilogGenerator/VerilogWriterFactory/VerilogDocument.h \
     ../../../../Plugins/VerilogGenerator/VerilogWriterFactory/VerilogWriterFactory.h
-SOURCES += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
+SOURCES += ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.cpp \
+    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \

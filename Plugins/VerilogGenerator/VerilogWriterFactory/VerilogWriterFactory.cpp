@@ -70,6 +70,7 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareComponent(QString c
 
     QSharedPointer<VerilogDocument> document = initializeComponentWriters(component);
     document->fileName_ = fileName;
+    document->vlnv_ = component->component_->getVlnv().toString();
 
     // Next comes the implementation.
     QSharedPointer<TextBodyWriter> implementationWriter(new TextBodyWriter(implementation));
@@ -88,7 +89,8 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareComponent(QString c
 QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareDesign(QString const& outputPath, QSharedPointer<MetaDesign> design)
 {
     QSharedPointer<VerilogDocument> document = initializeComponentWriters(design->topInstance_);
-    document->fileName_ = design->topInstance_->moduleName_ + ".v";;
+    document->fileName_ = design->topInstance_->moduleName_ + ".v";
+    document->vlnv_ = design->topInstance_->component_->getVlnv().toString();
 
     initializeDesignWriters(design, document);
 

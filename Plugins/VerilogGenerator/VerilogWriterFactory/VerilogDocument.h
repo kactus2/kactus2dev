@@ -16,6 +16,8 @@
 
 #include <QTextStream>
 
+#include <Plugins/PluginSystem/GeneratorPlugin/FileOutput.h>
+
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
@@ -29,12 +31,9 @@
 //-----------------------------------------------------------------------------
 // Verilog document.
 //-----------------------------------------------------------------------------
-class VerilogDocument
+class VerilogDocument : public GenerationFile
 {
 public:
-    //! The name of the file for the document
-    QString fileName_;
-
     //! Writer for generating file header.
     QSharedPointer<VerilogHeaderWriter> headerWriter_;
 
@@ -78,10 +77,8 @@ public:
     
     /*!
      *  Writes the Verilog to files.
-     *
-     *      @remark If prepares are not called before generate(), nothing is generated.
      */
-	void write(QTextStream& outputStream) const;
+	void write();
 
 private:
 

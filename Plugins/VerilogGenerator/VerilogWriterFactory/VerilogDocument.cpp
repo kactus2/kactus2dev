@@ -30,8 +30,9 @@ VerilogDocument::~VerilogDocument()
 //-----------------------------------------------------------------------------
 // Function: VerilogDocument::write()
 //-----------------------------------------------------------------------------
-void VerilogDocument::write(QTextStream& outputStream) const
+void VerilogDocument::write()
 {
+    QTextStream outputStream(&fileContent_);
     headerWriter_->write(outputStream, fileName_, QDateTime::currentDateTime());
     topWriter_->write(outputStream);
 }

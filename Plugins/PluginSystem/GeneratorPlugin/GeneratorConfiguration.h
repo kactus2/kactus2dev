@@ -2,8 +2,8 @@
 // File: GeneratorConfiguration.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Esko Pekkarinen
-// Date: 23.02.2015
+// Author: Janne Virtanen
+// Date: 26.01.2016
 //
 // Description:
 // Container class for generator configuration.
@@ -19,8 +19,8 @@
 #include "ViewSelection.h"
 #include "FileOutput.h"
 #include <Plugins/common/HDLParser/HDLComponentParser.h>
-#include <Plugins/common/HDLParser/HDLDesignParser.h>
-#include <Plugins/VerilogGenerator/VerilogGenerator/VerilogGenerator.h>
+#include <Plugins/common/HDLParser/MetaDesign.h>
+#include <Plugins/VerilogGenerator/VerilogWriterFactory/VerilogWriterFactory.h>
 
 //-----------------------------------------------------------------------------
 //! Container class for generator configuration.
@@ -32,10 +32,7 @@ class GeneratorConfiguration : public QObject
 public:
 
 	//! The constructor.
-    GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection,
-        HDLComponentParser* componentParser,
-        HDLDesignParser* designParser,
-        VerilogGenerator* generator);
+    GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection, bool isDesign);
 
 	//! The destructor.
     ~GeneratorConfiguration();
@@ -99,13 +96,9 @@ private:
 
     //! The view selection configuration.
     QSharedPointer<ViewSelection> viewSelection_;
+    bool isDesign_;
     //! The file output configuration.
     QSharedPointer<FileOuput> fileOutput_;
-
-    //! The parsers used to parse IP-XACT for data usable in generation.
-    HDLComponentParser* componentParser_;
-    HDLDesignParser* designParser_;
-    VerilogGenerator* generator_;
 
     //! If true, interfaces should be utilized in generation, else it is false.
     bool generateInterface_;

@@ -18,7 +18,6 @@ HEADERS += ../common/HDLParser/MetaInstance.h \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
     ../PluginSystem/GeneratorPlugin/FileOutput.h \
     ./VerilogGeneratorPlugin.h \
-    ./VerilogGenerator/VerilogGenerator.h \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../common/NameGenerationPolicy.h \
     ./common/Writer.h \
@@ -40,10 +39,11 @@ HEADERS += ../common/HDLParser/MetaInstance.h \
     ../../editors/ComponentEditor/common/ParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../designEditors/common/TopComponentParameterFinder.h \
-    ./VerilogTiedValueWriter/VerilogTiedValueWriter.h \
     ./TextBodyWriter/TextBodyWriter.h \
     ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
-    ../common/HDLParser/MetaDesign.h
+    ../common/HDLParser/MetaDesign.h \
+    ./VerilogWriterFactory/VerilogDocument.h \
+    ./VerilogWriterFactory/VerilogWriterFactory.h
 SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../PluginSystem/GeneratorPlugin/FileOutput.cpp \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
@@ -53,7 +53,6 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ../VerilogImport/VerilogSyntax.cpp \
     ./VerilogGeneratorPlugin.cpp \
-    ./VerilogGenerator/VerilogGenerator.cpp \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ./ComponentVerilogWriter/ComponentVerilogWriter.cpp \
     ./ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
@@ -71,9 +70,10 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../designEditors/common/TopComponentParameterFinder.cpp \
-    ./VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ./TextBodyWriter/TextBodyWriter.cpp \
     ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp \
     ../common/HDLParser/MetaInstance.cpp \
-    ../common/HDLParser/MetaDesign.cpp
+    ../common/HDLParser/MetaDesign.cpp \
+    ./VerilogWriterFactory/VerilogDocument.cpp \
+    ./VerilogWriterFactory/VerilogWriterFactory.cpp
 RESOURCES += VerilogGenerator.qrc

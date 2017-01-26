@@ -2,8 +2,8 @@
 // File: GeneratorConfiguration.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Esko Pekkarinen
-// Date: 23.02.2015
+// Author: Janne Virtanen
+// Date: 26.01.2016
 //
 // Description:
 // Container class for generator configuration.
@@ -18,12 +18,9 @@
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
-GeneratorConfiguration::GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection,
-    HDLComponentParser* componentParser, HDLDesignParser* designParser,
-    VerilogGenerator* generator) :
-	viewSelection_(viewSelection), componentParser_(componentParser), designParser_(designParser),
-    generator_(generator),
-    fileOutput_(new FileOuput), generateInterface_(false), generateMemory_(false)
+GeneratorConfiguration::GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection, bool isDesign) :
+	viewSelection_(viewSelection), isDesign_(isDesign), fileOutput_(new FileOuput), generateInterface_(false),
+    generateMemory_(false)
 {
 }
 
@@ -59,16 +56,15 @@ bool GeneratorConfiguration::validSelections(QString &warning)
 //-----------------------------------------------------------------------------
 void GeneratorConfiguration::parseDocuments()
 {
-    // Clear the existing list of file names and VLNVs.
-    fileOutput_->getFileNames()->clear();
-    fileOutput_->getVLNVs()->clear();
+    // Clear the existing list of files.
+    fileOutput_->getFiles()->clear();
 
-    // Parse the top level component.
-    componentParser_->parseComponent(viewSelection_->getView());
 
-    if (designParser_)
+    if (isDesign_)
     {
         // Parse the designs hierarchy.
+        MetaDesign::parseHierarchy()
+
         designParser_->parseDesign(componentParser_->getParsedComponent(), viewSelection_->getView());
 
         // Go through the parsed designs.
@@ -79,7 +75,7 @@ void GeneratorConfiguration::parseDocuments()
             // Add the file suffix to it.
             *fileName = design->topComponent_->moduleName_ + ".v";
             // Inform the names to the model.
-            fileOutput_->getFileNames()->append(fileName);
+            fileOutput_->getFiles()->append(fileName);
 
             // Append the VLNV to the list.
             fileOutput_->getVLNVs()->append(design->topComponent_->component_->getVlnv().toString());
@@ -92,7 +88,7 @@ void GeneratorConfiguration::parseDocuments()
         // Add the file suffix to it.
         *fileName = componentParser_->getParsedComponent()->moduleName_ + ".v";
         // Inform the names to the model.
-        fileOutput_->getFileNames()->append(fileName);
+        fileOutput_->getFiles()->append(fileName);
 
         // Append the VLNV to the list.
         fileOutput_->getVLNVs()->append(componentParser_->getParsedComponent()->component_->getVlnv().toString());
