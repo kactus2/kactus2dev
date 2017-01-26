@@ -7,11 +7,11 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../common/HDLParser/HDLComponentParser.h \
+HEADERS += ../common/HDLParser/MetaInstance.h \
+    ../common/HDLParser/HDLComponentParser.h \
     ../common/HDLParser/HDLParserCommon.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
     ../VerilogImport/VerilogSyntax.h \
-    ../common/HDLParser/HDLDesignParser.h \
     ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
@@ -42,9 +42,9 @@ HEADERS += ../common/HDLParser/HDLComponentParser.h \
     ../../designEditors/common/TopComponentParameterFinder.h \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.h \
     ./TextBodyWriter/TextBodyWriter.h \
-    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h
+    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
+    ../common/HDLParser/MetaDesign.h
 SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
-    ../common/HDLParser/HDLDesignParser.cpp \
     ../PluginSystem/GeneratorPlugin/FileOutput.cpp \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
@@ -73,5 +73,7 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../../designEditors/common/TopComponentParameterFinder.cpp \
     ./VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
     ./TextBodyWriter/TextBodyWriter.cpp \
-    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp
+    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp \
+    ../common/HDLParser/MetaInstance.cpp \
+    ../common/HDLParser/MetaDesign.cpp
 RESOURCES += VerilogGenerator.qrc

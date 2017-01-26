@@ -64,8 +64,6 @@ public:
     QMap<QString,QSharedPointer<MetaPort> > ports_;
     //! The module name for HDL.
     QString moduleName_;
-    //! TODO: replace with refactoring.
-    QString fileName_;
 
     //! The component library.
     LibraryInterface* library_;

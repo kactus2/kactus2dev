@@ -13,7 +13,7 @@ TEMPLATE = subdirs
 
 CONFIG += testcase
 SUBDIRS +=  VerilogGeneratorPlugin/tst_VerilogGeneratorPlugin.pro \
-		   VerilogGenerator/tst_VerilogGenerator.pro \
+		   VerilogWriterFactory/tst_VerilogWriterFactory.pro \
 		   VerilogHeaderWriter/tst_VerilogHeaderWriter.pro \
 		   InterfaceDirectionNameSorter/tst_InterfaceDirectionNameSorter.pro \
 		   CommentWriter/tst_CommentWriter.pro \

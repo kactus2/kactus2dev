@@ -144,7 +144,6 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
 
              // Set the module name as the existing module name + number of encounter before this one.
              subDesign->topInstance_->moduleName_ = name + "_" + QString::number(count);
-             subDesign->topInstance_->fileName_ = subDesign->topInstance_->moduleName_;
          }
     }
 
