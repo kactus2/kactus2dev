@@ -316,11 +316,6 @@ void DocumentGenerator::writeTableOfContents(unsigned int& componentNumber, QTex
 	// subHeader is running number that counts the number of sub headers for component
 	int subHeader = 1;
 
-	/*if (component_->hasModelParameters()) {
-        stream << vlnvHeader << ".modelParams\">" << myNumber_ << "." << subHeader <<
-            ". Model parameters</a><br>" << endl;
-		++subHeader;
-	}*/
 
 	// component always has kactus parameters
     stream << vlnvHeader << ".kts_params\">" << myNumber_ << "." << subHeader <<
@@ -400,7 +395,7 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 	stream << "\t\t</p>" << endl;
 
 	int subHeaderNumber = 1;
-// 	writeModelParameters(stream, subHeaderNumber);
+
 	writeParameters(stream, subHeaderNumber);
     writeMemoryMaps(stream, subHeaderNumber);
 	writePorts(stream, subHeaderNumber);
@@ -413,44 +408,6 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, const QString& t
 		generator->writeDocumentation(stream, targetPath, filesToInclude);
 	}
 }
-
-//-----------------------------------------------------------------------------
-// Function: documentgenerator::writeModelParameters()
-//-----------------------------------------------------------------------------
-/*void DocumentGenerator::writeModelParameters(QTextStream& stream, int& subHeaderNumber)
-{
-	if (component_->hasModelParameters()) {
-		
-		writeSubHeader(subHeaderNumber, stream, "Model parameters", "modelParams");
-
-		QStringList paramHeaders;
-		paramHeaders.append("Name");
-		paramHeaders.append("Data type");
-		paramHeaders.append("Default value");
-        paramHeaders.append("Array left");
-        paramHeaders.append("Array right");
-		paramHeaders.append("Description");
-		writeTableElement(paramHeaders, "List of model parameters defined for the component", stream);
-
-		foreach (QSharedPointer<ModelParameter> param, *component_->getModelParameters())
-        {
-			stream << "\t\t\t\t<tr>" << endl;
-			stream << "\t\t\t\t\t<td>" << param->name() << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << param->getDataType() << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(param->getValue()) <<
-                "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
-                param->getArrayLeft()) << "</td>" << endl;
-            stream << "\t\t\t\t\t<td>" << expressionFormatter_->formatReferringExpression(
-                param->getArrayRight()) << "</td>" << endl;
-			stream << "\t\t\t\t\t<td>" << param->description() << "</td>" << endl;
-			stream << "\t\t\t\t</tr>" << endl;
-		}
-
-		stream << "\t\t\t</table>" << endl;
-		++subHeaderNumber;
-	}
-}*/
 
 //-----------------------------------------------------------------------------
 // Function: documentgenerator::writeParameters()

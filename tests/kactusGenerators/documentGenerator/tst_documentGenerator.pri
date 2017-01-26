@@ -16,23 +16,14 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/common/Association/AssociationAddCommand.h \
     ../../../designEditors/common/Association/AssociationChangeEndpointCommand.h \
     ../../../designEditors/common/Association/AssociationRemoveCommand.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h \
     ../../../common/graphicsItems/CommonGraphicsUndoCommands.h \
     ../../../designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.h \
     ../../../designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMappingColumns.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.h \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.h \
     ../../../common/graphicsItems/ConnectionUndoCommands.h \
     ../../../designEditors/common/DesignDiagramResolver.h \
-    ../../../editors/ComponentEditor/common/ParameterizableTable.h \
     ../../MockObjects/DesignWidgetFactoryMock.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.h \
@@ -44,6 +35,9 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/widgets/assistedLineEdit/LineContentAssistWidget.h \
     ../../../designEditors/common/NamelabelWidth.h \
     ../../../editors/ComponentEditor/common/NullParser.h \
+    ../../../editors/ComponentEditor/common/ParameterizableTable.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMappingColumns.h \
     ../../../designEditors/HWDesign/undoCommands/PortPasteCommand.h \
     ../../../designEditors/common/StickyNote/StickyNoteEditCommand.h \
     ../../../designEditors/common/StickyNote/StickyNoteMoveCommand.h \
@@ -63,19 +57,18 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/HWDesign/views/CellEditTableView.h \
     ../../../designEditors/common/StickyNote/ColorFillTextItem.h \
     ../../../designEditors/HWDesign/columnview/ColumnEditDialog.h \
+    ../../../editors/ComponentEditor/common/CompleterPopupTable.h \
     ../../../designEditors/HWDesign/undoCommands/ComponentDeleteCommand.h \
     ../../../designEditors/common/ComponentDesignDiagram.h \
     ../../../common/graphicsItems/ComponentItem.h \
-    ../../../editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.h \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.h \
+    ../../../editors/ComponentEditor/parameters/ComponentParameterModel.h \
     ../../../common/widgets/componentPreviewBox/ComponentPreviewBox.h \
+    ../../../designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.h \
     ../../../common/graphicsItems/ConnectionEndpoint.h \
     ../../../designEditors/common/DesignDiagram.h \
     ../../../designEditors/common/DesignWidget.h \
-    ../../../editors/ComponentEditor/common/ParameterCompleter.h \
-    ../../../editors/ComponentEditor/parameters/ComponentParameterModel.h \
-    ../../../editors/ComponentEditor/common/ReferencingTableModel.h \
+    ../../../editors/ComponentEditor/common/ExpressionDelegate.h \
+    ../../../editors/ComponentEditor/common/ExpressionEditor.h \
     ../../../common/GenericEditProvider.h \
     ../../../common/graphicsItems/GraphicsColumn.h \
     ../../../common/graphicsItems/GraphicsColumnLayout.h \
@@ -93,10 +86,20 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../MockObjects/LibraryMock.h \
     ../../../common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
     ../../../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
+    ../../../editors/ComponentEditor/common/MultilineDescriptionDelegate.h \
     ../../../designEditors/HWDesign/OffPageConnectorItem.h \
-    ../../../designEditors/HWDesign/models/PortGenerationRow.h \
-    ../../../designEditors/HWDesign/models/PortGenerationTableModel.h \
+    ../../../editors/ComponentEditor/common/ParameterCompleter.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.h \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.h \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.h \
+    ../../../editors/ComponentEditor/common/ReferencingTableModel.h \
     ../../../designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h \
     ../../../designEditors/SystemDesign/SWComponentItem.h \
     ../../../designEditors/SystemDesign/SWConnectionEndpoint.h \
@@ -118,12 +121,9 @@ HEADERS += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/delegates/LineEditDelegate/lineeditdelegate.h \
     ../../../common/dialogs/newObjectDialog/newobjectdialog.h \
     ../../../common/widgets/vlnvEditor/vlnveditor.h \
-    ../../../designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.h \
-    ../../../editors/ComponentEditor/common/MultilineDescriptionDelegate.h \
-    ../../../editors/ComponentEditor/common/ExpressionDelegate.h \
-    ../../../editors/ComponentEditor/common/ExpressionEditor.h \
-    ../../../editors/ComponentEditor/common/CompleterPopupTable.h
-SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.h
+SOURCES += ../../../editors/ComponentEditor/busInterfaces/portmaps/JaroWinklerAlgorithm.cpp \
+    ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddCommand.cpp \
     ../../../designEditors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.cpp \
     ../../../designEditors/HWDesign/AdHocConnectionItem.cpp \
     ../../../designEditors/HWDesign/AdHocEnabled.cpp \
@@ -139,40 +139,31 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../designEditors/common/Association/AssociationRemoveCommand.cpp \
     ../../../designEditors/HWDesign/BusInterfaceDialog.cpp \
     ../../../designEditors/HWDesign/BusInterfaceItem.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.cpp \
     ../../../designEditors/HWDesign/BusPortItem.cpp \
     ../../../designEditors/HWDesign/views/CellEditTableView.cpp \
     ../../../designEditors/common/StickyNote/ColorFillTextItem.cpp \
     ../../../designEditors/HWDesign/columnview/ColumnEditDialog.cpp \
     ../../../common/graphicsItems/CommonGraphicsUndoCommands.cpp \
+    ../../../editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ../../../designEditors/HWDesign/undoCommands/ComponentDeleteCommand.cpp \
     ../../../designEditors/common/ComponentDesignDiagram.cpp \
     ../../../designEditors/HWDesign/undoCommands/ComponentInstancePasteCommand.cpp \
     ../../../common/graphicsItems/ComponentItem.cpp \
     ../../../designEditors/HWDesign/undoCommands/ComponentItemMoveCommand.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/BusInterfacePortMapTab.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.cpp \
-    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.cpp \
     ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
+    ../../../editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ../../../common/widgets/componentPreviewBox/ComponentPreviewBox.cpp \
+    ../../../designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.cpp \
     ../../../designEditors/HWDesign/undoCommands/ConnectionDeleteCommand.cpp \
     ../../../common/graphicsItems/ConnectionEndpoint.cpp \
     ../../../common/graphicsItems/ConnectionUndoCommands.cpp \
     ../../../designEditors/common/DesignDiagram.cpp \
     ../../../designEditors/common/DesignDiagramResolver.cpp \
     ../../../designEditors/common/DesignWidget.cpp \
-    ../../../editors/ComponentEditor/common/ParameterCompleter.cpp \
-    ../../../editors/ComponentEditor/common/ParameterizableTable.cpp \
-    ../../../editors/ComponentEditor/common/ReferencingTableModel.cpp \
-    ../../../editors/ComponentEditor/parameters/ComponentParameterModel.cpp \
     ../../MockObjects/DesignWidgetFactoryMock.cpp \
+    ../../../editors/ComponentEditor/common/ExpressionDelegate.cpp \
+    ../../../editors/ComponentEditor/common/ExpressionEditor.cpp \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../../editors/ComponentEditor/common/ExpressionFormatterFactoryImplementation.cpp \
     ../../../common/GenericEditProvider.cpp \
@@ -197,14 +188,26 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ../../../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.cpp \
     ../../../common/widgets/assistedLineEdit/LineContentAssistWidget.cpp \
+    ../../../editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
     ../../../designEditors/common/NamelabelWidth.cpp \
     ../../../editors/ComponentEditor/common/NullParser.cpp \
     ../../../designEditors/HWDesign/OffPageConnectorItem.cpp \
-    ../../../designEditors/HWDesign/models/PortGenerationRow.cpp \
-    ../../../designEditors/HWDesign/models/PortGenerationTableModel.cpp \
+    ../../../editors/ComponentEditor/common/ParameterCompleter.cpp \
+    ../../../editors/ComponentEditor/common/ParameterizableTable.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.cpp \
     ../../../editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapAutoConnector.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapHeaderView.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeDelegate.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeModel.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeSortProxyModel.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMapTreeView.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableModel.cpp \
+    ../../../editors/ComponentEditor/busInterfaces/portmaps/PortMappingTableView.cpp \
     ../../../designEditors/HWDesign/undoCommands/PortPasteCommand.cpp \
     ../../../designEditors/HWDesign/PortmapDialog.cpp \
+    ../../../editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ../../../designEditors/HWDesign/undoCommands/ReplaceComponentCommand.cpp \
     ../../../designEditors/SystemDesign/SWComponentItem.cpp \
     ../../../designEditors/SystemDesign/SWConnectionEndpoint.cpp \
@@ -232,9 +235,4 @@ SOURCES += ../../../designEditors/HWDesign/undoCommands/AdHocConnectionAddComman
     ../../../common/delegates/LineEditDelegate/lineeditdelegate.cpp \
     ../../../common/dialogs/newObjectDialog/newobjectdialog.cpp \
     ./tst_documentGenerator.cpp \
-    ../../../common/widgets/vlnvEditor/vlnveditor.cpp \
-    ../../../designEditors/common/ComponentInstanceEditor/ConfigurableElementsView.cpp \
-    ../../../editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
-    ../../../editors/ComponentEditor/common/ExpressionDelegate.cpp \
-    ../../../editors/ComponentEditor/common/ExpressionEditor.cpp \
-    ../../../editors/ComponentEditor/common/CompleterPopupTable.cpp
+    ../../../common/widgets/vlnvEditor/vlnveditor.cpp

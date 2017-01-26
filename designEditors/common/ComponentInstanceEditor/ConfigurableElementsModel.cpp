@@ -39,28 +39,26 @@ ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ParameterFin
     QSharedPointer<ExpressionParser> componentInstanceExpressionParser,
     QObject *parent):
 QAbstractItemModel(parent),
-ParameterizableTable(parameterFinder),
-component_(0),
-componentInstance_(0),
-viewConfiguration_(0),
-currentElementValues_(),
-configurableElements_(new QList<QSharedPointer<Parameter> > ()),
-editProvider_(0),
-configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
-componentInstanceExpressionFormatter_(componentInstanceExpressionFormatter),
-componentInstanceExpressionParser_(componentInstanceExpressionParser),
-validator_(0),
-designConfiguration_(new DesignConfiguration()),
-rootItems_()
+    ParameterizableTable(parameterFinder),
+    component_(0),
+    componentInstance_(0),
+    viewConfiguration_(0),
+    currentElementValues_(),
+    configurableElements_(new QList<QSharedPointer<Parameter> > ()),
+    editProvider_(0),
+    configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
+    componentInstanceExpressionFormatter_(componentInstanceExpressionFormatter),
+    componentInstanceExpressionParser_(componentInstanceExpressionParser),
+    validator_(0),
+    designConfiguration_(new DesignConfiguration()),
+    rootItems_()
 {
     QString* parameters (new QString("Parameters"));
-    QString* modelParameters (new QString("Model parameters"));
     QString* viewParameters (new QString("View parameters"));
     QString* moduleParameters (new QString("Module parameters"));
     QString* unknownElements (new QString("Unknown"));
 
     rootItems_.append(parameters);
-    rootItems_.append(modelParameters);
     rootItems_.append(viewParameters);
     rootItems_.append(moduleParameters);
     rootItems_.append(unknownElements);
@@ -78,7 +76,7 @@ rootItems_()
 //-----------------------------------------------------------------------------
 ConfigurableElementsModel::~ConfigurableElementsModel() 
 {
-
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -132,7 +130,7 @@ void ConfigurableElementsModel::clear()
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::rowCount()
 //-----------------------------------------------------------------------------
-int ConfigurableElementsModel::rowCount( const QModelIndex& parent /*= QModelIndex()*/ ) const 
+int ConfigurableElementsModel::rowCount(QModelIndex const& parent) const 
 {
     if (!parent.isValid())
     {
@@ -164,7 +162,7 @@ int ConfigurableElementsModel::rowCount( const QModelIndex& parent /*= QModelInd
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::columnCount()
 //-----------------------------------------------------------------------------
-int ConfigurableElementsModel::columnCount( const QModelIndex& /*parent = QModelIndex()*/ ) const 
+int ConfigurableElementsModel::columnCount(QModelIndex const& /*parent*/) const 
 {
     return ConfigurableElementsColumns::COLUMN_COUNT;
 }
@@ -172,7 +170,7 @@ int ConfigurableElementsModel::columnCount( const QModelIndex& /*parent = QModel
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::data()
 //-----------------------------------------------------------------------------
-QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*= Qt::DisplayRole*/ ) const 
+QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) const 
 {
     if (!isIndexValid(index))
     {
@@ -242,15 +240,9 @@ QVariant ConfigurableElementsModel::data( const QModelIndex& index, int role /*=
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant ConfigurableElementsModel::headerData( int section, Qt::Orientation orientation,
-    int role /*= Qt::DisplayRole */ ) const 
+QVariant ConfigurableElementsModel::headerData(int section, Qt::Orientation orientation, int role) const 
 {
-	if (orientation != Qt::Horizontal)
-    {
-		return QVariant();
-    }
-
-	if (role == Qt::DisplayRole) 
+	if (role == Qt::DisplayRole && orientation == Qt::Horizontal) 
     {
         if (section == ConfigurableElementsColumns::NAME)
         {
@@ -281,22 +273,15 @@ QVariant ConfigurableElementsModel::headerData( int section, Qt::Orientation ori
         {
             return tr("Type");
         }
-        else
-        {
-            return QVariant();
-        }
-	}
-	else
-    {
-		return QVariant();
     }
+
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::setData()
 //-----------------------------------------------------------------------------
-bool ConfigurableElementsModel::setData( const QModelIndex& index, const QVariant& value, 
-    int role /*= Qt::EditRole */ ) 
+bool ConfigurableElementsModel::setData(QModelIndex const& index, QVariant const& value, int role) 
 {
     if (!isIndexValid(index))
     {
@@ -342,7 +327,7 @@ bool ConfigurableElementsModel::setData( const QModelIndex& index, const QVarian
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags ConfigurableElementsModel::flags( const QModelIndex& index ) const 
+Qt::ItemFlags ConfigurableElementsModel::flags(QModelIndex const& index) const 
 {
 	if (!index.isValid())
     {
@@ -373,10 +358,8 @@ bool ConfigurableElementsModel::isParameterEditable(QModelIndex const& index) co
     {
         QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
 
-        if (element->getValueResolve() != "immediate" && !element->getValueResolve().isEmpty())
-        {
-            return true;
-        }
+        return (!element->getValueResolve().isEmpty() &&
+            element->getValueResolve().compare(QStringLiteral("immediate")) != 0);
     }
 
     return false;
@@ -395,15 +378,8 @@ void ConfigurableElementsModel::setDesignConfigurationModel(QSharedPointer<Desig
 //-----------------------------------------------------------------------------
 bool ConfigurableElementsModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    if (index.column() == ConfigurableElementsColumns::VALUE ||
-        index.column() == ConfigurableElementsColumns::DEFAULT_VALUE)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return index.column() == ConfigurableElementsColumns::VALUE ||
+        index.column() == ConfigurableElementsColumns::DEFAULT_VALUE;
 }
 
 //-----------------------------------------------------------------------------
@@ -549,7 +525,7 @@ QSharedPointer<Choice> ConfigurableElementsModel::findChoice(QString const& choi
         }
     }
 
-    return QSharedPointer<Choice> (new Choice());
+    return QSharedPointer<Choice>(new Choice());
 }
 
 //-----------------------------------------------------------------------------
@@ -726,14 +702,9 @@ void ConfigurableElementsModel::changeElements( const QMap<QString, QString>& co
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementsModel::onRemoveItem()
 //-----------------------------------------------------------------------------
-void ConfigurableElementsModel::onRemoveItem( const QModelIndex& index ) 
+void ConfigurableElementsModel::onRemoveItem( QModelIndex const& index ) 
 {
-    if (!isIndexValid(index))
-    {
-        return;
-    }
-
-    if (!index.parent().isValid())
+    if (!isIndexValid(index) || !index.parent().isValid())
     {
         return;
     }
@@ -977,12 +948,5 @@ bool ConfigurableElementsModel::isElementDeletable(QModelIndex const& index) con
 {
     QSharedPointer<Parameter> element = getIndexedConfigurableElement(index.parent(), index.row());
 
-    if (element->getValueAttribute(QLatin1String("kactus2:defaultValue")).isEmpty())
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return element->getValueAttribute(QLatin1String("kactus2:defaultValue")).isEmpty();
 }

@@ -265,6 +265,9 @@ Qt::ItemFlags AdHocVisibilityModel::flags(const QModelIndex& index) const
 //-----------------------------------------------------------------------------
 void AdHocVisibilityModel::updateVisibilities()
 {
-    emit dataChanged(index(0, AdHocVisibilityColumns::ADHOC_COL_VISIBILITY), index(table_->size() - 1,
-        AdHocVisibilityColumns::ADHOC_COL_VISIBILITY));
+    if (table_)
+    {
+        emit dataChanged(index(0, AdHocVisibilityColumns::ADHOC_COL_VISIBILITY), index(table_->size() - 1,
+            AdHocVisibilityColumns::ADHOC_COL_VISIBILITY));
+    }
 }
