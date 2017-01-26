@@ -80,6 +80,8 @@ private slots:
 
     void testIdenticalHierarchies();
 
+    void testParameterOverrideAtInstance();
+
 private:
     
     QString runGenerator();
@@ -1102,6 +1104,56 @@ void tst_MemoryViewGenerator::testIdenticalHierarchies()
         "tut.fi.TestLib.SubSlave.1.0.subID.subSlave.slaveMemoryMap;memoryMap;0x10;;;;;\n"
         "tut.fi.TestLib.SubSlave.1.0.subID.subSlave.slaveMemoryMap.slaveBlock;addressBlock;0x10;8;32;;;\n"
         ));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryViewGenerator::testParameterOverrideAtInstance()
+//-----------------------------------------------------------------------------
+void tst_MemoryViewGenerator::testParameterOverrideAtInstance()
+{
+    VLNV masterVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "TestMaster", "1.0");
+    VLNV slaveVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "TestSlave", "1.0");
+
+    createMasterComponent(masterVLNV);
+
+    QSharedPointer<Component> slaveComponent = createSlaveComponent(slaveVLNV);
+
+    QSharedPointer<Parameter> slaveParameter(new Parameter());
+    slaveParameter->setName("data_width");
+    slaveParameter->setValueId("id");
+    slaveParameter->setValue("8");
+    slaveParameter->setValueResolve("user");
+    slaveComponent->getParameters()->append(slaveParameter);
+
+    QSharedPointer<MemoryMap> slaveMemoryMap(new MemoryMap("slaveMemoryMap"));
+    slaveComponent->getMemoryMaps()->append(slaveMemoryMap);
+
+    QSharedPointer<AddressBlock> slaveAddressBlock = addAddressBlock("slaveBlock", "0", "8", "id", slaveMemoryMap);
+
+    QSharedPointer<Register> firstRegister(new Register("firstRegister", "0", "id"));
+    slaveAddressBlock->getRegisterData()->append(firstRegister);
+
+    QSharedPointer<Field> firstField(new Field("firstField"));
+    firstField->setBitWidth("id");
+    firstField->setBitOffset("1");
+
+    firstRegister->getFields()->append(firstField);
+
+    createMasterAndSlaveInstances(masterVLNV, slaveVLNV);
+    connectMasterAndSlaveInstance();
+
+    QSharedPointer<ComponentInstance> slaveInstance = design_->getComponentInstances()->last();
+
+    QSharedPointer<ConfigurableElementValue> parameterOverride(new ConfigurableElementValue("32", "id"));
+    slaveInstance->getConfigurableElementValues()->append(parameterOverride);
+
+    QString output = runGenerator();
+
+    QCOMPARE(output, QString("Identifier;Type;Address;Range (AUB);Width (bits);Size (bits);Offset (bits);\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap;memoryMap;0x0;;;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock;addressBlock;0x0;8;32;;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister;register;0x0;;;32;;\n"
+        "tut.fi.TestLib.TestSlave.1.0.slaveID.slaveInstance.slaveMemoryMap.slaveBlock.firstRegister.firstField;field;0x0;;32;;1;\n"));
 }
 
 //-----------------------------------------------------------------------------

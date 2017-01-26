@@ -54,70 +54,10 @@ MemoryViewGenerator::~MemoryViewGenerator()
 void MemoryViewGenerator::generate(QSharedPointer<Component> topComponent, QString const& activeView, 
     QString const& outputPath)
 {
-    QSharedPointer<const DesignConfiguration> designConfiguration(0);
-    QSharedPointer<const Design> design(0);
-
-    VLNV designReference = getConfigurationOrDesign(topComponent, activeView);
-    VLNV::IPXactType documentType = library_->getDocumentType(designReference);
-
-    if (documentType == VLNV::DESIGNCONFIGURATION)
-    {
-        designConfiguration = library_->getModelReadOnly(designReference).dynamicCast<const DesignConfiguration>();
-        design = library_->getModelReadOnly(designConfiguration->getDesignRef()).dynamicCast<const Design>();
-    }
-    else if (documentType == VLNV::DESIGN)
-    {
-        design = library_->getModelReadOnly(designReference).dynamicCast<const Design>();
-    }
-
-    QSharedPointer<ConnectivityGraph> graph = graphFactory_.createConnectivityGraph(design, designConfiguration);
+    QSharedPointer<ConnectivityGraph> graph = graphFactory_.createConnectivityGraph(topComponent, activeView);
     MasterSlavePathSearch searchAlgorithm;
 
     writeFile(outputPath, searchAlgorithm.findMasterSlavePaths(graph));
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryViewGenerator::getConfigurationOrDesign()
-//-----------------------------------------------------------------------------
-VLNV MemoryViewGenerator::getConfigurationOrDesign(QSharedPointer<Component> component, QString const& activeView)
-{
-    QSharedPointer<View> view = component->getModel()->findView(activeView);
-    if (view)
-    {
-        if (!view->getDesignConfigurationInstantiationRef().isEmpty())
-        {
-            QSharedPointer<DesignConfigurationInstantiation> instantiation = 
-                component->getModel()->findDesignConfigurationInstantiation(
-                view->getDesignConfigurationInstantiationRef());
-
-            if (instantiation)
-            {
-                return *instantiation->getDesignConfigurationReference();
-            }
-        }
-        else if (!view->getDesignInstantiationRef().isEmpty())
-        {
-            QSharedPointer<DesignInstantiation> instantiation = component->getModel()->findDesignInstantiation(
-                view->getDesignInstantiationRef());
-
-            if (instantiation)
-            {
-                return *instantiation->getDesignReference();
-            }
-        }
-    }
-    
-    if (component->getDesignConfigurationInstantiations()->count() == 1)
-    {
-        return *component->getDesignConfigurationInstantiations()->first()->getDesignConfigurationReference();
-    }
-
-    if (component->getDesignInstantiations()->count() == 1)
-    {
-        return *component->getDesignInstantiations()->first()->getDesignReference();
-    }
-
-    return VLNV();
 }
 
 //-----------------------------------------------------------------------------

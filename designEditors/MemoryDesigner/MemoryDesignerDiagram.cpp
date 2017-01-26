@@ -168,7 +168,7 @@ bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Compo
 {
     clearScene();
 
-    QSharedPointer<ConnectivityGraph> connectionGraph = createConnectionGraph(component, viewName);
+    QSharedPointer<ConnectivityGraph> connectionGraph = instanceLocator_.createConnectivityGraph(component, viewName);
     if (connectionGraph)
     {
         return memoryConstructor_->constructMemoryDesignItems(connectionGraph);
@@ -194,28 +194,6 @@ void MemoryDesignerDiagram::clearLayout()
     layout_.clear();
     layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
     memoryConstructor_->setNewLayout(layout_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryDesignerDiagram::createConnectionGraph()
-//-----------------------------------------------------------------------------
-QSharedPointer<ConnectivityGraph> MemoryDesignerDiagram::createConnectionGraph(
-    QSharedPointer<const Component> component, QString const& viewName)
-{
-    QSharedPointer<ConnectivityGraph> connectionGraph;
-
-    QSharedPointer<Design> selectedDesign = getContainingDesign(component, viewName);
-    if (selectedDesign)
-    {
-        QSharedPointer<const DesignConfiguration> containingConfiguration =
-            getContainingDesignConfiguration(component, viewName);
-        if (containingConfiguration)
-        {
-            connectionGraph = instanceLocator_.createConnectivityGraph(selectedDesign, containingConfiguration);
-        }
-    }
-
-    return connectionGraph;
 }
 
 //-----------------------------------------------------------------------------

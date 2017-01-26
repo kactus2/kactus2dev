@@ -21,7 +21,9 @@ HEADERS += ../../designEditors/MemoryDesigner/ConnectivityComponent.h \
     ./MemoryViewGenerator.h \
     ./memoryviewgenerator_global.h \
     ../../editors/ComponentEditor/common/ParameterCache.h \
-    ./MemoryViewGeneratorPlugin.h
+    ./MemoryViewGeneratorPlugin.h \
+    ../../designEditors/common/ComponentInstanceParameterFinder.h \
+    ../../editors/ComponentEditor/common/MultipleParameterFinder.h
 SOURCES += ../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
     ../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
@@ -34,5 +36,7 @@ SOURCES += ../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../editors/ComponentEditor/common/ParameterCache.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./MemoryViewGenerator.cpp \
-    ./MemoryViewGeneratorPlugin.cpp
+    ./MemoryViewGeneratorPlugin.cpp \
+    ../../designEditors/common/ComponentInstanceParameterFinder.cpp \
+    ../../editors/ComponentEditor/common/MultipleParameterFinder.cpp
 RESOURCES += MemoryViewGenerator.qrc

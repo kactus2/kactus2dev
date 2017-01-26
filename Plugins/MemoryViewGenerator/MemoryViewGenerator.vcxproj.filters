@@ -85,6 +85,18 @@
     <ClCompile Include="GeneratedFiles\Release\moc_ParameterCache.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\designEditors\common\ComponentInstanceParameterFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_ComponentInstanceParameterFinder.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_ComponentInstanceParameterFinder.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MemoryViewGenerator.h">
@@ -126,6 +138,9 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MemoryViewGeneratorPlugin.h">
@@ -135,6 +150,9 @@
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\editors\ComponentEditor\common\ParameterCache.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\designEditors\common\ComponentInstanceParameterFinder.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>

@@ -21,6 +21,8 @@
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCache.h>
+#include <editors/ComponentEditor/common/MultipleParameterFinder.h>
+#include <designEditors/common/ComponentInstanceParameterFinder.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
@@ -44,7 +46,7 @@
 // Function: ConnectivityGraphFactory::ConnectivityGraphFactory()
 //-----------------------------------------------------------------------------
 ConnectivityGraphFactory::ConnectivityGraphFactory(LibraryInterface* library):
-library_(library), parameterFinder_(new ParameterCache(QSharedPointer<Component>())), 
+library_(library), parameterFinder_(new MultipleParameterFinder()), 
     expressionParser_(new IPXactSystemVerilogParser(parameterFinder_))
 {
 
@@ -62,13 +64,21 @@ ConnectivityGraphFactory::~ConnectivityGraphFactory()
 // Function: ConnectivityGraphFactory::createConnectivityGraph()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConnectivityGraph> ConnectivityGraphFactory::createConnectivityGraph(
-    QSharedPointer<const Design> design, QSharedPointer<const DesignConfiguration> designConfiguration)
+    QSharedPointer<const Component> topComponent, QString const& activeView)
 {
     QSharedPointer<ConnectivityGraph> graph(new ConnectivityGraph());
 
-    if (design)
+    if (topComponent)
     {
-        analyzeDesign(design, designConfiguration, QVector<QSharedPointer<ConnectivityInterface> >(), graph);
+        parameterFinder_->addFinder(QSharedPointer<ParameterFinder>(new ParameterCache(topComponent)));
+
+        QSharedPointer<ConnectivityComponent> instanceNode = createInstanceData(QSharedPointer<ComponentInstance>(0), 
+            topComponent, activeView, graph);
+
+        QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces =
+            createInterfacesForInstance(topComponent, instanceNode, graph);
+
+        createConnectionsForDesign(topComponent, activeView, instanceInterfaces, graph);
     }
 
     return graph;
@@ -91,7 +101,10 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design
 
         if (instancedComponent)
         {
-            parameterFinder_->setComponent(instancedComponent);
+            QSharedPointer<ComponentInstanceParameterFinder> componentFinder(
+                new ComponentInstanceParameterFinder(componentInstance, instancedComponent));
+
+            parameterFinder_->addFinder(componentFinder);
 
             QString activeView;
             if (designConfiguration)
@@ -105,15 +118,17 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design
             QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces =
                 createInterfacesForInstance(instancedComponent, instanceNode, graph);
 
-            createInteralConnectionsAndDesigns(instancedComponent, componentInstance->getInstanceName(), activeView, 
-                instanceInterfaces, graph);
+            createInteralConnectionsAndDesigns(instancedComponent, componentInstance->getInstanceName(),
+                activeView, instanceInterfaces, graph);
 
             interfacesInDesign += instanceInterfaces;
-        }        
+
+            parameterFinder_->removeFinder(componentFinder);
+        }
     }
 
     foreach (QSharedPointer<Interconnection> interconnection, *design->getInterconnections())
-    {        
+    {
         createConnectionsForInterconnection(interconnection, interfacesInDesign, topInterfaces, graph);
     }
 }
@@ -127,9 +142,20 @@ QSharedPointer<ConnectivityComponent> ConnectivityGraphFactory::createInstanceDa
     QString const& activeView,
     QSharedPointer<ConnectivityGraph> graph) const
 {
-    QSharedPointer<ConnectivityComponent> newInstance(new ConnectivityComponent(instance->getInstanceName()));
-    newInstance->setInstanceUuid(instance->getUuid());
-    newInstance->setVlnv(instance->getComponentRef()->toString());
+    QSharedPointer<ConnectivityComponent> newInstance;
+    if (instance)
+    {
+        newInstance = QSharedPointer<ConnectivityComponent>(new ConnectivityComponent(instance->getInstanceName()));
+        newInstance->setInstanceUuid(instance->getUuid());
+        newInstance->setVlnv(instance->getComponentRef()->toString());
+    }
+    else
+    {
+        newInstance = QSharedPointer<ConnectivityComponent>(new ConnectivityComponent("top"));
+        newInstance->setInstanceUuid("top");
+        newInstance->setVlnv(component->getVlnv().toString());
+    }
+
     newInstance->setActiveView(activeView);
 
     addAddressSpaceMemories(newInstance, component);
@@ -166,7 +192,7 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
         if (!space->getWidth().isEmpty())
         {
             spaceItem->setWidth(expressionParser_->parseExpression(space->getWidth()));
-        }        
+        }
 
         newInstance->addMemory(spaceItem);
 
@@ -447,6 +473,16 @@ void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(QSharedPointer
         }
     }
     
+    createConnectionsForDesign(instancedComponent, activeView, instanceInterfaces, graph);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::createConnectionsForDesign()
+//-----------------------------------------------------------------------------
+void ConnectivityGraphFactory::createConnectionsForDesign(QSharedPointer<const Component> instancedComponent,
+    QString const& activeView, QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
+    QSharedPointer<ConnectivityGraph> graph) const
+{
     QSharedPointer<View> activeComponentView = findView(instancedComponent, activeView);
 
     if (activeComponentView && activeComponentView->isHierarchical())
@@ -466,7 +502,7 @@ void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(QSharedPointer
 
             analyzeDesign(hierarchicalDesign, hierarchicalConfiguration, instanceInterfaces, graph);
         }
-    }       
+    }
 }
 
 //-----------------------------------------------------------------------------

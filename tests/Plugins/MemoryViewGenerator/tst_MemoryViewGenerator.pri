@@ -7,35 +7,37 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../designEditors/MemoryDesigner/ConnectivityComponent.h \
+HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+    ../../../designEditors/MemoryDesigner/ConnectivityComponent.h \
     ../../../designEditors/MemoryDesigner/ConnectivityConnection.h \
     ../../../designEditors/MemoryDesigner/ConnectivityGraph.h \
     ../../../designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
     ../../../designEditors/MemoryDesigner/ConnectivityInterface.h \
     ../../../editors/ComponentEditor/common/ExpressionParser.h \
+    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../designEditors/MemoryDesigner/MasterSlavePathSearch.h \
     ../../../designEditors/MemoryDesigner/MemoryItem.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.h \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../MockObjects/LibraryMock.h \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.h \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
-    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../editors/ComponentEditor/common/ParameterCache.h \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h
-SOURCES += ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.h \
+    ../../../editors/ComponentEditor/common/MultipleParameterFinder.h
+SOURCES += ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityConnection.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityGraph.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
     ../../../designEditors/MemoryDesigner/ConnectivityInterface.cpp \
+    ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
     ../../../designEditors/MemoryDesigner/MemoryItem.cpp \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGenerator.cpp \
     ../../../Plugins/MemoryViewGenerator/MemoryViewGeneratorPlugin.cpp \
-    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
-    ./tst_MemoryViewGenerator.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../editors/ComponentEditor/common/ParameterCache.cpp \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp
+    ../../../Plugins/PluginSystem/PluginUtilityAdapter.cpp \
+    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
+    ./tst_MemoryViewGenerator.cpp \
+    ../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp

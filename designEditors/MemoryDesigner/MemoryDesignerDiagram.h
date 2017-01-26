@@ -193,17 +193,6 @@ private:
     void clearLayout();
 
     /*!
-     *  Create the connection graph from the selected view.
-     *
-     *      @param [in] component   The component containing the selected view.
-     *      @param [in] viewName    Name of the selected view.
-     *
-     *      @return The created connection graph.
-     */
-    QSharedPointer<ConnectivityGraph> createConnectionGraph(QSharedPointer<const Component> component,
-        QString const& viewName);
-
-    /*!
      *  Get the design referenced by the selected view.
      *
      *      @param [in] component   Component containing the selected view.

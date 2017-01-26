@@ -66,9 +66,6 @@ private:
     MemoryViewGenerator(MemoryViewGenerator const& rhs);
     MemoryViewGenerator& operator=(MemoryViewGenerator const& rhs);
 
-    VLNV getConfigurationOrDesign(QSharedPointer<Component> component, QString const& activeView);
-
-  
     /*!
      *  Writes the listing into a given file.
      *

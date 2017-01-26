@@ -37,7 +37,7 @@ class ConnectivityComponent;
 class ConnectivityInterface;
 class ExpressionParser;
 class MemoryItem;
-class ComponentParameterFinder;
+class MultipleParameterFinder;
 
 #include <QString>
 #include <QSharedPointer>
@@ -61,15 +61,15 @@ public:
     ~ConnectivityGraphFactory();
    
     /*!
-     *  Creates a connectivity graph from the given design and its underlying hierarchy.
+     *  Creates a connectivity graph from the component and its underlying hierarchy.
      *
-     *      @param [in] design                  The selected design.
-     *      @param [in] designConfiguration     The selected design configuration.
+     *      @param [in] topComponent    The selected component.
+     *      @param [in] activeView      The view to determine hierarchy.
      *
      *      @return Connectivity graph for the design hierarchy.
      */
-    QSharedPointer<ConnectivityGraph> createConnectivityGraph(QSharedPointer<const Design> design, 
-        QSharedPointer<const DesignConfiguration> designConfiguration);
+    QSharedPointer<ConnectivityGraph> createConnectivityGraph(QSharedPointer<const Component> topComponent,
+        QString const& activeView);
 
 private:
     // Disable copying.
@@ -212,12 +212,24 @@ private:
      *      @param [in] instancedComponent      The instanced component to transform.
      *      @param [in] instanceName            The name of the instance.
      *      @param [in] activeView              The active view of the component instance.
-     *      @param [in] instanceInterfaces      The graph interfaces for the instances component.
+     *      @param [in] instanceInterfaces      The graph interfaces for the instanced component.
      *      @param [in/out] graph               The graph to add elements into.
      */
     void createInteralConnectionsAndDesigns(QSharedPointer<const Component> instancedComponent,
         QString const& instanceName,
         QString const& activeView,
+        QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
+        QSharedPointer<ConnectivityGraph> graph) const;
+
+    /*!
+     *   Creates graph elements for component instance sub designs.
+     *
+     *      @param [in] instancedComponent      The instanced component whose sub design to transform.
+     *      @param [in] activeView              The active view of the component instance.
+     *      @param [in] instanceInterfaces      <The graph interfaces for the instances component.
+     *      @param [in] graph                   The graph to add elements into.
+     */
+    void createConnectionsForDesign(QSharedPointer<const Component> instancedComponent, QString const& activeView,
         QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
         QSharedPointer<ConnectivityGraph> graph) const;
 
@@ -266,8 +278,7 @@ private:
      *
      *      @return The view with the given name.
      */
-    QSharedPointer<View> findView(QSharedPointer<const Component> component,
-        QString const& viewName) const;
+    QSharedPointer<View> findView(QSharedPointer<const Component> component, QString const& viewName) const;
 
     /*!
      *  Creates the graph edges for the given channel.
@@ -335,7 +346,7 @@ private:
     LibraryInterface* library_;
 
     //! The parameter finder to use for instantiated components.
-    QSharedPointer<ComponentParameterFinder> parameterFinder_;
+    QSharedPointer<MultipleParameterFinder> parameterFinder_;
 
     //! Parser for resolving expressions.
     ExpressionParser* expressionParser_;

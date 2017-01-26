@@ -39,6 +39,14 @@ void MultipleParameterFinder::addFinder(QSharedPointer<ParameterFinder> finder)
 }
 
 //-----------------------------------------------------------------------------
+// Function: MultipleParameterFinder::removeFinder()
+//-----------------------------------------------------------------------------
+void MultipleParameterFinder::removeFinder(QSharedPointer<ParameterFinder> finder)
+{
+    finders_.removeAll(finder);
+}
+
+//-----------------------------------------------------------------------------
 // Function: MultipleParameterFinder::getParameterWithID()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> MultipleParameterFinder::getParameterWithID(QString const& parameterId) const
@@ -83,7 +91,15 @@ QString MultipleParameterFinder::nameForId(QString const& id) const
 //-----------------------------------------------------------------------------
 QString MultipleParameterFinder::valueForId(QString const& id) const
 {
-    return getParameterWithID(id)->getValue();
+    foreach(QSharedPointer<ParameterFinder> finder, finders_)
+    {
+        if (finder->hasId(id))
+        {
+            return finder->valueForId(id);
+        }
+    }
+
+    return QString();
 }
 
 //-----------------------------------------------------------------------------

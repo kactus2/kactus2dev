@@ -34,7 +34,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~MultipleParameterFinder();
+    virtual ~MultipleParameterFinder();
 
      /*!
       *  Adds a finder to be used in searches.
@@ -42,6 +42,13 @@ public:
       *      @param [in] finder   The finder to add.
       */
      void addFinder(QSharedPointer<ParameterFinder> finder);
+
+     /*!
+      *  Removes a finder from searches.
+      *
+      *      @param [in] finder   The finder to remove.
+      */
+     void removeFinder(QSharedPointer<ParameterFinder> finder);
 
     /*!
      *  Get the parameter with the given id.
