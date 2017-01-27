@@ -16,7 +16,7 @@
 
 #include <QGroupBox>
 #include <QLabel>
-#include <QGridLayout>
+#include <QFormLayout>
 #include <QHBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -34,15 +34,7 @@ public:
 	 *      @param [in] parent  Pointer to the owner of this widget.
 	 *      @param [in] vlnv    Reference to the vlnv to be displayed
 	 */
-	VLNVDisplayer(QWidget *parent, const VLNV& vlnv, bool compact = false);
-
-	/*!
-     *  The constructor.
-	 *
-	 *      @param [in] parent  Pointer to the owner of this widget.
-	 *      @param [in] vlnv    Pointer to the vlnv to be displayed
-	 */
-	VLNVDisplayer(QWidget *parent, const VLNV* vlnv, bool compact = false);
+	VLNVDisplayer(QWidget *parent, VLNV const& vlnv, bool compact = false);
 
 	/*!
      *  The constructor.
@@ -95,7 +87,7 @@ private:
 	QLabel version_;
 	
 	//! The layout of the widget (non-compact).
-	QGridLayout* layout_;
+	QFormLayout* layout_;
 
     //! Compact layout.
     QHBoxLayout* compactLayout_;

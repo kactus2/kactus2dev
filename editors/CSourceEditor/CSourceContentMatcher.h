@@ -17,7 +17,6 @@
 #include <QStringList>
 #include <QSharedPointer>
 
-#include "MCAPIDesignerTypes.h"
 #include <common/widgets/assistedTextEdit/ITextContentMatcher.h>
 
 class ApiDefinition;
@@ -85,6 +84,11 @@ public:
                          int& startIndex, QString& toolTipText, int& toolTipIndex);
 
 private:
+
+    // Disable copying.
+    CSourceContentMatcher(CSourceContentMatcher const& rhs);
+    CSourceContentMatcher& operator=(CSourceContentMatcher const& rhs);
+
     //! MatchExecFunc definition.
     typedef void (*MatchExecFunc)(TextContentAssistWidget& assist, QString const& match, QIcon const& icon);
 
@@ -98,9 +102,19 @@ private:
         MATCH_PARAM
     };
 
-    // Disable copying.
-    CSourceContentMatcher(CSourceContentMatcher const& rhs);
-    CSourceContentMatcher& operator=(CSourceContentMatcher const& rhs);
+    //-----------------------------------------------------------------------------
+    //! MCAPI types and utility functions.
+    //-----------------------------------------------------------------------------
+    enum MCAPIContentType
+    {
+        MCAPI_CONTENT_FUNC = 0,
+        MCAPI_CONTENT_TYPENAME,
+        MCAPI_CONTENT_NODE_ID,
+        MCAPI_CONTENT_PORT_ID,
+        MCAPI_CONTENT_ENDPOINT,
+        MCAPI_CONTENT_ENDPOINT_HANDLE,
+        MCAPI_CONTENT_TYPE_COUNT
+    };
 
     /*!
      *  Searches for matches in the given text.

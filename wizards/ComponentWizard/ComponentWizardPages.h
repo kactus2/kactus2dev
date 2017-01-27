@@ -20,8 +20,7 @@ namespace ComponentWizardPages
     {
         INTRO = 0,
         GENERAL,        
-        FILES,
-        DEPENDENCY,
+        FILE_DEPENDENCY,
         IMPORT,
         VIEWS,
         CONCLUSION

@@ -32,9 +32,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] lh         The library interface.
+     *      @param [in] lh         The library interface. 
+     *      @param [in] parent     The parent widget.
      */
-    ComponentPreviewBox(LibraryInterface* lh);
+    ComponentPreviewBox(LibraryInterface* lh, QWidget* parent = 0);
 
     /*!
      *  Destructor.

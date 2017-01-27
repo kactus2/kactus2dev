@@ -34,8 +34,9 @@ model_(component_, parameterFinder, this),
 proxy_(this),
 editor_(component_, componentPath, pluginMgr, &splitter_)
 {
-    setTitle(tr("Dependency Analysis & File Sets"));
-    setSubTitle(tr("Check for missing files with dependency analysis and create file sets."));
+    setTitle(tr("File Sets & Dependency Analysis"));
+    setSubTitle(tr("Add files to the component by specifying the source directories, check "
+        "file dependencies and create file sets."));
     setFinalPage(true);
 
     // Set file set view and editor settings.

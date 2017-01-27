@@ -142,7 +142,6 @@ HEADERS += ./VersionHelper.h \
     ./settings/GeneralSettingsPage.h \
     ./settings/CodeEditorSettingsPage.h \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
-    ./wizards/ComponentWizard/ComponentWizardFilesPage.h \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
     ./wizards/ComponentWizard/ComponentWizardPages.h \
     ./wizards/ComponentWizard/ViewListModel.h \
@@ -821,7 +820,6 @@ SOURCES += ./VersionHelper.cpp \
     ./wizards/ComponentWizard/ComponentWizard.cpp \
     ./wizards/ComponentWizard/ComponentWizardConclusionPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.cpp \
-    ./wizards/ComponentWizard/ComponentWizardFilesPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardGeneralInfoPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardImportPage.cpp \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.cpp \

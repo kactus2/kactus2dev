@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 26.01.2017
+// Date: 13.01.2017
 //
 // Description:
 // The implementation for finding parameters for component instance.

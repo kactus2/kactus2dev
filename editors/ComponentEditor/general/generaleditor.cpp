@@ -11,6 +11,7 @@
 
 #include "generaleditor.h"
 
+#include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 #include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
@@ -29,43 +30,37 @@
 //-----------------------------------------------------------------------------
 GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget *parent):
 ItemEditor(component, libHandler, parent),
-vlnvDisplayer_(0),
-attributeEditor_(0),
-authorEditor_(0),
-descEditor_(NULL),
-headerEditor_(NULL),
-previewBox_(0)
+    vlnvDisplayer_(new VLNVDisplayer(this, component->getVlnv())),
+    attributeEditor_(new KactusAttributeEditor(this)),
+    authorEditor_(new QLineEdit()),
+    descEditor_(new DescEditor()),
+    headerEditor_(new DescEditor()),
+    previewBox_(new ComponentPreviewBox(libHandler, this))
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(component != 0);
 
-    // Create the VLNV displayer and attribute & description editors.
-    QVBoxLayout* layout = new QVBoxLayout();
-	layout->setContentsMargins(0, 0, 0, 0);
-
     const QString xmlPath = libHandler->getPath(component->getVlnv());
-
-    vlnvDisplayer_ = new VLNVDisplayer(this, component->getVlnv());
+    vlnvDisplayer_->setTitle(tr("Component VLNV and location"));
 	vlnvDisplayer_->setPath(xmlPath);
 
-    attributeEditor_ = new KactusAttributeEditor(this);
+    headerEditor_->setTitle(tr("XML header"));
 
-    QGroupBox* authorBox = new QGroupBox("Author", this);
-    authorEditor_ = new QLineEdit(authorBox);   
-    QVBoxLayout* authorLayout = new QVBoxLayout(authorBox);
-    authorLayout->addWidget(authorEditor_);
-
-    descEditor_ = new DescEditor();
-
-	headerEditor_ = new DescEditor();
-	headerEditor_->setTitle(tr("XML header"));
-
-    previewBox_ = new ComponentPreviewBox(libHandler);
     previewBox_->setInteractive(true);
     previewBox_->setComponent(component);
     previewBox_->setFixedWidth(280);
     previewBox_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    // Create the VLNV displayer and attribute & description editors.
+    QVBoxLayout* layout = new QVBoxLayout();
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    QGroupBox* authorBox = new QGroupBox("Author", this);
+
+    QVBoxLayout* authorLayout = new QVBoxLayout(authorBox);
+    authorLayout->addWidget(authorEditor_);
+
+    layout->addWidget(new SummaryLabel(tr("Component summary"), this), 0, Qt::AlignCenter);
     layout->addWidget(vlnvDisplayer_);
     layout->addWidget(attributeEditor_);
     layout->addWidget(authorBox);    
@@ -75,6 +70,7 @@ previewBox_(0)
     QHBoxLayout* topLayout = new QHBoxLayout(this);
     topLayout->addLayout(layout, 1);
     topLayout->addWidget(previewBox_);
+    topLayout->setContentsMargins(4, 0, 0, 0);
 
     // Connect the contentChanged() signals.
     connect(previewBox_, SIGNAL(endpointsRearranged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

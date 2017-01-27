@@ -53,8 +53,7 @@ ItemEditor(component, libHandler, parent),
 	fileSetRefEditor_ = new FileSetRefEditor(component, tr("File set references"), this);
 	fileSetRefEditor_->initialize();
 
-	HWViewRefEditor_ = new ViewSelector(ViewSelector::BOTH_HW_VIEWS, component, this);
-	HWViewRefEditor_->setFixedWidth(200);
+	HWViewRefEditor_ = new ViewSelector(ViewSelector::BOTH_HW_VIEWS, component, this);	
 
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(hierRefEditor_, SIGNAL(vlnvEdited()), this, SLOT(onHierRefChange()), Qt::UniqueConnection);

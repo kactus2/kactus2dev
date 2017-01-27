@@ -17,14 +17,14 @@
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 #include <IPXACTmodels/kactusExtensions/validators/ApiDefinitionValidator.h>
 
-#include <QVBoxLayout>
+#include <QGridLayout>
 
 //-----------------------------------------------------------------------------
 // Function: ApiDefinitionEditor::ApiDefinitionEditor()
 //-----------------------------------------------------------------------------
 ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
-                                         QSharedPointer<ApiDefinition> apiDef)
-    : TabDocument(parent, DOC_PROTECTION_SUPPORT),
+    QSharedPointer<ApiDefinition> apiDef):
+TabDocument(parent, DOC_PROTECTION_SUPPORT),
       libHandler_(libHandler),
       apiDef_(apiDef),
       comDefVLNVEdit_(VLNV::COMDEFINITION, libHandler, parent, this),
@@ -37,7 +37,7 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
     functionEditor_.updateDataTypes(*apiDef->getDataTypes());
     functionEditor_.restore(*apiDef);
 
-    comDefVLNVEdit_.setTitle(tr("COM definition reference (optional)"));
+    comDefVLNVEdit_.setTitle(tr("COM definition reference"));
     comDefVLNVEdit_.setVLNV(apiDef->getComDefinitionRef());
     updateComDefinition();
 
@@ -48,10 +48,16 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
     connect(&functionEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     // Setup the layout.
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(&dataTypeList_);
-    layout->addWidget(&comDefVLNVEdit_);
-    layout->addWidget(&functionEditor_, 1);
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(&dataTypeList_, 0, 0, 1, 1);
+    layout->addWidget(&comDefVLNVEdit_, 0, 1, 1, 1, Qt::AlignTop);
+    layout->addWidget(&functionEditor_, 1, 0, 1, 2);
+
+    layout->setColumnStretch(0, 1);
+    layout->setColumnStretch(1, 3);
+
+    layout->setRowStretch(0, 1);
+    layout->setRowStretch(1, 4);
 
     setModified(false);
 

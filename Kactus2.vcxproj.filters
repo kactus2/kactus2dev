@@ -1432,9 +1432,6 @@
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardDependencyPage.cpp">
       <Filter>Source Files\wizards\ComponentWizard</Filter>
     </ClCompile>
-    <ClCompile Include="wizards\ComponentWizard\ComponentWizardFilesPage.cpp">
-      <Filter>Source Files\wizards\ComponentWizard</Filter>
-    </ClCompile>
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardGeneralInfoPage.cpp">
       <Filter>Source Files\wizards\ComponentWizard</Filter>
     </ClCompile>
@@ -5844,9 +5841,6 @@
       <Filter>Header Files\common\dialogs\NewBusDialog</Filter>
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardDependencyPage.h">
-      <Filter>Header Files\wizards\ComponentWizard</Filter>
-    </ClInclude>
-    <ClInclude Include="wizards\ComponentWizard\ComponentWizardFilesPage.h">
       <Filter>Header Files\wizards\ComponentWizard</Filter>
     </ClInclude>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardIntroPage.h">

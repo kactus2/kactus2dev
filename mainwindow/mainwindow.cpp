@@ -1147,7 +1147,7 @@ void MainWindow::setupLibraryDock()
 	previewDock_->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
 	previewDock_->setFeatures(QDockWidget::AllDockWidgetFeatures);
 
-	previewBox_ = new ComponentPreviewBox(libraryHandler_);
+	previewBox_ = new ComponentPreviewBox(libraryHandler_, previewDock_);
 	previewDock_->setWidget(previewBox_);
 
 	addDockWidget(Qt::LeftDockWidgetArea, previewDock_);

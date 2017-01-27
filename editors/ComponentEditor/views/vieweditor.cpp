@@ -58,6 +58,9 @@ ItemEditor(component, libHandler, parent),
 {
     moduleParameterEditor_->disableEditing();
 
+    designConfigurationDisplay_->setTitle(tr("Design configuration"));
+    designDisplay_->setTitle(tr("Design"));
+
     setupLayout();
 
     refresh();

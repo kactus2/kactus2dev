@@ -17,16 +17,15 @@
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QFormLayout>
+#include <QGridLayout>
 #include <QLabel>
 #include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionEditor::ApiFunctionEditor()
 //-----------------------------------------------------------------------------
-ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
-    : QGroupBox(tr("Functions"), parent),
+ApiFunctionEditor::ApiFunctionEditor(QWidget* parent): QGroupBox(tr("Functions"), parent),
       functionList_(this),
       functionModel_(this),
       descEdit_(this),
@@ -42,7 +41,6 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
 
     // Set widget settings.
     returnTypeCombo_.setEditable(true);
-    returnTypeCombo_.setMaximumWidth(180);
     returnTypeCombo_.setInsertPolicy(QComboBox::InsertAlphabetically);
     returnTypeCombo_.setEditText("");
 
@@ -57,27 +55,34 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent)
     paramView_.setItemsDraggable(true);
 
     // Create the layouts.
-    QVBoxLayout* funcLayout = new QVBoxLayout();
-    funcLayout->addWidget(new QLabel(tr("Description:"), this));
-    funcLayout->addWidget(&descEdit_);
-    funcLayout->addSpacing(12);
-    funcLayout->addWidget(new QLabel(tr("Return value type:"), this));
-    funcLayout->addWidget(&returnTypeCombo_);
-    funcLayout->addWidget(new QLabel(tr("Return value description:"), this));
-    funcLayout->addWidget(&returnValueDesc_);
-    funcLayout->addSpacing(12);
-    funcLayout->addWidget(new QLabel(tr("Function parameters:"), this));
-    funcLayout->addWidget(&paramView_, 1);
+    QGroupBox* functionsBox = new QGroupBox(tr("Available functions"), this);
+    QVBoxLayout* functionsLayout = new QVBoxLayout(functionsBox);
 
-    QHBoxLayout* layout = new QHBoxLayout(this);
-    layout->addWidget(&functionList_);
-    layout->addSpacing(6);
-    layout->addLayout(funcLayout, 1);
+    functionsLayout->addWidget(&functionList_);
 
-    connect(&paramModel_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&functionModel_, SIGNAL(contentChanged()),
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    QGroupBox* detailsBox = new QGroupBox(tr("Function details"), this);
+    QFormLayout* detailsLayout = new QFormLayout(detailsBox);
+
+    detailsLayout->addRow(tr("Function description:"), &descEdit_);
+    detailsLayout->addRow(tr("Return value type:"),  &returnTypeCombo_);
+    detailsLayout->addRow(tr("Return value description:"), &returnValueDesc_);
+
+    QGroupBox* parameterBox = new QGroupBox(tr("Function parameters"), this);
+
+    QVBoxLayout* parameterLayout = new QVBoxLayout(parameterBox);
+    parameterLayout->addWidget(&paramView_);
+
+    QGridLayout* layout = new QGridLayout(this);
+
+    layout->addWidget(functionsBox, 0, 0, 2, 1);
+    layout->addWidget(detailsBox, 0, 1, 1, 1);
+    layout->addWidget(parameterBox, 1, 1, 1, 1);
+
+    layout->setColumnStretch(0, 1);
+    layout->setColumnStretch(1, 3);
+
+    connect(&paramModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&functionModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&paramView_, SIGNAL(addItem(const QModelIndex&)),
             &paramModel_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);

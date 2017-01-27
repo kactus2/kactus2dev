@@ -55,7 +55,7 @@ ComponentWizardGeneralInfoPage::~ComponentWizardGeneralInfoPage()
 //-----------------------------------------------------------------------------
 int ComponentWizardGeneralInfoPage::nextId() const
 {
-    return ComponentWizardPages::FILES;
+    return ComponentWizardPages::FILE_DEPENDENCY;
 }
 
 //-----------------------------------------------------------------------------

@@ -78,14 +78,18 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: ComponentPreviewBox::ComponentPreviewBox()
 //-----------------------------------------------------------------------------
-ComponentPreviewBox::ComponentPreviewBox(LibraryInterface* lh) : lh_(lh), component_(), scene_(0)
+ComponentPreviewBox::ComponentPreviewBox(LibraryInterface* lh, QWidget* parent):
+QGraphicsView(parent), 
+    lh_(lh),
+    component_(),
+    scene_(0)
 {
     // Create the scene.
     scene_ = new GridScene(this);
     setScene(scene_);
     centerOn(0, 0);
 
-	setMinimumHeight(MIN_BOX_HEIGHT);
+    setMinimumHeight(MIN_BOX_HEIGHT);
 
     // Disable interactivity by default.
     setInteractive(false);

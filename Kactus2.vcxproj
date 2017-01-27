@@ -1402,7 +1402,6 @@ CreateHelp
     <ClCompile Include="wizards\ComponentWizard\ComponentWizard.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardConclusionPage.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardDependencyPage.cpp" />
-    <ClCompile Include="wizards\ComponentWizard\ComponentWizardFilesPage.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardGeneralInfoPage.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardImportPage.cpp" />
     <ClCompile Include="wizards\ComponentWizard\ComponentWizardIntroPage.cpp" />
@@ -13417,7 +13416,6 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB  "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
     </CustomBuild>
     <ClInclude Include="wizards\ComponentWizard\ComponentWizardDependencyPage.h" />
-    <ClInclude Include="wizards\ComponentWizard\ComponentWizardFilesPage.h" />
     <CustomBuild Include="wizards\ComponentWizard\ComponentWizardImportPage.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing ComponentWizardImportPage.h...</Message>

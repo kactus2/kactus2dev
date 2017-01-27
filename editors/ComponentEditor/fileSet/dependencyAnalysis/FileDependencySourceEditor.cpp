@@ -87,6 +87,7 @@ void FileDependencySourceEditor::addSource()
         QStringList newDirectories = items();
         newDirectories.push_back(newDirectory);
         setItems(newDirectories);
+        emit contentChanged();
     }
 }
 

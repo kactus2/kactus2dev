@@ -31,8 +31,7 @@ infoLabel_(this)
 
     QString infoText = tr("This wizard contains the following steps:");
     infoText += "<ul><li>" + tr("Component General Information");
-    infoText += "<li>" + tr("Add Files");
-    infoText += "<li>" + tr("Dependency Analysis & File Sets");
+    infoText += "<li>" + tr("File Sets & Dependency Analysis");
 
     if (component->getImplementation() == KactusAttribute::HW)
     {

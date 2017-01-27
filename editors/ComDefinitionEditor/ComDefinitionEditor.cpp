@@ -24,14 +24,13 @@
 //-----------------------------------------------------------------------------
 // Function: ComDefinitionEditor()
 //-----------------------------------------------------------------------------
-ComDefinitionEditor::ComDefinitionEditor(QWidget *parent,
-                                         LibraryInterface* libHandler,
-                                         QSharedPointer<ComDefinition> comDef)
-    : TabDocument(parent, DOC_PROTECTION_SUPPORT),
-      libHandler_(libHandler),
-      comDef_(comDef),
-      dataTypeList_(tr("Transfer types"), this),
-      propertyEditor_(this)
+ComDefinitionEditor::ComDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
+    QSharedPointer<ComDefinition> comDef):
+TabDocument(parent, DOC_PROTECTION_SUPPORT),
+    libHandler_(libHandler),
+    comDef_(comDef),
+    dataTypeList_(tr("Transfer types"), this),
+    propertyEditor_(this)
 {
     // Initialize the editors.
     dataTypeList_.initialize(*comDef_->getTransferTypes());

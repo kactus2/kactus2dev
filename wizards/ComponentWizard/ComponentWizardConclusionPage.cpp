@@ -22,6 +22,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
+#include <QFormLayout>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -48,14 +49,14 @@ parametersLabel_(new QLabel(this)),
 portsLabel_(new QLabel(this)),
 viewsLabel_(new QLabel(this)),
 descriptionLabel_(new QLabel(this)),
-previewBox_(lh),
+previewBox_(lh, this),
 diffView_(new ComponentDiffWidget(expressionFormatter, this))
 {
     setTitle(tr("Summary"));
     setSubTitle(tr("You have successfully completed the wizard. Verify the choices by clicking Finish."));
     setFinalPage(true);
     
-    previewBox_.setFixedWidth(300);
+    //previewBox_.setFixedWidth(300);
 
     directoryLabel_->setWordWrap(true);
     descriptionLabel_->setWordWrap(true);
@@ -187,83 +188,44 @@ ComponentWizardConclusionPage::DiffSummary ComponentWizardConclusionPage::creteS
 //-----------------------------------------------------------------------------
 void ComponentWizardConclusionPage::setupLayout()
 {
+    QFormLayout* leftLayout = new QFormLayout();
+
+    leftLayout->addRow(tr("<b>VLNV:</b>"), vlnvLabel_);
+
+    if (originalComponent_->getImplementation() == KactusAttribute::HW)
+    {
+        leftLayout->addRow(tr("<b>Product Hierarchy:</b>"), hierarchyLabel_);
+        leftLayout->addRow(tr("<b>Firmness:</b>"), firmnessLabel_);
+    }
+
+    leftLayout->addRow(tr("<b>File location:</b>"), directoryLabel_);
+    leftLayout->addRow(tr("<b>Author:</b>"), authorLabel_);
+    leftLayout->addRow(tr("<b>Description:</b>"), descriptionLabel_);
+    leftLayout->addRow(tr("<b>File sets:</b>"), filesetsLabel_);
+
+    if (originalComponent_->getImplementation() == KactusAttribute::HW)
+    {
+        leftLayout->addRow(tr("<b>Parameters:</b>"), parametersLabel_);
+        leftLayout->addRow(tr("<b>Ports:</b>"), portsLabel_);
+        leftLayout->addRow(tr("<b>Views:</b>"), viewsLabel_);
+    }
+
     QGridLayout* layout = new QGridLayout(this);
-    int rows = 0;
 
-    SummaryLabel* detailsLabel = new SummaryLabel(QObject::tr("Summary"), this);
-    layout->addWidget(detailsLabel, rows, 0, 1, 3, Qt::AlignCenter);    
-    rows++;
+    SummaryLabel* summaryLabel = new SummaryLabel(tr("Summary"), this);
+    layout->addWidget(summaryLabel, 0, 0, 1, 2, Qt::AlignCenter);    
 
-    QLabel* vendorTitleLabel = new QLabel("<b>VLNV:</b>",  this);
-    layout->addWidget(vendorTitleLabel, rows, 0, 1, 1, Qt::AlignTop);    
-    layout->addWidget(vlnvLabel_, rows, 1, 1, 1);
-    rows++;
+    layout->addLayout(leftLayout, 1, 0, 1, 1);
+    layout->addWidget(&previewBox_, 1, 1, 1, 1);
 
-    if (originalComponent_->getImplementation() == KactusAttribute::HW)
-    {
-        QLabel* hierarchyTitleLabel = new QLabel("<b>Product Hierarchy:</b>",  this);
-        layout->addWidget(hierarchyTitleLabel, rows, 0, 1, 1, Qt::AlignTop);    
-        layout->addWidget(hierarchyLabel_, rows, 1, 1, 1);
-        rows++;
+    QWidget* detailsLabel = new SummaryLabel(tr("Details"), this);
+    layout->addWidget(detailsLabel, 2, 0, 1, 2, Qt::AlignCenter);
+    layout->addWidget(diffView_, 3, 0, 1, 2);
+          
+    layout->setColumnStretch(0, 1);
+    layout->setColumnStretch(1, 1);
 
-        QLabel* firmnessTitleLabel = new QLabel("<b>Firmness:</b>",  this);
-        layout->addWidget(firmnessTitleLabel, rows, 0, 1, 1, Qt::AlignTop);    
-        layout->addWidget(firmnessLabel_, rows, 1, 1, 1);
-        rows++;
-    }
-
-    QLabel* directoryTitleLabel = new QLabel("<b>File location:</b>",  this);
-    layout->addWidget(directoryTitleLabel, rows, 0, 1, 1, Qt::AlignTop);    
-    layout->addWidget(directoryLabel_, rows, 1, 1, 1);
-    rows++;
-
-    QLabel* authorTitleLabel = new QLabel("<b>Author:</b>",  this);
-    layout->addWidget(authorTitleLabel, rows, 0, 1, 1, Qt::AlignTop);  
-    layout->addWidget(authorLabel_, rows, 1, 1, 1);
-    rows++;
-
-    QLabel* descriptionTitleLabel = new QLabel("<b>Description:</b>",  this);
-    layout->addWidget(descriptionTitleLabel, rows, 0, 1, 1, Qt::AlignTop);    
-    layout->addWidget(descriptionLabel_, rows, 1, 1, 1);
-    rows++;
-
-    QLabel* filesetTitleLabel = new QLabel("<b>File sets:</b>",  this);
-    layout->addWidget(filesetTitleLabel, rows, 0, 1, 1, Qt::AlignTop);    
-    layout->addWidget(filesetsLabel_, rows, 1, 1, 1);
-    rows++;
-
-    if (originalComponent_->getImplementation() == KactusAttribute::HW)
-    {
-        QLabel* parameterTitleLabel = new QLabel("<b>Parameters:</b>",  this);
-        layout->addWidget(parameterTitleLabel, rows, 0, 1, 1, Qt::AlignTop);
-        layout->addWidget(parametersLabel_, rows, 1, 1, 1);
-        rows++;
-
-        QLabel* portTitleLabel = new QLabel("<b>Ports:</b>",  this);
-        layout->addWidget(portTitleLabel, rows, 0, 1, 1, Qt::AlignTop);
-        layout->addWidget(portsLabel_, rows, 1, 1, 1);
-        rows++;
-
-        QLabel* viewTitleLabel = new QLabel("<b>Views:</b>",  this);
-        layout->addWidget(viewTitleLabel,  rows, 0, 1, 1, Qt::AlignTop);
-        layout->addWidget(viewsLabel_, rows, 1, 1, 1);
-        rows++;
-    }
-
-    if (originalComponent_->getImplementation() == KactusAttribute::HW)
-    {    
-        SummaryLabel* diffLabel = new SummaryLabel(QObject::tr("Details"), this);
-        layout->addWidget(diffLabel, rows, 0, 1, 3, Qt::AlignCenter);    
-        rows++;
-        layout->addWidget(diffView_, rows, 0, 1, 3);
-    }
-    else
-    {        
-        diffView_->hide();
-    }
-
-    layout->addWidget(&previewBox_, 1, 2, rows - 2, 1);
-
-    layout->setRowStretch(rows, 1);
-    layout->setColumnStretch(1, 1);        
+    bool showDetails = originalComponent_->getImplementation() == KactusAttribute::HW;
+    detailsLabel->setVisible(showDetails);
+    diffView_->setVisible(showDetails);  
 }

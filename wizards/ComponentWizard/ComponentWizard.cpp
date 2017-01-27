@@ -13,7 +13,6 @@
 #include "ComponentWizardPages.h"
 
 #include "ComponentWizardIntroPage.h"
-#include "ComponentWizardFilesPage.h"
 #include "ComponentWizardDependencyPage.h"
 #include "ComponentWizardGeneralInfoPage.h"
 #include "ComponentWizardImportPage.h"
@@ -56,8 +55,7 @@ referenceCounter_(new ParameterReferenceCounter(parameterFinder_))
 
     setPage(ComponentWizardPages::INTRO, new ComponentWizardIntroPage(component, this));
     setPage(ComponentWizardPages::GENERAL, new ComponentWizardGeneralInfoPage(component, this));    
-    setPage(ComponentWizardPages::FILES, new ComponentWizardFilesPage(component, basePath, this));
-    setPage(ComponentWizardPages::DEPENDENCY, new ComponentWizardDependencyPage(component, parameterFinder_,
+    setPage(ComponentWizardPages::FILE_DEPENDENCY, new ComponentWizardDependencyPage(component, parameterFinder_,
         basePath, pluginMgr, this));
     setPage(ComponentWizardPages::IMPORT, importPage);
     setPage(ComponentWizardPages::VIEWS, new ComponentWizardViewsPage(handler, parameterFinder_,
