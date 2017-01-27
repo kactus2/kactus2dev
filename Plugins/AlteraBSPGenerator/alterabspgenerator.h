@@ -96,7 +96,7 @@ public:
      */
     virtual bool checkGeneratorSupport(QSharedPointer<Component const> component,
         QSharedPointer<Design const> design,
-        QSharedPointer<DesignConfiguration const> designConfiguration);
+        QSharedPointer<DesignConfiguration const> designConfiguration) const;
 
     /*!
      *  Runs the generation, creating new files and/or modifying the IP-XACT metadata. The function has
