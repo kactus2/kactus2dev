@@ -5,7 +5,39 @@
 <body>
     <h2>System Design</h2>
     <p>
-        TODO:
+      This is Kactus2 extension <br><img src="../images/appicon.png"><br>
+      A <i>system design</i> describes the software mapping on hardware resources. 
+      <i>Software components</i> can be mapped on hardware accelerators and
+      CPUs, and connected using <i>COM</i> and <i>API</i> connections.
+    </p>
+    <p>
+        The design area in the center is divided into typed columns to create cleaner
+        layouts. New columns can be created using the <b>Add Column</b> button in the 
+        toolbar. The column name can edited by double-clicking the column header. 
+        The column order can be changed by drag-dropping the columns by the header.
+    </p>
+    <p>
+        New <i>software component instances</i> can be added by by drag-dropping 
+        <i>components</i> from the library into the design area. Hardware components
+        cannot be added directly, they must be defined in the underlying hardware design.<br />
+        Double-clicking the instance opens the design.
+        Selecting an item in the design shows more details in the windows on the right.
+    </p>
+
+    <h3>Design Configuration Details</h3>
+    <p>
+        The Design Configuration Details window is always visible in the design. A <i>design configuration</i> 
+        contains additional information about an the design. Each design can have multiple configurations. 
+        Design configuration defines what are the <b>active views</b> of the component instances in the design.
+    </p>
+
+    <h3>HW Mapping Details</h3>
+    <p>
+        The HW Mapping Details window is always visible in the system design. An <b>HW component reference</b> 
+        defines the top level hardware component for which the system design applies. 
+        <b>HW component view</b> defines the view containing the hardware design that is used as
+        a platform for the system. Changes to the component reference and view must be confirmed by selecting
+        <b>Apply</b>. <b>Revert</b> can be used to change back to the previous component configuration.
     </p>
 </body>
 </html>
