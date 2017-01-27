@@ -16,7 +16,7 @@
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QCheckBox>
-#include <QTextEdit>
+#include <QGroupBox>
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
@@ -62,6 +62,21 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 	bottomLayout->addWidget(generalWarningLabel_);
 	bottomLayout->addWidget(dialogButtons);
 
+    // Create font for previewing.
+    QFont font("Courier");
+    font.setStyleHint(QFont::Monospace);
+    font.setFixedPitch(true);
+    font.setPointSize(9);
+
+    // Create the previewer.
+    previewer_ = new QPlainTextEdit;
+    previewer_->setFont(font);
+    previewer_->setTabStopWidth(4 * previewer_->fontMetrics().width(' '));
+    previewer_->setReadOnly(true);
+    previewer_->setCursorWidth(0);
+    previewer_->setLineWrapMode(QPlainTextEdit::NoWrap);
+    previewer_->setMinimumWidth(850);
+
     // Add everything it their proper position in the final layout.
 	QVBoxLayout* leftLayout = new QVBoxLayout();
     leftLayout->addWidget(viewSelection_);
@@ -70,12 +85,17 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     leftLayout->addLayout(bottomLayout);
 
     QHBoxLayout* topLayout = new QHBoxLayout(this);
-    topLayout->addLayout(leftLayout);
-    topLayout->addWidget(new QTextEdit);
+    QGroupBox* leftBox = new QGroupBox("Settings");
+    leftBox->setLayout(leftLayout);
+    QGroupBox* rightBox = new QGroupBox("Preview");
+    QVBoxLayout* rightLayout = new QVBoxLayout();
+    rightLayout->addWidget(previewer_);
+    rightBox->setLayout(rightLayout);
+
+    topLayout->addWidget(leftBox);
+    topLayout->addWidget(rightBox);
 
     // Finally, connect the relevant events to their handler functions.
-    connect(configuration_.data(), SIGNAL(outputFilesChanged()), 
-        fileOutput_, SLOT(onOutputFilesChanged()), Qt::UniqueConnection);
 
     // Connect the view selection.
     connect(viewSelection_, SIGNAL(viewChanged()), 
@@ -88,14 +108,15 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
         this, SLOT(onMemoryGenerationStateChanged(int)), Qt::UniqueConnection);
 
     // Connect file output.
-    connect(fileOutput_, SIGNAL(selectedFileChanged()), 
-        this, SLOT(onSelectedFileChanged()), Qt::UniqueConnection);
+    connect(fileOutput_, SIGNAL(selectedFileChanged(QSharedPointer<GenerationFile>)), 
+        this, SLOT(onSelectedFileChanged(QSharedPointer<GenerationFile>)), Qt::UniqueConnection);
 
     // Connect the dialog buttons to their respective functions.
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
 
     configuration_->parseDocuments();
+    fileOutput_->onOutputFilesChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -121,14 +142,13 @@ void GeneratorConfigurationDialog::accept()
 
     QDialog::accept();
 }
-#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::onSelectedFileChanged()
 //-----------------------------------------------------------------------------
-void GeneratorConfigurationDialog::onSelectedFileChanged()
+void GeneratorConfigurationDialog::onSelectedFileChanged(QSharedPointer<GenerationFile> newSelection)
 {
-
-    qDebug() << "x vv" << endl;
+    previewer_->setPlainText(newSelection->fileContent_);
 }
 
 //-----------------------------------------------------------------------------
@@ -137,6 +157,7 @@ void GeneratorConfigurationDialog::onSelectedFileChanged()
 void GeneratorConfigurationDialog::onViewChanged()
 {
     configuration_->parseDocuments();
+    fileOutput_->onOutputFilesChanged();
 }
 
 //-----------------------------------------------------------------------------

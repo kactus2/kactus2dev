@@ -196,6 +196,14 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 
     foreach(QSharedPointer<Port> cPort, ports)
     {
+        if (cPort->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
+        {
+            ports.removeOne(cPort);
+        }
+    }
+
+    foreach(QSharedPointer<Port> cPort, ports)
+    {
         QSharedPointer<MetaPort> mPort = component_->ports_[cPort->name()];
 
         if (!mPort)

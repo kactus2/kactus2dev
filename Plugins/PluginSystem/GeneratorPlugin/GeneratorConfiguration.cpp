@@ -86,20 +86,13 @@ void GeneratorConfiguration::parseDocuments()
             (new HDLComponentParser(library_, input_.component, viewSelection_->getView()));
 
         QSharedPointer<GenerationFile> gFile = vFac.prepareComponent(fileOutput_->getOutputPath(), componentParser);
+        gFile->write();
 
         fileOutput_->getFiles()->append(gFile);
     }
 
     // Emit the signal.
     emit outputFilesChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::getPreview()
-//-----------------------------------------------------------------------------
-QString GeneratorConfiguration::getPreview()
-{
-    return "joq";
 }
 
 //-----------------------------------------------------------------------------

@@ -141,6 +141,14 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 
     foreach(QSharedPointer<Port> cPort, ports)
     {
+        if (cPort->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
+        {
+            ports.removeOne(cPort);
+        }
+    }
+
+    foreach(QSharedPointer<Port> cPort, ports)
+    {
         QSharedPointer<MetaPort> mPort = instance_->ports_[cPort->name()];
 
         if (!mPort)

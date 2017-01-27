@@ -52,11 +52,6 @@ public:
      *      @param [out] warning   The stated reason for not accepting.
      */
     bool validSelections(QString &warning);
-    
-    /*!
-     *  Gets reference to the output file paths.
-     */
-    QSharedPointer<QList<QSharedPointer<GenerationFile> > > getFiles();
 
     /*!
      *  Sets the path for the output file for the generation.
@@ -73,12 +68,9 @@ public:
     QString getOutputPath() const;
     
     /*!
-     *  Sets the file name in the given index of file names.
-     *
-     *      @param [in] path    The new name.
-     *      @param [in] index   The index of the file name.
+     *  Gets reference to the output file paths.
      */
-    void setOutputFileName(QString newName, int index);
+    QSharedPointer<QList<QSharedPointer<GenerationFile> > > getFiles();
 
 private:
 

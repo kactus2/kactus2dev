@@ -32,6 +32,7 @@ VerilogDocument::~VerilogDocument()
 //-----------------------------------------------------------------------------
 void VerilogDocument::write()
 {
+    fileContent_.clear();
     QTextStream outputStream(&fileContent_);
     headerWriter_->write(outputStream, fileName_, QDateTime::currentDateTime());
     topWriter_->write(outputStream);

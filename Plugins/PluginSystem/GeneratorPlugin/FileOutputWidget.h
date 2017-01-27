@@ -16,7 +16,7 @@
 #include <QLabel>
 #include <QTableWidget>
 
-class FileOuput;
+#include "FileOutput.h"
 
 class FileOutputWidget : public QWidget
 {
@@ -32,7 +32,7 @@ public:
 signals:
 	
     // Emitted when the selected file is changed.
-	void selectedFileChanged() const;
+	void selectedFileChanged(QSharedPointer<GenerationFile> newSelection) const;
 
 public slots:
 

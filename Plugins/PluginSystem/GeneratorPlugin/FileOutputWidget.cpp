@@ -10,7 +10,6 @@
 //-----------------------------------------------------------------------------
 
 #include "FileOutputWidget.h"
-#include "FileOutput.h"
 
 #include <QFileDialog>
 #include <QVBoxLayout>
@@ -142,6 +141,11 @@ void FileOutputWidget::onOutputFilesChanged()
 
     // File paths are potentially changed -> update existince status.
     checkExistence();
+
+    if (fileTable_->rowCount() > 0 && fileTable_->columnCount() >= COLUMN_FILENAME)
+    {
+        fileTable_->setCurrentCell(0, COLUMN_FILENAME);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -184,12 +188,26 @@ void FileOutputWidget::onItemChanged(QTableWidgetItem *item)
     }
 
     // Inform the change to the model.
-    model_->setOutputFileName(item->text(),item->row());
+    if (item->row() >= model_->getFiles()->size())
+    {
+        return;
+    }
+
+    QSharedPointer<GenerationFile> selection = model_->getFiles()->at(item->row());
+
+    if (selection->fileName_ == item->text())
+    {
+        return;
+    }
+
+    selection->fileName_ = item->text();
+    selection->write();
+    emit selectedFileChanged(selection);
 
     // A name of a file changed -> update existence status.
     checkExistence();
 }
-#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: FileOutputWidget::onItemSelectionChanged()
 //-----------------------------------------------------------------------------
@@ -201,9 +219,12 @@ void FileOutputWidget::onItemSelectionChanged()
     }
 
     QTableWidgetItem* item = fileTable_->selectedItems().last();
-    qDebug() << "x " << item->column() << " y " << item->row() << endl;
 
-    emit selectedFileChanged();
+    if (item->row() < model_->getFiles()->size())
+    {
+        QSharedPointer<GenerationFile> selection = model_->getFiles()->at(item->row());
+        emit selectedFileChanged(selection);
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -66,9 +66,10 @@ QIcon AlteraBSPGenerator::getIcon() const
     return QIcon(":icons/BSPicon24.png");
 }
 
-bool AlteraBSPGenerator::checkGeneratorSupport( QSharedPointer<Document const> libComp,
-	QSharedPointer<Document const> libDesConf /*= QSharedPointer<Document const>()*/,
-	QSharedPointer<Document const> libDes /*= QSharedPointer<Document const>()*/ ) const {
+bool AlteraBSPGenerator::checkGeneratorSupport(QSharedPointer<Component const> component,
+    QSharedPointer<Design const> design,
+    QSharedPointer<DesignConfiguration const> designConfiguration) const
+{
 	
 	// BSP package can only be run on component editor 
 	if (libDesConf || libDes)

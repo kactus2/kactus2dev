@@ -14,6 +14,7 @@
 
 #include <QDialog>
 #include <QLabel>
+#include <QPlainTextEdit>
 
 #include "ViewSelectionWidget.h"
 #include "FileOutputWidget.h"
@@ -44,7 +45,7 @@ private slots:
 
     void onViewChanged();
 
-    void onSelectedFileChanged();
+    void onSelectedFileChanged(QSharedPointer<GenerationFile> newSelection);
 
     void onInterfaceGenerationStateChanged(int state);
 
@@ -72,6 +73,9 @@ private:
 
     //! General warnings are displayed here.
 	QLabel* generalWarningLabel_;
+
+    //! Preview for the generation output.
+    QPlainTextEdit* previewer_;
 };
 
 #endif //GENERATORCONFIGURATIONDIALOG_H

@@ -71,14 +71,6 @@ bool FileOuput::validSelections(QString &warning)
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileOuput::getFileNames()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<GenerationFile> > > FileOuput::getFiles()
-{
-    return files_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileOuput::setOutputPath()
 //-----------------------------------------------------------------------------
 void FileOuput::setOutputPath(QString const& path)
@@ -95,15 +87,9 @@ QString FileOuput::getOutputPath() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileOuput::setOutputFileName()
+// Function: FileOuput::getFileNames()
 //-----------------------------------------------------------------------------
-void FileOuput::setOutputFileName(QString newName, int index)
+QSharedPointer<QList<QSharedPointer<GenerationFile> > > FileOuput::getFiles()
 {
-    if (index < 0 || index >= files_->size())
-    {
-        return;
-    }
-
-    QSharedPointer<GenerationFile> file = files_->at(index);
-    file->fileName_ = newName;
+    return files_;
 }

@@ -57,7 +57,7 @@ QString VerilogGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getVersion() const
 {
-    return "1.5c";
+    return "2.0";
 }
 
 //-----------------------------------------------------------------------------

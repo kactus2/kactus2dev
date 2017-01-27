@@ -48,8 +48,6 @@ public:
      *  Parses the documents so that we know what will be generated.
      */
     void parseDocuments();
-
-    QString getPreview();
 	
     /*!
      *  Gets the view selection data.
