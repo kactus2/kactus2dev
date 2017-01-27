@@ -18,9 +18,8 @@
 
 #include "ViewSelection.h"
 #include "FileOutput.h"
-#include <Plugins/common/HDLParser/HDLComponentParser.h>
-#include <Plugins/common/HDLParser/MetaDesign.h>
 #include <Plugins/VerilogGenerator/VerilogWriterFactory/VerilogWriterFactory.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 
 //-----------------------------------------------------------------------------
 //! Container class for generator configuration.
@@ -31,8 +30,9 @@ class GeneratorConfiguration : public QObject
 
 public:
 
-	//! The constructor.
-    GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection, bool isDesign);
+	//! The constructors.
+    GeneratorConfiguration(LibraryInterface* library, GenerationTuple input,
+        QSharedPointer<ViewSelection> viewSelection, bool isDesign);
 
 	//! The destructor.
     ~GeneratorConfiguration();
@@ -94,6 +94,8 @@ private:
 	GeneratorConfiguration(GeneratorConfiguration const& rhs);
 	GeneratorConfiguration& operator=(GeneratorConfiguration const& rhs);
 
+    LibraryInterface* library_;
+    GenerationTuple input_;
     //! The view selection configuration.
     QSharedPointer<ViewSelection> viewSelection_;
     bool isDesign_;
@@ -101,7 +103,7 @@ private:
     QSharedPointer<FileOuput> fileOutput_;
 
     //! If true, interfaces should be utilized in generation, else it is false.
-    bool generateInterface_;
+    bool generateInterfaces_;
     //! If true, definitions for registers are generated as well, else it is false.
     bool generateMemory_;
 };

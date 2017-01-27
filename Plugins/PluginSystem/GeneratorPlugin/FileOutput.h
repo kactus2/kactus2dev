@@ -24,6 +24,11 @@ struct GenerationFile
     QString fileName_;
     QString vlnv_;
     QString fileContent_;
+    
+    /*!
+     *  Writes the content.
+     */
+	virtual void write(){}
 };
 
 //-----------------------------------------------------------------------------

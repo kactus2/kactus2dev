@@ -39,9 +39,11 @@ HEADERS += ../common/HDLParser/MetaInstance.h \
     ../../editors/ComponentEditor/common/ParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../designEditors/common/TopComponentParameterFinder.h \
+    ./VerilogAssignmentWriter/VerilogAssignmentWriter.h \
     ./TextBodyWriter/TextBodyWriter.h \
     ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
     ../common/HDLParser/MetaDesign.h \
+    ./PortVerilogWriter/VerilogTopDefaultWriter.h \
     ./VerilogWriterFactory/VerilogDocument.h \
     ./VerilogWriterFactory/VerilogWriterFactory.h
 SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
@@ -70,10 +72,12 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../designEditors/common/TopComponentParameterFinder.cpp \
+    ./VerilogAssignmentWriter/VerilogAssignmentWriter.cpp \
     ./TextBodyWriter/TextBodyWriter.cpp \
     ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp \
     ../common/HDLParser/MetaInstance.cpp \
     ../common/HDLParser/MetaDesign.cpp \
+    ./PortVerilogWriter/VerilogTopDefaultWriter.cpp \
     ./VerilogWriterFactory/VerilogDocument.cpp \
     ./VerilogWriterFactory/VerilogWriterFactory.cpp
 RESOURCES += VerilogGenerator.qrc

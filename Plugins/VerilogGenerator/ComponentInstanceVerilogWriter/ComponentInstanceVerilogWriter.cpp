@@ -239,7 +239,7 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
     // Use the default value of port, if no assignments exist.
     if (mPort->assignments_.size() < 1)
     {
-        if (mPort->port_->getDirection() == DirectionTypes::IN || mPort->port_->getDirection() == DirectionTypes::INOUT);
+        if (mPort->port_->getDirection() == DirectionTypes::IN || mPort->port_->getDirection() == DirectionTypes::INOUT)
         {
             return mPort->defaultValue_;
         }

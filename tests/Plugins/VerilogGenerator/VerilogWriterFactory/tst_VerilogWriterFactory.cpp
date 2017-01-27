@@ -16,6 +16,7 @@
 #include <tests/MockObjects/LibraryMock.h>
 
 #include <Plugins/common/HDLParser/MetaDesign.h>
+#include <Plugins/common/HDLParser/HDLComponentParser.h>
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 
 #include <IPXACTmodels/common/Parameter.h>
@@ -59,8 +60,6 @@ private slots:
     
     void testDescriptionAndVLNVIsPrintedAboveInstance();
     void testDescriptionAndVLNVIsPrintedAboveInstance_data();
-
-    void testTopLevelParametersAreWritten();
     void testInstanceParametersAreWritten();
 
     // Flat test cases:
@@ -81,7 +80,7 @@ private:
     QSharedPointer<MetaPort> addPort(QString const& portName, int portSize, DirectionTypes::Direction direction, 
         QSharedPointer<MetaInstance> component, QSharedPointer<MetaInterface> mInterface =  QSharedPointer<MetaInterface>::QSharedPointer());
 
-    void addParameter(QString const& name, QString const& value);
+    void addParameter(QString const& name, QString const& value, QSharedPointer<MetaInstance> mInstance);
 
     void runGenerator(bool useDesign);
 
@@ -111,9 +110,11 @@ private:
     void verifyOutputContains(QString const& expectedOutput);
 
     void compareOutputTo(QString const& expectedOutput);
-   
+
     QSharedPointer<MetaInstance> topComponent_;
     QSharedPointer<MetaDesign> design_;
+
+    QSharedPointer<HDLComponentParser> flatComponent_;
 
     //! The generator output as a string.
     QString output_;
@@ -155,10 +156,14 @@ void tst_VerilogWriterFactory::init()
     topComponent_->moduleName_ = "TestComponent";
 
     VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
-    topComponent_->component_ = QSharedPointer<Component>(new Component(vlnv));
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv));
+    topComponent_->component_ = component;
 
     design_ = QSharedPointer<MetaDesign>(new MetaDesign);
     design_->topInstance_ = topComponent_;
+
+    flatComponent_ = QSharedPointer<HDLComponentParser>(
+        new HDLComponentParser(&library_, component, QSharedPointer<View>::QSharedPointer()));
 
     library_.clear();
 }
@@ -184,8 +189,8 @@ void tst_VerilogWriterFactory::testTopLevelComponent()
     addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
     addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
     addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
-    addParameter("dataWidth", "8");
-    addParameter("freq", "100000");
+    addParameter("dataWidth", "8", topComponent_);
+    addParameter("freq", "100000", topComponent_);
 
     runGenerator(true);
 
@@ -243,13 +248,14 @@ QSharedPointer<MetaPort> tst_VerilogWriterFactory::addPort(QString const& portNa
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogWriterFactory::addParameter()
 //-----------------------------------------------------------------------------
-void tst_VerilogWriterFactory::addParameter(QString const& name, QString const& value)
+void tst_VerilogWriterFactory::addParameter(QString const& name, QString const& value,
+    QSharedPointer<MetaInstance> mInstance)
 {
     QSharedPointer<Parameter> parameter = QSharedPointer<Parameter>(new Parameter());
     parameter->setName(name);
     parameter->setValue(value);
 
-    topComponent_->parameters_.append(parameter);
+    mInstance->parameters_.append(parameter);
 }
 
 //-----------------------------------------------------------------------------
@@ -263,11 +269,11 @@ void tst_VerilogWriterFactory::runGenerator(bool useDesign)
 
 	if (useDesign)
     {
-		document = factory.prepareDesign(outputPath, design_);
+		document = factory.prepareDesign(design_);
 	}
 	else
 	{
-		document = factory.prepareComponent(outputPath, topComponent_);
+		document = factory.prepareComponent(outputPath, flatComponent_);
 	}
 
     generationTime_ =  QDateTime::currentDateTime();
@@ -1316,39 +1322,20 @@ void tst_VerilogWriterFactory::testDescriptionAndVLNVIsPrintedAboveInstance_data
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_VerilogWriterFactory::testTopLevelParametersAreWritten()
-//-----------------------------------------------------------------------------
-void tst_VerilogWriterFactory::testTopLevelParametersAreWritten()
-{
-    QSharedPointer<Parameter> parameter(new Parameter());
-    parameter->setName("testParameter");
-    parameter->setValue("1");
-    topComponent_->parameters_.append(parameter);
-
-    runGenerator(false);
-
-    verifyOutputContains(QString(
-        "module TestComponent #(\n"
-        "    parameter                              testParameter    = 1\n"
-        ") ();"
-        ));
-}
-
-//-----------------------------------------------------------------------------
 // Function: tst_VerilogWriterFactory::testInstanceParametersAreWritten()
 //-----------------------------------------------------------------------------
 void tst_VerilogWriterFactory::testInstanceParametersAreWritten()
 {
-	QSharedPointer<View> activeView(new View("rtl"));
-	activeView->setComponentInstantiationRef("instance1");
-  
+    QSharedPointer<View> activeView(new View("rtl"));
+    activeView->setComponentInstantiationRef("instance1");
+
     QSharedPointer<MetaInstance> sender = addSender("sender");
 
     QSharedPointer<Parameter> parameter(new Parameter());
     parameter->setValueId("parameterId");
     parameter->setName("testParameter");
     parameter->setValue("2");
-	parameter->setValueResolve("user");
+    parameter->setValueResolve("user");
 
     sender->parameters_.append(parameter);
 
@@ -1365,12 +1352,12 @@ void tst_VerilogWriterFactory::testInstanceParametersAreWritten()
 //-----------------------------------------------------------------------------
 void tst_VerilogWriterFactory::testFlatComponent()
 {
-    addPort("clk", 1, DirectionTypes::IN, topComponent_);
-    addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
-    addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
-    addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
-    addParameter("dataWidth", "8");
-    addParameter("freq", "100000");
+    addPort("clk", 1, DirectionTypes::IN, flatComponent_);
+    addPort("rst_n", 1, DirectionTypes::IN, flatComponent_);
+    addPort("dataOut", 8, DirectionTypes::OUT, flatComponent_);
+    addPort("dataIn", 8, DirectionTypes::IN, flatComponent_);
+    addParameter("dataWidth", "8", flatComponent_);
+    addParameter("freq", "100000", flatComponent_);
 
     runGenerator(false);
 
@@ -1421,12 +1408,12 @@ void tst_VerilogWriterFactory::testGenerationWithImplementation()
 
 	existingFile.close();
 
-	addPort("clk", 1, DirectionTypes::IN, topComponent_);
-	addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
-	addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
-	addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
-	addParameter("dataWidth", "8");
-	addParameter("freq", "100000");
+	addPort("clk", 1, DirectionTypes::IN, flatComponent_);
+	addPort("rst_n", 1, DirectionTypes::IN, flatComponent_);
+	addPort("dataOut", 8, DirectionTypes::OUT, flatComponent_);
+	addPort("dataIn", 8, DirectionTypes::IN, flatComponent_);
+	addParameter("dataWidth", "8", flatComponent_);
+	addParameter("freq", "100000", flatComponent_);
 
 	runGenerator(false);
 
@@ -1483,12 +1470,12 @@ void tst_VerilogWriterFactory::testGenerationWithImplementationWithTag()
 
 	existingFile.close();
 
-	addPort("clk", 1, DirectionTypes::IN, topComponent_);
-	addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
-	addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
-	addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
-	addParameter("dataWidth", "8");
-	addParameter("freq", "100000");
+	addPort("clk", 1, DirectionTypes::IN, flatComponent_);
+	addPort("rst_n", 1, DirectionTypes::IN, flatComponent_);
+	addPort("dataOut", 8, DirectionTypes::OUT, flatComponent_);
+	addPort("dataIn", 8, DirectionTypes::IN, flatComponent_);
+	addParameter("dataWidth", "8", flatComponent_);
+	addParameter("freq", "100000", flatComponent_);
 
 	runGenerator(false);
 
@@ -1529,12 +1516,12 @@ void tst_VerilogWriterFactory::testGenerationWithImplementationWithPostModule()
 
 	existingFile.close();
 
-	addPort("clk", 1, DirectionTypes::IN, topComponent_);
-	addPort("rst_n", 1, DirectionTypes::IN, topComponent_);
-	addPort("dataOut", 8, DirectionTypes::OUT, topComponent_);
-	addPort("dataIn", 8, DirectionTypes::IN, topComponent_);
-	addParameter("dataWidth", "8");
-	addParameter("freq", "100000");
+	addPort("clk", 1, DirectionTypes::IN, flatComponent_);
+	addPort("rst_n", 1, DirectionTypes::IN, flatComponent_);
+	addPort("dataOut", 8, DirectionTypes::OUT, flatComponent_);
+	addPort("dataIn", 8, DirectionTypes::IN, flatComponent_);
+	addParameter("dataWidth", "8", flatComponent_);
+	addParameter("freq", "100000", flatComponent_);
 
 	runGenerator(false);
 

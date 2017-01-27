@@ -220,7 +220,9 @@
     </ClCompile>
     <ClCompile Include="ModelParameterVerilogWriter\ModelParameterVerilogWriter.cpp" />
     <ClCompile Include="PortVerilogWriter\PortVerilogWriter.cpp" />
+    <ClCompile Include="PortVerilogWriter\VerilogTopDefaultWriter.cpp" />
     <ClCompile Include="TextBodyWriter\TextBodyWriter.cpp" />
+    <ClCompile Include="VerilogAssignmentWriter\VerilogAssignmentWriter.cpp" />
     <ClCompile Include="VerilogGeneratorPlugin.cpp" />
     <ClCompile Include="VerilogHeaderWriter\VerilogHeaderWriter.cpp" />
     <ClCompile Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.cpp" />
@@ -244,6 +246,8 @@
     <ClInclude Include="..\common\NameGenerationPolicy.h" />
     <ClInclude Include="..\common\PortSorter\InterfaceDirectionNameSorter.h" />
     <ClInclude Include="..\common\PortSorter\PortSorter.h" />
+    <ClInclude Include="PortVerilogWriter\VerilogTopDefaultWriter.h" />
+    <ClInclude Include="VerilogAssignmentWriter\VerilogAssignmentWriter.h" />
     <ClInclude Include="VerilogWriterFactory\VerilogDocument.h" />
     <CustomBuild Include="VerilogWriterFactory\VerilogWriterFactory.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>

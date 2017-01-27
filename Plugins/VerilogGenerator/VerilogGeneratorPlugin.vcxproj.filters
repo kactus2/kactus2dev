@@ -125,6 +125,12 @@
     <Filter Include="Source Files\VerilogWriterFactory">
       <UniqueIdentifier>{df935c43-bdc6-4b31-9901-9c1c5a63f862}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\VerilogAssignmentWriter">
+      <UniqueIdentifier>{eb136d54-9485-4133-b031-5e668f8daa3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VerilogAssignmentWriter">
+      <UniqueIdentifier>{3fcc2a9d-b112-4143-8341-e27e3d9d8059}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ComponentVerilogWriter\ComponentVerilogWriter.cpp">
@@ -268,6 +274,12 @@
     <ClCompile Include="VerilogWriterFactory\VerilogDocument.cpp">
       <Filter>Source Files\VerilogWriterFactory</Filter>
     </ClCompile>
+    <ClCompile Include="VerilogAssignmentWriter\VerilogAssignmentWriter.cpp">
+      <Filter>Source Files\VerilogAssignmentWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="PortVerilogWriter\VerilogTopDefaultWriter.cpp">
+      <Filter>Source Files\PortVerilogWriter</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\Writer.h">
@@ -359,6 +371,12 @@
     </ClInclude>
     <ClInclude Include="VerilogWriterFactory\VerilogDocument.h">
       <Filter>Header Files\VerilogWriterFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogAssignmentWriter\VerilogAssignmentWriter.h">
+      <Filter>Header Files\VerilogAssignmentWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="PortVerilogWriter\VerilogTopDefaultWriter.h">
+      <Filter>Header Files\PortVerilogWriter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

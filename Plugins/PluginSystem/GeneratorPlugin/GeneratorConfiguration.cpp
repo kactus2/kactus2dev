@@ -15,12 +15,16 @@
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
+#include <Plugins/common/HDLParser/HDLComponentParser.h>
+#include <Plugins/common/HDLParser/MetaDesign.h>
+
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
-GeneratorConfiguration::GeneratorConfiguration(QSharedPointer<ViewSelection> viewSelection, bool isDesign) :
-	viewSelection_(viewSelection), isDesign_(isDesign), fileOutput_(new FileOuput), generateInterface_(false),
-    generateMemory_(false)
+GeneratorConfiguration::GeneratorConfiguration(LibraryInterface* library, GenerationTuple input,
+    QSharedPointer<ViewSelection> viewSelection, bool isDesign) :
+	library_(library), input_(input), viewSelection_(viewSelection), isDesign_(isDesign),
+    fileOutput_(new FileOuput), generateInterfaces_(false), generateMemory_(false)
 {
 }
 
@@ -59,39 +63,31 @@ void GeneratorConfiguration::parseDocuments()
     // Clear the existing list of files.
     fileOutput_->getFiles()->clear();
 
+    VerilogWriterFactory vFac(library_, generateInterfaces_, generateMemory_, "foo", "bar");
 
     if (isDesign_)
     {
-        // Parse the designs hierarchy.
-        MetaDesign::parseHierarchy()
-
-        designParser_->parseDesign(componentParser_->getParsedComponent(), viewSelection_->getView());
+        // Parse the design hierarchy.
+        QList<QSharedPointer<MetaDesign> > designs =
+            MetaDesign::parseHierarchy(library_, input_, viewSelection_->getView());
 
         // Go through the parsed designs.
-        foreach(QSharedPointer<GenerationDesign> design, designParser_->getParsedDesigns())
+        foreach(QSharedPointer<MetaDesign> design, designs)
         {
-            // Point to the parsed file name.
-            QString* fileName = &design->topComponent_->fileName_;
-            // Add the file suffix to it.
-            *fileName = design->topComponent_->moduleName_ + ".v";
-            // Inform the names to the model.
-            fileOutput_->getFiles()->append(fileName);
+            QSharedPointer<GenerationFile> gFile = vFac.prepareDesign(design);
+            gFile->write();
 
-            // Append the VLNV to the list.
-            fileOutput_->getVLNVs()->append(design->topComponent_->component_->getVlnv().toString());
+            fileOutput_->getFiles()->append(gFile);
         }
     }
     else
     {
-        // Point to the parsed file name.
-        QString* fileName = &componentParser_->getParsedComponent()->fileName_;
-        // Add the file suffix to it.
-        *fileName = componentParser_->getParsedComponent()->moduleName_ + ".v";
-        // Inform the names to the model.
-        fileOutput_->getFiles()->append(fileName);
+        QSharedPointer<HDLComponentParser> componentParser
+            (new HDLComponentParser(library_, input_.component, viewSelection_->getView()));
 
-        // Append the VLNV to the list.
-        fileOutput_->getVLNVs()->append(componentParser_->getParsedComponent()->component_->getVlnv().toString());
+        QSharedPointer<GenerationFile> gFile = vFac.prepareComponent(fileOutput_->getOutputPath(), componentParser);
+
+        fileOutput_->getFiles()->append(gFile);
     }
 
     // Emit the signal.
@@ -103,41 +99,7 @@ void GeneratorConfiguration::parseDocuments()
 //-----------------------------------------------------------------------------
 QString GeneratorConfiguration::getPreview()
 {
-    return "";
-
-    // Prepare the generator.
-    /*if (designGeneration)
-    {
-        QList<QSharedPointer<GenerationDesign> > designs = designParser->getParsedDesigns();
-        foreach (QSharedPointer<GenerationDesign> design, designs)
-        {
-            // Design generation gets parsed designs as a parameter, and the output path.
-            generator.prepareDesign(configuration->getFileOuput()->getOutputPath(), design);
-        }
-    }
-    else
-    {
-        // Component generation gets the parsed component as a parameter, and the output path.
-        if (!generator.prepareComponent(configuration->getFileOuput()->getOutputPath(), componentParser->getParsedComponent()))
-        {
-            // If it says no-go, abort the generation.
-            return "CANNOT PARSE";
-        }
-    }
-
-    VerilogDocument document = generator_->getDocuments()->first();
-    QFile outputFile(document->filePath_); 
-    if (!outputFile.open(QIODevice::WriteOnly))
-    {
-        emit reportError(tr("Could not open output file for writing: %1").arg(document->filePath_));
-        return;
-    }
-
-    QTextStream outputStream(&outputFile);
-
-    generate(outputStream, document);
-
-    outputFile.close();*/
+    return "joq";
 }
 
 //-----------------------------------------------------------------------------
@@ -161,7 +123,7 @@ QSharedPointer<FileOuput> GeneratorConfiguration::getFileOuput() const
 //-----------------------------------------------------------------------------
 void GeneratorConfiguration::setInterfaceGeneration(bool shouldGenerate)
 {
-    generateInterface_ = shouldGenerate;
+    generateInterfaces_ = shouldGenerate;
 }
 
 //-----------------------------------------------------------------------------
@@ -169,7 +131,7 @@ void GeneratorConfiguration::setInterfaceGeneration(bool shouldGenerate)
 //-----------------------------------------------------------------------------
 bool GeneratorConfiguration::getInterfaceGeneration() const
 {
-    return generateInterface_;
+    return generateInterfaces_;
 }
 
 //-----------------------------------------------------------------------------

@@ -52,7 +52,7 @@ VerilogWriterFactory::~VerilogWriterFactory()
 // Function: VerilogWriterFactory::prepareComponent()
 //-----------------------------------------------------------------------------
 QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareComponent(QString const& outputPath,
-    QSharedPointer<MetaInstance> component)
+    QSharedPointer<HDLComponentParser> component)
 {
     // If we are not generating based on a design, we must parse the existing implementation.
     QString implementation;
@@ -86,7 +86,7 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareComponent(QString c
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::prepareDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareDesign(QString const& outputPath, QSharedPointer<MetaDesign> design)
+QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareDesign(QSharedPointer<MetaDesign> design)
 {
     QSharedPointer<VerilogDocument> document = initializeComponentWriters(design->topInstance_);
     document->fileName_ = design->topInstance_->moduleName_ + ".v";

@@ -33,8 +33,8 @@
 //-----------------------------------------------------------------------------
 // Function: MetaDesign::MetaDesign()
 //-----------------------------------------------------------------------------
-MetaDesign::MetaDesign(LibraryInterface* library, QSharedPointer<Design> design,
-    QSharedPointer<DesignConfiguration> designConf, QSharedPointer<MetaInstance> topInstance) :
+MetaDesign::MetaDesign(LibraryInterface* library, QSharedPointer<Design const> design,
+    QSharedPointer<DesignConfiguration const> designConf, QSharedPointer<MetaInstance> topInstance) :
 library_(library),
 design_(design),
 designConf_(designConf),
@@ -66,8 +66,7 @@ MetaDesign::MetaDesign()
 //-----------------------------------------------------------------------------
 // Function: MetaDesign::parseHierarchy()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* library, QSharedPointer<Component> topComponent,
-    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf,
+QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* library, GenerationTuple input,
     QSharedPointer<View> topComponentView)
 {
     // Creating null parameters for function call.
@@ -78,10 +77,10 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
     // Instantiate the top component with the selected design.
     // Obviously it cannot have CEVs or parameters of any other component.
     QSharedPointer<MetaInstance> topMostInstance(new MetaInstance
-        (library, topComponent, topComponentView, componentInstance, topFinder, cevs));
+        (library, input.component, topComponentView, componentInstance, topFinder, cevs));
 
     // Create the design associated with the top component.
-    QSharedPointer<MetaDesign> topMostDesign(new MetaDesign(library, design, designConf, topMostInstance));
+    QSharedPointer<MetaDesign> topMostDesign(new MetaDesign(library, input.design, input.designConfiguration, topMostInstance));
 
     // Add it to the queue of designs that are to be parsed.
     QQueue<QSharedPointer<MetaDesign> > designs;

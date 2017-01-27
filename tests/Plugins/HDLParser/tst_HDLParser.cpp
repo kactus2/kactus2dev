@@ -137,6 +137,9 @@ private:
 	//! The design configuration used in the tests.
     QSharedPointer<DesignConfiguration> designConf_;
 
+    //! The above three bundled together.
+    GenerationTuple input_;
+
     //! The abstraction definitions used in the tests.
     QSharedPointer<ConfigurableVLNVReference> clkAbstractionVLNV_;
     QSharedPointer<AbstractionDefinition> clkAbstractionDefinition_;
@@ -192,6 +195,10 @@ void tst_HDLParser::init()
 	designConf_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(designConfVlnv));
     designConf_->setDesignRef(designVlnv);
 
+    input_.component = topComponent_;
+    input_.design = design_;
+    input_.designConfiguration = designConf_;
+
     clkAbstractionVLNV_ = QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "Test", "TestLibrary", "clkAbsDef", "1.0"));
 
@@ -244,7 +251,7 @@ void tst_HDLParser::testTopLevelComponent()
     addModuleParameter("freq", "100000", "secondParameter");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -286,7 +293,7 @@ void tst_HDLParser::testTopLevelComponentExpressions()
     topComponent_->getPorts()->append(port);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -367,7 +374,7 @@ void tst_HDLParser::testHierarchicalConnections()
     addInstanceToDesign("instance1", instanceVlnv, activeView);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -463,7 +470,7 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
     addInstanceToDesign("instance1", instanceVlnv, activeView);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -659,7 +666,7 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -769,7 +776,7 @@ void tst_HDLParser::testEmptyBounds()
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -864,7 +871,7 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -996,7 +1003,7 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     addConnectionToDesign("sender", "data_bus", "receiver2", "data_bus");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1079,7 +1086,7 @@ void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
     addConnectionToDesign("sender", "data_bus", "sixteenBitReceiver", "data_bus");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1239,7 +1246,7 @@ void tst_HDLParser::testSlicedInterconnection()
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1338,7 +1345,7 @@ void tst_HDLParser::testAbsDefDefault()
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1375,7 +1382,7 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
     addAdhocConnection("dataAdHoc", "sender", "data_out", "receiver1", "data_in");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1452,7 +1459,7 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
     addAdhocConnection("dataAdHoc", "sender", "data_out", "receiver", "data_in");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1505,7 +1512,7 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
     design_->getAdHocConnections()->first()->getInternalPortReferences()->first()->setPartSelect(ps);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1588,7 +1595,7 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     addTieOffAdhocConnectionToInstancePort("expID - 4", instanceName, expressionName, "expression_connection");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1655,7 +1662,7 @@ void tst_HDLParser::testPortDefaultValueInComponentInstance()
     defaultPort3->setDefaultValue("23");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1737,7 +1744,7 @@ void tst_HDLParser::testHierarchicalAdhocConnection()
     addHierAdhocConnection("data_from_sender", "sender", "data_out");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1840,7 +1847,7 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     design_->getAdHocConnections()->append(multiConnection);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1919,7 +1926,7 @@ void tst_HDLParser::testInstanceParametersAreCulled()
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -1975,7 +1982,7 @@ void tst_HDLParser::testTopComponentParametersAreUtilized()
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -2030,7 +2037,7 @@ void tst_HDLParser::testInstanceComponentParametersAreUtilized()
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -2085,7 +2092,7 @@ void tst_HDLParser::testParameterPropagationFromTop()
     designConf_->getViewConfiguration("sender")->getViewConfigurableElements()->append(parameterOverride);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -2146,7 +2153,7 @@ void tst_HDLParser::testParameterPropagationFromTop2()
     senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -2244,7 +2251,7 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
     addConnectionToDesign("sender", "data_bus", "receiver", "data_bus");
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
@@ -2349,7 +2356,7 @@ void tst_HDLParser::testMultiLevelHierachy()
     senderInstance->getConfigurableElementValues()->append(parameterOverride);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
-        (&library_, topComponent_, design_, designConf_, topView_);
+        (&library_, input_, topView_);
 
     QCOMPARE(designs.size(), 2);
     QSharedPointer<MetaDesign> design = designs.last();

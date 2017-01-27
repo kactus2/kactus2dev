@@ -25,26 +25,27 @@ MakeConfiguration::MakeConfiguration(SWStackParser* parser) :
 
     // Clear the old ones.
     fileOutput_->getFiles()->clear();
-    fileOutput_->getVLNVs()->clear();
 
     // Append to the master make file to the list, no VLNV is directly associated with it.
-    fileOutput_->getFiles()->append(parser->masterName_);
-    fileOutput_->getVLNVs()->append(":::");
+    QSharedPointer<GenerationFile> masterFile(new GenerationFile);
+    masterFile->fileName_ = *parser->masterName_;
+    fileOutput_->getFiles()->append(masterFile);
 
     foreach (QSharedPointer<MakeFileData> mfd, *parser->getParsedData())
     {
         // Append reference to the each proposed name of a makefile.
-        QString* fileName = &mfd->makeName;
-        fileOutput_->getFiles()->append(fileName);
+        QSharedPointer<GenerationFile> file(new GenerationFile);
+        file->fileName_ = mfd->makeName;
+        fileOutput_->getFiles()->append(file);
 
         // Pick the VLNV from the first stack component if exists.
         if (mfd->parts.size() > 0)
         {
-            fileOutput_->getVLNVs()->append(mfd->parts.first()->component->getVlnv().toString());
+            file->vlnv_ = mfd->parts.first()->component->getVlnv().toString();
         }
         else
         {
-            fileOutput_->getVLNVs()->append(":::");
+            file->vlnv_ = ":::";
         }
     }
 }

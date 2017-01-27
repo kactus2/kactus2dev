@@ -13,7 +13,7 @@
 #define VERILOGGENERATORPLUGIN_H
 
 #include "veriloggeneratorplugin_global.h"
-#include "VerilogGenerator/VerilogGenerator.h"
+#include "VerilogWriterFactory/VerilogWriterFactory.h"
 
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
@@ -102,32 +102,35 @@ public:
      *  Returns the icon for the generator.
      */
     virtual QIcon getIcon() const;
-
-    /*!
-     *  Checks whether the generator supports generation for the given library component.
+    
+        /*!
+     *  Checks whether the generator may run for the given component or design. 
      *
-     *      @param [in] libComp		The library component for which to check support.
-     *      @param [in] libDesConf	The optional design configuration object.
-     *      @param [in] libDes		The optional design object.
+     *      @param [in] component	        The component for which to check support. If design is not null, component
+	 *                                      will refer to design or designConfiguration.
+     *      @param [in] design	            The design, if the generator is ran for a design.
+     *      @param [in] designConfiguration The design configuration for design, if it is not null.
      *
-     *      @return True, if the generator supports the given component, otherwise false.
+     *      @return True, if the generator may run the given component. Otherwise false.
      */
-    virtual bool checkGeneratorSupport(QSharedPointer<Document const> libComp, 
-        QSharedPointer<Document const> libDesConf = QSharedPointer<Document const>() , 
-        QSharedPointer<Document const> libDes = QSharedPointer<Document const>()) const;
+    virtual bool checkGeneratorSupport(QSharedPointer<Component const> component,
+        QSharedPointer<Design const> design,
+        QSharedPointer<DesignConfiguration const> designConfiguration) const;
 
     /*!
-     *  Runs the generator.
+     *  Runs the generation, creating new files and/or modifying the IP-XACT metadata. The function has
+	 *  also access to the parent window widget, so that it can show dialogs for the user to aid the generation.
      *
-     *      @param [in]			utility			The plugin utility to use.
-     *      @param [in,out]	    libComp			The library component for which the generator is run.
-     *      @param [in]	        libDesConf		The optional design configuration object for the generator.
-     *      @param [in]	        libDes			The optional design object.
+     *      @param [in] utility			    The plugin utility interface.
+     *      @param [in] component	        The component for which to check support. If design is not null, component
+     *                                      will refer to design or designConfiguration.
+     *      @param [in] design	            The design, if the generator is ran for a design.
+     *      @param [in] designConfiguration The design configuration for design, if it is not null.
      */
     virtual void runGenerator(IPluginUtility* utility, 
-        QSharedPointer<Document> libComp, 
-        QSharedPointer<Document> libDesConf = QSharedPointer<Document>(), 
-        QSharedPointer<Document> libDes = QSharedPointer<Document>());
+        QSharedPointer<Component> component,
+        QSharedPointer<Design> design,
+        QSharedPointer<DesignConfiguration> designConfiguration);
 
 protected:
 
@@ -135,28 +138,28 @@ protected:
      *  Finds the possible views for generation.
      *
      *      @param [in,out]	    targetComponent	The component for which the generator is run.
-     *      @param [in]	        libDes   		The design which the generator is run.
-     *      @param [in]	        libDesConf      The design configuration object for which the generator is run.
      *
      *      @return List of possible view names for which to run the generation.
      */
-    QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<Component> targetComponent,
-        QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) const;
+    QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<const Component> targetComponent) const;
+
+    /*!
+     *  Finds the possible views for generation.
+     *
+     *      @param [in] input			        The relevant IP-XACT documents.
+     *
+     *      @return List of possible view names for which to run the generation.
+     */
+    QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(GenerationTuple input) const;
 
     /*!
      *  Checks if the generator could be configured.
      *
-	 *      @param [in] possibleViews			The list of possible views for generation.
-     *      @param [in] possibleInstantiations	The list of possible instantiations for generation.
-     *      @param [in] possibleFileSets	    The list of possible file sets for generation.
+	 *      @param [in] input			        The relevant IP-XACT documents.
      *
-     *      @return True, if configuration was successful, otherwise false.
+     *      @return True, if was successful, otherwise false.
      */
-    virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
-		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
-        QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets,
-        HDLComponentParser* componentParser,
-        HDLDesignParser* designParser);
+    virtual bool couldConfigure(GenerationTuple input);
 
     /*!
      *  Gets the configuration for the generation.

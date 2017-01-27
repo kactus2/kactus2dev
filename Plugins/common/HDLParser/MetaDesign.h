@@ -27,8 +27,8 @@ class MetaDesign
 {
 public:
     //! The constructor.
-    MetaDesign(LibraryInterface* library, QSharedPointer<Design> design,
-        QSharedPointer<DesignConfiguration> designConf, QSharedPointer<MetaInstance> topInstance);
+    MetaDesign(LibraryInterface* library, QSharedPointer<Design const> design,
+        QSharedPointer<DesignConfiguration const> designConf, QSharedPointer<MetaInstance> topInstance);
 
     //! The destructor.
     ~MetaDesign();
@@ -36,8 +36,7 @@ public:
     //! The alternative constructor.
     MetaDesign();
 
-    static QList<QSharedPointer<MetaDesign> > parseHierarchy(LibraryInterface* library, QSharedPointer<Component> topComponent,
-        QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf,
+    static QList<QSharedPointer<MetaDesign> > parseHierarchy(LibraryInterface* library,  GenerationTuple input,
         QSharedPointer<View> topComponentView);
 
     QMap<QString,QSharedPointer<MetaInstance> > instances_;
@@ -79,10 +78,10 @@ private:
     LibraryInterface* library_;
 
     //! The design to parse.
-    QSharedPointer<Design> design_;
+    QSharedPointer<Design const> design_;
 
     //! The design configuration to parse.
-    QSharedPointer<DesignConfiguration> designConf_;
+    QSharedPointer<DesignConfiguration const> designConf_;
      
     //! The list of all parsed designs that are below the current top are in this list.
     QList<QSharedPointer<MetaDesign> > subDesigns_;

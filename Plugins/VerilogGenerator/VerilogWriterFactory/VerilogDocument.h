@@ -76,7 +76,7 @@ public:
     ~VerilogDocument();
     
     /*!
-     *  Writes the Verilog to files.
+     *  Writes the content.
      */
 	void write();
 

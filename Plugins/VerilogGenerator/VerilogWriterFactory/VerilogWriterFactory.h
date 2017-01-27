@@ -18,6 +18,7 @@
 
 #include <QTextStream>
 #include <Plugins/common/HDLParser/MetaDesign.h>
+#include <Plugins/common/HDLParser/HDLComponentParser.h>
 
 class ComponentVerilogWriter;
 class ComponentInstanceVerilogWriter;
@@ -62,7 +63,7 @@ public:
      *
      *      @return False, if something went wrong.
      */
-    QSharedPointer<VerilogDocument> prepareComponent(QString const& outputPath, QSharedPointer<MetaInstance> component);
+    QSharedPointer<VerilogDocument> prepareComponent(QString const& outputPath, QSharedPointer<HDLComponentParser> component);
 
     /*!
      *  Prepares the given set of HDL designs for generation, creating writers for the task.
@@ -72,7 +73,7 @@ public:
      *
      *      @remark If parsing is not called before generation, nothing is generated.
      */
-    QSharedPointer<VerilogDocument> prepareDesign(QString const& outputPath, QSharedPointer<MetaDesign> design);
+    QSharedPointer<VerilogDocument> prepareDesign(QSharedPointer<MetaDesign> design);
 
 signals:
 	

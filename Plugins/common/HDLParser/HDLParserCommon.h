@@ -30,6 +30,17 @@ class AbstractionDefinition;
 class Port;
 class Parameter;
 
+struct GenerationTuple
+{
+    // The component for which the generator is run. If design is not null, component
+    // will refer to design or designConfiguration.
+    QSharedPointer<Component> component;
+    // The design, if the generator is ran for a design.
+    QSharedPointer<Design> design;
+    // The design configuration for design, if it is not null.
+    QSharedPointer<DesignConfiguration> designConfiguration;
+};
+
 struct MetaPort;
 
 struct MetaWire
