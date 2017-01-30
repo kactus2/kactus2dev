@@ -18,6 +18,7 @@ HEADERS += ../common/HDLParser/MetaInstance.h \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
     ../PluginSystem/GeneratorPlugin/FileOutput.h \
     ./VerilogGeneratorPlugin.h \
+    ../PluginSystem/GeneratorPlugin/IWriterFactory.h \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../common/NameGenerationPolicy.h \
     ./common/Writer.h \

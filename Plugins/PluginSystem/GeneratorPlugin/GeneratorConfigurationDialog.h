@@ -2,8 +2,8 @@
 // File: GeneratorConfigurationDialog.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Esko Pekkarinen
-// Date: 23.02.2015
+// Author: Janne Virtanen
+// Date: 26.01.2017
 //
 // Description:
 // Dialog for setting file generation options.

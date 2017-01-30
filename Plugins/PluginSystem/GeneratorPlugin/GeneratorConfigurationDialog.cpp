@@ -2,8 +2,8 @@
 // File: GeneratorConfigurationDialog.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Esko Pekkarinen
-// Date: 23.02.2015
+// Author: Janne Virtanen
+// Date: 26.01.2017
 //
 // Description:
 // Dialog for setting file generation options.
@@ -42,25 +42,15 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     QCheckBox* generateMemory = new QCheckBox("Generate memory (experimental)");
     optionLayout->addWidget(generateMemory);
 
-    if (configuration_->getInterfaceGeneration())
+    if (configuration_->getSettings()->generateInterfaces_)
     {
         useInterfaces->setCheckState(Qt::Checked);
     }
 
-    if (configuration_->getMemoryGeneration())
+    if (configuration_->getSettings()->generateMemory_)
     {
         generateMemory->setCheckState(Qt::Checked);
     }
-
-	// Layout for things coming to the bottom part of the dialog.
-	QHBoxLayout* bottomLayout = new QHBoxLayout();
-
-	// Add Ok and cancel give the dialog results.
-    QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
-        Qt::Horizontal);
-
-	bottomLayout->addWidget(generalWarningLabel_);
-	bottomLayout->addWidget(dialogButtons);
 
     // Create font for previewing.
     QFont font("Courier");
@@ -82,9 +72,15 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     leftLayout->addWidget(viewSelection_);
     leftLayout->addWidget(optionGroup);
     leftLayout->addWidget(fileOutput_);
-    leftLayout->addLayout(bottomLayout);
+    leftLayout->addWidget(generalWarningLabel_);
 
-    QHBoxLayout* topLayout = new QHBoxLayout(this);
+    // Layout for things coming to the bottom part of the dialog.
+
+    // Add Ok and cancel give the dialog results.
+    QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
+        Qt::Horizontal);
+
+    QHBoxLayout* topLayout = new QHBoxLayout;
     QGroupBox* leftBox = new QGroupBox("Settings");
     leftBox->setLayout(leftLayout);
     QGroupBox* rightBox = new QGroupBox("Preview");
@@ -94,6 +90,10 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 
     topLayout->addWidget(leftBox);
     topLayout->addWidget(rightBox);
+
+    QVBoxLayout* topmostLayout = new QVBoxLayout(this);
+    topmostLayout->addLayout(topLayout);
+    topmostLayout->addWidget(dialogButtons);
 
     // Finally, connect the relevant events to their handler functions.
 
@@ -140,6 +140,8 @@ void GeneratorConfigurationDialog::accept()
 		return;
 	}
 
+    configuration_->writeDocuments();
+
     QDialog::accept();
 }
 
@@ -165,7 +167,7 @@ void GeneratorConfigurationDialog::onViewChanged()
 //-----------------------------------------------------------------------------
 void GeneratorConfigurationDialog::onInterfaceGenerationStateChanged(int state)
 {
-    configuration_->setInterfaceGeneration(state == Qt::Checked);
+    configuration_->getSettings()->generateInterfaces_ = (state == Qt::Checked);
 }
 
 //-----------------------------------------------------------------------------
@@ -173,5 +175,5 @@ void GeneratorConfigurationDialog::onInterfaceGenerationStateChanged(int state)
 //-----------------------------------------------------------------------------
 void GeneratorConfigurationDialog::onMemoryGenerationStateChanged(int state)
 {
-    configuration_->setMemoryGeneration(state == Qt::Checked);
+    configuration_->getSettings()->generateMemory_ = (state == Qt::Checked);
 }

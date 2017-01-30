@@ -27,14 +27,16 @@
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/common/HDLParser/MetaDesign.h>
 
+#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/FileOutput.h>
+
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::VerilogWriterFactory()
 //-----------------------------------------------------------------------------
-VerilogWriterFactory::VerilogWriterFactory(LibraryInterface* library, bool useInterfaces, bool generateMemory,
-    QString const& kactusVersion, QString const& generatorVersion) : QObject(0), 
+VerilogWriterFactory::VerilogWriterFactory(LibraryInterface* library, GenerationSettings* settings,
+    QString const& kactusVersion, QString const& generatorVersion) :
 library_(library),
-useInterfaces_(useInterfaces),
-generateMemory_(generateMemory),
+settings_(settings),
 kactusVersion_(kactusVersion),
 generatorVersion_(generatorVersion),
 sorter_(new InterfaceDirectionNameSorter())
@@ -51,7 +53,7 @@ VerilogWriterFactory::~VerilogWriterFactory()
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::prepareComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareComponent(QString const& outputPath,
+QSharedPointer<GenerationFile> VerilogWriterFactory::prepareComponent(QString const& outputPath,
     QSharedPointer<HDLComponentParser> component)
 {
     // If we are not generating based on a design, we must parse the existing implementation.
@@ -63,7 +65,7 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareComponent(QString c
 
     if (!VerilogSyntax::selectImplementation(filePath, implementation, postModule, error))
     {
-        emit reportError(error);
+        //emit reportError(error); TODO: error
         // If parser says no-go, we dare do nothing.
         return QSharedPointer<VerilogDocument>::QSharedPointer();
     }
@@ -86,7 +88,7 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareComponent(QString c
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::prepareDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareDesign(QSharedPointer<MetaDesign> design)
+QSharedPointer<GenerationFile> VerilogWriterFactory::prepareDesign(QSharedPointer<MetaDesign> design)
 {
     QSharedPointer<VerilogDocument> document = initializeComponentWriters(design->topInstance_);
     document->fileName_ = design->topInstance_->moduleName_ + ".v";
@@ -98,6 +100,14 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::prepareDesign(QSharedPoint
     addWritersToTopInDesiredOrder(document);
 
     return document;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VerilogWriterFactory::getLanguage()
+//-----------------------------------------------------------------------------
+QString VerilogWriterFactory::getLanguage() const
+{
+    return "Verilog";
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +124,8 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::initializeComponentWriters
     retval->headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent->component_->getVlnv(), 
         componentXmlPath, currentUser, topComponent->component_->getDescription(), kactusVersion_, generatorVersion_));
 
-    retval->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter(topComponent, useInterfaces_, generateMemory_));
+    retval->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter
+        (topComponent, settings_->generateInterfaces_, settings_->generateMemory_));
 
     retval->instanceWriters_.clear();
 
@@ -174,7 +185,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
         QSharedPointer<ComponentInstance> instance = mInstance->componentInstance_;
 
         QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter(new ComponentInstanceVerilogWriter(
-            mInstance, sorter_, useInterfaces_));
+            mInstance, sorter_, settings_->generateInterfaces_));
 
         document->instanceWriters_.append(instanceWriter);
 

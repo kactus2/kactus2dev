@@ -39,7 +39,7 @@ bool FileOuput::validSelections(QString &warning)
     // Must have path for the files. 
     if (outputPath_.isEmpty() || !QDir(outputPath_).exists())
     {
-        warning = QLatin1String("<b>The output directory must exist!</b>");
+        warning = QLatin1String("<b>The output directory must exist.</b>");
         return false;
     }
 
@@ -61,7 +61,7 @@ bool FileOuput::validSelections(QString &warning)
             // Is the same -> fail.
             if (file->fileName_ == name2compare)
             {
-                warning = QLatin1String("<b>File name</b> ") + file->fileName_ + QLatin1String(" <b>is listed more than once!</b>");
+                warning = QLatin1String("<b>File name</b> ") + file->fileName_ + QLatin1String(" <b>is listed more than once.</b>");
                 return false;
             }
         }

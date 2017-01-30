@@ -112,7 +112,14 @@ ViewSelection::~ViewSelection()
 //-----------------------------------------------------------------------------
 bool ViewSelection::validSelections(QString &warning)
 {
-    // Must have a file set as well.
+    // Must have a view.
+    if (!view_)
+    {
+        warning = QLatin1String("<b>No view selected.</b>");
+        return false;
+    }
+
+    // Must have a file set.
     if (fileSetRef_.isEmpty())
     {
         warning = QLatin1String("<b>Define the file set.</b>");

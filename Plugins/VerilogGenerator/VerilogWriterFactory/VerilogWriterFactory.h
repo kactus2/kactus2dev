@@ -17,8 +17,7 @@
 #include "VerilogDocument.h"
 
 #include <QTextStream>
-#include <Plugins/common/HDLParser/MetaDesign.h>
-#include <Plugins/common/HDLParser/HDLComponentParser.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IWriterFactory.h>
 
 class ComponentVerilogWriter;
 class ComponentInstanceVerilogWriter;
@@ -30,57 +29,53 @@ class VerilogWireWriter;
 class CommentWriter;
 class Writer;
 class WriterGroup;
+class GenerationSettings;
 
 //-----------------------------------------------------------------------------
 // Verilog file generator.
 //-----------------------------------------------------------------------------
-class VerilogWriterFactory : public QObject
+class VerilogWriterFactory : public IWriterFactory
 {
-	Q_OBJECT
-
 public:
 
 	/*!
 	 *  The constructor.
 	 *
 	 *      @param [in] library                 The component library.
-     *      @param [in] useInterfaces           True, if interfaces are utilized separately from physical ports, else false.
-     *      @param [in] generateMemory          If true, definitions for registers are generated as well, else it is false.
+     *      @param [in] settings                Points to the settings to be used within the generation.
 	 *      @param [in] kactusVersion		    The version of the current Kactus build.
 	 *      @param [in] generatorVersion	    The current version of the generator.
 	 */
-    VerilogWriterFactory(LibraryInterface* library, bool useInterfaces, bool generateMemory,
+    VerilogWriterFactory(LibraryInterface* library, GenerationSettings* settings,
         QString const& kactusVersion, QString const& generatorVersion);
 
     //! The destructor.
     ~VerilogWriterFactory();
 
     /*!
-     *  Prepares a given HDL component for generation, creating writers for the task.
+     *  Creates writers for the given formatted HDL component.
      *
      *      @param [in] outputPath			The path to the output file.
-     *      @param [in] component           The component to which is prepared for generation.
+     *      @param [in] component           The component which is needs writing.
      *
-     *      @return False, if something went wrong.
+     *      @return The objects that bundles the writers. Will be null, if could not be created.
      */
-    QSharedPointer<VerilogDocument> prepareComponent(QString const& outputPath, QSharedPointer<HDLComponentParser> component);
+    virtual QSharedPointer<GenerationFile> prepareComponent(QString const& outputPath,
+        QSharedPointer<HDLComponentParser> component);
 
     /*!
-     *  Prepares the given set of HDL designs for generation, creating writers for the task.
+     *  Creates writers for the given parsed meta design.
      *
-     *      @param [in] outputPath			The path to the output file.
-     *      @param [in] designs             The designs to which are prepared for generation.
+     *      @param [in] design             The design which is needs writing.
      *
-     *      @remark If parsing is not called before generation, nothing is generated.
+     *      @return The objects that bundles the writers. Will be null, if could not be created.
      */
-    QSharedPointer<VerilogDocument> prepareDesign(QSharedPointer<MetaDesign> design);
-
-signals:
-	
+    virtual QSharedPointer<GenerationFile> prepareDesign(QSharedPointer<MetaDesign> design);
+    
     /*!
-     *  Emitted when reportable error occurs.
+     *  Returns the language of the factory.
      */
-	void reportError(const QString& errorMessage) const;
+    virtual QString getLanguage() const;
 
 private:
 
@@ -131,11 +126,8 @@ private:
     //! The component library.
     LibraryInterface* library_;
 
-    //! True, if interfaces are utilized separately from physical ports, else false.
-    bool useInterfaces_;
-
-    //! If true, definitions for registers are generated as well, else it is false.
-    bool generateMemory_;
+    //! Points to the settings to be used within the generation.
+    GenerationSettings* settings_;
 
     //! Version of the generator.
     QString generatorVersion_;

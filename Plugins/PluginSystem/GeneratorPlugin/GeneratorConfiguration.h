@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
-// Date: 26.01.2016
+// Date: 26.01.2017
 //
 // Description:
 // Container class for generator configuration.
@@ -18,8 +18,20 @@
 
 #include "ViewSelection.h"
 #include "FileOutput.h"
-#include <Plugins/VerilogGenerator/VerilogWriterFactory/VerilogWriterFactory.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/IWriterFactory.h>
+#include <Plugins/PluginSystem/IPluginUtility.h>
+
+struct GenerationSettings
+{
+    //! If true, interfaces should be utilized in generation, else it is false.
+    bool generateInterfaces_;
+    //! If true, definitions for registers are generated as well, else it is false.
+    bool generateMemory_;
+    //! The last values used by the generation.
+    QString lastViewName_;
+    QString lastFileSetName_;
+};
 
 //-----------------------------------------------------------------------------
 //! Container class for generator configuration.
@@ -31,12 +43,14 @@ class GeneratorConfiguration : public QObject
 public:
 
 	//! The constructors.
-    GeneratorConfiguration(LibraryInterface* library, GenerationTuple input,
-        QSharedPointer<ViewSelection> viewSelection, bool isDesign);
+    GeneratorConfiguration(IPluginUtility* utility, IWriterFactory* factory, GenerationTuple input,
+        GenerationSettings* settings);
 
 	//! The destructor.
     ~GeneratorConfiguration();
-    
+
+    void writeDocuments();
+   
     /*!
      *  Checks if the generation configuration is valid.
      *
@@ -60,50 +74,96 @@ public:
 	QSharedPointer<FileOuput> getFileOuput() const;
 
     /*!
-     *  Sets true for generating, false for not generating.
+     *  Returns settings.
      */
-    void setInterfaceGeneration(bool shouldGenerate);
+    GenerationSettings* getSettings() const;
+
+public slots:
 
     /*!
-     *  Returns true for generating, false for not generating.
-     */
-    bool getInterfaceGeneration() const;
+     *  Called when an error is reported to us.
+     *
+	 *      @param [in] report			The error message.
+	 */
+	void onErrorReport(const QString& report);
+
+protected:
 
     /*!
-     *  Sets true for generating, false for not generating.
+     *  Finds the possible views for generation.
+     *
+     *      @param [in,out]	    targetComponent	The component for which the generator is run.
+     *
+     *      @return List of possible view names for which to run the generation.
      */
-    void setMemoryGeneration(bool shouldGenerate);
+    QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<const Component> targetComponent) const;
 
     /*!
-     *  Returns true for generating, false for not generating.
+     *  Finds the possible views for generation.
+     *
+     *      @param [in] input			        The relevant IP-XACT documents.
+     *
+     *      @return List of possible view names for which to run the generation.
      */
-    bool getMemoryGeneration() const;
-
-signals:
-	
-    /*!
-     *  Emitted when output files have changed.
-     */
-	void outputFilesChanged() const;
+    QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(GenerationTuple input) const;
 
 private:
 
 	// Disable copying.
 	GeneratorConfiguration(GeneratorConfiguration const& rhs);
 	GeneratorConfiguration& operator=(GeneratorConfiguration const& rhs);
+    
+    /*!
+     *  Gets the default output path.     
+     *
+     *      @return The default output path.
+     */
+    QString defaultOutputPath() const;
+    
+    /*!
+     *  Gets the relative path from the top component xml file to the given absolute path.
+     *
+     *      @param [in] filePath   The absolute path to the target file.
+     *
+     *      @return Relative path from the top component xml file to the target file.
+     */
+    QString relativePathFromXmlToFile(QString const& filePath) const;
 
-    LibraryInterface* library_;
+    /*!
+     *  Inserts description to a generated file.
+     *
+	 *      @param [in] file		The file which needs to be described.
+     */
+    void insertFileDescription(QSharedPointer<File> file);
+
+    //! Saves the changes made to the top component.
+    void saveChanges();
+
+    /*!
+     *  Finds all the views in containing component referencing the given design or design configuration VLNV.
+     *
+     *      @param [in] containingComponent     The component whose views to search through.
+     *      @param [in] targetReference         The reference to find in views.
+     *
+     *      @return The the views referencing the given VLNV.
+     */
+    QSharedPointer<QList<QSharedPointer<View> > > findReferencingViews(QSharedPointer<Component> containingComponent,
+		VLNV targetReference) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The plugin utility to use.
+    IPluginUtility* utility_;
+    IWriterFactory* factory_;
     GenerationTuple input_;
+    GenerationSettings* settings_;
     //! The view selection configuration.
     QSharedPointer<ViewSelection> viewSelection_;
     bool isDesign_;
     //! The file output configuration.
     QSharedPointer<FileOuput> fileOutput_;
-
-    //! If true, interfaces should be utilized in generation, else it is false.
-    bool generateInterfaces_;
-    //! If true, definitions for registers are generated as well, else it is false.
-    bool generateMemory_;
 };
 
 #endif // GENERATORCONFIGURATION_H
