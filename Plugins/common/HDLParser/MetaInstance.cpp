@@ -249,11 +249,10 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
                     thisIfUsesThePort = true;
 
                     // Every mapping using the port creates a new assignment for the port.
-                    QSharedPointer<MetaPortAssignment> mPortAssignment(new MetaPortAssignment);
-                    mPort->assignments_.insert(pMap->getLogicalPort()->name_, mPortAssignment);
+                    QSharedPointer<MetaPortAssignment> mUpPortAssignment(new MetaPortAssignment);
 
                     // The default value comes from the port abstraction.
-                    mPortAssignment->defaultValue_ = portAbstraction->getDefaultValue();
+                    mUpPortAssignment->defaultValue_ = portAbstraction->getDefaultValue();
 
                     // Parse the port map bounds.
                     QPair<QString, QString> logicalBounds = logicalPortBoundsInMapping(parser, pMap);
@@ -272,8 +271,12 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
                     }
 
                     // Assign the values.
-                    mPortAssignment->logicalBounds_ = logicalBounds;
-                    mPortAssignment->physicalBounds_ = physicalBounds;
+                    mUpPortAssignment->logicalBounds_ = logicalBounds;
+                    mUpPortAssignment->physicalBounds_ = physicalBounds;
+
+                    QSharedPointer<MetaPortAssignment> mDownPortAssignment(new MetaPortAssignment(*mUpPortAssignment.data()));
+                    mPort->upAssignments_.insert(pMap->getLogicalPort()->name_, mUpPortAssignment);
+                    mPort->downAssignments_.insert(pMap->getLogicalPort()->name_, mDownPortAssignment);
                 }
             }
 

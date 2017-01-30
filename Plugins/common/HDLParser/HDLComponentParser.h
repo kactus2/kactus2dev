@@ -54,7 +54,16 @@ public:
      *      @param [out] sortParameters         The list containing the same parameters as in refParameters, that will be sorted.
      */
 	static void sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
-		QList<QSharedPointer<Parameter> >& sortParameters);
+        QList<QSharedPointer<Parameter> >& sortParameters);
+
+    //! The parsed remap states.
+    QList<QSharedPointer<GenerationRemapState> > remapStates_;
+    //! The parsed remaps, including the default memory map.
+    QList<QSharedPointer<GenerationRemap> > remaps_;
+    //! The addressable unit bits to be used within the component.
+    QString aub_;
+    //! Total memory within the component counted in AUBs.
+    QString totalRange_;
 
 protected:
     /*!
@@ -93,15 +102,6 @@ private:
 
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter_;
-
-    //! The parsed remap states.
-    QList<QSharedPointer<GenerationRemapState> > remapStates_;
-    //! The parsed remaps, including the default memory map.
-    QList<QSharedPointer<GenerationRemap> > remaps_;
-    //! The addressable unit bits to be used within the component.
-    QString aub_;
-    //! Total memory within the component counted in AUBs.
-    QString totalRange_;
 };
 
 #endif // HDLCOMPONENTPARSER_H

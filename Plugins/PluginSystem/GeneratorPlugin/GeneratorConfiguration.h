@@ -18,9 +18,8 @@
 
 #include "ViewSelection.h"
 #include "FileOutput.h"
-#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/IWriterFactory.h>
-#include <Plugins/PluginSystem/IPluginUtility.h>
+#include <library/LibraryManager/libraryinterface.h>
 
 struct GenerationSettings
 {
@@ -36,14 +35,12 @@ struct GenerationSettings
 //-----------------------------------------------------------------------------
 //! Container class for generator configuration.
 //-----------------------------------------------------------------------------
-class GeneratorConfiguration : public QObject
+class GeneratorConfiguration
 {
-    Q_OBJECT
-
 public:
 
 	//! The constructors.
-    GeneratorConfiguration(IPluginUtility* utility, IWriterFactory* factory, GenerationTuple input,
+    GeneratorConfiguration(LibraryInterface* library, IWriterFactory* factory, GenerationTuple input,
         GenerationSettings* settings);
 
 	//! The destructor.
@@ -77,15 +74,6 @@ public:
      *  Returns settings.
      */
     GenerationSettings* getSettings() const;
-
-public slots:
-
-    /*!
-     *  Called when an error is reported to us.
-     *
-	 *      @param [in] report			The error message.
-	 */
-	void onErrorReport(const QString& report);
 
 protected:
 
@@ -155,7 +143,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The plugin utility to use.
-    IPluginUtility* utility_;
+    LibraryInterface* library_;
     IWriterFactory* factory_;
     GenerationTuple input_;
     GenerationSettings* settings_;

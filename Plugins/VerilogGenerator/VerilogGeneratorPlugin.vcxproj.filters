@@ -229,12 +229,6 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_GeneratorConfiguration.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_GeneratorConfiguration.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="..\VerilogImport\VerilogSyntax.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -363,9 +357,6 @@
     <ClInclude Include="..\common\HDLParser\MetaInstance.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VerilogWriterFactory\VerilogDocument.h">
-      <Filter>Header Files\VerilogWriterFactory</Filter>
-    </ClInclude>
     <ClInclude Include="VerilogAssignmentWriter\VerilogAssignmentWriter.h">
       <Filter>Header Files\VerilogAssignmentWriter</Filter>
     </ClInclude>
@@ -374,6 +365,9 @@
     </ClInclude>
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\IWriterFactory.h">
       <Filter>Header Files\VerilogWriterFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogWriterFactory\VerilogDocument.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

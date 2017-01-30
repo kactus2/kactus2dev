@@ -18,6 +18,7 @@
 #include <Plugins/common/HDLParser/MetaDesign.h>
 #include <Plugins/common/HDLParser/HDLComponentParser.h>
 #include <Plugins/VerilogImport/VerilogSyntax.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Component/Port.h>
@@ -84,7 +85,7 @@ private:
 
     void runGenerator(bool useDesign);
 
-    void createPortAssignment(QSharedPointer<MetaPort> mPort, QSharedPointer<MetaWire> wire,
+    void createPortAssignment(QSharedPointer<MetaPort> mPort, QSharedPointer<MetaWire> wire, bool up,
         QString const& logicalLeft, QString const& logicalRight, QString const& physicalLeft, QString const& physicalRight);
 
     void createWirePortAssignment(QSharedPointer<MetaPort> port, QSharedPointer<MetaWire> wire, QSharedPointer<MetaInstance> instance, QString const& leftBound, QString const& rightBound);
@@ -105,7 +106,7 @@ private:
 
     QSharedPointer<MetaInterconnection> addConnectionToDesign();
 
-    void addDefaultPortAssignmentToPort(QSharedPointer<MetaPort> port, QString tieOff);
+    void addDefaultPortAssignmentToPort(QSharedPointer<MetaPort> port, QString tieOff, bool up);
 
     void verifyOutputContains(QString const& expectedOutput);
 
@@ -263,9 +264,13 @@ void tst_VerilogWriterFactory::addParameter(QString const& name, QString const& 
 //-----------------------------------------------------------------------------
 void tst_VerilogWriterFactory::runGenerator(bool useDesign)
 {
-    VerilogWriterFactory factory(&library_,false,false,"bogusToolVersion","bogusGeneratorVersion");
+    GenerationSettings settings;
+    settings.generateInterfaces_ = false;
+    settings.generateMemory_ = false;
+
+    VerilogWriterFactory factory(&library_, &settings, "bogusToolVersion", "bogusGeneratorVersion");
     QString outputPath = ".";
-    QSharedPointer<VerilogDocument> document;
+    QSharedPointer<GenerationFile> document;
 
 	if (useDesign)
     {
@@ -349,15 +354,15 @@ void tst_VerilogWriterFactory::testHierarchicalConnections()
     QSharedPointer<MetaWire> gw3 = addWireToDesign("full_wire","0","0",mI1);
     gw3->hierPorts_.append(topFull);
 
-    createPortAssignment(mInstance->ports_["clk"], gw0, "0", "0", "0", "0");
-    createPortAssignment(mInstance->ports_["data_in"], gw1, "7", "0", "0", "0");
-    createPortAssignment(mInstance->ports_["enable"], gw2, "0", "0", "0", "0");
-    createPortAssignment(mInstance->ports_["full"], gw3, "0", "0", "0", "0");
+    createPortAssignment(mInstance->ports_["clk"], gw0, true, "0", "0", "0", "0");
+    createPortAssignment(mInstance->ports_["data_in"], gw1, true, "7", "0", "0", "0");
+    createPortAssignment(mInstance->ports_["enable"], gw2, true, "0", "0", "0", "0");
+    createPortAssignment(mInstance->ports_["full"], gw3, true, "0", "0", "0", "0");
 
-    createPortAssignment(topClock, gw0, "0", "0", "0", "0");
-    createPortAssignment(topData, gw1, "7", "0", "7", "0");
-    createPortAssignment(topEnable, gw2, "0", "0", "0", "0");
-    createPortAssignment(topFull, gw3, "0", "0", "0", "0");
+    createPortAssignment(topClock, gw0, false, "0", "0", "0", "0");
+    createPortAssignment(topData, gw1, false, "7", "0", "7", "0");
+    createPortAssignment(topEnable, gw2, false, "0", "0", "0", "0");
+    createPortAssignment(topFull, gw3, false, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -440,13 +445,13 @@ void tst_VerilogWriterFactory::testInstanceSlicedHierarchicalConnections()
     QSharedPointer<MetaWire> omWire = addWireToDesign("odata_wire","7","0",mI1);
     omWire->hierPorts_.append(topoData);
 
-    createPortAssignment(idata1Port, imWire, "3", "0", "3", "0");
-    createPortAssignment(idata2Port, imWire, "7", "4", "3", "0");
-    createPortAssignment(odata1Port, omWire, "3", "0", "3", "0");
-    createPortAssignment(odata2Port, omWire, "7", "4", "3", "0");
+    createPortAssignment(idata1Port, imWire, true, "3", "0", "3", "0");
+    createPortAssignment(idata2Port, imWire, true, "7", "4", "3", "0");
+    createPortAssignment(odata1Port, omWire, true, "3", "0", "3", "0");
+    createPortAssignment(odata2Port, omWire, true, "7", "4", "3", "0");
 
-    createPortAssignment(topComponent_->ports_["data_to_instance"], imWire, "7", "0", "7", "0");
-    createPortAssignment(topComponent_->ports_["data_from_instance"], omWire, "7", "0", "7", "0");
+    createPortAssignment(topComponent_->ports_["data_to_instance"], imWire, false, "7", "0", "7", "0");
+    createPortAssignment(topComponent_->ports_["data_from_instance"], omWire, false, "7", "0", "7", "0");
 
     runGenerator(true);
 
@@ -509,13 +514,13 @@ void tst_VerilogWriterFactory::testTopSlicedHierarchicalConnections()
     omWire->hierPorts_.append(topoData1);
     omWire->hierPorts_.append(topoData2);
 
-    createPortAssignment(idataPort, imWire, "7", "0", "7", "0");
-    createPortAssignment(odataPort, omWire, "7", "0", "7", "0");
+    createPortAssignment(idataPort, imWire, true, "7", "0", "7", "0");
+    createPortAssignment(odataPort, omWire, true, "7", "0", "7", "0");
 
-    createPortAssignment(topiData1, imWire, "3", "0", "3", "0");
-    createPortAssignment(topiData2, imWire, "7", "4", "3", "0");
-    createPortAssignment(topoData1, omWire, "3", "0", "3", "0");
-    createPortAssignment(topoData2, omWire, "7", "4", "3", "0");
+    createPortAssignment(topiData1, imWire, false, "3", "0", "3", "0");
+    createPortAssignment(topiData2, imWire, false, "7", "4", "3", "0");
+    createPortAssignment(topoData1, omWire, false, "3", "0", "3", "0");
+    createPortAssignment(topoData2, omWire, false, "7", "4", "3", "0");
 
     runGenerator(true);
 
@@ -555,8 +560,8 @@ QSharedPointer<MetaInterconnection> tst_VerilogWriterFactory::addInterconnectToD
     design_->interconnections_.append(mInterconnect);
     mInterconnect->name_ = name;
 
-    first->interconnection_ = mInterconnect;
-    second->interconnection_ = mInterconnect;
+    first->upInterconnection_ = mInterconnect;
+    second->upInterconnection_ = mInterconnect;
 
     return mInterconnect;
 }
@@ -589,6 +594,7 @@ QSharedPointer<MetaWire> tst_VerilogWriterFactory::addWireToDesign(QString name,
 //-----------------------------------------------------------------------------
 void tst_VerilogWriterFactory::createPortAssignment(QSharedPointer<MetaPort> mPort,
     QSharedPointer<MetaWire> wire,
+    bool up,
     QString const& logicalLeft,
     QString const& logicalRight,
     QString const& physicalLeft,
@@ -601,7 +607,14 @@ void tst_VerilogWriterFactory::createPortAssignment(QSharedPointer<MetaPort> mPo
     mpa->physicalBounds_.second = physicalRight;
     mpa->wire_ = wire;
 
-    mPort->assignments_.insert(wire->name_, mpa);
+    if (up)
+    {
+        mPort->upAssignments_.insert(wire->name_, mpa);
+    }
+    else
+    {
+        mPort->downAssignments_.insert(wire->name_, mpa);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -688,11 +701,11 @@ void tst_VerilogWriterFactory::testMasterToSlaveInterconnection()
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
 
-    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, "7", "0", "7", "0");
-    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, true, "0", "0", "0", "0");
 
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "7", "0");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, true, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -738,13 +751,13 @@ void tst_VerilogWriterFactory::testPhysicalSlicedMasterToSlaveInterconnection()
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
 
-    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, "7", "4", "7", "4");
-    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, "3", "0", "3", "0");
-    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, true, "7", "4", "7", "4");
+    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, true, "3", "0", "3", "0");
+    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, true, "0", "0", "0", "0");
 
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "4", "7", "4");
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "3", "0", "3", "0");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, true, "7", "4", "7", "4");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, true, "3", "0", "3", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, true, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -793,13 +806,13 @@ void tst_VerilogWriterFactory::testLogicalSlicedMasterToSlaveInterconnection()
     QSharedPointer<MetaWire> dataWire2 = addWireToDesign("sender_to_receiver_DATA2","3","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
 
-    createPortAssignment(receiverInstance->ports_["data_in"], dataWire1, "3", "0", "3", "0");
-    createPortAssignment(receiverInstance->ports_["data_in"], dataWire2, "3", "0", "7", "4");
-    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(receiverInstance->ports_["data_in"], dataWire1, true, "3", "0", "3", "0");
+    createPortAssignment(receiverInstance->ports_["data_in"], dataWire2, true, "3", "0", "7", "4");
+    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, true, "0", "0", "0", "0");
 
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire1, "3", "0", "3", "0");
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire2, "3", "0", "7", "4");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire1, true, "3", "0", "3", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire2, true, "3", "0", "7", "4");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, true, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -850,13 +863,13 @@ void tst_VerilogWriterFactory::testPortSlicedMasterToSlaveInterconnection()
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",mInterconnect);
 
-    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, "7", "4", "3", "0");
-    createPortAssignment(receiverInstance->ports_["data_in2"], dataWire, "3", "0", "3", "0");
-    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(receiverInstance->ports_["data_in"], dataWire, true, "7", "4", "3", "0");
+    createPortAssignment(receiverInstance->ports_["data_in2"], dataWire, true, "3", "0", "3", "0");
+    createPortAssignment(receiverInstance->ports_["enable_in"], enaWire, true, "0", "0", "0", "0");
 
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "4", "3", "0");
-    createPortAssignment(senderInstance->ports_["data_out2"], dataWire, "3", "0", "3", "0");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, true, "7", "4", "3", "0");
+    createPortAssignment(senderInstance->ports_["data_out2"], dataWire, true, "3", "0", "3", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, true, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -945,13 +958,13 @@ void tst_VerilogWriterFactory::testMasterToMultipleSlavesInterconnections()
     QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",data_connection);
     QSharedPointer<MetaWire> enaWire = addWireToDesign("sender_to_receiver_ENABLE","0","0",ena_connection);
 
-    createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, "7", "0", "7", "0");
-    createPortAssignment(receiverInstance1->ports_["enable_in"], enaWire, "0", "0", "0", "0");
-    createPortAssignment(receiverInstance2->ports_["data_in"], dataWire, "7", "0", "7", "0");
-    createPortAssignment(receiverInstance2->ports_["enable_in"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(receiverInstance1->ports_["enable_in"], enaWire, true, "0", "0", "0", "0");
+    createPortAssignment(receiverInstance2->ports_["data_in"], dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(receiverInstance2->ports_["enable_in"], enaWire, true, "0", "0", "0", "0");
 
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "7", "0");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, true, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -1003,13 +1016,13 @@ void tst_VerilogWriterFactory::testAdhocConnectionBetweenComponentInstances()
     QSharedPointer<MetaWire> dataWire = addWireToDesign("dataAdHoc","7","0");
     QSharedPointer<MetaWire> enaWire = addWireToDesign("enableAdHoc","0","0");
 
-    createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, "7", "0", "7", "0");
-    createPortAssignment(receiverInstance1->ports_["enable_in"], enaWire, "0", "0", "0", "0");
-    createPortAssignment(receiverInstance2->ports_["data_in"], dataWire, "7", "0", "7", "0");
-    createPortAssignment(receiverInstance2->ports_["enable_in"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(receiverInstance1->ports_["data_in"], dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(receiverInstance1->ports_["enable_in"], enaWire, true, "0", "0", "0", "0");
+    createPortAssignment(receiverInstance2->ports_["data_in"], dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(receiverInstance2->ports_["enable_in"], enaWire, true, "0", "0", "0", "0");
 
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "7", "0");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, true, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -1090,17 +1103,17 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
     mpa0->physicalBounds_.first = "2";
     mpa0->physicalBounds_.second = "0";
 
-    slicedPort->assignments_.insert("eka", mpa1);
-    slicedPort->assignments_.insert("toka", mpa0);
+    slicedPort->upAssignments_.insert("eka", mpa1);
+    slicedPort->upAssignments_.insert("toka", mpa0);
 
     library_.addComponent(tieOffComponent);
 
-    addDefaultPortAssignmentToPort(mInstance->ports_[zeroName],"0");
-    addDefaultPortAssignmentToPort(mInstance->ports_[oneName],"1");
-    addDefaultPortAssignmentToPort(mInstance->ports_[naName],"abc");
-    addDefaultPortAssignmentToPort(mInstance->ports_[numberedName],"12");
-    addDefaultPortAssignmentToPort(mInstance->ports_[outName],"0");
-    addDefaultPortAssignmentToPort(mInstance->ports_[inOutName],"1");
+    addDefaultPortAssignmentToPort(mInstance->ports_[zeroName],"0", true);
+    addDefaultPortAssignmentToPort(mInstance->ports_[oneName],"1", true);
+    addDefaultPortAssignmentToPort(mInstance->ports_[naName],"abc", true);
+    addDefaultPortAssignmentToPort(mInstance->ports_[numberedName],"12", true);
+    addDefaultPortAssignmentToPort(mInstance->ports_[outName],"0", true);
+    addDefaultPortAssignmentToPort(mInstance->ports_[inOutName],"1", true);
 
     runGenerator(true);
 
@@ -1146,12 +1159,20 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
 // Function: tst_VerilogWriterFactory::addDefaultPortAssignmentToPort()
 //-----------------------------------------------------------------------------
 void tst_VerilogWriterFactory::addDefaultPortAssignmentToPort(QSharedPointer<MetaPort> port,
-    QString tieOff)
+    QString tieOff, bool up)
 {
     QSharedPointer<MetaPortAssignment> mpa(new MetaPortAssignment);
     mpa->defaultValue_ = tieOff;
     mpa->physicalBounds_ = port->vectorBounds_;
-    port->assignments_.insert("eka", mpa);
+
+    if (up)
+    {
+        port->upAssignments_.insert("eka", mpa);
+    }
+    else
+    {
+        port->downAssignments_.insert("eka", mpa);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1169,10 +1190,10 @@ void tst_VerilogWriterFactory::testHierarchicalAdhocConnection()
     QSharedPointer<MetaWire> enaWire = addWireToDesign("enableAdHoc","0","0");
     enaWire->hierPorts_.append(topEna);
 
-    createPortAssignment(topData, dataWire, "7", "0", "7", "0");
-    createPortAssignment(topEna, enaWire, "0", "0", "0", "0");
-    createPortAssignment(senderInstance->ports_["data_out"], dataWire, "7", "0", "7", "0");
-    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, "0", "0", "0", "0");
+    createPortAssignment(topData, dataWire, false, "7", "0", "7", "0");
+    createPortAssignment(topEna, enaWire, false, "0", "0", "0", "0");
+    createPortAssignment(senderInstance->ports_["data_out"], dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(senderInstance->ports_["enable_out"], enaWire, true, "0", "0", "0", "0");
 
     runGenerator(true);
 
@@ -1232,15 +1253,15 @@ void tst_VerilogWriterFactory::testHierarchicalAdHocTieOffValues()
     mpa0->physicalBounds_.first = "2";
     mpa0->physicalBounds_.second = "0";
 
-    slicedPort->assignments_.insert("eka", mpa1);
-    slicedPort->assignments_.insert("toka", mpa0);
+    slicedPort->downAssignments_.insert("eka", mpa1);
+    slicedPort->downAssignments_.insert("toka", mpa0);
 
-    addDefaultPortAssignmentToPort(topComponent_->ports_[zeroName],"0");
-    addDefaultPortAssignmentToPort(topComponent_->ports_[oneName],"1");
-    addDefaultPortAssignmentToPort(topComponent_->ports_[naName],"abc");
-    addDefaultPortAssignmentToPort(topComponent_->ports_[numberedName],"12");
-    addDefaultPortAssignmentToPort(topComponent_->ports_[inName],"0");
-    addDefaultPortAssignmentToPort(topComponent_->ports_[inOutName],"1");
+    addDefaultPortAssignmentToPort(topComponent_->ports_[zeroName],"0", false);
+    addDefaultPortAssignmentToPort(topComponent_->ports_[oneName],"1", false);
+    addDefaultPortAssignmentToPort(topComponent_->ports_[naName],"abc", false);
+    addDefaultPortAssignmentToPort(topComponent_->ports_[numberedName],"12", false);
+    addDefaultPortAssignmentToPort(topComponent_->ports_[inName],"0", false);
+    addDefaultPortAssignmentToPort(topComponent_->ports_[inOutName],"1", false);
 
     runGenerator(true);
 

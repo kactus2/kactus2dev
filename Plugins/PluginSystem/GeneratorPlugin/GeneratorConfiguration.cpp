@@ -30,9 +30,9 @@
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfiguration::GeneratorConfiguration()
 //-----------------------------------------------------------------------------
-GeneratorConfiguration::GeneratorConfiguration(IPluginUtility* utility, IWriterFactory* factory,
+GeneratorConfiguration::GeneratorConfiguration(LibraryInterface* library, IWriterFactory* factory,
     GenerationTuple input, GenerationSettings* settings) :
-	utility_(utility), factory_(factory), input_(input), settings_(settings), isDesign_(input.design != 0),
+	library_(library), factory_(factory), input_(input), settings_(settings), isDesign_(input.design != 0),
     fileOutput_(new FileOuput)
 {
     QSharedPointer<QList<QSharedPointer<View> > > possibleViews;
@@ -99,7 +99,7 @@ void GeneratorConfiguration::writeDocuments()
     }
 
     // Time to write the contents to files
-    utility_->printInfo(tr("Writing the file(s) %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+    //library->printInfo(tr("Writing the file(s) %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
     foreach(QSharedPointer<GenerationFile> gFile, *fileOutput_->getFiles())
     {
@@ -108,7 +108,7 @@ void GeneratorConfiguration::writeDocuments()
         QFile outputFile(absFilePath); 
         if (!outputFile.open(QIODevice::WriteOnly))
         {
-            utility_->printError(tr("Could not open output file for writing: %1").arg(absFilePath));
+            //library->printError(tr("Could not open output file for writing: %1").arg(absFilePath));
             return;
         }
 
@@ -122,6 +122,7 @@ void GeneratorConfiguration::writeDocuments()
         QString ipFilePath = relativePathFromXmlToFile(absFilePath);
         // Add the new file to the file set.
         QSettings settings;
+        // The resulting file will be added to the file set.
         QSharedPointer<File> ipFile = fileSet->addFile(ipFilePath, settings);
 
         // Insert the proper description to the file.
@@ -129,10 +130,8 @@ void GeneratorConfiguration::writeDocuments()
     }
 
     // Write files
-    utility_->printInfo(tr("Finished writing the file(s)."));
+    //library->printInfo(tr("Finished writing the file(s)."));
 
-    // The resulting file will be added to the file set.
-    // addGeneratedFileToFileSet(configuration->getViewSelection(), generator.getDocuments());
     // Finally, save the changes to the affected document.
     saveChanges();
 }
@@ -169,7 +168,7 @@ void GeneratorConfiguration::parseDocuments()
     {
         // Parse the design hierarchy.
         QList<QSharedPointer<MetaDesign> > designs =
-            MetaDesign::parseHierarchy(utility_->getLibraryInterface(), input_, viewSelection_->getView());
+            MetaDesign::parseHierarchy(library_, input_, viewSelection_->getView());
 
         // Go through the parsed designs.
         foreach(QSharedPointer<MetaDesign> design, designs)
@@ -189,7 +188,7 @@ void GeneratorConfiguration::parseDocuments()
     else
     {
         QSharedPointer<HDLComponentParser> componentParser
-            (new HDLComponentParser(utility_->getLibraryInterface(), input_.component, viewSelection_->getView()));
+            (new HDLComponentParser(library_, input_.component, viewSelection_->getView()));
 
         QSharedPointer<GenerationFile> gFile = factory_->prepareComponent(fileOutput_->getOutputPath(), componentParser);
 
@@ -226,14 +225,6 @@ QSharedPointer<FileOuput> GeneratorConfiguration::getFileOuput() const
 GenerationSettings* GeneratorConfiguration::getSettings() const
 {
     return settings_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration:::onErrorReport()
-//-----------------------------------------------------------------------------
-void GeneratorConfiguration::onErrorReport(const QString& report)
-{
-    utility_->printError(report);
 }
 
 //-----------------------------------------------------------------------------
@@ -296,7 +287,7 @@ QString GeneratorConfiguration::defaultOutputPath() const
 {
     QString suggestedDir = "";
 
-    QString topComponentPath = utility_->getLibraryInterface()->getPath(input_.component->getVlnv());
+    QString topComponentPath = library_->getPath(input_.component->getVlnv());
     QString xmlDir =  QFileInfo(topComponentPath).canonicalPath();
     suggestedDir = xmlDir;
 
@@ -308,7 +299,7 @@ QString GeneratorConfiguration::defaultOutputPath() const
 //-----------------------------------------------------------------------------
 QString GeneratorConfiguration::relativePathFromXmlToFile(QString const& filePath) const
 {
-    QString xmlPath = utility_->getLibraryInterface()->getPath(input_.component->getVlnv());
+    QString xmlPath = library_->getPath(input_.component->getVlnv());
     return General::getRelativePath(xmlPath, filePath);
 }
 
@@ -344,17 +335,17 @@ void GeneratorConfiguration::saveChanges()
     QString component = input_.component->getVlnv().toString();
 
     // Try to save.
-    bool saveSucceeded = utility_->getLibraryInterface()->writeModelToFile(input_.component);
+    bool saveSucceeded = library_->writeModelToFile(input_.component);
 
     if (saveSucceeded)
     {
         // Success: Inform the user.
-        utility_->printInfo(tr("Saved changes to component %1.").arg(component));
+        //library_->printInfo(tr("Saved changes to component %1.").arg(component));
     }    
     else
     {
         // Fail: Report the error, including the path.
-        QString savePath = utility_->getLibraryInterface()->getPath(input_.component->getVlnv());
-        utility_->printError(tr("Could not write component %1 to file %2.").arg(component, savePath));
+        QString savePath = library_->getPath(input_.component->getVlnv());
+        //library->printError(tr("Could not write component %1 to file %2.").arg(component, savePath));
     }
 }

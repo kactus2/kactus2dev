@@ -328,7 +328,7 @@ void HDLComponentParser::parseRemapStates()
         QString stateName = remap->getRemapState();
 
         QSharedPointer<RemapState> state;
-        
+
         // Try to match the remap state reference to a remap state within the component.
         foreach(QSharedPointer<RemapState> currentState, *component_->getRemapStates())
         {
@@ -353,13 +353,13 @@ void HDLComponentParser::parseRemapStates()
         // Each port referred by the state must be listed.
         foreach(QSharedPointer<RemapPort> rmport, *state->getRemapPorts())
         {
-           QSharedPointer<QPair<QSharedPointer<Port>,QString> > parsedPort(new QPair<QSharedPointer<Port>,QString>);
-           
-           // Pick the port name, and the value needed for it to remap state become effective.
-           parsedPort->first = component_->getPort(rmport->getPortNameRef());
-           parsedPort->second = formatter_->formatReferringExpression(rmport->getValue());
+            QSharedPointer<QPair<QSharedPointer<Port>,QString> > parsedPort(new QPair<QSharedPointer<Port>,QString>);
 
-           grms->ports_.append(parsedPort);
+            // Pick the port name, and the value needed for it to remap state become effective.
+            parsedPort->first = component_->getPort(rmport->getPortNameRef());
+            parsedPort->second = formatter_->formatReferringExpression(rmport->getValue());
+
+            grms->ports_.append(parsedPort);
         }
     }
 }

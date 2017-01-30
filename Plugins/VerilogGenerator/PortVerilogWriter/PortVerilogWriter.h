@@ -71,12 +71,15 @@ private:
     QString direction() const;
     
     /*!
-     *  Creates array bounds representation for the port.
-     *
-     *      @return Array bounds for the port.
+     *  Returns vector bounds representation for the port.
      */
-    QString arrayAndVectorBounds() const;
+    QString vectorBounds() const;
     
+    
+    /*!
+     *  Returns array bounds representation for the port.
+     */
+    QString arrayBounds() const;
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

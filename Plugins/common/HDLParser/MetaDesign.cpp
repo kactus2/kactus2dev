@@ -259,7 +259,7 @@ void MetaDesign::parseInterconnections()
         interfaces.append(connection->getStartInterface());
 
         // Found interfaces for the interconnection.
-        QList<QSharedPointer<MetaInterface> > foundInterfaces;
+        QList<QSharedPointer<MetaInterface> > foundInterInterfaces;
         QList<QSharedPointer<MetaInterface> > foundHierInterfaces;
 
         // Go through the interfaces.
@@ -284,7 +284,7 @@ void MetaDesign::parseInterconnections()
             }
 
             // Append to the list.
-            foundInterfaces.append(mInterface);
+            foundInterInterfaces.append(mInterface);
         }
 
         // Go through the hierarchical interfaces.
@@ -300,12 +300,11 @@ void MetaDesign::parseInterconnections()
             }
 
             // Append to the lists.
-            foundInterfaces.append(mInterface);
             foundHierInterfaces.append(mInterface);
         }
 
         // If not enough interfaces are in the interconnect, drop it.
-        if (foundInterfaces.size() < 2)
+        if (foundInterInterfaces.size() + foundHierInterfaces.size() < 2)
         {
             // TODO: error
             continue;
@@ -317,11 +316,20 @@ void MetaDesign::parseInterconnections()
         // If any of the found interfaces has an interconnection already, use it.
         // TODO: Have validators enforce the rule that each interface may have only one interconnection!
         // Then this step must be omitted.
-        foreach (QSharedPointer<MetaInterface> mInterface, foundInterfaces)
+        foreach (QSharedPointer<MetaInterface> mInterface, foundInterInterfaces)
         {
-            if (mInterface->interconnection_)
+            if (mInterface->upInterconnection_)
             {
-                mIterconnect = mInterface->interconnection_;
+                mIterconnect = mInterface->upInterconnection_;
+                break;
+            }
+        }
+
+        foreach (QSharedPointer<MetaInterface> mInterface, foundHierInterfaces)
+        {
+            if (mInterface->downInterconnection_)
+            {
+                mIterconnect = mInterface->downInterconnection_;
                 break;
             }
         }
@@ -340,43 +348,63 @@ void MetaDesign::parseInterconnections()
         }
 
         // Associate the interfaces with the interconnect.
-        foreach (QSharedPointer<MetaInterface> mInterface, foundInterfaces)
+        foreach (QSharedPointer<MetaInterface> mInterface, foundInterInterfaces)
         {
-            mInterface->interconnection_ = mIterconnect;
+            wireInterfacePorts(mInterface, mIterconnect, false);
+        }
 
-            bool isHierarchical = foundHierInterfaces.contains(mInterface);
+        // Associate the interfaces with the interconnect.
+        foreach (QSharedPointer<MetaInterface> mInterface, foundHierInterfaces)
+        {
+            wireInterfacePorts(mInterface, mIterconnect, true);
+        }
+    }
+}
 
-            // Associate the port assignments with the wires of the interconnect.
-            foreach (QSharedPointer<MetaPort> mPort, mInterface->ports_)
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::wireInterfacePorts()
+//-----------------------------------------------------------------------------
+void MetaDesign::wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
+    QSharedPointer<MetaInterconnection> mIterconnect, bool isHierarchical)
+{
+    // Associate the port assignments with the wires of the interconnect.
+    foreach (QSharedPointer<MetaPort> mPort, mInterface->ports_)
+    {
+        foreach (QSharedPointer<PortAbstraction> pAbs, *mInterface->absDef_->getLogicalPorts())
+        {
+            // ...get all port assignments in the interface utilizing its logical port...
+            QList<QSharedPointer<MetaPortAssignment> > assignments;
+
+            if (isHierarchical)
             {
-                foreach (QSharedPointer<PortAbstraction> pAbs, *mInterface->absDef_->getLogicalPorts())
+                assignments = mPort->downAssignments_.values(pAbs->getLogicalName());
+            }
+            else
+            {
+                assignments = mPort->upAssignments_.values(pAbs->getLogicalName());
+            }
+
+            // ...and associate them with the wire.
+            foreach (QSharedPointer<MetaPortAssignment> mpa, assignments)
+            {
+                QSharedPointer<MetaWire> mWire = mIterconnect->wires_.value(pAbs->getLogicalName());
+
+                if (!mWire)
                 {
-                    // ...get all port assignments in the interface utilizing its logical port...
-                    QList<QSharedPointer<MetaPortAssignment> > assignments = mPort->assignments_.values(pAbs->getLogicalName());
+                    mWire = QSharedPointer<MetaWire>(new MetaWire);
+                    mWire->name_ = mIterconnect->name_ + pAbs->getLogicalName();
 
-                    // ...and associate them with the wire.
-                    foreach (QSharedPointer<MetaPortAssignment> mpa, assignments)
-                    {
-                        QSharedPointer<MetaWire> mWire = mIterconnect->wires_.value(pAbs->getLogicalName());
+                    mIterconnect->wires_.insert(pAbs->getLogicalName(), mWire);
+                }
 
-                        if (!mWire)
-                        {
-                            mWire = QSharedPointer<MetaWire>(new MetaWire);
-                            mWire->name_ = mIterconnect->name_ + pAbs->getLogicalName();
+                mpa->wire_ = mWire;
+                // Also assign larger bounds for wire, if applicable.
+                assignLargerBounds(mWire, mpa->logicalBounds_);
 
-                            mIterconnect->wires_.insert(pAbs->getLogicalName(), mWire);
-                        }
-
-                        mpa->wire_ = mWire;
-                        // Also assign larger bounds for wire, if applicable.
-                        assignLargerBounds(mWire, mpa->logicalBounds_);
-
-                        // Associate the wire with the hierarchical ports.
-                        if (isHierarchical && !mWire->hierPorts_.contains(mPort))
-                        {
-                            mWire->hierPorts_.append(mPort);
-                        }
-                    }
+                // Associate the wire with the hierarchical ports.
+                if (isHierarchical && !mWire->hierPorts_.contains(mPort))
+                {
+                    mWire->hierPorts_.append(mPort);
                 }
             }
         }
@@ -464,13 +492,22 @@ void MetaDesign::parseAdHocs()
             QSharedPointer<MetaPort> mPort = foundPorts[i];
             QSharedPointer<PartSelect> ps = matchingPartSelects[i];
 
+            bool isHierarchical = foundHierPorts.contains(mPort);
+
             // New port assignment must be created for the each port.
             QSharedPointer<MetaPortAssignment> mpa(new MetaPortAssignment);
 
             // Associate the port assignments with the wire.
             mpa->wire_ = mWire;
             // Map the port assignment to the port using the name of the wire.
-            mPort->assignments_.insert(mWire->name_, mpa);
+            if (isHierarchical)
+            {
+                mPort->downAssignments_.insert(mWire->name_, mpa);
+            }
+            else
+            {
+                mPort->upAssignments_.insert(mWire->name_, mpa);
+            }
 
             // This is also the place for the tie-off.
             if (connection->getTiedValue() == "open")

@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.h \
-    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
+HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
@@ -29,6 +28,7 @@ HEADERS += ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.h \
     ../../../../Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h \
     ../../../../designEditors/common/TopComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/VerilogAssignmentWriter/VerilogAssignmentWriter.h \
+    ../../../../Plugins/VerilogGenerator/VerilogWriterFactory/VerilogDocument.h \
     ../../../../Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h \
     ../../../../Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
     ../../../../Plugins/VerilogImport/VerilogSyntax.h \
@@ -37,8 +37,9 @@ HEADERS += ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
     ../../../MockObjects/LibraryMock.h \
-    ../../../../Plugins/VerilogGenerator/VerilogWriterFactory/VerilogDocument.h \
-    ../../../../Plugins/VerilogGenerator/VerilogWriterFactory/VerilogWriterFactory.h
+    ../../../../Plugins/VerilogGenerator/VerilogWriterFactory/VerilogWriterFactory.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h
 SOURCES += ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.cpp \
     ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \

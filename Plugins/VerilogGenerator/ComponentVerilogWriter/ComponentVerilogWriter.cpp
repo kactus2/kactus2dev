@@ -28,6 +28,8 @@
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 
+#include <Plugins/common/HDLParser/HDLComponentParser.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
@@ -67,14 +69,14 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 
 	if (implementation_)
     {
-        /*if (generateMemory_)
+        if (generateMemory_)
         {
             // Implementing -> may need remap states.
             writeRemapSates(outputStream);
 
             // Implementing -> may need registers.
             writeRegisters(outputStream);
-        }*/
+        }
 
 		// If an implementation exists, there must be a warning about overwriting as well.
 		outputStream << "// " << VerilogSyntax::TAG_OVERRIDE << endl;
@@ -312,9 +314,11 @@ void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter:writeRemapSates()
 //-----------------------------------------------------------------------------
-/*void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
+void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
 {
-    foreach (QSharedPointer<GenerationRemapState> grms, component_->remapStates_)
+    QSharedPointer<HDLComponentParser> comparser = component_.dynamicCast<HDLComponentParser>();
+
+    foreach (QSharedPointer<GenerationRemapState> grms, comparser->remapStates_)
     {
         QString condition;
 
@@ -332,7 +336,7 @@ void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream
         outputStream << indentation() << "`define " << grms->stateName_ << " " << condition << endl;
     }
 
-    if (component_->remapStates_.count() > 0)
+    if (comparser->remapStates_.count() > 0)
     {
         outputStream << endl;
     }
@@ -343,19 +347,21 @@ void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeRegisters(QTextStream& outputStream) const
 {
-    if ( component_->remaps_.size() < 1 )
+    QSharedPointer<HDLComponentParser> comparser = component_.dynamicCast<HDLComponentParser>();
+
+    if (comparser->remaps_.size() < 1)
     {
         return;
     }
 
-    outputStream << indentation() << "localparam MEMORY_SIZE = " << component_->totalRange_ << ";" << endl;
-    outputStream << indentation() << "localparam AUB = " << component_->aub_ << ";" << endl;
+    outputStream << indentation() << "localparam MEMORY_SIZE = " << comparser->totalRange_ << ";" << endl;
+    outputStream << indentation() << "localparam AUB = " << comparser->aub_ << ";" << endl;
     outputStream << indentation() << "reg [0:AUB-1] dat [0:MEMORY_SIZE-1];" << endl;
 
     outputStream << indentation() << "genvar gen_iterator1;" << endl;
     outputStream << indentation() << "genvar gen_iterator2;" << endl;
 
-    foreach(QSharedPointer<GenerationRemap> grm, component_->remaps_)
+    foreach(QSharedPointer<GenerationRemap> grm, comparser->remaps_)
     {
         foreach(QSharedPointer<GenerationAddressBlock> gab, grm->blocks_)
         {
@@ -402,7 +408,7 @@ void ComponentVerilogWriter::writeRegisters(QTextStream& outputStream) const
     }
 
     outputStream << endl;
-}*/
+}
 
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::writeModuleEnd()

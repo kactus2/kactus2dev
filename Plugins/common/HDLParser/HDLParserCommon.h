@@ -76,7 +76,8 @@ struct MetaPort
     //! The parsed default value for port.
     QString defaultValue_;
     
-    QMultiMap<QString, QSharedPointer<MetaPortAssignment> > assignments_;
+    QMultiMap<QString, QSharedPointer<MetaPortAssignment> > upAssignments_;
+    QMultiMap<QString, QSharedPointer<MetaPortAssignment> > downAssignments_;
 };
 
 struct MetaInterface;
@@ -104,7 +105,8 @@ struct MetaInterface
     //! The parsed ports of the component keyed with its physical name.
     QMap<QString, QSharedPointer<MetaPort> > ports_;
     //! The interconnection attached to the interface.
-    QSharedPointer<MetaInterconnection> interconnection_;
+    QSharedPointer<MetaInterconnection> upInterconnection_;
+    QSharedPointer<MetaInterconnection> downInterconnection_;
 };
 
 struct GenerationField

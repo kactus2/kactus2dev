@@ -388,22 +388,22 @@ void tst_HDLParser::testHierarchicalConnections()
     QCOMPARE(mInterface->ports_.size(), 1);
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["clk"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("CLK");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("CLK");
     QCOMPARE(mpa->wire_->hierPorts_.first()->port_->name(), QString("top_clk"));
 
     mInterface = mInstance->interfaces_["data"];
     QCOMPARE(mInterface->ports_.size(), 3);
 
     mPort = mInterface->ports_["data_in"];
-    mpa = mPort->assignments_.value("DATA");
+    mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->wire_->hierPorts_.first()->port_->name(), QString("data_to_instance"));
 
     mPort = mInterface->ports_["enable"];
-    mpa = mPort->assignments_.value("ENABLE");
+    mpa = mPort->upAssignments_.value("ENABLE");
     QCOMPARE(mpa->wire_->hierPorts_.first()->port_->name(), QString("enable_to_instance"));
 
     mPort = mInterface->ports_["full"];
-    mpa = mPort->assignments_.value("FULL");
+    mpa = mPort->upAssignments_.value("FULL");
     QCOMPARE(mpa->wire_->hierPorts_.first()->port_->name(), QString("full_from_instance"));
 }
 
@@ -488,7 +488,7 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
     QCOMPARE(mInterface->ports_.size(), 1);
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["instance_clk"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("CLK");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("CLK");
     QCOMPARE(mpa->wire_->hierPorts_.first()->port_->name(), QString("top_clk"));
     QCOMPARE(mpa->logicalBounds_.first, QString("2"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
@@ -679,13 +679,13 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
     QSharedPointer<MetaInterface> mInterface = mInstance->interfaces_["data_bus"];
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["data_out"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("DATA");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("7"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
     QCOMPARE(mInterface->ports_.size(), 2);
 
     mPort = mInterface->ports_["enable_out"];
-    mpa = mPort->assignments_.value("ENABLE");
+    mpa = mPort->upAssignments_.value("ENABLE");
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
@@ -696,12 +696,12 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
     QCOMPARE(mInterface->ports_.size(), 2);
 
     mPort = mInterface->ports_["data_in"];
-    mpa = mPort->assignments_.value("DATA");
+    mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("7"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
     mPort = mInterface->ports_["enable_in"];
-    mpa = mPort->assignments_.value("ENABLE");
+    mpa = mPort->upAssignments_.value("ENABLE");
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
     
@@ -790,7 +790,7 @@ void tst_HDLParser::testEmptyBounds()
     QCOMPARE(mInterface->ports_.size(), 1);
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["data_out"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("DATA");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
@@ -801,7 +801,7 @@ void tst_HDLParser::testEmptyBounds()
     QCOMPARE(mInterface->ports_.size(), 1);
 
     mPort = mInterface->ports_["data_in"];
-    mpa = mPort->assignments_.value("DATA");
+    mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
@@ -885,7 +885,7 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     QCOMPARE(mInterface->ports_.size(), 1);
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["data_out"];
-    QSharedPointer<MetaPortAssignment> mpa = mpa = mPort->assignments_.value("DATA");
+    QSharedPointer<MetaPortAssignment> mpa = mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("14"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
@@ -896,7 +896,7 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     QCOMPARE(mInterface->ports_.size(), 1);
 
     mPort = mInterface->ports_["data_in"];
-    mpa = mPort->assignments_.value("DATA");
+    mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("8"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
@@ -1017,12 +1017,12 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     QCOMPARE(mInterface->ports_.size(), 2);
 
     QSharedPointer<MetaPort> mPort = mInterface->ports_["data_in"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("DATA");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("7"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
     mPort = mInterface->ports_["enable_in"];
-    mpa = mPort->assignments_.value("ENABLE");
+    mpa = mPort->upAssignments_.value("ENABLE");
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
@@ -1033,12 +1033,12 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     QCOMPARE(mInterface->ports_.size(), 2);
 
     mPort = mInterface->ports_["data_in"];
-    mpa = mPort->assignments_.value("DATA");
+    mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("7"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
     mPort = mInterface->ports_["enable_in"];
-    mpa = mPort->assignments_.value("ENABLE");
+    mpa = mPort->upAssignments_.value("ENABLE");
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
@@ -1104,22 +1104,22 @@ void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
     QCOMPARE(mInstance3->interfaces_.first()->ports_.size(), 2);
 
     QSharedPointer<MetaPort> mPort = mInstance0->interfaces_.first()->ports_["data_out"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("DATA");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("7"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
     mPort = mInstance1->interfaces_.first()->ports_["data_in"];
-    mpa = mPort->assignments_.value("DATA");
+    mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
     mPort = mInstance2->interfaces_.first()->ports_["data_in"];
-    mpa = mPort->assignments_.value("DATA");
+    mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("3"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
     mPort = mInstance3->interfaces_.first()->ports_["data_in"];
-    mpa = mPort->assignments_.value("DATA");
+    mpa = mPort->upAssignments_.value("DATA");
     QCOMPARE(mpa->logicalBounds_.first, QString("15"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
@@ -1260,17 +1260,17 @@ void tst_HDLParser::testSlicedInterconnection()
     QVERIFY(mInstance1->interfaces_.first()->ports_.size() > 0);
 
     QSharedPointer<MetaPort> mPort = mInstance0->interfaces_.first()->ports_["enable_out_high"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("ENABLE");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("ENABLE");
     QCOMPARE(mpa->logicalBounds_.first, QString("1"));
     QCOMPARE(mpa->logicalBounds_.second, QString("1"));
 
     mPort = mInstance0->interfaces_.first()->ports_["enable_out_low"];
-    mpa = mPort->assignments_.value("ENABLE");
+    mpa = mPort->upAssignments_.value("ENABLE");
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
     mPort = mInstance1->interfaces_.first()->ports_["enable_in"];
-    mpa = mPort->assignments_.value("ENABLE");
+    mpa = mPort->upAssignments_.value("ENABLE");
     QCOMPARE(mpa->logicalBounds_.first, QString("1"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
@@ -1357,7 +1357,7 @@ void tst_HDLParser::testAbsDefDefault()
     QVERIFY(mInstance->interfaces_.first()->ports_.size() > 0);
 
     QSharedPointer<MetaPort> mPort = mInstance->interfaces_.first()->ports_["enable_in"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("ENABLE");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("ENABLE");
     QCOMPARE(mpa->logicalBounds_.first, QString("2"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
     QCOMPARE(mpa->defaultValue_, QString("5"));
@@ -1392,31 +1392,31 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
     QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
 
     QSharedPointer<MetaPort> mPort = mInstance->ports_["data_out"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("dataAdHoc");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("dataAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("7"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
 
     mPort = mInstance->ports_["enable_out"];
-    mpa = mPort->assignments_.value("enableAdHoc");
+    mpa = mPort->upAssignments_.value("enableAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("0"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
 
     mInstance = design->instances_["receiver1"];
 
     mPort = mInstance->ports_["data_in"];
-    mpa = mPort->assignments_.value("dataAdHoc");
+    mpa = mPort->upAssignments_.value("dataAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("7"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
 
     mPort = mInstance->ports_["enable_in"];
-    mpa = mPort->assignments_.value("enableAdHoc");
+    mpa = mPort->upAssignments_.value("enableAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("0"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
 
     mInstance = design->instances_["receiver2"];
 
     mPort = mInstance->ports_["enable_in"];
-    mpa = mPort->assignments_.value("enableAdHoc");
+    mpa = mPort->upAssignments_.value("enableAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("0"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
 
@@ -1469,7 +1469,7 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
     QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
 
     QSharedPointer<MetaPort> mPort = mInstance->ports_["data_out"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("dataAdHoc");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("dataAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("16"));
     QCOMPARE(mpa->physicalBounds_.second, QString("4"));
 
@@ -1522,7 +1522,7 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
     QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
 
     QSharedPointer<MetaPort> mPort = mInstance->ports_["data_out"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("dataAdHoc");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("dataAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("8"));
     QCOMPARE(mpa->physicalBounds_.second, QString("3"));
 
@@ -1608,21 +1608,21 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     QCOMPARE(mPort->defaultValue_, QString("20"));
 
     mPort = mInstance->ports_["expressionTieOff"];
-    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("expID - 4"));
+    QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("expID - 4"));
     mPort = mInstance->ports_["n/aTieOff"];
-    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("abc"));
+    QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("abc"));
     mPort = mInstance->ports_["numberedTieOff"];
-    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("12"));
+    QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("12"));
     mPort = mInstance->ports_["oneTieOff"];
-    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("1"));
+    QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("1"));
     mPort = mInstance->ports_["openTieOff"];
-    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString(""));
+    QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString(""));
     mPort = mInstance->ports_["zeroTieOff"];
-    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("0"));
+    QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("0"));
     mPort = mInstance->ports_["tieOffOut"];
-    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("0"));
+    QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("0"));
     mPort = mInstance->ports_["tieOffInOut"];
-    QCOMPARE(mPort->assignments_.first()->defaultValue_, QString("1"));
+    QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("1"));
 }
 
 //-----------------------------------------------------------------------------
@@ -1758,12 +1758,12 @@ void tst_HDLParser::testHierarchicalAdhocConnection()
     QSharedPointer<MetaInstance> mInstance = design->instances_.first();
 
     QSharedPointer<MetaPort> mPort = mInstance->ports_["data_out"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.last();
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.last();
     QCOMPARE(mpa->wire_, mWire);
 
     QSharedPointer<MetaPort> hierPort = design->topInstance_->ports_.first();
     QCOMPARE(mpa->wire_->hierPorts_.first(), hierPort);
-    QSharedPointer<MetaPortAssignment> hierAssignment = hierPort->assignments_.first();
+    QSharedPointer<MetaPortAssignment> hierAssignment = hierPort->downAssignments_.first();
     QCOMPARE(hierAssignment->wire_, mWire);
     QCOMPARE(hierAssignment->wire_->hierPorts_.first(), hierPort);
 }
@@ -1864,7 +1864,7 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
 
     QSharedPointer<MetaPort> mPort = mInstance->ports_["data_out"];
-    QSharedPointer<MetaPortAssignment> mpa = mPort->assignments_.value("dataAdHoc");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("dataAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("7"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
     QCOMPARE(mpa->wire_, mWire);
@@ -1872,7 +1872,7 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     mInstance = design->instances_["receiver1"];
 
     mPort = mInstance->ports_["data_in"];
-    mpa = mPort->assignments_.value("dataAdHoc");
+    mpa = mPort->upAssignments_.value("dataAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("7"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
     QCOMPARE(mpa->wire_, mWire);
@@ -1880,7 +1880,7 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     mInstance = design->instances_["receiver2"];
 
     mPort = mInstance->ports_["data_in"];
-    mpa = mPort->assignments_.value("dataAdHoc");
+    mpa = mPort->upAssignments_.value("dataAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("7"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
     QCOMPARE(mpa->wire_, mWire);
@@ -2261,7 +2261,7 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
     QSharedPointer<MetaInstance> mInstance = design->instances_["sender"];
     QCOMPARE(mInstance->parameters_.size(), 2);
 
-    QSharedPointer<MetaPortAssignment> mpa = mInstance->interfaces_.first()->ports_.first()->assignments_.first();
+    QSharedPointer<MetaPortAssignment> mpa = mInstance->interfaces_.first()->ports_.first()->upAssignments_.first();
     QCOMPARE(mpa->logicalBounds_.first, QString("70"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 

@@ -27,8 +27,8 @@
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/common/HDLParser/MetaDesign.h>
 
-#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/FileOutput.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::VerilogWriterFactory()
@@ -162,9 +162,9 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
     // Create writers for 
     foreach (QSharedPointer<MetaPort> mPort, design->topInstance_->ports_)
     {
-        if (mPort->assignments_.size() > 0)
+        if (mPort->downAssignments_.size() > 0)
         {
-            foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->assignments_)
+            foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->downAssignments_)
             {
                 QSharedPointer<VerilogAssignmentWriter> topAssignment = QSharedPointer<VerilogAssignmentWriter>
                     (new VerilogAssignmentWriter(mPort->port_->name(), mpa, mPort->port_->getDirection(), true));
@@ -206,7 +206,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
 
         foreach (QSharedPointer<MetaPort> mPort, mInstance->ports_)
         {
-            if (mPort->assignments_.size() < 1)
+            if (mPort->upAssignments_.size() < 1)
             {
                 continue;
             }
@@ -217,7 +217,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
             document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(
                 new VerilogWireWriter(physName, mPort->vectorBounds_)));
 
-            foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->assignments_)
+            foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
             {
                 QSharedPointer<VerilogAssignmentWriter> instanceAssignment = QSharedPointer<VerilogAssignmentWriter>
                     (new VerilogAssignmentWriter(physName, mpa, mPort->port_->getDirection(), false));

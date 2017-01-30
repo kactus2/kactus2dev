@@ -165,7 +165,8 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     VerilogWriterFactory factory(utility->getLibraryInterface(), &settings_, utility->getKactusVersion(), getVersion());
 
     // Create model for the configuration widget.
-    QSharedPointer<GeneratorConfiguration> configuration(new GeneratorConfiguration(utility, &factory, input, &settings_));
+    QSharedPointer<GeneratorConfiguration> configuration(new GeneratorConfiguration
+        (utility->getLibraryInterface(), &factory, input, &settings_));
 
     // Create the dialog and execute: The user will ultimately accept the configuration.
     GeneratorConfigurationDialog dialog(configuration, utility->getParentWidget());

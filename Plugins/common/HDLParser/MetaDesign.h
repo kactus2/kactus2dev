@@ -59,6 +59,9 @@ private:
 
     void parseInterconnections();
 
+    void wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
+        QSharedPointer<MetaInterconnection> mIterconnect, bool isHierarchical);
+
     void parseAdHocs();
     
     /*!
