@@ -76,6 +76,13 @@ public:
 	 */
 	virtual void setModel(QAbstractItemModel* model);
 
+    /*!
+     *  Sets the text visible in the corner button. Both headers must be visible for the text to show.
+     *
+     *      @param [in] text   The text to set.
+     */
+    void setCornerButtonText(QString const& text);
+
 public slots:
 
 	/*!
@@ -158,6 +165,16 @@ protected:
 
 	//! Handler for context menu events
 	virtual void contextMenuEvent(QContextMenuEvent* event);
+    
+    /*!
+     *  Handler for intercepting events.
+     *
+     *      @param [in] target   The target for the event.
+     *      @param [in] event    The event to intercept or pass to target.
+     *
+     *      @return True, if the event is filtered and not passed to target, otherwise false.
+     */
+    virtual bool eventFilter(QObject* target, QEvent* event);
 
 	//! The point where mouse was clicked
 	QPoint pressedPoint_;

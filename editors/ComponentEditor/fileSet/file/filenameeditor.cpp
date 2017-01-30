@@ -13,34 +13,29 @@
 
 #include <IPXACTmodels/Component/File.h>
 
-#include <QGridLayout>
+#include <QFormLayout>
 #include <QLabel>
 
 //-----------------------------------------------------------------------------
 // Function: FileNameEditor::FileNameEditor()
 //-----------------------------------------------------------------------------
 FileNameEditor::FileNameEditor(QSharedPointer<File> file, QWidget* parent) :
-QGroupBox(tr("File name and path"), parent),
-fileNameLabel_(file->name(), this),
-descriptionEditor_(this),
-file_(file)
+QGroupBox(tr("File name and location"), parent),
+    fileNameLabel_(file->name(), this),
+    descriptionEditor_(this),
+    file_(file)
 {
-    setMaximumHeight(120);
-    
-    QLabel* nameLabel = new QLabel(tr("Name:"), this);
-    nameLabel->setToolTip(tr("The name field contains an absolute or relative\n"
-        "path to a file name or directory"));
+    fileNameLabel_.setWordWrap(true);
 
-    QLabel* descriptionLabel = new QLabel(tr("Description:"), this);
+    fileNameLabel_.setToolTip(tr("The name field contains an absolute or relative\n"
+        "path to a file name or directory"));
 
     descriptionEditor_.setToolTip("Set the description for the file");
     descriptionEditor_.setTabChangesFocus(true);
 
-    QGridLayout* topLayout = new QGridLayout(this);
-    topLayout->addWidget(nameLabel, 0, 0, 1, 1);
-    topLayout->addWidget(&fileNameLabel_, 0, 1, 1, 1);
-    topLayout->addWidget(descriptionLabel, 1, 0, 1, 1, Qt::AlignTop);
-    topLayout->addWidget(&descriptionEditor_, 1, 1, 1, 1);
+    QFormLayout* topLayout = new QFormLayout(this);
+    topLayout->addRow(tr("Name:"), &fileNameLabel_);
+    topLayout->addRow(tr("Description:"), &descriptionEditor_);
 
     connect(&descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
@@ -51,14 +46,6 @@ file_(file)
 FileNameEditor::~FileNameEditor()
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileNameEditor::isValid()
-//-----------------------------------------------------------------------------
-bool FileNameEditor::isValid() const
-{
-    return !file_->name().isEmpty();
 }
 
 //-----------------------------------------------------------------------------

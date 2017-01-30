@@ -21,9 +21,9 @@
 class RegisterTableModel;
 class LibraryInterface;
 class ParameterFinder;
+class EditableTableView;
 class ExpressionFormatter;
 class FieldValidator;
-class ColumnFreezableTable;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of fields in a register.
@@ -124,7 +124,7 @@ private:
 	RegisterEditor& operator=(const RegisterEditor& other);
 
 	//! Pointer to the view that displays the items.
-    ColumnFreezableTable* view_;
+    EditableTableView* view_;
 
 	//! Pointer to the model that manages the details of items.
 	RegisterTableModel* model_;

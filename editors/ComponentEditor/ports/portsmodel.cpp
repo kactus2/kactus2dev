@@ -191,7 +191,12 @@ QVariant PortsModel::headerData(int section, Qt::Orientation orientation, int ro
 {
     if (role == Qt::DisplayRole)
     {
-        if (orientation == Qt::Horizontal)
+        if (orientation == Qt::Vertical)
+        {
+            return portOnRow(section)->name();
+        }
+
+        else if (orientation == Qt::Horizontal)
         {
             if (section == PortColumns::ROW_NUMBER)
             {
@@ -291,6 +296,7 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
         else if (index.column() == PortColumns::NAME)
         {
             port->setName(value.toString());
+            emit headerDataChanged(Qt::Vertical, index.row(), index.row());
         }
         else if (index.column() == PortColumns::DIRECTION)
         {

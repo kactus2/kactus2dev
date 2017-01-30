@@ -38,12 +38,6 @@ public:
 	//! The destructor
 	virtual ~FileNameEditor();
 
-	/*! Checks that the widget has valid inputs.
-	 *
-	 * @return True if the widget is in valid state and changes can be applied.
-	 */
-	bool isValid() const;
-
 	//! Refresh the editor.
 	void refresh();
 

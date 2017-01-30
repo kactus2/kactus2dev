@@ -35,6 +35,8 @@ QGroupBox(tr("Signals (Abstraction Definition)"), parent),
     portView_.setAllowImportExport(true);
     portView_.setItemsDraggable(false);
 
+    portView_.sortByColumn(0, Qt::AscendingOrder);
+
 	connect(&portView_, SIGNAL(addSignalOptions()), this, SLOT(onAddSignalOptions()), Qt::UniqueConnection);
 	
 	connect(&portModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),

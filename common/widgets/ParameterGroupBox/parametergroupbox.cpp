@@ -11,7 +11,7 @@
 
 #include "parametergroupbox.h"
 
-#include <common/views/EditableTableView/ColumnFreezableTable.h>
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/parameters/ParameterColumns.h>
@@ -39,15 +39,17 @@ ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Paramet
                                      QSharedPointer<ExpressionFormatter> expressionFormatter,
 									 QWidget *parent):
 QGroupBox(tr("Parameters"), parent),
-view_(0), 
-proxy_(new QSortFilterProxyModel(this)),
-model_(0)
+    view_(new EditableTableView(this)), 
+    proxy_(new QSortFilterProxyModel(this)),
+    model_(0)
 {
-    QSharedPointer<EditableTableView> parametersView(new EditableTableView(this));
-    parametersView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    parametersView->verticalHeader()->show();
+    ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
+    view_->setHorizontalHeader(parameterHorizontalHeader);
 
-    view_ = new ColumnFreezableTable(1, parametersView, this);
+    view_->verticalHeader()->show();
+    view_->verticalHeader()->setMaximumWidth(300);
+    view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
+    view_->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
@@ -70,11 +72,6 @@ model_(0)
 	connect(view_, SIGNAL(removeItem(const QModelIndex&)),
 		model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-    ParameterEditorHeaderView* parameterHorizontalHeader = new ParameterEditorHeaderView(Qt::Horizontal, this);
-    view_->setHorizontalHeader(parameterHorizontalHeader);
-    view_->horizontalHeader()->setSectionsClickable(true);
-    view_->horizontalHeader()->setStretchLastSection(true);
-
 	// set view to be sortable
 	view_->setSortingEnabled(true);
 
@@ -87,7 +84,7 @@ model_(0)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-    view_->setDelegate(new ParameterDelegate(choices, parameterCompleter, parameterFinder,
+    view_->setItemDelegate(new ParameterDelegate(choices, parameterCompleter, parameterFinder,
         expressionFormatter, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), 

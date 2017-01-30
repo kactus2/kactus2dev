@@ -20,7 +20,8 @@
 ParameterEditorHeaderView::ParameterEditorHeaderView(Qt::Orientation orientation, QWidget* parent /* = 0 */):
 QHeaderView(orientation, parent)
 {
-    
+    setHighlightSections(true);
+    setSectionsClickable(true);
 }
 
 //-----------------------------------------------------------------------------

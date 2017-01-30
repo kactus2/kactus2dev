@@ -122,7 +122,12 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
 //-----------------------------------------------------------------------------
 QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) 
+    if (role == Qt::DisplayRole && orientation == Qt::Vertical)
+    {
+        return getParameterOnRow(section)->name();
+    }
+
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal) 
     {
         if (section == nameColumn())
         {
@@ -195,10 +200,7 @@ QVariant AbstractParameterModel::headerData(int section, Qt::Orientation orienta
             return QVariant();
         }
     }
-    else if (orientation == Qt::Vertical && role == Qt::DisplayRole) 
-    {
-        return QString(" ");
-    }
+
     // if unsupported role
     else 
     {
@@ -223,6 +225,7 @@ bool AbstractParameterModel::setData(QModelIndex const& index, const QVariant& v
         if (index.column() == nameColumn())
         {
             parameter->setName(value.toString());
+            emit headerDataChanged(Qt::Vertical, index.row(), index.row());
         }
         else if (index.column() == displayNameColumn())
         {

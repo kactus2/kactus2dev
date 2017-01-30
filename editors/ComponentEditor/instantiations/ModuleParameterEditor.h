@@ -50,6 +50,9 @@ public:
     //! Refresh the contents of the editor.
     void refresh();
 
+    //! Enables the editing of module parameters.
+    void enableEditing();
+
     //! Disables the editing of module parameters.
     void disableEditing();
 

@@ -40,7 +40,7 @@ ModuleParameterDelegate::~ModuleParameterDelegate()
 QWidget* ModuleParameterDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
     QModelIndex const& index ) const
 {
-	if (index.column() == ModelParameterColumns::USAGE_TYPE) 
+	if (index.column() == ModuleParameterColumns::USAGE_TYPE) 
     {
 		QComboBox* combo = new QComboBox(parent);
 		combo->addItem(QString("typed"));
@@ -58,7 +58,7 @@ QWidget* ModuleParameterDelegate::createEditor(QWidget* parent, QStyleOptionView
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::nameColumn() const
 {
-    return ModelParameterColumns::NAME;
+    return ModuleParameterColumns::NAME;
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ int ModuleParameterDelegate::nameColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::choiceColumn() const
 {
-    return ModelParameterColumns::CHOICE;
+    return ModuleParameterColumns::CHOICE;
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +74,7 @@ int ModuleParameterDelegate::choiceColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::formatColumn() const
 {
-    return ModelParameterColumns::TYPE;
+    return ModuleParameterColumns::TYPE;
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ int ModuleParameterDelegate::formatColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::bitWidthLeftColumn() const
 {
-    return ModelParameterColumns::BITWIDTH_LEFT;
+    return ModuleParameterColumns::BITWIDTH_LEFT;
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +90,7 @@ int ModuleParameterDelegate::bitWidthLeftColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::bitWidthRightColumn() const
 {
-    return ModelParameterColumns::BITWIDTH_RIGHT;
+    return ModuleParameterColumns::BITWIDTH_RIGHT;
 }
 
 //-----------------------------------------------------------------------------
@@ -98,7 +98,7 @@ int ModuleParameterDelegate::bitWidthRightColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::minimumColumn() const
 {
-    return ModelParameterColumns::MINIMUM;
+    return ModuleParameterColumns::MINIMUM;
 }
 
 //-----------------------------------------------------------------------------
@@ -106,7 +106,7 @@ int ModuleParameterDelegate::minimumColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::maximumColumn() const
 {
-    return ModelParameterColumns::MAXIMUM;
+    return ModuleParameterColumns::MAXIMUM;
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ int ModuleParameterDelegate::maximumColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::valueColumn() const
 {
-    return ModelParameterColumns::VALUE;
+    return ModuleParameterColumns::VALUE;
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +122,7 @@ int ModuleParameterDelegate::valueColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::resolveColumn() const
 {
-    return ModelParameterColumns::RESOLVE;
+    return ModuleParameterColumns::RESOLVE;
 }
 
 //-----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ int ModuleParameterDelegate::resolveColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::descriptionColumn() const
 {
-    return ModelParameterColumns::DESCRIPTION;
+    return ModuleParameterColumns::DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------
@@ -138,7 +138,7 @@ int ModuleParameterDelegate::descriptionColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::arrayLeftColumn() const
 {
-    return ModelParameterColumns::ARRAY_LEFT;
+    return ModuleParameterColumns::ARRAY_LEFT;
 }
 
 //-----------------------------------------------------------------------------
@@ -146,7 +146,7 @@ int ModuleParameterDelegate::arrayLeftColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::arrayRightColumn() const
 {
-    return ModelParameterColumns::ARRAY_RIGHT;
+    return ModuleParameterColumns::ARRAY_RIGHT;
 }
 
 //-----------------------------------------------------------------------------
@@ -154,7 +154,7 @@ int ModuleParameterDelegate::arrayRightColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::usageCountColumn() const
 {
-    return ModelParameterColumns::USAGE_COUNT;
+    return ModuleParameterColumns::USAGE_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -162,5 +162,5 @@ int ModuleParameterDelegate::usageCountColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterDelegate::idColumn() const
 {
-    return ModelParameterColumns::ID;
+    return ModuleParameterColumns::ID;
 }

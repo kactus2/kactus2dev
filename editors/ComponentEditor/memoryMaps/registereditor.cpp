@@ -17,7 +17,6 @@
 #include "RegisterColumns.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <common/views/EditableTableView/ColumnFreezableTable.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -36,13 +35,13 @@ RegisterEditor::RegisterEditor(QSharedPointer<Register> reg, QSharedPointer<Comp
     QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<FieldValidator> fieldValidator,
     QWidget* parent /* = 0 */):
 QGroupBox(tr("Fields summary"), parent),
-view_(0),
-model_(0)
+    view_(new EditableTableView(this)),
+    model_(0)
 {
-    QSharedPointer<EditableTableView> frozenView(new EditableTableView(this));
-    frozenView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-
-    view_ = new ColumnFreezableTable(1, frozenView, this);
+    view_->verticalHeader()->show();
+    view_->verticalHeader()->setMaximumWidth(300);
+    view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
+    view_->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
@@ -76,7 +75,7 @@ model_(0)
 	view_->setSortingEnabled(true);
     view_->setAllowElementCopying(true);
 
-    view_->setDelegate(new RegisterDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new RegisterDelegate(parameterCompleter, parameterFinder, this));
 
     view_->sortByColumn(RegisterColumns::OFFSET_COLUMN, Qt::AscendingOrder);
 

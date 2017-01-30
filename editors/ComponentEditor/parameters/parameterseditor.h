@@ -21,7 +21,7 @@
 #include <QSharedPointer>
 
 class LibraryInterface;
-class ColumnFreezableTable;
+class EditableTableView;
 class Component;
 //-----------------------------------------------------------------------------
 //! Editor to add/edit/remove parameters of a component.
@@ -73,7 +73,7 @@ private:
 	ParametersEditor& operator=(const ParametersEditor& other);
 
     //! The view that displays the parameters.
-    ColumnFreezableTable* view_;
+    EditableTableView* view_;
 
 	//! The model that holds the data to be displayed to the user
 	ParametersModel* model_;

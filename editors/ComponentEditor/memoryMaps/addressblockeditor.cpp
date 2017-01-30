@@ -17,7 +17,6 @@
 #include "AddressBlockColumns.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
-#include <common/views/EditableTableView/ColumnFreezableTable.h>
 
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
@@ -36,13 +35,13 @@ AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<RegisterValidator> registerValidator, QWidget* parent /* = 0 */):
 QGroupBox(tr("Registers summary"), parent),
-view_(0),
-model_(0)
+    view_(new EditableTableView(this)),
+    model_(0)
 {
-    QSharedPointer<EditableTableView> frozenView(new EditableTableView(this));
-    frozenView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-
-    view_ = new ColumnFreezableTable(1, frozenView, this);
+    view_->verticalHeader()->show();
+    view_->verticalHeader()->setMaximumWidth(300);
+    view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
+    view_->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
@@ -73,7 +72,7 @@ model_(0)
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
 
-    view_->setDelegate(new AddressBlockDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new AddressBlockDelegate(parameterCompleter, parameterFinder, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

@@ -3226,13 +3226,7 @@
     <ClCompile Include="editors\ComponentEditor\common\ExpressionFormatterFactoryImplementation.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
-    <ClCompile Include="common\views\EditableTableView\ColumnFreezableTable.cpp">
-      <Filter>Source Files\common\views\EditableTableView</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_PortsView.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_ColumnFreezableTable.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="library\LibraryManager\LibraryFilter.cpp">
@@ -4179,6 +4173,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_ComponentInstanceParameterFinder.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\ModuleParameterHeaderView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5355,9 +5352,6 @@
     <CustomBuild Include="mainwindow\DrawingBoard\DrawingBoard.h">
       <Filter>Header Files\mainwindow\DrawingBoard</Filter>
     </CustomBuild>
-    <CustomBuild Include="common\views\EditableTableView\ColumnFreezableTable.h">
-      <Filter>Header Files\common\views\EditableTableView</Filter>
-    </CustomBuild>
     <CustomBuild Include="library\LibraryManager\LibraryFilter.h">
       <Filter>Header Files\library\LibraryManager</Filter>
     </CustomBuild>
@@ -6310,6 +6304,12 @@
     </ClInclude>
     <ClInclude Include="designEditors\MemoryDesigner\MemoryConnectionHandler.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\instantiations\ModuleParameterColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\instantiations\ModuleParameterHeaderView.h">
+      <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

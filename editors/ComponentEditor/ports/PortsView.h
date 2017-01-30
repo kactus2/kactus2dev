@@ -12,14 +12,14 @@
 #ifndef PORTSVIEW_H
 #define PORTSVIEW_H
 
-#include <common/views/EditableTableView/ColumnFreezableTable.h>
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <QAction>
 
 //-----------------------------------------------------------------------------
 // View for port editor.
 //-----------------------------------------------------------------------------
-class PortsView : public ColumnFreezableTable
+class PortsView : public EditableTableView
 {
     Q_OBJECT
 public:

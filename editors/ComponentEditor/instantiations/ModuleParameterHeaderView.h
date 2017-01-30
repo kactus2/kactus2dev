@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: ModelParameterEditorHeaderView.h
+// File: ModuleParameterHeaderView.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
 // Date: 12.12.2014
 //
 // Description:
-// Header view for model parameter editor.
+// Header view for module parameter editor.
 //-----------------------------------------------------------------------------
 
 #ifndef MODELPARAMETEREDITORHEADERVIEW_H
@@ -17,7 +17,7 @@
 //-----------------------------------------------------------------------------
 //! Header view used to drawing the header.
 //-----------------------------------------------------------------------------
-class ModelParameterEditorHeaderView : public ParameterEditorHeaderView
+class ModuleParameterHeaderView : public ParameterEditorHeaderView
 {
 
 public:
@@ -27,9 +27,9 @@ public:
      *      @param [in] orientation     The headers orientation.
      *      @param [in] parent          The parent of the header.
      */
-    ModelParameterEditorHeaderView(Qt::Orientation orientation, QWidget* parent = 0);
+    ModuleParameterHeaderView(Qt::Orientation orientation, QWidget* parent = 0);
 
-    virtual ~ModelParameterEditorHeaderView();
+    virtual ~ModuleParameterHeaderView();
 
 protected:
     
@@ -64,8 +64,8 @@ protected:
 private:
 
     //! Disable copying and assignment
-    ModelParameterEditorHeaderView(const ParameterEditorHeaderView& other);
-    ModelParameterEditorHeaderView& operator=(const ParameterEditorHeaderView& other);
+    ModuleParameterHeaderView(const ParameterEditorHeaderView& other);
+    ModuleParameterHeaderView& operator=(const ParameterEditorHeaderView& other);
 };
 
 #endif // MODELPARAMETEREDITORHEADERVIEW_H

@@ -25,7 +25,6 @@ class LibraryInterface;
 class ParameterFinder;
 
 class RegisterValidator;
-class ColumnFreezableTable;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of registers in an address block.
@@ -133,7 +132,7 @@ private:
 	AddressBlockEditor& operator=(const AddressBlockEditor& other);
 
 	//! The view to display the items.
-    ColumnFreezableTable* view_;
+    EditableTableView* view_;
 
 	//! Pointer to the model that manages the details of address block.
 	AddressBlockModel* model_;

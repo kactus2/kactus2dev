@@ -1,17 +1,17 @@
 //-----------------------------------------------------------------------------
-// File: ModelParameterColumns.h
+// File: ModuleParameterColumns.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
 // Date: 06.11.2014
 //
 // Description:
-// Common declarations for editing model parameters.
+// Common declarations for editing module parameters.
 //-----------------------------------------------------------------------------
 
-namespace ModelParameterColumns
+namespace ModuleParameterColumns
 {
-    //! The editable columns in the model parameter editor.
+    //! The editable columns in the module parameter editor.
     enum columns
     {
         NAME = 0,

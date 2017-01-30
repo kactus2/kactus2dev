@@ -47,6 +47,8 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent): QGroupBox(tr("Functions")
     functionList_.setModel(&functionModel_);
     functionList_.setItemDelegate(new LineEditDelegate(this));
 
+    paramView_.setCornerButtonText(QString());
+
     paramView_.setModel(&paramModel_);
     paramView_.setSortingEnabled(false);
     paramView_.setItemsDraggable(false);

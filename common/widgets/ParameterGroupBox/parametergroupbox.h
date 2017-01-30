@@ -19,7 +19,7 @@
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 
-class ColumnFreezableTable;
+class EditableTableView;
 class Component;
 class Choice;
 class ParameterFinder;
@@ -100,7 +100,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! The view that displays the parameters.
-    ColumnFreezableTable* view_;
+    EditableTableView* view_;
 
     //! The proxy that is used to do the sorting of parameters.
     QSortFilterProxyModel* proxy_;

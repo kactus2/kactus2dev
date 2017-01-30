@@ -16,7 +16,8 @@
 #include "ParameterEditorHeaderView.h"
 
 #include <common/widgets/summaryLabel/summarylabel.h>
-#include <common/views/EditableTableView/ColumnFreezableTable.h>
+
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
@@ -38,14 +39,13 @@ ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryI
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget* parent): 
 ItemEditor(component, handler, parent),
-view_(0),
-model_(0)
+    view_(new EditableTableView(this)),
+    model_(0)
 {
-    QSharedPointer<EditableTableView> parametersView(new EditableTableView(this));
-    parametersView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    parametersView->verticalHeader()->show();
-
-    view_ = new ColumnFreezableTable(1, parametersView, this);
+    view_->verticalHeader()->show();
+    view_->verticalHeader()->setMaximumWidth(300);
+    view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().width(tr("Name"))*2);
+    view_->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
     model_ = new ParametersModel(component->getParameters(), component->getChoices(), validator, expressionParser,
         parameterFinder, expressionFormatter, this);
@@ -84,7 +84,7 @@ model_(0)
     view_->setSortingEnabled(true);
     view_->setItemsDraggable(false);
 
-    view_->setDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+    view_->setItemDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
         expressionFormatter, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),

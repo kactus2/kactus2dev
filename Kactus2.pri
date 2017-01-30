@@ -7,7 +7,8 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./VersionHelper.h \
+HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h \
+    ./VersionHelper.h \
     ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
@@ -87,7 +88,6 @@ HEADERS += ./VersionHelper.h \
     ./common/graphicsItems/CommonGraphicsUndoCommands.h \
     ./common/delegates/ComboDelegate/combodelegate.h \
     ./common/delegates/LineEditDelegate/lineeditdelegate.h \
-    ./common/views/EditableTableView/ColumnFreezableTable.h \
     ./common/views/EditableTableView/editabletableview.h \
     ./common/views/EditableListView/editablelistview.h \
     ./common/dialogs/comboSelector/comboselector.h \
@@ -142,6 +142,7 @@ HEADERS += ./VersionHelper.h \
     ./settings/GeneralSettingsPage.h \
     ./settings/CodeEditorSettingsPage.h \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
+    ./editors/ComponentEditor/instantiations/ModuleParameterColumns.h \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
     ./wizards/ComponentWizard/ComponentWizardPages.h \
     ./wizards/ComponentWizard/ViewListModel.h \
@@ -776,7 +777,6 @@ SOURCES += ./VersionHelper.cpp \
     ./common/graphicsItems/visualizeritem.cpp \
     ./common/delegates/ComboDelegate/combodelegate.cpp \
     ./common/delegates/LineEditDelegate/lineeditdelegate.cpp \
-    ./common/views/EditableTableView/ColumnFreezableTable.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
@@ -1309,5 +1309,6 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
+    ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.cpp
 RESOURCES += kactus.qrc

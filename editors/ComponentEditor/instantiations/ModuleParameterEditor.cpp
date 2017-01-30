@@ -13,15 +13,14 @@
 
 #include "ModuleParameterModel.h"
 #include "ModuleParameterDelegate.h"
+#include "ModuleParameterHeaderView.h"
 
-#include <common/views/EditableTableView/ColumnFreezableTable.h>
+#include <common/views/EditableTableView/editabletableview.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
-#include <editors/ComponentEditor/modelParameters/ModelParameterColumns.h>
-
-#include <editors/ComponentEditor/modelParameters/ModelParameterEditorHeaderView.h>
-
+#include "ModuleParameterColumns.h"
+#include "ModuleParameterHeaderView.h"
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
@@ -41,19 +40,32 @@ ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<QList<QSharedPointer
     QSharedPointer<ExpressionFormatter> expressionFormatter,
     QWidget *parent):
 QGroupBox(tr("Module parameters"), parent),
-proxy_(new QSortFilterProxyModel(this)),
-model_(0)
+    proxy_(new QSortFilterProxyModel(this)),
+    model_(0)
 {
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-    
+
     model_ = new ModuleParameterModel(parameters, componentChoices, expressionParser, parameterFinder,
         expressionFormatter, this);
     
-    QSharedPointer<EditableTableView> moduleParameterView(new EditableTableView(this));
-    moduleParameterView->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    moduleParameterView->verticalHeader()->show();
+    EditableTableView* view = new EditableTableView(this);
 
-    ColumnFreezableTable* view = new ColumnFreezableTable(1, moduleParameterView, this);
+    ModuleParameterHeaderView* horizontalHeader = new ModuleParameterHeaderView(Qt::Horizontal, view);
+    view->setHorizontalHeader(horizontalHeader);
+
+    view->verticalHeader()->setMaximumWidth(300);
+    view->verticalHeader()->setMinimumWidth(horizontalHeader->fontMetrics().width(tr("Name"))*2);
+    view->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    view->verticalHeader()->show();
+  
+    ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
+    parameterModel->setExpressionParser(expressionParser);
+
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(parameterModel);
+
+    view->setItemDelegate(new ModuleParameterDelegate(componentChoices, parameterCompleter, parameterFinder,
+        expressionFormatter, this));
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -67,28 +79,6 @@ model_(0)
         model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(view, SIGNAL(removeItem(const QModelIndex&)),
         model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-    
-//     ModelParameterEditorHeaderView* parameterHorizontalHeader =
-//         new ModelParameterEditorHeaderView(Qt::Horizontal, this);
-//     view->setHorizontalHeader(parameterHorizontalHeader);
-//     view->horizontalHeader()->setSectionsClickable(true);
-//     view->horizontalHeader()->setStretchLastSection(true);
-
-    // set view to be sortable
-    view->setSortingEnabled(true);
-
-    // items can not be dragged
-    view->setItemsDraggable(false);
-
-    ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
-    parameterModel->setExpressionParser(expressionParser);
-
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(parameterModel);
-
-    view->setDelegate(new ModuleParameterDelegate(componentChoices, parameterCompleter, parameterFinder,
-        expressionFormatter, this));
-
     connect(view->itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view->itemDelegate(), SIGNAL(decreaseReferences(QString)),
@@ -100,16 +90,16 @@ model_(0)
     connect(view->itemDelegate(), SIGNAL(openReferenceTree(QString)),
         this, SIGNAL(openReferenceTree(QString)), Qt::UniqueConnection);
 
-    // set source model for proxy
+
+    view->setSortingEnabled(true);
+    view->setItemsDraggable(false);
 
     proxy_->setSourceModel(model_);
-    // set proxy to be the source for the view
     view->setModel(proxy_);
 
-    // sort the view
     view->sortByColumn(0, Qt::AscendingOrder);
-
-   view->setColumnHidden(ModelParameterColumns::ID, true);
+    
+    view->setColumnHidden(ModuleParameterColumns::ID, true);
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(view);
@@ -129,6 +119,14 @@ ModuleParameterEditor::~ModuleParameterEditor()
 void ModuleParameterEditor::refresh()
 {
     proxy_->invalidate();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModuleParameterEditor::enableEditing()
+//-----------------------------------------------------------------------------
+void ModuleParameterEditor::enableEditing()
+{
+    model_->enableEditing();
 }
 
 //-----------------------------------------------------------------------------

@@ -11,7 +11,7 @@
 
 #include "ModuleParameterModel.h"
 
-#include <editors/ComponentEditor/modelParameters/ModelParameterColumns.h>
+#include "ModuleParameterColumns.h"
 
 #include <IPXACTmodels/common/ModuleParameter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator2014.h>
@@ -70,7 +70,7 @@ int ModuleParameterModel::columnCount(QModelIndex const& parent /*= QModelIndex(
 		return 0;
     }
 
-	return ModelParameterColumns::COLUMN_COUNT;
+	return ModuleParameterColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -87,11 +87,11 @@ QVariant ModuleParameterModel::data(QModelIndex const& index, int role) const
 
     if (role == Qt::DisplayRole)
     {
-        if (index.column() == ModelParameterColumns::DATA_TYPE)
+        if (index.column() == ModuleParameterColumns::DATA_TYPE)
         {
             return moduleParameter->getDataType();
         }
-        else if (index.column() ==  ModelParameterColumns::USAGE_TYPE)
+        else if (index.column() ==  ModuleParameterColumns::USAGE_TYPE)
         {
             return moduleParameter->getUsageType();
         }
@@ -119,11 +119,11 @@ QVariant ModuleParameterModel::headerData(int section, Qt::Orientation orientati
 {
 	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) 
     {	
-		if (section ==  ModelParameterColumns::DATA_TYPE)
+		if (section ==  ModuleParameterColumns::DATA_TYPE)
         {
             return tr("Data\ntype");
         }
-        else if (section == ModelParameterColumns::USAGE_TYPE)
+        else if (section == ModuleParameterColumns::USAGE_TYPE)
         {
             return tr("OO usage");
         }
@@ -147,13 +147,13 @@ bool ModuleParameterModel::setData(QModelIndex const& index, QVariant const& val
         QSharedPointer<ModuleParameter> moduleParameter = 
             getParameterOnRow(index.row()).dynamicCast<ModuleParameter>();
 
-        if (index.column() == ModelParameterColumns::DATA_TYPE)
+        if (index.column() == ModuleParameterColumns::DATA_TYPE)
         {
             moduleParameter->setDataType(value.toString());
             emit dataChanged(index, index);
             return true;
         }
-        else if (index.column() == ModelParameterColumns::USAGE_TYPE)
+        else if (index.column() == ModuleParameterColumns::USAGE_TYPE)
         {
             moduleParameter->setUsageType(value.toString());
             emit dataChanged(index, index);
@@ -250,7 +250,7 @@ QSharedPointer<Parameter> ModuleParameterModel::getParameterOnRow(int row) const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::nameColumn() const
 {
-    return ModelParameterColumns::NAME;
+    return ModuleParameterColumns::NAME;
 }
 
 //-----------------------------------------------------------------------------
@@ -258,7 +258,7 @@ int ModuleParameterModel::nameColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::displayNameColumn() const
 {
-    return ModelParameterColumns::DISPLAY_NAME;
+    return ModuleParameterColumns::DISPLAY_NAME;
 }
 
 //-----------------------------------------------------------------------------
@@ -266,7 +266,7 @@ int ModuleParameterModel::displayNameColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::typeColumn() const
 {
-    return ModelParameterColumns::TYPE;
+    return ModuleParameterColumns::TYPE;
 }
 
 //-----------------------------------------------------------------------------
@@ -274,7 +274,7 @@ int ModuleParameterModel::typeColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::bitWidthLeftColumn() const
 {
-    return ModelParameterColumns::BITWIDTH_LEFT;
+    return ModuleParameterColumns::BITWIDTH_LEFT;
 }
 
 //-----------------------------------------------------------------------------
@@ -282,7 +282,7 @@ int ModuleParameterModel::bitWidthLeftColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::bitWidthRightColumn() const
 {
-    return ModelParameterColumns::BITWIDTH_RIGHT;
+    return ModuleParameterColumns::BITWIDTH_RIGHT;
 }
 
 //-----------------------------------------------------------------------------
@@ -290,7 +290,7 @@ int ModuleParameterModel::bitWidthRightColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::minimumColumn() const
 {
-    return ModelParameterColumns::MINIMUM;
+    return ModuleParameterColumns::MINIMUM;
 }
 
 //-----------------------------------------------------------------------------
@@ -298,7 +298,7 @@ int ModuleParameterModel::minimumColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::maximumColumn() const
 {
-    return ModelParameterColumns::MAXIMUM;
+    return ModuleParameterColumns::MAXIMUM;
 }
 
 //-----------------------------------------------------------------------------
@@ -306,7 +306,7 @@ int ModuleParameterModel::maximumColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::choiceColumn() const
 {
-    return ModelParameterColumns::CHOICE;
+    return ModuleParameterColumns::CHOICE;
 }
 
 //-----------------------------------------------------------------------------
@@ -314,7 +314,7 @@ int ModuleParameterModel::choiceColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::valueColumn() const
 {
-    return ModelParameterColumns::VALUE;
+    return ModuleParameterColumns::VALUE;
 }
 
 //-----------------------------------------------------------------------------
@@ -322,7 +322,7 @@ int ModuleParameterModel::valueColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::resolveColumn() const
 {
-    return ModelParameterColumns::RESOLVE;
+    return ModuleParameterColumns::RESOLVE;
 }
 
 //-----------------------------------------------------------------------------
@@ -330,7 +330,7 @@ int ModuleParameterModel::resolveColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::arrayLeftColumn() const
 {
-    return ModelParameterColumns::ARRAY_LEFT;
+    return ModuleParameterColumns::ARRAY_LEFT;
 }
 
 //-----------------------------------------------------------------------------
@@ -338,7 +338,7 @@ int ModuleParameterModel::arrayLeftColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::arrayRightColumn() const
 {
-    return ModelParameterColumns::ARRAY_RIGHT;
+    return ModuleParameterColumns::ARRAY_RIGHT;
 }
 
 //-----------------------------------------------------------------------------
@@ -346,7 +346,7 @@ int ModuleParameterModel::arrayRightColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::descriptionColumn() const
 {
-    return ModelParameterColumns::DESCRIPTION;
+    return ModuleParameterColumns::DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------
@@ -354,7 +354,7 @@ int ModuleParameterModel::descriptionColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::idColumn() const
 {
-    return ModelParameterColumns::ID;
+    return ModuleParameterColumns::ID;
 }
 
 //-----------------------------------------------------------------------------
@@ -362,7 +362,7 @@ int ModuleParameterModel::idColumn() const
 //-----------------------------------------------------------------------------
 int ModuleParameterModel::usageCountColumn() const
 {
-    return ModelParameterColumns::USAGE_COUNT;
+    return ModuleParameterColumns::USAGE_COUNT;
 }
 
 //-----------------------------------------------------------------------------
@@ -385,6 +385,14 @@ void ModuleParameterModel::setModelParameters(
     endResetModel();
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModuleParameterModel::enableEditing()
+//-----------------------------------------------------------------------------
+void ModuleParameterModel::enableEditing()
+{
+    editingDisabled_ = false;
 }
 
 //-----------------------------------------------------------------------------

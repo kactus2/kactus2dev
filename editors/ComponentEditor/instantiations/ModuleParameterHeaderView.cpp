@@ -1,22 +1,22 @@
 //-----------------------------------------------------------------------------
-// File: ModelParameterEditorHeaderView.cpp
+// File: ModuleParameterHeaderView.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
 // Date: 12.12.2014
 //
 // Description:
-// Header view for model parameter editor.
+// Header view for module parameter editor.
 //-----------------------------------------------------------------------------
 
-#include "ModelParameterEditorHeaderView.h"
+#include "ModuleParameterHeaderView.h"
 
-#include "ModelParameterColumns.h"
+#include "ModuleParameterColumns.h"
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterEditorHeaderView::ModelParameterEditorHeaderView()
 //-----------------------------------------------------------------------------
-ModelParameterEditorHeaderView::ModelParameterEditorHeaderView(Qt::Orientation orientation, QWidget* parent /* = 0 */):
+ModuleParameterHeaderView::ModuleParameterHeaderView(Qt::Orientation orientation, QWidget* parent /* = 0 */):
 ParameterEditorHeaderView(orientation, parent)
 {
 
@@ -25,7 +25,7 @@ ParameterEditorHeaderView(orientation, parent)
 //-----------------------------------------------------------------------------
 // Function: ModelParameterEditorHeaderView::~ModelParameterEditorHeaderView()
 //-----------------------------------------------------------------------------
-ModelParameterEditorHeaderView::~ModelParameterEditorHeaderView()
+ModuleParameterHeaderView::~ModuleParameterHeaderView()
 {
 
 }
@@ -33,31 +33,31 @@ ModelParameterEditorHeaderView::~ModelParameterEditorHeaderView()
 //-----------------------------------------------------------------------------
 // Function: ParameterEditorHeaderView::descriptionColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterEditorHeaderView::descriptionColumn() const
+int ModuleParameterHeaderView::descriptionColumn() const
 {
-    return ModelParameterColumns::DESCRIPTION;
+    return ModuleParameterColumns::DESCRIPTION;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterEditorHeaderView::valueColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterEditorHeaderView::valueColumn() const
+int ModuleParameterHeaderView::valueColumn() const
 {
-    return ModelParameterColumns::VALUE;
+    return ModuleParameterColumns::VALUE;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ParameterEditorHeaderView::maximumColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterEditorHeaderView::maximumColumn() const
+int ModuleParameterHeaderView::maximumColumn() const
 {
-    return ModelParameterColumns::MAXIMUM;
+    return ModuleParameterColumns::MAXIMUM;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ModelParameterEditorHeaderView::arrayRightColumn()
 //-----------------------------------------------------------------------------
-int ModelParameterEditorHeaderView::arrayRightColumn() const
+int ModuleParameterHeaderView::arrayRightColumn() const
 {
-    return ModelParameterColumns::ARRAY_RIGHT;
+    return ModuleParameterColumns::ARRAY_RIGHT;
 }

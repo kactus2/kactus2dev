@@ -11,6 +11,7 @@
 
 #include "editabletableview.h"
 
+#include <QAbstractButton>
 #include <QAbstractTableModel>
 #include <QApplication>
 #include <QClipboard>
@@ -25,6 +26,7 @@
 #include <QModelIndexList>
 #include <QSize>
 #include <QSortFilterProxyModel>
+#include <QStylePainter>
 #include <QTextStream>
 
 //-----------------------------------------------------------------------------
@@ -48,19 +50,22 @@ QTableView(parent),
     defImportExportPath_(),
     itemsDraggable_(true)
 {
-    // cells are resized to match contents 
     horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
-
-    //last column is stretched take the available space in the widget
     horizontalHeader()->setStretchLastSection(true);
 
-    // vertical headers are not visible
     verticalHeader()->hide();
 
     // set the height of a row to be smaller than default
     verticalHeader()->setDefaultSectionSize(fontMetrics().height() + 8);
 
-	// easies to see the different rows from one another
+    QAbstractButton* cornerButton = findChild<QAbstractButton*>();
+    if (cornerButton != 0)
+    {
+        cornerButton->setText(tr("Name"));
+        cornerButton->setToolTip(tr("Click to select all"));
+        cornerButton->installEventFilter(this);
+    }
+
 	setAlternatingRowColors(true);
 
 	// words are wrapped in the cells to minimize space usage
@@ -108,6 +113,18 @@ bool EditableTableView::importExportAllowed() const
 void EditableTableView::setAllowElementCopying(bool allow)
 {
     elementCopyIsAllowed_ = allow;
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::setCornerButtonText()
+//-----------------------------------------------------------------------------
+void EditableTableView::setCornerButtonText(QString const& text)
+{
+    QAbstractButton* cornerButton = findChild<QAbstractButton*>();
+    if (cornerButton != 0)
+    {
+        cornerButton->setText(text);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -253,6 +270,51 @@ void EditableTableView::contextMenuEvent(QContextMenuEvent* event)
 	menu.exec(event->globalPos());
 
 	event->accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: EditableTableView::eventFilter()
+//-----------------------------------------------------------------------------
+bool EditableTableView::eventFilter(QObject* target, QEvent* event)
+{
+    if (event->type() == QEvent::Paint)
+    {
+        QAbstractButton* cornerButton = qobject_cast<QAbstractButton*>(target);
+        if (cornerButton)
+        {
+            // paint by hand (borrowed from QTableCornerButton)
+            QStyleOptionHeader opt;
+            opt.init(cornerButton);
+
+            QStyle::State styleState = QStyle::State_None;
+
+            if (cornerButton->isEnabled())
+            {
+                styleState |= QStyle::State_Enabled;
+            }
+            if (cornerButton->isActiveWindow())
+            {
+                styleState |= QStyle::State_Active;
+            }
+            if (cornerButton->isDown())
+            {
+                styleState |= QStyle::State_Sunken;
+            }
+
+            opt.state = styleState;
+            opt.rect = cornerButton->rect();
+            opt.text = cornerButton->text();
+            opt.textAlignment = Qt::AlignCenter;
+            opt.fontMetrics = horizontalHeader()->fontMetrics();
+            opt.position = QStyleOptionHeader::OnlyOneSection;
+
+            QStylePainter painter(cornerButton);
+            painter.drawControl(QStyle::CE_Header, opt);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

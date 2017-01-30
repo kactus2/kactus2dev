@@ -14,20 +14,24 @@
 #include "PortColumns.h"
 
 #include <QMenu>
+#include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: PortsView::PortsView()
 //-----------------------------------------------------------------------------
-PortsView::PortsView(QWidget *parent ):
-    ColumnFreezableTable(2, QSharedPointer<EditableTableView> (new EditableTableView(parent)), parent),
+PortsView::PortsView(QWidget *parent):
+EditableTableView(parent),
     createBus_(tr("Create new bus definition"), this),
-    createExistingBus_(tr("Use existing bus definition"),this)
+    createExistingBus_(tr("Use existing bus definition"), this)
 {
-    connect(&createBus_, SIGNAL(triggered()),
-        this, SLOT(onCreateNewBus()), Qt::UniqueConnection);
+    verticalHeader()->show();
+    verticalHeader()->setMaximumWidth(300);
+    verticalHeader()->setMinimumWidth(horizontalHeader()->fontMetrics().width(tr("Name"))*2);
+    verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
-    connect(&createExistingBus_, SIGNAL(triggered()),
-        this, SLOT(onCreateExistingBus()), Qt::UniqueConnection);
+    connect(&createBus_, SIGNAL(triggered()), this, SLOT(onCreateNewBus()), Qt::UniqueConnection);
+
+    connect(&createExistingBus_, SIGNAL(triggered()), this, SLOT(onCreateExistingBus()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

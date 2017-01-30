@@ -127,6 +127,9 @@ public:
      */
     void setModelParameters(QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
 
+    //! Enables the editing of module parameters in the model.
+    void enableEditing();
+
     //! Disables the editing of module parameters in the model.
     void disableEditing();
 
@@ -287,7 +290,7 @@ private:
 	 *      @return The index of the first column of the model parameter.
 	*/
     virtual QModelIndex indexFor(QSharedPointer<ModuleParameter> moduleParameter) const;
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

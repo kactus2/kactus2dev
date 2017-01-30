@@ -73,7 +73,7 @@ handler_(handler)
     view_->setAlternatingRowColors(false);
     view_->setSortingEnabled(true);
     view_->setItemsDraggable(false);
-    view_->setDelegate(new PortsDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new PortsDelegate(parameterCompleter, parameterFinder, this));
 
     proxy_.setSourceModel(model_);
     view_->setModel(&proxy_);

@@ -100,11 +100,12 @@ Qt::ItemFlags AddressBlockModel::flags(QModelIndex const& index) const
 QVariant AddressBlockModel::headerData( int section, Qt::Orientation orientation, int role)
     const 
 {
-	if (orientation != Qt::Horizontal) 
+	if (orientation == Qt::Vertical && role == Qt::DisplayRole) 
     {
-		return QVariant();
+		return items_->at(section)->name();
 	}
-	if (Qt::DisplayRole == role) 
+
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) 
     {
         if (section == AddressBlockColumns::NAME)
         {
@@ -312,6 +313,7 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
         if (index.column() == AddressBlockColumns::NAME)
         {
             reg->setName(value.toString());
+            emit headerDataChanged(Qt::Vertical, index.row(), index.row());
         }
         else if (index.column() == AddressBlockColumns::REGISTER_OFFSET)
         {

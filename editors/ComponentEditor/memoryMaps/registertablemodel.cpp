@@ -95,11 +95,12 @@ Qt::ItemFlags RegisterTableModel::flags( const QModelIndex& index ) const
 QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientation, 
     int role /*= Qt::DisplayRole*/ ) const 
 {
-	if (orientation != Qt::Horizontal) 
+    if (orientation == Qt::Vertical && role == Qt::DisplayRole) 
     {
-		return QVariant();
-	}
-	if (Qt::DisplayRole == role) 
+        return fields_->at(section)->name();
+    }
+
+    if (orientation == Qt::Horizontal && role == Qt::DisplayRole) 
     {
         if (section == RegisterColumns::NAME_COLUMN)
         {
@@ -343,6 +344,7 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
         {
             fields_->at(index.row())->setName(value.toString());
 
+            emit headerDataChanged(Qt::Vertical, index.row(), index.row());
             emit graphicsChanged();
         }
         else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
