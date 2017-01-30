@@ -30,12 +30,15 @@ public:
     /*!
      *  The constructor.
 	 *
-	 *      @param [in] vlnv            The VLNV of the top level component.
-     *      @param [in] xmlPath         The path to the top level component XML file.
-     *      @param [in] author          The creator of the file.
-     *      @param [in] description		The description of the top level component.
+	 *      @param [in] vlnv                The VLNV of the top level component.
+     *      @param [in] xmlPath             The path to the top level component XML file.
+     *      @param [in] author              The creator of the file.
+     *      @param [in] description		    The description of the top level component.
+     *      @param [in] kactusVersion		The version of the current Kactus2 build.
+     *      @param [in] generatorVersion	The current version of the generator.
 	 */
-	VerilogHeaderWriter(VLNV const& vlnv, QString const& xmlPath, QString const& author, QString const& description);
+	VerilogHeaderWriter(VLNV const& vlnv, QString const& xmlPath, QString const& author,
+        QString const& description, QString const& kactusVersion, QString const& generatorVersion);
 
 	//! The destructor.
 	~VerilogHeaderWriter();
@@ -44,12 +47,9 @@ public:
      *  Writes a header to the given output.
      *
 	 *      @param [in] outputStream		The output to write to.
-	 *      @param [in] kactusVersion		The version of the current Kactus build.
-	 *      @param [in] generatorVersion	The current version of the generator.
      *      @param [in] generationTime		Time of the generation.
      */
-    void write(QTextStream& outputStream, QString const& fileName, QString const& generatorVersion,
-		QString const& kactusVersion, QDateTime const& generationTime) const;
+    void write(QTextStream& outputStream, QString const& fileName, QDateTime const& generationTime) const;
 
 private:
 
@@ -68,6 +68,12 @@ private:
 
     //! The description of the top level component.
     QString description_;
+
+    //! Version of the generator.
+    QString generatorVersion_;
+
+    //! Version of Kactus2.
+    QString kactusVersion_;
 };
 
 #endif // VERILOGHEADERWRITER_H

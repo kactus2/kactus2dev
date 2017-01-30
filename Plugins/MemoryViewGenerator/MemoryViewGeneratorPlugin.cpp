@@ -115,29 +115,29 @@ QIcon MemoryViewGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MemoryViewGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Document const> libComp,
-    QSharedPointer<Document const> libDesConf, 
-    QSharedPointer<Document const> libDes) const
+bool MemoryViewGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> component,
+    QSharedPointer<Design const> design,
+    QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
-    QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
     if (!component || component->getImplementation() != KactusAttribute::HW)
     {
         return false;
     }
 
-    return libDes || libDesConf;
+    return design || designConfiguration;
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Document> libComp, 
-    QSharedPointer<Document> /*libDesConf*/,
-    QSharedPointer<Document> /*libDes*/)
+void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility, 
+    QSharedPointer<Component> component,
+    QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
     
-    QString xmlFilePath = utility->getLibraryInterface()->getDirectoryPath(libComp->getVlnv());
+    QString xmlFilePath = utility->getLibraryInterface()->getDirectoryPath(component->getVlnv());
 
     QString targetFile = QFileDialog::getSaveFileName(utility->getParentWidget(), tr("Select target file"), 
         xmlFilePath, tr("Comma separated values (*.csv)"));
@@ -145,9 +145,9 @@ void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPoi
     if (!targetFile.isEmpty())
     {
         MemoryViewGenerator generator(utility->getLibraryInterface());
-        generator.generate(libComp.dynamicCast<Component>(), QString(), targetFile);
+        generator.generate(component, QString(), targetFile);
 
-        saveToFileset(targetFile, libComp, utility);
+        saveToFileset(targetFile, component, utility);
 
         utility->printInfo(tr("Generation complete."));
     }
@@ -160,7 +160,7 @@ void MemoryViewGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPoi
 //-----------------------------------------------------------------------------
 // Function: MemoryViewGeneratorPlugin::saveToFileset()
 //-----------------------------------------------------------------------------
-void MemoryViewGeneratorPlugin::saveToFileset(QString const& targetFile, QSharedPointer<Document> component, 
+void MemoryViewGeneratorPlugin::saveToFileset(QString const& targetFile, QSharedPointer<Component> component, 
     IPluginUtility* utility)
 {
     QString xmlFilePath = utility->getLibraryInterface()->getDirectoryPath(component->getVlnv());

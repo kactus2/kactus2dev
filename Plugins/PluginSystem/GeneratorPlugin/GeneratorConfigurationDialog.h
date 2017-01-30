@@ -2,8 +2,8 @@
 // File: GeneratorConfigurationDialog.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Esko Pekkarinen
-// Date: 23.02.2015
+// Author: Janne Virtanen
+// Date: 26.01.2017
 //
 // Description:
 // Dialog for setting file generation options.
@@ -14,6 +14,7 @@
 
 #include <QDialog>
 #include <QLabel>
+#include <QPlainTextEdit>
 
 #include "ViewSelectionWidget.h"
 #include "FileOutputWidget.h"
@@ -37,11 +38,14 @@ public:
 
 public slots:
 
+    // Received when the OK button is pressed. NOTICE: Overrides slot accept() of the parent class.
     virtual void accept();
 
 private slots:
 
     void onViewChanged();
+
+    void onSelectedFileChanged(QSharedPointer<GenerationFile> newSelection);
 
     void onInterfaceGenerationStateChanged(int state);
 
@@ -69,6 +73,9 @@ private:
 
     //! General warnings are displayed here.
 	QLabel* generalWarningLabel_;
+
+    //! Preview for the generation output.
+    QPlainTextEdit* previewer_;
 };
 
 #endif //GENERATORCONFIGURATIONDIALOG_H

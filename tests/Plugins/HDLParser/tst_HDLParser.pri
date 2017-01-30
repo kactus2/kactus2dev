@@ -7,25 +7,27 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../Plugins/common/PortSorter/PortSorter.h \
-    ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
+HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
     ../../../Plugins/common/HDLParser/HDLComponentParser.h \
     ../../../Plugins/common/HDLParser/HDLParserCommon.h \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../editors/ComponentEditor/common/ListParameterFinder.h \
+    ../../../Plugins/common/HDLParser/MetaDesign.h \
+    ../../../Plugins/common/HDLParser/MetaInstance.h \
     ../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h \
     ../../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../../../editors/ComponentEditor/common/ParameterFinder.h \
+    ../../../Plugins/common/PortSorter/PortSorter.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../designEditors/common/TopComponentParameterFinder.h \
-    ../../../Plugins/common/HDLParser/HDLDesignParser.h \
     ../../MockObjects/LibraryMock.h
 SOURCES += ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
-    ../../../Plugins/common/HDLParser/HDLDesignParser.cpp \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
+    ../../../Plugins/common/HDLParser/MetaDesign.cpp \
+    ../../../Plugins/common/HDLParser/MetaInstance.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \

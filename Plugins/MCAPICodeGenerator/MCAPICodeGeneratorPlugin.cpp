@@ -100,42 +100,35 @@ QIcon MCAPICodeGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MCAPICodeGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> libComp,
-    QSharedPointer<Document const> libDesConf,
-    QSharedPointer<Document const> libDes ) const
+bool MCAPICodeGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> component,
+    QSharedPointer<Design const> design,
+    QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
-    QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
-    QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
-
-    return (comp != 0 && comp->getImplementation() == KactusAttribute::SW) ||
-        ( libDes != 0 && desgConf != 0 && desgConf->getImplementation() == KactusAttribute::SYSTEM );
+    return (component != 0 && component->getImplementation() == KactusAttribute::SW) ||
+        ( design != 0 && designConfiguration != 0 && designConfiguration->getImplementation() == KactusAttribute::SYSTEM );
 }
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility, 
-    QSharedPointer<Document> libComp,
-    QSharedPointer<Document> libDesConf,
-    QSharedPointer<Document> libDes)
+void MCAPICodeGeneratorPlugin::runGenerator(IPluginUtility* utility, 
+    QSharedPointer<Component> component,
+    QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
-    QSharedPointer<Design> design = libDes.dynamicCast<Design>();
-    QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
-    QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
-
-    if ( comp != 0 && comp->getImplementation() == KactusAttribute::SW )
+    if (component != 0 && component->getImplementation() == KactusAttribute::SW)
     {
         MCAPIParser parser( utility );
-        parser.parseMCAPIForComponent(comp);
+        parser.parseMCAPIForComponent(component);
         MCAPICodeGenerator generator( parser, utility );
-        QString dir = QFileInfo(utility->getLibraryInterface()->getPath(libComp->getVlnv())).absolutePath(); 
-        generator.generateMCAPIForComponent(dir, comp);
+        QString dir = QFileInfo(utility->getLibraryInterface()->getPath(component->getVlnv())).absolutePath(); 
+        generator.generateMCAPIForComponent(dir, component);
     }
-    else if ( libDes != 0 && desgConf != 0 &&
-        desgConf->getImplementation() == KactusAttribute::SYSTEM )
+    else if (design != 0 && designConfiguration != 0 &&
+        designConfiguration->getImplementation() == KactusAttribute::SYSTEM )
     {
         MCAPIParser parser( utility );
-        parser.parseTopLevel(design, comp, desgConf);
+        parser.parseTopLevel(design, component, designConfiguration);
 
         QStringList replacedFiles = parser.getReplacedFiles();
 
@@ -162,13 +155,13 @@ void MCAPICodeGeneratorPlugin::runGenerator( IPluginUtility* utility,
         }
 
         MCAPIHeaderGenerator generator( parser, utility );
-        VLNV topVLNV = comp->getVlnv();
+        VLNV topVLNV = component->getVlnv();
         QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(topVLNV)).absolutePath();
-        generator.generateTopLevel(design, comp, desgConf, topDir);
+        generator.generateTopLevel(design, component, designConfiguration, topDir);
         utility->getLibraryInterface()->writeModelToFile(design);
     }
 
-    utility->getLibraryInterface()->writeModelToFile(libComp);
+    utility->getLibraryInterface()->writeModelToFile(component);
 
     utility->printInfo( "MCAPI generation complete.");
 }

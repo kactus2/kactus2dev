@@ -26,6 +26,7 @@
 #include <Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h>
 
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
+#include <Plugins/common/HDLParser/MetaInstance.h>
 
 #include <QSharedPointer>
 #include <QTextStream>
@@ -45,7 +46,7 @@ public:
      *      @param [in] useInterfaces           True, if interfaces are utilized separately from physical ports, else false.
      *      @param [in] generateMemory          If true, definitions for registers are generated as well, else it is false.
 	 */
-	ComponentVerilogWriter(QSharedPointer<GenerationComponent> component, bool useInterfaces, bool generateMemory);
+	ComponentVerilogWriter(QSharedPointer<MetaInstance> component, bool useInterfaces, bool generateMemory);
 
 	//! The destructor.
 	~ComponentVerilogWriter();
@@ -116,7 +117,7 @@ private:
      *      @param [in] port            The port to write.
      *      @param [in] isLast          Indicates if the port is the last to write.
      */
-    void writePort(QTextStream& outputStream, QSharedPointer<GenerationPort> port, bool isLast) const;
+    void writePort(QTextStream& outputStream, QSharedPointer<MetaPort> port, bool isLast) const;
 
     /*!
      *  Writes a bus interface introduction.
@@ -168,7 +169,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The component to write to Verilog module.
-    QSharedPointer<GenerationComponent> component_;
+    QSharedPointer<MetaInstance> component_;
 
     //! True, if interfaces are utilized separately from physical ports, else false.
     bool useInterfaces_;

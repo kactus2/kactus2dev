@@ -18,6 +18,7 @@
 
 #include <Plugins/common/PortSorter/PortSorter.h>
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
+#include <Plugins/common/HDLParser/MetaInstance.h>
 
 #include <QSharedPointer>
 #include <QTextStream>
@@ -30,7 +31,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 // Class used to parse relevant information from IP-XACT component for HDL generation.
 //-----------------------------------------------------------------------------
-class HDLComponentParser
+class HDLComponentParser : public MetaInstance
 {
 public:
 
@@ -40,20 +41,11 @@ public:
 	 *      @param [in] component               The component to write to Verilog.
      *      @param [in] activeView              The active view for the component.
 	 */
-	HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component);
+    HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component,
+        QSharedPointer<View> activeView);
 
 	//! The destructor.
 	~HDLComponentParser();
-    
-    /*!
-    *  Parses the component using the given view.
-    */
-    void parseComponent(QSharedPointer<View> activeView);
-
-    /*!
-    *  Returns the parsed component.
-    */
-    QSharedPointer<GenerationComponent> getParsedComponent();
 
     /*!
      *  Sorts list of parameters based on their interdependencies.
@@ -62,27 +54,32 @@ public:
      *      @param [out] sortParameters         The list containing the same parameters as in refParameters, that will be sorted.
      */
 	static void sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
-		QList<QSharedPointer<Parameter> >& sortParameters);
+        QList<QSharedPointer<Parameter> >& sortParameters);
+
+    //! The parsed remap states.
+    QList<QSharedPointer<GenerationRemapState> > remapStates_;
+    //! The parsed remaps, including the default memory map.
+    QList<QSharedPointer<GenerationRemap> > remaps_;
+    //! The addressable unit bits to be used within the component.
+    QString aub_;
+    //! Total memory within the component counted in AUBs.
+    QString totalRange_;
+
+protected:
+    /*!
+    *  Parses the found parameter declarations.
+    */
+    virtual void formatParameters();
+    
+    /*!
+    *  Culls and parses the ports of the component.
+    */
+    virtual void formatPorts();
 
 private:
 	// Disable copying.
 	HDLComponentParser(HDLComponentParser const& rhs);
     HDLComponentParser& operator=(HDLComponentParser const& rhs);
-
-    /*!
-    *  Culls and formats parameter declarations for the component.
-    */
-    void findParameters();
-    
-    /*!
-    *  Culls the interfaces of the component.
-    */
-    void parseInterfaces();
-    
-    /*!
-    *  Culls, sorts and formats the ports of the component.
-    */
-    void parsePorts();
     
     /*!
     *  Culls the memory of the component.
@@ -103,26 +100,8 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The component library.
-    LibraryInterface* library_;
-
-    //! The component parsed for generation.
-    QSharedPointer<Component> component_;
-
-    //! The parsing result of component_.
-    QSharedPointer<GenerationComponent> retval_;
-
-    //! The active view of the component.
-    QSharedPointer<View> activeView_;
-
-    //! The component instantiation referred by the active view.
-    QSharedPointer<ComponentInstantiation> activeInstantiation_;
-
     //! The formatter for expressions.
     QSharedPointer<ExpressionFormatter> formatter_;
-
-    //! The interfaces utilized by the component.
-    QMap<QSharedPointer<BusInterface>, QSharedPointer<GenerationInterface> > interfaces_;
 };
 
 #endif // HDLCOMPONENTPARSER_H

@@ -25,7 +25,7 @@
 
 #include <QTextStream>
 #include <QSharedPointer>
-#include <Plugins/common/HDLParser/HDLParserCommon.h>
+#include <Plugins/common/HDLParser/MetaDesign.h>
 
 //-----------------------------------------------------------------------------
 //! Class for writing a component instance as a Verilog instance.
@@ -41,7 +41,7 @@ public:
      *      @param [in] sorter                  Sorter for the ports in the component.
      *      @param [in] useInterfaces           True, if interfaces are used where applicable. False means always ports.
 	 */
-	ComponentInstanceVerilogWriter(QSharedPointer<GenerationInstance> instance,
+	ComponentInstanceVerilogWriter(QSharedPointer<MetaInstance> instance,
         QSharedPointer<const PortSorter> sorter, bool useInterfaces);
 
 	//! The destructor.
@@ -133,15 +133,6 @@ private:
     QString createInterfaceSeparator(QString const& interfaceName, QString const& previousInteface) const;
 
     /*!
-    *  Gets the connection assignment for a port.
-    *
-    *      @param [in] portName     The name of the port whose connection assignment to get.
-    *
-    *      @return The Verilog description of the instance port connection assignment.
-    */
-    QString assignmentForPort(QSharedPointer<GenerationPortAssignMent> gab) const;
-
-    /*!
     *  Checks if a given port is not connected.
     *
     *      @param [in] portName     The name of the port to check.
@@ -177,11 +168,20 @@ private:
     */
     bool assignSingleBitInConnection(General::PortBounds const& signalBounds) const;
 
+    /*!
+    *  Gets the connection assignment for a port of a module instance.
+    *
+    *      @param [in] mPort            The meta port whose connection assignment to get.
+    *
+    *      @return The Verilog description of the instance port connection assignment.
+    */
+    QString assignmentForInstancePort(QSharedPointer<MetaPort> mPort) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	QSharedPointer<GenerationInstance> instance_;
+	QSharedPointer<MetaInstance> instance_;
 
 	//! Sorter for the ports of the component.
     QSharedPointer<const PortSorter> sorter_;

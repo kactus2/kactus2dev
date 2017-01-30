@@ -13,7 +13,7 @@
 #define VERILOGGENERATORPLUGIN_H
 
 #include "veriloggeneratorplugin_global.h"
-#include "VerilogGenerator/VerilogGenerator.h"
+#include "VerilogWriterFactory/VerilogWriterFactory.h"
 
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
@@ -102,150 +102,47 @@ public:
      *  Returns the icon for the generator.
      */
     virtual QIcon getIcon() const;
-
-    /*!
-     *  Checks whether the generator supports generation for the given library component.
+    
+        /*!
+     *  Checks whether the generator may run for the given component or design. 
      *
-     *      @param [in] libComp		The library component for which to check support.
-     *      @param [in] libDesConf	The optional design configuration object.
-     *      @param [in] libDes		The optional design object.
+     *      @param [in] component	        The component for which to check support. If design is not null, component
+	 *                                      will refer to design or designConfiguration.
+     *      @param [in] design	            The design, if the generator is ran for a design.
+     *      @param [in] designConfiguration The design configuration for design, if it is not null.
      *
-     *      @return True, if the generator supports the given component, otherwise false.
+     *      @return True, if the generator may run the given component. Otherwise false.
      */
-    virtual bool checkGeneratorSupport(QSharedPointer<Document const> libComp, 
-        QSharedPointer<Document const> libDesConf = QSharedPointer<Document const>() , 
-        QSharedPointer<Document const> libDes = QSharedPointer<Document const>()) const;
+    virtual bool checkGeneratorSupport(QSharedPointer<Component const> component,
+        QSharedPointer<Design const> design,
+        QSharedPointer<DesignConfiguration const> designConfiguration) const;
 
     /*!
-     *  Runs the generator.
+     *  Runs the generation, creating new files and/or modifying the IP-XACT metadata. The function has
+	 *  also access to the parent window widget, so that it can show dialogs for the user to aid the generation.
      *
-     *      @param [in]			utility			The plugin utility to use.
-     *      @param [in,out]	    libComp			The library component for which the generator is run.
-     *      @param [in]	        libDesConf		The optional design configuration object for the generator.
-     *      @param [in]	        libDes			The optional design object.
+     *      @param [in] utility			    The plugin utility interface.
+     *      @param [in] component	        The component for which to check support. If design is not null, component
+     *                                      will refer to design or designConfiguration.
+     *      @param [in] design	            The design, if the generator is ran for a design.
+     *      @param [in] designConfiguration The design configuration for design, if it is not null.
      */
     virtual void runGenerator(IPluginUtility* utility, 
-        QSharedPointer<Document> libComp, 
-        QSharedPointer<Document> libDesConf = QSharedPointer<Document>(), 
-        QSharedPointer<Document> libDes = QSharedPointer<Document>());
-
-protected:
-
-    /*!
-     *  Finds the possible views for generation.
-     *
-     *      @param [in,out]	    targetComponent	The component for which the generator is run.
-     *      @param [in]	        libDes   		The design which the generator is run.
-     *      @param [in]	        libDesConf      The design configuration object for which the generator is run.
-     *
-     *      @return List of possible view names for which to run the generation.
-     */
-    QSharedPointer<QList<QSharedPointer<View> > > findPossibleViews(QSharedPointer<Component> targetComponent,
-        QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConf) const;
-
-    /*!
-     *  Checks if the generator could be configured.
-     *
-	 *      @param [in] possibleViews			The list of possible views for generation.
-     *      @param [in] possibleInstantiations	The list of possible instantiations for generation.
-     *      @param [in] possibleFileSets	    The list of possible file sets for generation.
-     *
-     *      @return True, if configuration was successful, otherwise false.
-     */
-    virtual bool couldConfigure(QSharedPointer<QList<QSharedPointer<View> > > const possibleViews,
-		QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations,
-        QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets,
-        HDLComponentParser* componentParser,
-        HDLDesignParser* designParser);
-
-    /*!
-     *  Gets the configuration for the generation.
-     *
-     *      @return The configuration to use in generation.
-     */
-    virtual QSharedPointer<GeneratorConfiguration> getConfiguration();
-
-public slots:
-
-    /*!
-     *  Called when an error is reported to us.
-     *
-	 *      @param [in] report			The error message.
-	 */
-	void onErrorReport(const QString& report);
+        QSharedPointer<Component> component,
+        QSharedPointer<Design> design,
+        QSharedPointer<DesignConfiguration> designConfiguration);
 
 private:
 	// Disable copying.
 	VerilogGeneratorPlugin(VerilogGeneratorPlugin const& rhs);
 	VerilogGeneratorPlugin& operator=(VerilogGeneratorPlugin const& rhs);
-    
-    /*!
-     *  Gets the default output path.     
-     *
-     *      @return The default output path.
-     */
-    QString defaultOutputPath() const;
-
-    /*!
-     *  Checks if the generated file should be added to a file set in the top component.
-     *
-     *      @return True, if the file should be added to file set, otherwise false.
-     */
-    virtual bool outputFileShouldBeAddedToTopComponent() const;
-    
-    /*!
-     *  Gets the relative path from the top component xml file to the given absolute path.
-     *
-     *      @param [in] filePath   The absolute path to the target file.
-     *
-     *      @return Relative path from the top component xml file to the target file.
-     */
-    QString relativePathFromXmlToFile(QString const& filePath) const;
-
-    /*!
-     *  Adds the generated file to a file set in the top component.
-	 *  Will do nothing, if the fileSetName is empty.
-     *
-	 *      @param [in] activeView		The top component active view, which will refer to the instantiation.
-	 *      @param [in] instantiation   The instantiation, which will have the fileSetName as reference.
-	 *      @param [in] fileSetName		The name of the file set, where the file will be appended to.
-     */
-    void addGeneratedFileToFileSet(QSharedPointer<ViewSelection> configuration,
-        QSharedPointer<QList<QSharedPointer<VerilogDocument> > > documents);
-
-    /*!
-     *  Inserts description to a generated file.
-     *
-	 *      @param [in] file		The file which needs to be described.
-     */
-    void insertFileDescription(QSharedPointer<File> file);
-
-    //! Saves the changes made to the top component.
-    void saveChanges() const;
-
-    /*!
-     *  Finds all the views in containing component referencing the given design or design configuration VLNV.
-     *
-     *      @param [in] containingComponent     The component whose views to search through.
-     *      @param [in] targetReference         The reference to find in views.
-     *
-     *      @return The the views referencing the given VLNV.
-     */
-    QSharedPointer<QList<QSharedPointer<View> > > findReferencingViews(QSharedPointer<Component> containingComponent,
-		VLNV targetReference) const;
 
      //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The plugin utility to use while running generation.
-    IPluginUtility* utility_;
-
-    //! The top component for which to run the generation.
-    QSharedPointer<Component> topComponent_;
-
-    //! The configuration for the generation.
-    QSharedPointer<GeneratorConfiguration> configuration_;
+    //! The last values used by the generation.
+    GenerationSettings settings_;
 };
 
 #endif // VERILOGGENERATORPLUGIN_H

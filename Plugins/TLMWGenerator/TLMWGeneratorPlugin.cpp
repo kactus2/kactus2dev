@@ -99,32 +99,26 @@ QIcon TLMWGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: TLMWGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool TLMWGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> libComp,
-    QSharedPointer<Document const> libDesConf,
-    QSharedPointer<Document const> libDes ) const
+bool TLMWGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> component,
+    QSharedPointer<Design const> design,
+    QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
-    QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
-    QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
-
-    return (libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM);
+    return (design != 0 && designConfiguration != 0 &&
+        designConfiguration->getDesignConfigImplementation() == KactusAttribute::SYSTEM);
 }
 
 //-----------------------------------------------------------------------------
 // Function: TLMWGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void TLMWGeneratorPlugin::runGenerator(IPluginUtility* utility, 
-    QSharedPointer<Document> libComp,
-    QSharedPointer<Document> libDesConf,
-    QSharedPointer<Document> libDes)
+    QSharedPointer<Component> component,
+    QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
-    QSharedPointer<Design> design = libDes.dynamicCast<Design>();
-    QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
-    QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
-
-	if (libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM)
+	if (design != 0 && designConfiguration != 0 && designConfiguration->getDesignConfigImplementation() == KactusAttribute::SYSTEM)
     {
         TLMWParser parser( utility );
-        parser.parseTopLevel(design, comp, desgConf);
+        parser.parseTopLevel(design, component, designConfiguration);
 
         QStringList replacedFiles = parser.getReplacedFiles();
 
@@ -153,12 +147,12 @@ void TLMWGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
         TLMWHeaderGenerator generator(parser);
 
-        QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(comp->getVlnv())).absolutePath();
-        generator.generateTopLevel(design, comp, desgConf, topDir);
+        QString topDir = QFileInfo(utility->getLibraryInterface()->getPath(component->getVlnv())).absolutePath();
+        generator.generateTopLevel(design, component, designConfiguration, topDir);
         utility->getLibraryInterface()->writeModelToFile(design);
     }
 
-    utility->getLibraryInterface()->writeModelToFile(libComp);
+    utility->getLibraryInterface()->writeModelToFile(component);
     utility->printInfo("TLMW generation complete.");
 }
 

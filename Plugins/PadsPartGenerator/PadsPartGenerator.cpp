@@ -157,19 +157,18 @@ QIcon PadsPartGenerator::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: PadsPartGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool PadsPartGenerator::checkGeneratorSupport(QSharedPointer<Document const> libComp, 
-    QSharedPointer<Document const> libDesConf /*= QSharedPointer<Document const>()*/, 
-    QSharedPointer<Document const> libDes /*= QSharedPointer<Document const>()*/) const
+bool PadsPartGenerator::checkGeneratorSupport(QSharedPointer<Component const> component,
+    QSharedPointer<Design const> design,
+    QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
     // Pads part generation can only be run on component editor.
-    if (libDesConf || libDes) {
+    if (designConfiguration || design) {
         return false;
     }
 
     // Part generation can only run on HW chip components.
-    QSharedPointer<const Component> comp = libComp.dynamicCast<const Component>();
-    if (comp == 0 || 
-        comp->getImplementation() != KactusAttribute::HW || comp->getHierarchy() != KactusAttribute::CHIP)
+    if (!component || component->getImplementation() != KactusAttribute::HW ||
+        component->getHierarchy() != KactusAttribute::CHIP)
     {
         return false;
     }
@@ -181,19 +180,12 @@ bool PadsPartGenerator::checkGeneratorSupport(QSharedPointer<Document const> lib
 // Function: PadsPartGenerator::runGenerator()
 //-----------------------------------------------------------------------------
 void PadsPartGenerator::runGenerator(IPluginUtility* utility, 
-    QSharedPointer<Document> libComp, 
-    QSharedPointer<Document> libDesConf /*= QSharedPointer<Document>()*/, 
-    QSharedPointer<Document> libDes /*= QSharedPointer<Document>()*/)
+    QSharedPointer<Component> component,
+    QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
-    // Part generation can only run on HW components
-    QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
-    if (comp == 0 || comp->getImplementation() != KactusAttribute::HW)
-    {
-        return;
-    }
-
     // Ask user for generation settings.
-    PadsPartGeneratorDialog dialog(utility->getLibraryInterface(), comp, getName(), getVersion(), 
+    PadsPartGeneratorDialog dialog(utility->getLibraryInterface(), component, getName(), getVersion(), 
         utility->getParentWidget());
     if (dialog.exec() == QDialog::Rejected)
     {
@@ -206,7 +198,7 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
 
     QString partDescription(dialog.getPreviewText());
     QString filesetName =  dialog.getFileSetName();    
-    QString basePath = utility->getLibraryInterface()->getPath(comp->getVlnv());
+    QString basePath = utility->getLibraryInterface()->getPath(component->getVlnv());
     QFileInfo fileInfo(basePath); 
     QString targetDirectoryPath = fileInfo.absolutePath() + "/" + filesetName;
     QDir targetDirectory(targetDirectoryPath);
@@ -231,7 +223,7 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
     utility->printInfo(tr("Finished writing %1").arg(partFilePath));
 
     // Add part file to fileset.    
-    if (addFileToFileset(comp->getFileSet(filesetName), partFilePath, basePath, QStringList("padsPart")))
+    if (addFileToFileset(component->getFileSet(filesetName), partFilePath, basePath, QStringList("padsPart")))
     {
         utility->printInfo(tr("Added %1 to fileset %2").arg(partFileName).arg(filesetName)); 
     }
@@ -247,7 +239,7 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
     QString caeFilePath = targetDirectoryPath + "/" + caeFileName;    
     QFile* caeFile = new QFile(caeFilePath);
 
-    if (!generateCAEFile(caeFile, comp->getVlnv().toString().toUpper(), partDescription))
+    if (!generateCAEFile(caeFile, component->getVlnv().toString().toUpper(), partDescription))
     {
         utility->printError(tr("Could not write file %1").arg(caeFilePath));    
     }
@@ -256,7 +248,7 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
     utility->printInfo(tr("Finished writing %1").arg(caeFilePath));
 
     // Add cae file to fileset.
-    if (!addFileToFileset(comp->getFileSet(filesetName), caeFilePath, basePath, QStringList("padsCAEDecal")))
+    if (!addFileToFileset(component->getFileSet(filesetName), caeFilePath, basePath, QStringList("padsCAEDecal")))
     {
         utility->printError(tr("Could not add %1 to fileset %2").arg(caeFileName).arg(filesetName));
     }
@@ -267,7 +259,7 @@ void PadsPartGenerator::runGenerator(IPluginUtility* utility,
 
     // Write fileset changes to xml.
     utility->printInfo(tr("========== Part generation complete =========="));
-    utility->getLibraryInterface()->writeModelToFile(comp);         
+    utility->getLibraryInterface()->writeModelToFile(component);         
 }
 
 //-----------------------------------------------------------------------------

@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: VerilogInterconnectionWriter::InterconnectionVerilogWriter()
 //-----------------------------------------------------------------------------
-VerilogInterconnectionWriter::VerilogInterconnectionWriter(QSharedPointer<GenerationInterconnection> interconnection) : interconnection_(interconnection)
+VerilogInterconnectionWriter::VerilogInterconnectionWriter(QSharedPointer<MetaInterconnection> interconnection) : interconnection_(interconnection)
 {
 
 }
@@ -34,7 +34,8 @@ void VerilogInterconnectionWriter::write(QTextStream& output) const
 {
     QString instanceString = "<typeName> <parameters><instanceName>();";
 
-    instanceString.replace("<typeName>", interconnection_->typeName_);
+    // TODO: Interconnection typename.
+    //instanceString.replace("<typeName>", interconnection_->typeName_);
     instanceString.replace("<parameters>", parameterAssignments());
     instanceString.replace("<instanceName>", interconnection_->name_);
 

@@ -28,10 +28,12 @@
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 
+#include <Plugins/common/HDLParser/HDLComponentParser.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
-ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<GenerationComponent> component,
+ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<MetaInstance> component,
     bool useInterfaces,
     bool generateMemory) :
 component_(component),
@@ -59,23 +61,6 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
     if (nothingToWrite())
     {
         return;
-    }
-
-    if (useInterfaces_)
-    {
-        QStringList fileNames;
-
-        foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces_)
-        {
-            fileNames.append(gif->interface_->name());
-        }
-
-        fileNames.removeDuplicates();
-
-        foreach(QString name, fileNames)
-        {
-            outputStream << "`include \"" << name << "\"" <<  endl;
-        }
     }
 
     writeModuleDeclaration(outputStream);
@@ -148,16 +133,16 @@ void ComponentVerilogWriter::writeModuleDeclaration(QTextStream& outputStream) c
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStream) const
 {
-	if (component_->formattedParameters_.isEmpty())
+	if (component_->parameters_.isEmpty())
     {
         return;
     }
 
     outputStream << " #(" << endl;
 
-    foreach(QSharedPointer<Parameter> parameter, component_->formattedParameters_)
+    foreach(QSharedPointer<Parameter> parameter, component_->parameters_)
     {
-        bool isLastParameter = parameter == component_->formattedParameters_.last();
+        bool isLastParameter = parameter == component_->parameters_.last();
         writeParameter(outputStream, parameter, isLastParameter);
     }
 
@@ -208,24 +193,30 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 
     outputStream << "(";
 
-    if (useInterfaces_)
-    {
-        foreach(QSharedPointer<GenerationInterface> gif, component_->interfaces_)
-        {
-            QString typeName = gif->interface_->getBusType().getName();
-            outputStream << endl << typeName << "." << gif->mode_ << " " << gif->interface_->name() << ",";
-        }
-    }
-
     // Pick the ports in sorted order.
     QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(component_->component_);
 
-    foreach(QSharedPointer<Port> cport, ports)
-    {   
-        QSharedPointer<GenerationPort> gport = component_->ports_[cport->name()];
+    foreach(QSharedPointer<Port> cPort, ports)
+    {
+        if (cPort->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
+        {
+            ports.removeOne(cPort);
+        }
+    }
+
+    foreach(QSharedPointer<Port> cPort, ports)
+    {
+        QSharedPointer<MetaPort> mPort = component_->ports_[cPort->name()];
+
+        if (!mPort)
+        {
+            // TODO: error
+            continue;
+        }
+
         QString interfaceName;
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-            component_->component_->getInterfacesUsedByPort(cport->name());
+            component_->component_->getInterfacesUsedByPort(cPort->name());
 
         if (busInterfaces->count() < 1 )
         {
@@ -247,10 +238,9 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
             }
         }
 
-        writeInterfaceIntroduction(interfaceName, gport->port_->description(), previousInterfaceName, outputStream);
-
-        bool lastPortToWrite = cport == ports.last();
-        writePort(outputStream, gport, lastPortToWrite);
+        writeInterfaceIntroduction(interfaceName, cPort->description(), previousInterfaceName, outputStream);
+        bool lastPortToWrite = cPort == ports.last();
+        writePort(outputStream, mPort, lastPortToWrite);
     }
     
     outputStream << ");" << endl;
@@ -289,7 +279,7 @@ void ComponentVerilogWriter::writeInterfaceIntroduction(QString const& interface
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::writePort()
 //-----------------------------------------------------------------------------
-void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer<GenerationPort> port, bool isLast) const
+void ComponentVerilogWriter::writePort(QTextStream& outputStream, QSharedPointer<MetaPort> port, bool isLast) const
 {
     outputStream << indentation();
 
@@ -326,7 +316,9 @@ void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
 {
-    foreach (QSharedPointer<GenerationRemapState> grms, component_->remapStates_)
+    QSharedPointer<HDLComponentParser> comparser = component_.dynamicCast<HDLComponentParser>();
+
+    foreach (QSharedPointer<GenerationRemapState> grms, comparser->remapStates_)
     {
         QString condition;
 
@@ -344,7 +336,7 @@ void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
         outputStream << indentation() << "`define " << grms->stateName_ << " " << condition << endl;
     }
 
-    if (component_->remapStates_.count() > 0)
+    if (comparser->remapStates_.count() > 0)
     {
         outputStream << endl;
     }
@@ -355,19 +347,21 @@ void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeRegisters(QTextStream& outputStream) const
 {
-    if ( component_->remaps_.size() < 1 )
+    QSharedPointer<HDLComponentParser> comparser = component_.dynamicCast<HDLComponentParser>();
+
+    if (comparser->remaps_.size() < 1)
     {
         return;
     }
 
-    outputStream << indentation() << "localparam MEMORY_SIZE = " << component_->totalRange_ << ";" << endl;
-    outputStream << indentation() << "localparam AUB = " << component_->aub_ << ";" << endl;
+    outputStream << indentation() << "localparam MEMORY_SIZE = " << comparser->totalRange_ << ";" << endl;
+    outputStream << indentation() << "localparam AUB = " << comparser->aub_ << ";" << endl;
     outputStream << indentation() << "reg [0:AUB-1] dat [0:MEMORY_SIZE-1];" << endl;
 
     outputStream << indentation() << "genvar gen_iterator1;" << endl;
     outputStream << indentation() << "genvar gen_iterator2;" << endl;
 
-    foreach(QSharedPointer<GenerationRemap> grm, component_->remaps_)
+    foreach(QSharedPointer<GenerationRemap> grm, comparser->remaps_)
     {
         foreach(QSharedPointer<GenerationAddressBlock> gab, grm->blocks_)
         {

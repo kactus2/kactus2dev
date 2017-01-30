@@ -7,18 +7,18 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../common/HDLParser/HDLComponentParser.h \
+HEADERS += ../common/HDLParser/MetaInstance.h \
+    ../common/HDLParser/HDLComponentParser.h \
     ../common/HDLParser/HDLParserCommon.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
     ../VerilogImport/VerilogSyntax.h \
-    ../common/HDLParser/HDLDesignParser.h \
     ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
     ../PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
     ../PluginSystem/GeneratorPlugin/FileOutput.h \
     ./VerilogGeneratorPlugin.h \
-    ./VerilogGenerator/VerilogGenerator.h \
+    ../PluginSystem/GeneratorPlugin/IWriterFactory.h \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
     ../common/NameGenerationPolicy.h \
     ./common/Writer.h \
@@ -40,11 +40,14 @@ HEADERS += ../common/HDLParser/HDLComponentParser.h \
     ../../editors/ComponentEditor/common/ParameterFinder.h \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../designEditors/common/TopComponentParameterFinder.h \
-    ./VerilogTiedValueWriter/VerilogTiedValueWriter.h \
+    ./VerilogAssignmentWriter/VerilogAssignmentWriter.h \
     ./TextBodyWriter/TextBodyWriter.h \
-    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h
+    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
+    ../common/HDLParser/MetaDesign.h \
+    ./PortVerilogWriter/VerilogTopDefaultWriter.h \
+    ./VerilogWriterFactory/VerilogDocument.h \
+    ./VerilogWriterFactory/VerilogWriterFactory.h
 SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
-    ../common/HDLParser/HDLDesignParser.cpp \
     ../PluginSystem/GeneratorPlugin/FileOutput.cpp \
     ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
     ../PluginSystem/GeneratorPlugin/GeneratorConfiguration.cpp \
@@ -53,7 +56,6 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
     ../VerilogImport/VerilogSyntax.cpp \
     ./VerilogGeneratorPlugin.cpp \
-    ./VerilogGenerator/VerilogGenerator.cpp \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ./ComponentVerilogWriter/ComponentVerilogWriter.cpp \
     ./ModelParameterVerilogWriter/ModelParameterVerilogWriter.cpp \
@@ -71,7 +73,12 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../../editors/ComponentEditor/common/ListParameterFinder.cpp \
     ../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../designEditors/common/TopComponentParameterFinder.cpp \
-    ./VerilogTiedValueWriter/VerilogTiedValueWriter.cpp \
+    ./VerilogAssignmentWriter/VerilogAssignmentWriter.cpp \
     ./TextBodyWriter/TextBodyWriter.cpp \
-    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp
+    ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.cpp \
+    ../common/HDLParser/MetaInstance.cpp \
+    ../common/HDLParser/MetaDesign.cpp \
+    ./PortVerilogWriter/VerilogTopDefaultWriter.cpp \
+    ./VerilogWriterFactory/VerilogDocument.cpp \
+    ./VerilogWriterFactory/VerilogWriterFactory.cpp
 RESOURCES += VerilogGenerator.qrc

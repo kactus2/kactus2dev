@@ -26,6 +26,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
+
 #include "MakeCommon.h"
 
 class SWStackParser
@@ -67,7 +69,7 @@ private:
      bool isTopOfStack(QSharedPointer<SWInstance> softInstance, QSharedPointer<Component> softComponent);
 
     /*!
-     *  Recursively parses source files for the whole stack fow the given software instance.
+     *  Recursively parses source files for the whole stack for the given software instance.
 	 *
      *      @param [in] softComponent   The component of softInstance.
      *      @param [in] softInstance   The software instance which active view is to be parsed.

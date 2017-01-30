@@ -103,80 +103,62 @@ QIcon MemoryMapHeaderGenerator::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<Document const> libComp,
-    QSharedPointer<Document const> libDesConf, QSharedPointer<Document const> /*libDes*/) const
+bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<Component const> component,
+    QSharedPointer<Design const> design,
+    QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
-	QSharedPointer<Component const> comp = libComp.dynamicCast<Component const>();
-	if (!comp)
-    {
-		return false;
-	}
-
 	// if there is no design then header is generated for local memory maps
-	if (!libDesConf)
+	if (!designConfiguration)
     {
-		return comp->hasLocalMemoryMaps();
+		return component->hasLocalMemoryMaps();
 	}
 
-	// make sure the second parameter is for a design configuration object
-	QSharedPointer<DesignConfiguration const> designConf = libDesConf.dynamicCast<DesignConfiguration const>();
 	// the design configuration must be for HW or system
-	if (designConf)
-    {
-		return comp->getImplementation() == KactusAttribute::HW;
-	}
-	else
-    {
-		return false;
-	}
+	return designConfiguration->getImplementation() == KactusAttribute::HW;
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapHeaderGenerator::runGenerator()
 //-----------------------------------------------------------------------------
 void MemoryMapHeaderGenerator::runGenerator(IPluginUtility* utility, 
-    QSharedPointer<Document> libComp,
-    QSharedPointer<Document> libDesConf,
-    QSharedPointer<Document> libDes)
+    QSharedPointer<Component> component,
+    QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
 	utility_ = utility;
 
     utility_->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
-	QSharedPointer<Component> comp = libComp.dynamicCast<Component>();
-	Q_ASSERT(comp);
-
-	QSharedPointer<Design> design = libDes.dynamicCast<Design>();
+	Q_ASSERT(component);
 
 	// if there is no design object then create headers for local memory maps
 	if (!design)
     {
-        LocalMemoryMapHeaderWriter localWriter(utility_, comp, this);
+        LocalMemoryMapHeaderWriter localWriter(utility_, component, this);
         localWriter.writeMemoryMapHeader(localSaveOptions_);
 	}
 	// if there is a design configuration
-	else if (libDesConf)
+	else if (designConfiguration)
     {
 		Q_ASSERT(design);
 
 		// the component knows the implementation of the view
-		KactusAttribute::Implementation implementation = libDesConf->getImplementation();
+		KactusAttribute::Implementation implementation = designConfiguration->getImplementation();
 
-		QSharedPointer<DesignConfiguration> desConf = libDesConf.dynamicCast<DesignConfiguration>();
-		Q_ASSERT(desConf);
+		Q_ASSERT(designConfiguration);
 
 		// if the generator is run on a hierarchical HW component
 		if (implementation == KactusAttribute::HW)
         {
-            GlobalMemoryMapHeaderWriter globalWriter(utility_, design, desConf, this);
-            globalWriter.writeMemoryMapHeader(comp, globalSaveOptions_);
+            GlobalMemoryMapHeaderWriter globalWriter(utility_, design, designConfiguration, this);
+            globalWriter.writeMemoryMapHeader(component, globalSaveOptions_);
 		}
 
 		// the generator is run on a system component
 		else
         {
             SystemMemoryMapHeaderWriter systemWriter(utility_, this);
-            systemWriter.writeMemoryMapHeader(comp, desConf, design);
+            systemWriter.writeMemoryMapHeader(component, designConfiguration, design);
 		}
 	}
 
@@ -192,7 +174,7 @@ void MemoryMapHeaderGenerator::runGenerator(IPluginUtility* utility,
         {
             GlobalMemoryMapHeaderWriter globalWriter(utility_, design, QSharedPointer<DesignConfiguration> (),
                 this);
-            globalWriter.writeMemoryMapHeader(comp, globalSaveOptions_);
+            globalWriter.writeMemoryMapHeader(component, globalSaveOptions_);
 		}
 
 		// the generator is run on a system component without the configuration

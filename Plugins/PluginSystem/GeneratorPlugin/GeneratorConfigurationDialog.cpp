@@ -2,8 +2,8 @@
 // File: GeneratorConfigurationDialog.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Esko Pekkarinen
-// Date: 23.02.2015
+// Author: Janne Virtanen
+// Date: 26.01.2017
 //
 // Description:
 // Dialog for setting file generation options.
@@ -16,6 +16,7 @@
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QCheckBox>
+#include <QGroupBox>
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
@@ -35,41 +36,87 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     QHBoxLayout* optionLayout = new QHBoxLayout();
     optionGroup->setLayout(optionLayout);
 
-    QCheckBox* useInterfaces = new QCheckBox("Use interfaces (experimental)");
+    QCheckBox* useInterfaces = new QCheckBox("Use interfaces (disabled)");
+    useInterfaces->setEnabled(false);
     optionLayout->addWidget(useInterfaces);
     QCheckBox* generateMemory = new QCheckBox("Generate memory (experimental)");
     optionLayout->addWidget(generateMemory);
 
-	// Layout for things coming to the bottom part of the dialog.
-	QHBoxLayout* bottomLayout = new QHBoxLayout();
+    if (configuration_->getSettings()->generateInterfaces_)
+    {
+        useInterfaces->setCheckState(Qt::Checked);
+    }
 
-	// Add Ok and cancel give the dialog results.
+    if (configuration_->getSettings()->generateMemory_)
+    {
+        generateMemory->setCheckState(Qt::Checked);
+    }
+
+    // Create font for previewing.
+    QFont font("Courier");
+    font.setStyleHint(QFont::Monospace);
+    font.setFixedPitch(true);
+    font.setPointSize(9);
+
+    // Create the previewer.
+    previewer_ = new QPlainTextEdit;
+    previewer_->setFont(font);
+    previewer_->setTabStopWidth(4 * previewer_->fontMetrics().width(' '));
+    previewer_->setReadOnly(true);
+    previewer_->setCursorWidth(0);
+    previewer_->setLineWrapMode(QPlainTextEdit::NoWrap);
+    previewer_->setMinimumWidth(850);
+
+    // Add everything it their proper position in the final layout.
+	QVBoxLayout* leftLayout = new QVBoxLayout();
+    leftLayout->addWidget(viewSelection_);
+    leftLayout->addWidget(optionGroup);
+    leftLayout->addWidget(fileOutput_);
+    leftLayout->addWidget(generalWarningLabel_);
+
+    // Layout for things coming to the bottom part of the dialog.
+
+    // Add Ok and cancel give the dialog results.
     QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
         Qt::Horizontal);
 
-	bottomLayout->addWidget(generalWarningLabel_);
-	bottomLayout->addWidget(dialogButtons);
+    QHBoxLayout* topLayout = new QHBoxLayout;
+    QGroupBox* leftBox = new QGroupBox("Settings");
+    leftBox->setLayout(leftLayout);
+    QGroupBox* rightBox = new QGroupBox("Preview");
+    QVBoxLayout* rightLayout = new QVBoxLayout();
+    rightLayout->addWidget(previewer_);
+    rightBox->setLayout(rightLayout);
 
-	// Add everything it their proper position in the final layout.
-	QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addWidget(viewSelection_);
-    topLayout->addWidget(optionGroup);
-    topLayout->addWidget(fileOutput_);
-    topLayout->addLayout(bottomLayout);
+    topLayout->addWidget(leftBox);
+    topLayout->addWidget(rightBox);
+
+    QVBoxLayout* topmostLayout = new QVBoxLayout(this);
+    topmostLayout->addLayout(topLayout);
+    topmostLayout->addWidget(dialogButtons);
 
     // Finally, connect the relevant events to their handler functions.
+
+    // Connect the view selection.
     connect(viewSelection_, SIGNAL(viewChanged()), 
         this, SLOT(onViewChanged()), Qt::UniqueConnection);
+
+    // Connect the optional features.
     connect(useInterfaces, SIGNAL(stateChanged(int)), 
         this, SLOT(onInterfaceGenerationStateChanged(int)), Qt::UniqueConnection);
     connect(generateMemory, SIGNAL(stateChanged(int)), 
         this, SLOT(onMemoryGenerationStateChanged(int)), Qt::UniqueConnection);
+
+    // Connect file output.
+    connect(fileOutput_, SIGNAL(selectedFileChanged(QSharedPointer<GenerationFile>)), 
+        this, SLOT(onSelectedFileChanged(QSharedPointer<GenerationFile>)), Qt::UniqueConnection);
+
+    // Connect the dialog buttons to their respective functions.
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
-    connect(configuration_.data(), SIGNAL(outputFilesChanged()), 
-        fileOutput_, SLOT(onOutputFilesChanged()), Qt::UniqueConnection);
 
     configuration_->parseDocuments();
+    fileOutput_->onOutputFilesChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -88,11 +135,22 @@ void GeneratorConfigurationDialog::accept()
     QString warning;
     if (!configuration_->validSelections(warning))
 	{
+        // If not, tell user why not.
 		generalWarningLabel_->setText(warning);
 		return;
 	}
 
+    configuration_->writeDocuments();
+
     QDialog::accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfigurationDialog::onSelectedFileChanged()
+//-----------------------------------------------------------------------------
+void GeneratorConfigurationDialog::onSelectedFileChanged(QSharedPointer<GenerationFile> newSelection)
+{
+    previewer_->setPlainText(newSelection->fileContent_);
 }
 
 //-----------------------------------------------------------------------------
@@ -101,6 +159,7 @@ void GeneratorConfigurationDialog::accept()
 void GeneratorConfigurationDialog::onViewChanged()
 {
     configuration_->parseDocuments();
+    fileOutput_->onOutputFilesChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +167,7 @@ void GeneratorConfigurationDialog::onViewChanged()
 //-----------------------------------------------------------------------------
 void GeneratorConfigurationDialog::onInterfaceGenerationStateChanged(int state)
 {
-    configuration_->setInterfaceGeneration(state == Qt::Checked);
+    configuration_->getSettings()->generateInterfaces_ = (state == Qt::Checked);
 }
 
 //-----------------------------------------------------------------------------
@@ -116,5 +175,5 @@ void GeneratorConfigurationDialog::onInterfaceGenerationStateChanged(int state)
 //-----------------------------------------------------------------------------
 void GeneratorConfigurationDialog::onMemoryGenerationStateChanged(int state)
 {
-    configuration_->setMemoryGeneration(state == Qt::Checked);
+    configuration_->getSettings()->generateMemory_ = (state == Qt::Checked);
 }
