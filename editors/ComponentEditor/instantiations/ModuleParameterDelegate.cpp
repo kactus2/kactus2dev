@@ -11,7 +11,7 @@
 
 #include "ModuleParameterDelegate.h"
 
-#include <editors/ComponentEditor/modelParameters/ModelParameterColumns.h>
+#include "ModuleParameterColumns.h"
 
 #include <QComboBox>
 
