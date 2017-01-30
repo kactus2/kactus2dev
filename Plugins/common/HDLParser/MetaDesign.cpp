@@ -350,12 +350,14 @@ void MetaDesign::parseInterconnections()
         // Associate the interfaces with the interconnect.
         foreach (QSharedPointer<MetaInterface> mInterface, foundInterInterfaces)
         {
+            mInterface->upInterconnection_ = mIterconnect;
             wireInterfacePorts(mInterface, mIterconnect, false);
         }
 
         // Associate the interfaces with the interconnect.
         foreach (QSharedPointer<MetaInterface> mInterface, foundHierInterfaces)
         {
+            mInterface->downInterconnection_ = mIterconnect;
             wireInterfacePorts(mInterface, mIterconnect, true);
         }
     }
