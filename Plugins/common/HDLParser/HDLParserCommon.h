@@ -29,6 +29,7 @@ class AbstractionType;
 class AbstractionDefinition;
 class Port;
 class Parameter;
+class RemapState;
 
 struct GenerationTuple
 {
@@ -109,54 +110,12 @@ struct MetaInterface
     QSharedPointer<MetaInterconnection> downInterconnection_;
 };
 
-struct GenerationField
+struct FormattedRemapState
 {
-	//! Describes the offset where this bit field starts.
-	QString bitOffset_;
-	//! The width of the field in bits.
-    QString bitWidth_;
-    //! The name of the field.
-    QString name_;
-};
-
-struct GenerationRegister
-{
-	//! Number of instances of the register.
-    QString dimension_;
-    //! The offset of the register within the address block.
-    QString offset_;
-    //! The size of register in bits.
-    QString size_;
-    //! The fields within the register.
-    QList<QSharedPointer<GenerationField> > fields_;
-    //! The name of the register.
-    QString name_;
-};
-
-struct GenerationAddressBlock
-{
-    //! The registers within the address block.
-    QList<QSharedPointer<GenerationRegister> > registers_;
-    //! The base address of the address block.
-    QString baseAddress_;
-    //! The name of the address block.
-    QString name_;
-};
-
-struct GenerationRemap
-{
-    //! Addresses within the remap.
-    QList<QSharedPointer<GenerationAddressBlock> > blocks_;
-    //! The name of the remap.
-    QString name_;
-};
-
-struct GenerationRemapState
-{
-    //! Ports that are to be used as condition for using the remap.
+    //! Ports and their formatted values that are to be used as the condition for using the remap.
     QList<QSharedPointer<QPair<QSharedPointer<Port>, QString> > > ports_;
-    //! The name of the remap state.
-    QString stateName_;
+    //! The matching IP-XACT remap state.
+    QSharedPointer<RemapState> state_;
 };
 
 #endif // HDLPARSERCOMMON_H

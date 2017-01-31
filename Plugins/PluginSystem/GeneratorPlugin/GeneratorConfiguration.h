@@ -25,8 +25,6 @@ struct GenerationSettings
 {
     //! If true, interfaces should be utilized in generation, else it is false.
     bool generateInterfaces_;
-    //! If true, definitions for registers are generated as well, else it is false.
-    bool generateMemory_;
     //! The last values used by the generation.
     QString lastViewName_;
     QString lastFileSetName_;

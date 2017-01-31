@@ -44,9 +44,8 @@ public:
 	 *
 	 *      @param [in] component               The component to write to Verilog.
      *      @param [in] useInterfaces           True, if interfaces are utilized separately from physical ports, else false.
-     *      @param [in] generateMemory          If true, definitions for registers are generated as well, else it is false.
 	 */
-	ComponentVerilogWriter(QSharedPointer<MetaInstance> component, bool useInterfaces, bool generateMemory);
+	ComponentVerilogWriter(QSharedPointer<MetaInstance> component, bool useInterfaces);
 
 	//! The destructor.
 	~ComponentVerilogWriter();
@@ -173,9 +172,6 @@ private:
 
     //! True, if interfaces are utilized separately from physical ports, else false.
     bool useInterfaces_;
-
-    //! If true, definitions for registers are generated as well, else it is false.
-    bool generateMemory_;
 
     //! Writers for the inner elements e.g. wires and subcomponent instances.
     QList<QSharedPointer<Writer> > childWriters_;

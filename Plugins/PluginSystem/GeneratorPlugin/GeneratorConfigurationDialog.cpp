@@ -31,27 +31,6 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
 {
     setWindowTitle(tr("Configure file generation for %1.").arg(configuration->getViewSelection()->getTargetLanguage()));
 
-    // Optional generation features.
-    QGroupBox* optionGroup = new QGroupBox("Optional features:");
-    QHBoxLayout* optionLayout = new QHBoxLayout();
-    optionGroup->setLayout(optionLayout);
-
-    QCheckBox* useInterfaces = new QCheckBox("Use interfaces (disabled)");
-    useInterfaces->setEnabled(false);
-    optionLayout->addWidget(useInterfaces);
-    QCheckBox* generateMemory = new QCheckBox("Generate memory (experimental)");
-    optionLayout->addWidget(generateMemory);
-
-    if (configuration_->getSettings()->generateInterfaces_)
-    {
-        useInterfaces->setCheckState(Qt::Checked);
-    }
-
-    if (configuration_->getSettings()->generateMemory_)
-    {
-        generateMemory->setCheckState(Qt::Checked);
-    }
-
     // Create font for previewing.
     QFont font("Courier");
     font.setStyleHint(QFont::Monospace);
@@ -70,7 +49,6 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     // Add everything it their proper position in the final layout.
 	QVBoxLayout* leftLayout = new QVBoxLayout();
     leftLayout->addWidget(viewSelection_);
-    leftLayout->addWidget(optionGroup);
     leftLayout->addWidget(fileOutput_);
     leftLayout->addWidget(generalWarningLabel_);
 
@@ -100,12 +78,6 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     // Connect the view selection.
     connect(viewSelection_, SIGNAL(viewChanged()), 
         this, SLOT(onViewChanged()), Qt::UniqueConnection);
-
-    // Connect the optional features.
-    connect(useInterfaces, SIGNAL(stateChanged(int)), 
-        this, SLOT(onInterfaceGenerationStateChanged(int)), Qt::UniqueConnection);
-    connect(generateMemory, SIGNAL(stateChanged(int)), 
-        this, SLOT(onMemoryGenerationStateChanged(int)), Qt::UniqueConnection);
 
     // Connect file output.
     connect(fileOutput_, SIGNAL(selectedFileChanged(QSharedPointer<GenerationFile>)), 
@@ -160,20 +132,4 @@ void GeneratorConfigurationDialog::onViewChanged()
 {
     configuration_->parseDocuments();
     fileOutput_->onOutputFilesChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: GeneratorConfigurationDialog::onInterfaceGenerationStateChanged()
-//-----------------------------------------------------------------------------
-void GeneratorConfigurationDialog::onInterfaceGenerationStateChanged(int state)
-{
-    configuration_->getSettings()->generateInterfaces_ = (state == Qt::Checked);
-}
-
-//-----------------------------------------------------------------------------
-// Function: GeneratorConfigurationDialog::onMemoryGenerationStateChanged()
-//-----------------------------------------------------------------------------
-void GeneratorConfigurationDialog::onMemoryGenerationStateChanged(int state)
-{
-    configuration_->getSettings()->generateMemory_ = (state == Qt::Checked);
 }

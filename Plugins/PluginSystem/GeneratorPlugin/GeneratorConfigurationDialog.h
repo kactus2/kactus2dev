@@ -47,10 +47,6 @@ private slots:
 
     void onSelectedFileChanged(QSharedPointer<GenerationFile> newSelection);
 
-    void onInterfaceGenerationStateChanged(int state);
-
-    void onMemoryGenerationStateChanged(int state);
-
 private:
 
     // Disable copying.

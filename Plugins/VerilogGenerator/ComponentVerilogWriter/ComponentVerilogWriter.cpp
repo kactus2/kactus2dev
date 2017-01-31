@@ -17,6 +17,7 @@
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/common/ModuleParameter.h>
@@ -34,11 +35,9 @@
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
 ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<MetaInstance> component,
-    bool useInterfaces,
-    bool generateMemory) :
+    bool useInterfaces) :
 component_(component),
 useInterfaces_(useInterfaces),
-generateMemory_(generateMemory),
 childWriters_(),
 sorter_(new InterfaceDirectionNameSorter)
 {
@@ -69,14 +68,8 @@ void ComponentVerilogWriter::write(QTextStream& outputStream) const
 
 	if (implementation_)
     {
-        if (generateMemory_)
-        {
-            // Implementing -> may need remap states.
-            writeRemapSates(outputStream);
-
-            // Implementing -> may need registers.
-            writeRegisters(outputStream);
-        }
+        // Implementing -> may need remap states.
+        writeRemapSates(outputStream);
 
 		// If an implementation exists, there must be a warning about overwriting as well.
 		outputStream << "// " << VerilogSyntax::TAG_OVERRIDE << endl;
@@ -318,7 +311,7 @@ void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
 {
     QSharedPointer<HDLComponentParser> comparser = component_.dynamicCast<HDLComponentParser>();
 
-    foreach (QSharedPointer<GenerationRemapState> grms, comparser->remapStates_)
+    foreach (QSharedPointer<FormattedRemapState> grms, comparser->remapStates_)
     {
         QString condition;
 
@@ -333,81 +326,13 @@ void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
             }
         }
 
-        outputStream << indentation() << "`define " << grms->stateName_ << " " << condition << endl;
+        outputStream << indentation() << "`define " << grms->state_->name() << " " << condition << endl;
     }
 
     if (comparser->remapStates_.count() > 0)
     {
         outputStream << endl;
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentVerilogWriter::writeRegisters()
-//-----------------------------------------------------------------------------
-void ComponentVerilogWriter::writeRegisters(QTextStream& outputStream) const
-{
-    QSharedPointer<HDLComponentParser> comparser = component_.dynamicCast<HDLComponentParser>();
-
-    if (comparser->remaps_.size() < 1)
-    {
-        return;
-    }
-
-    outputStream << indentation() << "localparam MEMORY_SIZE = " << comparser->totalRange_ << ";" << endl;
-    outputStream << indentation() << "localparam AUB = " << comparser->aub_ << ";" << endl;
-    outputStream << indentation() << "reg [0:AUB-1] dat [0:MEMORY_SIZE-1];" << endl;
-
-    outputStream << indentation() << "genvar gen_iterator1;" << endl;
-    outputStream << indentation() << "genvar gen_iterator2;" << endl;
-
-    foreach(QSharedPointer<GenerationRemap> grm, comparser->remaps_)
-    {
-        foreach(QSharedPointer<GenerationAddressBlock> gab, grm->blocks_)
-        {
-            QString abName = grm->name_ + "_" + gab->name_;
-
-            outputStream << endl;
-
-            outputStream << indentation() << "localparam " << abName << "_BASE = " << gab->baseAddress_ << ";" << endl;
-
-            foreach(QSharedPointer<GenerationRegister> gr, gab->registers_)
-            {
-               QString regName = abName + "_" + gr->name_;
-
-                outputStream << indentation(2) << "localparam " << regName << "_DIM = " << gr->dimension_ << ";" << endl;
-                outputStream << indentation(2) << "localparam " << regName << "_OFFSET = " << gr->offset_ << ";" << endl;
-                outputStream << indentation(2) << "localparam " << regName << "_WIDTH = " << gr->size_ << ";" << endl;
-                outputStream << indentation(2) << "localparam " << regName << "_AU_WIDTH = $ceil($ceil(" << gr->size_ << ")/AUB);" << endl;
-                outputStream << indentation(2) << "wire [0:" << regName << "_WIDTH-1] " << regName << " [0:" << regName << "_DIM-1];" << endl;
-
-                outputStream << endl;
-
-                outputStream << indentation(2) << "generate" << endl;
-                outputStream << indentation(2) << "for (gen_iterator1= 0; gen_iterator1 < " << regName << "_DIM; gen_iterator1 = gen_iterator1 + 1)" << endl;
-                outputStream << indentation(2) << "begin" << endl;
-                outputStream << indentation(3) << "for (gen_iterator2 = 0; gen_iterator2 < " << regName << "_AU_WIDTH; gen_iterator2 = gen_iterator2 + 1)" << endl;
-                outputStream << indentation(3) << "begin" << endl;
-                outputStream << indentation(4) << "assign " << regName << "[gen_iterator1][(gen_iterator2*AUB)+:AUB] = dat[gen_iterator1*" << regName << "_AU_WIDTH+gen_iterator2];" << endl;
-                outputStream << indentation(3) << "end" << endl;
-                outputStream << indentation(2) << "end" << endl;
-                outputStream << indentation(2) << "endgenerate" << endl;
-
-                outputStream << endl;
-
-                foreach(QSharedPointer<GenerationField> gf, gr->fields_)
-                {
-                    QString fieldName = regName + "_" + gf->name_;
-                    outputStream << indentation(2) << "localparam " << fieldName << "_WIDTH = " << gf->bitWidth_ << ";" << endl;
-                    outputStream << indentation(2) << "localparam " << fieldName << "_OFFSET = " << gf->bitOffset_ << ";" << endl;;
-
-                    outputStream << endl;
-                }
-            }
-        }
-    }
-
-    outputStream << endl;
 }
 
 //-----------------------------------------------------------------------------

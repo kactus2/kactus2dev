@@ -57,13 +57,7 @@ public:
         QList<QSharedPointer<Parameter> >& sortParameters);
 
     //! The parsed remap states.
-    QList<QSharedPointer<GenerationRemapState> > remapStates_;
-    //! The parsed remaps, including the default memory map.
-    QList<QSharedPointer<GenerationRemap> > remaps_;
-    //! The addressable unit bits to be used within the component.
-    QString aub_;
-    //! Total memory within the component counted in AUBs.
-    QString totalRange_;
+    QList<QSharedPointer<FormattedRemapState> > remapStates_;
 
 protected:
     /*!
@@ -80,16 +74,6 @@ private:
 	// Disable copying.
 	HDLComponentParser(HDLComponentParser const& rhs);
     HDLComponentParser& operator=(HDLComponentParser const& rhs);
-    
-    /*!
-    *  Culls the memory of the component.
-    */
-	void parseMemoryMaps();
-    
-    /*!
-    *  Parses the relevant data of the given address block.
-    */
-    void parseAddressBlock(QSharedPointer<AddressBlock> ab, QSharedPointer<GenerationRemap> target);
     
     /*!
     *  Goes through the remap states, connects remaps to correct ports.

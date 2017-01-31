@@ -25,7 +25,6 @@
 VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0)
 {
     settings_.generateInterfaces_ = false;
-    settings_.generateMemory_ = false;
     settings_.lastFileSetName_ = "";
     settings_.lastFileSetName_ = "";
 }

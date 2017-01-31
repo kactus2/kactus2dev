@@ -266,7 +266,6 @@ void tst_VerilogWriterFactory::runGenerator(bool useDesign)
 {
     GenerationSettings settings;
     settings.generateInterfaces_ = false;
-    settings.generateMemory_ = false;
 
     VerilogWriterFactory factory(&library_, &settings, "bogusToolVersion", "bogusGeneratorVersion");
     QString outputPath = ".";

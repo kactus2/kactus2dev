@@ -125,7 +125,7 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::initializeComponentWriters
         componentXmlPath, currentUser, topComponent->component_->getDescription(), kactusVersion_, generatorVersion_));
 
     retval->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter
-        (topComponent, settings_->generateInterfaces_, settings_->generateMemory_));
+        (topComponent, settings_->generateInterfaces_));
 
     retval->instanceWriters_.clear();
 
