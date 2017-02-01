@@ -112,13 +112,6 @@ ViewSelection::~ViewSelection()
 //-----------------------------------------------------------------------------
 bool ViewSelection::validSelections(QString &warning)
 {
-    // Must have a view.
-    if (!view_)
-    {
-        warning = QLatin1String("<b>No view selected.</b>");
-        return false;
-    }
-
     // Must have a file set.
     if (fileSetRef_.isEmpty())
     {
@@ -194,6 +187,11 @@ QSharedPointer<View> ViewSelection::getView() const
 //-----------------------------------------------------------------------------
 QString ViewSelection::getViewName() const
 {
+    if (!view_)
+    {
+        return "";
+    }
+
     return view_->name();
 }
 
@@ -210,6 +208,11 @@ QSharedPointer<ComponentInstantiation> ViewSelection::getInstantiation() const
 //-----------------------------------------------------------------------------
 QString ViewSelection::getInstantiationName() const
 {
+    if (!view_)
+    {
+        return "";
+    }
+
 	return view_->getComponentInstantiationRef();
 }
 

@@ -36,6 +36,10 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) :
     pathSelectionLayout->addWidget(new QLabel(tr("Output directory:")));
     pathSelectionLayout->addWidget(pathEditor_);
 
+    QPalette p = pathEditor_->palette();
+    p.setColor(QPalette::Base, QColor("LemonChiffon"));
+    pathEditor_->setPalette(p);
+
     // Get the default output path from the generation configuration.
     pathEditor_->setText(model_->getOutputPath());
 

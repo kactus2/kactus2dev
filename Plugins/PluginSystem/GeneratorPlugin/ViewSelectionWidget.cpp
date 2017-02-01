@@ -42,6 +42,10 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<ViewSelection> configura
     // Is editable, in case a new entry is desired.
     fileSetSelection_->setEditable(true);
 
+    QPalette p = fileSetSelection_->palette();
+    p.setColor(QPalette::Base, QColor("LemonChiffon"));
+    fileSetSelection_->setPalette(p);
+
 	// Add everything it their proper position in the final layout.
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addLayout(viewSelectionLayout);

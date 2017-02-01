@@ -12,11 +12,14 @@
 #include "GeneratorConfigurationDialog.h"
 #include "GeneratorConfiguration.h"
 
+#include <Plugins/VerilogImport/VerilogSyntax.h>
+
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
+#include <QTextCursor>
 
 //-----------------------------------------------------------------------------
 // Function: GeneratorConfigurationDialog::GeneratorConfigurationDialog()
@@ -69,9 +72,16 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     topLayout->addWidget(leftBox);
     topLayout->addWidget(rightBox);
 
+    QGroupBox* botBox = new QGroupBox("Warnings");
+    QVBoxLayout* botLayout = new QVBoxLayout();
+    botBox->setLayout(botLayout);
+    botLayout->addWidget(new QPlainTextEdit);
+
     QVBoxLayout* topmostLayout = new QVBoxLayout(this);
     topmostLayout->addLayout(topLayout);
+    topmostLayout->addWidget(botBox);
     topmostLayout->addWidget(dialogButtons);
+
 
     // Finally, connect the relevant events to their handler functions.
 
@@ -123,6 +133,54 @@ void GeneratorConfigurationDialog::accept()
 void GeneratorConfigurationDialog::onSelectedFileChanged(QSharedPointer<GenerationFile> newSelection)
 {
     previewer_->setPlainText(newSelection->fileContent_);
+
+    if (configuration_->isDesignGeneration())
+    {
+        return;
+    }
+
+    int implementationStart;
+    int implementationEnd;
+    QString error;
+
+    if (!VerilogSyntax::findImplementation(
+        previewer_->toPlainText(), implementationStart, implementationEnd, error))
+    {
+        return;
+    }
+
+    if (implementationStart == -1 || implementationEnd == -1 && implementationEnd
+        > previewer_->toPlainText().length())
+    {
+        return;
+    }
+
+    QColor const& highlightColor = QColor::fromRgb(183,225,252);
+
+    QTextCursor cursor = previewer_->textCursor();
+    cursor.setPosition(implementationStart);
+
+    QTextCharFormat highlighFormat = cursor.charFormat();        
+    highlighFormat.setBackground(QBrush(highlightColor));
+
+    cursor.setPosition(implementationEnd, QTextCursor::KeepAnchor);        
+    cursor.setCharFormat(highlighFormat);
+
+    /*if (implementationStart < 1)
+    {
+        return;
+    }
+
+    QColor const& fadeColor = QColor::fromRgb(201,202,202);
+
+    QTextCursor cursor2 = previewer_->textCursor();
+    cursor2.setPosition(0);
+
+    QTextCharFormat fadeFormat = cursor2.charFormat();        
+    fadeFormat.setForeground(QBrush(fadeColor));
+
+    cursor2.setPosition(implementationStart-1, QTextCursor::KeepAnchor);        
+    cursor2.setCharFormat(fadeFormat);*/
 }
 
 //-----------------------------------------------------------------------------

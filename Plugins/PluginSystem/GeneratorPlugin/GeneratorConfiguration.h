@@ -73,6 +73,11 @@ public:
      */
     GenerationSettings* getSettings() const;
 
+    /*!
+     *  Returns isDesignGeneration_;
+     */
+    bool isDesignGeneration() const;
+
 protected:
 
     /*!
@@ -147,7 +152,7 @@ private:
     GenerationSettings* settings_;
     //! The view selection configuration.
     QSharedPointer<ViewSelection> viewSelection_;
-    bool isDesign_;
+    bool isDesignGeneration_;
     //! The file output configuration.
     QSharedPointer<FileOuput> fileOutput_;
 };

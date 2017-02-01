@@ -32,12 +32,12 @@
 //-----------------------------------------------------------------------------
 GeneratorConfiguration::GeneratorConfiguration(LibraryInterface* library, IWriterFactory* factory,
     GenerationTuple input, GenerationSettings* settings) :
-	library_(library), factory_(factory), input_(input), settings_(settings), isDesign_(input.design != 0),
+	library_(library), factory_(factory), input_(input), settings_(settings), isDesignGeneration_(input.design != 0),
     fileOutput_(new FileOuput)
 {
     QSharedPointer<QList<QSharedPointer<View> > > possibleViews;
 
-    if (isDesign_)
+    if (isDesignGeneration_)
     {
         possibleViews = findPossibleViews(input);
     }
@@ -80,7 +80,6 @@ void GeneratorConfiguration::writeDocuments()
         settings_->lastViewName_ = getViewSelection()->getView()->name();
     }
 
-    QSharedPointer<View> activeView = viewSelection_->getView();
     QSharedPointer<ComponentInstantiation> instantiation = viewSelection_->getInstantiation();
     QSharedPointer<FileSet> fileSet = viewSelection_->getFileSet();
 
@@ -164,7 +163,7 @@ void GeneratorConfiguration::parseDocuments()
     // Clear the existing list of files.
     fileOutput_->getFiles()->clear();
 
-    if (isDesign_)
+    if (isDesignGeneration_)
     {
         // Parse the design hierarchy.
         QList<QSharedPointer<MetaDesign> > designs =
@@ -225,6 +224,14 @@ QSharedPointer<FileOuput> GeneratorConfiguration::getFileOuput() const
 GenerationSettings* GeneratorConfiguration::getSettings() const
 {
     return settings_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneratorConfiguration::isDesignGeneration()
+//-----------------------------------------------------------------------------
+bool GeneratorConfiguration::isDesignGeneration() const
+{
+    return isDesignGeneration_;
 }
 
 //-----------------------------------------------------------------------------

@@ -397,7 +397,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="veriloggeneratorplugin.json" />
     <None Include="verilogGenerator.png">
       <Filter>Resource Files</Filter>
     </None>

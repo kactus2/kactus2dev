@@ -94,11 +94,6 @@ void tst_ImplementationSelection::cleanup()
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelection()
 {
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
 	QString content = QString(
 		"module TestComponent #(\n"
 		"    parameter                              dataWidth        = 8,\n"
@@ -115,17 +110,13 @@ void tst_ImplementationSelection::testImplementationSelection()
 		"endmodule\n"
 		); 
 
-	outputStream << content;
-
-	existingFile.close();
-
 	
 
 	QString implementation;
     QString postModule;
     QString error;
 
-	VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
+	VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	implementation = implementation.trimmed();
 
@@ -137,11 +128,6 @@ void tst_ImplementationSelection::testImplementationSelection()
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelectionWithEvilComments()
 {
-    QFile existingFile("./generatorOutput.v");
-
-    existingFile.open(QIODevice::WriteOnly);
-    QTextStream outputStream(&existingFile);
-
     QString content = QString(
         "module TestComponent #(\n"
         "    parameter                              dataWidth        = 8, // module ending );\n"
@@ -158,17 +144,11 @@ void tst_ImplementationSelection::testImplementationSelectionWithEvilComments()
         "endmodule\n"
         ); 
 
-    outputStream << content;
-
-    existingFile.close();
-
-    
-
     QString implementation;
     QString postModule;
     QString error;
 
-    VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
+    VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
     implementation = implementation.trimmed();
 
@@ -180,11 +160,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithEvilComments()
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelectionWithTag()
 {
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
 	QString content = QString(
 		"module TestComponent #(\n"
 		"    parameter                              dataWidth        = 8,\n"
@@ -202,17 +177,11 @@ void tst_ImplementationSelection::testImplementationSelectionWithTag()
 		"endmodule\n"
 		); 
 
-	outputStream << content;
-
-	existingFile.close();
-
-	
-
 	QString implementation;
     QString postModule;
     QString error;
 
-	VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
+    VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	implementation = implementation.trimmed();
 
@@ -224,11 +193,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithTag()
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelectionWithoutParameters()
 {
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
 	QString content = QString(
 		"module TestComponent(\n"
 		"    // These ports are not in any interface\n"         
@@ -243,17 +207,10 @@ void tst_ImplementationSelection::testImplementationSelectionWithoutParameters()
 		"endmodule\n"
 		); 
 
-	outputStream << content;
-
-	existingFile.close();
-
-	
-
 	QString implementation;
     QString postModule;
     QString error;
-
-	VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
+    VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	implementation = implementation.trimmed();
 
@@ -265,28 +222,17 @@ void tst_ImplementationSelection::testImplementationSelectionWithoutParameters()
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelectionWithoutPorts()
 {
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
 	QString content = QString(
 		"module TestComponent();\n"
 		"dataOut <= rst_n & clk\n"
 		"endmodule\n"
 		); 
 
-	outputStream << content;
-
-	existingFile.close();
-
-	
-
 	QString implementation;
     QString postModule;
     QString error;
 
-	VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
+    VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	implementation = implementation.trimmed();
 
@@ -298,11 +244,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithoutPorts()
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelectionWithInstantiation()
 {
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
 	QString content = QString(
 		"module TestComponent #(\n"
 		"    parameter                              dataWidth        = 8,\n"
@@ -330,17 +271,12 @@ void tst_ImplementationSelection::testImplementationSelectionWithInstantiation()
 		".start\n"
 		");");
 
-	outputStream << content << expectedImplementation << "endmodule";
-
-	existingFile.close();
-
-	
-
 	QString actualImplementation;
     QString postModule;
     QString error;
 
-	VerilogSyntax::selectImplementation("./generatorOutput.v", actualImplementation, postModule, error);
+	VerilogSyntax::selectImplementation(content + expectedImplementation + "endmodule",
+        actualImplementation, postModule, error);
 
 	actualImplementation = actualImplementation.trimmed();
 
@@ -352,11 +288,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithInstantiation()
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelectionWithPostModule()
 {
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
 	QString content = QString(
 		"module TestComponent #(\n"
 		"    parameter                              dataWidth        = 8,\n"
@@ -382,17 +313,12 @@ void tst_ImplementationSelection::testImplementationSelectionWithPostModule()
 		"bar"
 		); 
 
-	outputStream << content << endl << expectedPostModule;
-
-	existingFile.close();
-
-	
-
 	QString implementation;
     QString actualPostModule;
     QString error;
 
-	VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, actualPostModule, error);
+	VerilogSyntax::selectImplementation(content + "\n" + expectedPostModule,
+        implementation, actualPostModule, error);
 
 	implementation = implementation.trimmed();
 	actualPostModule = actualPostModule.trimmed();
@@ -406,11 +332,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithPostModule()
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelectionWithTooManyModules()
 {
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
 	QString content = QString(
 		"module TestComponent #(\n"
 		"    parameter                              dataWidth        = 8,\n"
@@ -440,17 +361,12 @@ void tst_ImplementationSelection::testImplementationSelectionWithTooManyModules(
 		"endmodule"
 		); 
 
-	outputStream << content << endl << extraModule;
-
-	existingFile.close();
-
-	
-
 	QString implementation;
     QString postModule;
     QString error;
 
-	bool success = VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
+    bool success = VerilogSyntax::selectImplementation(content + "\n" + extraModule,
+        implementation, postModule, error);
 
 	QVERIFY(!success);
 }
@@ -460,11 +376,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithTooManyModules(
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelectionWithNoModuleHeaderStart()
 {
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
 	QString content = QString(
 		"TestComponent #(\n"
 		"    parameter                              dataWidth        = 8,\n"
@@ -481,17 +392,11 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleHeaderS
 		"endmodule\n"
 		); 
 
-	outputStream << content;
-
-	existingFile.close();
-
-	
-
 	QString implementation;
     QString postModule;
     QString error;
 
-	bool success = VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
+    bool success = VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	QVERIFY(!success);
 }
@@ -501,11 +406,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleHeaderS
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelectionWithNoModuleHeaderEnd()
 {
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
 	QString content = QString(
 		"module TestComponent #(\n"
 		"    parameter                              dataWidth        = 8,\n"
@@ -521,18 +421,12 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleHeaderE
 		"bar\n"
 		"endmodule\n"
 		); 
-
-	outputStream << content;
-
-	existingFile.close();
-
 	
-
 	QString implementation;
     QString postModule;
     QString error;
 
-	bool success = VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
+    bool success =  VerilogSyntax::selectImplementation(content, implementation, postModule, error);
 
 	QVERIFY(!success);
 }
@@ -542,11 +436,6 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleHeaderE
 //-----------------------------------------------------------------------------
 void tst_ImplementationSelection::testImplementationSelectionWithNoModuleEnd()
 {
-	QFile existingFile("./generatorOutput.v");
-
-	existingFile.open(QIODevice::WriteOnly);
-	QTextStream outputStream(&existingFile);
-
 	QString content = QString(
 		"module TestComponent #(\n"
 		"    parameter                              dataWidth        = 8,\n"
@@ -563,17 +452,11 @@ void tst_ImplementationSelection::testImplementationSelectionWithNoModuleEnd()
 		"bar\n"
 		); 
 
-	outputStream << content;
-
-	existingFile.close();
-
-	
-
 	QString implementation;
     QString postModule;
     QString error;
 
-	bool success = VerilogSyntax::selectImplementation("./generatorOutput.v", implementation, postModule, error);
+    bool success = VerilogSyntax::selectImplementation(content, implementation, postModule, error);;
 
 	QVERIFY(!success);
 }

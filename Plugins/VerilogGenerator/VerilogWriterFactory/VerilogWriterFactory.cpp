@@ -63,7 +63,7 @@ QSharedPointer<GenerationFile> VerilogWriterFactory::prepareComponent(QString co
     QString filePath = outputPath + "/" + fileName;
     QString error;
 
-    if (!VerilogSyntax::selectImplementation(filePath, implementation, postModule, error))
+    if (!VerilogSyntax::readImplementation(filePath, implementation, postModule, error))
     {
         //emit reportError(error); TODO: error
         // If parser says no-go, we dare do nothing.
