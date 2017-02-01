@@ -375,14 +375,18 @@ VLNV::IPXactType VLNV::string2Type(QString const& type)
     {
 		return ABSTRACTIONDEFINITION;
 	}
+    else if (type.compare(QLatin1String("ipxact:abstractor"), Qt::CaseInsensitive) == 0)
+    {
+        return ABSTRACTOR;
+    }
 	else if (type.compare(QLatin1String("ipxact:busDefinition"), Qt::CaseInsensitive) == 0)
     {
 		return BUSDEFINITION;
 	}
-	else if (type.compare(QLatin1String("ipxact:abstractor"), Qt::CaseInsensitive) == 0)
+    else if (type.compare(QLatin1String("ipxact:catalog"), Qt::CaseInsensitive) == 0) 
     {
-		return ABSTRACTOR;
-	}
+        return CATALOG;
+    }
 	else if (type.compare(QLatin1String("ipxact:component"), Qt::CaseInsensitive) == 0) 
     {
 		return COMPONENT;
@@ -426,6 +430,10 @@ QString VLNV::IPXactType2String(IPXactType const& type)
     else if (type == COMPONENT)
     {
         return QStringLiteral("ipxact:component");
+    }
+    else if (type == CATALOG)
+    {
+        return QStringLiteral("ipxact:catalog");
     }
     else if (type == DESIGN)
     {
