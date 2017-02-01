@@ -20,6 +20,7 @@ SUBDIRS += common\Common.pro \
 		   BusDefinition\tst_BusDefinitionReader.pro \
 		   BusDefinition\validators\tst_BusDefinitionValidator.pro \
 		   Catalog\tst_CatalogWriter.pro\
+		   Catalog\tst_CatalogReader.pro\
 		   DesignConfiguration\tst_DesignConfigurationWriter.pro \
 		   DesignConfiguration\tst_DesignConfigurationReader.pro \
 		   DesignConfiguration\validators\tst_DesignConfigurationValidator.pro \

@@ -7,45 +7,47 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../IPXACTmodels/Catalog/Catalog.h \
+HEADERS += ../../../IPXACTmodels/common/Array.h \
+    ../../../IPXACTmodels/common/Assertion.h \
+    ../../../IPXACTmodels/Catalog/Catalog.h \
+    ../../../IPXACTmodels/Catalog/CatalogReader.h \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/Document.h \
     ../../../IPXACTmodels/common/Extendable.h \
     ../../../IPXACTmodels/common/GenericVendorExtension.h \
+    ../../../IPXACTmodels/Catalog/IpxactFile.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.h \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.h \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.h \
-    ../../../IPXACTmodels/Catalog/CatalogWriter.h \
-    ../../../IPXACTmodels/common/DocumentWriter.h \
     ../../../IPXACTmodels/common/NameGroup.h \
-    ../../../IPXACTmodels/common/CommonItemsWriter.h \
-    ../../../IPXACTmodels/common/ParameterWriter.h \
-    ../../../IPXACTmodels/common/ConfigurableElementValue.h \
     ../../../IPXACTmodels/common/Parameter.h \
     ../../../IPXACTmodels/common/Range.h \
-    ../../../IPXACTmodels/common/Assertion.h \
-    ../../../IPXACTmodels/common/NameGroupWriter.h \
     ../../../IPXACTmodels/common/Vector.h \
-    ../../../IPXACTmodels/common/Array.h \
-    ../../../IPXACTmodels/Catalog/IpxactFile.h
-SOURCES += ../../../IPXACTmodels/Catalog/Catalog.cpp \
-    ../../../IPXACTmodels/Catalog/CatalogWriter.cpp \
-    ../../../IPXACTmodels/common/CommonItemsWriter.cpp \
+    ../../../IPXACTmodels/common/CommonItemsReader.h \
+    ../../../IPXACTmodels/common/DocumentReader.h \
+    ../../../IPXACTmodels/common/NameGroupReader.h \
+    ../../../IPXACTmodels/common/ParameterReader.h \
+    ../../../IPXACTmodels/common/ConfigurableVLNVReference.h
+SOURCES += ../../../IPXACTmodels/common/Array.cpp \
+    ../../../IPXACTmodels/common/Assertion.cpp \
+    ../../../IPXACTmodels/Catalog/Catalog.cpp \
+    ../../../IPXACTmodels/Catalog/CatalogReader.cpp \
+    ../../../IPXACTmodels/common/CommonItemsReader.cpp \
+    ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
     ../../../IPXACTmodels/common/Document.cpp \
-    ../../../IPXACTmodels/common/DocumentWriter.cpp \
+    ../../../IPXACTmodels/common/DocumentReader.cpp \
     ../../../IPXACTmodels/common/Extendable.cpp \
     ../../../IPXACTmodels/common/GenericVendorExtension.cpp \
+    ../../../IPXACTmodels/Catalog/IpxactFile.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Group.cpp \
     ../../../IPXACTmodels/kactusExtensions/Kactus2Value.cpp \
     ../../../IPXACTmodels/kactusExtensions/KactusAttribute.cpp \
-    ../../../IPXACTmodels/common/VLNV.cpp \
-    ./tst_CatalogWriter.cpp \
     ../../../IPXACTmodels/common/NameGroup.cpp \
-    ../../../IPXACTmodels/common/ParameterWriter.cpp \
-    ../../../IPXACTmodels/common/ConfigurableElementValue.cpp \
+    ../../../IPXACTmodels/common/NameGroupReader.cpp \
     ../../../IPXACTmodels/common/Parameter.cpp \
+    ../../../IPXACTmodels/common/ParameterReader.cpp \
     ../../../IPXACTmodels/common/Range.cpp \
-    ../../../IPXACTmodels/common/Assertion.cpp \
-    ../../../IPXACTmodels/common/NameGroupWriter.cpp \
+    ../../../IPXACTmodels/common/VLNV.cpp \
     ../../../IPXACTmodels/common/Vector.cpp \
-    ../../../IPXACTmodels/common/Array.cpp \
-    ../../../IPXACTmodels/Catalog/IpxactFile.cpp
+    ./tst_CatalogReader.cpp \
+    ../../../IPXACTmodels/common/ConfigurableVLNVReference.cpp
