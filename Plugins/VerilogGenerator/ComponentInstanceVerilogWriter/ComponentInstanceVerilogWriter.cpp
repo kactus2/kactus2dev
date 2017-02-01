@@ -96,16 +96,27 @@ QString ComponentInstanceVerilogWriter::indentation() const
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::parameterAssignments() const
 {
+    QList<QSharedPointer<Parameter> > parameterToWrite;
+
+    foreach(QSharedPointer<Parameter> parameter, instance_->parameters_)
+    {
+        // If the parameters are not user resolved nor generated, then there cannot be any override by the design.
+        if (parameter->getValueResolve() == "user" || parameter->getValueResolve() == "generated")
+        {
+            parameterToWrite.append(parameter);
+        }
+    }
+
+    if (parameterToWrite.isEmpty())
+    {
+        return "";
+    }
+
 	QString instanceParameters("#(\n<namesAndValues>)\n");
 
 	QStringList assignments;
 
-	if (instance_->parameters_.count() < 1)
-	{
-		return "";
-	}
-
-	foreach(QSharedPointer<Parameter> parameter, instance_->parameters_)
+	foreach(QSharedPointer<Parameter> parameter, parameterToWrite)
 	{
         // If the parameters are not user resolved nor generated, then there cannot be any override by the design.
         if (parameter->getValueResolve() != "user" && parameter->getValueResolve() != "generated")
