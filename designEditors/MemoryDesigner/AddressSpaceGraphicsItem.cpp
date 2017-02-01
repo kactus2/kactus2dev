@@ -136,8 +136,7 @@ void AddressSpaceGraphicsItem::condenseItemAndChildItems(
         }
         else
         {
-            spaceNewHeight =
-                getCompressedHeight(AddressSpaceItemConstants::MINIMUMSUBITEMHEIGHT, this, movedConnections);
+            spaceNewHeight = getFilteredCompressedHeight();
         }
 
         if (spaceNewHeight > 0)
@@ -150,306 +149,230 @@ void AddressSpaceGraphicsItem::condenseItemAndChildItems(
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceGraphicsItem::getSubItemHeight()
-//-----------------------------------------------------------------------------
-qreal AddressSpaceGraphicsItem::getSubItemHeight(SubMemoryLayout* mainItem,
-    MemoryDesignerChildGraphicsItem* subItem, qreal minimumSubItemHeight, quint64 yPosition,
-    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
-{
-    qreal newSubItemHeight = 0;
-
-    if (mainItem == this)
-    {
-        MemoryConnectionItem* firstConnection = subItem->getMemoryConnections().first();
-        quint64 connectionRangeEnd = firstConnection->getRangeEndValue();
-        qreal yTransfer = (sceneBoundingRect().top() + yPosition) - firstConnection->sceneBoundingRect().top();
-        quint64 previousConnectionLow = firstConnection->sceneBoundingRect().bottom();
-
-        quint64 subItemBaseAddress = subItem->getBaseAddress();
-        quint64 subItemLastAddress = subItem->getLastAddress();
-
-        qreal intervalBetweenConnections = 0;
-
-        quint64 connectionLowPoint = firstConnection->sceneBoundingRect().bottom();
-        quint64 connectionHighPoint = firstConnection->sceneBoundingRect().top();
-
-        quint64 previousConnectionBaseAddress = firstConnection->getRangeStartValue();
-        MemoryConnectionItem* previousConnection = firstConnection;
-
-        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(subItem->getMemoryConnections());
-        while (connectionIterator.hasNext())
-        {
-            connectionIterator.next();
-            MemoryConnectionItem* connectionItem = connectionIterator.value();
-
-            if (connectionItem->getConnectionStartItem() == mainItem)
-            {
-                quint64 connectionBaseAddress = connectionIterator.key();
-
-                yTransfer = getTransferY(connectionBaseAddress, previousConnectionBaseAddress,
-                    connectionRangeEnd, previousConnectionLow, connectionItem, previousConnection, yTransfer);
-
-                moveConnectionItem(connectionItem, yTransfer, movedConnections);
-
-                quint64 newConnectionEnd = getConnectionRangeEndValue(connectionItem);
-                if (connectionItem == firstConnection || newConnectionEnd > connectionRangeEnd)
-                {
-                    previousConnection = connectionItem;
-                    connectionRangeEnd = newConnectionEnd;
-                    previousConnectionBaseAddress = connectionBaseAddress;
-                    previousConnectionLow = connectionItem->getSceneEndPoint();
-                    connectionHighPoint = connectionItem->sceneBoundingRect().top();
-
-                    if (connectionItem != firstConnection && connectionHighPoint > connectionLowPoint)
-                    {
-                        intervalBetweenConnections = connectionHighPoint - connectionLowPoint + 1;
-                    }
-                    else
-                    {
-                        intervalBetweenConnections = 0;
-                    }
-
-                    if (connectionItem != firstConnection && connectionHighPoint < connectionLowPoint)
-                    {
-                        quint64 connectionLastAddress = connectionItem->getRangeEndValue();
-                        if (subItemLastAddress >= connectionLastAddress)
-                        {
-                            intervalBetweenConnections =
-                                intervalBetweenConnections - (connectionLowPoint - connectionHighPoint) + 1;
-
-                            yTransfer -= MemoryDesignerConstants::RANGEINTERVAL * 2;
-                        }
-                    }
-
-                    quint64 subItemConnectionHeight =
-                        getSubItemHeightForConnection(this, subItemBaseAddress, subItemLastAddress, subItem,
-                        connectionItem, yPosition, newSubItemHeight, minimumSubItemHeight);
-
-                    newSubItemHeight += subItemConnectionHeight + intervalBetweenConnections;
-
-                    connectionLowPoint = connectionItem->sceneBoundingRect().bottom();
-                }
-            }
-        }
-    }
-
-    return newSubItemHeight;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpaceGraphicsItem::getConnectionEndPoint()
-//-----------------------------------------------------------------------------
-quint64 AddressSpaceGraphicsItem::getConnectionRangeEndValue(MemoryConnectionItem* connectionItem) const
-{
-    quint64 newConnectionEnd = 0;
-
-    qreal connectionHeight = connectionItem->boundingRect().height();
-    qreal endItemHeight = connectionItem->getConnectionEndItem()->boundingRect().height();
-    if (connectionHeight == endItemHeight)
-    {
-        newConnectionEnd = connectionItem->getRangeEndValue();
-    }
-    else
-    {
-        newConnectionEnd = connectionItem->getConnectedEndItemLastAddress();
-    }
-
-    return newConnectionEnd;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpaceGraphicsItem::moveConnectionItem()
-//-----------------------------------------------------------------------------
-void AddressSpaceGraphicsItem::moveConnectionItem(MemoryConnectionItem* connectionItem, qreal yTransfer,
-    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
-{
-    if (!movedConnections->contains(connectionItem))
-    {
-        connectionItem->compressEndItem(movedConnections);
-
-        connectionItem->onMoveConnectionInY(this, yTransfer);
-        movedConnections->append(connectionItem);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpaceGraphicsItem::getTransferY()
-//-----------------------------------------------------------------------------
-qreal AddressSpaceGraphicsItem::getTransferY(quint64 currentConnectionBaseAddress,
-    quint64 previousConnectionBaseAddress, quint64 previousConnectionRangeEnd, quint64 previousConnectionLow,
-    MemoryConnectionItem* connectionItem, MemoryConnectionItem* previousConnection, qreal yTransfer) const
-{
-    qreal newYTransfer = yTransfer;
-
-    if (currentConnectionBaseAddress == previousConnectionRangeEnd + 1)
-    {
-        newYTransfer = previousConnectionLow - connectionItem->sceneBoundingRect().top() - 0.5;
-    }
-    else if (currentConnectionBaseAddress > previousConnectionRangeEnd + 1)
-    {
-        newYTransfer = previousConnectionLow - connectionItem->sceneBoundingRect().top() +
-            MemoryDesignerConstants::RANGEINTERVAL;
-    }
-    else if (currentConnectionBaseAddress <= previousConnectionRangeEnd &&
-        currentConnectionBaseAddress > previousConnectionBaseAddress)
-    {
-        quint64 addressDifference = (previousConnectionRangeEnd - currentConnectionBaseAddress) + 1;
-        qreal addressTransfer = addressDifference * MemoryDesignerConstants::RANGEINTERVAL;
-
-        MainMemoryGraphicsItem* previousEndItem = previousConnection->getConnectionEndItem();
-        if (previousEndItem->sceneBoundingRect().bottom() < previousConnectionLow)
-        {
-            qreal previousExtensionHeight = previousConnectionLow - previousEndItem->sceneBoundingRect().bottom();
-            addressTransfer = qMin(addressTransfer, previousExtensionHeight);
-        }
-
-        newYTransfer = previousConnectionLow - connectionItem->sceneBoundingRect().top() - addressTransfer;
-
-        qreal maximumTransfer = previousConnection->sceneBoundingRect().top() -
-            connectionItem->sceneBoundingRect().top() + MemoryDesignerConstants::RANGEINTERVAL;
-        newYTransfer = qMax(newYTransfer, maximumTransfer);
-    }
-
-    return newYTransfer;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpaceGraphicsItem::getMinimumRequiredHeight()
-//-----------------------------------------------------------------------------
-qreal AddressSpaceGraphicsItem::getMinimumRequiredHeight(quint64 connectionBaseAddress,
-    quint64 connectionEndAddress) const
-{
-    qreal height = boundingRect().height();
-
-    return SubMemoryLayout::getMinimumRequiredHeight(AddressSpaceItemConstants::MINIMUMSUBITEMHEIGHT,
-        connectionBaseAddress, connectionEndAddress, getBaseAddress(), getLastAddress(), height);
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::getFilteredCompressedHeight()
 //-----------------------------------------------------------------------------
-quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight(SubMemoryLayout*, quint64,
-    qreal minimumSubItemHeight)
+quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
 {
-    MemoryConnectionItem* firstConnection = getMemoryConnections().first();
-    quint64 connectionRangeEnd = firstConnection->getRangeEndValue();
-    qreal yTransfer = (sceneBoundingRect().top()) - firstConnection->sceneBoundingRect().top();
-    quint64 previousConnectionLow = firstConnection->sceneBoundingRect().bottom();
+    const int CUTMODIFIER = 2;
 
-    quint64 itemLastAddress = getLastAddress();
-    
-    quint64 connectionHighPoint = firstConnection->sceneBoundingRect().top();
-    quint64 connectionLowPoint = sceneBoundingRect().top() + minimumSubItemHeight;
+    QMap<quint64, MemoryConnectionItem*> chainedConnections = getChainedMemoryConnections();
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(chainedConnections);
 
-    quint64 connectionsTopY = connectionHighPoint;
-    quint64 connectionsLowY = connectionLowPoint;
+    QVector<quint64> unCutAddresses = getUnCutAddressesFromConnections(connectionIterator);
+    qSort(unCutAddresses);
 
-    QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections (new QVector<MemoryConnectionItem*>());
-
-    quint64 previousConnectionBaseAddress = firstConnection->getRangeStartValue();
-    MemoryConnectionItem* previousConnection = firstConnection;
-
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
+    connectionIterator.toFront();
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();
         MemoryConnectionItem* connectionItem = connectionIterator.value();
+        connectionItem->condenseToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+    }
 
-        if (connectionItem->getConnectionStartItem() == this)
+    QList<quint64> unCutAddressesInList = unCutAddresses.toList();
+
+    QVector<MainMemoryGraphicsItem*> movedItems;
+
+    connectionIterator.toFront();
+    quint64 cutAreaBegin = getBaseAddress();
+    quint64 itemLastAddress = getLastAddress();
+    quint64 spaceCutArea = 0;
+
+    foreach (quint64 cutAreaEnd, unCutAddresses)
+    {
+        qint64 addressDifference = cutAreaEnd - cutAreaBegin - CUTMODIFIER;
+        if (addressDifference > 0)
         {
-            quint64 connectionBaseAddress = connectionIterator.key();
-
-            yTransfer = getFilteredConnectionYTransfer(connectionItem, connectionBaseAddress, previousConnection,
-                previousConnectionBaseAddress, connectionRangeEnd, previousConnectionLow, yTransfer);
-
-            moveConnectionItem(connectionItem, yTransfer, movedConnections);
-
-            quint64 newConnectionEnd = getConnectionRangeEndValue(connectionItem);
-            if (connectionItem == firstConnection || newConnectionEnd > connectionRangeEnd)
+            if (cutAreaBegin < itemLastAddress)
             {
-                connectionRangeEnd = newConnectionEnd;
-                previousConnection = connectionItem;
-                previousConnectionBaseAddress = connectionBaseAddress;
+                spaceCutArea += addressDifference;
+            }
 
-                previousConnectionLow = getFilteredPreviousConnectionLow(connectionItem);
+            qreal cutTransfer = -addressDifference * MemoryDesignerConstants::RANGEINTERVAL;
 
-                connectionHighPoint = connectionItem->sceneBoundingRect().top();
-
-                quint64 connectionLastAddress = connectionItem->getRangeEndValue();
-                quint64 connectionBaseAddress = connectionItem->getRangeStartValue();
-                if (connectionItem != firstConnection && connectionHighPoint < connectionLowPoint)
+            while (connectionIterator.hasNext())
+            {
+                connectionIterator.next();
+                quint64 connectionBaseAddress = connectionIterator.key();
+                if (connectionBaseAddress >= cutAreaEnd)
                 {
-                    if (itemLastAddress >= connectionLastAddress)
+                    MemoryConnectionItem* connectionItem = connectionIterator.value();
+                    MainMemoryGraphicsItem* connectionStartItem = connectionItem->getConnectionStartItem();
+                    if (!movedItems.contains(connectionStartItem))
                     {
-                        yTransfer -= MemoryDesignerConstants::RANGEINTERVAL * 2;
+                        connectionItem->onMoveConnectionInY(connectionStartItem, cutTransfer);
+                        movedItems.append(connectionItem->getConnectionEndItem());
                     }
                 }
+            }
 
-                connectionLowPoint = connectionItem->sceneBoundingRect().bottom();
+            connectionIterator.toFront();
+            movedItems.clear();
+        }
 
-                if (connectionHighPoint < connectionsTopY)
+        cutAreaBegin = cutAreaEnd;
+    }
+
+    if (!subItemsAreFiltered())
+    {
+        compressSubItemsToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+    }
+
+    qreal originalHeight = boundingRect().height();
+    qreal cutAreaHeight = spaceCutArea * MemoryDesignerConstants::RANGEINTERVAL;
+    qreal condensedHeight = originalHeight - cutAreaHeight;
+
+    return qMin(originalHeight, condensedHeight);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getChainedMemoryConnections()
+//-----------------------------------------------------------------------------
+QMap<quint64, MemoryConnectionItem*> AddressSpaceGraphicsItem::getChainedMemoryConnections() const
+{
+    QMultiMap<quint64, MemoryConnectionItem*> chainedConnections = getMemoryConnections();
+    QMapIterator<quint64, MemoryConnectionItem*> chainIterator (chainedConnections);
+    while (chainIterator.hasNext())
+    {
+        chainIterator.next();
+        MemoryConnectionItem* chainConnection = chainIterator.value();
+        
+        MainMemoryGraphicsItem* chainEndItem = chainConnection->getConnectionEndItem();
+        AddressSpaceGraphicsItem* chainSpace = dynamic_cast<AddressSpaceGraphicsItem*>(chainEndItem);
+        if (chainSpace && chainSpace != this)
+        {
+            QMap<quint64, MemoryConnectionItem*> secondConnections = chainSpace->getChainedMemoryConnections();
+            QMapIterator<quint64, MemoryConnectionItem*> secondChainIterator (secondConnections);
+            while (secondChainIterator.hasNext())
+            {
+                secondChainIterator.next();
+                MemoryConnectionItem* secondChainConnection = secondChainIterator.value();
+
+                if (!chainedConnections.values().contains(secondChainConnection))
                 {
-                    connectionsTopY = connectionHighPoint;
-                }
-                if (connectionLowPoint > connectionsLowY)
-                {
-                    connectionsLowY = connectionLowPoint;
-                    if (connectionLastAddress > itemLastAddress + connectionBaseAddress)
+                    quint64 secondChainBaseAddress = secondChainIterator.key();
+                    if (chainedConnections.keys().contains(secondChainBaseAddress))
                     {
-                        connectionsLowY -= MemoryDesignerConstants::RANGEINTERVAL * 2;
+                        QVector<MemoryConnectionItem*> sameKeyItems =
+                            chainedConnections.values(secondChainBaseAddress).toVector();
+                        sameKeyItems.append(secondChainConnection);
+
+                        int amountOfSameKeys = chainedConnections.remove(secondChainBaseAddress) + 1;
+                        for (int connectionIndex = amountOfSameKeys - 1; connectionIndex >= 0; --connectionIndex)
+                        {
+                            MemoryConnectionItem* sameKeyConnection = sameKeyItems.at(connectionIndex);
+                            chainedConnections.insertMulti(secondChainBaseAddress, sameKeyConnection);
+                        }
+                    }
+                    else
+                    {
+                        chainedConnections.insertMulti(secondChainBaseAddress, secondChainConnection);
                     }
                 }
             }
         }
-        else
+    }
+
+    return chainedConnections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getUnCutAddresses()
+//-----------------------------------------------------------------------------
+QVector<quint64> AddressSpaceGraphicsItem::getUnCutAddressesFromConnections(
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const
+{
+    QVector<quint64> unCutAddresses = getUnCutAddresses();
+
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+
+        quint64 connectionBaseAddress = connectionIterator.key();
+        if (!unCutAddresses.contains(connectionBaseAddress))
         {
-            connectionsLowY = connectionItem->sceneBoundingRect().bottom();
+            unCutAddresses.append(connectionBaseAddress);
+        }
+        quint64 connectionLastAddress = connectionIterator.value()->getRangeEndValue();
+        if (!unCutAddresses.contains(connectionLastAddress))
+        {
+            unCutAddresses.append(connectionLastAddress);
+        }
+
+        MemoryConnectionItem* connectionItem = connectionIterator.value();
+        MainMemoryGraphicsItem* connectionStart = connectionItem->getConnectionStartItem();
+        if (connectionStart != this)
+        {
+            foreach (quint64 address, connectionStart->getUnCutAddresses())
+            {
+                if (!unCutAddresses.contains(address))
+                {
+                    unCutAddresses.append(address);
+                }
+            }
+        }
+
+        MainMemoryGraphicsItem* connectionEnd = connectionItem->getConnectionEndItem();
+        foreach (quint64 address, connectionEnd->getUnCutAddresses())
+        {
+            if (!unCutAddresses.contains(address))
+            {
+                unCutAddresses.append(address);
+            }
+        }
+    }
+    
+    return unCutAddresses;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getAllConnectedSpaceItems()
+//-----------------------------------------------------------------------------
+QVector<MainMemoryGraphicsItem*> AddressSpaceGraphicsItem::getAllConnectedSpaceItems(
+    MainMemoryGraphicsItem* origin) const
+{
+    QVector<MainMemoryGraphicsItem*> allConnectedSpaceItems;
+
+    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
+    {
+        MainMemoryGraphicsItem* connectionStartItem = connectionItem->getConnectionStartItem();
+        MainMemoryGraphicsItem* connectionEndItem = connectionItem->getConnectionEndItem();
+        if (connectionStartItem == this && connectionEndItem != origin)
+        {
+            foreach (MainMemoryGraphicsItem* connectedSpaceItem,
+                getSpaceItemsConnectedToSpaceItem(connectionEndItem, connectionStartItem))
+            {
+                allConnectedSpaceItems.append(connectedSpaceItem);
+            }
+        }
+        else if (connectionEndItem == this && connectionStartItem != origin)
+        {
+            foreach (MainMemoryGraphicsItem* connectedSpaceItem,
+                getSpaceItemsConnectedToSpaceItem(connectionStartItem, connectionEndItem))
+            {
+                allConnectedSpaceItems.append(connectedSpaceItem);
+            }
         }
     }
 
-    qreal newItemHeight = connectionsLowY - connectionsTopY - pen().width();
-    newItemHeight = qMax(newItemHeight, minimumSubItemHeight);
+    return allConnectedSpaceItems;
 
-    return newItemHeight;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceGraphicsItem::getFilteredConnectionYTransfer()
+// Function: AddressSpaceGraphicsItem::getSpaceItemsConnectedToSpaceItem()
 //-----------------------------------------------------------------------------
-qreal AddressSpaceGraphicsItem::getFilteredConnectionYTransfer(MemoryConnectionItem* connectionItem,
-    quint64 connectionBaseAddress, MemoryConnectionItem* previousConnection, quint64 previousBaseAddress,
-    quint64 connectionRangeEnd, quint64 previousConnectionLow, qreal oldTransferY) const
+QVector<MainMemoryGraphicsItem*> AddressSpaceGraphicsItem::getSpaceItemsConnectedToSpaceItem(
+    MainMemoryGraphicsItem* memoryItem, MainMemoryGraphicsItem* originSpaceItem) const
 {
-    qreal newTransferY = 0;
+    QVector<MainMemoryGraphicsItem*> connectedSpaceItems;
 
-    if (connectionItem->endItemIsMemoryMap())
+    AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
+    if (spaceItem)
     {
-        newTransferY = getTransferY(connectionBaseAddress, previousBaseAddress, connectionRangeEnd,
-            previousConnectionLow, connectionItem, previousConnection, oldTransferY);
-    }
-    else if (connectionBaseAddress >= connectionRangeEnd + 1)
-    {
-        newTransferY = previousConnectionLow - connectionItem->sceneBoundingRect().top() - 0.5;
+        connectedSpaceItems = spaceItem->getAllConnectedSpaceItems(originSpaceItem);
+        connectedSpaceItems.append(memoryItem);
     }
 
-    return newTransferY;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpaceGraphicsItem::getFilteredPreviousConnectionLow()
-//-----------------------------------------------------------------------------
-quint64 AddressSpaceGraphicsItem::getFilteredPreviousConnectionLow(MemoryConnectionItem* connectionItem) const
-{
-    quint64 previousConnectionLow = 0;
-
-    if (connectionItem->endItemIsMemoryMap())
-    {
-        previousConnectionLow = connectionItem->getSceneEndPoint();
-    }
-    else
-    {
-        previousConnectionLow = connectionItem->sceneBoundingRect().bottom();
-    }
-
-    return previousConnectionLow;
+    return connectedSpaceItems;
 }

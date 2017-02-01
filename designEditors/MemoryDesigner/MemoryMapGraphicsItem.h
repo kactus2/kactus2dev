@@ -64,32 +64,6 @@ public:
     virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
 
     /*!
-     *  Compress the memory map item.
-     *
-     *      @param [in] movedConnections    Connection items that have already been moved.
-     */
-    void compressMapItem(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
-
-    /*!
-     *  Get the minimum required height of the memory map item to fit the selected memory connection.
-     *
-     *      @param [in] connectionBaseAddress   Base address of the selected memory connection.
-     *      @param [in] connectionEndAddress    End address of the selected memory connection.
-     *
-     *      @return The minimum required height of the memory map item.
-     */
-    virtual qreal getMinimumRequiredHeight(quint64 connectionBaseAddress, quint64 connectionEndAddress) const;
-
-    /*!
-     *  Check if the memory map is connected to any of the selected address spaces.
-     *
-     *      @param [in] spaceItems  List of the selected address space graphics items.
-     *
-     *      @return True, if the memory map is connected to any of the selected address spaces.
-     */
-    bool isConnectedToSpaceItems(QVector<MainMemoryGraphicsItem*> spaceItems) const;
-
-    /*!
      *  Change the width of this item and the contained register graphics items.
      *
      *      @param [in] widthChange     The change in width.

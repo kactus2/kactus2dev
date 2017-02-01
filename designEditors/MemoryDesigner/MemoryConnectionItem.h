@@ -105,13 +105,6 @@ public:
     quint64 getConnectedEndItemLastAddress() const;
 
     /*!
-     *  Compress the end item.
-     *
-     *      @param [in] movedConnections    Connection items that have already been moved.
-     */
-    void compressEndItem(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
-
-    /*!
      *  Get the height of the connected end memory item.
      *
      *      @return The height of the connected end memory item.
@@ -140,11 +133,6 @@ public:
     MainMemoryGraphicsItem* getConnectionEndItem() const;
 
     /*!
-     *  Set the width for the memory connection item.
-     */
-    void setConnectionWidth();
-
-    /*!
      *  Reposition range labels that are colliding with range labels of other memory connection items.
      */
     void repositionCollidingRangeLabels();
@@ -161,10 +149,33 @@ public:
     bool labelCollidesWithRanges(QGraphicsTextItem* label, qreal fontHeight,
         const MainMemoryGraphicsItem* connectedItem) const;
 
+    /*!
+     *  Condense this connection to contain the selected addresses.
+     *
+     *      @param [in] uncutAddresses  The addresses that remain after the compression.
+     *      @param [in] CUTMODIFIER     Modifier for the cut areas.
+     */
+    void condenseToUnCutAddresses(QVector<quint64> uncutAddresses, const int CUTMODIFIER);
+
 private:
     // Disable copying.
     MemoryConnectionItem(MemoryConnectionItem const& rhs);
     MemoryConnectionItem& operator=(MemoryConnectionItem const& rhs);
+
+    /*!
+     *  Compress the contained end item.
+     *
+     *      @param [in] unCutAddresses  The addresses that remain after the compression.
+     *      @param [in] CUTMODIFIER     Modifier for the cut areas.
+     */
+    void compressEndItem(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+
+    /*!
+     *  Set a new height for the memory connection.
+     *
+     *      @param [in] newHeight   The new height.
+     */
+    void setCondensedHeight(qreal newHeight);
 
     /*!
      *  Setup the range labels.
@@ -190,6 +201,20 @@ private:
     void avoidCollisionsOnPath(QPointF highStartPoint, QPointF highEndPoint, QPointF lowStartPoint, QPointF lowEndPoint);
 
     /*!
+     *  Create a collision path according to the collision points.
+     *
+     *      @param [in] highStartPoint          The top start point of the connection.
+     *      @param [in] highEndPoint            The top end point of the connection.
+     *      @param [in] lowStartPoint           The low start point of the connection.
+     *      @param [in] lowEndPoint             The low end point of the connection.
+     *      @param [in] highCollisionPoints     Map containing the top collision points of the connection item.
+     *      @param [in] lowCollisionPoints      Map containing the low collision points of the connection item.
+     */
+    void createCollisionPath(QPointF highStartPoint, QPointF highEndPoint, QPointF lowStartPoint,
+        QPointF lowEndPoint, QMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints,
+        QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints);
+
+    /*!
      *  Reposition the connection labels.
      */
     void repositionLabels();
@@ -200,15 +225,6 @@ private:
      *      @return The width of the connection.
      */
     qreal getConnectionWidth() const;
-
-    /*!
-     *  Get the height of the memory connection item to match the connection chain.
-     *
-     *      @param [in] comparisonConnection    The selected memory connection item.
-     *
-     *      @return The new height for the memory connection item.
-     */
-    qreal getComparedConnectionHeight(MemoryConnectionItem* comparisonConnection) const;
 
     /*!
      *  Reposition a single colliding range label.

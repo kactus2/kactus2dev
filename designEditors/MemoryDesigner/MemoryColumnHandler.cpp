@@ -289,3 +289,12 @@ void MemoryColumnHandler::changeColumnWidths(qreal deltaWidth)
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumnHandler::itemOverlapsAnotherItemInColumn()
+//-----------------------------------------------------------------------------
+bool MemoryColumnHandler::itemOverlapsAnotherItemInColumn(QRectF firstRectangle, int firstLineWidth,
+    MemoryColumn* itemColumn) const
+{
+    return itemColumn->itemOverlapsAnotherColumnItem(firstRectangle, firstLineWidth);
+}

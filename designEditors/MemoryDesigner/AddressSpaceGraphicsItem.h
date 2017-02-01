@@ -63,14 +63,11 @@ public:
     virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
 
     /*!
-     *  Get the minimum required height of the address space item to fit the selected memory connection.
+     *  Get all the address space graphics items connected to the origin item.
      *
-     *      @param [in] connectionBaseAddress   Base address of the selected memory connection.
-     *      @param [in] connectionEndAddress    End address of the selected memory connection.
-     *
-     *      @return The minimum required height of the address space item.
+     *      @param [in] origin  The origin item for gathering connections.
      */
-    virtual qreal getMinimumRequiredHeight(quint64 connectionBaseAddress, quint64 connectionEndAddress) const;
+    QVector<MainMemoryGraphicsItem*> getAllConnectedSpaceItems(MainMemoryGraphicsItem* origin) const;
 
 private:
     // Disable copying.
@@ -104,94 +101,39 @@ private:
     virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd);
 
     /*!
-     *  Get the y-coordinate transfer for the connected memory items.
-     *
-     *      @param [in] currentConnectionBaseAddress    Base address of the current connection.
-     *      @param [in] previousConnectionBaseAddress   Base address of the previous connection.
-     *      @param [in] previousConnectionRangeEnd      Range end of the previous connection.
-     *      @param [in] connectionRangeEnd              Range end of the current connection.
-     *      @param [in] previousConnectionLow           Scene low point of the connection item.
-     *      @param [in] connectionItem                  The connection item.
-     *      @param [in] previousConnection              The previous connection item.
-     *      @param [in] yTransfer                       Previous y-coordinate transfer.
-     *
-     *      @return The y-coordinate transfer.
-     */
-    qreal getTransferY(quint64 currentConnectionBaseAddress, quint64 previousConnectionBaseAddress,
-        quint64 previousConnectionRangeEnd, quint64 previousConnectionLow, MemoryConnectionItem* connectionItem,
-        MemoryConnectionItem* previousConnection, qreal yTransfer) const;
-
-    /*!
-     *  Move the selected memory connection item.
-     *
-     *      @param [in] connectionItem      Memory connection item.
-     *      @param [in] yTransfer           Item y transfer.
-     *      @param [in] movedConnections    The already moved memory connection items.
-     */
-    void moveConnectionItem(MemoryConnectionItem* connectionItem, qreal yTransfer,
-        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
-
-    /*!
-     *  Get the height for a compressed memory sub item.
-     *
-     *      @param [in] mainItem                The parent item of the selected memory sub item.
-     *      @param [in] subItem                 The selected memory sub item.
-     *      @param [in] minimumSubItemHeight    Minimum height for the memory sub item.
-     *      @param [in] yPosition               Y-coordinate for the compressed memory sub item.
-     *      @param [in] movedConnections        Connections that have been moved previously.
-     *
-     *      @return The compressed height for the memory sub item.
-     */
-    virtual qreal getSubItemHeight(SubMemoryLayout* mainItem, MemoryDesignerChildGraphicsItem* subItem,
-        qreal minimumSubItemHeight, quint64 yPosition,
-        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
-
-    /*!
-     *  Get the last address of the connection or connected end item.
-     *
-     *      @param [in] connectionItem      The selected connection item.
-     *
-     *      @return The last address of the selected connection or connected end item.
-     */
-    quint64 getConnectionRangeEndValue(MemoryConnectionItem* connectionItem) const;
-
-    /*!
-     *  Get the filtered compressed height of an address space graphics item.
-     *
-     *      @param [in] parentLayout            Layout of the parent item.
-     *      @param [in] yPosition               Y coordinate of the layout.
-     *      @param [in] minimumSubItemHeight    Minimum height of the graphics item.
+     *  Get the compressed height of an address space graphics item.
      *
      *      @return The compressed height of an address space graphics item.
      */
-    virtual quint64 getFilteredCompressedHeight(SubMemoryLayout* parentLayout, quint64 yPosition,
-        qreal minimumSubItemHeight);
+    quint64 getFilteredCompressedHeight();
 
     /*!
-     *  Get the connection movement of a filtered address space graphics item in y-coordinate.
+     *  Get the address space items connected to the selected address space item.
      *
-     *      @param [in] connectionItem          The selected memory connection graphics item.
-     *      @param [in] connectionBaseAddress   Base address of the selected connection.
-     *      @param [in] previousConnection      The previous memory connection graphics item.
-     *      @param [in] previousBaseAddress     Base address of the previous connection.
-     *      @param [in] connectionRangeEnd      End address of the selected connection.
-     *      @param [in] previousConnectionLow   The low y-coordinate of the previous memory connection item.
-     *      @param [in] oldTransferY            The old y-coordinate transfer value.
+     *      @param [in] memoryItem          The selected address space graphics item.
+     *      @param [in] originSpaceItem     Origin of the search.
      *
-     *      @return Y-transfer of the memory connection item in a filtered address space graphics item.
+     *      @return All the address space items connected to the selected item.
      */
-    qreal getFilteredConnectionYTransfer(MemoryConnectionItem* connectionItem, quint64 connectionBaseAddress,
-        MemoryConnectionItem* previousConnection, quint64 previousBaseAddress, quint64 connectionRangeEnd,
-        quint64 previousConnectionLow, qreal oldTransferY) const;
+    QVector<MainMemoryGraphicsItem*> getSpaceItemsConnectedToSpaceItem(MainMemoryGraphicsItem* memoryItem,
+        MainMemoryGraphicsItem* originSpaceItem) const;
 
     /*!
-     *  Get the low y-coordinate of a memory connection item in a filtered address space item.
+     *  Get all the chained memory connection items.
      *
-     *      @param [in] connectionItem  The selected memory connection item.
-     *
-     *      @return The low y-coordinate of a memory connection item in a filtered address space item.
+     *      @return The chained memory connection items.
      */
-    quint64 getFilteredPreviousConnectionLow(MemoryConnectionItem* connectionItem) const;
+    QMap<quint64, MemoryConnectionItem*> getChainedMemoryConnections() const;
+
+    /*!
+     *  Get all the addresses that must be retained after compression.
+     *
+     *      @param [in] connectionIterator  Iterator holding all the required memory connections.
+     *
+     *      @return All the addresses that are retained after compression.
+     */
+    QVector<quint64> getUnCutAddressesFromConnections(
+        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
 
     //-----------------------------------------------------------------------------
     // Data.

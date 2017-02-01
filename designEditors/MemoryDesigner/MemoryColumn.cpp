@@ -197,14 +197,17 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
     int yTransfer = 0;
     quint64 spaceItemLowAfter = 0;
 
+    QVector<MainMemoryGraphicsItem*> movedSpaceItems;
+
     foreach (QGraphicsItem* graphicsItem, getGraphicsItemInOrder())
     {
         MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
         if (memoryItem)
         {
             int memoryItemLowBefore = memoryItem->getSceneEndPoint();
+            memoryItemLowBefore += memoryItem->getSubItemHeightAddition();
 
-            if (condenseMemoryItems)
+            if (condenseMemoryItems && !memoryItem->isCompressed())
             {
                 memoryItem->condenseItemAndChildItems(movedConnectionItems);
             }
@@ -233,11 +236,22 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
                             yTransfer += yMovementAddition;
                         }
 
-                        spaceItem->moveConnectedItems(yTransfer);
+                        if (!movedSpaceItems.contains(memoryItem))
+                        {
+                            spaceItem->moveConnectedItems(yTransfer);
 
+                            foreach (MainMemoryGraphicsItem* connectedSpace,
+                                spaceItem->getAllConnectedSpaceItems(spaceItem))
+                            {
+                                movedSpaceItems.append(connectedSpace);
+                            }
+
+                            movedSpaceItems.append(spaceItem);
+                        }
                     }
 
                     spaceItemLowAfter = spaceItem->getSceneEndPoint();
+                    spaceItemLowAfter += memoryItem->getSubItemHeightAddition();
 
                     yTransfer = spaceItemLowAfter - memoryItemLowBefore;
 
@@ -246,6 +260,7 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
             }
 
             memoryItem->resizeSubItemNameLabels();
+            memoryItem->createOverlappingSubItemMarkings();
         }
     }
 }
@@ -328,11 +343,6 @@ quint64 MemoryColumn::getUnconnectedItemPosition(QSharedPointer<QVector<MainMemo
 void MemoryColumn::moveGraphicsItem(MainMemoryGraphicsItem* memoryItem, int& placementY, const qreal itemInterval)
 {
     memoryItem->setY(placementY);
-    if (!containsMemoryMapItems())
-    {
-        onMoveItem(memoryItem);
-        onReleaseItem(memoryItem);
-    }
 
     placementY += memoryItem->boundingRect().height() + itemInterval;
 }
@@ -340,21 +350,28 @@ void MemoryColumn::moveGraphicsItem(MainMemoryGraphicsItem* memoryItem, int& pla
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn::memoryMapOverlapsInColumn()
 //-----------------------------------------------------------------------------
-bool MemoryColumn::memoryMapOverlapsInColumn(MainMemoryGraphicsItem* memoryGraphicsItem, quint64 mapBaseAddress,
-    quint64 mapLastAddress, QRectF memoryItemRect, int memoryPenWidth,
-    QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
+bool MemoryColumn::memoryMapOverlapsInColumn(MainMemoryGraphicsItem* memoryGraphicsItem, QRectF memoryItemRect,
+    int memoryPenWidth, QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const
 {
     foreach (QGraphicsItem* graphicsItem, childItems())
     {
         MemoryMapGraphicsItem* comparisonMemoryItem = dynamic_cast<MemoryMapGraphicsItem*>(graphicsItem);
-        if (comparisonMemoryItem && comparisonMemoryItem != memoryGraphicsItem &&
-            comparisonMemoryItem->isConnectedToSpaceItems(connectedSpaceItems) &&
-            placedMaps->contains(comparisonMemoryItem) &&
-            itemOverlapsAnotherItem(
-            mapBaseAddress, mapLastAddress, memoryItemRect, memoryPenWidth, comparisonMemoryItem))
+        if (comparisonMemoryItem)
         {
-            return true;
+            QRectF comparisonRectangle = comparisonMemoryItem->sceneBoundingRect();
+            int comparisonLineWidth = comparisonMemoryItem->pen().width();
+
+            bool isNotSameItem = comparisonMemoryItem != memoryGraphicsItem;
+            bool itemIsConnectionedToSpaceItems = comparisonMemoryItem->isConnectedToSpaceItems(connectedSpaceItems);
+            bool itemIsPlaced = placedMaps->contains(comparisonMemoryItem);
+            bool overlap = MemoryDesignerConstants::itemOverlapsAnotherItem(
+                memoryItemRect, memoryPenWidth, comparisonRectangle, comparisonLineWidth);
+
+            if (isNotSameItem && itemIsConnectionedToSpaceItems && itemIsPlaced && overlap)
+            {
+                return true;
+            }
         }
     }
 
@@ -402,5 +419,25 @@ bool MemoryColumn::itemOverlapsAnotherItem(quint64 itemBaseAddress, quint64 item
             return true;
         }
     }
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::itemOverlapsAnotherColumnItem()
+//-----------------------------------------------------------------------------
+bool MemoryColumn::itemOverlapsAnotherColumnItem(QRectF itemRectangle, int lineWidth) const
+{
+    foreach (MainMemoryGraphicsItem* comparisonItem, getGraphicsItemInOrder())
+    {
+        QRectF comparisonRectangle = comparisonItem->sceneBoundingRect();
+        int comparisonLineWidth = comparisonItem->pen().width();
+
+        if (MemoryDesignerConstants::itemOverlapsAnotherItem(
+            itemRectangle, lineWidth, comparisonRectangle, comparisonLineWidth))
+        {
+            return true;
+        }
+    }
+
     return false;
 }

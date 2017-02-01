@@ -73,17 +73,6 @@ void MemoryDesignerChildGraphicsItem::setEmptyItemRangeColors(QColor emptyItemRa
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryDesignerChildGraphicsItem::changeAddressRange()
-//-----------------------------------------------------------------------------
-void MemoryDesignerChildGraphicsItem::changeAddressRange(quint64 offset)
-{
-    quint64 newBaseAddress = getBaseAddress() + offset;
-    quint64 newLastAddress = getLastAddress() + offset;
-
-    setupLabels(newBaseAddress, newLastAddress);
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryDesignerChildGraphicsItem::fitNameLabel()
 //-----------------------------------------------------------------------------
 void MemoryDesignerChildGraphicsItem::fitNameLabel()

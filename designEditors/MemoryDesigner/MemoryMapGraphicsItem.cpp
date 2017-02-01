@@ -292,38 +292,6 @@ void MemoryMapGraphicsItem::condenseItemAndChildItems(QSharedPointer<QVector<Mem
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::compressMapItem()
-//-----------------------------------------------------------------------------
-void MemoryMapGraphicsItem::compressMapItem(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
-{
-    if (!isCompressed())
-    {
-        quint64 newMapHeight = getCompressedHeight(getMinimumHeightForSubItems(), this, movedConnections);
-
-        if (newMapHeight > 0)
-        {
-            condense(newMapHeight);
-
-            setCompressed(true);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::getMinimumRequiredHeight()
-//-----------------------------------------------------------------------------
-qreal MemoryMapGraphicsItem::getMinimumRequiredHeight(quint64 connectionBaseAddress, quint64 connectionEndAddress)
-    const
-{
-    int subItemHeight = getMinimumHeightForSubItems();
-
-    qreal height = boundingRect().height();
-
-    return SubMemoryLayout::getMinimumRequiredHeight(
-        subItemHeight, connectionBaseAddress, connectionEndAddress, getBaseAddress(), getLastAddress(), height);
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::getMinimumHeightForSubItems()
 //-----------------------------------------------------------------------------
 int MemoryMapGraphicsItem::getMinimumHeightForSubItems() const
@@ -340,22 +308,6 @@ int MemoryMapGraphicsItem::getMinimumHeightForSubItems() const
     }
 
     return blockHeight;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::isConnectedToSpaceItems()
-//-----------------------------------------------------------------------------
-bool MemoryMapGraphicsItem::isConnectedToSpaceItems(QVector<MainMemoryGraphicsItem*> spaceItems) const
-{
-    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
-    {
-        if (spaceItems.contains(connectionItem->getConnectionStartItem()))
-        {
-            return true;
-        }
-    }
-
-    return false;
 }
 
 //-----------------------------------------------------------------------------
