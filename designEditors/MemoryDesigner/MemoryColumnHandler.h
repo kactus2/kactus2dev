@@ -145,6 +145,18 @@ public:
      */
     void changeColumnWidths(qreal deltaWidth);
 
+    /*!
+     *  Check if an item overlaps another main graphics item in the selected column.
+     *
+     *      @param [in] firstRectangle  Rectangle of the selected item.
+     *      @param [in] firstLineWidth  Line width of the selected item.
+     *      @param [in] itemColumn      The selected memory column.
+     *
+     *      @return True, if the selected item overlaps another item in the selected column, false otherwise.
+     */
+    bool itemOverlapsAnotherItemInColumn(QRectF firstRectangle, int firstLineWidth, MemoryColumn* itemColumn)
+        const;
+
 private:
     // Disable copying.
     MemoryColumnHandler(MemoryColumnHandler const& rhs);

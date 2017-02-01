@@ -108,6 +108,9 @@ void MemoryConnectionHandler::createMemoryConnections(QSharedPointer<Connectivit
     }
 
     compressGraphicsItems(placedSpaceItems, spaceYPlacement, spaceColumn);
+
+    repositionOverlappingSpaceItems(placedSpaceItems);
+
     if (condenseMemoryItems_)
     {
         repositionCompressedMemoryMaps(placedMapItems, memoryMapColumn);
@@ -157,8 +160,9 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
             QVector<MainMemoryGraphicsItem*> spaceItemChain;
             spaceItemChain.append(connectionStartItem);
 
-            QVector<MemoryConnectionItem*> connectionChain;
+            bool isChainedSpaceConnection = false;
 
+            quint64 spaceChainConnectionBaseAddress = 0;
             foreach(QSharedPointer<ConnectivityInterface> pathInterface, connectionPath)
             {
                 if (pathInterface != startInterface && pathInterface != endInterface)
@@ -173,41 +177,39 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
                     }
                     else if (pathInterface->getMode().compare(QStringLiteral("master"), Qt::CaseInsensitive) == 0)
                     {
+                        spaceChainConnectionBaseAddress += baseAddressNumber;
                         if (pathInterface->isConnectedToMemory())
                         {
                             MainMemoryGraphicsItem* connectionMiddleItem = getMainGraphicsItem(
                                 pathInterface, MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME);
                             if (connectionMiddleItem)
                             {
+                                connectionMiddleItem->changeAddressRange(spaceChainConnectionBaseAddress);
+
                                 if (filterAddressSpaceChains_)
                                 {
                                     connectionMiddleItem->hide();
                                 }
                                 else
                                 {
-                                    MemoryConnectionItem* newSpaceConnection = createSpaceConnection(
-                                        connectionStartItem, connectionMiddleItem, pathInterface, spaceColumn,
-                                        placedSpaceItems, spaceItemChain, spaceYPlacement);
-                                    if (newSpaceConnection)
-                                    {
-                                        connectionChain.append(newSpaceConnection);
-                                    }
+//                                     MemoryConnectionItem* newSpaceConnection = createSpaceConnection(
+//                                         connectionStartItem, spaceChainConnectionBaseAddress, connectionMiddleItem,
+//                                         pathInterface , spaceColumn, placedSpaceItems, spaceItemChain,
+//                                         spaceYPlacement);
+                                    createSpaceConnection(connectionStartItem, spaceChainConnectionBaseAddress,
+                                        connectionMiddleItem, pathInterface , spaceColumn, placedSpaceItems,
+                                        spaceItemChain, spaceYPlacement);
 
                                     spaceItemChain.append(connectionMiddleItem);
 
                                     connectionStartItem = connectionMiddleItem;
+
+                                    isChainedSpaceConnection = true;
                                 }
                             }
                         }
 
-                        if (!placedSpaceItems->contains(connectionStartItem) && !filterAddressSpaceChains_)
-                        {
-                            baseAddressNumber = pathInterface->getBaseAddress().toULongLong();
-                        }
-                        else
-                        {
-                            mirroredSlaveAddressChange += pathInterface->getBaseAddress().toULongLong();
-                        }
+                        baseAddressNumber = pathInterface->getBaseAddress().toULongLong();
                     }
                 }
             }
@@ -233,11 +235,17 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
 
             quint64 endAddressNumber = baseAddressNumber + memoryMapEndAddress;
 
-            quint64 remappedAddress = baseAddressNumber + mirroredSlaveAddressChange;
-            quint64 remappedEndAddress = endAddressNumber + mirroredSlaveAddressChange;
+            quint64 remappedAddress =
+                baseAddressNumber + spaceChainConnectionBaseAddress + mirroredSlaveAddressChange;
+            quint64 remappedEndAddress =
+                endAddressNumber + spaceChainConnectionBaseAddress + mirroredSlaveAddressChange;
 
-            quint64 yTransfer = (memoryMapBaseAddress + mirroredSlaveAddressChange) *
-                MemoryDesignerConstants::RANGEINTERVAL;
+            unsigned int yTransfer = baseAddressNumber + memoryMapBaseAddress + mirroredSlaveAddressChange;
+            if (filterAddressSpaceChains_)
+            {
+                yTransfer += spaceChainConnectionBaseAddress;
+            }
+            yTransfer = yTransfer * MemoryDesignerConstants::RANGEINTERVAL;
 
             QPointF startConnectionPosBefore = connectionStartItem->pos();
 
@@ -246,22 +254,22 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
                 connectionEndItem->hideMemoryRangeLabels();
                 connectionEndItem->setPos(connectionEndItem->pos().x(), connectionStartItem->pos().y() + yTransfer);
 
-                QPointF startItemPositionBefore = connectionStartItem->pos();
+                qreal startItemPositionBefore = connectionStartItem->pos().y();
 
-                if (spaceItemPlaced)
+                if (spaceItemPlaced && !isChainedSpaceConnection)
                 {
                     repositionMemoryMap(placedMapItems, placedSpaceItems, connectionStartItem, spaceColumn,
                         connectionEndItem, yTransfer);
                 }
                 else
                 {
-                    checkMemoryMapRepositionToOverlapColumn(placedMapItems, connectionEndItem, memoryMapColumn,
-                        remappedAddress, remappedEndAddress, connectionStartItem);
+                    checkMemoryMapRepositionToOverlapColumn(
+                        placedMapItems, connectionEndItem, memoryMapColumn, connectionStartItem);
                 }
 
-                QPointF startItemPositionAfter = connectionStartItem->pos();
+                qreal startItemPositionAfter = connectionStartItem->pos().y();
 
-                spaceYPlacement += startItemPositionAfter.y() - startItemPositionBefore.y();
+                spaceYPlacement += startItemPositionAfter - startItemPositionBefore;
 
                 placedMapItems->append(connectionEndItem);
             }
@@ -273,24 +281,19 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
                     MemoryDesignerConstants::SPACEITEMINTERVAL);
             }
 
-            if (spaceItemPlaced)
-            {
-                connectionStartItem->changeChildItemRanges(baseAddressNumber);
-            }
-            connectionEndItem->changeChildItemRanges(remappedAddress);
+            connectionEndItem->changeAddressRange(remappedAddress);
 
             qreal spaceItemEndPointBefore = connectionStartItem->getSceneEndPoint();
 
             MemoryConnectionItem* newConnectionItem =
                 new MemoryConnectionItem(connectionStartItem, remappedAddress, remappedEndAddress,
                 connectionEndItem, spaceColumn->scene(), condenseMemoryItems_, yTransfer);
-            connectionChain.append(newConnectionItem);
-            setHeightForConnectionChain(connectionChain);
             connectionsToMemoryMaps_.append(newConnectionItem);
 
             qreal spaceItemEndPointAfter = connectionStartItem->getSceneEndPoint();
 
             spaceYPlacement += spaceItemEndPointAfter - spaceItemEndPointBefore;
+            spaceYPlacement += connectionStartItem->getSubItemHeightAddition();
         }
     }
 }
@@ -324,13 +327,12 @@ MainMemoryGraphicsItem* MemoryConnectionHandler::getMainGraphicsItem(
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::createSpaceConnection()
 //-----------------------------------------------------------------------------
-MemoryConnectionItem* MemoryConnectionHandler::createSpaceConnection(MainMemoryGraphicsItem* connectionStartItem,
-    MainMemoryGraphicsItem* connectionMiddleItem, QSharedPointer<ConnectivityInterface> newSpaceInterface,
-    MemoryColumn* spaceColumn, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
+void MemoryConnectionHandler::createSpaceConnection(MainMemoryGraphicsItem* connectionStartItem,
+    quint64 connectionBaseAddress, MainMemoryGraphicsItem* connectionMiddleItem,
+    QSharedPointer<ConnectivityInterface> newSpaceInterface, MemoryColumn* spaceColumn,
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
     QVector<MainMemoryGraphicsItem*> spaceItemChain, int& spaceYPlacement)
 {
-    MemoryConnectionItem* addressSpaceConnection = 0;
-
     if (connectionMiddleItem)
     {
         connectionMiddleItem->hideMemoryRangeLabels();
@@ -338,8 +340,9 @@ MemoryConnectionItem* MemoryConnectionHandler::createSpaceConnection(MainMemoryG
         int startItemPositionY = connectionStartItem->pos().y();
         if (!placedSpaceItems->contains(connectionMiddleItem))
         {
-            spaceColumn->moveGraphicsItem(connectionMiddleItem, startItemPositionY,
-                MemoryDesignerConstants::SPACEITEMINTERVAL);
+            placeSpaceItem(
+                connectionMiddleItem, startItemPositionY, spaceColumn, placedSpaceItems, connectionStartItem);
+
             connectionMiddleItem->hideFirstAndLastSegmentRange();
         }
 
@@ -354,13 +357,12 @@ MemoryConnectionItem* MemoryConnectionHandler::createSpaceConnection(MainMemoryG
             recalculateYPosition = true;
         }
 
-        quint64 interfaceBaseAddress = newSpaceInterface->getBaseAddress().toULongLong();
         quint64 startItemBaseAddress = connectionStartItem->getBaseAddress();
-        quint64 baseAddressDifference = interfaceBaseAddress - startItemBaseAddress;
-        int yTransfer = baseAddressDifference * MemoryDesignerConstants::RANGEINTERVAL;
 
-        quint64 middleItemRangeStart = connectionMiddleItem->getBaseAddress() + interfaceBaseAddress;
-        quint64 middleItemRangeEnd = connectionMiddleItem->getLastAddress() + interfaceBaseAddress;
+        quint64 middleItemRangeStart = startItemBaseAddress + connectionBaseAddress;
+        quint64 middleItemRangeEnd = middleItemRangeStart +
+            (connectionMiddleItem->getLastAddress() - connectionMiddleItem->getBaseAddress());
+        int yTransfer = (startItemBaseAddress + connectionBaseAddress ) * MemoryDesignerConstants::RANGEINTERVAL;
 
         if (!placedSpaceItems->contains(connectionMiddleItem))
         {
@@ -380,16 +382,42 @@ MemoryConnectionItem* MemoryConnectionHandler::createSpaceConnection(MainMemoryG
 
         if (!placedSpaceItems->contains(connectionMiddleItem) || !placedSpaceItems->contains(connectionStartItem))
         {
-            addressSpaceConnection = new MemoryConnectionItem(connectionStartItem, middleItemRangeStart,
-                middleItemRangeEnd, connectionMiddleItem, spaceColumn->scene(), condenseMemoryItems_, yTransfer);
+            new MemoryConnectionItem(connectionStartItem, middleItemRangeStart, middleItemRangeEnd,
+                connectionMiddleItem, spaceColumn->scene(), condenseMemoryItems_, yTransfer);
         }
-        else
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::placeSpaceItem()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::placeSpaceItem(MainMemoryGraphicsItem* spaceItem, int positionY,
+    MemoryColumn* originalColumn, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
+    MainMemoryGraphicsItem* connectionStartItem)
+{
+    QRectF spaceRectangle = spaceItem->sceneBoundingRect();
+    qreal rectangleHeight = spaceRectangle.height();
+    spaceRectangle.setY(positionY);
+    spaceRectangle.setHeight(rectangleHeight);
+    int spaceLineWidth = spaceItem->pen().width();
+
+    foreach (MainMemoryGraphicsItem* comparisonSpace, *placedSpaceItems)
+    {
+        MemoryColumn* comparisonColumn = dynamic_cast<MemoryColumn*>(comparisonSpace->parentItem());
+        if (comparisonSpace != connectionStartItem && comparisonColumn && comparisonColumn == originalColumn)
         {
-            addressSpaceConnection = getAddressSpaceChainConnection(connectionStartItem, connectionMiddleItem);
+            QRectF comparisonRectangle = comparisonSpace->sceneBoundingRect();
+            int comparisonLineWidht = comparisonSpace->pen().width();
+            if (MemoryDesignerConstants::itemOverlapsAnotherItem(
+                spaceRectangle, spaceLineWidth, comparisonRectangle, comparisonLineWidht))
+            {
+                changeSpaceItemColumn(spaceItem, spaceRectangle, spaceLineWidth, positionY, originalColumn);
+                return;
+            }
         }
     }
 
-    return addressSpaceConnection;
+    originalColumn->moveGraphicsItem(spaceItem, positionY, MemoryDesignerConstants::SPACEITEMINTERVAL);
 }
 
 //-----------------------------------------------------------------------------
@@ -400,6 +428,14 @@ void MemoryConnectionHandler::changeMasterAddressSpaceColumn(MainMemoryGraphicsI
 {
     originalColumn->removeItem(masterSpaceItem);
 
+    masterSpaceItem->setY(spaceItemY);
+
+    QRectF masterSpaceRectangle = masterSpaceItem->sceneBoundingRect();
+    qreal masterSpaceHeight = masterSpaceRectangle.height();
+    masterSpaceRectangle.setY(spaceItemY);
+    masterSpaceRectangle.setHeight(masterSpaceHeight);
+    int masterSpaceLineWidth = masterSpaceItem->pen().width();
+
     qreal columnWidth = originalColumn->boundingRect().width();
     qreal currentColumnPosition = originalColumn->pos().x() - columnWidth;
     MemoryColumn* currentColumn = 0;
@@ -409,24 +445,18 @@ void MemoryConnectionHandler::changeMasterAddressSpaceColumn(MainMemoryGraphicsI
         if (currentColumn &&
             currentColumn->name().contains(MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME, Qt::CaseInsensitive))
         {
-            currentColumn->addItem(masterSpaceItem);
-            masterSpaceItem->setPos(masterSpaceItem->pos().x(), spaceItemY);
-
-            if (!masterSpaceItem->itemCollidesWithSimilarItems())
+            if (!currentColumn->itemOverlapsAnotherColumnItem(masterSpaceRectangle, masterSpaceLineWidth))
             {
+                currentColumn->addItem(masterSpaceItem);
                 return;
             }
             else
             {
                 changeCollidingMasterAddressSpaceColumn(currentColumn, spaceItemChain);
-
-                if (!masterSpaceItem->itemCollidesWithSimilarItems())
+                if (!currentColumn->itemOverlapsAnotherColumnItem(masterSpaceRectangle, masterSpaceLineWidth))
                 {
+                    currentColumn->addItem(masterSpaceItem);
                     return;
-                }
-                else
-                {
-                    currentColumn->removeItem(masterSpaceItem);
                 }
             }
         }
@@ -437,7 +467,7 @@ void MemoryConnectionHandler::changeMasterAddressSpaceColumn(MainMemoryGraphicsI
     MemoryColumn* newSpaceColumn = columnHandler_->createAddressSpaceColumn();
     newSpaceColumn->setZValue(-1);
     newSpaceColumn->addItem(masterSpaceItem);
-    masterSpaceItem->setPos(masterSpaceItem->pos().x(), spaceItemY);
+    masterSpaceItem->setY(spaceItemY);
 }
 
 //-----------------------------------------------------------------------------
@@ -460,44 +490,11 @@ void MemoryConnectionHandler::changeCollidingMasterAddressSpaceColumn(MemoryColu
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionHandler::getAddressSpaceChainConnection()
-//-----------------------------------------------------------------------------
-MemoryConnectionItem* MemoryConnectionHandler::getAddressSpaceChainConnection(
-    MainMemoryGraphicsItem* connectionStartItem, MainMemoryGraphicsItem* connectionMiddleItem) const
-{
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(connectionStartItem->getMemoryConnections());
-    while (connectionIterator.hasNext())
-    {
-        connectionIterator.next();
-
-        MemoryConnectionItem* connectionItem = connectionIterator.value();
-        if (connectionMiddleItem->hasConnection(connectionItem))
-        {
-            return connectionItem;
-        }
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionHandler::setHeightForConnectionChain()
-//-----------------------------------------------------------------------------
-void MemoryConnectionHandler::setHeightForConnectionChain(QVector<MemoryConnectionItem*> connectionChain)
-{
-    foreach (MemoryConnectionItem* connectionItem, connectionChain)
-    {
-        connectionItem->setConnectionWidth();
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn()
 //-----------------------------------------------------------------------------
 void MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps, MainMemoryGraphicsItem* memoryItem,
-    MemoryColumn* originalColumn, quint64 mapBaseAddress, quint64 mapLastAddress,
-    MainMemoryGraphicsItem* connectionStartItem)
+    MemoryColumn* originalColumn, MainMemoryGraphicsItem* connectionStartItem)
 {
     QRectF selectedItemRect = memoryItem->sceneBoundingRect();
 
@@ -505,16 +502,20 @@ void MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn(
 
     QVector<MainMemoryGraphicsItem*> connectedSpaceItems;
     connectedSpaceItems.append(connectionStartItem);
+    foreach (MainMemoryGraphicsItem* chainedSpaceItem, connectionStartItem->getChainedSpaceItems())
+    {
+        connectedSpaceItems.append(chainedSpaceItem);
+    }
 
-    if (originalColumn->memoryMapOverlapsInColumn(memoryItem, mapBaseAddress, mapLastAddress, selectedItemRect,
-        selectedItemPenWidth, connectedSpaceItems, placedMaps))
+    if (originalColumn->memoryMapOverlapsInColumn(
+        memoryItem, selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
     {
         foreach (MemoryColumn* memoryColumn, columnHandler_->getMapOverlapColumns())
         {
             selectedItemRect.setX(selectedItemRect.x() + memoryColumn->boundingRect().width());
 
-            if (!memoryColumn->memoryMapOverlapsInColumn(memoryItem, mapBaseAddress, mapLastAddress,
-                selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
+            if (!memoryColumn->memoryMapOverlapsInColumn(
+                memoryItem, selectedItemRect, selectedItemPenWidth, connectedSpaceItems, placedMaps))
             {
                 originalColumn->removeItem(memoryItem);
                 memoryColumn->addItem(memoryItem);
@@ -601,24 +602,27 @@ void MemoryConnectionHandler::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem
 {
     originalColumn->removeItem(spaceItem);
 
+    QRectF spaceRectangle = spaceItem->sceneBoundingRect();
+    qreal spaceHeight = spaceRectangle.height();
+
+    spaceRectangle.setY(targetItem->pos().y() + yTransfer);
+    spaceRectangle.setHeight(spaceHeight);
+
+    int spacePenWidth = spaceItem->pen().width();
+
     foreach (MemoryColumn* currentSpaceColumn, columnHandler_->getAddressSpaceColumns())
     {
-        currentSpaceColumn->addItem(spaceItem);
-        spaceItem->setPos(spaceItem->pos().x(), targetItem->pos().y() + yTransfer);
-
-        if (spaceItem->itemCollidesWithSimilarItems())
+        if (!currentSpaceColumn->itemOverlapsAnotherColumnItem(spaceRectangle, spacePenWidth))
         {
-            currentSpaceColumn->removeItem(spaceItem);
-        }
-        else
-        {
+            currentSpaceColumn->addItem(spaceItem);
+            spaceItem->setY(spaceRectangle.y());
             return;
         }
     }
 
     MemoryColumn* newSpaceColumn = columnHandler_->createAddressSpaceColumn();
     newSpaceColumn->addItem(spaceItem);
-    spaceItem->setPos(spaceItem->pos().x(), targetItem->pos().y());
+    spaceItem->setY(targetItem->pos().y());
 }
 
 //-----------------------------------------------------------------------------
@@ -701,27 +705,17 @@ void MemoryConnectionHandler::repositionCompressedMemoryMaps(
         MemoryColumn* originalColumn = dynamic_cast<MemoryColumn*>(mapParentItem);
         if (originalColumn && originalColumn != memoryMapColumn)
         {
-            quint64 mapBaseAddress = mapItem->getBaseAddress();
-            quint64 mapLastAddress = mapItem->getLastAddress();
-
             QRectF mapRectangle = mapItem->sceneBoundingRect();
             int mapPenWidth = mapItem->pen().width();
 
             if (mapItem->hasExtensionItem())
             {
-                mapRectangle.setHeight(
-                    mapRectangle.height() + mapItem->getExtensionItem()->boundingRect().height());
+                qreal itemHeight = mapRectangle.height();
+                qreal extensionHeight = mapItem->getExtensionItem()->boundingRect().height();
+                mapRectangle.setHeight(itemHeight + extensionHeight);
             }
 
-            QVector<MainMemoryGraphicsItem*> connectedSpaceItems;
-            foreach (MemoryConnectionItem* connectionItem, mapItem->getMemoryConnections())
-            {
-                MainMemoryGraphicsItem* connectionStartItem = connectionItem->getConnectionStartItem();
-                if (!connectedSpaceItems.contains(connectionStartItem))
-                {
-                    connectedSpaceItems.append(connectionStartItem);
-                }
-            }
+            QVector<MainMemoryGraphicsItem*> connectedSpaceItems = mapItem->getChainedSpaceItems();
 
             int columnWidth = originalColumn->sceneBoundingRect().width();
 
@@ -734,8 +728,8 @@ void MemoryConnectionHandler::repositionCompressedMemoryMaps(
                 {
                     mapRectangle.setX(mapRectangle.x() - columnWidth);
 
-                    if (!comparisonColumn->memoryMapOverlapsInColumn(mapItem, mapBaseAddress, mapLastAddress,
-                        mapRectangle, mapPenWidth, connectedSpaceItems, placedMapItems))
+                    if (!comparisonColumn->memoryMapOverlapsInColumn(
+                        mapItem, mapRectangle, mapPenWidth, connectedSpaceItems, placedMapItems))
                     {
                         originalColumn->removeItem(mapItem);
                         comparisonColumn->addItem(mapItem, true);
@@ -770,4 +764,125 @@ void MemoryConnectionHandler::reDrawConnectionsAndCollisions()
     {
         collisionItem->reDrawCollision();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::repositionOverlappingSpaceItems()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::repositionOverlappingSpaceItems(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems)
+{
+    for (int spaceIndex = placedSpaceItems->size() - 1; spaceIndex > 0; --spaceIndex)
+    {
+        MainMemoryGraphicsItem* spaceItem = placedSpaceItems->at(spaceIndex);
+        QRectF spaceRectangle = getConnectionAdjustedItemRectangle(spaceItem);
+        int spaceLineWidth = spaceItem->pen().width();
+
+        MemoryColumn* spaceItemColumn = dynamic_cast<MemoryColumn*> (spaceItem->parentItem());
+        if (spaceItemColumn)
+        {
+            for (int comparisonIndex = spaceIndex - 1; comparisonIndex > 0; --comparisonIndex)
+            {
+                MainMemoryGraphicsItem* comparisonSpace = placedSpaceItems->at(comparisonIndex);
+                QRectF comparisonRectangle = getConnectionAdjustedItemRectangle(comparisonSpace);
+                int comparisonLineWidth = comparisonSpace->pen().width();
+
+                MemoryColumn* comparisonColumn = dynamic_cast<MemoryColumn*>(comparisonSpace->parentItem());
+                if (comparisonColumn && spaceItemColumn == comparisonColumn &&
+                    MemoryDesignerConstants::itemOverlapsAnotherItem(
+                    spaceRectangle, spaceLineWidth, comparisonRectangle, comparisonLineWidth))
+                {
+                    changeSpaceItemColumn(
+                        spaceItem, spaceRectangle, spaceLineWidth, spaceItem->scenePos().y(), spaceItemColumn);
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::getConnectionAdjustedItemRectangle()
+//-----------------------------------------------------------------------------
+QRectF MemoryConnectionHandler::getConnectionAdjustedItemRectangle(MainMemoryGraphicsItem* memoryItem) const
+{
+    QRectF itemRectangle = memoryItem->sceneBoundingRect();
+    if (!memoryItem->getMemoryConnections().isEmpty())
+    {
+        qreal lastConnectionLow = memoryItem->getLastConnection()->sceneBoundingRect().bottom();
+        if (itemRectangle.bottom() < lastConnectionLow)
+        {
+            itemRectangle.setBottom(lastConnectionLow);
+        }
+    }
+
+    return itemRectangle;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::changeSpaceItemColumn()
+//-----------------------------------------------------------------------------
+void MemoryConnectionHandler::changeSpaceItemColumn(MainMemoryGraphicsItem* spaceItem, QRectF spaceRectangle,
+    int spaceLineWidth, qreal newPositionY, MemoryColumn* originalColumn)
+{
+    originalColumn->removeItem(spaceItem);
+    spaceItem->setY(newPositionY);
+
+    qreal columnWidth = originalColumn->boundingRect().width();
+    qreal currentColumnPosition = originalColumn->scenePos().x() - columnWidth;
+
+    MemoryColumn* currentColumn = 0;
+    while (currentColumnPosition >= 0)
+    {
+        currentColumn = columnHandler_->findColumnAtPosition(QPointF(currentColumnPosition, 0));
+        if (currentColumn &&
+            currentColumn->name().contains(MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME, Qt::CaseInsensitive))
+        {
+            spaceRectangle.setX(currentColumnPosition);
+
+            MainMemoryGraphicsItem* collidingItem =
+                getCollidingSpaceItem(spaceRectangle, spaceLineWidth, currentColumn);
+            while (collidingItem)
+            {
+                QRectF collidingRectangle = getConnectionAdjustedItemRectangle(collidingItem);
+                int collidingLineWidth = collidingItem->pen().width();
+                changeSpaceItemColumn(
+                    collidingItem, collidingRectangle, collidingLineWidth, collidingRectangle.y(), currentColumn);
+
+                collidingItem = getCollidingSpaceItem(spaceRectangle, spaceLineWidth, currentColumn);
+            }
+
+            currentColumn->addItem(spaceItem);
+            return;
+        }
+
+        currentColumnPosition -= columnWidth;
+    }
+
+    MemoryColumn* newSpaceColumn = columnHandler_->createAddressSpaceColumn();
+    newSpaceColumn->setZValue(-1);
+    newSpaceColumn->addItem(spaceItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionHandler::getCollidingSpaceItem()
+//-----------------------------------------------------------------------------
+MainMemoryGraphicsItem* MemoryConnectionHandler::getCollidingSpaceItem(QRectF spaceRectangle, int spaceLineWidth,
+    MemoryColumn* currentColumn) const
+{
+    foreach (QGraphicsItem* columnItem, currentColumn->childItems())
+    {
+        MainMemoryGraphicsItem* comparisonItem = dynamic_cast<MainMemoryGraphicsItem*>(columnItem);
+        if (comparisonItem)
+        {
+            QRectF comparisonRectangle = getConnectionAdjustedItemRectangle(comparisonItem);
+            int comparisonLineWidth = comparisonItem->pen().width();
+            if (MemoryDesignerConstants::itemOverlapsAnotherItem(
+                spaceRectangle, spaceLineWidth, comparisonRectangle, comparisonLineWidth))
+            {
+                return comparisonItem;
+            }
+        }
+    }
+
+    return 0;
 }

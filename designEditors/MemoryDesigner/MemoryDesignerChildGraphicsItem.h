@@ -50,13 +50,6 @@ public:
     virtual int type() const  = 0;
 
     /*!
-     *  Change the address range of the memory item.
-     *
-     *      @param [in] offset  The offset of the parent item.
-     */
-    virtual void changeAddressRange(quint64 offset);
-
-    /*!
      *  Fit the name label to the available space.
      */
     void fitNameLabel();

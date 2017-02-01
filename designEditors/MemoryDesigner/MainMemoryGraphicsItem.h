@@ -103,16 +103,6 @@ public:
     void moveConnectedItems(qreal yTransfer);
 
     /*!
-     *  Get the minimum required height of the memory item to fit the selected memory connection.
-     *
-     *      @param [in] connectionBaseAddress   Base address of the selected memory connection.
-     *      @param [in] connectionEndAddress    End address of the selected memory connection.
-     *
-     *      @return The minimum required height of the memory item.
-     */
-    virtual qreal getMinimumRequiredHeight(quint64 connectionBaseAddress, quint64 connectionEndAddress) const = 0;
-
-    /*!
      *  Get lowest point of the item, connection or connected item.
      *
      *      @return The lowest point.
@@ -167,16 +157,40 @@ public:
     QSharedPointer<MemoryItem> getMemoryItem() const;
 
     /*!
-     *  Check if this item collides with similar items.
-     *
-     *      @return True, if the item collides with another item, false otherwise.
-     */
-    bool itemCollidesWithSimilarItems() const;
-
-    /*!
      *  Create collision markers for overlapping connections.
      */
     void createOverlappingConnectionMarkers();
+
+    /*!
+     *  Check if the memory map is connected to any of the selected address spaces.
+     *
+     *      @param [in] spaceItems  List of the selected address space graphics items.
+     *
+     *      @return True, if the memory map is connected to any of the selected address spaces.
+     */
+    bool isConnectedToSpaceItems(QVector<MainMemoryGraphicsItem*> spaceItems) const;
+
+    /*!
+     *  Get the chained address space items connected to this item.
+     *
+     *      @return All the chained address space items connected to this item.
+     */
+    QVector<MainMemoryGraphicsItem*> getChainedSpaceItems() const;
+
+    /*!
+     *  Compress this item to the uncut addresses.
+     *
+     *      @param [in] unCutAddresses  List of the addresses that are retained after compression.
+     *      @param [in] CUTMODIFIER     The modifier for the size of the cut area.
+     */
+    virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+
+    /*!
+     *  Change the address range of this item and its sub items.
+     *
+     *      @param [in] offsetChange    The offset change of the item.
+     */
+    virtual void changeAddressRange(quint64 offsetChange);
 
 protected:
 
