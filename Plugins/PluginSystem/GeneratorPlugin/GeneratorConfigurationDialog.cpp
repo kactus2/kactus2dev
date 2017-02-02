@@ -72,7 +72,7 @@ GeneratorConfigurationDialog::GeneratorConfigurationDialog(QSharedPointer<Genera
     topLayout->addWidget(leftBox);
     topLayout->addWidget(rightBox);
 
-    QGroupBox* botBox = new QGroupBox("Warnings");
+    QGroupBox* botBox = new QGroupBox("Log");
     QVBoxLayout* botLayout = new QVBoxLayout();
     botBox->setLayout(botLayout);
     botLayout->addWidget(new QPlainTextEdit);
