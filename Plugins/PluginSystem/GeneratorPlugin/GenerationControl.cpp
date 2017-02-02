@@ -35,6 +35,7 @@ GenerationControl::GenerationControl(LibraryInterface* library,
 	library_(library), factory_(factory), input_(input), settings_(settings), isDesignGeneration_(input.design != 0),
     fileOutput_(new FileOuput)
 {
+    // Find views usable for the generation.
     QSharedPointer<QList<QSharedPointer<View> > > possibleViews;
 
     if (isDesignGeneration_)
@@ -46,13 +47,13 @@ GenerationControl::GenerationControl(LibraryInterface* library,
         possibleViews = findPossibleViews(input.component);
     }
 
+    // The usable instantiations and file sets are, in principle, the ones of the component.
     QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > possibleInstantiations =
         input.component->getComponentInstantiations();
-
     QSharedPointer<QList<QSharedPointer<FileSet> > > possibleFileSets = input.component->getFileSets();
 
     // Initialize model for view selection.
-     viewSelection_ = QSharedPointer<ViewSelection>(
+    viewSelection_ = QSharedPointer<ViewSelection>(
         new ViewSelection(factory->getLanguage(), settings_->lastViewName_, settings_->lastFileSetName_,
         possibleViews, possibleInstantiations, possibleFileSets));
 
@@ -99,10 +100,13 @@ bool GenerationControl::writeDocuments()
 
     bool fails = false;
 
+    // Go through each potential file.
     foreach(QSharedPointer<GenerationFile> gFile, *fileOutput_->getFiles())
     {
+        // Form the path from the determined output path plus determined file name.
         QString absFilePath = fileOutput_->getOutputPath() + "/" + gFile->fileName_;
 
+        // Try to open the file.
         QFile outputFile(absFilePath); 
         if (!outputFile.open(QIODevice::WriteOnly))
         {
@@ -111,23 +115,24 @@ bool GenerationControl::writeDocuments()
             continue;
         }
 
+        // Put the content to the file and close it.
         QTextStream outputStream(&outputFile);
 
         outputStream << gFile->fileContent_;
 
         outputFile.close();
 
-        // Need a path for the file: It must be relative to the file path of the document.
+        // Need a path for the IP-XACT file: It must be relative to the file path of the document.
         QString ipFilePath = relativePathFromXmlToFile(absFilePath);
         // Add the new file to the file set.
         QSettings settings;
-        // The resulting file will be added to the file set.
         QSharedPointer<File> ipFile = fileSet->addFile(ipFilePath, settings);
 
-        // Insert the proper description to the file.
+        // Insert the proper description to the IP-XACT file.
         insertFileDescription(ipFile);
     }
 
+    // Return false if something fails.
     return !fails && saveChanges();
 }
 
@@ -305,8 +310,9 @@ QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleVie
             findDesignInstantiation(view->getDesignInstantiationRef());
 
         // If either of the exists AND targets the correct VLNV, the view is eligible.
-        if (disg && *disg->getDesignConfigurationReference() == input.designConfiguration->getVlnv()
-            || dis && *dis->getDesignReference() == input.design->getVlnv())
+        if (disg && input.designConfiguration && *disg->getDesignConfigurationReference()
+            == input.designConfiguration->getVlnv()
+            || dis && input.design && *dis->getDesignReference() == input.design->getVlnv())
         {
             views->append(view);
         }

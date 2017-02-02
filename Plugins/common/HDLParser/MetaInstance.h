@@ -34,9 +34,13 @@ public:
 
 	/*!
 	 *  The constructor.
-	 *
-	 *      @param [in] component               The instantiated component.
-     *      @param [in] activeView              The active view for the component.
+     *
+     *      @param [in] library             The library which is expected to contain the parsed documents.
+     *      @param [in] messages            For message output.
+	 *      @param [in] component           The instantiated component.
+     *      @param [in] activeView          The active view for the component. May be null
+     *      @param [in] topFinder           Finder for parameters in upper level. May be null
+     *      @param [in] cevs                Applicable configurable element values for the instance. May be null.
 	 */
     MetaInstance(LibraryInterface* library,
         MessagePasser* messages,
@@ -51,7 +55,6 @@ public:
 
 	//! The destructor.
     ~MetaInstance();
-
 
     //! The component library.
     LibraryInterface* library_;
@@ -80,24 +83,26 @@ public:
 
 protected:
     /*!
-    *  Culls and copies parameter declarations of the component and active instantiation if any exists.
-    */
+     *  Culls and copies parameter declarations of the component and active instantiation if any exists.
+     */
     virtual void cullParameters();
 
     /*!
-    *  Parses the found parameter declarations.
-    */
+     *  Parses the found parameter declarations.
+     */
     virtual void parseParameters(IPXactSystemVerilogParser& parser,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs);
     
     /*!
-    *  Culls the interfaces of the component.
-    */
+     *  Culls the interfaces of the component.
+     */
     virtual void parseInterfaces();
     
     /*!
-    *  Culls and parses the ports of the component.
-    */
+     *  Culls and parses the ports of the component.
+     *
+     *      @param [in] parser          Used to parse expressions.
+     */
     virtual void parsePorts(IPXactSystemVerilogParser& parser);
 
 private:
@@ -116,7 +121,7 @@ private:
      *      @param [in] parser          Used for parsing the bounds.
      *      @param [in] portMap         The port map for the which to find the logical bounds.
      *
-     *      @return The port bounds for the port map in an instance.
+     *      @return The logical port bounds for the port map in an instance.
      */
 	static QPair<QString, QString> logicalPortBoundsInMapping(IPXactSystemVerilogParser& parser,
         QSharedPointer<PortMap> portMap);
@@ -125,9 +130,9 @@ private:
      *  Finds the mapped physical port bounds for a port map.
      *
      *      @param [in] parser          Used for parsing the bounds.
-     *      @param [in] portMap         The port map for the which to find the logical bounds.
+     *      @param [in] portMap         The port map for the which to find the physical bounds.
      *
-     *      @return The port bounds for the port map in an instance.
+     *      @return The physical port bounds for the port map in an instance.
      */
     static QPair<QString, QString> physicalPortBoundsInMapping(IPXactSystemVerilogParser& parser,
         QSharedPointer<PortMap> portMap);

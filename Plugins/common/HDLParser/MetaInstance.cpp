@@ -75,8 +75,10 @@ MetaInstance::MetaInstance(LibraryInterface* library,
         multiFinder->addFinder(topFinder);
     }
 
+    // Create parser using the applicable finders.
     IPXactSystemVerilogParser instanceParser(multiFinder);
 
+    // Parse the content: Parameters, interfaces and ports.
     parseParameters(instanceParser, cevs);
     parseInterfaces();
     parsePorts(instanceParser);

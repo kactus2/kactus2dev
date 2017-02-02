@@ -26,7 +26,15 @@ class ListParameterFinder;
 class MetaDesign
 {
 public:
-    //! The constructor.
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] library             The library which is expected to contain the parsed documents.
+     *      @param [in] messages		    For message output.
+     *      @param [in] design              The design to parse.
+     *      @param [in] designConf          The design configuration to parse.
+     *      @param [in] topInstance         The parsed meta instance of the top component.
+     */
     MetaDesign(LibraryInterface* library,
         MessagePasser* messages,
         QSharedPointer<Design const> design,
@@ -38,16 +46,28 @@ public:
 
     //! The alternative constructor.
     MetaDesign();
-
-    static QList<QSharedPointer<MetaDesign> > parseHierarchy(LibraryInterface* library,  GenerationTuple input,
+    
+    /*!
+     *  Parses a hierarchy of designs and return the list of them.
+     *
+     *      @param [in] library                 The library which is expected to contain the parsed documents.
+     *      @param [in] input		            The starting point for hierarchy parsing.
+     *      @param [in] topComponentView        The active view of the component in input.
+     */
+    static QList<QSharedPointer<MetaDesign> > parseHierarchy(LibraryInterface* library,
+        GenerationTuple input,
         QSharedPointer<View> topComponentView);
 
+    //! The parsed instances in the design_, keyed with their names.
     QMap<QString,QSharedPointer<MetaInstance> > instances_;
 
+    //! The parsed meta instance of the top component.
     QSharedPointer<MetaInstance> topInstance_;
 
+    //! The parsed interconnections of the design_.
     QList<QSharedPointer<MetaInterconnection> > interconnections_;
 
+    //! The parsed ad-hoc connections of the design_.
     QList<QSharedPointer<MetaWire> > adHocWires_;
 
 private:
@@ -56,15 +76,34 @@ private:
     MetaDesign(MetaDesign const& rhs);
     MetaDesign& operator=(MetaDesign const& rhs);
 
+    /*!
+     *  Parses the design_: The instances, the interconnections, the ad-hocs.
+     */
     void parseDesign();
-
+    
+    /*!
+     *  Parses instance in the design_.
+     */
     void parseInstances();
-
+    
+    /*!
+     *  Parses insterconnections in the design_.
+     */
     void parseInterconnections();
-
+    
+    /*!
+     *  Assigns ports of mInterface with the wires of mInterconnect.
+     *
+     *      @param [in] mInterface              The interface which will have the ports.
+     *      @param [in] mIterconnect		    The interconnect which will have the wires.
+     *      @param [in] isHierarchical          True, if mInterface is in topInstance, else false.
+     */
     void wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
         QSharedPointer<MetaInterconnection> mIterconnect, bool isHierarchical);
-
+    
+    /*!
+     *  Parses ad-hocs in the design_.
+     */
     void parseAdHocs();
     
     /*!

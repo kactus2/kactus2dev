@@ -36,12 +36,12 @@
 VerilogWriterFactory::VerilogWriterFactory(LibraryInterface* library,
     MessagePasser* messages, GenerationSettings* settings,
     QString const& kactusVersion, QString const& generatorVersion) :
-library_(library),
-messages_(messages),
-settings_(settings),
-kactusVersion_(kactusVersion),
-generatorVersion_(generatorVersion),
-sorter_(new InterfaceDirectionNameSorter())
+    library_(library),
+    messages_(messages),
+    settings_(settings),
+    kactusVersion_(kactusVersion),
+    generatorVersion_(generatorVersion),
+    sorter_(new InterfaceDirectionNameSorter())
 {
 }
 
@@ -154,6 +154,7 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::initializeComponentWriters
 //-----------------------------------------------------------------------------
 void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> design, QSharedPointer<VerilogDocument> document)
 {
+    // Comment for top for assignments.
     if (design->topInstance_->ports_.size() > 0)
     {
         QSharedPointer<CommentWriter> topAssignmentHeaderWriter(
@@ -162,7 +163,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
         document->topAssignmentWriters_->add(topAssignmentHeaderWriter);
     }
 
-    // Create writers for 
+    // Create assignments fort top ports.
     foreach (QSharedPointer<MetaPort> mPort, design->topInstance_->ports_)
     {
         if (mPort->downAssignments_.size() > 0)
@@ -182,7 +183,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
         }
     }
 
-    // Create instance writers for the instances, complete with expression parsers and formatters.
+    // Create instance writers for the instances.
     foreach(QSharedPointer<MetaInstance> mInstance, design->instances_)
     {
         QSharedPointer<ComponentInstance> instance = mInstance->componentInstance_;
@@ -194,6 +195,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
 
         document->instanceHeaderWriters_.insert(instanceWriter, createHeaderWriterForInstance(mInstance));
 
+        // Comment for instance assignments.
         if (mInstance->ports_.size() > 0)
         {
             QSharedPointer<CommentWriter> portWireHeaderWriter(
@@ -207,6 +209,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
             document->instanceAssignmentWriters_->add(assignmentHeaderWriter);
         }
 
+        // Create writers for instance ports, wires, and assignnments.
         foreach (QSharedPointer<MetaPort> mPort, mInstance->ports_)
         {
             if (mPort->upAssignments_.size() < 1)
@@ -246,6 +249,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
         }
     }
 
+    // Create wire writers for the ad-hoc connections
     if (design->adHocWires_.size() > 0)
     {
         QSharedPointer<CommentWriter> adHocWireHeaderWriter(
@@ -254,7 +258,6 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
        document->adHocWireWriters_->add(adHocWireHeaderWriter);
     }
 
-    // Create wire writers for the ad hoc connections as well.
     foreach (QSharedPointer<MetaWire> adHoc, design->adHocWires_)
     {
         document->adHocWireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(adHoc->name_, adHoc->bounds_)));

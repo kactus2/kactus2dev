@@ -44,20 +44,22 @@ HDLComponentParser::HDLComponentParser(LibraryInterface* library,
     QSharedPointer<Component> component,
     QSharedPointer<View> activeView) :
     MetaInstance(library,
-        messages,
-        component,
-        activeView,
-        QSharedPointer<ComponentInstance>::QSharedPointer(),
-        QSharedPointer<ListParameterFinder>::QSharedPointer(),
-        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >::QSharedPointer())
+    messages,
+    component,
+    activeView,
+    QSharedPointer<ComponentInstance>::QSharedPointer(),
+    QSharedPointer<ListParameterFinder>::QSharedPointer(),
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >::QSharedPointer())
 {
-    // Initialize the parameter finder and formatter.s
+    // Initialize the parameter finder and formatter.
     QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(component_));
     parameterFinder->setActiveView(activeView_);
     formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
 
+    // Cull again the parameters.
     parameters_.clear();
     cullParameters();
+    // Format parameters and ports.
     formatParameters();
     formatPorts();
 

@@ -45,10 +45,15 @@ public:
 
 	//! The destructor.
     ~GenerationControl();
-
+    
+    /*!
+     *  Tries to write documents to file system. Returns true if succeeds, else false.
+     */
     bool writeDocuments();
-
-    //! Saves the changes made to the top component.
+    
+    /*!
+     *  Tries to write changes of the top component to file system. Returns true if succeeds, else false.
+     */
     bool saveChanges();
    
     /*!
@@ -110,16 +115,14 @@ private:
 	GenerationControl& operator=(GenerationControl const& rhs);
     
     /*!
-     *  Gets the default output path.     
-     *
-     *      @return The default output path.
+     *  Returns the default output path.     
      */
     QString defaultOutputPath() const;
     
     /*!
      *  Gets the relative path from the top component xml file to the given absolute path.
      *
-     *      @param [in] filePath   The absolute path to the target file.
+     *      @param [in] filePath                The absolute path to the target file.
      *
      *      @return Relative path from the top component xml file to the target file.
      */
@@ -128,20 +131,9 @@ private:
     /*!
      *  Inserts description to a generated file.
      *
-	 *      @param [in] file		The file which needs to be described.
+	 *      @param [in] file		            The file which needs to be described.
      */
     void insertFileDescription(QSharedPointer<File> file);
-
-    /*!
-     *  Finds all the views in containing component referencing the given design or design configuration VLNV.
-     *
-     *      @param [in] containingComponent     The component whose views to search through.
-     *      @param [in] targetReference         The reference to find in views.
-     *
-     *      @return The the views referencing the given VLNV.
-     */
-    QSharedPointer<QList<QSharedPointer<View> > > findReferencingViews(QSharedPointer<Component> containingComponent,
-		VLNV targetReference) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -151,14 +143,18 @@ private:
     LibraryInterface* library_;
     //! The messages.
     QSharedPointer<MessagePasser> messages_;
+    //! The language dependent factory for this generation session.
     IWriterFactory* factory_;
+    //! Has the input objects for the generation.
     GenerationTuple input_;
+    //! Points to the memorized settings.
     GenerationSettings* settings_;
-    //! The view selection configuration.
-    QSharedPointer<ViewSelection> viewSelection_;
+    //! True, if the generation target is deemed to be a design. False, if it is a component.
     bool isDesignGeneration_;
     //! The file output configuration.
     QSharedPointer<FileOuput> fileOutput_;
+    //! The view selection configuration.
+    QSharedPointer<ViewSelection> viewSelection_;
 };
 
 #endif // GENERATIONCONTROL_H

@@ -41,7 +41,8 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] library                 The component library.
+     *      @param [in] library                 The component library.
+     *      @param [in] messages                For message output.
      *      @param [in] settings                Points to the settings to be used within the generation.
 	 *      @param [in] kactusVersion		    The version of the current Kactus build.
 	 *      @param [in] generatorVersion	    The current version of the generator.

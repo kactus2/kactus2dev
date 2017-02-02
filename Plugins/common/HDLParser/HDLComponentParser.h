@@ -34,12 +34,14 @@ class LibraryInterface;
 class HDLComponentParser : public MetaInstance
 {
 public:
-
+    
 	/*!
 	 *  The constructor.
-	 *
-	 *      @param [in] component               The component to write to Verilog.
-     *      @param [in] activeView              The active view for the component.
+     *
+     *      @param [in] library             The library which is expected to contain the parsed documents.
+     *      @param [in] messages            For message output.
+	 *      @param [in] component           The instantiated component.
+     *      @param [in] activeView          The active view for the component. May be null
 	 */
     HDLComponentParser(LibraryInterface* library,
         MessagePasser* messages,

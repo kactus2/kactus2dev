@@ -172,9 +172,8 @@ void MetaDesign::parseInstances()
     // Go through each component instance in the design.
     foreach(QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
     {
-        // We must get its instance through VLNV.
+        // We must get its component through VLNV.
         VLNV instanceVLNV = design_->getHWComponentVLNV(instance->getInstanceName());
-
         QSharedPointer<Component> component = library_->getModel(instanceVLNV).dynamicCast<Component>();
 
         if (!component)
