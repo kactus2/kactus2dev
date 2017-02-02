@@ -15,6 +15,8 @@
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
+#include <QVBoxLayout>
+
 //-----------------------------------------------------------------------------
 // Function: NewComDefinitionPage()
 //-----------------------------------------------------------------------------
@@ -22,7 +24,8 @@ NewComDefinitionPage::NewComDefinitionPage(LibraryInterface* libInterface, QWidg
 NewPage(libInterface, VLNV::COMDEFINITION, tr("New COM definition"), tr("Creates a communication definition"),
     parentDlg)
 {
- 
+    QVBoxLayout* topLayout = dynamic_cast<QVBoxLayout*>(layout());
+    topLayout->addStretch(1);
 }
 
 //-----------------------------------------------------------------------------

@@ -23,98 +23,48 @@
 #include <QPushButton>
 
 //-----------------------------------------------------------------------------
-// Function: NewSystemPage()
+// Function: NewSystemPage::NewSystemPage()
 //-----------------------------------------------------------------------------
-NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg)
-: NewPage(libInterface, VLNV::COMPONENT, tr("New System"), tr("Creates SW architecture that can be mapped to HW"), parentDlg),
-actionGroupBox_(new QGroupBox(tr("Mapping Options"), this)),
-actionGroup_(new QButtonGroup(this)),
-emptyRadioButton_(new QRadioButton(tr("Leave initially unmapped"), this)),
-emptyDescLabel_(new QLabel(tr("Creates an unmapped SW architecture. A new system component will be created."), this)),
-mapRadioButton_(new QRadioButton(tr("Map to specific HW now"), this)),
-mapDescLabel_(new QLabel(tr("Creates a SW architecture and maps it to selected top-level HW. A system view will "
-              "be created for the HW component to reference the new system design."), this)),
-              treeLabel_(new QLabel(tr("Select top-level HW component:"), this)),
-              compTreeWidget_(new QTreeWidget(this)),             
-              viewLabel_(new QLabel(tr("Select view of top-level HW component:"), this)),
-              viewComboBox_(new QComboBox(this))
+NewSystemPage::NewSystemPage(LibraryInterface* libInterface, QWidget* parent):
+NewPage(libInterface, VLNV::COMPONENT, tr("New System"), tr("Creates SW architecture that can be mapped to HW"), parent),
+    optionGroupBox_(new QGroupBox(tr("Mapping options"), this)),
+    unmapRadioButton_(new QRadioButton(tr("Leave initially unmapped"), this)),
+    mapRadioButton_(new QRadioButton(tr("Map to specific HW now"), this)),
+    compTreeWidget_(new QTreeWidget(this)),             
+    viewComboBox_(new QComboBox(this))
 {
-    emptyDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
-    emptyDescLabel_->setWordWrap(true);
-    mapDescLabel_->setStyleSheet("QLabel { padding-left: 19px; }");
-    mapDescLabel_->setWordWrap(true);
-
-    QFont font = emptyRadioButton_->font();
-    font.setBold(true);
-    emptyRadioButton_->setFont(font);
-    emptyRadioButton_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
-    mapRadioButton_->setFont(font);
-    mapRadioButton_->setStyleSheet("QRadioButton::indicator { width: 15px; height: 15px; }");
-
-    actionGroup_->addButton(emptyRadioButton_);
-    actionGroup_->addButton(mapRadioButton_);
-
-    // Create the tree widget and fill it with VLNV data.
-    compTreeWidget_->setColumnCount(1);
-    compTreeWidget_->setSelectionBehavior(QAbstractItemView::SelectItems);
-    compTreeWidget_->header()->close();
-    compTreeWidget_->setIconSize(QSize(20, 20));
-
-    for (int i = 0; i < libInterface->getTreeRoot()->getNumberOfChildren(); ++i)
-    {
-        QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(0, libInterface->getTreeRoot()->child(i)->name());
-
-        // Add child items.
-        addChildItems(libInterface->getTreeRoot()->child(i), item);
-
-        // Add only items that have children.
-        if (item->childCount() == 0)
-        {
-            delete item;
-            continue;
-        }
-
-        // Add the item to the tree.
-        compTreeWidget_->addTopLevelItem(item);
-    }
-
-    compTreeWidget_->sortItems(0, Qt::AscendingOrder);
-    compTreeWidget_->setFixedHeight(160);
-
-    connect(compTreeWidget_, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-        this, SLOT(onTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
-
-    // Create the VLNV editor.
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::SYSTEM);
     vlnvEditor_->addNameExtension(".sysdesign");
     vlnvEditor_->addNameExtension(".sysdesigncfg");
-    //vlnvEditor_->setTitle(tr("VLNV of the new system design"));
 
-    QVBoxLayout* groupLayout = new QVBoxLayout(actionGroupBox_);
-    groupLayout->addWidget(emptyRadioButton_);
-    groupLayout->addWidget(emptyDescLabel_);
-    groupLayout->addWidget(mapRadioButton_);
-    groupLayout->addWidget(mapDescLabel_);
+    QButtonGroup* actionGroup(new QButtonGroup(this));
+    actionGroup->addButton(unmapRadioButton_);
+    actionGroup->addButton(mapRadioButton_);
 
-    // Setup the layout.
-    QVBoxLayout* topLayout = dynamic_cast<QVBoxLayout*>(layout());
-    Q_ASSERT(topLayout);
-    topLayout->insertWidget(3, actionGroupBox_);
-    topLayout->insertWidget(4, treeLabel_);
-    topLayout->insertWidget(5, compTreeWidget_, 1);
-    topLayout->insertWidget(6, viewLabel_);
-    topLayout->insertWidget(7, viewComboBox_);
+    QFont buttonFont = unmapRadioButton_->font();
+    buttonFont.setBold(true);    
+    unmapRadioButton_->setFont(buttonFont);
+    mapRadioButton_->setFont(buttonFont);
 
-    connect(actionGroup_, SIGNAL(buttonClicked(QAbstractButton*)),
+    QString buttonStyle = QStringLiteral("QRadioButton::indicator { width: 15px; height: 15px; }");
+    unmapRadioButton_->setStyleSheet(buttonStyle);
+    mapRadioButton_->setStyleSheet(buttonStyle);
+
+    initializeHWComponentSelectionWidget(libInterface);
+
+    unmapRadioButton_->setChecked(true);
+
+    setupLayout();
+
+    connect(actionGroup, SIGNAL(buttonClicked(QAbstractButton*)),
         this, SLOT(actionChanged(QAbstractButton*)), Qt::UniqueConnection);
 
-    emptyRadioButton_->setChecked(true);
-    actionChanged(emptyRadioButton_);
+    connect(compTreeWidget_, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+        this, SLOT(onTreeItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)));
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~NewSystemPage()
+// Function: NewSystemPage::~NewSystemPage()
 //-----------------------------------------------------------------------------
 NewSystemPage::~NewSystemPage()
 {
@@ -122,7 +72,7 @@ NewSystemPage::~NewSystemPage()
 }
 
 //-----------------------------------------------------------------------------
-// Function: prevalidate()
+// Function: NewSystemPage::prevalidate()
 //-----------------------------------------------------------------------------
 bool NewSystemPage::prevalidate() const
 {
@@ -135,8 +85,7 @@ bool NewSystemPage::prevalidate() const
 
         QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
 
-        return (!data.isNull() && data.value<VLNV>().isValid() &&
-            NewPage::prevalidate());
+        return (!data.isNull() && data.value<VLNV>().isValid() && NewPage::prevalidate());
     }
     else
     {
@@ -145,7 +94,7 @@ bool NewSystemPage::prevalidate() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: validate()
+// Function: NewSystemPage::validate()
 //-----------------------------------------------------------------------------
 bool NewSystemPage::validate()
 {
@@ -160,7 +109,7 @@ bool NewSystemPage::validate()
         vlnv.getName().remove(".comp") + ".sysdesigncfg", vlnv.getVersion());
 
     // Check if any of the VLNVs already exists.
-    if (emptyRadioButton_->isChecked() && !validVLNV)
+    if (unmapRadioButton_->isChecked() && !validVLNV)
     {
         showErrorForReservedVLVN(vlnv);
         return false;
@@ -182,7 +131,7 @@ bool NewSystemPage::validate()
 }
 
 //-----------------------------------------------------------------------------
-// Function: apply()
+// Function: NewSystemPage::apply()
 //-----------------------------------------------------------------------------
 void NewSystemPage::apply()
 {
@@ -197,111 +146,45 @@ void NewSystemPage::apply()
     }
     else
     {
-        emit createSystem(VLNV(), "", vlnvEditor_->getVLNV(),selectedPath());
+        emit createSystem(VLNV(), QString(), vlnvEditor_->getVLNV(), selectedPath());
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: onPageChange()
+// Function: NewSystemPage::onPageChange()
 //-----------------------------------------------------------------------------
 bool NewSystemPage::onPageChange()
 {
     // Discard the VLNV and collapse the tree widget.
     compTreeWidget_->collapseAll();
     compTreeWidget_->setCurrentItem(0);
+
     return NewPage::onPageChange();
 }
 
 //-----------------------------------------------------------------------------
-// Function: onTreeItemChanged()
+// Function: NewSystemPage::onTreeItemChanged()
 //-----------------------------------------------------------------------------
-void NewSystemPage::onTreeItemChanged(QTreeWidgetItem* cur, QTreeWidgetItem*)
+void NewSystemPage::onTreeItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
-    if (cur != 0)
+    if (current != 0)
     {
         // Check if the item has a VLNV (i.e. is a leaf item).
-        QVariant data = cur->data(0, Qt::UserRole);
+        QVariant data = current->data(0, Qt::UserRole);
 
         if (!data.isNull())
         {
-            VLNV compVLNV = data.value<VLNV>();
-            VLNV sysVLNV = vlnvEditor_->getVLNV();
-
-            // Auto-fill the VLNV editor information (vendor and library fields).
-            vlnvEditor_->setVLNV(VLNV(VLNV::DESIGN, compVLNV.getVendor(), compVLNV.getLibrary(),
-                sysVLNV.getName(), sysVLNV.getVersion()));
+            VLNV vlnv = data.value<VLNV>();
 
             // Add all available hierarchical views to the view combo box.
-            QSharedPointer<Document> libComp = libInterface_->getModel(compVLNV);
-            QSharedPointer<Component> comp = libComp.staticCast<Component>();
+            QSharedPointer<Component> component = libInterface_->getModel(vlnv).staticCast<Component>();
 
             viewComboBox_->clear();
-
-            foreach (QString const& viewName, comp->getHierViews())
-            {
-                viewComboBox_->addItem(viewName);
-            }
+            viewComboBox_->addItems(component->getHierViews());
         }
     }
 
     emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: addChildItems()
-//-----------------------------------------------------------------------------
-void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* treeItem)
-{
-    for (int i = 0; i < libItem->getNumberOfChildren(); ++i)
-    {
-        VLNV vlnv = libItem->child(i)->getVLNV();
-
-        if (vlnv.isValid() && vlnv.getType() != VLNV::COMPONENT)
-        {
-            continue;
-        }
-
-        // Create a child tree widget item.
-        QTreeWidgetItem* item = new QTreeWidgetItem();
-        item->setText(0, libItem->child(i)->name());
-
-        // Recursively add its children if this is not the leaf level.
-        if (!vlnv.isValid())
-        {
-            addChildItems(libItem->child(i), item);
-
-            // Add the item as a child of the given tree item if it has children.
-            if (item->childCount() > 0)
-            {
-                treeItem->addChild(item);
-            }
-            else
-            {
-                delete item;
-            }
-        }
-        else
-        {
-            // Only hierarchical HW components are added.
-            QSharedPointer<Document> libComp = libInterface_->getModel(vlnv);
-            QSharedPointer<Component> comp = libComp.staticCast<Component>();
-
-            QStringList views = comp->getHierViews();
-            views.removeAll("kts_sw_ref");
-            views.removeAll("kts_sys_ref");
-
-            if (comp->getImplementation() != KactusAttribute::HW || views.isEmpty())
-            {
-                delete item;
-                continue;
-            }
-
-            // Add the VLNV to the item's data.
-            item->setData(0, Qt::UserRole, QVariant::fromValue((vlnv)));
-            item->setIcon(0, QIcon(":icons/common/graphics/hier-hw-component.png"));
-            treeItem->addChild(item);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -309,18 +192,141 @@ void NewSystemPage::addChildItems(LibraryItem const* libItem, QTreeWidgetItem* t
 //-----------------------------------------------------------------------------
 void NewSystemPage::actionChanged(QAbstractButton* button)
 {
-    if (button == emptyRadioButton_)
+    if (button == unmapRadioButton_)
     {
-        compTreeWidget_->collapseAll();
         compTreeWidget_->setCurrentItem(0);
         viewComboBox_->clear();
     }
 
-    treeLabel_->setEnabled(button == mapRadioButton_);
-    compTreeWidget_->setEnabled(button == mapRadioButton_);
-
-    viewLabel_->setEnabled(button == mapRadioButton_);
-    viewComboBox_->setEnabled(button == mapRadioButton_);
-
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewSystemPage::initializeHWComponentSelectionWidget()
+//-----------------------------------------------------------------------------
+void NewSystemPage::initializeHWComponentSelectionWidget(LibraryInterface* libInterface)
+{
+    compTreeWidget_->setColumnCount(1);
+    compTreeWidget_->setSelectionBehavior(QAbstractItemView::SelectItems);
+    compTreeWidget_->header()->close();
+    compTreeWidget_->setIconSize(QSize(20, 20));
+
+    LibraryItem const* rootItem = libInterface->getTreeRoot();
+
+    const int itemCount = rootItem->getNumberOfChildren();
+    for (int i = 0; i < itemCount; i++)
+    {
+        QTreeWidgetItem* child = createChildRecursively(rootItem->child(i));
+        if (child)
+        {
+            compTreeWidget_->addTopLevelItem(child);
+        }
+    }
+
+    compTreeWidget_->sortItems(0, Qt::AscendingOrder);
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewSystemPage::createChildRecursively()
+//-----------------------------------------------------------------------------
+QTreeWidgetItem* NewSystemPage::createChildRecursively(LibraryItem const* libraryItem) const
+{
+    // Only hierarchical HW components are added.
+    if (!libraryItem->hasChildren())
+    {
+        VLNV vlnv = libraryItem->getVLNV();
+
+        if (vlnv.isValid() && vlnv.getType() == VLNV::COMPONENT)
+        {
+            QSharedPointer<Component> component = libInterface_->getModel(vlnv).staticCast<Component>();
+
+            if (component->getImplementation() == KactusAttribute::HW && !component->getHierViews().isEmpty())
+            {
+                QTreeWidgetItem* leafItem = new QTreeWidgetItem();
+                leafItem->setText(0, libraryItem->name());
+
+                leafItem->setData(0, Qt::UserRole, QVariant::fromValue(vlnv));
+                leafItem->setIcon(0, QIcon(":icons/common/graphics/hier-hw-component.png"));
+
+                return leafItem;
+            }
+        }
+    }
+
+    // Recursively add its children if this is not the leaf level.
+    else
+    {
+        QTreeWidgetItem* intermediateItem = new QTreeWidgetItem();
+        intermediateItem->setText(0, libraryItem->name());
+
+        const int childCount = libraryItem->getNumberOfChildren();
+        for (int i = 0; i < childCount; i++)
+        {
+            QTreeWidgetItem* childItem = createChildRecursively(libraryItem->child(i));  
+            if (childItem)
+            {
+                intermediateItem->addChild(childItem);
+            }
+        }
+        
+        // Discard items with no content to show.
+        if (intermediateItem->childCount() == 0)
+        {
+            delete intermediateItem;
+            intermediateItem = 0;
+        }
+
+        return intermediateItem;
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: NewSystemPage::setupLayout()
+//-----------------------------------------------------------------------------
+void NewSystemPage::setupLayout()
+{
+    QString labelStyle = QStringLiteral("QLabel { padding-left: 19px; }");
+
+    QLabel* unmappedLabel = new QLabel(tr("Creates an unmapped SW architecture. "
+        "A new system component will be created."), this);
+    unmappedLabel->setStyleSheet(labelStyle);
+    unmappedLabel->setWordWrap(true);
+
+    QLabel* mappedLabel = new QLabel(tr("Creates a SW architecture and maps it to selected top-level HW. "
+        "A system view will be created for the HW component to reference the new system design."), this);
+    mappedLabel->setStyleSheet(labelStyle);
+    mappedLabel->setWordWrap(true);
+
+    QLabel* treeLabel = new QLabel(tr("Select top-level HW component:"), this);
+
+    QVBoxLayout* optionsLayout = new QVBoxLayout(optionGroupBox_);
+    optionsLayout->addWidget(unmapRadioButton_);
+    optionsLayout->addWidget(unmappedLabel);
+    optionsLayout->addWidget(mapRadioButton_);
+    optionsLayout->addWidget(mappedLabel);
+    optionsLayout->addWidget(treeLabel);
+    optionsLayout->addWidget(compTreeWidget_, 1);
+
+    QHBoxLayout* viewLayout = new QHBoxLayout();
+    QLabel* viewLabel = new QLabel(tr("Select view of top-level HW component:"), this);
+    viewLayout->addWidget(viewLabel);
+    viewLayout->addWidget(viewComboBox_, 1);
+    
+    optionsLayout->addLayout(viewLayout);
+
+    // Finalize inherited NewPage layout.
+    QVBoxLayout* topLayout = dynamic_cast<QVBoxLayout*>(layout());
+    topLayout->addWidget(optionGroupBox_);
+
+    treeLabel->setDisabled(true);
+    compTreeWidget_->setDisabled(true);
+    viewLabel->setDisabled(true);
+    viewComboBox_->setDisabled(true);
+
+    connect(mapRadioButton_, SIGNAL(toggled(bool)), treeLabel, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+    connect(mapRadioButton_, SIGNAL(toggled(bool)), compTreeWidget_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+    connect(mapRadioButton_, SIGNAL(toggled(bool)), viewLabel, SLOT(setEnabled(bool)), Qt::UniqueConnection);
+    connect(mapRadioButton_, SIGNAL(toggled(bool)), viewComboBox_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 }

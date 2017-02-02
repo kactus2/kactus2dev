@@ -18,6 +18,8 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
+#include <QVBoxLayout>
+
 //-----------------------------------------------------------------------------
 // Function: NewSWComponentPage()
 //-----------------------------------------------------------------------------
@@ -25,6 +27,9 @@ NewSWComponentPage::NewSWComponentPage(LibraryInterface* libInterface, QWidget* 
 NewPage(libInterface, VLNV::COMPONENT, tr("New SW Component"), tr("Creates a SW component"), parentDlg)
 {
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::SW);
+
+    QVBoxLayout* topLayout = dynamic_cast<QVBoxLayout*>(layout());
+    topLayout->addStretch(1);
 }
 
 //-----------------------------------------------------------------------------

@@ -699,7 +699,8 @@ HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h 
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./mainwindow/NewPages/NewCatalogPage.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -777,6 +778,7 @@ SOURCES += ./VersionHelper.cpp \
     ./common/graphicsItems/visualizeritem.cpp \
     ./common/delegates/ComboDelegate/combodelegate.cpp \
     ./common/delegates/LineEditDelegate/lineeditdelegate.cpp \
+    ./mainwindow/NewPages/NewCatalogPage.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \

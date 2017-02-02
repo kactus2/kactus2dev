@@ -16,33 +16,32 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
+#include <QDialogButtonBox>
 
 //-----------------------------------------------------------------------------
 // Function: PropertyPageDialog()
 //-----------------------------------------------------------------------------
 PropertyPageDialog::PropertyPageDialog(QSize const& listIconSize, int iconColumnCount,
-                                       ViewMode viewMode, ApplyMode applyMode, QWidget* parent)
-    : QDialog(parent),
-      iconColumnCount_(iconColumnCount),
-      contentsList_(0),
-      pages_(0),
-      btnOk_(0),
-      viewMode_(viewMode),
-      applyMode_(applyMode)
+    ViewMode viewMode, ApplyMode applyMode, QWidget* parent):
+QDialog(parent),
+    iconColumnCount_(iconColumnCount),
+    contentsList_(new QListWidget(this)),
+    pages_(new QStackedWidget(this)),
+    btnOk_(new QPushButton(tr("OK") , this)),
+    viewMode_(viewMode),
+    applyMode_(applyMode)
 {
-    // Create the contents list.
-    contentsList_ = new QListWidget(this);
     contentsList_->setIconSize(listIconSize);
 
     if (viewMode == VIEW_ICONS)
     {
         contentsList_->setViewMode(QListView::IconMode);
         contentsList_->setMovement(QListView::Static);
+        
+        contentsList_->setUniformItemSizes(true);
+        contentsList_->setSelectionRectVisible(true);
 
-        if (iconColumnCount == 1)
-        {
-            contentsList_->setWrapping(false);
-        }
+        contentsList_->setWrapping(iconColumnCount != 1);
 
         contentsList_->setSpacing(ICON_SPACING);
         contentsList_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -53,39 +52,10 @@ PropertyPageDialog::PropertyPageDialog(QSize const& listIconSize, int iconColumn
         contentsList_->setViewMode(QListView::ListMode);
     }
     
-    // Create the stacked pages widget and a layout with a separator (group box).
-    pages_ = new QStackedWidget(this);
-
-    QGroupBox* separator = new QGroupBox(this);
-    separator->setFlat(true);
-
-    QVBoxLayout* pageLayout = new QVBoxLayout();
-    pageLayout->addWidget(pages_);
-    pageLayout->addWidget(separator);
-
-    // Create the layout for the contents list and pages.
-    QHBoxLayout* horizontalLayout = new QHBoxLayout();
-    horizontalLayout->addWidget(contentsList_);
-    horizontalLayout->addLayout(pageLayout, 1);
-
-    // Create the buttons and their layout.
-    btnOk_ = new QPushButton(tr("OK") , this);
-    QPushButton* btnCancel = new QPushButton(tr("Cancel"), this);
-
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
-    buttonLayout->addStretch(1);
-    buttonLayout->addWidget(btnOk_);
-    buttonLayout->addWidget(btnCancel);
-
-    // Create the main layout.
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->addLayout(horizontalLayout, 1);
-    mainLayout->addLayout(buttonLayout);
-
-    connect(btnOk_, SIGNAL(clicked()), this, SLOT(accept()));
-    connect(btnCancel, SIGNAL(clicked()), this, SLOT(reject()));
+    setupLayout();
+   
     connect(contentsList_, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-            this, SLOT(changePage(QListWidgetItem*, QListWidgetItem*)));
+            this, SLOT(changePage(QListWidgetItem*, QListWidgetItem*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -221,7 +191,7 @@ void PropertyPageDialog::finalizePages()
     // Update the width of the list.
     if (viewMode_ == VIEW_ICONS)
     {
-        optimalWidth += 50;
+        optimalWidth += 40;
 
         QFontMetrics metrics(contentsList_->font());
         int textHeight = metrics.height();
@@ -232,10 +202,35 @@ void PropertyPageDialog::finalizePages()
             contentsList_->item(i)->setSizeHint(QSize(optimalWidth, optimalHeight));
         }
 
+        contentsList_->setFixedHeight((optimalHeight + ICON_SPACING) * contentsList_->count() + ICON_SPACING);
         contentsList_->setFixedWidth(optimalWidth * iconColumnCount_);
     }
     else
     {
         contentsList_->setFixedWidth(optimalWidth + 30);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PropertyPageDialog::setupLayout()
+//-----------------------------------------------------------------------------
+void PropertyPageDialog::setupLayout()
+{
+    QGroupBox* separator = new QGroupBox(this);
+    separator->setFlat(true);
+
+    QDialogButtonBox* buttons = new QDialogButtonBox(this);
+    buttons->addButton(btnOk_, QDialogButtonBox::AcceptRole);
+    buttons->addButton(QDialogButtonBox::Cancel);
+
+    connect(buttons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
+    connect(buttons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
+
+    QGridLayout* topLayout = new QGridLayout(this);
+    topLayout->addWidget(contentsList_, 0, 0, 2, 1);
+    topLayout->addWidget(pages_, 0, 1, 1, 1);
+    topLayout->addWidget(separator, 1, 1, 1, 1);
+    topLayout->addWidget(buttons, 2, 0, 1, 2);
+
+    //topLayout->setRowStretch(0, 10);
 }

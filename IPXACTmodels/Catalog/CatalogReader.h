@@ -34,7 +34,7 @@ public:
 	CatalogReader(QObject* parent = 0);
 
 	//! The destructor.
-	~CatalogReader();
+	virtual ~CatalogReader();
 
     /*!
      *  Creates a catalog from XML description.

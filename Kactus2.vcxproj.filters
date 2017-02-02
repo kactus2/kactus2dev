@@ -4177,6 +4177,12 @@
     <ClCompile Include="editors\ComponentEditor\instantiations\ModuleParameterHeaderView.cpp">
       <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
     </ClCompile>
+    <ClCompile Include="mainwindow\NewPages\NewCatalogPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewCatalogPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5744,6 +5750,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\common\ComponentInstanceParameterFinder.h">
       <Filter>Header Files\designEditors\common</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewCatalogPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

@@ -25,6 +25,8 @@ QGroupBox(tr("File name and location"), parent),
     descriptionEditor_(this),
     file_(file)
 {
+    setMaximumHeight(150);
+
     fileNameLabel_.setWordWrap(true);
 
     fileNameLabel_.setToolTip(tr("The name field contains an absolute or relative\n"

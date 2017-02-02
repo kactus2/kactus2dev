@@ -303,6 +303,8 @@ public slots:
 
     void unlockNewlyCreatedDocument(VLNV const& vlnv);
 
+    void createCatalog(VLNV const& catalogVLNV, QString const& directory);
+
     /*!
      *  Creates a new hierarchical SW component with an SW design.
      *

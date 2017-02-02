@@ -24,6 +24,9 @@ NewBusDefinitionPage::NewBusDefinitionPage(LibraryInterface* libHandler, QWidget
 NewPage(libHandler, VLNV::BUSDEFINITION, tr("New Bus Definition"), tr("Creates a new bus definition"), parentDlg)
 {
 	Q_ASSERT_X(libHandler, "NewBusPage constructor", "Null LibraryInterface pointer given as parameter");	
+    
+    QVBoxLayout* topLayout = dynamic_cast<QVBoxLayout*>(layout());
+    topLayout->addStretch(1);
 }
 
 //-----------------------------------------------------------------------------

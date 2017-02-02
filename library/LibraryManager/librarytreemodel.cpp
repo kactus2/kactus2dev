@@ -288,14 +288,19 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
                 return QIcon(":/icons/common/graphics/hw-component.png");
 			}
 
-			else if (documentType == VLNV::BUSDEFINITION)
+            else if (documentType == VLNV::ABSTRACTIONDEFINITION)
+            {
+                return QIcon(":/icons/common/graphics/abs-def.png");
+            }
+
+            else if (documentType == VLNV::BUSDEFINITION)
             {
                 return QIcon(":/icons/common/graphics/new-bus.png");
             }
 
-            else if (documentType == VLNV::ABSTRACTIONDEFINITION)
+            else if (documentType == VLNV::CATALOG)
             {
-                return QIcon(":/icons/common/graphics/abs-def.png");
+                return QIcon(":/icons/common/graphics/catalog.png");
             }
 
             else if (documentType == VLNV::COMDEFINITION)

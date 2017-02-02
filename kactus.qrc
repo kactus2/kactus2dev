@@ -115,6 +115,8 @@
       <file>common/graphics/filterRegisters.png</file>
       <file>common/graphics/filterFields.png</file>
       <file>common/graphics/folder-horizontal-open.png</file>
+	  <file>common/graphics/catalog.png</file>
+	  
   </qresource>
     <qresource prefix="/">        
         <file>common/graphics/splash.png</file>

@@ -15,13 +15,16 @@
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
+#include <QVBoxLayout>
+
 //-----------------------------------------------------------------------------
 // Function: NewApiDefinitionPage()
 //-----------------------------------------------------------------------------
 NewApiDefinitionPage::NewApiDefinitionPage(LibraryInterface* libInterface, QWidget* parentDlg):
 NewPage(libInterface, VLNV::APIDEFINITION, tr("New API definition"), tr("Creates an API definition"), parentDlg)
 {
-
+    QVBoxLayout* topLayout = dynamic_cast<QVBoxLayout*>(layout());
+    topLayout->addStretch(1);
 }
 
 //-----------------------------------------------------------------------------

@@ -15,6 +15,8 @@
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
+#include <QVBoxLayout>
+
 //-----------------------------------------------------------------------------
 // Function: NewSWDesignPage()
 //-----------------------------------------------------------------------------
@@ -23,6 +25,9 @@ NewPage(libInterface, VLNV::COMPONENT, tr("New SW Design"), tr("Creates a hierar
 {    
     // Create the VLNV editor.
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::SW);
+
+    QVBoxLayout* topLayout = dynamic_cast<QVBoxLayout*>(layout());
+    topLayout->addStretch(1);
 }
 
 //-----------------------------------------------------------------------------

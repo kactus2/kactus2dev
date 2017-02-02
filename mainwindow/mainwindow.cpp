@@ -21,6 +21,7 @@
 #include <mainwindow/Ribbon/Ribbon.h>
 #include <mainwindow/Ribbon/RibbonGroup.h>
 #include <mainwindow/MessageConsole/messageconsole.h>
+#include <mainwindow/NewPages/NewCatalogPage.h>
 #include <mainwindow/NewPages/NewComponentPage.h>
 #include <mainwindow/NewPages/NewDesignPage.h>
 #include <mainwindow/NewPages/NewSWComponentPage.h>
@@ -90,6 +91,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+
+#include <IPXACTmodels/Catalog/Catalog.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Model.h>
@@ -2152,6 +2155,11 @@ void MainWindow::createNew()
         this, SLOT(createApiDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
     dialog.addPage(QIcon(":icons/common/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
 
+    NewCatalogPage* catalogPage = new NewCatalogPage(libraryHandler_, &dialog);
+   connect(catalogPage, SIGNAL(createCatalog(VLNV const&, QString const&)),
+        this, SLOT(createCatalog(VLNV const&, QString const&)), Qt::UniqueConnection);
+    dialog.addPage(QIcon(":icons/common/graphics/catalog.png"), tr("Catalog"), catalogPage);
+
     dialog.finalizePages();
 
 	dialog.exec();
@@ -2415,6 +2423,31 @@ void MainWindow::unlockNewlyCreatedDocument(VLNV const& vlnv)
     {
         document->setProtection(false);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::createCatalog()
+//-----------------------------------------------------------------------------
+void MainWindow::createCatalog(VLNV const& catalogVLNV, QString const& directory)
+{
+    Q_ASSERT(catalogVLNV.isValid());
+
+    // Create the catalog.
+    QSharedPointer<Catalog> catalog = QSharedPointer<Catalog>(new Catalog());
+    catalog->setVlnv(catalogVLNV);
+    catalog->setVersion(VersionHelper::versionFileStr());
+
+    // create the file for the abstraction definition
+    if (!libraryHandler_->writeModelToFile(directory, catalog))
+    {
+        emit errorMessage("Error saving files to disk.");
+        return;
+    }
+
+    // Open the catalog editor.
+    //openCatalog(catalogVLNV);
+
+    //unlockNewlyCreatedDocument(catalogVLNV);
 }
 
 //-----------------------------------------------------------------------------
