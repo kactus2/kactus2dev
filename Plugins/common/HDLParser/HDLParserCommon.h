@@ -12,6 +12,8 @@
 #ifndef HDLPARSERCOMMON_H
 #define HDLPARSERCOMMON_H
 
+#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -40,6 +42,8 @@ struct GenerationTuple
     QSharedPointer<Design> design;
     // The design configuration for design, if it is not null.
     QSharedPointer<DesignConfiguration> designConfiguration;
+    // The messages.
+    MessagePasser* messages;
 };
 
 struct MetaPort;

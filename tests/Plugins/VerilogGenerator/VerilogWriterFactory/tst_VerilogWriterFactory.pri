@@ -39,8 +39,10 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../MockObjects/LibraryMock.h \
     ../../../../Plugins/VerilogGenerator/VerilogWriterFactory/VerilogWriterFactory.h \
     ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.h \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h
-SOURCES += ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.cpp \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h
+SOURCES += ../../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.cpp \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.cpp \
     ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \

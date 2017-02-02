@@ -27,8 +27,11 @@ class MetaDesign
 {
 public:
     //! The constructor.
-    MetaDesign(LibraryInterface* library, QSharedPointer<Design const> design,
-        QSharedPointer<DesignConfiguration const> designConf, QSharedPointer<MetaInstance> topInstance);
+    MetaDesign(LibraryInterface* library,
+        MessagePasser* messages,
+        QSharedPointer<Design const> design,
+        QSharedPointer<DesignConfiguration const> designConf,
+        QSharedPointer<MetaInstance> topInstance);
 
     //! The destructor.
     ~MetaDesign();
@@ -79,6 +82,9 @@ private:
 
     //! The component library.
     LibraryInterface* library_;
+
+    //! The messages.
+    MessagePasser* messages_;
 
     //! The design to parse.
     QSharedPointer<Design const> design_;

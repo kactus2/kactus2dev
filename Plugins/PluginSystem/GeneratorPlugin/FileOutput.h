@@ -32,12 +32,10 @@ struct GenerationFile
 };
 
 //-----------------------------------------------------------------------------
-//! Container class for generator configuration.
+// Container class for file output of generation.
 //-----------------------------------------------------------------------------
-class FileOuput : public QObject
+class FileOuput
 {
-    Q_OBJECT
-
 public:
 
 	//! The constructor.

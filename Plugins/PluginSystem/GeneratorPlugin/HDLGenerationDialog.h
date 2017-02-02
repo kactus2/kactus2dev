@@ -18,6 +18,7 @@
 
 #include "ViewSelectionWidget.h"
 #include "FileOutputWidget.h"
+#include <mainwindow/MessageConsole/messageconsole.h>
 
 class GenerationControl;
 
@@ -34,16 +35,20 @@ public:
 	HDLGenerationDialog(QSharedPointer<GenerationControl> configuration, QWidget *parent);
 
 	//! The destructor.
-	~HDLGenerationDialog();
+    ~HDLGenerationDialog();
+
+    //! Output window for the messages.
+    MessageConsole* console_;
 
 public slots:
 
     // Received when the OK button is pressed. NOTICE: Overrides slot accept() of the parent class.
     virtual void accept();
 
+    void onViewChanged();
+
 private slots:
 
-    void onViewChanged();
 
     void onSelectedFileChanged(QSharedPointer<GenerationFile> newSelection);
 

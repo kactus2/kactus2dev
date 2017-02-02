@@ -38,13 +38,18 @@ class GenerationControl
 public:
 
 	//! The constructors.
-    GenerationControl(LibraryInterface* library, IWriterFactory* factory, GenerationTuple input,
+    GenerationControl(LibraryInterface* library,
+        IWriterFactory* factory,
+        GenerationTuple input,
         GenerationSettings* settings);
 
 	//! The destructor.
     ~GenerationControl();
 
-    void writeDocuments();
+    bool writeDocuments();
+
+    //! Saves the changes made to the top component.
+    bool saveChanges();
    
     /*!
      *  Checks if the generation configuration is valid.
@@ -127,9 +132,6 @@ private:
      */
     void insertFileDescription(QSharedPointer<File> file);
 
-    //! Saves the changes made to the top component.
-    void saveChanges();
-
     /*!
      *  Finds all the views in containing component referencing the given design or design configuration VLNV.
      *
@@ -147,6 +149,8 @@ private:
 
     //! The plugin utility to use.
     LibraryInterface* library_;
+    //! The messages.
+    QSharedPointer<MessagePasser> messages_;
     IWriterFactory* factory_;
     GenerationTuple input_;
     GenerationSettings* settings_;

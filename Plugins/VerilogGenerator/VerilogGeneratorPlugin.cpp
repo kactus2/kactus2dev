@@ -1,18 +1,19 @@
 //-----------------------------------------------------------------------------
 // File: VerilogGeneratorPlugin.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
-// Author: Esko Pekkarinen
-// Date: 27.08.2014
+// Project: Kactus2
+// Author: Janne Virtanen
+// Date: 26.01.2017
 //
 // Description:
-// Plugin for structural verilog generation.
+// Plugin for Verilog generation.
 //-----------------------------------------------------------------------------
 
 #include "VerilogGeneratorPlugin.h"
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
@@ -26,7 +27,7 @@ VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0)
 {
     settings_.generateInterfaces_ = false;
     settings_.lastFileSetName_ = "";
-    settings_.lastFileSetName_ = "";
+    settings_.lastViewName_ = "";
 }
 
 //-----------------------------------------------------------------------------
@@ -57,7 +58,7 @@ QString VerilogGeneratorPlugin::getVersion() const
 //-----------------------------------------------------------------------------
 QString VerilogGeneratorPlugin::getDescription() const
 {
-    return tr("Generates a Verilog module for a component or a hierarchy of modules for a HW design.");
+    return tr("Generates a Verilog module for a HW component or a hierarchy of modules for a HW design.");
 }
 
 //-----------------------------------------------------------------------------
@@ -152,16 +153,20 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     // Must have a component under any condition.
     if (!component)
     {
-        utility->printError(tr("Null  component given as a parameter."));
+        utility->printError(tr("Null component given as a parameter."));
         return;
     }
+
+    MessagePasser messages;
 
     GenerationTuple input;
     input.component = component;
     input.design = design;
     input.designConfiguration = designConfiguration;
+    input.messages = &messages;
 
-    VerilogWriterFactory factory(utility->getLibraryInterface(), &settings_, utility->getKactusVersion(), getVersion());
+    VerilogWriterFactory factory(utility->getLibraryInterface(), &messages, &settings_,
+        utility->getKactusVersion(), getVersion());
 
     // Create model for the configuration widget.
     QSharedPointer<GenerationControl> configuration(new GenerationControl
@@ -170,11 +175,19 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     // Create the dialog and execute: The user will ultimately accept the configuration.
     HDLGenerationDialog dialog(configuration, utility->getParentWidget());
 
+    connect(&messages, SIGNAL(errorMessage(const QString&)),
+        dialog.console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+    connect(&messages, SIGNAL(noticeMessage(const QString&)),
+        dialog.console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+
+    dialog.onViewChanged();
+
     if (dialog.exec() != QDialog::Accepted)
     {
         utility->printInfo(tr("Generation aborted."));
         return;
     }
 
+    // Finally, save the changes.
     utility->printInfo(tr("Generation complete."));
 }

@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
 // File: VerilogGeneratorPlugin.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
-// Author: Esko Pekkarinen
-// Date: 27.08.2014
+// Project: Kactus2
+// Author: Janne Virtanen
+// Date: 26.01.2017
 //
 // Description:
-// Plugin for structural verilog generation.
+// Plugin for Verilog generation.
 //-----------------------------------------------------------------------------
 
 #ifndef VERILOGGENERATORPLUGIN_H

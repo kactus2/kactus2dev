@@ -232,12 +232,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_FileOutputWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_FileOutput.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_FileOutput.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="VerilogWriterFactory\VerilogWriterFactory.cpp">
       <Filter>Source Files\VerilogWriterFactory</Filter>
     </ClCompile>
@@ -285,6 +279,24 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_HDLGenerationDialog.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MessagePasser.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MessagePasser.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_messageconsole.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_messageconsole.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp">
+      <Filter>Source Files\Widgets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -411,6 +423,12 @@
       <Filter>Header Files\Widgets</Filter>
     </CustomBuild>
     <CustomBuild Include="..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\mainwindow\MessageConsole\messageconsole.h">
       <Filter>Header Files\Widgets</Filter>
     </CustomBuild>
   </ItemGroup>

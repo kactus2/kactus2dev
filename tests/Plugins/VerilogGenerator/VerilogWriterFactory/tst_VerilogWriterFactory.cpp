@@ -18,7 +18,7 @@
 #include <Plugins/common/HDLParser/MetaDesign.h>
 #include <Plugins/common/HDLParser/HDLComponentParser.h>
 #include <Plugins/VerilogImport/VerilogSyntax.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Component/Port.h>
@@ -163,8 +163,10 @@ void tst_VerilogWriterFactory::init()
     design_ = QSharedPointer<MetaDesign>(new MetaDesign);
     design_->topInstance_ = topComponent_;
 
+    MessagePasser messages;
+
     flatComponent_ = QSharedPointer<HDLComponentParser>(
-        new HDLComponentParser(&library_, component, QSharedPointer<View>::QSharedPointer()));
+        new HDLComponentParser(&library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
 
     library_.clear();
 }
@@ -267,7 +269,9 @@ void tst_VerilogWriterFactory::runGenerator(bool useDesign)
     GenerationSettings settings;
     settings.generateInterfaces_ = false;
 
-    VerilogWriterFactory factory(&library_, &settings, "bogusToolVersion", "bogusGeneratorVersion");
+    MessagePasser messages;
+
+    VerilogWriterFactory factory(&library_, &messages, &settings, "bogusToolVersion", "bogusGeneratorVersion");
     QString outputPath = ".";
     QSharedPointer<GenerationFile> document;
 

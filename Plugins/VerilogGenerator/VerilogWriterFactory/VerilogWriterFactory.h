@@ -46,7 +46,8 @@ public:
 	 *      @param [in] kactusVersion		    The version of the current Kactus build.
 	 *      @param [in] generatorVersion	    The current version of the generator.
 	 */
-    VerilogWriterFactory(LibraryInterface* library, GenerationSettings* settings,
+    VerilogWriterFactory(LibraryInterface* library, 
+        MessagePasser* messages, GenerationSettings* settings,
         QString const& kactusVersion, QString const& generatorVersion);
 
     //! The destructor.
@@ -125,6 +126,9 @@ private:
 
     //! The component library.
     LibraryInterface* library_;
+
+    //! The messages.
+    MessagePasser* messages_;
 
     //! Points to the settings to be used within the generation.
     GenerationSettings* settings_;

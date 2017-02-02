@@ -46,7 +46,9 @@ HEADERS += ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../PluginSystem/GeneratorPlugin/IWriterFactory.h \
     ./VerilogWriterFactory/VerilogWriterFactory.h \
     ./VerilogAssignmentWriter/VerilogAssignmentWriter.h \
-    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.h
+    ../PluginSystem/GeneratorPlugin/MessagePasser.h \
+    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.h \
+    ../../mainwindow/MessageConsole/messageconsole.h
 SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ../common/HDLParser/MetaDesign.cpp \
     ../common/HDLParser/MetaInstance.cpp \
@@ -80,5 +82,7 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ./VerilogWriterFactory/VerilogWriterFactory.cpp \
     ./VerilogAssignmentWriter/VerilogAssignmentWriter.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
-    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.cpp
+    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.cpp \
+    ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
+    ../../mainwindow/MessageConsole/messageconsole.cpp
 RESOURCES += VerilogGenerator.qrc

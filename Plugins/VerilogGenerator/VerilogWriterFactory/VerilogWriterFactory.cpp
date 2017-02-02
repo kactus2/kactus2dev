@@ -28,14 +28,16 @@
 #include <Plugins/common/HDLParser/MetaDesign.h>
 
 #include <Plugins/PluginSystem/GeneratorPlugin/FileOutput.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::VerilogWriterFactory()
 //-----------------------------------------------------------------------------
-VerilogWriterFactory::VerilogWriterFactory(LibraryInterface* library, GenerationSettings* settings,
+VerilogWriterFactory::VerilogWriterFactory(LibraryInterface* library,
+    MessagePasser* messages, GenerationSettings* settings,
     QString const& kactusVersion, QString const& generatorVersion) :
 library_(library),
+messages_(messages),
 settings_(settings),
 kactusVersion_(kactusVersion),
 generatorVersion_(generatorVersion),
@@ -65,7 +67,8 @@ QSharedPointer<GenerationFile> VerilogWriterFactory::prepareComponent(QString co
 
     if (!VerilogSyntax::readImplementation(filePath, implementation, postModule, error))
     {
-        //emit reportError(error); TODO: error
+        messages_->errorMessage(error);
+
         // If parser says no-go, we dare do nothing.
         return QSharedPointer<VerilogDocument>::QSharedPointer();
     }

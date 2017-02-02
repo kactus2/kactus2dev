@@ -41,7 +41,9 @@ public:
 	 *      @param [in] component               The component to write to Verilog.
      *      @param [in] activeView              The active view for the component.
 	 */
-    HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component,
+    HDLComponentParser(LibraryInterface* library,
+        MessagePasser* messages,
+        QSharedPointer<Component> component,
         QSharedPointer<View> activeView);
 
 	//! The destructor.

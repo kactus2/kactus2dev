@@ -30,8 +30,8 @@
 //-----------------------------------------------------------------------------
 // Function: GenerationControl::GenerationControl()
 //-----------------------------------------------------------------------------
-GenerationControl::GenerationControl(LibraryInterface* library, IWriterFactory* factory,
-    GenerationTuple input, GenerationSettings* settings) :
+GenerationControl::GenerationControl(LibraryInterface* library,
+    IWriterFactory* factory, GenerationTuple input, GenerationSettings* settings) :
 	library_(library), factory_(factory), input_(input), settings_(settings), isDesignGeneration_(input.design != 0),
     fileOutput_(new FileOuput)
 {
@@ -70,7 +70,7 @@ GenerationControl::~GenerationControl()
 //-----------------------------------------------------------------------------
 // Function: GenerationControl::writeDocuments()
 //-----------------------------------------------------------------------------
-void GenerationControl::writeDocuments()
+bool GenerationControl::writeDocuments()
 {
     // Remember the values chosen by the user.
     settings_->lastFileSetName_ = getViewSelection()->getFileSetName();
@@ -97,8 +97,7 @@ void GenerationControl::writeDocuments()
         instantiation->getFileSetReferences()->append(fileSet->name());
     }
 
-    // Time to write the contents to files
-    //library->printInfo(tr("Writing the file(s) %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+    bool fails = false;
 
     foreach(QSharedPointer<GenerationFile> gFile, *fileOutput_->getFiles())
     {
@@ -107,8 +106,9 @@ void GenerationControl::writeDocuments()
         QFile outputFile(absFilePath); 
         if (!outputFile.open(QIODevice::WriteOnly))
         {
-            //library->printError(tr("Could not open output file for writing: %1").arg(absFilePath));
-            return;
+            input_.messages->errorMessage(QObject::tr("Could not open output file for writing: %1").arg(absFilePath));
+            fails = true;
+            continue;
         }
 
         QTextStream outputStream(&outputFile);
@@ -128,11 +128,29 @@ void GenerationControl::writeDocuments()
         insertFileDescription(ipFile);
     }
 
-    // Write files
-    //library->printInfo(tr("Finished writing the file(s)."));
+    return !fails && saveChanges();
+}
 
-    // Finally, save the changes to the affected document.
-    saveChanges();
+//-----------------------------------------------------------------------------
+// Function: GenerationControl::saveChanges()
+//-----------------------------------------------------------------------------
+bool GenerationControl::saveChanges()
+{
+    // The component VLNV in string format.
+    QString component = input_.component->getVlnv().toString();
+
+    // Try to save.
+    bool saveSucceeded = library_->writeModelToFile(input_.component);
+
+    if (saveSucceeded)
+    {
+        return true;
+    }    
+
+    // Fail: Report the error, including the path.
+    QString savePath = library_->getPath(input_.component->getVlnv());
+    input_.messages->errorMessage(QObject::tr("Could not write component %1 to file %2.").arg(component, savePath));
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -165,9 +183,14 @@ void GenerationControl::parseDocuments()
 
     if (isDesignGeneration_)
     {
+        // Time to write the contents to files
+        input_.messages->sendNotice(QObject::tr("Parsing hierarchy %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+
         // Parse the design hierarchy.
         QList<QSharedPointer<MetaDesign> > designs =
             MetaDesign::parseHierarchy(library_, input_, viewSelection_->getView());
+
+        input_.messages->sendNotice(QObject::tr("Writing content %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
         // Go through the parsed designs.
         foreach(QSharedPointer<MetaDesign> design, designs)
@@ -179,6 +202,7 @@ void GenerationControl::parseDocuments()
                 continue;
             }
 
+            // Time to write the contents to files
             gFile->write();
 
             fileOutput_->getFiles()->append(gFile);
@@ -186,8 +210,11 @@ void GenerationControl::parseDocuments()
     }
     else
     {
+        // Time to write the contents to files
+        input_.messages->sendNotice(QObject::tr("Formatting component %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
+
         QSharedPointer<HDLComponentParser> componentParser
-            (new HDLComponentParser(library_, input_.component, viewSelection_->getView()));
+            (new HDLComponentParser(library_, input_.messages, input_.component, viewSelection_->getView()));
 
         QSharedPointer<GenerationFile> gFile = factory_->prepareComponent(fileOutput_->getOutputPath(), componentParser);
 
@@ -195,6 +222,8 @@ void GenerationControl::parseDocuments()
         {
             return;
         }
+
+        input_.messages->sendNotice(QObject::tr("Writing content %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
         gFile->write();
 
@@ -331,28 +360,4 @@ void GenerationControl::insertFileDescription(QSharedPointer<File> file)
 
     // Append the generation time description to the description.
     file->setDescription("Generated at " + time + " on " + date + " by Kactus2. " + desc);
-}
-
-//-----------------------------------------------------------------------------
-// Function: GenerationControl::saveChanges()
-//-----------------------------------------------------------------------------
-void GenerationControl::saveChanges()
-{
-    // The component VLNV in string format.
-    QString component = input_.component->getVlnv().toString();
-
-    // Try to save.
-    bool saveSucceeded = library_->writeModelToFile(input_.component);
-
-    if (saveSucceeded)
-    {
-        // Success: Inform the user.
-        //library_->printInfo(tr("Saved changes to component %1.").arg(component));
-    }    
-    else
-    {
-        // Fail: Report the error, including the path.
-        QString savePath = library_->getPath(input_.component->getVlnv());
-        //library->printError(tr("Could not write component %1 to file %2.").arg(component, savePath));
-    }
 }

@@ -38,7 +38,8 @@ public:
 	 *      @param [in] component               The instantiated component.
      *      @param [in] activeView              The active view for the component.
 	 */
-	MetaInstance(LibraryInterface* library,
+    MetaInstance(LibraryInterface* library,
+        MessagePasser* messages,
         QSharedPointer<Component> component,
         QSharedPointer<View> activeView,
         QSharedPointer<ComponentInstance> componentInstance,
@@ -51,6 +52,12 @@ public:
 	//! The destructor.
     ~MetaInstance();
 
+
+    //! The component library.
+    LibraryInterface* library_;
+
+    //! The messages.
+    MessagePasser* messages_;
     //! The matching IP-XACT component.
     QSharedPointer<Component> component_;
     //! The matching IP-XACT component instance.
@@ -64,9 +71,6 @@ public:
     QMap<QString,QSharedPointer<MetaPort> > ports_;
     //! The module name for HDL.
     QString moduleName_;
-
-    //! The component library.
-    LibraryInterface* library_;
 
     //! The active view of the instance.
     QSharedPointer<View> activeView_;

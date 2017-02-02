@@ -39,9 +39,12 @@
 //-----------------------------------------------------------------------------
 // Function: HDLComponentParser::HDLComponentParser
 //-----------------------------------------------------------------------------
-HDLComponentParser::HDLComponentParser(LibraryInterface* library, QSharedPointer<Component> component,
+HDLComponentParser::HDLComponentParser(LibraryInterface* library,
+    MessagePasser* messages,
+    QSharedPointer<Component> component,
     QSharedPointer<View> activeView) :
     MetaInstance(library,
+        messages,
         component,
         activeView,
         QSharedPointer<ComponentInstance>::QSharedPointer(),

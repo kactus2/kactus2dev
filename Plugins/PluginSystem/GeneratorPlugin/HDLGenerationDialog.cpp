@@ -20,6 +20,7 @@
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QTextCursor>
+#include <QGridLayout>
 
 //-----------------------------------------------------------------------------
 // Function: HDLGenerationDialog::HDLGenerationDialog()
@@ -61,27 +62,28 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
         Qt::Horizontal);
 
-    QHBoxLayout* topLayout = new QHBoxLayout;
+    QGridLayout* grid = new QGridLayout(this);
+
     QGroupBox* leftBox = new QGroupBox("Settings");
     leftBox->setLayout(leftLayout);
+
+    QGroupBox* logBox = new QGroupBox("Log");
+    QVBoxLayout* botLayout = new QVBoxLayout();
+    logBox->setLayout(botLayout);
+    console_ = new MessageConsole(this);
+    console_->setMinimumWidth(500);
+    botLayout->addWidget(console_);
+
+    grid->addWidget(leftBox, 0, 0, 2, 1);
+    grid->addWidget(logBox, 2, 0, 2, 1);
+
     QGroupBox* rightBox = new QGroupBox("Preview");
     QVBoxLayout* rightLayout = new QVBoxLayout();
     rightLayout->addWidget(previewer_);
     rightBox->setLayout(rightLayout);
 
-    topLayout->addWidget(leftBox);
-    topLayout->addWidget(rightBox);
-
-    QGroupBox* botBox = new QGroupBox("Log");
-    QVBoxLayout* botLayout = new QVBoxLayout();
-    botBox->setLayout(botLayout);
-    botLayout->addWidget(new QPlainTextEdit);
-
-    QVBoxLayout* topmostLayout = new QVBoxLayout(this);
-    topmostLayout->addLayout(topLayout);
-    topmostLayout->addWidget(botBox);
-    topmostLayout->addWidget(dialogButtons);
-
+    grid->addWidget(rightBox, 0, 1, 4, 1);
+    grid->addWidget(dialogButtons, 4, 1, 1, 1);
 
     // Finally, connect the relevant events to their handler functions.
 
@@ -96,9 +98,6 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     // Connect the dialog buttons to their respective functions.
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
-
-    configuration_->parseDocuments();
-    fileOutput_->onOutputFilesChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +121,10 @@ void HDLGenerationDialog::accept()
 		return;
 	}
 
-    configuration_->writeDocuments();
+    if (!configuration_->writeDocuments())
+    {
+        return;
+    }
 
     QDialog::accept();
 }
