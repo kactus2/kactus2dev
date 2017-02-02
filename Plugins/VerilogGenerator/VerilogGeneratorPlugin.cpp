@@ -12,7 +12,7 @@
 #include "VerilogGeneratorPlugin.h"
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfigurationDialog.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
@@ -164,11 +164,11 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
     VerilogWriterFactory factory(utility->getLibraryInterface(), &settings_, utility->getKactusVersion(), getVersion());
 
     // Create model for the configuration widget.
-    QSharedPointer<GeneratorConfiguration> configuration(new GeneratorConfiguration
+    QSharedPointer<GenerationControl> configuration(new GenerationControl
         (utility->getLibraryInterface(), &factory, input, &settings_));
 
     // Create the dialog and execute: The user will ultimately accept the configuration.
-    GeneratorConfigurationDialog dialog(configuration, utility->getParentWidget());
+    HDLGenerationDialog dialog(configuration, utility->getParentWidget());
 
     if (dialog.exec() != QDialog::Accepted)
     {

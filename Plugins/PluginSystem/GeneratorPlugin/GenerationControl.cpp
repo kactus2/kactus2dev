@@ -1,15 +1,15 @@
 //-----------------------------------------------------------------------------
-// File: GeneratorConfiguration.cpp
+// File: GenerationControl.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
 // Date: 26.01.2017
 //
 // Description:
-// Container class for generator configuration.
+// Class to control the over structure of generation.
 //-----------------------------------------------------------------------------
 
-#include "GeneratorConfiguration.h"
+#include "GenerationControl.h"
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -28,9 +28,9 @@
 #include <QDateTime>
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::GeneratorConfiguration()
+// Function: GenerationControl::GenerationControl()
 //-----------------------------------------------------------------------------
-GeneratorConfiguration::GeneratorConfiguration(LibraryInterface* library, IWriterFactory* factory,
+GenerationControl::GenerationControl(LibraryInterface* library, IWriterFactory* factory,
     GenerationTuple input, GenerationSettings* settings) :
 	library_(library), factory_(factory), input_(input), settings_(settings), isDesignGeneration_(input.design != 0),
     fileOutput_(new FileOuput)
@@ -61,16 +61,16 @@ GeneratorConfiguration::GeneratorConfiguration(LibraryInterface* library, IWrite
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::~GeneratorConfiguration()
+// Function: GenerationControl::~GenerationControl()
 //-----------------------------------------------------------------------------
-GeneratorConfiguration::~GeneratorConfiguration()
+GenerationControl::~GenerationControl()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::writeDocuments()
+// Function: GenerationControl::writeDocuments()
 //-----------------------------------------------------------------------------
-void GeneratorConfiguration::writeDocuments()
+void GenerationControl::writeDocuments()
 {
     // Remember the values chosen by the user.
     settings_->lastFileSetName_ = getViewSelection()->getFileSetName();
@@ -136,9 +136,9 @@ void GeneratorConfiguration::writeDocuments()
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::validSelections()
+// Function: GenerationControl::validSelections()
 //-----------------------------------------------------------------------------
-bool GeneratorConfiguration::validSelections(QString &warning)
+bool GenerationControl::validSelections(QString &warning)
 {
     // Must have a file set as well.
     if (!viewSelection_->validSelections(warning))
@@ -156,9 +156,9 @@ bool GeneratorConfiguration::validSelections(QString &warning)
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::parseDocuments()
+// Function: GenerationControl::parseDocuments()
 //-----------------------------------------------------------------------------
-void GeneratorConfiguration::parseDocuments()
+void GenerationControl::parseDocuments()
 {
     // Clear the existing list of files.
     fileOutput_->getFiles()->clear();
@@ -203,41 +203,41 @@ void GeneratorConfiguration::parseDocuments()
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::getViewSelection()
+// Function: GenerationControl::getViewSelection()
 //-----------------------------------------------------------------------------
-QSharedPointer<ViewSelection> GeneratorConfiguration::getViewSelection() const
+QSharedPointer<ViewSelection> GenerationControl::getViewSelection() const
 {
     return viewSelection_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::getFileOuput()
+// Function: GenerationControl::getFileOuput()
 //-----------------------------------------------------------------------------
-QSharedPointer<FileOuput> GeneratorConfiguration::getFileOuput() const
+QSharedPointer<FileOuput> GenerationControl::getFileOuput() const
 {
     return fileOutput_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::getSettings()
+// Function: GenerationControl::getSettings()
 //-----------------------------------------------------------------------------
-GenerationSettings* GeneratorConfiguration::getSettings() const
+GenerationSettings* GenerationControl::getSettings() const
 {
     return settings_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::isDesignGeneration()
+// Function: GenerationControl::isDesignGeneration()
 //-----------------------------------------------------------------------------
-bool GeneratorConfiguration::isDesignGeneration() const
+bool GenerationControl::isDesignGeneration() const
 {
     return isDesignGeneration_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::findPossibleViews()
+// Function: GenerationControl::findPossibleViews()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<View> > > GeneratorConfiguration::findPossibleViews(
+QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleViews(
     QSharedPointer<const Component> targetComponent) const
 {
     // If the generation is targeted to a component, return the flat views of the component.
@@ -257,9 +257,9 @@ QSharedPointer<QList<QSharedPointer<View> > > GeneratorConfiguration::findPossib
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::findPossibleViews()
+// Function: GenerationControl::findPossibleViews()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<View> > > GeneratorConfiguration::findPossibleViews(
+QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleViews(
     GenerationTuple input) const
 {
     // Create a new list object.
@@ -288,9 +288,9 @@ QSharedPointer<QList<QSharedPointer<View> > > GeneratorConfiguration::findPossib
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::defaultOutputPath()
+// Function: GenerationControl::defaultOutputPath()
 //-----------------------------------------------------------------------------
-QString GeneratorConfiguration::defaultOutputPath() const
+QString GenerationControl::defaultOutputPath() const
 {
     QString suggestedDir = "";
 
@@ -302,18 +302,18 @@ QString GeneratorConfiguration::defaultOutputPath() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::relativePathForFile()
+// Function: GenerationControl::relativePathForFile()
 //-----------------------------------------------------------------------------
-QString GeneratorConfiguration::relativePathFromXmlToFile(QString const& filePath) const
+QString GenerationControl::relativePathFromXmlToFile(QString const& filePath) const
 {
     QString xmlPath = library_->getPath(input_.component->getVlnv());
     return General::getRelativePath(xmlPath, filePath);
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::insertFileDescription()
+// Function: GenerationControl::insertFileDescription()
 //-----------------------------------------------------------------------------
-void GeneratorConfiguration::insertFileDescription(QSharedPointer<File> file)
+void GenerationControl::insertFileDescription(QSharedPointer<File> file)
 {
     // Get the current description.
     QString desc = file->getDescription();
@@ -334,9 +334,9 @@ void GeneratorConfiguration::insertFileDescription(QSharedPointer<File> file)
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneratorConfiguration::saveChanges()
+// Function: GenerationControl::saveChanges()
 //-----------------------------------------------------------------------------
-void GeneratorConfiguration::saveChanges()
+void GenerationControl::saveChanges()
 {
     // The component VLNV in string format.
     QString component = input_.component->getVlnv().toString();

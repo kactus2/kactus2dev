@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: GeneratorConfiguration.h
+// File: GenerationControl.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
 // Date: 26.01.2017
 //
 // Description:
-// Container class for generator configuration.
+// Class to control the over structure of generation.
 //-----------------------------------------------------------------------------
 
-#ifndef GENERATORCONFIGURATION_H
-#define GENERATORCONFIGURATION_H
+#ifndef GENERATIONCONTROL_H
+#define GENERATIONCONTROL_H
 
 #include <QString>
 #include <QMap>
@@ -33,16 +33,16 @@ struct GenerationSettings
 //-----------------------------------------------------------------------------
 //! Container class for generator configuration.
 //-----------------------------------------------------------------------------
-class GeneratorConfiguration
+class GenerationControl
 {
 public:
 
 	//! The constructors.
-    GeneratorConfiguration(LibraryInterface* library, IWriterFactory* factory, GenerationTuple input,
+    GenerationControl(LibraryInterface* library, IWriterFactory* factory, GenerationTuple input,
         GenerationSettings* settings);
 
 	//! The destructor.
-    ~GeneratorConfiguration();
+    ~GenerationControl();
 
     void writeDocuments();
    
@@ -101,8 +101,8 @@ protected:
 private:
 
 	// Disable copying.
-	GeneratorConfiguration(GeneratorConfiguration const& rhs);
-	GeneratorConfiguration& operator=(GeneratorConfiguration const& rhs);
+	GenerationControl(GenerationControl const& rhs);
+	GenerationControl& operator=(GenerationControl const& rhs);
     
     /*!
      *  Gets the default output path.     
@@ -157,4 +157,4 @@ private:
     QSharedPointer<FileOuput> fileOutput_;
 };
 
-#endif // GENERATORCONFIGURATION_H
+#endif // GENERATIONCONTROL_H

@@ -17,7 +17,7 @@
 
 #include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 
