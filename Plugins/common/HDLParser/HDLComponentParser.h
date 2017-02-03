@@ -58,7 +58,7 @@ public:
      *      @param [out] sortParameters         The list containing the same parameters as in refParameters, that will be sorted.
      */
 	static void sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
-        QList<QSharedPointer<Parameter> >& sortParameters);
+        QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters);
 
     //! The parsed remap states.
     QList<QSharedPointer<FormattedRemapState> > remapStates_;

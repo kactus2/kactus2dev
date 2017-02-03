@@ -37,7 +37,10 @@ MetaInstance::MetaInstance(LibraryInterface* library,
     messages_(messages),
     component_(component),
     componentInstance_(componentInstance),
-    activeView_(activeView)
+    activeView_(activeView),
+    parameters_(new QList<QSharedPointer<Parameter> >()),
+    interfaces_(new QMap<QString,QSharedPointer<MetaInterface> >()),
+    ports_(new QMap<QString,QSharedPointer<MetaPort> >())
 {
     // Try to find a component instantiation for the view.
     if (activeView_)
@@ -62,7 +65,7 @@ MetaInstance::MetaInstance(LibraryInterface* library,
     cullParameters();
 
     // Initialize the parameter parsing: Find parameters from both the instance and the top component.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(new QList<QSharedPointer<Parameter> >(parameters_));
+    QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(parameters_);
     QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
     instanceFinder->setParameterList(ilist);
 
@@ -85,13 +88,6 @@ MetaInstance::MetaInstance(LibraryInterface* library,
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaInstance::MetaInstance()
-//-----------------------------------------------------------------------------
-MetaInstance::MetaInstance()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: MetaInstance::~MetaInstance()
 //-----------------------------------------------------------------------------
 MetaInstance::~MetaInstance()
@@ -107,7 +103,7 @@ void MetaInstance::cullParameters()
     foreach(QSharedPointer<Parameter> parameterOrig, *component_->getParameters())
     {
         QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
-        parameters_.append(parameterCpy);
+        parameters_->append(parameterCpy);
     }
 
     // If there is an active component instantiation, take its module parameters as well.
@@ -116,7 +112,7 @@ void MetaInstance::cullParameters()
         foreach(QSharedPointer<ModuleParameter> parameterOrig, *activeInstantiation_->getModuleParameters())
         {
             QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
-            parameters_.append(parameterCpy);
+            parameters_->append(parameterCpy);
         }
     }
 }
@@ -131,7 +127,7 @@ void MetaInstance::parseParameters(IPXactSystemVerilogParser& parser,
     if (cevs)
     {
         // Go through the culled parameters, find if any exists in CEVs.
-        foreach(QSharedPointer<Parameter> parameter, parameters_)
+        foreach(QSharedPointer<Parameter> parameter, *parameters_)
         {
             foreach(QSharedPointer<ConfigurableElementValue> cev, *cevs)
             {
@@ -146,7 +142,7 @@ void MetaInstance::parseParameters(IPXactSystemVerilogParser& parser,
     }
 
     // Parse values.
-    foreach(QSharedPointer<Parameter> parameter, parameters_)
+    foreach(QSharedPointer<Parameter> parameter, *parameters_)
     {
         parameter->setValue(parseExpression(parser, parameter->getValue()));
     }
@@ -208,7 +204,7 @@ void MetaInstance::parseInterfaces()
         mInterface->absDef_ = absDef;
 
         // Insert to the interface to the list.
-        interfaces_.insert(busInterface->name(), mInterface);
+        interfaces_->insert(busInterface->name(), mInterface);
     }
 }
 
@@ -237,9 +233,9 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
 
         // Try to find an interface where port belongs to.
         bool anyIfUsesThePort = false;
-        ports_.insert(cport->name(), mPort);
+        ports_->insert(cport->name(), mPort);
 
-        foreach (QSharedPointer<MetaInterface> mInterface, interfaces_)
+        foreach (QSharedPointer<MetaInterface> mInterface, *interfaces_)
         {
             bool thisIfUsesThePort = false;
 

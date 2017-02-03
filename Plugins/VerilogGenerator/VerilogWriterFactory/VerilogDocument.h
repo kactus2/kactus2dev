@@ -14,8 +14,6 @@
 
 #include "../veriloggeneratorplugin_global.h"
 
-#include <QTextStream>
-
 #include <Plugins/PluginSystem/GeneratorPlugin/FileOutput.h>
 
 #include <Plugins/VerilogGenerator/common/WriterGroup.h>
@@ -31,9 +29,8 @@
 //-----------------------------------------------------------------------------
 // Verilog document.
 //-----------------------------------------------------------------------------
-class VerilogDocument : public GenerationFile
+struct VerilogDocument : public GenerationFile
 {
-public:
     //! Writer for generating file header.
     QSharedPointer<VerilogHeaderWriter> headerWriter_;
 
@@ -64,31 +61,13 @@ public:
     //! Writers for Verilog instances.
     QList<QSharedPointer<ComponentInstanceVerilogWriter> > instanceWriters_;
 
-    //! Witers for Verilog instances.
+    //! Writers for Verilog instances.
     QMap<QSharedPointer<ComponentInstanceVerilogWriter>, QSharedPointer<Writer> > instanceHeaderWriters_;
 
-	/*!
-	 *  The constructor.
-     */
-    VerilogDocument();
-
-    //! The destructor.
-    ~VerilogDocument();
-    
     /*!
      *  Writes the content.
      */
 	void write();
-
-private:
-
-    // Disable copying.
-    VerilogDocument(VerilogDocument const& rhs);
-    VerilogDocument& operator=(VerilogDocument const& rhs);
-
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
 };
 
 #endif // VerilogDocument_H

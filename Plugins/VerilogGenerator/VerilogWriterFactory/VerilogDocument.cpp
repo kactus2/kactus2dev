@@ -12,20 +12,7 @@
 #include "VerilogDocument.h"
 
 #include <QDateTime>
-
-//-----------------------------------------------------------------------------
-// Function: VerilogDocument::VerilogDocument()
-//-----------------------------------------------------------------------------
-VerilogDocument::VerilogDocument()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: VerilogDocument::~VerilogDocument()
-//-----------------------------------------------------------------------------
-VerilogDocument::~VerilogDocument()
-{
-}
+#include <QTextStream>
 
 //-----------------------------------------------------------------------------
 // Function: VerilogDocument::write()

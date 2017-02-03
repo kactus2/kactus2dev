@@ -48,8 +48,7 @@ topFinder_(new ListParameterFinder)
     // Create the finder for the parameters coming from the top.
     // TODO: The parameters must come through the proper chain, rather than directly from the top component!
     QSharedPointer<QList<QSharedPointer<Parameter> > > toplist =
-        QSharedPointer<QList<QSharedPointer<Parameter> > >
-        (new QList<QSharedPointer<Parameter> >(topInstance->parameters_));
+        QSharedPointer<QList<QSharedPointer<Parameter> > >(topInstance->getParameters());
     topFinder_->setParameterList(toplist);
 }
 
@@ -128,7 +127,7 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
              designs.enqueue(subDesign);
 
              // Take the module name associated with the instantiated top component.
-             QString name = subDesign->topInstance_->moduleName_;
+             QString name = subDesign->topInstance_->getModuleName();
 
              // Find the name from the set of existing names.
              QMap<QString,int>::iterator nameIter = names.find(name);
@@ -147,7 +146,7 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
              }
 
              // Set the module name as the existing module name + number of encounter before this one.
-             subDesign->topInstance_->moduleName_ = name + "_" + QString::number(count);
+             subDesign->topInstance_->setModuleName(name + "_" + QString::number(count));
          }
     }
 
@@ -282,7 +281,7 @@ void MetaDesign::parseInterconnections()
             }
 
             // The interface must be found within the interfaces recognized for the instance.
-            QSharedPointer<MetaInterface> mInterface = mInstance->interfaces_.value(connectionInterface->getBusReference());
+            QSharedPointer<MetaInterface> mInterface = mInstance->getInterfaces()->value(connectionInterface->getBusReference());
 
             if (!mInterface)
             {
@@ -290,7 +289,7 @@ void MetaDesign::parseInterconnections()
                     .arg(design_->getVlnv().toString(),
                     connectionInterface->getBusReference(),
                     connection->name(),
-                    mInstance->component_->getVlnv().toString()));
+                    mInstance->getComponent()->getVlnv().toString()));
                 continue;
             }
 
@@ -302,7 +301,7 @@ void MetaDesign::parseInterconnections()
         foreach (QSharedPointer<HierInterface> connectionInterface, *connection->getHierInterfaces())
         {
             // The interface must be found within the interfaces recognized for the top instance.
-            QSharedPointer<MetaInterface> mInterface = topInstance_->interfaces_.value(connectionInterface->getBusReference());
+            QSharedPointer<MetaInterface> mInterface = topInstance_->getInterfaces()->value(connectionInterface->getBusReference());
 
             if (!mInterface)
             {
@@ -310,7 +309,7 @@ void MetaDesign::parseInterconnections()
                     .arg(design_->getVlnv().toString(),
                     connectionInterface->getBusReference(),
                     connection->name(),
-                    topInstance_->component_->getVlnv().toString()));
+                    topInstance_->getComponent()->getVlnv().toString()));
                 continue;
             }
 
@@ -460,7 +459,7 @@ void MetaDesign::parseAdHocs()
             }
 
             // The port must be found within the ad-hoc ports recognized for the instance.
-            QSharedPointer<MetaPort> mPort = mInstance->ports_.value(portRef->getPortRef());
+            QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value(portRef->getPortRef());
 
             if (!mPort)
             {
@@ -468,7 +467,7 @@ void MetaDesign::parseAdHocs()
                     .arg(design_->getVlnv().toString(),
                     portRef->getPortRef(),
                     connection->name(),
-                    mInstance->component_->getVlnv().toString()));
+                    mInstance->getComponent()->getVlnv().toString()));
                 continue;
             }
 
@@ -481,7 +480,7 @@ void MetaDesign::parseAdHocs()
         foreach(QSharedPointer<PortReference> portRef, *connection->getExternalPortReferences())
         {
             // The port must be found within the ad-hoc ports recognized for the top instance.
-            QSharedPointer<MetaPort> mPort = topInstance_->ports_.value(portRef->getPortRef());
+            QSharedPointer<MetaPort> mPort = topInstance_->getPorts()->value(portRef->getPortRef());
 
             if (!mPort)
             {
@@ -489,7 +488,7 @@ void MetaDesign::parseAdHocs()
                     .arg(design_->getVlnv().toString(),
                     portRef->getPortRef(),
                     connection->name(),
-                    topInstance_->component_->getVlnv().toString()));
+                    topInstance_->getComponent()->getVlnv().toString()));
                 continue;
             }
 
