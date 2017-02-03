@@ -80,7 +80,8 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
     // Instantiate the top component with the selected design.
     // Obviously it cannot have CEVs or parameters of any other component.
     QSharedPointer<MetaInstance> topMostInstance(new MetaInstance
-        (library, input.messages, input.component, topComponentView, componentInstance, topFinder, cevs));
+        (library, input.messages, input.component, topComponentView));
+    topMostInstance->parseInstance(componentInstance, topFinder, cevs);
 
     // Create the design associated with the top component.
     QSharedPointer<MetaDesign> topMostDesign(new MetaDesign
@@ -206,8 +207,9 @@ void MetaDesign::parseInstances()
         }
 
         // Now create the instance, using what we know as the parameters.
-        QSharedPointer<MetaInstance> mInstance(new MetaInstance
-            (library_, messages_, component, activeView, instance, topFinder_, cevs));
+        QSharedPointer<MetaInstance> mInstance(new MetaInstance(library_, messages_, component, activeView));
+        // Parse.
+        mInstance->parseInstance(instance, topFinder_, cevs);
         // Map using the name.
         instances_.insert(instance->getInstanceName(), mInstance);
 

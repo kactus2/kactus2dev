@@ -16,7 +16,7 @@
 #include <tests/MockObjects/LibraryMock.h>
 
 #include <Plugins/common/HDLParser/MetaDesign.h>
-#include <Plugins/common/HDLParser/HDLComponentParser.h>
+#include <Plugins/common/HDLParser/MetaComponent.h>
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
@@ -79,9 +79,9 @@ private:
     QSharedPointer<MetaWire> addWireToDesign(QString name, QString leftBound, QString rightBound, QSharedPointer<MetaInterconnection> mInterconnect = QSharedPointer<MetaInterconnection>::QSharedPointer());
 
     QSharedPointer<MetaPort> addPort(QString const& portName, int portSize, DirectionTypes::Direction direction, 
-        QSharedPointer<MetaInstance> component, QSharedPointer<MetaInterface> mInterface =  QSharedPointer<MetaInterface>::QSharedPointer());
+        QSharedPointer<MetaComponent> component, QSharedPointer<MetaInterface> mInterface = QSharedPointer<MetaInterface>::QSharedPointer());
 
-    void addParameter(QString const& name, QString const& value, QSharedPointer<MetaInstance> mInstance);
+    void addParameter(QString const& name, QString const& value, QSharedPointer<MetaComponent> mComponent);
 
     void runGenerator(bool useDesign);
 
@@ -115,7 +115,7 @@ private:
     QSharedPointer<MetaInstance> topComponent_;
     QSharedPointer<MetaDesign> design_;
 
-    QSharedPointer<HDLComponentParser> flatComponent_;
+    QSharedPointer<MetaComponent> flatComponent_;
 
     //! The generator output as a string.
     QString output_;
@@ -156,21 +156,16 @@ void tst_VerilogWriterFactory::init()
     VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
     QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv));
 
-    QSharedPointer<ComponentInstance> instance;
-    QSharedPointer<ListParameterFinder> topFinder;
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs;
-
     MessagePasser messages;
 
     topComponent_ =  QSharedPointer<MetaInstance>(new MetaInstance(
-        &library_, &messages, component, QSharedPointer<View>::QSharedPointer(), instance, topFinder, cevs));
-
+        &library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
 
     design_ = QSharedPointer<MetaDesign>(new MetaDesign);
     design_->topInstance_ = topComponent_;
 
-    flatComponent_ = QSharedPointer<HDLComponentParser>(
-        new HDLComponentParser(&library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
+    flatComponent_ = QSharedPointer<MetaComponent>(
+        new MetaComponent(&messages, component, QSharedPointer<View>::QSharedPointer()));
 
     library_.clear();
 }
@@ -225,7 +220,7 @@ void tst_VerilogWriterFactory::testTopLevelComponent()
 // Function: tst_VerilogWriterFactory::addPort()
 //-----------------------------------------------------------------------------
 QSharedPointer<MetaPort> tst_VerilogWriterFactory::addPort(QString const& portName, int portSize, 
-    DirectionTypes::Direction direction, QSharedPointer<MetaInstance> mInstance,
+    DirectionTypes::Direction direction, QSharedPointer<MetaComponent> component,
     QSharedPointer<MetaInterface> mInterface /*= QSharedPointer<MetaInterface>::QSharedPointer()*/)
 {
     QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName, direction));
@@ -234,8 +229,8 @@ QSharedPointer<MetaPort> tst_VerilogWriterFactory::addPort(QString const& portNa
     gp->port_ = port;
     gp->vectorBounds_.first = QString::number(portSize-1);
     gp->vectorBounds_.second = "0";
-    mInstance->getPorts()->insert(portName,gp);
-    mInstance->getComponent()->getPorts()->append(port);
+    component->getPorts()->insert(portName,gp);
+    component->getComponent()->getPorts()->append(port);
 
     if (mInterface)
     {
@@ -256,13 +251,13 @@ QSharedPointer<MetaPort> tst_VerilogWriterFactory::addPort(QString const& portNa
 // Function: tst_VerilogWriterFactory::addParameter()
 //-----------------------------------------------------------------------------
 void tst_VerilogWriterFactory::addParameter(QString const& name, QString const& value,
-    QSharedPointer<MetaInstance> mInstance)
+    QSharedPointer<MetaComponent> mComponent)
 {
     QSharedPointer<Parameter> parameter = QSharedPointer<Parameter>(new Parameter());
     parameter->setName(name);
     parameter->setValue(value);
 
-    mInstance->getParameters()->append(parameter);
+    mComponent->getParameters()->append(parameter);
 }
 
 //-----------------------------------------------------------------------------
@@ -669,7 +664,8 @@ QSharedPointer<MetaInstance> tst_VerilogWriterFactory::addInstanceToDesign(QStri
     MessagePasser messages;
 
     QSharedPointer<MetaInstance> mInstance(new MetaInstance(
-        &library_, &messages, component, QSharedPointer<View>::QSharedPointer(), instance, topFinder, cevs));
+        &library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
+    mInstance->parseInstance(instance, topFinder, cevs);
 
     design_->instances_.insert(instanceName, mInstance);
 

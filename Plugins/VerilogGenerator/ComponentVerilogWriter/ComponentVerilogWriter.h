@@ -26,7 +26,7 @@
 #include <Plugins/VerilogGenerator/TextBodyWriter/TextBodyWriter.h>
 
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
-#include <Plugins/common/HDLParser/MetaInstance.h>
+#include <Plugins/common/HDLParser/MetaComponent.h>
 
 #include <QSharedPointer>
 #include <QTextStream>
@@ -45,7 +45,7 @@ public:
 	 *      @param [in] component               The component to write to Verilog.
      *      @param [in] useInterfaces           True, if interfaces are utilized separately from physical ports, else false.
 	 */
-	ComponentVerilogWriter(QSharedPointer<MetaInstance> component, bool useInterfaces);
+	ComponentVerilogWriter(QSharedPointer<MetaComponent> component, bool useInterfaces);
 
 	//! The destructor.
 	~ComponentVerilogWriter();
@@ -168,7 +168,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The component to write to Verilog module.
-    QSharedPointer<MetaInstance> component_;
+    QSharedPointer<MetaComponent> component_;
 
     //! True, if interfaces are utilized separately from physical ports, else false.
     bool useInterfaces_;

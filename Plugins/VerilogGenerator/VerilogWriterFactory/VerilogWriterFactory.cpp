@@ -56,7 +56,7 @@ VerilogWriterFactory::~VerilogWriterFactory()
 // Function: VerilogWriterFactory::prepareComponent()
 //-----------------------------------------------------------------------------
 QSharedPointer<GenerationFile> VerilogWriterFactory::prepareComponent(QString const& outputPath,
-    QSharedPointer<HDLComponentParser> component)
+    QSharedPointer<MetaComponent> component)
 {
     // If we are not generating based on a design, we must parse the existing implementation.
     QString implementation;
@@ -116,7 +116,7 @@ QString VerilogWriterFactory::getLanguage() const
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::initializeComponentWriters()
 //-----------------------------------------------------------------------------
-QSharedPointer<VerilogDocument> VerilogWriterFactory::initializeComponentWriters(QSharedPointer<MetaInstance> topComponent)
+QSharedPointer<VerilogDocument> VerilogWriterFactory::initializeComponentWriters(QSharedPointer<MetaComponent> topComponent)
 {
     QSettings settings;
     QString currentUser = settings.value("General/Username").toString();

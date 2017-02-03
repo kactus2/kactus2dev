@@ -63,7 +63,7 @@ public:
      *      @return The objects that bundles the writers. Will be null, if could not be created.
      */
     virtual QSharedPointer<GenerationFile> prepareComponent(QString const& outputPath,
-        QSharedPointer<HDLComponentParser> component);
+        QSharedPointer<MetaComponent> component);
 
     /*!
      *  Creates writers for the given parsed meta design.
@@ -97,7 +97,7 @@ private:
 
      *      @return The document, which has writers associated with the component writing.
      */
-    QSharedPointer<VerilogDocument> initializeComponentWriters(QSharedPointer<MetaInstance> topComponent);
+    QSharedPointer<VerilogDocument> initializeComponentWriters(QSharedPointer<MetaComponent> topComponent);
     
     /*!
     *  Initializes writers for the given design.

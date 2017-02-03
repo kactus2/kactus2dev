@@ -1,17 +1,15 @@
 //-----------------------------------------------------------------------------
-// File: HDLComponentParser.cpp
+// File: MetaComponent.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
-// Date: 11.08.2016
+// Date: 03.02.2017
 //
 // Description:
 // Class used to parse relevant information from IP-XACT component for HDL generation.
 //-----------------------------------------------------------------------------
 
-#include "HDLComponentParser.h"
-
-#include <library/LibraryManager/libraryinterface.h>
+#include "MetaComponent.h"
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
@@ -23,12 +21,6 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 
-#include <IPXACTmodels/Component/MemoryMap.h>
-#include <IPXACTmodels/Component/MemoryRemap.h>
-#include <IPXACTmodels/Component/MemoryBlockBase.h>
-#include <IPXACTmodels/Component/AddressBlock.h>
-#include <IPXACTmodels/Component/Register.h>
-#include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 
@@ -37,91 +29,52 @@
 #include <editors/ComponentEditor/common/ListParameterFinder.h>
 
 //-----------------------------------------------------------------------------
-// Function: HDLComponentParser::HDLComponentParser
+// Function: MetaComponent::MetaComponent
 //-----------------------------------------------------------------------------
-HDLComponentParser::HDLComponentParser(LibraryInterface* library,
-    MessagePasser* messages,
+MetaComponent::MetaComponent(MessagePasser* messages,
     QSharedPointer<Component> component,
     QSharedPointer<View> activeView) :
-    MetaInstance(library,
-    messages,
-    component,
-    activeView,
-    QSharedPointer<ComponentInstance>::QSharedPointer(),
-    QSharedPointer<ListParameterFinder>::QSharedPointer(),
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > >::QSharedPointer())
+    messages_(messages),
+    component_(component),
+    activeView_(activeView),
+    parameters_(new QList<QSharedPointer<Parameter> >()),
+    ports_(new QMap<QString,QSharedPointer<MetaPort> >()),
+    remapStates_(new QList<QSharedPointer<FormattedRemapState> >())
 {
-    // Initialize the parameter finder and formatter.
-    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(component_));
-    parameterFinder->setActiveView(activeView_);
-    formatter_ = QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
+    // Try to find a component instantiation for the view.
+    if (activeView_)
+    {
+        activeInstantiation_ = component_->getModel()->
+            findComponentInstantiation(activeView_->getComponentInstantiationRef());
 
-    // Cull again the parameters.
-    parameters_->clear();
+        if (activeInstantiation_)
+        {
+            // If there is a named component instantiation, its module name shall be used.
+            moduleName_ = activeInstantiation_->getModuleName();
+        }
+    }
+
+    if (moduleName_.isEmpty())
+    {
+        // No module name. -> Take the name from the VLNV of the component.
+        moduleName_ = component_->getVlnv().getName();
+    }
+
+    // Must cull the parameters before can use them!
     cullParameters();
-    // Format parameters and ports.
-    formatParameters();
-    formatPorts();
-
-    // Find and parse the component stuff that (currently) does not exists in the hierarchy parsing.
-    parseRemapStates();
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLComponentParser::~HDLComponentParser
+// Function: MetaComponent::~MetaComponent
 //-----------------------------------------------------------------------------
-HDLComponentParser::~HDLComponentParser()
+MetaComponent::~MetaComponent()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLComponentParser::formatParameters()
+// Function: MetaComponent::sortModuleParameters()
 //-----------------------------------------------------------------------------
-void HDLComponentParser::formatParameters()
-{
-    // Create reference parameters.
-    QList<QSharedPointer<Parameter> > refParameters;
-    refParameters.append(*parameters_.data());
-
-    // Sort the parameters.
-    sortParameters(refParameters, parameters_);
-
-    // Format the parameters.
-    foreach(QSharedPointer<Parameter> parameter, *parameters_)
-    {
-        parameter->setValue(formatter_->formatReferringExpression(parameter->getValue()));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HDLComponentParser::formatPorts()
-//-----------------------------------------------------------------------------
-void HDLComponentParser::formatPorts()
-{
-    foreach (QSharedPointer<Port> cport, *component_->getPorts())
-    {
-        // Create generation port.
-        QSharedPointer<MetaPort> mPort(new MetaPort);
-
-        // Needs a reference to the IP-XACT port.
-        mPort->port_ = cport;
-
-        // Both vector and array bounds may be needed.
-        mPort->arrayBounds_.first = formatter_->formatReferringExpression(cport->getArrayLeft());
-        mPort->arrayBounds_.second = formatter_->formatReferringExpression(cport->getArrayRight());
-
-        mPort->vectorBounds_.first = formatter_->formatReferringExpression(cport->getLeftBound());
-        mPort->vectorBounds_.second = formatter_->formatReferringExpression(cport->getRightBound());
-
-        // Add to the list.
-        ports_->insert(cport->name(), mPort);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HDLComponentParser::sortModuleParameters()
-//-----------------------------------------------------------------------------
-void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
+void MetaComponent::sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
     QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters )
 {
     // Go through existing ones on the instance.
@@ -193,9 +146,96 @@ void HDLComponentParser::sortParameters(QList<QSharedPointer<Parameter> >& refPa
 }
 
 //-----------------------------------------------------------------------------
-// Function: HDLComponentParser::parseRemapStates
+// Function: MetaComponent::cullParameters()
 //-----------------------------------------------------------------------------
-void HDLComponentParser::parseRemapStates()
+void MetaComponent::cullParameters()
+{
+    // Cull all the component parameters for the original parameters.
+    foreach(QSharedPointer<Parameter> parameterOrig, *component_->getParameters())
+    {
+        QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
+        parameters_->append(parameterCpy);
+    }
+
+    // If there is an active component instantiation, take its module parameters as well.
+    if (activeInstantiation_)
+    {
+        foreach(QSharedPointer<ModuleParameter> parameterOrig, *activeInstantiation_->getModuleParameters())
+        {
+            QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
+            parameters_->append(parameterCpy);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function:  MetaComponent::formatComponent()
+//-----------------------------------------------------------------------------
+void MetaComponent::formatComponent()
+{
+    // Initialize the parameter finder and formatter.
+    QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(component_));
+    parameterFinder->setActiveView(activeView_);
+    //! The formatter for expressions.
+    QSharedPointer<ExpressionFormatter> formatter = 
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder));
+
+    // Format parameters and ports.
+    formatParameters(formatter);
+    formatPorts(formatter);
+
+    // Find and parse the component stuff that (currently) does not exists in the hierarchy parsing.
+    parseRemapStates(formatter);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaComponent::formatParameters()
+//-----------------------------------------------------------------------------
+void MetaComponent::formatParameters(QSharedPointer<ExpressionFormatter> formatter)
+{
+    // Create reference parameters.
+    QList<QSharedPointer<Parameter> > refParameters;
+    refParameters.append(*parameters_.data());
+
+    // Sort the parameters.
+    sortParameters(refParameters, parameters_);
+
+    // Format the parameters.
+    foreach(QSharedPointer<Parameter> parameter, *parameters_)
+    {
+        parameter->setValue(formatter->formatReferringExpression(parameter->getValue()));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaComponent::formatPorts()
+//-----------------------------------------------------------------------------
+void MetaComponent::formatPorts(QSharedPointer<ExpressionFormatter> formatter)
+{
+    foreach (QSharedPointer<Port> cport, *component_->getPorts())
+    {
+        // Create generation port.
+        QSharedPointer<MetaPort> mPort(new MetaPort);
+
+        // Needs a reference to the IP-XACT port.
+        mPort->port_ = cport;
+
+        // Both vector and array bounds may be needed.
+        mPort->arrayBounds_.first = formatter->formatReferringExpression(cport->getArrayLeft());
+        mPort->arrayBounds_.second = formatter->formatReferringExpression(cport->getArrayRight());
+
+        mPort->vectorBounds_.first = formatter->formatReferringExpression(cport->getLeftBound());
+        mPort->vectorBounds_.second = formatter->formatReferringExpression(cport->getRightBound());
+
+        // Add to the list.
+        ports_->insert(cport->name(), mPort);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaComponent::parseRemapStates
+//-----------------------------------------------------------------------------
+void MetaComponent::parseRemapStates(QSharedPointer<ExpressionFormatter> formatter)
 {
     // Go through configured remap states.
     foreach(QSharedPointer<RemapState> currentState, *component_->getRemapStates())
@@ -203,7 +243,7 @@ void HDLComponentParser::parseRemapStates()
         // Create new remap state for the generation.
         QSharedPointer<FormattedRemapState> grms(new FormattedRemapState);
         grms->state_ = currentState;
-        remapStates_.append(grms);
+        remapStates_->append(grms);
 
         // Each port referred by the state must be listed.
         foreach(QSharedPointer<RemapPort> rmport, *currentState->getRemapPorts())
@@ -212,7 +252,7 @@ void HDLComponentParser::parseRemapStates()
 
             // Pick the port name, and the value needed for it to remap state become effective.
             parsedPort->first = component_->getPort(rmport->getPortNameRef());
-            parsedPort->second = formatter_->formatReferringExpression(rmport->getValue());
+            parsedPort->second = formatter->formatReferringExpression(rmport->getValue());
 
             grms->ports_.append(parsedPort);
         }

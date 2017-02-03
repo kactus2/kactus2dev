@@ -32,7 +32,7 @@
 
 #include <tests/MockObjects/LibraryMock.h>
 
-#include <Plugins/common/HDLParser/HDLComponentParser.h>
+#include <Plugins/common/HDLParser/MetaComponent.h>
 #include <Plugins/common/HDLParser/MetaDesign.h>
 
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
@@ -2387,27 +2387,28 @@ void tst_HDLParser::testFlatComponent()
     addModuleParameter("freq", "100000", "secondParameter");
 
     MessagePasser messages;
-    QSharedPointer<HDLComponentParser> componentParser =
-        QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, &messages, topComponent_, topView_));
+    QSharedPointer<MetaComponent> flatComponent =
+        QSharedPointer<MetaComponent>(new MetaComponent(&messages, topComponent_, topView_));
+    flatComponent->formatComponent();
 
-    QCOMPARE(componentParser->getParameters()->size(), 2);
-    QCOMPARE(componentParser->getParameters()->value(0)->name(), QString("dataWidth"));
-    QCOMPARE(componentParser->getParameters()->value(0)->getValue(), QString("8"));
-    QCOMPARE(componentParser->getParameters()->value(1)->name(), QString("freq"));
-    QCOMPARE(componentParser->getParameters()->value(1)->getValue(), QString("100000"));
+    QCOMPARE(flatComponent->getParameters()->size(), 2);
+    QCOMPARE(flatComponent->getParameters()->value(0)->name(), QString("dataWidth"));
+    QCOMPARE(flatComponent->getParameters()->value(0)->getValue(), QString("8"));
+    QCOMPARE(flatComponent->getParameters()->value(1)->name(), QString("freq"));
+    QCOMPARE(flatComponent->getParameters()->value(1)->getValue(), QString("100000"));
 
-    QCOMPARE(componentParser->getPorts()->size(), 4);
-    QCOMPARE(componentParser->getPorts()->value("clk")->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(flatComponent->getPorts()->size(), 4);
+    QCOMPARE(flatComponent->getPorts()->value("clk")->port_->getDirection(), DirectionTypes::IN);
 
-    QCOMPARE(componentParser->getPorts()->value("dataIn")->port_->getDirection(), DirectionTypes::IN);
-    QCOMPARE(componentParser->getPorts()->value("dataIn")->vectorBounds_.first, QString("7"));
-    QCOMPARE(componentParser->getPorts()->value("dataIn")->vectorBounds_.second, QString("0"));
+    QCOMPARE(flatComponent->getPorts()->value("dataIn")->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(flatComponent->getPorts()->value("dataIn")->vectorBounds_.first, QString("7"));
+    QCOMPARE(flatComponent->getPorts()->value("dataIn")->vectorBounds_.second, QString("0"));
 
-    QCOMPARE(componentParser->getPorts()->value("rst_n")->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(flatComponent->getPorts()->value("rst_n")->port_->getDirection(), DirectionTypes::IN);
 
-    QCOMPARE(componentParser->getPorts()->value("dataOut")->port_->getDirection(), DirectionTypes::OUT);
-    QCOMPARE(componentParser->getPorts()->value("dataOut")->vectorBounds_.first, QString("7"));
-    QCOMPARE(componentParser->getPorts()->value("dataOut")->vectorBounds_.second, QString("0"));
+    QCOMPARE(flatComponent->getPorts()->value("dataOut")->port_->getDirection(), DirectionTypes::OUT);
+    QCOMPARE(flatComponent->getPorts()->value("dataOut")->vectorBounds_.first, QString("7"));
+    QCOMPARE(flatComponent->getPorts()->value("dataOut")->vectorBounds_.second, QString("0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -2424,19 +2425,20 @@ void tst_HDLParser::testFlatComponentExpressions()
     topComponent_->getPorts()->append(port);
 
     MessagePasser messages;
-    QSharedPointer<HDLComponentParser> componentParser =
-        QSharedPointer<HDLComponentParser>(new HDLComponentParser(&library_, &messages, topComponent_, topView_));
+    QSharedPointer<MetaComponent> flatComponent =
+        QSharedPointer<MetaComponent>(new MetaComponent(&messages, topComponent_, topView_));
+    flatComponent->formatComponent();
 
-    QCOMPARE(componentParser->getParameters()->size(), 2);
-    QCOMPARE(componentParser->getParameters()->value(0)->name(), QString("module"));
-    QCOMPARE(componentParser->getParameters()->value(0)->getValue(), QString("10"));
-    QCOMPARE(componentParser->getParameters()->value(1)->name(), QString("freq"));
-    QCOMPARE(componentParser->getParameters()->value(1)->getValue(), QString("module*3.14"));
+    QCOMPARE(flatComponent->getParameters()->size(), 2);
+    QCOMPARE(flatComponent->getParameters()->value(0)->name(), QString("module"));
+    QCOMPARE(flatComponent->getParameters()->value(0)->getValue(), QString("10"));
+    QCOMPARE(flatComponent->getParameters()->value(1)->name(), QString("freq"));
+    QCOMPARE(flatComponent->getParameters()->value(1)->getValue(), QString("module*3.14"));
 
-    QCOMPARE(componentParser->getPorts()->size(), 1);
-    QCOMPARE(componentParser->getPorts()->value("clk")->port_->getDirection(), DirectionTypes::IN);
-    QCOMPARE(componentParser->getPorts()->value("clk")->vectorBounds_.first, QString("freq*2"));
-    QCOMPARE(componentParser->getPorts()->value("clk")->vectorBounds_.second, QString("2+5"));
+    QCOMPARE(flatComponent->getPorts()->size(), 1);
+    QCOMPARE(flatComponent->getPorts()->value("clk")->port_->getDirection(), DirectionTypes::IN);
+    QCOMPARE(flatComponent->getPorts()->value("clk")->vectorBounds_.first, QString("freq*2"));
+    QCOMPARE(flatComponent->getPorts()->value("clk")->vectorBounds_.second, QString("2+5"));
 }
 
 //-----------------------------------------------------------------------------
@@ -2469,7 +2471,7 @@ void tst_HDLParser::testParameterSorting()
 
     QSharedPointer<QList<QSharedPointer<Parameter> > > sortedParameters(new  QList<QSharedPointer<Parameter> >(parameters));
 
-    HDLComponentParser::sortParameters(parameters, sortedParameters);
+    MetaComponent::sortParameters(parameters, sortedParameters);
 
     QCOMPARE(sortedParameters->size(), 3);
 
@@ -2518,7 +2520,7 @@ void tst_HDLParser::testParameterSorting2()
 
     QSharedPointer<QList<QSharedPointer<Parameter> > > sortedParameters(new  QList<QSharedPointer<Parameter> >(parameters));
 
-    HDLComponentParser::sortParameters(parameters,sortedParameters);
+    MetaComponent::sortParameters(parameters,sortedParameters);
 
     QCOMPARE(sortedParameters->size(), 4);
 
@@ -2576,7 +2578,7 @@ void tst_HDLParser::testParameterSorting3()
 
     QSharedPointer<QList<QSharedPointer<Parameter> > > sortedParameters(new  QList<QSharedPointer<Parameter> >(parameters));
 
-    HDLComponentParser::sortParameters(parameters, sortedParameters);
+    MetaComponent::sortParameters(parameters, sortedParameters);
 
     QCOMPARE(sortedParameters->size(), 5);
 

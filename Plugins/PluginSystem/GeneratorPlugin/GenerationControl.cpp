@@ -17,7 +17,6 @@
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
-#include <Plugins/common/HDLParser/HDLComponentParser.h>
 #include <Plugins/common/HDLParser/MetaDesign.h>
 
 #include <IPXACTmodels/Design/Design.h>
@@ -218,8 +217,9 @@ void GenerationControl::parseDocuments()
         // Time to write the contents to files
         input_.messages->sendNotice(QObject::tr("Formatting component %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
-        QSharedPointer<HDLComponentParser> componentParser
-            (new HDLComponentParser(library_, input_.messages, input_.component, viewSelection_->getView()));
+        QSharedPointer<MetaComponent> componentParser
+            (new MetaComponent(input_.messages, input_.component, viewSelection_->getView()));
+        componentParser->formatComponent();
 
         QSharedPointer<GenerationFile> gFile = factory_->prepareComponent(fileOutput_->getOutputPath(), componentParser);
 

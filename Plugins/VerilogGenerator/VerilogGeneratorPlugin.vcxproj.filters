@@ -259,9 +259,6 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.cpp">
       <Filter>Source Files\Widgets</Filter>
     </ClCompile>
-    <ClCompile Include="..\common\HDLParser\HDLComponentParser.cpp">
-      <Filter>Source Files\Parsing</Filter>
-    </ClCompile>
     <ClCompile Include="..\common\HDLParser\MetaDesign.cpp">
       <Filter>Source Files\Parsing</Filter>
     </ClCompile>
@@ -297,6 +294,9 @@
     </ClCompile>
     <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp">
       <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\MetaComponent.cpp">
+      <Filter>Source Files\Parsing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -387,9 +387,6 @@
     <ClInclude Include="..\common\HDLParser\HDLParserCommon.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\HDLParser\HDLComponentParser.h">
-      <Filter>Header Files\Parsing</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\HDLParser\MetaInstance.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
@@ -401,6 +398,9 @@
     </ClInclude>
     <ClInclude Include="..\VerilogImport\VerilogSyntax.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaComponent.h">
+      <Filter>Header Files\Parsing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

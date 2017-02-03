@@ -29,12 +29,10 @@
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 #include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>
 
-#include <Plugins/common/HDLParser/HDLComponentParser.h>
-
 //-----------------------------------------------------------------------------
 // Function: ComponentVerilogWriter::ComponentVerilogWriter
 //-----------------------------------------------------------------------------
-ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<MetaInstance> component,
+ComponentVerilogWriter::ComponentVerilogWriter(QSharedPointer<MetaComponent> component,
     bool useInterfaces) :
 component_(component),
 useInterfaces_(useInterfaces),
@@ -309,9 +307,14 @@ void ComponentVerilogWriter::writeInternalWiresAndComponentInstances(QTextStream
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
 {
-    QSharedPointer<HDLComponentParser> comparser = component_.dynamicCast<HDLComponentParser>();
+    if (component_->getRemapStates()->isEmpty())
+    {
+       return;
+    }
 
-    foreach (QSharedPointer<FormattedRemapState> grms, comparser->remapStates_)
+    outputStream << indentation() << "// Remap states:" << endl;
+
+    foreach (QSharedPointer<FormattedRemapState> grms, *component_->getRemapStates())
     {
         QString condition;
 
@@ -329,10 +332,7 @@ void ComponentVerilogWriter::writeRemapSates(QTextStream& outputStream) const
         outputStream << indentation() << "`define " << grms->state_->name() << " " << condition << endl;
     }
 
-    if (comparser->remapStates_.count() > 0)
-    {
-        outputStream << endl;
-    }
+    outputStream << endl;
 }
 
 //-----------------------------------------------------------------------------
