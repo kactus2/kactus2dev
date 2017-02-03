@@ -106,8 +106,6 @@ struct MetaInterface
     QSharedPointer<AbstractionType> absType_;
     //! The abstraction definition of the abstraction type.
     QSharedPointer<AbstractionDefinition> absDef_;
-    //! The used interface mode.
-    QString mode_;
     //! The parsed ports of the component keyed with its physical name.
     QMap<QString, QSharedPointer<MetaPort> > ports_;
     //! The interconnection attached to the interface go upper level in hierarchy.

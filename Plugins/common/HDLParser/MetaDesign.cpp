@@ -291,6 +291,8 @@ void MetaDesign::parseInterconnections()
                 continue;
             }
 
+            // TODO: Errr if mInterface already has an interconnection!
+
             // Append to the list.
             foundInterInterfaces.append(mInterface);
         }
@@ -310,6 +312,8 @@ void MetaDesign::parseInterconnections()
                     topInstance_->getComponent()->getVlnv().toString()));
                 continue;
             }
+
+            // TODO: Errr if mInterface already has an interconnection!
 
             // Append to the lists.
             foundHierInterfaces.append(mInterface);

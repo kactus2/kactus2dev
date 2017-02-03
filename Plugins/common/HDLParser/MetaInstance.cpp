@@ -160,7 +160,6 @@ void MetaInstance::cullInterfaces()
 
         // Create "our" interface for each IP-XACT interface. Take the relevant values.
         QSharedPointer<MetaInterface> mInterface(new MetaInterface);
-        mInterface->mode_ = interfaceMode2Str(busInterface->getInterfaceMode());
         mInterface->interface_ = busInterface;
         mInterface->absType_ = absType;
         mInterface->absDef_ = absDef;
