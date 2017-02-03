@@ -29,6 +29,8 @@ MemoryDesignerGraphicsItem(QStringLiteral(""), QStringLiteral(""), parentItem)
     setRect(positionX, positionY, extensionWidth, extensionHeight);
     setPenAndBrush();
     setLabelPositions();
+
+    setZValue(-10);
 }
 
 //-----------------------------------------------------------------------------

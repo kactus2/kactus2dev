@@ -482,7 +482,7 @@ quint64 MemoryConnectionItem::getSceneEndPoint() const
 {
     quint64 sceneEndPoint = sceneBoundingRect().bottom();
 
-    quint64 endItemSceneEndPoint = endItem_->sceneBoundingRect().bottom();
+    quint64 endItemSceneEndPoint = endItem_->getSceneRectangleWithSubItems().bottom();
 
     if (endItemSceneEndPoint > sceneEndPoint)
     {

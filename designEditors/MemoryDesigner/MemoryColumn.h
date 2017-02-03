@@ -60,13 +60,6 @@ public:
     MainMemoryGraphicsItem* findItemAt(int y) const;
 
     /*!
-     *  Find a graphics item at a given position.
-     *
-     *      @param [in] itemYPosition   The given position.
-     */
-    MainMemoryGraphicsItem* findGraphicsItemAt(int itemYPosition) const;
-
-    /*!
      *  Find a graphics item by a given memory item.
      *
      *      @param [in] containedMemoryItem     The selected memory item.
