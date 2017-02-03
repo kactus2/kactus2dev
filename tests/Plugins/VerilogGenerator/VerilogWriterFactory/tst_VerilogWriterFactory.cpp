@@ -235,7 +235,7 @@ QSharedPointer<MetaPort> tst_VerilogWriterFactory::addPort(QString const& portNa
 
     if (mInterface)
     {
-        mInterface->getPorts()->insert(portName,gp);
+        mInterface->ports_.insert(portName,gp);
 
         QSharedPointer<PortMap> pm(new PortMap);
         QSharedPointer<PortMap::PhysicalPort> pp(new PortMap::PhysicalPort);
