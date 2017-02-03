@@ -43,9 +43,6 @@ public:
 
     //! The destructor.
     ~MetaDesign();
-
-    //! The alternative constructor.
-    MetaDesign();
     
     /*!
      *  Parses a hierarchy of designs and return the list of them.
@@ -58,17 +55,10 @@ public:
         GenerationTuple input,
         QSharedPointer<View> topComponentView);
 
-    //! The parsed instances in the design_, keyed with their names.
-    QMap<QString,QSharedPointer<MetaInstance> > instances_;
-
-    //! The parsed meta instance of the top component.
-    QSharedPointer<MetaInstance> topInstance_;
-
-    //! The parsed interconnections of the design_.
-    QList<QSharedPointer<MetaInterconnection> > interconnections_;
-
-    //! The parsed ad-hoc connections of the design_.
-    QList<QSharedPointer<MetaWire> > adHocWires_;
+    QSharedPointer<QMap<QString,QSharedPointer<MetaInstance> > > getInstances() const { return instances_; }
+    QSharedPointer<MetaInstance> getTopInstance() const { return topInstance_; }
+    QSharedPointer<QList<QSharedPointer<MetaInterconnection> > > getInterconnections() const { return interconnections_; }
+    QSharedPointer<QList<QSharedPointer<MetaWire> > > getAdHocWires() const { return adHocWires_; }
 
 private:
 
@@ -136,6 +126,15 @@ private:
 
     //! The finder for top level parameters.
     QSharedPointer<ListParameterFinder> topFinder_;
+
+    //! The parsed meta instance of the top component.
+    QSharedPointer<MetaInstance> topInstance_;
+    //! The parsed instances in the design_, keyed with their names.
+    QSharedPointer<QMap<QString,QSharedPointer<MetaInstance> > > instances_;
+    //! The parsed interconnections of the design_.
+    QSharedPointer<QList<QSharedPointer<MetaInterconnection> > > interconnections_;
+    //! The parsed ad-hoc connections of the design_.
+    QSharedPointer<QList<QSharedPointer<MetaWire> > > adHocWires_;
 };
 
 #endif // METADESIGN_H

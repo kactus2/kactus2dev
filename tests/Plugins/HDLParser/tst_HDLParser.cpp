@@ -258,8 +258,8 @@ void tst_HDLParser::testTopLevelComponent()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QVERIFY(design->topInstance_);
-    QSharedPointer<MetaInstance> mInstance = design->topInstance_;
+    QVERIFY(design->getTopInstance());
+    QSharedPointer<MetaInstance> mInstance = design->getTopInstance();
 
     QCOMPARE(mInstance->getParameters()->size(), 2);
     QCOMPARE(mInstance->getParameters()->value(0)->name(), QString("dataWidth"));
@@ -300,8 +300,8 @@ void tst_HDLParser::testTopLevelComponentExpressions()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QVERIFY(design->topInstance_);
-    QSharedPointer<MetaInstance> mInstance = design->topInstance_;
+    QVERIFY(design->getTopInstance());
+    QSharedPointer<MetaInstance> mInstance = design->getTopInstance();
 
     QCOMPARE(mInstance->getParameters()->size(), 2);
     QCOMPARE(mInstance->getParameters()->value(0)->name(), QString("module"));
@@ -381,9 +381,9 @@ void tst_HDLParser::testHierarchicalConnections()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("instance1");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("instance1");
     QCOMPARE(mInstance->getInterfaces()->size(), 2);
 
     QSharedPointer<MetaInterface> mInterface = mInstance->getInterfaces()->value("clk");
@@ -477,9 +477,9 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("instance1");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("instance1");
     QCOMPARE(mInstance->getInterfaces()->size(), 1);
     QCOMPARE(mInstance->getParameters()->size(), 1);
 
@@ -673,9 +673,9 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 2);
+    QCOMPARE(design->getInstances()->size(), 2);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
     QCOMPARE(mInstance->getInterfaces()->size(), 1);
 
     QSharedPointer<MetaInterface> mInterface = mInstance->getInterfaces()->value("data_bus");
@@ -691,7 +691,7 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
-    mInstance = design->instances_.value("receiver");
+    mInstance = design->getInstances()->value("receiver");
     QCOMPARE(mInstance->getInterfaces()->size(), 1);
 
     mInterface = mInstance->getInterfaces()->value("data_bus");
@@ -707,8 +707,8 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
     
-    QCOMPARE(design->interconnections_.size(), 1);
-    QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
+    QCOMPARE(design->getInterconnections()->size(), 1);
+    QSharedPointer<MetaInterconnection> mInterconnect = design->getInterconnections()->first();
 
     QCOMPARE(mInterconnect->wires_.size(), 2);
     QSharedPointer<MetaWire> mWire = mInterconnect->wires_.first();
@@ -783,9 +783,9 @@ void tst_HDLParser::testEmptyBounds()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 2);
+    QCOMPARE(design->getInstances()->size(), 2);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
     QCOMPARE(mInstance->getInterfaces()->size(), 1);
 
     QSharedPointer<MetaInterface> mInterface = mInstance->getInterfaces()->value("data_bus");
@@ -796,7 +796,7 @@ void tst_HDLParser::testEmptyBounds()
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
-    mInstance = design->instances_.value("receiver");
+    mInstance = design->getInstances()->value("receiver");
     QCOMPARE(mInstance->getInterfaces()->size(), 1);
 
     mInterface = mInstance->getInterfaces()->value("data_bus");
@@ -807,8 +807,8 @@ void tst_HDLParser::testEmptyBounds()
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
-    QCOMPARE(design->interconnections_.size(), 1);
-    QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
+    QCOMPARE(design->getInterconnections()->size(), 1);
+    QSharedPointer<MetaInterconnection> mInterconnect = design->getInterconnections()->first();
 
     QCOMPARE(mInterconnect->wires_.size(), 1);
     QSharedPointer<MetaWire> mWire = mInterconnect->wires_.first();
@@ -878,9 +878,9 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 2);
+    QCOMPARE(design->getInstances()->size(), 2);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
     QCOMPARE(mInstance->getInterfaces()->size(), 1);
 
     QSharedPointer<MetaInterface> mInterface = mInstance->getInterfaces()->value("data_bus");
@@ -891,7 +891,7 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     QCOMPARE(mpa->logicalBounds_.first, QString("14"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
-    mInstance = design->instances_.value("receiver");
+    mInstance = design->getInstances()->value("receiver");
     QCOMPARE(mInstance->getInterfaces()->size(), 1);
 
     mInterface = mInstance->getInterfaces()->value("data_bus");
@@ -902,8 +902,8 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     QCOMPARE(mpa->logicalBounds_.first, QString("8"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
-    QCOMPARE(design->interconnections_.size(), 1);
-    QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
+    QCOMPARE(design->getInterconnections()->size(), 1);
+    QSharedPointer<MetaInterconnection> mInterconnect = design->getInterconnections()->first();
 
     QCOMPARE(mInterconnect->wires_.size(), 1);
     QSharedPointer<MetaWire> mWire = mInterconnect->wires_.first();
@@ -1010,9 +1010,9 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 3);
+    QCOMPARE(design->getInstances()->size(), 3);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("receiver1");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("receiver1");
     QCOMPARE(mInstance->getInterfaces()->size(), 1);
 
     QSharedPointer<MetaInterface> mInterface = mInstance->getInterfaces()->value("data_bus");
@@ -1028,7 +1028,7 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
-    mInstance = design->instances_.value("receiver2");
+    mInstance = design->getInstances()->value("receiver2");
     QCOMPARE(mInstance->getInterfaces()->size(), 1);
 
     mInterface = mInstance->getInterfaces()->value("data_bus");
@@ -1044,8 +1044,8 @@ void tst_HDLParser::testMasterToMultipleSlavesInterconnections()
     QCOMPARE(mpa->logicalBounds_.first, QString("0"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
-    QCOMPARE(design->interconnections_.size(), 1);
-    QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
+    QCOMPARE(design->getInterconnections()->size(), 1);
+    QSharedPointer<MetaInterconnection> mInterconnect = design->getInterconnections()->first();
 
     QCOMPARE(mInterconnect->wires_.size(), 2);
     QSharedPointer<MetaWire> mWire = mInterconnect->wires_.first();
@@ -1093,12 +1093,12 @@ void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 4);
+    QCOMPARE(design->getInstances()->size(), 4);
 
-    QSharedPointer<MetaInstance> mInstance0 = design->instances_.value("sender");
-    QSharedPointer<MetaInstance> mInstance1 = design->instances_.value("oneBitReceiver");
-    QSharedPointer<MetaInstance> mInstance2 = design->instances_.value("fourBitReceiver");
-    QSharedPointer<MetaInstance> mInstance3 = design->instances_.value("sixteenBitReceiver");
+    QSharedPointer<MetaInstance> mInstance0 = design->getInstances()->value("sender");
+    QSharedPointer<MetaInstance> mInstance1 = design->getInstances()->value("oneBitReceiver");
+    QSharedPointer<MetaInstance> mInstance2 = design->getInstances()->value("fourBitReceiver");
+    QSharedPointer<MetaInstance> mInstance3 = design->getInstances()->value("sixteenBitReceiver");
 
     QCOMPARE(mInstance0->getInterfaces()->first()->getPorts()->size(), 2);
     QCOMPARE(mInstance1->getInterfaces()->first()->getPorts()->size(), 2);
@@ -1125,8 +1125,8 @@ void tst_HDLParser::testInterconnectionToVaryingSizeLogicalMaps()
     QCOMPARE(mpa->logicalBounds_.first, QString("15"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
-    QCOMPARE(design->interconnections_.size(), 1);
-    QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
+    QCOMPARE(design->getInterconnections()->size(), 1);
+    QSharedPointer<MetaInterconnection> mInterconnect = design->getInterconnections()->first();
 
     QCOMPARE(mInterconnect->wires_.size(), 2);
     QSharedPointer<MetaWire> mWire = mInterconnect->wires_.first();
@@ -1253,10 +1253,10 @@ void tst_HDLParser::testSlicedInterconnection()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 2);
+    QCOMPARE(design->getInstances()->size(), 2);
 
-    QSharedPointer<MetaInstance> mInstance0 = design->instances_.value("sender");
-    QSharedPointer<MetaInstance> mInstance1 = design->instances_.value("receiver");
+    QSharedPointer<MetaInstance> mInstance0 = design->getInstances()->value("sender");
+    QSharedPointer<MetaInstance> mInstance1 = design->getInstances()->value("receiver");
 
     QVERIFY(mInstance0->getInterfaces()->first()->getPorts()->size() > 0);
     QVERIFY(mInstance1->getInterfaces()->first()->getPorts()->size() > 0);
@@ -1276,8 +1276,8 @@ void tst_HDLParser::testSlicedInterconnection()
     QCOMPARE(mpa->logicalBounds_.first, QString("1"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
-    QCOMPARE(design->interconnections_.size(), 1);
-    QSharedPointer<MetaInterconnection> mInterconnect = design->interconnections_.first();
+    QCOMPARE(design->getInterconnections()->size(), 1);
+    QSharedPointer<MetaInterconnection> mInterconnect = design->getInterconnections()->first();
 
     QVERIFY(mInterconnect->wires_.size() > 0);
     QSharedPointer<MetaWire> mWire = mInterconnect->wires_.last();
@@ -1352,9 +1352,9 @@ void tst_HDLParser::testAbsDefDefault()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 2);
+    QCOMPARE(design->getInstances()->size(), 2);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("receiver");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("receiver");
 
     QVERIFY(mInstance->getInterfaces()->first()->getPorts()->size() > 0);
 
@@ -1389,9 +1389,9 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 3);
+    QCOMPARE(design->getInstances()->size(), 3);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
 
     QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value("data_out");
     QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("dataAdHoc");
@@ -1403,7 +1403,7 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
     QCOMPARE(mpa->physicalBounds_.first, QString("0"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
 
-    mInstance = design->instances_.value("receiver1");
+    mInstance = design->getInstances()->value("receiver1");
 
     mPort = mInstance->getPorts()->value("data_in");
     mpa = mPort->upAssignments_.value("dataAdHoc");
@@ -1415,21 +1415,21 @@ void tst_HDLParser::testAdhocConnectionBetweenComponentInstances()
     QCOMPARE(mpa->physicalBounds_.first, QString("0"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
 
-    mInstance = design->instances_.value("receiver2");
+    mInstance = design->getInstances()->value("receiver2");
 
     mPort = mInstance->getPorts()->value("enable_in");
     mpa = mPort->upAssignments_.value("enableAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("0"));
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
 
-    QCOMPARE(design->adHocWires_.size(), 2);
-    QSharedPointer<MetaWire> mWire = design->adHocWires_.first();
+    QCOMPARE(design->getAdHocWires()->size(), 2);
+    QSharedPointer<MetaWire> mWire = design->getAdHocWires()->first();
 
     QCOMPARE(mWire->hierPorts_.size(), 0);
     QCOMPARE(mWire->bounds_.first, QString("0"));
     QCOMPARE(mWire->bounds_.second, QString("0"));
 
-    mWire = design->adHocWires_.last();
+    mWire = design->getAdHocWires()->last();
     QCOMPARE(mWire->hierPorts_.size(), 0);
     QCOMPARE(mWire->bounds_.first, QString("7"));
     QCOMPARE(mWire->bounds_.second, QString("0"));
@@ -1466,19 +1466,19 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 2);
+    QCOMPARE(design->getInstances()->size(), 2);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
 
     QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value("data_out");
     QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("dataAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("16"));
     QCOMPARE(mpa->physicalBounds_.second, QString("4"));
 
-    QCOMPARE(design->adHocWires_.size(), 1);
-    QSharedPointer<MetaWire> mWire = design->adHocWires_.first();
+    QCOMPARE(design->getAdHocWires()->size(), 1);
+    QSharedPointer<MetaWire> mWire = design->getAdHocWires()->first();
 
-    mWire = design->adHocWires_.last();
+    mWire = design->getAdHocWires()->last();
     QCOMPARE(mWire->bounds_.first, QString("16"));
     QCOMPARE(mWire->bounds_.second, QString("0"));
 }
@@ -1519,19 +1519,19 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 2);
+    QCOMPARE(design->getInstances()->size(), 2);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
 
     QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value("data_out");
     QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("dataAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("8"));
     QCOMPARE(mpa->physicalBounds_.second, QString("3"));
 
-    QCOMPARE(design->adHocWires_.size(), 1);
-    QSharedPointer<MetaWire> mWire = design->adHocWires_.first();
+    QCOMPARE(design->getAdHocWires()->size(), 1);
+    QSharedPointer<MetaWire> mWire = design->getAdHocWires()->first();
 
-    mWire = design->adHocWires_.last();
+    mWire = design->getAdHocWires()->last();
     QCOMPARE(mWire->bounds_.first, QString("8"));
     QCOMPARE(mWire->bounds_.second, QString("0"));
 }
@@ -1601,9 +1601,9 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("tieOffer");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("tieOffer");
     QCOMPARE(mInstance->getPorts()->size(), 9);
 
     QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value("defaultTieOff");
@@ -1668,9 +1668,9 @@ void tst_HDLParser::testPortDefaultValueInComponentInstance()
 
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("tieOffer");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("tieOffer");
     QCOMPARE(mInstance->getPorts()->size(), 3);
 
     QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value("unconnnectedIn");
@@ -1751,19 +1751,19 @@ void tst_HDLParser::testHierarchicalAdhocConnection()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QCOMPARE(design->adHocWires_.size(), 1);
+    QCOMPARE(design->getAdHocWires()->size(), 1);
 
-    QSharedPointer<MetaWire> mWire = design->adHocWires_.first();
+    QSharedPointer<MetaWire> mWire = design->getAdHocWires()->first();
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.first();
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->first();
 
     QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value("data_out");
     QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.last();
     QCOMPARE(mpa->wire_, mWire);
 
-    QSharedPointer<MetaPort> hierPort = design->topInstance_->getPorts()->first();
+    QSharedPointer<MetaPort> hierPort = design->getTopInstance()->getPorts()->first();
     QCOMPARE(mpa->wire_->hierPorts_.first(), hierPort);
     QSharedPointer<MetaPortAssignment> hierAssignment = hierPort->downAssignments_.first();
     QCOMPARE(hierAssignment->wire_, mWire);
@@ -1854,16 +1854,16 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 3);
+    QCOMPARE(design->getInstances()->size(), 3);
 
-    QCOMPARE(design->adHocWires_.size(), 1);
-    QSharedPointer<MetaWire> mWire = design->adHocWires_.first();
-    mWire = design->adHocWires_.last();
+    QCOMPARE(design->getAdHocWires()->size(), 1);
+    QSharedPointer<MetaWire> mWire = design->getAdHocWires()->first();
+    mWire = design->getAdHocWires()->last();
     QCOMPARE(mWire->hierPorts_.size(), 0);
     QCOMPARE(mWire->bounds_.first, QString("7"));
     QCOMPARE(mWire->bounds_.second, QString("0"));
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
 
     QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value("data_out");
     QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("dataAdHoc");
@@ -1871,7 +1871,7 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
     QCOMPARE(mpa->wire_, mWire);
 
-    mInstance = design->instances_.value("receiver1");
+    mInstance = design->getInstances()->value("receiver1");
 
     mPort = mInstance->getPorts()->value("data_in");
     mpa = mPort->upAssignments_.value("dataAdHoc");
@@ -1879,7 +1879,7 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     QCOMPARE(mpa->physicalBounds_.second, QString("0"));
     QCOMPARE(mpa->wire_, mWire);
 
-    mInstance = design->instances_.value("receiver2");
+    mInstance = design->getInstances()->value("receiver2");
 
     mPort = mInstance->getPorts()->value("data_in");
     mpa = mPort->upAssignments_.value("dataAdHoc");
@@ -1933,9 +1933,9 @@ void tst_HDLParser::testInstanceParametersAreCulled()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
     QCOMPARE(mInstance->getParameters()->size(), 2);
 
     QCOMPARE(mInstance->getParameters()->value(0)->name(), QString("componentParameter"));
@@ -1989,9 +1989,9 @@ void tst_HDLParser::testTopComponentParametersAreUtilized()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
     QCOMPARE(mInstance->getParameters()->size(), 1);
 
     QCOMPARE(mInstance->getParameters()->value(0)->name(), QString("moduleParameter"));
@@ -2044,9 +2044,9 @@ void tst_HDLParser::testInstanceComponentParametersAreUtilized()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
     QCOMPARE(mInstance->getParameters()->size(), 2);
 
     QCOMPARE(mInstance->getParameters()->value(0)->name(), QString("componentParameter"));
@@ -2099,9 +2099,9 @@ void tst_HDLParser::testParameterPropagationFromTop()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
     QCOMPARE(mInstance->getParameters()->size(), 1);
 
     QCOMPARE(mInstance->getParameters()->value(0)->name(), QString("moduleParameter"));
@@ -2160,9 +2160,9 @@ void tst_HDLParser::testParameterPropagationFromTop2()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
     QCOMPARE(mInstance->getParameters()->size(), 2);
 
     QCOMPARE(mInstance->getParameters()->value(0)->name(), QString("senderParameter"));
@@ -2258,16 +2258,16 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
     QCOMPARE(designs.size(), 1);
     QSharedPointer<MetaDesign> design = designs.first();
 
-    QCOMPARE(design->instances_.size(), 2);
+    QCOMPARE(design->getInstances()->size(), 2);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.value("sender");
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
     QCOMPARE(mInstance->getParameters()->size(), 2);
 
     QSharedPointer<MetaPortAssignment> mpa = mInstance->getInterfaces()->first()->getPorts()->first()->upAssignments_.first();
     QCOMPARE(mpa->logicalBounds_.first, QString("70"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
-    QSharedPointer<MetaWire> mWire = design->interconnections_.first()->wires_.first();
+    QSharedPointer<MetaWire> mWire = design->getInterconnections()->first()->wires_.first();
     QCOMPARE(mWire->bounds_.first, QString("70"));
     QCOMPARE(mWire->bounds_.second, QString("0"));
 }
@@ -2363,9 +2363,9 @@ void tst_HDLParser::testMultiLevelHierachy()
     QCOMPARE(designs.size(), 2);
     QSharedPointer<MetaDesign> design = designs.last();
 
-    QCOMPARE(design->instances_.size(), 1);
+    QCOMPARE(design->getInstances()->size(), 1);
 
-    QSharedPointer<MetaInstance> mInstance = design->instances_.first();
+    QSharedPointer<MetaInstance> mInstance = design->getInstances()->first();
     QCOMPARE(mInstance->getParameters()->size(), 2);
 
     QCOMPARE(mInstance->getParameters()->value(0)->name(), QString("senderParameter"));

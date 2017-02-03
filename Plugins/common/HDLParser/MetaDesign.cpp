@@ -42,8 +42,11 @@ library_(library),
 messages_(messages),
 design_(design),
 designConf_(designConf),
+topFinder_(new ListParameterFinder),
 topInstance_(topInstance),
-topFinder_(new ListParameterFinder)
+instances_(new QMap<QString,QSharedPointer<MetaInstance> >),
+interconnections_(new QList<QSharedPointer<MetaInterconnection> >),
+adHocWires_(new QList<QSharedPointer<MetaWire> >)
 {
     // Create the finder for the parameters coming from the top.
     // TODO: The parameters must come through the proper chain, rather than directly from the top component!
@@ -56,13 +59,6 @@ topFinder_(new ListParameterFinder)
 // Function: MetaDesign::~MetaDesign()
 //-----------------------------------------------------------------------------
 MetaDesign::~MetaDesign()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: MetaDesign::MetaDesign()
-//-----------------------------------------------------------------------------
-MetaDesign::MetaDesign()
 {
 }
 
@@ -128,7 +124,7 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
              designs.enqueue(subDesign);
 
              // Take the module name associated with the instantiated top component.
-             QString name = subDesign->topInstance_->getModuleName();
+             QString name = subDesign->getTopInstance()->getModuleName();
 
              // Find the name from the set of existing names.
              QMap<QString,int>::iterator nameIter = names.find(name);
@@ -147,7 +143,7 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
              }
 
              // Set the module name as the existing module name + number of encounter before this one.
-             subDesign->topInstance_->setModuleName(name + "_" + QString::number(count));
+             subDesign->getTopInstance()->setModuleName(name + "_" + QString::number(count));
          }
     }
 
@@ -211,7 +207,7 @@ void MetaDesign::parseInstances()
         // Parse.
         mInstance->parseInstance(instance, topFinder_, cevs);
         // Map using the name.
-        instances_.insert(instance->getInstanceName(), mInstance);
+        instances_->insert(instance->getInstanceName(), mInstance);
 
         // Find also the hierarchical references if applicable.
         QSharedPointer<DesignInstantiation> dis = component->getModel()->
@@ -271,7 +267,7 @@ void MetaDesign::parseInterconnections()
         foreach (QSharedPointer<ActiveInterface> connectionInterface, interfaces)
         {
             // The matching instance must exist.
-            QSharedPointer<MetaInstance> mInstance = instances_.value(connectionInterface->getComponentReference());
+            QSharedPointer<MetaInstance> mInstance = instances_->value(connectionInterface->getComponentReference());
 
             if (!mInstance)
             {
@@ -359,7 +355,7 @@ void MetaDesign::parseInterconnections()
             mIterconnect->name_ = connection->name();
 
             // Append to the pool of detected interconnections.
-            interconnections_.append(mIterconnect);
+            interconnections_->append(mIterconnect);
 
             // The interconnection needs to be knowledgeable of the hierarchical interfaces connected to it.
             mIterconnect->hierIfs_ = foundHierInterfaces;
@@ -449,7 +445,7 @@ void MetaDesign::parseAdHocs()
         foreach(QSharedPointer<PortReference> portRef, *connection->getInternalPortReferences())
         {
             // The matching instance must exist.
-            QSharedPointer<MetaInstance> mInstance = instances_.value(portRef->getComponentRef());
+            QSharedPointer<MetaInstance> mInstance = instances_->value(portRef->getComponentRef());
 
             if (!mInstance)
             {
@@ -514,7 +510,7 @@ void MetaDesign::parseAdHocs()
         mWire->name_ = connection->name();
 
         // Append to the pool of detected interconnections.
-        adHocWires_.append(mWire);
+        adHocWires_->append(mWire);
 
         // The interconnection needs to be knowledgeable of the hierarchical interfaces connected to it.
         mWire->hierPorts_ = foundHierPorts;

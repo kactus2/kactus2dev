@@ -161,8 +161,9 @@ void tst_VerilogWriterFactory::init()
     topComponent_ =  QSharedPointer<MetaInstance>(new MetaInstance(
         &library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
 
-    design_ = QSharedPointer<MetaDesign>(new MetaDesign);
-    design_->topInstance_ = topComponent_;
+    design_ = QSharedPointer<MetaDesign>(new MetaDesign(&library_,&messages,
+        QSharedPointer<Design>::QSharedPointer(),QSharedPointer<DesignConfiguration>::QSharedPointer(),
+        topComponent_));
 
     flatComponent_ = QSharedPointer<MetaComponent>(
         new MetaComponent(&messages, component, QSharedPointer<View>::QSharedPointer()));
@@ -559,7 +560,7 @@ QSharedPointer<MetaInterconnection> tst_VerilogWriterFactory::addInterconnectToD
     QSharedPointer<MetaInterface> second, QString name)
 {
     QSharedPointer<MetaInterconnection> mInterconnect(new MetaInterconnection);
-    design_->interconnections_.append(mInterconnect);
+    design_->getInterconnections()->append(mInterconnect);
     mInterconnect->name_ = name;
 
     first->upInterconnection_ = mInterconnect;
@@ -585,7 +586,7 @@ QSharedPointer<MetaWire> tst_VerilogWriterFactory::addWireToDesign(QString name,
     }
     else
     {
-        design_->adHocWires_.append(gw);
+        design_->getAdHocWires()->append(gw);
     }
 
     return gw;
@@ -667,7 +668,7 @@ QSharedPointer<MetaInstance> tst_VerilogWriterFactory::addInstanceToDesign(QStri
         &library_, &messages, component, QSharedPointer<View>::QSharedPointer()));
     mInstance->parseInstance(instance, topFinder, cevs);
 
-    design_->instances_.insert(instanceName, mInstance);
+    design_->getInstances()->insert(instanceName, mInstance);
 
 	return mInstance;
 }
