@@ -89,7 +89,7 @@ public:
      *
      *      @return The height addition of the out of bounds sub memory items.
      */
-    int getSubItemHeightAddition();
+    quint64 getSubItemHeightAddition() const;
 
     /*!
      *  Get the addresses that are retained after item compression.
@@ -105,6 +105,20 @@ public:
      *      @param [in] CUTMODIFIER     Modifier for the cut area.
      */
     void compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+
+    /*!
+     *  Get layout height modified by the height of the out of bounds sub memory items.
+     *
+     *      @return True height of the layout.
+     */
+    virtual quint64 getHeightWithSubItems() const;
+
+    /*!
+     *  Get the scene bounding rectangle of the layout modified by the height of the sub memory items.
+     *
+     *      @return True scene bounding rectangle of the layout.
+     */
+    virtual QRectF getSceneRectangleWithSubItems() const;
 
 protected:
 

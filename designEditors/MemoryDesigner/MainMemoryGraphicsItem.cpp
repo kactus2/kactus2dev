@@ -203,6 +203,12 @@ quint64 MainMemoryGraphicsItem::getSceneEndPoint() const
         }
     }
 
+    quint64 heightWithOverlappingSubItem = sceneBoundingRect().bottom() + getSubItemHeightAddition();
+    if (heightWithOverlappingSubItem > sceneEndPoint)
+    {
+        sceneEndPoint = heightWithOverlappingSubItem;
+    }
+
     return sceneEndPoint;
 }
 

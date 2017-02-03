@@ -18,7 +18,6 @@
 #include <designEditors/MemoryDesigner/MemoryDesignerGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
-#include <designEditors/MemoryDesigner/MainMemoryGraphicsItem.h>
 
 #include <QBrush>
 #include <QPen>
@@ -345,34 +344,66 @@ void SubMemoryLayout::setFaultySubItemColor(MemoryDesignerChildGraphicsItem* sub
 //-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::getSubItemHeightAddition()
 //-----------------------------------------------------------------------------
-int SubMemoryLayout::getSubItemHeightAddition()
+quint64 SubMemoryLayout::getSubItemHeightAddition() const
 {
-    int heightAddition = 0;
+    quint64 heightAddition = 0;
 
-    MemoryDesignerGraphicsItem* mainItem = dynamic_cast<MemoryDesignerGraphicsItem*>(this);
-    if (mainItem && !subItemsAreFiltered())
+    if (mainGraphicsItem_ && !subItemsAreFiltered())
     {
-        quint64 mainItemLastAddress = mainItem->getLastAddress();
+        quint64 mainItemLastAddress = mainGraphicsItem_->getLastAddress();
+        quint64 mainItemLow = mainGraphicsItem_->sceneBoundingRect().bottom();
 
-            QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
         while (subItemIterator.hasNext())
         {
             subItemIterator.next();
 
             MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
             quint64 subItemLastAddress = subItem->getLastAddress();
-            if (subItemLastAddress > mainItemLastAddress)
+            SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
+            if (subLayout && !subLayout->subItemsAreFiltered())
             {
-                heightAddition = subItem->sceneBoundingRect().bottom();
+                heightAddition = subLayout->getSubItemHeightAddition();
             }
-        }
-        if (heightAddition > 0)
-        {
-            heightAddition = heightAddition - mainItem->sceneBoundingRect().bottom();
+            else if (subItemLastAddress > mainItemLastAddress)
+            {
+                quint64 subItemLow = subItem->sceneBoundingRect().bottom();
+                quint64 subItemAddition = subItemLow - mainItemLow;
+                if (subItemAddition > heightAddition)
+                {
+                    heightAddition = subItemAddition;
+                }
+            }
         }
     }
 
     return heightAddition;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::getHeightWithSubItems()
+//-----------------------------------------------------------------------------
+quint64 SubMemoryLayout::getHeightWithSubItems() const
+{
+    quint64 height = mainGraphicsItem_->boundingRect().height() + getSubItemHeightAddition();
+
+    return height;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SubMemoryLayout::getSceneRectangleWithSubItems()
+//-----------------------------------------------------------------------------
+QRectF SubMemoryLayout::getSceneRectangleWithSubItems() const
+{
+    QRectF rectangle = mainGraphicsItem_->sceneBoundingRect();
+
+    quint64 heightWithSubItems = getHeightWithSubItems();
+    if (heightWithSubItems > rectangle.height())
+    {
+        rectangle.setHeight(heightWithSubItems);
+    }
+
+    return rectangle;
 }
 
 //-----------------------------------------------------------------------------
@@ -428,6 +459,8 @@ QVector<quint64> SubMemoryLayout::getUnCutAddresses() const
 //-----------------------------------------------------------------------------
 void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER)
 {
+    quint64 lastAddress = mainGraphicsItem_->getLastAddress();
+
     QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
     while (subItemIterator.hasNext())
     {
@@ -441,15 +474,20 @@ void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAdd
         }
 
         subItem->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+
+        quint64 subItemLastAddress = subItem->getLastAddress();
+        if (subItemLastAddress > lastAddress)
+        {
+            lastAddress = subItemLastAddress;
+        }
     }
 
     quint64 itemBaseAddress = mainGraphicsItem_->getBaseAddress();
-    quint64 itemLastAddress = mainGraphicsItem_->getLastAddress();
 
     quint64 areaBegin = itemBaseAddress;
     foreach (quint64 areaEnd, unCutAddresses)
     {
-        if (areaBegin < itemLastAddress && areaEnd > itemBaseAddress)
+        if (areaBegin < lastAddress && areaEnd > itemBaseAddress)
         {
             qint64 addressDifference = areaEnd - areaBegin - CUTMODIFIER;
             if (addressDifference > 0)
@@ -469,7 +507,7 @@ void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAdd
                 }
             }
         }
-        else if (areaBegin >= itemLastAddress)
+        else if (areaBegin >= lastAddress)
         {
             return;
         }

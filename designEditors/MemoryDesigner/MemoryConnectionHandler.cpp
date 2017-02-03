@@ -192,10 +192,6 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
                                 }
                                 else
                                 {
-//                                     MemoryConnectionItem* newSpaceConnection = createSpaceConnection(
-//                                         connectionStartItem, spaceChainConnectionBaseAddress, connectionMiddleItem,
-//                                         pathInterface , spaceColumn, placedSpaceItems, spaceItemChain,
-//                                         spaceYPlacement);
                                     createSpaceConnection(connectionStartItem, spaceChainConnectionBaseAddress,
                                         connectionMiddleItem, pathInterface , spaceColumn, placedSpaceItems,
                                         spaceItemChain, spaceYPlacement);
@@ -277,23 +273,29 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
             {
                 placeSpaceItemToOtherColumn(connectionStartItem, spaceColumn, connectionEndItem, yTransfer);
 
-                spaceYPlacement = spaceYPlacement - (connectionStartItem->boundingRect().height() +
+                spaceYPlacement = spaceYPlacement - (connectionStartItem->getHeightWithSubItems() +
                     MemoryDesignerConstants::SPACEITEMINTERVAL);
             }
 
             connectionEndItem->changeAddressRange(remappedAddress);
 
-            qreal spaceItemEndPointBefore = connectionStartItem->getSceneEndPoint();
+            quint64 spaceItemEndPointBefore = connectionStartItem->getSceneEndPoint();
 
             MemoryConnectionItem* newConnectionItem =
                 new MemoryConnectionItem(connectionStartItem, remappedAddress, remappedEndAddress,
                 connectionEndItem, spaceColumn->scene(), condenseMemoryItems_, yTransfer);
             connectionsToMemoryMaps_.append(newConnectionItem);
 
-            qreal spaceItemEndPointAfter = connectionStartItem->getSceneEndPoint();
+            quint64 spaceItemEndPointAfter = connectionStartItem->getSceneEndPoint();
 
             spaceYPlacement += spaceItemEndPointAfter - spaceItemEndPointBefore;
-            spaceYPlacement += connectionStartItem->getSubItemHeightAddition();
+
+            qreal endItemChangeToPlacement = connectionEndItem->getSceneRectangleWithSubItems().bottom() +
+                MemoryDesignerConstants::SPACEITEMINTERVAL;
+            if (endItemChangeToPlacement > spaceYPlacement)
+            {
+                spaceYPlacement = endItemChangeToPlacement;
+            }
         }
     }
 }
@@ -373,7 +375,7 @@ void MemoryConnectionHandler::createSpaceConnection(MainMemoryGraphicsItem* conn
         if (recalculateYPosition)
         {
             quint64 newYPosition =
-                connectionMiddleItem->sceneBoundingRect().height() + MemoryDesignerConstants::SPACEITEMINTERVAL;
+                connectionMiddleItem->getHeightWithSubItems() + MemoryDesignerConstants::SPACEITEMINTERVAL;
             if (newYPosition > spaceYPlacement)
             {
                 spaceYPlacement = newYPosition;
@@ -395,7 +397,7 @@ void MemoryConnectionHandler::placeSpaceItem(MainMemoryGraphicsItem* spaceItem, 
     MemoryColumn* originalColumn, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
     MainMemoryGraphicsItem* connectionStartItem)
 {
-    QRectF spaceRectangle = spaceItem->sceneBoundingRect();
+    QRectF spaceRectangle = spaceItem->getSceneRectangleWithSubItems();
     qreal rectangleHeight = spaceRectangle.height();
     spaceRectangle.setY(positionY);
     spaceRectangle.setHeight(rectangleHeight);
@@ -406,7 +408,7 @@ void MemoryConnectionHandler::placeSpaceItem(MainMemoryGraphicsItem* spaceItem, 
         MemoryColumn* comparisonColumn = dynamic_cast<MemoryColumn*>(comparisonSpace->parentItem());
         if (comparisonSpace != connectionStartItem && comparisonColumn && comparisonColumn == originalColumn)
         {
-            QRectF comparisonRectangle = comparisonSpace->sceneBoundingRect();
+            QRectF comparisonRectangle = comparisonSpace->getSceneRectangleWithSubItems();
             int comparisonLineWidht = comparisonSpace->pen().width();
             if (MemoryDesignerConstants::itemOverlapsAnotherItem(
                 spaceRectangle, spaceLineWidth, comparisonRectangle, comparisonLineWidht))
@@ -430,7 +432,7 @@ void MemoryConnectionHandler::changeMasterAddressSpaceColumn(MainMemoryGraphicsI
 
     masterSpaceItem->setY(spaceItemY);
 
-    QRectF masterSpaceRectangle = masterSpaceItem->sceneBoundingRect();
+    QRectF masterSpaceRectangle = masterSpaceItem->getSceneRectangleWithSubItems();
     qreal masterSpaceHeight = masterSpaceRectangle.height();
     masterSpaceRectangle.setY(spaceItemY);
     masterSpaceRectangle.setHeight(masterSpaceHeight);
@@ -496,7 +498,7 @@ void MemoryConnectionHandler::checkMemoryMapRepositionToOverlapColumn(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps, MainMemoryGraphicsItem* memoryItem,
     MemoryColumn* originalColumn, MainMemoryGraphicsItem* connectionStartItem)
 {
-    QRectF selectedItemRect = memoryItem->sceneBoundingRect();
+    QRectF selectedItemRect = memoryItem->getSceneRectangleWithSubItems();
 
     int selectedItemPenWidth = memoryItem->pen().width();
 
@@ -537,18 +539,18 @@ void MemoryConnectionHandler::repositionMemoryMap(QSharedPointer<QVector<MainMem
     MainMemoryGraphicsItem* startConnectionItem, MemoryColumn* addressSpaceColumn,
     MainMemoryGraphicsItem* endConnectionItem, int memoryMapYTransfer)
 {
-    QRectF endConnectionRectangle = endConnectionItem->sceneBoundingRect();
+    QRectF endConnectionRectangle = endConnectionItem->getSceneRectangleWithSubItems();
     int endConnectionPenWidth = endConnectionItem->pen().width();
     
-    foreach (MemoryDesignerGraphicsItem* memoryMapItem, *placedMapItems)
+    foreach (MainMemoryGraphicsItem* memoryMapItem, *placedMapItems)
     {
-        QRectF comparisonRectangle = memoryMapItem->sceneBoundingRect();
+        QRectF comparisonRectangle = memoryMapItem->getSceneRectangleWithSubItems();
         int comparisonPenWidth = memoryMapItem->pen().width();
 
         if (endConnectionItem != memoryMapItem && MemoryDesignerConstants::itemOverlapsAnotherItem(
             endConnectionRectangle, endConnectionPenWidth, comparisonRectangle, comparisonPenWidth))
         {
-            int mapItemYTransfer = memoryMapItem->sceneBoundingRect().bottom();
+            int mapItemYTransfer = comparisonRectangle.bottom();
 
             endConnectionItem->setPos(endConnectionItem->x(), mapItemYTransfer);
 
@@ -576,12 +578,12 @@ void MemoryConnectionHandler::repositionSpaceItemToMemoryMap(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems, MainMemoryGraphicsItem* startItem,
     MainMemoryGraphicsItem* endItem, MemoryColumn* spaceColumn, int memoryMapYTransfer)
 {
-    foreach (MemoryDesignerGraphicsItem* spaceItem, *placedSpaceItems)
+    foreach (MainMemoryGraphicsItem* spaceItem, *placedSpaceItems)
     {
         if (spaceItem != startItem && startItem->collidesWithItem(spaceItem))
         {
             int spaceItemYTransfer =
-                spaceItem->sceneBoundingRect().bottom() + MemoryDesignerConstants::SPACEITEMINTERVAL;
+                spaceItem->getSceneRectangleWithSubItems().bottom() + MemoryDesignerConstants::SPACEITEMINTERVAL;
 
             startItem->setPos(startItem->x(), spaceItemYTransfer);
 
@@ -602,7 +604,7 @@ void MemoryConnectionHandler::placeSpaceItemToOtherColumn(MainMemoryGraphicsItem
 {
     originalColumn->removeItem(spaceItem);
 
-    QRectF spaceRectangle = spaceItem->sceneBoundingRect();
+    QRectF spaceRectangle = spaceItem->getSceneRectangleWithSubItems();
     qreal spaceHeight = spaceRectangle.height();
 
     spaceRectangle.setY(targetItem->pos().y() + yTransfer);
@@ -708,12 +710,21 @@ void MemoryConnectionHandler::repositionCompressedMemoryMaps(
             QRectF mapRectangle = mapItem->sceneBoundingRect();
             int mapPenWidth = mapItem->pen().width();
 
+            qreal itemHeight = mapRectangle.height();
+            qreal extensionHeight = 0;
+
             if (mapItem->hasExtensionItem())
             {
-                qreal itemHeight = mapRectangle.height();
-                qreal extensionHeight = mapItem->getExtensionItem()->boundingRect().height();
-                mapRectangle.setHeight(itemHeight + extensionHeight);
+                extensionHeight = mapItem->getExtensionItem()->boundingRect().height();
             }
+
+            qreal subItemsHeight = mapItem->getSubItemHeightAddition();
+            if (subItemsHeight > extensionHeight)
+            {
+                extensionHeight = subItemsHeight;
+            }
+
+            mapRectangle.setHeight(itemHeight + extensionHeight);
 
             QVector<MainMemoryGraphicsItem*> connectedSpaceItems = mapItem->getChainedSpaceItems();
 
@@ -805,7 +816,7 @@ void MemoryConnectionHandler::repositionOverlappingSpaceItems(
 //-----------------------------------------------------------------------------
 QRectF MemoryConnectionHandler::getConnectionAdjustedItemRectangle(MainMemoryGraphicsItem* memoryItem) const
 {
-    QRectF itemRectangle = memoryItem->sceneBoundingRect();
+    QRectF itemRectangle = memoryItem->getSceneRectangleWithSubItems();
     if (!memoryItem->getMemoryConnections().isEmpty())
     {
         qreal lastConnectionLow = memoryItem->getLastConnection()->sceneBoundingRect().bottom();
