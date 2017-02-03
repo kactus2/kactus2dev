@@ -52,7 +52,7 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
-    instanceString.replace("<component>", instance_->moduleName_);
+    instanceString.replace("<component>", instance_->getModuleName());
     instanceString.replace("<parameters>", parameterAssignments());
     instanceString.replace("<instanceName>", formattedInstanceName());
     instanceString.replace("<portConnections>", portConnections());
@@ -73,9 +73,9 @@ bool ComponentInstanceVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::formattedInstanceName() const
 {
-    QString instanceName = instance_->componentInstance_->getInstanceName();
+    QString instanceName = instance_->getComponentInstance()->getInstanceName();
 
-    if (!instance_->componentInstance_->getConfigurableElementValues()->isEmpty())
+    if (!instance_->getComponentInstance()->getConfigurableElementValues()->isEmpty())
     {
         instanceName.prepend(indentation());
     }
@@ -98,7 +98,7 @@ QString ComponentInstanceVerilogWriter::parameterAssignments() const
 {
     QList<QSharedPointer<Parameter> > parameterToWrite;
 
-    foreach(QSharedPointer<Parameter> parameter, instance_->parameters_)
+    foreach(QSharedPointer<Parameter> parameter, *instance_->getParameters())
     {
         // If the parameters are not user resolved nor generated, then there cannot be any override by the design.
         if (parameter->getValueResolve() == "user" || parameter->getValueResolve() == "generated")
@@ -148,7 +148,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
     QString previousInterfaceName = "";
 
     // Pick the ports in sorted order.
-    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(instance_->component_);
+    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(instance_->getComponent());
 
     foreach(QSharedPointer<Port> cPort, ports)
     {
@@ -160,7 +160,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
 
     foreach(QSharedPointer<Port> cPort, ports)
     {
-        QSharedPointer<MetaPort> mPort = instance_->ports_[cPort->name()];
+        QSharedPointer<MetaPort> mPort = instance_->getPorts()->value(cPort->name());
 
         if (!mPort)
         {
@@ -169,7 +169,7 @@ QString ComponentInstanceVerilogWriter::portConnections() const
         }
 
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-            instance_->component_->getInterfacesUsedByPort(cPort->name());
+            instance_->getComponent()->getInterfacesUsedByPort(cPort->name());
         QString interfaceName;
 
         if (busInterfaces->size() == 1)
@@ -266,5 +266,5 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
         return "";
     }
 
-    return instance_->componentInstance_->getInstanceName() + "_" + mPort->port_->name();
+    return instance_->getComponentInstance()->getInstanceName() + "_" + mPort->port_->name();
 }

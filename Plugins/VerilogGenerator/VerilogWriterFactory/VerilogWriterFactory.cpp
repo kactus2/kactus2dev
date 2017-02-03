@@ -61,7 +61,7 @@ QSharedPointer<GenerationFile> VerilogWriterFactory::prepareComponent(QString co
     // If we are not generating based on a design, we must parse the existing implementation.
     QString implementation;
     QString postModule;
-    QString fileName = component->moduleName_ + ".v";
+    QString fileName = component->getModuleName() + ".v";
     QString filePath = outputPath + "/" + fileName;
     QString error;
 
@@ -75,7 +75,7 @@ QSharedPointer<GenerationFile> VerilogWriterFactory::prepareComponent(QString co
 
     QSharedPointer<VerilogDocument> document = initializeComponentWriters(component);
     document->fileName_ = fileName;
-    document->vlnv_ = component->component_->getVlnv().toString();
+    document->vlnv_ = component->getComponent()->getVlnv().toString();
 
     // Next comes the implementation.
     QSharedPointer<TextBodyWriter> implementationWriter(new TextBodyWriter(implementation));
@@ -94,8 +94,8 @@ QSharedPointer<GenerationFile> VerilogWriterFactory::prepareComponent(QString co
 QSharedPointer<GenerationFile> VerilogWriterFactory::prepareDesign(QSharedPointer<MetaDesign> design)
 {
     QSharedPointer<VerilogDocument> document = initializeComponentWriters(design->topInstance_);
-    document->fileName_ = design->topInstance_->moduleName_ + ".v";
-    document->vlnv_ = design->topInstance_->component_->getVlnv().toString();
+    document->fileName_ = design->topInstance_->getModuleName() + ".v";
+    document->vlnv_ = design->topInstance_->getComponent()->getVlnv().toString();
 
     initializeDesignWriters(design, document);
 
@@ -120,12 +120,12 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::initializeComponentWriters
 {
     QSettings settings;
     QString currentUser = settings.value("General/Username").toString();
-    QString componentXmlPath = library_->getPath(topComponent->component_->getVlnv());
+    QString componentXmlPath = library_->getPath(topComponent->getComponent()->getVlnv());
 
     QSharedPointer<VerilogDocument> retval(new VerilogDocument);
 
-    retval->headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent->component_->getVlnv(), 
-        componentXmlPath, currentUser, topComponent->component_->getDescription(), kactusVersion_, generatorVersion_));
+    retval->headerWriter_ = QSharedPointer<VerilogHeaderWriter>(new VerilogHeaderWriter(topComponent->getComponent()->getVlnv(), 
+        componentXmlPath, currentUser, topComponent->getComponent()->getDescription(), kactusVersion_, generatorVersion_));
 
     retval->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter
         (topComponent, settings_->generateInterfaces_));
@@ -155,7 +155,7 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::initializeComponentWriters
 void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> design, QSharedPointer<VerilogDocument> document)
 {
     // Comment for top for assignments.
-    if (design->topInstance_->ports_.size() > 0)
+    if (design->topInstance_->getPorts()->size() > 0)
     {
         QSharedPointer<CommentWriter> topAssignmentHeaderWriter(
             new CommentWriter("Assignments for the ports of the encompassing component:"));
@@ -164,7 +164,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
     }
 
     // Create assignments fort top ports.
-    foreach (QSharedPointer<MetaPort> mPort, design->topInstance_->ports_)
+    foreach (QSharedPointer<MetaPort> mPort, *design->topInstance_->getPorts())
     {
         if (mPort->downAssignments_.size() > 0)
         {
@@ -186,7 +186,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
     // Create instance writers for the instances.
     foreach(QSharedPointer<MetaInstance> mInstance, design->instances_)
     {
-        QSharedPointer<ComponentInstance> instance = mInstance->componentInstance_;
+        QSharedPointer<ComponentInstance> instance = mInstance->getComponentInstance();
 
         QSharedPointer<ComponentInstanceVerilogWriter> instanceWriter(new ComponentInstanceVerilogWriter(
             mInstance, sorter_, settings_->generateInterfaces_));
@@ -196,28 +196,28 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
         document->instanceHeaderWriters_.insert(instanceWriter, createHeaderWriterForInstance(mInstance));
 
         // Comment for instance assignments.
-        if (mInstance->ports_.size() > 0)
+        if (mInstance->getPorts()->size() > 0)
         {
             QSharedPointer<CommentWriter> portWireHeaderWriter(
-                new CommentWriter(mInstance->componentInstance_->getInstanceName() + " port wires:"));
+                new CommentWriter(instance->getInstanceName() + " port wires:"));
             portWireHeaderWriter->setIndent(4);
             document->portWireWriters_->add(portWireHeaderWriter);
 
             QSharedPointer<CommentWriter> assignmentHeaderWriter(
-                new CommentWriter(mInstance->componentInstance_->getInstanceName() + " assignments:"));
+                new CommentWriter(instance->getInstanceName() + " assignments:"));
             assignmentHeaderWriter->setIndent(4);
             document->instanceAssignmentWriters_->add(assignmentHeaderWriter);
         }
 
-        // Create writers for instance ports, wires, and assignnments.
-        foreach (QSharedPointer<MetaPort> mPort, mInstance->ports_)
+        // Create writers for instance ports, wires, and assignments.
+        foreach (QSharedPointer<MetaPort> mPort, *mInstance->getPorts())
         {
             if (mPort->upAssignments_.size() < 1)
             {
                 continue;
             }
 
-            QString physName = mInstance->componentInstance_->getInstanceName() + "_" +
+            QString physName = instance->getInstanceName() + "_" +
                 mPort->port_->name();
 
             document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(
@@ -300,13 +300,13 @@ void VerilogWriterFactory::addWritersToTopInDesiredOrder(QSharedPointer<VerilogD
 //-----------------------------------------------------------------------------
 QSharedPointer<Writer> VerilogWriterFactory::createHeaderWriterForInstance(QSharedPointer<MetaInstance> instance) const
 {
-    QString header = instance->componentInstance_->getDescription();
+    QString header = instance->getComponentInstance()->getDescription();
     if (!header.isEmpty())
     {
         header.append("\n");
     }
 
-    header.append("IP-XACT VLNV: " + instance->component_->getVlnv().toString());
+    header.append("IP-XACT VLNV: " + instance->getComponent()->getVlnv().toString());
 
     QSharedPointer<CommentWriter> headerWriter(new CommentWriter(header));
     headerWriter->setIndent(4);

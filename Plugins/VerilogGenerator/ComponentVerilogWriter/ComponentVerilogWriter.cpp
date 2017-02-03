@@ -114,7 +114,7 @@ bool ComponentVerilogWriter::nothingToWrite() const
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeModuleDeclaration(QTextStream& outputStream) const
 {
-    outputStream << "module " << component_->moduleName_;
+    outputStream << "module " << component_->getModuleName();
     
     writeParameterDeclarations(outputStream);
 
@@ -126,16 +126,16 @@ void ComponentVerilogWriter::writeModuleDeclaration(QTextStream& outputStream) c
 //-----------------------------------------------------------------------------
 void ComponentVerilogWriter::writeParameterDeclarations(QTextStream& outputStream) const
 {
-	if (component_->parameters_.isEmpty())
+	if (component_->getParameters()->isEmpty())
     {
         return;
     }
 
     outputStream << " #(" << endl;
 
-    foreach(QSharedPointer<Parameter> parameter, component_->parameters_)
+    foreach(QSharedPointer<Parameter> parameter, *component_->getParameters())
     {
-        bool isLastParameter = parameter == component_->parameters_.last();
+        bool isLastParameter = parameter == component_->getParameters()->last();
         writeParameter(outputStream, parameter, isLastParameter);
     }
 
@@ -187,7 +187,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
     outputStream << "(";
 
     // Pick the ports in sorted order.
-    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(component_->component_);
+    QList<QSharedPointer<Port> > ports = sorter_->sortedPorts(component_->getComponent());
 
     foreach(QSharedPointer<Port> cPort, ports)
     {
@@ -199,7 +199,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 
     foreach(QSharedPointer<Port> cPort, ports)
     {
-        QSharedPointer<MetaPort> mPort = component_->ports_[cPort->name()];
+        QSharedPointer<MetaPort> mPort = component_->getPorts()->value(cPort->name());
 
         if (!mPort)
         {
@@ -209,7 +209,7 @@ void ComponentVerilogWriter::writePortDeclarations(QTextStream& outputStream) co
 
         QString interfaceName;
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces =
-            component_->component_->getInterfacesUsedByPort(cPort->name());
+            component_->getComponent()->getInterfacesUsedByPort(cPort->name());
 
         if (busInterfaces->count() < 1 )
         {

@@ -50,37 +50,17 @@ public:
         QSharedPointer<ListParameterFinder> topFinder,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs);
 
-    //! Alternative constructor.
-    MetaInstance();
-
 	//! The destructor.
     ~MetaInstance();
 
-    //! The component library.
-    LibraryInterface* library_;
+    QSharedPointer<Component> getComponent() const { return component_; }
+    QSharedPointer<ComponentInstance> getComponentInstance() const { return componentInstance_; }
+    QSharedPointer<QList<QSharedPointer<Parameter> > > getParameters() { return parameters_; }
+    QSharedPointer<QMap<QString,QSharedPointer<MetaInterface> > > getInterfaces() { return interfaces_; }
+    QSharedPointer<QMap<QString,QSharedPointer<MetaPort> > > getPorts() { return ports_; }
 
-    //! The messages.
-    MessagePasser* messages_;
-    //! The matching IP-XACT component.
-    QSharedPointer<Component> component_;
-    //! The matching IP-XACT component instance.
-    QSharedPointer<ComponentInstance> componentInstance_;
-
-    //! The parsed parameters that are to be used with the instance. CEVs used where applicable.
-    QList<QSharedPointer<Parameter> > parameters_;
-    //! The parsed interfaces of the instance, keyed with its name.
-    QMap<QString,QSharedPointer<MetaInterface> > interfaces_;
-    //! The ports of the component keyed with its physical name.
-    QMap<QString,QSharedPointer<MetaPort> > ports_;
-    //! The module name for HDL.
-    QString moduleName_;
-
-    //! The active view of the instance.
-    QSharedPointer<View> activeView_;
-
-    //! The component instantiation referred by the active view.
-    QSharedPointer<ComponentInstantiation> activeInstantiation_;
-
+    QString getModuleName() const { return moduleName_; }
+    void setModuleName(QString const& val) { moduleName_ = val; }
 protected:
     /*!
      *  Culls and copies parameter declarations of the component and active instantiation if any exists.
@@ -104,6 +84,19 @@ protected:
      *      @param [in] parser          Used to parse expressions.
      */
     virtual void parsePorts(IPXactSystemVerilogParser& parser);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The active view of the instance.
+    QSharedPointer<View> activeView_;
+    //! The matching IP-XACT component.
+    QSharedPointer<Component> component_;
+    //! The parsed parameters that are to be used with the instance. CEVs used where applicable.
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+    //! The ports of the component keyed with its physical name.
+    QSharedPointer<QMap<QString,QSharedPointer<MetaPort> > > ports_;
 
 private:
 	// Disable copying.
@@ -140,6 +133,22 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The component library.
+    LibraryInterface* library_;
+
+    //! The messages.
+    MessagePasser* messages_;
+    //! The matching IP-XACT component instance.
+    QSharedPointer<ComponentInstance> componentInstance_;
+
+    //! The parsed interfaces of the instance, keyed with its name.
+    QSharedPointer<QMap<QString,QSharedPointer<MetaInterface> > > interfaces_;
+    //! The module name for HDL.
+    QString moduleName_;
+
+    //! The component instantiation referred by the active view.
+    QSharedPointer<ComponentInstantiation> activeInstantiation_;
 };
 
 #endif // METAINSTANCE_H

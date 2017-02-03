@@ -21,16 +21,18 @@ HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../Plugins/common/PortSorter/PortSorter.h \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
     ../../../designEditors/common/TopComponentParameterFinder.h \
-    ../../MockObjects/LibraryMock.h
+    ../../MockObjects/LibraryMock.h \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h
 SOURCES += ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
     ../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
-    ../../../Plugins/common/HDLParser/MetaDesign.cpp \
-    ../../../Plugins/common/HDLParser/MetaInstance.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \
+    ../../../Plugins/common/HDLParser/MetaDesign.cpp \
+    ../../../Plugins/common/HDLParser/MetaInstance.cpp \
     ../../../editors/ComponentEditor/common/MultipleParameterFinder.cpp \
     ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ../../../designEditors/common/TopComponentParameterFinder.cpp \
-    ./tst_HDLParser.cpp
+    ./tst_HDLParser.cpp \
+    ../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.cpp

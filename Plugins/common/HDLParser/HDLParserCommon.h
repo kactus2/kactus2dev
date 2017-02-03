@@ -112,6 +112,8 @@ struct MetaInterface
     //! The interconnection attached to the interface.
     QSharedPointer<MetaInterconnection> upInterconnection_;
     QSharedPointer<MetaInterconnection> downInterconnection_;
+
+    QSharedPointer<QMap<QString, QSharedPointer<MetaPort> > > getPorts(){return QSharedPointer<QMap<QString, QSharedPointer<MetaPort> > >(new QMap<QString, QSharedPointer<MetaPort> >(ports_));}
 };
 
 struct FormattedRemapState
