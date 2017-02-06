@@ -3173,6 +3173,16 @@ void MainWindow::openCatalog(const VLNV& vlnv)
     }
 
     CatalogEditor* editor = new CatalogEditor(libraryHandler_, catalog, this);
+
+    connect(editor, SIGNAL(openCatalog(const VLNV&)), 
+        this, SLOT(openCatalog(const VLNV&)), Qt::UniqueConnection);
+
+    connect(editor, SIGNAL(openBus(const VLNV&, VLNV const&)), 
+        this, SLOT(openBus(const VLNV&, VLNV const&)), Qt::UniqueConnection);
+
+    connect(editor, SIGNAL(openComponent(const VLNV&)), 
+        this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+
     designTabs_->addAndOpenDocument(editor);
 }
 

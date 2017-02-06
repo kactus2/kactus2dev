@@ -68,6 +68,14 @@ public:
      */
     virtual void setProtection(bool locked);
 
+signals:
+    
+    //! Emitted when a catalog should be opened.
+    void openCatalog(VLNV const&);
+
+    //! Emitted when a component should be opened.
+    void openComponent(VLNV const&);
+
 public slots:
     /*!
      *  Validates the document against the IP-XACT standard.

@@ -45,6 +45,9 @@ public slots:
     //! Called when an item should be removed from the given index.
     void onRemoveItem(QModelIndex const& index);
 
+    //! Called when an item should be opened in the given index.
+    void onOpenItem(QModelIndex const& index);
+
 signals:
 
     //! Emitted when an item should be added in the given index.
@@ -52,6 +55,9 @@ signals:
 
     //! Emitted when an item should be removed from the given index.
     void removeItem(QModelIndex const& index);
+
+    //! Emitted when an item should be opened in the given index.
+    void openItem(QModelIndex const& index);
 
 private:
 

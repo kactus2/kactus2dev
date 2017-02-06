@@ -30,6 +30,7 @@
 CatalogFileView::CatalogFileView(QWidget* parent): QTreeView(parent),
     addAction_(new QAction(tr("Add row"), this)),
     removeAction_(new QAction(tr("Remove row"), this)),
+    openAction_(new QAction(tr("Open"), this)),
     cutAction_(new QAction(tr("Cut"), this)),
     copyAction_(new QAction(tr("Copy"), this)),
     pasteAction_(new QAction(tr("Paste"), this)),
@@ -63,6 +64,14 @@ void CatalogFileView::contextMenuEvent(QContextMenuEvent* event)
     QModelIndex index = indexAt(event->pos());
 
     QMenu menu(this);
+
+    if (index.isValid() && index.parent().isValid() && index.parent().row() <= CatalogFileColumns::COMPONENTS)
+    {
+        menu.addAction(openAction_);
+        openAction_->setEnabled(selectedIndexes().count() == 1);
+        menu.addSeparator();
+    }
+
     menu.addAction(addAction_);
 
     bool validIndex = index.isValid() && index.parent().isValid();
@@ -71,6 +80,7 @@ void CatalogFileView::contextMenuEvent(QContextMenuEvent* event)
     if (validIndex)
     {
         menu.addAction(removeAction_);
+
         menu.addSeparator();
         menu.addAction(cutAction_);
         menu.addAction(copyAction_);
@@ -284,6 +294,21 @@ void CatalogFileView::onClearAction()
 }
 
 //-----------------------------------------------------------------------------
+// Function: CatalogFileView::onOpenAction()
+//-----------------------------------------------------------------------------
+void CatalogFileView::onOpenAction()
+{	
+    QModelIndexList indexes = selectedIndexes();
+
+    if (indexes.count() != 1) 
+    {
+        return;
+    }
+
+    emit openItem(indexes.first());
+}
+
+//-----------------------------------------------------------------------------
 // Function: CatalogFileView::setupActions()
 //-----------------------------------------------------------------------------
 void CatalogFileView::setupActions()
@@ -298,6 +323,9 @@ void CatalogFileView::setupActions()
     removeAction_->setShortcutContext(Qt::WidgetShortcut);
     connect(removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
     
+    addAction(openAction_);
+    connect(openAction_, SIGNAL(triggered()), this, SLOT(onOpenAction()), Qt::UniqueConnection);
+
     addAction(copyAction_);
     copyAction_->setShortcut(QKeySequence::Copy);
     copyAction_->setShortcutContext(Qt::WidgetShortcut);

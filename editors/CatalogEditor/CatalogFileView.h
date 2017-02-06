@@ -51,6 +51,9 @@ signals:
     //! Emitted when an item should be removed from the given index.
     void removeItem(QModelIndex const& index);
 
+    //! Emitted when an item should be opened in the given index.
+    void openItem(QModelIndex const& index);
+
 protected:
 
 
@@ -80,6 +83,7 @@ private slots:
     //! Handler for clear action.
     void onClearAction();
 
+    void onOpenAction();
 private:
 
     //! No assignment
@@ -104,22 +108,25 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Action to add new item
+    //! Action to add new item.
     QAction* addAction_;
 
-    //! Action to remove item
+    //! Action to remove item.
     QAction* removeAction_;
 
-    //! Action to cut item
+    //! Action to open an item.
+    QAction* openAction_;
+
+    //! Action to cut item.
     QAction* cutAction_;
 
-    //! Action to copy item
+    //! Action to copy item.
     QAction* copyAction_;
 
-    //! Action to paste item
+    //! Action to paste item.
     QAction* pasteAction_;
 
-    //! Action to clear selected cells
+    //! Action to clear selected cells.
     QAction* clearAction_;
 
     //! Action to expand all branches.

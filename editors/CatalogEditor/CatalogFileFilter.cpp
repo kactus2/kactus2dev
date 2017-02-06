@@ -41,3 +41,11 @@ void CatalogFileFilter::onRemoveItem(QModelIndex const& index)
 {
     emit removeItem(mapToSource(index));
 }
+
+//-----------------------------------------------------------------------------
+// Function: CatalogFileFilter::onOpenItem()
+//-----------------------------------------------------------------------------
+void CatalogFileFilter::onOpenItem(QModelIndex const& index)
+{
+    emit openItem(mapToSource(index));
+}

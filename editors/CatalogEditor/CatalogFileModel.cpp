@@ -17,6 +17,7 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/Catalog/Catalog.h>
 #include <IPXACTmodels/Catalog/IpxactFile.h>
 
@@ -512,4 +513,41 @@ void CatalogFileModel::onRemoveItem(QModelIndex const& index)
     endRemoveRows();
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogFileModel::onOpenItem()
+//-----------------------------------------------------------------------------
+void CatalogFileModel::onOpenItem(QModelIndex const& index)
+{
+    if (!index.isValid() || !index.parent().isValid())
+    {
+        return;
+    }
+
+    QSharedPointer<IpxactFile> file = topLevelRows_.at(index.parent().row())->at(index.row());
+    VLNV fileVLNV = file->getVlnv();
+
+    VLNV::IPXactType type = topLevelTypes_.at(index.parent().row());
+    if (type == VLNV::CATALOG)
+    {
+        emit openCatalog(fileVLNV);
+    }
+    else if (type == VLNV::BUSDEFINITION)
+    {
+        emit openBus(fileVLNV, VLNV());
+    }
+    else if (type == VLNV::ABSTRACTIONDEFINITION)
+    {
+        QSharedPointer<AbstractionDefinition const> abstraction = 
+            library_->getModelReadOnly(fileVLNV).dynamicCast<AbstractionDefinition const>();
+        if (abstraction)
+        {
+            emit openBus(abstraction->getBusType(), fileVLNV);
+        }
+    }
+    else if (type == VLNV::COMPONENT)
+    {
+        emit openComponent(fileVLNV);
+    }
 }

@@ -170,6 +170,12 @@ signals:
     //! Emitted when the contents have changed.
     void contentChanged();
 
+    void openCatalog(VLNV const& vlnv);
+
+    void openComponent(VLNV const& vlnv);
+
+    void openBus(VLNV const& busVLNV, VLNV const& absVLNV);
+
 public slots:
 
     //! Called when an item should be added in the given index.
@@ -177,6 +183,9 @@ public slots:
 
     //! Called when an item should be removed from the given index.
     void onRemoveItem(QModelIndex const& index);
+
+    //! Called when an item should be opened in the given index.
+    void onOpenItem(QModelIndex const& index);
 
 private:
 
