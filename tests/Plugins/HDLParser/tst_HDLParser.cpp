@@ -57,6 +57,8 @@ private slots:
     void testHierarchicalConnections();
     void testHierarchicalConnectionsWithExpressions();
 
+    void testPortMapping();
+
     void testMasterToSlaveInterconnection();
     void testEmptyBounds();
     void testMasterToSlaveInterconnectionWithExpressions();
@@ -109,7 +111,7 @@ private:
     void mapPortToInterface(QString const& portName, int left, int right, 
         QString const& logicalName, QString const& interfaceName, QSharedPointer<Component> component);
     
-    void addInterfaceToComponent(QString const& interfaceName, QSharedPointer<Component> component);
+    QSharedPointer<BusInterface> addInterfaceToComponent(QString const& interfaceName, QSharedPointer<Component> component, QSharedPointer<ConfigurableVLNVReference> absRef);
 
     QSharedPointer<View> addSenderComponentToLibrary(VLNV senderVLNV, General::InterfaceMode mode);
 
@@ -360,8 +362,8 @@ void tst_HDLParser::testHierarchicalConnections()
     addPort("enable_to_instance", 1, DirectionTypes::IN, topComponent_);
     addPort("full_from_instance", 1, DirectionTypes::OUT, topComponent_);
 
-    addInterfaceToComponent("clk_if", topComponent_);
-    addInterfaceToComponent("data_bus", topComponent_);
+    addInterfaceToComponent("clk_if", topComponent_, clkAbstractionVLNV_);
+    addInterfaceToComponent("data_bus", topComponent_, dataAbstractionVLNV_);
     
     mapPortToInterface("top_clk", "CLK", "clk_if", topComponent_);
     mapPortToInterface("data_to_instance", "DATA", "data_bus", topComponent_);
@@ -435,7 +437,7 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
     clkPort->setRightBound("0");
     topComponent_->getPorts()->append(clkPort);
 
-    addInterfaceToComponent("clk_if", topComponent_);
+    addInterfaceToComponent("clk_if", topComponent_, clkAbstractionVLNV_);;
 
     mapPortToInterface("top_clk", "CLK", "clk_if", topComponent_);
 
@@ -457,7 +459,7 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
     instanceClkPort->setRightBound("4-2*2");
     instanceComponent->getPorts()->append(instanceClkPort);
 
-    addInterfaceToComponent("instanceInterface", instanceComponent);
+    addInterfaceToComponent("instanceInterface", instanceComponent, clkAbstractionVLNV_);
     mapPortToInterface("instance_clk", "CLK", "instanceInterface", instanceComponent);
 
 	library_.addComponent(instanceComponent);
@@ -499,12 +501,21 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::addInterfaceToComponent()
 //-----------------------------------------------------------------------------
-void tst_HDLParser::addInterfaceToComponent(QString const& interfaceName,
-    QSharedPointer<Component> component)
+QSharedPointer<BusInterface> tst_HDLParser::addInterfaceToComponent(QString const& interfaceName,
+    QSharedPointer<Component> component,
+    QSharedPointer<ConfigurableVLNVReference> absRef)
 {
     QSharedPointer<BusInterface> busInterface(new BusInterface());
     busInterface->setName(interfaceName);
     component->getBusInterfaces()->append(busInterface);
+
+    QSharedPointer<AbstractionType> testAbstraction (new AbstractionType());
+    QSharedPointer<QList<QSharedPointer<PortMap> > > newPortMapList (new QList<QSharedPointer<PortMap> > ());
+    busInterface->getAbstractionTypes()->append(testAbstraction);
+    busInterface->setPortMaps(newPortMapList);
+    testAbstraction->setAbstractionRef(absRef);
+
+    return busInterface;
 }
 
 //-----------------------------------------------------------------------------
@@ -527,29 +538,6 @@ void tst_HDLParser::mapPortToInterface(QString const& portName, QString const& l
 
     QSharedPointer<BusInterface> containingBusIf = component->getBusInterface(interfaceName);
     QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = containingBusIf->getPortMaps();
-
-    if (!portMaps)
-    {
-        QSharedPointer<QList<QSharedPointer<PortMap> > > newPortMapList (new QList<QSharedPointer<PortMap> > ());
-
-        if (containingBusIf->getAbstractionTypes()->isEmpty())
-        {
-            QSharedPointer<AbstractionType> testAbstraction (new AbstractionType());
-            containingBusIf->getAbstractionTypes()->append(testAbstraction);
-
-            if (logicalName == "CLK")
-            {
-                testAbstraction->setAbstractionRef(clkAbstractionVLNV_);
-            }
-            else
-            {
-                testAbstraction->setAbstractionRef(dataAbstractionVLNV_);
-            }
-        }
-
-        containingBusIf->setPortMaps(newPortMapList);
-        portMaps = containingBusIf->getPortMaps();
-    }
 
     portMaps->append(portMap);
 }
@@ -619,11 +607,11 @@ QSharedPointer<View> tst_HDLParser::addTestComponentToLibrary(VLNV vlnv)
 	instanceComponent->getComponentInstantiations()->append(instantiation);
 	instanceComponent->getViews()->append(activeView);
 
-    addInterfaceToComponent("clk", instanceComponent);
+    addInterfaceToComponent("clk", instanceComponent, clkAbstractionVLNV_);
 
     mapPortToInterface("clk", "CLK", "clk", instanceComponent);
 
-    addInterfaceToComponent("data", instanceComponent);
+    addInterfaceToComponent("data", instanceComponent, dataAbstractionVLNV_);
 
     mapPortToInterface("data_in", "DATA", "data", instanceComponent);
     mapPortToInterface("enable", "ENABLE", "data", instanceComponent);
@@ -650,6 +638,101 @@ QSharedPointer<ComponentInstance> tst_HDLParser::addInstanceToDesign(QString ins
 	}
 
 	return instance;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_HDLParser::testPortMapping()
+//-----------------------------------------------------------------------------
+void tst_HDLParser::testPortMapping()
+{
+    QSharedPointer<ConfigurableVLNVReference> abstractionVLNV(new ConfigurableVLNVReference(
+        VLNV::ABSTRACTIONDEFINITION, "Test", "TestLibrary", "absDef", "1.0"));
+
+    QSharedPointer<AbstractionDefinition> testAbstractionDefinition(new AbstractionDefinition());
+    testAbstractionDefinition->setVlnv(*abstractionVLNV.data());
+    library_.addComponent(testAbstractionDefinition);
+
+    QSharedPointer<PortAbstraction> logicalPortHigh (new PortAbstraction());
+    logicalPortHigh->setName("CUSTOM_HIGH");
+    testAbstractionDefinition->getLogicalPorts()->append(logicalPortHigh);
+
+    QSharedPointer<PortAbstraction> logicalPortLow (new PortAbstraction());
+    logicalPortLow->setName("CUSTOM_LOW");
+    testAbstractionDefinition->getLogicalPorts()->append(logicalPortLow);
+
+    VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
+
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    addPort("test_out", 8, DirectionTypes::OUT, senderComponent);
+
+    QSharedPointer<BusInterface> testIf = addInterfaceToComponent("data_bus", senderComponent, abstractionVLNV);
+    testIf->setInterfaceMode(General::MASTER);    
+
+    QSharedPointer<PortMap> enableLowPortMap(new PortMap());
+    QSharedPointer<PortMap::LogicalPort> logPortLow(new PortMap::LogicalPort("CUSTOM_HIGH"));
+    QSharedPointer<PortMap::PhysicalPort> physPortLow(new PortMap::PhysicalPort("test_out"));
+    enableLowPortMap->setLogicalPort(logPortLow);
+    enableLowPortMap->setPhysicalPort(physPortLow);
+
+    QSharedPointer<PartSelect> lowPart (new PartSelect("7", "4"));
+    physPortLow->partSelect_ = lowPart;
+
+    QSharedPointer<Range> lowRange (new Range("3", "0"));
+    logPortLow->range_ = lowRange;
+
+    QSharedPointer<PortMap> enableHighPortMap(new PortMap());
+    QSharedPointer<PortMap::LogicalPort> logPortHigh(new PortMap::LogicalPort("CUSTOM_LOW"));
+    QSharedPointer<PortMap::PhysicalPort> physPortHigh(new PortMap::PhysicalPort("test_out"));
+    enableHighPortMap->setLogicalPort(logPortHigh);
+    enableHighPortMap->setPhysicalPort(physPortHigh);
+
+    QSharedPointer<PartSelect> highPart (new PartSelect("3", "0"));
+    physPortHigh->partSelect_ = highPart;
+
+    QSharedPointer<Range> highRange (new Range("3", "0"));
+    logPortHigh->range_ = highRange;
+
+    QSharedPointer<AbstractionType> senderEnableAbstraction (new AbstractionType());
+    testIf->getAbstractionTypes()->append(senderEnableAbstraction);
+
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps = testIf->getPortMaps();
+    portMaps->append(enableLowPortMap);
+    portMaps->append(enableHighPortMap);
+
+    QSharedPointer<View> sendView(new View("rtl"));
+    sendView->setComponentInstantiationRef("instance1");
+
+    QSharedPointer<ComponentInstantiation> instantiation(new ComponentInstantiation("instance1"));
+    senderComponent->getComponentInstantiations()->append(instantiation);
+    senderComponent->getViews()->append(sendView);
+
+    library_.addComponent(senderComponent);
+    addInstanceToDesign("sender", senderVLNV, sendView);
+
+    QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
+        (&library_, input_, topView_);
+
+    QCOMPARE(designs.size(), 1);
+    QSharedPointer<MetaDesign> design = designs.first();
+
+    QCOMPARE(design->getInstances()->size(), 1);
+    QSharedPointer<MetaInstance> mInstance0 = design->getInstances()->value("sender");
+
+    QVERIFY(mInstance0->getInterfaces()->size() > 0);
+    QVERIFY(mInstance0->getInterfaces()->first()->ports_.size() > 0);
+
+    QSharedPointer<MetaPort> mPort = mInstance0->getInterfaces()->first()->ports_.value("test_out");
+    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("CUSTOM_HIGH");
+    QCOMPARE(mpa->logicalBounds_.first, QString("3"));
+    QCOMPARE(mpa->logicalBounds_.second, QString("0"));
+    QCOMPARE(mpa->physicalBounds_.first, QString("7"));
+    QCOMPARE(mpa->physicalBounds_.second, QString("4"));
+
+    mpa = mPort->upAssignments_.value("CUSTOM_LOW");
+    QCOMPARE(mpa->logicalBounds_.first, QString("3"));
+    QCOMPARE(mpa->logicalBounds_.second, QString("0"));
+    QCOMPARE(mpa->physicalBounds_.first, QString("3"));
+    QCOMPARE(mpa->physicalBounds_.second, QString("0"));
 }
 
 //-----------------------------------------------------------------------------
@@ -742,7 +825,7 @@ void tst_HDLParser::testEmptyBounds()
     senderPort->setRightBound("");
     senderComponent->getPorts()->append(senderPort);
 
-    addInterfaceToComponent("data_bus", senderComponent);
+    addInterfaceToComponent("data_bus", senderComponent, dataAbstractionVLNV_);
     senderComponent->getBusInterface("data_bus")->setInterfaceMode(General::MASTER);
 
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
@@ -768,7 +851,7 @@ void tst_HDLParser::testEmptyBounds()
     receiverPort->setRightBound("");
     receiverComponent->getPorts()->append(receiverPort);
 
-    addInterfaceToComponent("data_bus", receiverComponent);
+    addInterfaceToComponent("data_bus", receiverComponent, dataAbstractionVLNV_);
     receiverComponent->getBusInterface("data_bus")->setInterfaceMode(General::SLAVE);
     mapPortToInterface("data_in", "DATA", "data_bus", receiverComponent);
 
@@ -837,7 +920,7 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     senderPort->setRightBound("0");
     senderComponent->getPorts()->append(senderPort);
 
-    addInterfaceToComponent("data_bus", senderComponent);
+    addInterfaceToComponent("data_bus", senderComponent, dataAbstractionVLNV_);
     senderComponent->getBusInterface("data_bus")->setInterfaceMode(General::MASTER);
 
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
@@ -863,7 +946,7 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     receiverPort->setRightBound("0");
     receiverComponent->getPorts()->append(receiverPort);
 
-    addInterfaceToComponent("data_bus", receiverComponent);
+    addInterfaceToComponent("data_bus", receiverComponent, dataAbstractionVLNV_);
     receiverComponent->getBusInterface("data_bus")->setInterfaceMode(General::SLAVE);
     mapPortToInterface("data_in", "DATA", "data_bus", receiverComponent);
 
@@ -921,7 +1004,7 @@ QSharedPointer<View> tst_HDLParser::addSenderComponentToLibrary(VLNV senderVLNV,
     addPort("enable_out", 1, DirectionTypes::OUT, senderComponent);
     addPort("data_out", 8, DirectionTypes::OUT, senderComponent);
 
-    addInterfaceToComponent("data_bus", senderComponent);
+    addInterfaceToComponent("data_bus", senderComponent, dataAbstractionVLNV_);
     senderComponent->getBusInterface("data_bus")->setInterfaceMode(mode);    
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
     QSharedPointer<PortMap> dataMap = senderComponent->getBusInterface("data_bus")->getPortMaps()->first();
@@ -952,7 +1035,7 @@ QSharedPointer<View> tst_HDLParser::addReceiverComponentToLibrary(VLNV receiverV
     addPort("enable_in", 1, DirectionTypes::IN, receiverComponent);
     addPort("data_in", 8, DirectionTypes::IN, receiverComponent);
 
-    addInterfaceToComponent("data_bus", receiverComponent);
+    addInterfaceToComponent("data_bus", receiverComponent, dataAbstractionVLNV_);
     receiverComponent->getBusInterface("data_bus")->setInterfaceMode(mode);    
     mapPortToInterface("data_in", "DATA", "data_bus", receiverComponent);
 
@@ -1171,7 +1254,7 @@ void tst_HDLParser::testSlicedInterconnection()
     addPort("enable_out_low", 1, DirectionTypes::OUT, senderComponent);
     addPort("enable_out_high", 1, DirectionTypes::OUT, senderComponent);
 
-    addInterfaceToComponent("data_bus", senderComponent);
+    addInterfaceToComponent("data_bus", senderComponent, dataAbstractionVLNV_);
     QSharedPointer<BusInterface> enableIf = senderComponent->getBusInterface("data_bus");
     enableIf->setInterfaceMode(General::MASTER);    
 
@@ -1297,7 +1380,7 @@ void tst_HDLParser::testAbsDefDefault()
     addPort("enable_out_low", 1, DirectionTypes::OUT, senderComponent);
     addPort("enable_out_high", 1, DirectionTypes::OUT, senderComponent);
 
-    addInterfaceToComponent("data_bus", senderComponent);
+    addInterfaceToComponent("data_bus", senderComponent, dataAbstractionVLNV_);
     QSharedPointer<BusInterface> enableIf = senderComponent->getBusInterface("data_bus");
     enableIf->setInterfaceMode(General::MASTER);    
 
@@ -1800,7 +1883,7 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     senderPort->setRightBound("0");
     senderComponent->getPorts()->append(senderPort);
 
-    addInterfaceToComponent("data_bus", senderComponent);
+    addInterfaceToComponent("data_bus", senderComponent, dataAbstractionVLNV_);
     senderComponent->getBusInterface("data_bus")->setInterfaceMode(General::MASTER);
 
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
@@ -1822,7 +1905,7 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     receiverPort->setRightBound("0");
     receiverComponent->getPorts()->append(receiverPort);
 
-    addInterfaceToComponent("data_bus", receiverComponent);
+    addInterfaceToComponent("data_bus", receiverComponent, dataAbstractionVLNV_);
     receiverComponent->getBusInterface("data_bus")->setInterfaceMode(General::SLAVE);
     mapPortToInterface("data_in", "DATA", "data_bus", receiverComponent);
 
@@ -2212,7 +2295,7 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
 
     sendCimp->getModuleParameters()->append(moduleParameter);
 
-    addInterfaceToComponent("data_bus", senderComponent);
+    addInterfaceToComponent("data_bus", senderComponent, dataAbstractionVLNV_);
     senderComponent->getBusInterface("data_bus")->setInterfaceMode(General::MASTER);
 
     mapPortToInterface("data_out", "DATA", "data_bus", senderComponent);
@@ -2243,7 +2326,7 @@ void tst_HDLParser::testParameterPropagationFromTopWire()
     receiverPort->setRightBound("0");
     receiverComponent->getPorts()->append(receiverPort);
 
-    addInterfaceToComponent("data_bus", receiverComponent);
+    addInterfaceToComponent("data_bus", receiverComponent, dataAbstractionVLNV_);
     receiverComponent->getBusInterface("data_bus")->setInterfaceMode(General::SLAVE);
     mapPortToInterface("data_in", "DATA", "data_bus", receiverComponent);
 

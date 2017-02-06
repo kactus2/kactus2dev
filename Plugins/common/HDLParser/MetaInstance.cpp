@@ -238,13 +238,20 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
                     // If logical bounds do not exist, they are the same as the physical bounds.
                     if (logicalBounds.first.isEmpty() || logicalBounds.second.isEmpty())
                     {
-                        logicalBounds = physicalBounds;
+                        // Pick the total width of the physical bounds.
+                        int left = parseExpression(parser, physicalBounds.first).toInt();
+                        int right = parseExpression(parser, physicalBounds.second).toInt();
+                        // This is [abs(physical.left – physical.right):0]
+                        int widthMinusOne = abs(left - right);
+                        logicalBounds.first = QString::number(widthMinusOne);
+                        logicalBounds.second = "0";
                     }
 
                     // Assign the values.
                     mUpPortAssignment->logicalBounds_ = logicalBounds;
                     mUpPortAssignment->physicalBounds_ = physicalBounds;
 
+                    // Create a copy of the assignments, so that there is an assignment going to both directions in hierarchy.
                     QSharedPointer<MetaPortAssignment> mDownPortAssignment(new MetaPortAssignment(*mUpPortAssignment.data()));
                     mPort->upAssignments_.insert(pMap->getLogicalPort()->name_, mUpPortAssignment);
                     mPort->downAssignments_.insert(pMap->getLogicalPort()->name_, mDownPortAssignment);
@@ -306,14 +313,11 @@ QPair<QString, QString> MetaInstance::physicalPortBoundsInMapping(IPXactSystemVe
 
     QSharedPointer<PortMap::PhysicalPort> physPort = portMap->getPhysicalPort();
 
-    if ((bounds.first.isEmpty() || bounds.second.isEmpty()) && physPort && physPort->partSelect_)
+    if (physPort && physPort->partSelect_)
     {
         // Pick the part select expressions as the total width of the physical bounds.
-        int left = parseExpression(parser, physPort->partSelect_->getLeftRange()).toInt();
-        int right = parseExpression(parser, physPort->partSelect_->getRightRange()).toInt();
-        int width = left - right;
-        bounds.first = QString::number(width);
-        bounds.second = "0";
+        bounds.first = parseExpression(parser, physPort->partSelect_->getLeftRange());
+        bounds.second = parseExpression(parser, physPort->partSelect_->getRightRange());
     }
 
     return bounds;
