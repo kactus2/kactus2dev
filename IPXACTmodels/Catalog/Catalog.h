@@ -135,6 +135,13 @@ private:
      */
     void copyIpxactFiles(Catalog const& other);
 
+    /*!
+     *  Gets all the ipxact files in the catalog regardless of the type.
+     *
+     *      @return All ipxact files in the catalog.
+     */
+    QList<QSharedPointer<IpxactFile> > getAllFiles() const;
+
     //! The catalogs referenced by this catalog.
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > catalogs_;
 

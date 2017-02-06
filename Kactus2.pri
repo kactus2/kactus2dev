@@ -8,6 +8,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h \
+    ./editors/CatalogEditor/CatalogEditor.h \
     ./VersionHelper.h \
     ./common/Global.h \
     ./common/KactusColors.h \
@@ -700,7 +701,12 @@ HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h 
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./mainwindow/NewPages/NewCatalogPage.h
+    ./mainwindow/NewPages/NewCatalogPage.h \
+    ./editors/CatalogEditor/CatalogFileModel.h \
+    ./editors/CatalogEditor/CatalogFileColumns.h \
+    ./editors/CatalogEditor/CatalogFileDelegate.h \
+    ./editors/CatalogEditor/CatalogFileFilter.h \
+    ./editors/CatalogEditor/CatalogFileView.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -1312,5 +1318,10 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.cpp
+    ./editors/CatalogEditor/CatalogEditor.cpp \
+    ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.cpp \
+    ./editors/CatalogEditor/CatalogFileModel.cpp \
+    ./editors/CatalogEditor/CatalogFileDelegate.cpp \
+    ./editors/CatalogEditor/CatalogFileFilter.cpp \
+    ./editors/CatalogEditor/CatalogFileView.cpp
 RESOURCES += kactus.qrc

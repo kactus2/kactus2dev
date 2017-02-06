@@ -558,6 +558,11 @@ void LibraryHandler::onEditItem(VLNV const& vlnv)
         emit openComponent(vlnv);
     }
 
+    if (documentType == VLNV::CATALOG)
+    {
+        emit openCatalog(vlnv);
+    }
+
     else if (documentType == VLNV::COMDEFINITION)
     {
         emit openComDefinition(vlnv);

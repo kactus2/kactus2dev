@@ -65,6 +65,7 @@
 #include <editors/ApiDefinitionEditor/ApiDefinitionEditor.h>
 #include <editors/BusDefinitionEditor/BusDefinitionEditor.h>
 #include <editors/ComDefinitionEditor/ComDefinitionEditor.h>
+#include <editors/CatalogEditor/CatalogEditor.h>
 #include <editors/ComponentEditor/componenteditor.h>
 #include <editors/CSourceEditor/CSourceWidget.h>
 #include <editors/CSourceEditor/CSourceContentMatcher.h>
@@ -1181,6 +1182,8 @@ void MainWindow::setupLibraryDock()
         this, SLOT(createDesignForExistingComponent(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openComponent(const VLNV&)),
 		this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+    connect(libraryHandler_, SIGNAL(openCatalog(const VLNV&)),
+        this, SLOT(openCatalog(const VLNV&)), Qt::UniqueConnection);
 	connect(libraryHandler_, SIGNAL(openSWDesign(const VLNV&, QString const&)),
 		this, SLOT(openSWDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
     connect(libraryHandler_, SIGNAL(openSystemDesign(const VLNV&, QString const&)),
@@ -2106,6 +2109,16 @@ void MainWindow::createNew()
 	dialog.setFixedWidth(620);
 	dialog.setWindowTitle(tr("New"));
 
+    NewBusDefinitionPage* busPage = new NewBusDefinitionPage(libraryHandler_, &dialog);
+    connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
+        this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
+    dialog.addPage(QIcon(":icons/common/graphics/new-bus.png"), tr("Bus Definition"), busPage);
+
+    NewCatalogPage* catalogPage = new NewCatalogPage(libraryHandler_, &dialog);
+    connect(catalogPage, SIGNAL(createCatalog(VLNV const&, QString const&)),
+        this, SLOT(createCatalog(VLNV const&, QString const&)), Qt::UniqueConnection);
+    dialog.addPage(QIcon(":icons/common/graphics/catalog.png"), tr("Catalog"), catalogPage);
+
     // Add pages to the dialog.
 	NewComponentPage* compPage = new NewComponentPage(libraryHandler_, &dialog);
 	connect(compPage, SIGNAL(createComponent(KactusAttribute::ProductHierarchy,
@@ -2140,25 +2153,15 @@ void MainWindow::createNew()
 		this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)));
 	dialog.addPage(QIcon(":icons/common/graphics/system-component.png"), tr("System"), sysPage);
 
-	NewBusDefinitionPage* busPage = new NewBusDefinitionPage(libraryHandler_, &dialog);
-	connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
-		this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
-	dialog.addPage(QIcon(":icons/common/graphics/new-bus.png"), tr("Bus Definition"), busPage);
-
-    NewComDefinitionPage* comDefPage = new NewComDefinitionPage(libraryHandler_, &dialog);
-    connect(comDefPage, SIGNAL(createComDefinition(VLNV const&, QString const&)),
-            this, SLOT(createComDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
-
     NewApiDefinitionPage* apiDefPage = new NewApiDefinitionPage(libraryHandler_, &dialog);
     connect(apiDefPage, SIGNAL(createApiDefinition(VLNV const&, QString const&)),
         this, SLOT(createApiDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
     dialog.addPage(QIcon(":icons/common/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
 
-    NewCatalogPage* catalogPage = new NewCatalogPage(libraryHandler_, &dialog);
-   connect(catalogPage, SIGNAL(createCatalog(VLNV const&, QString const&)),
-        this, SLOT(createCatalog(VLNV const&, QString const&)), Qt::UniqueConnection);
-    dialog.addPage(QIcon(":icons/common/graphics/catalog.png"), tr("Catalog"), catalogPage);
+    NewComDefinitionPage* comDefPage = new NewComDefinitionPage(libraryHandler_, &dialog);
+    connect(comDefPage, SIGNAL(createComDefinition(VLNV const&, QString const&)),
+            this, SLOT(createComDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
+    dialog.addPage(QIcon(":icons/common/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
 
     dialog.finalizePages();
 
@@ -2445,9 +2448,9 @@ void MainWindow::createCatalog(VLNV const& catalogVLNV, QString const& directory
     }
 
     // Open the catalog editor.
-    //openCatalog(catalogVLNV);
+    openCatalog(catalogVLNV);
 
-    //unlockNewlyCreatedDocument(catalogVLNV);
+    unlockNewlyCreatedDocument(catalogVLNV);
 }
 
 //-----------------------------------------------------------------------------
@@ -3137,6 +3140,39 @@ void MainWindow::openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV, bool di
 
     BusDefinitionEditor* editor = new BusDefinitionEditor(this, libraryHandler_, busDef, absDef, absDef && disableBusDef);
 
+    designTabs_->addAndOpenDocument(editor);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::openCatalog()
+//-----------------------------------------------------------------------------
+void MainWindow::openCatalog(const VLNV& vlnv)
+{
+    if (isOpen(vlnv))
+    {
+        return;
+    }
+
+    // Editor was not yet open so create it.
+    QSharedPointer<Catalog> catalog;
+
+    if (libraryHandler_->contains(vlnv))
+    {
+        catalog = libraryHandler_->getModel(vlnv).dynamicCast<Catalog>();
+    }
+    else
+    {
+        emit errorMessage(tr("VLNV %1 was not found in the library").arg(vlnv.toString()));
+        return;
+    }
+
+    if (catalog == 0)
+    {
+        emit errorMessage(tr("Document type did not match Catalog"));
+        return;
+    }
+
+    CatalogEditor* editor = new CatalogEditor(libraryHandler_, catalog, this);
     designTabs_->addAndOpenDocument(editor);
 }
 
