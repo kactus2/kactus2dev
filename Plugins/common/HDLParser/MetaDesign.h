@@ -54,11 +54,26 @@ public:
     static QList<QSharedPointer<MetaDesign> > parseHierarchy(LibraryInterface* library,
         GenerationTuple input,
         QSharedPointer<View> topComponentView);
-
-    QSharedPointer<QMap<QString,QSharedPointer<MetaInstance> > > getInstances() const { return instances_; }
-    QSharedPointer<MetaInstance> getTopInstance() const { return topInstance_; }
-    QSharedPointer<QList<QSharedPointer<MetaInterconnection> > > getInterconnections() const { return interconnections_; }
-    QSharedPointer<QList<QSharedPointer<MetaWire> > > getAdHocWires() const { return adHocWires_; }
+    
+    /*!
+     *  Returns the meta instance of the top component. Must exists even if is the topmost in hierarchy.
+     */
+    QSharedPointer<MetaInstance> getTopInstance() const {return topInstance_;}
+    
+    /*!
+     *  Returns map of the parsed meta instances within the design. Keyed with instance names.
+     */
+    QSharedPointer<QMap<QString,QSharedPointer<MetaInstance> > > getInstances() const {return instances_;}
+    
+    /*!
+     *  Returns list of the parsed meta interconnections within the design.
+     */
+    QSharedPointer<QList<QSharedPointer<MetaInterconnection> > > getInterconnections() const {return interconnections_;}
+    
+    /*!
+    *  Returns list of the parsed ad-hoc wires within the design.
+     */
+    QSharedPointer<QList<QSharedPointer<MetaWire> > > getAdHocWires() const {return adHocWires_;}
 
 private:
 
@@ -77,7 +92,7 @@ private:
     void parseInstances();
     
     /*!
-     *  Parses insterconnections in the design_.
+     *  Parses interconnections in the design_.
      */
     void parseInterconnections();
     
@@ -120,21 +135,22 @@ private:
 
     //! The design configuration to parse.
     QSharedPointer<DesignConfiguration const> designConf_;
-     
-    //! The list of all parsed designs that are below the current top are in this list.
-    QList<QSharedPointer<MetaDesign> > subDesigns_;
+
+    //! The parsed meta instance of the top component.
+    QSharedPointer<MetaInstance> topInstance_;
 
     //! The finder for top level parameters.
     QSharedPointer<ListParameterFinder> topFinder_;
 
-    //! The parsed meta instance of the top component.
-    QSharedPointer<MetaInstance> topInstance_;
     //! The parsed instances in the design_, keyed with their names.
     QSharedPointer<QMap<QString,QSharedPointer<MetaInstance> > > instances_;
     //! The parsed interconnections of the design_.
     QSharedPointer<QList<QSharedPointer<MetaInterconnection> > > interconnections_;
     //! The parsed ad-hoc connections of the design_.
     QSharedPointer<QList<QSharedPointer<MetaWire> > > adHocWires_;
+
+    //! The list of all parsed designs that are below the current top are in this list.
+    QList<QSharedPointer<MetaDesign> > subDesigns_;
 };
 
 #endif // METADESIGN_H

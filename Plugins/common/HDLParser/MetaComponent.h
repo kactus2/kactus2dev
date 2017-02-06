@@ -105,18 +105,18 @@ private:
     virtual void cullParameters();
     
     /*!
-    *  Parses the found parameter declarations.
-    */
+     *  Formats the found parameter declarations.
+     */
     virtual void formatParameters(QSharedPointer<ExpressionFormatter> formatter);
     
     /*!
-    *  Culls and parses the ports of the component.
-    */
+     *  Culls and formats the ports of the component.
+     */
     virtual void formatPorts(QSharedPointer<ExpressionFormatter> formatter);
 
     /*!
-    *  Goes through the remap states, connects remaps to correct ports.
-    */
+     *  Goes through the remap states, connects remaps to correct ports.
+     */
     void parseRemapStates(QSharedPointer<ExpressionFormatter> formatter);
 
     //-----------------------------------------------------------------------------

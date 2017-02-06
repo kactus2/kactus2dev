@@ -84,6 +84,7 @@ private:
     
     /*!
      *  Culls and parses the ports of the component.
+     *  Creates assignments for port maps.
      *
      *      @param [in] parser          Used to parse expressions.
      */
