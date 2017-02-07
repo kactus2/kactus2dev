@@ -18,6 +18,8 @@
           </section>
         </section>
         <section title="General Help" ref="general/generalHelp.html">
+          <section title="Colors" ref="general/colors.html">
+          </section>
           <section title="Toolbar" ref="general/ribbon.html">
           </section>
           <section title="Expressions" ref="general/expressions.html">

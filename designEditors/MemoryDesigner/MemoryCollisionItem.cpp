@@ -58,11 +58,7 @@ MemoryCollisionItem::~MemoryCollisionItem()
 //-----------------------------------------------------------------------------
 void MemoryCollisionItem::setCollisionBrush()
 {
-    qreal collisionOpacity = 0.45;
-
-    QBrush collisionBrush(KactusColors::MISSING_COMPONENT);
-    setBrush(collisionBrush);
-    setOpacity(collisionOpacity);
+    qreal mainCollisionOpacity = 0.4;
 
     QVector<MemoryCollisionItem*> collidingCollisionItems;
     foreach (QGraphicsItem* collidingItem, collidingItems())
@@ -74,17 +70,31 @@ void MemoryCollisionItem::setCollisionBrush()
         }
     }
 
-    int collisionMarker = collidingCollisionItems.size();
-    foreach (MemoryCollisionItem* collidingItem, collidingCollisionItems)
+    if (!collidingCollisionItems.isEmpty())
     {
-        if (collidingItem->boundingRect().top() == boundingRect().top() &&
-            collidingItem->boundingRect().bottom() == boundingRect().bottom())
+        collidingCollisionItems.removeFirst();
+
+        mainCollisionOpacity = 0.3;
+        qreal collisionOpacity = mainCollisionOpacity;
+
+        int collisionMarker = collidingCollisionItems.size();
+        for (int collisionIndex = collidingCollisionItems.size() - 1; collisionIndex >= 0; --collisionIndex)
         {
-            collisionMarker = collisionMarker - 1;
-            collisionOpacity = collisionOpacity / (collidingCollisionItems.size() - collisionMarker);
-            collidingItem->setOpacity(collisionOpacity);
+            MemoryCollisionItem* collidingItem = collidingCollisionItems.at(collisionIndex);
+
+            if (collidingItem->boundingRect().top() == boundingRect().top() &&
+                collidingItem->boundingRect().bottom() == boundingRect().bottom())
+            {
+                collisionMarker = collisionMarker - 1;
+                collisionOpacity = collisionOpacity / (collidingCollisionItems.size() - collisionMarker);
+                collidingItem->setOpacity(collisionOpacity);
+            }
         }
     }
+
+    QBrush collisionBrush(KactusColors::MISSING_COMPONENT);
+    setBrush(collisionBrush);
+    setOpacity(mainCollisionOpacity);
 }
 
 //-----------------------------------------------------------------------------

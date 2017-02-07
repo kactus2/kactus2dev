@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: VerilogWireWriter.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 21.08.2014
 //
@@ -23,8 +23,8 @@ class VERILOGGENERATORPLUGIN_EXPORT VerilogWireWriter : public Writer
 {
 public:
 
-	//! The constructor.
-	VerilogWireWriter(QSharedPointer<GenerationWire> wire);
+    //! The constructor.
+    VerilogWireWriter(QString name, QPair<QString, QString> bounds);
 
 	//! The destructor.
 	virtual ~VerilogWireWriter();
@@ -57,7 +57,8 @@ private:
     QString formattedSize() const;
 
     //! The wire.
-    QSharedPointer<GenerationWire> wire_;
+    QString name_;
+    QPair<QString, QString> bounds_;
 };
 
 #endif // VERILOGWIREWRITER_H

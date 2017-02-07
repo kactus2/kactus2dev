@@ -17,8 +17,6 @@
 #include <QSharedPointer>
 
 #include <Plugins/PluginSystem/GeneratorPlugin/FileOutput.h>
-#include <Plugins/common/HDLParser/HDLComponentParser.h>
-#include <Plugins/common/HDLParser/HDLDesignParser.h>
 
 #include "SWStackParser.h"
 

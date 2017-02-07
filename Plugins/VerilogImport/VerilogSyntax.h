@@ -75,6 +75,32 @@ namespace VerilogSyntax
      *      @return   The position and length of the module declaration.
      */
     QPair<int,int> findModuleDeclaration(QString const& input);
+
+    /*!
+     *  Parses the module implementation out of verilog file given as output, if it already exists.
+     *
+	 *      @param [in] outputPath		The path to the output file.
+	 *      @param [in] implementation	The module implementation.
+	 *      @param [in] postModule		Anything that exists after the module declaration.
+	 *
+	 *      @return False, if the file exists, but could not be opened or parsed properly.
+     */
+	bool readImplementation(QString const& outputPath, QString& implementation,
+		QString& postModule, QString& error);
+
+    /*!
+     *  Parses the module implementation out of verilog file given as output, if it already exists.
+     *
+	 *      @param [in] outputPath		The path to the output file.
+	 *      @param [in] implementation	The module implementation.
+	 *      @param [in] postModule		Anything that exists after the module declaration.
+	 *
+	 *      @return False, if the file exists, but could not be opened or parsed properly.
+     */
+	bool selectImplementation(QString const& fileContent, QString& implementation,
+        QString& postModule, QString& error);
+
+    bool findImplementation(QString const& fileContent, int& implementationStart, int& implementationEnd, QString& error);
 }
 
 #endif // VERILOGSYNTAX_H

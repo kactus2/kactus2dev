@@ -30,7 +30,7 @@ public:
      *
      *      @param [in] port                    The port to write to Verilog.
      */
-    PortVerilogWriter(QSharedPointer<GenerationPort> port);
+    PortVerilogWriter(QSharedPointer<MetaPort> port);
 
     //! The destructor.
     ~PortVerilogWriter();
@@ -71,18 +71,21 @@ private:
     QString direction() const;
     
     /*!
-     *  Creates array bounds representation for the port.
-     *
-     *      @return Array bounds for the port.
+     *  Returns vector bounds representation for the port.
      */
-    QString arrayAndVectorBounds() const;
+    QString vectorBounds() const;
     
+    
+    /*!
+     *  Returns array bounds representation for the port.
+     */
+    QString arrayBounds() const;
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The port to write to Verilog.
-    QSharedPointer<const GenerationPort> port_;
+    QSharedPointer<const MetaPort> port_;
 };
 
 #endif // PORTVERILOGWRITER_H

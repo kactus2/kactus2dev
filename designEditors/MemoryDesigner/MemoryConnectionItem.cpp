@@ -40,7 +40,7 @@ endItem_(endItem),
 yTransfer_(yTransfer),
 connectionBaseAddress_(firstStartValue),
 connectionLastAddress_(firstEndValue),
-connectionWidth_(0),
+connectionWidth_(getConnectionWidth()),
 memoryItemsAreCondensed_(memoryItemsAreCondensed)
 {
     setupLabels(firstStartValue, firstEndValue);
@@ -55,6 +55,8 @@ memoryItemsAreCondensed_(memoryItemsAreCondensed)
 
     startItem_->addMemoryConnection(this);
     endItem_->addMemoryConnection(this);
+
+    createPath();
 }
 
 //-----------------------------------------------------------------------------
@@ -75,8 +77,8 @@ void MemoryConnectionItem::createPath()
     const qreal LINEWIDTH = 1;
     qreal connectionWidth = connectionWidth_;
 
-    QPointF startItemTopRight = startItem_->mapToScene(startItem_->boundingRect().topRight());
-    QPointF endItemTopLeft = endItem_->mapToScene(endItem_->boundingRect().topLeft());
+    QPointF startItemTopRight = startItem_->sceneBoundingRect().topRight();
+    QPointF endItemTopLeft = endItem_->sceneBoundingRect().topLeft();
 
     QPointF highStartPoint(startItemTopRight.x(), startItemTopRight.y() + yTransfer_ + LINEWIDTH / 2);
     QPointF lowStartPoint(highStartPoint.x(), highStartPoint.y() + connectionWidth);
@@ -105,39 +107,63 @@ qreal MemoryConnectionItem::getConnectionWidth() const
     qreal connectionWidth =
         (connectionLastAddress_ - connectionBaseAddress_ + 1) * MemoryDesignerConstants::RANGEINTERVAL;
 
-    if (memoryItemsAreCondensed_)
-    {
-        qreal endItemHeight = endItem_->getMinimumRequiredHeight(connectionBaseAddress_, connectionLastAddress_);
-        qreal startItemHeight =
-            startItem_->getMinimumRequiredHeight(connectionBaseAddress_, connectionLastAddress_);
+    return connectionWidth;
+}
 
-        qreal comparisonHeight = endItemHeight;
-        if (startItemHeight > endItemHeight)
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::condenseToUnCutAddresses()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::condenseToUnCutAddresses(QVector<quint64> uncutAddresses, const int CUTMODIFIER)
+{
+    quint64 cutArea = 0;
+    quint64 previousAddress = connectionBaseAddress_;
+    foreach (quint64 address, uncutAddresses)
+    {
+        if (address > connectionBaseAddress_ && address <= connectionLastAddress_)
         {
-            comparisonHeight = startItemHeight;
+            qint64 singleCut = address - previousAddress - CUTMODIFIER;
+            if (singleCut > 0)
+            {
+                cutArea += singleCut;
+            }
+
+            previousAddress = address;
         }
 
-        if (comparisonHeight < connectionWidth)
+        if (address > connectionLastAddress_)
         {
-            connectionWidth = comparisonHeight;
-
-            quint64 connectionSize = connectionLastAddress_ - connectionBaseAddress_;
-
-            quint64 startLastAddress = startItem_->getLastAddress();
-            quint64 startBaseAddress = startItem_->getBaseAddress();
-            quint64 endLastAddress = endItem_->getLastAddress();
-            quint64 endBaseAddress = endItem_->getBaseAddress();
-
-            quint64 startItemSize = startLastAddress - startBaseAddress;
-            quint64 endItemSize = endLastAddress - endBaseAddress;
-            if (connectionSize > startItemSize || connectionSize > endItemSize)
-            {
-                connectionWidth += MemoryDesignerConstants::RANGEINTERVAL * 2;
-            }
+            break;
         }
     }
 
-    return connectionWidth;
+    if (cutArea > 0)
+    {
+        qreal condensedHeight = boundingRect().height() - (cutArea * MemoryDesignerConstants::RANGEINTERVAL);
+
+        setCondensedHeight(condensedHeight);
+    }
+
+    compressEndItem(uncutAddresses, CUTMODIFIER);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::compressEndItem()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::compressEndItem(QVector<quint64> unCutAddresses, const int CUTMODIFIER)
+{
+    if (endItem_ && !endItem_->isCompressed())
+    {
+        endItem_->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::setCondensedHeight()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::setCondensedHeight(qreal newHeight)
+{
+    connectionWidth_ = newHeight;
+    reDrawConnection();
 }
 
 //-----------------------------------------------------------------------------
@@ -149,8 +175,11 @@ void MemoryConnectionItem::avoidCollisionsOnPath(QPointF highStartPoint, QPointF
     QList<QGraphicsItem*> collisions = collidingItems(Qt::IntersectsItemBoundingRect);
     if (!collisions.isEmpty())
     {
-        QList<QPair<QPointF, QPointF> > highCollisionPoints;
-        QList<QPair<QPointF, QPointF> > lowCollisionPoints;
+        qreal connectionTop = highStartPoint.y();
+        qreal connectionLow = lowStartPoint.y();
+
+        QMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints;
+        QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints;
 
         MemoryColumn* startColumn = dynamic_cast<MemoryColumn*>(startItem_->parentItem());
         MemoryColumn* endColumn = dynamic_cast<MemoryColumn*>(endItem_->parentItem());
@@ -158,34 +187,50 @@ void MemoryConnectionItem::avoidCollisionsOnPath(QPointF highStartPoint, QPointF
         foreach (QGraphicsItem* collidingItem, collisions)
         {
             MemoryDesignerGraphicsItem* memoryItem = dynamic_cast<MemoryDesignerGraphicsItem*>(collidingItem);
-            if (memoryItem && (dynamic_cast<MainMemoryGraphicsItem*>(memoryItem) ||
-                dynamic_cast<MemoryExtensionGraphicsItem*>(memoryItem)) && memoryItem != startItem_ &&
-                memoryItem != endItem_)
+            if (memoryItem)
             {
-                MemoryColumn* itemColumn = dynamic_cast<MemoryColumn*>(memoryItem->parentItem());
-                if (itemColumn && startColumn && endColumn && itemColumn != startColumn && itemColumn != endColumn)
+                bool isMainItem = dynamic_cast<MainMemoryGraphicsItem*>(memoryItem);
+                bool isExtensionItem = dynamic_cast<MemoryExtensionGraphicsItem*>(memoryItem);
+                bool isNotConnectedItem = memoryItem != startItem_ && memoryItem != endItem_;
+                if (memoryItem && (isMainItem || isExtensionItem) && isNotConnectedItem)
                 {
-                    QRectF itemSceneRect = memoryItem->sceneBoundingRect();
-                    QPointF highCollisionStart = itemSceneRect.topLeft();
-                    if (highCollisionStart.y() < highStartPoint.y())
+                    MemoryColumn* itemColumn = dynamic_cast<MemoryColumn*>(memoryItem->parentItem());
+                    if (!itemColumn && isExtensionItem)
                     {
-                        highCollisionStart.setY(highStartPoint.y());
-                        QPointF highCollisionEnd = itemSceneRect.topRight();
-                        highCollisionEnd.setY(highStartPoint.y());
-
-                        QPair<QPointF, QPointF> collisionPoints(highCollisionStart, highCollisionEnd);
-                        highCollisionPoints.append(collisionPoints);
+                        MainMemoryGraphicsItem* extensionParent =
+                            dynamic_cast<MainMemoryGraphicsItem*>(memoryItem->parentItem());
+                        if (extensionParent)
+                        {
+                            itemColumn = dynamic_cast<MemoryColumn*>(extensionParent->parentItem());
+                        }
                     }
-
-                    QPointF lowCollisionStart = itemSceneRect.bottomLeft();
-                    if (lowCollisionStart.y() > lowStartPoint.y())
+                    bool columnIsNotConnectedColumn = itemColumn != startColumn && itemColumn != endColumn;
+                    if (itemColumn && startColumn && endColumn && columnIsNotConnectedColumn)
                     {
-                        lowCollisionStart.setY(lowStartPoint.y());
-                        QPointF lowCollisionEnd = itemSceneRect.bottomRight();
-                        lowCollisionEnd.setY(lowStartPoint.y());
+                        QRectF collisionRectangle = memoryItem->sceneBoundingRect();
+                        qreal collisionTop = collisionRectangle.top();
+                        qreal collisionLow = collisionRectangle.bottom();
 
-                        QPair<QPointF, QPointF> collisionPoints(lowCollisionStart, lowCollisionEnd);
-                        lowCollisionPoints.append(collisionPoints);
+                        qreal collisionLeft = collisionRectangle.left();
+                        qreal collisionRight = collisionRectangle.right();
+
+                        if (collisionTop < connectionTop && collisionLow > connectionTop)
+                        {
+                            QPointF collisionStart (collisionLeft, connectionTop);
+                            QPointF collisionEnd (collisionRight, connectionTop);
+
+                            QPair<QPointF, QPointF> collisionPoints(collisionStart, collisionEnd);
+                            highCollisionPoints.insertMulti(collisionLeft, collisionPoints);
+                        }
+
+                        if (collisionTop < connectionLow && collisionLow > connectionLow)
+                        {
+                            QPointF collisionStart (collisionLeft, connectionLow);
+                            QPointF collisionEnd (collisionRight, connectionLow);
+
+                            QPair<QPointF, QPointF> collisionPoints(collisionStart, collisionEnd);
+                            lowCollisionPoints.insertMulti(collisionLeft, collisionPoints);
+                        }
                     }
                 }
             }
@@ -193,35 +238,51 @@ void MemoryConnectionItem::avoidCollisionsOnPath(QPointF highStartPoint, QPointF
 
         if (!highCollisionPoints.isEmpty() || !lowCollisionPoints.isEmpty())
         {
-            QPainterPath collisionPath;
-
-            QPointF highCollisionStartPoint = highStartPoint;
-            for (int i = 0; i < highCollisionPoints.size(); ++i)
-            {
-                QPair<QPointF, QPointF> collisionPoint = highCollisionPoints.at(i);
-                collisionPath.moveTo(highCollisionStartPoint);
-                collisionPath.lineTo(collisionPoint.first);
-                highCollisionStartPoint = collisionPoint.second;
-            }
-
-            collisionPath.moveTo(highCollisionStartPoint);
-            collisionPath.lineTo(highEndPoint);
-
-            QPointF lowCollisionStartPoint = lowStartPoint;
-            for (int i = 0; i < lowCollisionPoints.size(); ++i)
-            {
-                QPair<QPointF, QPointF> collisionPoint = lowCollisionPoints.at(i);
-                collisionPath.moveTo(lowCollisionStartPoint);
-                collisionPath.lineTo(collisionPoint.first);
-                lowCollisionStartPoint = collisionPoint.second;
-            }
-
-            collisionPath.moveTo(lowCollisionStartPoint);
-            collisionPath.lineTo(lowEndPoint);
-
-            setPath(collisionPath);
+            createCollisionPath(
+                highStartPoint, highEndPoint, lowStartPoint, lowEndPoint, highCollisionPoints, lowCollisionPoints);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::createCollisionPath()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::createCollisionPath(QPointF highStartPoint, QPointF highEndPoint,
+    QPointF lowStartPoint, QPointF lowEndPoint,
+    QMap<qreal, QPair<QPointF, QPointF> > highCollisionPoints,
+    QMap<qreal, QPair<QPointF, QPointF> > lowCollisionPoints)
+{
+    QPainterPath collisionPath;
+
+    QPointF highCollisionStartPoint = highStartPoint;
+    QMapIterator<qreal, QPair<QPointF, QPointF> > highIterator(highCollisionPoints);
+    while (highIterator.hasNext())
+    {
+        highIterator.next();
+        QPair<QPointF, QPointF> collisionPoint = highIterator.value();
+        collisionPath.moveTo(highCollisionStartPoint);
+        collisionPath.lineTo(collisionPoint.first);
+        highCollisionStartPoint = collisionPoint.second;
+    }
+
+    collisionPath.moveTo(highCollisionStartPoint);
+    collisionPath.lineTo(highEndPoint);
+
+    QPointF lowCollisionStartPoint = lowStartPoint;
+    QMapIterator<qreal, QPair<QPointF, QPointF> > lowIterator(lowCollisionPoints);
+    while (lowIterator.hasNext())
+    {
+        lowIterator.next();
+        QPair<QPointF, QPointF> collisionPoint = lowIterator.value();
+        collisionPath.moveTo(lowCollisionStartPoint);
+        collisionPath.lineTo(collisionPoint.first);
+        lowCollisionStartPoint = collisionPoint.second;
+    }
+
+    collisionPath.moveTo(lowCollisionStartPoint);
+    collisionPath.lineTo(lowEndPoint);
+
+    setPath(collisionPath);
 }
 
 //-----------------------------------------------------------------------------
@@ -312,7 +373,7 @@ void MemoryConnectionItem::onMoveConnectionInY(MainMemoryGraphicsItem* movementO
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::moveConnectedItem(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer)
 {
-    MainMemoryGraphicsItem* connectedItem;
+    MainMemoryGraphicsItem* connectedItem = 0;
 
     if (movementOrigin == startItem_)
     {
@@ -421,7 +482,7 @@ quint64 MemoryConnectionItem::getSceneEndPoint() const
 {
     quint64 sceneEndPoint = sceneBoundingRect().bottom();
 
-    quint64 endItemSceneEndPoint = endItem_->sceneBoundingRect().bottom();
+    quint64 endItemSceneEndPoint = endItem_->getSceneRectangleWithSubItems().bottom();
 
     if (endItemSceneEndPoint > sceneEndPoint)
     {
@@ -429,21 +490,6 @@ quint64 MemoryConnectionItem::getSceneEndPoint() const
     }
 
     return sceneEndPoint;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::compressEndItem()
-//-----------------------------------------------------------------------------
-void MemoryConnectionItem::compressEndItem(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections)
-{
-    if (endItem_)
-    {
-        MemoryMapGraphicsItem* mapItem = dynamic_cast<MemoryMapGraphicsItem*>(endItem_);
-        if (mapItem && !mapItem->isCompressed())
-        {
-            mapItem->compressMapItem(movedConnections);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -507,64 +553,6 @@ MainMemoryGraphicsItem* MemoryConnectionItem::getConnectionStartItem() const
 MainMemoryGraphicsItem* MemoryConnectionItem::getConnectionEndItem() const
 {
     return endItem_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::setConnectionWidth()
-//-----------------------------------------------------------------------------
-void MemoryConnectionItem::setConnectionWidth()
-{
-    connectionWidth_ = getComparedConnectionHeight(this);
-    reDrawConnection();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::getComparedConnectionHeight()
-//-----------------------------------------------------------------------------
-qreal MemoryConnectionItem::getComparedConnectionHeight(MemoryConnectionItem* connectionItem) const
-{
-    qreal connectionHeight = connectionItem->getConnectionWidth();
-    if (memoryItemsAreCondensed_)
-    {
-        qreal containedConnectionsHeight = 0;
-
-        quint64 comparisonLastAddress = 0;
-
-        MainMemoryGraphicsItem* connectionEndItem = connectionItem->getConnectionEndItem();
-        foreach (MemoryConnectionItem* comparisonConnection, connectionEndItem->getMemoryConnections())
-        {
-            if (comparisonConnection->getConnectionStartItem() == connectionEndItem)
-            {
-                containedConnectionsHeight += getComparedConnectionHeight(comparisonConnection);
-                comparisonLastAddress = comparisonConnection->getRangeEndValue();
-            }
-        }
-
-        if (connectionLastAddress_ < comparisonLastAddress)
-        {
-            containedConnectionsHeight -= MemoryDesignerConstants::RANGEINTERVAL * 2;
-        }
-
-        connectionHeight = qMax(connectionHeight, containedConnectionsHeight);
-
-        foreach (MemoryConnectionItem* comparisonConnection, startItem_->getMemoryConnections())
-        {
-            if (comparisonConnection->getConnectionEndItem() == startItem_)
-            {
-                qreal comparisonHeight = comparisonConnection->boundingRect().height() - 1;
-                if (comparisonHeight >= connectionHeight)
-                {
-                    quint64 comparisonLastAddress = comparisonConnection->getRangeEndValue();
-                    if (comparisonLastAddress < connectionLastAddress_)
-                    {
-                        connectionHeight = comparisonHeight + MemoryDesignerConstants::RANGEINTERVAL * 2;
-                    }
-                }
-            }
-        }
-    }
-
-    return connectionHeight;
 }
 
 //-----------------------------------------------------------------------------

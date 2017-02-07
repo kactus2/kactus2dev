@@ -24,12 +24,6 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Header Files\VerilogGenerator">
-      <UniqueIdentifier>{1c531240-09d2-4215-acab-9e32c1022d3d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\VerilogGenerator">
-      <UniqueIdentifier>{df935c43-bdc6-4b31-9901-9c1c5a63f862}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\common">
       <UniqueIdentifier>{96e9ee6a-c016-4cf5-be38-0f78a5982b1f}</UniqueIdentifier>
     </Filter>
@@ -113,12 +107,6 @@
     <Filter Include="Header Files\editors\DesignEditor">
       <UniqueIdentifier>{2ece6617-9617-4da5-bbef-c3a1fed77fdf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\VerilogTiedValueWriter">
-      <UniqueIdentifier>{dc219def-890b-4f59-a0e0-720eb14259a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\VerilogTiedValueWriter">
-      <UniqueIdentifier>{12df4dee-4481-4416-b6a3-d1bf09812f88}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\TextBodyWrite">
       <UniqueIdentifier>{087779c9-1f4e-4c00-89b6-05295736929e}</UniqueIdentifier>
     </Filter>
@@ -131,11 +119,38 @@
     <Filter Include="Header Files\VerilogInterconnectionWriter">
       <UniqueIdentifier>{49c1da0b-e2ef-4922-b33f-0b53c28cd4a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\VerilogWriterFactory">
+      <UniqueIdentifier>{1c531240-09d2-4215-acab-9e32c1022d3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VerilogWriterFactory">
+      <UniqueIdentifier>{df935c43-bdc6-4b31-9901-9c1c5a63f862}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\VerilogAssignmentWriter">
+      <UniqueIdentifier>{eb136d54-9485-4133-b031-5e668f8daa3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\VerilogAssignmentWriter">
+      <UniqueIdentifier>{3fcc2a9d-b112-4143-8341-e27e3d9d8059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GenerationControl">
+      <UniqueIdentifier>{763961cb-58da-4c55-83d3-10b80c6e25a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GenerationControl">
+      <UniqueIdentifier>{6c9da2cd-2b6e-492a-a913-41d81e41505e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Widgets">
+      <UniqueIdentifier>{b83d2cb6-0cdd-46fb-b9f6-23fa4f90f4eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Widgets">
+      <UniqueIdentifier>{c7abcd51-8127-488f-9646-7db7fdff4c20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parsing">
+      <UniqueIdentifier>{f3a5a54b-16c5-4acd-abb2-fc58c0b2146b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parsing">
+      <UniqueIdentifier>{265b861a-684d-4adf-be14-c53097eb9d3f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="VerilogGenerator\VerilogGenerator.cpp">
-      <Filter>Source Files\VerilogGenerator</Filter>
-    </ClCompile>
     <ClCompile Include="ComponentVerilogWriter\ComponentVerilogWriter.cpp">
       <Filter>Source Files\ComponentVerilogWriter</Filter>
     </ClCompile>
@@ -166,18 +181,6 @@
     <ClCompile Include="..\..\editors\ComponentEditor\common\ExpressionFormatter.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_GeneratorConfigurationDialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_GeneratorConfigurationDialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PluginSystem\GeneratorPlugin\GeneratorConfigurationDialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VerilogGeneratorPlugin.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -199,17 +202,8 @@
     <ClCompile Include="..\..\designEditors\common\TopComponentParameterFinder.cpp">
       <Filter>Source Files\editors\DesignEditor</Filter>
     </ClCompile>
-    <ClCompile Include="VerilogTiedValueWriter\VerilogTiedValueWriter.cpp">
-      <Filter>Source Files\VerilogTiedValueWriter</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.cpp">
       <Filter>Source Files\common</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_VerilogGenerator.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_VerilogGenerator.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="TextBodyWriter\TextBodyWriter.cpp">
       <Filter>Source Files\TextBodyWrite</Filter>
@@ -219,21 +213,6 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_ViewSelectionWidget.cpp">
       <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_HDLDesignParser.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_HDLDesignParser.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\HDLParser\HDLDesignParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\HDLParser\HDLComponentParser.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\editors\ComponentEditor\common\ListParameterFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
@@ -247,35 +226,77 @@
     <ClCompile Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.cpp">
       <Filter>Source Files\VerilogInterconnectionWriter</Filter>
     </ClCompile>
-    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_GeneratorConfiguration.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_GeneratorConfiguration.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\VerilogImport\VerilogSyntax.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_FileOutputWidget.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_FileOutputWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_FileOutput.cpp">
-      <Filter>Generated Files\Debug</Filter>
+    <ClCompile Include="VerilogWriterFactory\VerilogWriterFactory.cpp">
+      <Filter>Source Files\VerilogWriterFactory</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_FileOutput.cpp">
-      <Filter>Generated Files\Release</Filter>
+    <ClCompile Include="VerilogWriterFactory\VerilogDocument.cpp">
+      <Filter>Source Files\VerilogWriterFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="VerilogAssignmentWriter\VerilogAssignmentWriter.cpp">
+      <Filter>Source Files\VerilogAssignmentWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="PortVerilogWriter\VerilogTopDefaultWriter.cpp">
+      <Filter>Source Files\PortVerilogWriter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutput.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\MetaDesign.cpp">
+      <Filter>Source Files\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\MetaInstance.cpp">
+      <Filter>Source Files\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\VerilogImport\VerilogSyntax.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_HDLGenerationDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_HDLGenerationDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_MessagePasser.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_MessagePasser.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\MessagePasser.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_messageconsole.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_messageconsole.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp">
+      <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\MetaComponent.cpp">
+      <Filter>Source Files\Parsing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -327,20 +348,11 @@
     <ClInclude Include="..\..\designEditors\common\TopComponentParameterFinder.h">
       <Filter>Header Files\editors\DesignEditor</Filter>
     </ClInclude>
-    <ClInclude Include="VerilogTiedValueWriter\VerilogTiedValueWriter.h">
-      <Filter>Header Files\VerilogTiedValueWriter</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\MultipleParameterFinder.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="TextBodyWriter\TextBodyWriter.h">
       <Filter>Header Files\TextBodyWrite</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\HDLParser\HDLComponentParser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\HDLParser\HDLParserCommon.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\ListParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
@@ -354,47 +366,73 @@
     <ClInclude Include="VerilogInterconnectionWriter\VerilogInterconnectionWriter.h">
       <Filter>Header Files\VerilogInterconnectionWriter</Filter>
     </ClInclude>
-    <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="veriloggeneratorplugin_global.h">
       <Filter>Header Files\ComponentVerilogWriter</Filter>
     </ClInclude>
+    <ClInclude Include="VerilogAssignmentWriter\VerilogAssignmentWriter.h">
+      <Filter>Header Files\VerilogAssignmentWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="PortVerilogWriter\VerilogTopDefaultWriter.h">
+      <Filter>Header Files\PortVerilogWriter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\IWriterFactory.h">
+      <Filter>Header Files\VerilogWriterFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\HDLParserCommon.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaInstance.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaDesign.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogWriterFactory\VerilogDocument.h">
+      <Filter>Header Files\VerilogWriterFactory</Filter>
+    </ClInclude>
     <ClInclude Include="..\VerilogImport\VerilogSyntax.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaComponent.h">
+      <Filter>Header Files\Parsing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="VerilogGenerator.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\GeneratorConfigurationDialog.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
     <CustomBuild Include="VerilogGeneratorPlugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="VerilogGenerator\VerilogGenerator.h">
-      <Filter>Header Files\VerilogGenerator</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\common\HDLParser\HDLDesignParser.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\GeneratorConfiguration.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="VerilogWriterFactory\VerilogWriterFactory.h">
+      <Filter>Header Files\VerilogWriterFactory</Filter>
     </CustomBuild>
     <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutput.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\GenerationControl</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\ViewSelectionWidget.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\HDLGenerationDialog.h">
+      <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\mainwindow\MessageConsole\messageconsole.h">
+      <Filter>Header Files\Widgets</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="veriloggeneratorplugin.json" />
     <None Include="verilogGenerator.png">
       <Filter>Resource Files</Filter>
     </None>

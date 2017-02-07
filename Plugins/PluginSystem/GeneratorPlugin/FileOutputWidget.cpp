@@ -10,7 +10,6 @@
 //-----------------------------------------------------------------------------
 
 #include "FileOutputWidget.h"
-#include "FileOutput.h"
 
 #include <QFileDialog>
 #include <QVBoxLayout>
@@ -36,6 +35,10 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) :
     QHBoxLayout* pathSelectionLayout = new QHBoxLayout();
     pathSelectionLayout->addWidget(new QLabel(tr("Output directory:")));
     pathSelectionLayout->addWidget(pathEditor_);
+
+    QPalette p = pathEditor_->palette();
+    p.setColor(QPalette::Base, QColor("LemonChiffon"));
+    pathEditor_->setPalette(p);
 
     // Get the default output path from the generation configuration.
     pathEditor_->setText(model_->getOutputPath());
@@ -92,6 +95,8 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) :
     connect(browseButton, SIGNAL(clicked(bool)), this, SLOT(onBrowse()), Qt::UniqueConnection);
     connect(fileTable_, SIGNAL(itemChanged(QTableWidgetItem*)),
         this, SLOT(onItemChanged(QTableWidgetItem*)), Qt::UniqueConnection);
+    connect(fileTable_, SIGNAL(itemSelectionChanged()),
+        this, SLOT(onItemSelectionChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -108,15 +113,15 @@ void FileOutputWidget::onOutputFilesChanged()
 {
     // Remove the old stuff, set number of rows as number of files.
     fileTable_->clearContents();
-    fileTable_->setRowCount(model_->getFileNames()->size());
+    fileTable_->setRowCount(model_->getFiles()->size());
 
     // Populate the table.
     int row = 0;
 
-    foreach(QString* fileName, *model_->getFileNames())
+    foreach(QSharedPointer<GenerationFile> file, *model_->getFiles())
     {
         // Insert VLNV string to the row.
-        QString vlnv = model_->getVLNVs()->at(row);
+        QString vlnv = file->vlnv_;
         QTableWidgetItem* vlnvItem = new QTableWidgetItem(vlnv);
         vlnvItem->setToolTip(vlnv);
         fileTable_->setItem(row, COLUMN_VLNV, vlnvItem);
@@ -126,8 +131,8 @@ void FileOutputWidget::onOutputFilesChanged()
         fileTable_->setItem(row, COLUMN_EXISTS, fileExistsItem);
 
         // Insert filename to the row.
-        QTableWidgetItem* fileNameItem = new QTableWidgetItem(*fileName);
-        fileNameItem->setToolTip(*fileName);
+        QTableWidgetItem* fileNameItem = new QTableWidgetItem(file->fileName_);
+        fileNameItem->setToolTip(file->fileName_);
         fileTable_->setItem(row, COLUMN_FILENAME, fileNameItem);
 
         // Disable editing.
@@ -140,6 +145,11 @@ void FileOutputWidget::onOutputFilesChanged()
 
     // File paths are potentially changed -> update existince status.
     checkExistence();
+
+    if (fileTable_->rowCount() > 0 && fileTable_->columnCount() >= COLUMN_FILENAME)
+    {
+        fileTable_->setCurrentCell(0, COLUMN_FILENAME);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -175,15 +185,50 @@ void FileOutputWidget::onBrowse()
 //-----------------------------------------------------------------------------
 void FileOutputWidget::onItemChanged(QTableWidgetItem *item)
 {
+    // Must be in the filename column.
     if (item->column() != COLUMN_FILENAME)
     {
         return;
     }
 
-    model_->setOutputFileName(item->text(),item->row());
+    // Inform the change to the model.
+    if (item->row() >= model_->getFiles()->size())
+    {
+        return;
+    }
+
+    QSharedPointer<GenerationFile> selection = model_->getFiles()->at(item->row());
+
+    if (selection->fileName_ == item->text())
+    {
+        return;
+    }
+
+    selection->fileName_ = item->text();
+    selection->write();
+    emit selectedFileChanged(selection);
 
     // A name of a file changed -> update existence status.
     checkExistence();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FileOutputWidget::onItemSelectionChanged()
+//-----------------------------------------------------------------------------
+void FileOutputWidget::onItemSelectionChanged()
+{
+    if (fileTable_->selectedItems().size() < 1)
+    {
+        return;
+    }
+
+    QTableWidgetItem* item = fileTable_->selectedItems().last();
+
+    if (item->row() < model_->getFiles()->size())
+    {
+        QSharedPointer<GenerationFile> selection = model_->getFiles()->at(item->row());
+        emit selectedFileChanged(selection);
+    }
 }
 
 //-----------------------------------------------------------------------------

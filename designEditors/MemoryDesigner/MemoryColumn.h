@@ -60,13 +60,6 @@ public:
     MainMemoryGraphicsItem* findItemAt(int y) const;
 
     /*!
-     *  Find a graphics item at a given position.
-     *
-     *      @param [in] itemYPosition   The given position.
-     */
-    MainMemoryGraphicsItem* findGraphicsItemAt(int itemYPosition) const;
-
-    /*!
      *  Find a graphics item by a given memory item.
      *
      *      @param [in] containedMemoryItem     The selected memory item.
@@ -142,8 +135,6 @@ public:
      *  Check if a memory map overlaps within this column.
      *
      *      @param [in] memoryGraphicsItem      The selected memory map item.
-     *      @param [in] mapBaseAddress          Base address of the memory map item.
-     *      @param [in] mapLastAddress          Last address of the memory map item.
      *      @param [in] memoryItemRect          Bounding rectangle of the selected memory map item.
      *      @param [in] memoryPenWidth          Line width of the memory map item.
      *      @param [in] connectedSpaceItems     List of address space items connected to the memory map item.
@@ -151,9 +142,8 @@ public:
      *
      *      @return True if the memory map overlaps another item in this column, false otherwise.
      */
-    bool memoryMapOverlapsInColumn(MainMemoryGraphicsItem* memoryGraphicsItem, quint64 mapBaseAddress,
-        quint64 mapLastAddress, QRectF memoryItemRect, int memoryPenWidth,
-        QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
+    bool memoryMapOverlapsInColumn(MainMemoryGraphicsItem* memoryGraphicsItem, QRectF memoryItemRect,
+        int memoryPenWidth, QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const;
 
     /*!
@@ -169,6 +159,16 @@ public:
      */
     bool itemOverlapsAnotherItem(quint64 itemBaseAddress, quint64 itemLastAddress, QRectF memoryItemRect,
         int memoryPenWidth, MainMemoryGraphicsItem* comparisonMemoryItem) const;
+
+    /*!
+     *  Check if the selected item overlaps another main graphics item in this column.
+     *
+     *      @param [in] itemRectangle   Rectangle of the selected item.
+     *      @param [in] lineWidth       Line width of the selected item.
+     *
+     *      @return True if the selected item overlaps another main graphics item, false otherwise.
+     */
+    bool itemOverlapsAnotherColumnItem(QRectF itemRectangle, int lineWidth) const;
 
 protected:
 

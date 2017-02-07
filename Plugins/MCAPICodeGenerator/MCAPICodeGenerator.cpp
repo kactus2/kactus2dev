@@ -97,6 +97,13 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
 
     // Add the files to the component metadata.
     QSharedPointer<FileSet> fileSet = component->getFileSet("generatedMCAPI");
+
+    if (fileSet.isNull())
+    {
+        fileSet = QSharedPointer<FileSet>(new FileSet("generatedMCAPI"));
+        component->getFileSets()->append(fileSet);
+    }
+
     fileSet->setGroups("sourceFiles");
 
     QSharedPointer<QList<QSharedPointer<FileBuilder> > > fblist = fileSet->getDefaultFileBuilders();

@@ -341,5 +341,4 @@
 			<kactus2:functionParameter name="mcapi_status" type="mcapi_status_t*" transferType="" contentSource="" dependentParamIndex="-1" description="Pointer to status variable for checking against errors."/>
 		</kactus2:function>
 	</kactus2:functions>
-	<ipxact:vendorExtensions/>
 </kactus2:apiDefinition>

@@ -28,6 +28,7 @@ private slots:
     void testGenerationTime();
     void testDescription();
     void testDescription_data();
+    void testVersion();
 
 private:
     void compareLineByLine(QString const& expectedOutput);
@@ -73,8 +74,8 @@ void tst_VerilogHeaderWriter::testVlnv()
     VLNV vlnv(VLNV::COMPONENT, vendor, library, name, version);
     QDateTime generationTime(QDate(2014, 4, 1), QTime(14,14,14));
 
-    VerilogHeaderWriter writer(vlnv, "", "", "");
-    writer.write(outputStream_, "output.v", "", "", generationTime);
+    VerilogHeaderWriter writer(vlnv, "", "", "", "", "");
+    writer.write(outputStream_, "output.v", generationTime);
 
     compareLineByLine(QString(
         "//-----------------------------------------------------------------------------\n"
@@ -115,8 +116,8 @@ void tst_VerilogHeaderWriter::testGenerationTime()
 
     QDateTime generationTime(QDate(2014, 1, 14), QTime(12, 0, 40));
 
-    VerilogHeaderWriter writer(vlnv, "", "", "");
-    writer.write(outputStream_, "TestComponent.v", "", "", generationTime);       
+    VerilogHeaderWriter writer(vlnv, "", "", "", "", "");
+    writer.write(outputStream_, "TestComponent.v", generationTime);       
 
     compareLineByLine(QString(
         "//-----------------------------------------------------------------------------\n"
@@ -144,8 +145,8 @@ void tst_VerilogHeaderWriter::testDescription()
 
     QDateTime generationTime(QDate(2014, 4, 14), QTime(14, 14, 14));
 
-    VerilogHeaderWriter writer(vlnv, "", "", description);
-    writer.write(outputStream_, "TestComponent.v", "", "", generationTime);       
+    VerilogHeaderWriter writer(vlnv, "", "", description, "", "");
+    writer.write(outputStream_, "TestComponent.v", generationTime);       
 
     compareLineByLine(expectedOutput);
 }
@@ -205,6 +206,32 @@ void tst_VerilogHeaderWriter::testDescription_data()
         "// This file was generated based on IP-XACT component Tester:TestLibrary:TestComponent:0.1\n"
         "// whose XML file is \n"
         "//-----------------------------------------------------------------------------\n";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogHeaderWriter::testVersion()
+//-----------------------------------------------------------------------------
+void tst_VerilogHeaderWriter::testVersion()
+{
+    VLNV vlnv(VLNV::COMPONENT, "Tester", "TestLibrary", "TestComponent", "0.1");
+
+    QDateTime generationTime(QDate(2020, 12, 15), QTime(23, 9, 50));
+
+    VerilogHeaderWriter writer(vlnv, "", "", "", "toolVersion", "generatorVersion");
+    writer.write(outputStream_, "TestComponent.v", generationTime);       
+
+    compareLineByLine(QString(
+        "//-----------------------------------------------------------------------------\n"
+        "// File          : TestComponent.v\n"
+        "// Creation date : 15.12.2020\n"
+        "// Creation time : 23:09:50\n"
+        "// Description   : \n"
+        "// Created by    : \n"
+        "// Tool : Kactus2 toolVersion\n"
+        "// Plugin : Verilog generator generatorVersion\n"
+        "// This file was generated based on IP-XACT component Tester:TestLibrary:TestComponent:0.1\n"
+        "// whose XML file is \n"
+        "//-----------------------------------------------------------------------------\n"));
 }
 
 //-----------------------------------------------------------------------------

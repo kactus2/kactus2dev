@@ -103,57 +103,48 @@ QIcon ModelSimGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: ModelSimGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool ModelSimGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> libComp,
-    QSharedPointer<Document const> libDesConf,
-    QSharedPointer<Document const> libDes ) const
+bool ModelSimGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> component,
+    QSharedPointer<Design const> design,
+    QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
-	QSharedPointer<const Component> targetComponent = libComp.dynamicCast<const Component>();
-
-	return targetComponent && targetComponent->getImplementation() == KactusAttribute::HW;
+	return component && component->getImplementation() == KactusAttribute::HW;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ModelSimGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void ModelSimGeneratorPlugin::runGenerator( IPluginUtility* utility, 
-    QSharedPointer<Document> libComp,
-    QSharedPointer<Document> libDesConf,
-    QSharedPointer<Document> libDes)
+void ModelSimGeneratorPlugin::runGenerator(IPluginUtility* utility, 
+    QSharedPointer<Component> component,
+    QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
-	// Dynamic cast to component, as it is needed that way.
-	QSharedPointer<Component> topComponent = libComp.dynamicCast<Component>();
-	// Dynamic cast to design, as it is needed that way.
-	QSharedPointer<const Design> design = libDes.dynamicCast<Design const>();
-	// Dynamic cast to design configuration, as it is needed that way.
-	QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
-
 	// In principle, these could be null.
-	if ( !topComponent || (design && !desgConf) || (!design && desgConf) )
+	if (!component || (design && !designConfiguration) || (!design && designConfiguration))
 	{
 		utility->printError( "ModelSim generator received null top component or design!" );
 		return;
 	}
 
 	// Must know if generating for a design.
-	bool targetIsDesign = design && desgConf;
+	bool targetIsDesign = design && designConfiguration;
 
 	// Inform when done.
 	utility->printInfo( "ModelSim generation complete." );
 
 	// Top component may have been affected by changes -> save.
-	utility->getLibraryInterface()->writeModelToFile(libComp);
+	utility->getLibraryInterface()->writeModelToFile(component);
 
 	// select a view to generate the ModelSim script for
-	QSharedPointer<View> view = topComponent->getViews()->first();//ComboSelector::selectView(topComponent, utility->getParentWidget(), QString(), tr("Select a view to generate the modelsim script for"));
+	QSharedPointer<View> view = component->getViews()->first();//ComboSelector::selectView(component, utility->getParentWidget(), QString(), tr("Select a view to generate the modelsim script for"));
 	if (!view)
 	{
 		return;
 	}
 
-	QString fileName = utility->getLibraryInterface()->getPath(topComponent->getVlnv());
+	QString fileName = utility->getLibraryInterface()->getPath(component->getVlnv());
 	QFileInfo targetInfo(fileName);
 	fileName = targetInfo.absolutePath();
-	fileName += QString("/%1.%2.create_makefile").arg(topComponent->getVlnv().getName()).arg(view->name());
+	fileName += QString("/%1.%2.create_makefile").arg(component->getVlnv().getName()).arg(view->name());
 
 	// ask user to select a location to save the makefile
 	fileName = QFileDialog::getSaveFileName(utility->getParentWidget(), 
@@ -168,7 +159,7 @@ void ModelSimGeneratorPlugin::runGenerator( IPluginUtility* utility,
 
 	// Parse the matching file sets.
 	ModelSimParser sparser(utility, utility->getLibraryInterface());
-	sparser.parseFiles(topComponent, view);
+	sparser.parseFiles(component, view);
 
 	// construct the generator
 	ModelSimGenerator generator(sparser,utility,utility->getLibraryInterface());
@@ -181,9 +172,9 @@ void ModelSimGeneratorPlugin::runGenerator( IPluginUtility* utility,
 	generator.generateMakefile(fileName);
 
 	// check if the file already exists in the metadata
-	QString basePath = utility->getLibraryInterface()->getPath(topComponent->getVlnv());
+	QString basePath = utility->getLibraryInterface()->getPath(component->getVlnv());
 	QString relativePath = General::getRelativePath(basePath, fileName);
-	if (!topComponent->hasFile(relativePath))
+	if (!component->hasFile(relativePath))
 	{
 		// ask user if he wants to save the generated ModelSim script into 
 		// object metadata
@@ -195,12 +186,12 @@ void ModelSimGeneratorPlugin::runGenerator( IPluginUtility* utility,
 		// if the generated file is saved
 		if (button == QMessageBox::Yes)
 		{
-			QString xmlPath = utility->getLibraryInterface()->getPath(topComponent->getVlnv());
+			QString xmlPath = utility->getLibraryInterface()->getPath(component->getVlnv());
 
 			// if the file was successfully added to the library
-			if (generator.addMakefile2IPXact(topComponent, fileName, xmlPath))
+			if (generator.addMakefile2IPXact(component, fileName, xmlPath))
 			{
-				utility->getLibraryInterface()->writeModelToFile(topComponent);
+				utility->getLibraryInterface()->writeModelToFile(component);
 			}
 		}
 	}

@@ -68,18 +68,6 @@ public:
     void addConnectionToSubItems(MemoryConnectionItem* connectionItem);
 
     /*!
-     *  Get the compressed height for the layout.
-     *
-     *      @param [in] minimumSubItemHeight    Minimum height for the memory sub items.
-     *      @param [in] mainItem                The main sub memory layout.
-     *      @param [in] movedConnections        Connection items that have already been moved.
-     *
-     *      @return The compressed height of the sub memory layout.
-     */
-    quint64 getCompressedHeight(qreal minimumSubItemHeight, SubMemoryLayout* mainItem,
-        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
-
-    /*!
      *  Check whether the sub items are filtered or not.
      *
      *      @return True, if the sub items are filtered, otherwise false.
@@ -90,6 +78,47 @@ public:
      *  Resize the name labels for the sub memory items.
      */
     void resizeSubItemNameLabels();
+
+    /*!
+     *  Create overlapping markings for sub memory items.
+     */
+    void createOverlappingSubItemMarkings();
+
+    /*!
+     *  Get the height addition of the out of bounds sub memory items.
+     *
+     *      @return The height addition of the out of bounds sub memory items.
+     */
+    quint64 getSubItemHeightAddition() const;
+
+    /*!
+     *  Get the addresses that are retained after item compression.
+     *
+     *      @return Addresses that are retained after compressing the item.
+     */
+    QVector<quint64> getUnCutAddresses() const;
+
+    /*!
+     *  Compress the contained sub memory items to contain the remaining addresses.
+     *
+     *      @param [in] unCutAddresses  The retained addresses.
+     *      @param [in] CUTMODIFIER     Modifier for the cut area.
+     */
+    void compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+
+    /*!
+     *  Get layout height modified by the height of the out of bounds sub memory items.
+     *
+     *      @return True height of the layout.
+     */
+    virtual quint64 getHeightWithSubItems() const;
+
+    /*!
+     *  Get the scene bounding rectangle of the layout modified by the height of the sub memory items.
+     *
+     *      @return True scene bounding rectangle of the layout.
+     */
+    virtual QRectF getSceneRectangleWithSubItems() const;
 
 protected:
 
@@ -134,62 +163,6 @@ protected:
      */
     quint64 condenseSubItem(MemoryDesignerChildGraphicsItem* subItem, qreal minimumSubItemHeight,
         quint64 positionY);
-
-    /*!
-     *  Get the minimum required height of the sub memory layout to fit the selected memory connection.
-     *
-     *      @param [in] minimumSubItemHeight    Minimum height of the sub items.
-     *      @param [in] connectionBaseAddress   Base address of the selected memory connection.
-     *      @param [in] connectionEndAddress    End address of the selected memory connection.
-     *      @param [in] itemBaseAddress         Base address of the layout.
-     *      @param [in] itemLastAddress         Last address of the layout.
-     *      @param [in] itemHeight              Height of the layout.
-     *
-     *      @return The minimum required height of the sub memory layout.
-     */
-    qreal getMinimumRequiredHeight(qreal minimumSubItemHeight, quint64 connectionBaseAddress,
-        quint64 connectionEndAddress, quint64 itemBaseAddress, quint64 itemLastAddress, qreal itemHeight) const;
-
-    /*!
-     *  Get the minimum available height for the layout.
-     *
-     *      @param [in] baseAddress         Base address of the layout.
-     *      @param [in] lastAddress         Last address of the layout.
-     *      @param [in] itemHeight          Height of the layout.
-     *      @param [in] minimumItemHeight   The minimum height for the layout.
-     *
-     *      @return The minimum available height for the layout.
-     */
-    qreal getMinimumItemHeight(quint64 baseAddress, quint64 lastAddress, qreal itemHeight, qreal minimumItemHeight)
-        const;
-
-    /*!
-     *  Check whether the selected address range is within the limit for the minimum height.
-     *
-     *      @param [in] baseAddress     The selected base address.
-     *      @param [in] lastAddress     The selected last address.
-     *
-     *      @return True, if the address range is within the limited range, false otherwise.
-     */
-    bool addressRangeIsWithinLimit(quint64 baseAddress, quint64 lastAddress) const;
-
-    /*!
-     *  Get the height for the memory sub item to fit in the selected memory connection item.
-     *
-     *      @param [in] mainItem                Main sub memory layout.
-     *      @param [in] subItemBaseAddress      Base address of the selected memory sub item.
-     *      @param [in] subItemLastAddress      Last address of the selected memory sub item.
-     *      @param [in] subItem                 The selected memory sub item.
-     *      @param [in] connectionItem          The selected memory connection item.
-     *      @param [in] yPosition               Y-coordinate for the memory sub item.
-     *      @param [in] newSubItemHeight        Current new height for the memory sub item.
-     *      @param [in] minimumSubItemHeight    Minimum height for a memory sub item.
-     *
-     *      @return The height for the sub memory item to fit in the selected memory connection item.
-     */
-    quint64 getSubItemHeightForConnection(SubMemoryLayout* mainItem, quint64 subItemBaseAddress,
-        quint64 subItemLastAddress, MemoryDesignerGraphicsItem* subItem, MemoryConnectionItem* connectionItem,
-        quint64 yPosition, quint64 newSubItemHeight, qreal minimumSubItemHeight) const;
 
 private:
     // Disable copying.
@@ -240,57 +213,11 @@ private:
         MemoryDesignerChildGraphicsItem* newSubItem);
 
     /*!
-     *  Get the height for the selected memory sub item.
+     *  Set the color for a faulty sub memory item.
      *
-     *      @param [in] mainItem                The main memory layout.
-     *      @param [in] subItem                 The selected memory sub item.
-     *      @param [in] minimumSubItemHeight    Minimum height for a memory sub item.
-     *      @param [in] yPosition               Y-coordinate for the memory sub item.
-     *      @param [in] movedConnections        Connections that have been moved.
-     *
-     *      @return The height for the memory sub item.
+     *      @param [in] subItem     The selected sub memory item.
      */
-    virtual qreal getSubItemHeight(SubMemoryLayout* mainItem, MemoryDesignerChildGraphicsItem* subItem,
-        qreal minimumSubItemHeight, quint64 yPosition,
-        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections);
-
-    /*!
-     *  Get the memory sub items connected to the selected memory connection item.
-     *
-     *      @param [in] memoryItem      The main sub memory layout.
-     *      @param [in] connectionItem  The selected memory connection item.
-     *
-     *      @return Memory sub items connected to the selected memory connection item.
-     */
-    QVector<MemoryDesignerChildGraphicsItem*> getSubItemsInConnection(SubMemoryLayout* memoryItem,
-        MemoryConnectionItem* connectionItem) const;
-
-    /*!
-     *  Get the height of the available area for the memory sub item.
-     *
-     *      @param [in] mainItem                        The main sub memory layout.
-     *      @param [in] yPosition                       Y-coordinate of the memory sub item.
-     *      @param [in] newSubItemHeight                The current height of the memory sub item.
-     *      @param [in] connectionItem                  The selected memory connection item.
-     *      @param [in] connectedSubItemLastAddress     Last address of all the sub items connected to the same
-     *                                                  memory connection.
-     *
-     *      @return The available area for the memory sub item.
-     */
-    qreal getAvailableArea(SubMemoryLayout* mainItem, quint64 yPosition, quint64 newSubItemHeight,
-        MemoryConnectionItem* connectionItem, quint64 connectedSubItemLastAddress) const;
-
-    /*!
-     *  Get the height of a filtered sub memory layout.
-     *
-     *      @param [in] parentLayout            The parent layout.
-     *      @param [in] yPosition               Y coordinate for this layout.
-     *      @param [in] minimumSubItemHeight    Minimum height of the layout.
-     *
-     *      @return Filtered height of the sub memory layout.
-     */
-    virtual quint64 getFilteredCompressedHeight(SubMemoryLayout* parentLayout, quint64 yPosition,
-        qreal minimumSubItemHeight);
+    void setFaultySubItemColor(MemoryDesignerChildGraphicsItem* subItem);
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -129,6 +129,21 @@ public:
      */
     QString getContainingInstance() const;
 
+    /*!
+     *  Change the address range of the memory item.
+     *
+     *      @param [in] offset  The offset of the parent item.
+     */
+    virtual void changeAddressRange(quint64 offset);
+
+    /*!
+     *  Compress this item to contain the selected addresses.
+     *
+     *      @param [in] uncutAddresses  The addresses that remain after the compression.
+     *      @param [in] CUTMODIFIER     Modifier for the cut areas.
+     */
+    virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+
 protected:
 
     /*!

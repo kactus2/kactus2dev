@@ -203,6 +203,12 @@ quint64 MainMemoryGraphicsItem::getSceneEndPoint() const
         }
     }
 
+    quint64 heightWithOverlappingSubItem = sceneBoundingRect().bottom() + getSubItemHeightAddition();
+    if (heightWithOverlappingSubItem > sceneEndPoint)
+    {
+        sceneEndPoint = heightWithOverlappingSubItem;
+    }
+
     return sceneEndPoint;
 }
 
@@ -343,32 +349,6 @@ bool MainMemoryGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem* lab
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::itemCollidesWithSimilarItems()
-//-----------------------------------------------------------------------------
-bool MainMemoryGraphicsItem::itemCollidesWithSimilarItems() const
-{
-    foreach (QGraphicsItem* collidingItem, collidingItems(Qt::IntersectsItemShape))
-    {
-        MainMemoryGraphicsItem* collidingMainItem = dynamic_cast<MainMemoryGraphicsItem*>(collidingItem);
-        if (collidingMainItem)
-        {
-            return true;
-        }
-        else
-        {
-            MemoryExtensionGraphicsItem* collidingExtensionItem =
-                dynamic_cast<MemoryExtensionGraphicsItem*>(collidingItem);
-            if (collidingExtensionItem)
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::createOverlappingConnectionMarkers()
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::createOverlappingConnectionMarkers()
@@ -392,7 +372,8 @@ void MainMemoryGraphicsItem::createOverlappingConnectionMarkers()
                 QRectF comparisonRect = comparisonItem->sceneBoundingRect();
 
                 if (selectedItem && comparisonItem && selectedItem != comparisonItem &&
-                    selectedItem->endItemIsMemoryMap() && comparisonItem->endItemIsMemoryMap() &&
+                    selectedItem->getConnectionStartItem() == this &&
+                    comparisonItem->getConnectionStartItem() == this &&
                     MemoryDesignerConstants::itemOverlapsAnotherItem(connectionRect,
                     selectedItem->pen().width(), comparisonRect, comparisonItem->pen().width()))
                 {
@@ -411,4 +392,69 @@ void MainMemoryGraphicsItem::createOverlappingConnectionMarkers()
 QVector<MemoryCollisionItem*> MainMemoryGraphicsItem::getMemoryCollisions() const
 {
     return memoryCollisions_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::isConnectedToSpaceItems()
+//-----------------------------------------------------------------------------
+bool MainMemoryGraphicsItem::isConnectedToSpaceItems(QVector<MainMemoryGraphicsItem*> spaceItems) const
+{
+    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
+    {
+        MainMemoryGraphicsItem* connectedSpaceItem = connectionItem->getConnectionStartItem();
+        if (connectedSpaceItem && connectedSpaceItem != this &&
+            (spaceItems.contains(connectedSpaceItem) || connectedSpaceItem->isConnectedToSpaceItems(spaceItems)))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getChainedSpaceItems()
+//-----------------------------------------------------------------------------
+QVector<MainMemoryGraphicsItem*> MainMemoryGraphicsItem::getChainedSpaceItems() const
+{
+    QVector<MainMemoryGraphicsItem*> chainedSpaces;
+
+    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
+    {
+        MainMemoryGraphicsItem* connectedSpaceItem = connectionItem->getConnectionStartItem();
+        if (connectedSpaceItem && connectedSpaceItem != this)
+        {
+            chainedSpaces.append(connectedSpaceItem);
+            foreach (MainMemoryGraphicsItem* chainedSpaceItem, connectedSpaceItem->getChainedSpaceItems())
+            {
+                chainedSpaces.append(chainedSpaceItem);
+            }
+        }
+    }
+
+    return chainedSpaces;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::compressToUnCutAddresses()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER)
+{
+    if (!subItemsAreFiltered())
+    {
+        compressSubItemsToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+    }
+
+    MemoryDesignerGraphicsItem::compressToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+    setCompressed(true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::changeAddressRange()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::changeAddressRange(quint64 offsetChange)
+{
+    MemoryDesignerGraphicsItem::changeAddressRange(offsetChange);
+
+    SubMemoryLayout::changeChildItemRanges(offsetChange);
 }

@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::ComponentParameterFinder()
 //-----------------------------------------------------------------------------
-ComponentParameterFinder::ComponentParameterFinder(QSharedPointer<const Component> component) : component_(component)
+ComponentParameterFinder::ComponentParameterFinder(QSharedPointer<Component const> component) : component_(component)
 {
 }
 

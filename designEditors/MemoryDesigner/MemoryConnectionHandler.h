@@ -117,13 +117,10 @@ private:
      *      @param [in] placedMaps              A list of placed memory map items.
      *      @param [in] memoryItem              The selected memory map item.
      *      @param [in] originalColumn          The original column of the memory map item.
-     *      @param [in] mapBaseAddress          Base address of the remapped memory map.
-     *      @param [in] mapLastAddress          Last address of the remapped memory map.
      *      @param [in] connectionStartItem     The start item of the memory map connection.
      */
     void checkMemoryMapRepositionToOverlapColumn(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps,
-        MainMemoryGraphicsItem* memoryItem, MemoryColumn* originalColumn, quint64 mapBaseAddress,
-        quint64 mapLastAddress, MainMemoryGraphicsItem* connectionStartItem);
+        MainMemoryGraphicsItem* memoryItem, MemoryColumn* originalColumn, MainMemoryGraphicsItem* connectionStartItem);
 
     /*!
      *  Reposition the selected memory map item.
@@ -230,19 +227,31 @@ private:
      *  Create a connection between two address space items.
      *
      *      @param [in] connectionStartItem     Start item of the connection.
+     *      @param [in] connectionBaseAddress   Base address of the connection.
      *      @param [in] connectionMiddleItem    The second address space item.
      *      @param [in] newSpaceInterface       Interface of the second address space item.
      *      @param [in] spaceColumn             The address space column.
      *      @param [in] placedSpaceItems        List of the placed address space items.
      *      @param [in] spaceItemChain          Connection chain of address space items.
      *      @param [in] spaceYPlacement         Y coordinate of the address space placement.
-     *
-     *      @return The created memory connection item.
      */
-    MemoryConnectionItem* createSpaceConnection(MainMemoryGraphicsItem* connectionStartItem,
+    void createSpaceConnection(MainMemoryGraphicsItem* connectionStartItem, quint64 connectionBaseAddress,
         MainMemoryGraphicsItem* connectionMiddleItem, QSharedPointer<ConnectivityInterface> newSpaceInterface,
         MemoryColumn* spaceColumn, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
         QVector<MainMemoryGraphicsItem*> spaceItemChain, int& spaceYPlacement);
+
+    /*!
+     *  Place the selected address space item.
+     *
+     *      @param [in] spaceItem               The selected address space item.
+     *      @param [in] positionY               The new y-coordinate for the address space item.
+     *      @param [in] originalColumn          Original column of the address space item.
+     *      @param [in] placedSpaceItems        List of all the address space items that have been placed.
+     *      @param [in] connectionStartItem     Start item of the connection.
+     */
+    void placeSpaceItem(MainMemoryGraphicsItem* spaceItem, int positionY,
+        MemoryColumn* originalColumn, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
+        MainMemoryGraphicsItem* connectionStartItem);
 
     /*!
      *  Change the column of the master address space item.
@@ -265,22 +274,44 @@ private:
         QVector<MainMemoryGraphicsItem*> spaceItemChain);
 
     /*!
-     *  Get an address space connection from placed start memory item and middle memory item.
+     *  Reposition the overlapping address space items.
      *
-     *      @param [in] connectionStartItem     The memory connection start memory item.
-     *      @param [in] connectionMiddleItem    The memory connection middle memory item.
-     *
-     *      @return The placed memory connection between an already placed start memory item and middle memory item.
+     *      @param [in] placedSpaceItems    List of all the placed address space items.
      */
-    MemoryConnectionItem* getAddressSpaceChainConnection(MainMemoryGraphicsItem* connectionStartItem,
-        MainMemoryGraphicsItem* connectionMiddleItem) const;
+    void repositionOverlappingSpaceItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems);
 
     /*!
-     *  Set the connection width for the memory connection items within a memory connection chain.
+     *  Get the rectangle of selected item with adjustments made from the connected memory connections.
      *
-     *      @param [in] connectionChain     Connection chain of address space items.
+     *      @param [in] memoryItem  The selected memory item.
+     *
+     *      @return Rectangle with the height to contain the selected memory item and all its connection items.
      */
-    void setHeightForConnectionChain(QVector<MemoryConnectionItem*> connectionChain);
+    QRectF getConnectionAdjustedItemRectangle(MainMemoryGraphicsItem* memoryItem) const;
+
+    /*!
+     *  Change the column for the selected address space item.
+     *
+     *      @param [in] spaceItem       The selected address space item.
+     *      @param [in] spaceRectangle  Rectangle of the selected address space item.
+     *      @param [in] spaceLineWidth  Line width of the selected address space item.
+     *      @param [in] newPositionY    New y-coordinate for the address space item.
+     *      @param [in] originalColumn  Original column of the address space item.
+     */
+    void changeSpaceItemColumn(MainMemoryGraphicsItem* spaceItem, QRectF spaceRectangle, int spaceLineWidth,
+        qreal newPositionY, MemoryColumn* originalColumn);
+
+    /*!
+     *  Get the memory item colliding with the selected item.
+     *
+     *      @param [in] spaceRectangle  Bounding rectangle of the selected item.
+     *      @param [in] spaceLineWidth  Line width of the selected item.
+     *      @param [in] currentColumn   Current column of the selected item.
+     *
+     *      @return The memory item colliding with the selected item.
+     */
+    MainMemoryGraphicsItem* getCollidingSpaceItem(QRectF spaceRectangle, int spaceLineWidth,
+        MemoryColumn* currentColumn) const;
 
     //-----------------------------------------------------------------------------
     // Data.

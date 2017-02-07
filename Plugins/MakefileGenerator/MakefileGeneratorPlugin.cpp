@@ -104,37 +104,25 @@ QIcon MakefileGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool MakefileGeneratorPlugin::checkGeneratorSupport( QSharedPointer<Document const> libComp,
-    QSharedPointer<Document const> libDesConf,
-    QSharedPointer<Document const> libDes ) const
+bool MakefileGeneratorPlugin::checkGeneratorSupport(
+    QSharedPointer<Component const> component,
+    QSharedPointer<Design const> design,
+    QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
-    QSharedPointer<DesignConfiguration const> desgConf = libDesConf.dynamicCast<DesignConfiguration const>();
-
-    return (libDes != 0 && desgConf != 0 && desgConf->getDesignConfigImplementation() == KactusAttribute::SYSTEM);
+    return (design != 0 && designConfiguration != 0 && designConfiguration->getDesignConfigImplementation()
+        == KactusAttribute::SYSTEM);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MakefileGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility, 
-    QSharedPointer<Document> libComp,
-    QSharedPointer<Document> libDesConf,
-    QSharedPointer<Document> libDes)
+void MakefileGeneratorPlugin::runGenerator(IPluginUtility* utility, 
+    QSharedPointer<Component> component,
+    QSharedPointer<Design> design,
+    QSharedPointer<DesignConfiguration> designConfiguration)
 {
     // First state we are running. Tell the version.
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
-
-    // Convert the documents to their proper data types.
-    QSharedPointer<Component> topComponent = libComp.dynamicCast<Component>();
-    QSharedPointer<Design> design = libDes.dynamicCast<Design>();
-    QSharedPointer<DesignConfiguration> desgConf = libDesConf.dynamicCast<DesignConfiguration>();
-
-    // Everything must exist
-    if (!topComponent || !design || !desgConf)
-    {
-        utility->printError("Document broken.");
-        return;
-    }
 
 	// Library interface is utilized.
     LibraryInterface* library = utility->getLibraryInterface();
@@ -142,9 +130,9 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
 	// Find the name of the system view pointing to the design configuration.
 	QString sysViewName;
 
-	foreach (QSharedPointer<SystemView> view, topComponent->getSystemViews())
+	foreach (QSharedPointer<SystemView> view, component->getSystemViews())
 	{
-		if (view->getHierarchyRef() == desgConf->getVlnv())
+		if (view->getHierarchyRef() == designConfiguration->getVlnv())
 		{
 			sysViewName = view->name();
 			break;
@@ -154,19 +142,20 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
     // System view must exist.
     if (sysViewName.isEmpty())
     {
-        utility->printError("The design configuration did not match any system view. VLNV: " + desgConf->getVlnv().toString());
+        utility->printError("The design configuration did not match any system view. VLNV: " + 
+            designConfiguration->getVlnv().toString());
         return;
     }
 
 	// Parse the design for buildable software stacks.
-    SWStackParser stackParser(library, topComponent, design, desgConf);
+    SWStackParser stackParser(library, component, design, designConfiguration);
     stackParser.parse(sysViewName);
 
     // Parse the stacks for buildable objects.
     MakefileParser makeParser(library, stackParser);
-    makeParser.parse(topComponent);
+    makeParser.parse(component);
 
-    QString targetPath = QFileInfo(library->getPath(libDes->getVlnv())).absolutePath() + "/sw_" + sysViewName;
+    QString targetPath = QFileInfo(library->getPath(design->getVlnv())).absolutePath() + "/sw_" + sysViewName;
 
     QDir path;
     if (!path.mkpath(targetPath))
@@ -191,15 +180,15 @@ void MakefileGeneratorPlugin::runGenerator( IPluginUtility* utility,
     MakefileGenerator generator(makeParser, utility, stackParser.getGeneralFileSet());
     generator.mainMakeName_ = *stackParser.masterName_;
 	// Also the directory of the top component is needed for the generated files.
-	QString topDir = QFileInfo(library->getPath(libComp->getVlnv())).absolutePath(); 
+	QString topDir = QFileInfo(library->getPath(component->getVlnv())).absolutePath(); 
     int exe_count = generator.generate(configuration->getFileOuput()->getOutputPath(), topDir, sysViewName);
 
 	// Did we actually generate anything?
 	if (exe_count > 0)
 	{
 		// Top component and the design may have been affected by changes -> save.
-		library->writeModelToFile(libComp);
-		library->writeModelToFile(libDes);
+		library->writeModelToFile(component);
+		library->writeModelToFile(design);
 
 		// Inform that the generation is complete.
 		utility->printInfo( tr("Makefile generation complete. Created a makefile for %1 executables.").arg(exe_count) );

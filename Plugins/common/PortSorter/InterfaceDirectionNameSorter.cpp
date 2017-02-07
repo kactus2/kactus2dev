@@ -32,7 +32,7 @@ InterfaceDirectionNameSorter::~InterfaceDirectionNameSorter()
 //-----------------------------------------------------------------------------
 // Function: InterfaceDirectionNameSorter::sortedPortsNames()
 //-----------------------------------------------------------------------------
-QStringList InterfaceDirectionNameSorter::sortedPortNames(QSharedPointer<Component> component) const
+QStringList InterfaceDirectionNameSorter::sortedPortNames(QSharedPointer<Component const> component) const
 {
     QStringList portNames;
 
@@ -49,7 +49,7 @@ QStringList InterfaceDirectionNameSorter::sortedPortNames(QSharedPointer<Compone
 //-----------------------------------------------------------------------------
 // Function: InterfaceDirectionNameSorter::sortedPorts()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<Port> > InterfaceDirectionNameSorter::sortedPorts(QSharedPointer<Component> component) const
+QList<QSharedPointer<Port> > InterfaceDirectionNameSorter::sortedPorts(QSharedPointer<Component const> component) const
 {
     if (component.isNull())
     {

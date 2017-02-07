@@ -17,16 +17,25 @@
 #include <QSharedPointer>
 
 #include "ViewSelection.h"
-#include <Plugins/common/HDLParser/HDLComponentParser.h>
-#include <Plugins/common/HDLParser/HDLDesignParser.h>
 
-//-----------------------------------------------------------------------------
-//! Container class for generator configuration.
-//-----------------------------------------------------------------------------
-class FileOuput : public QObject
+struct GenerationFile
 {
-    Q_OBJECT
+    //! The name of the file for the document
+    QString fileName_;
+    QString vlnv_;
+    QString fileContent_;
+    
+    /*!
+     *  Writes the content.
+     */
+	virtual void write(){}
+};
 
+//-----------------------------------------------------------------------------
+// Container class for file output of generation.
+//-----------------------------------------------------------------------------
+class FileOuput
+{
 public:
 
 	//! The constructor.
@@ -41,16 +50,6 @@ public:
      *      @param [out] warning   The stated reason for not accepting.
      */
     bool validSelections(QString &warning);
-    
-    /*!
-     *  Gets reference to the output file paths.
-     */
-    QSharedPointer<QList<QString*> > getFileNames();
-    
-    /*!
-     *  Gets reference to the VLNVs of the components corresponding the files.
-     */
-    QSharedPointer<QStringList> getVLNVs();
 
     /*!
      *  Sets the path for the output file for the generation.
@@ -67,12 +66,9 @@ public:
     QString getOutputPath() const;
     
     /*!
-     *  Sets the file name in the given index of file names.
-     *
-     *      @param [in] path    The new name.
-     *      @param [in] index   The index of the file name.
+     *  Gets reference to the output file paths.
      */
-    void setOutputFileName(QString newName, int index);
+    QSharedPointer<QList<QSharedPointer<GenerationFile> > > getFiles();
 
 private:
 
@@ -82,10 +78,8 @@ private:
 
     //! The base directory for output paths.
     QString outputPath_;
-    //! The names of the potential new files.
-    QSharedPointer<QList<QString*> > fileNames_;
-    //! The VLNVs corresponding the files.
-    QSharedPointer<QStringList> vlnvs_;
+    //! The potential new files.
+    QSharedPointer<QList<QSharedPointer<GenerationFile> > > files_;
 };
 
 #endif // FILEOUTPUT_H

@@ -68,25 +68,14 @@ MainMemoryGraphicsItem* MemoryColumn::findItemAt(int y) const
 {
     foreach (QGraphicsItem* item, getItems())
     {
-        if (y >= item->sceneBoundingRect().top() && y < item->sceneBoundingRect().bottom())
+        MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(item);
+        if (memoryItem)
         {
-            return static_cast<MainMemoryGraphicsItem*>(item);
-        }
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryColumn::findItemAt()
-//-----------------------------------------------------------------------------
-MainMemoryGraphicsItem* MemoryColumn::findGraphicsItemAt(int itemYPosition) const
-{
-    foreach (QGraphicsItem* item, getItems())
-    {
-        if (itemYPosition >= item->sceneBoundingRect().top() && itemYPosition < item->sceneBoundingRect().bottom())
-        {
-            return dynamic_cast<MainMemoryGraphicsItem*>(item);
+            QRectF memoryItemRectangle = memoryItem->getSceneRectangleWithSubItems();
+            if (y >= memoryItemRectangle.top() && y < memoryItemRectangle.bottom())
+            {
+                return memoryItem;
+            }
         }
     }
 
@@ -197,14 +186,16 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
     int yTransfer = 0;
     quint64 spaceItemLowAfter = 0;
 
+    QVector<MainMemoryGraphicsItem*> movedSpaceItems;
+
     foreach (QGraphicsItem* graphicsItem, getGraphicsItemInOrder())
     {
         MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
-        if (memoryItem)
+        if (memoryItem && memoryItem->isVisible())
         {
-            int memoryItemLowBefore = memoryItem->getSceneEndPoint();
+            quint64 memoryItemLowBefore = memoryItem->getSceneEndPoint();
 
-            if (condenseMemoryItems)
+            if (condenseMemoryItems && !memoryItem->isCompressed())
             {
                 memoryItem->condenseItemAndChildItems(movedConnectionItems);
             }
@@ -233,8 +224,18 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
                             yTransfer += yMovementAddition;
                         }
 
-                        spaceItem->moveConnectedItems(yTransfer);
+                        if (!movedSpaceItems.contains(memoryItem))
+                        {
+                            spaceItem->moveConnectedItems(yTransfer);
 
+                            foreach (MainMemoryGraphicsItem* connectedSpace,
+                                spaceItem->getAllConnectedSpaceItems(spaceItem))
+                            {
+                                movedSpaceItems.append(connectedSpace);
+                            }
+
+                            movedSpaceItems.append(spaceItem);
+                        }
                     }
 
                     spaceItemLowAfter = spaceItem->getSceneEndPoint();
@@ -246,6 +247,7 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
             }
 
             memoryItem->resizeSubItemNameLabels();
+            memoryItem->createOverlappingSubItemMarkings();
         }
     }
 }
@@ -303,11 +305,16 @@ quint64 MemoryColumn::getUnconnectedItemPosition(QSharedPointer<QVector<MainMemo
     qreal lastItemLowLinePosition = 0;
     foreach (MainMemoryGraphicsItem* graphicsItem, *placedItems)
     {
-        int extensionHeight = 0;
+        qreal extensionHeight = 0;
         MemoryExtensionGraphicsItem* extensionItem = graphicsItem->getExtensionItem();
         if (extensionItem)
         {
             extensionHeight = extensionItem->sceneBoundingRect().height();
+        }
+        qreal subItemHeightAddition = graphicsItem->getSubItemHeightAddition();
+        if (subItemHeightAddition > extensionHeight)
+        {
+            extensionHeight = subItemHeightAddition;
         }
 
         qreal itemLow = graphicsItem->sceneBoundingRect().bottom() + extensionHeight;
@@ -328,33 +335,35 @@ quint64 MemoryColumn::getUnconnectedItemPosition(QSharedPointer<QVector<MainMemo
 void MemoryColumn::moveGraphicsItem(MainMemoryGraphicsItem* memoryItem, int& placementY, const qreal itemInterval)
 {
     memoryItem->setY(placementY);
-    if (!containsMemoryMapItems())
-    {
-        onMoveItem(memoryItem);
-        onReleaseItem(memoryItem);
-    }
 
-    placementY += memoryItem->boundingRect().height() + itemInterval;
+    placementY += memoryItem->getHeightWithSubItems() + itemInterval;
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn::memoryMapOverlapsInColumn()
 //-----------------------------------------------------------------------------
-bool MemoryColumn::memoryMapOverlapsInColumn(MainMemoryGraphicsItem* memoryGraphicsItem, quint64 mapBaseAddress,
-    quint64 mapLastAddress, QRectF memoryItemRect, int memoryPenWidth,
-    QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
+bool MemoryColumn::memoryMapOverlapsInColumn(MainMemoryGraphicsItem* memoryGraphicsItem, QRectF memoryItemRect,
+    int memoryPenWidth, QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const
 {
     foreach (QGraphicsItem* graphicsItem, childItems())
     {
         MemoryMapGraphicsItem* comparisonMemoryItem = dynamic_cast<MemoryMapGraphicsItem*>(graphicsItem);
-        if (comparisonMemoryItem && comparisonMemoryItem != memoryGraphicsItem &&
-            comparisonMemoryItem->isConnectedToSpaceItems(connectedSpaceItems) &&
-            placedMaps->contains(comparisonMemoryItem) &&
-            itemOverlapsAnotherItem(
-            mapBaseAddress, mapLastAddress, memoryItemRect, memoryPenWidth, comparisonMemoryItem))
+        if (comparisonMemoryItem)
         {
-            return true;
+            QRectF comparisonRectangle = comparisonMemoryItem->getSceneRectangleWithSubItems();
+            int comparisonLineWidth = comparisonMemoryItem->pen().width();
+
+            bool isNotSameItem = comparisonMemoryItem != memoryGraphicsItem;
+            bool itemIsConnectionedToSpaceItems = comparisonMemoryItem->isConnectedToSpaceItems(connectedSpaceItems);
+            bool itemIsPlaced = placedMaps->contains(comparisonMemoryItem);
+            bool overlap = MemoryDesignerConstants::itemOverlapsAnotherItem(
+                memoryItemRect, memoryPenWidth, comparisonRectangle, comparisonLineWidth);
+
+            if (isNotSameItem && itemIsConnectionedToSpaceItems && itemIsPlaced && overlap)
+            {
+                return true;
+            }
         }
     }
 
@@ -367,7 +376,7 @@ bool MemoryColumn::memoryMapOverlapsInColumn(MainMemoryGraphicsItem* memoryGraph
 bool MemoryColumn::itemOverlapsAnotherItem(quint64 itemBaseAddress, quint64 itemLastAddress, QRectF memoryItemRect,
     int memoryPenWidth, MainMemoryGraphicsItem* comparisonMemoryItem) const
 {
-    QRectF comparisonRectangle = comparisonMemoryItem->sceneBoundingRect();
+    QRectF comparisonRectangle = comparisonMemoryItem->getSceneRectangleWithSubItems();
 
     if (memoryItemRect.x() == comparisonRectangle.x())
     {
@@ -402,5 +411,25 @@ bool MemoryColumn::itemOverlapsAnotherItem(quint64 itemBaseAddress, quint64 item
             return true;
         }
     }
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::itemOverlapsAnotherColumnItem()
+//-----------------------------------------------------------------------------
+bool MemoryColumn::itemOverlapsAnotherColumnItem(QRectF itemRectangle, int lineWidth) const
+{
+    foreach (MainMemoryGraphicsItem* comparisonItem, getGraphicsItemInOrder())
+    {
+        QRectF comparisonRectangle = comparisonItem->getSceneRectangleWithSubItems();
+        int comparisonLineWidth = comparisonItem->pen().width();
+
+        if (MemoryDesignerConstants::itemOverlapsAnotherItem(
+            itemRectangle, lineWidth, comparisonRectangle, comparisonLineWidth))
+        {
+            return true;
+        }
+    }
+
     return false;
 }

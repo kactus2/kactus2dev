@@ -277,3 +277,54 @@ QString MemoryDesignerGraphicsItem::getContainingInstance() const
 {
     return instanceName_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::changeAddressRange()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::changeAddressRange(quint64 offset)
+{
+    quint64 newBaseAddress = getBaseAddress() + offset;
+    quint64 newLastAddress = getLastAddress() + offset;
+
+    setupLabels(newBaseAddress, newLastAddress);
+
+    baseAddress_ = newBaseAddress;
+    lastAddress_ = newLastAddress;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::compressToUnCutAddresses()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER)
+{
+    quint64 cutArea = 0;
+    
+    quint64 baseAddress = getBaseAddress();
+    quint64 lastAddress = getLastAddress();
+
+    quint64 beginArea = unCutAddresses.first();
+    foreach (quint64 endArea, unCutAddresses)
+    {
+        if (beginArea >= baseAddress && endArea <= lastAddress)
+        {
+            qint64 addressDifference = endArea - beginArea - CUTMODIFIER;
+            if (addressDifference > 0)
+            {
+                cutArea += addressDifference;
+            }
+        }
+        else if (endArea > lastAddress)
+        {
+            break;
+        }
+
+        beginArea = endArea;
+    }
+
+    if (cutArea > 0)
+    {
+        qreal cutAreaHeight = cutArea * MemoryDesignerConstants::RANGEINTERVAL;
+        qreal condensedHeight = boundingRect().height() - cutAreaHeight;
+        condense(condensedHeight);
+    }
+}
