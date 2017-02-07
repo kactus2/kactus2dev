@@ -67,7 +67,7 @@ public:
      *
      *      @return Editor for the index.
      */
-    virtual QWidget * createEditor(QWidget* parent,  QStyleOptionViewItem const& option, 
+    virtual QWidget* createEditor(QWidget* parent,  QStyleOptionViewItem const& option, 
         QModelIndex const& index) const;
   
 private:
@@ -82,6 +82,10 @@ private:
      *      @param [in] index   The index whose content to suggest.
      */
     void updateSuggestedItems(QModelIndex const& index) const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! The library of available IP-XACT documents.
     LibraryInterface* library_;

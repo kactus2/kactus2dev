@@ -243,7 +243,7 @@ QVariant CatalogFileModel::data(QModelIndex const& index, int role) const
         {
             return QColor(QStringLiteral("gainsboro"));
         }
-        else if (role == Qt::DecorationRole && index.column() == CatalogFileColumns::TREE_NAVIGATION)
+        else if (role == Qt::DecorationRole && index.column() == 0)
         {
             return QIcon(ICONS[index.row()]);
         }
@@ -277,7 +277,7 @@ QVariant CatalogFileModel::data(QModelIndex const& index, int role) const
             }
         }
 
-        if (role == Qt::ForegroundRole && index.column() != CatalogFileColumns::TREE_NAVIGATION)
+        if (role == Qt::ForegroundRole)
         {
             if (locked_)
             {
@@ -364,12 +364,12 @@ Qt::ItemFlags CatalogFileModel::flags(QModelIndex const& index) const
         itemFlags |= Qt::ItemIsDropEnabled;
     }
 
-    if (!locked_ && index.parent().isValid() && index.column() != CatalogFileColumns::TREE_NAVIGATION)
+    if (!locked_ && index.parent().isValid())
     {
         itemFlags |= Qt::ItemIsEditable; 
     }
 
-    if (!index.parent().isValid() || index.column() != CatalogFileColumns::TREE_NAVIGATION)
+    if (!index.parent().isValid())
     {
         itemFlags |= Qt::ItemIsSelectable;
     }
@@ -538,7 +538,7 @@ void CatalogFileModel::addFile(QSharedPointer<IpxactFile> fileToAdd)
     if (vlnv.isEmpty() || !contains(vlnv))
     {
         int category = 0;
-        for (category = 0; category <= CatalogFileColumns::UNKNOWN; category++)
+        for (category = 0; category < CatalogFileColumns::CATEGORY_COUNT; category++)
         {
             if (vlnv.getType() == CatalogFileColumns::CATEGORY_TYPES[category])
             {

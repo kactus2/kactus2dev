@@ -17,9 +17,6 @@
 #include <common/widgets/vlnvEditor/VLNVContentMatcher.h>
 
 #include <QPen>
-#include <QIcon>
-#include <QApplication>
-#include <QMouseEvent>
 
 //-----------------------------------------------------------------------------
 // Function: CatalogFileDelegate::CatalogFileDelegate()
@@ -66,6 +63,11 @@ void CatalogFileDelegate::paint(QPainter* painter, QStyleOptionViewItem const& o
     QPen newPen(Qt::lightGray);
     newPen.setWidth(1);
     painter->setPen(newPen);
+
+    if (index.column() == 0)
+    {
+        painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
+    }
 
     painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
     painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());

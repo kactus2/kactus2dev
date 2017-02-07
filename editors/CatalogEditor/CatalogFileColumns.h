@@ -16,8 +16,7 @@ namespace CatalogFileColumns
     //! The editable columns in the ipxactFiles of the catalog editor.
     enum columns
     {
-        TREE_NAVIGATION = 0,
-        VENDOR,
+        VENDOR = 0,
         LIBRARY,
         NAME,
         VERSION,
@@ -39,7 +38,7 @@ namespace CatalogFileColumns
         CATEGORY_COUNT
     };   
 
-    //! Types in the different categories.
+    //! VLNV types in the different categories.
     const VLNV::IPXactType CATEGORY_TYPES[CatalogFileColumns::CATEGORY_COUNT] =
     {
         VLNV::CATALOG,
