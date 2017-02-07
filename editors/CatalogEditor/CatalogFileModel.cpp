@@ -291,7 +291,8 @@ QVariant CatalogFileModel::data(QModelIndex const& index, int role) const
                     return QColor(Qt::red);
                 }
             }
-            else if (!library_->contains(file->getVlnv()))
+            else if (library_->getDocumentType(file->getVlnv()) != 
+                CatalogFileColumns::CATEGORY_TYPES[index.parent().row()])
             {
                 return QColor(Qt::red);
             }
@@ -412,19 +413,31 @@ bool CatalogFileModel::dropMimeData(QMimeData const* data, Qt::DropAction action
     }
 
     VLNV vlnv = variant.value<VLNV>();
-    QString path = General::getRelativePath(library_->getPath(catalog_->getVlnv()), library_->getPath(vlnv));
+    QString catalogPath = library_->getPath(catalog_->getVlnv());
+    QString path = General::getRelativePath(catalogPath, library_->getPath(vlnv));
 
-    QSharedPointer<IpxactFile> droppedFile(new IpxactFile);
+    QSharedPointer<IpxactFile> droppedFile(new IpxactFile());
     droppedFile->setVlnv(vlnv);
     droppedFile->setName(path);
 
     addFile(droppedFile);
 
-    emit contentChanged();
+    if (vlnv.getType() != VLNV::CATALOG)
+    {
+        foreach (VLNV const& dependentVlnv, library_->getModelReadOnly(vlnv)->getDependentVLNVs())
+        {
+            QSharedPointer<IpxactFile> dependentFile(new IpxactFile());
+            dependentFile->setVlnv(dependentVlnv);
+
+            QString dependentPath = General::getRelativePath(catalogPath, library_->getPath(dependentVlnv));
+            dependentFile->setName(dependentPath);
+
+            addFile(dependentFile);
+        }
+    }
 
     return true;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: CatalogFileModel::onAddItem()
@@ -455,9 +468,7 @@ void CatalogFileModel::onAddItem(QModelIndex const& index)
 
     QSharedPointer<IpxactFile> file(new IpxactFile());
     file->setVlnv(vlnv);
-    addFile(file);
-   
-    emit contentChanged();
+    addFile(file);  
 }
 
 //-----------------------------------------------------------------------------
@@ -524,21 +535,44 @@ void CatalogFileModel::addFile(QSharedPointer<IpxactFile> fileToAdd)
 {
     VLNV vlnv = fileToAdd->getVlnv();
 
-    int category = 0;
-    for (category = 0; category <= CatalogFileColumns::UNKNOWN; category++)
+    if (vlnv.isEmpty() || !contains(vlnv))
     {
-        if (vlnv.getType() == CatalogFileColumns::CATEGORY_TYPES[category])
+        int category = 0;
+        for (category = 0; category <= CatalogFileColumns::UNKNOWN; category++)
         {
-            break;
+            if (vlnv.getType() == CatalogFileColumns::CATEGORY_TYPES[category])
+            {
+                break;
+            }
+        }
+
+        QModelIndex parentIndex = index(category, 0, QModelIndex());
+        int lastRow = rowCount(parentIndex);
+
+        beginInsertRows(parentIndex, lastRow, lastRow);
+        topLevelRows_.at(category)->append(fileToAdd);
+        endInsertRows();
+           
+        emit contentChanged();
+    }   
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogFileModel::contains()
+//-----------------------------------------------------------------------------
+bool CatalogFileModel::contains(VLNV const& vlnv) const
+{
+    foreach (QSharedPointer<QList<QSharedPointer<IpxactFile> > > topLevel, topLevelRows_)
+    {
+        foreach (QSharedPointer<IpxactFile> file, *topLevel)
+        {
+            if (file->getVlnv() == vlnv)
+            {
+                return true;
+            }
         }
     }
-
-    QModelIndex parentIndex = index(category, 0, QModelIndex());
-    int lastRow = rowCount(parentIndex);
-
-    beginInsertRows(parentIndex, lastRow, lastRow);
-    topLevelRows_.at(category)->append(fileToAdd);
-    endInsertRows();
+    return false;
 }
 
 //-----------------------------------------------------------------------------

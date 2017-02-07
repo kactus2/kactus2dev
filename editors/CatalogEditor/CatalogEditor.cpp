@@ -129,9 +129,11 @@ void CatalogEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void CatalogEditor::refresh()
 {
-    catalog_ = library_->getModel(catalog_->getVlnv()).staticCast<Catalog>();
+    VLNV vlnv = catalog_->getVlnv();
+    catalog_ = library_->getModel(vlnv).staticCast<Catalog>();
 
     // Update the editors.
+    vlnvDisplay_->setVLNV(vlnv);
     descriptionEditor_->setPlainText(catalog_->getDescription());
     fileModel_->refresh(catalog_);
 

@@ -204,6 +204,15 @@ private:
     void addFile(QSharedPointer<IpxactFile> fileToAdd);
 
     /*!
+     *  Checks if the given VLNV is already contained in the catalog.
+     *
+     *      @param [in] vlnv   The VLNV to find.
+     *
+     *      @return True, if the VLNV is already in the catalog, otherwise false.
+     */
+    bool contains(VLNV const& vlnv) const;
+
+    /*!
      *  Checks if the given path is valid.
      *
      *      @param [in] path   The path to check.
@@ -211,6 +220,7 @@ private:
      *      @return True, if the path is valid, otherwise false.
      */
     bool isValidPath(QString const& path) const;
+
 
     //-----------------------------------------------------------------------------
     // Data.

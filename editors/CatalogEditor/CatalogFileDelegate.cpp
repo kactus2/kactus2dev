@@ -40,6 +40,7 @@ QStyledItemDelegate(parent),
 CatalogFileDelegate::~CatalogFileDelegate()
 {
     delete matcher_;
+    delete dataTree_;
 }
 
 //-----------------------------------------------------------------------------
@@ -101,6 +102,7 @@ void CatalogFileDelegate::updateSuggestedItems(QModelIndex const& index) const
     VLNV::IPXactType type = CatalogFileColumns::CATEGORY_TYPES[index.parent().row()];
     types.append(type);
 
+    dataTree_->clear();
     dataTree_->parse(library_, types);
 
     VLNVDataNode const* dataNode = dataTree_;
