@@ -12,9 +12,15 @@
 #ifndef CATALOGFILEDELEGATE_H
 #define CATALOGFILEDELEGATE_H
 
+#include <common/widgets/vlnvEditor/VLNVDataTree.h>
+
 #include <QPainter>
 #include <QSharedPointer>
 #include <QStyledItemDelegate>
+
+
+class LibraryInterface;
+class VLNVContentMatcher;
 
 //-----------------------------------------------------------------------------
 // ! Delegate to provide editors to edit catalog files.
@@ -28,14 +34,15 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] parent              The parent of this delegate.
+     *      @param [in] library     The library of available IP-XACT documents.
+	 *      @param [in] parent      The parent of this delegate.
 	 */
-	CatalogFileDelegate(QObject *parent);
+	CatalogFileDelegate(LibraryInterface* library, QObject *parent);
 	
 	/*!
      *  The destructor.
      */
-    ~CatalogFileDelegate();
+    virtual ~CatalogFileDelegate();
        
     /*!
      *  Returns the size hint for the given model index.
@@ -51,12 +58,39 @@ public:
      */
     virtual void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
     
+    /*!
+     *  Creates an editor for the given index.
+     *
+     *      @param [in] parent      The parent widget for the editor.
+     *      @param [in] option      Format options for the editor.
+     *      @param [in] index       The index whose content to edit in the editor.
+     *
+     *      @return Editor for the index.
+     */
+    virtual QWidget * createEditor(QWidget* parent,  QStyleOptionViewItem const& option, 
+        QModelIndex const& index) const;
+  
 private:
 
 	//! No copying.
 	CatalogFileDelegate(const CatalogFileDelegate& other);
 	CatalogFileDelegate& operator=(const CatalogFileDelegate& other);
-  
+      
+    /*!
+     *  Updates the suggested items in the editor for the given index.
+     *
+     *      @param [in] index   The index whose content to suggest.
+     */
+    void updateSuggestedItems(QModelIndex const& index) const;
+
+    //! The library of available IP-XACT documents.
+    LibraryInterface* library_;
+
+    //! Matcher for editor suggestions.
+    VLNVContentMatcher* matcher_;
+
+    //! The VLNV data tree.
+    VLNVDataTree* dataTree_;
 };
 
 #endif // CATALOGFILEDELEGATE_H

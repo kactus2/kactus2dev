@@ -56,7 +56,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     proxy->setSourceModel(fileModel_);
 
     fileView_->setModel(proxy);
-    fileView_->setItemDelegate(new CatalogFileDelegate(this));
+    fileView_->setItemDelegate(new CatalogFileDelegate(library_, this));
     
     refresh();
 
@@ -87,7 +87,6 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
         this, SIGNAL(openComponent(VLNV const&)), Qt::UniqueConnection);
     connect(fileModel_, SIGNAL(openBus(VLNV const&, VLNV const&)),
         this, SIGNAL(openBus(VLNV const&, VLNV const&)), Qt::UniqueConnection);
-
 }
 
 //-----------------------------------------------------------------------------

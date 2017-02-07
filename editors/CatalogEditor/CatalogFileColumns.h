@@ -9,6 +9,7 @@
 // Common declarations for ipxactFiles in catalog editor.
 //-----------------------------------------------------------------------------
 
+#include <IPXACTmodels/common/VLNV.h>
 
 namespace CatalogFileColumns
 {
@@ -24,6 +25,7 @@ namespace CatalogFileColumns
         COLUMN_COUNT
     };
 
+    //! Types in the different categories.
     enum categories{
         CATALOGS = 0,
         BUS_DEFINITIONS,
@@ -35,5 +37,20 @@ namespace CatalogFileColumns
         GENERATOR_CHAINS,
         UNKNOWN,
         CATEGORY_COUNT
-    };     
+    };   
+
+    //! Types in the different categories.
+    const VLNV::IPXactType CATEGORY_TYPES[CatalogFileColumns::CATEGORY_COUNT] =
+    {
+        VLNV::CATALOG,
+        VLNV::BUSDEFINITION,
+        VLNV::ABSTRACTIONDEFINITION,
+        VLNV::COMPONENT,
+        VLNV::ABSTRACTOR,
+        VLNV::DESIGN,
+        VLNV::DESIGNCONFIGURATION,
+        VLNV::GENERATORCHAIN,
+        VLNV::INVALID
+    };
+
 }

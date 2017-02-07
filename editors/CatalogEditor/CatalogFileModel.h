@@ -170,10 +170,13 @@ signals:
     //! Emitted when the contents have changed.
     void contentChanged();
 
+    //! Emitted when a catalog should be opened.
     void openCatalog(VLNV const& vlnv);
 
+    //! Emitted when a component should be opened.
     void openComponent(VLNV const& vlnv);
 
+    //! Emitted when a bus should be opened.
     void openBus(VLNV const& busVLNV, VLNV const& absVLNV);
 
 public slots:
@@ -193,6 +196,10 @@ private:
     CatalogFileModel(CatalogFileModel const& rhs);
     CatalogFileModel& operator=(CatalogFileModel const& rhs);
 
+    void addFile(QSharedPointer<IpxactFile> fileToAdd);
+
+    bool nonExistingFile(QString const& path) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //----------------------------------------------------------------------------- 
@@ -203,10 +210,10 @@ private:
     //! The instance that manages the library.
     LibraryInterface* library_;
 
-    QVector<VLNV::IPXactType>  topLevelTypes_;
-
+    //! All the files in the model.
     QVector<QSharedPointer<QList<QSharedPointer<IpxactFile> > > > topLevelRows_;
 
+    //! Lock for editing.
     bool locked_;
 };
 

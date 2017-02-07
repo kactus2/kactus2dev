@@ -91,53 +91,6 @@ bool VLNVContentMatcher::enumerateMatches(QString const& text, LineContentAssist
                 if (assist != 0)
                 {
                     QListWidgetItem* item = new QListWidgetItem(child->name());
-
-                    // Add an icon if the child is at the leaf level.
-//                     if (child->getLevel() == VLNVDataNode::LEVEL_VERSION)
-//                     {
-//                         // Retrieve the component for further examination.
-//                         QSharedPointer<Document const> libComp = lh_->getModelReadOnly(child->getVLNV());
-//                         QSharedPointer<Component const> component = libComp.dynamicCast<Component const>();
-// 
-//                         if (component != 0)
-//                         {
-//                             switch (component->getComponentImplementation())
-//                             {
-//                             case KactusAttribute::KTS_SYS:
-//                                 {
-//                                     item->setIcon(QIcon(":/icons/common/graphics/system-component.png"));
-//                                     break;
-//                                 }
-// 
-//                             case KactusAttribute::KTS_SW:
-//                                 {
-//                                     if (component->hasSWViews())
-//                                     {
-//                                         item->setIcon(QIcon(":/icons/common/graphics/hier-sw-component.png"));
-//                                     }
-//                                     else
-//                                     {
-//                                         item->setIcon(QIcon(":/icons/common/graphics/sw-component.png"));
-//                                     }
-//                                     break;
-//                                 }
-// 
-//                             default:
-//                                 {
-//                                     if (component->isHierarchical())
-//                                     {
-//                                         item->setIcon(QIcon(":/icons/common/graphics/hier-hw-component.png"));
-//                                     }
-//                                     else
-//                                     {
-//                                         item->setIcon(QIcon(":/icons/common/graphics/hw-component.png"));
-//                                     }
-// 
-//                                     break;
-//                                 }
-//                             }
-//                         }
-//                     }
                     
                     assist->addItem(item);
                 }

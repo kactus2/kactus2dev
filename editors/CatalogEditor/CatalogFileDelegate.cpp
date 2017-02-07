@@ -11,6 +11,11 @@
 
 #include "CatalogFileDelegate.h"
 
+#include "CatalogFileColumns.h"
+
+#include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
+#include <common/widgets/vlnvEditor/VLNVContentMatcher.h>
+
 #include <QPen>
 #include <QIcon>
 #include <QApplication>
@@ -19,10 +24,14 @@
 //-----------------------------------------------------------------------------
 // Function: CatalogFileDelegate::CatalogFileDelegate()
 //-----------------------------------------------------------------------------
-CatalogFileDelegate::CatalogFileDelegate(QObject *parent):
-QStyledItemDelegate(parent)
-{
+CatalogFileDelegate::CatalogFileDelegate(LibraryInterface* library, QObject *parent):
+QStyledItemDelegate(parent),    
+    library_(library),
+    matcher_(new VLNVContentMatcher(library)),
+    dataTree_(new VLNVDataTree())
 
+{
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -30,7 +39,7 @@ QStyledItemDelegate(parent)
 //-----------------------------------------------------------------------------
 CatalogFileDelegate::~CatalogFileDelegate()
 {
-
+    delete matcher_;
 }
 
 //-----------------------------------------------------------------------------
@@ -53,7 +62,7 @@ void CatalogFileDelegate::paint(QPainter* painter, QStyleOptionViewItem const& o
 
     painter->save();
 
-    QPen newPen(QStringLiteral("gainsboro"));
+    QPen newPen(Qt::lightGray);
     newPen.setWidth(1);
     painter->setPen(newPen);
 
@@ -61,4 +70,48 @@ void CatalogFileDelegate::paint(QPainter* painter, QStyleOptionViewItem const& o
     painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
 
     painter->restore();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogFileDelegate::createEditor()
+//-----------------------------------------------------------------------------
+QWidget * CatalogFileDelegate::createEditor(QWidget *parent, QStyleOptionViewItem const& option,
+    QModelIndex const& index) const
+{
+    if (index.column() < CatalogFileColumns::PATH)
+    {
+        updateSuggestedItems(index);
+
+        AssistedLineEdit* editor = new AssistedLineEdit(parent->window(), parent);
+        editor->setContentMatcher(matcher_);
+        return editor;
+    }
+    else
+    {
+        return QStyledItemDelegate::createEditor(parent, option, index);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogFileDelegate::updateSuggestedItems()
+//-----------------------------------------------------------------------------
+void CatalogFileDelegate::updateSuggestedItems(QModelIndex const& index) const
+{
+    QList<VLNV::IPXactType> types;
+    VLNV::IPXactType type = CatalogFileColumns::CATEGORY_TYPES[index.parent().row()];
+    types.append(type);
+
+    dataTree_->parse(library_, types);
+
+    VLNVDataNode const* dataNode = dataTree_;
+    for (int column = CatalogFileColumns::VENDOR; column < index.column(); column++)
+    {
+        if (dataNode)
+        {
+            QString previousLevel = index.sibling(index.row(), column).data(Qt::DisplayRole).toString();
+            dataNode = dataNode->findChild(previousLevel);
+        }
+    }
+
+    matcher_->setDataNode(dataNode);
 }

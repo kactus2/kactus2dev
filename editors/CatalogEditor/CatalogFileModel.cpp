@@ -21,13 +21,18 @@
 #include <IPXACTmodels/Catalog/Catalog.h>
 #include <IPXACTmodels/Catalog/IpxactFile.h>
 
+#include <QFileInfo>
 #include <QIcon>
 #include <QSize>
 #include <QMimeData>
 
+//-----------------------------------------------------------------------------
+// Private namespace.
+//-----------------------------------------------------------------------------
 namespace
 {
-    const QString CATEGORIES[CatalogFileColumns::CATEGORY_COUNT] = {
+    const QString CATEGORIES[CatalogFileColumns::CATEGORY_COUNT] =
+    {
         QLatin1String("Catalogs"),
         QLatin1String("Bus definitions"),
         QLatin1String("Abstraction definitions"),
@@ -39,7 +44,8 @@ namespace
         QLatin1String("Unknown")
     };
 
-    const QString ICONS[CatalogFileColumns::CATEGORY_COUNT] = {
+    const QString ICONS[CatalogFileColumns::CATEGORY_COUNT] =
+    {
         QLatin1String(":icons/common/graphics/catalog.png"),
         QLatin1String(":icons/common/graphics/new-bus.png"),
         QLatin1String(":icons/common/graphics/abs-def.png"),        
@@ -59,7 +65,6 @@ CatalogFileModel::CatalogFileModel(LibraryInterface* library, QObject *parent) :
 QAbstractItemModel(parent),
     catalog_(),
     library_(library),
-    topLevelTypes_(),
     topLevelRows_(),
     locked_(true)
 {
@@ -80,14 +85,6 @@ CatalogFileModel::~CatalogFileModel()
 void CatalogFileModel::setProtection(bool locked)
 {
     locked_ = locked;
-
-    QVector<int> roles(Qt::ForegroundRole);
-
-    for (int i = 0; i < CatalogFileColumns::CATEGORY_COUNT; i++)
-    {
-        QModelIndex parentIndex = index(i, 0, QModelIndex());
-        emit dataChanged(index(0, 0, parentIndex), index(rowCount(parentIndex), CatalogFileColumns::PATH, parentIndex), roles);
-    }    
 } 
 
 //-----------------------------------------------------------------------------
@@ -98,39 +95,20 @@ void CatalogFileModel::refresh(QSharedPointer<Catalog> catalog)
     catalog_ = catalog;
     
     beginResetModel();
-    topLevelTypes_.clear();
     topLevelRows_.clear();
-
-    topLevelTypes_.append(VLNV::CATALOG);
     topLevelRows_.append(catalog->getCatalogs());
-
-    topLevelTypes_.append(VLNV::BUSDEFINITION);
     topLevelRows_.append(catalog->getBusDefinitions());
-
-    topLevelTypes_.append(VLNV::ABSTRACTIONDEFINITION);
     topLevelRows_.append(catalog->getAbstractionDefinitions());
-
-    topLevelTypes_.append(VLNV::COMPONENT);
     topLevelRows_.append(catalog->getComponents());
-
-    topLevelTypes_.append(VLNV::ABSTRACTOR);
     topLevelRows_.append(catalog->getAbstractors());
-
-    topLevelTypes_.append(VLNV::DESIGN);
     topLevelRows_.append(catalog->getDesigns());
-
-    topLevelTypes_.append(VLNV::DESIGNCONFIGURATION);
     topLevelRows_.append(catalog->getDesignConfigurations());
-
-    topLevelTypes_.append(VLNV::GENERATORCHAIN);
     topLevelRows_.append(catalog->getGeneratorChains());
-
-    topLevelTypes_.append(VLNV::INVALID);
-    topLevelRows_.append(QSharedPointer<QList<QSharedPointer<IpxactFile> > >(new QList<QSharedPointer<IpxactFile> > ()));
+    topLevelRows_.append(QSharedPointer<QList<QSharedPointer<IpxactFile> > >(
+        new QList<QSharedPointer<IpxactFile> > ())); //<! Other, unknown items.
     
     endResetModel();
 
-    Q_ASSERT(topLevelTypes_.count() == CatalogFileColumns::CATEGORY_COUNT);
     Q_ASSERT(topLevelRows_.count() == CatalogFileColumns::CATEGORY_COUNT);
 }
 
@@ -189,13 +167,13 @@ QModelIndex CatalogFileModel::index(int row, int column, QModelIndex const& pare
 //-----------------------------------------------------------------------------
 QModelIndex CatalogFileModel::parent(QModelIndex const& child) const
 {
-    for (int i = 0; i < topLevelRows_.count(); i++)
+    for (int topRow = 0; topRow < topLevelRows_.count(); topRow++)
     {
-        for (int j = 0; j < topLevelRows_.at(i)->count(); j++)
+        for (int childRow = 0; childRow < topLevelRows_.at(topRow)->count(); childRow++)
         {
-            if (topLevelRows_.at(i)->at(j).data() == child.internalPointer())
+            if (topLevelRows_.at(topRow)->at(childRow).data() == child.internalPointer())
             {
-                return createIndex(i, 0, topLevelRows_.at(i).data());
+                return createIndex(topRow, 0, topLevelRows_.at(topRow).data());
             }
         }
     }
@@ -303,9 +281,13 @@ QVariant CatalogFileModel::data(QModelIndex const& index, int role) const
             {
                 return QColor(Qt::lightGray);
             }
+
             if (index.column() == CatalogFileColumns::PATH)
             {
-                //TODO: check path exists.
+                if (nonExistingFile(file->getName()))
+                {
+                    return QColor(Qt::red);
+                }
             }
             else if (!library_->contains(file->getVlnv()))
             {
@@ -434,23 +416,13 @@ bool CatalogFileModel::dropMimeData(QMimeData const* data, Qt::DropAction action
     droppedFile->setVlnv(vlnv);
     droppedFile->setName(path);
 
-    int category = topLevelTypes_.indexOf(vlnv.getType());
-    if (category == -1)
-    {
-        category = CatalogFileColumns::UNKNOWN;
-    }
-
-    QModelIndex parentIndex = index(category, 0, QModelIndex());
-    int lastRow = rowCount(parentIndex);
-
-    beginInsertRows(parentIndex, lastRow, lastRow);
-    topLevelRows_.at(category)->append(droppedFile);
-    endInsertRows();
+    addFile(droppedFile);
 
     emit contentChanged();
 
     return true;
 }
+
 
 //-----------------------------------------------------------------------------
 // Function: CatalogFileModel::onAddItem()
@@ -462,36 +434,27 @@ void CatalogFileModel::onAddItem(QModelIndex const& index)
         return;
     }
 
-    QModelIndex parentIndex;
+    VLNV::IPXactType type = VLNV::INVALID;
 
     if (index.isValid())
     {
         if (index.parent().isValid())
         {
-            parentIndex = index.parent();
+            type = CatalogFileColumns::CATEGORY_TYPES[index.parent().row()];
         }
         else
         {
-            parentIndex = index;
+            type = CatalogFileColumns::CATEGORY_TYPES[index.row()];
         }
     }
 
-    int category = CatalogFileColumns::UNKNOWN;
-    if (parentIndex.isValid())
-    {
-        category = parentIndex.row();
-    }
-    else
-    {
-        parentIndex = CatalogFileModel::index(category, 0, QModelIndex());
-    }
+    VLNV vlnv;    
+    vlnv.setType(type);
 
-    int lastRow = rowCount(parentIndex);
-
-    beginInsertRows(parentIndex, lastRow, lastRow);
-    topLevelRows_.at(category)->append(QSharedPointer<IpxactFile>(new IpxactFile()));
-    endInsertRows();
-
+    QSharedPointer<IpxactFile> file(new IpxactFile());
+    file->setVlnv(vlnv);
+    addFile(file);
+   
     emit contentChanged();
 }
 
@@ -528,7 +491,7 @@ void CatalogFileModel::onOpenItem(QModelIndex const& index)
     QSharedPointer<IpxactFile> file = topLevelRows_.at(index.parent().row())->at(index.row());
     VLNV fileVLNV = file->getVlnv();
 
-    VLNV::IPXactType type = topLevelTypes_.at(index.parent().row());
+    VLNV::IPXactType type = CatalogFileColumns::CATEGORY_TYPES[index.parent().row()];
     if (type == VLNV::CATALOG)
     {
         emit openCatalog(fileVLNV);
@@ -550,4 +513,46 @@ void CatalogFileModel::onOpenItem(QModelIndex const& index)
     {
         emit openComponent(fileVLNV);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogFileModel::addFile()
+//-----------------------------------------------------------------------------
+void CatalogFileModel::addFile(QSharedPointer<IpxactFile> fileToAdd)
+{
+    VLNV vlnv = fileToAdd->getVlnv();
+
+    int category = 0;
+    for (category = 0; category <= CatalogFileColumns::UNKNOWN; category++)
+    {
+        if (vlnv.getType() == CatalogFileColumns::CATEGORY_TYPES[category])
+        {
+            break;
+        }
+    }
+
+    QModelIndex parentIndex = index(category, 0, QModelIndex());
+    int lastRow = rowCount(parentIndex);
+
+    beginInsertRows(parentIndex, lastRow, lastRow);
+    topLevelRows_.at(category)->append(fileToAdd);
+    endInsertRows();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogFileModel::nonExistingFile()
+//-----------------------------------------------------------------------------
+bool CatalogFileModel::nonExistingFile(QString const& path) const
+{
+    if (path.isEmpty())
+    {
+        return true;
+    }
+
+    QString basePath = library_->getPath(catalog_->getVlnv());
+    QString absFilePath = General::getAbsolutePath(basePath, path);
+
+    QFileInfo fileInfo(absFilePath);
+
+    return !fileInfo.exists();
 }

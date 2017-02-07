@@ -120,15 +120,14 @@ void CatalogFileView::onAddAction()
 //-----------------------------------------------------------------------------
 void CatalogFileView::onRemoveAction()
 {
-    QModelIndexList indexes = selectedIndexes();
-    if (indexes.isEmpty())
+    QModelIndexList toRemove = sortAndMinimize(selectedIndexes());
+    if (toRemove.isEmpty())
     {
         return;
     }
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
-    QModelIndexList toRemove = sortAndMinimize(indexes);
     QModelIndex removeIndex = toRemove.first();
 
     for (int i = 0; i < toRemove.count(); i++)
