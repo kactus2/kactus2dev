@@ -196,9 +196,21 @@ private:
     CatalogFileModel(CatalogFileModel const& rhs);
     CatalogFileModel& operator=(CatalogFileModel const& rhs);
 
+    /*!
+     *  Adds the given file to correct category in the model.
+     *
+     *      @param [in] fileToAdd   The file to add.
+     */
     void addFile(QSharedPointer<IpxactFile> fileToAdd);
 
-    bool nonExistingFile(QString const& path) const;
+    /*!
+     *  Checks if the given path is valid.
+     *
+     *      @param [in] path   The path to check.
+     *
+     *      @return True, if the path is valid, otherwise false.
+     */
+    bool isValidPath(QString const& path) const;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -13,6 +13,8 @@
 
 #include "CatalogFileColumns.h"
 
+#include <common/utils.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
@@ -284,7 +286,7 @@ QVariant CatalogFileModel::data(QModelIndex const& index, int role) const
 
             if (index.column() == CatalogFileColumns::PATH)
             {
-                if (nonExistingFile(file->getName()))
+                if (!isValidPath(file->getName()))
                 {
                     return QColor(Qt::red);
                 }
@@ -540,19 +542,29 @@ void CatalogFileModel::addFile(QSharedPointer<IpxactFile> fileToAdd)
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogFileModel::nonExistingFile()
+// Function: CatalogFileModel::isValidPath()
 //-----------------------------------------------------------------------------
-bool CatalogFileModel::nonExistingFile(QString const& path) const
+bool CatalogFileModel::isValidPath(QString const& path) const
 {
     if (path.isEmpty())
+    {
+        return false;
+    }
+
+    bool isValidUri = Utils::URL_VALIDITY_REG_EXP.match(path).hasMatch();
+    if (isValidUri)
     {
         return true;
     }
 
-    QString basePath = library_->getPath(catalog_->getVlnv());
-    QString absFilePath = General::getAbsolutePath(basePath, path);
+    QFileInfo fileInfo(path);
+    if (fileInfo.isRelative())
+    {
+        QString basePath = library_->getPath(catalog_->getVlnv());
+        QString absFilePath = General::getAbsolutePath(basePath, path);
 
-    QFileInfo fileInfo(absFilePath);
+        fileInfo.setFile(absFilePath);
+    }
 
-    return !fileInfo.exists();
+    return fileInfo.exists();
 }

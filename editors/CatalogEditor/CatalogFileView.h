@@ -56,7 +56,6 @@ signals:
 
 protected:
 
-
     /*! Handler for the context menu events.
     *
     *      @param [in] event The contextMenuEvent to be handled.
@@ -83,7 +82,9 @@ private slots:
     //! Handler for clear action.
     void onClearAction();
 
+    //! Handler for open action.
     void onOpenAction();
+
 private:
 
     //! No assignment

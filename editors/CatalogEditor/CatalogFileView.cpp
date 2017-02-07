@@ -15,7 +15,6 @@
 
 #include <QApplication>
 #include <QClipboard>
-#include <QDesktopServices>
 #include <QDrag>
 #include <QFileInfo>
 #include <QHeaderView>
@@ -44,6 +43,9 @@ CatalogFileView::CatalogFileView(QWidget* parent): QTreeView(parent),
     setDropIndicatorShown(true);   
     viewport()->setAcceptDrops(true); 
     setDragDropMode(QAbstractItemView::DropOnly);
+
+    setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked |
+        QAbstractItemView::EditKeyPressed | QAbstractItemView::AnyKeyPressed);
 
 	setupActions();
 }

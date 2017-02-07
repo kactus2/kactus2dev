@@ -96,11 +96,12 @@
         </section>
         <section title="HW Design" ref="hwdesign/hwdesign.html">
           <section title="Component Instance" ref="hwdesign/hwinstance.html" />
-		  <section title="Bus Interface" ref="hwdesign/busport.html" />
-		  <section title="Interconnection" ref="hwdesign/connection.html" />
-		  <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
-		  <section title="Ad-hoc Connection" ref="hwdesign/adhocconnection.html" />
+          <section title="Bus Interface" ref="hwdesign/busport.html" />
+          <section title="Interconnection" ref="hwdesign/connection.html" />
+          <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
+          <section title="Ad-hoc Connection" ref="hwdesign/adhocconnection.html" />
         </section>
+        <section title="Catalog" ref="definitions/catalog.html" />
         <section title="SW Design" ref="swsysdesign/swdesign.html">
           <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
         </section>
