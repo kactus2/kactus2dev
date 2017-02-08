@@ -30,7 +30,6 @@ instance_(instance),
 sorter_(sorter),
 useInterfaces_(useInterfaces)
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -38,18 +37,13 @@ useInterfaces_(useInterfaces)
 //-----------------------------------------------------------------------------
 ComponentInstanceVerilogWriter::~ComponentInstanceVerilogWriter()
 {
-
 }
+
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::write()
 //-----------------------------------------------------------------------------
 void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 {
-    if (nothingToWrite())
-    {
-        return;
-    }
-
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
     instanceString.replace("<component>", instance_->getModuleName());
@@ -58,14 +52,6 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
     instanceString.replace("<portConnections>", portConnections());
 
     outputStream << indentation() << instanceString << endl;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstanceVerilogWriter::nothingToWrite()
-//-----------------------------------------------------------------------------
-bool ComponentInstanceVerilogWriter::nothingToWrite() const
-{
-    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -232,22 +218,6 @@ QString ComponentInstanceVerilogWriter::createInterfaceSeparator(QString const& 
     }
 
     return interfaceIntroduction;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstanceVerilogWriter::assignWholePort()
-//-----------------------------------------------------------------------------
-bool ComponentInstanceVerilogWriter::assignAllBitsInConnection(General::PortBounds const& signalBounds) const
-{
-    return signalBounds.left_ == ALL_BITS;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstanceVerilogWriter::assignSingleBit()
-//-----------------------------------------------------------------------------
-bool ComponentInstanceVerilogWriter::assignSingleBitInConnection(General::PortBounds const& signalBounds) const
-{
-    return  signalBounds.left_ == signalBounds.right_;
 }
 
 //-----------------------------------------------------------------------------

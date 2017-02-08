@@ -94,7 +94,7 @@ private slots:
 
 private:
 
-    void addPort(QString const& portName, int portSize, DirectionTypes::Direction direction, 
+    QSharedPointer<Port> addPort(QString const& portName, int portSize, DirectionTypes::Direction direction, 
         QSharedPointer<Component> component);
 
     void addModuleParameter(QString const& name, QString const& value, QString const& valueID);
@@ -320,12 +320,14 @@ void tst_HDLParser::testTopLevelComponentExpressions()
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::addPort()
 //-----------------------------------------------------------------------------
-void tst_HDLParser::addPort(QString const& portName, int portSize, 
+QSharedPointer<Port> tst_HDLParser::addPort(QString const& portName, int portSize, 
     DirectionTypes::Direction direction, QSharedPointer<Component> component)
 {
     QSharedPointer<Port> port = QSharedPointer<Port>(new Port(portName, direction));
     port->setPortSize(portSize);
     component->getPorts()->append(port);
+
+    return port;
 }
 
 //-----------------------------------------------------------------------------
@@ -1636,15 +1638,21 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
 
     QString instanceName = "tieOffer";
 
+    QString portDefaultName = "portDefault";
+    QString defaultValueName = "defaultValue";
     QString zeroName = "zeroTieOff";
     QString oneName = "oneTieOff";
     QString naName = "n/aTieOff";
     QString numberedName = "numberedTieOff";
     QString outName = "tieOffOut";
     QString inOutName = "tieOffInOut";
-    QString defaultName = "defaultTieOff";
     QString openName = "openTieOff";
     QString expressionName = "expressionTieOff";
+
+    QSharedPointer<Port> portDefault = addPort(portDefaultName, 4, DirectionTypes::OUT, tieOffComponent);
+    portDefault->setDefaultValue("20");
+    QSharedPointer<Port> defaultPort = addPort(defaultValueName, 4, DirectionTypes::IN, tieOffComponent);
+    defaultPort->setDefaultValue("35");
 
     addPort(zeroName, 2, DirectionTypes::IN, tieOffComponent);
     addPort(oneName, 4, DirectionTypes::IN, tieOffComponent);
@@ -1652,7 +1660,6 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     addPort(numberedName, 10, DirectionTypes::IN, tieOffComponent);
     addPort(outName, 2, DirectionTypes::OUT, tieOffComponent);
     addPort(inOutName, 10, DirectionTypes::INOUT, tieOffComponent);
-    addPort(defaultName, 1, DirectionTypes::IN, tieOffComponent);
     addPort(openName, 1, DirectionTypes::IN, tieOffComponent);
     addPort(expressionName, 1, DirectionTypes::IN, tieOffComponent);
 
@@ -1660,22 +1667,19 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
 
     addInstanceToDesign(instanceName, tieOffVLNV, activeView);
 
-    QSharedPointer<Port> defaultPort = tieOffComponent->getPort("defaultTieOff");
-    defaultPort->setDefaultValue("20");
-
     QSharedPointer<Parameter> expressionParameter (new Parameter());
     expressionParameter->setName("expName");
     expressionParameter->setValueId("expID");
     expressionParameter->setValue("5");
     tieOffComponent->getParameters()->append(expressionParameter);
 
+    addTieOffAdhocConnectionToInstancePort("default", instanceName, defaultValueName, "default_connection");
     addTieOffAdhocConnectionToInstancePort("0", instanceName, zeroName, "zero_connection");
     addTieOffAdhocConnectionToInstancePort("1", instanceName, oneName, "one_connection");
     addTieOffAdhocConnectionToInstancePort("abc", instanceName, naName, "n/a_connection");
     addTieOffAdhocConnectionToInstancePort("12", instanceName, numberedName, "number_connection");
     addTieOffAdhocConnectionToInstancePort("0", instanceName, outName, "out_connection");
     addTieOffAdhocConnectionToInstancePort("1", instanceName, inOutName, "inOut_connection");
-    addTieOffAdhocConnectionToInstancePort("default", instanceName, defaultName, "default_connection");
     addTieOffAdhocConnectionToInstancePort("open", instanceName, openName, "open_connection");
     addTieOffAdhocConnectionToInstancePort("expID - 4", instanceName, expressionName, "expression_connection");
 
@@ -1687,27 +1691,37 @@ void tst_HDLParser::testAdhocTieOffInComponentInstance()
     QCOMPARE(design->getInstances()->size(), 1);
 
     QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("tieOffer");
-    QCOMPARE(mInstance->getPorts()->size(), 9);
+    QCOMPARE(mInstance->getPorts()->size(), 10);
 
-    QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value("defaultTieOff");
+    QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value(portDefaultName);
     QCOMPARE(mPort->defaultValue_, QString("20"));
 
+    mPort = mInstance->getPorts()->value(defaultValueName);
+    QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("35"));
+    QVERIFY(!mPort->upAssignments_.first()->wire_);
     mPort = mInstance->getPorts()->value("expressionTieOff");
     QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("expID - 4"));
+    QVERIFY(!mPort->upAssignments_.first()->wire_);
     mPort = mInstance->getPorts()->value("n/aTieOff");
     QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("abc"));
+    QVERIFY(!mPort->upAssignments_.first()->wire_);
     mPort = mInstance->getPorts()->value("numberedTieOff");
     QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("12"));
+    QVERIFY(!mPort->upAssignments_.first()->wire_);
     mPort = mInstance->getPorts()->value("oneTieOff");
     QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("1"));
+    QVERIFY(!mPort->upAssignments_.first()->wire_);
     mPort = mInstance->getPorts()->value("openTieOff");
-    QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString(""));
+    QVERIFY(mPort->upAssignments_.size() < 1);
     mPort = mInstance->getPorts()->value("zeroTieOff");
     QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("0"));
+    QVERIFY(!mPort->upAssignments_.first()->wire_);
     mPort = mInstance->getPorts()->value("tieOffOut");
     QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("0"));
+    QVERIFY(!mPort->upAssignments_.first()->wire_);
     mPort = mInstance->getPorts()->value("tieOffInOut");
     QCOMPARE(mPort->upAssignments_.first()->defaultValue_, QString("1"));
+    QVERIFY(!mPort->upAssignments_.first()->wire_);
 }
 
 //-----------------------------------------------------------------------------

@@ -1085,7 +1085,7 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
     QString numberedName = "numberedTieOff";
     QString outName = "tieOffOut";
     QString inOutName = "tieOffInOut";
-    QString openName = "openTieOff";
+    QString unusedName = "unusedPort";
     QString slicedName = "slicedTieOff";
 
     QSharedPointer<MetaPort> defaultPort = addPort(defaultName, 4, DirectionTypes::IN, mInstance);
@@ -1096,7 +1096,7 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
     addPort(numberedName, 10, DirectionTypes::IN, mInstance);
     addPort(outName, 2, DirectionTypes::OUT, mInstance);
     addPort(inOutName, 10, DirectionTypes::INOUT, mInstance);
-    addPort(openName, 1, DirectionTypes::IN, mInstance);
+    addPort(unusedName, 1, DirectionTypes::IN, mInstance);
     QSharedPointer<MetaPort> slicedPort = addPort(slicedName, 5, DirectionTypes::IN, mInstance);
 
     QSharedPointer<MetaPortAssignment> mpa1(new MetaPortAssignment);
@@ -1151,8 +1151,8 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
         "        .n/aTieOff           (tieOffer_n/aTieOff),\n"
         "        .numberedTieOff      (tieOffer_numberedTieOff),\n"
         "        .oneTieOff           (tieOffer_oneTieOff),\n"
-        "        .openTieOff          (),\n"
         "        .slicedTieOff        (tieOffer_slicedTieOff),\n"
+        "        .unusedPort          (),\n"
         "        .zeroTieOff          (tieOffer_zeroTieOff),\n"
         "        .tieOffOut           (tieOffer_tieOffOut),\n"
         "        .tieOffInOut         (tieOffer_tieOffInOut));\n"
