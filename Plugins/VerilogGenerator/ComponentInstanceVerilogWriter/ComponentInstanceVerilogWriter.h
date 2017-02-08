@@ -88,13 +88,6 @@ private:
 	ComponentInstanceVerilogWriter& operator=(ComponentInstanceVerilogWriter const& rhs);
 
     /*!
-     *  Checks if the writer should write nothing.
-     *
-     *      @return True, if the writer has nothing to write, otherwise false.
-     */
-    bool nothingToWrite() const;
-
-    /*!
      *  Gets the component instance name with or without indentation as required.
      *
      *      @return The formatted instance name.
@@ -131,42 +124,6 @@ private:
      *      @return Separator for port interface.
      */
     QString createInterfaceSeparator(QString const& interfaceName, QString const& previousInteface) const;
-
-    /*!
-    *  Checks if a given port is not connected.
-    *
-    *      @param [in] portName     The name of the port to check.
-    *
-    *      @return True, if the port is not connected, otherwise false.
-    */
-    bool notConnected(QString portName) const;
-
-    /*!
-     *  Gets the default value for a port in port connection.
-     *
-     *      @param [in] portName   The name of the port whose default value to get.
-     *
-     *      @return The default value for the port.
-     */
-    QString portDefaultValue(QString const& portName) const;
-
-    /*!
-    *  Checks if all bits in a given connection are assigned to a port.
-    *
-    *      @param [in] signalBounds     The connection bounds.
-    *
-    *      @return True, if all the bits are connected, otherwise false.
-    */
-    bool assignAllBitsInConnection(General::PortBounds const& signalBounds) const;
-
-    /*!
-    *  Checks if only one bit in a given connection is assigned to a port.
-    *
-    *      @param [in] signalBounds     The connection bounds.
-    *
-    *      @return True, if one bit is connected, otherwise false.
-    */
-    bool assignSingleBitInConnection(General::PortBounds const& signalBounds) const;
 
     /*!
     *  Gets the connection assignment for a port of a module instance.

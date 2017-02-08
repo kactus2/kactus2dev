@@ -510,21 +510,48 @@ void MetaDesign::parseAdHocs()
             continue;
         }
 
-        // Else create a new wire.
-        QSharedPointer<MetaWire> mWire = QSharedPointer<MetaWire>(new MetaWire);
-        mWire->name_ = connection->name();
+        // Create a new wire, but only if at least two ports refer to it.
+        QSharedPointer<MetaWire> mWire;
+        QString wireName = connection->name();
 
-        // Append to the pool of detected interconnections.
-        adHocWires_->append(mWire);
+        if (foundPorts.size() > 1)
+        {
+            mWire = QSharedPointer<MetaWire>(new MetaWire);
+            mWire->name_ = wireName;
 
-        // The interconnection needs to be knowledgeable of the hierarchical interfaces connected to it.
-        mWire->hierPorts_ = foundHierPorts;
+            // Append to the pool of detected interconnections.
+            adHocWires_->append(mWire);
+
+            // The interconnection needs to be knowledgeable of the hierarchical interfaces connected to it.
+            mWire->hierPorts_ = foundHierPorts;
+        }
 
         // Go through each matching port.
         for (int i = 0; i < foundPorts.size(); ++i)
         {
             QSharedPointer<MetaPort> mPort = foundPorts[i];
-            QSharedPointer<PartSelect> ps = matchingPartSelects[i];
+
+            // Try to find a default value.
+            QString defaultValue;
+
+            if (connection->getTiedValue() == "open")
+            {
+                defaultValue = "";
+            }
+            else if (connection->getTiedValue() == "default")
+            {
+                defaultValue = mPort->defaultValue_;
+            }
+            else
+            {
+                defaultValue = connection->getTiedValue();
+            }
+
+            // No wire and default value means no assignment.
+            if (defaultValue.isEmpty() && !mWire)
+            {
+                continue;
+            }
 
             bool isHierarchical = foundHierPorts.contains(mPort);
 
@@ -533,31 +560,21 @@ void MetaDesign::parseAdHocs()
 
             // Associate the port assignments with the wire.
             mpa->wire_ = mWire;
+            // Assign the resolved default value.
+            mpa->defaultValue_ = defaultValue;
+
             // Map the port assignment to the port using the name of the wire.
             if (isHierarchical)
             {
-                mPort->downAssignments_.insert(mWire->name_, mpa);
+                mPort->downAssignments_.insert(wireName, mpa);
             }
             else
             {
-                mPort->upAssignments_.insert(mWire->name_, mpa);
-            }
-
-            // This is also the place for the tie-off.
-            if (connection->getTiedValue() == "open")
-            {
-                mpa->defaultValue_ = "";
-            }
-            else if (connection->getTiedValue() == "default")
-            {
-                mpa->defaultValue_ = mPort->defaultValue_;
-            }
-            else
-            {
-                mpa->defaultValue_ = connection->getTiedValue();
+                mPort->upAssignments_.insert(wireName, mpa);
             }
 
             // Assigning bounds.
+            QSharedPointer<PartSelect> ps = matchingPartSelects[i];
             if (ps && !ps->getLeftRange().isEmpty() && !ps->getRightRange().isEmpty())
             {
                 // If part select exists, it shall be used.
@@ -574,7 +591,10 @@ void MetaDesign::parseAdHocs()
             mpa->logicalBounds_ = mpa->physicalBounds_;
 
             // Also assign larger bounds for the wire, if applicable.
-            assignLargerBounds(mWire, mpa->logicalBounds_);
+            if (mWire)
+            {
+                assignLargerBounds(mWire, mpa->logicalBounds_);
+            }
         }
     }
 }
