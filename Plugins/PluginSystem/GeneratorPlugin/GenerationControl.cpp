@@ -13,12 +13,7 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <IPXACTmodels/Component/View.h>
-#include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/FileSet.h>
-
-#include <Plugins/common/HDLParser/MetaDesign.h>
-
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 

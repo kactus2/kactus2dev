@@ -13,15 +13,10 @@
 #define METACOMPONENT_H
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/View.h>
-#include <IPXACTmodels/Component/Port.h>
 
-#include <Plugins/common/PortSorter/PortSorter.h>
 #include <Plugins/common/HDLParser/HDLParserCommon.h>
 
-#include <QSharedPointer>
 #include <QTextStream>
-#include <QList>
 
 class ExpressionFormatter;
 
@@ -54,11 +49,9 @@ public:
     /*!
      *  Sorts list of parameters based on their interdependencies.
      *
-     *      @param [in] refParameters		    The list containing the parameters, to be used as a reference.
-     *      @param [out] sortParameters         The list containing the same parameters as in refParameters, that will be sorted.
+     *      @param [out] sortParameters         The list containing the parameters that will be sorted.
      */
-	static void sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
-        QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters);
+	static void sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters);
     
     /*!
      *  Returns the associated component.

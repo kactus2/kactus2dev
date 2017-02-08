@@ -255,7 +255,6 @@
     <ClInclude Include="..\common\HDLParser\MetaComponent.h" />
     <ClInclude Include="..\common\HDLParser\MetaDesign.h" />
     <ClInclude Include="..\common\HDLParser\MetaInstance.h" />
-    <ClInclude Include="..\common\NameGenerationPolicy.h" />
     <ClInclude Include="..\common\PortSorter\InterfaceDirectionNameSorter.h" />
     <ClInclude Include="..\common\PortSorter\PortSorter.h" />
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\GenerationControl.h" />

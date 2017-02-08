@@ -13,20 +13,11 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
-
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
-#include <IPXACTmodels/common/PortAlignment.h>
-
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
-#include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
-
-#include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/PortMap.h>
-#include <IPXACTmodels/Component/Model.h>
 
 #include <QQueue>
 
@@ -114,7 +105,8 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
          // Must not have too many.
          if (countOfSubDesigns >= MAXIMUM_SUBDESIGNS)
          {
-             input.messages->errorMessage(QObject::tr("Hit the limit: %1 DESIGNS IN ONE HIERARCHY!!!").arg(MAXIMUM_SUBDESIGNS));
+             input.messages->errorMessage(QObject::tr("Hit the limit: %1 DESIGNS IN ONE HIERARCHY!!!")
+                 .arg(MAXIMUM_SUBDESIGNS));
              return retval;
          }
 
@@ -267,11 +259,13 @@ void MetaDesign::parseInterconnections()
         foreach (QSharedPointer<ActiveInterface> connectionInterface, interfaces)
         {
             // The matching instance must exist.
-            QSharedPointer<MetaInstance> mInstance = instances_->value(connectionInterface->getComponentReference());
+            QSharedPointer<MetaInstance> mInstance = instances_->
+                value(connectionInterface->getComponentReference());
 
             if (!mInstance)
             {
-                messages_->errorMessage(QObject::tr("Design %1: Instance %2 referred by interconnection %3 does not exist.")
+                messages_->errorMessage(QObject::tr("Design %1: Instance %2 referred by interconnection %3"
+                    " does not exist.")
                     .arg(design_->getVlnv().toString(),
                     connectionInterface->getComponentReference(),
                     connection->name()));
@@ -279,11 +273,13 @@ void MetaDesign::parseInterconnections()
             }
 
             // The interface must be found within the interfaces recognized for the instance.
-            QSharedPointer<MetaInterface> mInterface = mInstance->getInterfaces()->value(connectionInterface->getBusReference());
+            QSharedPointer<MetaInterface> mInterface = mInstance->getInterfaces()->
+                value(connectionInterface->getBusReference());
 
             if (!mInterface)
             {
-                messages_->errorMessage(QObject::tr("Design %1: Bus interface %2 referred by interconnection %3 does not exist within component %4.")
+                messages_->errorMessage(QObject::tr("Design %1: Bus interface %2 referred by interconnection %3"
+                    " does not exist within component %4.")
                     .arg(design_->getVlnv().toString(),
                     connectionInterface->getBusReference(),
                     connection->name(),
@@ -301,11 +297,13 @@ void MetaDesign::parseInterconnections()
         foreach (QSharedPointer<HierInterface> connectionInterface, *connection->getHierInterfaces())
         {
             // The interface must be found within the interfaces recognized for the top instance.
-            QSharedPointer<MetaInterface> mInterface = topInstance_->getInterfaces()->value(connectionInterface->getBusReference());
+            QSharedPointer<MetaInterface> mInterface = topInstance_->getInterfaces()->
+                value(connectionInterface->getBusReference());
 
             if (!mInterface)
             {
-                messages_->errorMessage(QObject::tr("Design %1: Bus interface %2 referred by interconnection %3 does not exist within component %4.")
+                messages_->errorMessage(QObject::tr("Design %1: Bus interface %2 referred by interconnection %3"
+                    " does not exist within component %4.")
                     .arg(design_->getVlnv().toString(),
                     connectionInterface->getBusReference(),
                     connection->name(),
@@ -322,7 +320,8 @@ void MetaDesign::parseInterconnections()
         // If not enough interfaces are in the interconnect, drop it.
         if (foundInterInterfaces.size() + foundHierInterfaces.size() < 2)
         {
-            messages_->errorMessage(QObject::tr("Design %1: No bus interfaces were found for ad-hoc interconnection %2.")
+            messages_->errorMessage(QObject::tr("Design %1: No bus interfaces were found for ad-hoc"
+                " interconnection %2.")
                 .arg(design_->getVlnv().toString(),
                 connection->name()));
             continue;
@@ -465,7 +464,8 @@ void MetaDesign::parseAdHocs()
 
             if (!mPort)
             {
-                messages_->errorMessage(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3 does not exist within component %4.")
+                messages_->errorMessage(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3 does"
+                    " not exist within component %4.")
                     .arg(design_->getVlnv().toString(),
                     portRef->getPortRef(),
                     connection->name(),
@@ -486,7 +486,8 @@ void MetaDesign::parseAdHocs()
 
             if (!mPort)
             {
-                messages_->errorMessage(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3 does not exist within component %4.")
+                messages_->errorMessage(QObject::tr("Design %1: Port %2 referred by ad-hoc connection %3"
+                    " does not exist within component %4.")
                     .arg(design_->getVlnv().toString(),
                     portRef->getPortRef(),
                     connection->name(),

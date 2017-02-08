@@ -11,16 +11,15 @@
 
 #include "VerilogGeneratorPlugin.h"
 
+#include "VerilogWriterFactory/VerilogWriterFactory.h"
+
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
-#include <QFileDialog>
-
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::VerilogGeneratorPlugin()
 //-----------------------------------------------------------------------------
 VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0)

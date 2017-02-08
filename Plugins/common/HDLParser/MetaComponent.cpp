@@ -11,22 +11,11 @@
 
 #include "MetaComponent.h"
 
-#include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
-
-#include <IPXACTmodels/common/ModuleParameter.h>
-#include <IPXACTmodels/common/VLNV.h>
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/Port.h>
-#include <IPXACTmodels/Component/View.h>
-#include <IPXACTmodels/Component/ComponentInstantiation.h>
-
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 
-#include "editors/ComponentEditor/common/ComponentParameterFinder.h"
-#include "editors/ComponentEditor/common/ExpressionFormatter.h"
-#include <editors/ComponentEditor/common/ListParameterFinder.h>
+#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
 //-----------------------------------------------------------------------------
 // Function: MetaComponent::MetaComponent
@@ -74,9 +63,12 @@ MetaComponent::~MetaComponent()
 //-----------------------------------------------------------------------------
 // Function: MetaComponent::sortModuleParameters()
 //-----------------------------------------------------------------------------
-void MetaComponent::sortParameters(QList<QSharedPointer<Parameter> >& refParameters,
-    QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters )
+void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > sortParameters)
 {
+    // Create reference parameters.
+    QList<QSharedPointer<Parameter> > refParameters;
+    refParameters.append(*sortParameters.data());
+
     // Go through existing ones on the instance.
     for (QList<QSharedPointer<Parameter> >::Iterator parameterAdd =
         refParameters.begin(); parameterAdd != refParameters.end(); ++parameterAdd)
@@ -193,12 +185,8 @@ void MetaComponent::formatComponent()
 //-----------------------------------------------------------------------------
 void MetaComponent::formatParameters(QSharedPointer<ExpressionFormatter> formatter)
 {
-    // Create reference parameters.
-    QList<QSharedPointer<Parameter> > refParameters;
-    refParameters.append(*parameters_.data());
-
     // Sort the parameters.
-    sortParameters(refParameters, parameters_);
+    sortParameters(parameters_);
 
     // Format the parameters.
     foreach(QSharedPointer<Parameter> parameter, *parameters_)
@@ -248,7 +236,8 @@ void MetaComponent::parseRemapStates(QSharedPointer<ExpressionFormatter> formatt
         // Each port referred by the state must be listed.
         foreach(QSharedPointer<RemapPort> rmport, *currentState->getRemapPorts())
         {
-            QSharedPointer<QPair<QSharedPointer<Port>,QString> > parsedPort(new QPair<QSharedPointer<Port>,QString>);
+            QSharedPointer<QPair<QSharedPointer<Port>,QString> > parsedPort
+                (new QPair<QSharedPointer<Port>,QString>);
 
             // Pick the port name, and the value needed for it to remap state become effective.
             parsedPort->first = component_->getPort(rmport->getPortNameRef());
