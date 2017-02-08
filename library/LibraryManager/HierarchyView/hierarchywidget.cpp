@@ -59,20 +59,14 @@ void HierarchyWidget::setupConnections(HierarchyModel* dataModel)
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
     // connect the view to the tree model
-    connect(&view_, SIGNAL(openComponent(const QModelIndex&)),
-        dataModel, SLOT(onOpenComponent(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&view_, SIGNAL(openItem(const QModelIndex&)),
+        dataModel, SLOT(onOpenItem(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(openDesign(const QModelIndex&)), 
         dataModel, SLOT(onOpenDesign(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(openMemoryDesign(const QModelIndex&)), 
         dataModel, SLOT(onOpenMemoryDesign(const QModelIndex&)), Qt::UniqueConnection);
-
-    connect(&view_, SIGNAL(openSWDesign(const QModelIndex&)), 
-        dataModel, SLOT(onOpenSWDesign(const QModelIndex&)), Qt::UniqueConnection);
-
-    connect(&view_, SIGNAL(openSystemDesign(const QModelIndex&)), 
-        dataModel, SLOT(onOpenSystemDesign(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(createNewComponent(const QModelIndex&)),
         dataModel, SLOT(onCreateNewComponent(const QModelIndex&)), Qt::UniqueConnection);

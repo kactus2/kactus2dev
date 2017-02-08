@@ -64,9 +64,17 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
         }
     }
 
+    else if (itemType == HierarchyItem::CATALOG)
+    {
+        if (!type().catalogs_)
+        {
+            return false;
+        }
+    }
+
     else if (itemType == HierarchyItem::APIDEFINITION || itemType == HierarchyItem::COMDEFINITION)
     {
-        if (!type().buses_)
+        if (!type().apis_)
         {
             return false;
         }

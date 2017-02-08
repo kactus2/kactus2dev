@@ -51,22 +51,14 @@ public:
 
 public slots:
 
-	//! Open a hierarchical component
-	void onOpenDesign();
+	//! Open component editor
+	void onOpenItem();
 
-    //! Open a memory design of a hierarchical component
+    void onOpenDesign();
+
     void onOpenMemoryDesign();
 
-    //! Open the SW design of a component
-    void onOpenSWDesign();
-
-    //! Open the system design of a component.
-    void onOpenSystemDesign();
-
-	//! Open component editor
-	void onOpenComponent();
-
-	//! Create new component
+    //! Create new component
 	void onCreateComponent();
 
 	//! Create new design
@@ -91,23 +83,14 @@ public slots:
 	*/
 	virtual void setCurrentIndex(QModelIndex const& index);
 
-	//! Open bus in bus editor
-	void onOpenBus();
-
 	//! Create new abstraction definition for selected bus definition.
 	void onAddSignals();
 
 	//! Create new bus definition and abstraction definition.
 	void onCreateBus();
 
-    //! Open COM definition in editor
-    void onOpenComDef();
-
     //! Create new COM definition.
     void onCreateComDef();
-
-    //! Open API definition in editor
-    void onOpenApiDef();
 
     //! Create new API definition.
     void onCreateApiDef();
@@ -122,38 +105,32 @@ public slots:
     void onShowErrors();
 
 signals:
-	//! Open the selected hierarchical design
-	void openDesign(const QModelIndex& index);
-
-    //! Open the memory design of a hierarchical component
-    void openMemoryDesign(const QModelIndex& index);
-
-    //! Open the selected SW design
-    void openSWDesign(const QModelIndex& index);
-
-    //! Open the selected system design
-    void openSystemDesign(const QModelIndex& index);
 
 	//! Open the given object in the component editor
-	void openComponent(const QModelIndex& index);
+	void openItem(QModelIndex const& index);
+    
+    //! Open the given object in the component editor
+    void openDesign(QModelIndex const& index);
+
+    void openMemoryDesign(QModelIndex const& index);
 
 	//! Create new component
-	void createNewComponent(const QModelIndex& index);
+	void createNewComponent(QModelIndex const& index);
 
 	//! create new bus
-	void createNewBus(const QModelIndex& index);
+	void createNewBus(QModelIndex const& index);
 
 	//! Create new abstraction definition for given bus definition.
-	void createNewAbsDef(const QModelIndex& index);
+	void createNewAbsDef(QModelIndex const& index);
 
     //! create new COM definition
-    void createNewComDef(const QModelIndex& index);
+    void createNewComDef(QModelIndex const& index);
 
     //! create new API definition
-    void createNewApiDef(const QModelIndex& index);
+    void createNewApiDef(QModelIndex const& index);
 
 	//! Create new design
-	void createNewDesign(const QModelIndex& index);
+	void createNewDesign(QModelIndex const& index);
 
     //! Create new SW design.
     void createNewSWDesign(QModelIndex const& index);
@@ -165,7 +142,7 @@ signals:
     void deleteItem(QModelIndex const& index);
 
 	//! Export the selected item and it's sub-items.
-	void exportItem(const QModelIndex& index);
+	void exportItem(QModelIndex const& index);
 
     //! Shows errors about the selected item.
     void showErrors(QModelIndex const& index);
@@ -174,7 +151,7 @@ signals:
 	void componentSelected(const VLNV& vlnv);
 
 	//! A drag operation has been initiated.
-	void dragInitiated(const QModelIndex& index);
+	void dragInitiated(QModelIndex const& index);
 
 	//! Send error message to user.
 	void errorMessage(const QString& message);
@@ -244,6 +221,9 @@ private:
 	//! Open the component editor
 	QAction* openComponentAction_;
 
+    //! Open the catalog editor.
+    QAction* openCatalogAction_;
+    
 	//! Create a new empty object, only copy the vlnv structure.
 	QAction* createNewComponentAction_;
 

@@ -177,16 +177,10 @@ public slots:
     //! Open the memory design of the selected design.
     void onOpenMemoryDesign(QModelIndex const& index);
 
-    //! Open the selected SW design
-    void onOpenSWDesign(QModelIndex const& index);
+   //! Open the selected component.
+	void onOpenItem(QModelIndex const& index);
 
-    //! Open the selected system design
-    void onOpenSystemDesign(QModelIndex const& index);
-
-	//! When open is selected in search view
-	void onOpenComponent(QModelIndex const& index);
-
-	//! Create new component
+    //! Create new component
 	void onCreateNewComponent(QModelIndex const& index);
 
 	//! Create new design
