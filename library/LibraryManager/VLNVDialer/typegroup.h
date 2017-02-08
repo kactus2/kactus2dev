@@ -62,7 +62,13 @@ private slots:
 	//! Handler for busApiBox state changes.
     void onBusChange(bool checked);
 
-	//! Handler for advancedBox state changes.
+    //! Handler for catalog state changes.
+    void onCatalogChange(bool checked);
+
+    //! Handler for Api/Com state changes.
+    void onApiComChange(bool checked);
+
+    //! Handler for advancedBox state changes.
     void onAdvancedChange(bool checked);
 
 private:
@@ -76,7 +82,13 @@ private:
 	QCheckBox componentBox_;
 
 	//! Check box to select buses/APIs in/out of search results.
-	QCheckBox busApiComBox_;
+	QCheckBox busBox_;
+
+    //! Check box to select buses/APIs in/out of search results.
+    QCheckBox catalogBox_;
+
+    //! Check box to select buses/APIs in/out of search results.
+    QCheckBox apiComBox_;
 
 	//! Check box to select other IP-Xact types in/out of search results.
 	QCheckBox advancedBox_;

@@ -15,6 +15,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/Catalog/IpxactFile.h>
+
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
@@ -31,6 +33,7 @@ QObject(parent),
     comDef_(),
     apiDef_(),
     design_(),
+    catalog_(),
     library_(handler),
     childItems_(),
     parentItem_(parent),
@@ -54,6 +57,10 @@ QObject(parent),
     if (documentType == VLNV::COMPONENT)
     {
         parseComponent(vlnv);
+    }
+    else if (documentType == VLNV::CATALOG)
+    {
+        parseCatalog(vlnv);
     }
     else if (documentType == VLNV::BUSDEFINITION)
     {
@@ -93,6 +100,7 @@ QObject(parent),
     comDef_(),
     apiDef_(),
     design_(),
+    catalog_(),
     library_(handler),
     childItems_(),
     parentItem_(NULL),
@@ -116,15 +124,8 @@ HierarchyItem::~HierarchyItem()
 //-----------------------------------------------------------------------------
 void HierarchyItem::createChild(VLNV const& vlnv)
 {
-	if (hasChild(vlnv))
+	if (hasChild(vlnv) || !library_->contains(vlnv))
     {
-		return;
-	}
-
-	// if the child does not exist in library
-	if (!library_->contains(vlnv))
-    {
-		//emit errorMessage(tr("The vlnv %1 was not found in the library.").arg(vlnv.toString()));
 		return;
 	}
 
@@ -148,6 +149,10 @@ VLNV HierarchyItem::getVLNV() const
     {
 		return component_->getVlnv();
 	}
+    if (type_ == HierarchyItem::CATALOG && catalog_)
+    {
+        return catalog_->getVlnv();
+    }
 	else if (type_ == HierarchyItem::BUSDEFINITION && busDef_)
     {
 		return busDef_->getVlnv();
@@ -247,6 +252,11 @@ bool HierarchyItem::contains(VLNV const& vlnv) const
 	if (component_ && component_->getVlnv() == vlnv)
     {
 		return true;
+    }
+
+    else if (catalog_ && catalog_->getVlnv() == vlnv)
+    {
+        return true;
     }
 
 	else if (busDef_ && busDef_->getVlnv() == vlnv)
@@ -511,8 +521,6 @@ QVector<VLNV> HierarchyItem::getVLNVs() const
 	if (parentItem_)
     {
 		list.append(getVLNV());
-
-		// append parent item's list of vlnvs
 		list += parentItem_->getVLNVs();
 	}
 
@@ -665,8 +673,43 @@ void HierarchyItem::parseComponent(VLNV const& vlnv)
         if (view->isHierarchical())
         {
             VLNV designVLNV = findDesignReference(view);
-            createChildItemForDesign(designVLNV, KactusAttribute::HW, view->name());
+            createChildItemForDesign(designVLNV, view->name());
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HierarchyItem::parseCatalog()
+//-----------------------------------------------------------------------------
+void HierarchyItem::parseCatalog(VLNV const& vlnv)
+{
+    type_ = HierarchyItem::CATALOG;
+    catalog_ = library_->getModelReadOnly(vlnv).staticCast<Catalog const>();
+    Q_ASSERT(catalog_);
+
+    isValid_ = library_->isValid(vlnv);
+
+    foreach (QSharedPointer<IpxactFile> catalogFile, *catalog_->getCatalogs())
+    {
+        if (!hasParent(catalogFile->getVlnv())) //<! Avoid cyclic instantiations.
+        {
+             createChild(catalogFile->getVlnv());
+        }       
+    }
+
+    foreach (QSharedPointer<IpxactFile> busFile, *catalog_->getBusDefinitions())
+    {
+        createChild(busFile->getVlnv());   
+    }
+
+    foreach (QSharedPointer<IpxactFile> abstractionFile, *catalog_->getAbstractionDefinitions())
+    {
+        createChild(abstractionFile->getVlnv()); 
+    }
+
+    foreach (QSharedPointer<IpxactFile> componentFile, *catalog_->getComponents())
+    {
+        createChild(componentFile->getVlnv());
     }
 }
 
@@ -725,8 +768,7 @@ VLNV HierarchyItem::findDesignReference(QSharedPointer<View> view)
 //-----------------------------------------------------------------------------
 // Function: HierarchyItem::createChildItemForDesign()
 //-----------------------------------------------------------------------------
-void HierarchyItem::createChildItemForDesign(VLNV const& designVLNV, 
-    KactusAttribute::Implementation implementation, QString const& viewName)
+void HierarchyItem::createChildItemForDesign(VLNV const& designVLNV, QString const& viewName)
 {
     if (!designVLNV.isEmpty())
     {
@@ -742,6 +784,7 @@ void HierarchyItem::createChildItemForDesign(VLNV const& designVLNV,
         }
         else if (!hasChild(designVLNV)) 
         {
+            KactusAttribute::Implementation implementation = library_->getModelReadOnly(designVLNV)->getImplementation();
             HierarchyItem* designItem = new HierarchyItem(library_, this, designVLNV, implementation, viewName);
 
             connect(designItem, SIGNAL(errorMessage(QString const&)),

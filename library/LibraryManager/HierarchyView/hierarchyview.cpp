@@ -57,6 +57,7 @@ QTreeView(parent),
     openMemoryDesignAction_(new QAction(tr("Open Memory Design"), this)),
     openSWDesignAction_(new QAction(tr("Open SW Design"), this)),
     openComponentAction_(new QAction(tr("Open Component"), this)),
+    openCatalogAction_(new QAction(tr("Open Catalog"), this)),
     createNewComponentAction_(new QAction(tr("New HW Component"), this)),
     createNewDesignAction_(new QAction(tr("New HW Design..."), this)),
     createNewSWDesignAction_(new QAction(tr("New SW Design..."), this)),
@@ -116,11 +117,15 @@ void HierarchyView::setupActions()
 
     openSWDesignAction_->setStatusTip(tr("Open a SW design"));
     openSWDesignAction_->setToolTip(tr("Open a SW design"));
-    connect(openSWDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenSWDesign()), Qt::UniqueConnection);
+    connect(openSWDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenDesign()), Qt::UniqueConnection);
 
 	openComponentAction_->setStatusTip(tr("Open component editor"));
 	openComponentAction_->setToolTip(tr("Open component editor"));
-	connect(openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponent()), Qt::UniqueConnection);
+	connect(openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenItem()), Qt::UniqueConnection);
+
+    openCatalogAction_->setStatusTip(tr("Open catalog editor"));
+    openCatalogAction_->setToolTip(tr("Open catalog editor"));
+    connect(openCatalogAction_, SIGNAL(triggered()), this, SLOT(onOpenItem()), Qt::UniqueConnection);
 
 	createNewComponentAction_->setStatusTip(tr("Create new HW component"));
 	createNewComponentAction_->setToolTip(tr("Create new HW component"));
@@ -153,7 +158,7 @@ void HierarchyView::setupActions()
 
 	openBusAction_->setStatusTip(tr("Open the bus in bus editor"));
 	openBusAction_->setToolTip(tr("Open the bus in bus editor"));
-	connect(openBusAction_, SIGNAL(triggered()), this, SLOT(onOpenBus()), Qt::UniqueConnection);
+	connect(openBusAction_, SIGNAL(triggered()), this, SLOT(onOpenItem()), Qt::UniqueConnection);
 
 	addSignalsAction_->setStatusTip(tr("Create new abstraction definition for the bus"));
 	addSignalsAction_->setToolTip(tr("Create new abstraction definition for the bus"));
@@ -161,15 +166,15 @@ void HierarchyView::setupActions()
 
     openComDefAction_->setStatusTip(tr("Open the COM definition in an editor"));
     openComDefAction_->setToolTip(tr("Open the COM definition in an editor"));
-    connect(openComDefAction_, SIGNAL(triggered()), this, SLOT(onOpenComDef()), Qt::UniqueConnection);
+    connect(openComDefAction_, SIGNAL(triggered()), this, SLOT(onOpenItem()), Qt::UniqueConnection);
 
     openApiDefAction_->setStatusTip(tr("Open the API definition in an editor"));
     openApiDefAction_->setToolTip(tr("Open the API definition in an editor"));
-    connect(openApiDefAction_, SIGNAL(triggered()), this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
+    connect(openApiDefAction_, SIGNAL(triggered()), this, SLOT(onOpenItem()), Qt::UniqueConnection);
 
 	openSystemAction_->setStatusTip(tr("Open system design for editing"));
 	openSystemAction_->setToolTip(tr("Open system design for editing"));
-	connect(openSystemAction_, SIGNAL(triggered()), this, SLOT(onOpenSystemDesign()), Qt::UniqueConnection);
+	connect(openSystemAction_, SIGNAL(triggered()), this, SLOT(onOpenDesign()), Qt::UniqueConnection);
 
 	connect(openXmlAction_, SIGNAL(triggered()), this, SLOT(onOpenXml()), Qt::UniqueConnection);
 
@@ -178,47 +183,14 @@ void HierarchyView::setupActions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyView::onOpenComponent()
+// Function: HierarchyView::onOpenItem()
 //-----------------------------------------------------------------------------
-void HierarchyView::onOpenComponent()
+void HierarchyView::onOpenItem()
 {
 	foreach (QModelIndex const& index, selectedIndexes())
     {
-		emit openComponent(filter_->mapToSource(index));
+		emit openItem(filter_->mapToSource(index));
 	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyView::onOpenBus()
-//-----------------------------------------------------------------------------
-void HierarchyView::onOpenBus()
-{
-	foreach (QModelIndex const& index, selectedIndexes())
-    {
-		emit openComponent(filter_->mapToSource(index));
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyView::onOpenComDef()
-//-----------------------------------------------------------------------------
-void HierarchyView::onOpenComDef()
-{
-    foreach (QModelIndex const& index, selectedIndexes())
-    {
-        emit openComponent(filter_->mapToSource(index));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyView::onOpenApiDef()
-//-----------------------------------------------------------------------------
-void HierarchyView::onOpenApiDef()
-{
-    foreach (QModelIndex const& index, selectedIndexes())
-    {
-        emit openComponent(filter_->mapToSource(index));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -226,10 +198,10 @@ void HierarchyView::onOpenApiDef()
 //-----------------------------------------------------------------------------
 void HierarchyView::onOpenDesign()
 {
-	foreach (QModelIndex const& index, selectedIndexes())
+    foreach (QModelIndex const& index, selectedIndexes())
     {
-		emit openDesign(filter_->mapToSource(index));
-	}
+        emit openDesign(filter_->mapToSource(index));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -240,28 +212,6 @@ void HierarchyView::onOpenMemoryDesign()
     foreach (QModelIndex const& index, selectedIndexes())
     {
         emit openMemoryDesign(filter_->mapToSource(index));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyView::onOpenSWDesign()
-//-----------------------------------------------------------------------------
-void HierarchyView::onOpenSWDesign()
-{
-    foreach (QModelIndex const& index, selectedIndexes())
-    {
-        emit openSWDesign(filter_->mapToSource(index));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyView::onOpenSystemDesign()
-//-----------------------------------------------------------------------------
-void HierarchyView::onOpenSystemDesign()
-{
-    foreach (QModelIndex const& index, selectedIndexes())
-    {
-        emit openSystemDesign(filter_->mapToSource(index));
     }
 }
 
@@ -464,6 +414,10 @@ void HierarchyView::contextMenuEvent(QContextMenuEvent* event)
                 }
             }
 		}
+        else if (item->type() == HierarchyItem::CATALOG)
+        {
+            menu.addAction(openCatalogAction_);
+        }
 		else if (item->type() == HierarchyItem::BUSDEFINITION)
         {
             menu.addAction(openBusAction_);
@@ -536,21 +490,15 @@ void HierarchyView::mouseDoubleClickEvent(QMouseEvent* event)
 	if (sourceIndex.isValid())
     {
         HierarchyItem* item = static_cast<HierarchyItem*>(sourceIndex.internalPointer());
-        if (item->type() == HierarchyItem::HW_DESIGN)
+        if (item->type() == HierarchyItem::HW_DESIGN ||
+            item->type() == HierarchyItem::SW_DESIGN ||
+            item->type() == HierarchyItem::SYS_DESIGN)
         {
             emit openDesign(sourceIndex);
         }
-        else if (item->type() == HierarchyItem::SW_DESIGN)
-        {
-            emit openSWDesign(sourceIndex);
-        }
-        else if (item->type() == HierarchyItem::SYS_DESIGN)
-        {
-            emit openSystemDesign(sourceIndex);
-        }
         else
         {
-            emit openComponent(sourceIndex);		
+            emit openItem(sourceIndex);		
         }
 
 		// select the object even if the instance column was clicked

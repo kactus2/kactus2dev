@@ -12,6 +12,7 @@
 #ifndef HIERARCHYITEM_H
 #define HIERARCHYITEM_H
 
+#include <IPXACTmodels/Catalog/Catalog.h>
 #include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
@@ -49,7 +50,8 @@ public:
         APIDEFINITION,
 		HW_DESIGN,
 		SW_DESIGN,
-		SYS_DESIGN
+		SYS_DESIGN,
+        CATALOG
 	};
 
 	/*! The constructor
@@ -355,6 +357,8 @@ private:
 	*/
 	void parseComponent(const VLNV& vlnv);
 
+    void parseCatalog(VLNV const& vlnv);
+
     /*!
      *  Finds the referenced design in a component view.
      *
@@ -371,7 +375,7 @@ private:
      *      @param [in] implementation      The implementation type of the design.
      *      @param [in] viewName            The name of the view referencing the design.
      */
-    void createChildItemForDesign(VLNV const& designVLNV, KactusAttribute::Implementation implementation,
+    void createChildItemForDesign(VLNV const& designVLNV,
         QString const& viewName);
 
 	/*! Parse this hierarchy item to match a bus definition.
@@ -445,6 +449,9 @@ private:
 
 	//! The design that this hierarchyItem represents.
 	QSharedPointer<Design const> design_;
+
+    //! The catalog that this hierarhcyItem represents.
+    QSharedPointer<Catalog const> catalog_;
 
 	//! The object that manages the library.
 	LibraryInterface* library_;

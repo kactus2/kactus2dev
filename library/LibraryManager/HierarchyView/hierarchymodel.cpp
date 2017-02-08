@@ -81,6 +81,7 @@ void HierarchyModel::onResetModel()
             VLNV::IPXactType documentType = handler_->getDocumentType(itemVlnv);
 
             if (documentType == VLNV::COMPONENT || documentType == VLNV::BUSDEFINITION ||
+                documentType == VLNV::CATALOG ||
                 documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION) 
             {
                 rootItem_->createChild(itemVlnv);
@@ -357,6 +358,10 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
                 }		
             }
         }
+        else if (item->type() == HierarchyItem::CATALOG)
+        {
+            return QIcon(":/icons/common/graphics/catalog.png");
+        }
         else if (item->type() == HierarchyItem::COMDEFINITION)
         {
             return QIcon(":/icons/common/graphics/new-com_definition.png");
@@ -446,7 +451,7 @@ void HierarchyModel::onOpenDesign(QModelIndex const& index)
 	}
 
 	// item must always be design
-	Q_ASSERT(item->type() == HierarchyItem::HW_DESIGN);	
+	Q_ASSERT(item->type() == HierarchyItem::HW_DESIGN || item->type() == HierarchyItem::SW_DESIGN);	
 
 	// find the containing component
 	HierarchyItem* parent = item->parent();
@@ -461,9 +466,22 @@ void HierarchyModel::onOpenDesign(QModelIndex const& index)
 
 	// find the vlnv of the component
 	VLNV componentVLNV = parent->getVLNV();
-	Q_ASSERT(componentVLNV.getType() == handler_->getDocumentType(componentVLNV));
+    Q_ASSERT(componentVLNV.getType() == handler_->getDocumentType(componentVLNV));
 
-	emit openDesign(componentVLNV, item->getViewName());
+    if (item->type() == HierarchyItem::HW_DESIGN)
+    {
+        emit openDesign(componentVLNV, item->getViewName());
+    }
+
+    else if (item->type() == HierarchyItem::SW_DESIGN)
+    {
+        emit openSWDesign(componentVLNV, item->getViewName());
+    }
+
+    else if (item->type() == HierarchyItem::SYS_DESIGN)
+    {
+        emit openSystemDesign(componentVLNV, item->getViewName());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -503,81 +521,9 @@ void HierarchyModel::onOpenMemoryDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onOpenSWDesign()
+// Function: HierarchyModel::onOpenItem()
 //-----------------------------------------------------------------------------
-void HierarchyModel::onOpenSWDesign(QModelIndex const& index)
-{
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
-	if (!item)
-    {
-		return;
-	}
-
-	// item must always be design
-	Q_ASSERT(item->type() == HierarchyItem::SW_DESIGN);
-
-	// find the containing component
-	HierarchyItem* parent = item->parent();
-	// if the design has no parent or the parent is the root item (which is not component)
-	if (!parent || parent == rootItem_)
-    {
-		emit errorMessage(tr("Design did not have containing component and could not be opened."));
-		return;
-	}
-	Q_ASSERT(parent->type() == HierarchyItem::COMPONENT);
-
-	// find the vlnv of the component
-	VLNV componentVLNV = parent->getVLNV();
-	Q_ASSERT(componentVLNV.getType() == handler_->getDocumentType(componentVLNV));
-
-	emit openSWDesign(componentVLNV, item->getViewName());
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyModel::onOpenSystemDesign()
-//-----------------------------------------------------------------------------
-void HierarchyModel::onOpenSystemDesign(QModelIndex const& index)
-{
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
-	if (!item)
-    {
-		return;
-	}
-
-	// item must always be design
-	Q_ASSERT(item->type() == HierarchyItem::SYS_DESIGN);
-
-	// find the containing component
-	HierarchyItem* parent = item->parent();
-	// if the design has no parent or the parent is the root item (which is not component)
-	if (!parent || parent == rootItem_)
-    {
-		emit errorMessage(tr("Design did not have containing component and could not be opened."));
-		return;
-	}
-	Q_ASSERT(parent->type() == HierarchyItem::COMPONENT);
-
-	// find the vlnv of the component
-	VLNV componentVLNV = parent->getVLNV();
-	Q_ASSERT(componentVLNV.getType() == handler_->getDocumentType(componentVLNV));
-
-	emit openSystemDesign(componentVLNV, item->getViewName());
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyModel::onOpenComponent()
-//-----------------------------------------------------------------------------
-void HierarchyModel::onOpenComponent(QModelIndex const& index)
+void HierarchyModel::onOpenItem(QModelIndex const& index)
 {
 	if (!index.isValid())
     {
@@ -586,10 +532,10 @@ void HierarchyModel::onOpenComponent(QModelIndex const& index)
 
 	HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
 
-	VLNV componentVLNV = item->getVLNV();
-	if (componentVLNV.isValid())
+	VLNV vlnv = item->getVLNV();
+	if (vlnv.isValid())
     {
-		emit editItem(componentVLNV);
+		emit editItem(vlnv);
     }
 }
 

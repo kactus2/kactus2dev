@@ -79,6 +79,14 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
                 }
             }
 
+            else if (documentType == VLNV::CATALOG)
+            {
+                if (type().catalogs_)
+                {
+                    return true;
+                }
+            }
+
             else if (documentType == VLNV::ABSTRACTIONDEFINITION)
             {
                 if (type().buses_ && implementation().hw_) 
@@ -97,7 +105,7 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
 
             else if (documentType == VLNV::COMDEFINITION || documentType == VLNV::APIDEFINITION)
             {
-                if (type().buses_)
+                if (type().apis_)
                 {
                     return true;
                 }

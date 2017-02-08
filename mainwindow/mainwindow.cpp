@@ -403,6 +403,8 @@ void MainWindow::createNewWorkspace(QString workspaceName)
 	settings.beginGroup("Type");
 	settings.setValue("ShowComponents", filters.type.components_);
 	settings.setValue("ShowBuses", filters.type.buses_);
+    settings.setValue("ShowCatalogs", filters.type.catalogs_);
+    settings.setValue("ShowApis", filters.type.apis_);
 	settings.setValue("ShowAdvanced", filters.type.advanced_);
 	settings.endGroup();
 	settings.beginGroup("Implementation");
@@ -582,6 +584,8 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
     settings.beginGroup("Type");
     filters.type.components_ = settings.value("ShowComponents", true).toBool();
     filters.type.buses_ = settings.value("ShowBuses", true).toBool();
+    filters.type.catalogs_ = settings.value("ShowCatalogs", true).toBool();
+    filters.type.apis_ = settings.value("ShowApis", true).toBool();
     filters.type.advanced_ = settings.value("ShowAdvanced", false).toBool();
     settings.endGroup();
     settings.beginGroup("Implementation");
@@ -642,6 +646,8 @@ void MainWindow::saveWorkspace(QString const& workspaceName)
     settings.beginGroup("Type");
     settings.setValue("ShowComponents", filters.type.components_);
     settings.setValue("ShowBuses", filters.type.buses_);
+    settings.setValue("ShowCatalogs", filters.type.catalogs_);
+    settings.setValue("ShowApis", filters.type.apis_);
     settings.setValue("ShowAdvanced", filters.type.advanced_);
     settings.endGroup();
     settings.beginGroup("Implementation");
