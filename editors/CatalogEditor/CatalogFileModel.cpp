@@ -538,7 +538,7 @@ void CatalogFileModel::addFile(QSharedPointer<IpxactFile> fileToAdd)
     if (vlnv.isEmpty() || !contains(vlnv))
     {
         int category = 0;
-        for (category = 0; category < CatalogFileColumns::CATEGORY_COUNT; category++)
+        for (category = 0; category < CatalogFileColumns::UNKNOWN; category++)
         {
             if (vlnv.getType() == CatalogFileColumns::CATEGORY_TYPES[category])
             {
