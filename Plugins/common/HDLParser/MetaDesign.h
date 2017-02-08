@@ -12,13 +12,10 @@
 #ifndef METADESIGN_H
 #define METADESIGN_H
 
-#include "HDLParserCommon.h"
 #include "MetaInstance.h"
 
 class Design;
 class DesignConfiguration;
-class LibraryInterface;
-class ListParameterFinder;
 
 //-----------------------------------------------------------------------------
 // An instantiated design with all its parameters, instances, and interconnections parsed.

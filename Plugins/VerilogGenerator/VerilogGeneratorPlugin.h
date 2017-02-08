@@ -13,29 +13,12 @@
 #define VERILOGGENERATORPLUGIN_H
 
 #include "veriloggeneratorplugin_global.h"
-#include "VerilogWriterFactory/VerilogWriterFactory.h"
 
-#include <Plugins/PluginSystem/IPlugin.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 
-#include <IPXACTmodels/common/VLNV.h>
-
-#include <QObject>
-#include <QSharedPointer>
-#include <QtPlugin>
-
-class Component;
-class ViewSelection;
-class Document;
-class View;
-class ComponentInstantiation;
-class FileSet;
-class Design;
-class DesignConfiguration;
-
 //-----------------------------------------------------------------------------
-//! Plugin for structural verilog generation.
+//! Plugin for structural Verilog generation.
 //-----------------------------------------------------------------------------
 class VERILOGGENERATORPLUGIN_EXPORT VerilogGeneratorPlugin : public QObject, public IGeneratorPlugin
 {

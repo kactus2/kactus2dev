@@ -12,8 +12,6 @@
 #ifndef METAINSTANCE_H
 #define METAINSTANCE_H
 
-
-#include <Plugins/common/HDLParser/HDLParserCommon.h>
 #include <Plugins/common/HDLParser/MetaComponent.h>
 
 #include <editors/ComponentEditor/common/ListParameterFinder.h>

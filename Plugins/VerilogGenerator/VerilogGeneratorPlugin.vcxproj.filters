@@ -336,9 +336,6 @@
     <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\NameGenerationPolicy.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>

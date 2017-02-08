@@ -12,14 +12,12 @@
 #ifndef GENERATIONCONTROL_H
 #define GENERATIONCONTROL_H
 
-#include <QString>
-#include <QMap>
-#include <QSharedPointer>
-
 #include "ViewSelection.h"
 #include "FileOutput.h"
+
 #include <Plugins/PluginSystem/GeneratorPlugin/IWriterFactory.h>
-#include <library/LibraryManager/libraryinterface.h>
+
+class LibraryInterface;
 
 struct GenerationSettings
 {

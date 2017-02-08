@@ -7,20 +7,9 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../PluginSystem/GeneratorPlugin/GenerationControl.h \
-    ../common/HDLParser/HDLComponentParser.h \
-    ../common/HDLParser/HDLParserCommon.h \
-    ../common/HDLParser/MetaDesign.h \
-    ../common/HDLParser/MetaInstance.h \
-    ./VerilogWriterFactory/VerilogDocument.h \
-    ../PluginSystem/GeneratorPlugin/ViewSelection.h \
-    ../VerilogImport/VerilogSyntax.h \
-    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
-    ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
-    ../PluginSystem/GeneratorPlugin/FileOutput.h \
+HEADERS += ../VerilogImport/VerilogSyntax.h \
     ./VerilogGeneratorPlugin.h \
     ../../editors/ComponentEditor/common/MultipleParameterFinder.h \
-    ../common/NameGenerationPolicy.h \
     ./common/Writer.h \
     ./common/WriterGroup.h \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
@@ -44,19 +33,22 @@ HEADERS += ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ./TextBodyWriter/TextBodyWriter.h \
     ./VerilogInterconnectionWriter/VerilogInterconnectionWriter.h \
     ../PluginSystem/GeneratorPlugin/IWriterFactory.h \
+    ./VerilogWriterFactory/VerilogDocument.h \
     ./VerilogWriterFactory/VerilogWriterFactory.h \
     ./VerilogAssignmentWriter/VerilogAssignmentWriter.h \
+    ../PluginSystem/GeneratorPlugin/GenerationControl.h \
+    ../PluginSystem/GeneratorPlugin/ViewSelection.h \
     ../PluginSystem/GeneratorPlugin/MessagePasser.h \
+    ../PluginSystem/GeneratorPlugin/FileOutput.h \
+    ../../mainwindow/MessageConsole/messageconsole.h \
     ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.h \
-    ../../mainwindow/MessageConsole/messageconsole.h
-SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
-    ../common/HDLParser/MetaDesign.cpp \
-    ../common/HDLParser/MetaInstance.cpp \
-    ../PluginSystem/GeneratorPlugin/FileOutput.cpp \
-    ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
-    ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
-    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
-    ../VerilogImport/VerilogSyntax.cpp \
+    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
+    ../PluginSystem/GeneratorPlugin/FileOutputWidget.h \
+    ../common/HDLParser/HDLParserCommon.h \
+    ../common/HDLParser/MetaComponent.h \
+    ../common/HDLParser/MetaDesign.h \
+    ../common/HDLParser/MetaInstance.h
+SOURCES += ../VerilogImport/VerilogSyntax.cpp \
     ./VerilogGeneratorPlugin.cpp \
     ./ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ./ComponentVerilogWriter/ComponentVerilogWriter.cpp \
@@ -81,8 +73,15 @@ SOURCES += ../common/HDLParser/HDLComponentParser.cpp \
     ./VerilogWriterFactory/VerilogDocument.cpp \
     ./VerilogWriterFactory/VerilogWriterFactory.cpp \
     ./VerilogAssignmentWriter/VerilogAssignmentWriter.cpp \
+    ../PluginSystem/GeneratorPlugin/FileOutput.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
-    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.cpp \
     ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
-    ../../mainwindow/MessageConsole/messageconsole.cpp
+    ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \
+    ../../mainwindow/MessageConsole/messageconsole.cpp \
+    ../PluginSystem/GeneratorPlugin/FileOutputWidget.cpp \
+    ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.cpp \
+    ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.cpp \
+    ../common/HDLParser/MetaComponent.cpp \
+    ../common/HDLParser/MetaDesign.cpp \
+    ../common/HDLParser/MetaInstance.cpp
 RESOURCES += VerilogGenerator.qrc

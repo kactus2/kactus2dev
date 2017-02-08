@@ -12,23 +12,10 @@
 #ifndef VERILOGWRITERFACTORY_H
 #define VERILOGWRITERFACTORY_H
 
-#include "../veriloggeneratorplugin_global.h"
-
 #include "VerilogDocument.h"
 
-#include <QTextStream>
 #include <Plugins/PluginSystem/GeneratorPlugin/IWriterFactory.h>
 
-class ComponentVerilogWriter;
-class ComponentInstanceVerilogWriter;
-class VerilogAssignmentWriter;
-class LibraryInterface;
-class PortSorter;
-class VerilogHeaderWriter;
-class VerilogWireWriter;
-class CommentWriter;
-class Writer;
-class WriterGroup;
 class GenerationSettings;
 
 //-----------------------------------------------------------------------------

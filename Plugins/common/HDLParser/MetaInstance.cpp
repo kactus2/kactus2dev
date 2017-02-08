@@ -13,14 +13,12 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include "editors/ComponentEditor/common/ComponentParameterFinder.h"
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include "editors/ComponentEditor/common/ExpressionFormatter.h"
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
 //-----------------------------------------------------------------------------
@@ -128,7 +126,8 @@ void MetaInstance::cullInterfaces()
 
         if (!absType)
         {
-            messages_->errorMessage(QObject::tr("Component %1: Bus interface %2 does not have an abstraction type!")
+            messages_->errorMessage(QObject::tr
+                ("Component %1: Bus interface %2 does not have an abstraction type!")
                 .arg(getComponent()->getVlnv().toString(),
                 busInterface->name()));
             continue;
@@ -139,7 +138,8 @@ void MetaInstance::cullInterfaces()
 
         if (!absRef)
         {
-            messages_->errorMessage(QObject::tr("Component %1: Abstraction type of bus interface %2 does not have abstraction reference!")
+            messages_->errorMessage(QObject::tr
+                ("Component %1: Abstraction type of bus interface %2 does not have abstraction reference!")
                 .arg(getComponent()->getVlnv().toString(),
                 busInterface->name()));
             continue;
@@ -151,7 +151,8 @@ void MetaInstance::cullInterfaces()
 
         if (!absDef)
         {
-            messages_->errorMessage(QObject::tr("Component %1: Abstraction definition for bus interface %2 was not found: %3")
+            messages_->errorMessage(QObject::tr
+                ("Component %1: Abstraction definition for bus interface %2 was not found: %3")
                 .arg(getComponent()->getVlnv().toString(),
                 busInterface->name(),
                 absRef->toString()));
@@ -205,11 +206,13 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
                 if (pMap->getPhysicalPort()->name_ == cport->name())
                 {
                     // The port mapping must have a corresponding port abstraction in the abstraction definition!
-                    QSharedPointer<PortAbstraction> portAbstraction = mInterface->absDef_->getPort(pMap->getLogicalPort()->name_);
+                    QSharedPointer<PortAbstraction> portAbstraction = mInterface->absDef_->
+                        getPort(pMap->getLogicalPort()->name_);
 
                     if (!portAbstraction)
                     {
-                        messages_->errorMessage(QObject::tr("Component %1, Bus interface %2: Port abstraction was not found for logical port %3 at abstraction definition %4.")
+                        messages_->errorMessage(QObject::tr("Component %1, Bus interface %2: Port abstraction"
+                            " was not found for logical port %3 at abstraction definition %4.")
                             .arg(getComponent()->getVlnv().toString(),
                             mInterface->interface_->name(),
                             pMap->getLogicalPort()->name_,
@@ -251,8 +254,10 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
                     mUpPortAssignment->logicalBounds_ = logicalBounds;
                     mUpPortAssignment->physicalBounds_ = physicalBounds;
 
-                    // Create a copy of the assignments, so that there is an assignment going to both directions in hierarchy.
-                    QSharedPointer<MetaPortAssignment> mDownPortAssignment(new MetaPortAssignment(*mUpPortAssignment.data()));
+                    // Create a copy of the assignments.
+                    QSharedPointer<MetaPortAssignment> mDownPortAssignment
+                        (new MetaPortAssignment(*mUpPortAssignment.data()));
+                    // There must be an assignment for both directions in hierarchy.
                     mPort->upAssignments_.insert(pMap->getLogicalPort()->name_, mUpPortAssignment);
                     mPort->downAssignments_.insert(pMap->getLogicalPort()->name_, mDownPortAssignment);
                 }
