@@ -36,6 +36,7 @@ public:
      */
     ~ConfigurableElementsFilter();
 
+   
 signals:
 
     /*!
@@ -59,6 +60,8 @@ protected:
 
 public slots:
    
+     void setShowImmediateValues(bool show);
+
     /*!
      *  Removes an item of the given index from the model.
      *
@@ -72,8 +75,7 @@ private:
     ConfigurableElementsFilter(ConfigurableElementsFilter const& rhs);
     ConfigurableElementsFilter& operator=(ConfigurableElementsFilter const& rhs);
 
-    //! The index of the item to be removed.
-    QModelIndex indexOfRemovedElement_;
+    bool showImmediateValues_;
 };
 
 #endif // CONFIGURABLESELEMENTFILTER_H
