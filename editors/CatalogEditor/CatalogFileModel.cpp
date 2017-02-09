@@ -357,7 +357,7 @@ bool CatalogFileModel::setData(QModelIndex const& index, QVariant const& value, 
 //-----------------------------------------------------------------------------
 Qt::ItemFlags CatalogFileModel::flags(QModelIndex const& index) const
 {
-    Qt::ItemFlags itemFlags = Qt::ItemIsEnabled;
+    Qt::ItemFlags itemFlags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
     if (!locked_)
     {
@@ -367,11 +367,6 @@ Qt::ItemFlags CatalogFileModel::flags(QModelIndex const& index) const
     if (!locked_ && index.parent().isValid())
     {
         itemFlags |= Qt::ItemIsEditable; 
-    }
-
-    if (!index.parent().isValid())
-    {
-        itemFlags |= Qt::ItemIsSelectable;
     }
 
     return itemFlags;
