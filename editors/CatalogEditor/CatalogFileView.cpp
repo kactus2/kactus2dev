@@ -364,7 +364,7 @@ QModelIndexList CatalogFileView::sortAndMinimize(QModelIndexList const& indexes)
 
     QModelIndex previousRow = QModelIndex();
 
-    foreach (QModelIndex index, indexes)
+    foreach (QModelIndex index, sorted)
     {
         if (!index.parent().isValid() || 
             (index.row() == previousRow.row() && index.parent() == previousRow.parent()))
