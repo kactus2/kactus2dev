@@ -61,7 +61,7 @@ QString ComponentInstanceVerilogWriter::formattedInstanceName() const
 {
     QString instanceName = instance_->getComponentInstance()->getInstanceName();
 
-    if (!instance_->getComponentInstance()->getConfigurableElementValues()->isEmpty())
+    if (!instance_->getParameters()->isEmpty())
     {
         instanceName.prepend(indentation());
     }

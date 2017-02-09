@@ -16,7 +16,7 @@
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IWriterFactory.h>
 
-class GenerationSettings;
+struct GenerationSettings;
 
 //-----------------------------------------------------------------------------
 // Verilog file generator.
@@ -49,7 +49,7 @@ public:
      *
      *      @return The objects that bundles the writers. Will be null, if could not be created.
      */
-    virtual QSharedPointer<GenerationFile> prepareComponent(QString const& outputPath,
+    virtual QSharedPointer<GenerationOutput> prepareComponent(QString const& outputPath,
         QSharedPointer<MetaComponent> component);
 
     /*!
@@ -59,7 +59,7 @@ public:
      *
      *      @return The objects that bundles the writers. Will be null, if could not be created.
      */
-    virtual QSharedPointer<GenerationFile> prepareDesign(QSharedPointer<MetaDesign> design);
+    virtual QSharedPointer<GenerationOutput> prepareDesign(QSharedPointer<MetaDesign> design);
     
     /*!
      *  Returns the language of the factory.

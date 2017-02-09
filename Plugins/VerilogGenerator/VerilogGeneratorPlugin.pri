@@ -39,7 +39,7 @@ HEADERS += ../VerilogImport/VerilogSyntax.h \
     ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../PluginSystem/GeneratorPlugin/ViewSelection.h \
     ../PluginSystem/GeneratorPlugin/MessagePasser.h \
-    ../PluginSystem/GeneratorPlugin/FileOutput.h \
+    ../PluginSystem/GeneratorPlugin/OutputControl.h \
     ../../mainwindow/MessageConsole/messageconsole.h \
     ../PluginSystem/GeneratorPlugin/HDLGenerationDialog.h \
     ../PluginSystem/GeneratorPlugin/ViewSelectionWidget.h \
@@ -73,7 +73,7 @@ SOURCES += ../VerilogImport/VerilogSyntax.cpp \
     ./VerilogWriterFactory/VerilogDocument.cpp \
     ./VerilogWriterFactory/VerilogWriterFactory.cpp \
     ./VerilogAssignmentWriter/VerilogAssignmentWriter.cpp \
-    ../PluginSystem/GeneratorPlugin/FileOutput.cpp \
+    ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
     ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
     ../PluginSystem/GeneratorPlugin/ViewSelection.cpp \

@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: FileOutput.h
+// File: OutputControl.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
 // Date: 15.11.2016
 //
 // Description:
-// Container class for file output of generation.
+// Helps to control output of generation.
 //-----------------------------------------------------------------------------
 
-#ifndef FILEOUTPUT_H
-#define FILEOUTPUT_H
+#ifndef OUTPUTCONTROL_H
+#define OUTPUTCONTROL_H
 
 #include <QString>
 #include <QMap>
@@ -18,11 +18,13 @@
 
 #include "ViewSelection.h"
 
-struct GenerationFile
+struct GenerationOutput
 {
-    //! The name of the file for the document
+    //! The name for the file created from the output.
     QString fileName_;
+    //! The VLNV of the component corresponding the output.
     QString vlnv_;
+    //! The content of the output, ie. what will be written to the file.
     QString fileContent_;
     
     /*!
@@ -34,15 +36,15 @@ struct GenerationFile
 //-----------------------------------------------------------------------------
 // Container class for file output of generation.
 //-----------------------------------------------------------------------------
-class FileOuput
+class OutputControl
 {
 public:
 
 	//! The constructor.
-    FileOuput();
+    OutputControl();
 
 	//! The destructor.
-	~FileOuput();
+	~OutputControl();
     
     /*!
      *  Checks if the file output configuration is valid.
@@ -68,18 +70,28 @@ public:
     /*!
      *  Gets reference to the output file paths.
      */
-    QSharedPointer<QList<QSharedPointer<GenerationFile> > > getFiles();
+    QSharedPointer<QList<QSharedPointer<GenerationOutput> > > getOutputs();
+    
+    /*!
+     *  Tries to change the file name of an output. Will rewrite the content.
+     *
+     *      @param [in] index           The position of the output within the list.
+     *      @param [in] newName         The would-be new name for the file.
+     *
+     *      @return The changed output if the change was successful.
+     */
+    QSharedPointer<GenerationOutput> changeFileName(int index, QString const& newName);
 
 private:
 
 	// Disable copying.
-	FileOuput(FileOuput const& rhs);
-	FileOuput& operator=(FileOuput const& rhs);
+	OutputControl(OutputControl const& rhs);
+	OutputControl& operator=(OutputControl const& rhs);
 
     //! The base directory for output paths.
     QString outputPath_;
     //! The potential new files.
-    QSharedPointer<QList<QSharedPointer<GenerationFile> > > files_;
+    QSharedPointer<QList<QSharedPointer<GenerationOutput> > > outputs_;
 };
 
-#endif // FILEOUTPUT_H
+#endif // OUTPUTCONTROL_H

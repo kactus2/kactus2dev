@@ -273,7 +273,7 @@ void tst_VerilogWriterFactory::runGenerator(bool useDesign)
 
     VerilogWriterFactory factory(&library_, &messages, &settings, "bogusToolVersion", "bogusGeneratorVersion");
     QString outputPath = ".";
-    QSharedPointer<GenerationFile> document;
+    QSharedPointer<GenerationOutput> document;
 
 	if (useDesign)
     {
@@ -1371,7 +1371,7 @@ void tst_VerilogWriterFactory::testInstanceParametersAreWritten()
     verifyOutputContains(
         "    TestSender #(\n"
         "        .testParameter       (2))\n"
-        "sender(");
+        "    sender(");
 }
 
 //-----------------------------------------------------------------------------

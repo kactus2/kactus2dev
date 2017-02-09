@@ -190,8 +190,12 @@ void MetaDesign::parseInstances()
         // Design configuration may have CEVs pointing to module parameters.
         if (designConf_)
         {
-            cevs->append(*(designConf_->getViewConfiguration(instance->getInstanceName())->
-                getViewConfigurableElements()));
+            QSharedPointer<ViewConfiguration> viewConfig = designConf_->getViewConfiguration(instance->getInstanceName());
+
+            if (viewConfig)
+            {
+                cevs->append(*viewConfig->getViewConfigurableElements());
+            }
         }
 
         // Now create the instance, using what we know as the parameters.
@@ -202,40 +206,7 @@ void MetaDesign::parseInstances()
         instances_->insert(instance->getInstanceName(), mInstance);
 
         // Find also the hierarchical references if applicable.
-        QSharedPointer<DesignInstantiation> dis = component->getModel()->
-            findDesignInstantiation(activeView->getDesignInstantiationRef());
-        QSharedPointer<DesignConfigurationInstantiation> disg = component->getModel()->
-            findDesignConfigurationInstantiation(activeView->getDesignConfigurationInstantiationRef());
-
-        // Try to find the referred documents.
-        QSharedPointer<Design> subDesign;
-        QSharedPointer<DesignConfiguration> subDesignConfiguration;
-
-        if (disg && disg->getDesignConfigurationReference())
-        {
-            // The design configuration reference takes the precedence.
-            subDesignConfiguration = library_->getModel(*(disg->getDesignConfigurationReference()))
-                .dynamicCast<DesignConfiguration>();
-
-            // If the design configuration is found, use its design reference.
-            if (subDesignConfiguration)
-            {
-                subDesign = library_->getModel(subDesignConfiguration->getDesignRef()).dynamicCast<Design>();
-            }
-        }
-        else if (dis && dis->getDesignReference())
-        {
-            // Try to use the design reference if no design configuration reference is stated.
-            subDesign = library_->getModel(*(dis->getDesignReference())).dynamicCast<Design>();
-        }
-
-        // If a sub design exists, it must be also parsed.
-        if (subDesign)
-        {
-            QSharedPointer<MetaDesign> subMetaDesign(new MetaDesign
-                (library_, messages_, subDesign, subDesignConfiguration, mInstance));
-            subDesigns_.append(subMetaDesign);
-        }
+        findHierarchy(mInstance);
     }
 }
 
@@ -596,6 +567,94 @@ void MetaDesign::parseAdHocs()
                 assignLargerBounds(mWire, mpa->logicalBounds_);
             }
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::findHierarchy()
+//-----------------------------------------------------------------------------
+void MetaDesign::findHierarchy(QSharedPointer<MetaInstance> mInstance)
+{
+    QSharedPointer<View> activeView = mInstance->getActiveView();
+
+    // Must have active view to have hierarchy reference!
+    if (!activeView)
+    {
+        return;
+    }
+
+    QSharedPointer<Component> component = mInstance->getComponent();
+
+    // Try to find the instantiations.
+    QSharedPointer<DesignInstantiation> dis = component->getModel()->
+        findDesignInstantiation(activeView->getDesignInstantiationRef());
+    QSharedPointer<DesignConfigurationInstantiation> disg = component->getModel()->
+        findDesignConfigurationInstantiation(activeView->getDesignConfigurationInstantiationRef());
+
+    // Try to find the referred documents.
+    QSharedPointer<Design> subDesign;
+    QSharedPointer<DesignConfiguration> subDesignConfiguration;
+
+    if (dis && dis->getDesignReference())
+    {
+        // Try to find the referred design.
+        subDesign = library_->getModel(*(dis->getDesignReference())).dynamicCast<Design>();
+
+        // If instantiation exists, the referred document must exist!
+        if (!subDesign)
+        {
+            messages_->errorMessage(QObject::tr
+                ("Design %1: Subdesign referred by instantiation did not exist: %2")
+                .arg(design_->getVlnv().toString(),
+                dis->getDesignReference()->toString()));
+            return;
+        }
+    }
+
+    if (disg && disg->getDesignConfigurationReference())
+    {
+        // Try to find the referred design configuration.
+        subDesignConfiguration = library_->getModel(*(disg->getDesignConfigurationReference()))
+            .dynamicCast<DesignConfiguration>();
+
+        // If instantiation exists, the referred document must exist!
+        if (!subDesignConfiguration)
+        {
+            messages_->errorMessage(QObject::tr
+                ("Design %1: Design configuration referred by instantiation did not exist: %2")
+                .arg(design_->getVlnv().toString(),
+                disg->getDesignConfigurationReference()->toString()));
+
+            return;
+        }
+
+        if (subDesign)
+        {
+            // If the design is already found, check for discrepancy.
+            if (subDesignConfiguration->getDesignRef() != subDesign->getVlnv())
+            {
+                messages_->errorMessage(QObject::tr
+                    ("Design %1: Design configuration %2 of sub design %3 refers to different VLNV: %4")
+                    .arg(design_->getVlnv().toString(),
+                    subDesignConfiguration->getVlnv().toString(),
+                    subDesign->getVlnv().toString(),
+                    subDesignConfiguration->getDesignRef().toString()));
+                return;
+            }
+        }
+        else
+        {
+            // Else pick the referred design as sub design.
+            subDesign = library_->getModel(subDesignConfiguration->getDesignRef()).dynamicCast<Design>();
+        }
+    }
+
+    // If a sub design exists, it must be also parsed.
+    if (subDesign)
+    {
+        QSharedPointer<MetaDesign> subMetaDesign(new MetaDesign
+            (library_, messages_, subDesign, subDesignConfiguration, mInstance));
+        subDesigns_.append(subMetaDesign);
     }
 }
 
