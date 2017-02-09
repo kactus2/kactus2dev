@@ -54,9 +54,7 @@ QSize CatalogFileDelegate::sizeHint(QStyleOptionViewItem const& option, QModelIn
 void CatalogFileDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {
-    QStyleOptionViewItemV4 viewItemOption(option);
-
-    QStyledItemDelegate::paint(painter, viewItemOption, index);
+    QStyledItemDelegate::paint(painter, option, index);
 
     painter->save();
 
@@ -64,13 +62,7 @@ void CatalogFileDelegate::paint(QPainter* painter, QStyleOptionViewItem const& o
     newPen.setWidth(1);
     painter->setPen(newPen);
 
-    if (index.column() == 0)
-    {
-        painter->drawLine(option.rect.topLeft(), option.rect.bottomLeft());
-    }
-
     painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
-    painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
 
     painter->restore();
 }
