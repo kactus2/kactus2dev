@@ -59,8 +59,9 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     // Layout for things coming to the bottom part of the dialog.
 
     // Add Ok and cancel give the dialog results.
-    QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
+    QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Cancel, 
         Qt::Horizontal);
+    dialogButtons->addButton("Write files", QDialogButtonBox::AcceptRole);
 
     QGridLayout* grid = new QGridLayout(this);
 
