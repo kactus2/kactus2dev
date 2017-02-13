@@ -128,10 +128,7 @@ QVariant MemoryMapModel::headerData(int section, Qt::Orientation orientation, in
             QString widthHeader = tr("Width\n [bits]") + getExpressionSymbol();
             return widthHeader;
         }
-        else if (section == MemoryMapColumns::DESCRIPTION_COLUMN)
-        {
-            return tr("Description");
-        }
+
         else if (section == MemoryMapColumns::ACCESS_COLUMN)
         {
             return tr("Access");
@@ -140,7 +137,16 @@ QVariant MemoryMapModel::headerData(int section, Qt::Orientation orientation, in
         {
             return tr("Volatile");
         }
-        else {
+        else if (section == MemoryMapColumns::IS_PRESENT)
+        {
+            return tr("Is present") + getExpressionSymbol();
+        }
+        else if (section == MemoryMapColumns::DESCRIPTION_COLUMN)
+        {
+            return tr("Description");
+        }
+        else
+        {
             return QVariant();
         }
 	}
@@ -285,6 +291,10 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
                 return false;
             }
         }
+        else if (index.column() == MemoryMapColumns::IS_PRESENT)
+        {
+            memoryBlocks_->at(index.row())->setIsPresent(value.toString());
+        }
         else if (index.column() == MemoryMapColumns::DESCRIPTION_COLUMN)
         {
             memoryBlocks_->at(index.row())->setDescription(value.toString());
@@ -319,7 +329,8 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         }
 
         if (index.column() == MemoryMapColumns::NAME_COLUMN || index.column() == MemoryMapColumns::BASE_COLUMN ||
-            index.column() == MemoryMapColumns::RANGE_COLUMN || index.column() == MemoryMapColumns::WIDTH_COLUMN)
+            index.column() == MemoryMapColumns::RANGE_COLUMN || index.column() == MemoryMapColumns::WIDTH_COLUMN ||
+            index.column() == MemoryMapColumns::IS_PRESENT)
         {
             emit graphicsChanged();
         }
@@ -460,7 +471,7 @@ void MemoryMapModel::decreaseReferencesWithRemovedAddressBlock(QSharedPointer<Ad
 bool MemoryMapModel::isValidExpressionColumn(QModelIndex const& index) const
 {
     return index.column() == MemoryMapColumns::BASE_COLUMN || index.column() == MemoryMapColumns::RANGE_COLUMN ||
-        index.column() == MemoryMapColumns::WIDTH_COLUMN;
+        index.column() == MemoryMapColumns::WIDTH_COLUMN || index.column() == MemoryMapColumns::IS_PRESENT;
 }
 
 //-----------------------------------------------------------------------------
@@ -483,6 +494,10 @@ QVariant MemoryMapModel::expressionOrValueForIndex(QModelIndex const& index) con
         else if (index.column() == MemoryMapColumns::WIDTH_COLUMN)
         {
             return addressBlock->getWidth();
+        }
+        else if (index.column() == MemoryMapColumns::IS_PRESENT)
+        {
+            return addressBlock->getIsPresent();
         }
         else
         {
@@ -520,6 +535,10 @@ bool MemoryMapModel::validateIndex(QModelIndex const& index) const
     {
         return addressBlockValidator_->hasValidWidth(addressBlock);
     }
+    else if (index.column() == MemoryMapColumns::IS_PRESENT)
+    {
+        return addressBlockValidator_->hasValidIsPresent(addressBlock);
+    }
     else if (index.column() == MemoryMapColumns::USAGE_COLUMN)
     {
         return addressBlockValidator_->hasValidUsage(addressBlock);
@@ -540,8 +559,10 @@ int MemoryMapModel::getAllReferencesToIdInItemOnRow(const int& row, QString cons
         int referencesInBaseAddress = memoryBlocks_->at(row)->getBaseAddress().count(valueID);
         int referencesInRange = addressBlock->getRange().count(valueID);
         int referencesInWidth = addressBlock->getWidth().count(valueID);
+        int referencesInIsPresent = addressBlock->getIsPresent().count(valueID);
 
-        int totalReferences = referencesInBaseAddress + referencesInRange + referencesInWidth;
+        int totalReferences = referencesInBaseAddress + referencesInRange + referencesInWidth
+            + referencesInIsPresent;
         return totalReferences;
     }
 
@@ -567,6 +588,10 @@ QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
     else if (index.column() == MemoryMapColumns::BASE_COLUMN)
     {
         return memoryBlocks_->at(index.row())->getBaseAddress();
+    }
+    else if (index.column() == MemoryMapColumns::IS_PRESENT)
+    {
+        return memoryBlocks_->at(index.row())->getIsPresent();
     }
 
     QSharedPointer<AddressBlock> addressBlock = memoryBlocks_->at(index.row()).dynamicCast<AddressBlock>();

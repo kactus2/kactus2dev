@@ -12,6 +12,8 @@
 #ifndef MEMORYMAPSMODEL_H
 #define MEMORYMAPSMODEL_H
 
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
+
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 
 #include <QAbstractItemModel>
@@ -20,6 +22,7 @@
 #include <QMap>
 
 class Component;
+class ExpressionFormatter;
 class MemoryMapBase;
 class MemoryMap;
 class MemoryRemap;
@@ -31,7 +34,7 @@ class ReferenceCalculator;
 //-----------------------------------------------------------------------------
 //! The model to manage the memory maps summary.
 //-----------------------------------------------------------------------------
-class MemoryMapsModel : public QAbstractItemModel
+class MemoryMapsModel : public QAbstractItemModel, public ParameterizableTable
 {
 	Q_OBJECT
 
@@ -40,12 +43,16 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component           Pointer to the component that contains the memory maps to edit.
-     *      @param [in] parameterFinder     Pointer to the instance used to find parameters.
-     *      @param [in] memoryMapValidator  Validator used for memory maps.
-	 *      @param [in] parent              Pointer to the owner of the model.
+	 *      @param [in] component               The component that contains the memory maps to edit.
+     *      @param [in] parameterFinder         The instance used to find parameters.
+     *      @param [in] expressionParser        The used expression parser.
+     *      @param [in] expressionFormatter     The formatter for expressions.
+     *      @param [in] memoryMapValidator      Validator used for memory maps.
+	 *      @param [in] parent                  The owner of the model.
 	 */
 	MemoryMapsModel(QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<MemoryMapValidator> memoryMapValidator, QObject *parent);
 	
 	/*!
@@ -215,6 +222,35 @@ signals:
      */
     void decreaseReferences(QString const& id);
 
+protected:
+    
+    /*!
+     *  Check if the column index is valid for containing expressions.
+     *
+     *      @param [in] index   The index being evaluated.
+     *
+     *      @return     True, if column can have expressions, false otherwise.
+     */
+    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+
+    /*!
+     *  Gets the expression for the given index or the plain value if expression is not available.
+     *
+     *      @param [in] index   The index whose expression to get.
+     *
+     *      @return The expression for the index if available, otherwise the value for the given index.
+     */
+    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Validates the data in an index.
+     *
+     *      @param [in] index   The index whose data to validate
+     *
+     *      @return True, if the data in the index is valid, otherwise false.
+     */
+    virtual bool validateIndex(QModelIndex const& index) const;
+
 private:
 	
     //! No copying
@@ -222,6 +258,15 @@ private:
 
     //! No assignment
     MemoryMapsModel& operator=(const MemoryMapsModel& other);
+    
+    /*!
+     *  Gets the value for the given index.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      @return     The data in the given index.
+     */
+    QVariant valueForIndex(QModelIndex const& index) const;
 
     /*!
      *  Increaser the number of references when creating a new memory remap.
@@ -266,7 +311,7 @@ private:
      *      @param [in] parentIndex     The parent index of the memory remap.
      *      @param [in] row             The row of the memory remap.
      *
-     *      @return Pointer to the indexed memory remap.
+     *      @return The indexed memory remap.
      */
     QSharedPointer<MemoryRemap> getIndexedMemoryRemap(QModelIndex const& parentIndex, int row) const;
 
@@ -287,24 +332,6 @@ private:
      *      @return True, if the index is valid, false otherwise.
      */
     bool isIndexValid(QModelIndex const& index) const;
-
-    /*!
-     *  Gets the value corresponding to the index.
-     *
-     *      @param [in] index   The index of the item that's value is wanted.
-     *
-     *      @return The value of the item corresponding to the index.
-     */
-    QVariant valueForIndex(QModelIndex const& index) const;
-
-    /*!
-     *  Gets the foreground colour for the given index.
-     *
-     *      @param [in] index   The index whose foreground color is wanted.
-     *
-     *      @return Black for valid, red for invalid and gray for data that cannot be changed.
-     */
-    QColor getForegroundColor(QModelIndex const& index) const;
 
     /*!
      *  Create a copy from the selected memory map.
@@ -361,15 +388,19 @@ private:
      */
     QStringList getMemoryRemapNames(QSharedPointer<MemoryMap> currentMap) const;
 
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the component that contains the memory maps to edit.
+	//! The component that contains the memory maps to edit.
 	QSharedPointer<Component> component_;
 
     //! The parameter finder.
     QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! The formatter for expressions.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
 	//! Contains the memory maps to show in the summary.
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > rootMemoryMaps_;

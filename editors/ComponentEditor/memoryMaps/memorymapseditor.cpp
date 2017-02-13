@@ -16,6 +16,9 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -28,20 +31,23 @@
 // Function: memorymapseditor::MemoryMapsEditor()
 //-----------------------------------------------------------------------------
 MemoryMapsEditor::MemoryMapsEditor(QSharedPointer<Component> component,
-                                   QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* handler,
-                                   QSharedPointer<MemoryMapValidator> memoryMapValidator,
-                                   QWidget *parent /* = 0 */):
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    LibraryInterface* handler,
+    QSharedPointer<MemoryMapValidator> memoryMapValidator,
+    QWidget *parent):
 ItemEditor(component, handler, parent),
-view_(new MemoryMapsView(this)),
-proxy_(new QSortFilterProxyModel(this)),
-model_(new MemoryMapsModel(component, parameterFinder, memoryMapValidator, this)),
-delegate_()
+    view_(new MemoryMapsView(this)),
+    proxy_(new QSortFilterProxyModel(this)),
+    model_(new MemoryMapsModel(component, parameterFinder, expressionParser, expressionFormatter, memoryMapValidator, this)),
+    delegate_()
 {
-	// display a label on top the table
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("Memory maps summary"), this);
+    // display a label on top the table
+    SummaryLabel* summaryLabel = new SummaryLabel(tr("Memory maps summary"), this);
 
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
@@ -57,7 +63,13 @@ delegate_()
 	view_->setAllowImportExport(true);
 	view_->setSortingEnabled(true);
 
-    delegate_ = new MemoryMapsDelegate(getRemapStateNames(), this);
+    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
+    componentParametersModel->setExpressionParser(expressionParser);
+
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(componentParametersModel);
+
+    delegate_ = new MemoryMapsDelegate(parameterCompleter, parameterFinder, getRemapStateNames(), this);
     view_->setItemDelegate(delegate_);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

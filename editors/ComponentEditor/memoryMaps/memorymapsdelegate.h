@@ -13,11 +13,12 @@
 #define MEMORYMAPSDELEGATE_H
 
 #include <editors/ComponentEditor/common/MultilineDescriptionDelegate.h>
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
 //-----------------------------------------------------------------------------
 //! The delegate to provide editor for adding/removing/editing the memory maps of a component.
 //-----------------------------------------------------------------------------
-class MemoryMapsDelegate : public MultilineDescriptionDelegate
+class MemoryMapsDelegate : public ExpressionDelegate
 {
 	Q_OBJECT
 
@@ -25,11 +26,15 @@ public:
 
     /*!
 	 *  The constructor.
-	 *
-	 *      @param [in] remapStateNames     A list of names of the component remap states.
-	 *      @param [in] parent              Pointer to the owner of the delegate.
+     *
+     *      @param [in] parameterNameCompleter  The completer to use for parameter names in expression editor.
+     *      @param [in] parameterFinder         The parameter finder for expression editor.
+	 *      @param [in] remapStateNames         A list of names of the component remap states.
+	 *      @param [in] parent                  Pointer to the owner of the delegate.
 	 */
-	MemoryMapsDelegate(QStringList remapStateNames, QObject *parent);
+    MemoryMapsDelegate(QCompleter* parameterNameCompleter,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QStringList remapStateNames, QObject *parent);
 	
 	//! The destructor.
 	virtual ~MemoryMapsDelegate();
@@ -83,6 +88,15 @@ protected:
 
     //! Gets the description column.
     virtual int descriptionColumn() const;
+    
+    /*!
+     *  Checks if the given column supports expressions in the editor.
+     *
+     *      @param [in] column  The column to check.
+     *
+     *      @return True if the cells in the column allow expressions, otherwise false.
+     */
+    virtual bool columnAcceptsExpression(int column) const;
 
 private slots:
 
@@ -98,7 +112,6 @@ private:
 
 	//! No assignment.
 	MemoryMapsDelegate& operator=(const MemoryMapsDelegate& other);
-
 
     //! A list of the components remap state names.
     QStringList remapStateNames_;

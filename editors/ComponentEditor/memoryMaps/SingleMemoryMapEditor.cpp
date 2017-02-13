@@ -14,6 +14,8 @@
 #include <QScrollArea>
 #include <QLabel>
 
+#include <editors/ComponentEditor/common/ExpressionEditor.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
@@ -29,32 +31,38 @@
 // Function: SingleMemoryMapEditor::SingleMemoryMapEditor()
 //-----------------------------------------------------------------------------
 SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component,
-                                             QSharedPointer<MemoryMapBase> memoryRemap,
-                                             QSharedPointer<MemoryMap> parentMemoryMap,
-                                             LibraryInterface* libHandler,
-                                             QSharedPointer<ParameterFinder> parameterFinder,
-                                             QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                             QSharedPointer<ExpressionParser> expressionParser,
-                                             QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
-                                             QWidget* parent /* = 0 */):
+    QSharedPointer<MemoryMapBase> memoryRemap,
+    QSharedPointer<MemoryMap> parentMemoryMap,
+    LibraryInterface* libHandler,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<MemoryMapBaseValidator> memoryMapBaseValidator,
+    QWidget* parent):
 ItemEditor(component, libHandler, parent),
-nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
-memoryMapEditor_(new MemoryMapEditor(component, libHandler, memoryRemap, parameterFinder, expressionFormatter,
+    nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
+    memoryMapEditor_(new MemoryMapEditor(component, libHandler, memoryRemap, parameterFinder, expressionFormatter,
     expressionParser, memoryMapBaseValidator->getAddressBlockValidator(), parentMemoryMap->getAddressUnitBits(),
     this)),
-addressUnitBitsEditor_(new QLineEdit(parent)),
-slaveInterfaceLabel_(new QLabel(this)),
-remapStateSelector_(),
-memoryRemap_(memoryRemap),
-parentMemoryMap_(parentMemoryMap)
+    addressUnitBitsEditor_(new QLineEdit(parent)),
+    isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
+    slaveInterfaceLabel_(new QLabel(this)),
+    remapStateSelector_(new ReferenceSelector(this)),
+    memoryRemap_(memoryRemap),
+    parentMemoryMap_(parentMemoryMap)
 {
     addressUnitBitsEditor_->setValidator
         (new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));
+
+    isPresentEditor_->setFrameShadow(QFrame::Sunken);
+    isPresentEditor_->setFixedHeight(20);
 
     if (!isMemoryMap())
     {
         addressUnitBitsEditor_->setEnabled(false);
     }
+
+    remapStateSelector_->setProperty("mandatoryField", true);
 
     connect(memoryMapEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(memoryMapEditor_, SIGNAL(increaseReferences(QString)),
@@ -72,13 +80,20 @@ parentMemoryMap_(parentMemoryMap)
 
     connect(addressUnitBitsEditor_, SIGNAL(editingFinished()),
         this, SLOT(updateAddressUnitBits()), Qt::UniqueConnection);
+    
+    connect(isPresentEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
     connect(this, SIGNAL(assignNewAddressUnitBits(QString const&)),
         memoryMapEditor_, SIGNAL(assignNewAddressUnitBits(QString const&)), Qt::UniqueConnection);
 
     setupLayout();
-
-    remapStateSelector_->setProperty("mandatoryField", true);
 }
 
 //-----------------------------------------------------------------------------
@@ -98,7 +113,7 @@ void SingleMemoryMapEditor::refresh()
     memoryMapEditor_->refresh();
     refreshSlaveBinding();
     addressUnitBitsEditor_->setText(parentMemoryMap_->getAddressUnitBits());
-
+    
     if (isMemoryMap())
     {
         remapStateSelector_->setEnabled(false);
@@ -106,10 +121,12 @@ void SingleMemoryMapEditor::refresh()
         defaultList.append("Default");
         remapStateSelector_->refresh(defaultList);
         remapStateSelector_->selectItem("Default");
+        isPresentEditor_->setExpression(parentMemoryMap_->getIsPresent());
     }
     else
     {
         refreshRemapStateSelector();
+        isPresentEditor_->setExpression(memoryRemap_->getIsPresent());
     }
 }
 
@@ -130,10 +147,8 @@ void SingleMemoryMapEditor::setupLayout()
 
     QFormLayout* memoryMapDefinitionGroupLayout = new QFormLayout(memoryMapDefinitionGroup);
     memoryMapDefinitionGroupLayout->addRow(tr("Address Unit Bits [AUB]:"), addressUnitBitsEditor_);
-
-    remapStateSelector_ = new ReferenceSelector(memoryMapDefinitionGroup);
+    memoryMapDefinitionGroupLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
     memoryMapDefinitionGroupLayout->addRow(tr("Remap state:"), remapStateSelector_);
-
     memoryMapDefinitionGroupLayout->addRow(tr("Slave interface binding:"), slaveInterfaceLabel_);
 
     connect(remapStateSelector_, SIGNAL(itemSelected(QString const&)),
@@ -207,6 +222,26 @@ void SingleMemoryMapEditor::updateAddressUnitBits()
     emit contentChanged();
 
     emit assignNewAddressUnitBits(addressUnitBitsEditor_->text());
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleMemoryMapEditor::onIsPresentEdited()
+//-----------------------------------------------------------------------------
+void SingleMemoryMapEditor::onIsPresentEdited()
+{
+    isPresentEditor_->finishEditingCurrentWord();
+
+    QString newIsPresent = isPresentEditor_->getExpression();
+    //isPresentEditor_->setToolTip(formattedValueFor(newIsPresent));
+
+    if (isMemoryMap())
+    {
+        parentMemoryMap_->setIsPresent(newIsPresent);   
+    }
+    else
+    {
+        memoryRemap_->setIsPresent(newIsPresent);
+    }
 }
 
 //-----------------------------------------------------------------------------

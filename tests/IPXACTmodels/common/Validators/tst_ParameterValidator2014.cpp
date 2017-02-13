@@ -456,6 +456,8 @@ void tst_ParameterValidator2014::testValidityWithChoice_data()
 
     QTest::newRow("Value test is valid for enumerations test and test1, with type string") << "\"test\"" <<
         "\"test\"" << "\"test1\"" << "string" << true;
+
+    QTest::newRow("Expression evaluating to enumeration is valid") << "8+8" << "16" << "32" << "int" << true;
 }
 
 //-----------------------------------------------------------------------------

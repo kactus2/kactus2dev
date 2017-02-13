@@ -45,14 +45,14 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addressBlock            Pointer to the address block being edited.
-	 *      @param [in] component               Pointer to the component being edited.
-	 *      @param [in] handler                 Pointer to the instance managing the library.
-	 *      @param [in] parameterFinder         Pointer to the parameter finder.
-	 *      @param [in] expressionFormatter     Pointer to the expression formatter.
-     *      @param [in] expressionFormatter     The expression parser.
+	 *      @param [in] addressBlock            The address block being edited.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] handler                 The instance managing the library.
+	 *      @param [in] parameterFinder         The parameter finder.
+	 *      @param [in] expressionFormatter     The expression formatter.
+     *      @param [in] expressionParser        The expression parser.
      *      @param [in] addressBlockValidator   Validator used for address blocks.
-	 *      @param [in] parent                  Pointer to the parent of this editor.
+	 *      @param [in] parent                  The parent of this editor.
 	 */
     SingleAddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
         QSharedPointer<Component> component,
@@ -106,6 +106,9 @@ private slots:
      *  Sets the value in the width editor.
      */
     void onWidthChanged();
+
+    //! Called when isPresent is changed.
+    void onIsPresentEdited();
 
     /*!
      *  Sets the value in the usage editor.
@@ -183,6 +186,9 @@ private:
 
     //! Editor for the width of the address block-
     ExpressionEditor* widthEditor_;
+
+    //! Editor for the is present of the address block-
+    ExpressionEditor* isPresentEditor_;
 
     //! Editor for selecting the access of the address block.
     AccessComboBox* accessEditor_;

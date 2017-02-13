@@ -24,6 +24,7 @@ namespace MemoryMapColumns
         USAGE_COLUMN,
         ACCESS_COLUMN,
         VOLATILE_COLUMN,
+        IS_PRESENT,
         DESCRIPTION_COLUMN,
         COLUMN_COUNT
     };

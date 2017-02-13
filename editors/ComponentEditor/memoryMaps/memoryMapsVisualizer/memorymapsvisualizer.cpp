@@ -101,7 +101,10 @@ void MemoryMapsVisualizer::showEvent(QShowEvent* event)
 
     foreach (MemoryMapGraphItem* memoryMap, memGraphItems_)
     {
-        memoryMap->recursiveRefresh();
+        if (memoryMap->isPresent())
+        {
+            memoryMap->recursiveRefresh();
+        }
     }
     scene_->rePosition();
 

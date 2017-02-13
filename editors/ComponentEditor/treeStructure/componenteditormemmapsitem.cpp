@@ -27,19 +27,19 @@
 //-----------------------------------------------------------------------------
 // Function: componenteditormemmapsitem::ComponentEditorMemMapsItem()
 //-----------------------------------------------------------------------------
-ComponentEditorMemMapsItem::ComponentEditorMemMapsItem( ComponentEditorTreeModel* model,
-													   LibraryInterface* libHandler,
-													   QSharedPointer<Component> component,
-                                                       QSharedPointer<ReferenceCounter> referenceCounter,
-                                                       QSharedPointer<ParameterFinder> parameterFinder,
-                                                       QSharedPointer<ExpressionFormatter> expressionFormatter,
-                                                       QSharedPointer<ExpressionParser> expressionParser,
-													   ComponentEditorItem* parent ):
+ComponentEditorMemMapsItem::ComponentEditorMemMapsItem(ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler,
+    QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ExpressionParser> expressionParser,
+    ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
-memoryMaps_(component->getMemoryMaps()),
-visualizer_(new MemoryMapsVisualizer()),
-expressionParser_(expressionParser),
-memoryMapValidator_()
+    memoryMaps_(component->getMemoryMaps()),
+    visualizer_(new MemoryMapsVisualizer()),
+    expressionParser_(expressionParser),
+    memoryMapValidator_()
 {
     createMemoryMapValidator();
 
@@ -102,7 +102,8 @@ ItemEditor* ComponentEditorMemMapsItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new MemoryMapsEditor(component_, parameterFinder_, libHandler_, memoryMapValidator_);
+		editor_ = new MemoryMapsEditor(component_, parameterFinder_, expressionParser_, expressionFormatter_, 
+            libHandler_, memoryMapValidator_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);

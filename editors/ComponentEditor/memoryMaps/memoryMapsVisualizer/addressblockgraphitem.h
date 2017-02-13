@@ -83,7 +83,14 @@ public:
 	 *      @return The size of least addressable unit.
 	 */
 	virtual unsigned int getAddressUnitSize() const;
-        
+           
+    /*!
+     *  Checks if the item is to be used in the visualization.
+     *
+     *      @return True, if the item should be used, otherwise false.
+     */
+    virtual bool isPresent() const;
+
 private:
 	
 	//! No copying.

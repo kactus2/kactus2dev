@@ -32,6 +32,15 @@
         <b>Width</b> is mandatory and defines the data width of a row in the <i>address block</i>.
         The width value is given in bits.
     </p>
+		
+	<p>
+        <b>Is present</b> is optional and allows enabling/disabling of a <i>address block</i>
+        presence in a <i>memory map</i>. Value 1 indicates that the <i>address block</i>
+        is present in the <i>memory mape</i> whereas value 0 marks the memory map to be
+        treated as if it does not exist. Is present can be given as a SystemVerilog expression,
+        but it must evaluate to 1 or 0.</p>
+	<p>
+	
     <p>
         <b>Usage</b> is a mandatory value to specify the usage of the address block and
         may have one of the following values:
