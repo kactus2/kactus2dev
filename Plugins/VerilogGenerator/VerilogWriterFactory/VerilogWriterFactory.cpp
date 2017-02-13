@@ -48,7 +48,7 @@ VerilogWriterFactory::~VerilogWriterFactory()
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::prepareComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<GenerationFile> VerilogWriterFactory::prepareComponent(QString const& outputPath,
+QSharedPointer<GenerationOutput> VerilogWriterFactory::prepareComponent(QString const& outputPath,
     QSharedPointer<MetaComponent> component)
 {
     // If we are not generating based on a design, we must parse the existing implementation.
@@ -84,7 +84,7 @@ QSharedPointer<GenerationFile> VerilogWriterFactory::prepareComponent(QString co
 //-----------------------------------------------------------------------------
 // Function: VerilogWriterFactory::prepareDesign()
 //-----------------------------------------------------------------------------
-QSharedPointer<GenerationFile> VerilogWriterFactory::prepareDesign(QSharedPointer<MetaDesign> design)
+QSharedPointer<GenerationOutput> VerilogWriterFactory::prepareDesign(QSharedPointer<MetaDesign> design)
 {
     QSharedPointer<VerilogDocument> document = initializeComponentWriters(design->getTopInstance());
     document->fileName_ = design->getTopInstance()->getModuleName() + ".v";

@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: FileOutput.cpp
+// File: OutputControl.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Janne Virtanen
@@ -9,7 +9,7 @@
 // Container class for file output of generation.
 //-----------------------------------------------------------------------------
 
-#include "FileOutput.h"
+#include "OutputControl.h"
 
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
@@ -18,23 +18,23 @@
 #include <QDir>
 
 //-----------------------------------------------------------------------------
-// Function: FileOuput::FileOuput()
+// Function: OutputControl::OutputControl()
 //-----------------------------------------------------------------------------
-FileOuput::FileOuput() : outputPath_(), files_(new QList<QSharedPointer<GenerationFile> >)
+OutputControl::OutputControl() : outputPath_(), outputs_(new QList<QSharedPointer<GenerationOutput> >)
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileOuput::~FileOuput()
+// Function: OutputControl::~OutputControl()
 //-----------------------------------------------------------------------------
-FileOuput::~FileOuput()
+OutputControl::~OutputControl()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileOuput::validSelections()
+// Function: OutputControl::validSelections()
 //-----------------------------------------------------------------------------
-bool FileOuput::validSelections(QString &warning)
+bool OutputControl::validSelections(QString &warning)
 {
     // Must have path for the files. 
     if (outputPath_.isEmpty() || !QDir(outputPath_).exists())
@@ -44,11 +44,11 @@ bool FileOuput::validSelections(QString &warning)
     }
 
     // Must not have same file name more than once!
-    for(int i = 0; i < files_->size(); ++i)
+    for(int i = 0; i < outputs_->size(); ++i)
     {
-        QSharedPointer<GenerationFile> file = files_->at(i);
+        QSharedPointer<GenerationOutput> file = outputs_->at(i);
 
-        for(int j = 0; j < files_->size(); ++j)
+        for(int j = 0; j < outputs_->size(); ++j)
         {
             // Do not compare with itself
             if (i==j)
@@ -56,7 +56,7 @@ bool FileOuput::validSelections(QString &warning)
                 continue;
             }
 
-            QString name2compare = files_->at(j)->fileName_;
+            QString name2compare = outputs_->at(j)->fileName_;
 
             // Is the same -> fail.
             if (file->fileName_ == name2compare)
@@ -71,25 +71,48 @@ bool FileOuput::validSelections(QString &warning)
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileOuput::setOutputPath()
+// Function: OutputControl::setOutputPath()
 //-----------------------------------------------------------------------------
-void FileOuput::setOutputPath(QString const& path)
+void OutputControl::setOutputPath(QString const& path)
 {
     outputPath_ = path;
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileOuput::getOutputPath()
+// Function: OutputControl::getOutputPath()
 //-----------------------------------------------------------------------------
-QString FileOuput::getOutputPath() const
+QString OutputControl::getOutputPath() const
 {
     return outputPath_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileOuput::getFileNames()
+// Function: OutputControl::getFileNames()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<GenerationFile> > > FileOuput::getFiles()
+QSharedPointer<QList<QSharedPointer<GenerationOutput> > > OutputControl::getOutputs()
 {
-    return files_;
+    return outputs_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: OutputControl::changeFileName()
+//-----------------------------------------------------------------------------
+QSharedPointer<GenerationOutput> OutputControl::changeFileName(int index, QString const& newName)
+{
+    if (index >= outputs_->size() || index < 0)
+    {
+        return QSharedPointer<GenerationOutput>::QSharedPointer();
+    }
+
+    QSharedPointer<GenerationOutput> selection = outputs_->at(index);
+
+    if (selection->fileName_ == newName)
+    {
+        return QSharedPointer<GenerationOutput>::QSharedPointer();
+    }
+
+    selection->fileName_ = newName;
+    selection->write();
+
+    return selection;
 }

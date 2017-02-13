@@ -27,7 +27,7 @@
 GenerationControl::GenerationControl(LibraryInterface* library,
     IWriterFactory* factory, GenerationTuple input, GenerationSettings* settings) :
 	library_(library), factory_(factory), input_(input), settings_(settings), isDesignGeneration_(input.design != 0),
-    fileOutput_(new FileOuput)
+    outputControl_(new OutputControl)
 {
     // Find views usable for the generation.
     QSharedPointer<QList<QSharedPointer<View> > > possibleViews;
@@ -52,7 +52,7 @@ GenerationControl::GenerationControl(LibraryInterface* library,
         possibleViews, possibleInstantiations, possibleFileSets));
 
     // Set the defaults for convenience.
-    getFileOuput()->setOutputPath(defaultOutputPath());
+    outputControl_->setOutputPath(defaultOutputPath());
 }
 
 //-----------------------------------------------------------------------------
@@ -95,10 +95,10 @@ bool GenerationControl::writeDocuments()
     bool fails = false;
 
     // Go through each potential file.
-    foreach(QSharedPointer<GenerationFile> gFile, *fileOutput_->getFiles())
+    foreach(QSharedPointer<GenerationOutput> output, *outputControl_->getOutputs())
     {
         // Form the path from the determined output path plus determined file name.
-        QString absFilePath = fileOutput_->getOutputPath() + "/" + gFile->fileName_;
+        QString absFilePath = outputControl_->getOutputPath() + "/" + output->fileName_;
 
         // Try to open the file.
         QFile outputFile(absFilePath); 
@@ -112,7 +112,7 @@ bool GenerationControl::writeDocuments()
         // Put the content to the file and close it.
         QTextStream outputStream(&outputFile);
 
-        outputStream << gFile->fileContent_;
+        outputStream << output->fileContent_;
 
         outputFile.close();
 
@@ -164,7 +164,7 @@ bool GenerationControl::validSelections(QString &warning)
     }
 
     // Must have valid file output.
-    if (!fileOutput_->validSelections(warning))
+    if (!outputControl_->validSelections(warning))
     {
         return false;
     }
@@ -178,7 +178,7 @@ bool GenerationControl::validSelections(QString &warning)
 void GenerationControl::parseDocuments()
 {
     // Clear the existing list of files.
-    fileOutput_->getFiles()->clear();
+    outputControl_->getOutputs()->clear();
 
     if (isDesignGeneration_)
     {
@@ -194,17 +194,17 @@ void GenerationControl::parseDocuments()
         // Go through the parsed designs.
         foreach(QSharedPointer<MetaDesign> design, designs)
         {
-            QSharedPointer<GenerationFile> gFile = factory_->prepareDesign(design);
+            QSharedPointer<GenerationOutput> output = factory_->prepareDesign(design);
 
-            if (!gFile)
+            if (!output)
             {
                 continue;
             }
 
             // Time to write the contents to files
-            gFile->write();
+            output->write();
 
-            fileOutput_->getFiles()->append(gFile);
+            outputControl_->getOutputs()->append(output);
         }
     }
     else
@@ -216,18 +216,18 @@ void GenerationControl::parseDocuments()
             (new MetaComponent(input_.messages, input_.component, viewSelection_->getView()));
         componentParser->formatComponent();
 
-        QSharedPointer<GenerationFile> gFile = factory_->prepareComponent(fileOutput_->getOutputPath(), componentParser);
+        QSharedPointer<GenerationOutput> output = factory_->prepareComponent(outputControl_->getOutputPath(), componentParser);
 
-        if (!gFile)
+        if (!output)
         {
             return;
         }
 
         input_.messages->sendNotice(QObject::tr("Writing content %1.").arg(QDateTime::currentDateTime().toString(Qt::LocalDate)));
 
-        gFile->write();
+        output->write();
 
-        fileOutput_->getFiles()->append(gFile);
+        outputControl_->getOutputs()->append(output);
     }
 }
 
@@ -240,11 +240,11 @@ QSharedPointer<ViewSelection> GenerationControl::getViewSelection() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: GenerationControl::getFileOuput()
+// Function: GenerationControl::getFileOutput()
 //-----------------------------------------------------------------------------
-QSharedPointer<FileOuput> GenerationControl::getFileOuput() const
+QSharedPointer<OutputControl> GenerationControl::getOutputControl() const
 {
-    return fileOutput_;
+    return outputControl_;
 }
 
 //-----------------------------------------------------------------------------
@@ -295,22 +295,44 @@ QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleVie
     QSharedPointer<QList<QSharedPointer<View> > > views = QSharedPointer<QList<QSharedPointer<View> > >
         (new QList<QSharedPointer<View> >);
 
+    // The input must have a design
+    if (!input.design)
+    {
+        return views;
+    }
+
     // Go through each view of the containing component and pick the eligible ones.
     foreach(QSharedPointer<View> view, *input.component->getViews())
     {
-        // Find the relevant instantiations of the inspected view.
-        QSharedPointer<DesignConfigurationInstantiation> disg = input.component->getModel()->
-            findDesignConfigurationInstantiation(view->getDesignConfigurationInstantiationRef());
+        // Find the design instantiation of the view.
         QSharedPointer<DesignInstantiation> dis = input.component->getModel()->
             findDesignInstantiation(view->getDesignInstantiationRef());
 
-        // If either of the exists AND targets the correct VLNV, the view is eligible.
-        if (disg && input.designConfiguration && *disg->getDesignConfigurationReference()
-            == input.designConfiguration->getVlnv()
-            || dis && input.design && *dis->getDesignReference() == input.design->getVlnv())
+        // If it exists it must refer to the input design.
+        if (dis && *dis->getDesignReference() == input.design->getVlnv())
         {
-            views->append(view);
+            continue;
         }
+
+        // Find the design configuration instantiation of the view.
+        QSharedPointer<DesignConfigurationInstantiation> disg = input.component->getModel()->
+            findDesignConfigurationInstantiation(view->getDesignConfigurationInstantiationRef());
+
+        // If input has no design configuration, the instantiation must not exist.
+        if (!input.designConfiguration && disg)
+        {
+            continue;
+        }
+
+        // If it does, the instantiation must exist and VLNVs must match.
+        if (input.designConfiguration && !disg ||
+            *disg->getDesignConfigurationReference() != input.designConfiguration->getVlnv())
+        {
+            continue;
+        }
+
+        // If above conditions are satisfied, the view may be used for generation.
+        views->append(view);
     }
 
     // Finally, return the pickings.

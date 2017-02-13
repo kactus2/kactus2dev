@@ -50,7 +50,7 @@ public slots:
 private slots:
 
 
-    void onSelectedFileChanged(QSharedPointer<GenerationFile> newSelection);
+    void onSelectedFileChanged(QSharedPointer<GenerationOutput> newSelection);
 
 private:
 

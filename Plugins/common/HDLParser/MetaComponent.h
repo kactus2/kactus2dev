@@ -57,6 +57,11 @@ public:
      *  Returns the associated component.
      */
     QSharedPointer<Component> getComponent() const { return component_; }
+    
+    /*!
+     *  Returns the active view.
+     */
+    QSharedPointer<View> getActiveView() const { return activeView_; }
 
     /*!
      *  Returns list of culled parameters

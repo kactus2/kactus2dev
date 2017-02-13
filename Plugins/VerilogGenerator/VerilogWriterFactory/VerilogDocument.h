@@ -14,7 +14,7 @@
 
 #include "../veriloggeneratorplugin_global.h"
 
-#include <Plugins/PluginSystem/GeneratorPlugin/FileOutput.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/OutputControl.h>
 
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
 #include <Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h>
@@ -23,7 +23,7 @@
 //-----------------------------------------------------------------------------
 // Verilog document.
 //-----------------------------------------------------------------------------
-struct VerilogDocument : public GenerationFile
+struct VerilogDocument : public GenerationOutput
 {
     //! Writer for generating file header.
     QSharedPointer<VerilogHeaderWriter> headerWriter_;

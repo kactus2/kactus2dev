@@ -30,7 +30,7 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
 	QDialog(parent,Qt::WindowTitleHint), 
     configuration_(configuration),
     viewSelection_(new ViewSelectionWidget(configuration->getViewSelection())),
-    fileOutput_(new FileOutputWidget(configuration->getFileOuput())),
+    fileOutput_(new FileOutputWidget(configuration->getOutputControl())),
     generalWarningLabel_(new QLabel)
 {
     setWindowTitle(tr("Configure file generation for %1.").arg(configuration->getViewSelection()->getTargetLanguage()));
@@ -92,8 +92,8 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
         this, SLOT(onViewChanged()), Qt::UniqueConnection);
 
     // Connect file output.
-    connect(fileOutput_, SIGNAL(selectedFileChanged(QSharedPointer<GenerationFile>)), 
-        this, SLOT(onSelectedFileChanged(QSharedPointer<GenerationFile>)), Qt::UniqueConnection);
+    connect(fileOutput_, SIGNAL(selectedFileChanged(QSharedPointer<GenerationOutput>)), 
+        this, SLOT(onSelectedFileChanged(QSharedPointer<GenerationOutput>)), Qt::UniqueConnection);
 
     // Connect the dialog buttons to their respective functions.
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
@@ -132,7 +132,7 @@ void HDLGenerationDialog::accept()
 //-----------------------------------------------------------------------------
 // Function: HDLGenerationDialog::onSelectedFileChanged()
 //-----------------------------------------------------------------------------
-void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationFile> newSelection)
+void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationOutput> newSelection)
 {
     previewer_->setPlainText(newSelection->fileContent_);
 

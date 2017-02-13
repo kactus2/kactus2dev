@@ -247,9 +247,6 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
-    <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutput.cpp">
-      <Filter>Source Files\GenerationControl</Filter>
-    </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
@@ -297,6 +294,9 @@
     </ClCompile>
     <ClCompile Include="..\common\HDLParser\MetaComponent.cpp">
       <Filter>Source Files\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -399,6 +399,9 @@
     <ClInclude Include="..\common\HDLParser\MetaComponent.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="VerilogGenerator.qrc">
@@ -409,9 +412,6 @@
     </CustomBuild>
     <CustomBuild Include="VerilogWriterFactory\VerilogWriterFactory.h">
       <Filter>Header Files\VerilogWriterFactory</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutput.h">
-      <Filter>Header Files\GenerationControl</Filter>
     </CustomBuild>
     <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
       <Filter>Header Files\Widgets</Filter>

@@ -87,7 +87,7 @@ private:
      *  Parses instance in the design_.
      */
     void parseInstances();
-    
+
     /*!
      *  Parses interconnections in the design_.
      */
@@ -109,11 +109,20 @@ private:
     void parseAdHocs();
     
     /*!
+     *  Tries to find hierarchy from mInstance for the active view and then create a sub design.
+     *  If sub design is created, it shall be appended to the list of the sub designs.
+     *
+     *      @param [in] mInstance		        The instance, which component is expected to have needed instantiations.
+     *                                          Consequently, will be the top instance of the created meta design.
+     */
+    void findHierarchy(QSharedPointer<MetaInstance> mInstance);
+    
+    /*!
      *  Compares new bounds to existing bounds of the wire and then assigns the largest combination of two
      *  If even one of the existing bounds is missing, candidates will replace them both.
      *
-     *      @param [in] wire            The wire which bounds are possibly enlarged.
-     *      @param [in] boundCand		The candidate for new bounds.
+     *      @param [in] wire                    The wire which bounds are possibly enlarged.
+     *      @param [in] boundCand		        The candidate for new bounds.
      */
     void assignLargerBounds(QSharedPointer<MetaWire> wire, QPair<QString,QString> const& boundCand);
 

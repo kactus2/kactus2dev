@@ -15,7 +15,7 @@
 // Function: MakeConfiguration::MakeConfiguration()
 //-----------------------------------------------------------------------------
 MakeConfiguration::MakeConfiguration(SWStackParser* parser) :
-    fileOutput_(new FileOuput)
+    outputControl_(new OutputControl)
 {
     // Must have the parser for the data.
     if (!parser)
@@ -24,19 +24,19 @@ MakeConfiguration::MakeConfiguration(SWStackParser* parser) :
     }
 
     // Clear the old ones.
-    fileOutput_->getFiles()->clear();
+    outputControl_->getOutputs()->clear();
 
     // Append to the master make file to the list, no VLNV is directly associated with it.
-    QSharedPointer<GenerationFile> masterFile(new GenerationFile);
+    QSharedPointer<GenerationOutput> masterFile(new GenerationOutput);
     masterFile->fileName_ = *parser->masterName_;
-    fileOutput_->getFiles()->append(masterFile);
+    outputControl_->getOutputs()->append(masterFile);
 
     foreach (QSharedPointer<MakeFileData> mfd, *parser->getParsedData())
     {
         // Append reference to the each proposed name of a makefile.
-        QSharedPointer<GenerationFile> file(new GenerationFile);
+        QSharedPointer<GenerationOutput> file(new GenerationOutput);
         file->fileName_ = mfd->makeName;
-        fileOutput_->getFiles()->append(file);
+        outputControl_->getOutputs()->append(file);
 
         // Pick the VLNV from the first stack component if exists.
         if (mfd->parts.size() > 0)
@@ -63,7 +63,7 @@ MakeConfiguration::~MakeConfiguration()
 bool MakeConfiguration::validSelections(QString &warning)
 {
     // Must have valid file output.
-    if (!fileOutput_->validSelections(warning))
+    if (!outputControl_->validSelections(warning))
     {
         return false;
     }
@@ -74,7 +74,7 @@ bool MakeConfiguration::validSelections(QString &warning)
 //-----------------------------------------------------------------------------
 // Function: MakeConfiguration::getFileOuput()
 //-----------------------------------------------------------------------------
-QSharedPointer<FileOuput> MakeConfiguration::getFileOuput() const
+QSharedPointer<OutputControl> MakeConfiguration::getFileOuput() const
 {
-    return fileOutput_;
+    return outputControl_;
 }

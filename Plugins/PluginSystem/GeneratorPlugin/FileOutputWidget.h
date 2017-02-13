@@ -16,7 +16,7 @@
 #include <QLabel>
 #include <QTableWidget>
 
-#include "FileOutput.h"
+#include "OutputControl.h"
 
 class FileOutputWidget : public QWidget
 {
@@ -24,7 +24,7 @@ class FileOutputWidget : public QWidget
 public:
 
 	//! The constructor.
-	FileOutputWidget(QSharedPointer<FileOuput> model);
+	FileOutputWidget(QSharedPointer<OutputControl> model);
 
 	//! The destructor.
     ~FileOutputWidget();
@@ -32,7 +32,7 @@ public:
 signals:
 	
     // Emitted when the selected file is changed.
-	void selectedFileChanged(QSharedPointer<GenerationFile> newSelection) const;
+	void selectedFileChanged(QSharedPointer<GenerationOutput> newSelection) const;
 
 public slots:
 
@@ -69,7 +69,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	// The "model" for the widget.
-    QSharedPointer<FileOuput> model_;
+    QSharedPointer<OutputControl> model_;
 
     //! Editor for the path of the generated file.
     QLineEdit* pathEditor_;
