@@ -220,16 +220,20 @@ void ConnectivityGraphFactory::addMemoryMapMemories(QSharedPointer<ConnectivityC
 {
     foreach (QSharedPointer<const MemoryMap> map, *component->getMemoryMaps())
     {
-        int addressableUnitBits = expressionParser_->parseExpression(map->getAddressUnitBits()).toInt();
-        if (addressableUnitBits == 0)
+        if (map->getIsPresent().isEmpty() ||
+            expressionParser_->parseExpression(map->getIsPresent()).toInt() == 1)
         {
-            addressableUnitBits = 8;
+            int addressableUnitBits = expressionParser_->parseExpression(map->getAddressUnitBits()).toInt();
+            if (addressableUnitBits == 0)
+            {
+                addressableUnitBits = 8;
+            }
+
+            QSharedPointer<MemoryItem> mapItem = createMemoryMapData(map, addressableUnitBits, instanceData);
+            instanceData->addMemory(mapItem);
+
+            addMemoryRemapData(map, mapItem, addressableUnitBits, instanceData);
         }
-
-        QSharedPointer<MemoryItem> mapItem = createMemoryMapData(map, addressableUnitBits, instanceData);
-        instanceData->addMemory(mapItem);
-
-        addMemoryRemapData(map, mapItem, addressableUnitBits, instanceData);
     }
 }
 
