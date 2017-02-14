@@ -23,15 +23,15 @@
 // Function: MemoryVisualizationItem::MemoryVisualizationItem()
 //-----------------------------------------------------------------------------
 MemoryVisualizationItem::MemoryVisualizationItem(QSharedPointer<ExpressionParser> expressionParser,
-    QGraphicsItem* parent /* = 0 */):
+    QGraphicsItem* parent):
 ExpandableItem(parent),
-childItems_(),
-firstFreeAddress_(-1),
-lastFreeAddress_(-1),
-childWidth_(VisualizerItem::DEFAULT_WIDTH),
-conflicted_(false),
-overlapped_(false),
-expressionParser_(expressionParser)
+    childItems_(),
+    firstFreeAddress_(-1),
+    lastFreeAddress_(-1),
+    childWidth_(VisualizerItem::DEFAULT_WIDTH),
+    conflicted_(false),
+    overlapped_(false),
+    expressionParser_(expressionParser)
 {
     QPen pen(Qt::gray);
     setPen(pen);
@@ -128,7 +128,7 @@ void MemoryVisualizationItem::setDisplayOffset(quint64 const& address)
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {        
-        setLeftBottomCorner("");
+        setLeftBottomCorner(QString());
     }
 }
 
@@ -150,7 +150,7 @@ void MemoryVisualizationItem::setDisplayLastAddress(quint64 const& address)
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {
-        setLeftBottomCorner("");
+        setLeftBottomCorner(QString());
     }
 }
 
@@ -170,8 +170,8 @@ void MemoryVisualizationItem::setCompleteOverlap()
     overlapped_ = true;
     setConflicted(true);
     
-    setLeftTopCorner("");
-    setLeftBottomCorner("");
+    setLeftTopCorner(QString());
+    setLeftBottomCorner(QString());
 }
 
 //-----------------------------------------------------------------------------
@@ -217,7 +217,11 @@ void MemoryVisualizationItem::reorganizeChildren()
     showExpandIconIfHasChildren();
 
     if (mustRepositionChildren())
-    {    
+    {
+        // Note: Set this item visible before reorganizing, otherwise childs will return false on isVisible().
+        // This will be reset when the parent reorganizes this item.
+        setVisible(true); 
+
         int childCountBeforeUpdate = childItems_.count();
         updateChildMap();
         int childCountAfterUpdate = childItems_.count();
@@ -481,7 +485,7 @@ QString MemoryVisualizationItem::toHexString(quint64 address)
         fieldSize++; //Round upwards, e.g. 7bits needs 4 hex digits
     }
 
-    QString padded = QString("%1").arg(str, fieldSize, QChar('0'));
+    QString padded = QString("%1").arg(str, fieldSize, QLatin1Char('0'));
     return groupByFourDigits(padded);
 }
 
@@ -573,7 +577,7 @@ QString MemoryVisualizationItem::groupByFourDigits(QString const& text) const
     int size = text.size();
     for (int i = size; i > 0; i -= 4) 
     {
-        groupedText.insert(i, " ");
+        groupedText.insert(i, QStringLiteral(" "));
     }
 
     return groupedText;

@@ -26,10 +26,10 @@
 //-----------------------------------------------------------------------------
 MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> parentMemoryMap,
     QSharedPointer<MemoryMapBase> memoryRemap, QSharedPointer<ExpressionParser> expressionParser,
-    QGraphicsItem* parent /* = 0 */):
+    QGraphicsItem* parent):
 MemoryVisualizationItem(expressionParser, parent),
-memoryMap_(memoryRemap),
-parentMemoryMap_(parentMemoryMap)
+    memoryMap_(memoryRemap),
+    parentMemoryMap_(parentMemoryMap)
 {
     Q_ASSERT(memoryMap_);
 
