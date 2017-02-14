@@ -42,6 +42,13 @@
     <p>
       <b>Width</b> is the data width of a row in bits. It defines the maximum size for a single transfer.
     </p>
+	<p>
+        <b>Is present</b> is optional and allows enabling/disabling of a <i>address space</i>
+        presence in a <i>component</i>. Value 1 indicates that the <i>address space</i>
+        is present in the <i>component</i> whereas value 0 marks the address space to be
+        treated as if it does not exist. Is present can be given as a SystemVerilog expression,
+        but it must evaluate to 1 or 0.</p>
+	<p>
     <p>
       <b>Master interface binding</b> shows the master <i>bus interfaces</i> bound to the address space. 
 	  The binding can be set in the bus interface editor.
@@ -61,6 +68,13 @@
 	<p>
 		<b>Range</b> is mandatory and defines the size of the <i>segment</i> in address unit bits.
     </p>
+		<p>
+        <b>Is present</b> is optional and allows enabling/disabling of a <i>segment</i>
+        presence in an <i>address space</i>. Value 1 indicates that the <i>segment</i>
+        is present in the <i>address space</i> whereas value 0 marks the segment to be
+        treated as if it does not exist. Is present can be given as a SystemVerilog expression,
+        but it must evaluate to 1 or 0.</p>
+	<p>
 	 <p>
         <b>Description</b> is an optional field for textual description of the <i>segment</i>.		
     </p>

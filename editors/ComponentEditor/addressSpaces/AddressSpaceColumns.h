@@ -22,6 +22,7 @@ namespace AddressSpaceColumns
         RANGE,
         WIDTH,
         INTERFACE_BINDING,
+        IS_PRESENT,
         DESCRIPTION,
         COLUMN_COUNT
     };

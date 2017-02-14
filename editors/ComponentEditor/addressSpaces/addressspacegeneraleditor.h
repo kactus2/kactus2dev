@@ -121,6 +121,9 @@ private slots:
 	//! Handler for changes in range.
     void onRangeChanged();
 
+    //! Handler for changes in range.
+    void onIsPresentChanged();
+
 private:
 	//! No copying. No assignment.
 	AddressSpaceGeneralEditor(const AddressSpaceGeneralEditor& other);
@@ -153,6 +156,9 @@ private:
 
 	//! Editor to set the width of one row in address space.
 	ExpressionEditor* widthEditor_;
+
+    //! Editor to set the is presence property of address space.
+    ExpressionEditor* isPresentEditor_;
 
     //! Label for the master interface binding(s).
     QLabel* masterInterfaceBindingLabel_;

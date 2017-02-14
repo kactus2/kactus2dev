@@ -483,6 +483,10 @@ void tst_MemoryViewGenerator::testIsPresent()
     QSharedPointer<MemoryMap> slaveMemoryMap(new MemoryMap("slaveMemoryMap"));
     slaveComponent->getMemoryMaps()->append(slaveMemoryMap);
 
+    QSharedPointer<MemoryMap> nonPresentMemoryMap(new MemoryMap("nonPresentMemoryMap"));
+    nonPresentMemoryMap->setIsPresent("0");
+    slaveComponent->getMemoryMaps()->append(nonPresentMemoryMap);
+
     QSharedPointer<AddressBlock> slaveAddressBlock = addAddressBlock("slaveBlock", "0", "8", "32", slaveMemoryMap);
     slaveAddressBlock->setIsPresent("true");
 

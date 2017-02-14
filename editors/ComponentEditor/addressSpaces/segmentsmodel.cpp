@@ -94,6 +94,10 @@ QVariant SegmentsModel::headerData(int section, Qt::Orientation orientation, int
         {
             return tr("Range [AUB]") + getExpressionSymbol();
         }
+        else if (section == SegmentColumns::IS_PRESENT)
+        {
+            return tr("Is present") + getExpressionSymbol();
+        }
         else if (section == SegmentColumns::DESCRIPTION)
         {
             return tr("Description");
@@ -193,6 +197,11 @@ bool SegmentsModel::setData(QModelIndex const& index, QVariant const& value, int
             targetSegment->setRange(value.toString());
             emit segmentChanged(targetSegment);
         }
+        else if (index.column() == SegmentColumns::IS_PRESENT)
+        {
+            targetSegment->setIsPresent(value.toString());
+            emit segmentChanged(targetSegment);
+        }
         else if (index.column() == SegmentColumns::DESCRIPTION)
         {
             targetSegment->setDescription(value.toString());
@@ -222,22 +231,6 @@ Qt::ItemFlags SegmentsModel::flags( QModelIndex const& index ) const
     }
 
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SegmentsModel::isValid()
-//-----------------------------------------------------------------------------
-bool SegmentsModel::isValid() const
-{	
-	// check all segments
-	foreach (QSharedPointer<Segment> segment, *segments_)
-    {
-		/*if (!segment->isValid())
-        {
-			return false;
-		}*/
-	}
-	return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -309,7 +302,8 @@ void SegmentsModel::onRemoveItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 bool SegmentsModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    return index.column() == SegmentColumns::OFFSET || index.column() == SegmentColumns::RANGE;
+    return index.column() == SegmentColumns::OFFSET || index.column() == SegmentColumns::RANGE ||
+        index.column() == SegmentColumns::IS_PRESENT;
 }
 
 //-----------------------------------------------------------------------------
@@ -328,6 +322,10 @@ QVariant SegmentsModel::expressionOrValueForIndex(QModelIndex const& index) cons
     else if (index.column() ==  SegmentColumns::RANGE)
     {
         return segments_->at(index.row())->getRange();
+    }
+    else if (index.column() ==  SegmentColumns::IS_PRESENT)
+    {
+        return segments_->at(index.row())->getIsPresent();
     }
     else if (index.column() ==  SegmentColumns::DESCRIPTION)
     {
@@ -364,14 +362,18 @@ bool SegmentsModel::validateIndex(QModelIndex const& index) const
         QString range = segments_->at(index.row())->getRange();
         return isValuePlainOrExpression(range);
     }
+    else if (index.column() ==  SegmentColumns::IS_PRESENT)
+    {
+        QString isPresent = segments_->at(index.row())->getIsPresent();
+        int value = parseExpressionToDecimal(isPresent).toInt();
+        return isPresent.isEmpty() || value == 1 || value == 0;
+    }
     else if (index.column() ==  SegmentColumns::DESCRIPTION)
     {
         return true;
     }
-    else 
-    {
-        return false;
-    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

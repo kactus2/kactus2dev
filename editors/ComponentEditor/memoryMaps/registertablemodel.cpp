@@ -156,8 +156,7 @@ QVariant RegisterTableModel::headerData( int section, Qt::Orientation orientatio
         }
         else if (section == RegisterColumns::IS_PRESENT_COLUMN)
         {
-            QString isPresent = tr("Is Present") + getExpressionSymbol();
-            return isPresent;
+            return tr("Is present") + getExpressionSymbol();
         }
         else
         {
