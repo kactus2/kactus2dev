@@ -23,7 +23,7 @@ expansionArrow_(new QGraphicsPixmapItem(this))
 
     expandCollapseItem_->show();
 
-    QPixmap pic(":/icons/common/graphics/triangle_arrow_right.png");
+    QPixmap pic(QStringLiteral(":/icons/common/graphics/triangle_arrow_right.png"));
     QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, 
         GraphicsExpandCollapseItem::SIDE, Qt::KeepAspectRatio);
     expansionArrow_->setPixmap(scaledPic);
@@ -61,7 +61,7 @@ void ExpandableItem::onExpandStateChange(bool expanded)
     if (expanded)
     {
         reorganizeChildren();
-        QPixmap pic(":/icons/common/graphics/triangle_arrow_down.png");
+        QPixmap pic(QStringLiteral(":/icons/common/graphics/triangle_arrow_down.png"));
         QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE,
             Qt::KeepAspectRatio);
         expansionArrow_->setPixmap(scaledPic);
@@ -69,7 +69,7 @@ void ExpandableItem::onExpandStateChange(bool expanded)
     else
     {
         updateRectangle();
-        QPixmap pic(":/icons/common/graphics/triangle_arrow_right.png");
+        QPixmap pic(QStringLiteral(":/icons/common/graphics/triangle_arrow_right.png"));
         QPixmap scaledPic = pic.scaled(GraphicsExpandCollapseItem::SIDE, GraphicsExpandCollapseItem::SIDE,
             Qt::KeepAspectRatio);
         expansionArrow_->setPixmap(scaledPic);

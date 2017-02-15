@@ -55,6 +55,15 @@ signals:
     void openItem(QModelIndex const& index);
 
 protected:
+   
+    /*!
+     *  Draws a row and a separator line under it.
+     *
+     *      @param [in] painter   The painter used for the drawing.
+     *      @param [in] option    Options for the drawing.
+     *      @param [in] index     Index of the item to draw.
+     */
+    virtual void drawRow(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const;
 
     /*! Handler for the context menu events.
     *

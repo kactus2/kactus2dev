@@ -33,7 +33,7 @@
 AddressBlockEditor::AddressBlockEditor(QSharedPointer<AddressBlock> addressBlock,
     QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<RegisterValidator> registerValidator, QWidget* parent /* = 0 */):
+    QSharedPointer<RegisterValidator> registerValidator, QWidget* parent):
 QGroupBox(tr("Registers summary"), parent),
     view_(new EditableTableView(this)),
     model_(0)

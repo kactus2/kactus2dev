@@ -147,7 +147,7 @@ void MemoryMapDelegate::setModelData(QWidget* editor, QAbstractItemModel* model,
 bool MemoryMapDelegate::columnAcceptsExpression(int column) const
 {
     return column == MemoryMapColumns::BASE_COLUMN || column == MemoryMapColumns::RANGE_COLUMN ||
-        column == MemoryMapColumns::WIDTH_COLUMN;
+        column == MemoryMapColumns::WIDTH_COLUMN || column == MemoryMapColumns::IS_PRESENT;
 }
 
 //-----------------------------------------------------------------------------

@@ -49,6 +49,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     setDocumentType(tr("Catalog"));
 
+    vlnvDisplay_->setFlat(false);
     vlnvDisplay_->setTitle(tr("Catalog VLNV and location"));
     vlnvDisplay_->setPath(library_->getPath(vlnv));
    

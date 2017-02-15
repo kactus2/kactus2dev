@@ -234,7 +234,7 @@ QGraphicsItem* MemoryRemapItem::getGraphicsItem()
 // Function: MemoryRemapItem::updateGraphics()
 //-----------------------------------------------------------------------------
 void MemoryRemapItem::updateGraphics()
-{
+{    
     if (graphItem_)
     {
         graphItem_->refresh();

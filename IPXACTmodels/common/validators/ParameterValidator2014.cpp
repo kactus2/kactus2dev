@@ -290,8 +290,9 @@ bool ParameterValidator2014::hasValidValueForChoice(QSharedPointer<const Paramet
         }
         return true;
     }
-
-    return !referencedChoice.isNull() && referencedChoice->hasEnumeration(parameter->getValue());
+    
+    return !referencedChoice.isNull() && 
+        referencedChoice->hasEnumeration(expressionParser_->parseExpression(parameter->getValue()));
 }
 
 //-----------------------------------------------------------------------------

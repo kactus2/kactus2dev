@@ -29,18 +29,31 @@
     </p>
     <h3>Memory map</h3>
     <p>
-      <b>Name</b> is a mandatory identifier for the memory map.<br/>
+      <b>Name</b> is a mandatory identifier for the memory map.</p>
+	  	  	  
+	  <p>
+      <b>Remap state</b> is always 'default' for memory maps and cannot be changed. It applies only to memory
+	  remaps.</p><p>
+	  
+	  <p>
       <b>Address unit bits</b> (AUB) defines the number of data bits each address increment of the memory map
       contains, e.g. 8b or 32b. The default setting for a <i>memory maps</i> is byte addressable (8 bits).
 	  E.g. if AUB=8,
       then 32-bit registers are at addresses 0x0, 0x4, 0x8... If AUB=32, they are in addresses 0x0, 0x1, 0x2...
       AUB is the unit for base addresses and ranges within the address map.</p>
 	  <p>
+	  
       <b>Slave interface binding</b> shows which slave bus interfaces are used to access the memory map.
 	  The binding can only be set in the bus interface editor, but is shown here for convenience.</p>
+    
 	  <p>
-      <b>Remap state</b> is always 'default' for memory maps and cannot be changed. It applies only to memory
-	  remaps.</p><p>	  
+        <b>Is present</b> is optional and allows enabling/disabling of a <i>memory map</i>
+        presence in a <i>component</i>. Value 1 indicates that the <i>memory map</i>
+        is present in the <i>component</i> whereas value 0 marks the memory map to be
+        treated as if it does not exist. Is present can be given as a SystemVerilog expression,
+        but it must evaluate to 1 or 0.</p>
+	  <p>
+	
 	  <b>Description</b> is an optional field for textual description of the memory map.
 	 <br />
       <img src="../images/mem_map.png" alt="mem map's idea">

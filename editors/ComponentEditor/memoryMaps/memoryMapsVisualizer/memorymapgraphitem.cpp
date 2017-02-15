@@ -26,14 +26,12 @@
 //-----------------------------------------------------------------------------
 MemoryMapGraphItem::MemoryMapGraphItem(QSharedPointer<MemoryMap> parentMemoryMap,
     QSharedPointer<MemoryMapBase> memoryRemap, QSharedPointer<ExpressionParser> expressionParser,
-    QGraphicsItem* parent /* = 0 */):
+    QGraphicsItem* parent):
 MemoryVisualizationItem(expressionParser, parent),
-memoryMap_(memoryRemap),
-parentMemoryMap_(parentMemoryMap)
+    memoryMap_(memoryRemap),
+    parentMemoryMap_(parentMemoryMap)
 {
     Q_ASSERT(memoryMap_);
-    QBrush brush(KactusColors::MEM_MAP_COLOR);
-    setDefaultBrush(brush);
 
     updateDisplay();
 }
@@ -66,6 +64,17 @@ void MemoryMapGraphItem::updateDisplay()
 
     setDisplayOffset(offset);
     setDisplayLastAddress(lastAddress);
+  
+    if (isPresent())
+    {
+        QBrush defaultBrush(KactusColors::MEM_MAP_COLOR);
+        setDefaultBrush(defaultBrush);
+    }
+    else
+    {
+        QBrush nonPresentBrush(Qt::lightGray);
+        setDefaultBrush(nonPresentBrush);
+    }
 
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + memoryMap_->name() + "<br>" +
@@ -143,4 +152,12 @@ quint64 MemoryMapGraphItem::getLastAddress() const
 qreal MemoryMapGraphItem::itemTotalWidth() const 
 {
     return VisualizerItem::DEFAULT_WIDTH;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphItem::isPresent()
+//-----------------------------------------------------------------------------
+bool MemoryMapGraphItem::isPresent() const
+{
+    return memoryMap_->getIsPresent().isEmpty() || parseExpression(memoryMap_->getIsPresent()) == 1;
 }

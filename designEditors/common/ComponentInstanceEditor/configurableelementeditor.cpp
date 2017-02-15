@@ -31,11 +31,12 @@ ConfigurableElementEditor::ConfigurableElementEditor(QSharedPointer<ListParamete
                                                   QAbstractItemModel* completionModel,
                                                   QWidget *parent):
 QGroupBox(tr("Configurable element values"), parent),
-view_(this),
-model_(parameterFinder, listFinder, configurableElementFormatter, componentInstanceFormatter, expressionParser,
-       instanceParser, this),
-delegate_()
-{
+    view_(this),
+    model_(parameterFinder, listFinder, configurableElementFormatter, componentInstanceFormatter, expressionParser,
+    instanceParser, this),    
+    delegate_(),
+    filterSelection_(new QCheckBox(tr("Show immediate values"), this))
+{    
     ConfigurableElementsFilter* filter (new ConfigurableElementsFilter(this));
 	filter->setSourceModel(&model_);
     filter->setSortCaseSensitivity(Qt::CaseInsensitive);
@@ -49,10 +50,9 @@ delegate_()
     view_.setSelectionBehavior(QAbstractItemView::SelectItems);
     view_.setSelectionMode(QAbstractItemView::SingleSelection);
 
-    delegate_ = QSharedPointer<ConfigurableElementDelegate> (new ConfigurableElementDelegate(parameterCompleter,
-        parameterFinder, configurableElementFormatter, this));
+    delegate_ = new ConfigurableElementDelegate(parameterCompleter, parameterFinder, configurableElementFormatter, this);
 
-    view_.setItemDelegate(delegate_.data());
+    view_.setItemDelegate(delegate_);
 
     view_.setAlternatingRowColors(false);
     view_.setColumnHidden(ConfigurableElementsColumns::CHOICE, true);
@@ -62,12 +62,14 @@ delegate_()
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);
 	topLayout->addWidget(&view_);
+    topLayout->addWidget(filterSelection_);
 
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
         filter, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(filter, SIGNAL(removeItem(const QModelIndex&)),
         &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+    connect(filterSelection_, SIGNAL(clicked(bool)), filter, SLOT(setShowImmediateValues(bool)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

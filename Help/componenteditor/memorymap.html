@@ -37,7 +37,15 @@
         is byte addressable (8 bits). E.g. if AUB=8, then 32-bit registers are at addresses
         0x0, 0x4, 0x8... If AUB=32, they are in addresses 0x0, 0x1, 0x2... AUB is the unit
         for base addresses and ranges within the address map.</p><p>
-		
+	
+		<p>
+        <b>Is present</b> is optional and allows enabling/disabling of a <i>memory map</i>
+        presence in a <i>component</i>. Value 1 indicates that the <i>memory map</i>
+        is present in the <i>component</i> whereas value 0 marks the memory map to be
+        treated as if it does not exist. Is present can be given as a SystemVerilog expression,
+        but it must evaluate to 1 or 0.</p>
+		<p>
+	
         <b>Remap state</b> identifies the name of the <i>remap state</i> for which the optional
         <i>memory map</i> elements are active. <i>Memory maps</i> are labeled with a default remap
         state, while <i>memory remaps</i> must be given a <i>remap state</i>. For more information
@@ -105,6 +113,15 @@
         write operation. For example, the timer value gets updated automatically and master
         must always issue a read to get the latest value.
     </p>
+	
+	<p>
+        <b>Is present</b> is optional and allows enabling/disabling of a <i>address block</i>
+        presence in a <i>memory map</i>. Value 1 indicates that the <i>address block</i>
+        is present in the <i>memory map</i> whereas value 0 marks the memory map to be
+        treated as if it does not exist. Is present can be given as a SystemVerilog expression,
+        but it must evaluate to 1 or 0.</p>
+	<p>
+		
     <p>
         <b>Description</b> is an optional field for textual description of the <i>address block</i>.
     </p>

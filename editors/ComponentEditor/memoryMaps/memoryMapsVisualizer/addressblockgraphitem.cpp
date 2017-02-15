@@ -103,6 +103,14 @@ unsigned int AddressBlockGraphItem::getAddressUnitSize() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlockGraphItem::isPresent()
+//-----------------------------------------------------------------------------
+bool AddressBlockGraphItem::isPresent() const
+{
+    return addrBlock_->getIsPresent().isEmpty() || parseExpression(addrBlock_->getIsPresent()) == 1;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressBlockGraphItem::getLastAddress()
 //-----------------------------------------------------------------------------
 quint64 AddressBlockGraphItem::getLastAddress() const

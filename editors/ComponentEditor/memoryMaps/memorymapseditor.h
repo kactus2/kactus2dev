@@ -26,8 +26,10 @@ class MemoryMapsView;
 class MemoryMapsModel;
 class Component;
 class MemoryMap;
-
+class ExpressionFormatter;
+class ExpressionParser;
 class MemoryMapValidator;
+
 //-----------------------------------------------------------------------------
 //! Editor for editing the memory maps of a component.
 //-----------------------------------------------------------------------------
@@ -47,14 +49,18 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] component           Pointer to the component being edited.
-	 *      @param [in] parameterFinder     Pointer to the parameter finder.
-	 *      @param [in] handler             Pointer to the instance managing the library.
-     *      @param [in] memoryMapValidator  Validator used for memory maps.
-	 *      @param [in] parent              Pointer to the owner of this editor.
+	 *      @param [in] component               The component being edited.
+	 *      @param [in] parameterFinder         The parameter finder.
+     *      @param [in] expressionParser        The used expression parser.
+     *      @param [in] expressionFormatter     The formatter for expressions.
+	 *      @param [in] handler                 The instance managing the library.
+     *      @param [in] memoryMapValidator      Validator used for memory maps.
+	 *      @param [in] parent                  The owner of this editor.
 	 */
 	MemoryMapsEditor(QSharedPointer<Component> component,
         QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ExpressionFormatter> expressionFormatter,
 		LibraryInterface* handler, 
         QSharedPointer<MemoryMapValidator> memoryMapValidator,
 		QWidget *parent = 0);

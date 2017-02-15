@@ -25,6 +25,7 @@
 #include <QAbstractItemModel>
 #include <QGroupBox>
 #include <QSharedPointer>
+#include <QCheckBox>
 
 class ExpressionParser;
 class ParameterFinder;
@@ -105,7 +106,9 @@ private:
 	ConfigurableElementsModel model_;
 
     //! The delegate used in the display widget.
-    QSharedPointer<ConfigurableElementDelegate> delegate_;
+    ConfigurableElementDelegate* delegate_;
+
+    QCheckBox* filterSelection_;
 };
 
 #endif // CONFIGURABLEELEMENTEDITOR_H

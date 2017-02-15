@@ -15,13 +15,8 @@
 
 #include <QApplication>
 #include <QClipboard>
-#include <QDrag>
-#include <QFileInfo>
-#include <QHeaderView>
+#include <QPainter>
 #include <QMenu>
-#include <QMessageBox>
-#include <QMimeData>
-#include <QVector>
 
 //-----------------------------------------------------------------------------
 // Function: CatalogFileView::CatalogFileView()
@@ -47,6 +42,8 @@ CatalogFileView::CatalogFileView(QWidget* parent): QTreeView(parent),
     setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::SelectedClicked |
         QAbstractItemView::EditKeyPressed | QAbstractItemView::AnyKeyPressed);
 
+    setIndentation(10);
+
 	setupActions();
 }
 
@@ -56,6 +53,20 @@ CatalogFileView::CatalogFileView(QWidget* parent): QTreeView(parent),
 CatalogFileView::~CatalogFileView()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogFileView::drawRow()
+//-----------------------------------------------------------------------------
+void CatalogFileView::drawRow(QPainter* painter, QStyleOptionViewItem const& option,
+    QModelIndex const& index) const
+{
+    QTreeView::drawRow(painter, option, index);
+
+    painter->save();
+    painter->setPen(QPen(QColor(Qt::lightGray), 0));
+    painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
+    painter->restore();
 }
 
 //-----------------------------------------------------------------------------

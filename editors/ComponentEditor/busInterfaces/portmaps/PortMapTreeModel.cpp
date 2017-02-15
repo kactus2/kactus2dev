@@ -1114,8 +1114,7 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
         }
     }
 
-    if (index.parent().isValid() && currentPortMap &&
-        index.column() != PortMapsColumns::LOGICAL_PRESENCE && index.column() != PortMapsColumns::INVERT)
+    if (index.parent().isValid() && currentPortMap)
     {
         if (index.column() == PortMapsColumns::LOGICAL_PORT ||
             index.column() == PortMapsColumns::LOGICAL_LEFT || index.column() == PortMapsColumns::LOGICAL_RIGHT)
@@ -1133,7 +1132,7 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
                 return false;
             }
         }
-        else
+        else if (index.column() != PortMapsColumns::LOGICAL_PRESENCE && index.column() != PortMapsColumns::INVERT)
         {
             if (currentPortMap->getPhysicalPort() && !currentPortMap->getLogicalTieOff().isEmpty())
             {

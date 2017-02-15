@@ -22,9 +22,11 @@
 //-----------------------------------------------------------------------------
 // Function: memorymapsdelegate::MemoryMapsDelegate()
 //-----------------------------------------------------------------------------
-MemoryMapsDelegate::MemoryMapsDelegate(QStringList remapStateNames, QObject *parent):
-MultilineDescriptionDelegate(parent),
-remapStateNames_(remapStateNames)
+MemoryMapsDelegate::MemoryMapsDelegate(QCompleter* parameterNameCompleter,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QStringList remapStateNames, QObject *parent):
+ExpressionDelegate(parameterNameCompleter, parameterFinder, parent),
+    remapStateNames_(remapStateNames)
 {
 
 }
@@ -65,7 +67,7 @@ QWidget* MemoryMapsDelegate::createEditor( QWidget* parent, const QStyleOptionVi
     }
     else
     {
-        return MultilineDescriptionDelegate::createEditor(parent, option, index);
+        return ExpressionDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -98,7 +100,7 @@ void MemoryMapsDelegate::setEditorData( QWidget* editor, const QModelIndex& inde
     }
     else
     {
-        MultilineDescriptionDelegate::setEditorData(editor, index);
+        ExpressionDelegate::setEditorData(editor, index);
     }
 }
 
@@ -131,7 +133,7 @@ void MemoryMapsDelegate::setModelData( QWidget* editor, QAbstractItemModel* mode
     }
     else
     {
-        MultilineDescriptionDelegate::setModelData(editor, model, index);
+        ExpressionDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -158,6 +160,14 @@ void MemoryMapsDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
     painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
 
     painter->setPen(oldPen);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapsDelegate::columnAcceptsExpression()
+//-----------------------------------------------------------------------------
+bool MemoryMapsDelegate::columnAcceptsExpression(int column) const
+{
+    return column == MemoryMapsColumns::IS_PRESENT;
 }
 
 //-----------------------------------------------------------------------------
