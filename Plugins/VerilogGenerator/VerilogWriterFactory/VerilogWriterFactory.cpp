@@ -161,11 +161,17 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
     {
         if (mPort->downAssignments_.size() > 0)
         {
+            // Create a writer for each assignment of the port.
             foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->downAssignments_)
             {
-                QSharedPointer<VerilogAssignmentWriter> topAssignment = QSharedPointer<VerilogAssignmentWriter>
-                    (new VerilogAssignmentWriter(mPort->port_->name(), mpa, mPort->port_->getDirection(), true));
-                document->topAssignmentWriters_->add(topAssignment);
+                // Current policy dictates that hierarchical inout ports are directly connected to an instance port.
+                // As an exception, it could have a default value assignment.
+                if (mPort->port_->getDirection() != DirectionTypes::INOUT || !mpa->wire_)
+                {
+                    QSharedPointer<VerilogAssignmentWriter> topAssignment = QSharedPointer<VerilogAssignmentWriter>
+                        (new VerilogAssignmentWriter(mPort->port_->name(), mpa, mPort->port_->getDirection(), true));
+                    document->topAssignmentWriters_->add(topAssignment);
+                }
             }
         }
         else
@@ -210,17 +216,21 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
                 continue;
             }
 
-            QString physName = instance->getInstanceName() + "_" +
-                mPort->port_->name();
-
-            document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(
-                new VerilogWireWriter(physName, mPort->vectorBounds_)));
-
-            foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
+            // Current policy dictates that instance inout ports are directly connected to wire or hierarchical port.
+            if (mPort->port_->getDirection() != DirectionTypes::INOUT)
             {
-                QSharedPointer<VerilogAssignmentWriter> instanceAssignment = QSharedPointer<VerilogAssignmentWriter>
-                    (new VerilogAssignmentWriter(physName, mpa, mPort->port_->getDirection(), false));
-                document->instanceAssignmentWriters_->add(instanceAssignment);
+                QString physName = instance->getInstanceName() + "_" +
+                    mPort->port_->name();
+
+                document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(
+                    new VerilogWireWriter(physName, mPort->vectorBounds_)));
+
+                foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
+                {
+                    QSharedPointer<VerilogAssignmentWriter> instanceAssignment = QSharedPointer<VerilogAssignmentWriter>
+                        (new VerilogAssignmentWriter(physName, mpa, mPort->port_->getDirection(), false));
+                    document->instanceAssignmentWriters_->add(instanceAssignment);
+                }
             }
         }
     }
@@ -238,7 +248,22 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
 
         foreach (QSharedPointer<MetaWire> gw, mInterconnect->wires_)
         {
-            document->connectionWireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw->name_, gw->bounds_)));
+            // Current policy dictates that hierarchical inout ports are directly connected to an instance port.
+            bool hierInout = false;
+            foreach (QSharedPointer<MetaPort> mPort, gw->hierPorts_)
+            {
+                if (mPort->port_->getDirection() == DirectionTypes::INOUT)
+                {
+                    hierInout = true;
+                    break;
+                }
+            }
+
+            if (!hierInout)
+            {
+                document->connectionWireWriters_->
+                    add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(gw->name_, gw->bounds_)));
+            }
         }
     }
 
@@ -253,7 +278,22 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
 
     foreach (QSharedPointer<MetaWire> adHoc, *design->getAdHocWires())
     {
-        document->adHocWireWriters_->add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(adHoc->name_, adHoc->bounds_)));
+        // Current policy dictates that hierarchical in out ports are directly connected to an instance port.
+        bool hierInout = false;
+        foreach (QSharedPointer<MetaPort> mPort, adHoc->hierPorts_)
+        {
+            if (mPort->port_->getDirection() == DirectionTypes::INOUT)
+            {
+                hierInout = true;
+                break;
+            }
+        }
+
+        if (!hierInout)
+        {
+            document->adHocWireWriters_->
+                add(QSharedPointer<VerilogWireWriter>(new VerilogWireWriter(adHoc->name_, adHoc->bounds_)));
+        }
     }
 }
 

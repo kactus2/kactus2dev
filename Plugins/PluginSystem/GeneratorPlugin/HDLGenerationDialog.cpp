@@ -33,7 +33,7 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     fileOutput_(new FileOutputWidget(configuration->getOutputControl())),
     generalWarningLabel_(new QLabel)
 {
-    setWindowTitle(tr("Configure file generation for %1.").arg(configuration->getViewSelection()->getTargetLanguage()));
+    setWindowTitle(tr("File generation for %1").arg(configuration->getViewSelection()->getTargetLanguage()));
 
     // Create font for previewing.
     QFont font("Courier");

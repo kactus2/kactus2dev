@@ -228,9 +228,29 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
     // Use the default value of port, if no assignments exist.
     if (mPort->upAssignments_.size() < 1)
     {
-        if (mPort->port_->getDirection() == DirectionTypes::IN || mPort->port_->getDirection() == DirectionTypes::INOUT)
+        if (mPort->port_->getDirection() == DirectionTypes::IN)
         {
             return mPort->defaultValue_;
+        }
+
+        return "";
+    }
+
+    // In case of an inout port, connect it directly the first encountered wire.
+    if (mPort->port_->getDirection() == DirectionTypes::INOUT)
+    {
+        foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
+        {
+            if (mpa->wire_)
+            {
+                // If it is hierarchical, use the corresponding hierarchical port instead.
+                if (mpa->wire_->hierPorts_.size() > 0)
+                {
+                    return mpa->wire_->hierPorts_.first()->port_->name();
+                }
+
+                return mpa->wire_->name_;
+            }
         }
 
         return "";

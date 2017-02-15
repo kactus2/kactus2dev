@@ -55,8 +55,10 @@ private slots:
     void testMasterToMultipleSlavesInterconnections();
 
     void testAdhocConnectionBetweenComponentInstances();    
+    void testAdhocInOutConnectionBetweenComponentInstances();
     void testAdhocTieOffInComponentInstance();
     void testHierarchicalAdhocConnection();
+    void testHierarchicalAdhocInOutConnection();
     void testHierarchicalAdHocTieOffValues();
     
     void testDescriptionAndVLNVIsPrintedAboveInstance();
@@ -1069,6 +1071,50 @@ void tst_VerilogWriterFactory::testAdhocConnectionBetweenComponentInstances()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testAdhocInOutConnectionBetweenComponentInstances()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testAdhocInOutConnectionBetweenComponentInstances()
+{
+    QSharedPointer<MetaInstance> senderInstance = addSender("sender");
+    QSharedPointer<MetaInstance> receiverInstance1 = addReceiver("receiver1");
+    QSharedPointer<MetaInstance> receiverInstance2 = addReceiver("receiver2");
+
+    QSharedPointer<MetaWire> dataWire = addWireToDesign("dataAdHoc","7","0");
+    QSharedPointer<MetaWire> enaWire = addWireToDesign("enableAdHoc","0","0");
+
+    createPortAssignment(receiverInstance1->getPorts()->value("data_in"), dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(receiverInstance2->getPorts()->value("data_in"), dataWire, true, "7", "0", "7", "0");
+    createPortAssignment(senderInstance->getPorts()->value("data_out"), dataWire, true, "7", "0", "7", "0");
+
+    receiverInstance1->getPorts()->first()->port_->setDirection(DirectionTypes::INOUT);
+    receiverInstance2->getPorts()->first()->port_->setDirection(DirectionTypes::INOUT);
+    senderInstance->getPorts()->first()->port_->setDirection(DirectionTypes::INOUT);
+
+    runGenerator(true);
+
+    verifyOutputContains("wire [7:0]  dataAdHoc;");
+    verifyOutputContains("wire        enableAdHoc;");
+
+    verifyOutputContains(
+        "    TestReceiver receiver1(\n"
+        "        // Interface: data_if\n"
+        "        .enable_in           (),\n"
+        "        .data_in             (dataAdHoc)");
+
+    verifyOutputContains(
+        "    TestReceiver receiver2(\n"
+        "        // Interface: data_if\n"
+        "        .enable_in           (),\n"
+        "        .data_in             (dataAdHoc)");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_if\n"
+        "        .enable_out          (),\n"
+        "        .data_out            (dataAdHoc)");
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
 //-----------------------------------------------------------------------------
 void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
@@ -1131,7 +1177,6 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
         "    wire [9:0]  tieOffer_numberedTieOff;\n"
         "    wire [3:0]  tieOffer_oneTieOff;\n"
         "    wire [4:0]  tieOffer_slicedTieOff;\n"
-        "    wire [9:0]  tieOffer_tieOffInOut;\n"
         "    wire [1:0]  tieOffer_tieOffOut;\n"
         "    wire [1:0]  tieOffer_zeroTieOff;\n"
         "\n"
@@ -1141,7 +1186,6 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
         "    assign tieOffer_oneTieOff[3:0] = 1;\n"
         "    assign tieOffer_slicedTieOff[4:3] = 2;\n"
         "    assign tieOffer_slicedTieOff[2:0] = 7;\n"
-        "    assign tieOffer_tieOffInOut[9:0] = 1;\n"
         "    assign tieOffer_zeroTieOff[1:0] = 0;\n"
         "\n"
         "    // IP-XACT VLNV: Test:TestLibrary:TestTieOff:1.0\n"
@@ -1155,7 +1199,7 @@ void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
         "        .unusedPort          (),\n"
         "        .zeroTieOff          (tieOffer_zeroTieOff),\n"
         "        .tieOffOut           (tieOffer_tieOffOut),\n"
-        "        .tieOffInOut         (tieOffer_tieOffInOut));\n"
+        "        .tieOffInOut         ());\n"
         "\n"
         "\n"
         "endmodule");
@@ -1223,6 +1267,34 @@ void tst_VerilogWriterFactory::testHierarchicalAdhocConnection()
         "        // Interface: data_if\n"
         "        .data_out            (sender_data_out),\n"
         "        .enable_out          (sender_enable_out)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testHierarchicalAdhocInOutConnection()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testHierarchicalAdhocInOutConnection()
+{
+    QSharedPointer<MetaPort> topData = addPort("data_from_sender", 8, DirectionTypes::INOUT, topComponent_);
+
+    QSharedPointer<MetaInstance> senderInstance = addSender("sender");
+
+    senderInstance->getPorts()->first()->port_->setDirection(DirectionTypes::INOUT);
+
+    QSharedPointer<MetaWire> dataWire = addWireToDesign("dataAdHoc","7","0");
+    dataWire->hierPorts_.append(topData);
+
+    createPortAssignment(topData, dataWire, false, "7", "0", "7", "0");
+    createPortAssignment(senderInstance->getPorts()->value("data_out"), dataWire, true, "7", "0", "7", "0");
+
+    runGenerator(true);
+
+    verifyOutputContains("inout          [7:0]                data_from_sender");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_if\n"
+        "        .enable_out          (),\n"
+        "        .data_out            (data_from_sender)");
 }
 
 //-----------------------------------------------------------------------------
