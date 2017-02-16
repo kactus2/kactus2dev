@@ -7,9 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h \
-    ./editors/CatalogEditor/CatalogEditor.h \
-    ./VersionHelper.h \
+HEADERS += ./VersionHelper.h \
     ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
@@ -112,6 +110,7 @@ HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h 
     ./mainwindow/Ribbon/RibbonTheme.h \
     ./mainwindow/Ribbon/Ribbon.h \
     ./mainwindow/Ribbon/RibbonGroup.h \
+    ./mainwindow/NewPages/NewCatalogPage.h \
     ./mainwindow/NewPages/NewApiDefinitionPage.h \
     ./mainwindow/NewPages/NewBusDefinitionPage.h \
     ./mainwindow/NewPages/NewComDefinitionPage.h \
@@ -143,7 +142,6 @@ HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h 
     ./settings/GeneralSettingsPage.h \
     ./settings/CodeEditorSettingsPage.h \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
-    ./editors/ComponentEditor/instantiations/ModuleParameterColumns.h \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
     ./wizards/ComponentWizard/ComponentWizardPages.h \
     ./wizards/ComponentWizard/ViewListModel.h \
@@ -507,6 +505,8 @@ HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h 
     ./editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.h \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationsColumns.h \
     ./editors/ComponentEditor/instantiations/DesignInstantiationColumns.h \
+    ./editors/ComponentEditor/instantiations/ModuleParameterColumns.h \
+    ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h \
     ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationEditor.h \
     ./editors/ComponentEditor/instantiations/DesignInstantiationEditor.h \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.h \
@@ -539,6 +539,12 @@ HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h 
     ./editors/BusDefinitionEditor/busportsdelegate.h \
     ./editors/BusDefinitionEditor/busportsmodel.h \
     ./editors/BusDefinitionEditor/busportsview.h \
+    ./editors/CatalogEditor/CatalogFileColumns.h \
+    ./editors/CatalogEditor/CatalogEditor.h \
+    ./editors/CatalogEditor/CatalogFileModel.h \
+    ./editors/CatalogEditor/CatalogFileDelegate.h \
+    ./editors/CatalogEditor/CatalogFileFilter.h \
+    ./editors/CatalogEditor/CatalogFileView.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/ComGraphicsConnection.h \
     ./designEditors/SystemDesign/ApiGraphicsConnection.h \
@@ -701,12 +707,9 @@ HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h 
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
     ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./mainwindow/NewPages/NewCatalogPage.h \
-    ./editors/CatalogEditor/CatalogFileModel.h \
-    ./editors/CatalogEditor/CatalogFileColumns.h \
-    ./editors/CatalogEditor/CatalogFileDelegate.h \
-    ./editors/CatalogEditor/CatalogFileFilter.h \
-    ./editors/CatalogEditor/CatalogFileView.h
+    ./Plugins/common/LanguageHighlighter.h \
+    ./editors/CSourceEditor/CSourceHighlight.h \
+    ./Plugins/common/SourceHighlightStyle.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -784,7 +787,6 @@ SOURCES += ./VersionHelper.cpp \
     ./common/graphicsItems/visualizeritem.cpp \
     ./common/delegates/ComboDelegate/combodelegate.cpp \
     ./common/delegates/LineEditDelegate/lineeditdelegate.cpp \
-    ./mainwindow/NewPages/NewCatalogPage.cpp \
     ./common/views/EditableTableView/editabletableview.cpp \
     ./common/views/EditableListView/editablelistview.cpp \
     ./mainwindow/DeleteWorkspaceDialog.cpp \
@@ -795,6 +797,7 @@ SOURCES += ./VersionHelper.cpp \
     ./mainwindow/SplashScreen.cpp \
     ./mainwindow/NewPages/NewApiDefinitionPage.cpp \
     ./mainwindow/NewPages/NewBusDefinitionPage.cpp \
+    ./mainwindow/NewPages/NewCatalogPage.cpp \
     ./mainwindow/NewPages/NewComDefinitionPage.cpp \
     ./mainwindow/NewPages/NewComponentPage.cpp \
     ./mainwindow/NewPages/NewDesignPage.cpp \
@@ -1147,6 +1150,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/instantiations/InstantiationsEditor.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterEditor.cpp \
+    ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterModel.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
@@ -1163,6 +1167,11 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/BusDefinitionEditor/busportsdelegate.cpp \
     ./editors/BusDefinitionEditor/busportsmodel.cpp \
     ./editors/BusDefinitionEditor/busportsview.cpp \
+    ./editors/CatalogEditor/CatalogEditor.cpp \
+    ./editors/CatalogEditor/CatalogFileDelegate.cpp \
+    ./editors/CatalogEditor/CatalogFileFilter.cpp \
+    ./editors/CatalogEditor/CatalogFileModel.cpp \
+    ./editors/CatalogEditor/CatalogFileView.cpp \
     ./designEditors/HWDesign/AdHocConnectionItem.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
     ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
@@ -1318,10 +1327,7 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./editors/CatalogEditor/CatalogEditor.cpp \
-    ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.cpp \
-    ./editors/CatalogEditor/CatalogFileModel.cpp \
-    ./editors/CatalogEditor/CatalogFileDelegate.cpp \
-    ./editors/CatalogEditor/CatalogFileFilter.cpp \
-    ./editors/CatalogEditor/CatalogFileView.cpp
+    ./Plugins/common/LanguageHighlighter.cpp \
+    ./editors/CSourceEditor/CSourceHighlight.cpp \
+    ./Plugins/common/SourceHighlightStyle.cpp
 RESOURCES += kactus.qrc

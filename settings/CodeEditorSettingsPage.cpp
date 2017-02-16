@@ -42,6 +42,7 @@ namespace
         "Multi-line Comments",
         "API Data Types",
         "API Functions",
+        "Language Specific"
     };
 }
 

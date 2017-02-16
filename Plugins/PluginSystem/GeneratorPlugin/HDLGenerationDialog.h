@@ -20,6 +20,8 @@
 #include "FileOutputWidget.h"
 #include <mainwindow/MessageConsole/messageconsole.h>
 
+#include <QSyntaxHighlighter>
+
 class GenerationControl;
 
 //-----------------------------------------------------------------------------
@@ -35,10 +37,14 @@ public:
 	HDLGenerationDialog(QSharedPointer<GenerationControl> configuration, QWidget *parent);
 
 	//! The destructor.
-    ~HDLGenerationDialog();
+    virtual ~HDLGenerationDialog();
 
-    //! Output window for the messages.
-    MessageConsole* console_;
+    /*!
+     *  Sets syntax highlighter for the generation preview.
+     *
+     *      @param [in] highlighter   The highlighter to use for preview.
+     */
+    void setPreviewHighlighter(QSyntaxHighlighter* highlighter);
 
 public slots:
 
@@ -46,6 +52,10 @@ public slots:
     virtual void accept();
 
     void onViewChanged();
+
+    void onNoticeMessage(QString const& message);
+
+    void onErrorMessage(QString const& message);
 
 private slots:
 
@@ -57,7 +67,7 @@ private:
     // Disable copying.
     HDLGenerationDialog(HDLGenerationDialog const& rhs);
     HDLGenerationDialog& operator=(HDLGenerationDialog const& rhs);
-  
+
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -77,6 +87,9 @@ private:
 
     //! Preview for the generation output.
     QPlainTextEdit* previewer_;
+
+    //! Output window for the messages.
+    MessageConsole* console_;
 };
 
 #endif //HDLGENERATIONDIALOG_H

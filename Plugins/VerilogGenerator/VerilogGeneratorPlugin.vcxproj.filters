@@ -298,6 +298,21 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\LanguageHighlighter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\SourceHighlightStyle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VerilogSourceHighlight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_LanguageHighlighter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_LanguageHighlighter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\Writer.h">
@@ -402,6 +417,12 @@
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h">
       <Filter>Header Files\GenerationControl</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\SourceHighlightStyle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogSourceHighlight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="VerilogGenerator.qrc">
@@ -427,6 +448,9 @@
     </CustomBuild>
     <CustomBuild Include="..\..\mainwindow\MessageConsole\messageconsole.h">
       <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\common\LanguageHighlighter.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

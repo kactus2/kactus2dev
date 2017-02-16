@@ -4219,6 +4219,18 @@
     <ClCompile Include="GeneratedFiles\moc_CatalogFileView.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_LanguageHighlighter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\common\LanguageHighlighter.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CSourceEditor\CSourceHighlight.cpp">
+      <Filter>Source Files\editors\CSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\common\SourceHighlightStyle.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5805,6 +5817,9 @@
     <CustomBuild Include="editors\CatalogEditor\CatalogFileView.h">
       <Filter>Header Files\editors\CatalogEditor</Filter>
     </CustomBuild>
+    <CustomBuild Include="Plugins\common\LanguageHighlighter.h">
+      <Filter>Header Files\Plugins\common</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6373,6 +6388,12 @@
     </ClInclude>
     <ClInclude Include="editors\CatalogEditor\CatalogFileColumns.h">
       <Filter>Header Files\editors\CatalogEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\CSourceEditor\CSourceHighlight.h">
+      <Filter>Header Files\editors\CSourceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\common\SourceHighlightStyle.h">
+      <Filter>Header Files\Plugins\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

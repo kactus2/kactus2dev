@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "HDLGenerationDialog.h"
+
 #include "GenerationControl.h"
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
@@ -31,7 +32,9 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     configuration_(configuration),
     viewSelection_(new ViewSelectionWidget(configuration->getViewSelection())),
     fileOutput_(new FileOutputWidget(configuration->getOutputControl())),
-    generalWarningLabel_(new QLabel)
+    generalWarningLabel_(new QLabel), 
+    previewer_(new QPlainTextEdit(this)),
+    console_(new MessageConsole(this))
 {
     setWindowTitle(tr("Configure file generation for %1.").arg(configuration->getViewSelection()->getTargetLanguage()));
 
@@ -42,7 +45,6 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     font.setPointSize(9);
 
     // Create the previewer.
-    previewer_ = new QPlainTextEdit;
     previewer_->setFont(font);
     previewer_->setTabStopWidth(4 * previewer_->fontMetrics().width(' '));
     previewer_->setReadOnly(true);
@@ -70,7 +72,7 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     QGroupBox* logBox = new QGroupBox("Log");
     QVBoxLayout* botLayout = new QVBoxLayout();
     logBox->setLayout(botLayout);
-    console_ = new MessageConsole(this);
+
     console_->setMinimumWidth(500);
     botLayout->addWidget(console_);
 
@@ -108,6 +110,14 @@ HDLGenerationDialog::~HDLGenerationDialog()
 }
 
 //-----------------------------------------------------------------------------
+// Function: HDLGenerationDialog::setPreviewHighlighter()
+//-----------------------------------------------------------------------------
+void HDLGenerationDialog::setPreviewHighlighter(QSyntaxHighlighter* highlighter)
+{
+    highlighter->setDocument(previewer_->document());
+}
+
+//-----------------------------------------------------------------------------
 // Function: HDLGenerationDialog::accept()
 //-----------------------------------------------------------------------------
 void HDLGenerationDialog::accept()
@@ -127,6 +137,31 @@ void HDLGenerationDialog::accept()
     }
 
     QDialog::accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLGenerationDialog::onViewChanged()
+//-----------------------------------------------------------------------------
+void HDLGenerationDialog::onViewChanged()
+{
+    configuration_->parseDocuments();
+    fileOutput_->onOutputFilesChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLGenerationDialog::onNoticeMessage()
+//-----------------------------------------------------------------------------
+void HDLGenerationDialog::onNoticeMessage(QString const& message)
+{
+    console_->onNoticeMessage(message);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLGenerationDialog::onErrorMessage()
+//-----------------------------------------------------------------------------
+void HDLGenerationDialog::onErrorMessage(QString const& message)
+{
+    console_->onErrorMessage(message);
 }
 
 //-----------------------------------------------------------------------------
@@ -167,13 +202,4 @@ void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationOutput>
 
     cursor.setPosition(implementationEnd, QTextCursor::KeepAnchor);        
     cursor.setCharFormat(highlighFormat);
-}
-
-//-----------------------------------------------------------------------------
-// Function: HDLGenerationDialog::onViewChanged()
-//-----------------------------------------------------------------------------
-void HDLGenerationDialog::onViewChanged()
-{
-    configuration_->parseDocuments();
-    fileOutput_->onOutputFilesChanged();
 }
