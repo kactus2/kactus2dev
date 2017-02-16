@@ -45,6 +45,7 @@ reservedWords_()
 
     setFrameStyle(QFrame::Plain);
     setFrameShape(QFrame::Box);
+    setFrameShadow(QFrame::Sunken);
 
     nameCompleter_->setWidget(this);
 

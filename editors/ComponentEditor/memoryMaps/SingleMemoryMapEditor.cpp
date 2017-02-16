@@ -54,7 +54,6 @@ ItemEditor(component, libHandler, parent),
     addressUnitBitsEditor_->setValidator
         (new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));
 
-    isPresentEditor_->setFrameShadow(QFrame::Sunken);
     isPresentEditor_->setFixedHeight(20);
 
     if (!isMemoryMap())

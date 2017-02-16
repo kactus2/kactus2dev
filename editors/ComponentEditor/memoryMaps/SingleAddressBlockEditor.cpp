@@ -258,11 +258,6 @@ void SingleAddressBlockEditor::setupLayout()
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-    baseAddressEditor_->setFrameShadow(QFrame::Sunken);
-    rangeEditor_->setFrameShadow(QFrame::Sunken);
-    widthEditor_->setFrameShadow(QFrame::Sunken);
-    isPresentEditor_->setFrameShadow(QFrame::Sunken);
-
     QGroupBox* addressBlockDefinitionGroup = new QGroupBox(tr("Address block definition"));
 
     QFormLayout* addressBlockDefinitionLayout = new QFormLayout(addressBlockDefinitionGroup);

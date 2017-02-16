@@ -48,10 +48,6 @@ masterInterfaceBindingLabel_(new QLabel(this))
 
     addrUnitEditor_.setValidator(new QIntValidator(this));
     addrUnitEditor_.setPlaceholderText("8");
-    
-    rangeEditor_->setFrameShadow(QFrame::Sunken);
-    widthEditor_->setFrameShadow(QFrame::Sunken);
-    isPresentEditor_->setFrameShadow(QFrame::Sunken);
 
     rangeEditor_->setFixedHeight(20);
     widthEditor_->setFixedHeight(20);
@@ -111,9 +107,6 @@ masterInterfaceBindingLabel_(new QLabel(this))
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(isPresentEditor_, SIGNAL(decreaseReference(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-    connect(isPresentEditor_, SIGNAL(editingFinished(QString)),
-        this, SIGNAL(graphicsChanged(QString)), Qt::UniqueConnection);
-
 }
 
 //-----------------------------------------------------------------------------

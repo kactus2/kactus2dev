@@ -383,8 +383,9 @@ int SegmentsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const
 {
     int referencesInOffset = segments_->at(row)->getAddressOffset().count(valueID);
     int referencesInRange = segments_->at(row)->getRange().count(valueID);
+    int referencesInPresence = segments_->at(row)->getIsPresent().count(valueID);
 
-    return referencesInOffset + referencesInRange;
+    return referencesInOffset + referencesInRange + referencesInPresence;
 }
 
 //-----------------------------------------------------------------------------
