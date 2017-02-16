@@ -65,11 +65,6 @@ QWidget* ConfigurableElementDelegate::createEditor(QWidget* parent, QStyleOption
         return scrollingWidget;
     }
 
-    else if (isIndexForValueUsingChoice(index))
-    {
-        return createEnumerationSelector(parent, index);
-    }
-
     else
     {
         return ChoiceCreatorDelegate::createEditor(parent, option, index);
@@ -84,19 +79,6 @@ void ConfigurableElementDelegate::setEditorData(QWidget* editor, QModelIndex con
     if (index.column() == valueColumn() && valueIsArray(index))
     {
         createArrayEditor(editor, index);
-    }
-
-    else if (isIndexForValueUsingChoice(index))
-    {
-        QString text = index.model()->data(index, Qt::DisplayRole).toString();
-        QComboBox* combo = qobject_cast<QComboBox*>(editor);
-
-        int comboIndex = combo->findText(text, Qt::MatchEndsWith);
-        if (comboIndex == -1)
-        {
-            comboIndex = combo->findText(text, Qt::MatchStartsWith);
-        }
-        combo->setCurrentIndex(comboIndex);
     }
 
     else
@@ -119,14 +101,6 @@ void ConfigurableElementDelegate::setModelData(QWidget* editor, QAbstractItemMod
 
         QString arrayValue = arrayModel->getArrayData();
         model->setData(index, arrayValue, Qt::EditRole);
-    }
-
-    else if (isIndexForValueUsingChoice(index))
-    {
-        QComboBox* combo = qobject_cast<QComboBox*>(editor);
-        QString text = combo->currentText();
-        text = text.left(text.indexOf(':'));
-        model->setData(index, text, Qt::EditRole);
     }
 
     else

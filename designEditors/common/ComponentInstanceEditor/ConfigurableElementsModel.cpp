@@ -92,6 +92,8 @@ void ConfigurableElementsModel::setComponent(QSharedPointer<Component> component
     component_ = component;
     componentInstance_ = instance;
     viewConfiguration_ = viewConfiguration;
+    
+    validator_->componentChange(component_->getChoices());
 
     // get the edit provider that manages the undo/redo stack
     editProvider_ = editProvider;
@@ -519,7 +521,7 @@ QSharedPointer<Choice> ConfigurableElementsModel::findChoice(QString const& choi
 {
     foreach (QSharedPointer<Choice> choice, *component_->getChoices())
     {
-        if (choice->name() == choiceName)
+        if (choice->name().compare(choiceName) == 0)
         {
             return choice;
         }
@@ -558,15 +560,16 @@ QString ConfigurableElementsModel::matchArrayValuesToSelectedChoice(QSharedPoint
 QString ConfigurableElementsModel::findDisplayValueForEnumeration(QSharedPointer<Choice> choice,
     QString const& enumerationValue) const
 {
+    QString value = parseExpressionToDecimal(enumerationValue);
     foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
     {
-        if (enumeration->getValue() == enumerationValue && !enumeration->getText().isEmpty())
+        if (enumeration->getValue().compare(value) == 0 && !enumeration->getText().isEmpty())
         {
             return enumeration->getText();
         }
     }
 
-    return enumerationValue;
+    return value;
 }
 
 //-----------------------------------------------------------------------------
