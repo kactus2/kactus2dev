@@ -14,8 +14,8 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryItem::MemoryItem()
 //-----------------------------------------------------------------------------
-MemoryItem::MemoryItem(QString const& name, QString const& type): name_(name), type_(type), identifier_(), 
-    address_(), range_(), width_(), size_(), offset_(), childItems_()
+MemoryItem::MemoryItem(QString const& name, QString const& type): name_(name), displayName_(),
+    type_(type), identifier_(), address_(), range_(), width_(), size_(), offset_(), childItems_()
 {
 
 }
@@ -42,6 +42,22 @@ QString MemoryItem::getName() const
 QString MemoryItem::getType() const
 {
     return type_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setDisplayName()
+//-----------------------------------------------------------------------------
+void MemoryItem::setDisplayName(QString const& displayName)
+{
+    displayName_ = displayName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getDisplayName()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getDisplayName() const
+{
+    return displayName_;
 }
 
 //-----------------------------------------------------------------------------
