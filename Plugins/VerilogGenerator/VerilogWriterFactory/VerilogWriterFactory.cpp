@@ -169,7 +169,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
                 if (mPort->port_->getDirection() != DirectionTypes::INOUT || !mpa->wire_)
                 {
                     QSharedPointer<VerilogAssignmentWriter> topAssignment = QSharedPointer<VerilogAssignmentWriter>
-                        (new VerilogAssignmentWriter(mPort->port_->name(), mpa, mPort->port_->getDirection(), true));
+                        (new VerilogAssignmentWriter(mPort->port_->name(), mpa, mPort, true));
                     document->topAssignmentWriters_->add(topAssignment);
                 }
             }
@@ -228,7 +228,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
                 foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
                 {
                     QSharedPointer<VerilogAssignmentWriter> instanceAssignment = QSharedPointer<VerilogAssignmentWriter>
-                        (new VerilogAssignmentWriter(physName, mpa, mPort->port_->getDirection(), false));
+                        (new VerilogAssignmentWriter(physName, mpa, mPort, false));
                     document->instanceAssignmentWriters_->add(instanceAssignment);
                 }
             }

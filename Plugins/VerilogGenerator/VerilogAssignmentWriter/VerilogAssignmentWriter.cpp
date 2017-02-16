@@ -16,11 +16,11 @@
 //-----------------------------------------------------------------------------
 VerilogAssignmentWriter::VerilogAssignmentWriter(QString portWireName,
     QSharedPointer<MetaPortAssignment> portAssignment,
-    DirectionTypes::Direction direction,
+    QSharedPointer<MetaPort> mPort,
     bool isHierPort) :
     portWireName_(portWireName),
     mpa_(portAssignment),
-    direction_(direction),
+    mPort_(mPort),
     isInHierPort_(isHierPort)
 {
 }
@@ -50,8 +50,9 @@ void VerilogAssignmentWriter::write(QTextStream& output) const
 //-----------------------------------------------------------------------------
 QString VerilogAssignmentWriter::assignmentForPort() const
 {
-    bool isOutPort = (direction_ == DirectionTypes::OUT || direction_ == DirectionTypes::INOUT);
-    bool isInPort = (direction_ == DirectionTypes::IN || direction_ == DirectionTypes::INOUT);
+    DirectionTypes::Direction dir = mPort_->port_->getDirection();
+    bool isOutPort = (dir == DirectionTypes::OUT || dir == DirectionTypes::INOUT);
+    bool isInPort = (dir == DirectionTypes::IN || dir == DirectionTypes::INOUT);
 
     QString assignmentString;
 
@@ -119,7 +120,7 @@ QString VerilogAssignmentWriter::assignmentForPort() const
     if (portBounds.first == portBounds.second)
     {
         // If the chosen wire bounds differ, must select the bit.
-        if (!defaultIsUsed && wireBounds.first == wireBounds.second)
+        if (!defaultIsUsed && mPort_->vectorBounds_.first == mPort_->vectorBounds_.second)
         {
             assignmentString.remove("[<physicalLeft>:<physicalRight>]");
         }
