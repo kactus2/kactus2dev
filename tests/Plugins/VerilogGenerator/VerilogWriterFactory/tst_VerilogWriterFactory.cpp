@@ -1337,7 +1337,7 @@ void tst_VerilogWriterFactory::testHierarchicalAdhocInOutConnection()
         "    TestSender sender(\n"
         "        // Interface: data_if\n"
         "        .enable_out          (),\n"
-        "        .data_out            (data_from_sender)");
+        "        .data_out            (data_from_sender[7:0])");
 }
 
 //-----------------------------------------------------------------------------

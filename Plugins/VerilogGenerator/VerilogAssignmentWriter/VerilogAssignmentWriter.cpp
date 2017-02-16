@@ -75,8 +75,6 @@ QString VerilogAssignmentWriter::assignmentForPort() const
     QPair<QString,QString> wireBounds;
     // The bounds of the selected part wire that will be assigned to selected bounds of the component port.
     QPair<QString,QString> logicalBounds;
-    // Will be set true, if default value is used instead of wire bounds.
-    bool defaultIsUsed = false;
 
     if (mpa_->wire_)
     {
@@ -109,7 +107,6 @@ QString VerilogAssignmentWriter::assignmentForPort() const
         // If a default value is assigned to a physical port, it shall be used.
         assignmentString.remove("[<logicalLeft>:<logicalRight>]");
         assignmentString.replace("<logicalWireName>", mpa_->defaultValue_);
-        defaultIsUsed = true;
     }
     else
     {
@@ -120,7 +117,7 @@ QString VerilogAssignmentWriter::assignmentForPort() const
     if (portBounds.first == portBounds.second)
     {
         // If the chosen wire bounds differ, must select the bit.
-        if (!defaultIsUsed && mPort_->vectorBounds_.first == mPort_->vectorBounds_.second)
+        if (mPort_->vectorBounds_.first == mPort_->vectorBounds_.second)
         {
             assignmentString.remove("[<physicalLeft>:<physicalRight>]");
         }

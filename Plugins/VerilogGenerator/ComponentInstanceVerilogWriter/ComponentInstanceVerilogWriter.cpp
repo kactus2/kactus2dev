@@ -246,7 +246,42 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
                 // If it is hierarchical, use the corresponding hierarchical port instead.
                 if (mpa->wire_->hierPorts_.size() > 0)
                 {
-                    return mpa->wire_->hierPorts_.first()->port_->name();
+                    QSharedPointer<MetaPort> hierPort = mpa->wire_->hierPorts_.first();
+                    QSharedPointer<MetaPortAssignment> hierMpa;
+
+                    // Find corresponding assignment
+                    foreach (QSharedPointer<MetaPortAssignment> theirAssignment, hierPort->downAssignments_)
+                    {
+                        if (theirAssignment->wire_ == mpa->wire_)
+                        {
+                            hierMpa = theirAssignment;
+                            break;
+                        }
+                    }
+
+                    QString bounds;
+
+                    if (hierMpa)
+                    {
+                        if (hierMpa->physicalBounds_.first == hierMpa->physicalBounds_.second)
+                        {
+                            if (hierPort->vectorBounds_.first != hierPort->vectorBounds_.second)
+                            {
+                                bounds = "[<left>]";
+
+                                bounds.replace("<left>", hierMpa->physicalBounds_.first);
+                            }
+                        }
+                        else
+                        {
+                            bounds = "[<left>:<right>]";
+                            
+                            bounds.replace("<left>", hierMpa->physicalBounds_.first);
+                            bounds.replace("<right>", hierMpa->physicalBounds_.second);
+                        }
+                    }
+
+                    return hierPort->port_->name() + bounds;
                 }
 
                 return mpa->wire_->name_;
