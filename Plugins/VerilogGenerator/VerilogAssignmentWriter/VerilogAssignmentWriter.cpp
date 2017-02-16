@@ -68,19 +68,37 @@ QString VerilogAssignmentWriter::assignmentForPort() const
         return "";
     }
 
+    // The selected bounds of the component port that will be assigned.
+    QPair<QString,QString> portBounds = mpa_->physicalBounds_;
+    // The bounds of the wire that will be assigned to selected bounds of the component port.
+    QPair<QString,QString> wireBounds;
+    // The bounds of the selected part wire that will be assigned to selected bounds of the component port.
+    QPair<QString,QString> logicalBounds;
+    // Will be set true, if default value is used instead of wire bounds.
+    bool defaultIsUsed = false;
+
     if (mpa_->wire_)
     {
-        QPair<QString,QString> wireBounds = mpa_->logicalBounds_;
+        logicalBounds = mpa_->logicalBounds_;
+        wireBounds = mpa_->wire_->bounds_;
 
         // Use bounds only if they are not the same.
-        if (wireBounds.first == wireBounds.second)
+        if (logicalBounds.first == logicalBounds.second)
         {
-            assignmentString.remove("[<logicalLeft>:<logicalRight>]");
+            // If the chosen port bounds differ, must select the bit.
+            if (wireBounds.first == wireBounds.second)
+            {
+                assignmentString.remove("[<logicalLeft>:<logicalRight>]");
+            }
+            else
+            {
+                assignmentString.replace("<logicalLeft>:<logicalRight>", logicalBounds.first);
+            }
         }
         else
         {
-            assignmentString.replace("<logicalLeft>", wireBounds.first);
-            assignmentString.replace("<logicalRight>", wireBounds.second);
+            assignmentString.replace("<logicalLeft>", logicalBounds.first);
+            assignmentString.replace("<logicalRight>", logicalBounds.second);
         }
 
         assignmentString.replace("<logicalWireName>", mpa_->wire_->name_);
@@ -90,18 +108,25 @@ QString VerilogAssignmentWriter::assignmentForPort() const
         // If a default value is assigned to a physical port, it shall be used.
         assignmentString.remove("[<logicalLeft>:<logicalRight>]");
         assignmentString.replace("<logicalWireName>", mpa_->defaultValue_);
+        defaultIsUsed = true;
     }
     else
     {
         return "";
     }
 
-    QPair<QString,QString> portBounds = mpa_->physicalBounds_;
-
     // Use bounds only if they are not the same.
     if (portBounds.first == portBounds.second)
     {
-        assignmentString.remove("[<physicalLeft>:<physicalRight>]");
+        // If the chosen wire bounds differ, must select the bit.
+        if (!defaultIsUsed && wireBounds.first == wireBounds.second)
+        {
+            assignmentString.remove("[<physicalLeft>:<physicalRight>]");
+        }
+        else
+        {
+            assignmentString.replace("<physicalLeft>:<physicalRight>", portBounds.first);
+        }
     }
     else
     {
