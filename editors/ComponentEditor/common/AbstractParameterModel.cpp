@@ -69,7 +69,8 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
         }
         else if (index.column() == descriptionColumn())
         {
-            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$", QRegularExpression::DotMatchesEverythingOption), "...");
+            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$",
+                QRegularExpression::DotMatchesEverythingOption), QStringLiteral("..."));
         }
         else
         {
@@ -87,7 +88,7 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
             QString choiceText = index.sibling(index.row(), choiceColumn()).data(Qt::DisplayRole).toString();
             if (!choiceText.isEmpty())
             {
-                return expressionOrValueForIndex(index);
+                return expressionFormatter_->formatReferringExpression(expressionOrValueForIndex(index).toString());
             }
         }
 
@@ -102,13 +103,17 @@ QVariant AbstractParameterModel::data( QModelIndex const& index, int role /*= Qt
             return valueForIndex(index);
         }
     }
-    else if (Qt::BackgroundRole == role) 
+    else if (role == Qt::BackgroundRole) 
     {
         return backgroundColorForIndex(index);
     }
-    else if (Qt::ForegroundRole == role)
+    else if (role == Qt::ForegroundRole)
     {
         return blackForValidOrRedForInvalidIndex(index);
+    }
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
     }
 
     else // if unsupported role
@@ -424,15 +429,17 @@ QSharedPointer<Choice> AbstractParameterModel::findChoice(QString const& choiceN
 QString AbstractParameterModel::findDisplayValueForEnumeration(QSharedPointer<Choice> choice,
     QString const& enumerationValue) const
 {
+    QString value = parseExpressionToDecimal(enumerationValue);
+
     foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
     {
-        if (enumeration->getValue() == enumerationValue && !enumeration->getText().isEmpty())
+        if (enumeration->getValue() == value && !enumeration->getText().isEmpty())
         {
             return enumeration->getText();
         }
     }
 
-    return enumerationValue;
+    return value;
 }
 
 //-----------------------------------------------------------------------------

@@ -54,7 +54,7 @@ struct MetaWire
     QPair<QString,QString> bounds_;
     //! The name of the wire, to tell it apart from other wires of the same interconnection.
     QString name_;
-
+    //! The hierarchical ports that are assigned to the wire.
     QList<QSharedPointer<MetaPort> > hierPorts_;
 };
 
@@ -80,8 +80,9 @@ struct MetaPort
     QPair<QString,QString> arrayBounds_;
     //! The parsed default value for port.
     QString defaultValue_;
-    
+    //! The parsed assignments for port that go upper level in hierarchy.
     QMultiMap<QString, QSharedPointer<MetaPortAssignment> > upAssignments_;
+    //! The parsed assignments for port that go lower level in hierarchy.
     QMultiMap<QString, QSharedPointer<MetaPortAssignment> > downAssignments_;
 };
 
@@ -91,9 +92,9 @@ struct MetaInterconnection
 {
     //! The name of the interconnection, to tell it apart from other interconnections of the design.
     QString name_;
-
+    //! The wires for the logical wires in interconnections.
     QMap<QString, QSharedPointer<MetaWire> > wires_;
-
+    //! The hierarchical interfaces that are assigned to the interconection.
     QList<QSharedPointer<MetaInterface> > hierIfs_;
 };
 
@@ -105,15 +106,12 @@ struct MetaInterface
     QSharedPointer<AbstractionType> absType_;
     //! The abstraction definition of the abstraction type.
     QSharedPointer<AbstractionDefinition> absDef_;
-    //! The used interface mode.
-    QString mode_;
     //! The parsed ports of the component keyed with its physical name.
     QMap<QString, QSharedPointer<MetaPort> > ports_;
-    //! The interconnection attached to the interface.
+    //! The interconnection attached to the interface go upper level in hierarchy.
     QSharedPointer<MetaInterconnection> upInterconnection_;
+    //! The interconnection attached to the interface go lower level in hierarchy.
     QSharedPointer<MetaInterconnection> downInterconnection_;
-
-    QSharedPointer<QMap<QString, QSharedPointer<MetaPort> > > getPorts(){return QSharedPointer<QMap<QString, QSharedPointer<MetaPort> > >(new QMap<QString, QSharedPointer<MetaPort> >(ports_));}
 };
 
 struct FormattedRemapState

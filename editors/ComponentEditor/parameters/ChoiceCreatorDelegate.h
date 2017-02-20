@@ -68,15 +68,6 @@ protected:
     bool columnAcceptsExpression(int column) const = 0;
 
     /*!
-     *  Check if the index is used to select a parameter value using a choice.
-     *
-     *      @param [in] index   The index to check.
-     *
-     *      @return True, if the index is for selecting a value with a choice, otherwise false.
-     */
-    bool isIndexForValueUsingChoice(QModelIndex const& index) const;
-
-    /*!
      *  Finds the name of the choice corresponding to the given index.
      *
      *      @param [in] index   The index of the row to get the choice name from.
@@ -84,16 +75,6 @@ protected:
      *      @return The name of the choice on the row.
      */
     virtual QString choiceNameOnRow(QModelIndex const& index) const = 0;
-
-    /*!
-     *  Creates the enumeration selector for a value containing a choice.
-     *
-     *      @param [in] parent  The parent widget for the editor.
-     *      @param [in] index   The index for which to create the editor.
-     *
-     *      @return An editor for selecting an enumeration.
-     */
-    virtual QWidget* createEnumerationSelector (QWidget* parent, QModelIndex const& index) const;
 
     /*!
      *  Gets the choice used on the row identified by the given index.

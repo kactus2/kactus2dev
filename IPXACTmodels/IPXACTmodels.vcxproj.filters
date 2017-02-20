@@ -123,6 +123,18 @@
     <Filter Include="Source Files\kactusExtensions\validators">
       <UniqueIdentifier>{400a4962-d1b4-46a4-a93f-52c4f3b9514d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Catalog">
+      <UniqueIdentifier>{300d32ff-9bc3-4bc3-b1a8-f5cfc464bd7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Catalog">
+      <UniqueIdentifier>{2c69e06e-0636-46ef-9854-26900eb868c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Catalog\validators">
+      <UniqueIdentifier>{9c883f7b-85d7-4788-a56e-2b3c39628e68}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Catalog\validators">
+      <UniqueIdentifier>{64de22a1-b68b-4616-88ed-eb3641e323ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="validators\namevalidator.cpp">
@@ -1271,6 +1283,33 @@
     <ClCompile Include="kactusExtensions\InterfaceGraphicsData.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CatalogReader.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CatalogReader.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_CatalogWriter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_CatalogWriter.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog\Catalog.cpp">
+      <Filter>Source Files\Catalog</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog\CatalogReader.cpp">
+      <Filter>Source Files\Catalog</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog\CatalogWriter.cpp">
+      <Filter>Source Files\Catalog</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog\IpxactFile.cpp">
+      <Filter>Source Files\Catalog</Filter>
+    </ClCompile>
+    <ClCompile Include="Catalog\validators\CatalogValidator.cpp">
+      <Filter>Source Files\Catalog\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1771,6 +1810,15 @@
     <ClInclude Include="Component\validators\BusInterfaceValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
+    <ClInclude Include="Catalog\Catalog.h">
+      <Filter>Header Files\Catalog</Filter>
+    </ClInclude>
+    <ClInclude Include="Catalog\IpxactFile.h">
+      <Filter>Header Files\Catalog</Filter>
+    </ClInclude>
+    <ClInclude Include="Catalog\validators\CatalogValidator.h">
+      <Filter>Header Files\Catalog\validators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -1991,6 +2039,12 @@
     </CustomBuild>
     <CustomBuild Include="kactusExtensions\ComDefinitionReader.h">
       <Filter>Header Files\kactusExtensions</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Catalog\CatalogReader.h">
+      <Filter>Header Files\Catalog</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Catalog\CatalogWriter.h">
+      <Filter>Header Files\Catalog</Filter>
     </CustomBuild>
   </ItemGroup>
 </Project>

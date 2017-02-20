@@ -411,7 +411,7 @@ QString VisualizerItem::clipText(QString const& text, int maxChars) const
     // if the text is too wide to be displayed at all.
     if (text.size() > maxChars && maxChars < 2)
     {
-        return "";
+        return QString();
     }       
     else if (text.size() > maxChars)
     {    
@@ -419,7 +419,7 @@ QString VisualizerItem::clipText(QString const& text, int maxChars) const
         chopped.resize(maxChars - 3);
 
         // add "..." to the end to indicate the text has been partly hidden.
-        chopped.append("...");
+        chopped.append(QStringLiteral("..."));
         return chopped;
     }
 

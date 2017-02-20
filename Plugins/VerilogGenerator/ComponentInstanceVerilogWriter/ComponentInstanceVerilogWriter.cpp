@@ -30,7 +30,6 @@ instance_(instance),
 sorter_(sorter),
 useInterfaces_(useInterfaces)
 {
-
 }
 
 //-----------------------------------------------------------------------------
@@ -38,18 +37,13 @@ useInterfaces_(useInterfaces)
 //-----------------------------------------------------------------------------
 ComponentInstanceVerilogWriter::~ComponentInstanceVerilogWriter()
 {
-
 }
+
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::write()
 //-----------------------------------------------------------------------------
 void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 {
-    if (nothingToWrite())
-    {
-        return;
-    }
-
     QString instanceString = "<component> <parameters><instanceName>(<portConnections>);";
 
     instanceString.replace("<component>", instance_->getModuleName());
@@ -61,21 +55,13 @@ void ComponentInstanceVerilogWriter::write(QTextStream& outputStream) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceVerilogWriter::nothingToWrite()
-//-----------------------------------------------------------------------------
-bool ComponentInstanceVerilogWriter::nothingToWrite() const
-{
-    return false;
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::formattedInstanceName()
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::formattedInstanceName() const
 {
     QString instanceName = instance_->getComponentInstance()->getInstanceName();
 
-    if (!instance_->getComponentInstance()->getConfigurableElementValues()->isEmpty())
+    if (!instance_->getParameters()->isEmpty())
     {
         instanceName.prepend(indentation());
     }
@@ -235,22 +221,6 @@ QString ComponentInstanceVerilogWriter::createInterfaceSeparator(QString const& 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceVerilogWriter::assignWholePort()
-//-----------------------------------------------------------------------------
-bool ComponentInstanceVerilogWriter::assignAllBitsInConnection(General::PortBounds const& signalBounds) const
-{
-    return signalBounds.left_ == ALL_BITS;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstanceVerilogWriter::assignSingleBit()
-//-----------------------------------------------------------------------------
-bool ComponentInstanceVerilogWriter::assignSingleBitInConnection(General::PortBounds const& signalBounds) const
-{
-    return  signalBounds.left_ == signalBounds.right_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstanceVerilogWriter::assignmentForPort()
 //-----------------------------------------------------------------------------
 QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer<MetaPort> mPort) const
@@ -258,9 +228,64 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
     // Use the default value of port, if no assignments exist.
     if (mPort->upAssignments_.size() < 1)
     {
-        if (mPort->port_->getDirection() == DirectionTypes::IN || mPort->port_->getDirection() == DirectionTypes::INOUT)
+        if (mPort->port_->getDirection() == DirectionTypes::IN)
         {
             return mPort->defaultValue_;
+        }
+
+        return "";
+    }
+
+    // In case of an inout port, connect it directly the first encountered wire.
+    if (mPort->port_->getDirection() == DirectionTypes::INOUT)
+    {
+        foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
+        {
+            if (mpa->wire_)
+            {
+                // If it is hierarchical, use the corresponding hierarchical port instead.
+                if (mpa->wire_->hierPorts_.size() > 0)
+                {
+                    QSharedPointer<MetaPort> hierPort = mpa->wire_->hierPorts_.first();
+                    QSharedPointer<MetaPortAssignment> hierMpa;
+
+                    // Find corresponding assignment
+                    foreach (QSharedPointer<MetaPortAssignment> theirAssignment, hierPort->downAssignments_)
+                    {
+                        if (theirAssignment->wire_ == mpa->wire_)
+                        {
+                            hierMpa = theirAssignment;
+                            break;
+                        }
+                    }
+
+                    QString bounds;
+
+                    if (hierMpa)
+                    {
+                        if (hierMpa->physicalBounds_.first == hierMpa->physicalBounds_.second)
+                        {
+                            if (hierPort->vectorBounds_.first != hierPort->vectorBounds_.second)
+                            {
+                                bounds = "[<left>]";
+
+                                bounds.replace("<left>", hierMpa->physicalBounds_.first);
+                            }
+                        }
+                        else
+                        {
+                            bounds = "[<left>:<right>]";
+                            
+                            bounds.replace("<left>", hierMpa->physicalBounds_.first);
+                            bounds.replace("<right>", hierMpa->physicalBounds_.second);
+                        }
+                    }
+
+                    return hierPort->port_->name() + bounds;
+                }
+
+                return mpa->wire_->name_;
+            }
         }
 
         return "";

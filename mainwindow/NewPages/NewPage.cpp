@@ -201,7 +201,5 @@ void NewPage::setupLayout()
     layout->addWidget(descLabel_);
     layout->addSpacing(12);
     layout->addWidget(vlnvEditor_);
-    layout->addSpacing(12);
     layout->addWidget(librarySelector_);
-    layout->addStretch(1);
 }

@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileOutputWidget::FileOutputWidget()
 //-----------------------------------------------------------------------------
-FileOutputWidget::FileOutputWidget(QSharedPointer<FileOuput> configuration) : 
+FileOutputWidget::FileOutputWidget(QSharedPointer<OutputControl> configuration) : 
     model_(configuration),
     pathEditor_(new QLineEdit(this)),
     generalWarningLabel_(new QLabel),
@@ -113,15 +113,15 @@ void FileOutputWidget::onOutputFilesChanged()
 {
     // Remove the old stuff, set number of rows as number of files.
     fileTable_->clearContents();
-    fileTable_->setRowCount(model_->getFiles()->size());
+    fileTable_->setRowCount(model_->getOutputs()->size());
 
     // Populate the table.
     int row = 0;
 
-    foreach(QSharedPointer<GenerationFile> file, *model_->getFiles())
+    foreach(QSharedPointer<GenerationOutput> output, *model_->getOutputs())
     {
         // Insert VLNV string to the row.
-        QString vlnv = file->vlnv_;
+        QString vlnv = output->vlnv_;
         QTableWidgetItem* vlnvItem = new QTableWidgetItem(vlnv);
         vlnvItem->setToolTip(vlnv);
         fileTable_->setItem(row, COLUMN_VLNV, vlnvItem);
@@ -131,8 +131,8 @@ void FileOutputWidget::onOutputFilesChanged()
         fileTable_->setItem(row, COLUMN_EXISTS, fileExistsItem);
 
         // Insert filename to the row.
-        QTableWidgetItem* fileNameItem = new QTableWidgetItem(file->fileName_);
-        fileNameItem->setToolTip(file->fileName_);
+        QTableWidgetItem* fileNameItem = new QTableWidgetItem(output->fileName_);
+        fileNameItem->setToolTip(output->fileName_);
         fileTable_->setItem(row, COLUMN_FILENAME, fileNameItem);
 
         // Disable editing.
@@ -171,7 +171,7 @@ void FileOutputWidget::onBrowse()
 {
     // Acquire the path to the file through a dialog.
     QString selectedPath = QFileDialog::getExistingDirectory(this,
-        tr("Select output path for generation"), pathEditor_->text(), 0);
+        tr("Select output path for generation"), pathEditor_->text(), QFileDialog::ShowDirsOnly);
 
     // If any path chosen, set it as the selected path.
     if (!selectedPath.isEmpty())
@@ -192,24 +192,14 @@ void FileOutputWidget::onItemChanged(QTableWidgetItem *item)
     }
 
     // Inform the change to the model.
-    if (item->row() >= model_->getFiles()->size())
+    QSharedPointer<GenerationOutput> affectedFile = model_->changeFileName(item->row(), item->text());
+
+    if (affectedFile)
     {
-        return;
+        // A name of a file changed -> emit signal and update existence status.
+        emit selectedFileChanged(affectedFile);
+        checkExistence();
     }
-
-    QSharedPointer<GenerationFile> selection = model_->getFiles()->at(item->row());
-
-    if (selection->fileName_ == item->text())
-    {
-        return;
-    }
-
-    selection->fileName_ = item->text();
-    selection->write();
-    emit selectedFileChanged(selection);
-
-    // A name of a file changed -> update existence status.
-    checkExistence();
 }
 
 //-----------------------------------------------------------------------------
@@ -224,9 +214,9 @@ void FileOutputWidget::onItemSelectionChanged()
 
     QTableWidgetItem* item = fileTable_->selectedItems().last();
 
-    if (item->row() < model_->getFiles()->size())
+    if (item->row() < model_->getOutputs()->size())
     {
-        QSharedPointer<GenerationFile> selection = model_->getFiles()->at(item->row());
+        QSharedPointer<GenerationOutput> selection = model_->getOutputs()->at(item->row());
         emit selectedFileChanged(selection);
     }
 }

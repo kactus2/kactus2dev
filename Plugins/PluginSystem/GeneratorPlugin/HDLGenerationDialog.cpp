@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "HDLGenerationDialog.h"
+
 #include "GenerationControl.h"
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
@@ -30,10 +31,12 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
 	QDialog(parent,Qt::WindowTitleHint), 
     configuration_(configuration),
     viewSelection_(new ViewSelectionWidget(configuration->getViewSelection())),
-    fileOutput_(new FileOutputWidget(configuration->getFileOuput())),
-    generalWarningLabel_(new QLabel)
+    fileOutput_(new FileOutputWidget(configuration->getOutputControl())),
+    generalWarningLabel_(new QLabel), 
+    previewer_(new QPlainTextEdit(this)),
+    console_(new MessageConsole(this))
 {
-    setWindowTitle(tr("Configure file generation for %1.").arg(configuration->getViewSelection()->getTargetLanguage()));
+    setWindowTitle(tr("File generation for %1").arg(configuration->getViewSelection()->getTargetLanguage()));
 
     // Create font for previewing.
     QFont font("Courier");
@@ -42,7 +45,6 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     font.setPointSize(9);
 
     // Create the previewer.
-    previewer_ = new QPlainTextEdit;
     previewer_->setFont(font);
     previewer_->setTabStopWidth(4 * previewer_->fontMetrics().width(' '));
     previewer_->setReadOnly(true);
@@ -59,8 +61,9 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     // Layout for things coming to the bottom part of the dialog.
 
     // Add Ok and cancel give the dialog results.
-    QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, 
+    QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Cancel, 
         Qt::Horizontal);
+    dialogButtons->addButton("Write files", QDialogButtonBox::AcceptRole);
 
     QGridLayout* grid = new QGridLayout(this);
 
@@ -70,7 +73,7 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
     QGroupBox* logBox = new QGroupBox("Log");
     QVBoxLayout* botLayout = new QVBoxLayout();
     logBox->setLayout(botLayout);
-    console_ = new MessageConsole(this);
+
     console_->setMinimumWidth(500);
     botLayout->addWidget(console_);
 
@@ -92,8 +95,8 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
         this, SLOT(onViewChanged()), Qt::UniqueConnection);
 
     // Connect file output.
-    connect(fileOutput_, SIGNAL(selectedFileChanged(QSharedPointer<GenerationFile>)), 
-        this, SLOT(onSelectedFileChanged(QSharedPointer<GenerationFile>)), Qt::UniqueConnection);
+    connect(fileOutput_, SIGNAL(selectedFileChanged(QSharedPointer<GenerationOutput>)), 
+        this, SLOT(onSelectedFileChanged(QSharedPointer<GenerationOutput>)), Qt::UniqueConnection);
 
     // Connect the dialog buttons to their respective functions.
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
@@ -105,6 +108,14 @@ HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> confi
 //-----------------------------------------------------------------------------
 HDLGenerationDialog::~HDLGenerationDialog()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLGenerationDialog::setPreviewHighlighter()
+//-----------------------------------------------------------------------------
+void HDLGenerationDialog::setPreviewHighlighter(QSyntaxHighlighter* highlighter)
+{
+    highlighter->setDocument(previewer_->document());
 }
 
 //-----------------------------------------------------------------------------
@@ -130,9 +141,34 @@ void HDLGenerationDialog::accept()
 }
 
 //-----------------------------------------------------------------------------
+// Function: HDLGenerationDialog::onViewChanged()
+//-----------------------------------------------------------------------------
+void HDLGenerationDialog::onViewChanged()
+{
+    configuration_->parseDocuments();
+    fileOutput_->onOutputFilesChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLGenerationDialog::onNoticeMessage()
+//-----------------------------------------------------------------------------
+void HDLGenerationDialog::onNoticeMessage(QString const& message)
+{
+    console_->onNoticeMessage(message);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HDLGenerationDialog::onErrorMessage()
+//-----------------------------------------------------------------------------
+void HDLGenerationDialog::onErrorMessage(QString const& message)
+{
+    console_->onErrorMessage(message);
+}
+
+//-----------------------------------------------------------------------------
 // Function: HDLGenerationDialog::onSelectedFileChanged()
 //-----------------------------------------------------------------------------
-void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationFile> newSelection)
+void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationOutput> newSelection)
 {
     previewer_->setPlainText(newSelection->fileContent_);
 
@@ -167,13 +203,4 @@ void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationFile> n
 
     cursor.setPosition(implementationEnd, QTextCursor::KeepAnchor);        
     cursor.setCharFormat(highlighFormat);
-}
-
-//-----------------------------------------------------------------------------
-// Function: HDLGenerationDialog::onViewChanged()
-//-----------------------------------------------------------------------------
-void HDLGenerationDialog::onViewChanged()
-{
-    configuration_->parseDocuments();
-    fileOutput_->onOutputFilesChanged();
 }

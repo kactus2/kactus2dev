@@ -13,14 +13,12 @@
 
 #include <library/LibraryManager/libraryinterface.h>
 
-#include "editors/ComponentEditor/common/ComponentParameterFinder.h"
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include "editors/ComponentEditor/common/ExpressionFormatter.h"
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
 //-----------------------------------------------------------------------------
@@ -29,43 +27,35 @@
 MetaInstance::MetaInstance(LibraryInterface* library,
     MessagePasser* messages,
     QSharedPointer<Component> component,
-    QSharedPointer<View> activeView,
-    QSharedPointer<ComponentInstance> componentInstance,
-    QSharedPointer<ListParameterFinder> topFinder,
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs) :
+    QSharedPointer<View> activeView) :
+MetaComponent(
+    messages,
+    component,
+    activeView),
     library_(library),
-    messages_(messages),
-    component_(component),
-    componentInstance_(componentInstance),
-    activeView_(activeView),
-    parameters_(new QList<QSharedPointer<Parameter> >()),
-    interfaces_(new QMap<QString,QSharedPointer<MetaInterface> >()),
-    ports_(new QMap<QString,QSharedPointer<MetaPort> >())
+    interfaces_(new QMap<QString,QSharedPointer<MetaInterface> >())
 {
-    // Try to find a component instantiation for the view.
-    if (activeView_)
-    {
-        activeInstantiation_ = component_->getModel()->
-            findComponentInstantiation(activeView_->getComponentInstantiationRef());
+}
 
-        if (activeInstantiation_)
-        {
-            // If there is a named component instantiation, its module name shall be used.
-            moduleName_ = activeInstantiation_->getModuleName();
-        }
-    }
+//-----------------------------------------------------------------------------
+// Function: MetaInstance::~MetaInstance()
+//-----------------------------------------------------------------------------
+MetaInstance::~MetaInstance()
+{
+}
 
-    if (moduleName_.isEmpty())
-    {
-        // No module name. -> Take the name from the VLNV of the component.
-        moduleName_ = component_->getVlnv().getName();
-    }
-
-    // Must cull the parameters before can use them!
-    cullParameters();
+//-----------------------------------------------------------------------------
+// Function:  MetaInstance::parseInstance()
+//-----------------------------------------------------------------------------
+void MetaInstance::parseInstance(QSharedPointer<ComponentInstance> componentInstance,
+    QSharedPointer<ListParameterFinder> topFinder,
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > cevs)
+{
+    // This is now the associated component instance.
+    componentInstance_ = componentInstance;
 
     // Initialize the parameter parsing: Find parameters from both the instance and the top component.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(parameters_);
+    QSharedPointer<QList<QSharedPointer<Parameter> > > ilist(getParameters());
     QSharedPointer<ListParameterFinder> instanceFinder(new ListParameterFinder);
     instanceFinder->setParameterList(ilist);
 
@@ -83,38 +73,8 @@ MetaInstance::MetaInstance(LibraryInterface* library,
 
     // Parse the content: Parameters, interfaces and ports.
     parseParameters(instanceParser, cevs);
-    parseInterfaces();
+    cullInterfaces();
     parsePorts(instanceParser);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MetaInstance::~MetaInstance()
-//-----------------------------------------------------------------------------
-MetaInstance::~MetaInstance()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: MetaInstance::findParameters()
-//-----------------------------------------------------------------------------
-void MetaInstance::cullParameters()
-{
-    // Cull all the component parameters for the original parameters.
-    foreach(QSharedPointer<Parameter> parameterOrig, *component_->getParameters())
-    {
-        QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
-        parameters_->append(parameterCpy);
-    }
-
-    // If there is an active component instantiation, take its module parameters as well.
-    if (activeInstantiation_)
-    {
-        foreach(QSharedPointer<ModuleParameter> parameterOrig, *activeInstantiation_->getModuleParameters())
-        {
-            QSharedPointer<Parameter> parameterCpy(new Parameter(*parameterOrig));
-            parameters_->append(parameterCpy);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +87,7 @@ void MetaInstance::parseParameters(IPXactSystemVerilogParser& parser,
     if (cevs)
     {
         // Go through the culled parameters, find if any exists in CEVs.
-        foreach(QSharedPointer<Parameter> parameter, *parameters_)
+        foreach(QSharedPointer<Parameter> parameter, *getParameters())
         {
             foreach(QSharedPointer<ConfigurableElementValue> cev, *cevs)
             {
@@ -142,18 +102,18 @@ void MetaInstance::parseParameters(IPXactSystemVerilogParser& parser,
     }
 
     // Parse values.
-    foreach(QSharedPointer<Parameter> parameter, *parameters_)
+    foreach(QSharedPointer<Parameter> parameter, *getParameters())
     {
         parameter->setValue(parseExpression(parser, parameter->getValue()));
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaInstance::parseInterfaces()
+// Function: MetaInstance::cullInterfaces()
 //-----------------------------------------------------------------------------
-void MetaInstance::parseInterfaces()
+void MetaInstance::cullInterfaces()
 {
-    foreach(QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
+    foreach(QSharedPointer<BusInterface> busInterface, *getComponent()->getBusInterfaces())
     {
         // Find the correct abstraction type.
         QSharedPointer<AbstractionType> absType;
@@ -166,8 +126,9 @@ void MetaInstance::parseInterfaces()
 
         if (!absType)
         {
-            messages_->errorMessage(QObject::tr("Component %1: Bus interface %2 does not have an abstraction type!")
-                .arg(component_->getVlnv().toString(),
+            messages_->errorMessage(QObject::tr
+                ("Component %1: Bus interface %2 does not have an abstraction type!")
+                .arg(getComponent()->getVlnv().toString(),
                 busInterface->name()));
             continue;
         }
@@ -177,8 +138,9 @@ void MetaInstance::parseInterfaces()
 
         if (!absRef)
         {
-            messages_->errorMessage(QObject::tr("Component %1: Abstraction type of bus interface %2 does not have abstraction reference!")
-                .arg(component_->getVlnv().toString(),
+            messages_->errorMessage(QObject::tr
+                ("Component %1: Abstraction type of bus interface %2 does not have abstraction reference!")
+                .arg(getComponent()->getVlnv().toString(),
                 busInterface->name()));
             continue;
         }
@@ -189,8 +151,9 @@ void MetaInstance::parseInterfaces()
 
         if (!absDef)
         {
-            messages_->errorMessage(QObject::tr("Component %1: Abstraction definition for bus interface %2 was not found: %3")
-                .arg(component_->getVlnv().toString(),
+            messages_->errorMessage(QObject::tr
+                ("Component %1: Abstraction definition for bus interface %2 was not found: %3")
+                .arg(getComponent()->getVlnv().toString(),
                 busInterface->name(),
                 absRef->toString()));
             continue;
@@ -198,7 +161,6 @@ void MetaInstance::parseInterfaces()
 
         // Create "our" interface for each IP-XACT interface. Take the relevant values.
         QSharedPointer<MetaInterface> mInterface(new MetaInterface);
-        mInterface->mode_ = interfaceMode2Str(busInterface->getInterfaceMode());
         mInterface->interface_ = busInterface;
         mInterface->absType_ = absType;
         mInterface->absDef_ = absDef;
@@ -213,7 +175,7 @@ void MetaInstance::parseInterfaces()
 //-----------------------------------------------------------------------------
 void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
 {
-    foreach (QSharedPointer<Port> cport, *component_->getPorts())
+    foreach (QSharedPointer<Port> cport, *getComponent()->getPorts())
     {
         // Create generation port.
         QSharedPointer<MetaPort> mPort(new MetaPort);
@@ -233,7 +195,7 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
 
         // Try to find an interface where port belongs to.
         bool anyIfUsesThePort = false;
-        ports_->insert(cport->name(), mPort);
+        getPorts()->insert(cport->name(), mPort);
 
         foreach (QSharedPointer<MetaInterface> mInterface, *interfaces_)
         {
@@ -244,12 +206,14 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
                 if (pMap->getPhysicalPort()->name_ == cport->name())
                 {
                     // The port mapping must have a corresponding port abstraction in the abstraction definition!
-                    QSharedPointer<PortAbstraction> portAbstraction = mInterface->absDef_->getPort(pMap->getLogicalPort()->name_);
+                    QSharedPointer<PortAbstraction> portAbstraction = mInterface->absDef_->
+                        getPort(pMap->getLogicalPort()->name_);
 
                     if (!portAbstraction)
                     {
-                        messages_->errorMessage(QObject::tr("Component %1, Bus interface %2: Port abstraction was not found for logical port %3 at abstraction definition %4.")
-                            .arg(component_->getVlnv().toString(),
+                        messages_->errorMessage(QObject::tr("Component %1, Bus interface %2: Port abstraction"
+                            " was not found for logical port %3 at abstraction definition %4.")
+                            .arg(getComponent()->getVlnv().toString(),
                             mInterface->interface_->name(),
                             pMap->getLogicalPort()->name_,
                             mInterface->absDef_->getVlnv().toString()));
@@ -277,14 +241,23 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
                     // If logical bounds do not exist, they are the same as the physical bounds.
                     if (logicalBounds.first.isEmpty() || logicalBounds.second.isEmpty())
                     {
-                        logicalBounds = physicalBounds;
+                        // Pick the total width of the physical bounds.
+                        int left = parseExpression(parser, physicalBounds.first).toInt();
+                        int right = parseExpression(parser, physicalBounds.second).toInt();
+                        // This is [abs(physical.left – physical.right):0]
+                        int widthMinusOne = abs(left - right);
+                        logicalBounds.first = QString::number(widthMinusOne);
+                        logicalBounds.second = "0";
                     }
 
                     // Assign the values.
                     mUpPortAssignment->logicalBounds_ = logicalBounds;
                     mUpPortAssignment->physicalBounds_ = physicalBounds;
 
-                    QSharedPointer<MetaPortAssignment> mDownPortAssignment(new MetaPortAssignment(*mUpPortAssignment.data()));
+                    // Create a copy of the assignments.
+                    QSharedPointer<MetaPortAssignment> mDownPortAssignment
+                        (new MetaPortAssignment(*mUpPortAssignment.data()));
+                    // There must be an assignment for both directions in hierarchy.
                     mPort->upAssignments_.insert(pMap->getLogicalPort()->name_, mUpPortAssignment);
                     mPort->downAssignments_.insert(pMap->getLogicalPort()->name_, mDownPortAssignment);
                 }
@@ -345,14 +318,11 @@ QPair<QString, QString> MetaInstance::physicalPortBoundsInMapping(IPXactSystemVe
 
     QSharedPointer<PortMap::PhysicalPort> physPort = portMap->getPhysicalPort();
 
-    if ((bounds.first.isEmpty() || bounds.second.isEmpty()) && physPort && physPort->partSelect_)
+    if (physPort && physPort->partSelect_)
     {
         // Pick the part select expressions as the total width of the physical bounds.
-        int left = parseExpression(parser, physPort->partSelect_->getLeftRange()).toInt();
-        int right = parseExpression(parser, physPort->partSelect_->getRightRange()).toInt();
-        int width = left - right;
-        bounds.first = QString::number(width);
-        bounds.second = "0";
+        bounds.first = parseExpression(parser, physPort->partSelect_->getLeftRange());
+        bounds.second = parseExpression(parser, physPort->partSelect_->getRightRange());
     }
 
     return bounds;

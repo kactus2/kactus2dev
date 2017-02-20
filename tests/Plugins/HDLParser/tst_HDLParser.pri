@@ -9,7 +9,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.h \
-    ../../../Plugins/common/HDLParser/HDLComponentParser.h \
+    ../../../Plugins/common/HDLParser/MetaComponent.h \
     ../../../Plugins/common/HDLParser/HDLParserCommon.h \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../editors/ComponentEditor/common/ListParameterFinder.h \
@@ -25,7 +25,7 @@ HEADERS += ../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h
 SOURCES += ../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
-    ../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
+    ../../../Plugins/common/HDLParser/MetaComponent.cpp \
     ../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../editors/ComponentEditor/common/ListParameterFinder.cpp \

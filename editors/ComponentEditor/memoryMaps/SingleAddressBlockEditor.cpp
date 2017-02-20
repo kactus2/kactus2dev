@@ -36,23 +36,25 @@ SingleAddressBlockEditor::SingleAddressBlockEditor(QSharedPointer<AddressBlock> 
     QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<AddressBlockValidator> addressBlockValidator,
-    QWidget* parent /* = 0 */):
+    QWidget* parent):
 ItemEditor(component, handler, parent),
-nameEditor_(addressBlock, this, tr("Address block name and description")),
-registersEditor_(new AddressBlockEditor(addressBlock, component, handler, parameterFinder, expressionFormatter,
-                 addressBlockValidator->getRegisterValidator(), this)),
-usageEditor_(),
-baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
-rangeEditor_(new ExpressionEditor(parameterFinder, this)),
-widthEditor_(new ExpressionEditor(parameterFinder, this)),
-accessEditor_(),
-volatileEditor_(),
-addressBlock_(addressBlock),
-expressionParser_(expressionParser)
+    nameEditor_(addressBlock, this, tr("Address block name and description")),
+    registersEditor_(new AddressBlockEditor(addressBlock, component, handler, parameterFinder, expressionFormatter,
+    addressBlockValidator->getRegisterValidator(), this)),
+    usageEditor_(),
+    baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
+    rangeEditor_(new ExpressionEditor(parameterFinder, this)),
+    widthEditor_(new ExpressionEditor(parameterFinder, this)),
+    isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
+    accessEditor_(),
+    volatileEditor_(),
+    addressBlock_(addressBlock),
+    expressionParser_(expressionParser)
 {
     baseAddressEditor_->setFixedHeight(20);
     rangeEditor_->setFixedHeight(20);
     widthEditor_->setFixedHeight(20);
+    isPresentEditor_->setFixedHeight(20);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
@@ -66,9 +68,13 @@ expressionParser_(expressionParser)
     ParameterCompleter* widthEditorCompleter = new ParameterCompleter(this);
     widthEditorCompleter->setModel(componentParametersModel);
     
+    ParameterCompleter* isPresentEditorCompleter = new ParameterCompleter(this);
+    isPresentEditorCompleter->setModel(componentParametersModel);
+
     baseAddressEditor_->setAppendingCompleter(baseAddressEditorCompleter);
     rangeEditor_->setAppendingCompleter(rangeEditorCompleter);
     widthEditor_->setAppendingCompleter(widthEditorCompleter);
+    isPresentEditor_->setAppendingCompleter(isPresentEditorCompleter);
 
     setupLayout();
 
@@ -117,6 +123,7 @@ void SingleAddressBlockEditor::refresh()
     rangeEditor_->setToolTip(formattedValueFor(addressBlock_->getRange()));
     widthEditor_->setExpression(addressBlock_->getWidth());
     widthEditor_->setToolTip(formattedValueFor(addressBlock_->getWidth()));
+    isPresentEditor_->setExpression(addressBlock_->getIsPresent());
 
     changeExpressionEditorSignalBlockStatus(false);
 
@@ -157,6 +164,19 @@ void SingleAddressBlockEditor::onWidthChanged()
     addressBlock_->setWidth(newWidth);
 
     widthEditor_->setToolTip(formattedValueFor(newWidth));
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleRegisterEditor::onIsPresentEdited()
+//-----------------------------------------------------------------------------
+void SingleAddressBlockEditor::onIsPresentEdited()
+{
+    isPresentEditor_->finishEditingCurrentWord();
+
+    QString newIsPresent = isPresentEditor_->getExpression();
+    addressBlock_->setIsPresent(newIsPresent);
+
+    isPresentEditor_->setToolTip(formattedValueFor(newIsPresent));
 }
 
 //-----------------------------------------------------------------------------
@@ -238,10 +258,6 @@ void SingleAddressBlockEditor::setupLayout()
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-    baseAddressEditor_->setFrameShadow(QFrame::Sunken);
-    rangeEditor_->setFrameShadow(QFrame::Sunken);
-    widthEditor_->setFrameShadow(QFrame::Sunken);
-
     QGroupBox* addressBlockDefinitionGroup = new QGroupBox(tr("Address block definition"));
 
     QFormLayout* addressBlockDefinitionLayout = new QFormLayout(addressBlockDefinitionGroup);
@@ -249,7 +265,8 @@ void SingleAddressBlockEditor::setupLayout()
     addressBlockDefinitionLayout->addRow(tr("Base Address [AUB], f(x):"), baseAddressEditor_);
     addressBlockDefinitionLayout->addRow(tr("Range [AUB], f(x):"), rangeEditor_);
     addressBlockDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
-    
+    addressBlockDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+
     usageEditor_ = new UsageComboBox(addressBlockDefinitionGroup);
     addressBlockDefinitionLayout->addRow(tr("Usage:"), usageEditor_);
 
@@ -323,6 +340,10 @@ void SingleAddressBlockEditor::connectSignals() const
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(widthEditor_, SIGNAL(decreaseReference(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(increaseReference(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(decreaseReference(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     connect(baseAddressEditor_, SIGNAL(editingFinished()), this, SLOT(onBaseAddressChanged()), Qt::UniqueConnection);
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SLOT(onRangeChanged()), Qt::UniqueConnection);
@@ -340,9 +361,14 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(rangeEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
     connect(widthEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentEdited()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
+
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
         registersEditor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
 }
+
 //-----------------------------------------------------------------------------
 // Function: SingleAddressBlockEditor::changeExpressionEditorSignalBlocks()
 //-----------------------------------------------------------------------------
@@ -351,4 +377,5 @@ void SingleAddressBlockEditor::changeExpressionEditorSignalBlockStatus(bool bloc
     baseAddressEditor_->blockSignals(blockStatus);
     rangeEditor_->blockSignals(blockStatus);
     widthEditor_->blockSignals(blockStatus);
+    isPresentEditor_->blockSignals(blockStatus);
 }

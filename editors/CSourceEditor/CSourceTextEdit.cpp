@@ -11,27 +11,30 @@
 
 #include "CSourceTextEdit.h"
 
+#include "CSourceHighlight.h"
 #include "CSourceHighlighter.h"
 #include "CSourceContentMatcher.h"
 
 //-----------------------------------------------------------------------------
-// Function: CSourceTextEdit()
+// Function: CSourceTextEdit::CSourceTextEdit()
 //-----------------------------------------------------------------------------
-CSourceTextEdit::CSourceTextEdit(QWidget* mainWnd, QWidget* parent /* = 0 */)
-    : AssistedTextEdit(QSharedPointer<CSourceContentMatcher>(new CSourceContentMatcher()), mainWnd, parent),
-      m_highlighter(new CSourceHighlighter(document()))
+CSourceTextEdit::CSourceTextEdit(QWidget* mainWnd, QWidget* parent):
+AssistedTextEdit(QSharedPointer<CSourceContentMatcher>(new CSourceContentMatcher()), mainWnd, parent),
+    highlighter_(new CSourceHighlighter(document()))
 {
+    CSourceHighlight style;
+    style.apply(highlighter_);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~CSourceTextEdit()
+// Function: CSourceTextEdit::~CSourceTextEdit()
 //-----------------------------------------------------------------------------
 CSourceTextEdit::~CSourceTextEdit()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: getMatcher()
+// Function: CSourceTextEdit::getMatcher()
 //-----------------------------------------------------------------------------
 CSourceContentMatcher& CSourceTextEdit::getMatcher()
 {
@@ -39,9 +42,9 @@ CSourceContentMatcher& CSourceTextEdit::getMatcher()
 }
 
 //-----------------------------------------------------------------------------
-// Function: getHighlighter()
+// Function: CSourceTextEdit::getHighlighter()
 //-----------------------------------------------------------------------------
 CSourceHighlighter& CSourceTextEdit::getHighlighter()
 {
-    return *m_highlighter;
+    return *highlighter_;
 }

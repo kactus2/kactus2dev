@@ -7,12 +7,14 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
+HEADERS += ../../../../Plugins/PluginSystem/GeneratorPlugin/IWriterFactory.h \
+    ../../../../Plugins/common/HDLParser/MetaComponent.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h \
+    ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.h \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.h \
-    ../../../../Plugins/common/HDLParser/HDLComponentParser.h \
     ../../../../Plugins/common/HDLParser/HDLParserCommon.h \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.h \
     ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.h \
@@ -36,19 +38,18 @@ HEADERS += ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.h \
     ../../../../Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h \
     ../../../../Plugins/VerilogGenerator/common/Writer.h \
     ../../../../Plugins/VerilogGenerator/common/WriterGroup.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/OutputControl.h \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h \
     ../../../MockObjects/LibraryMock.h \
-    ../../../../Plugins/VerilogGenerator/VerilogWriterFactory/VerilogWriterFactory.h \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.h \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/GeneratorConfiguration.h \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h
-SOURCES += ../../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.cpp \
-    ../../../../Plugins/PluginSystem/GeneratorPlugin/FileOutput.cpp \
+    ../../../../Plugins/VerilogGenerator/VerilogWriterFactory/VerilogWriterFactory.h
+SOURCES += ../../../../Plugins/common/HDLParser/MetaComponent.cpp \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/OutputControl.cpp \
+    ../../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.cpp \
     ../../../../Plugins/VerilogGenerator/CommentWriter/CommentWriter.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ComponentParameterFinder.cpp \
     ../../../../Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.cpp \
     ../../../../editors/ComponentEditor/common/ExpressionFormatter.cpp \
-    ../../../../Plugins/common/HDLParser/HDLComponentParser.cpp \
     ../../../../editors/ComponentEditor/common/IPXactSystemVerilogParser.cpp \
     ../../../../Plugins/common/PortSorter/InterfaceDirectionNameSorter.cpp \
     ../../../MockObjects/LibraryMock.cpp \

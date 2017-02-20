@@ -38,18 +38,20 @@
 //-----------------------------------------------------------------------------
 ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent):
 QWidget(parent),
-component_(0),
-vlnvDisplayer_(new VLNVDisplayer(this)),
-nameGroup_(new NameGroupBox(this, tr("Instance name"))),
-configurableElements_(0),
-swGroup_(new QGroupBox(tr("SW"), this)),
-fileSetRefCombo_(new QComboBox(this)),
-propertyValueEditor_(new PropertyValueEditor(this)),
-editProvider_(0),
-instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
-listFinder_(new ListParameterFinder()),
-topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0))),
-containingDesign_()
+    component_(0),
+    vlnvDisplayer_(new VLNVDisplayer(this)),
+    nameGroup_(new NameGroupBox(this, tr("Instance name"))),
+    configurableElements_(0),
+    swGroup_(new QGroupBox(tr("SW"), this)),
+    fileSetRefCombo_(new QComboBox(this)),
+    propertyValueEditor_(new PropertyValueEditor(this)),
+    editProvider_(0),
+    instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
+    listFinder_(new ListParameterFinder()),
+    topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0))),
+    completionModel_(0),
+    topComponent_(),
+    containingDesign_()
 {
     QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
     multiFinder->addFinder(listFinder_);
@@ -58,13 +60,13 @@ containingDesign_()
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(multiFinder));
     QSharedPointer<IPXactSystemVerilogParser> instanceParser (new IPXactSystemVerilogParser(instanceFinder_));
 
-    DesignCompletionModel* completionModel = new DesignCompletionModel(topFinder_, multiFinder, this); 
-    completionModel->setExpressionParser(expressionParser);
+    completionModel_ = new DesignCompletionModel(topFinder_, multiFinder, this); 
+    completionModel_->setExpressionParser(expressionParser);
 
     configurableElements_ = new ConfigurableElementEditor(listFinder_, multiFinder, 
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)),
         QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(instanceFinder_)),
-        expressionParser, instanceParser, completionModel, this);
+        expressionParser, instanceParser, completionModel_, this);
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
@@ -132,8 +134,12 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* component, QSh
 
     containingDesign_ = design;
 	component_ = component;
+
 	instanceFinder_->setComponent(component->componentModel());
-	instanceFinder_->setActiveView(activeViewName);
+	instanceFinder_->setActiveView(designConfiguration->getActiveView(component->name()));
+
+    
+    topFinder_->setActiveView(topComponent_->getModel()->findView(activeViewName));    
 
 	// set the vlnv of the component to be displayed
 	vlnvDisplayer_->setVLNV(component->componentModel()->getVlnv(), true);

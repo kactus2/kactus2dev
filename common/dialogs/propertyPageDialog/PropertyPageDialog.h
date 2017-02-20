@@ -101,10 +101,13 @@ private:
     PropertyPageDialog(PropertyPageDialog const& rhs);
     PropertyPageDialog& operator=(PropertyPageDialog const& rhs);
 
+    //! Sets the dialog layout.
+    void setupLayout();
+
     enum
     {
-        ICON_SPACING = 12,
-        LAYOUT_SPACING = 12
+        ICON_SPACING = 10,
+        LAYOUT_SPACING = 10
     };
 
     //-----------------------------------------------------------------------------

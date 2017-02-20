@@ -20,6 +20,7 @@ namespace SegmentColumns
         NAME = 0,
         OFFSET,
         RANGE,
+        IS_PRESENT,
         DESCRIPTION,
         COLUMN_COUNT
     };

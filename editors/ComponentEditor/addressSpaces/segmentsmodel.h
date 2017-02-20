@@ -107,13 +107,6 @@ public:
 	 */
 	Qt::ItemFlags flags(const QModelIndex& index) const;
 
-	/*!
-     *  Check if the model is in valid state or not.
-	 *
-	 *      @return True if all items in model are valid.
-	 */
-	bool isValid() const;
-    
     /*!
      *  Get the list of acceptable mime types.
      *

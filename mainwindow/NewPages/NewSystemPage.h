@@ -36,10 +36,10 @@ public:
     /*!
      *  Constructor.
      *
-     *      @param [in] libInterface The library interface.
-     *      @param [in] parentDlg    The parent dialog.
+     *      @param [in] libInterface    The library interface.
+     *      @param [in] parent          The parent widget.
      */
-    NewSystemPage(LibraryInterface* libInterface, QWidget* parentDlg);
+    NewSystemPage(LibraryInterface* libInterface, QWidget* parent);
 
     /*!
      *  Destructor.
@@ -97,49 +97,44 @@ private:
     // Disable copying.
     NewSystemPage(NewSystemPage const& rhs);
     NewSystemPage& operator=(NewSystemPage const& rhs);
+        
+    /*!
+     *  Initializes the top component selection listing for HW mapping.
+     *
+     *      @param [in] libInterface   The library interface.
+     */
+    void initializeHWComponentSelectionWidget(LibraryInterface* libInterface);
 
     /*!
-     *  Adds child items to a tree item from a library item.
+     *  Creates an item for selection widget for the given library item finding child items recursively.
      *
-     *      @param [in]      libItem   The library item ("source").
-     *      @param [in/out]  treeItem  The tree item ("destination").
+     *      @param [in] libraryItem   The library item to create the item for.
+     *
+     *      @return The item for selection widget.
      */
-    void addChildItems(LibraryItem const* libItem, QTreeWidgetItem* treeItem);
+    QTreeWidgetItem* createChildRecursively(LibraryItem const* libraryItem) const;
+
+    //! Sets the page layout.
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Group box for radio buttons.
-    QGroupBox* actionGroupBox_;
-
-    //! Radio button group.
-    QButtonGroup* actionGroup_;
+    QGroupBox* optionGroupBox_;
 
     //! Radio button for empty SW architecture action.
-    QRadioButton* emptyRadioButton_;
-
-    //! Description label for empty selection.
-    QLabel* emptyDescLabel_;
+    QRadioButton* unmapRadioButton_;
 
     //! Radio button for map HW action.
     QRadioButton* mapRadioButton_;
 
-    //! Description label fro mapping.
-    QLabel* mapDescLabel_;
-
-    //! Label for the component selection tree widget.
-    QLabel* treeLabel_;
-
     //! Component selection tree widget.
     QTreeWidget* compTreeWidget_;
 
-    //! Label for the view selection combo box.
-    QLabel* viewLabel_;
-
     //! View selection combo box.
     QComboBox* viewComboBox_;
-
 };
 
 //-----------------------------------------------------------------------------

@@ -13,7 +13,6 @@
 #define IWRITERFACTORY_H
 
 #include <Plugins/common/HDLParser/MetaDesign.h>
-#include <Plugins/common/HDLParser/HDLComponentParser.h>
 
 //-----------------------------------------------------------------------------
 // Verilog file generator.
@@ -34,8 +33,8 @@ public:
      *
      *      @return The objects that bundles the writers. Will be null, if could not be created.
      */
-    virtual QSharedPointer<GenerationFile> prepareComponent(QString const& outputPath,
-        QSharedPointer<HDLComponentParser> component) = 0;
+    virtual QSharedPointer<GenerationOutput> prepareComponent(QString const& outputPath,
+        QSharedPointer<MetaComponent> component) = 0;
 
     /*!
      *  Creates writers for the given parsed meta design.
@@ -44,7 +43,7 @@ public:
      *
      *      @return The objects that bundles the writers. Will be null, if could not be created.
      */
-    virtual QSharedPointer<GenerationFile> prepareDesign(QSharedPointer<MetaDesign> design) = 0;
+    virtual QSharedPointer<GenerationOutput> prepareDesign(QSharedPointer<MetaDesign> design) = 0;
     
     /*!
      *  Returns the language of the factory.

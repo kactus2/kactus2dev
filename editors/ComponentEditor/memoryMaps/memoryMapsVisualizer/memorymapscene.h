@@ -56,8 +56,6 @@ public:
 	 */
 	void removeMemGraphItem(VisualizerItem* memGraphItem);
 
-
-
 	/*!
      *  Set the scene width.
 	 *

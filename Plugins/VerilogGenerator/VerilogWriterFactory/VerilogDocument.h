@@ -14,22 +14,16 @@
 
 #include "../veriloggeneratorplugin_global.h"
 
-#include <Plugins/PluginSystem/GeneratorPlugin/FileOutput.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/OutputControl.h>
 
-#include <Plugins/VerilogGenerator/common/WriterGroup.h>
-#include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 #include <Plugins/VerilogGenerator/ComponentVerilogWriter/ComponentVerilogWriter.h>
 #include <Plugins/VerilogGenerator/ComponentInstanceVerilogWriter/ComponentInstanceVerilogWriter.h>
 #include <Plugins/VerilogGenerator/VerilogHeaderWriter/VerilogHeaderWriter.h>
-#include <Plugins/VerilogGenerator/VerilogWireWriter/VerilogWireWriter.h>
-#include <Plugins/VerilogGenerator/VerilogAssignmentWriter/VerilogAssignmentWriter.h>
-#include <Plugins/VerilogGenerator/PortVerilogWriter/VerilogTopDefaultWriter.h>
-#include <Plugins/VerilogGenerator/VerilogInterconnectionWriter/VerilogInterconnectionWriter.h>
 
 //-----------------------------------------------------------------------------
 // Verilog document.
 //-----------------------------------------------------------------------------
-struct VerilogDocument : public GenerationFile
+struct VerilogDocument : public GenerationOutput
 {
     //! Writer for generating file header.
     QSharedPointer<VerilogHeaderWriter> headerWriter_;

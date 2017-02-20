@@ -155,7 +155,7 @@ QString ParameterizableTable::parseExpressionToDecimal (QString const& expressio
 //-----------------------------------------------------------------------------
 // Function: ParameterizableTable::getParameterFinder()
 //-----------------------------------------------------------------------------
-QSharedPointer<ParameterFinder> ParameterizableTable::getParameterFinder()
+QSharedPointer<ParameterFinder> ParameterizableTable::getParameterFinder() const
 {
     return parameterFinder_;
 }

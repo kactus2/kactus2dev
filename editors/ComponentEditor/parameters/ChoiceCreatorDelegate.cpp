@@ -20,9 +20,9 @@
 // Function: ChoiceCreatorDelegate::ChoiceCreatorDelegate()
 //-----------------------------------------------------------------------------
 ChoiceCreatorDelegate::ChoiceCreatorDelegate(QCompleter* parameterCompleter,
-    QSharedPointer<ParameterFinder> finder, QObject* parent /* = 0 */):
+    QSharedPointer<ParameterFinder> finder, QObject* parent):
 ExpressionDelegate(parameterCompleter, finder, parent),
-choices_(new QList<QSharedPointer<Choice> > ())
+    choices_(new QList<QSharedPointer<Choice> > ())
 {
 
 }
@@ -49,35 +49,6 @@ void ChoiceCreatorDelegate::setChoices(QSharedPointer<QList<QSharedPointer<Choic
 QSharedPointer<QList<QSharedPointer<Choice> > > ChoiceCreatorDelegate::getChoices() const
 {
     return choices_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChoiceCreatorDelegate::isIndexForValueUsingChoice()
-//-----------------------------------------------------------------------------
-bool ChoiceCreatorDelegate::isIndexForValueUsingChoice(QModelIndex const& index) const
-{
-    return index.column() == valueColumn() && !choiceNameOnRow(index).isEmpty();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChoiceCreatorDelegate::createEnumerationSelector()
-//-----------------------------------------------------------------------------
-QWidget* ChoiceCreatorDelegate::createEnumerationSelector(QWidget* parent, QModelIndex const& index) const
-{
-    QComboBox* choiceCombo = new QComboBox(parent);
-
-    QSharedPointer<Choice> selectedChoice = findChoice(index);
-    foreach (QSharedPointer<Enumeration> enumeration, *selectedChoice->enumerations())
-    {
-        QString itemText = enumeration->getValue();
-        if (!enumeration->getText().isEmpty())
-        {
-            itemText.append(":" + enumeration->getText());
-        }
-        choiceCombo->addItem(itemText);
-    }
-
-    return choiceCombo;
 }
 
 //-----------------------------------------------------------------------------

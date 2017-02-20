@@ -50,6 +50,7 @@ LibraryTreeView::LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* f
       exportAction_(new QAction(tr("Export..."), this)),  
       showErrorsAction_(new QAction(tr("Show Errors"), this)),
       openBusAction_(new QAction(tr("Open"), this)),
+      openCatalogAction_(new QAction(tr("Open Catalog"), this)),
       addSignalsAction_(new QAction(tr("New Abstraction Definition..."), this)),
       openComDefAction_(new QAction(tr("Open"), this)),
       openApiDefAction_(new QAction(tr("Open"), this)),
@@ -202,6 +203,11 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
             menuNew->addAction(addSignalsAction_);
 		}
 
+        else if (documentType == VLNV::CATALOG)
+        {
+            menu.addAction(openCatalogAction_);
+        }
+
 		else if (documentType == VLNV::ABSTRACTIONDEFINITION)
         {
 			menu.addAction(openBusAction_);
@@ -290,6 +296,10 @@ void LibraryTreeView::setupActions()
 	openBusAction_->setStatusTip(tr("Open"));
 	openBusAction_->setToolTip(tr("Open"));
 	connect(openBusAction_, SIGNAL(triggered()), this, SLOT(onOpenBus()), Qt::UniqueConnection);
+   
+    openCatalogAction_->setStatusTip(tr("Open a catalog"));
+    openCatalogAction_->setToolTip(tr("Open a catalog"));
+    connect(openCatalogAction_, SIGNAL(triggered()), this, SLOT(onOpenCatalog()), Qt::UniqueConnection);
 
     addSignalsAction_->setStatusTip(tr("Create new abstraction definition for the bus"));
     addSignalsAction_->setToolTip(tr("Create new abstraction definition for the bus"));
@@ -529,11 +539,19 @@ void LibraryTreeView::onCreateSystemDesign()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeView::onCreateDesign()
+// Function: LibraryTreeView::onOpenBus()
 //-----------------------------------------------------------------------------
 void LibraryTreeView::onOpenBus()
 {
 	emit openBus(filter_->mapToSource(currentIndex()));
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onOpenCatalog()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onOpenCatalog()
+{
+    emit openCatalog(filter_->mapToSource(currentIndex()));
 }
 
 //-----------------------------------------------------------------------------

@@ -33,6 +33,7 @@ class ComponentItem;
 class ParameterFinder;
 class TopComponentParameterFinder;
 class Design;
+class DesignCompletionModel;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of a component instance within a design.
@@ -165,6 +166,8 @@ private:
 
     //! The parameter finder for component instances.
     QSharedPointer<TopComponentParameterFinder> topFinder_;
+
+    DesignCompletionModel* completionModel_;
 
     //! The current top component.
     QSharedPointer<Component> topComponent_;

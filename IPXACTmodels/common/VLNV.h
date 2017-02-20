@@ -38,6 +38,7 @@ public:
         ABSTRACTOR,             // ipxact:abstractor
         DESIGNCONFIGURATION,    // ipxact:designConfiguration
         ABSTRACTIONDEFINITION,  // ipxact:abstractionDefinition
+        CATALOG,                // ipxact:catalog
         COMDEFINITION,          // kactus2:comDefinition
         APIDEFINITION,          // kactus2:apiDefinition
 		INVALID                 // invalid type

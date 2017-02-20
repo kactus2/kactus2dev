@@ -125,6 +125,10 @@ QVariant AddressSpacesModel::headerData( int section, Qt::Orientation orientatio
         {
             return tr("Width\n [bits]") + getExpressionSymbol();
         }
+        else if (section == AddressSpaceColumns::IS_PRESENT)
+        {
+            return tr("Is present") + getExpressionSymbol();
+        }
         else if (section == AddressSpaceColumns::INTERFACE_BINDING)
         {
             return tr("Master interface\nbinding(s)");
@@ -245,6 +249,10 @@ bool AddressSpacesModel::setData(QModelIndex const& index, QVariant const& value
         {
             addressSpaces_->at(index.row())->setRange(value.toString());
         }
+        else if (index.column() == AddressSpaceColumns::IS_PRESENT)
+        {
+            addressSpaces_->at(index.row())->setIsPresent(value.toString());
+        }
         else if (index.column() == AddressSpaceColumns::DESCRIPTION)
         {
             addressSpaces_->at(index.row())->setDescription(value.toString());
@@ -318,7 +326,8 @@ void AddressSpacesModel::onRemoveItem(QModelIndex const& index )
 //-----------------------------------------------------------------------------
 bool AddressSpacesModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    return index.column() == AddressSpaceColumns::WIDTH || index.column() == AddressSpaceColumns::RANGE;
+    return index.column() == AddressSpaceColumns::WIDTH || index.column() == AddressSpaceColumns::RANGE ||
+        index.column() == AddressSpaceColumns::IS_PRESENT;
 }
 
 //-----------------------------------------------------------------------------
@@ -341,6 +350,10 @@ QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index)
     else if (index.column() == AddressSpaceColumns::RANGE)
     {
         return addressSpaces_->at(index.row())->getRange();
+    }
+    else if (index.column() == AddressSpaceColumns::IS_PRESENT)
+    {
+        return addressSpaces_->at(index.row())->getIsPresent();
     }
     else if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
     {
@@ -390,6 +403,10 @@ bool AddressSpacesModel::validateIndex(QModelIndex const& index) const
     {
         return addressSpaceValidator_->hasValidWidth(currentSpace);
     }
+    else if (index.column() == AddressSpaceColumns::IS_PRESENT)
+    {
+        return addressSpaceValidator_->hasValidIsPresent(currentSpace->getIsPresent());
+    }
     else
     {
         return true;
@@ -403,8 +420,9 @@ int AddressSpacesModel::getAllReferencesToIdInItemOnRow(const int& row, QString 
 {
     int referencesInRange = addressSpaces_->at(row)->getRange().count(valueID);
     int referencesInWidth = addressSpaces_->at(row)->getWidth().count(valueID);
+    int referencesInPresence = addressSpaces_->at(row)->getIsPresent().count(valueID);
 
-    return referencesInRange + referencesInWidth;
+    return referencesInRange + referencesInWidth + referencesInPresence;
 }
 
 //-----------------------------------------------------------------------------

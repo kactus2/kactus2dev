@@ -36,7 +36,8 @@ AddressSpacesDelegate::~AddressSpacesDelegate()
 //-----------------------------------------------------------------------------
 bool AddressSpacesDelegate::columnAcceptsExpression(int column) const
 {
-    return column == AddressSpaceColumns::RANGE || column == AddressSpaceColumns::WIDTH;        
+    return column == AddressSpaceColumns::RANGE || column == AddressSpaceColumns::WIDTH ||
+        column == AddressSpaceColumns::IS_PRESENT;        
 }
 
 //-----------------------------------------------------------------------------

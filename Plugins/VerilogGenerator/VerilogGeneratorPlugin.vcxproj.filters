@@ -247,9 +247,6 @@
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
-    <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutput.cpp">
-      <Filter>Source Files\GenerationControl</Filter>
-    </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\ViewSelection.cpp">
       <Filter>Source Files\GenerationControl</Filter>
     </ClCompile>
@@ -258,9 +255,6 @@
     </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.cpp">
       <Filter>Source Files\Widgets</Filter>
-    </ClCompile>
-    <ClCompile Include="..\common\HDLParser\HDLComponentParser.cpp">
-      <Filter>Source Files\Parsing</Filter>
     </ClCompile>
     <ClCompile Include="..\common\HDLParser\MetaDesign.cpp">
       <Filter>Source Files\Parsing</Filter>
@@ -297,6 +291,27 @@
     </ClCompile>
     <ClCompile Include="..\..\mainwindow\MessageConsole\messageconsole.cpp">
       <Filter>Source Files\Widgets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\HDLParser\MetaComponent.cpp">
+      <Filter>Source Files\Parsing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp">
+      <Filter>Source Files\GenerationControl</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\LanguageHighlighter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\SourceHighlightStyle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="VerilogSourceHighlight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_LanguageHighlighter.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_LanguageHighlighter.cpp">
+      <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -335,9 +350,6 @@
     </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\ComponentParameterFinder.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\common\NameGenerationPolicy.h">
-      <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\editors\ComponentEditor\common\IPXactSystemVerilogParser.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
@@ -387,9 +399,6 @@
     <ClInclude Include="..\common\HDLParser\HDLParserCommon.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\HDLParser\HDLComponentParser.h">
-      <Filter>Header Files\Parsing</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\HDLParser\MetaInstance.h">
       <Filter>Header Files\Parsing</Filter>
     </ClInclude>
@@ -402,6 +411,18 @@
     <ClInclude Include="..\VerilogImport\VerilogSyntax.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\HDLParser\MetaComponent.h">
+      <Filter>Header Files\Parsing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h">
+      <Filter>Header Files\GenerationControl</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\SourceHighlightStyle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VerilogSourceHighlight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="VerilogGenerator.qrc">
@@ -412,9 +433,6 @@
     </CustomBuild>
     <CustomBuild Include="VerilogWriterFactory\VerilogWriterFactory.h">
       <Filter>Header Files\VerilogWriterFactory</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutput.h">
-      <Filter>Header Files\GenerationControl</Filter>
     </CustomBuild>
     <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
       <Filter>Header Files\Widgets</Filter>
@@ -430,6 +448,9 @@
     </CustomBuild>
     <CustomBuild Include="..\..\mainwindow\MessageConsole\messageconsole.h">
       <Filter>Header Files\Widgets</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\common\LanguageHighlighter.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>

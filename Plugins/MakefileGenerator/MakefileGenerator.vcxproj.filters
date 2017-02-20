@@ -24,7 +24,7 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Source Files\Resource Files">
+    <Filter Include="Resource Files">
       <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
       <Extensions>qrc;*</Extensions>
       <ParseFiles>false</ParseFiles>
@@ -73,12 +73,6 @@
     <ClCompile Include="GeneratedFiles\Release\moc_MakeParametersDialog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_FileOutput.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_FileOutput.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_FileOutputWidget.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
@@ -86,9 +80,6 @@
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PluginSystem\GeneratorPlugin\FileOutput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MakeConfiguration.cpp">
@@ -99,6 +90,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_MakeConfiguration.cpp">
       <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\PluginSystem\GeneratorPlugin\OutputControl.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -132,18 +126,18 @@
     <ClInclude Include="SWStackParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\PluginSystem\GeneratorPlugin\OutputControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="MakefileGeneratorPlugin.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="MakefileGenerator.qrc">
-      <Filter>Source Files\Resource Files</Filter>
+      <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="MakeParametersDialog.h">
-      <Filter>Header Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutput.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
     <CustomBuild Include="..\PluginSystem\GeneratorPlugin\FileOutputWidget.h">
@@ -155,7 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="MakefileGenerator.png">
-      <Filter>Source Files\Resource Files</Filter>
+      <Filter>Resource Files</Filter>
     </None>
     <None Include="makefile.json" />
   </ItemGroup>

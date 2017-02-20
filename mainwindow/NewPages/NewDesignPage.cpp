@@ -23,20 +23,18 @@
 //-----------------------------------------------------------------------------
 NewDesignPage::NewDesignPage(LibraryInterface* libInterface, QWidget* parentDlg):
 NewPage(libInterface, VLNV::COMPONENT, tr("New HW Design"), tr("Creates a hierarchical HW design"), parentDlg),
-attributeEditor_(0)
+    attributeEditor_(new KactusAttributeEditor(this))
 {
-    // Create the attribute editor.
-    attributeEditor_ = new KactusAttributeEditor(this);
     connect(attributeEditor_, SIGNAL(productHierarchyChanged()), this, SLOT(onProductHierarchyChanged()));
 
     // Create the VLNV editor.
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::HW);
 
-   
     // Setup the layout.
     QVBoxLayout* widgetLayout = dynamic_cast<QVBoxLayout*>(layout());
     Q_ASSERT(widgetLayout);
-    widgetLayout->insertWidget(3, attributeEditor_);
+    widgetLayout->insertWidget(3, attributeEditor_);   
+    widgetLayout->addStretch(1);
 
     onProductHierarchyChanged();
 }

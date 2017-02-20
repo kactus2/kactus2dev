@@ -41,15 +41,17 @@ expressionParser_(expressionParser),
 addrUnitEditor_(this),
 rangeEditor_(new ExpressionEditor(parameterFinder, this)),
 widthEditor_(new ExpressionEditor(parameterFinder, this)),
+isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 masterInterfaceBindingLabel_(new QLabel(this))
 {
 	Q_ASSERT(addrSpace_);
 
     addrUnitEditor_.setValidator(new QIntValidator(this));
     addrUnitEditor_.setPlaceholderText("8");
-    
+
     rangeEditor_->setFixedHeight(20);
     widthEditor_->setFixedHeight(20);
+    isPresentEditor_->setFixedHeight(20);
 
 	// Set the back ground colors for mandatory fields.
 	widthEditor_->setProperty("mandatoryField", true);
@@ -64,15 +66,19 @@ masterInterfaceBindingLabel_(new QLabel(this))
     ParameterCompleter* widthEditorCompleter = new ParameterCompleter(this);
     widthEditorCompleter->setModel(parameterCompletionModel);
 
+    ParameterCompleter* isPresentEditorCompleter = new ParameterCompleter(this);
+    isPresentEditorCompleter->setModel(parameterCompletionModel);
+
     rangeEditor_->setAppendingCompleter(rangeEditorCompleter);
     widthEditor_->setAppendingCompleter(widthEditorCompleter);
+    isPresentEditor_->setAppendingCompleter(isPresentEditorCompleter);
 
 	QFormLayout* layout = new QFormLayout(this);
 	layout->addRow(tr("Addressable unit bits (AUB):"),&addrUnitEditor_);
 	layout->addRow(tr("Range (=size) [AUB], f(x):"), rangeEditor_);
     layout->addRow(tr("Width [bits], f(x):"), widthEditor_);
+    layout->addRow(tr("Is present, f(x):"), isPresentEditor_);
     layout->addRow(tr("Master interface binding(s):"), masterInterfaceBindingLabel_);
-	layout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
 	refresh(busInterfaceNames);
 
@@ -93,6 +99,13 @@ masterInterfaceBindingLabel_(new QLabel(this))
     connect(rangeEditor_, SIGNAL(increaseReference(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(rangeEditor_, SIGNAL(decreaseReference(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(isPresentEditor_, SIGNAL(editingFinished()), this, SLOT(onIsPresentChanged()), Qt::UniqueConnection);
+
+    connect(isPresentEditor_, SIGNAL(increaseReference(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(isPresentEditor_, SIGNAL(decreaseReference(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
@@ -118,6 +131,7 @@ void AddressSpaceGeneralEditor::refresh(QStringList masterInterfaceNames)
 {
     widthEditor_->blockSignals(true);
     rangeEditor_->blockSignals(true);
+    isPresentEditor_->blockSignals(true);
 
     addrUnitEditor_.setText(addrSpace_->getAddressUnitBits());
 
@@ -127,8 +141,12 @@ void AddressSpaceGeneralEditor::refresh(QStringList masterInterfaceNames)
 	rangeEditor_->setExpression(addrSpace_->getRange());
     rangeEditor_->setToolTip(format(addrSpace_->getRange()));
 
+    isPresentEditor_->setExpression(addrSpace_->getIsPresent());
+    isPresentEditor_->setToolTip(format(addrSpace_->getIsPresent()));
+
     widthEditor_->blockSignals(false);
     rangeEditor_->blockSignals(false);
+    isPresentEditor_->blockSignals(false);
 
     if (masterInterfaceNames.isEmpty())
     {
@@ -177,6 +195,18 @@ void AddressSpaceGeneralEditor::onRangeChanged()
     rangeEditor_->setToolTip(format(rangeEditor_->getExpression()));
 
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGeneralEditor::onIsPresentChanged()
+//-----------------------------------------------------------------------------
+void AddressSpaceGeneralEditor::onIsPresentChanged()
+{
+    isPresentEditor_->finishEditingCurrentWord();
+    addrSpace_->setIsPresent(isPresentEditor_->getExpression());
+    isPresentEditor_->setToolTip(format(isPresentEditor_->getExpression()));
+
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------

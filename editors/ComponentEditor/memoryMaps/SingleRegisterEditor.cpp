@@ -109,11 +109,6 @@ void SingleRegisterEditor::setupLayout()
 
     QGroupBox* registerDefinitionGroup = new QGroupBox(tr("Register definition"));
 
-    offsetEditor_->setFrameShadow(QFrame::Sunken);
-    sizeEditor_->setFrameShadow(QFrame::Sunken);
-    dimensionEditor_->setFrameShadow(QFrame::Sunken);
-    isPresentEditor_->setFrameShadow(QFrame::Sunken);
-
     QFormLayout* registerDefinitionLayout = new QFormLayout(registerDefinitionGroup);
     registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
     registerDefinitionLayout->addRow(tr("Size [bits], f(x):"), sizeEditor_);

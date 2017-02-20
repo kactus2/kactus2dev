@@ -11,16 +11,18 @@
 
 #include "VerilogGeneratorPlugin.h"
 
+#include "VerilogSourceHighlight.h"
+
+#include "VerilogWriterFactory/VerilogWriterFactory.h"
+
+#include <Plugins/common/LanguageHighlighter.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/HDLGenerationDialog.h>
-#include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 
-#include <QFileDialog>
-
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 // Function: VerilogGeneratorPlugin::VerilogGeneratorPlugin()
 //-----------------------------------------------------------------------------
 VerilogGeneratorPlugin::VerilogGeneratorPlugin(): QObject(0)
@@ -174,11 +176,17 @@ void VerilogGeneratorPlugin::runGenerator(IPluginUtility* utility,
 
     // Create the dialog and execute: The user will ultimately accept the configuration.
     HDLGenerationDialog dialog(configuration, utility->getParentWidget());
+    
+    LanguageHighlighter* highlighter = new LanguageHighlighter(0);
+    VerilogSourceHighlight style;
+    style.apply(highlighter);
+
+    dialog.setPreviewHighlighter(highlighter);
 
     connect(&messages, SIGNAL(errorMessage(const QString&)),
-        dialog.console_, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
+        &dialog, SLOT(onErrorMessage(const QString&)), Qt::UniqueConnection);
     connect(&messages, SIGNAL(noticeMessage(const QString&)),
-        dialog.console_, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
+       & dialog, SLOT(onNoticeMessage(const QString&)), Qt::UniqueConnection);
 
     dialog.onViewChanged();
 

@@ -405,6 +405,9 @@ signals:
 	//! Signal that user wants to open specified component for editing
 	void openComponent(VLNV const& vlnv);
 
+    //! Signal that user wants to open specified catalog for editing
+    void openCatalog(VLNV const& vlnv);
+
     //! Signal that user wants to open specified COM definition for editing
     void openComDefinition(VLNV const& vlnv);
 

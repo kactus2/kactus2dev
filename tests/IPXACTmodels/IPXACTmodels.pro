@@ -13,12 +13,15 @@ TEMPLATE = subdirs
 
 CONFIG += testcase
 SUBDIRS += common\Common.pro \
-		   BusDefinition\tst_BusDefinitionWriter.pro \
-		   BusDefinition\tst_BusDefinitionReader.pro \
-		   BusDefinition\validators\tst_BusDefinitionValidator.pro \
 		   AbstractionDefinition\tst_AbstractionDefinitionWriter.pro \
 		   AbstractionDefinition\tst_AbstractionDefinitionReader.pro \
 		   AbstractionDefinition\validators\tst_AbstractionDefinitionValidator.pro \
+		   BusDefinition\tst_BusDefinitionWriter.pro \
+		   BusDefinition\tst_BusDefinitionReader.pro \
+		   BusDefinition\validators\tst_BusDefinitionValidator.pro \
+		   Catalog\tst_CatalogWriter.pro\
+		   Catalog\tst_CatalogReader.pro\
+		   Catalog\validators\tst_CatalogValidator.pro\
 		   DesignConfiguration\tst_DesignConfigurationWriter.pro \
 		   DesignConfiguration\tst_DesignConfigurationReader.pro \
 		   DesignConfiguration\validators\tst_DesignConfigurationValidator.pro \

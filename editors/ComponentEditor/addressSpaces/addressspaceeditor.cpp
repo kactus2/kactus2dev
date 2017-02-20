@@ -19,7 +19,7 @@
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
 
 #include <QVBoxLayout>
-#include <QHBoxLayout>
+#include <QGridLayout>
 #include <QScrollArea>
 #include <QSplitter>
 #include <QWidget>
@@ -47,6 +47,7 @@ localMemMapEditor_(addrSpace, component, handler, parameterFinder, expressionFor
 	Q_ASSERT(addrSpace_);
 
     nameEditor_.setTitle(tr("Address space name and description"));
+    nameEditor_.setMaximumHeight(160);
 
     connect(&nameEditor_, SIGNAL(contentChanged()),	this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -143,13 +144,13 @@ void AddressSpaceEditor::setupLayout()
     QWidget* topWidget = new QWidget(scrollArea);
     topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
+    QGridLayout* topLayout = new QGridLayout(topWidget);
     
-    QHBoxLayout* nameAndGeneralLayout = new QHBoxLayout();
-    nameAndGeneralLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
-    nameAndGeneralLayout->addWidget(&generalEditor_);
-    topLayout->addLayout(nameAndGeneralLayout);
-    topLayout->addWidget(&segmentsEditor_, 1);
+    topLayout->addWidget(&nameEditor_, 0, 0, 1, 1, Qt::AlignTop);
+    topLayout->addWidget(&generalEditor_, 0, 1, 1, 1);
+    topLayout->addWidget(&segmentsEditor_, 1, 0, 1, 2);
+    topLayout->setColumnStretch(0, 1);
+    topLayout->setColumnStretch(1, 1);
     topLayout->setContentsMargins(0, 0, 0, 0);
 
     QWidget* bottomWidget = new QWidget(scrollArea);

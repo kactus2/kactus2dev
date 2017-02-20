@@ -93,6 +93,12 @@ namespace Utils {
 		//! If true then bus definitions should be included in search.
 		bool buses_;
 
+        //! If true then catalogs should be included in search.
+        bool catalogs_;
+
+        //! If true then APIs/Coms should be included in search.
+        bool apis_;
+
 		//! If true then other IP-Xact types should be included in search.
 		bool advanced_;
 

@@ -12,14 +12,12 @@
 #ifndef GENERATIONCONTROL_H
 #define GENERATIONCONTROL_H
 
-#include <QString>
-#include <QMap>
-#include <QSharedPointer>
-
 #include "ViewSelection.h"
-#include "FileOutput.h"
+#include "OutputControl.h"
+
 #include <Plugins/PluginSystem/GeneratorPlugin/IWriterFactory.h>
-#include <library/LibraryManager/libraryinterface.h>
+
+class LibraryInterface;
 
 struct GenerationSettings
 {
@@ -74,9 +72,9 @@ public:
 	QSharedPointer<ViewSelection> getViewSelection() const;
 	
     /*!
-     *  Gets the file output data.
+     *  Gets the output data.
      */
-	QSharedPointer<FileOuput> getFileOuput() const;
+	QSharedPointer<OutputControl> getOutputControl() const;
 
     /*!
      *  Returns settings.
@@ -152,7 +150,7 @@ private:
     //! True, if the generation target is deemed to be a design. False, if it is a component.
     bool isDesignGeneration_;
     //! The file output configuration.
-    QSharedPointer<FileOuput> fileOutput_;
+    QSharedPointer<OutputControl> outputControl_;
     //! The view selection configuration.
     QSharedPointer<ViewSelection> viewSelection_;
 };

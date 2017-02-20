@@ -25,6 +25,7 @@
 class Component;
 class MemoryMap;
 class MemoryMapBase;
+class ExpressionEditor;
 class ExpressionParser;
 class MemoryMapBaseValidator;
 //-----------------------------------------------------------------------------
@@ -39,15 +40,15 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] component               Pointer to the component that contains the editor.
-     *      @param [in] memoryRemap             Pointer to the memory remap being edited.
-     *      @param [in] parentMemoryMap         Pointer to the parent of the memory remap being edited.
-     *      @param [in] libHandler              Pointer to the instance that manages the library.
+     *      @param [in] component               The component that contains the editor.
+     *      @param [in] memoryRemap             The memory remap being edited.
+     *      @param [in] parentMemoryMap         The parent of the memory remap being edited.
+     *      @param [in] libHandler              The instance that manages the library.
      *      @param [in] parameterFinder         The finder for the parameter references.
      *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
      *      @param [in] expressionParser        The expression parser.
      *      @param [in] memoryMapBaseValidator  Validator used for memory map base.
-     *      @param [in] parent                  Pointer to the owner of this editor.
+     *      @param [in] parent                  The owner of this editor.
      */
     SingleMemoryMapEditor(QSharedPointer<Component> component,
         QSharedPointer<MemoryMapBase> memoryRemap,
@@ -89,6 +90,9 @@ private slots:
      *  Updates the address unit bits [AUB].
      */
     void updateAddressUnitBits();
+    
+    //! Called when isPresent has been edited.
+    void onIsPresentEdited();
 
     /*!
      *  Sets the new remap state to the memory remap.
@@ -148,6 +152,9 @@ private:
 
     //! The editor for the memory maps address unit bits [AUB].
     QLineEdit* addressUnitBitsEditor_;
+
+    //! The editor for isPresent-property.
+    ExpressionEditor* isPresentEditor_;
 
     //! The label for the slave interface binding.
     QLabel* slaveInterfaceLabel_;

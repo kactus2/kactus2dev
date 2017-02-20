@@ -157,12 +157,6 @@ void SingleFieldEditor::setupLayout()
 
     QGroupBox* fieldDefinitionGroup = new QGroupBox(tr("Field definition"));
 
-    offsetEditor_->setFrameShadow(QFrame::Sunken);
-    widthEditor_->setFrameShadow(QFrame::Sunken);
-    isPresentEditor_->setFrameShadow(QFrame::Sunken);
-    resetValueEditor_->setFrameShadow(QFrame::Sunken);
-    resetMaskEditor_->setFrameShadow(QFrame::Sunken);
-
     QFormLayout* fieldDefinitionLayout = new QFormLayout(fieldDefinitionGroup);
     fieldDefinitionLayout->addRow(tr("Offset [bits], f(x):"), offsetEditor_);
     fieldDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
@@ -171,9 +165,6 @@ void SingleFieldEditor::setupLayout()
     fieldDefinitionLayout->addRow(tr("Reset mask, f(x):"), resetMaskEditor_);
 
     QGroupBox* fieldConstraintGroup = new QGroupBox(tr("Field constraints"));
-
-    writeConstraintMinLimit_->setFrameShadow(QFrame::Sunken);
-    writeConstraintMaxLimit_->setFrameShadow(QFrame::Sunken);
 
     QFormLayout* fieldConstraintLayout = new QFormLayout(fieldConstraintGroup);
     volatileEditor_ = new BooleanComboBox(fieldDefinitionGroup);

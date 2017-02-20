@@ -24,11 +24,9 @@
 //-----------------------------------------------------------------------------
 NewComponentPage::NewComponentPage(LibraryInterface* libInterface, QWidget* parentDlg):
 NewPage(libInterface, VLNV::COMPONENT, tr("New HW Component"),
-    tr("Creates a flat (non-hierarchical) HW component"), parentDlg) 
+    tr("Creates a flat (non-hierarchical) HW component"), parentDlg),
+    attributeEditor_(new KactusAttributeEditor(this))
 {
-
-    // Create the attribute editor.
-    attributeEditor_ = new KactusAttributeEditor(this);
     connect(attributeEditor_, SIGNAL(productHierarchyChanged()), this, SLOT(onProductHierarchyChanged()));
 
     vlnvEditor_->setImplementationFilter(true, KactusAttribute::HW);
@@ -38,6 +36,7 @@ NewPage(libInterface, VLNV::COMPONENT, tr("New HW Component"),
     Q_ASSERT(widgetLayout);
     widgetLayout->addSpacing(12);
     widgetLayout->insertWidget(3, attributeEditor_);
+    widgetLayout->addStretch(1);
 
     onProductHierarchyChanged();
 }

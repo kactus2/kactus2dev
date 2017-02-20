@@ -92,6 +92,7 @@ QWidget* ExpressionDelegate::createExpressionEditor(QWidget* parent) const
 {
     ExpressionEditor* editor = new ExpressionEditor(parameterFinder_, parent);
     editor->setAppendingCompleter(parameterNameCompleter_);
+    editor->setFrameShadow(QFrame::Plain);
 
     connect(editor, SIGNAL(increaseReference(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

@@ -32,6 +32,10 @@
 #include <IPXACTmodels/BusDefinition/BusDefinitionReader.h>
 #include <IPXACTmodels/BusDefinition/validators/BusDefinitionValidator.h>
 
+#include <IPXACTmodels/Catalog/Catalog.h>
+#include <IPXACTmodels/Catalog/CatalogReader.h>
+#include <IPXACTmodels/Catalog/validators/CatalogValidator.h>
+
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/DesignReader.h>
 
@@ -397,10 +401,20 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
     file.close();
 
     // Create correct type of object.
-    if (toCreate.getType() == VLNV::BUSDEFINITION)
+    if (toCreate.getType() == VLNV::ABSTRACTIONDEFINITION)
+    {
+        AbstractionDefinitionReader reader;
+        return reader.createAbstractionDefinitionFrom(doc);
+    }
+    else if (toCreate.getType() == VLNV::BUSDEFINITION)
     {
         BusDefinitionReader reader;
         return reader.createBusDefinitionFrom(doc);
+    }
+    else if (toCreate.getType() == VLNV::CATALOG)
+    {
+        CatalogReader reader;
+        return reader.createCatalogFrom(doc);
     }
     else if (toCreate.getType() == VLNV::COMPONENT)
     {
@@ -417,20 +431,16 @@ QSharedPointer<Document> LibraryData::getModel(VLNV const& vlnv)
         DesignConfigurationReader reader;
         return reader.createDesignConfigurationFrom(doc);
     }
-    else if (toCreate.getType() == VLNV::ABSTRACTIONDEFINITION)
+
+    else if (toCreate.getType() == VLNV::APIDEFINITION)
     {
-        AbstractionDefinitionReader reader;
-        return reader.createAbstractionDefinitionFrom(doc);
+        ApiDefinitionReader reader;
+        return reader.createApiDefinitionFrom(doc);
     }
     else if (toCreate.getType() == VLNV::COMDEFINITION)
     {
 		ComDefinitionReader reader;
 		return reader.createComDefinitionFrom(doc);
-    }
-    else if (toCreate.getType() == VLNV::APIDEFINITION)
-    {
-		ApiDefinitionReader reader;
-		return reader.createApiDefinitionFrom(doc);
     }
     else
     {
@@ -537,18 +547,26 @@ bool LibraryData::validateDocument(QSharedPointer<Document> document)
         return false;
     }
 
-	if (getType(documentVLNV) == VLNV::BUSDEFINITION)
+    if (getType(documentVLNV) == VLNV::ABSTRACTIONDEFINITION)
+    {
+        AbstractionDefinitionValidator validator(handler_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+        if (!validator.validate(document.dynamicCast<AbstractionDefinition>()))
+        {
+            return false;
+        }
+    }
+    else if (getType(documentVLNV) == VLNV::BUSDEFINITION)
     {
         BusDefinitionValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
         if (!validator.validate(document.dynamicCast<BusDefinition>()))
         {
             return false;
         }
-    }
-	else if (getType(documentVLNV) == VLNV::ABSTRACTIONDEFINITION)
+    } 
+    else if (getType(documentVLNV) == VLNV::CATALOG)
     {
-        AbstractionDefinitionValidator validator(handler_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
-        if (!validator.validate(document.dynamicCast<AbstractionDefinition>()))
+        CatalogValidator validator;
+        if (!validator.validate(document.dynamicCast<Catalog>()))
         {
             return false;
         }

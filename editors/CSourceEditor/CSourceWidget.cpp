@@ -38,13 +38,11 @@
 //-----------------------------------------------------------------------------
 // Function: CSourceWidget()
 //-----------------------------------------------------------------------------
-CSourceWidget::CSourceWidget(QString const& sourceFile,
-                             QSharedPointer<Component> ownerComponent,
-                             LibraryInterface* libInterface,
-                             QWidget* mainWnd, QWidget* parent)
-    : TabDocument(parent, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
-      sourceFile_(sourceFile),
-      editProvider_()
+CSourceWidget::CSourceWidget(QString const& sourceFile, QSharedPointer<Component> ownerComponent,
+    LibraryInterface* libInterface, QWidget* mainWnd, QWidget* parent):
+TabDocument(parent, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
+    sourceFile_(sourceFile),
+    editProvider_()
 {
     textEdit_ = new CSourceTextEdit(mainWnd, this);
     editProvider_ = QSharedPointer<TextEditProvider>(new TextEditProvider(*textEdit_));

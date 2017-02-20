@@ -67,16 +67,20 @@ void AddressSpaceScene::refresh()
     QSharedPointer<QList<QSharedPointer<Segment> > > segments = addrSpace_->getSegments();
     foreach(QSharedPointer<Segment> current, *segments)
     {
-        SegmentGraphItem* segItem = new SegmentGraphItem(current, addrSpace_->getWidth(), expressionParser_);
-        addItem(segItem);
+        if (current->getIsPresent().isEmpty() || 
+            expressionParser_->parseExpression(current->getIsPresent()).toInt() == 1)
+        {
+            SegmentGraphItem* segItem = new SegmentGraphItem(current, addrSpace_->getWidth(), expressionParser_);
+            addItem(segItem);
 
-        if ( segItem->getOffset() > addressSpaceEnd)
-        {
-            exceedingSegments_.insert(segItem->getOffset(), segItem);
-        }
-        else
-        {
-            segmentItems_.insert(segItem->getOffset(), segItem);
+            if (segItem->getOffset() > addressSpaceEnd)
+            {
+                exceedingSegments_.insert(segItem->getOffset(), segItem);
+            }
+            else
+            {
+                segmentItems_.insert(segItem->getOffset(), segItem);
+            }
         }
     }
 
@@ -86,7 +90,8 @@ void AddressSpaceScene::refresh()
         foreach (QSharedPointer<MemoryBlockBase> block, *localMap->getMemoryBlocks())
         {
             QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
-            if (addrBlock)
+            if (addrBlock && 
+                (addrBlock->getIsPresent().isEmpty() || expressionParser_->parseExpression(addrBlock->getIsPresent()).toInt() == 1))
             {
                 LocalAddrBlockGraphItem* blockItem = new LocalAddrBlockGraphItem(addrBlock, 
                     addrSpace_->getWidth(), expressionParser_);

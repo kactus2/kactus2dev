@@ -83,12 +83,18 @@ public:
 	/*!
      *  Get the width of the item.
 	 *
-	 * This width is affected by the item's children so if children grow this 
-	 * width grows accordingly.
+	 * This width is affected by the item's children so if children grow this width grows accordingly.
 	 *
 	 *      @return The width of the item and it's sub-items.
 	 */
 	virtual qreal itemTotalWidth() const;
+       
+    /*!
+     *  Checks if the item is to be used in the visualization.
+     *
+     *      @return True, if the item should be used, otherwise false.
+     */
+    virtual bool isPresent() const;
 
 protected:
 

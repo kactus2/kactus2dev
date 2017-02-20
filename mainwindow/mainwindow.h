@@ -101,7 +101,6 @@ public slots:
      *
      *      @param [in] vlnv           The VLNV of the top-level component.
      *      @param [in] viewName       The name of the view to open.
-     *      @param [in] forceUnlocked  Forces the design to be opened in unlocked mode.
      */
     void openDesign(VLNV const& vlnv = VLNV(), QString const& viewName = QString());
 
@@ -116,7 +115,6 @@ public slots:
      *  
      *      @param [in] vlnv            The VLNV of the top-level component.
      *      @param [in] viewName        Name of the view to open.
-     *      @param [in] forceUnlocked   Forces the design to be opened in unlocked mode.
      */
     void openMemoryDesign(const VLNV& vlnv, const QString& viewName = QString());    
 
@@ -125,7 +123,6 @@ public slots:
      *
      *      @param [in] vlnv           The VLNV of the top-level component.
      *      @param [in] viewName       The name of the view to open.
-     *      @param [in] forceUnlocked  Forces the design to be opened in unlocked mode.
      */
 	void openSWDesign(const VLNV& vlnv = VLNV(), QString const& viewName = QString());
 
@@ -134,23 +131,29 @@ public slots:
      *
      *      @param [in] vlnv           The VLNV of the system component whose system design to open.
      *      @param [in] viewName       The name of the view to open.
-     *      @param [in] forceUnlocked  Forces the system to be opened in unlocked mode.
      */
     void openSystemDesign(VLNV const &vlnv, QString const& viewName = QString());
 
     /*!
-     *  Open bus to be edited
+     *  Open bus to be edited.
 	 *
-	 *      @param [in] vlnv           Identifies the bus definition
-     *      @param [in] forceUnlocked  Forces the bus to be opened in unlocked mode.
+	 *      @param [in] busDefVLNV      Identifies the bus definition.
+	 *      @param [in] absDefVLNV      Identifies the abstraction definition.
+     *      @param [in] disableBusDef   Flag for forcing disable on bus definitino edits.
 	 */
 	void openBus(const VLNV& busDefVLNV, const VLNV& absDefVLNV = VLNV(), bool disableBusDef = false);
+
+	/*!
+     *  Open catalog editor to edit catalog details.
+	 *
+	 *      @param [in] vlnv           Identifies the catalog to edit.
+	 */
+	void openCatalog(const VLNV& vlnv);
 
 	/*!
      *  Open component editor to edit a component details.
 	 *
 	 *      @param [in] vlnv           Identifies the component to edit.
-     *      @param [in] forceUnlocked  Forces the component to be opened in unlocked mode.
 	 */
 	void openComponent(const VLNV& vlnv);
 
@@ -158,7 +161,6 @@ public slots:
      *  Opens a COM definition for editing.
      *
      *      @param [in] vlnv           The VLNV of the COM definition to open.
-     *      @param [in] forceUnlocked  Forces the COM definition to be opened in unlocked mode.
      */
     void openComDefinition(VLNV const& vlnv);
 
@@ -166,7 +168,6 @@ public slots:
      *  Opens an API definition for editing.
      *
      *      @param [in] vlnv           The VLNV of the API definition to open.
-     *      @param [in] forceUnlocked  Forces the API definition to be opened in unlocked mode.
      */
     void openApiDefinition(VLNV const& vlnv);
 
@@ -302,6 +303,8 @@ public slots:
     void createDesignForExistingComponent(VLNV const& vlnv);
 
     void unlockNewlyCreatedDocument(VLNV const& vlnv);
+
+    void createCatalog(VLNV const& catalogVLNV, QString const& directory);
 
     /*!
      *  Creates a new hierarchical SW component with an SW design.

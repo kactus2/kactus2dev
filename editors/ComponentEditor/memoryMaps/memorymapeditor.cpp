@@ -56,6 +56,7 @@ model_(new MemoryMapModel(memoryRemap, expressionParser, parameterFinder, expres
     proxy->setColumnToAcceptExpressions(MemoryMapColumns::BASE_COLUMN);
     proxy->setColumnToAcceptExpressions(MemoryMapColumns::RANGE_COLUMN);
     proxy->setColumnToAcceptExpressions(MemoryMapColumns::WIDTH_COLUMN);
+    proxy->setColumnToAcceptExpressions(MemoryMapColumns::IS_PRESENT);
 
 	proxy->setSourceModel(model_);
 	view_->setModel(proxy);

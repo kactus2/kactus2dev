@@ -57,13 +57,6 @@ public:
 	virtual ~SegmentEditor();
 
 	/*!
-     *  Check if the editor is in valid state.
-	 *
-	 *      @return True if the editor is in valid state.
-	 */
-	bool isValid() const;
-
-	/*!
      *  Read the settings from the address space to the editor.
 	 */
 	void refresh();

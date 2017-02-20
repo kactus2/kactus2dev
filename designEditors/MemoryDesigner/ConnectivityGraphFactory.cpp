@@ -178,35 +178,41 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
 
     foreach (QSharedPointer<AddressSpace> space, *component->getAddressSpaces())
     {
-        QString spaceIdentifier = instanceIdentifier + "." + space->name();
-        QSharedPointer<MemoryItem> spaceItem(new MemoryItem(space->name(), "addressSpace"));
-        spaceItem->setIdentifier(spaceIdentifier);
-        spaceItem->setAUB(space->getAddressUnitBits());
-        spaceItem->setAddress("0");
-
-        if (!space->getRange().isEmpty())
+        if (space->getIsPresent().isEmpty() ||
+            expressionParser_->parseExpression(space->getIsPresent()).toInt() == 1)
         {
-            spaceItem->setRange(expressionParser_->parseExpression(space->getRange()));
-        }
+            QString spaceIdentifier = instanceIdentifier + "." + space->name();
+            QSharedPointer<MemoryItem> spaceItem(new MemoryItem(space->name(), "addressSpace"));
+            spaceItem->setIdentifier(spaceIdentifier);
+            spaceItem->setDisplayName(space->displayName());
+            spaceItem->setAUB(space->getAddressUnitBits());
+            spaceItem->setAddress("0");
 
-        if (!space->getWidth().isEmpty())
-        {
-            spaceItem->setWidth(expressionParser_->parseExpression(space->getWidth()));
-        }
-
-        newInstance->addMemory(spaceItem);
-
-        foreach(QSharedPointer<Segment> segment, *space->getSegments())
-        {
-            if (segment->getIsPresent().isEmpty() ||
-                expressionParser_->parseExpression(segment->getIsPresent()).toInt() == 1)
+            if (!space->getRange().isEmpty())
             {
-                QSharedPointer<MemoryItem> segmentItem(new MemoryItem(segment->name(), "segment"));
-                segmentItem->setIdentifier(spaceIdentifier + '.' + segment->name());
-                segmentItem->setRange(expressionParser_->parseExpression(segment->getRange()));
-                segmentItem->setOffset(expressionParser_->parseExpression(segment->getAddressOffset()));
+                spaceItem->setRange(expressionParser_->parseExpression(space->getRange()));
+            }
 
-                spaceItem->addChild(segmentItem);
+            if (!space->getWidth().isEmpty())
+            {
+                spaceItem->setWidth(expressionParser_->parseExpression(space->getWidth()));
+            }
+
+            newInstance->addMemory(spaceItem);
+
+            foreach(QSharedPointer<Segment> segment, *space->getSegments())
+            {
+                if (segment->getIsPresent().isEmpty() ||
+                    expressionParser_->parseExpression(segment->getIsPresent()).toInt() == 1)
+                {
+                    QSharedPointer<MemoryItem> segmentItem(new MemoryItem(segment->name(), "segment"));
+                    segmentItem->setIdentifier(spaceIdentifier + '.' + segment->name());
+                    segmentItem->setDisplayName(segment->displayName());
+                    segmentItem->setRange(expressionParser_->parseExpression(segment->getRange()));
+                    segmentItem->setOffset(expressionParser_->parseExpression(segment->getAddressOffset()));
+
+                    spaceItem->addChild(segmentItem);
+                }
             }
         }
     }
@@ -220,16 +226,20 @@ void ConnectivityGraphFactory::addMemoryMapMemories(QSharedPointer<ConnectivityC
 {
     foreach (QSharedPointer<const MemoryMap> map, *component->getMemoryMaps())
     {
-        int addressableUnitBits = expressionParser_->parseExpression(map->getAddressUnitBits()).toInt();
-        if (addressableUnitBits == 0)
+        if (map->getIsPresent().isEmpty() ||
+            expressionParser_->parseExpression(map->getIsPresent()).toInt() == 1)
         {
-            addressableUnitBits = 8;
+            int addressableUnitBits = expressionParser_->parseExpression(map->getAddressUnitBits()).toInt();
+            if (addressableUnitBits == 0)
+            {
+                addressableUnitBits = 8;
+            }
+
+            QSharedPointer<MemoryItem> mapItem = createMemoryMapData(map, addressableUnitBits, instanceData);
+            instanceData->addMemory(mapItem);
+
+            addMemoryRemapData(map, mapItem, addressableUnitBits, instanceData);
         }
-
-        QSharedPointer<MemoryItem> mapItem = createMemoryMapData(map, addressableUnitBits, instanceData);
-        instanceData->addMemory(mapItem);
-
-        addMemoryRemapData(map, mapItem, addressableUnitBits, instanceData);
     }
 }
 
@@ -244,6 +254,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
 
     QSharedPointer<MemoryItem> mapItem(new MemoryItem(map->name(), "memoryMap"));
     mapItem->setIdentifier(mapIdentifier);
+    mapItem->setDisplayName(map->displayName());
     mapItem->setAUB(QString::number(addressableUnitBits));
 
     foreach (QSharedPointer<MemoryBlockBase> block, *map->getMemoryBlocks())
@@ -273,6 +284,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(
 
     QSharedPointer<MemoryItem> blockItem(new MemoryItem(addressBlock->name(), "addressBlock"));
     blockItem->setIdentifier(blockIdentifier);
+    blockItem->setDisplayName(addressBlock->displayName());
     blockItem->setAUB(QString::number(addressableUnitBits));
     blockItem->setAddress(QString::number(baseAddress));
     blockItem->setRange(expressionParser_->parseExpression(addressBlock->getRange()));
@@ -312,6 +324,7 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> re
 
         QSharedPointer<MemoryItem> regItem(new MemoryItem(reg->name(), "register"));
         regItem->setIdentifier(registerIdentifier);
+        regItem->setDisplayName(reg->displayName());
         regItem->setAUB(QString::number(addressableUnitBits));
         regItem->setAddress(QString::number(registerAddress));
         regItem->setSize(expressionParser_->parseExpression(reg->getSize()));
@@ -342,6 +355,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<
 
     QSharedPointer<MemoryItem> fieldItem(new MemoryItem(field->name(), "field"));
     fieldItem->setIdentifier(fieldIdentifier);
+    fieldItem->setDisplayName(field->displayName());
     fieldItem->setAUB(QString::number(addressableUnitBits));
     fieldItem->setWidth(expressionParser_->parseExpression(field->getBitWidth()));
     fieldItem->setAddress(QString::number(regAddress + bitOffset/addressableUnitBits));
@@ -363,6 +377,7 @@ void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<const MemoryMap
             containingInstance->getInstanceUuid() + "." + containingInstance->getName() + "." + remap->name();
 
         QSharedPointer<MemoryItem> remapItem(new MemoryItem(remap->name(), "memoryRemap"));
+        remapItem->setDisplayName(remap->displayName());
         remapItem->setIdentifier(remapIdentifier);
         remapItem->setAUB(QString::number(addressableUnitBits));
 

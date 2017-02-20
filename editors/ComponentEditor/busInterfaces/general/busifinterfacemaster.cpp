@@ -54,8 +54,6 @@ parameterFinder_(parameterFinder)
     baseAddressCompleter->setModel(componentParameterModel);
     baseAddressEditor_->setAppendingCompleter(baseAddressCompleter);
 
-    baseAddressEditor_->setFrameShadow(QFrame::Sunken);
-
     // set the title depending on the mode
     if (mode == General::MASTER)
     {

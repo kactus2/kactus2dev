@@ -16,7 +16,7 @@
 #include <QMap>
 #include <QSharedPointer>
 
-#include <Plugins/PluginSystem/GeneratorPlugin/FileOutput.h>
+#include <Plugins/PluginSystem/GeneratorPlugin/OutputControl.h>
 
 #include "SWStackParser.h"
 
@@ -45,7 +45,7 @@ public:
     /*!
      *  Gets the file output data.
      */
-	QSharedPointer<FileOuput> getFileOuput() const;
+	QSharedPointer<OutputControl> getFileOuput() const;
 
 signals:
 	
@@ -61,7 +61,7 @@ private:
 	MakeConfiguration& operator=(MakeConfiguration const& rhs);
 
     //! The file output configuration.
-    QSharedPointer<FileOuput> fileOutput_;
+    QSharedPointer<OutputControl> outputControl_;
 };
 
 #endif // MAKECONFIGURATION_H

@@ -244,7 +244,12 @@ HEADERS += ./XmlUtils.h \
     ./Component/validators/MemoryMapValidator.h \
     ./Component/validators/MemoryReserve.h \
     ./Component/validators/RegisterValidator.h \
-    ./Component/validators/ViewValidator.h
+    ./Component/validators/ViewValidator.h \
+    ./Catalog/Catalog.h \
+    ./Catalog/CatalogReader.h \
+    ./Catalog/CatalogWriter.h \
+    ./Catalog/IpxactFile.h \
+    ./Catalog/validators/CatalogValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./XmlUtils.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -479,4 +484,9 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/MemoryMapValidator.cpp \
     ./Component/validators/MemoryReserve.cpp \
     ./Component/validators/RegisterValidator.cpp \
-    ./Component/validators/ViewValidator.cpp
+    ./Component/validators/ViewValidator.cpp \
+    ./Catalog/Catalog.cpp \
+    ./Catalog/CatalogReader.cpp \
+    ./Catalog/CatalogWriter.cpp \
+    ./Catalog/IpxactFile.cpp \
+    ./Catalog/validators/CatalogValidator.cpp

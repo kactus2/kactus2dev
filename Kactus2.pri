@@ -110,6 +110,7 @@ HEADERS += ./VersionHelper.h \
     ./mainwindow/Ribbon/RibbonTheme.h \
     ./mainwindow/Ribbon/Ribbon.h \
     ./mainwindow/Ribbon/RibbonGroup.h \
+    ./mainwindow/NewPages/NewCatalogPage.h \
     ./mainwindow/NewPages/NewApiDefinitionPage.h \
     ./mainwindow/NewPages/NewBusDefinitionPage.h \
     ./mainwindow/NewPages/NewComDefinitionPage.h \
@@ -538,6 +539,12 @@ HEADERS += ./VersionHelper.h \
     ./editors/BusDefinitionEditor/busportsdelegate.h \
     ./editors/BusDefinitionEditor/busportsmodel.h \
     ./editors/BusDefinitionEditor/busportsview.h \
+    ./editors/CatalogEditor/CatalogFileColumns.h \
+    ./editors/CatalogEditor/CatalogEditor.h \
+    ./editors/CatalogEditor/CatalogFileModel.h \
+    ./editors/CatalogEditor/CatalogFileDelegate.h \
+    ./editors/CatalogEditor/CatalogFileFilter.h \
+    ./editors/CatalogEditor/CatalogFileView.h \
     ./designEditors/SystemDesign/HWMappingItem.h \
     ./designEditors/SystemDesign/ComGraphicsConnection.h \
     ./designEditors/SystemDesign/ApiGraphicsConnection.h \
@@ -576,7 +583,6 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
     ./designEditors/MemoryDesigner/ConnectivityInterface.h \
     ./designEditors/MemoryDesigner/FieldGraphicsItem.h \
-    ./designEditors/MemoryDesigner/FieldOverlapItem.h \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.h \
     ./designEditors/MemoryDesigner/MemoryColumnHandler.h \
     ./designEditors/MemoryDesigner/MemoryConnectionHandler.h \
@@ -700,7 +706,10 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./Plugins/common/LanguageHighlighter.h \
+    ./editors/CSourceEditor/CSourceHighlight.h \
+    ./Plugins/common/SourceHighlightStyle.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -788,6 +797,7 @@ SOURCES += ./VersionHelper.cpp \
     ./mainwindow/SplashScreen.cpp \
     ./mainwindow/NewPages/NewApiDefinitionPage.cpp \
     ./mainwindow/NewPages/NewBusDefinitionPage.cpp \
+    ./mainwindow/NewPages/NewCatalogPage.cpp \
     ./mainwindow/NewPages/NewComDefinitionPage.cpp \
     ./mainwindow/NewPages/NewComponentPage.cpp \
     ./mainwindow/NewPages/NewDesignPage.cpp \
@@ -1157,6 +1167,11 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/BusDefinitionEditor/busportsdelegate.cpp \
     ./editors/BusDefinitionEditor/busportsmodel.cpp \
     ./editors/BusDefinitionEditor/busportsview.cpp \
+    ./editors/CatalogEditor/CatalogEditor.cpp \
+    ./editors/CatalogEditor/CatalogFileDelegate.cpp \
+    ./editors/CatalogEditor/CatalogFileFilter.cpp \
+    ./editors/CatalogEditor/CatalogFileModel.cpp \
+    ./editors/CatalogEditor/CatalogFileView.cpp \
     ./designEditors/HWDesign/AdHocConnectionItem.cpp \
     ./designEditors/HWDesign/AdHocEnabled.cpp \
     ./designEditors/HWDesign/AdHocInterfaceItem.cpp \
@@ -1213,7 +1228,6 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
     ./designEditors/MemoryDesigner/ConnectivityInterface.cpp \
     ./designEditors/MemoryDesigner/FieldGraphicsItem.cpp \
-    ./designEditors/MemoryDesigner/FieldOverlapItem.cpp \
     ./designEditors/MemoryDesigner/MainMemoryGraphicsItem.cpp \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
     ./designEditors/MemoryDesigner/MemoryCollisionItem.cpp \
@@ -1312,5 +1326,8 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
+    ./Plugins/common/LanguageHighlighter.cpp \
+    ./editors/CSourceEditor/CSourceHighlight.cpp \
+    ./Plugins/common/SourceHighlightStyle.cpp
 RESOURCES += kactus.qrc

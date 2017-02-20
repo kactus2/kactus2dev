@@ -48,9 +48,6 @@ parameterFinder_(parameterFinder)
     remapEditor_->setFixedHeight(20);
     rangeEditor_->setFixedHeight(20);
 
-    remapEditor_->setFrameShadow(QFrame::Sunken);
-    rangeEditor_->setFrameShadow(QFrame::Sunken);
-
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 

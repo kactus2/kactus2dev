@@ -21,7 +21,6 @@
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovemodel.h>
 
-
 #include <IPXACTmodels/common/Document.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
@@ -29,6 +28,13 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
+
+#include <IPXACTmodels/Catalog/Catalog.h>
+#include <IPXACTmodels/Catalog/CatalogWriter.h>
+
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/ComponentWriter.h>
+#include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/DesignWriter.h>
@@ -38,10 +44,6 @@
 
 #include <IPXACTmodels/kactusExtensions/ApiDefinitionWriter.h>
 #include <IPXACTmodels/kactusExtensions/ComDefinitionWriter.h>
-
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/ComponentWriter.h>
-#include <IPXACTmodels/Component/FileSet.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 
@@ -554,6 +556,11 @@ void LibraryHandler::onEditItem(VLNV const& vlnv)
     if (documentType == VLNV::COMPONENT)
     {
         emit openComponent(vlnv);
+    }
+
+    if (documentType == VLNV::CATALOG)
+    {
+        emit openCatalog(vlnv);
     }
 
     else if (documentType == VLNV::COMDEFINITION)
@@ -1318,13 +1325,18 @@ bool LibraryHandler::writeFile(QString const& filePath, QSharedPointer<Document>
         QSharedPointer<BusDefinition> busDef = model.dynamicCast<BusDefinition>();
         writer.writeBusDefinition(xmlWriter, busDef);
     }
+    else if (documentType == VLNV::CATALOG)
+    {
+        CatalogWriter writer;
+        QSharedPointer<Catalog> catalog = model.dynamicCast<Catalog>();
+        writer.writeCatalog(xmlWriter, catalog);
+    }
     else if (documentType == VLNV::COMPONENT)
     {
         ComponentWriter writer;
         QSharedPointer<Component> component = model.dynamicCast<Component>();
         writer.writeComponent(xmlWriter, component);
     }
-
     else if (documentType == VLNV::DESIGN)
     {
         DesignWriter designWriter;

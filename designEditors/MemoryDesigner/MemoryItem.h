@@ -49,6 +49,20 @@ public:
     QString getType() const;
 
     /*!
+     *  Sets a display name for the memory.
+     *
+     *      @param [in] displayName   The display name to set.
+     */
+    void setDisplayName(QString const& displayName);
+
+    /*!
+     *  Gets the display name of the memory.
+     *
+     *      @return The display name of the memory.
+     */
+    QString getDisplayName() const;
+
+    /*!
      *  Sets an identifier for the memory.
      *
      *      @param [in] identifier   The identifier to set.
@@ -168,6 +182,9 @@ private:
 
     //! The name of the memory element.
     QString name_;
+
+    //! The display name of the memory element.
+    QString displayName_;
 
     //! The type of the memory element.
     QString type_;

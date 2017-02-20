@@ -40,12 +40,12 @@ public:
     /*!
      *  Constructor.
      */
-    VLNVDataNode(QString const& name = "", unsigned int level = LEVEL_ROOT);
+    VLNVDataNode(QString const& name = QString(), unsigned int level = LEVEL_ROOT);
 
     /*!
      *  Destructor.
      */
-    ~VLNVDataNode();
+    virtual ~VLNVDataNode();
 
     /*!
      *  Returns the name of the node.
@@ -146,9 +146,9 @@ public:
     /*!
      *  Destructor.
      */
-    ~VLNVDataTree();
+    virtual ~VLNVDataTree();
 
-    /*!
+    /*! 
      *  Updates the tree based on the filters and the given library interface.
      *
      *      @param [in] lh     The library interface.

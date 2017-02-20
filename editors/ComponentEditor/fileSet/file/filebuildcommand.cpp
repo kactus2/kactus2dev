@@ -259,8 +259,6 @@ void FileBuildCommand::setupLayout()
     replaceLabel->setToolTip(replaceFlagsToolTip);
     flagsEditor_.setToolTip(replaceFlagsToolTip);
 
-    replaceDefaultEditor_->setFrameShadow(QFrame::Sunken);
-
     topLayout->addWidget(replaceLabel, 3, 0, 1, 1);
     topLayout->addWidget(replaceDefaultEditor_, 3, 1, 1, 2);
     topLayout->setColumnStretch(1, 1);

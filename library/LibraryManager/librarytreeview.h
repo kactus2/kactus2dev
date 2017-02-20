@@ -85,6 +85,9 @@ signals:
 	//! Open bus definition in an editor
 	void openBus(QModelIndex const& index);
 
+    //! Open catalog in an editor
+    void openCatalog(QModelIndex const& index);
+
 	//! Open COM definition in an editor
 	void openComDef(QModelIndex const& index);
 
@@ -152,6 +155,9 @@ public slots:
 
     //! Open bus.
     void onOpenBus();
+
+    //! Open catalog.
+    void onOpenCatalog();
 
     //! Open COM definition.
     void onOpenComDef();
@@ -264,6 +270,9 @@ private:
 
 	//! Open a bus definition
 	QAction* openBusAction_;
+   
+    //! Open a catalog.
+    QAction* openCatalogAction_;
 
 	//! Create new abstraction definition for bus definition.
 	QAction* addSignalsAction_;

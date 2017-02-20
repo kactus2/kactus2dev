@@ -57,7 +57,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The MCAPI highlighter.
-    CSourceHighlighter* m_highlighter;
+    CSourceHighlighter* highlighter_;
 
     //! The used content matcher.
     QSharedPointer<CSourceContentMatcher> m_matcher;

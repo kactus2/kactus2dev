@@ -131,7 +131,7 @@ protected:
      *
      *      @return The parameter finder used in the table.
      */
-    QSharedPointer<ParameterFinder> getParameterFinder();
+    QSharedPointer<ParameterFinder> getParameterFinder() const;
 
 private:
 

@@ -905,6 +905,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\otherClockDrivers">
       <UniqueIdentifier>{3cc0e478-f0f1-4286-b4a8-74b708d06637}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\CatalogEditor">
+      <UniqueIdentifier>{efa480c3-3005-4460-8ce6-b937c3534e44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\CatalogEditor">
+      <UniqueIdentifier>{7bc5bd4f-48d9-404f-9960-2993778e9613}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -4177,8 +4183,53 @@
     <ClCompile Include="editors\ComponentEditor\instantiations\ModuleParameterHeaderView.cpp">
       <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
     </ClCompile>
-    <ClCompile Include="designEditors\MemoryDesigner\FieldOverlapItem.cpp">
-      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    <ClCompile Include="mainwindow\NewPages\NewCatalogPage.cpp">
+      <Filter>Source Files\mainwindow\NewPages</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_NewCatalogPage.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CatalogEditor\CatalogEditor.cpp">
+      <Filter>Source Files\editors\CatalogEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CatalogEditor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CatalogFileModel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CatalogEditor\CatalogFileModel.cpp">
+      <Filter>Source Files\editors\CatalogEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CatalogEditor\CatalogFileDelegate.cpp">
+      <Filter>Source Files\editors\CatalogEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CatalogFileDelegate.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CatalogFileFilter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CatalogEditor\CatalogFileFilter.cpp">
+      <Filter>Source Files\editors\CatalogEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CatalogEditor\CatalogFileView.cpp">
+      <Filter>Source Files\editors\CatalogEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_CatalogFileView.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_LanguageHighlighter.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\common\LanguageHighlighter.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\CSourceEditor\CSourceHighlight.cpp">
+      <Filter>Source Files\editors\CSourceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugins\common\SourceHighlightStyle.cpp">
+      <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5748,6 +5799,27 @@
     <CustomBuild Include="designEditors\common\ComponentInstanceParameterFinder.h">
       <Filter>Header Files\designEditors\common</Filter>
     </CustomBuild>
+    <CustomBuild Include="mainwindow\NewPages\NewCatalogPage.h">
+      <Filter>Header Files\mainwindow\NewPages</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\CatalogEditor\CatalogEditor.h">
+      <Filter>Header Files\editors\CatalogEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\CatalogEditor\CatalogFileModel.h">
+      <Filter>Header Files\editors\CatalogEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\CatalogEditor\CatalogFileDelegate.h">
+      <Filter>Header Files\editors\CatalogEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\CatalogEditor\CatalogFileFilter.h">
+      <Filter>Header Files\editors\CatalogEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\CatalogEditor\CatalogFileView.h">
+      <Filter>Header Files\editors\CatalogEditor</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Plugins\common\LanguageHighlighter.h">
+      <Filter>Header Files\Plugins\common</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6314,8 +6386,14 @@
     <ClInclude Include="editors\ComponentEditor\instantiations\ModuleParameterHeaderView.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\MemoryDesigner\FieldOverlapItem.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    <ClInclude Include="editors\CatalogEditor\CatalogFileColumns.h">
+      <Filter>Header Files\editors\CatalogEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\CSourceEditor\CSourceHighlight.h">
+      <Filter>Header Files\editors\CSourceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugins\common\SourceHighlightStyle.h">
+      <Filter>Header Files\Plugins\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
