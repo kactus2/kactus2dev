@@ -202,3 +202,24 @@ qreal AddressBlockGraphicsItem::getMaximumNeededChangeInFieldWidth() const
 
     return maximumWidthChange;
 }
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockGraphicsItem::createFieldOverlapItems()
+//-----------------------------------------------------------------------------
+void AddressBlockGraphicsItem::createFieldOverlapItems()
+{
+    if (!subItemsAreFiltered())
+    {
+        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        while (subItemIterator.hasNext())
+        {
+            subItemIterator.next();
+            MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+            RegisterGraphicsItem* registerItem = dynamic_cast<RegisterGraphicsItem*>(subItem);
+            if (registerItem)
+            {
+                registerItem->createOverlappingFieldMarkers();
+            }
+        }
+    }
+}

@@ -27,7 +27,8 @@ MemoryGraphicsItemHandler::MemoryGraphicsItemHandler():
 filterAddressSpaceSegments_(true),
 filterAddressBlocks_(true),
 filterRegisters_(true),
-filterFields_(true)
+filterFields_(true),
+memoryMapItems_()
 {
 
 }
@@ -110,6 +111,8 @@ bool MemoryGraphicsItemHandler::fieldsAreFiltered() const
 void MemoryGraphicsItemHandler::createMemoryItems(QSharedPointer<ConnectivityGraph> connectionGraph,
     MemoryColumn* spaceColumn, MemoryColumn* memoryMapColumn)
 {
+    memoryMapItems_.clear();
+
     foreach (QSharedPointer<ConnectivityComponent> componentInstance, connectionGraph->getInstances())
     {
         foreach (QSharedPointer<MemoryItem> memoryItem, componentInstance->getMemories())
@@ -153,5 +156,18 @@ void MemoryGraphicsItemHandler::createMemoryMapItem(QSharedPointer<MemoryItem> m
         MemoryMapGraphicsItem* mapGraphicsItem = new MemoryMapGraphicsItem(
             mapItem, filterAddressBlocks_, filterRegisters_, filterFields_, containingInstance, containingColumn);
         containingColumn->addItem(mapGraphicsItem);
+
+        memoryMapItems_.append(mapGraphicsItem);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::createFieldOverlapItems()
+//-----------------------------------------------------------------------------
+void MemoryGraphicsItemHandler::createFieldOverlapItems()
+{
+    foreach (MemoryMapGraphicsItem* mapItem, memoryMapItems_)
+    {
+        mapItem->createFieldOverlapItems();
     }
 }

@@ -141,6 +141,16 @@ void MemoryDesignerGraphicsItem::setupToolTip(QString const& identifier)
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::addToToolTip()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::addToToolTip(QString const& toolTipAddition)
+{
+    QString toolTipText = toolTip();
+    toolTipText += toolTipAddition;
+    setToolTip(toolTipText);
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::name()
 //-----------------------------------------------------------------------------
 QString MemoryDesignerGraphicsItem::name() const

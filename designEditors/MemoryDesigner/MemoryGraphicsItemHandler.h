@@ -16,8 +16,10 @@ class ConnectivityGraph;
 class MemoryColumn;
 class MemoryItem;
 class ConnectivityComponent;
+class MemoryMapGraphicsItem;
 
 #include <QSharedPointer>
+#include <QVector>
 
 //-----------------------------------------------------------------------------
 //! Constructs the memory graphics items for the memory design diagram.
@@ -103,6 +105,11 @@ public:
     void createMemoryItems(QSharedPointer<ConnectivityGraph> connectionGraph, MemoryColumn* spaceColumn,
         MemoryColumn* memoryMapColumn);
 
+    /*!
+     *  Create overlap items for register graphics items.
+     */
+    void createFieldOverlapItems();
+
 private:
     // Disable copying.
     MemoryGraphicsItemHandler(MemoryGraphicsItemHandler const& rhs);
@@ -143,6 +150,9 @@ private:
 
     //! Value for filtering register fields.
     bool filterFields_;
+
+    //! List of all the created memory map graphics items.
+    QVector<MemoryMapGraphicsItem*> memoryMapItems_;
 };
 
 //-----------------------------------------------------------------------------

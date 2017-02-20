@@ -76,10 +76,28 @@ public:
      */
     qreal getMaximumNeededChangeInFieldWidth() const;
 
+    /*!
+     *  Create overlapping field graphics items.
+     */
+    void createOverlappingFieldMarkers();
+
 private:
     // Disable copying.
     RegisterGraphicsItem(RegisterGraphicsItem const& rhs);
     RegisterGraphicsItem& operator=(RegisterGraphicsItem const& rhs);
+
+    //! Field memory items with calculated field offset and width.
+    struct FieldMemoryItem
+    {
+        //! Offset of the field item.
+        quint64 fieldOffset;
+
+        //! Width of the field item.
+        quint64 fieldWidth;
+
+        //! Memory item containing the field item data.
+        QSharedPointer<MemoryItem> fieldMemoryItem;
+    };
 
     /*!
      *  Get the register end.
@@ -104,14 +122,14 @@ private:
     void setupFields(QSharedPointer<MemoryItem> registerItem);
 
     /*!
-     *  Get the field memory items of the selected register memory item in the order of their offset.
+     *  Get the field items in last bit order.
      *
-     *      @param [in] registerItem    The selected register memory item.
+     *      @param [in] registerItem    Memory item containing the register data.
      *
-     *      @return Map containing field offset and field memory item pairs.
+     *      @return Field items in last bit order with calculated offsets and widths.
      */
-    QMap<quint64, QSharedPointer<MemoryItem> > getFieldItemsInOffsetOrder(QSharedPointer<MemoryItem> registerItem)
-        const;
+    QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> getFieldItemsInLastBitOrder(
+        QSharedPointer<MemoryItem> registerItem) const;
 
     /*!
      *  Create an empty field graphics item.
@@ -148,6 +166,74 @@ private:
      *      @return The width available for the register item.
      */
     virtual qreal getItemWidth() const;
+
+    /*!
+     *  Create overlapping markers for the selected field.
+     *
+     *      @param [in] fieldIndex          Index of the selected field.
+     *      @param [in] fieldCount          Number of fields contained within the register.
+     *      @param [in] fieldItem           The selected field item.
+     *      @param [in] fieldRectangle      Bounding rectangle of the field item.
+     *      @param [in] fieldLineWidth      Line width of the field item.
+     *      @param [in] overlapBrush        Brush used to draw the field item.
+     *      @param [in] containingScene     Scene containing field item.
+     */
+    void createOverlappingMarkersForField(int fieldIndex, int fieldCount, FieldGraphicsItem* fieldItem,
+        QRectF fieldRectangle, int fieldLineWidth, QBrush overlapBrush, QGraphicsScene* containingScene);
+
+    /*!
+     *  Check if a field overlaps another field.
+     *
+     *      @param [in] firstItemRectangle      Bounding rectangle of the first field item.
+     *      @param [in] firstItemLineWidth      Line width of the first field item.
+     *      @param [in] secondItemRectangle     Bounding rectangle of the second field item.
+     *      @param [in] secondItemLineWidth     Line width of the first field item.
+     *
+     *      @return True, if the field overlaps another field, false otherwise.
+     */
+    bool fieldOverlapsAnotherField(QRectF firstItemRectangle, int firstItemLineWidth, QRectF secondItemRectangle,
+        int secondItemLineWidth) const;
+
+    /*!
+     *  Get the x coordinate modifier for the overlapping field.
+     *
+     *      @param [in] firstOffset     Offset of the first field.
+     *      @param [in] firstLastBit    Last bit of the first field.
+     *      @param [in] secondOffset    Offset of the second field.
+     *      @param [in] secondLastbit   Last bit of the second field.
+     *      @param [in] changePerBit    Width change per bit.
+     *
+     *      @return The x coordinate modifier for the overlapping field.
+     */
+    qreal getOverlappingFieldPositionModifier(quint64 firstOffset, quint64 firstLastBit, quint64 secondOffset,
+        quint64 secondLastbit, qreal changePerBit) const;
+
+    /*!
+     *  Get the new x coordinate for the selected field item.
+     *
+     *      @param [in] fieldItem               The selected field item.
+     *      @param [in] fieldLastBit            Last bit of the selected field.
+     *      @param [in] fieldItemWidthChange    Width change of the selected field item.
+     *      @param [in] overallWidthChange      Overall width change of the contained field items.
+     *      @param [in] overallOverlapModifier  Overlap modifier of the selected field item.
+     *      @param [in] currentOverlapModifier  Overall overlap modifier of the contained field items.
+     *      @param [in] fieldsStartPosition     Start position of the field items.
+     *
+     *      @return The new x coordinate.
+     */
+    qreal getNewFieldPositionX(FieldGraphicsItem* fieldItem, quint64 fieldLastBit, qreal fieldItemWidthChange,
+        qreal overallWidthChange, qreal overallOverlapModifier, qreal currentOverlapModifier,
+        qreal fieldsStartPosition) const;
+
+    /*!
+     *  Get the field width modified to fit into the register bounds.
+     *
+     *      @param [in] fieldLastBit    Last bit of the selected field.
+     *      @param [in] fieldOffset     Offset of the selected field.
+     *
+     *      @return Modified width of the field item.
+     */
+    quint64 getModifiedFieldWidth(quint64 fieldLastBit, quint64 fieldOffset) const;
 
     //-----------------------------------------------------------------------------
     // Data.

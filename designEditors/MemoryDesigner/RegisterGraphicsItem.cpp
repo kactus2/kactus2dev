@@ -19,6 +19,7 @@
 
 #include <QBrush>
 #include <QFont>
+#include <QPen>
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::RegisterGraphicsItem()
@@ -118,7 +119,7 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem)
     quint64 registerEnd = getRegisterEnd(addressUnitBits_, registerSize_);
     QString registerName = getNameLabel()->toPlainText();
 
-    qint64 firstUnusedBit = registerSize_;
+    quint64 firstUnusedBit = registerSize_;
     qreal registerWidth = boundingRect().width();
     qreal subItemPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2;
     qreal oneBitWidth = (registerWidth - subItemPosition) / registerSize_;
@@ -127,18 +128,21 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem)
     QFont fieldFont = getNameLabel()->font();
     fieldFont.setPointSizeF(fieldFont.pointSizeF() - 1.6);
 
-    QMapIterator<quint64, QSharedPointer<MemoryItem> > subItemIterator(getFieldItemsInOffsetOrder(registerItem));
+    QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> subItems = getFieldItemsInLastBitOrder(registerItem);
+    QMapIterator<quint64, RegisterGraphicsItem::FieldMemoryItem> subItemIterator(subItems);
     subItemIterator.toBack();
     while (subItemIterator.hasPrevious())
     {
         subItemIterator.previous();
-        QSharedPointer<MemoryItem> fieldItem = subItemIterator.value();
-        quint64 fieldOffset = subItemIterator.key();
-        quint64 fieldWidth = fieldItem->getWidth().toULongLong();
-        qint64 lastBit = fieldOffset + fieldWidth - 1;
+
+        RegisterGraphicsItem::FieldMemoryItem fieldMemory = subItemIterator.value();
+        QSharedPointer<MemoryItem> fieldItem = fieldMemory.fieldMemoryItem;
+        quint64 fieldOffset = fieldMemory.fieldOffset;
+        quint64 fieldWidth = fieldMemory.fieldWidth;
+        quint64 lastBit = subItemIterator.key();
         if (lastBit >= 0)
         {
-            if (lastBit < firstUnusedBit - 1)
+            if (firstUnusedBit > 0 && lastBit < firstUnusedBit - 1)
             {
                 createEmptyFieldItem(lastBit + 1, firstUnusedBit - 1, oneBitWidth, registerEnd,
                     fieldsStartPosition, fieldFont);
@@ -147,7 +151,10 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem)
             createFieldGraphicsItem(fieldItem->getName(), fieldOffset, fieldWidth, false, oneBitWidth, registerEnd,
                 fieldsStartPosition, fieldFont);
 
-            firstUnusedBit = fieldOffset;
+            if (fieldOffset < firstUnusedBit)
+            {
+                firstUnusedBit = fieldOffset;
+            }
         }
     }
 
@@ -158,12 +165,12 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem)
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterGraphicsItem::getFieldItemsInOffsetOrder()
+// Function: RegisterGraphicsItem::getFieldItemsInLastBitOrder()
 //-----------------------------------------------------------------------------
-QMap<quint64, QSharedPointer<MemoryItem> > RegisterGraphicsItem::getFieldItemsInOffsetOrder(
+QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> RegisterGraphicsItem::getFieldItemsInLastBitOrder(
     QSharedPointer<MemoryItem> registerItem) const
 {
-    QMap<quint64, QSharedPointer<MemoryItem> > fieldMap;
+    QMap<quint64, RegisterGraphicsItem::FieldMemoryItem> fieldMap;
 
     quint64 registerOffset = registerItem->getAddress().toULongLong();
 
@@ -175,7 +182,19 @@ QMap<quint64, QSharedPointer<MemoryItem> > RegisterGraphicsItem::getFieldItemsIn
             quint64 fieldRegisteredOffset = fieldItem->getOffset().toULongLong();
 
             quint64 fieldOffset = (fieldAddress - registerOffset) * addressUnitBits_ + fieldRegisteredOffset;
-            fieldMap.insertMulti(fieldOffset, fieldItem);
+
+            quint64 fieldWidth = fieldItem->getWidth().toULongLong();
+            if (fieldWidth > 0)
+            {
+                quint64 lastBit = fieldOffset + fieldWidth - 1;
+
+                FieldMemoryItem newFieldMemoryItem;
+                newFieldMemoryItem.fieldOffset = fieldOffset;
+                newFieldMemoryItem.fieldWidth = fieldWidth;
+                newFieldMemoryItem.fieldMemoryItem = fieldItem;
+
+                fieldMap.insertMulti(lastBit, newFieldMemoryItem);
+            }
         }
     }
 
@@ -202,15 +221,115 @@ void RegisterGraphicsItem::createFieldGraphicsItem(QString const& fieldName, qui
     QFont fieldFont)
 {
     quint64 fieldLastBit = fieldOffset + fieldWidth - 1;
-    qreal fieldItemWidth = fieldWidth * oneBitWidth;
+
+    quint64 modifiedFieldWidth = getModifiedFieldWidth(fieldLastBit, fieldOffset);
+    bool fieldIsOutsideRegister = modifiedFieldWidth < fieldWidth;
+
+    qreal fieldItemWidth = modifiedFieldWidth * oneBitWidth;
 
     FieldGraphicsItem* newField = new FieldGraphicsItem(fieldName, fieldOffset, fieldLastBit, fieldItemWidth,
-        registerEnd, isEmptyField, fieldFont, getContainingInstance(), this);
+        registerEnd, isEmptyField, fieldFont, getContainingInstance(), fieldIsOutsideRegister, this);
     fieldItems_.append(newField);
 
-    qreal fieldItemPositionX =
-        fieldsStartPosition + fieldItemWidth / 2 + (((registerSize_ - fieldLastBit) - 1) * oneBitWidth);
+    qreal fieldItemPositionX = fieldsStartPosition + fieldItemWidth / 2;
+    if (fieldLastBit < registerSize_ - 1)
+    {
+        fieldItemPositionX += (((registerSize_ - fieldLastBit) - 1) * oneBitWidth);
+    }
+
     newField->setPos(fieldItemPositionX, 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::getModifiedFieldWidth()
+//-----------------------------------------------------------------------------
+quint64 RegisterGraphicsItem::getModifiedFieldWidth(quint64 fieldLastBit, quint64 fieldOffset) const
+{
+    quint64 modifiedFieldWidth = fieldLastBit - fieldOffset + 1;
+
+    if (fieldLastBit >= registerSize_)
+    {
+        if (fieldOffset > registerSize_ - 2)
+        {
+            modifiedFieldWidth = 2;
+        }
+        else
+        {
+            modifiedFieldWidth = modifiedFieldWidth - (fieldLastBit - registerSize_ + 1);
+        }
+    }
+
+    return modifiedFieldWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::createOverlappingFieldMarkers()
+//-----------------------------------------------------------------------------
+void RegisterGraphicsItem::createOverlappingFieldMarkers()
+{
+    int fieldCount = fieldItems_.size();
+
+    if (fieldCount > 1)
+    {
+        QBrush overlapBrush(KactusColors::MISSING_COMPONENT);
+
+        QGraphicsScene* containingScene = scene();
+
+        for (int fieldIndex = 0; fieldIndex < fieldCount; ++fieldIndex)
+        {
+            FieldGraphicsItem* currentField = fieldItems_.at(fieldIndex);
+
+            QRectF fieldRectangle = currentField->sceneBoundingRect();
+            int fieldLineWidth = currentField->pen().width();
+
+            createOverlappingMarkersForField(fieldIndex, fieldCount, currentField, fieldRectangle, fieldLineWidth,
+                overlapBrush, containingScene);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::createOverlappingMarkersForField()
+//-----------------------------------------------------------------------------
+void RegisterGraphicsItem::createOverlappingMarkersForField(int fieldIndex, int fieldCount,
+    FieldGraphicsItem* fieldItem, QRectF fieldRectangle, int fieldLineWidth, QBrush overlapBrush,
+    QGraphicsScene* containingScene)
+{
+    for (int comparisonIndex = fieldIndex + 1; comparisonIndex < fieldCount; ++comparisonIndex)
+    {
+        FieldGraphicsItem* comparisonField = fieldItems_.at(comparisonIndex);
+
+        QRectF comparisonRectangle = comparisonField->sceneBoundingRect();
+        int comparisonLineWidth = comparisonField->pen().width();
+
+        if (fieldOverlapsAnotherField(fieldRectangle, fieldLineWidth, comparisonRectangle, comparisonLineWidth))
+        {
+            fieldItem->setBrush(overlapBrush);
+            comparisonField->setBrush(overlapBrush);
+
+            fieldItem->addOverlappingFieldItem(comparisonField, overlapBrush, containingScene);
+            comparisonField->addOverlappingFieldItem(fieldItem, overlapBrush, containingScene);
+        }
+        else
+        {
+            return;
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::fieldOverlapsAnotherField()
+//-----------------------------------------------------------------------------
+bool RegisterGraphicsItem::fieldOverlapsAnotherField(QRectF firstItemRectangle, int firstItemLineWidth,
+    QRectF secondItemRectangle, int secondItemLineWidth) const
+{
+    qreal firstItemLeft = firstItemRectangle.left() + firstItemLineWidth;
+    qreal firstItemRight = firstItemRectangle.right() - firstItemLineWidth;
+
+    qreal secondItemLeft = secondItemRectangle.left() + secondItemLineWidth;
+    qreal secondItemRight = secondItemRectangle.right() - secondItemLineWidth;
+
+    return secondItemLeft <= firstItemRight && secondItemRight >= firstItemLeft;
 }
 
 //-----------------------------------------------------------------------------
@@ -221,18 +340,45 @@ void RegisterGraphicsItem::changeWidth(qreal widthChange)
     if (!isEmpty_)
     {
         qreal changePerBit = widthChange / registerSize_;
-        qreal previousEndPosition = boundingRect().left() + MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2;
+        qreal overallWidthChange = 0;
+        qreal overallOverlapModifier = 0;
+
+        quint64 previousOffset = registerSize_;
+        quint64 previousLastBit = registerSize_;
+
+        qreal subItemPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2;
+        qreal fieldsStartPosition = boundingRect().left() + subItemPosition;
 
         foreach (FieldGraphicsItem* fieldItem, fieldItems_)
         {
-            qreal fieldItemWidthChange =
-                (fieldItem->getLastAddress() - fieldItem->getBaseAddress() + 1) * changePerBit;
+            quint64 fieldOffset = fieldItem->getBaseAddress();
+            quint64 fieldLastBit = fieldItem->getLastAddress();
+
+            quint64 fieldItemWidth = getModifiedFieldWidth(fieldLastBit, fieldOffset);
+            qreal fieldItemWidthChange = fieldItemWidth * changePerBit;
 
             fieldItem->changeWidth(fieldItemWidthChange);
-            qreal fieldItemWidth = fieldItem->boundingRect().width() - 1;
-            fieldItem->setPos(previousEndPosition + fieldItemWidth / 2, fieldItem->pos().y());
 
-            previousEndPosition += fieldItem->boundingRect().width() - 1;
+            qreal overlapModifier = getOverlappingFieldPositionModifier(
+                previousOffset, previousLastBit, fieldOffset, fieldLastBit, changePerBit);
+
+            qreal newFieldPositionX = getNewFieldPositionX(fieldItem, fieldLastBit, fieldItemWidthChange,
+                overallWidthChange, overallOverlapModifier, overlapModifier, fieldsStartPosition);
+
+            fieldItem->setX(newFieldPositionX);
+
+            if (fieldOffset < previousOffset)
+            {
+                previousOffset = fieldOffset;
+                previousLastBit = fieldLastBit;
+                overallWidthChange += fieldItemWidthChange;
+                overallOverlapModifier += overlapModifier;
+            }
+        }
+
+        foreach (FieldGraphicsItem* fieldItem, fieldItems_)
+        {
+            fieldItem->resizeAndRepositionOverlappingItems();
         }
     }
     else
@@ -243,6 +389,61 @@ void RegisterGraphicsItem::changeWidth(qreal widthChange)
         setRect(-newWidth / 2, 0, newWidth, boundingRect().height() - 1);
         setLabelPositions();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::getOverlappingFieldPositionModifier()
+//-----------------------------------------------------------------------------
+qreal RegisterGraphicsItem::getOverlappingFieldPositionModifier(quint64 firstOffset, quint64 firstLastBit,
+    quint64 secondOffset, quint64 secondLastbit, qreal changePerBit) const
+{
+    qreal overlapModifier = 0;
+
+    if (secondLastbit < registerSize_ && secondLastbit >= firstOffset)
+    {
+        quint64 bitDifference = secondLastbit - firstOffset + 1;
+
+        overlapModifier = bitDifference * changePerBit;
+    }
+    else if (firstLastBit > registerSize_ && secondLastbit >= registerSize_)
+    {
+        if (firstOffset >= registerSize_ - 2 || secondOffset >= registerSize_ - 2)
+        {
+            overlapModifier = 2 * changePerBit;
+        }
+        else
+        {
+            quint64 offsetMax = qMax(firstOffset, secondOffset);
+
+            quint64 bitDifference = registerSize_ - offsetMax + 1;
+            overlapModifier = bitDifference * changePerBit;
+        }
+    }
+
+    return overlapModifier;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterGraphicsItem::getNewFieldPositionX()
+//-----------------------------------------------------------------------------
+qreal RegisterGraphicsItem::getNewFieldPositionX(FieldGraphicsItem* fieldItem, quint64 fieldLastBit,
+    qreal fieldItemWidthChange, qreal overallWidthChange, qreal overallOverlapModifier,
+    qreal currentOverlapModifier, qreal fieldsStartPosition) const
+{
+    qreal newFieldPositionX = 0;
+
+    if (fieldLastBit >= registerSize_)
+    {
+        qreal fieldWidth = fieldItem->boundingRect().width();
+        newFieldPositionX = fieldsStartPosition + fieldWidth / 2;
+    }
+    else
+    {
+        newFieldPositionX = fieldItem->pos().x() + fieldItemWidthChange / 2 + overallWidthChange -
+            (overallOverlapModifier + currentOverlapModifier);
+    }
+
+    return newFieldPositionX;
 }
 
 //-----------------------------------------------------------------------------

@@ -89,6 +89,11 @@ public:
      */
     qreal getMaximumNeededChangeInFieldWidth() const;
 
+    /*!
+     *  Create overlapping register field items.
+     */
+    void createFieldOverlapItems();
+
 private:
     // Disable copying.
     AddressBlockGraphicsItem(AddressBlockGraphicsItem const& rhs);

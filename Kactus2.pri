@@ -7,8 +7,7 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h \
-    ./VersionHelper.h \
+HEADERS += ./VersionHelper.h \
     ./common/Global.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
@@ -142,7 +141,6 @@ HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h 
     ./settings/GeneralSettingsPage.h \
     ./settings/CodeEditorSettingsPage.h \
     ./wizards/ComponentWizard/ComponentWizardDependencyPage.h \
-    ./editors/ComponentEditor/instantiations/ModuleParameterColumns.h \
     ./wizards/ComponentWizard/ComponentWizardIntroPage.h \
     ./wizards/ComponentWizard/ComponentWizardPages.h \
     ./wizards/ComponentWizard/ViewListModel.h \
@@ -506,6 +504,8 @@ HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h 
     ./editors/ComponentEditor/instantiations/ComponentInstantiationDisplayer.h \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationsColumns.h \
     ./editors/ComponentEditor/instantiations/DesignInstantiationColumns.h \
+    ./editors/ComponentEditor/instantiations/ModuleParameterColumns.h \
+    ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h \
     ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationEditor.h \
     ./editors/ComponentEditor/instantiations/DesignInstantiationEditor.h \
     ./editors/ComponentEditor/instantiations/ComponentInstantiationsEditor.h \
@@ -576,6 +576,7 @@ HEADERS += ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.h 
     ./designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
     ./designEditors/MemoryDesigner/ConnectivityInterface.h \
     ./designEditors/MemoryDesigner/FieldGraphicsItem.h \
+    ./designEditors/MemoryDesigner/FieldOverlapItem.h \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.h \
     ./designEditors/MemoryDesigner/MemoryColumnHandler.h \
     ./designEditors/MemoryDesigner/MemoryConnectionHandler.h \
@@ -1139,6 +1140,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/instantiations/InstantiationsEditor.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterEditor.cpp \
+    ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.cpp \
     ./editors/ComponentEditor/instantiations/ModuleParameterModel.cpp \
     ./editors/ComponentEditor/otherClockDrivers/clockdriversdelegate.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
@@ -1211,6 +1213,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
     ./designEditors/MemoryDesigner/ConnectivityInterface.cpp \
     ./designEditors/MemoryDesigner/FieldGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/FieldOverlapItem.cpp \
     ./designEditors/MemoryDesigner/MainMemoryGraphicsItem.cpp \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
     ./designEditors/MemoryDesigner/MemoryCollisionItem.cpp \
@@ -1309,6 +1312,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./editors/ComponentEditor/instantiations/ModuleParameterHeaderView.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc

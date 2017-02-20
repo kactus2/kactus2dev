@@ -16,29 +16,50 @@
 #include <designEditors/MemoryDesigner/MemoryItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
+#include <designEditors/MemoryDesigner/FieldOverlapItem.h>
 
 #include <QBrush>
 #include <QFont>
 #include <QFontMetrics>
+#include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
 // Function: FieldGraphicsItem::FieldGraphicsItem()
 //-----------------------------------------------------------------------------
 FieldGraphicsItem::FieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldLastBit,
     qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QFont labelFont, QString const& containingInstance,
-    MemoryDesignerGraphicsItem* parentItem):
+    bool isOutsideRegister, MemoryDesignerGraphicsItem* parentItem):
 MemoryDesignerChildGraphicsItem(fieldName, QStringLiteral("Field"), fieldOffset, fieldHeight, fieldWidth,
     containingInstance, parentItem),
 combinedRangeLabel_(new QGraphicsTextItem("", this)),
-fieldName_(fieldName)
+fieldName_(fieldName),
+overlapFields_(),
+overlapIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/triangle_arrow_down.png"), this)),
+overlapAreaRectangle_(0)
 {
+    qreal overlapIconPositionX = boundingRect().right() - overlapIcon_->boundingRect().width() - (GridSize / 2);
+    qreal overlapIconPositionY = boundingRect().top() + (GridSize / 2);
+    overlapIcon_->setPos(overlapIconPositionX, overlapIconPositionY);
+    overlapIcon_->setVisible(false);
+
     getNameLabel()->setFont(labelFont);
     combinedRangeLabel_->setFont(labelFont);
 
     setupLabels(fieldOffset, fieldLastBit);
     setupToolTip(QStringLiteral("Field"));
     setLabelPositions();
-    setColors(KactusColors::FIELD_COLOR, isEmptyField);
+
+    QColor fieldColor = KactusColors::FIELD_COLOR;
+    if (isOutsideRegister)
+    {
+        QString toolTipAddition = QStringLiteral(
+            "<br><br><b><font color=\"red\">This field is not contained within register</font></b>");
+        addToToolTip(toolTipAddition);
+
+        fieldColor = KactusColors::MISSING_COMPONENT;
+    }
+         
+    setColors(fieldColor, isEmptyField);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,6 +170,38 @@ void FieldGraphicsItem::changeWidth(qreal widthChange)
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::resizeAndRepositionOverlappingItems()
+//-----------------------------------------------------------------------------
+void FieldGraphicsItem::resizeAndRepositionOverlappingItems()
+{
+    if (!overlapFields_.isEmpty())
+    {
+        qreal overlapRectangleLeft = sceneBoundingRect().left();
+        qreal overlapRectangleRight = sceneBoundingRect().right();
+        foreach (FieldGraphicsItem::CombinedOverlappingFieldItem overlapCombination, overlapFields_)
+        {
+            FieldOverlapItem* overlapItem = overlapCombination.overlapItem_;
+            FieldGraphicsItem* overlappedField = overlapCombination.overlappedField_;
+            QRectF overlapFieldRectangle = overlappedField->sceneBoundingRect();
+            int overlapFieldLineWidth = overlappedField->pen().width();
+            overlapItem->resizeToRectangle(overlapFieldRectangle, overlapFieldLineWidth);
+
+            qreal overlappedFieldCurrentPosition = overlappedField->scenePos().x();
+            overlapItem->setX(overlappedFieldCurrentPosition);
+
+            overlapRectangleLeft = qMin(overlapRectangleLeft, overlapItem->sceneBoundingRect().left());
+            overlapRectangleRight = qMax(overlapRectangleRight, overlapItem->sceneBoundingRect().right());
+        }
+
+        qreal overlapWidth = overlapRectangleRight - overlapRectangleLeft;
+        qreal newOverlapHeight = overlapAreaRectangle_->boundingRect().height() - overlapAreaRectangle_->pen().width();
+        qreal overlapPositionX = overlapRectangleLeft + overlapWidth / 2;
+        overlapAreaRectangle_->setRect(-overlapWidth / 2, 0, overlapWidth, newOverlapHeight);
+        overlapAreaRectangle_->setX(overlapPositionX);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldGraphicsItem::getMaximumNeededWidthChange()
 //-----------------------------------------------------------------------------
 qreal FieldGraphicsItem::getNeededWithChangeToDisplayFullName() const
@@ -170,4 +223,140 @@ qreal FieldGraphicsItem::getNeededWithChangeToDisplayFullName() const
     }
 
     return neededWithChangeToDisplayFullName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::addOverlappingFieldItem()
+//-----------------------------------------------------------------------------
+void FieldGraphicsItem::addOverlappingFieldItem(FieldGraphicsItem* overlappingFieldItem, QBrush overlapBrush,
+    QGraphicsScene* containingScene)
+{
+    QRectF fieldRectangle = sceneBoundingRect();
+    qreal overlapPositionY = fieldRectangle.bottom();
+
+    if (!overlapAreaRectangle_)
+    {
+        createOverlapRectangle(overlapPositionY, fieldRectangle, containingScene);
+    }
+
+    qreal currentOverlapHeight = 0;
+    foreach (CombinedOverlappingFieldItem overlapField, overlapFields_)
+    {
+        FieldOverlapItem* overlapItem = overlapField.overlapItem_;
+        currentOverlapHeight += overlapItem->boundingRect().height();
+    }
+
+    setupOverlapRectangle(currentOverlapHeight, overlappingFieldItem);
+
+    overlapPositionY += currentOverlapHeight;
+
+    QFont labelFont = combinedRangeLabel_->font();
+    FieldOverlapItem* newOverlapItem =
+        new FieldOverlapItem(overlappingFieldItem, containingScene, overlapBrush, labelFont);
+
+    newOverlapItem->setY(overlapPositionY);
+
+    CombinedOverlappingFieldItem combinedOverlappingField;
+    combinedOverlappingField.overlapItem_ = newOverlapItem;
+    combinedOverlappingField.overlappedField_ = overlappingFieldItem;
+
+    overlapFields_.append(combinedOverlappingField);
+
+    if (!overlapIcon_->isVisible())
+    {
+        overlapIcon_->setVisible(true);
+        setAcceptHoverEvents(true);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::createOverlapRectangle()
+//-----------------------------------------------------------------------------
+void FieldGraphicsItem::createOverlapRectangle(qreal rectanglePositionY, QRectF fieldRectangle,
+    QGraphicsScene* containingScene)
+{
+    int fieldLineWidth = pen().width();
+
+    qreal overlapWidth = fieldRectangle.width() - fieldLineWidth;
+    qreal overlapHeight = fieldRectangle.height() - fieldLineWidth;
+    QRectF newOverlapRectangle(-overlapWidth / 2, 0, overlapWidth, overlapHeight);
+    overlapAreaRectangle_ = new QGraphicsRectItem(newOverlapRectangle);
+
+    overlapAreaRectangle_->setOpacity(0.9);
+
+    QBrush overlapRectangleBrush(QColor("white"));
+    overlapAreaRectangle_->setBrush(overlapRectangleBrush);
+
+    overlapAreaRectangle_->setPos(scenePos().x(), rectanglePositionY);
+    containingScene->addItem(overlapAreaRectangle_);
+
+    overlapAreaRectangle_->hide();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::setupOverlapRectangle()
+//-----------------------------------------------------------------------------
+void FieldGraphicsItem::setupOverlapRectangle(qreal currentOverlapHeight, FieldGraphicsItem* newOverlapItem)
+{
+    qreal newOverlapItemLineWidth = newOverlapItem->pen().width();
+
+    QRectF overlappingItemRectangle = newOverlapItem->sceneBoundingRect();
+    QRectF oldOverlapRectangle = overlapAreaRectangle_->sceneBoundingRect();
+
+    qreal newOverlapRectangleLeft =
+        qMin(oldOverlapRectangle.left(), overlappingItemRectangle.left() + newOverlapItemLineWidth);
+    qreal newOverlapRectangleRight =
+        qMax(oldOverlapRectangle.right(), overlappingItemRectangle.right() - newOverlapItemLineWidth);
+
+    qreal overlapWidth = newOverlapRectangleRight - newOverlapRectangleLeft;
+    qreal overlapHeight = currentOverlapHeight + overlappingItemRectangle.height();
+
+    QRectF newOverlapRectangle(-overlapWidth / 2, 0, overlapWidth, overlapHeight);
+    overlapAreaRectangle_->setRect(newOverlapRectangle);
+
+    qreal newPositionX = newOverlapRectangleLeft + (overlapWidth / 2);
+    overlapAreaRectangle_->setX(newPositionX);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::mousePressEvent()
+//-----------------------------------------------------------------------------
+void FieldGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton && !overlapFields_.isEmpty())
+    {
+        foreach (CombinedOverlappingFieldItem combinedOverlapField, overlapFields_)
+        {
+            FieldOverlapItem* overlapField = combinedOverlapField.overlapItem_;
+
+            overlapField->show();
+            overlapAreaRectangle_->show();
+
+            combinedOverlapField.overlappedField_->hide();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::hoverLeaveEvent()
+//-----------------------------------------------------------------------------
+void FieldGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent*)
+{
+    if (!overlapFields_.isEmpty())
+    {
+        foreach (CombinedOverlappingFieldItem combindedOverlapField, overlapFields_)
+        {
+            combindedOverlapField.overlapItem_->hide();
+            overlapAreaRectangle_->hide();
+            combindedOverlapField.overlappedField_->show();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldGraphicsItem::getCombinedRangeText()
+//-----------------------------------------------------------------------------
+QString FieldGraphicsItem::getCombinedRangeText() const
+{
+    return combinedRangeLabel_->toPlainText();
 }

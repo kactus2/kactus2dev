@@ -4177,6 +4177,9 @@
     <ClCompile Include="editors\ComponentEditor\instantiations\ModuleParameterHeaderView.cpp">
       <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\FieldOverlapItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6310,6 +6313,9 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\instantiations\ModuleParameterHeaderView.h">
       <Filter>Header Files\editors\ComponentEditor\instantiations</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\FieldOverlapItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

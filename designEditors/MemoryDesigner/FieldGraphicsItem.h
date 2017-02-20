@@ -18,8 +18,12 @@
 
 class MemoryItem;
 class MemoryDesignerChildGraphicsItem;
+class FieldOverlapItem;
 
 #include <QSharedPointer>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsScene>
 
 //-----------------------------------------------------------------------------
 //! Graphics item for visualizing a field in the memory designer.
@@ -42,11 +46,12 @@ public:
      *      @param [in] isEmptyField        Value for empty fields.
      *      @param [in] labelFont           Font for the field labels.
      *      @param [in] containingInstance  Name of the containing component instance.
+     *      @param [in] isOutsideRegister   Holds whether the field is out of bounds of the register or not.
      *      @param [in] parentItem          The parent graphics item.
      */
     FieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldLastBit, qreal fieldWidth,
         quint64 fieldHeight, bool isEmptyField, QFont labelFont, QString const& containingInstance,
-        MemoryDesignerGraphicsItem* parentItem);
+        bool isOutsideRegister, MemoryDesignerGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.
@@ -79,6 +84,44 @@ public:
      */
     qreal getNeededWithChangeToDisplayFullName() const;
 
+    /*!
+     *  Add an overlap field item from the overlapping field graphics item.
+     *
+     *      @param [in] overlappingFieldItem    The overlapping field graphics item.
+     *      @param [in] overlapBrush            Brush used to draw the overlap item.
+     *      @param [in] containingScene         Scene containing the overlapping field item.
+     */
+    void addOverlappingFieldItem(FieldGraphicsItem* overlappingFieldItem, QBrush overlapBrush,
+        QGraphicsScene* containingScene);
+
+    /*!
+     *  Get the text from the combined range label.
+     *
+     *      @return The text contained within the combined range label.
+     */
+    QString getCombinedRangeText() const;
+
+    /*!
+     *  Resize and reposition the overlapping items when the fields are extended.
+     */
+    void resizeAndRepositionOverlappingItems();
+
+protected:
+
+    /*!
+     *  Handler for the mouse press event.
+     *
+     *      @param [in] event   The mouse press event.
+     */
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+    /*!
+     *  Handler for the hover leave event.
+     *
+     *      @param [in] event   The hover leave event.
+     */
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+
 private:
     // Disable copying.
     FieldGraphicsItem(FieldGraphicsItem const& rhs);
@@ -103,15 +146,52 @@ private:
      */
     void fitNameToBoundaries(QGraphicsTextItem* nameLabel);
 
+    /*!
+     *  Create the rectangle for containing the overlapping field items.
+     *
+     *      @param [in] rectanglePositionY  Y coordinate of the rectangle.
+     *      @param [in] fieldRectangle      The field bounding rectangle.
+     *      @param [in] containingScene     Scene containing the field item.
+     */
+    void createOverlapRectangle(qreal rectanglePositionY, QRectF fieldRectangle, QGraphicsScene* containingScene);
+
+    /*!
+     *  Setup the rectangle containing the overlapping field items.
+     *
+     *      @param [in] currentOverlapHeight    Current height of the overlapping rectangle.
+     *      @param [in] newOverlapItem          The new overlapping field item.
+     */
+    void setupOverlapRectangle(qreal currentOverlapHeight, FieldGraphicsItem* newOverlapItem);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! Overlapping item containing both the overlapping field graphics item and the overlap field item
+    //! constructed from it.
+    struct CombinedOverlappingFieldItem
+    {
+        //! The overlap field item.
+        FieldOverlapItem* overlapItem_;
+
+        //! The overlapped field graphics item.
+        FieldGraphicsItem* overlappedField_;
+    };
 
     //! Label for the combined range value.
     QGraphicsTextItem* combinedRangeLabel_;
 
     //! The original name of the field.
     QString fieldName_;
+
+    //! List of all the overlapped field items.
+    QVector<CombinedOverlappingFieldItem> overlapFields_;
+
+    //! Icon to display the overlapped field items.
+    QGraphicsPixmapItem* overlapIcon_;
+
+    //! Rectangle for containing all the overlapped field graphics items.
+    QGraphicsRectItem* overlapAreaRectangle_;
 };
 
 //-----------------------------------------------------------------------------

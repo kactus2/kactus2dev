@@ -170,6 +170,13 @@ protected:
     void setupToolTip(QString const& identifier);
 
     /*!
+     *  Add text to the tooltip.
+     *
+     *      @param [in] toolTipAddition     Text to be added to the tooltip.
+     */
+    void addToToolTip(QString const& toolTipAddition);
+
+    /*!
      *  Get the name label.
      *
      *      @return The label containing the item name.
