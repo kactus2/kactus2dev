@@ -25,6 +25,12 @@ fieldName_(overlappingFieldItem->name()),
 nameLabel_(new QGraphicsTextItem(this)),
 combinedRangeLabel_(new QGraphicsTextItem(this))
 {
+    QString overlapDisplayName = overlappingFieldItem->displayName();
+    if (!overlapDisplayName.isEmpty())
+    {
+        fieldName_ = overlapDisplayName;
+    }
+
     nameLabel_->setPlainText(fieldName_);
     combinedRangeLabel_->setPlainText(overlappingFieldItem->getCombinedRangeText());
 

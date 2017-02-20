@@ -27,8 +27,8 @@
 RegisterGraphicsItem::RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister,
     qreal registerWidth, bool filterFields, QString const& containingInstance,
     MemoryDesignerGraphicsItem* parentItem):
-MemoryDesignerChildGraphicsItem(registerItem->getName(), QStringLiteral("Register"),
-    registerItem->getAddress().toULongLong(),
+MemoryDesignerChildGraphicsItem(registerItem->getName(), registerItem->getDisplayName(),
+    QStringLiteral("Register"), registerItem->getAddress().toULongLong(),
     getRegisterEnd(registerItem->getAUB().toUInt(), registerItem->getSize().toULongLong()), registerWidth,
     containingInstance, parentItem),
 fieldItems_(),
@@ -148,8 +148,8 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem> registerItem)
                     fieldsStartPosition, fieldFont);
             }
 
-            createFieldGraphicsItem(fieldItem->getName(), fieldOffset, fieldWidth, false, oneBitWidth, registerEnd,
-                fieldsStartPosition, fieldFont);
+            createFieldGraphicsItem(fieldItem->getName(), fieldItem->getDisplayName(), fieldOffset, fieldWidth,
+                false, oneBitWidth, registerEnd, fieldsStartPosition, fieldFont);
 
             if (fieldOffset < firstUnusedBit)
             {
@@ -209,16 +209,16 @@ void RegisterGraphicsItem::createEmptyFieldItem(quint64 currentOffset, quint64 l
 {
     quint64 fieldWidth = lastBit - currentOffset + 1;
 
-    createFieldGraphicsItem(MemoryDesignerConstants::RESERVED_NAME, currentOffset, fieldWidth, true, oneBitWidth,
-        registerEnd, fieldsStartPosition, fieldFont);
+    createFieldGraphicsItem(MemoryDesignerConstants::RESERVED_NAME, QStringLiteral(""), currentOffset, fieldWidth,
+        true, oneBitWidth, registerEnd, fieldsStartPosition, fieldFont);
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphicsItem::createFieldGraphicsItem()
 //-----------------------------------------------------------------------------
-void RegisterGraphicsItem::createFieldGraphicsItem(QString const& fieldName, quint64 fieldOffset,
-    quint64 fieldWidth, bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal fieldsStartPosition,
-    QFont fieldFont)
+void RegisterGraphicsItem::createFieldGraphicsItem(QString const& fieldName, QString const& displayName,
+    quint64 fieldOffset, quint64 fieldWidth, bool isEmptyField, qreal oneBitWidth, quint64 registerEnd,
+    qreal fieldsStartPosition, QFont fieldFont)
 {
     quint64 fieldLastBit = fieldOffset + fieldWidth - 1;
 
@@ -227,8 +227,9 @@ void RegisterGraphicsItem::createFieldGraphicsItem(QString const& fieldName, qui
 
     qreal fieldItemWidth = modifiedFieldWidth * oneBitWidth;
 
-    FieldGraphicsItem* newField = new FieldGraphicsItem(fieldName, fieldOffset, fieldLastBit, fieldItemWidth,
-        registerEnd, isEmptyField, fieldFont, getContainingInstance(), fieldIsOutsideRegister, this);
+    FieldGraphicsItem* newField = new FieldGraphicsItem(fieldName, displayName, fieldOffset, fieldLastBit,
+        fieldItemWidth, registerEnd, isEmptyField, fieldFont, getContainingInstance(), fieldIsOutsideRegister,
+        this);
     fieldItems_.append(newField);
 
     qreal fieldItemPositionX = fieldsStartPosition + fieldItemWidth / 2;

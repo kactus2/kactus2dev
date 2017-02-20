@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QString const& instanceName,
     QString const& subItemType, bool filterSubItems, QGraphicsItem* parent):
-MemoryDesignerGraphicsItem(memoryItem->getName(), instanceName, parent),
+MemoryDesignerGraphicsItem(memoryItem->getName(), memoryItem->getDisplayName(), instanceName, parent),
 SubMemoryLayout(memoryItem, subItemType, filterSubItems, this),
 instanceNameLabel_(new QGraphicsTextItem(instanceName, this)),
 memoryItem_(memoryItem),

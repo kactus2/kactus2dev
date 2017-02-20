@@ -26,17 +26,22 @@
 //-----------------------------------------------------------------------------
 // Function: FieldGraphicsItem::FieldGraphicsItem()
 //-----------------------------------------------------------------------------
-FieldGraphicsItem::FieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldLastBit,
-    qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QFont labelFont, QString const& containingInstance,
-    bool isOutsideRegister, MemoryDesignerGraphicsItem* parentItem):
-MemoryDesignerChildGraphicsItem(fieldName, QStringLiteral("Field"), fieldOffset, fieldHeight, fieldWidth,
-    containingInstance, parentItem),
+FieldGraphicsItem::FieldGraphicsItem(QString const& fieldName, QString const& displayName, quint64 fieldOffset,
+    quint64 fieldLastBit, qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QFont labelFont,
+    QString const& containingInstance, bool isOutsideRegister, MemoryDesignerGraphicsItem* parentItem):
+MemoryDesignerChildGraphicsItem(fieldName, displayName, QStringLiteral("Field"), fieldOffset, fieldHeight,
+    fieldWidth, containingInstance, parentItem),
 combinedRangeLabel_(new QGraphicsTextItem("", this)),
 fieldName_(fieldName),
 overlapFields_(),
 overlapIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/triangle_arrow_down.png"), this)),
 overlapAreaRectangle_(0)
 {
+    if (!displayName.isEmpty())
+    {
+        fieldName_ = displayName;
+    }
+
     qreal overlapIconPositionX = boundingRect().right() - overlapIcon_->boundingRect().width() - (GridSize / 2);
     qreal overlapIconPositionY = boundingRect().top() + (GridSize / 2);
     overlapIcon_->setPos(overlapIconPositionX, overlapIconPositionY);

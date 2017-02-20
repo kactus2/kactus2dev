@@ -148,6 +148,7 @@ private:
      *  Create a field graphics item.
      *
      *      @param [in] fieldName               Name of the field.
+     *      @param [in] displayName             Display name of the field.
      *      @param [in] fieldOffset             Offset of the field.
      *      @param [in] fieldWidth              Width of the field.
      *      @param [in] isEmptyField            Holds whether the field is empty or not.
@@ -156,8 +157,8 @@ private:
      *      @param [in] fieldsStartPosition     The start coordinate for the field graphics items.
      *      @param [in] fieldFont               Font used in fields.
      */
-    void createFieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldWidth,
-        bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal fieldsStartPosition,
+    void createFieldGraphicsItem(QString const& fieldName, QString const& displayName, quint64 fieldOffset,
+        quint64 fieldWidth, bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal fieldsStartPosition,
         QFont fieldFont);
 
     /*!

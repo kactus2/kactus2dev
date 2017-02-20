@@ -39,6 +39,7 @@ public:
      *  The constructor.
      *
      *      @param [in] fieldName           Name of the field.
+     *      @param [in] displayName         Display name of the field.
      *      @param [in] fieldOffset         Offset of the field.
      *      @param [in] fieldLastBit        Last bit used by the field.
      *      @param [in] fieldWidth          Width of the field.
@@ -49,9 +50,9 @@ public:
      *      @param [in] isOutsideRegister   Holds whether the field is out of bounds of the register or not.
      *      @param [in] parentItem          The parent graphics item.
      */
-    FieldGraphicsItem(QString const& fieldName, quint64 fieldOffset, quint64 fieldLastBit, qreal fieldWidth,
-        quint64 fieldHeight, bool isEmptyField, QFont labelFont, QString const& containingInstance,
-        bool isOutsideRegister, MemoryDesignerGraphicsItem* parentItem);
+    FieldGraphicsItem(QString const& fieldName, QString const& displayName, quint64 fieldOffset,
+        quint64 fieldLastBit, qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QFont labelFont,
+        QString const& containingInstance, bool isOutsideRegister, MemoryDesignerGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.

@@ -34,10 +34,12 @@ public:
      *  The constructor.
      *
      *      @param [in] itemName        Name of the memory graphics item.
+     *      @param [in] displayName     Display name of the memory graphics item.
      *      @param [in] instanceName    Name of the containing component instance.
      *      @param [in] parent          The parent item.
      */
-    MemoryDesignerGraphicsItem(QString const& itemName, QString const& instanceName, QGraphicsItem* parent = 0);
+    MemoryDesignerGraphicsItem(QString const& itemName, QString const& displayName, QString const& instanceName,
+        QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.
@@ -55,6 +57,13 @@ public:
      *      @return The name of the memory item.
      */
     QString name() const;
+
+    /*!
+     *  Get the display name of the memory item.
+     *
+     *      @return The display name of the memory item.
+     */
+    QString displayName() const;
 
     /*!
      *  Hide the memory range labels.
@@ -245,6 +254,9 @@ private:
 
     //! Name of the item.
     QString itemName_;
+
+    //! Display name of the item.
+    QString displayName_;
 
     //! Name of the containing component instance.
     QString instanceName_;

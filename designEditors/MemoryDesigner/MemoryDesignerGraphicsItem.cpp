@@ -24,8 +24,8 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem()
 //-----------------------------------------------------------------------------
-MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem(QString const& itemName, QString const& instanceName,
-    QGraphicsItem* parent):
+MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem(QString const& itemName, QString const& displayName,
+    QString const& instanceName, QGraphicsItem* parent):
 QGraphicsRectItem(parent),
 nameLabel_(new QGraphicsTextItem(itemName, this)),
 startRangeLabel_(new QGraphicsTextItem(this)),
@@ -33,9 +33,15 @@ endRangeLabel_(new QGraphicsTextItem(this)),
 baseAddress_(0),
 lastAddress_(0),
 itemName_(itemName),
+displayName_(displayName),
 memoryConnections_(),
 instanceName_(instanceName)
 {
+    if (!displayName_.isEmpty())
+    {
+        nameLabel_->setPlainText(displayName);
+    }
+
     QFont labelFont = nameLabel_->font();
     labelFont.setWeight(QFont::Bold);
 
@@ -131,12 +137,23 @@ void MemoryDesignerGraphicsItem::setupLabels(quint64 memoryStart, quint64 memory
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::setupToolTip(QString const& identifier)
 {
-    QString toolTipText =
-        QStringLiteral("<b>") + identifier + QStringLiteral(":</b> ") + name() + QStringLiteral("<br>") +
-        QStringLiteral("<b>Component Instance:</b> ") + instanceName_ + QStringLiteral("<br><br>") +
-        QStringLiteral("<b>Generic Base Address:</b> ") + getRangeStartLabel()->toPlainText() +
-        QStringLiteral("<br>") +
-        QStringLiteral("<b>Generic Last Address:</b> ") + getRangeEndLabel()->toPlainText();
+    QString lineEnd = QStringLiteral("<br>");
+
+    QString identifierText = QStringLiteral("<b>") + identifier + QStringLiteral(":</b> ") + name() + lineEnd;
+
+    QString displayNameText("");
+    if (!displayName_.isEmpty())
+    {
+        displayNameText = QStringLiteral("<b>Display Name:</b> ") + displayName() + lineEnd;
+    }
+
+    QString instanceText = QStringLiteral("<b>Component Instance:</b> ") + instanceName_ + lineEnd + lineEnd;
+
+    QString baseAddressText =
+        QStringLiteral("<b>Generic Base Address:</b> ") + getRangeStartLabel()->toPlainText() + lineEnd;
+    QString lastAddressText = QStringLiteral("<b>Generic Last Address:</b> ") + getRangeEndLabel()->toPlainText();
+
+    QString toolTipText = identifierText + displayNameText + instanceText + baseAddressText + lastAddressText;
     setToolTip(toolTipText);
 }
 
@@ -156,6 +173,14 @@ void MemoryDesignerGraphicsItem::addToToolTip(QString const& toolTipAddition)
 QString MemoryDesignerGraphicsItem::name() const
 {
     return itemName_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::displayName()
+//-----------------------------------------------------------------------------
+QString MemoryDesignerGraphicsItem::displayName() const
+{
+    return displayName_;
 }
 
 //-----------------------------------------------------------------------------

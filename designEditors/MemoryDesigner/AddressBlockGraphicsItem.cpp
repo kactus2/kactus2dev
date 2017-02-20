@@ -28,7 +28,7 @@
 AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock,
     bool filterRegisters, bool filterFields, qreal addressBlockWidth, QString const& containingInstanceName,
     MemoryMapGraphicsItem* memoryMapItem):
-MemoryDesignerChildGraphicsItem(blockItem->getName(), QStringLiteral("Address Block"),
+MemoryDesignerChildGraphicsItem(blockItem->getName(), blockItem->getDisplayName(), QStringLiteral("Address Block"),
     blockItem->getAddress().toULongLong(), blockItem->getRange().toULongLong(), addressBlockWidth,
     containingInstanceName, memoryMapItem),
 SubMemoryLayout(blockItem, MemoryDesignerConstants::REGISTER_TYPE, filterRegisters, this),
