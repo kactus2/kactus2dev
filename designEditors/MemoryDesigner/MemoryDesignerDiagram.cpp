@@ -168,7 +168,8 @@ bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Compo
 {
     clearScene();
 
-    QSharedPointer<ConnectivityGraph> connectionGraph = instanceLocator_.createConnectivityGraph(component, viewName);
+    QSharedPointer<ConnectivityGraph> connectionGraph =
+        instanceLocator_.createConnectivityGraph(component, viewName);
     if (connectionGraph)
     {
         return memoryConstructor_->constructMemoryDesignItems(connectionGraph);
@@ -194,95 +195,6 @@ void MemoryDesignerDiagram::clearLayout()
     layout_.clear();
     layout_ = QSharedPointer<GraphicsColumnLayout>(new GraphicsColumnLayout(this));
     memoryConstructor_->setNewLayout(layout_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryDesignerDiagram::getDesignFromComponentUsingView()
-//-----------------------------------------------------------------------------
-QSharedPointer<Design> MemoryDesignerDiagram::getContainingDesign(QSharedPointer<const Component> component,
-    QString const& viewName) const
-{
-    foreach (QSharedPointer<View> componentView, *component->getViews())
-    {
-        if (componentView->name() == viewName)
-        {
-            if (componentView->isHierarchical())
-            {
-                VLNV designVLNV;
-
-                QString designInstantiationReference = componentView->getDesignInstantiationRef();
-                if (designInstantiationReference.isEmpty())
-                {
-                    QSharedPointer<const DesignConfiguration> containingConfiguration =
-                        getContainingDesignConfiguration(component, viewName);
-                    if (containingConfiguration)
-                    {
-                        designVLNV = containingConfiguration->getDesignRef();
-                    }
-                }
-                else
-                {
-                    foreach (QSharedPointer<DesignInstantiation> instantiation,
-                        *component->getDesignInstantiations())
-                    {
-                        if (instantiation->name() == viewName)
-                        {
-                            designVLNV = *instantiation->getDesignReference().data();
-                            break;
-                        }
-                    }
-                }
-
-                if (designVLNV.isValid() && designVLNV.getType() == VLNV::DESIGN)
-                {
-                    QSharedPointer<Design> containingDesign = libraryHandler_->getDesign(designVLNV);
-                    return containingDesign;
-                }
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
-    return QSharedPointer<Design>();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryDesignerDiagram::getContainingDesignConfiguration()
-//-----------------------------------------------------------------------------
-QSharedPointer<const DesignConfiguration> MemoryDesignerDiagram::getContainingDesignConfiguration(
-    QSharedPointer<const Component> component, QString const& viewName) const
-{
-    foreach (QSharedPointer<View> activeView, *component->getViews())
-    {
-        if (activeView->name() == viewName)
-        {
-            QString designConfigurationReference = activeView->getDesignConfigurationInstantiationRef();
-            if (!designConfigurationReference.isEmpty())
-            {
-                foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
-                    *component->getDesignConfigurationInstantiations())
-                {
-                    if (instantiation->name() == designConfigurationReference)
-                    {
-                        QSharedPointer<ConfigurableVLNVReference> designConfigurationVLNV =
-                            instantiation->getDesignConfigurationReference();
-
-                        QSharedPointer<const Document> designConfigurationDocument =
-                            libraryHandler_->getModelReadOnly(*designConfigurationVLNV.data());
-                        QSharedPointer<const DesignConfiguration> designConfiguration =
-                            designConfigurationDocument.dynamicCast<const DesignConfiguration>();
-
-                        return designConfiguration;
-                    }
-                }
-            }
-        }
-    }
-
-    return QSharedPointer<const DesignConfiguration>();
 }
 
 //-----------------------------------------------------------------------------

@@ -48,14 +48,6 @@ public:
     virtual ~MemoryConnectionItem();
 
     /*!
-     *  Move a memory connection item.
-     *
-     *      @param [in] movementOrigin  The origin of the movement.
-     *      @param [in] movementDelta   The difference in movement.
-     */
-    void onMoveConnection(MainMemoryGraphicsItem* movementOrigin, QPointF movementDelta);
-
-    /*!
      *  Move a memory connection item by the y-coordinate.
      *
      *      @param [in] movementOrigin  The origin of the movement.
@@ -96,27 +88,6 @@ public:
      *      @return The lowest point of the connection item.
      */
     quint64 getSceneEndPoint() const;
-
-    /*!
-     *  Get the last address of the connected end item.
-     *
-     *      @return The last address of the connected end item.
-     */
-    quint64 getConnectedEndItemLastAddress() const;
-
-    /*!
-     *  Get the height of the connected end memory item.
-     *
-     *      @return The height of the connected end memory item.
-     */
-    qreal getEndItemHeight() const;
-
-    /*!
-     *  Check if the connected end memory items is a memory map.
-     *
-     *      @return True, if the connected end memory item is a memory map, otherwise false.
-     */
-    bool endItemIsMemoryMap() const;
 
     /*!
      *  Get the connected start memory item.

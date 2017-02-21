@@ -116,15 +116,6 @@ public:
     QMap<quint64, MemoryConnectionItem*> getMemoryConnections() const;
 
     /*!
-     *  Check if the graphics item is connected to the selected connection item.
-     *
-     *      @param [in] comparisonConnectionItem    The selected connection item.
-     *
-     *      @return True, if the graphics item is connected to the selected connection item, false otherwise.
-     */
-    bool hasConnection(MemoryConnectionItem* comparisonConnectionItem) const;
-
-    /*!
      *  Fit the selected label to this item.
      *
      *      @param [in] label   The selected label.

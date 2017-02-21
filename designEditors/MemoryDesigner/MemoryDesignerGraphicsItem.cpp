@@ -233,14 +233,6 @@ QMap<quint64, MemoryConnectionItem*> MemoryDesignerGraphicsItem::getMemoryConnec
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryDesignerGraphicsItem::hasConnection()
-//-----------------------------------------------------------------------------
-bool MemoryDesignerGraphicsItem::hasConnection(MemoryConnectionItem* comparisonConnectionItem) const
-{
-    return getMemoryConnections().values().contains(comparisonConnectionItem);
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::fitNameLabel()
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::fitLabel(QGraphicsTextItem* label)
