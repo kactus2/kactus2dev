@@ -307,15 +307,15 @@ void SubMemoryLayout::createOverlappingSubItemMarkings()
             subItemLayout->createOverlappingSubItemMarkings();
         }
 
+        quint64 subItemBaseAddress = subItem->getBaseAddress();
+        quint64 subItemLastAddress = subItem->getLastAddress();
+
         QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> comparisonItemIterator = subItemIterator;
         while (comparisonItemIterator.hasNext())
         {
             comparisonItemIterator.next();
 
             MemoryDesignerChildGraphicsItem* comparisonItem = comparisonItemIterator.value();
-
-            quint64 subItemBaseAddress = subItem->getBaseAddress();
-            quint64 subItemLastAddress = subItem->getLastAddress();
 
             quint64 comparisonBaseAddress = comparisonItem->getBaseAddress();
             quint64 comparisonLastAddress = comparisonItem->getLastAddress();
@@ -327,6 +327,11 @@ void SubMemoryLayout::createOverlappingSubItemMarkings()
             {
                 setFaultySubItemColor(subItem);
                 setFaultySubItemColor(comparisonItem);
+            }
+
+            else if (comparisonBaseAddress > subItemLastAddress)
+            {
+                break;
             }
         }
     }

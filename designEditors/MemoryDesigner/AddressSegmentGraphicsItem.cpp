@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 AddressSegmentGraphicsItem::AddressSegmentGraphicsItem(QSharedPointer<MemoryItem> segmentItem, bool isEmptySegment,
     QString const& containingInstance, AddressSpaceGraphicsItem* spaceItem):
-MemoryDesignerChildGraphicsItem(segmentItem->getName(), QStringLiteral("Segment"),
+MemoryDesignerChildGraphicsItem(segmentItem->getName(), segmentItem->getDisplayName(), QStringLiteral("Segment"),
     segmentItem->getOffset().toULongLong(), segmentItem->getRange().toULongLong(), getSegmentItemWidth(spaceItem),
     containingInstance, spaceItem)
 {

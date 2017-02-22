@@ -87,7 +87,7 @@ QVector<MemoryColumn*> MemoryColumnHandler::getAddressSpaceColumns() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryColumnHandler::getMemoryColumns()
+// Function: MemoryColumnHandler::getMemoryMapColumns()
 //-----------------------------------------------------------------------------
 QVector<MemoryColumn*> MemoryColumnHandler::getMemoryMapColumns() const
 {

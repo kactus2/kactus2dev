@@ -34,10 +34,12 @@ public:
      *  The constructor.
      *
      *      @param [in] itemName        Name of the memory graphics item.
+     *      @param [in] displayName     Display name of the memory graphics item.
      *      @param [in] instanceName    Name of the containing component instance.
      *      @param [in] parent          The parent item.
      */
-    MemoryDesignerGraphicsItem(QString const& itemName, QString const& instanceName, QGraphicsItem* parent = 0);
+    MemoryDesignerGraphicsItem(QString const& itemName, QString const& displayName, QString const& instanceName,
+        QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.
@@ -55,6 +57,13 @@ public:
      *      @return The name of the memory item.
      */
     QString name() const;
+
+    /*!
+     *  Get the display name of the memory item.
+     *
+     *      @return The display name of the memory item.
+     */
+    QString displayName() const;
 
     /*!
      *  Hide the memory range labels.
@@ -105,15 +114,6 @@ public:
      *      @return A map containing the memory connection items in the order of their base addresses.
      */
     QMap<quint64, MemoryConnectionItem*> getMemoryConnections() const;
-
-    /*!
-     *  Check if the graphics item is connected to the selected connection item.
-     *
-     *      @param [in] comparisonConnectionItem    The selected connection item.
-     *
-     *      @return True, if the graphics item is connected to the selected connection item, false otherwise.
-     */
-    bool hasConnection(MemoryConnectionItem* comparisonConnectionItem) const;
 
     /*!
      *  Fit the selected label to this item.
@@ -168,6 +168,13 @@ protected:
      *      @param [in] identifier      Selected identifier.
      */
     void setupToolTip(QString const& identifier);
+
+    /*!
+     *  Add text to the tooltip.
+     *
+     *      @param [in] toolTipAddition     Text to be added to the tooltip.
+     */
+    void addToToolTip(QString const& toolTipAddition);
 
     /*!
      *  Get the name label.
@@ -238,6 +245,9 @@ private:
 
     //! Name of the item.
     QString itemName_;
+
+    //! Display name of the item.
+    QString displayName_;
 
     //! Name of the containing component instance.
     QString instanceName_;

@@ -257,7 +257,6 @@ void FileBuildCommand::setupLayout()
         "any default flags from the build script. When false, the given flags are appended."));
     QLabel* replaceLabel = new QLabel(tr("Replace default flags, f(x):"), this);
     replaceLabel->setToolTip(replaceFlagsToolTip);
-    flagsEditor_.setToolTip(replaceFlagsToolTip);
 
     topLayout->addWidget(replaceLabel, 3, 0, 1, 1);
     topLayout->addWidget(replaceDefaultEditor_, 3, 1, 1, 2);

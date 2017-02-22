@@ -217,7 +217,7 @@ bool MemoryDesignConstructor::constructMemoryDesignItems(QSharedPointer<Connecti
         {
             itemHandler_->createMemoryItems(connectionGraph, addressSpaceColumn, memoryMapColumn);
             connectionHandler_->createMemoryConnections(connectionGraph, addressSpaceColumn, memoryMapColumn);
-
+            itemHandler_->createFieldOverlapItems();
             return true;
         }
     }

@@ -51,15 +51,6 @@ public:
     virtual ~MemoryColumn();
 
     /*!
-     *  Searches the item which contains the given y coordinate.
-     *
-     *      @param [i] y The y coordinate.
-     *
-     *      @return The item which contains the given y coordinate.
-     */
-    MainMemoryGraphicsItem* findItemAt(int y) const;
-
-    /*!
      *  Find a graphics item by a given memory item.
      *
      *      @param [in] containedMemoryItem     The selected memory item.

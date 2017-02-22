@@ -16,11 +16,11 @@
 //-----------------------------------------------------------------------------
 VerilogAssignmentWriter::VerilogAssignmentWriter(QString portWireName,
     QSharedPointer<MetaPortAssignment> portAssignment,
-    DirectionTypes::Direction direction,
+    QSharedPointer<MetaPort> mPort,
     bool isHierPort) :
     portWireName_(portWireName),
     mpa_(portAssignment),
-    direction_(direction),
+    mPort_(mPort),
     isInHierPort_(isHierPort)
 {
 }
@@ -50,8 +50,9 @@ void VerilogAssignmentWriter::write(QTextStream& output) const
 //-----------------------------------------------------------------------------
 QString VerilogAssignmentWriter::assignmentForPort() const
 {
-    bool isOutPort = (direction_ == DirectionTypes::OUT || direction_ == DirectionTypes::INOUT);
-    bool isInPort = (direction_ == DirectionTypes::IN || direction_ == DirectionTypes::INOUT);
+    DirectionTypes::Direction dir = mPort_->port_->getDirection();
+    bool isOutPort = (dir == DirectionTypes::OUT || dir == DirectionTypes::INOUT);
+    bool isInPort = (dir == DirectionTypes::IN || dir == DirectionTypes::INOUT);
 
     QString assignmentString;
 
@@ -68,19 +69,35 @@ QString VerilogAssignmentWriter::assignmentForPort() const
         return "";
     }
 
+    // The selected bounds of the component port that will be assigned.
+    QPair<QString,QString> portBounds = mpa_->physicalBounds_;
+    // The bounds of the wire that will be assigned to selected bounds of the component port.
+    QPair<QString,QString> wireBounds;
+    // The bounds of the selected part wire that will be assigned to selected bounds of the component port.
+    QPair<QString,QString> logicalBounds;
+
     if (mpa_->wire_)
     {
-        QPair<QString,QString> wireBounds = mpa_->logicalBounds_;
+        logicalBounds = mpa_->logicalBounds_;
+        wireBounds = mpa_->wire_->bounds_;
 
         // Use bounds only if they are not the same.
-        if (wireBounds.first == wireBounds.second)
+        if (logicalBounds.first == logicalBounds.second)
         {
-            assignmentString.remove("[<logicalLeft>:<logicalRight>]");
+            // If the chosen port bounds differ, must select the bit.
+            if (wireBounds.first == wireBounds.second)
+            {
+                assignmentString.remove("[<logicalLeft>:<logicalRight>]");
+            }
+            else
+            {
+                assignmentString.replace("<logicalLeft>:<logicalRight>", logicalBounds.first);
+            }
         }
         else
         {
-            assignmentString.replace("<logicalLeft>", wireBounds.first);
-            assignmentString.replace("<logicalRight>", wireBounds.second);
+            assignmentString.replace("<logicalLeft>", logicalBounds.first);
+            assignmentString.replace("<logicalRight>", logicalBounds.second);
         }
 
         assignmentString.replace("<logicalWireName>", mpa_->wire_->name_);
@@ -96,12 +113,18 @@ QString VerilogAssignmentWriter::assignmentForPort() const
         return "";
     }
 
-    QPair<QString,QString> portBounds = mpa_->physicalBounds_;
-
     // Use bounds only if they are not the same.
     if (portBounds.first == portBounds.second)
     {
-        assignmentString.remove("[<physicalLeft>:<physicalRight>]");
+        // If the chosen wire bounds differ, must select the bit.
+        if (mPort_->vectorBounds_.first == mPort_->vectorBounds_.second)
+        {
+            assignmentString.remove("[<physicalLeft>:<physicalRight>]");
+        }
+        else
+        {
+            assignmentString.replace("<physicalLeft>:<physicalRight>", portBounds.first);
+        }
     }
     else
     {

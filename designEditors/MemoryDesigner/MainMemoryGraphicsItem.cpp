@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QString const& instanceName,
     QString const& subItemType, bool filterSubItems, QGraphicsItem* parent):
-MemoryDesignerGraphicsItem(memoryItem->getName(), instanceName, parent),
+MemoryDesignerGraphicsItem(memoryItem->getName(), memoryItem->getDisplayName(), instanceName, parent),
 SubMemoryLayout(memoryItem, subItemType, filterSubItems, this),
 instanceNameLabel_(new QGraphicsTextItem(instanceName, this)),
 memoryItem_(memoryItem),
@@ -60,87 +60,6 @@ MainMemoryGraphicsItem::~MainMemoryGraphicsItem()
 QGraphicsTextItem* MainMemoryGraphicsItem::getInstanceNameLabel() const
 {
     return instanceNameLabel_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::mouseMoveEvent()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
-{
-    QPointF positionBeforeMovement = scenePos();
-
-    QGraphicsRectItem::mouseMoveEvent(event);
-
-    MemoryColumn* memoryColumn = dynamic_cast<MemoryColumn*>(parentItem());
-    if (memoryColumn)
-    {
-        memoryColumn->onMoveItem(this);
-    }
-
-    moveConnectedConnections(positionBeforeMovement);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::mouseReleaseEvent()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
-{
-    QPointF positionBeforeRelease = scenePos();
-
-    QGraphicsRectItem::mouseReleaseEvent(event);
-
-    MemoryColumn* memoryColumn = dynamic_cast<MemoryColumn*>(parentItem());
-    if (memoryColumn)
-    {
-        memoryColumn->onReleaseItem(this);
-    }
-
-    moveConnectedConnections(positionBeforeRelease);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::moveConnectedConnections()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::moveConnectedConnections(QPointF beforePosition)
-{
-    QPointF afterPosition = scenePos();
-    QPointF mouseMoveDelta = afterPosition - beforePosition;
-    
-    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
-    {
-        connectionItem->onMoveConnection(this, mouseMoveDelta);
-    }
-
-    foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
-    {
-        qreal collisionMoveY = collisionItem->pos().y() + mouseMoveDelta.y();
-        collisionItem->setPos(0, collisionMoveY);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::moveByConnection()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::moveByConnection(MemoryConnectionItem* movementOrigin, QPointF movementDelta)
-{
-    qreal newPositionX = pos().x() + movementDelta.x();
-    qreal newPositionY = pos().y() + movementDelta.y();
-    setPos(newPositionX, newPositionY);
-
-    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
-    {
-        if (connectionItem != movementOrigin)
-        {
-            QPointF newMovement (0, movementDelta.y());
-            connectionItem->onMoveConnection(this, newMovement);
-        }
-    }
-
-    foreach (MemoryCollisionItem* collisionItem, memoryCollisions_)
-    {
-        qreal newCollisionY = collisionItem->pos().y() + movementDelta.y();
-        collisionItem->setPos(0, newCollisionY);
-    }
 }
 
 //-----------------------------------------------------------------------------

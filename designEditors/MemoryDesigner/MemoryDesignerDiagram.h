@@ -192,28 +192,6 @@ private:
      */
     void clearLayout();
 
-    /*!
-     *  Get the design referenced by the selected view.
-     *
-     *      @param [in] component   Component containing the selected view.
-     *      @param [in] viewName    The name of the selected view.
-     *
-     *      @return The design referenced by the selected view.
-     */
-    QSharedPointer<Design> getContainingDesign(QSharedPointer<const Component> component, QString const& viewName)
-        const;
-
-    /*!
-     *  Get the design configuration referenced by the selected view.
-     *
-     *      @param [in] component   Component containing the selected view.
-     *      @param [in] viewName    The name of the selected view.
-     *
-     *      @return The design configuration referenced by the selected view.
-     */
-    QSharedPointer<const DesignConfiguration> getContainingDesignConfiguration(
-        QSharedPointer<const Component> component, QString const& viewName) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

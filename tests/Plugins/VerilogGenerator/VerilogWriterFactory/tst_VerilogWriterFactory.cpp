@@ -49,6 +49,7 @@ private slots:
     void testTopSlicedHierarchicalConnections();
 
     void testMasterToSlaveInterconnection();
+    void testOneBitSlicing();
     void testPhysicalSlicedMasterToSlaveInterconnection();
     void testLogicalSlicedMasterToSlaveInterconnection();
     void testPortSlicedMasterToSlaveInterconnection();
@@ -360,7 +361,7 @@ void tst_VerilogWriterFactory::testHierarchicalConnections()
     gw3->hierPorts_.append(topFull);
 
     createPortAssignment(mInstance->getPorts()->value("clk"), gw0, true, "0", "0", "0", "0");
-    createPortAssignment(mInstance->getPorts()->value("data_in"), gw1, true, "7", "0", "0", "0");
+    createPortAssignment(mInstance->getPorts()->value("data_in"), gw1, true, "7", "0", "7", "0");
     createPortAssignment(mInstance->getPorts()->value("enable"), gw2, true, "0", "0", "0", "0");
     createPortAssignment(mInstance->getPorts()->value("full"), gw3, true, "0", "0", "0", "0");
 
@@ -403,7 +404,7 @@ void tst_VerilogWriterFactory::testHierarchicalConnections()
         "\n"
         "    // instance1 assignments:\n"
         "    assign instance1_clk = clk_wire;\n"
-        "    assign instance1_data_in = data_wire[7:0];\n"
+        "    assign instance1_data_in[7:0] = data_wire[7:0];\n"
         "    assign instance1_enable = enable_wire;\n"
         "    assign full_wire = instance1_full;\n"
         "\n"
@@ -741,6 +742,48 @@ void tst_VerilogWriterFactory::testMasterToSlaveInterconnection()
         "        // Interface: data_if\n"
         "        .data_out            (sender_data_out),\n"
         "        .enable_out          (sender_enable_out)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testOneBitSlicing()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testOneBitSlicing()
+{
+    QSharedPointer<MetaInstance> senderInstance = addSender("sender");
+    QSharedPointer<MetaInstance> receiverInstance = addReceiver("receiver");
+
+    QSharedPointer<MetaInterface> senderIf = senderInstance->getInterfaces()->value("data_if");
+    QSharedPointer<MetaInterface> recvIf = receiverInstance->getInterfaces()->value("data_if");
+
+    QSharedPointer<MetaInterconnection> mInterconnect = addInterconnectToDesign(senderIf, recvIf, "data_connection");
+
+    QSharedPointer<MetaWire> dataWire = addWireToDesign("sender_to_receiver_DATA","7","0",mInterconnect);
+
+    createPortAssignment(receiverInstance->getPorts()->value("data_in"), dataWire, true, "5", "5", "7", "7");
+
+    createPortAssignment(senderInstance->getPorts()->value("data_out"), dataWire, true, "5", "5", "6", "6");
+
+    runGenerator(true);
+
+    verifyOutputContains("wire [7:0]  sender_to_receiver_DATA;");
+
+    verifyOutputContains("wire [7:0]  receiver_data_in;");
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+
+    verifyOutputContains("assign receiver_data_in[7] = sender_to_receiver_DATA[5];");
+    verifyOutputContains("assign sender_to_receiver_DATA[5] = sender_data_out[6];");
+
+    verifyOutputContains(
+        "    TestReceiver receiver(\n"
+        "        // Interface: data_if\n"
+        "        .data_in             (receiver_data_in),\n"
+        "        .enable_in           ()");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_if\n"
+        "        .data_out            (sender_data_out),\n"
+        "        .enable_out          ()");
 }
 
 //-----------------------------------------------------------------------------
@@ -1294,7 +1337,7 @@ void tst_VerilogWriterFactory::testHierarchicalAdhocInOutConnection()
         "    TestSender sender(\n"
         "        // Interface: data_if\n"
         "        .enable_out          (),\n"
-        "        .data_out            (data_from_sender)");
+        "        .data_out            (data_from_sender[7:0])");
 }
 
 //-----------------------------------------------------------------------------

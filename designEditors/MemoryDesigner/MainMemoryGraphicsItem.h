@@ -62,21 +62,6 @@ public:
     QVector<MemoryCollisionItem*> getMemoryCollisions() const;
 
     /*!
-     *  Move the connected memory connections.
-     *
-     *      @param [in] beforePosition  The position of the graphics item before movement.
-     */
-    void moveConnectedConnections(QPointF beforePosition);
-
-    /*!
-     *  Move the memory item through a moving memory connection.
-     *
-     *      @param [in] movementOrigin  The origin of the movement.
-     *      @param [in] movementDelta   The movement delta.
-     */
-    void moveByConnection(MemoryConnectionItem* movementOrigin, QPointF movementDelta);
-
-    /*!
      *  Change the ranges of the child items.
      *
      *      @param [in] offset  Offset of this memory item.
@@ -200,16 +185,6 @@ protected:
      *      @return Graphics text item containing the name of the containing component instance.
      */
     QGraphicsTextItem* getInstanceNameLabel() const;
-
-    /*!
-     *  Called when the user moves the column with the mouse.
-     */
-    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
-
-    /*!
-     *  Called when the user release the mouse.
-     */
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
 
     /*!
      *  Set a new compression value.

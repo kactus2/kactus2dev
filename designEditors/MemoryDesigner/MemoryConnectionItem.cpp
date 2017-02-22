@@ -334,31 +334,6 @@ void MemoryConnectionItem::setupLabels(quint64 startValue, quint64 endValue)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::onMoveConnection()
-//-----------------------------------------------------------------------------
-void MemoryConnectionItem::onMoveConnection(MainMemoryGraphicsItem* movementOrigin, QPointF movementDelta)
-{
-    MainMemoryGraphicsItem* connectedItem;
-
-    if (movementOrigin == startItem_)
-    {
-        connectedItem = endItem_;
-    }
-    else if (movementOrigin == endItem_)
-    {
-        connectedItem = startItem_;
-    }
-
-    if (connectedItem)
-    {
-        connectedItem->moveByConnection(this, movementDelta);
-    }
-
-    createPath();
-    repositionLabels();
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::onMoveConnectionInY()
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::onMoveConnectionInY(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer)
@@ -490,53 +465,6 @@ quint64 MemoryConnectionItem::getSceneEndPoint() const
     }
 
     return sceneEndPoint;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::getConnectedEndItemEndPoint()
-//-----------------------------------------------------------------------------
-quint64 MemoryConnectionItem::getConnectedEndItemLastAddress() const
-{
-    quint64 lastAddress = connectionLastAddress_;
-
-    quint64 endItemLastAddress = endItem_->getLastAddress() + connectionBaseAddress_;
-    if (endItemLastAddress > lastAddress)
-    {
-        lastAddress = endItemLastAddress;
-    }
-
-    return lastAddress;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::getEndItemHeight()
-//-----------------------------------------------------------------------------
-qreal MemoryConnectionItem::getEndItemHeight() const
-{
-    qreal endItemHeight = 0;
-
-    if (endItem_)
-    {
-        endItemHeight = endItem_->boundingRect().height();
-    }
-
-    return endItemHeight;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::endItemIsMemoryMap()
-//-----------------------------------------------------------------------------
-bool MemoryConnectionItem::endItemIsMemoryMap() const
-{
-    MemoryMapGraphicsItem* mapItem = dynamic_cast<MemoryMapGraphicsItem*>(endItem_);
-    if (mapItem)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
 }
 
 //-----------------------------------------------------------------------------

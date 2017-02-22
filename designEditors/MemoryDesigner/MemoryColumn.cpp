@@ -62,27 +62,6 @@ bool MemoryColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryColumn::findItemAt()
-//-----------------------------------------------------------------------------
-MainMemoryGraphicsItem* MemoryColumn::findItemAt(int y) const
-{
-    foreach (QGraphicsItem* item, getItems())
-    {
-        MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(item);
-        if (memoryItem)
-        {
-            QRectF memoryItemRectangle = memoryItem->getSceneRectangleWithSubItems();
-            if (y >= memoryItemRectangle.top() && y < memoryItemRectangle.bottom())
-            {
-                return memoryItem;
-            }
-        }
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryColumn::findGraphicsItemByMemoryItem()
 //-----------------------------------------------------------------------------
 MainMemoryGraphicsItem* MemoryColumn::findGraphicsItemByMemoryItem(QSharedPointer<MemoryItem> containedMemoryItem)

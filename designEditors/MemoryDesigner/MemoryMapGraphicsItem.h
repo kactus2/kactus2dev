@@ -78,6 +78,11 @@ public:
      */
     qreal getMaximumNeededChangeInFieldWidth() const;
 
+    /*!
+     *  Create field overlap items for register fields.
+     */
+    void createFieldOverlapItems();
+
 private:
     // Disable copying.
     MemoryMapGraphicsItem(MemoryMapGraphicsItem const& rhs);

@@ -18,9 +18,9 @@
 // Function: MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem()
 //-----------------------------------------------------------------------------
 MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem(QString const& itemName,
-    QString const& toolTipType, quint64 baseAddress, quint64 range, qreal blockWidth, QString const& instanceName,
-    QGraphicsItem* parent):
-MemoryDesignerGraphicsItem(itemName, instanceName, parent)
+    QString const& displayName, QString const& toolTipType, quint64 baseAddress, quint64 range, qreal blockWidth,
+    QString const& instanceName, QGraphicsItem* parent):
+MemoryDesignerGraphicsItem(itemName, displayName, instanceName, parent)
 {
     if (range == 1)
     {

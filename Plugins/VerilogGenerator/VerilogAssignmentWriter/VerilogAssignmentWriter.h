@@ -31,7 +31,7 @@ public:
      */
     VerilogAssignmentWriter(QString portWireName,
         QSharedPointer<MetaPortAssignment> portAssignment,
-        DirectionTypes::Direction direction,
+        QSharedPointer<MetaPort> mPort,
         bool isInHierPort);
 
 	/*!
@@ -66,7 +66,7 @@ private:
     //! Ports
     QString portWireName_;
     QSharedPointer<MetaPortAssignment> mpa_;
-    DirectionTypes::Direction direction_;
+    QSharedPointer<MetaPort> mPort_;
     bool isInHierPort_;
 };
 

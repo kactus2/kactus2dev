@@ -391,3 +391,32 @@ qreal MemoryMapGraphicsItem::getMaximumNeededChangeInFieldWidth() const
 
     return maximumNeededWithChange;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::createFieldOverlapItems()
+//-----------------------------------------------------------------------------
+void MemoryMapGraphicsItem::createFieldOverlapItems()
+{
+    if (!subItemsAreFiltered())
+    {
+        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        while (subItemIterator.hasNext())
+        {
+            subItemIterator.next();
+            MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+            AddressBlockGraphicsItem* blockItem = dynamic_cast<AddressBlockGraphicsItem*>(subItem);
+            if (blockItem)
+            {
+                blockItem->createFieldOverlapItems();
+            }
+            else
+            {
+                RegisterGraphicsItem* registerItem = dynamic_cast<RegisterGraphicsItem*>(subItem);
+                if (registerItem)
+                {
+                    registerItem->createOverlappingFieldMarkers();
+                }
+            }
+        }
+    }
+}
