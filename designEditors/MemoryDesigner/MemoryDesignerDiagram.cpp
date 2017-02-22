@@ -37,6 +37,9 @@ libraryHandler_(library),
 instanceLocator_(library),
 memoryConstructor_(new MemoryDesignConstructor(layout_))
 {
+    connect(memoryConstructor_, SIGNAL(openComponentDocument(VLNV const&)),
+        this, SIGNAL(openComponentDocument(VLNV const&)), Qt::UniqueConnection);
+
     setSceneRect(0, 0, 100000, 100000);
 }
 

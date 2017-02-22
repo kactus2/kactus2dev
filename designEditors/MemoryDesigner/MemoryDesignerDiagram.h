@@ -12,6 +12,8 @@
 #ifndef MEMORYDESIGNERDIAGRAM_H
 #define MEMORYDESIGNERDIAGRAM_H
 
+#include <IPXACTmodels/common/VLNV.h>
+
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
 #include <designEditors/MemoryDesigner/ConnectivityGraphFactory.h>
@@ -181,6 +183,15 @@ protected:
      *      @param [in] rect        The containing rectangle of the diagram.
      */
     virtual void drawBackground(QPainter *painter, const QRectF &rect);
+
+signals:
+
+    /*!
+     *  Open the component document for the selected VLNV.
+     *
+     *      @param [in] vlnv    VLNV of the containing component.
+     */
+    void openComponentDocument(VLNV const& vlnv);
 
 private:
     // Disable copying.

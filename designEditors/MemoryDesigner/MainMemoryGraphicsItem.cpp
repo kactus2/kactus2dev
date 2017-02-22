@@ -20,23 +20,33 @@
 #include <designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
+#include <designEditors/MemoryDesigner/ConnectivityComponent.h>
 
 #include <QFont>
-#include <QGraphicsSceneMouseEvent>
+#include <QMenu>
+#include <QGraphicsSceneEvent>
 
 //-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::MainMemoryGraphicsItem()
 //-----------------------------------------------------------------------------
-MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QString const& instanceName,
-    QString const& subItemType, bool filterSubItems, QGraphicsItem* parent):
-MemoryDesignerGraphicsItem(memoryItem->getName(), memoryItem->getDisplayName(), instanceName, parent),
+MainMemoryGraphicsItem::MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
+    QSharedPointer<ConnectivityComponent> containingInstance, QString const& subItemType, bool filterSubItems,
+    QGraphicsItem* parent):
+QObject(),
+MemoryDesignerGraphicsItem(memoryItem->getName(), memoryItem->getDisplayName(), containingInstance->getName(),
+    parent),
 SubMemoryLayout(memoryItem, subItemType, filterSubItems, this),
-instanceNameLabel_(new QGraphicsTextItem(instanceName, this)),
+instanceNameLabel_(new QGraphicsTextItem(containingInstance->getName(), this)),
 memoryItem_(memoryItem),
 memoryCollisions_(),
 compressed_(false),
-extensionItem_(0)
+extensionItem_(0),
+openComponentAction_(new QAction(this)),
+instanceVLNV_(getVLNVFromString(containingInstance->getVlnv()))
 {
+    QString openComponentText = QStringLiteral("Open containing component");
+    openComponentAction_->setText(openComponentText);
+
     // setFlag(ItemIsSelectable);
     // setFlag(ItemIsMovable);
     setFlag(ItemSendsGeometryChanges);
@@ -44,6 +54,9 @@ extensionItem_(0)
 
     QFont labelFont = getNameLabel()->font();
     instanceNameLabel_->setFont(labelFont);
+
+    connect(openComponentAction_, SIGNAL(triggered()),
+        this, SLOT(openContainingComponent()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -376,4 +389,34 @@ void MainMemoryGraphicsItem::changeAddressRange(quint64 offsetChange)
     MemoryDesignerGraphicsItem::changeAddressRange(offsetChange);
 
     SubMemoryLayout::changeChildItemRanges(offsetChange);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::contextMenuEvent()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    QMenu contextMenu;
+    contextMenu.addAction(openComponentAction_);
+
+    contextMenu.exec(event->screenPos());
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getVLNVFromString()
+//-----------------------------------------------------------------------------
+VLNV MainMemoryGraphicsItem::getVLNVFromString(QString const& vlnvString) const
+{
+    VLNV::IPXactType vlnvType = VLNV::COMPONENT;
+
+    VLNV componentVLNV(vlnvType, vlnvString);
+    return componentVLNV;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::openContainingComponent()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::openContainingComponent()
+{
+    emit openComponentDocument(instanceVLNV_);
 }

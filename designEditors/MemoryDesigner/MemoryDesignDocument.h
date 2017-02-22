@@ -12,6 +12,8 @@
 #ifndef MEMORYDESIGNDOCUMENT_H
 #define MEMORYDESIGNDOCUMENT_H
 
+#include <IPXACTmodels/common/VLNV.h>
+
 #include <common/widgets/tabDocument/TabDocument.h>
 
 #include <QGraphicsView>
@@ -220,6 +222,13 @@ signals:
 
     //! Signaled when all items are deselected.
     void clearItemSelection();
+
+    /*!
+     *  Open the component document for the selected VLNV.
+     *
+     *      @param [in] vlnv    VLNV of the containing component.
+     */
+    void openComponentDocument(VLNV const& vlnv);
 
 protected:
     

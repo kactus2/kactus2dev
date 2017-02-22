@@ -4231,6 +4231,18 @@
     <ClCompile Include="Plugins\common\SourceHighlightStyle.cpp">
       <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\FieldOverlapItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryGraphicsItemHandler.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MainMemoryGraphicsItem.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignConstructor.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5820,6 +5832,9 @@
     <CustomBuild Include="Plugins\common\LanguageHighlighter.h">
       <Filter>Header Files\Plugins\common</Filter>
     </CustomBuild>
+    <CustomBuild Include="designEditors\MemoryDesigner\MemoryGraphicsItemHandler.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\dialogs\listSelectDialog\ListSelectDialog.h">
@@ -6374,9 +6389,6 @@
     <ClInclude Include="designEditors\MemoryDesigner\MemoryColumnHandler.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
-    <ClInclude Include="designEditors\MemoryDesigner\MemoryGraphicsItemHandler.h">
-      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
-    </ClInclude>
     <ClInclude Include="designEditors\MemoryDesigner\MemoryConnectionHandler.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
@@ -6394,6 +6406,9 @@
     </ClInclude>
     <ClInclude Include="Plugins\common\SourceHighlightStyle.h">
       <Filter>Header Files\Plugins\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\FieldOverlapItem.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

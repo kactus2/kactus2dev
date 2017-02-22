@@ -34,7 +34,7 @@ namespace AddressSpaceItemConstants
 //-----------------------------------------------------------------------------
 AddressSpaceGraphicsItem::AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
     QSharedPointer<ConnectivityComponent> containingInstance, bool filterSegments, QGraphicsItem* parent):
-MainMemoryGraphicsItem(memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSSEGMENT_TYPE,
+MainMemoryGraphicsItem(memoryItem, containingInstance, MemoryDesignerConstants::ADDRESSSEGMENT_TYPE,
     filterSegments, parent),
 cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), this))
 {

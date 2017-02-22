@@ -3331,6 +3331,9 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
 
     connect(memoryDesignWidget, SIGNAL(clearItemSelection()), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
+    connect(memoryDesignWidget, SIGNAL(openComponentDocument(VLNV const&)),
+        this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+
     designTabs_->addAndOpenDocument(memoryDesignWidget);
     
     QApplication::restoreOverrideCursor();
