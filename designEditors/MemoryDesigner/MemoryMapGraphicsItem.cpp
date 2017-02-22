@@ -36,7 +36,7 @@ namespace MemoryMapItemConstants
 MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem, bool filterAddressBlocks,
     bool filterRegisters, bool filterFields, QSharedPointer<ConnectivityComponent> containingInstance,
     QGraphicsItem* parent):
-MainMemoryGraphicsItem(memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSBLOCK_TYPE,
+MainMemoryGraphicsItem(memoryItem, containingInstance, MemoryDesignerConstants::ADDRESSBLOCK_TYPE,
     filterAddressBlocks, parent),
 addressUnitBits_(memoryItem->getAUB()),
 filterAddressBlocks_(filterAddressBlocks),
@@ -390,4 +390,33 @@ qreal MemoryMapGraphicsItem::getMaximumNeededChangeInFieldWidth() const
     }
 
     return maximumNeededWithChange;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::createFieldOverlapItems()
+//-----------------------------------------------------------------------------
+void MemoryMapGraphicsItem::createFieldOverlapItems()
+{
+    if (!subItemsAreFiltered())
+    {
+        QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
+        while (subItemIterator.hasNext())
+        {
+            subItemIterator.next();
+            MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
+            AddressBlockGraphicsItem* blockItem = dynamic_cast<AddressBlockGraphicsItem*>(subItem);
+            if (blockItem)
+            {
+                blockItem->createFieldOverlapItems();
+            }
+            else
+            {
+                RegisterGraphicsItem* registerItem = dynamic_cast<RegisterGraphicsItem*>(subItem);
+                if (registerItem)
+                {
+                    registerItem->createOverlappingFieldMarkers();
+                }
+            }
+        }
+    }
 }

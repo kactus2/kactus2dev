@@ -23,12 +23,14 @@
 // Function: MemoryDesignConstructor::MemoryDesignConstructor()
 //-----------------------------------------------------------------------------
 MemoryDesignConstructor::MemoryDesignConstructor(QSharedPointer<GraphicsColumnLayout> layout):
+QObject(),
 columnHandler_(new MemoryColumnHandler(layout)),
 itemHandler_(new MemoryGraphicsItemHandler()),
 connectionHandler_(new MemoryConnectionHandler(columnHandler_)),
 widthBoundary_(0)
 {
-
+    connect(itemHandler_.data(), SIGNAL(openComponentDocument(VLNV const&)),
+        this, SIGNAL(openComponentDocument(VLNV const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -217,7 +219,7 @@ bool MemoryDesignConstructor::constructMemoryDesignItems(QSharedPointer<Connecti
         {
             itemHandler_->createMemoryItems(connectionGraph, addressSpaceColumn, memoryMapColumn);
             connectionHandler_->createMemoryConnections(connectionGraph, addressSpaceColumn, memoryMapColumn);
-
+            itemHandler_->createFieldOverlapItems();
             return true;
         }
     }

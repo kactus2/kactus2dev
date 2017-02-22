@@ -12,6 +12,8 @@
 #ifndef MEMORYDESIGNERDIAGRAM_H
 #define MEMORYDESIGNERDIAGRAM_H
 
+#include <IPXACTmodels/common/VLNV.h>
+
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 
 #include <designEditors/MemoryDesigner/ConnectivityGraphFactory.h>
@@ -182,6 +184,15 @@ protected:
      */
     virtual void drawBackground(QPainter *painter, const QRectF &rect);
 
+signals:
+
+    /*!
+     *  Open the component document for the selected VLNV.
+     *
+     *      @param [in] vlnv    VLNV of the containing component.
+     */
+    void openComponentDocument(VLNV const& vlnv);
+
 private:
     // Disable copying.
     MemoryDesignerDiagram(MemoryDesignerDiagram const& rhs);
@@ -191,28 +202,6 @@ private:
      *  Clear the layout.
      */
     void clearLayout();
-
-    /*!
-     *  Get the design referenced by the selected view.
-     *
-     *      @param [in] component   Component containing the selected view.
-     *      @param [in] viewName    The name of the selected view.
-     *
-     *      @return The design referenced by the selected view.
-     */
-    QSharedPointer<Design> getContainingDesign(QSharedPointer<const Component> component, QString const& viewName)
-        const;
-
-    /*!
-     *  Get the design configuration referenced by the selected view.
-     *
-     *      @param [in] component   Component containing the selected view.
-     *      @param [in] viewName    The name of the selected view.
-     *
-     *      @return The design configuration referenced by the selected view.
-     */
-    QSharedPointer<const DesignConfiguration> getContainingDesignConfiguration(
-        QSharedPointer<const Component> component, QString const& viewName) const;
 
     //-----------------------------------------------------------------------------
     // Data.

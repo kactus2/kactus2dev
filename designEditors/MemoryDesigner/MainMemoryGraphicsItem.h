@@ -12,6 +12,8 @@
 #ifndef MAINMEMORYGRAPHICSITEM_H
 #define MAINMEMORYGRAPHICSITEM_H
 
+#include <IPXACTmodels/common/VLNV.h>
+
 #include <designEditors/common/diagramgrid.h>
 
 #include <designEditors/MemoryDesigner/MemoryDesignerGraphicsItem.h>
@@ -19,28 +21,33 @@
 
 class MemoryItem;
 class MemoryExtensionGraphicsItem;
+class ConnectivityComponent;
 
 #include <QFontMetrics>
+#include <QAction>
+#include <QObject>
 
 //-----------------------------------------------------------------------------
 //! Parent class for memory map and address space graphics items in memory designer.
 //-----------------------------------------------------------------------------
-class MainMemoryGraphicsItem : public MemoryDesignerGraphicsItem, public SubMemoryLayout
+class MainMemoryGraphicsItem : public QObject, public MemoryDesignerGraphicsItem, public SubMemoryLayout
 {
+    Q_OBJECT
 
 public:
 
     /*!
      *  The constructor.
      *
-     *      @param [in] memoryItem      Memory item data.
-     *      @param [in] instanceName    Name of the containing instance.
-     *      @param [in] subItemType     Type of the memory sub items.
-     *      @param [in] filterSubItems  Value for filtering sub items.
-     *      @param [in] parent          The parent item.
+     *      @param [in] memoryItem          Memory item data.
+     *      @param [in] containingInstance  The containing instance.
+     *      @param [in] subItemType         Type of the memory sub items.
+     *      @param [in] filterSubItems      Value for filtering sub items.
+     *      @param [in] parent              The parent item.
      */
-    MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QString const& instanceName,
-        QString const& subItemType, bool filterSubItems, QGraphicsItem* parent = 0);
+    MainMemoryGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
+        QSharedPointer<ConnectivityComponent> containingInstance, QString const& subItemType, bool filterSubItems,
+        QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.
@@ -60,21 +67,6 @@ public:
      *      @return Memory collision items contained within this item.
      */
     QVector<MemoryCollisionItem*> getMemoryCollisions() const;
-
-    /*!
-     *  Move the connected memory connections.
-     *
-     *      @param [in] beforePosition  The position of the graphics item before movement.
-     */
-    void moveConnectedConnections(QPointF beforePosition);
-
-    /*!
-     *  Move the memory item through a moving memory connection.
-     *
-     *      @param [in] movementOrigin  The origin of the movement.
-     *      @param [in] movementDelta   The movement delta.
-     */
-    void moveByConnection(MemoryConnectionItem* movementOrigin, QPointF movementDelta);
 
     /*!
      *  Change the ranges of the child items.
@@ -202,21 +194,34 @@ protected:
     QGraphicsTextItem* getInstanceNameLabel() const;
 
     /*!
-     *  Called when the user moves the column with the mouse.
-     */
-    void mouseMoveEvent(QGraphicsSceneMouseEvent* event);
-
-    /*!
-     *  Called when the user release the mouse.
-     */
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
-
-    /*!
      *  Set a new compression value.
      *
      *      @param [in] newCompressValue    The new memory compression value.
      */
     void setCompressed(bool newCompressValue);
+
+    /*!
+     *  Handler for context menu.
+     *
+     *      @param [in] event   The context menu event.
+     */
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
+private slots:
+
+    /*!
+     *  Open the editor for the containing component.
+     */
+    void openContainingComponent();
+
+signals:
+
+    /*!
+     *  Open the component document for the selected VLNV.
+     *
+     *      @param [in] vlnv    VLNV of the containing component.
+     */
+    void openComponentDocument(VLNV const& vlnv);
 
 private:
     // Disable copying.
@@ -240,6 +245,15 @@ private:
      */
     virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label, qreal fontHeight) const;
 
+    /*!
+     *  Get the component VLNV from the selected string.
+     *
+     *      @param [in] vlnvString  String containing the component VLNV.
+     *
+     *      @return The component VLNV constructed from the selected string.
+     */
+    VLNV getVLNVFromString(QString const& vlnvString) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -258,6 +272,12 @@ private:
 
     //! The memory extension item.
     MemoryExtensionGraphicsItem* extensionItem_;
+
+    //! Action for opening the component document editor.
+    QAction* openComponentAction_;
+
+    //! VLNV for the containing component.
+    VLNV instanceVLNV_;
 };
 
 //-----------------------------------------------------------------------------
