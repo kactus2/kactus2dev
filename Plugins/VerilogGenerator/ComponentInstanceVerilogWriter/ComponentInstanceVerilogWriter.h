@@ -134,6 +134,8 @@ private:
     */
     QString assignmentForInstancePort(QSharedPointer<MetaPort> mPort) const;
 
+    QString getInOutAssignment(QSharedPointer<MetaPort> mPort) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
