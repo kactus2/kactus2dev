@@ -56,7 +56,7 @@ QWidget* PortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const
     }
     else if (index.column() == PortColumns::TYPE_NAME)
     {
-        return createSelectorWithVHDLTypes(parent);
+        return createSelectorWithCommonTypes(parent);
     }
     else if (index.column() == PortColumns::TYPE_DEF)
     {
@@ -299,21 +299,24 @@ QWidget* PortsDelegate::createSelectorForDirection(QWidget* parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsDelegate::createSelectorWithVHDLTypes()
+// Function: PortsDelegate::createSelectorWithCommonTypes()
 //-----------------------------------------------------------------------------
-QWidget* PortsDelegate::createSelectorWithVHDLTypes(QWidget* parent) const
+QWidget* PortsDelegate::createSelectorWithCommonTypes(QWidget* parent) const
 {
     QComboBox* combo = new QComboBox(parent);
     combo->setEditable(true);
-    combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
-	combo->addItem("reg");
-
-    for (unsigned int i = 0; i < VhdlGeneral::VHDL_TYPE_COUNT; ++i)
+    QStringList types;
+    for (unsigned int i = 0; i < VhdlGeneral::VHDL_TYPE_COUNT; i++)
     {
-        combo->addItem(VhdlGeneral::VHDL_TYPES[i]);
+        types.append(VhdlGeneral::VHDL_TYPES[i]);
     }
+    types.append("reg");
+    types.append("wire");
 
+    types.sort(Qt::CaseInsensitive);
+
+    combo->addItems(types);
     return combo;
 }
 

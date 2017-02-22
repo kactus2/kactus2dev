@@ -120,13 +120,13 @@ private:
     QWidget* createSelectorForDirection(QWidget* parent) const;
         
     /*!
-     *  Creates a selector for port type with VHDL types as options.
+     *  Creates a selector for port type with common VHDL and Verilog types as options.
      *
      *      @param [in] parent   The parent widget for the selector.
      *
      *      @return The selector for port type.
      */
-    QWidget* createSelectorWithVHDLTypes(QWidget* parent) const;
+    QWidget* createSelectorWithCommonTypes(QWidget* parent) const;
           
     /*!
      *  Creates a selector for port typedef with VHDL standard libraries as options.
