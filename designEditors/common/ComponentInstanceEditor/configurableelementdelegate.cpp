@@ -173,11 +173,11 @@ bool ConfigurableElementDelegate::valueIsArray(QModelIndex const& index) const
 void ConfigurableElementDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
     const QModelIndex &index) const
 {
-    ExpressionDelegate::updateEditorGeometry(editor, option, index);
+    ExpressionDelegate::updateEditorGeometry(editor, options, index);
 
     if (index.column() == valueColumn() && valueIsArray(index))
     {
-        repositionAndResizeEditor(editor, option, index);
+        repositionAndResizeEditor(editor, options, index);
     }
 }
 
@@ -287,7 +287,10 @@ int ConfigurableElementDelegate::getArraySize(int arrayLeft, int arrayRight) con
 void ConfigurableElementDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     const QModelIndex &index) const
 {
-    ChoiceCreatorDelegate::paint(painter, option, index);
+    QStyleOptionViewItemV4 options(option);
+    options.decorationPosition = QStyleOptionViewItem::Right;
+
+    ChoiceCreatorDelegate::paint(painter, options, index);
     
     QPen oldPen = painter->pen();
     QPen newPen(Qt::lightGray);
@@ -296,7 +299,7 @@ void ConfigurableElementDelegate::paint(QPainter *painter, const QStyleOptionVie
     
     if (index.parent().isValid())
     {
-        painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
+        painter->drawLine(options.rect.topRight(), options.rect.bottomRight());
     }
 
     painter->setPen(oldPen);

@@ -4231,6 +4231,9 @@
     <ClCompile Include="Plugins\common\SourceHighlightStyle.cpp">
       <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
+    <ClCompile Include="designEditors\MemoryDesigner\FieldOverlapItem.cpp">
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -6394,6 +6397,9 @@
     </ClInclude>
     <ClInclude Include="Plugins\common\SourceHighlightStyle.h">
       <Filter>Header Files\Plugins\common</Filter>
+    </ClInclude>
+    <ClInclude Include="designEditors\MemoryDesigner\FieldOverlapItem.h">
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
