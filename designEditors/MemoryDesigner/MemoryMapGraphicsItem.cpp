@@ -36,7 +36,7 @@ namespace MemoryMapItemConstants
 MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem, bool filterAddressBlocks,
     bool filterRegisters, bool filterFields, QSharedPointer<ConnectivityComponent> containingInstance,
     QGraphicsItem* parent):
-MainMemoryGraphicsItem(memoryItem, containingInstance->getName(), MemoryDesignerConstants::ADDRESSBLOCK_TYPE,
+MainMemoryGraphicsItem(memoryItem, containingInstance, MemoryDesignerConstants::ADDRESSBLOCK_TYPE,
     filterAddressBlocks, parent),
 addressUnitBits_(memoryItem->getAUB()),
 filterAddressBlocks_(filterAddressBlocks),

@@ -239,57 +239,84 @@ QString ComponentInstanceVerilogWriter::assignmentForInstancePort(QSharedPointer
     // In case of an inout port, connect it directly the first encountered wire.
     if (mPort->port_->getDirection() == DirectionTypes::INOUT)
     {
-        foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
-        {
-            if (mpa->wire_)
-            {
-                // If it is hierarchical, use the corresponding hierarchical port instead.
-                if (mpa->wire_->hierPorts_.size() > 0)
-                {
-                    QSharedPointer<MetaPort> hierPort = mpa->wire_->hierPorts_.first();
-                    QSharedPointer<MetaPortAssignment> hierMpa;
-
-                    // Find corresponding assignment
-                    foreach (QSharedPointer<MetaPortAssignment> theirAssignment, hierPort->downAssignments_)
-                    {
-                        if (theirAssignment->wire_ == mpa->wire_)
-                        {
-                            hierMpa = theirAssignment;
-                            break;
-                        }
-                    }
-
-                    QString bounds;
-
-                    if (hierMpa)
-                    {
-                        if (hierMpa->physicalBounds_.first == hierMpa->physicalBounds_.second)
-                        {
-                            if (hierPort->vectorBounds_.first != hierPort->vectorBounds_.second)
-                            {
-                                bounds = "[<left>]";
-
-                                bounds.replace("<left>", hierMpa->physicalBounds_.first);
-                            }
-                        }
-                        else
-                        {
-                            bounds = "[<left>:<right>]";
-                            
-                            bounds.replace("<left>", hierMpa->physicalBounds_.first);
-                            bounds.replace("<right>", hierMpa->physicalBounds_.second);
-                        }
-                    }
-
-                    return hierPort->port_->name() + bounds;
-                }
-
-                return mpa->wire_->name_;
-            }
-        }
-
-        return "";
+        return getInOutAssignment(mPort);
     }
 
     return instance_->getComponentInstance()->getInstanceName() + "_" + mPort->port_->name();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstanceVerilogWriter::getInOutAssignment()
+//-----------------------------------------------------------------------------
+QString ComponentInstanceVerilogWriter::getInOutAssignment(QSharedPointer<MetaPort> mPort) const
+{
+    // Search for the first port assignment with a wire.
+    QSharedPointer<MetaPortAssignment> mpa;
+
+    foreach (QSharedPointer<MetaPortAssignment> inspect, mPort->upAssignments_)
+    {
+        if (inspect->wire_)
+        {
+            mpa = inspect;
+            break;
+        }
+    }
+
+    // No wiring means no assignment.
+    if (!mpa)
+    {
+        return "";
+    }
+
+    // If its not hierarchical, the name of the wire shall suffice.
+    if (mpa->wire_->hierPorts_.size() < 1)
+    {
+        return mpa->wire_->name_;
+    }
+
+    // If it is hierarchical, use the corresponding hierarchical port assignment instead.
+    QSharedPointer<MetaPort> hierPort = mpa->wire_->hierPorts_.first();
+    QSharedPointer<MetaPortAssignment> hierMpa;
+
+    // Find corresponding assignment: It must use the same wire to match.
+    foreach (QSharedPointer<MetaPortAssignment> theirAssignment, hierPort->downAssignments_)
+    {
+        if (theirAssignment->wire_ == mpa->wire_)
+        {
+            hierMpa = theirAssignment;
+            break;
+        }
+    }
+
+    // If none exists, no can do.
+    if (!hierMpa)
+    {
+        return "";
+    }
+
+    QString bounds;
+
+    // If the assigned bounds are the same, different notation is needed.
+    if (hierMpa->physicalBounds_.first == hierMpa->physicalBounds_.second)
+    {
+        // If the vector bounds are not the same, use index instead.
+        if (hierPort->vectorBounds_.first != hierPort->vectorBounds_.second)
+        {
+            bounds = "[<left>]";
+
+            bounds.replace("<left>", hierMpa->physicalBounds_.first);
+        }
+
+        // Else no bounds are needed.
+    }
+    else
+    {
+        // If the assigned bounds differ, they must be generated.
+        bounds = "[<left>:<right>]";
+
+        bounds.replace("<left>", hierMpa->physicalBounds_.first);
+        bounds.replace("<right>", hierMpa->physicalBounds_.second);
+    }
+
+    return hierPort->port_->name() + bounds;
 }

@@ -12,20 +12,25 @@
 #ifndef MEMORYGRAPHICSITEMHANDLER_H
 #define MEMORYGRAPHICSITEMHANDLER_H
 
+#include <IPXACTmodels/common/VLNV.h>
+
 class ConnectivityGraph;
 class MemoryColumn;
 class MemoryItem;
 class ConnectivityComponent;
 class MemoryMapGraphicsItem;
+class MainMemoryGraphicsItem;
 
 #include <QSharedPointer>
 #include <QVector>
+#include <QObject>
 
 //-----------------------------------------------------------------------------
 //! Constructs the memory graphics items for the memory design diagram.
 //-----------------------------------------------------------------------------
-class MemoryGraphicsItemHandler
+class MemoryGraphicsItemHandler : public QObject
 {
+    Q_OBJECT
 
 public:
 
@@ -110,6 +115,15 @@ public:
      */
     void createFieldOverlapItems();
 
+signals:
+
+    /*!
+     *  Open the component document for the selected VLNV.
+     *
+     *      @param [in] vlnv    VLNV of the containing component.
+     */
+    void openComponentDocument(VLNV const& vlnv);
+
 private:
     // Disable copying.
     MemoryGraphicsItemHandler(MemoryGraphicsItemHandler const& rhs);
@@ -134,6 +148,13 @@ private:
      */
     void createMemoryMapItem(QSharedPointer<MemoryItem> mapItem,
         QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* containingColumn);
+
+    /*!
+     *  Connect the signals from the selected memory graphics item.
+     *
+     *      @param [in] graphicsItem    The selected memory graphics item.
+     */
+    void connectGraphicsItemSignals(MainMemoryGraphicsItem* graphicsItem);
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -24,6 +24,7 @@
 // Function: MemoryGraphicsItemHandler::MemoryGraphicsItemHandler()
 //-----------------------------------------------------------------------------
 MemoryGraphicsItemHandler::MemoryGraphicsItemHandler():
+QObject(),
 filterAddressSpaceSegments_(true),
 filterAddressBlocks_(true),
 filterRegisters_(true),
@@ -142,6 +143,8 @@ void MemoryGraphicsItemHandler::createAddressSpaceItem(QSharedPointer<MemoryItem
         AddressSpaceGraphicsItem* spaceGraphicsItem = new AddressSpaceGraphicsItem(
             spaceItem, containingInstance, filterAddressSpaceSegments_, containingColumn);
         containingColumn->addItem(spaceGraphicsItem);
+
+        connectGraphicsItemSignals(spaceGraphicsItem);
     }
 }
 
@@ -158,7 +161,18 @@ void MemoryGraphicsItemHandler::createMemoryMapItem(QSharedPointer<MemoryItem> m
         containingColumn->addItem(mapGraphicsItem);
 
         memoryMapItems_.append(mapGraphicsItem);
+
+        connectGraphicsItemSignals(mapGraphicsItem);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryGraphicsItemHandler::connectGraphicsItemSignals()
+//-----------------------------------------------------------------------------
+void MemoryGraphicsItemHandler::connectGraphicsItemSignals(MainMemoryGraphicsItem* graphicsItem)
+{
+    connect(graphicsItem, SIGNAL(openComponentDocument(VLNV const&)),
+        this, SIGNAL(openComponentDocument(VLNV const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

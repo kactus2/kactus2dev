@@ -217,20 +217,25 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
             }
 
             // Current policy dictates that instance inout ports are directly connected to wire or hierarchical port.
-            if (mPort->port_->getDirection() != DirectionTypes::INOUT)
+            if (mPort->port_->getDirection() == DirectionTypes::INOUT)
             {
-                QString physName = instance->getInstanceName() + "_" +
-                    mPort->port_->name();
+                continue;
+            }
 
-                document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(
-                    new VerilogWireWriter(physName, mPort->vectorBounds_)));
+            // Determine the name for the connected element: Name of the instance plus port.
+            QString physName = instance->getInstanceName() + "_" +
+                mPort->port_->name();
 
-                foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
-                {
-                    QSharedPointer<VerilogAssignmentWriter> instanceAssignment = QSharedPointer<VerilogAssignmentWriter>
-                        (new VerilogAssignmentWriter(physName, mpa, mPort, false));
-                    document->instanceAssignmentWriters_->add(instanceAssignment);
-                }
+            // Create a wire for it.
+            document->portWireWriters_->add(QSharedPointer<VerilogWireWriter>(
+                new VerilogWireWriter(physName, mPort->vectorBounds_)));
+
+            // Then create assignments, that connect it to logical wires.
+            foreach (QSharedPointer<MetaPortAssignment> mpa, mPort->upAssignments_)
+            {
+                QSharedPointer<VerilogAssignmentWriter> instanceAssignment = QSharedPointer<VerilogAssignmentWriter>
+                    (new VerilogAssignmentWriter(physName, mpa, mPort, false));
+                document->instanceAssignmentWriters_->add(instanceAssignment);
             }
         }
     }
@@ -289,6 +294,7 @@ void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> de
             }
         }
 
+        // Thus, if an ad-hoc wire is connected to any hierarchical inout ports, it is no written.
         if (!hierInout)
         {
             document->adHocWireWriters_->
