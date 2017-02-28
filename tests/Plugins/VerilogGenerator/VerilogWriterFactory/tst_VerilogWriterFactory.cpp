@@ -68,6 +68,7 @@ private slots:
 
     // Flat test cases:
     void testFlatComponent();
+    void testFlatComponentWithTypedParameter();
 
 	void testGenerationWithImplementation();
 	void testGenerationWithImplementationWithTag();
@@ -84,7 +85,7 @@ private:
     QSharedPointer<MetaPort> addPort(QString const& portName, int portSize, DirectionTypes::Direction direction, 
         QSharedPointer<MetaComponent> component, QSharedPointer<MetaInterface> mInterface = QSharedPointer<MetaInterface>::QSharedPointer());
 
-    void addParameter(QString const& name, QString const& value, QSharedPointer<MetaComponent> mComponent);
+    QSharedPointer<Parameter> addParameter(QString const& name, QString const& value, QSharedPointer<MetaComponent> mComponent);
 
     void runGenerator(bool useDesign);
 
@@ -254,7 +255,7 @@ QSharedPointer<MetaPort> tst_VerilogWriterFactory::addPort(QString const& portNa
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogWriterFactory::addParameter()
 //-----------------------------------------------------------------------------
-void tst_VerilogWriterFactory::addParameter(QString const& name, QString const& value,
+QSharedPointer<Parameter> tst_VerilogWriterFactory::addParameter(QString const& name, QString const& value,
     QSharedPointer<MetaComponent> mComponent)
 {
     QSharedPointer<Parameter> parameter = QSharedPointer<Parameter>(new Parameter());
@@ -262,6 +263,8 @@ void tst_VerilogWriterFactory::addParameter(QString const& name, QString const& 
     parameter->setValue(value);
 
     mComponent->getParameters()->append(parameter);
+
+    return parameter;
 }
 
 //-----------------------------------------------------------------------------
@@ -1514,6 +1517,28 @@ void tst_VerilogWriterFactory::testFlatComponent()
         "    input                               rst_n,\n"
         "    output         [7:0]                dataOut\n"
         ");\n"
+        "\n"
+        "// " + VerilogSyntax::TAG_OVERRIDE + "\n"
+        "endmodule\n"
+        ));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testFlatComponentWithTypedParameter()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testFlatComponentWithTypedParameter()
+{
+    QSharedPointer<Parameter> testParameter = addParameter("dataWidth", "8", flatComponent_);
+    testParameter->setAttribute(QStringLiteral("dataType"), "integer");
+    addParameter("freq", "100000", flatComponent_);
+
+    runGenerator(false);
+
+    verifyOutputContains(QString(
+        "module TestComponent #(\n"
+        "    parameter integer                      dataWidth        = 8,\n"
+        "    parameter                              freq             = 100000\n"
+        ") ();\n"
         "\n"
         "// " + VerilogSyntax::TAG_OVERRIDE + "\n"
         "endmodule\n"
