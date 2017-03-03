@@ -44,6 +44,8 @@ QSharedPointer<Catalog> CatalogReader::createCatalogFrom(QDomNode const& documen
     parseXMLProcessingInstructions(document, catalog);
 
     QDomNode catalogNode = document.firstChildElement();
+    parseNamespaceDeclarations(catalogNode, catalog);
+
     parseVLNVElements(catalogNode, catalog, VLNV::CATALOG);
 
     parseDescription(catalogNode, catalog);

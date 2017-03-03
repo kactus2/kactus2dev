@@ -42,7 +42,7 @@ void BusDefinitionWriter::writeBusDefinition(QXmlStreamWriter& writer,
     writeXmlProcessingInstructions(writer, busDefinition);
 
     writer.writeStartElement(QStringLiteral("ipxact:busDefinition"));
-    writeNamespaceDeclarations(writer);
+    writeNamespaceDeclarations(writer, busDefinition);
 
 
     writeVLNVElements(writer, busDefinition->getVlnv());

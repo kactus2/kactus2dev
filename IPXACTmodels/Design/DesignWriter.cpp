@@ -40,7 +40,7 @@ void DesignWriter::writeDesign(QXmlStreamWriter& writer, QSharedPointer<Design> 
 
     writeDesignStart(writer, design);
 
-    writeNamespaceDeclarations(writer);
+    writeNamespaceDeclarations(writer, design);
 
     writeVLNVElements(writer, design->getVlnv());
 

@@ -42,7 +42,7 @@ void CatalogWriter::writeCatalog(QXmlStreamWriter& writer, QSharedPointer<Catalo
     writeXmlProcessingInstructions(writer, catalog);
 
     writer.writeStartElement(QStringLiteral("ipxact:catalog"));
-    writeNamespaceDeclarations(writer);
+    writeNamespaceDeclarations(writer, catalog);
 
     writeVLNVElements(writer, catalog->getVlnv());
 

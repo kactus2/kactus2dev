@@ -46,7 +46,7 @@ void AbstractionDefinitionWriter::writeAbstractionDefinition(QXmlStreamWriter& w
     writeXmlProcessingInstructions(writer, abstractionDefinition);
 
     writer.writeStartElement(QStringLiteral("ipxact:abstractionDefinition"));
-    writeNamespaceDeclarations(writer);
+    writeNamespaceDeclarations(writer, abstractionDefinition);
 
     writeVLNVElements(writer, abstractionDefinition->getVlnv());
 

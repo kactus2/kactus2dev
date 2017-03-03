@@ -146,6 +146,19 @@ public:
      *      @return The XML processing instructions as target-data pairs.
      */
     QVector<QPair<QString, QString> > getXmlProcessingInstructions() const;
+        
+    /*!
+     *  Adds a new XML namespace for the document.
+     *
+     *      @param [in] nameSpace  The name of the namespace.
+     *      @param [in] uri        The uri of the namespace.
+     */
+    void addXmlNameSpace(QString const& nameSpace, QString const& uri);
+    
+    /*!
+     *  Gets the XML name spaces for the document.
+     */
+    QVector<QPair<QString, QString> > getXmlNameSpaces() const;
 
 	/*! A pure virtual function to be implemented by subclasses.
 	 *
@@ -250,6 +263,11 @@ public:
     void setFirmness(KactusAttribute::Firmness firmness);
 
 private:
+
+    /*
+     *  Add the default namespaces to the list of namespaces.
+     */
+    void addDefaultNameSpaces();
     
     /*!
      *  Copies parameters from another document.
@@ -287,6 +305,9 @@ private:
 
     //! Contains the xml processing instructions as target-data pairs.
     QVector<QPair<QString, QString> > xmlProcessingInstructions_;
+
+    //! The map of xml namespaces with namespace as key and uri as value.
+    QVector<QPair<QString, QString> > xmlNameSpaces_;
 
     //! A list of parameters for the document.
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;

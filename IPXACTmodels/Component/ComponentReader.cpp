@@ -64,6 +64,7 @@ QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument cons
     parseXMLProcessingInstructions(componentDocument, newComponent);
 
     QDomNode componentNode = componentDocument.firstChildElement();
+    parseNamespaceDeclarations(componentNode, newComponent);
 
     parseVLNVElements(componentNode, newComponent, VLNV::COMPONENT);
 

@@ -59,7 +59,7 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
 
     writer.writeStartElement(QStringLiteral("ipxact:component"));
 
-    writeNamespaceDeclarations(writer);
+    writeNamespaceDeclarations(writer, component);
 
     writeVLNVElements(writer, component->getVlnv());
 

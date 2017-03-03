@@ -50,6 +50,7 @@ QSharedPointer<Design> DesignReader::createDesignFrom(QDomDocument const& docume
     parseXMLProcessingInstructions(document, newDesign);
 
     QDomNode designNode = document.firstChildElement();
+    parseNamespaceDeclarations(designNode, newDesign);
 
     parseVLNVElements(designNode, newDesign, VLNV::DESIGN);
 

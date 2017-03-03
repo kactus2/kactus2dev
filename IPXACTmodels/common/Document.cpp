@@ -31,10 +31,13 @@ Extendable(),
     description_(),
     topComments_(),
     xmlProcessingInstructions_(),
+    xmlNameSpaces_(),
     parameters_(new QList<QSharedPointer<Parameter> >()),
     assertions_(new QList<QSharedPointer<Assertion> >())
 {
     vlnv_ = VLNV();
+
+    addDefaultNameSpaces();
 }
 
 //-----------------------------------------------------------------------------
@@ -46,10 +49,13 @@ Extendable(),
     description_(),
     topComments_(),
     xmlProcessingInstructions_(),
+    xmlNameSpaces_(),
     parameters_(new QList<QSharedPointer<Parameter> >()),
     assertions_(new QList<QSharedPointer<Assertion> >())
 {
     vlnv_ = vlnv;
+
+    addDefaultNameSpaces();
 }
 
 //-----------------------------------------------------------------------------
@@ -61,6 +67,7 @@ Extendable(other),
     description_(other.description_),
     topComments_(other.topComments_),
     xmlProcessingInstructions_(other.xmlProcessingInstructions_),
+    xmlNameSpaces_(other.xmlNameSpaces_),
     parameters_(new QList<QSharedPointer<Parameter> >()),
     assertions_(new QList<QSharedPointer<Assertion> >())
 {
@@ -199,6 +206,32 @@ void Document::addXmlProcessingInstructions(QString const& target, QString const
 QVector<QPair<QString, QString> > Document::getXmlProcessingInstructions() const
 {
     return xmlProcessingInstructions_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::addXmlNameSpace()
+//-----------------------------------------------------------------------------
+void Document::addXmlNameSpace(QString const& nameSpace, QString const& uri)
+{
+    for (int i = 0; i < xmlNameSpaces_.size(); ++i)
+    {
+        QPair<QString, QString> value = xmlNameSpaces_[i];
+
+        if (value.first == nameSpace)
+        {
+            return;
+        }
+    }
+
+    xmlNameSpaces_.append(qMakePair(nameSpace, uri));
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::getXmlNameSpaces()
+//-----------------------------------------------------------------------------
+QVector<QPair<QString, QString> > Document::getXmlNameSpaces() const
+{
+    return xmlNameSpaces_;
 }
 
 //-----------------------------------------------------------------------------
@@ -423,6 +456,16 @@ void Document::setFirmness(KactusAttribute::Firmness firmness)
     attributes->setFirmness(firmness);
 
     getVendorExtensions()->append(attributes);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::addDefaultNameSpaces()
+//-----------------------------------------------------------------------------
+void Document::addDefaultNameSpaces()
+{
+    xmlNameSpaces_.append(qMakePair(QStringLiteral("xsi"), QStringLiteral("http://www.w3.org/2001/XMLSchema-instance")));
+    xmlNameSpaces_.append(qMakePair(QStringLiteral("ipxact"), QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014")));
+    xmlNameSpaces_.append(qMakePair(QStringLiteral("kactus2"), QStringLiteral("http://kactus2.cs.tut.fi")));
 }
 
 //-----------------------------------------------------------------------------
