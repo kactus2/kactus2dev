@@ -558,8 +558,14 @@ void MetaDesign::parseAdHocs()
                 mpa->physicalBounds_ = mPort->vectorBounds_;
             }
 
+            QPair<QString, QString> newBounds;
+            newBounds.second = "0";
+
+            int right = mpa->physicalBounds_.first.toInt() - mpa->physicalBounds_.second.toInt();
+            newBounds.first = QString::number(right);
+
             // Logical bounds are still used to determine wire bounds.
-            mpa->logicalBounds_ = mpa->physicalBounds_;
+            mpa->logicalBounds_ = newBounds;
 
             // Also assign larger bounds for the wire, if applicable.
             if (mWire)

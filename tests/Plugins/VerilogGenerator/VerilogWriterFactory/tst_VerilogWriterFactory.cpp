@@ -56,6 +56,7 @@ private slots:
     void testMasterToMultipleSlavesInterconnections();
 
     void testAdhocConnectionBetweenComponentInstances();    
+    void testPartSelectedAdhocConnectionBetweenComponentInstances();
     void testAdhocInOutConnectionBetweenComponentInstances();
     void testAdhocTieOffInComponentInstance();
     void testHierarchicalAdhocConnection();
@@ -1114,6 +1115,57 @@ void tst_VerilogWriterFactory::testAdhocConnectionBetweenComponentInstances()
         "        // Interface: data_if\n"
         "        .data_out            (sender_data_out),\n"
         "        .enable_out          (sender_enable_out)");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testPartSelectedAdhocConnectionBetweenComponentInstances()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testPartSelectedAdhocConnectionBetweenComponentInstances()
+{
+    QSharedPointer<MetaInstance> senderInstance = addSender("sender");
+    QSharedPointer<MetaInstance> receiverInstance1 = addReceiver("receiver1");
+    QSharedPointer<MetaInstance> receiverInstance2 = addReceiver("receiver2");
+
+    QSharedPointer<MetaWire> dataWire1 = addWireToDesign("dataAdHoc1","3","0");
+    QSharedPointer<MetaWire> dataWire2 = addWireToDesign("dataAdHoc2","3","0");
+
+    createPortAssignment(receiverInstance1->getPorts()->value("data_in"), dataWire1, true, "3", "0", "3", "0");
+    createPortAssignment(receiverInstance2->getPorts()->value("data_in"), dataWire2, true, "3", "0", "3", "0");
+
+    createPortAssignment(senderInstance->getPorts()->value("data_out"), dataWire1, true, "3", "0", "3", "0");
+    createPortAssignment(senderInstance->getPorts()->value("data_out"), dataWire2, true, "3", "0", "7", "4");
+
+    runGenerator(true);
+
+    verifyOutputContains("wire [3:0]  dataAdHoc1;");
+    verifyOutputContains("wire [3:0]  dataAdHoc2;");
+
+    verifyOutputContains("wire [7:0]  receiver1_data_in;");
+    verifyOutputContains("wire [7:0]  receiver2_data_in;");
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+
+    verifyOutputContains("assign receiver1_data_in[3:0] = dataAdHoc1[3:0];");
+    verifyOutputContains("assign receiver2_data_in[3:0] = dataAdHoc2[3:0];");
+    verifyOutputContains("assign dataAdHoc1[3:0] = sender_data_out[3:0];");
+    verifyOutputContains("assign dataAdHoc2[3:0] = sender_data_out[7:4];");
+
+    verifyOutputContains(
+        "    TestReceiver receiver1(\n"
+        "        // Interface: data_if\n"
+        "        .data_in             (receiver1_data_in),\n"
+        "        .enable_in           ()");
+
+    verifyOutputContains(
+        "    TestReceiver receiver2(\n"
+        "        // Interface: data_if\n"
+        "        .data_in             (receiver2_data_in),\n"
+        "        .enable_in           ()");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_if\n"
+        "        .data_out            (sender_data_out),\n"
+        "        .enable_out          ()");
 }
 
 //-----------------------------------------------------------------------------
