@@ -26,11 +26,16 @@ Create HW designs with hierarchy
  * Configure component instances in designs, including the sub-designs
  * Use generator plugins to create HDL with wiring and parameterization
 
-Intergrate HW and SW
+Integrate HW and SW
  * Use memory designer to preview memory maps and address spaces in your hierarchy
  * Pack software to IP-XACT components and map them to hardware
  * Generate makefiles that build executables with rules defined in IP-XACT
-   
+
+Tutorials 
+----------------------------------------------------
+
+Video tutorials are available at https://www.youtube.com/channel/UCsilC6PiJ8tH5ltGxL5M8VA
+
 Community Guidelines 
 ----------------------------------------------------
 
