@@ -64,10 +64,8 @@ public:
 
     /*!
      *  Get all the address space graphics items connected to the origin item.
-     *
-     *      @param [in] origin  The origin item for gathering connections.
      */
-    QVector<MainMemoryGraphicsItem*> getAllConnectedSpaceItems(MainMemoryGraphicsItem* origin) const;
+    QVector<MainMemoryGraphicsItem*> getAllConnectedSpaceItems() const;
 
 private:
     // Disable copying.
@@ -108,15 +106,13 @@ private:
     quint64 getFilteredCompressedHeight();
 
     /*!
-     *  Get the address space items connected to the selected address space item.
+     *  Get the address space items connected to the selected memory item.
      *
-     *      @param [in] memoryItem          The selected address space graphics item.
-     *      @param [in] originSpaceItem     Origin of the search.
+     *      @param [in] memoryItem          The selected memory graphics item.
      *
      *      @return All the address space items connected to the selected item.
      */
-    QVector<MainMemoryGraphicsItem*> getSpaceItemsConnectedToSpaceItem(MainMemoryGraphicsItem* memoryItem,
-        MainMemoryGraphicsItem* originSpaceItem) const;
+    QVector<MainMemoryGraphicsItem*> getSpaceItemsConnectedToSpaceItem(MainMemoryGraphicsItem* memoryItem) const;
 
     /*!
      *  Get all the chained memory connection items.

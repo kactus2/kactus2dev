@@ -76,15 +76,27 @@ QGraphicsTextItem* MainMemoryGraphicsItem::getInstanceNameLabel() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::moveConnectedItems()
+// Function: MainMemoryGraphicsItem::moveItemAndConnectedItems()
 //-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::moveConnectedItems(qreal yTransfer)
+void MainMemoryGraphicsItem::moveItemAndConnectedItems(qreal yTransfer)
 {
     moveBy(0, yTransfer);
 
-    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemories (new QVector<MainMemoryGraphicsItem*> ());
+    visitedMemories->append(this);
+
+    QMap<quint64, MemoryConnectionItem*> allConnectedConnections =
+        getAllConnectionsFromConnectedItems(visitedMemories);
+
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems(new QVector<MainMemoryGraphicsItem*>());
+
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(allConnectedConnections);
+    while (connectionIterator.hasNext())
     {
-        connectionItem->moveConnectedItem(this, yTransfer);
+        connectionIterator.next();
+        MemoryConnectionItem* connectionItem = connectionIterator.value();
+
+        connectionItem->moveConnectedItems(movedItems, this, yTransfer);
     }
 }
 
@@ -169,7 +181,7 @@ MemoryConnectionItem* MainMemoryGraphicsItem::getLastConnection() const
 
         MemoryConnectionItem* connection = connectionIterator.value();
         quint64 connectionRangeEnd = connection->getRangeEndValue();
-        if (connectionRangeEnd > lastConnectionRangeEnd)
+        if (connectionRangeEnd >= lastConnectionRangeEnd)
         {
             lastConnection = connection;
             lastConnectionRangeEnd = connectionRangeEnd;
@@ -419,4 +431,92 @@ VLNV MainMemoryGraphicsItem::getVLNVFromString(QString const& vlnvString) const
 void MainMemoryGraphicsItem::openContainingComponent()
 {
     emit openComponentDocument(instanceVLNV_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getAllConnectionsFromConnectedItems()
+//-----------------------------------------------------------------------------
+QMap<quint64, MemoryConnectionItem*> MainMemoryGraphicsItem::getAllConnectionsFromConnectedItems(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems) const
+{
+    QMultiMap<quint64, MemoryConnectionItem*> allConnections = getMemoryConnections();
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator (allConnections);
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+        MemoryConnectionItem* currentConnection = connectionIterator.value();
+
+        MainMemoryGraphicsItem* connectedItem = currentConnection->getConnectionStartItem();
+        if (connectedItem == this)
+        {
+            connectedItem = currentConnection->getConnectionEndItem();
+        }
+
+        if (connectedItem && !visitedMemoryItems->contains(connectedItem))
+        {
+            visitedMemoryItems->append(connectedItem);
+            
+            QMap<quint64, MemoryConnectionItem*> secondConnections =
+                connectedItem->getAllConnectionsFromConnectedItems(visitedMemoryItems);
+            QMapIterator<quint64, MemoryConnectionItem*> secondConnectionIterator (secondConnections);
+            while (secondConnectionIterator.hasNext())
+            {
+                secondConnectionIterator.next();
+                MemoryConnectionItem* secondConnectionItem = secondConnectionIterator.value();
+
+                if (!allConnections.values().contains(secondConnectionItem))
+                {
+                    quint64 secondConnectionBaseAddress = secondConnectionIterator.key();
+                    if (allConnections.keys().contains(secondConnectionBaseAddress))
+                    {
+                        QVector<MemoryConnectionItem*> sameKeyItems =
+                            allConnections.values(secondConnectionBaseAddress).toVector();
+                        sameKeyItems.append(secondConnectionItem);
+
+                        int amountOfSameKeys = allConnections.remove(secondConnectionBaseAddress) + 1;
+                        for (int connectionIndex = amountOfSameKeys - 1; connectionIndex >= 0; --connectionIndex)
+                        {
+                            MemoryConnectionItem* sameKeyConnection = sameKeyItems.at(connectionIndex);
+                            allConnections.insertMulti(secondConnectionBaseAddress, sameKeyConnection);
+                        }
+                    }
+                    else
+                    {
+                        allConnections.insertMulti(secondConnectionBaseAddress, secondConnectionItem);
+                    }
+                }
+            }
+        }
+    }
+
+    return allConnections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getLowestPointOfConnectedItems()
+//-----------------------------------------------------------------------------
+qreal MainMemoryGraphicsItem::getLowestPointOfConnectedItems()
+{
+    qreal lowestPoint = sceneBoundingRect().bottom();
+
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedItems (new QVector<MainMemoryGraphicsItem*>());
+    QMap<quint64, MemoryConnectionItem*> allConnections = getAllConnectionsFromConnectedItems(visitedItems);
+
+    visitedItems->clear();
+
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator (allConnections);
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+
+        MemoryConnectionItem* connectionItem = connectionIterator.value();
+        
+        qreal connectionLowPoint = connectionItem->getConnectionLowPoint(this);
+        if (connectionLowPoint > lowestPoint)
+        {
+            lowestPoint = connectionLowPoint;
+        }
+    }
+
+    return lowestPoint;
 }

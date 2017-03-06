@@ -32,6 +32,8 @@ startRangeLabel_(new QGraphicsTextItem(this)),
 endRangeLabel_(new QGraphicsTextItem(this)),
 baseAddress_(0),
 lastAddress_(0),
+originalBaseAddress_(0),
+originalLastAddress_(0),
 itemName_(itemName),
 displayName_(displayName),
 memoryConnections_(),
@@ -63,6 +65,32 @@ void MemoryDesignerGraphicsItem::hideMemoryRangeLabels()
 {
     hideStartRangeLabel();
     hideEndRangeLabel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::hideCollidingRangeLabels()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::hideCollidingRangeLabels(quint64 connectionBaseAddress,
+    quint64 connectionLastAddress)
+{
+    quint64 itemBaseAddress = getBaseAddress();
+    quint64 itemLastAddress = getLastAddress();
+
+    quint64 minItemBaseConnectionLast = qMin(itemBaseAddress, connectionLastAddress);
+    quint64 maxItemBaseConnectionLast = qMax(itemBaseAddress, connectionLastAddress);
+    if (connectionBaseAddress - itemBaseAddress < 2 || maxItemBaseConnectionLast - minItemBaseConnectionLast < 2)
+    {
+        hideStartRangeLabel();
+    }
+
+    quint64 minItemLastConnectionBase = qMin(itemLastAddress, connectionBaseAddress);
+    quint64 maxItemLastconnectionBase = qMax(itemLastAddress, connectionBaseAddress);
+    quint64 minLastAddress = qMin(itemLastAddress, connectionLastAddress);
+    quint64 maxLastAddress = qMax(itemLastAddress, connectionLastAddress);
+    if (maxItemLastconnectionBase - minItemLastConnectionBase < 2 || maxLastAddress - minLastAddress < 2)
+    {
+        hideEndRangeLabel();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -115,6 +143,17 @@ QGraphicsTextItem* MemoryDesignerGraphicsItem::getRangeEndLabel() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::setupGraphicsItem()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::setupGraphicsItem(quint64 memoryStart, quint64 memoryEnd,
+    QString const& identifier)
+{
+    setupLabels(memoryStart, memoryEnd);
+    setupOriginalAddresses(memoryStart, memoryEnd);
+    setupToolTip(identifier);
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::setupLabels()
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::setupLabels(quint64 memoryStart, quint64 memoryEnd)
@@ -128,8 +167,18 @@ void MemoryDesignerGraphicsItem::setupLabels(quint64 memoryStart, quint64 memory
 
     baseAddress_ = memoryStart;
     lastAddress_ = memoryEnd;
+
     startRangeLabel_->setPlainText(baseAddressInHexa);
     endRangeLabel_->setPlainText(lastAddressInHexa);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::setOriginalAddresses()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::setupOriginalAddresses(quint64 memoryStart, quint64 memoryEnd)
+{
+    originalBaseAddress_ = memoryStart;
+    originalLastAddress_ = memoryEnd;
 }
 
 //-----------------------------------------------------------------------------
@@ -192,11 +241,27 @@ quint64 MemoryDesignerGraphicsItem::getBaseAddress() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::getOriginalBaseAddress()
+//-----------------------------------------------------------------------------
+quint64 MemoryDesignerGraphicsItem::getOriginalBaseAddress() const
+{
+    return originalBaseAddress_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::getLastAddress()
 //-----------------------------------------------------------------------------
 quint64 MemoryDesignerGraphicsItem::getLastAddress() const
 {
     return lastAddress_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::getOriginalLastAddress()
+//-----------------------------------------------------------------------------
+quint64 MemoryDesignerGraphicsItem::getOriginalLastAddress() const
+{
+    return originalLastAddress_;
 }
 
 //-----------------------------------------------------------------------------
@@ -310,13 +375,10 @@ QString MemoryDesignerGraphicsItem::getContainingInstance() const
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::changeAddressRange(quint64 offset)
 {
-    quint64 newBaseAddress = getBaseAddress() + offset;
-    quint64 newLastAddress = getLastAddress() + offset;
+    quint64 newBaseAddress = originalBaseAddress_ + offset;
+    quint64 newLastAddress = originalLastAddress_ + offset;
 
     setupLabels(newBaseAddress, newLastAddress);
-
-    baseAddress_ = newBaseAddress;
-    lastAddress_ = newLastAddress;
 }
 
 //-----------------------------------------------------------------------------

@@ -99,17 +99,19 @@ private:
     /*!
      *  Create a memory connection between an address space and a memory map.
      *
-     *      @param [in] connectionPath      The path of the memory connection.
-     *      @param [in] placedMapItems      A list of placed memory map items.
-     *      @param [in] memoryMapColumn     The column containing the memory maps.
-     *      @param [in] spaceYPlacement     The Y placement of the next address space item.
-     *      @param [in] placedSpaceItems    A list of placed address space items.
-     *      @param [in] spaceColumn         The column containing the address spaces.
+     *      @param [in] connectionPath          The path of the memory connection.
+     *      @param [in] placedMapItems          A list of placed memory map items.
+     *      @param [in] memoryMapColumn         The column containing the memory maps.
+     *      @param [in] spaceYPlacement         The Y placement of the next address space item.
+     *      @param [in] placedSpaceItems        A list of placed address space items.
+     *      @param [in] spaceColumn             The column containing the address spaces.
+     *      @param [in] previousConnectionLow   Lowest point of the previous memory connection and the connected
+     *                                          items.
      */
     void createConnection(QVector<QSharedPointer<ConnectivityInterface> > connectionPath,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems, MemoryColumn* memoryMapColumn,
         int& spaceYPlacement, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        MemoryColumn* spaceColumn);
+        MemoryColumn* spaceColumn, qreal& previousConnectionLow);
 
     /*!
      *  Check and reposition a memory map to a memory map overlap column if needed.
@@ -160,13 +162,13 @@ private:
     /*!
      *  Place the address space item to another address space column.
      *
-     *      @param [in] spaceItem       The selected address space item.
-     *      @param [in] originalColumn  The original column of the selected address space item.
-     *      @param [in] targetItem      The other item of the memory connection.
-     *      @param [in] yTransfer       Y transfer of the address space item.
+     *      @param [in] spaceItem               The selected address space item.
+     *      @param [in] originalColumn          The original column of the selected address space item.
+     *      @param [in] targetItem              The other item of the memory connection.
+     *      @param [in] connectionBaseAddress   Base address of the current memory connection item.
      */
     void placeSpaceItemToOtherColumn(MainMemoryGraphicsItem* spaceItem, MemoryColumn* originalColumn,
-        MainMemoryGraphicsItem* targetItem, int yTransfer);
+        MainMemoryGraphicsItem* targetItem, quint64 connectionBaseAddress);
 
     /*!
      *  Move the unconnected address space items to the bottom of the address space column.

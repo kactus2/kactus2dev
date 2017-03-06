@@ -172,7 +172,7 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
         MainMemoryGraphicsItem* memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
         if (memoryItem && memoryItem->isVisible())
         {
-            quint64 memoryItemLowBefore = memoryItem->getSceneEndPoint();
+            qreal memoryItemLowBefore = memoryItem->getLowestPointOfConnectedItems();
 
             if (condenseMemoryItems && !memoryItem->isCompressed())
             {
@@ -188,11 +188,11 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
             if (condenseMemoryItems)
             {
                 AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
-                if (spaceItem && placedSpaceItems->contains(memoryItem) && this == spaceColumn)
+                if (spaceItem && placedSpaceItems->contains(memoryItem) && this == spaceColumn &&
+                    !movedSpaceItems.contains(spaceItem))
                 {
-                    quint64 spaceItemTop = spaceItem->sceneBoundingRect().top();
-
-                    if (spaceItemTop + spaceItem->pen().width() != spaceItemLowAfter)
+                    quint64 spaceItemTop = spaceItem->sceneBoundingRect().top() + spaceItem->pen().width();
+                    if (spaceItemTop != spaceItemLowAfter)
                     {
                         qint64 spaceInterval = (spaceItemTop + yTransfer) - spaceItemLowAfter;
 
@@ -205,10 +205,10 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
 
                         if (!movedSpaceItems.contains(memoryItem))
                         {
-                            spaceItem->moveConnectedItems(yTransfer);
+                            spaceItem->moveItemAndConnectedItems(yTransfer);
 
                             foreach (MainMemoryGraphicsItem* connectedSpace,
-                                spaceItem->getAllConnectedSpaceItems(spaceItem))
+                                spaceItem->getAllConnectedSpaceItems())
                             {
                                 movedSpaceItems.append(connectedSpace);
                             }
@@ -217,7 +217,7 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
                         }
                     }
 
-                    spaceItemLowAfter = spaceItem->getSceneEndPoint();
+                    spaceItemLowAfter = spaceItem->getLowestPointOfConnectedItems();
 
                     yTransfer = spaceItemLowAfter - memoryItemLowBefore;
 
@@ -303,7 +303,15 @@ quint64 MemoryColumn::getUnconnectedItemPosition(QSharedPointer<QVector<MainMemo
         }
     }
 
-    quint64 positionY = lastItemLowLinePosition + MemoryDesignerConstants::CONNECTED_UNCONNECTED_INTERVAL;
+    quint64 positionY = 0;
+    if (lastItemLowLinePosition == 0)
+    {
+        positionY = MemoryDesignerConstants::SPACEITEMINTERVAL;
+    }
+    else
+    {
+        positionY = lastItemLowLinePosition + MemoryDesignerConstants::CONNECTED_UNCONNECTED_INTERVAL;
+    }
 
     return positionY;
 }
@@ -396,17 +404,21 @@ bool MemoryColumn::itemOverlapsAnotherItem(quint64 itemBaseAddress, quint64 item
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn::itemOverlapsAnotherColumnItem()
 //-----------------------------------------------------------------------------
-bool MemoryColumn::itemOverlapsAnotherColumnItem(QRectF itemRectangle, int lineWidth) const
+bool MemoryColumn::itemOverlapsAnotherColumnItem(MainMemoryGraphicsItem* memoryItem, QRectF itemRectangle,
+    int lineWidth) const
 {
     foreach (MainMemoryGraphicsItem* comparisonItem, getGraphicsItemInOrder())
     {
-        QRectF comparisonRectangle = comparisonItem->getSceneRectangleWithSubItems();
-        int comparisonLineWidth = comparisonItem->pen().width();
-
-        if (MemoryDesignerConstants::itemOverlapsAnotherItem(
-            itemRectangle, lineWidth, comparisonRectangle, comparisonLineWidth))
+        if (comparisonItem != memoryItem)
         {
-            return true;
+            QRectF comparisonRectangle = comparisonItem->getSceneRectangleWithSubItems();
+            int comparisonLineWidth = comparisonItem->pen().width();
+
+            if (MemoryDesignerConstants::itemOverlapsAnotherItem(
+                itemRectangle, lineWidth, comparisonRectangle, comparisonLineWidth))
+            {
+                return true;
+            }
         }
     }
 

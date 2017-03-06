@@ -34,13 +34,12 @@ public:
      *      @param [in] firstEndValue               End address in the start item.
      *      @param [in] endItem                     The end item of the connection (memory map).
      *      @param [in] containingScene             Graphics scene containing the memory connection item.
-     *      @param [in] memoryItemsAreCondensed     Value for displaying condensed memory connections.
      *      @param [in] yTransfer                   Y transfer of the memory connection.
      *      @param [in] parent                      Parent item of the connection.
      */
     MemoryConnectionItem(MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
-        MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, bool memoryItemsAreCondensed,
-        int yTransfer = 0, QGraphicsItem* parent = 0);
+        MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, int yTransfer = 0,
+        QGraphicsItem* parent = 0);
 
 	/*!
      *  The Destructor.
@@ -48,12 +47,11 @@ public:
     virtual ~MemoryConnectionItem();
 
     /*!
-     *  Move a memory connection item by the y-coordinate.
+     *  Move the connection in y-coordinate by the given amount without moving connected items.
      *
-     *      @param [in] movementOrigin  The origin of the movement.
-     *      @param [in] yTransfer       The movement amount.
+     *      @param [in] ytransfer   The amount to move in y-coordinate.
      */
-    void onMoveConnectionInY(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer);
+    void moveConnectionWithoutConnectedItemsInY(qreal ytransfer);
 
     /*!
      *  Get the start value of the connection.
@@ -73,14 +71,6 @@ public:
      *  Redraw the path of this connection.
      */
     void reDrawConnection();
-
-    /*!
-     *  Move the other connected item.
-     *
-     *      @param [in] movementOrigin  The origin item of the movement.
-     *      @param [in] yTransfer       The movement amount.
-     */
-    void moveConnectedItem(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer);
 
     /*!
      *  Get the lowest point of the connection.
@@ -123,10 +113,41 @@ public:
     /*!
      *  Condense this connection to contain the selected addresses.
      *
+     *      @param [in] condensedItems  List of all the items that have already been condensed.
      *      @param [in] uncutAddresses  The addresses that remain after the compression.
      *      @param [in] CUTMODIFIER     Modifier for the cut areas.
      */
-    void condenseToUnCutAddresses(QVector<quint64> uncutAddresses, const int CUTMODIFIER);
+    void condenseToUnCutAddresses(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
+        QVector<quint64> uncutAddresses, const int CUTMODIFIER);
+
+    /*!
+     *  Move condensed connection and the connected memory items.
+     *
+     *      @param [in] movedItems      Memory items that have already been moved.
+     *      @param [in] movementOrigin  Origin of the movement.
+     *      @param [in] cutAreaBegin    The start of the cut area.
+     *      @param [in] cutAreaEnd      The end of the cut area.
+     *      @param [in] transferY       The amount to move in y-coordinate.
+     */
+    void moveCutConnectionAndConnectedItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems,
+        MainMemoryGraphicsItem* movementOrigin, quint64 cutAreaBegin, quint64 cutAreaEnd, qreal transferY);
+
+    /*!
+     *  Move the connected memory items.
+     *
+     *      @param [in] movedItems      Memory items that have already been moved.
+     *      @param [in] movementOrigin  Origin of the movement.
+     *      @param [in] transferY       The amount to move in y-coordinate.
+     */
+    void moveConnectedItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems,
+        MainMemoryGraphicsItem* movementOrigin, qreal transferY);
+
+    /*!
+     *  Get the lowest point of the memory connection and the other connected memory item.
+     *
+     *      @param [in] originItem  The origin memory item.
+     */
+    qreal getConnectionLowPoint(MainMemoryGraphicsItem* originItem) const;
 
 private:
     // Disable copying.
@@ -136,10 +157,12 @@ private:
     /*!
      *  Compress the contained end item.
      *
+     *      @param [in] condensedItems  Memory items that have already been condensed.
      *      @param [in] unCutAddresses  The addresses that remain after the compression.
      *      @param [in] CUTMODIFIER     Modifier for the cut areas.
      */
-    void compressEndItem(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+    void compressEndItem(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
+        QVector<quint64> unCutAddresses, const int CUTMODIFIER);
 
     /*!
      *  Set a new height for the memory connection.
@@ -204,6 +227,45 @@ private:
      */
     void repositionSingleRangeLabel(QGraphicsTextItem* rangeLabel) const;
 
+    /*!
+     *  Create a path for the memory connection.
+     *
+     *      @param [in] highStartPoint  High start point of the memory connection.
+     *      @param [in] highEndPoint    High end point of the memory connection.
+     *      @param [in] lowStartPoint   Low start point of the memory connection.
+     *      @param [in] lowEndPoint     Low end point of the memory connection.
+     *      @param [in] LINEWIDTH       Line width of the memory connection.
+     *
+     *      @return The created painter path.
+     */
+    QPainterPath createConnectionPath(QPointF highStartPoint, QPointF highEndPoint, QPointF lowStartPoint,
+        QPointF lowEndPoint, const int LINEWIDTH);
+
+    /*!
+     *  Move the compressed connected item without moving connected memory connections.
+     *
+     *      @param [in] movedItems          The memory items that have already been moved.
+     *      @param [in] movementOrigin      Origin of the movement.
+     *      @param [in] connectedItem       The memory item to be moved.
+     *      @param [in] itemBaseAddress     Base address of the connected memory item.
+     *      @param [in] transferY           The amount to move in y-coordinate.
+     *      @param [in] cutAreaEnd          End of the cut area.
+     */
+    void moveCutConnectedItemWithoutConnections(QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems,
+        MainMemoryGraphicsItem* movementOrigin, MainMemoryGraphicsItem* connectedItem, quint64 itemBaseAddress,
+        qreal transferY, quint64 cutAreaEnd);
+
+    /*!
+     *  Move the connected items without moving connected memory connections.
+     *
+     *      @param [in] movedItems      Memory items that have already been moved.
+     *      @param [in] movementOrigin  Origin of the movement.
+     *      @param [in] connectedItem   The item to be moved.
+     *      @param [in] transferY       The amount to move in y-coordinate.
+     */
+    void moveConnectedItemWithoutConnections(QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems,
+        MainMemoryGraphicsItem* movementOrigin, MainMemoryGraphicsItem* connectedItem, qreal transferY);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -237,9 +299,6 @@ private:
 
     //! Width of the memory connection item.
     qreal connectionWidth_;
-
-    //! Value for displaying condensed memory connections.
-    bool memoryItemsAreCondensed_;
 };
 
 //-----------------------------------------------------------------------------

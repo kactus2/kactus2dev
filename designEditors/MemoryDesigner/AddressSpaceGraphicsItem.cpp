@@ -46,8 +46,7 @@ cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), 
 
     setGraphicsRectangle(spaceWidth + 1, spaceRangeInt);
 
-    setupLabels(0, spaceRangeInt - 1);
-    setupToolTip(QStringLiteral("Address Space"));
+    setupGraphicsItem(0, spaceRangeInt - 1, QStringLiteral("Address Space"));
 
     cpuIcon_->setPos(spaceWidth / 2 - cpuIcon_->pixmap().width() - GridSize, GridSize * 3);
     cpuIcon_->setVisible(false);
@@ -155,59 +154,62 @@ quint64 AddressSpaceGraphicsItem::getFilteredCompressedHeight()
 {
     const int CUTMODIFIER = 2;
 
-    QMap<quint64, MemoryConnectionItem*> chainedConnections = getChainedMemoryConnections();
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(chainedConnections);
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems (new QVector<MainMemoryGraphicsItem*> ());
+    visitedMemoryItems->append(this);
+
+    QMap<quint64, MemoryConnectionItem*> allConnectedConnections =
+        getAllConnectionsFromConnectedItems(visitedMemoryItems);
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(allConnectedConnections);
 
     QVector<quint64> unCutAddresses = getUnCutAddressesFromConnections(connectionIterator);
     qSort(unCutAddresses);
+
+    visitedMemoryItems->clear();
+    visitedMemoryItems->append(this);
 
     connectionIterator.toFront();
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();
         MemoryConnectionItem* connectionItem = connectionIterator.value();
-        connectionItem->condenseToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+        connectionItem->condenseToUnCutAddresses(visitedMemoryItems, unCutAddresses, CUTMODIFIER);
     }
 
     QList<quint64> unCutAddressesInList = unCutAddresses.toList();
-
-    QVector<MainMemoryGraphicsItem*> movedItems;
 
     connectionIterator.toFront();
     quint64 cutAreaBegin = getBaseAddress();
     quint64 itemLastAddress = getLastAddress();
     quint64 spaceCutArea = 0;
 
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems(new QVector<MainMemoryGraphicsItem*> ());
+
     foreach (quint64 cutAreaEnd, unCutAddresses)
     {
-        qint64 addressDifference = cutAreaEnd - cutAreaBegin - CUTMODIFIER;
-        if (addressDifference > 0)
+        quint64 addressDifference = cutAreaEnd - cutAreaBegin;
+        if (addressDifference > CUTMODIFIER)
         {
+            addressDifference = addressDifference - CUTMODIFIER;
+
             if (cutAreaBegin < itemLastAddress)
             {
                 spaceCutArea += addressDifference;
             }
 
-            qreal cutTransfer = -addressDifference * MemoryDesignerConstants::RANGEINTERVAL;
+            qreal cutTransfer = addressDifference * MemoryDesignerConstants::RANGEINTERVAL;
+            cutTransfer = -cutTransfer;
 
             while (connectionIterator.hasNext())
             {
                 connectionIterator.next();
-                quint64 connectionBaseAddress = connectionIterator.key();
-                if (connectionBaseAddress >= cutAreaEnd)
-                {
-                    MemoryConnectionItem* connectionItem = connectionIterator.value();
-                    MainMemoryGraphicsItem* connectionStartItem = connectionItem->getConnectionStartItem();
-                    if (!movedItems.contains(connectionStartItem))
-                    {
-                        connectionItem->onMoveConnectionInY(connectionStartItem, cutTransfer);
-                        movedItems.append(connectionItem->getConnectionEndItem());
-                    }
-                }
+
+                MemoryConnectionItem* connectionItem = connectionIterator.value();
+                connectionItem->moveCutConnectionAndConnectedItems(
+                    movedItems, this, cutAreaBegin, cutAreaEnd, cutTransfer);
             }
 
             connectionIterator.toFront();
-            movedItems.clear();
+            movedItems->clear();
         }
 
         cutAreaBegin = cutAreaEnd;
@@ -328,30 +330,33 @@ QVector<quint64> AddressSpaceGraphicsItem::getUnCutAddressesFromConnections(
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::getAllConnectedSpaceItems()
 //-----------------------------------------------------------------------------
-QVector<MainMemoryGraphicsItem*> AddressSpaceGraphicsItem::getAllConnectedSpaceItems(
-    MainMemoryGraphicsItem* origin) const
+QVector<MainMemoryGraphicsItem*> AddressSpaceGraphicsItem::getAllConnectedSpaceItems() const
 {
     QVector<MainMemoryGraphicsItem*> allConnectedSpaceItems;
 
-    foreach (MemoryConnectionItem* connectionItem, getMemoryConnections())
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedItems (new QVector<MainMemoryGraphicsItem*> ());
+
+    QMap<quint64, MemoryConnectionItem*> allConnections = getAllConnectionsFromConnectedItems(visitedItems);
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator (allConnections);
+    while (connectionIterator.hasNext())
     {
+        connectionIterator.next();
+
+        MemoryConnectionItem* connectionItem = connectionIterator.value();
         MainMemoryGraphicsItem* connectionStartItem = connectionItem->getConnectionStartItem();
-        MainMemoryGraphicsItem* connectionEndItem = connectionItem->getConnectionEndItem();
-        if (connectionStartItem == this && connectionEndItem != origin)
+        if (connectionStartItem && connectionStartItem != this &&
+            dynamic_cast<AddressSpaceGraphicsItem*>(connectionStartItem) &&
+            !allConnectedSpaceItems.contains(connectionStartItem))
         {
-            foreach (MainMemoryGraphicsItem* connectedSpaceItem,
-                getSpaceItemsConnectedToSpaceItem(connectionEndItem, connectionStartItem))
-            {
-                allConnectedSpaceItems.append(connectedSpaceItem);
-            }
+            allConnectedSpaceItems.append(connectionStartItem);
         }
-        else if (connectionEndItem == this && connectionStartItem != origin)
+
+        MainMemoryGraphicsItem* connectionEndItem = connectionItem->getConnectionEndItem();
+        if (connectionEndItem && connectionEndItem != this &&
+            dynamic_cast<AddressSpaceGraphicsItem*>(connectionEndItem) &&
+            !allConnectedSpaceItems.contains(connectionEndItem))
         {
-            foreach (MainMemoryGraphicsItem* connectedSpaceItem,
-                getSpaceItemsConnectedToSpaceItem(connectionStartItem, connectionEndItem))
-            {
-                allConnectedSpaceItems.append(connectedSpaceItem);
-            }
+            allConnectedSpaceItems.append(connectionEndItem);
         }
     }
 
@@ -363,14 +368,14 @@ QVector<MainMemoryGraphicsItem*> AddressSpaceGraphicsItem::getAllConnectedSpaceI
 // Function: AddressSpaceGraphicsItem::getSpaceItemsConnectedToSpaceItem()
 //-----------------------------------------------------------------------------
 QVector<MainMemoryGraphicsItem*> AddressSpaceGraphicsItem::getSpaceItemsConnectedToSpaceItem(
-    MainMemoryGraphicsItem* memoryItem, MainMemoryGraphicsItem* originSpaceItem) const
+    MainMemoryGraphicsItem* memoryItem) const
 {
     QVector<MainMemoryGraphicsItem*> connectedSpaceItems;
 
     AddressSpaceGraphicsItem* spaceItem = dynamic_cast<AddressSpaceGraphicsItem*>(memoryItem);
     if (spaceItem)
     {
-        connectedSpaceItems = spaceItem->getAllConnectedSpaceItems(originSpaceItem);
+        connectedSpaceItems = spaceItem->getAllConnectedSpaceItems();
         connectedSpaceItems.append(memoryItem);
     }
 

@@ -28,8 +28,8 @@
 // Function: MemoryConnectionItem::MemoryConnectionItem()
 //-----------------------------------------------------------------------------
 MemoryConnectionItem::MemoryConnectionItem(MainMemoryGraphicsItem* startItem, quint64 firstStartValue,
-    quint64 firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
-    bool memoryItemsAreCondensed, int yTransfer, QGraphicsItem* parent):
+    quint64 firstEndValue, MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, int yTransfer,
+    QGraphicsItem* parent):
 QGraphicsPathItem(parent),
 firstItemStartLabel_(new QGraphicsTextItem(this)),
 firstItemEndLabel_(new QGraphicsTextItem(this)),
@@ -40,8 +40,7 @@ endItem_(endItem),
 yTransfer_(yTransfer),
 connectionBaseAddress_(firstStartValue),
 connectionLastAddress_(firstEndValue),
-connectionWidth_(getConnectionWidth()),
-memoryItemsAreCondensed_(memoryItemsAreCondensed)
+connectionWidth_(getConnectionWidth())
 {
     setupLabels(firstStartValue, firstEndValue);
 
@@ -52,6 +51,7 @@ memoryItemsAreCondensed_(memoryItemsAreCondensed)
     }
 
     containingScene->addItem(this);
+    setZValue(10000);
 
     startItem_->addMemoryConnection(this);
     endItem_->addMemoryConnection(this);
@@ -85,18 +85,61 @@ void MemoryConnectionItem::createPath()
     QPointF highEndPoint(endItemTopLeft.x(), highStartPoint.y());
     QPointF lowEndPoint(highEndPoint.x(), lowStartPoint.y());
 
-    QPainterPath path;
-    path.moveTo(highStartPoint);
-    path.lineTo(highEndPoint);
-    path.moveTo(lowStartPoint);
-    path.lineTo(lowEndPoint);
-
-    QPen newPen = pen();
-    newPen.setWidth(LINEWIDTH);
-    setPen(newPen);
+    QPainterPath path = createConnectionPath(highStartPoint, highEndPoint, lowStartPoint, lowEndPoint, LINEWIDTH);
 
     setPath(path);
     avoidCollisionsOnPath(highStartPoint, highEndPoint, lowStartPoint, lowEndPoint);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::createConnectionPath()
+//-----------------------------------------------------------------------------
+QPainterPath MemoryConnectionItem::createConnectionPath(QPointF highStartPoint, QPointF highEndPoint,
+    QPointF lowStartPoint, QPointF lowEndPoint, const int LINEWIDTH)
+{
+    QPainterPath path;
+    path.moveTo(highStartPoint);
+
+    QPen connectionPen = pen();
+    connectionPen.setWidth(LINEWIDTH);
+
+    if (dynamic_cast<MemoryMapGraphicsItem*>(endItem_))
+    {
+        path.lineTo(highEndPoint);
+        path.moveTo(lowStartPoint);
+        path.lineTo(lowEndPoint);
+    }
+    else
+    {
+        const int BRIDGEMODIFIER = 10;
+        qreal bridgeHighLineY = highStartPoint.y();
+        qreal bridgeLowLineY = lowStartPoint.y();
+        qreal bridgeHighY = highStartPoint.y() + BRIDGEMODIFIER;
+        qreal bridgeLowY = lowStartPoint.y() - BRIDGEMODIFIER;
+        qreal bridgeStartX = highStartPoint.x() + BRIDGEMODIFIER;
+        qreal bridgeFirstPillarX = bridgeStartX + BRIDGEMODIFIER;
+        qreal bridgeEndX = highEndPoint.x() - BRIDGEMODIFIER;
+        qreal bridgeLastPillarX = bridgeEndX - BRIDGEMODIFIER;
+
+        path.lineTo(bridgeStartX, bridgeHighLineY);
+        path.lineTo(bridgeFirstPillarX, bridgeHighY);
+        path.lineTo(bridgeLastPillarX, bridgeHighY);
+        path.lineTo(bridgeEndX, bridgeHighLineY);
+        path.lineTo(highEndPoint);
+        
+        path.moveTo(lowStartPoint);
+        path.lineTo(bridgeStartX, bridgeLowLineY);
+        path.lineTo(bridgeFirstPillarX, bridgeLowY);
+        path.lineTo(bridgeLastPillarX, bridgeLowY);
+        path.lineTo(bridgeEndX, bridgeLowLineY);
+        path.lineTo(lowEndPoint);
+
+        connectionPen.setColor(QColor(60, 153, 60));
+    }
+
+    setPen(connectionPen);
+
+    return path;
 }
 
 //-----------------------------------------------------------------------------
@@ -113,7 +156,9 @@ qreal MemoryConnectionItem::getConnectionWidth() const
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::condenseToUnCutAddresses()
 //-----------------------------------------------------------------------------
-void MemoryConnectionItem::condenseToUnCutAddresses(QVector<quint64> uncutAddresses, const int CUTMODIFIER)
+void MemoryConnectionItem::condenseToUnCutAddresses(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems, QVector<quint64> uncutAddresses,
+    const int CUTMODIFIER)
 {
     quint64 cutArea = 0;
     quint64 previousAddress = connectionBaseAddress_;
@@ -143,17 +188,100 @@ void MemoryConnectionItem::condenseToUnCutAddresses(QVector<quint64> uncutAddres
         setCondensedHeight(condensedHeight);
     }
 
-    compressEndItem(uncutAddresses, CUTMODIFIER);
+    compressEndItem(condensedItems, uncutAddresses, CUTMODIFIER);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::compressEndItem()
 //-----------------------------------------------------------------------------
-void MemoryConnectionItem::compressEndItem(QVector<quint64> unCutAddresses, const int CUTMODIFIER)
+void MemoryConnectionItem::compressEndItem(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
+    QVector<quint64> unCutAddresses, const int CUTMODIFIER)
 {
-    if (endItem_ && !endItem_->isCompressed())
+    if (!condensedItems->contains(endItem_))
     {
+        condensedItems->append(endItem_);
         endItem_->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+    }
+
+    if (!condensedItems->contains(startItem_))
+    {
+        condensedItems->append(startItem_);
+        startItem_->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::moveConnectionAndConnectedItems()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::moveCutConnectionAndConnectedItems(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems, MainMemoryGraphicsItem* movementOrigin,
+    quint64 cutAreaBegin, quint64 cutAreaEnd, qreal transferY)
+{
+    if (getRangeStartValue() >= cutAreaEnd)
+    {
+        MainMemoryGraphicsItem* connectionStartItem = getConnectionStartItem();
+        MainMemoryGraphicsItem* connectionEndItem = getConnectionEndItem();
+        if (connectionStartItem && connectionEndItem)
+        {
+            quint64 startItemBaseAddress = connectionStartItem->getBaseAddress();
+            quint64 endItemBaseAddress = connectionEndItem->getBaseAddress();
+
+            if (cutAreaBegin >= startItemBaseAddress)
+            {
+                moveConnectionWithoutConnectedItemsInY(transferY);
+            }
+
+            moveCutConnectedItemWithoutConnections(
+                movedItems, movementOrigin, connectionStartItem, startItemBaseAddress, transferY, cutAreaEnd);
+            moveCutConnectedItemWithoutConnections(
+                movedItems, movementOrigin, connectionEndItem, endItemBaseAddress, transferY, cutAreaEnd);
+
+            reDrawConnection();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::moveCutConnectedItemWithoutConnections()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::moveCutConnectedItemWithoutConnections(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems, MainMemoryGraphicsItem* movementOrigin,
+    MainMemoryGraphicsItem* connectedItem, quint64 itemBaseAddress, qreal transferY, quint64 cutAreaEnd)
+{
+    if (connectedItem != movementOrigin && !movedItems->contains(connectedItem))
+    {
+        movedItems->append(connectedItem);
+
+        if (itemBaseAddress >= cutAreaEnd)
+        {
+            connectedItem->moveBy(0, transferY);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::moveConnectedItems()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::moveConnectedItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems,
+    MainMemoryGraphicsItem* movementOrigin, qreal transferY)
+{
+    moveConnectedItemWithoutConnections(movedItems, movementOrigin, getConnectionStartItem(), transferY);
+    moveConnectedItemWithoutConnections(movedItems, movementOrigin, getConnectionEndItem(), transferY);
+
+    reDrawConnection();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::moveConnectedItem()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::moveConnectedItemWithoutConnections(
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems, MainMemoryGraphicsItem* movementOrigin,
+    MainMemoryGraphicsItem* connectedItem, qreal transferY)
+{
+    if (connectedItem && connectedItem != movementOrigin && !movedItems->contains(connectedItem))
+    {
+        movedItems->append(connectedItem);
+        connectedItem->moveBy(0, transferY);
     }
 }
 
@@ -286,7 +414,7 @@ void MemoryConnectionItem::createCollisionPath(QPointF highStartPoint, QPointF h
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::setLabels()
+// Function: MemoryConnectionItem::repositionLabels()
 //-----------------------------------------------------------------------------
 void MemoryConnectionItem::repositionLabels()
 {
@@ -334,45 +462,11 @@ void MemoryConnectionItem::setupLabels(quint64 startValue, quint64 endValue)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::onMoveConnectionInY()
+// Function: MemoryConnectionItem::moveConnectionWithoutConnectedItemsInY()
 //-----------------------------------------------------------------------------
-void MemoryConnectionItem::onMoveConnectionInY(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer)
+void MemoryConnectionItem::moveConnectionWithoutConnectedItemsInY(qreal ytransfer)
 {
-    yTransfer_ += yTransfer;
-
-    moveConnectedItem(movementOrigin, yTransfer);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::moveConnectedItem()
-//-----------------------------------------------------------------------------
-void MemoryConnectionItem::moveConnectedItem(MainMemoryGraphicsItem* movementOrigin, qreal yTransfer)
-{
-    MainMemoryGraphicsItem* connectedItem = 0;
-
-    if (movementOrigin == startItem_)
-    {
-        connectedItem = endItem_;
-    }
-    else if (movementOrigin == endItem_)
-    {
-        connectedItem = startItem_;
-    }
-
-    if (connectedItem)
-    {
-        connectedItem->moveBy(0, yTransfer);
-
-        reDrawConnection();
-
-        foreach (MemoryConnectionItem* connectionItem, connectedItem->getMemoryConnections())
-        {
-            if (connectionItem != this)
-            {
-                connectionItem->moveConnectedItem(connectedItem, yTransfer);
-            }
-        }
-    }
+    yTransfer_ += ytransfer;
 }
 
 //-----------------------------------------------------------------------------
@@ -508,4 +602,35 @@ bool MemoryConnectionItem::labelCollidesWithRanges(QGraphicsTextItem* label, qre
 
     return MemoryDesignerConstants::itemOverlapsAnotherItem(labelRectangle, 0, comparedStartRectangle, 0) ||
         MemoryDesignerConstants::itemOverlapsAnotherItem(labelRectangle, 0, comparedEndRectangle, 0);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::getConnectionLowPoint()
+//-----------------------------------------------------------------------------
+qreal MemoryConnectionItem::getConnectionLowPoint(MainMemoryGraphicsItem* originItem) const
+{
+    qreal lowestPoint = sceneBoundingRect().bottom();
+
+    MainMemoryGraphicsItem* connectionStartItem = getConnectionStartItem();
+
+    if (!originItem || connectionStartItem != originItem)
+    {
+        qreal startItemLow = connectionStartItem->sceneBoundingRect().bottom();
+        if (startItemLow > lowestPoint)
+        {
+            lowestPoint = startItemLow;
+        }
+    }
+
+    MainMemoryGraphicsItem* connectionEndItem = getConnectionEndItem();
+    if (!originItem || connectionEndItem != originItem)
+    {
+        qreal endItemLow = connectionEndItem->sceneBoundingRect().bottom();
+        if (endItemLow > lowestPoint)
+        {
+            lowestPoint = endItemLow;
+        }
+    }
+
+    return lowestPoint;
 }

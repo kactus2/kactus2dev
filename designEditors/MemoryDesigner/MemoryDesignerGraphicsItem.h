@@ -71,6 +71,14 @@ public:
     void hideMemoryRangeLabels();
 
     /*!
+     *  Hide the colliding memory item range labels.
+     *
+     *      @param [in] connectionBaseAddress   Base address of the memory connection item.
+     *      @param [in] connectionLastAddress   Last address of the memory connection item.
+     */
+    void hideCollidingRangeLabels(quint64 connectionBaseAddress, quint64 connectionLastAddress);
+
+    /*!
      *  Hide the start memory range label.
      */
     void hideStartRangeLabel();
@@ -81,18 +89,32 @@ public:
     void hideEndRangeLabel();
 
     /*!
-     *  Get the base address of the memory item.
+     *  Get the current base address of the memory item.
      *
-     *      @return The base address of the memory item.
+     *      @return The current base address of the memory item.
      */
     quint64 getBaseAddress() const;
 
     /*!
-     *  Get the end address of the memory item.
+     *  Get the original base address of the memory item.
      *
-     *      @return The end address of the memory item.
+     *      @return The original base address of the memory item.
+     */
+    quint64 getOriginalBaseAddress() const;
+
+    /*!
+     *  Get the current last address of the memory item.
+     *
+     *      @return The current last address of the memory item.
      */
     quint64 getLastAddress() const;
+
+    /*!
+     *  Get the original last address of the memory item.
+     *
+     *      @return The original last address of the memory item.
+     */
+    quint64 getOriginalLastAddress() const;
 
     /*!
      *  Compress this graphics item.
@@ -155,19 +177,13 @@ protected:
     void setGraphicsRectangle(qreal rectangleWidth, qreal rectangleHeight);
 
     /*!
-     *  Setup range labels.
+     *  Setup the memory graphics item.
      *
-     *      @param [in] memoryStart     The range start.
-     *      @param [in] memoryEnd       The range end.
+     *      @param [in] memoryStart     Base address of the memory item.
+     *      @param [in] memoryEnd       Last address of the memory item.
+     *      @param [in] identifier      Identifier of the memory item.
      */
-    void setupLabels(quint64 memoryStart, quint64 memoryEnd);
-
-    /*!
-     *  Setup the tooltip and the memory range labels.
-     *
-     *      @param [in] identifier      Selected identifier.
-     */
-    void setupToolTip(QString const& identifier);
+    void setupGraphicsItem(quint64 memoryStart, quint64 memoryEnd, QString const& identifier);
 
     /*!
      *  Add text to the tooltip.
@@ -223,6 +239,29 @@ private:
      *      @return The available width of this item.
      */
     virtual qreal getItemWidth() const;
+    
+    /*!
+     *  Setup range labels.
+     *
+     *      @param [in] memoryStart     The range start.
+     *      @param [in] memoryEnd       The range end.
+     */
+    void setupLabels(quint64 memoryStart, quint64 memoryEnd);
+
+    /*!
+     *  Setup the original addresses for the memory item.
+     *
+     *      @param [in] memoryStart     Base address of the memory item.
+     *      @param [in] memoryEnd       Last address of the memory item.
+     */
+    void setupOriginalAddresses(quint64 memoryStart, quint64 memoryEnd);
+
+    /*!
+     *  Setup the tooltip and the memory range labels.
+     *
+     *      @param [in] identifier      Selected identifier.
+     */
+    void setupToolTip(QString const& identifier);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -242,6 +281,12 @@ private:
 
     //! The last address.
     quint64 lastAddress_;
+
+    //! The original base address.
+    quint64 originalBaseAddress_;
+
+    //! The original last address.
+    quint64 originalLastAddress_;
 
     //! Name of the item.
     QString itemName_;

@@ -88,11 +88,11 @@ public:
     virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections) = 0;
 
     /*!
-     *  Move the connected items by y-coordinate.
+     *  Move memory item and all the connected memory connections and the connected memory items.
      *
-     *      @param [in] yTransfer   The movement amount in the y-coordinate.
+     *      @param [in] yTransfer   The amount of movement in the y-coordinate.
      */
-    void moveConnectedItems(qreal yTransfer);
+    void moveItemAndConnectedItems(qreal yTransfer);
 
     /*!
      *  Get lowest point of the item, connection or connected item.
@@ -184,6 +184,13 @@ public:
      */
     virtual void changeAddressRange(quint64 offsetChange);
 
+    /*!
+     *  Get the lowest point of all the connected memory items.
+     *
+     *      @return The lowest point of all the connected memory items.
+     */
+    qreal getLowestPointOfConnectedItems();
+
 protected:
 
     /*!
@@ -206,6 +213,16 @@ protected:
      *      @param [in] event   The context menu event.
      */
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
+    /*!
+     *  Get all the connections from connected memory items.
+     *
+     *      @param [in] visitedMemoryItems  List of all the memory items that have been checked.
+     *
+     *      @return All the connections from the connected memory items.
+     */
+    QMap<quint64, MemoryConnectionItem*> getAllConnectionsFromConnectedItems(
+        QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems) const;
 
 private slots:
 
