@@ -37,23 +37,16 @@ ComDefinitionReader::~ComDefinitionReader()
 //-----------------------------------------------------------------------------
 QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomNode const& document) const
 {
-	QSharedPointer<ComDefinition> comDefinition(new ComDefinition());
+    QSharedPointer<ComDefinition> comDefinition(new ComDefinition());
 
-	QDomElement comNode = document.firstChildElement();
+    parseTopComments(document, comDefinition);
 
-	QString vendor = comNode.firstChildElement(QStringLiteral("ipxact:vendor")).firstChild().nodeValue();
-	QString library = comNode.firstChildElement(QStringLiteral("ipxact:library")).firstChild().nodeValue();
-	QString name = comNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
-	QString version = comNode.firstChildElement(QStringLiteral("ipxact:version")).firstChild().nodeValue();
+    parseXMLProcessingInstructions(document, comDefinition);
 
-	VLNV itemVLNV;
-	itemVLNV.setType(VLNV::COMDEFINITION);
-	itemVLNV.setVendor(vendor);
-	itemVLNV.setLibrary(library);
-	itemVLNV.setName(name);
-	itemVLNV.setVersion(version);
+    QDomElement comNode = document.firstChildElement();
+    parseNamespaceDeclarations(comNode, comDefinition);
 
-	comDefinition->setVlnv(itemVLNV);
+	comDefinition->setVlnv(createVLNVFrom(comNode, VLNV::COMDEFINITION));
 
 	// Parse child nodes.
 	for (int i = 0; i < comNode.childNodes().count(); ++i)

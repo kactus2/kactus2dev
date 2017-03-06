@@ -60,12 +60,22 @@ void DocumentWriter::writeXmlProcessingInstructions(QXmlStreamWriter& writer, QS
 //-----------------------------------------------------------------------------
 // Function: DocumentWriter::writeNamespaceDeclarations()
 //-----------------------------------------------------------------------------
-void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer) const
+void DocumentWriter::writeNamespaceDeclarations(QXmlStreamWriter& writer, QSharedPointer<Document> document) const
 {
-    writer.writeNamespace(QStringLiteral("http://www.w3.org/2001/XMLSchema-instance"), QStringLiteral("xsi"));
-    writer.writeNamespace(QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014"),
-        QStringLiteral("ipxact"));
-    writer.writeNamespace(QStringLiteral("http://kactus2.cs.tut.fi"), QStringLiteral("kactus2"));
+    QVector<QPair<QString, QString> > nameSpaces = document->getXmlNameSpaces();
+
+    // Write each known xml namespace.
+    for (int i = 0; i < nameSpaces.size(); ++i)
+    {
+        QPair<QString, QString> value = nameSpaces[i];
+
+        QString name = value.first;
+        QString uri = value.second;
+
+        writer.writeNamespace(uri, name);
+    }
+
+    // Also write the schema location.
     writer.writeAttribute(QStringLiteral("xsi:schemaLocation"), 
         QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd"));
 }

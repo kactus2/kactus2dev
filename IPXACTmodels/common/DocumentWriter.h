@@ -47,15 +47,22 @@ protected:
      *      @param [in] document    The document whose comments to write.
      */
     void writeTopComments(QXmlStreamWriter& writer, QSharedPointer<Document> document) const;
-
+    
+    /*!
+     *  Writes the xml processing instructions for IP-XACT 2014 documents.
+     *
+     *      @param [in] writer      The writer to use.
+     *      @param [in] document    The document whose comments to write.
+     */
     void writeXmlProcessingInstructions(QXmlStreamWriter& writer, QSharedPointer<Document> document) const;
 
     /*!
      *  Writes the namespace declarations for IP-XACT 2014 documents.
      *
      *      @param [in] writer   The writer to use.
+     *      @param [in] document    The document whose comments to write.
      */
-    void writeNamespaceDeclarations(QXmlStreamWriter& writer) const;
+    void writeNamespaceDeclarations(QXmlStreamWriter& writer, QSharedPointer<Document> document) const;
 
     /*!
      *  Writes the document description into XML.

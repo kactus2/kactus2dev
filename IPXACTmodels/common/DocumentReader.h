@@ -56,6 +56,8 @@ protected:
 
     void parseXMLProcessingInstructions(QDomNode const& documentNode, QSharedPointer<Document> document) const;
 
+    void parseNamespaceDeclarations(QDomNode const& documentNode, QSharedPointer<Document> document) const;
+
     /*!
      *  Parses the VLNV from XML to a document.
      *

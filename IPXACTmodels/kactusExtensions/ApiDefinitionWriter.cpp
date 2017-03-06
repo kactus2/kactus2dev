@@ -39,7 +39,7 @@ void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPo
     writeTopComments(writer, apiDefinition);
 	
     writer.writeStartElement(QStringLiteral("kactus2:apiDefinition"));
-    writeNamespaceDeclarations(writer);
+    writeNamespaceDeclarations(writer, apiDefinition);
 
 	// Write basic information.
 	writer.writeTextElement(QStringLiteral("ipxact:vendor"), apiDefinition->getVlnv().getVendor());

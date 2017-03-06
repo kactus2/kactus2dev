@@ -235,6 +235,14 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
             return QColor(230, 230, 230);
         }
     }
+    else if (role == Qt::DecorationRole)
+    {
+        if (index.parent().isValid() && index.column() == ConfigurableElementsColumns::NAME &&
+            !getIndexedConfigurableElement(index.parent(), index.row())->getChoiceRef().isEmpty())
+        {
+            return QIcon(":/icons/common/graphics/paginator.png");
+        }
+    }
 
     return QVariant();
 }
@@ -610,6 +618,28 @@ QString ConfigurableElementsModel::tooltipForIndex(QModelIndex const& index) con
         if (element->getValueAttribute("kactus2:defaultValue").isEmpty())
         {
             return QString("This parameter was not found in " + componentInstance_->getInstanceName() + ".");
+        }
+
+        else if (index.column() == ConfigurableElementsColumns::NAME)
+        {
+            QString tooltip(element->name());
+
+            if (!element->getChoiceRef().isEmpty())
+            {
+                QSharedPointer<Choice> choice = findChoice(element->getChoiceRef());
+                tooltip.append("<br>Possible values are:");
+     
+                foreach (QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+                {
+                    tooltip.append("<br>" + enumeration->getValue());
+                    if (!enumeration->getText().isEmpty())
+                    {
+                        tooltip.append(" (" + enumeration->getText() + ")");
+                    }
+                }
+            }
+
+            return tooltip;
         }
 
         else if (index.column() == ConfigurableElementsColumns::VALUE)

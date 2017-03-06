@@ -287,7 +287,10 @@ int ConfigurableElementDelegate::getArraySize(int arrayLeft, int arrayRight) con
 void ConfigurableElementDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
     const QModelIndex &index) const
 {
-    ChoiceCreatorDelegate::paint(painter, option, index);
+    QStyleOptionViewItemV4 overrideOptions(option);
+    overrideOptions.decorationPosition = QStyleOptionViewItem::Right;
+
+    ChoiceCreatorDelegate::paint(painter, overrideOptions, index);
     
     QPen oldPen = painter->pen();
     QPen newPen(Qt::lightGray);
@@ -296,7 +299,7 @@ void ConfigurableElementDelegate::paint(QPainter *painter, const QStyleOptionVie
     
     if (index.parent().isValid())
     {
-        painter->drawLine(option.rect.topRight(), option.rect.bottomRight());
+        painter->drawLine(overrideOptions.rect.topRight(), overrideOptions.rect.bottomRight());
     }
 
     painter->setPen(oldPen);

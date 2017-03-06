@@ -4232,7 +4232,7 @@
       <Filter>Source Files\Plugins\common</Filter>
     </ClCompile>
     <ClCompile Include="designEditors\MemoryDesigner\FieldOverlapItem.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\designEditors\MemoryDesigner</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_MemoryGraphicsItemHandler.cpp">
       <Filter>Generated Files</Filter>
@@ -6408,7 +6408,7 @@
       <Filter>Header Files\Plugins\common</Filter>
     </ClInclude>
     <ClInclude Include="designEditors\MemoryDesigner\FieldOverlapItem.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

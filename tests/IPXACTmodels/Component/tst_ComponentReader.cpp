@@ -49,6 +49,7 @@ private slots:
     void readSimpleComponent();
     
     void readXMLProcessingInstructions();
+    void readXMLNameSpaces();
 
     void readBusInterfaces();
     void readChannels();
@@ -124,7 +125,6 @@ void tst_ComponentReader::readSimpleComponent()
     QCOMPARE(testComponent->getDescription(), QString("coreDrill"));
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentReader::readXMLProcessingInstructions()
 //-----------------------------------------------------------------------------
@@ -164,6 +164,53 @@ void tst_ComponentReader::readXMLProcessingInstructions()
     QPair<QString, QString> secondInstructions = testComponent->getXmlProcessingInstructions().last();
     QCOMPARE(secondInstructions.first, QString("xml-stylesheet"));
     QCOMPARE(secondInstructions.second, QString("href=\"other.css\" attribute=\"value\" title=\"Other\""));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentReader::readXMLNameSpaces()
+//-----------------------------------------------------------------------------
+void tst_ComponentReader::readXMLNameSpaces()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\" "
+        "xmlns:bogusvendor=\"http://bogus.tld/info.txt\">"
+        "<ipxact:vendor>TUT</ipxact:vendor>"
+        "<ipxact:library>TestLibrary</ipxact:library>"
+        "<ipxact:name>TestComponent</ipxact:name>"
+        "<ipxact:version>1.0</ipxact:version>"
+        "</ipxact:component>\n"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    ComponentReader componentReader;
+
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+
+    QCOMPARE(testComponent->getXmlNameSpaces().size(), 4);
+
+    QPair<QString, QString> xsiNs = testComponent->getXmlNameSpaces().at(0);
+    QCOMPARE(xsiNs.first, QStringLiteral("xsi"));
+    QCOMPARE(xsiNs.second, QStringLiteral("http://www.w3.org/2001/XMLSchema-instance"));
+
+    QPair<QString, QString> ipxactNs = testComponent->getXmlNameSpaces().at(1);
+    QCOMPARE(ipxactNs.first, QStringLiteral("ipxact"));
+    QCOMPARE(ipxactNs.second, QStringLiteral("http://www.accellera.org/XMLSchema/IPXACT/1685-2014"));
+
+    QPair<QString, QString> kactus2Ns = testComponent->getXmlNameSpaces().at(2);
+    QCOMPARE(kactus2Ns.first, QStringLiteral("kactus2"));
+    QCOMPARE(kactus2Ns.second, QStringLiteral("http://kactus2.cs.tut.fi"));
+
+    QPair<QString, QString> bogusNs = testComponent->getXmlNameSpaces().at(3);
+    QCOMPARE(bogusNs.first, QStringLiteral("bogusvendor"));
+    QCOMPARE(bogusNs.second, QStringLiteral("http://bogus.tld/info.txt"));
 }
 
 //-----------------------------------------------------------------------------

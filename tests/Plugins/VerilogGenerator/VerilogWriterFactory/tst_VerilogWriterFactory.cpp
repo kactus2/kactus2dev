@@ -56,6 +56,7 @@ private slots:
     void testMasterToMultipleSlavesInterconnections();
 
     void testAdhocConnectionBetweenComponentInstances();    
+    void testPartSelectedAdhocConnectionBetweenComponentInstances();
     void testAdhocInOutConnectionBetweenComponentInstances();
     void testAdhocTieOffInComponentInstance();
     void testHierarchicalAdhocConnection();
@@ -68,6 +69,7 @@ private slots:
 
     // Flat test cases:
     void testFlatComponent();
+    void testFlatComponentWithTypedParameter();
 
 	void testGenerationWithImplementation();
 	void testGenerationWithImplementationWithTag();
@@ -84,7 +86,7 @@ private:
     QSharedPointer<MetaPort> addPort(QString const& portName, int portSize, DirectionTypes::Direction direction, 
         QSharedPointer<MetaComponent> component, QSharedPointer<MetaInterface> mInterface = QSharedPointer<MetaInterface>::QSharedPointer());
 
-    void addParameter(QString const& name, QString const& value, QSharedPointer<MetaComponent> mComponent);
+    QSharedPointer<Parameter> addParameter(QString const& name, QString const& value, QSharedPointer<MetaComponent> mComponent);
 
     void runGenerator(bool useDesign);
 
@@ -254,7 +256,7 @@ QSharedPointer<MetaPort> tst_VerilogWriterFactory::addPort(QString const& portNa
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogWriterFactory::addParameter()
 //-----------------------------------------------------------------------------
-void tst_VerilogWriterFactory::addParameter(QString const& name, QString const& value,
+QSharedPointer<Parameter> tst_VerilogWriterFactory::addParameter(QString const& name, QString const& value,
     QSharedPointer<MetaComponent> mComponent)
 {
     QSharedPointer<Parameter> parameter = QSharedPointer<Parameter>(new Parameter());
@@ -262,6 +264,8 @@ void tst_VerilogWriterFactory::addParameter(QString const& name, QString const& 
     parameter->setValue(value);
 
     mComponent->getParameters()->append(parameter);
+
+    return parameter;
 }
 
 //-----------------------------------------------------------------------------
@@ -1114,6 +1118,57 @@ void tst_VerilogWriterFactory::testAdhocConnectionBetweenComponentInstances()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testPartSelectedAdhocConnectionBetweenComponentInstances()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testPartSelectedAdhocConnectionBetweenComponentInstances()
+{
+    QSharedPointer<MetaInstance> senderInstance = addSender("sender");
+    QSharedPointer<MetaInstance> receiverInstance1 = addReceiver("receiver1");
+    QSharedPointer<MetaInstance> receiverInstance2 = addReceiver("receiver2");
+
+    QSharedPointer<MetaWire> dataWire1 = addWireToDesign("dataAdHoc1","3","0");
+    QSharedPointer<MetaWire> dataWire2 = addWireToDesign("dataAdHoc2","3","0");
+
+    createPortAssignment(receiverInstance1->getPorts()->value("data_in"), dataWire1, true, "3", "0", "3", "0");
+    createPortAssignment(receiverInstance2->getPorts()->value("data_in"), dataWire2, true, "3", "0", "3", "0");
+
+    createPortAssignment(senderInstance->getPorts()->value("data_out"), dataWire1, true, "3", "0", "3", "0");
+    createPortAssignment(senderInstance->getPorts()->value("data_out"), dataWire2, true, "3", "0", "7", "4");
+
+    runGenerator(true);
+
+    verifyOutputContains("wire [3:0]  dataAdHoc1;");
+    verifyOutputContains("wire [3:0]  dataAdHoc2;");
+
+    verifyOutputContains("wire [7:0]  receiver1_data_in;");
+    verifyOutputContains("wire [7:0]  receiver2_data_in;");
+    verifyOutputContains("wire [7:0]  sender_data_out;");
+
+    verifyOutputContains("assign receiver1_data_in[3:0] = dataAdHoc1[3:0];");
+    verifyOutputContains("assign receiver2_data_in[3:0] = dataAdHoc2[3:0];");
+    verifyOutputContains("assign dataAdHoc1[3:0] = sender_data_out[3:0];");
+    verifyOutputContains("assign dataAdHoc2[3:0] = sender_data_out[7:4];");
+
+    verifyOutputContains(
+        "    TestReceiver receiver1(\n"
+        "        // Interface: data_if\n"
+        "        .data_in             (receiver1_data_in),\n"
+        "        .enable_in           ()");
+
+    verifyOutputContains(
+        "    TestReceiver receiver2(\n"
+        "        // Interface: data_if\n"
+        "        .data_in             (receiver2_data_in),\n"
+        "        .enable_in           ()");
+
+    verifyOutputContains(
+        "    TestSender sender(\n"
+        "        // Interface: data_if\n"
+        "        .data_out            (sender_data_out),\n"
+        "        .enable_out          ()");
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_VerilogWriterFactory::testAdhocInOutConnectionBetweenComponentInstances()
 //-----------------------------------------------------------------------------
 void tst_VerilogWriterFactory::testAdhocInOutConnectionBetweenComponentInstances()
@@ -1514,6 +1569,28 @@ void tst_VerilogWriterFactory::testFlatComponent()
         "    input                               rst_n,\n"
         "    output         [7:0]                dataOut\n"
         ");\n"
+        "\n"
+        "// " + VerilogSyntax::TAG_OVERRIDE + "\n"
+        "endmodule\n"
+        ));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_VerilogWriterFactory::testFlatComponentWithTypedParameter()
+//-----------------------------------------------------------------------------
+void tst_VerilogWriterFactory::testFlatComponentWithTypedParameter()
+{
+    QSharedPointer<Parameter> testParameter = addParameter("dataWidth", "8", flatComponent_);
+    testParameter->setAttribute(QStringLiteral("dataType"), "integer");
+    addParameter("freq", "100000", flatComponent_);
+
+    runGenerator(false);
+
+    verifyOutputContains(QString(
+        "module TestComponent #(\n"
+        "    parameter integer                      dataWidth        = 8,\n"
+        "    parameter                              freq             = 100000\n"
+        ") ();\n"
         "\n"
         "// " + VerilogSyntax::TAG_OVERRIDE + "\n"
         "endmodule\n"

@@ -9,35 +9,47 @@ Summary
 ----------------------------------------------------
 
 Kactus2 is a toolset to design embedded products, especially FPGA-based
-MP-SoCs. We aim easier IP reusabilility and practical HW/SW abstraction for
-easier application SW development. It is based on IEEE1685/IP-XACT XML metadata
-and design methodology, but extends the IP-XACT usage to upper product
-hierarchies and HW/SW abstraction with Multicore Association MCAPI. Kactus2 is
-aimed to offer easy entrance to metadata based design methodology.
-
+MP-SoCs. We aim to easier IP reusabilility and integration for both hardware and
+software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
 
 What you can do with Kactus2
 ----------------------------------------------------
 
-Draft & Specify from scratch
- * Quickly draft block diagram blueprints for product boards (PCB), chips,
-   system-on-chip, IPs and get them stored in IP-XACT format
- * Draft MCAPI endpoint design for all processors and fixed IPs in a product
- * For new IP-blocks generate code templates (VHDL entities, Verilog modules, 
-   headers) from IP-XACT components defined in Kactus2
-
 Packetize IP for reuse and exchange
- * Create "electronic datasheets" of your existing IPs for library as templates
-   and blocks ready for integration
- * Import, export and integrity check IP libraries from any standard compatible
-   IP vendor
- * Create MP-SoC products
+ * Import your existing IPs as IP-XACT components
+ * Create new IP-XACT components and generate their HDL module headers
+ * Reuse IP-XACT files from any standard compatible vendor
+ * Reuse the IPs in your designs and connect them with wires and busses
 
 Create HW designs with hierarchy
- * Create system designs that map SW to HW
- * Create SW architecture in MCAPI communication abstraction
- * Configure all designs
- * Generate everything ready for HDL synthesis and SW build for all processors
+ * Create multilevel hierarchies, where a design has multiple sub-designs
+ * Configure component instances in designs, including the sub-designs
+ * Use generator plugins to create HDL with wiring and parameterization
+
+Integrate HW and SW
+ * Use memory designer to preview memory maps and address spaces in your hierarchy
+ * Pack software to IP-XACT components and map them to hardware
+ * Generate makefiles that build executables with rules defined in IP-XACT
+
+Tutorials 
+----------------------------------------------------
+
+Video tutorials are available at https://www.youtube.com/channel/UCsilC6PiJ8tH5ltGxL5M8VA
+
+Community Guidelines 
+----------------------------------------------------
+
+Issues should be left at Kactus2 project management site: https://kactus2.cs.tut.fi
+
+Otherwise support is provided via our email: kactus2@cs.tut.fi
+
+When contributing to Kactus2, you should see the wiki at the project management site.
+It will guide on essentials like building with Visual Studio and plugin development.
+Contributions to Kactus2 core, the IP-XACTmodels library, and the plugins provided by
+TUT will not make to a release unless we accept them and you agree to transfer the
+copyrights of the changes to TUT.
+
+When creating a plugin, you may keep it closed or open source, and the copyright stays with you. 
 
 Contributors
 ----------------------------------------------------

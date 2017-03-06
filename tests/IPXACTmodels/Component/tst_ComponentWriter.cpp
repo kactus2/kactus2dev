@@ -58,6 +58,7 @@ private slots:
     void writeSimpleComponent();
 
     void writeXMLProcessingInstructions();
+    void writeXMLNameSpaces();
 
     void writeBusInterfaces();
     void writeChannels();
@@ -195,6 +196,41 @@ void tst_ComponentWriter::writeXMLProcessingInstructions()
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter:::writeXMLNameSpaces()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeXMLNameSpaces()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    testComponent_->addXmlNameSpace("bogusvendor", "http://bogus.tld/info.txt");
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xmlns:bogusvendor=\"http://bogus.tld/info.txt\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
+        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+        "\t<ipxact:name>TestComponent</ipxact:name>\n"
+        "\t<ipxact:version>0.11</ipxact:version>\n"
         "</ipxact:component>\n"
         );
 

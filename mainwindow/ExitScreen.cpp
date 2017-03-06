@@ -19,11 +19,13 @@
 #include <QCheckBox>
 #include <QSettings>
 
+#define CLOSE_TIME 11
+
 //-----------------------------------------------------------------------------
 // Function: ExitScreen::ExitScreen()
 //-----------------------------------------------------------------------------
 ExitScreen::ExitScreen(QWidget* parent) : QDialog(parent), 
-    closeCounter_(7), 
+    closeCounter_(CLOSE_TIME), 
     countdownLabel_(new QLabel(this))
 {
     setFixedSize(600, 400);
@@ -101,7 +103,7 @@ void ExitScreen::onTimerExpired()
         accept();
     }
 
-    countdownLabel_->setText(tr("This window will close  in %1 seconds").arg(closeCounter_));
+    countdownLabel_->setText(tr("This window will close in %1 seconds").arg(closeCounter_));
 }
 
 //-----------------------------------------------------------------------------

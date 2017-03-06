@@ -75,6 +75,30 @@ void DocumentReader::parseXMLProcessingInstructions(QDomNode const& documentNode
 }
 
 //-----------------------------------------------------------------------------
+// Function: DocumentWriter::parseNamespaceDeclarations()
+//-----------------------------------------------------------------------------
+void DocumentReader::parseNamespaceDeclarations(QDomNode const& documentNode, 
+    QSharedPointer<Document> document) const
+{
+    QDomNamedNodeMap attributeMap = documentNode.attributes();
+
+    for (int i = 0; i < attributeMap.count(); ++i)
+    {
+        QDomNode attr = attributeMap.item(i);
+
+        QString name = attr.nodeName();
+
+        QString nameSpaceIdentifier = QStringLiteral("xmlns:");
+
+        // Must be xmlns.
+        if (name.startsWith(nameSpaceIdentifier))
+        {
+            document->addXmlNameSpace(name.remove(nameSpaceIdentifier), attr.nodeValue());
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: DocumentReader::parseVLNV()
 //-----------------------------------------------------------------------------
 void DocumentReader::parseVLNVElements(QDomNode const& documentNode, QSharedPointer<Document> document,

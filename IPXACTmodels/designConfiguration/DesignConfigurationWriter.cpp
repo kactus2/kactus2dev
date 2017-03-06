@@ -49,7 +49,7 @@ void DesignConfigurationWriter::writeDesignConfiguration(QXmlStreamWriter& write
 
     writeDesignConfigurationStart(writer, designConfiguration);
 
-    writeNamespaceDeclarations(writer);
+    writeNamespaceDeclarations(writer, designConfiguration);
 
     writeVLNVElements(writer, designConfiguration->getVlnv());
 

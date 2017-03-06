@@ -45,6 +45,8 @@ QSharedPointer<BusDefinition> BusDefinitionReader::createBusDefinitionFrom(QDomN
     parseXMLProcessingInstructions(document, busDefinition);
 
     QDomNode busNode = document.firstChildElement();
+    parseNamespaceDeclarations(busNode, busDefinition);
+
     parseVLNVElements(busNode, busDefinition, VLNV::BUSDEFINITION);
 
     parseDirectConnection(busNode, busDefinition);

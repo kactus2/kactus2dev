@@ -41,6 +41,7 @@ QSharedPointer<DesignConfiguration> DesignConfigurationReader::createDesignConfi
     parseXMLProcessingInstructions(document, newDesignConfiguration);
 
     QDomNode designConfigurationNode = document.firstChildElement();
+    parseNamespaceDeclarations(designConfigurationNode, newDesignConfiguration);
 
     parseVLNVElements(designConfigurationNode, newDesignConfiguration, VLNV::DESIGNCONFIGURATION);
 

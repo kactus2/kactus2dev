@@ -47,6 +47,7 @@ QSharedPointer<AbstractionDefinition> AbstractionDefinitionReader::createAbstrac
     parseXMLProcessingInstructions(document, abstractionDefinion);
 
     QDomNode definitionNode = document.firstChildElement(QStringLiteral("ipxact:abstractionDefinition"));
+    parseNamespaceDeclarations(definitionNode, abstractionDefinion);
 
     parseVLNVElements(definitionNode, abstractionDefinion, VLNV::ABSTRACTIONDEFINITION);
 

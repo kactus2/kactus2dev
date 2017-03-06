@@ -39,21 +39,14 @@ QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomN
 {
     QSharedPointer<ApiDefinition> apiDefinition(new ApiDefinition());
 
-	QDomElement apiNode = document.firstChildElement();
+    parseTopComments(document, apiDefinition);
 
-	QString vendor = apiNode.firstChildElement(QStringLiteral("ipxact:vendor")).firstChild().nodeValue();
-	QString library = apiNode.firstChildElement(QStringLiteral("ipxact:library")).firstChild().nodeValue();
-	QString name = apiNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
-	QString version = apiNode.firstChildElement(QStringLiteral("ipxact:version")).firstChild().nodeValue();
+    parseXMLProcessingInstructions(document, apiDefinition);
 
-	VLNV itemVLNV;
-	itemVLNV.setType(VLNV::APIDEFINITION);
-	itemVLNV.setVendor(vendor);
-	itemVLNV.setLibrary(library);
-	itemVLNV.setName(name);
-	itemVLNV.setVersion(version);
+    QDomElement apiNode = document.firstChildElement();
+    parseNamespaceDeclarations(apiNode, apiDefinition);
 
-	apiDefinition->setVlnv(itemVLNV);
+    apiDefinition->setVlnv(createVLNVFrom(apiNode, VLNV::APIDEFINITION));
 
 	// Parse child nodes.
 	for (int i = 0; i < apiNode.childNodes().count(); ++i)

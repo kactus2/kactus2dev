@@ -121,7 +121,7 @@ private:
 
     void addConnectionToDesign(QString fromInstance, QString fromInterface, QString toInstance, QString toInterface);
 
-    void addAdhocConnection(QString const& connectionName, QString const& sourceInstance, QString const& sourcePort,
+    QSharedPointer<AdHocConnection> addAdhocConnection(QString const& connectionName, QString const& sourceInstance, QString const& sourcePort,
         QString const& targetInstance, QString const& targetPort);
 
     void addTieOffAdhocConnectionToInstancePort(QString const& tieOffValue, QString const& instanceName,
@@ -1559,12 +1559,14 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
     QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("dataAdHoc");
     QCOMPARE(mpa->physicalBounds_.first, QString("16"));
     QCOMPARE(mpa->physicalBounds_.second, QString("4"));
+    QCOMPARE(mpa->logicalBounds_.first, QString("12"));
+    QCOMPARE(mpa->logicalBounds_.second, QString("0"));
 
     QCOMPARE(design->getAdHocWires()->size(), 1);
     QSharedPointer<MetaWire> mWire = design->getAdHocWires()->first();
 
     mWire = design->getAdHocWires()->last();
-    QCOMPARE(mWire->bounds_.first, QString("16"));
+    QCOMPARE(mWire->bounds_.first, QString("12"));
     QCOMPARE(mWire->bounds_.second, QString("0"));
 }
 
@@ -1573,30 +1575,44 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
 //-----------------------------------------------------------------------------
 void tst_HDLParser::testAdhocConnectionWithPartSelect()
 {
-    QSharedPointer<View> activeView(new View("rtl"));
-    activeView->setComponentInstantiationRef("instance1");
+    QSharedPointer<View> senderView(new View("rtl"));
+    senderView->setComponentInstantiationRef("instance1");
 
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
     QSharedPointer<Component> senderComponent(new Component(senderVLNV));
     library_.addComponent(senderComponent);
-    addInstanceToDesign("sender", senderVLNV, activeView);
-    senderComponent->getViews()->append(activeView);
+    addInstanceToDesign("sender", senderVLNV, senderView);
+    senderComponent->getViews()->append(senderView);
 
     QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out", DirectionTypes::OUT));
     senderPort->setLeftBound("16");
     senderPort->setRightBound("4");
     senderComponent->getPorts()->append(senderPort);
 
+    QSharedPointer<View> receiverView(new View("rtl"));
+
     VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
-    QSharedPointer<View> receiverView = addReceiverComponentToLibrary(receiverVLNV, General::SLAVE);
+    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+    library_.addComponent(receiverComponent);
     addInstanceToDesign("receiver", receiverVLNV, receiverView);
+    receiverComponent->getViews()->append(receiverView);
 
-    addAdhocConnection("dataAdHoc", "sender", "data_out", "receiver", "data_in");
+    QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in", DirectionTypes::IN));
+    receiverPort->setLeftBound("7");
+    receiverPort->setRightBound("0");
+    receiverComponent->getPorts()->append(receiverPort);
 
-    QSharedPointer<PartSelect> ps(new PartSelect);
-    ps->setLeftRange("8");
-    ps->setRightRange("3");
-    design_->getAdHocConnections()->first()->getInternalPortReferences()->first()->setPartSelect(ps);
+    QSharedPointer<AdHocConnection> connection = addAdhocConnection("dataAdHoc", "sender", "data_out", "receiver", "data_in");
+
+    QSharedPointer<PartSelect> ps1(new PartSelect);
+    ps1->setLeftRange("8");
+    ps1->setRightRange("3");
+    connection->getInternalPortReferences()->first()->setPartSelect(ps1);
+
+    QSharedPointer<PartSelect> ps2(new PartSelect);
+    ps2->setLeftRange("2");
+    ps2->setRightRange("0");
+    connection->getInternalPortReferences()->last()->setPartSelect(ps2);
 
     QList<QSharedPointer<MetaDesign> > designs = MetaDesign::parseHierarchy
         (&library_, input_, topView_);
@@ -1606,18 +1622,29 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
 
     QCOMPARE(design->getInstances()->size(), 2);
 
-    QSharedPointer<MetaInstance> mInstance = design->getInstances()->value("sender");
+    QSharedPointer<MetaInstance> mInstance1 = design->getInstances()->value("sender");
 
-    QSharedPointer<MetaPort> mPort = mInstance->getPorts()->value("data_out");
-    QSharedPointer<MetaPortAssignment> mpa = mPort->upAssignments_.value("dataAdHoc");
-    QCOMPARE(mpa->physicalBounds_.first, QString("8"));
-    QCOMPARE(mpa->physicalBounds_.second, QString("3"));
+    QSharedPointer<MetaPort> mPort1 = mInstance1->getPorts()->value("data_out");
+    QSharedPointer<MetaPortAssignment> mpa1 = mPort1->upAssignments_.value("dataAdHoc");
+    QCOMPARE(mpa1->physicalBounds_.first, QString("8"));
+    QCOMPARE(mpa1->physicalBounds_.second, QString("3"));
+    QCOMPARE(mpa1->logicalBounds_.first, QString("5"));
+    QCOMPARE(mpa1->logicalBounds_.second, QString("0"));
+
+    QSharedPointer<MetaInstance> mInstance2 = design->getInstances()->value("receiver");
+
+    QSharedPointer<MetaPort> mPort2 = mInstance2->getPorts()->value("data_in");
+    QSharedPointer<MetaPortAssignment> mpa2 = mPort2->upAssignments_.value("dataAdHoc");
+    QCOMPARE(mpa2->physicalBounds_.first, QString("2"));
+    QCOMPARE(mpa2->physicalBounds_.second, QString("0"));
+    QCOMPARE(mpa2->logicalBounds_.first, QString("2"));
+    QCOMPARE(mpa2->logicalBounds_.second, QString("0"));
 
     QCOMPARE(design->getAdHocWires()->size(), 1);
     QSharedPointer<MetaWire> mWire = design->getAdHocWires()->first();
 
     mWire = design->getAdHocWires()->last();
-    QCOMPARE(mWire->bounds_.first, QString("8"));
+    QCOMPARE(mWire->bounds_.first, QString("5"));
     QCOMPARE(mWire->bounds_.second, QString("0"));
 }
 
@@ -1781,7 +1808,7 @@ void tst_HDLParser::testPortDefaultValueInComponentInstance()
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::addAdhocConnection()
 //-----------------------------------------------------------------------------
-void tst_HDLParser::addAdhocConnection(QString const& connectionName, 
+QSharedPointer<AdHocConnection> tst_HDLParser::addAdhocConnection(QString const& connectionName, 
     QString const& sourceInstance, QString const& sourcePort, 
     QString const& targetInstance, QString const& targetPort)
 {
@@ -1812,6 +1839,8 @@ void tst_HDLParser::addAdhocConnection(QString const& connectionName,
     connection->setInternalPortReferences(internalRefs);
 
     design_->getAdHocConnections()->append(connection);
+
+    return connection;
 }
 
 //-----------------------------------------------------------------------------

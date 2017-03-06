@@ -60,7 +60,9 @@ QString ModuleParameterVerilogWriter::createDeclaration() const
 {
     QString parameterDeclaration("parameter <type> <arrayBounds> <name> = <default>");
 
-    parameterDeclaration.replace("<type>", parameter_->getType().leftJustified(7));
+    QString dataValue = parameter_->getAttribute(QStringLiteral("dataType"));
+
+    parameterDeclaration.replace("<type>", dataValue.leftJustified(7));
     parameterDeclaration.replace("<arrayBounds>", arrayBounds().leftJustified(20));
     //parameterDeclaration.replace("<vectorBounds>", vectorBounds());
     parameterDeclaration.replace("<name>", parameter_->name().leftJustified(16));

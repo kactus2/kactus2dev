@@ -64,7 +64,7 @@
 	    <file>common/graphics/settings-environment_vars.png</file>
       <file>common/graphics/triangle_arrow_down.png</file>
       <file>common/graphics/triangle_arrow_up.png</file>
-	  <file>common/graphics/triangle_arrow_right.png</file>
+	    <file>common/graphics/triangle_arrow_right.png</file>
       <file>common/graphics/protection-locked.png</file>
       <file>common/graphics/protection-unlocked.png</file>
       <file>common/graphics/edit-undo.png</file>
@@ -114,10 +114,11 @@
       <file>common/graphics/filterAddressBlocks.png</file>
       <file>common/graphics/filterRegisters.png</file>
       <file>common/graphics/filterFields.png</file>
-      <file>common/graphics/folder-horizontal-open.png</file>
+    <file>common/graphics/folder-horizontal-open.png</file>
 	  <file>common/graphics/catalog.png</file>
 	  <file>common/graphics/generatorChain.png</file>
-	  <file>common/graphics/exclamation--frame.png</file>	 	  
+	  <file>common/graphics/exclamation--frame.png</file>
+    <file>common/graphics/paginator.png</file>
   </qresource>
     <qresource prefix="/">        
         <file>common/graphics/splash.png</file>
