@@ -50,8 +50,7 @@ overlapAreaRectangle_(0)
     getNameLabel()->setFont(labelFont);
     combinedRangeLabel_->setFont(labelFont);
 
-    setupLabels(fieldOffset, fieldLastBit);
-    setupToolTip(QStringLiteral("Field"));
+    setupGraphicsItem(fieldOffset, fieldLastBit, QStringLiteral("Field"));
     setLabelPositions();
 
     QColor fieldColor = KactusColors::FIELD_COLOR;

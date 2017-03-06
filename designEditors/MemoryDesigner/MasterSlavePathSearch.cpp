@@ -90,15 +90,26 @@ void MasterSlavePathSearch::findPaths(QSharedPointer<ConnectivityInterface> star
     }
     else
     {
+        QSharedPointer<ConnectivityComponent> startInstance = startVertex->getInstance();
+        bool startVertexIsMirroredSlave =
+            startVertex->getMode().compare("mirroredSlave", Qt::CaseInsensitive) == 0;
+
         foreach (QSharedPointer<ConnectivityConnection> nextEdge, connections)
         {
-            if (!existingPath.contains(nextEdge->getFirstInterface()))
+            QSharedPointer<ConnectivityInterface> firstInterface = nextEdge->getFirstInterface();
+            QSharedPointer<ConnectivityInterface> secondInterface = nextEdge->getSecondInterface();
+
+            if (!existingPath.contains(firstInterface) &&
+                (!startVertexIsMirroredSlave ||
+                (startVertexIsMirroredSlave && startInstance != firstInterface->getInstance())))
             {
-                findPaths(nextEdge->getFirstInterface(), nextEdge, existingPath, graph);
+                findPaths(firstInterface, nextEdge, existingPath, graph);
             }
-            else if (!existingPath.contains(nextEdge->getSecondInterface()))
+            else if (!existingPath.contains(secondInterface) &&
+                (!startVertexIsMirroredSlave ||
+                (startVertexIsMirroredSlave && startInstance != secondInterface->getInstance())))
             {
-                findPaths(nextEdge->getSecondInterface(), nextEdge, existingPath, graph);
+                findPaths(secondInterface, nextEdge, existingPath, graph);
             }
         }
     }

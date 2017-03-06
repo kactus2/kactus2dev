@@ -32,8 +32,7 @@ MemoryDesignerGraphicsItem(itemName, displayName, instanceName, parent)
     quint64 rangeEnd = baseAddress + range - 1;
     if (toolTipType.compare(QStringLiteral("Field")) != 0)
     {
-        setupLabels(baseAddress, rangeEnd);
-        setupToolTip(toolTipType);
+        setupGraphicsItem(baseAddress, rangeEnd, toolTipType);
     }
 }
 

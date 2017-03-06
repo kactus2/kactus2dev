@@ -67,8 +67,7 @@ subItemWidth_(0)
     }
 
     setGraphicsRectangle(memoryWidth, memoryHeight);
-    setupLabels(baseAddress, lastAddress);
-    setupToolTip(QStringLiteral("Memory Map"));
+    setupGraphicsItem(baseAddress, lastAddress, QStringLiteral("Memory Map"));
 
     qreal blockXPosition = MemoryDesignerConstants::MAPSUBITEMPOSITIONX;
 

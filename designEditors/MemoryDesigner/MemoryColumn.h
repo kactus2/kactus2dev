@@ -154,12 +154,14 @@ public:
     /*!
      *  Check if the selected item overlaps another main graphics item in this column.
      *
+     *      @param [in] memoryItem      The selected memory graphics item.
      *      @param [in] itemRectangle   Rectangle of the selected item.
      *      @param [in] lineWidth       Line width of the selected item.
      *
      *      @return True if the selected item overlaps another main graphics item, false otherwise.
      */
-    bool itemOverlapsAnotherColumnItem(QRectF itemRectangle, int lineWidth) const;
+    bool itemOverlapsAnotherColumnItem(MainMemoryGraphicsItem* memoryItem, QRectF itemRectangle, int lineWidth)
+        const;
 
 protected:
 
