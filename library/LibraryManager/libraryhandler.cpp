@@ -558,7 +558,7 @@ void LibraryHandler::onEditItem(VLNV const& vlnv)
         emit openComponent(vlnv);
     }
 
-    if (documentType == VLNV::CATALOG)
+    else if (documentType == VLNV::CATALOG)
     {
         emit openCatalog(vlnv);
     }

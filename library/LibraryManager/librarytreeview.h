@@ -291,6 +291,12 @@ private:
 
     //! Action to open the containing folder.
     QAction* openContainingFolderAction_;
+
+    //! Action to expand the whole library tree.
+    QAction* expandAllAction_;
+
+    //! Action to collapse the whole library tree
+    QAction* collapseAllAction_;
 };
 
 #endif // LIBRARYTREEVIEW_H

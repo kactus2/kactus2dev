@@ -28,7 +28,7 @@
 //-----------------------------------------------------------------------------
 HDLGenerationDialog::HDLGenerationDialog(QSharedPointer<GenerationControl> configuration,
 	QWidget *parent) : 
-	QDialog(parent,Qt::WindowTitleHint), 
+	QDialog(parent, Qt::WindowTitleHint | Qt::WindowCloseButtonHint), 
     configuration_(configuration),
     viewSelection_(new ViewSelectionWidget(configuration->getViewSelection())),
     fileOutput_(new FileOutputWidget(configuration->getOutputControl())),
