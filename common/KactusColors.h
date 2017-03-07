@@ -40,8 +40,8 @@ namespace KactusColors
     QColor const SLAVE_INTERFACE(0x32,0x99,0x64);
     QColor const MIRROREDMASTER_INTERFACE(0xcb,0xfd,0xfd);
     QColor const MIRROREDSLAVE_INTERFACE(0x00,0xfd,00);
-    QColor const SYSTEM_INTERFACE(0xf9,0x11,0x11);
-    QColor const MIRROREDSYSTEM_INTERFACE(0xf9,0x9d,0xcb);
+    QColor const SYSTEM_INTERFACE(165,74,170);
+    QColor const MIRROREDSYSTEM_INTERFACE(201,189,233);
     QColor const MONITOR_INTERFACE(0xfd,0xfd,0xfd);
 
     //! Colors used for memory/address sections in the memory designer.

@@ -247,8 +247,7 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
             return MONITOR;
         }
     default: {
-            Q_ASSERT(false);
-            return MASTER;
+            return INTERFACE_MODE_COUNT;
         }
     }
 }

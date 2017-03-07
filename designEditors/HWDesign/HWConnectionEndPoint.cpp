@@ -41,11 +41,7 @@ void HWConnectionEndpoint::updateInterface()
 
     General::InterfaceMode mode = getInterfaceMode();
 
-    if (isInvalid())
-    {
-        setBrush(QBrush(Qt::red));
-    }
-    else if (mode == General::MASTER)
+    if (mode == General::MASTER)
     {
         setBrush(QBrush(KactusColors::MASTER_INTERFACE));
     }
@@ -75,7 +71,7 @@ void HWConnectionEndpoint::updateInterface()
     }
     else // if undefined
     {
-        setBrush(QBrush(Qt::black));
+        setBrush(QBrush(KactusColors::BROKEN_CONNECTION));
     }
 }
 
