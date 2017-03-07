@@ -1043,7 +1043,7 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     {
         findErrorsInMonitorInterface(errors, busInterface, busInterface->getMonitor(), newContext);
     }
-    else
+    else if (interfaceMode != General::MIRROREDMASTER)
     {
         errors.append(QObject::tr("Unknown interface mode set for bus interface %1 within %2")
             .arg(busInterface->name(), containingContext));
