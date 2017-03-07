@@ -964,8 +964,6 @@ void tst_AbstractionDefinition::testVendorExtensions()
     QSharedPointer<QList<QSharedPointer<VendorExtension> > > vendorExtensions = abstractionDefinition->getVendorExtensions();
     vendorExtensions->append(testExtension);
 
-    abstractionDefinition->setFilename("busName.sv");
-
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
     AbstractionDefinitionWriter busWriter;
@@ -986,8 +984,7 @@ void tst_AbstractionDefinition::testVendorExtensions()
             "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"TargetBusDef\" version=\"1.0\"/>"
             "<ipxact:vendorExtensions>"
                 "<kactus2:version>3.0.0</kactus2:version>"
-                "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"     
-                "<kactus2:definitionFile>busName.sv</kactus2:definitionFile>"           
+                "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"       
             "</ipxact:vendorExtensions>"
         "</ipxact:abstractionDefinition>\n"));
 }

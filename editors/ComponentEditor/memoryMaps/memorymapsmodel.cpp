@@ -106,7 +106,7 @@ Qt::ItemFlags MemoryMapsModel::flags(QModelIndex const& index) const
     else if ((!index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN) ||
         (index.parent().isValid() && index.column() == MemoryMapsColumns::AUB_COLUMN))
     {
-        return Qt::ItemIsSelectable;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;

@@ -296,6 +296,7 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.h \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.h \
     ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.h \
+    ./editors/ComponentEditor/busInterfaces/general/BusIfInterfaceMirroredMaster.h \
     ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersdelegate.h \
     ./editors/ComponentEditor/fileBuilders/filebuilderseditor.h \
@@ -710,8 +711,7 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./editors/ComponentEditor/busInterfaces/general/BusIfInterfaceMirroredMaster.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -927,6 +927,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifgeneraldetails.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifgeneraltab.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacemaster.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/BusIfInterfaceMirroredMaster.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacemodeeditor.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacemonitor.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacemslave.cpp \
@@ -1332,6 +1333,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./editors/ComponentEditor/busInterfaces/general/BusIfInterfaceMirroredMaster.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc

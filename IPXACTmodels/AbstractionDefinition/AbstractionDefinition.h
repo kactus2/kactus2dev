@@ -139,20 +139,6 @@ public:
      */
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > getLogicalPorts() const;
 
-    /*!
-     *  Returns the last calculated hash.
-     *
-     *      @return The last calculated hash.
-     */
-    QString getFileName() const;
-
-    /*!
-     *  Set the last calculated hash.
-     *
-     *      @param [in] newHash     The new hash value.
-     */
-    void setFilename(QString const& fileName);
-
 private:
 
     //! Specifies the bus definition this abstraction definition details.

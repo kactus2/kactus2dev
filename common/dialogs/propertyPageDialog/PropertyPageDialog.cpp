@@ -31,6 +31,8 @@ QDialog(parent),
     viewMode_(viewMode),
     applyMode_(applyMode)
 {
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+
     contentsList_->setIconSize(listIconSize);
 
     if (viewMode == VIEW_ICONS)
