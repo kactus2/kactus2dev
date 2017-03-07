@@ -487,11 +487,7 @@ void ComponentReader::parseComponentExtensions(QDomNode const& componentNode,
     for (int extensionIndex = 0; extensionIndex < extensionNodeList.count(); ++extensionIndex)
     {
         QDomNode singleExtensionNode = extensionNodeList.at(extensionIndex);
-        if (singleExtensionNode.nodeName() == QLatin1String("kactus2:swViews"))
-        {
-            parseSwViews(singleExtensionNode, newComponent);
-        }
-        else if (singleExtensionNode.nodeName() == QLatin1String("kactus2:properties"))
+        if (singleExtensionNode.nodeName() == QLatin1String("kactus2:properties"))
         {
             parseSwProperties(singleExtensionNode, newComponent);
         }
@@ -518,71 +514,6 @@ void ComponentReader::parseComponentExtensions(QDomNode const& componentNode,
     }
 
     parseKactusAndVendorExtensions(componentNode, newComponent);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentReader::parseSwViews()
-//-----------------------------------------------------------------------------
-void ComponentReader::parseSwViews(QDomNode const& swViewsNode, QSharedPointer<Component> newComponent) const
-{
-    NameGroupReader nameReader;
-
-    QDomNodeList swViewNodeList = swViewsNode.childNodes();
-    for (int viewIndex = 0; viewIndex < swViewNodeList.count(); ++viewIndex)
-    {
-        QDomElement singleSWViewElement = swViewNodeList.at(viewIndex).toElement();
-
-        QSharedPointer<View> newSWView (new View());
-
-        nameReader.parseNameGroup(singleSWViewElement, newSWView);
-
-        QSharedPointer<ComponentInstantiation> swInstantiation(new ComponentInstantiation);
-        swInstantiation->setName(newSWView->name() + QLatin1String("_sw_component_instantiation"));
-        newComponent->getComponentInstantiations()->append(swInstantiation);
-
-        newSWView->setComponentInstantiationRef(swInstantiation->name());
-
-        QDomElement hierarchyElement = singleSWViewElement.firstChildElement(QStringLiteral("kactus2:hierarchyRef"));
-        if (!hierarchyElement.isNull())
-        {
-            VLNV hierarhcyReference = parseVLNVAttributes(hierarchyElement, VLNV::DESIGNCONFIGURATION);
-
-            QSharedPointer<ConfigurableVLNVReference> ref(new ConfigurableVLNVReference(hierarhcyReference));
-            QSharedPointer<DesignConfigurationInstantiation> designConfInstaniation(new DesignConfigurationInstantiation);
-            designConfInstaniation->setDesignConfigurationReference(ref);
-            designConfInstaniation->setName(newSWView->name() + QLatin1String("_sw_design_configuration_instantiation"));
-            newComponent->getDesignConfigurationInstantiations()->append(designConfInstaniation);
-            newSWView->setDesignConfigurationInstantiationRef(designConfInstaniation->name());
-        }
-
-        QDomNodeList fileSetRefNodeList = singleSWViewElement.elementsByTagName(QStringLiteral("kactus2:fileSetRef"));
-        for (int setIndex = 0; setIndex < fileSetRefNodeList.count(); ++setIndex)
-        {
-            QString setReference = fileSetRefNodeList.at(setIndex).firstChild().nodeValue();
-            swInstantiation->getFileSetReferences()->append(setReference);
-        }
-
-        QDomNodeList swBuildCommandNodes = singleSWViewElement.elementsByTagName(QStringLiteral("kactus2:SWBuildCommand"));
-        for (int commandIndex = 0; commandIndex < swBuildCommandNodes.count(); ++commandIndex)
-        {
-            QDomElement swBuildElement = swBuildCommandNodes.at(commandIndex).toElement();
-
-            QString fileType = swBuildElement.firstChildElement(QStringLiteral("kactus2:fileType")).firstChild().nodeValue();
-            QString command = swBuildElement.firstChildElement(QStringLiteral("ipxact:command")).firstChild().nodeValue();
-            QString flags = swBuildElement.firstChildElement(QStringLiteral("ipxact:flags")).firstChild().nodeValue();
-            QString replace = swBuildElement.firstChildElement(QStringLiteral("ipxact:replaceDefaultFlags")).firstChild().nodeValue();
-
-            QSharedPointer<FileBuilder> builder(new FileBuilder);
-            builder->setFileType(fileType);
-            builder->setCommand(command);
-            builder->setFlags(flags);
-            builder->setReplaceDefaultFlags(replace);
-
-            swInstantiation->getDefaultFileBuilders()->append(builder);
-        }
-
-        newComponent->getViews()->append(newSWView);
-    }
 }
 
 //-----------------------------------------------------------------------------

@@ -72,7 +72,6 @@ private slots:
     void readVendorExtensions();
 
     void readKactusAttributes();
-    void readSwViews();
     void readSwComProperties();
     void readSystemViews();
     void readComInterfaces();
@@ -973,91 +972,6 @@ void tst_ComponentReader::readKactusAttributes()
     QCOMPARE(testComponent->getHierarchy(), KactusAttribute::IP);
     QCOMPARE(testComponent->getImplementation(), KactusAttribute::SW);
     QCOMPARE(testComponent->getFirmness(), KactusAttribute::FIXED);    
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentReader::readSwViews()
-//-----------------------------------------------------------------------------
-void tst_ComponentReader::readSwViews()
-{
-    QString documentContent(
-        "<?xml version=\"1.0\"?>"
-        "<ipxact:component "
-        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
-        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014\" "
-        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
-        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
-        "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
-            "<ipxact:library>TestLibrary</ipxact:library>"
-            "<ipxact:name>TestComponent</ipxact:name>"
-            "<ipxact:version>0.11</ipxact:version>"
-            "<ipxact:vendorExtensions>"
-                "<kactus2:version>3.0.0</kactus2:version>"
-                "<kactus2:swViews>"
-                    "<kactus2:swView>"
-                        "<ipxact:name>sampleSoftView</ipxact:name>"
-                        "<ipxact:displayName>displayed</ipxact:displayName>"
-                        "<ipxact:description>described</ipxact:description>"
-                        "<kactus2:hierarchyRef vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
-                        "version=\"0.3\"/>"
-                        "<kactus2:fileSetRef>fileSet</kactus2:fileSetRef>"
-                        "<kactus2:SWBuildCommand>"
-                            "<kactus2:fileType>cSource</kactus2:fileType>"
-                            "<ipxact:command>gcc</ipxact:command>"
-                            "<ipxact:flags>-DhwA</ipxact:flags>"
-                            "<ipxact:replaceDefaultFlags>1</ipxact:replaceDefaultFlags>"
-                        "</kactus2:SWBuildCommand>"
-                    "</kactus2:swView>"
-                "</kactus2:swViews>"
-            "</ipxact:vendorExtensions>"
-        "</ipxact:component>"
-        );
-
-    QDomDocument document;
-    document.setContent(documentContent);
-
-    ComponentReader componentReader;
-
-    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
-    QCOMPARE(testComponent->getVlnv().getName(), QString("TestComponent"));
-    QCOMPARE(testComponent->getViews()->size(), 1);
-
-    QSharedPointer<View> swView = testComponent->getViews()->first();
-    QCOMPARE(swView->name(), QString("sampleSoftView"));
-    QCOMPARE(swView->displayName(), QString("displayed"));
-    QCOMPARE(swView->description(), QString("described"));
-    QCOMPARE(swView->getComponentInstantiationRef(), QString("sampleSoftView_sw_component_instantiation"));
-    QCOMPARE(swView->getDesignConfigurationInstantiationRef(), QString("sampleSoftView_sw_design_configuration_instantiation"));
-
-    QCOMPARE(testComponent->getComponentInstantiations()->size(), 1);
-
-    QSharedPointer<ComponentInstantiation> componentInstantiation =
-        testComponent->getComponentInstantiations()->first();
-    QCOMPARE(componentInstantiation->name(), swView->getComponentInstantiationRef());
-    QCOMPARE(componentInstantiation->getFileSetReferences()->size(), 1);
-    QCOMPARE(componentInstantiation->getFileSetReferences()->first(), QString("fileSet"));
-
-    QCOMPARE(componentInstantiation->getDefaultFileBuilders()->size(), 1);
-    QSharedPointer<FileBuilder> builder = componentInstantiation->getDefaultFileBuilders()->first();
-    QCOMPARE(builder->getFileType(),QString("cSource"));
-    QCOMPARE(builder->getCommand(),QString("gcc"));
-    QCOMPARE(builder->getFlags(),QString("-DhwA"));
-    QCOMPARE(builder->getReplaceDefaultFlags(),QString("1"));
-
-    QCOMPARE(testComponent->getDesignConfigurationInstantiations()->size(), 1);
-
-    QSharedPointer<DesignConfigurationInstantiation> designConfInstantiation =
-        testComponent->getDesignConfigurationInstantiations()->first();
-    QCOMPARE(designConfInstantiation->name(), swView->getDesignConfigurationInstantiationRef());
-
-    QSharedPointer<ConfigurableVLNVReference> designRef = designConfInstantiation->getDesignConfigurationReference();
-
-    QVERIFY(designRef);
-    QCOMPARE(designRef->getVendor(), QString("TUT"));
-    QCOMPARE(designRef->getLibrary(), QString("TestLibrary"));
-    QCOMPARE(designRef->getName(), QString("hierarchy"));
-    QCOMPARE(designRef->getVersion(), QString("0.3"));
 }
 
 //-----------------------------------------------------------------------------
