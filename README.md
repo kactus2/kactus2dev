@@ -8,8 +8,8 @@
 Summary
 ----------------------------------------------------
 
-Kactus2 is a toolset to design embedded products, especially FPGA-based
-MP-SoCs. We aim to easier IP reusabilility and integration for both hardware and
+Kactus2 is a toolset for designing embedded products, especially FPGA-based
+MP-SoCs. The aim is easier IP reusabilility and integration for both hardware and
 software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
 
 What you can do with Kactus2
@@ -30,11 +30,16 @@ Integrate HW and SW
  * Use memory designer to preview memory maps and address spaces in your hierarchy
  * Pack software to IP-XACT components and map them to hardware
  * Generate makefiles that build executables with rules defined in IP-XACT
+ 
+Examples
+----------------------------------------------------
+
+Example IPs are available at https://github.com/kactus2/ipxactexamplelib
 
 Tutorials 
 ----------------------------------------------------
 
-Video tutorials are available at https://www.youtube.com/channel/UCsilC6PiJ8tH5ltGxL5M8VA
+Video tutorials are available at https://www.youtube.com/user/Kactus2Tutorial
 
 Community Guidelines 
 ----------------------------------------------------
