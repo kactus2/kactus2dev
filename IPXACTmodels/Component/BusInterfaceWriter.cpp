@@ -329,7 +329,7 @@ void BusInterfaceWriter::writeInterfaceMode(QXmlStreamWriter& writer,
     
     else if(interfaceMode == General::MIRROREDMASTER)
     {
-        writeMasterInterface(writer, businterface->getMaster(), true);
+        writer.writeEmptyElement(QStringLiteral("ipxact:mirroredMaster"));
     }
 
     else if(interfaceMode == General::SLAVE)

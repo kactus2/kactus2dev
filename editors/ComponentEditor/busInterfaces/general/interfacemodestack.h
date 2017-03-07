@@ -17,6 +17,7 @@
 #include "busifinterfacemslave.h"
 #include "busifinterfaceslave.h"
 #include "busifinterfacesystem.h"
+#include "BusIfInterfaceMirroredMaster.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -115,7 +116,7 @@ private:
 	BusIfInterfaceSystem system_;
 
     //! The mirrored master interface.
-	BusIfInterfaceMaster mirroredMaster_;
+    BusIfInterfaceMirroredMaster mirroredMaster_;
 
     //! The mirrored slave interface.
 	BusIfInterfaceMSlave mirroredSlave_;

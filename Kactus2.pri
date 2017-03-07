@@ -195,6 +195,8 @@ HEADERS += ./VersionHelper.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterSource.h \
     ./Plugins/PluginSystem/ImportPlugin/ModelParameterVisualizer.h \
     ./Plugins/common/NameGenerationPolicy.h \
+    ./Plugins/common/SourceHighlightStyle.h \
+    ./Plugins/common/LanguageHighlighter.h \
     ./library/LibraryManager/TableViewDialog.h \
     ./library/LibraryManager/libraryinterface.h \
     ./library/LibraryManager/LibraryUtils.h \
@@ -294,6 +296,7 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfaceslave.h \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacesystem.h \
     ./editors/ComponentEditor/busInterfaces/general/interfacemodestack.h \
+    ./editors/ComponentEditor/busInterfaces/general/BusIfInterfaceMirroredMaster.h \
     ./editors/ComponentEditor/fileBuilders/FileBuilderColumns.h \
     ./editors/ComponentEditor/fileBuilders/filebuildersdelegate.h \
     ./editors/ComponentEditor/fileBuilders/filebuilderseditor.h \
@@ -524,6 +527,7 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/instantiations/ModuleParameterDelegate.h \
     ./editors/ComponentEditor/instantiations/ModuleParameterEditor.h \
     ./editors/ComponentEditor/instantiations/ModuleParameterModel.h \
+    ./editors/CSourceEditor/CSourceHighlight.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/MCAPIDesignerTypes.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -583,11 +587,11 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/MemoryDesigner/ConnectivityGraphFactory.h \
     ./designEditors/MemoryDesigner/ConnectivityInterface.h \
     ./designEditors/MemoryDesigner/FieldGraphicsItem.h \
+    ./designEditors/MemoryDesigner/FieldOverlapItem.h \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.h \
     ./designEditors/MemoryDesigner/MemoryColumnHandler.h \
     ./designEditors/MemoryDesigner/MemoryConnectionHandler.h \
     ./designEditors/MemoryDesigner/MemoryDesignerConstants.h \
-    ./designEditors/MemoryDesigner/MemoryGraphicsItemHandler.h \
     ./designEditors/MemoryDesigner/MemoryItem.h \
     ./designEditors/MemoryDesigner/SubMemoryLayout.h \
     ./designEditors/MemoryDesigner/AddressSpaceGraphicsItem.h \
@@ -602,6 +606,7 @@ HEADERS += ./VersionHelper.h \
     ./designEditors/MemoryDesigner/MemoryDesignerChildGraphicsItem.h \
     ./designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h \
     ./designEditors/MemoryDesigner/MemoryDesignConstructor.h \
+    ./designEditors/MemoryDesigner/MemoryGraphicsItemHandler.h \
     ./designEditors/MemoryDesigner/MemoryMapGraphicsItem.h \
     ./designEditors/MemoryDesigner/RegisterGraphicsItem.h \
     ./designEditors/MemoryDesigner/MemoryColumn.h \
@@ -706,10 +711,7 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
-    ./Plugins/common/LanguageHighlighter.h \
-    ./editors/CSourceEditor/CSourceHighlight.h \
-    ./Plugins/common/SourceHighlightStyle.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -864,7 +866,9 @@ SOURCES += ./VersionHelper.cpp \
     ./Plugins/PluginSystem/PluginListDialog.cpp \
     ./Plugins/PluginSystem/PluginManager.cpp \
     ./Plugins/PluginSystem/PluginUtilityAdapter.cpp \
+    ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/NameGenerationPolicy.cpp \
+    ./Plugins/common/SourceHighlightStyle.cpp \
     ./library/LibraryManager/librarydata.cpp \
     ./library/LibraryManager/LibraryErrorModel.cpp \
     ./library/LibraryManager/LibraryFilter.cpp \
@@ -923,6 +927,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifgeneraldetails.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifgeneraltab.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacemaster.cpp \
+    ./editors/ComponentEditor/busInterfaces/general/BusIfInterfaceMirroredMaster.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacemodeeditor.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacemonitor.cpp \
     ./editors/ComponentEditor/busInterfaces/general/busifinterfacemslave.cpp \
@@ -1156,6 +1161,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriverseditor.cpp \
     ./editors/ComponentEditor/otherClockDrivers/otherclockdriversmodel.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
+    ./editors/CSourceEditor/CSourceHighlight.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
     ./editors/CSourceEditor/CSourceTextEdit.cpp \
     ./editors/CSourceEditor/CSourceWidget.cpp \
@@ -1228,6 +1234,7 @@ SOURCES += ./VersionHelper.cpp \
     ./designEditors/MemoryDesigner/ConnectivityGraphFactory.cpp \
     ./designEditors/MemoryDesigner/ConnectivityInterface.cpp \
     ./designEditors/MemoryDesigner/FieldGraphicsItem.cpp \
+    ./designEditors/MemoryDesigner/FieldOverlapItem.cpp \
     ./designEditors/MemoryDesigner/MainMemoryGraphicsItem.cpp \
     ./designEditors/MemoryDesigner/MasterSlavePathSearch.cpp \
     ./designEditors/MemoryDesigner/MemoryCollisionItem.cpp \
@@ -1326,8 +1333,5 @@ SOURCES += ./VersionHelper.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlportsorter.cpp \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.cpp \
     ./kactusGenerators/vhdlGenerator/VhdlTypedObject.cpp \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
-    ./Plugins/common/LanguageHighlighter.cpp \
-    ./editors/CSourceEditor/CSourceHighlight.cpp \
-    ./Plugins/common/SourceHighlightStyle.cpp
+    ./kactusGenerators/DocumentGenerator/documentgenerator.cpp
 RESOURCES += kactus.qrc

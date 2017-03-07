@@ -712,21 +712,15 @@ void tst_businterfaceWriter::testWriteMirroredMaster()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<MasterInterface> interface( new MasterInterface() );
-    interface->setAddressSpaceRef("apb");
-
     testbusinterface_->setInterfaceMode(General::MIRROREDMASTER);
-    testbusinterface_->setMaster( interface );
 
-	QString expectedOutput(
-		"<ipxact:busInterface>"
-		    "<ipxact:name>testbusinterface</ipxact:name>"
-		    "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
-		    "<ipxact:mirroredMaster>"
-		        "<ipxact:addressSpaceRef ipxact:addressSpaceRef=\"apb\"/>"
-		    "</ipxact:mirroredMaster>"
-		"</ipxact:busInterface>"
-		);
+    QString expectedOutput(
+        "<ipxact:busInterface>"
+            "<ipxact:name>testbusinterface</ipxact:name>"
+            "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
+            "<ipxact:mirroredMaster/>"
+        "</ipxact:busInterface>"
+        );
 
 	BusInterfaceWriter businterfaceWriter;
 	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);

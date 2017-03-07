@@ -430,8 +430,7 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
 
     QString memoryReference;
 
-    if (busInterface->getInterfaceMode() == General::MASTER ||
-        busInterface->getInterfaceMode() == General::MIRROREDMASTER)
+    if (busInterface->getInterfaceMode() == General::MASTER)
     {
         interfaceNode->setBaseAddress(expressionParser_->parseExpression(busInterface->getMaster()->getBaseAddress()));
         memoryReference = busInterface->getAddressSpaceRef();

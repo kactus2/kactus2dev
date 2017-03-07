@@ -28,7 +28,7 @@ QStackedWidget(parent),
     master_(General::MASTER, busif_, component, parameterFinder, expressionParser, this),
     slave_(busif, component, this),
     system_(General::SYSTEM, handler, busif, component, this),
-    mirroredMaster_(General::MIRROREDMASTER, busif, component, parameterFinder, expressionParser, this),
+    mirroredMaster_(busif, component, this),
     mirroredSlave_(busif, component, parameterFinder, expressionParser, this),
     mirroredSystem_(General::MIRROREDSYSTEM, handler, busif, component, this),
     monitor_(busif, component, handler, this)
@@ -70,11 +70,6 @@ QStackedWidget(parent),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(&master_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-
-    connect(&mirroredMaster_, SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(&mirroredMaster_, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -97,10 +92,6 @@ void InterfaceModeStack::setMode( General::InterfaceMode mode )
     else if (mode_ == General::MASTER)
     {
         master_.removeReferencesFromExpressions();
-    }
-    else if (mode_ == General::MIRROREDMASTER)
-    {
-        mirroredMaster_.removeReferencesFromExpressions();
     }
 
 	// update the current mode
@@ -146,7 +137,6 @@ void InterfaceModeStack::refresh()
     {
         mirroredMaster_.refresh();
         mirroredMaster_.saveModeSpecific();
-
     }
     else if (mode_ == General::MIRROREDSLAVE)
     {

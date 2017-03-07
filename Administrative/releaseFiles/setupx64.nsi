@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Kactus2"
-!define PRODUCT_VERSION "3.3.0 64-bit"
+!define PRODUCT_VERSION "3.3.507 64-bit"
 !define PRODUCT_PUBLISHER "TUT"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Kactus2.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -77,7 +77,7 @@ Section "MainSection" SEC01
   File "..\..\x64\executable\Kactus2.exe"
   File "gpl2.txt"
   File "release_notes.txt"
-  File "readme.txt"
+  File "..\..\README.md"
   File "..\..\executable\upgrade.cfg"
   File /oname=DefaultSettings.ini "DefaultSettingsWin.ini"
   
@@ -234,7 +234,7 @@ Section Uninstall
   Delete "$INSTDIR\accessible\qtaccessiblewidgets.dll"
   Delete "$INSTDIR\DefaultSettings.ini"
   Delete "$INSTDIR\upgrade.cfg"
-  Delete "$INSTDIR\readme.txt"
+  Delete "$INSTDIR\README.md"
   Delete "$INSTDIR\release_notes.txt"
   Delete "$INSTDIR\gpl2.txt"
   Delete "$INSTDIR\Kactus2.exe"
