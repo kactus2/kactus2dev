@@ -744,7 +744,6 @@ void tst_AbstractionDefinitionReader::testReadVendorExtension()
             "<ipxact:version>1.0</ipxact:version>"
             "<ipxact:vendorExtensions>"
                 "<kactus2:version>3.0.0</kactus2:version>"
-                "<kactus2:definitionFile>fileName.sv</kactus2:definitionFile>"
                 "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
             "</ipxact:vendorExtensions>"
         "</ipxact:abstractionDefinition>"));
@@ -752,9 +751,8 @@ void tst_AbstractionDefinitionReader::testReadVendorExtension()
     AbstractionDefinitionReader reader;
     QSharedPointer<AbstractionDefinition> TestDefinition = reader.createAbstractionDefinitionFrom(document);
 
-    QCOMPARE(TestDefinition->getVendorExtensions()->count(), 3);
+    QCOMPARE(TestDefinition->getVendorExtensions()->count(), 2);
     QCOMPARE(TestDefinition->getVersion(), QString("3.0.0"));
-    QCOMPARE(TestDefinition->getFileName(), QString("fileName.sv"));
 }
 
 
