@@ -273,13 +273,11 @@ void tst_businterfaceReader::testReadMirroredSlave()
 //-----------------------------------------------------------------------------
 void tst_businterfaceReader::testReadMirroredMaster()
 {
-	QString documentContent(
-		"<ipxact:busInterface>"
-		    "<ipxact:mirroredMaster>"
-		        "<ipxact:addressSpaceRef ipxact:addressSpaceRef=\"apb\"/>"
-		    "</ipxact:mirroredMaster>"
-		"</ipxact:busInterface>"
-		);
+    QString documentContent(
+        "<ipxact:busInterface>"
+            "<ipxact:mirroredMaster/>"
+        "</ipxact:busInterface>"
+        );
 
 
 	QDomDocument document;
@@ -290,7 +288,8 @@ void tst_businterfaceReader::testReadMirroredMaster()
 	BusinterfaceReader businterfaceReader;
 	QSharedPointer<BusInterface> testbusinterface = businterfaceReader.createbusinterfaceFrom(businterfaceNode);
 
-	QCOMPARE(testbusinterface->getMaster()->getAddressSpaceRef(), QString("apb"));
+    QCOMPARE(testbusinterface->getInterfaceMode(), General::MIRROREDMASTER);
+    QCOMPARE(testbusinterface->getMaster(), QSharedPointer<MasterInterface>());
 }
 
 //-----------------------------------------------------------------------------

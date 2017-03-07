@@ -4243,6 +4243,9 @@
     <ClCompile Include="GeneratedFiles\moc_MemoryDesignConstructor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\BusIfInterfaceMirroredMaster.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Kactus2.rc" />
@@ -5834,6 +5837,9 @@
     </CustomBuild>
     <CustomBuild Include="designEditors\MemoryDesigner\MemoryGraphicsItemHandler.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\BusIfInterfaceMirroredMaster.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
