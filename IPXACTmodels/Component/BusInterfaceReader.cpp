@@ -357,11 +357,7 @@ void BusinterfaceReader::parseInterfaceMode(QDomElement const& busInterfaceEleme
     QDomElement mirroredMasterNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:mirroredMaster"));
     if (!mirroredMasterNode.isNull())
     {		
-        QSharedPointer<MasterInterface> newmode(new MasterInterface());
-        readMasterInterface(mirroredMasterNode, newmode);
-
         newbusinterface->setInterfaceMode(General::MIRROREDMASTER);
-        newbusinterface->setMaster(newmode);
         return;
     }
 

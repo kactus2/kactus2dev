@@ -385,9 +385,13 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
 {
     General::InterfaceMode interfaceMode = busInterface->getInterfaceMode();
 
-    if (interfaceMode == General::MASTER || interfaceMode == General::MIRROREDMASTER)
+    if (interfaceMode == General::MASTER)
     {
         return hasValidMasterInterface(busInterface->getMaster());
+    }
+    else if (interfaceMode == General::MIRROREDMASTER)
+    {
+        return true;
     }
     else if (interfaceMode == General::SLAVE)
     {
@@ -1019,7 +1023,7 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     newContext.append(QLatin1Char(' '));
     newContext.append(busInterfaceContext);
 
-    if (interfaceMode == General::MASTER || interfaceMode == General::MIRROREDMASTER)
+    if (interfaceMode == General::MASTER)
     {
         findErrorsInMasterInterface(errors, busInterface->getMaster(), newContext);
     }
@@ -1052,46 +1056,49 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
 void BusInterfaceValidator::findErrorsInMasterInterface(QVector<QString>& errors,
     QSharedPointer<MasterInterface> master, QString const& context) const
 {
-    if (!master->getAddressSpaceRef().isEmpty())
+    if (master)
     {
-        bool found = false;
-        foreach (QSharedPointer<AddressSpace> space, *availableAddressSpaces_)
+        if (!master->getAddressSpaceRef().isEmpty())
         {
-            if (master->getAddressSpaceRef() == space->name())
+            bool found = false;
+            foreach (QSharedPointer<AddressSpace> space, *availableAddressSpaces_)
             {
-                found = true;
-
-                if (!interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent()))
+                if (master->getAddressSpaceRef() == space->name())
                 {
-                    errors.append(QObject::tr("Cannot refer to non-present address space %1 in %2")
-                        .arg(space->name()).arg(context));
-                }
-                break;
-            }
-        }
-        if (!found)
-        {
-            errors.append(QObject::tr("Could not find address space %1 referenced by the %2")
-                .arg(master->getAddressSpaceRef()).arg(context));
-        }
-        if (!master->getBaseAddress().isEmpty())
-        {
-            bool changeOk = true;
-            int baseAddress = expressionParser_->parseExpression(master->getBaseAddress()).toInt(&changeOk);
+                    found = true;
 
-            if (!changeOk || baseAddress < 0)
+                    if (!interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent()))
+                    {
+                        errors.append(QObject::tr("Cannot refer to non-present address space %1 in %2")
+                            .arg(space->name()).arg(context));
+                    }
+                    break;
+                }
+            }
+            if (!found)
             {
-                errors.append(QObject::tr("Invalid base address set for %1").arg(context));
+                errors.append(QObject::tr("Could not find address space %1 referenced by the %2")
+                    .arg(master->getAddressSpaceRef()).arg(context));
+            }
+            if (!master->getBaseAddress().isEmpty())
+            {
+                bool changeOk = true;
+                int baseAddress = expressionParser_->parseExpression(master->getBaseAddress()).toInt(&changeOk);
+
+                if (!changeOk || baseAddress < 0)
+                {
+                    errors.append(QObject::tr("Invalid base address set for %1").arg(context));
+                }
+            }
+            if (!hasValidIsPresent(master->getIsPresent()))
+            {
+                errors.append(QObject::tr("Invalid is present set for address space reference in %1").arg(context));
             }
         }
-        if (!hasValidIsPresent(master->getIsPresent()))
+        else if (!master->getIsPresent().isEmpty() || !master->getBaseAddress().isEmpty())
         {
-            errors.append(QObject::tr("Invalid is present set for address space reference in %1").arg(context));
+            errors.append(QObject::tr("Invalid address space reference set for %1").arg(context));
         }
-    }
-    else if (!master->getIsPresent().isEmpty() || !master->getBaseAddress().isEmpty())
-    {
-        errors.append(QObject::tr("Invalid address space reference set for %1").arg(context));
     }
 }
 

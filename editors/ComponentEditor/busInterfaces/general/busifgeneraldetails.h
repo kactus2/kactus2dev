@@ -81,6 +81,11 @@ private slots:
 	//! Handler for changes in connection required check box
 	void onConnectionRequiredChanged();
 
+    /*!
+     *  Change the colouring of bit steering combobox determined by the currently selected interface mode.
+     */
+    void changeBitSteeringColour();
+
 private:
 	
 	//! No copying

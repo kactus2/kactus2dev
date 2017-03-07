@@ -586,6 +586,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifgeneraldetails.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifgeneraltab.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemaster.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\BusIfInterfaceMirroredMaster.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemodeeditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemonitor.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemslave.cpp" />
@@ -4160,6 +4161,50 @@ CreateHelp
       <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">Moc%27ing BusInterfacePortMapTab.h...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">.\GeneratedFiles\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
+    </CustomBuild>
+    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\BusIfInterfaceMirroredMaster.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|Win32'">
+      </Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">%(AdditionalInputs)</AdditionalInputs>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+      </Command>
     </CustomBuild>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapHeaderView.h" />
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMappingColumns.h" />

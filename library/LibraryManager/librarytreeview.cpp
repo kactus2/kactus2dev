@@ -33,39 +33,39 @@
 //-----------------------------------------------------------------------------
 // Function: LibraryTreeView::LibraryTreeView()
 //-----------------------------------------------------------------------------
-LibraryTreeView::LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* filter, QWidget* parent)
-    : QTreeView(parent), 
-      handler_(handler),
-      filter_(filter),
-      startPos_(),
-      dragIndex_(),
-      openDesignAction_(new QAction(tr("Open HW Design"), this)),
-      openSWDesignAction_(new QAction(tr("Open SW Design"), this)),
-      openMemoryDesignAction_(new QAction(tr("Open Memory Design"), this)),
-      openComponentAction_(new QAction(tr("Open Component"), this)),
-      createNewDesignAction_(new QAction(tr("New HW Design..."), this)),
-      createNewSWDesignAction_(new QAction(tr("New SW Design..."), this)),
-      createNewSystemDesignAction_(new QAction(tr("New System Design..."), this)),
-      deleteAction_(new QAction(tr("Delete Item..."), this)), 
-      exportAction_(new QAction(tr("Export..."), this)),  
-      showErrorsAction_(new QAction(tr("Show Errors"), this)),
-      openBusAction_(new QAction(tr("Open"), this)),
-      openCatalogAction_(new QAction(tr("Open Catalog"), this)),
-      addSignalsAction_(new QAction(tr("New Abstraction Definition..."), this)),
-      openComDefAction_(new QAction(tr("Open"), this)),
-      openApiDefAction_(new QAction(tr("Open"), this)),
-      openSystemAction_(new QAction(tr("Open System Design"), this)),
-      openXmlAction_(new QAction(tr("Open XML File"), this)),
-      openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this))
+LibraryTreeView::LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* filter, QWidget* parent):
+QTreeView(parent), 
+    handler_(handler),
+    filter_(filter),
+    startPos_(),
+    dragIndex_(),
+    openDesignAction_(new QAction(tr("Open HW Design"), this)),
+    openSWDesignAction_(new QAction(tr("Open SW Design"), this)),
+    openMemoryDesignAction_(new QAction(tr("Open Memory Design"), this)),
+    openComponentAction_(new QAction(tr("Open Component"), this)),
+    createNewDesignAction_(new QAction(tr("New HW Design..."), this)),
+    createNewSWDesignAction_(new QAction(tr("New SW Design..."), this)),
+    createNewSystemDesignAction_(new QAction(tr("New System Design..."), this)),
+    deleteAction_(new QAction(tr("Delete Item..."), this)), 
+    exportAction_(new QAction(tr("Export..."), this)),  
+    showErrorsAction_(new QAction(tr("Show Errors..."), this)),
+    openBusAction_(new QAction(tr("Open"), this)),
+    openCatalogAction_(new QAction(tr("Open Catalog"), this)),
+    addSignalsAction_(new QAction(tr("New Abstraction Definition..."), this)),
+    openComDefAction_(new QAction(tr("Open"), this)),
+    openApiDefAction_(new QAction(tr("Open"), this)),
+    openSystemAction_(new QAction(tr("Open System Design"), this)),
+    openXmlAction_(new QAction(tr("Open XML File"), this)),
+    openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this)),
+    expandAllAction_(new QAction(tr("Expand all"), this)),
+    collapseAllAction_(new QAction(tr("Collapse all"), this))
 {
-
 	Q_ASSERT_X(filter, "LibraryTreeView constructor", "Null filter pointer given");
 
     setIconSize(QSize(20, 20));
 
 	setSortingEnabled(true);
 
-	// user can select items in the view
 	setSelectionBehavior(QAbstractItemView::SelectItems);
 	setSelectionMode(QAbstractItemView::SingleSelection);
 
@@ -73,10 +73,6 @@ LibraryTreeView::LibraryTreeView(LibraryInterface* handler, LibraryTreeFilter* f
 	setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 	setupActions();
-
-	// User can't expand/collapse items in a normal way because the event handler for mouse press events 
-    // has been reimplemented.
-	setItemsExpandable(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,30 +88,22 @@ LibraryTreeView::~LibraryTreeView()
 //-----------------------------------------------------------------------------
 void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
 {
-	// accept the event so it is not passed forwards
 	event->accept();
 
 	QModelIndex current = currentIndex();
-
-	// if nothing was chosen
 	if (!current.isValid())
     {
 		return;
 	}
 
-	// get original model index so internalPointer can be used
-	QModelIndex sourceIndex = filter_->mapToSource(current);
+    QMenu menu(this);
+  
+    // Get original model index so internalPointer can be used.
+    QModelIndex sourceIndex = filter_->mapToSource(current);
+	VLNV vlnv = static_cast<LibraryItem*>(sourceIndex.internalPointer())->getVLNV();
 
-	LibraryItem* item = static_cast<LibraryItem*>(sourceIndex.internalPointer());
-	VLNV vlnv = item->getVLNV();
-
-	// create a menu to show contextMenu actions
-	QMenu menu(this);
-
-	// if item can be identified as single item
 	if (vlnv.isValid())
     {
-		// parse the model
 		QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
 		if (!document)
         {
@@ -124,12 +112,11 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
 		}
 
         VLNV::IPXactType documentType = document->getVlnv().getType();
-
-        QMenu* menuNew = 0;
-
         if (documentType == VLNV::COMPONENT)
         {
             QSharedPointer<Component const> component = document.staticCast<Component const>();
+
+            menu.addAction(openComponentAction_);  
 
             // depending on the type of the component
             if (component->getImplementation() == KactusAttribute::SYSTEM)
@@ -138,19 +125,16 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
                 {
                     menu.addAction(openSystemAction_);
                 }
-
-                menu.addAction(openComponentAction_);
             }
             else 
             {
-                menuNew = menu.addMenu(tr("Add"));
+                QMenu* menuNew = menu.addMenu(tr("Add"));
 
                 if (component->getImplementation() == KactusAttribute::HW)
                 {
                     if (!component->getHierViews().isEmpty())
                     {
                         menu.addAction(openDesignAction_);
-
                         menu.addAction(openMemoryDesignAction_);
                     }
 
@@ -158,9 +142,7 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
                     {
                         menu.addAction(openSystemAction_);
                     }
-
-                    menu.addSeparator();
-
+                    
                     menuNew->addAction(createNewDesignAction_);
 
                     // Add New System Design action only if the component contains hierarchical HW views.
@@ -170,48 +152,45 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
                     }
                 }
 
-                QSharedPointer<View> swView;
-
                 foreach(QSharedPointer<View> view, *component->getViews())
                 {
                     VLNV reference = component->getModel()->getHierRef(view->name());
 
-                    QSharedPointer<const Document> docu = handler_->getModelReadOnly(reference);
+                    QSharedPointer<const Document> document = handler_->getModelReadOnly(reference);
 
-                    if (docu && docu->getImplementation() == KactusAttribute::SW)
+                    if (document && document->getImplementation() == KactusAttribute::SW)
                     {
-                        swView = view;
+                        menu.addAction(openSWDesignAction_);
                         break;
                     }
                 }
-
-                if (swView)
-                {
-                    menu.addAction(openSWDesignAction_);
-                }
-
-                menu.addAction(openComponentAction_);
+            
+                menu.addSeparator();
 
                 menuNew->addAction(createNewSWDesignAction_);
+                menu.addMenu(menuNew);
             }
         }
 
-		else if (documentType == VLNV::BUSDEFINITION)
+        else if (documentType == VLNV::ABSTRACTIONDEFINITION)
         {
             menu.addAction(openBusAction_);
-            menuNew = menu.addMenu(tr("Add"));
+        }
+
+        else if (documentType == VLNV::BUSDEFINITION)
+        {
+            menu.addAction(openBusAction_);
+            menu.addSeparator();
+
+            QMenu* menuNew = menu.addMenu(tr("Add"));
             menuNew->addAction(addSignalsAction_);
-		}
+            menu.addMenu(menuNew);
+        }
 
         else if (documentType == VLNV::CATALOG)
         {
             menu.addAction(openCatalogAction_);
         }
-
-		else if (documentType == VLNV::ABSTRACTIONDEFINITION)
-        {
-			menu.addAction(openBusAction_);
-		}
 
         else if (documentType == VLNV::COMDEFINITION)
         {
@@ -223,19 +202,12 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
             menu.addAction(openApiDefAction_);
         }
 
-        // Insert the New menu to the popup menu if it was created.
-        if (menuNew != 0)
-        {
-            menu.addSeparator();
-            menu.addMenu(menuNew);
-        }
-
         menu.addSeparator();
-        
-         if (!handler_->isValid(vlnv))
-         {
-             menu.addAction(showErrorsAction_);
-         }
+
+        if (!handler_->isValid(vlnv))
+        {
+            menu.addAction(showErrorsAction_);
+        }
 
         menu.addAction(openContainingFolderAction_);
 		menu.addAction(openXmlAction_);
@@ -243,6 +215,10 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
 
 	menu.addAction(exportAction_);
 	menu.addAction(deleteAction_);
+
+    menu.addSeparator();
+    menu.addAction(expandAllAction_);
+    menu.addAction(collapseAllAction_);
 
 	menu.exec(event->globalPos());
 }
@@ -321,6 +297,11 @@ void LibraryTreeView::setupActions()
 
     connect(openContainingFolderAction_, SIGNAL(triggered()),
         this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
+
+    connect(expandAllAction_, SIGNAL(triggered()), this, SLOT(expandAll()), Qt::UniqueConnection);
+
+    connect(collapseAllAction_, SIGNAL(triggered()), this, SLOT(collapseAll()), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -367,25 +348,28 @@ void LibraryTreeView::mousePressEvent(QMouseEvent* event)
 	startPos_ = event->pos();
 	QModelIndex index = indexAt(startPos_);
 
+    if (event->button() == Qt::LeftButton)
+    {
+        dragIndex_ = filter_->mapToSource(index);
+    }
+
 	setCurrentIndex(index);
 
-	if (event->button() == Qt::LeftButton)
+    bool previouslyExpanded = isExpanded(index);
+    QTreeView::mousePressEvent(event);
+
+    // Change expand state if the click did not change it otherwise.
+    if (event->button() == Qt::LeftButton && index.isValid() && (isExpanded(index) == previouslyExpanded))
     {
-		dragIndex_ = filter_->mapToSource(index);
-
-		// if the item is not yet expanded
-		if (index.isValid() && !isExpanded(index))
+        if (isExpanded(index))
+        {            
+            collapse(index);
+        }
+        else
         {
-			expand(index);
-		}
-		// if item was expanded then close it
-		else
-        {
-			collapse(index);
-		}
-	}
-
-	QTreeView::mousePressEvent(event);
+            expand(index);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

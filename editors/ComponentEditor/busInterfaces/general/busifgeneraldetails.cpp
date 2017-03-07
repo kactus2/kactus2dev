@@ -53,6 +53,8 @@ QGroupBox(tr("General") ,parent),
 		this, SLOT(onEndiannessChanged()), Qt::UniqueConnection);
 	connect(&bitSteeringSelector_, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
+    connect(&modeSelector_, SIGNAL(modeSelected(General::InterfaceMode)),
+        this, SLOT(changeBitSteeringColour()), Qt::UniqueConnection);
 
     setupLayout();
 }
@@ -62,6 +64,27 @@ QGroupBox(tr("General") ,parent),
 //-----------------------------------------------------------------------------
 BusIfGeneralDetails::~BusIfGeneralDetails()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: busifgeneraldetails::changeBitSteeringColour()
+//-----------------------------------------------------------------------------
+void BusIfGeneralDetails::changeBitSteeringColour()
+{
+    QPalette comboPalette = bitSteeringSelector_.palette();
+
+    QColor colour(Qt::black);
+
+    General::InterfaceMode interfaceMode = busif_->getInterfaceMode();
+    if (!bitSteeringSelector_.currentText().isEmpty() &&
+        (interfaceMode == General::MIRROREDMASTER || interfaceMode == General::SYSTEM ||
+        interfaceMode == General::MIRROREDSYSTEM))
+    {
+        colour = Qt::red;
+    }
+
+    comboPalette.setColor(QPalette::Text, colour);
+    bitSteeringSelector_.setPalette(comboPalette);
 }
 
 //-----------------------------------------------------------------------------
@@ -88,6 +111,8 @@ void BusIfGeneralDetails::refresh()
     disconnect(&bitSteeringSelector_, SIGNAL(currentIndexChanged(int)),	this, SLOT(onBitSteeringChanged()));
 
     bitSteeringSelector_.setCurrentIndex(busif_->getBitSteering());
+
+    changeBitSteeringColour();
 
     connect(&bitSteeringSelector_, SIGNAL(currentIndexChanged(int)),
         this, SLOT(onBitSteeringChanged()), Qt::UniqueConnection);
@@ -130,16 +155,18 @@ void BusIfGeneralDetails::onBitSteeringChanged()
 {
 	disconnect(&bitSteeringSelector_, SIGNAL(currentIndexChanged(int)),	this, SLOT(onBitSteeringChanged()));
 
+    changeBitSteeringColour();
+
 	// if bit steering is enabled
-	if (bitSteeringSelector_.currentText() == QLatin1String("on"))
+    if (bitSteeringSelector_.currentText() == QLatin1String("on"))
     {
-		busif_->setBitSteering(BusInterface::BITSTEERING_ON);
-	}
-	// if it was disabled
-	else if (bitSteeringSelector_.currentText() == QLatin1String("off"))
-	{
+        busif_->setBitSteering(BusInterface::BITSTEERING_ON);
+    }
+    // if it was disabled
+    else if (bitSteeringSelector_.currentText() == QLatin1String("off"))
+    {
         busif_->setBitSteering(BusInterface::BITSTEERING_OFF);
-	}
+    }
     else
     {
 		busif_->setBitSteering(BusInterface::BITSTEERING_UNSPECIFIED);

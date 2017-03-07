@@ -347,10 +347,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
         slave_.clear();
         systemGroup_.clear();
         mirroredSlave_.clear();
-        if (!master_)
-        {
-            master_ = QSharedPointer<MasterInterface>(new MasterInterface()); 
-        }
+        master_.clear();
     }
     else if (interfaceMode == General::MIRROREDSYSTEM)
     {
