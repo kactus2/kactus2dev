@@ -1,0 +1,47 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Creating Documents</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<h2>Step 3: Creating Documents</h2>
+
+<p>A new document is required for new IP as well as for IP lacking IP-XACT packaging.</p>
+<ol>
+<li>Click the new button on the top ribbon.</li>
+<li>Select a document type, see more details in their corresponding sections in the manual:
+<ul>
+    <li>Bus Definition determines constraints for bus connections.</li>
+    <li>Catalog groups IP-XACT documents.</li>
+    <li>HW Component describes a hardware IP with behavioral functionality.</li>
+    <li>HW Design describes an IP that instantiates and connects other hardware IPs.</li>
+    <li>SW Component is used to group software source files and set their build rules.</li>
+    <li>SW Design describes an IP that instantiates and connects other sofware IPs.</li>
+    <li>Systems are subject to a major overhaul in future and should not be used.</li>
+    <li>API definition describes external functions provided by software components.</li>
+    <li>COM Definition determines constraints for interprocess connections.</li>
+</li>
+</ul>
+</li>
+<li>In case of HW component of HW design, you may select hierarchy and firmness. See more details in component editor.</li>
+<li>Type VLNV tuple for the document:
+<ul>
+    <li>Vendor identifies the owner. To ensure uniqueness, it should be their internet domain name in left-to-right order (e.g., tut.fi not fi.tut).</li>
+    <li>Library is used to group documents, and thus should reflect the type of the IP-XACT document. It is auto-filled with the selected hierarchy, but you may replace it with something more accurate.</li>
+    <li>The name should be self-explanatory.</li>
+    <li>Technically, another version means another component.</li>
+</ul>
+</li>
+<li>Select a directory for the new document. Default location is constructed from the VLNV. It is based on the location of the default library, which was chosen in <a href="configureLibrary.html">step 1.</a></li>
+<li>Click ok.</li>
+</ol>
+
+<p>The previous step was <a href="accessingDocuments.html">accessing documents.</a><p>
+
+<img alt="AddLibrary" src="../images/CreatingDocument.png">
+
+</body>
+</html>
