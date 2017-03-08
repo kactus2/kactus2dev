@@ -13,8 +13,10 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <common/KactusColors.h>
+
 #include <QFileInfo>
-#include <QColor>
+
 #include <QIcon>
 #include <QPixmap>
 
@@ -54,11 +56,11 @@ QVariant DirListManagerModel::data(QModelIndex const& index, int role /*= Qt::Di
     {
         if (directoryExistsForPath(items_.at(index.row())))
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
         else
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
 	}
 

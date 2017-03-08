@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ValueOrIndexedValueEditor.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 20.04.2016
 //
@@ -23,6 +23,8 @@
 #include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
+
+#include <common/KactusColors.h>
 
 #include <QHeaderView>
 #include <QEvent>
@@ -156,7 +158,7 @@ void ValueOrIndexedValueEditor::setupArrayEditor(QString const& value, int const
     QSharedPointer<Choice> newChoice(new Choice());
 
     ParameterArrayModel* arrayModel = new ParameterArrayModel(arraySize, expressionParser_, parameterFinder_,
-        expressionFormatter_, newChoice, QColor("white"), arrayStart, arrayView_);
+        expressionFormatter_, newChoice, KactusColors::REGULAR_FIELD, arrayStart, arrayView_);
 
     if (value.contains('{') && value.contains('}'))
     {

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: SWConnectionEndpoint.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 2.5.2012
 //
@@ -12,6 +12,8 @@
 #include "SWConnectionEndpoint.h"
 
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
+
+#include <common/KactusColors.h>
 
 #include <QPen>
 
@@ -47,11 +49,11 @@ void SWConnectionEndpoint::updateInterface()
     ConnectionEndpoint::EndpointType endPointType = getType();
     if (endPointType == ENDPOINT_TYPE_UNDEFINED)
     {
-        setBrush(QBrush(Qt::black));
+        setBrush(QBrush(KactusColors::BROKEN_CONNECTION));
     }
     else if (endPointType == ENDPOINT_TYPE_API)
     {
-        setBrush(QBrush(QColor(0xcb,0xfd,0xfd)));
+        setBrush(QBrush(KactusColors::ENDPOINT_TYPE_API));
     }
     else if (endPointType == ENDPOINT_TYPE_COM)
     {

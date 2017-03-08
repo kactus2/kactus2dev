@@ -11,6 +11,8 @@
 
 #include "FileOutputWidget.h"
 
+#include <common/KactusColors.h>
+
 #include <QFileDialog>
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -37,7 +39,7 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<OutputControl> configuration) 
     pathSelectionLayout->addWidget(pathEditor_);
 
     QPalette p = pathEditor_->palette();
-    p.setColor(QPalette::Base, QColor("LemonChiffon"));
+    p.setColor(QPalette::Base, KactusColors::MANDATORY_FIELD);
     pathEditor_->setPalette(p);
 
     // Get the default output path from the generation configuration.
@@ -88,7 +90,7 @@ FileOutputWidget::FileOutputWidget(QSharedPointer<OutputControl> configuration) 
     topLayout->addLayout(bottomLayout);
 
     // Use red to make it more warny.
-    generalWarningLabel_->setStyleSheet("QLabel { color : rgb(255, 102, 45); }");
+    generalWarningLabel_->setStyleSheet("QLabel { color : " + KactusColors::WARNING.name() + "; }");
 
     connect(pathEditor_, SIGNAL(textChanged(const QString &)), this,
         SLOT(onPathEdited(const QString &)), Qt::UniqueConnection);
@@ -246,7 +248,7 @@ void FileOutputWidget::checkExistence()
         {
             // Check and set a warning color.
             fileExistsItem->setCheckState(Qt::Checked);
-            pathItem->setTextColor(QColor(255, 102, 45));
+            pathItem->setTextColor(KactusColors::WARNING);
             existingFiles = true;
         }
         else

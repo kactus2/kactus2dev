@@ -2,7 +2,7 @@
  *	Created on:	23.4.2013
  *	Author:		Antti Kamppi
  *	File name:	commandlineconsole.h
- *	Project:		Kactus 2
+ *	Project:		Kactus2
 */
 
 #ifndef COMMANDLINECONSOLE_H

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: SaveHierarchyDelegate.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 22.05.2015
 //
@@ -15,6 +15,7 @@
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <common/widgets/vlnvEditor/vlnveditor.h>
+#include <common/KactusColors.h>
 
 #include <QPainter>
 
@@ -102,11 +103,11 @@ void SaveHierarchyDelegate::setModelData(QWidget* editor, QAbstractItemModel* mo
 
         if (!vlnvEditor->getVLNV().isValid() || library_->contains(vlnvEditor->getVLNV()))
         {
-            model->setData(index, QColor("red"), Qt::ForegroundRole);
+            model->setData(index, KactusColors::ERROR, Qt::ForegroundRole);
         }
         else
         {
-            model->setData(index, QColor("black"), Qt::ForegroundRole);
+            model->setData(index, KactusColors::REGULAR_TEXT, Qt::ForegroundRole);
         }
     }
 }

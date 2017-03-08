@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: channelsmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 14.06.2012
 //
@@ -16,8 +16,10 @@
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/validators/ChannelValidator.h>
 
+#include <common/KactusColors.h>
+
 #include <QStringList>
-#include <QColor>
+
 
 //-----------------------------------------------------------------------------
 // Function: ChannelsModel::ChannelsModel()
@@ -157,22 +159,22 @@ QVariant ChannelsModel::data(QModelIndex const& index, int role) const
         if (index.column() == ChannelColumns::INTERFACE_COLUMN && 
             !validator_->hasValidBusInterfaceReferences(channels_->at(index.row())))
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
         else
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
 		// interface names are needed to check that references to bus interfaces are valid
 		//QStringList interfaceNames = component_->getBusInterfaceNames();
 
 		/*if (channels_->at(index.row())->isValid(interfaceNames))
         {*/
-		//	return QColor("black");
+		//	return KactusColors::REGULAR_TEXT;
 		/*}
 		else
         {
-			return QColor("red");
+			return KactusColors::ERROR;
 		}*/
 	}
 
@@ -180,11 +182,11 @@ QVariant ChannelsModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == ChannelColumns::NAME_COLUMN || index.column() == ChannelColumns::INTERFACE_COLUMN)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
 	else 

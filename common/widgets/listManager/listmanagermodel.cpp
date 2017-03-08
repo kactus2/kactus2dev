@@ -8,7 +8,8 @@
 #include "listmanagermodel.h"
 
 #include <QVariant>
-#include <QColor>
+
+#include <common/KactusColors.h>
 
 ListManagerModel::ListManagerModel(QObject *parent, 
 								   const QStringList& items)
@@ -44,7 +45,7 @@ QVariant ListManagerModel::data( const QModelIndex& index, int role) const {
 				return tr("Double click to add new item.");
 								  }
 			case Qt::ForegroundRole: {
-				return QColor("silver");
+				return KactusColors::DISABLED_TEXT;
 									 }
 			default: {
 				return QVariant();

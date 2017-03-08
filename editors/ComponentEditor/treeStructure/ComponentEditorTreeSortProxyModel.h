@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ComponentEditorTreeSortProxyModel.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 05.08.2013
 //

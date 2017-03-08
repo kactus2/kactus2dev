@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ViewListModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 10.10.2014
 //
@@ -11,9 +11,10 @@
 
 #include "ViewListModel.h"
 
-
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>
+
+#include <common/KactusColors.h>
 
 #include <QIcon>
 
@@ -91,11 +92,11 @@ QVariant ViewListModel::data(QModelIndex const& index, int role) const
     {
         if (component_->getViewNames().count(viewName) > 1 || viewName.isEmpty())
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
         else
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
     }
 	else

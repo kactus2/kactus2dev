@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ParameterDelegate.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 10.11.2014
 //
@@ -26,12 +26,14 @@
 #include <editors/ComponentEditor/parameters/Array/ArrayDelegate.h>
 #include <editors/ComponentEditor/parameters/Array/ArrayView.h>
 
+#include <common/KactusColors.h>
+
 #include <QComboBox>
 #include <QLineEdit>
 #include <QPainter>
 #include <QScrollArea>
 #include <QSortFilterProxyModel>
-#include <QColor>
+
 
 //-----------------------------------------------------------------------------
 // Function: ParameterDelegate::ParameterDelegate()
@@ -148,7 +150,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         QSharedPointer<Choice> selectedChoice = findChoice(index);
 
         ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
-            expressionFormatter_, selectedChoice, QColor("LemonChiffon"), arrayStartIndex, view);
+            expressionFormatter_, selectedChoice, KactusColors::MANDATORY_FIELD, arrayStartIndex, view);
 
         QModelIndex valueIndex = index.sibling(index.row(), valueColumn());
         QString parameterValue = valueIndex.data(Qt::EditRole).toString();

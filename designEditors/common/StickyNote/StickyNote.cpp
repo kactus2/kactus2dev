@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: StickyNote.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 5.2.2014
 //
@@ -16,6 +16,7 @@
 #include "StickyNoteEditCommand.h"
 
 #include <common/GenericEditProvider.h>
+#include <common/KactusColors.h>
 
 #include <designEditors/common/diagramgrid.h>
 #include <designEditors/common/Association/Association.h>
@@ -268,7 +269,7 @@ void StickyNote::setItemOptions()
 //-----------------------------------------------------------------------------
 void StickyNote::createGluedEdge()
 {
-    QColor topColor = QColor("lemonChiffon").darker(103);
+    QColor topColor = KactusColors::STICKY_NOTE_BACKGROUND.darker(103);
 
     QGraphicsRectItem* glueEdge = new QGraphicsRectItem(0, 0, DEFAULT_WIDTH, TOP_OFFSET);
     QPen outlinePen(Qt::black, 0, Qt::NoPen);    
@@ -289,7 +290,7 @@ void StickyNote::createGluedEdge()
 void StickyNote::createWritableArea()
 {
     textArea_ = new ColorFillTextItem();
-    textArea_->setFill(QColor("lemonChiffon"));
+    textArea_->setFill(KactusColors::STICKY_NOTE_BACKGROUND);
     textArea_->setTextWidth(DEFAULT_WIDTH);
     textArea_->setPos(0, TOP_OFFSET);
 

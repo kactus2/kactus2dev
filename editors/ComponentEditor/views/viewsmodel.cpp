@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: viewsmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 12.6.2012
 //
@@ -13,10 +13,12 @@
 #include "ViewColumns.h"
 
 #include <QStringList>
-#include <QColor>
+
 #include <QRegularExpression>
 
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
+
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ViewsModel::ViewsModel()
@@ -171,26 +173,26 @@ QVariant ViewsModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == ViewColumns::TYPE_COLUMN)
         {
-            return QColor("gray");
+            return KactusColors::DISABLED_TEXT;
         }
         else if (index.column() == ViewColumns::NAME_COLUMN && !viewValidator_->hasValidName(view->name()))
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
         else
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
 	}
 	else if (role == Qt::BackgroundRole)
     {
         if (index.column() == ViewColumns::NAME_COLUMN)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
     else 

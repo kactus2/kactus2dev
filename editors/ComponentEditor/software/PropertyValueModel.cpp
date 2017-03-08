@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: PropertyValueModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 16.4.2012
 //
@@ -13,7 +13,8 @@
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
 #include <QFont>
 #include <QRegularExpression>
 
@@ -190,12 +191,12 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
             {
                 if (comProperty->name() == table_.at(index.row()).first)
                 {
-                    return QColor(Qt::black);
+                    return KactusColors::REGULAR_TEXT;
                 }
             }
 
             // Use red to indicate property values that are not found in the allowed properties.
-            return QColor(Qt::red);
+            return KactusColors::ERROR;
         }
 
         else if (index.column() == 1)
@@ -220,20 +221,20 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
 
                     if (ok)
                     {
-                        return QColor(Qt::black);
+                        return KactusColors::REGULAR_TEXT;
                     }
                     else
                     {
-                        return QColor(Qt::red);
+                        return KactusColors::ERROR;
                     }
                 }
             }
 
-            return QColor(Qt::black);
+            return KactusColors::REGULAR_TEXT;
         }
         else
         {
-            return QColor(Qt::black);
+            return KactusColors::REGULAR_TEXT;
         }
     }
 

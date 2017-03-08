@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: addressspacesmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 11.06.2012
 //
@@ -20,10 +20,11 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
-
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 #include <QRegularExpression>
 #include <QApplication>
 #include <QClipboard>
@@ -188,7 +189,7 @@ QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
         {
-            return QColor("gray");
+            return KactusColors::MANDATORY_FIELD;
         }
         
         return blackForValidOrRedForInvalidIndex(index);
@@ -198,11 +199,11 @@ QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
         if (index.column() == AddressSpaceColumns::NAME || index.column() ==  AddressSpaceColumns::AUB ||
             index.column() ==  AddressSpaceColumns::WIDTH || index.column() ==  AddressSpaceColumns::RANGE)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
     else if (role == Qt::ToolTipRole)

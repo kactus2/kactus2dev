@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: fieldgraphitem.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 25.4.2012
 //
@@ -16,7 +16,7 @@
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
 #include <QBrush>
-#include <QColor>
+
 
 //-----------------------------------------------------------------------------
 // Function: FieldGraphItem::FieldGraphItem()

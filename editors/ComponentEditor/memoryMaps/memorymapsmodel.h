@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: memorymapsmodel.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 21.08.2012
 //
@@ -18,7 +18,7 @@
 
 #include <QAbstractItemModel>
 #include <QSharedPointer>
-#include <QColor>
+
 #include <QMap>
 
 class Component;

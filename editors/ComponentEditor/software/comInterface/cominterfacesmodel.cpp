@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: cominterfacesmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 28.06.2012
 //
@@ -23,7 +23,9 @@
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 #include <QMimeData>
 
 //-----------------------------------------------------------------------------
@@ -189,11 +191,11 @@ QVariant ComInterfacesModel::data(QModelIndex const& index, int role) const
     {
         if (comIfs_.at(index.row())->isValid())
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
         else
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
     }
     else if (role == Qt::BackgroundRole)
@@ -201,11 +203,11 @@ QVariant ComInterfacesModel::data(QModelIndex const& index, int role) const
         if (index.column() == ComInterfaceColumns::NAME ||
             index.column() == ComInterfaceColumns::DIRECTION)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
     else

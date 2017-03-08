@@ -2,7 +2,7 @@
  *  	Created on: 21.6.2012
  *      Author: Antti Kamppi
  * 		filename: bridgeseditor.h
- *		Project: Kactus 2
+ *		Project: Kactus2
  */
 
 #ifndef BRIDGESEDITOR_H

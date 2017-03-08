@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: CatalogFileModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 02.02.2017
 //
@@ -14,6 +14,7 @@
 #include "CatalogFileColumns.h"
 
 #include <common/utils.h>
+#include <common/KactusColors.h>
 
 #include <library/LibraryManager/libraryinterface.h>
 
@@ -241,7 +242,7 @@ QVariant CatalogFileModel::data(QModelIndex const& index, int role) const
         }
         else if (role == Qt::BackgroundRole)
         {
-            return QColor(QStringLiteral("gainsboro"));
+            return KactusColors::CATALOG_HEADER;
         }
         else if (role == Qt::DecorationRole && index.column() == 0)
         {
@@ -281,20 +282,20 @@ QVariant CatalogFileModel::data(QModelIndex const& index, int role) const
         {
             if (locked_)
             {
-                return QColor(Qt::lightGray);
+                return KactusColors::DISABLED_TEXT;
             }
 
             if (index.column() == CatalogFileColumns::PATH)
             {
                 if (!isValidPath(file->getName()))
                 {
-                    return QColor(Qt::red);
+                    return KactusColors::ERROR;
                 }
             }
             else if (library_->getDocumentType(file->getVlnv()) != 
                 CatalogFileColumns::CATEGORY_TYPES[index.parent().row()])
             {
-                return QColor(Qt::red);
+                return KactusColors::ERROR;
             }
         }
     }

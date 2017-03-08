@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: addressblockmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 24.08.2012
 //
@@ -18,12 +18,13 @@
 
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/AccessTypes.h>
 
-#include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <common/KactusColors.h>
 
-#include <QColor>
+
 #include <QRegularExpression>
 #include <QApplication>
 #include <QClipboard>
@@ -211,16 +212,16 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
             if (index.column() != AddressBlockColumns::IS_PRESENT && reg &&
                 (!reg->getIsPresent().isEmpty() && parseExpressionToDecimal(reg->getIsPresent()).toInt() != 1))
             {
-                return QColor("gray");
+                return KactusColors::MANDATORY_FIELD;
             }
             else
             {
-                return QColor("black");
+                return KactusColors::REGULAR_TEXT;
             }
         }
         else
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
 	}
     else if (role == Qt::BackgroundRole)
@@ -229,11 +230,11 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
             index.column() == AddressBlockColumns::REGISTER_OFFSET ||
             index.column() == AddressBlockColumns::REGISTER_SIZE)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
     else

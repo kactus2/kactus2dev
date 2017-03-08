@@ -13,6 +13,8 @@
 #include "ConfigurableElementsColumns.h"
 
 #include <common/graphicsItems/ComponentItem.h>
+#include <common/KactusColors.h>
+
 #include <designEditors/common/DesignDiagram.h>
 #include <designEditors/HWDesign/HWChangeCommands.h>
 #include <editors/ComponentEditor/common/ExpressionParser.h>
@@ -187,7 +189,7 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
 
             if (element->getValueAttribute(QLatin1String("kactus2:defaultValue")).isEmpty())
             {
-                return QColor(Qt::red);
+                return KactusColors::ERROR;
             }
             else if (index.column() == ConfigurableElementsColumns::VALUE && isParameterEditable(index))
             {
@@ -195,12 +197,12 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
             }
             else
             {
-                return QColor(Qt::gray);
+                return KactusColors::DISABLED_FIELD;
             }
         }
         else
         {
-            return QColor(Qt::black);
+            return KactusColors::REGULAR_TEXT;
         }
     }
 
@@ -232,7 +234,7 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
     {
         if (!index.parent().isValid())
         {
-            return QColor(230, 230, 230);
+            return KactusColors::DISABLED_FIELD;
         }
     }
     else if (role == Qt::DecorationRole)

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ApiFunctionModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 18.4.2012
 //
@@ -15,7 +15,8 @@
 #include <IPXACTmodels/kactusExtensions/ApiDefinition.h>
 
 #include <QVariant>
-#include <QColor>
+
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ApiFunctionModel::ApiFunctionModel()
@@ -95,7 +96,7 @@ QVariant ApiFunctionModel::data( const QModelIndex& index, int role) const {
                 return tr("Double click to add new item.");
                                   }
             case Qt::ForegroundRole: {
-                return QColor("silver");
+                return KactusColors::DISABLED_TEXT;
                                      }
             default: {
                 return QVariant();

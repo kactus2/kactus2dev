@@ -2,10 +2,12 @@
  *  	Created on: 21.6.2012
  *      Author: Antti Kamppi
  * 		filename: memorymapselector.cpp
- *		Project: Kactus 2
+ *		Project: Kactus2
  */
 
 #include "ReferenceSelector.h"
+
+#include <common/KactusColors.h>
 
 #include <QPalette>
 #include <QEvent>
@@ -61,7 +63,7 @@ void ReferenceSelector::selectItem(QString const& itemName)
         addItem(itemName);
         index = findText(itemName);
 
-        setItemData(index, QColor(Qt::red), Qt::TextColorRole);
+        setItemData(index, KactusColors::ERROR, Qt::TextColorRole);
         setItemIcon(index, QIcon(QPixmap(":/icons/common/graphics/exclamation.png")));
     }
     else if (!isEnabled())

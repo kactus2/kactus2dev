@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: FileDependencyModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 12.02.2013
 //
@@ -20,6 +20,8 @@
 
 #include <Plugins/PluginSystem/PluginManager.h>
 #include <Plugins/PluginSystem/ISourceAnalyzerPlugin.h>
+
+#include <common/KactusColors.h>
 
 #include <QIcon>
 #include <QDir>
@@ -300,11 +302,11 @@ QVariant FileDependencyModel::data(QModelIndex const& index, int role) const
             
             if (!QFileInfo(absPath).exists())
             {
-                return QColor(Qt::red);
+                return KactusColors::ERROR;
             }
             else if (item->getFileSets().empty())
             {
-                return QColor(Qt::gray);
+                return KactusColors::DISABLED_FIELD;
             }
         }
     }

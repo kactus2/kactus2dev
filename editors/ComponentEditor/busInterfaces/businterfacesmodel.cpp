@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: businterfacesmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 15.06.2012
 //
@@ -27,7 +27,9 @@
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 #include <QCoreApplication>
 #include <QMap>
 #include <QMessageBox>
@@ -196,29 +198,29 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == BusInterfaceColumns::NAME && validator_->hasValidName(busInterface))
         {
-            return QColor("black");     
+            return KactusColors::REGULAR_TEXT;     
         }
         else if ( index.column() == BusInterfaceColumns::BUSDEF && validator_->hasValidBusType(busInterface))
         {
-            return QColor("black");   
+            return KactusColors::REGULAR_TEXT;   
         }
         else if (index.column() == BusInterfaceColumns::ABSDEF &&
             validator_->hasValidAbstractionTypes(busInterface))
         {
-            return QColor("black");  
+            return KactusColors::REGULAR_TEXT;  
         }
         else if (index.column() == BusInterfaceColumns::INTERFACE_MODE &&
             busInterface->getInterfaceMode() != General::INTERFACE_MODE_COUNT)
         {
-            return QColor("black");  
+            return KactusColors::REGULAR_TEXT;  
         }
         else if (index.column() == BusInterfaceColumns::DESCRIPTION)
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
         else
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
 	}
 	else if (role == Qt::BackgroundRole)
@@ -227,11 +229,11 @@ QVariant BusInterfacesModel::data(QModelIndex const& index, int role) const
             index.column() == BusInterfaceColumns::BUSDEF ||
             index.column() == BusInterfaceColumns::INTERFACE_MODE)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
 	}
 	else 

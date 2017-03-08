@@ -288,7 +288,7 @@ void FieldGraphicsItem::createOverlapRectangle(qreal rectanglePositionY, QRectF 
 
     overlapAreaRectangle_->setOpacity(0.9);
 
-    QBrush overlapRectangleBrush(QColor("white"));
+    QBrush overlapRectangleBrush(KactusColors::REGULAR_FIELD);
     overlapAreaRectangle_->setBrush(overlapRectangleBrush);
 
     overlapAreaRectangle_->setPos(scenePos().x(), rectanglePositionY);

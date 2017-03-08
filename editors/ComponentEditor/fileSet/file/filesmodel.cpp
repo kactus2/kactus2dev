@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: filesmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 1.6.2012
 //
@@ -13,6 +13,7 @@
 #include "FileColumns.h"
 
 #include <common/utils.h>
+#include <common/KactusColors.h>
 #include <library/LibraryManager/libraryinterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
@@ -20,7 +21,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <QColor>
+
 #include <QFileInfo>
 #include <QMimeData>
 #include <QRegularExpression>
@@ -185,16 +186,16 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         {
             if (file->name().isEmpty())
             {
-                return QColor("red");
+                return KactusColors::ERROR;
             }
             else
             {
-                return QColor("gray");
+                return KactusColors::MANDATORY_FIELD;
             }
         }
         if (index.column() == FileColumns::PATH_COLUMN && !(filePathExists(file) || isValidURI(file)))
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
 	}
 
@@ -214,7 +215,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == FileColumns::PATH_COLUMN || index.column() == FileColumns::TYPES_COLUMN)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
 	}
 

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: EnumerationModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 04.11.2014
 //
@@ -12,8 +12,9 @@
 #include "EnumerationModel.h"
 
 #include <IPXACTmodels/common/Enumeration.h>
+#include <common/KactusColors.h>
 
-#include <QColor>
+
 
 namespace
 {
@@ -262,7 +263,7 @@ QVariant EnumerationModel::getEnumerationColumnData(int row, int role) const
         }
         else if (role == Qt::BackgroundRole)
         { 
-            return QColor("lemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
     }
     else
@@ -273,7 +274,7 @@ QVariant EnumerationModel::getEnumerationColumnData(int row, int role) const
         }
         else if (role == Qt::ForegroundRole)
         { 
-            return QColor("gray");
+            return KactusColors::MANDATORY_FIELD;
         }        
     }
 
@@ -287,11 +288,11 @@ QVariant EnumerationModel::getForegroundColorForEnumeration(QSharedPointer<Enume
 {
     if (enumeration->getValue().isEmpty())
     {
-        return QColor("red");
+        return KactusColors::ERROR;
     }
     else
     {
-        return QColor("black");
+        return KactusColors::REGULAR_TEXT;
     }
 }
 

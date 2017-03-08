@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: DesignConfigurationInstantiationsItem.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 25.01.2016
 //
