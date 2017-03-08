@@ -87,16 +87,16 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
 
             if (!subItemsInOrder.isEmpty())
             {
+                quint64 currentOffset = itemBaseAddress;
+                quint64 subItemLastAddress = itemBaseAddress;
+
                 if (subItemsInOrder.firstKey() > itemBaseAddress)
                 {
-                    createAndPositionNewEmptySubItem(
-                        0, subItemsInOrder.firstKey() - 1, subItemPositionX, itemBaseAddress);
+                    subItemLastAddress = subItemsInOrder.firstKey() - 1;
+                    createAndPositionNewEmptySubItem(0, subItemLastAddress, subItemPositionX, itemBaseAddress);
                 }
 
                 QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subItemsInOrder);
-
-                quint64 currentOffset = itemBaseAddress;
-                quint64 subItemLastAddress = itemBaseAddress;
 
                 while (subItemIterator.hasNext())
                 {

@@ -150,7 +150,12 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
                     connectionStartItem, spaceYPlacement, MemoryDesignerConstants::SPACEITEMINTERVAL);
             }
 
-            quint64 baseAddressNumber = startInterface->getBaseAddress().toULongLong();
+            quint64 baseAddressNumber = 0;
+            QString startInterfaceBaseAddress = startInterface->getBaseAddress();
+            if (startInterfaceBaseAddress.compare(QStringLiteral("x"), Qt::CaseInsensitive) != 0)
+            {
+                baseAddressNumber = startInterfaceBaseAddress.toULongLong();
+            }
 
             bool hasRemapRange = false;
             quint64 mirroredSlaveAddressChange = 0;
@@ -167,7 +172,8 @@ void MemoryConnectionHandler::createConnection(QVector<QSharedPointer<Connectivi
                 if (pathInterface != startInterface && pathInterface != endInterface)
                 {
                     if (pathInterface->getMode().compare(
-                        QStringLiteral("mirroredSlave"), Qt::CaseInsensitive) == 0)
+                        QStringLiteral("mirroredSlave"), Qt::CaseInsensitive) == 0 &&
+                        !pathInterface->getRemapAddress().isEmpty() && !pathInterface->getRemapRange().isEmpty())
                     {
                         mirroredSlaveAddressChange += pathInterface->getRemapAddress().toULongLong();
 
