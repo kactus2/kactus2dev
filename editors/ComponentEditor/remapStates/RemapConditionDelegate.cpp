@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: RemapConditionDelegate.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 09.04.2015
 //
@@ -24,7 +24,7 @@
 #include <IPXACTmodels/Component/Choice.h>
 
 #include <QScrollArea>
-#include <QColor>
+
 
 //-----------------------------------------------------------------------------
 // Function: RemapConditionDelegate::RemapConditionDelegate()

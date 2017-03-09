@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ParametrizableTable.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 17.12.2014
 //
@@ -13,10 +13,12 @@
 
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 
+#include <common/KactusColors.h>
+
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
 #include <QFont>
-#include <QColor>
+
 
 //-----------------------------------------------------------------------------
 // Function: ParameterizableTable::ParametrizableTable()
@@ -121,11 +123,11 @@ QVariant ParameterizableTable::blackForValidOrRedForInvalidIndex(QModelIndex con
 {
     if (validateIndex(index))
     {
-        return QColor("black");
+        return KactusColors::REGULAR_TEXT;
     }
     else
     {
-        return QColor("red");
+        return KactusColors::ERROR;
     }
 }
 

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: memorygapitem.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 20.11.2012
 //
@@ -13,7 +13,7 @@
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapgraphitem.h>
 
-#include <QColor>
+
 #include <QBrush>
 
 //-----------------------------------------------------------------------------

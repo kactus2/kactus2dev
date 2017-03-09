@@ -2,12 +2,12 @@
  *  	Created on: 8.8.2011
  *      Author: Antti Kamppi
  * 		filename: objectremovemodel.cpp
- *		Project: Kactus 2
+ *		Project: Kactus2
  */
 
 #include "objectremovemodel.h"
 
-#include <QColor>
+#include <common/KactusColors.h>
 
 ObjectRemoveModel::ObjectRemoveModel(QObject *parent): 
 QAbstractTableModel(parent),
@@ -95,10 +95,10 @@ QVariant ObjectRemoveModel::data( const QModelIndex& index,
 		}
 		else if (role == Qt::ForegroundRole) {
 			if (items_.at(index.row()).locked_) {
-				return QColor("grey");
+				return KactusColors::DISABLED_FIELD;
 			}
 			else {
-				return QColor("black");
+				return KactusColors::REGULAR_TEXT;
 			}
 		}
 

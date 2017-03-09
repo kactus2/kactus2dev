@@ -2,7 +2,7 @@
  *  	Created on: 21.5.2012
  *      Author: Antti Kamppi
  * 		filename: componenteditorgroupslot.cpp
- *		Project: Kactus 2
+ *		Project: Kactus2
  */
 
 #include "componenteditorgroupslot.h"

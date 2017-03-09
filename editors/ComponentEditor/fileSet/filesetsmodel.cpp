@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: filesetsmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 25.5.2012
 //
@@ -17,7 +17,9 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 #include <QStringList>
 #include <QString>
 #include <QRegularExpression>
@@ -148,11 +150,11 @@ QVariant FileSetsModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == FileSetColumns::NAME_COLUMN)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
 		}
 	}
 	else

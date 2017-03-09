@@ -2,7 +2,7 @@
  *  	Created on: 9.12.2011
  *      Author: Antti Kamppi
  * 		filename: groupmanagerdelegate.cpp
- *		Project: Kactus 2
+ *		Project: Kactus2
  */
 
 #include "groupmanagerdelegate.h"

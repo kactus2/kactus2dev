@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: PortMapTreeModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 23.05.2016
 //
@@ -28,6 +28,8 @@
 #include <QIcon>
 #include <QSize>
 #include <QMimeData>
+
+#include <common/KactusColors.h>
 
 namespace
 {
@@ -368,7 +370,7 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == PortMapsColumns::LOGICAL_PRESENCE)
         {
-            return QColor("Grey");
+            return KactusColors::DISABLED_TEXT;
         }
         return blackForValidOrRedForInvalidIndex(index);
     }
@@ -432,11 +434,11 @@ QVariant PortMapTreeModel::getBackgroundColour(QModelIndex const& index,
         if (logicalPort->getPresence(interfaceMode_) == PresenceTypes::REQUIRED &&
             index.column() == PortMapsColumns::PHYSICAL_PORT)
         {
-            return QColor("lemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("aliceblue");
+            return KactusColors::LOGICAL_PORT_BACKGROUND;
         }
     }
     else
@@ -445,11 +447,11 @@ QVariant PortMapTreeModel::getBackgroundColour(QModelIndex const& index,
             (index.column() == PortMapsColumns::PHYSICAL_PORT && portMap->getLogicalTieOff().isEmpty()) ||
             (index.column() == PortMapsColumns::TIEOFF && !portMap->getPhysicalPort()))
         {
-            return QColor("lemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
     }
     // return QVariant();
-    return QColor("white");
+    return KactusColors::REGULAR_FIELD;
 }
 
 //-----------------------------------------------------------------------------

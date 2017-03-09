@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: hierarchymodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 01.07.2011
 //
@@ -18,7 +18,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
 #include <QMap>
 
 //-----------------------------------------------------------------------------
@@ -301,11 +302,11 @@ QVariant HierarchyModel::data(QModelIndex const& index, int role) const
     {
 		if (item->isValid()) 
         {
-			return QColor("black");
+			return KactusColors::REGULAR_TEXT;
         }
 		else
         {
-			return QColor("red");
+			return KactusColors::ERROR;
         }
 	}
 	else if (role == Qt::ToolTipRole)

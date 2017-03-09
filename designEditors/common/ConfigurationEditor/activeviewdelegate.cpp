@@ -2,7 +2,7 @@
  *  	Created on: 26.8.2011
  *      Author: Antti Kamppi
  * 		filename: activeviewdelegate.cpp
- *		Project: Kactus 2
+ *		Project: Kactus2
  */
 
 #include "activeviewdelegate.h"

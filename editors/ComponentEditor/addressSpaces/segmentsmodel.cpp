@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: segmentsmodel.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 22.02.2012
 //
@@ -18,10 +18,12 @@
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>
 
-#include <QColor>
+
 #include <QApplication>
 #include <QClipboard>
 #include <QMimeData>
+
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: SegmentsModel::SegmentsModel()
@@ -141,11 +143,11 @@ QVariant SegmentsModel::data( QModelIndex const& index, int role) const
         if (index.column() == SegmentColumns::NAME || index.column() ==  SegmentColumns::OFFSET ||
             index.column() == SegmentColumns::RANGE)
         {            
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
 	else if (role == Qt::ForegroundRole)

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: AdHocVisibilityModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 20.2.2012
 //
@@ -13,6 +13,7 @@
 #include "AdHocVisibilityColumns.h"
 
 #include <common/IEditProvider.h>
+#include <common/KactusColors.h>
 
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/HWDesign/AdHocEnabled.h>
@@ -142,11 +143,11 @@ QVariant AdHocVisibilityModel::data(QModelIndex const& index, int role /*= Qt::D
     {
         if (!visibilityPolicy_->canChangeVisibility(adhocPort))
         {
-            return QColor(Qt::gray);
+            return KactusColors::DISABLED_FIELD;
         }
         else
         {
-            return QColor(Qt::black);
+            return KactusColors::REGULAR_TEXT;
         }
     }
 

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: AddressModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 28.08.2012
 //
@@ -16,6 +16,7 @@
 #include <common/utils.h>
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/graphicsItems/GraphicsConnection.h>
+#include <common/KactusColors.h>
 
 #include <designEditors/HWDesign/BusPortItem.h>
 
@@ -205,7 +206,7 @@ QVariant AddressModel::data(QModelIndex const& index, int role /*= Qt::DisplayRo
             {
                 if (!checkRangeOverlaps(index.row()))
                 {
-                    return QColor(Qt::red);
+                    return KactusColors::ERROR;
                 }
 
                 return QVariant();

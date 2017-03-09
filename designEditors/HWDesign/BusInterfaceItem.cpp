@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: diagraminterface.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 17.3.2011
 //
@@ -41,7 +41,7 @@
 
 #include <QBrush>
 #include <QPen>
-#include <QColor>
+
 #include <QFont>
 #include <QGraphicsDropShadowEffect>
 #include <QMessageBox>

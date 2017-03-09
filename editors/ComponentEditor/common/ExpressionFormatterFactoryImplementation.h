@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ExpressionFormatterFactoryImplementation.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 16.02.2015
 //

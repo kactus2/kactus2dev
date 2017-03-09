@@ -2,7 +2,7 @@
  *  	Created on: 21.6.2012
  *      Author: Antti Kamppi
  * 		filename: bridgesdelegate.h
- *		Project: Kactus 2
+ *		Project: Kactus2
  */
 
 #ifndef BRIDGESDELEGATE_H

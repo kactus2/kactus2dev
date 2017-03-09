@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ParameterArrayModel.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 10.03.2015
 //
@@ -24,6 +24,7 @@
 #include <QSharedPointer>
 #include <QList>
 #include <QStringList>
+
 #include <QColor>
 
 //-----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: apiinterfacesmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 27.6.2012
 //
@@ -16,7 +16,9 @@
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 #include <QMimeData>
 
 //-----------------------------------------------------------------------------
@@ -160,10 +162,10 @@ QVariant ApiInterfacesModel::data(QModelIndex const& index, int role) const
     {
 		if (apis_.at(index.row())->isValid())
         {
-			return QColor("black");
+			return KactusColors::REGULAR_TEXT;
 		}
 		else {
-			return QColor("red");
+			return KactusColors::ERROR;
 		}
 	}
 
@@ -171,11 +173,11 @@ QVariant ApiInterfacesModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == ApiInterfaceColumns::NAME)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
 	

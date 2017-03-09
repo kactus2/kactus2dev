@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: otherclockdriversmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 04.04.2011
 //
@@ -20,7 +20,9 @@
 
 #include <IPXACTmodels/Component/validators/OtherClockDriverValidator.h>
 
-#include <QColor>
+
+
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: OtherClockDriversModel::OtherClockDriversModel()
@@ -129,21 +131,21 @@ QVariant OtherClockDriversModel::data(QModelIndex const&  index, int role) const
             index.column() == OtherClockDriverColumns::PULSE_VALUE ||
             index.column() == OtherClockDriverColumns::PULSE_DURATION)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
     }
 
     else if (role == Qt::ForegroundRole)
     {
         if (validateIndex(index))
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
 		}
 		else
         {
-			return QColor("red");
+			return KactusColors::ERROR;
 		}
 	}
 

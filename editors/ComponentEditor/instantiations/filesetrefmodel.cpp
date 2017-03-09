@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: filesetrefmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 07.02.2012
 //
@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: filesetrefmodel::FileSetRefModel()
@@ -53,7 +53,7 @@ QVariant FileSetRefModel::data( const QModelIndex& index, int role /*= Qt::Displ
         }
         else if (role == Qt::ForegroundRole)
         {
-            return QColor("silver");
+            return KactusColors::DISABLED_TEXT;
         }
         else
         {
@@ -77,13 +77,13 @@ QVariant FileSetRefModel::data( const QModelIndex& index, int role /*= Qt::Displ
 		// if component contains the named file set.
 		if (component_->hasFileSet(items_.at(index.row())))
         {
-			return QColor("black");
+			return KactusColors::REGULAR_TEXT;
 		}
 
 		// if the file set does not exist.
 		else
         {
-			return QColor("red");
+			return KactusColors::ERROR;
 		}
 	}
 	// if unsupported role
