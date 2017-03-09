@@ -18,6 +18,7 @@
         </section>
         <section title="General Help" ref="general/ribbon.html">
           <section title="Toolbar" ref="general/ribbon.html"/>
+          <section title="Library Navigation" ref="general/libraryNavigation.html"/>
           <section title="Keyboard and Mouse Shortcuts" ref="general/shortcuts.html"/>
           <section title="Expressions" ref="general/expressions.html"/>
           <section title="Colors" ref="general/colors.html"/>

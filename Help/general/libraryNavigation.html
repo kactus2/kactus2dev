@@ -1,0 +1,58 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Library Navigation</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+<h2>Library Navigation</h2>
+
+<p>How to access IP-XACT documents and open them for editors.</p>
+
+<h3>Library Filters</h3>
+
+<p>You may limit the number of displayed IP-XACT documents using filters:</p>
+
+<ol>
+<li>Only documents which type is checked are displayed. Advanced stands for designs and design configurations.</li>
+<li>Hide documents that do not match the implementation. For instance, unchecking HW hides all hardware components and buses.</li>
+<li>Hide components that do not match any checked hierarchy level.</li>
+<li>Hide components that do not match any checked firmness level.</li>
+<li>Find documents with any field of VLNV tuple. Partial match is sufficient, so "tut" would yield "tut.fi" and empty field means no filtering. You may write a field or select one from the dropdown menu.</li>
+</ol>
+
+<img alt="VLNVtree" src="../images/LibraryFilter.png">
+
+<h3>VLNV Tree</h3>
+
+<p>Documents are sorted to VLNV tree based on the VLNV tuple of a document.</p>
+
+<div id="vlnvtree">
+<ol>
+<li>Select VLNV tree.</li>
+<li>Browse to the desired document, double click to open.</li>
+<li>Right click for context menu. The additional options include opening and creating designs.</li>
+<li>The external interfaces and ad-hoc ports are illustrated in preview.</li>
+</ol>
+
+<img alt="VLNVtree" src="../images/VLNVtree.png">
+
+</div>
+
+<h3>Hierarchy Navigation</h3>
+
+<p>Documents are sorted to hierarchy display based on their position in designs and sub designs.</p>
+
+<ol>
+<li>Select hierarchy.</li>
+<li>Hierarchical components are expandable, displaying the associated designs and the components that have instances in the design.</li>
+<li>Hierarchical navigation is recursive, so that a design within a design is also expandable.</li>
+<li>This column displays how many instances in the design use the component.</li>
+</ol>
+
+<img alt="ProtectionLocation" src="../images/HierarchyNavigation.png">
+
+</body>
+</html>

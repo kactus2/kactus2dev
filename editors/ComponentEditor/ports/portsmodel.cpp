@@ -132,7 +132,7 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
     {
         if (isLocked(index))
         {
-            return KactusColors::MANDATORY_FIELD;
+            return KactusColors::DISABLED_TEXT;
         }
         else
         {
