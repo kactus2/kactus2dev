@@ -361,14 +361,7 @@ void LibraryTreeView::mousePressEvent(QMouseEvent* event)
     // Change expand state if the click did not change it otherwise.
     if (event->button() == Qt::LeftButton && index.isValid() && (isExpanded(index) == previouslyExpanded))
     {
-        if (isExpanded(index))
-        {            
-            collapse(index);
-        }
-        else
-        {
-            expand(index);
-        }
+        setExpanded(index, !previouslyExpanded);
     }
 }
 
