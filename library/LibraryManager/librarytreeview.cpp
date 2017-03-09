@@ -57,8 +57,10 @@ QTreeView(parent),
     openSystemAction_(new QAction(tr("Open System Design"), this)),
     openXmlAction_(new QAction(tr("Open XML File"), this)),
     openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this)),
-    expandAllAction_(new QAction(tr("Expand all"), this)),
-    collapseAllAction_(new QAction(tr("Collapse all"), this))
+    expandChilds_(new QAction(tr("Expand Branches"), this)),
+    collapseChilds_(new QAction(tr("Collapse Branches"), this)),
+    expandAllAction_(new QAction(tr("Expand All"), this)),
+    collapseAllAction_(new QAction(tr("Collapse All"), this))
 {
 	Q_ASSERT_X(filter, "LibraryTreeView constructor", "Null filter pointer given");
 
@@ -217,91 +219,15 @@ void LibraryTreeView::contextMenuEvent(QContextMenuEvent* event)
 	menu.addAction(deleteAction_);
 
     menu.addSeparator();
+    if (model()->rowCount(current) > 0)
+    {
+        menu.addAction(expandChilds_);
+        menu.addAction(collapseChilds_);
+    }
     menu.addAction(expandAllAction_);
     menu.addAction(collapseAllAction_);
 
 	menu.exec(event->globalPos());
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryTreeView::setupActions()
-//-----------------------------------------------------------------------------
-void LibraryTreeView::setupActions()
-{
-	openDesignAction_->setStatusTip(tr("Open a HW design"));
-	openDesignAction_->setToolTip(tr("Open a HW design"));
-	connect(openDesignAction_, SIGNAL(triggered()),	this, SLOT(onOpenDesign()), Qt::UniqueConnection);
-
-    openSWDesignAction_->setStatusTip(tr("Open a SW design"));
-    openSWDesignAction_->setToolTip(tr("Open a SW design"));
-    connect(openSWDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenSWDesign()), Qt::UniqueConnection);
-
-    openMemoryDesignAction_->setStatusTip(tr("Open a memory design"));
-    openMemoryDesignAction_->setToolTip(tr("Open a memory design"));
-    connect(openMemoryDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenMemoryDesign()), Qt::UniqueConnection);
-
-	openComponentAction_->setStatusTip(tr("Open component editor"));
-	openComponentAction_->setToolTip(tr("Open component editor"));
-	connect(openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponent()), Qt::UniqueConnection);
-
-	createNewDesignAction_->setStatusTip(tr("Create new HW design"));
-	createNewDesignAction_->setToolTip(tr("Create new HW design"));
-	connect(createNewDesignAction_, SIGNAL(triggered()), this, SLOT(onCreateDesign()), Qt::UniqueConnection);
-
-    createNewSWDesignAction_->setStatusTip(tr("Create new SW design"));
-    createNewSWDesignAction_->setToolTip(tr("Create new SW design"));
-    connect(createNewSWDesignAction_, SIGNAL(triggered()), this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
-
-    createNewSystemDesignAction_->setStatusTip(tr("Create new system design"));
-    createNewSystemDesignAction_->setToolTip(tr("Create new system design"));
-    connect(createNewSystemDesignAction_, SIGNAL(triggered()),
-        this, SLOT(onCreateSystemDesign()), Qt::UniqueConnection);
-
-	deleteAction_->setStatusTip(tr("Delete item from the library"));
-	deleteAction_->setToolTip(tr("Delete the item from the library"));
-	connect(deleteAction_, SIGNAL(triggered()),	this, SLOT(onDeleteAction()), Qt::UniqueConnection);
-
-	exportAction_->setStatusTip(tr("Export item and it's sub-items to another location"));
-	exportAction_->setToolTip(tr("Export item and it's sub-items to another location"));
-	connect(exportAction_, SIGNAL(triggered()), this, SLOT(onExportAction()), Qt::UniqueConnection);
-
-    showErrorsAction_->setStatusTip(tr("Show all errors of the item"));
-    showErrorsAction_->setToolTip(tr("Show all errors of the item"));
-    connect(showErrorsAction_, SIGNAL(triggered()), this, SLOT(onShowErrors()), Qt::UniqueConnection);
-
-	openBusAction_->setStatusTip(tr("Open"));
-	openBusAction_->setToolTip(tr("Open"));
-	connect(openBusAction_, SIGNAL(triggered()), this, SLOT(onOpenBus()), Qt::UniqueConnection);
-   
-    openCatalogAction_->setStatusTip(tr("Open a catalog"));
-    openCatalogAction_->setToolTip(tr("Open a catalog"));
-    connect(openCatalogAction_, SIGNAL(triggered()), this, SLOT(onOpenCatalog()), Qt::UniqueConnection);
-
-    addSignalsAction_->setStatusTip(tr("Create new abstraction definition for the bus"));
-    addSignalsAction_->setToolTip(tr("Create new abstraction definition for the bus"));
-	connect(addSignalsAction_, SIGNAL(triggered()),	this, SLOT(onAddSignals()), Qt::UniqueConnection);
-
-    openComDefAction_->setStatusTip(tr("Open"));
-    openComDefAction_->setToolTip(tr("Open"));
-    connect(openComDefAction_, SIGNAL(triggered()), this, SLOT(onOpenComDef()), Qt::UniqueConnection);
-
-    openApiDefAction_->setStatusTip(tr("Open"));
-    openApiDefAction_->setToolTip(tr("Open"));
-    connect(openApiDefAction_, SIGNAL(triggered()), this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
-
-	openSystemAction_->setStatusTip(tr("Open system design for editing"));
-	openSystemAction_->setToolTip(tr("Open system design for editing"));
-	connect(openSystemAction_, SIGNAL(triggered()),	this, SLOT(onOpenSystemDesign()), Qt::UniqueConnection);
-
-	connect(openXmlAction_, SIGNAL(triggered()), this, SLOT(onOpenXml()), Qt::UniqueConnection);
-
-    connect(openContainingFolderAction_, SIGNAL(triggered()),
-        this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
-
-    connect(expandAllAction_, SIGNAL(triggered()), this, SLOT(expandAll()), Qt::UniqueConnection);
-
-    connect(collapseAllAction_, SIGNAL(triggered()), this, SLOT(collapseAll()), Qt::UniqueConnection);
-
 }
 
 //-----------------------------------------------------------------------------
@@ -619,4 +545,127 @@ void LibraryTreeView::onOpenContainingFolder()
         // Open the folder in the operating system's default file browser.
         QDesktopServices::openUrl(QUrl::fromLocalFile(path));
     }    
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onExpandBranches()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onExpandBranches()
+{
+    QModelIndex index = currentIndex();
+
+    setExpanded(index, true);
+    setChildrenExpandStates(index, true);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::onCollapseBranches()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::onCollapseBranches()
+{
+    QModelIndex index = currentIndex();
+
+    setChildrenExpandStates(index, false);
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::setChildrenExpandStates()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::setChildrenExpandStates(QModelIndex index, bool expanded)
+{
+    if (index.isValid())
+    {
+        int childCount = model()->rowCount(index);
+        for (int i = 0; i < childCount; i++)
+        {
+            QModelIndex childIndex = model()->index(i, 0, index);
+            setExpanded(childIndex, expanded);
+            setChildrenExpandStates(childIndex, expanded);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryTreeView::setupActions()
+//-----------------------------------------------------------------------------
+void LibraryTreeView::setupActions()
+{
+    openDesignAction_->setStatusTip(tr("Open a HW design"));
+    openDesignAction_->setToolTip(tr("Open a HW design"));
+    connect(openDesignAction_, SIGNAL(triggered()),	this, SLOT(onOpenDesign()), Qt::UniqueConnection);
+
+    openSWDesignAction_->setStatusTip(tr("Open a SW design"));
+    openSWDesignAction_->setToolTip(tr("Open a SW design"));
+    connect(openSWDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenSWDesign()), Qt::UniqueConnection);
+
+    openMemoryDesignAction_->setStatusTip(tr("Open a memory design"));
+    openMemoryDesignAction_->setToolTip(tr("Open a memory design"));
+    connect(openMemoryDesignAction_, SIGNAL(triggered()), this, SLOT(onOpenMemoryDesign()), Qt::UniqueConnection);
+
+    openComponentAction_->setStatusTip(tr("Open component editor"));
+    openComponentAction_->setToolTip(tr("Open component editor"));
+    connect(openComponentAction_, SIGNAL(triggered()), this, SLOT(onOpenComponent()), Qt::UniqueConnection);
+
+    createNewDesignAction_->setStatusTip(tr("Create new HW design"));
+    createNewDesignAction_->setToolTip(tr("Create new HW design"));
+    connect(createNewDesignAction_, SIGNAL(triggered()), this, SLOT(onCreateDesign()), Qt::UniqueConnection);
+
+    createNewSWDesignAction_->setStatusTip(tr("Create new SW design"));
+    createNewSWDesignAction_->setToolTip(tr("Create new SW design"));
+    connect(createNewSWDesignAction_, SIGNAL(triggered()), this, SLOT(onCreateSWDesign()), Qt::UniqueConnection);
+
+    createNewSystemDesignAction_->setStatusTip(tr("Create new system design"));
+    createNewSystemDesignAction_->setToolTip(tr("Create new system design"));
+    connect(createNewSystemDesignAction_, SIGNAL(triggered()),
+        this, SLOT(onCreateSystemDesign()), Qt::UniqueConnection);
+
+    deleteAction_->setStatusTip(tr("Delete item from the library"));
+    deleteAction_->setToolTip(tr("Delete the item from the library"));
+    connect(deleteAction_, SIGNAL(triggered()),	this, SLOT(onDeleteAction()), Qt::UniqueConnection);
+
+    exportAction_->setStatusTip(tr("Export item and it's sub-items to another location"));
+    exportAction_->setToolTip(tr("Export item and it's sub-items to another location"));
+    connect(exportAction_, SIGNAL(triggered()), this, SLOT(onExportAction()), Qt::UniqueConnection);
+
+    showErrorsAction_->setStatusTip(tr("Show all errors of the item"));
+    showErrorsAction_->setToolTip(tr("Show all errors of the item"));
+    connect(showErrorsAction_, SIGNAL(triggered()), this, SLOT(onShowErrors()), Qt::UniqueConnection);
+
+    openBusAction_->setStatusTip(tr("Open"));
+    openBusAction_->setToolTip(tr("Open"));
+    connect(openBusAction_, SIGNAL(triggered()), this, SLOT(onOpenBus()), Qt::UniqueConnection);
+
+    openCatalogAction_->setStatusTip(tr("Open a catalog"));
+    openCatalogAction_->setToolTip(tr("Open a catalog"));
+    connect(openCatalogAction_, SIGNAL(triggered()), this, SLOT(onOpenCatalog()), Qt::UniqueConnection);
+
+    addSignalsAction_->setStatusTip(tr("Create new abstraction definition for the bus"));
+    addSignalsAction_->setToolTip(tr("Create new abstraction definition for the bus"));
+    connect(addSignalsAction_, SIGNAL(triggered()),	this, SLOT(onAddSignals()), Qt::UniqueConnection);
+
+    openComDefAction_->setStatusTip(tr("Open"));
+    openComDefAction_->setToolTip(tr("Open"));
+    connect(openComDefAction_, SIGNAL(triggered()), this, SLOT(onOpenComDef()), Qt::UniqueConnection);
+
+    openApiDefAction_->setStatusTip(tr("Open"));
+    openApiDefAction_->setToolTip(tr("Open"));
+    connect(openApiDefAction_, SIGNAL(triggered()), this, SLOT(onOpenApiDef()), Qt::UniqueConnection);
+
+    openSystemAction_->setStatusTip(tr("Open system design for editing"));
+    openSystemAction_->setToolTip(tr("Open system design for editing"));
+    connect(openSystemAction_, SIGNAL(triggered()),	this, SLOT(onOpenSystemDesign()), Qt::UniqueConnection);
+
+    connect(openXmlAction_, SIGNAL(triggered()), this, SLOT(onOpenXml()), Qt::UniqueConnection);
+
+    connect(openContainingFolderAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenContainingFolder()), Qt::UniqueConnection);
+
+    connect(expandChilds_, SIGNAL(triggered()), this, SLOT(onExpandBranches()), Qt::UniqueConnection);
+
+    connect(collapseChilds_, SIGNAL(triggered()), this, SLOT(onCollapseBranches()), Qt::UniqueConnection);
+
+    connect(expandAllAction_, SIGNAL(triggered()), this, SLOT(expandAll()), Qt::UniqueConnection);
+
+    connect(collapseAllAction_, SIGNAL(triggered()), this, SLOT(collapseAll()), Qt::UniqueConnection);
+
 }
