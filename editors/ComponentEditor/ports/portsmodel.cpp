@@ -148,7 +148,7 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
             (index.column() == PortColumns::WIDTH && hasExpressionInLeftOrRightBound(portOnRow(index.row()))) ||
             (index.column() == PortColumns::TYPE_DEF && !port->hasType()))
         {
-            return QColor("whiteSmoke");
+            return KactusColors::DISABLED_FIELD;
         }
         else if (index.column() == PortColumns::NAME || index.column() == PortColumns::DIRECTION || 
             index.column() == PortColumns::WIDTH)

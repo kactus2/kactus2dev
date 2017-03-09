@@ -71,7 +71,7 @@ void HWConnectionEndpoint::updateInterface()
     }
     else // if undefined
     {
-        setBrush(QBrush(KactusColors::BROKEN_CONNECTION));
+        setBrush(QBrush(KactusColors::INVALID_INTERFACE));
     }
 }
 

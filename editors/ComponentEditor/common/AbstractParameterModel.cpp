@@ -715,7 +715,7 @@ QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& inde
         ((index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn()) &&
         parameter->getType() != "bit"))
     {
-        return QColor("whiteSmoke");
+        return KactusColors::DISABLED_FIELD;
     }
     else
     {

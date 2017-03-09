@@ -251,7 +251,7 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
         // Return a color that is different from previous port.
         if (previousColor == KactusColors::REGULAR_FIELD)
         {
-            return QColor("aliceblue");
+            return KactusColors::LOGICAL_PORT_BACKGROUND;
         }
         else
         {

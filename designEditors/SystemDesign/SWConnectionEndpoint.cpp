@@ -49,7 +49,7 @@ void SWConnectionEndpoint::updateInterface()
     ConnectionEndpoint::EndpointType endPointType = getType();
     if (endPointType == ENDPOINT_TYPE_UNDEFINED)
     {
-        setBrush(QBrush(KactusColors::BROKEN_CONNECTION));
+        setBrush(QBrush(KactusColors::INVALID_INTERFACE));
     }
     else if (endPointType == ENDPOINT_TYPE_API)
     {

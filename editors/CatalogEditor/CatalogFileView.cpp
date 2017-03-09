@@ -13,6 +13,8 @@
 
 #include "CatalogFileColumns.h"
 
+#include <common/KactusColors.h>
+
 #include <QApplication>
 #include <QClipboard>
 #include <QPainter>
@@ -64,7 +66,7 @@ void CatalogFileView::drawRow(QPainter* painter, QStyleOptionViewItem const& opt
     QTreeView::drawRow(painter, option, index);
 
     painter->save();
-    painter->setPen(QPen(QColor(Qt::lightGray), 0));
+    painter->setPen(QPen(KactusColors::DISABLED_TEXT, 0));
     painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
     painter->restore();
 }

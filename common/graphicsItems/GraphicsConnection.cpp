@@ -953,12 +953,12 @@ void GraphicsConnection::setDefaultColor()
         }
         else
         {
-            newPen.setColor(Qt::black);
+            newPen.setColor(KactusColors::REGULAR_CONNECTION);
         }
     }
     else
     {
-        newPen.setColor(QColor(180, 180, 180));
+        newPen.setColor(KactusColors::UNKNOWN_CONNECTION);
     }
 
     setPen(newPen);
@@ -1052,7 +1052,7 @@ void GraphicsConnection::drawOverlapGraphics(QPainter* painter)
                                 ++width;
                             }
 
-                            painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
+                            painter->setPen(QPen(KactusColors::CONNECTION_UNDERCROSSING, pen().width() + 1));
 
                             if (length2 > 0.5f)
                             {
@@ -1098,7 +1098,7 @@ void GraphicsConnection::drawOverlapGraphics(QPainter* painter)
                 QLineF::IntersectType type1 = line1.intersect(leftEdge, &pt);
                 QLineF::IntersectType type2 = line1.intersect(rightEdge, &pt2);
 
-                painter->setPen(QPen(QColor(160, 160, 160), pen().width() + 1));
+                painter->setPen(QPen(KactusColors::CONNECTION_UNDERCROSSING, pen().width() + 1));
 
                 // Fill in the whole line segment under the component if the segment goes across the component
                 // horizontally.

@@ -38,7 +38,7 @@ namespace KactusColors
     QColor const MANDATORY_FIELD = QColor(QStringLiteral("LemonChiffon"));
 
     //! Color used for ineffective fields.
-    QColor const DISABLED_FIELD = QColor(QStringLiteral("grey"));
+    QColor const DISABLED_FIELD = QColor(QStringLiteral("whiteSmoke"));
 
     //! Color used for invalid fields.
     QColor const INVALID_FIELD = QColor(255, 192, 192);
@@ -50,7 +50,7 @@ namespace KactusColors
     QColor const REGULAR_CONNECTION = Qt::black;
 
     //! Color used for broken/invalid connections in design diagrams.
-    QColor const BROKEN_CONNECTION = Qt::red;
+    QColor const BROKEN_CONNECTION = ERROR;
 
     //! Special color used for COM connections.
     QColor const COM_CONNECTION = QColor(49, 132, 61);
@@ -84,6 +84,7 @@ namespace KactusColors
     QColor const SW_COMPONENT = QColor(0xc5,0xff, 0xab);
 
     //! Colors used for interfaces in design.
+    QColor const INVALID_INTERFACE = ERROR;
     QColor const MASTER_INTERFACE(0x32,0xcb,0xcb);
     QColor const SLAVE_INTERFACE(0x32,0x99,0x64);
     QColor const MIRROREDMASTER_INTERFACE(0xcb,0xfd,0xfd);

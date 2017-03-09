@@ -258,7 +258,7 @@ QVariant InterfacePortMapModel::data(QModelIndex const& index, int role) const
         if (index.column() == InterfacePortMapColumns::INTERFACE_EXCLUDE &&
             (endPoint_->isHierarchical() || activeInterfaces_.isEmpty()))
         {
-            return QColor("whiteSmoke");
+            return KactusColors::DISABLED_FIELD;
         }
         else
         {

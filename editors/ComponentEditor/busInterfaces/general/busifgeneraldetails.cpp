@@ -12,8 +12,9 @@
 #include "busifgeneraldetails.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
-
 #include <IPXACTmodels/Component/BusInterface.h>
+
+#include <common/KactusColors.h>
 
 #include <QFormLayout>
 #include <QVBoxLayout>
@@ -73,14 +74,14 @@ void BusIfGeneralDetails::changeBitSteeringColour()
 {
     QPalette comboPalette = bitSteeringSelector_.palette();
 
-    QColor colour(Qt::black);
+    QColor colour = KactusColors::REGULAR_TEXT;
 
     General::InterfaceMode interfaceMode = busif_->getInterfaceMode();
     if (!bitSteeringSelector_.currentText().isEmpty() &&
         (interfaceMode == General::MIRROREDMASTER || interfaceMode == General::SYSTEM ||
         interfaceMode == General::MIRROREDSYSTEM))
     {
-        colour = Qt::red;
+        colour = KactusColors::ERROR;
     }
 
     comboPalette.setColor(QPalette::Text, colour);

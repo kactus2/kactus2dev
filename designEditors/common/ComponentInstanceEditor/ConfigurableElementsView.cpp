@@ -11,6 +11,8 @@
 
 #include "ConfigurableElementsView.h"
 
+#include <common/KactusColors.h>
+
 #include <QMenu>
 #include <QPainter>
 
@@ -56,7 +58,7 @@ void ConfigurableElementsView::drawRow(QPainter* painter, QStyleOptionViewItem c
     QTreeView::drawRow(painter, option, index);
 
     painter->save();
-    painter->setPen(QPen(QColor(Qt::lightGray), 0));
+    painter->setPen(QPen(KactusColors::DISABLED_TEXT, 0));
     painter->drawLine(option.rect.bottomLeft(), option.rect.bottomRight());
     painter->restore();
 }
