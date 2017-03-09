@@ -6,6 +6,7 @@
 */
 
 #include "commandlineconsole.h"
+#include <common/KactusColors.h>
 
 CommandLineConsole::CommandLineConsole(QWidget *parent):
 QTextEdit(parent) {

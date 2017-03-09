@@ -10,8 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "HDLGenerationDialog.h"
-
 #include "GenerationControl.h"
+
+#include <common/KactusColors.h>
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 
