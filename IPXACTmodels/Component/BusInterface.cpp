@@ -602,7 +602,7 @@ bool BusInterface::hasPhysicalPort(QString const& physicalPortName ) const
 
 	foreach (QSharedPointer<PortMap> portMap, *abstractionTypes_->first()->getPortMaps())
 	{
-		if (portMap->getPhysicalPort()->name_ == physicalPortName)
+		if (portMap->getPhysicalPort() && portMap->getPhysicalPort()->name_ == physicalPortName)
 		{
 			return true;
 		}
