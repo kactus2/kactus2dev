@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: portsmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 31.3.2011
 //
@@ -22,10 +22,12 @@
 
 #include <kactusGenerators/vhdlGenerator/vhdlgeneral.h>
 
+#include <common/KactusColors.h>
+
 #include <QTextStream>
 #include <QString>
 #include <QStringList>
-#include <QColor>
+
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
@@ -130,7 +132,7 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
     {
         if (isLocked(index))
         {
-            return QColor("gray");
+            return KactusColors::DISABLED_TEXT;
         }
         else
         {
@@ -146,16 +148,16 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
             (index.column() == PortColumns::WIDTH && hasExpressionInLeftOrRightBound(portOnRow(index.row()))) ||
             (index.column() == PortColumns::TYPE_DEF && !port->hasType()))
         {
-            return QColor("whiteSmoke");
+            return KactusColors::DISABLED_FIELD;
         }
         else if (index.column() == PortColumns::NAME || index.column() == PortColumns::DIRECTION || 
             index.column() == PortColumns::WIDTH)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
     else if (Qt::CheckStateRole == role)

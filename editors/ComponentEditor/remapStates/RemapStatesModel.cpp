@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: RemapStatesModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 08.04.2015
 //
@@ -16,7 +16,9 @@
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 
 //-----------------------------------------------------------------------------
 // Function: RemapStatesModel::RemapStatesModel()
@@ -139,11 +141,11 @@ QVariant RemapStatesModel::data(const QModelIndex& index, int role /* = Qt::Disp
     {
         if (index.column() == RemapStatesModel::NAME_COLUMN)
         {
-            return QColor("lemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
 

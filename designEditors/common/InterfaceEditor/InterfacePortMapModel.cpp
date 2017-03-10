@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: InterfacePortMapModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 16.05.2016
 //
@@ -27,6 +27,8 @@
 #include <IPXACTmodels/Design/Interconnection.h>
 #include <IPXACTmodels/Design/ActiveInterface.h>
 #include <IPXACTmodels/Design/Design.h>
+
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: InterfacePortMapModel::InterfacePortMapModel()
@@ -248,7 +250,7 @@ QVariant InterfacePortMapModel::data(QModelIndex const& index, int role) const
             (index.column() == InterfacePortMapColumns::INTERFACE_PHYSICAL_NAME &&
             !mappingItems_.at(index.row()).physicalIsOk_))
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
     }
     else if (role == Qt::BackgroundRole)
@@ -256,11 +258,11 @@ QVariant InterfacePortMapModel::data(QModelIndex const& index, int role) const
         if (index.column() == InterfacePortMapColumns::INTERFACE_EXCLUDE &&
             (endPoint_->isHierarchical() || activeInterfaces_.isEmpty()))
         {
-            return QColor("whiteSmoke");
+            return KactusColors::DISABLED_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
     else if (role == Qt::ToolTipRole)

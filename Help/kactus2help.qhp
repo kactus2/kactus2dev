@@ -11,27 +11,23 @@
     <filterAttribute>2.0</filterAttribute>
     <toc>
       <section title="Kactus2 Manual" ref="index.html">
-        <section title="Getting Started">
-          <section title="Configuring Library" ref="gettingStarted/configureLibrary.html">
-          </section>
-          <section title="Accessing Documents" ref="gettingStarted/accessingDocuments.html">
-          </section>
+        <section title="Getting Started" ref="gettingStarted/configureLibrary.html">
+          <section title="Step 1: Configuring Library" ref="gettingStarted/configureLibrary.html"/>
+          <section title="Step 2: Accessing Documents" ref="gettingStarted/accessingDocuments.html"/>
+          <section title="Step 3: Creating Documents" ref="gettingStarted/creatingDocuments.html"/>
         </section>
-        <section title="General Help" ref="general/generalHelp.html">
-          <section title="Colors" ref="general/colors.html">
-          </section>
-          <section title="Toolbar" ref="general/ribbon.html">
-          </section>
-          <section title="Expressions" ref="general/expressions.html">
-          </section>
-          <section title="Workspace" ref="general/workSpace.html">
-          </section>
-          <section title="Default Applications" ref="general/defaultApplication.html">
-          </section>
+        <section title="General Help" ref="general/ribbon.html">
+          <section title="Toolbar" ref="general/ribbon.html"/>
+          <section title="Library Navigation" ref="general/libraryNavigation.html"/>
+          <section title="Keyboard and Mouse Shortcuts" ref="general/shortcuts.html"/>
+          <section title="Expressions" ref="general/expressions.html"/>
+          <section title="Colors" ref="general/colors.html"/>
+          <section title="Workspace" ref="general/workSpace.html"/>
+          <section title="Default Applications" ref="general/defaultApplication.html"/>
         </section>
-        <section title="Bus Editor" ref="definitions/busdefinition.html">
-        </section>
-        <section title="Component Editor" ref="componenteditor/componenteditor.html">
+        <section title="Bus Definition" ref="definitions/busdefinition.html"/>
+        <section title="Catalog" ref="definitions/catalog.html" />
+        <section title="Component" ref="componenteditor/componenteditor.html">
           <section title="General" ref="componenteditor/general.html" />
           <section title="File sets" ref="componenteditor/filesets.html">
             <section title="File set" ref="componenteditor/fileset.html">
@@ -103,14 +99,11 @@
           <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
           <section title="Ad-hoc Connection" ref="hwdesign/adhocconnection.html" />
         </section>
-        <section title="Catalog" ref="definitions/catalog.html" />
+        <section title="Memory Design" ref="memoryDesign/memoryDesign.html"/>
         <section title="SW Design" ref="swsysdesign/swdesign.html">
           <section title="SW Component Instance" ref="swsysdesign/swinstance.html" />
         </section>
-        <section title="Memory Design" ref="memoryDesign/memoryDesign.html">
-        </section>
         <!--section title="System Design" ref="swsysdesign/systemdesign.html"/-->
-        <section title="Keyboard and Mouse Shortcuts" ref="shortcuts.html"/>
         <section title="Community Guidelines" ref="communityGuideLines.html"/>
       </section>
     </toc>

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: HWMappingItem.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 30.4.2012
 //
@@ -21,6 +21,7 @@
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
 #include <common/layouts/VStackedLayout.h>
+#include <common/KactusColors.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
@@ -383,16 +384,16 @@ void HWMappingItem::updateComponent()
     {
         if (!getLibraryInterface()->contains(vlnv))
         {
-            setBrush(QBrush(QColor(0xe8, 0xc5, 0xc5)));
+            setBrush(QBrush(KactusColors::MISSING_COMPONENT));
         }
         else
         {
-            setBrush(QBrush(QColor(0xa5,0xc3,0xef)));
+            setBrush(QBrush(KactusColors::HW_COMPONENT));
         }
     }
     else
     {
-        setBrush(QBrush(QColor(217, 217, 217)));
+        setBrush(QBrush(KactusColors::DRAFT_COMPONENT));
     }
 }
 

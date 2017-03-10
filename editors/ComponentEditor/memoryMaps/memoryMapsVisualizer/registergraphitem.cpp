@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: registergraphitem.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 24.04.2012
 //
@@ -21,7 +21,7 @@
 #include <common/graphicsItems/visualizeritem.h>
 
 #include <QBrush>
-#include <QColor>
+
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::RegisterGraphItem()

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: DesignConfigurationInstantiationsModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 28.01.2016
 //
@@ -13,11 +13,13 @@
 #include "DesignInstantiationColumns.h"
 
 #include <QStringList>
-#include <QColor>
+
 #include <QMimeData>
 #include <QRegularExpression>
 
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationsModel::DesignConfigurationInstantiationsModel()
@@ -175,11 +177,11 @@ QVariant DesignConfigurationInstantiationsModel::data(QModelIndex const& index, 
         if (index.column() == DesignInstantiationsColumns::NAME && 
             !validator_->hasValidName(instantiation->name()))
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
         else
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
 	}
 	else if (role == Qt::BackgroundRole)
@@ -187,11 +189,11 @@ QVariant DesignConfigurationInstantiationsModel::data(QModelIndex const& index, 
         if (index.column() == DesignInstantiationsColumns::NAME ||
             index.column() == DesignInstantiationsColumns::VLNV_REFERENCE)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
     else 

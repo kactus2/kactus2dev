@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ParameterArrayModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 10.03.2015
 //
@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/common/Enumeration.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: ParameterArrayModel::ParameterArrayModel()
@@ -167,7 +167,7 @@ QVariant ParameterArrayModel::data(const QModelIndex &index, int role) const
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
 

@@ -2,7 +2,7 @@
  *  	Created on: 8.8.2011
  *      Author: Antti Kamppi
  * 		filename: objectremovemodel.h
- *		Project: Kactus 2
+ *		Project: Kactus2
  */
 
 #ifndef OBJECTREMOVEMODEL_H

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: componenteditortreemodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 07.05.2012
 //
@@ -13,7 +13,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
 #include <QIcon>
 
 //-----------------------------------------------------------------------------
@@ -133,15 +134,15 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index, int role /*= 
     {
         if (!item->isValid())
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }         
         else if (item->highlight())
         {
-            return QColor("blue");
+            return KactusColors::REGULAR_MESSAGE;
         }  
         else
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
 	}
 	else if (role == Qt::ToolTipRole)

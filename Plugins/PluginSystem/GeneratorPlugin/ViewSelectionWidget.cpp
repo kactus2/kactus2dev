@@ -12,6 +12,8 @@
 #include "ViewSelectionWidget.h"
 #include "ViewSelection.h"
 
+#include <common/KactusColors.h>
+
 #include <QFormLayout>
 #include <QVBoxLayout>
 
@@ -43,7 +45,7 @@ ViewSelectionWidget::ViewSelectionWidget(QSharedPointer<ViewSelection> configura
     fileSetSelection_->setEditable(true);
 
     QPalette p = fileSetSelection_->palette();
-    p.setColor(QPalette::Base, QColor("LemonChiffon"));
+    p.setColor(QPalette::Base, KactusColors::MANDATORY_FIELD);
     fileSetSelection_->setPalette(p);
 
 	// Add everything it their proper position in the final layout.

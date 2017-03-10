@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: localmemorymapgraphitem.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 17.12.2012
 //
@@ -19,7 +19,7 @@
 #include <common/KactusColors.h>
 
 #include <QBrush>
-#include <QColor>
+
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphItem::MemoryMapGraphItem()

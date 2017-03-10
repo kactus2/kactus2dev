@@ -15,6 +15,7 @@
 #include "GraphicsColumnLayout.h"
 
 #include <common/IEditProvider.h>
+#include <common/KactusColors.h>
 
 #include <common/layouts/VStackedLayout.h>
 #include <common/layouts/VCollisionLayout.h>
@@ -48,7 +49,7 @@ GraphicsColumn::GraphicsColumn(QSharedPointer<ColumnDesc> desc, GraphicsColumnLa
     setFlag(ItemIsMovable);
     setFlag(ItemIsSelectable);
     setFlag(ItemSendsGeometryChanges);
-    setBrush(QBrush(QColor(210, 210, 210)));
+    setBrush(QBrush(KactusColors::DIAGRAM_COLUMN_HEADER));
     setPen(QPen(Qt::black, 1));
     setAcceptHoverEvents(true);
 

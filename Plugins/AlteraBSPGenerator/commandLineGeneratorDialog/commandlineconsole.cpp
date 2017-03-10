@@ -2,10 +2,11 @@
  *	Created on:	23.4.2013
  *	Author:		Antti Kamppi
  *	File name:	commandlineconsole.cpp
- *	Project:		Kactus 2
+ *	Project:		Kactus2
 */
 
 #include "commandlineconsole.h"
+#include <common/KactusColors.h>
 
 CommandLineConsole::CommandLineConsole(QWidget *parent):
 QTextEdit(parent) {
@@ -24,7 +25,7 @@ void CommandLineConsole::printStandard( const QString& text ) {
 	moveCursor(QTextCursor::End);
 
 	// notices are printed in blue
-	setTextColor(QColor("blue"));
+	setTextColor(KactusColors::REGULAR_MESSAGE);
 	insertPlainText(text);
 
 	// set cursor to the end of the text
@@ -39,7 +40,7 @@ void CommandLineConsole::printError( const QString& text ) {
 	moveCursor(QTextCursor::End);
 
 	// errors are printed in red color
-	setTextColor(QColor("red"));
+	setTextColor(KactusColors::ERROR);
 	insertPlainText(text);
 
 	// set cursor to the end of the text

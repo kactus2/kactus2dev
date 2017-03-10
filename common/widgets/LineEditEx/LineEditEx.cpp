@@ -14,6 +14,8 @@
 #include <QStyle>
 #include <QPalette>
 
+#include <common/KactusColors.h>
+
 //-----------------------------------------------------------------------------
 // Function: LineEditEx::LineEditEx()
 //-----------------------------------------------------------------------------
@@ -111,13 +113,13 @@ void LineEditEx::validateText(QString const& text)
         if (invalid)
         {
             QPalette p = palette();
-            p.setColor(QPalette::Normal, QPalette::Base, QColor(255, 192, 192));
+            p.setColor(QPalette::Normal, QPalette::Base, KactusColors::INVALID_FIELD);
             setPalette(p);
         }
         else
         {
             QPalette p = palette();
-            p.setColor(QPalette::Normal, QPalette::Base, Qt::white);
+            p.setColor(QPalette::Normal, QPalette::Base, KactusColors::REGULAR_FIELD);
             setPalette(p);
         }
     }

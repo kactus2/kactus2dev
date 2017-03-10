@@ -10,8 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "HDLGenerationDialog.h"
-
 #include "GenerationControl.h"
+
+#include <common/KactusColors.h>
 
 #include <Plugins/VerilogImport/VerilogSyntax.h>
 
@@ -193,7 +194,7 @@ void HDLGenerationDialog::onSelectedFileChanged(QSharedPointer<GenerationOutput>
         return;
     }
 
-    QColor const& highlightColor = QColor::fromRgb(183,225,252);
+    QColor const& highlightColor = KactusColors::WARNING;
 
     QTextCursor cursor = previewer_->textCursor();
     cursor.setPosition(implementationStart);

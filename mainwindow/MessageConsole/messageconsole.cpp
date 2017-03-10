@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: messageconsole.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 22.02.2011
 //
@@ -11,7 +11,8 @@
 
 #include "messageconsole.h"
 
-#include <QColor>
+#include <common/KactusColors.h>
+
 #include <QMenu>
 
 //-----------------------------------------------------------------------------
@@ -54,7 +55,7 @@ void MessageConsole::onErrorMessage(QString const& message)
 	moveCursor(QTextCursor::End);
 
 	// errors are printed in red color
-	setTextColor(QColor("red"));
+	setTextColor(KactusColors::ERROR);
     appendPlainText(message);
 }
 
@@ -71,7 +72,7 @@ void MessageConsole::onNoticeMessage(QString const& message)
 	moveCursor(QTextCursor::End);
 
 	// notices are printed in blue
-	setTextColor(QColor("blue"));
+	setTextColor(KactusColors::REGULAR_MESSAGE);
 	appendPlainText(message);
 }
 

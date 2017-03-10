@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: librarytreemodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 20.12.2010
 //
@@ -21,9 +21,11 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include <common/KactusColors.h>
+
 #include <QSharedPointer>
 #include <QBrush>
-#include <QColor>
+
 #include <QIcon>
 
 //-----------------------------------------------------------------------------
@@ -207,11 +209,11 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
     {
         if (item->isValid())
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
         else
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
 	}
 

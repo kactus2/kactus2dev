@@ -212,6 +212,14 @@ protected:
     */
     virtual void contextMenuEvent(QContextMenuEvent* event);
 
+private slots:
+    
+    //! Called when all the children of the current index should be expanded.
+    void onExpandBranches();
+
+    //! Called when all the children of the current index should be collapsed.
+    void onCollapseBranches();
+
 private:
 
     //! No assignment
@@ -220,8 +228,11 @@ private:
 	//! No copying
 	LibraryTreeView& operator=(const LibraryTreeView& other);
 
-	//! Set up the actions for the context menu
-	void setupActions();
+    //! Expands/collapses all child indexes recursively.
+    void setChildrenExpandStates(QModelIndex index, bool expanded);
+
+    //! Set up the actions for the context menu
+    void setupActions();
 
 	//! The instance that gives the xml objects.
 	LibraryInterface* handler_;
@@ -291,6 +302,12 @@ private:
 
     //! Action to open the containing folder.
     QAction* openContainingFolderAction_;
+
+    //! Action for recursively expand all child indexes of the selected index.
+    QAction* expandChilds_;
+
+    //! Action for recursively collapse all child indexes of the selected index.
+    QAction* collapseChilds_;
 
     //! Action to expand the whole library tree.
     QAction* expandAllAction_;

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: filebuildersmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 31.05.2012
 //
@@ -17,7 +17,9 @@
 
 #include <IPXACTmodels/common/FileBuilder.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 
 //-----------------------------------------------------------------------------
 // Function: filebuildersmodel::FileBuildersModel()
@@ -113,22 +115,22 @@ QVariant FileBuildersModel::data( const QModelIndex& index, int role /*= Qt::Dis
     {
 		if (index.column() == 0)
         {
-			return QColor("LemonChiffon");
+			return KactusColors::MANDATORY_FIELD;
 		}
 		else
         {
-			return QColor("white");
+			return KactusColors::REGULAR_FIELD;
 		}
 	}
 	else if (Qt::ForegroundRole == role)
     {
 // 		if (fileBuilders_->at(index.row())->isValid())
 //         {
-			return QColor("black");
+			return KactusColors::REGULAR_TEXT;
 // 		}
 // 		else
 //         {
-// 			return QColor("red");
+// 			return KactusColors::ERROR;
 // 		}
 	}
 

@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: bridgesmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 21.06.2012
 //
@@ -12,7 +12,9 @@
 #include "bridgesmodel.h"
 #include "BridgeColumns.h"
 
-#include <QColor>
+
+
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: BridgesModel::BridgesModel()
@@ -117,22 +119,22 @@ QVariant BridgesModel::data(QModelIndex const& index, int role) const
     {
 		if (bridges_->at(index.row())->masterRef_.isEmpty())
         {
-			return QColor("red");
+			return KactusColors::ERROR;
 		}
 		else
         {
-			return QColor("black");
+			return KactusColors::REGULAR_TEXT;
 		}
 	}
 	else if (role == Qt::BackgroundRole)
     {
         if (index.column() == BridgeColumns::MASTER_COLUMN)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
 

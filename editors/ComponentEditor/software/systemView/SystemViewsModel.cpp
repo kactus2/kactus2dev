@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: SystemViewsModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti M‰‰tt‰
 // Date: 13.7.2012
 //
@@ -17,7 +17,9 @@
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 #include <QMimeData>
 
 //-----------------------------------------------------------------------------
@@ -156,11 +158,11 @@ QVariant SystemViewsModel::data(QModelIndex const& index, int role) const
 
 		if (views_.at(index.row())->isValid(fileSetNames, viewNames))
         {
-			return QColor("black");
+			return KactusColors::REGULAR_TEXT;
 		}
 		else
         {
-			return QColor("red");
+			return KactusColors::ERROR;
 		}
 	}
 
@@ -169,11 +171,11 @@ QVariant SystemViewsModel::data(QModelIndex const& index, int role) const
         if (index.column() == SystemViewsDelegate::NAME_COLUMN || 
             index.column() == SystemViewsDelegate::HIER_REF_COLUMN)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
     else

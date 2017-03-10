@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ComPropertyModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Joni-Matti Määttä
 // Date: 17.4.2012
 //
@@ -15,8 +15,10 @@
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 
-#include <QColor>
+
 #include <QRegularExpression>
+
+#include <common/KactusColors.h>
 
 QString const ComPropertyModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
     "(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\."
@@ -149,17 +151,17 @@ QVariant ComPropertyModel::data(QModelIndex const& index, int role) const
 
             if (ok)
             {
-                return QColor(Qt::black);
+                return KactusColors::REGULAR_TEXT;
             }
             else
             {
-                return QColor(Qt::red);
+                return KactusColors::ERROR;
             }
         }
 
         else
         {
-            return QColor(Qt::black);
+            return KactusColors::REGULAR_TEXT;
         }
     }
 	else if (role == Qt::BackgroundRole)
@@ -168,11 +170,11 @@ QVariant ComPropertyModel::data(QModelIndex const& index, int role) const
             index.column() == ComPropertyColumns::REQUIRED ||
             index.column() == ComPropertyColumns::TYPE)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
 	}
     else

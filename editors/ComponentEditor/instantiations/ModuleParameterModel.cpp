@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ModuleParameterModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 29.3.2011
 //
@@ -16,7 +16,8 @@
 #include <IPXACTmodels/common/ModuleParameter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
 #include <QPersistentModelIndex>
 
 //-----------------------------------------------------------------------------
@@ -101,11 +102,11 @@ QVariant ModuleParameterModel::data(QModelIndex const& index, int role) const
     {
         if (!validateIndex(index))
         {
-             return QColor("red");
+             return KactusColors::ERROR;
         }
         else if (editingDisabled_)
         {
-            return QColor("gray");
+            return KactusColors::MANDATORY_FIELD;
         }
     }
 

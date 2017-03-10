@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: registertablemodel.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 25.08.2012
 //
@@ -17,7 +17,9 @@
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/FieldExpressionsGatherer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 #include <QRegularExpression>
 #include <QApplication>
 #include <QClipboard>
@@ -230,16 +232,16 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
             if (index.column() != RegisterColumns::IS_PRESENT_COLUMN && 
                 (!isPresentValue.isEmpty() && parseExpressionToDecimal(isPresentValue).toInt() != 1))
             {
-                return QColor("gray");
+                return KactusColors::MANDATORY_FIELD;
             }
             else
             {
-                return QColor("black");
+                return KactusColors::REGULAR_TEXT;
             }
         }
         else
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
 	}
 	else if (Qt::BackgroundRole == role) 
@@ -247,11 +249,11 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
         if (index.column() == RegisterColumns::NAME_COLUMN || index.column() == RegisterColumns::OFFSET_COLUMN ||
             index.column() == RegisterColumns::WIDTH_COLUMN)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
 		}
 	}
 	else 

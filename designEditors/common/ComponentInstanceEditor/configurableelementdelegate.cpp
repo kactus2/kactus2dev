@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: configurableelementdelegate.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 12.08.2011
 //
@@ -20,12 +20,14 @@
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 
+#include <common/KactusColors.h>
+
 #include <QScrollArea>
 #include <QComboBox>
 
 #include <QPen>
 #include <QPainter>
-#include <QColor>
+
 
 //-----------------------------------------------------------------------------
 // Function: configurableelementdelegate::ConfigurableElemenetDelegate()
@@ -249,7 +251,7 @@ void ConfigurableElementDelegate::createArrayEditor(QWidget* editor, QModelIndex
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(getParameterFinder()));
     QSharedPointer<Choice> selectedChoice = findChoice(index);
     ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
-        expressionFormatter_, selectedChoice, QColor("LemonChiffon"), arrayStartIndex, view);
+        expressionFormatter_, selectedChoice, KactusColors::MANDATORY_FIELD, arrayStartIndex, view);
     
     QModelIndex valueIndex = index.sibling(index.row(), valueColumn());
     QString parameterValue = valueIndex.data(Qt::EditRole).toString();

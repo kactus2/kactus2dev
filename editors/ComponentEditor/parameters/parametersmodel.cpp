@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: parametersmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 4.4.2011
 //
@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 
-#include <QColor>
+
 
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::ParametersModel()

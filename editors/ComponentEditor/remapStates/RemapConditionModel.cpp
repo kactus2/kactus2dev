@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: RemapConditionModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Mikko Teuho
 // Date: 09.04.2015
 //
@@ -12,7 +12,9 @@
 #include "RemapConditionModel.h"
 #include "RemapConditionColumns.h"
 
-#include <QColor>
+
+
+#include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: RemapConditionModel::RemapConditionModel()
@@ -126,7 +128,7 @@ QVariant RemapConditionModel::data(QModelIndex const& index, int role) const
         if (index.column() == RemapConditionColumns::NAME_COLUMN ||
             index.column() == RemapConditionColumns::VALUE_COLUMN)
         {
-            return QColor("lemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
     }
 

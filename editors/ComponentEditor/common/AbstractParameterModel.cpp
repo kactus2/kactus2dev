@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: AbstractParameterModel.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 18.11.2014
 //
@@ -18,8 +18,10 @@
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator2014.h>
 
+#include <common/KactusColors.h>
+
 #include <QApplication>
-#include <QColor>
+
 #include <QFont>
 #include <QMessageBox>
 #include <QRegularExpression>
@@ -705,7 +707,7 @@ QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& inde
 
     if (isMandatoryColumn(index.column())) 
     {
-        return QColor("lemonChiffon");
+        return KactusColors::MANDATORY_FIELD;
     }
     else if (((index.column() == minimumColumn() || index.column() == maximumColumn()) &&
         (parameter->getType().isEmpty() || parameter->getType() == "bit" || parameter->getType() == "string"))
@@ -713,11 +715,11 @@ QVariant AbstractParameterModel::backgroundColorForIndex(QModelIndex const& inde
         ((index.column() == bitWidthLeftColumn() || index.column() == bitWidthRightColumn()) &&
         parameter->getType() != "bit"))
     {
-        return QColor("whiteSmoke");
+        return KactusColors::DISABLED_FIELD;
     }
     else
     {
-        return QColor("white");
+        return KactusColors::REGULAR_FIELD;
     }
 }
 

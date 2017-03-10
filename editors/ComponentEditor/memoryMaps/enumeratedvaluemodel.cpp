@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: enumeratedvaluemodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 28.08.2012
 //
@@ -13,10 +13,11 @@
 #include "EnumeratedValueColumns.h"
 
 #include <IPXACTmodels/Component/EnumeratedValue.h>
-
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 #include <QApplication>
 #include <QClipboard>
 #include <QMimeData>
@@ -138,11 +139,11 @@ QVariant EnumeratedValueModel::data( const QModelIndex& index, int role /*= Qt::
     {
         if (enumeratedValueValidator_->validate(enumValues_->at(index.row())))
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
         else
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
 	}
 
@@ -151,11 +152,11 @@ QVariant EnumeratedValueModel::data( const QModelIndex& index, int role /*= Qt::
         if (index.column() == EnumeratedValueColumns::NAME_COLUMN ||
             index.column() == EnumeratedValueColumns::VALUE_COLUMN)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
 	}
 	else

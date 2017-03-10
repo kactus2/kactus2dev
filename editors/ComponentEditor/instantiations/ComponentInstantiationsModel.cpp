@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ComponentInstantiationsModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 28.01.2016
 //
@@ -14,8 +14,10 @@
 
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
+#include <common/KactusColors.h>
+
 #include <QStringList>
-#include <QColor>
+
 #include <QRegularExpression>
 
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
@@ -172,22 +174,22 @@ QVariant ComponentInstantiationsModel::data(QModelIndex const& index, int role) 
         if (index.column() == ComponentInstantiationsColumns::NAME && 
             !validator_->hasValidName(instantiation->name()))
         {
-            return QColor("red");
+            return KactusColors::ERROR;
         }
         else
         {
-            return QColor("black");
+            return KactusColors::REGULAR_TEXT;
         }
 	}
 	else if (role == Qt::BackgroundRole)
     {
         if (index.column() == ComponentInstantiationsColumns::NAME)
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
     else 

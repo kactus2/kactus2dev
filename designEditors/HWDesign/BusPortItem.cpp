@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: BusPortItem.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: 
 // Date: 
 //
@@ -551,9 +551,14 @@ void BusPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 QList<General::InterfaceMode> BusPortItem::getOpposingModes(QSharedPointer<BusInterface> busIf) const
 {
+    QList<General::InterfaceMode> possibleModes;
+
     General::InterfaceMode sourceMode = busIf->getInterfaceMode();
 
-    QList<General::InterfaceMode> possibleModes;
+    if (sourceMode == General::INTERFACE_MODE_COUNT)
+    {
+        return possibleModes;
+    }
 
     possibleModes.append(General::getCompatibleInterfaceMode(sourceMode));
 

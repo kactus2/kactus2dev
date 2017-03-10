@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: ChoicesModel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 04.11.2014
 //
@@ -15,7 +15,9 @@
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 
 //-----------------------------------------------------------------------------
 // Function: ChoicesModel::ChoicesModel()
@@ -144,16 +146,16 @@ QVariant ChoicesModel::data( const QModelIndex& index, int role) const
     {
         if (validator_->validate(choice))
         {
-            return QColor(Qt::black);
+            return KactusColors::REGULAR_TEXT;
         }
         else
         {
-            return QColor(Qt::red);
+            return KactusColors::ERROR;
         }
 	}
     else if (role == Qt::BackgroundRole)
     {
-        return QColor("lemonChiffon");
+        return KactusColors::MANDATORY_FIELD;
     }
 	else
     {

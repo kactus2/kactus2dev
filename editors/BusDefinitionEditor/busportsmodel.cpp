@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: busportsmodel.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Antti Kamppi
 // Date: 21.6.2011
 //
@@ -17,7 +17,9 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
-#include <QColor>
+#include <common/KactusColors.h>
+
+
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
@@ -216,7 +218,7 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
         if (index.column() == LogicalPortColumns::NAME ||
             (index.column() == LogicalPortColumns::SYSTEM_GROUP && port.mode_ == General::SYSTEM)) 
         {
-            return QColor("LemonChiffon");
+            return KactusColors::MANDATORY_FIELD;
         }
         
         int topIndex = index.row();
@@ -238,7 +240,7 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
         // The first item has always white background.
         if (topIndex == 0)
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
 
         QModelIndex previousPort = QAbstractTableModel::index(topIndex - 1, LogicalPortColumns::QUALIFIER,
@@ -247,13 +249,13 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
         QColor previousColor = data(previousPort, Qt::BackgroundRole).value<QColor>();
 
         // Return a color that is different from previous port.
-        if (previousColor == QColor("white"))
+        if (previousColor == KactusColors::REGULAR_FIELD)
         {
-            return QColor("aliceblue");
+            return KactusColors::LOGICAL_PORT_BACKGROUND;
         }
         else
         {
-            return QColor("white");
+            return KactusColors::REGULAR_FIELD;
         }
     }
     else if (role == Qt::ForegroundRole)
@@ -262,14 +264,14 @@ QVariant BusPortsModel::data(QModelIndex const& index, int role) const
             (index.column() == LogicalPortColumns::MODE && 
                 (port.mode_ == General::INTERFACE_MODE_COUNT || table_.count(port) > 1)))
         {
-            return  QColor("red");
+            return  KactusColors::ERROR;
         }
         else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
         {
             if (port.mode_ != General::SYSTEM || !busDefinition_ || 
                 !busDefinition_->getSystemGroupNames().contains(port.wire_->getSystemGroup()))
             {
-                return  QColor("red");
+                return  KactusColors::ERROR;
             }
         }
         else
