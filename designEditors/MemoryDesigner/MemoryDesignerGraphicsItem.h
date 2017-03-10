@@ -12,33 +12,43 @@
 #ifndef MEMORYDESIGNERGRAPHICSITEM_H
 #define MEMORYDESIGNERGRAPHICSITEM_H
 
+#include <IPXACTmodels/common/VLNV.h>
+
 #include <designEditors/common/diagramgrid.h>
 
 #include <QGraphicsRectItem>
 #include <QSharedPointer>
 #include <QGraphicsTextItem>
 
+#include <QObject>
+#include <QAction>
+
 class MemoryColumn;
 class MemoryConnectionItem;
 class MemoryCollisionItem;
+class ConnectivityComponent;
+class MemoryItem;
 
 //-----------------------------------------------------------------------------
 //! Parent class for memory designer graphics items.
 //-----------------------------------------------------------------------------
-class MemoryDesignerGraphicsItem : public QGraphicsRectItem
+class MemoryDesignerGraphicsItem : public QObject, public QGraphicsRectItem
 {
+    Q_OBJECT
 
 public:
 
     /*!
      *  The constructor.
      *
-     *      @param [in] itemName        Name of the memory graphics item.
-     *      @param [in] displayName     Display name of the memory graphics item.
-     *      @param [in] instanceName    Name of the containing component instance.
-     *      @param [in] parent          The parent item.
+     *      @param [in] itemName            Name of the memory graphics item.
+     *      @param [in] displayName         Display name of the memory graphics item.
+     *      @param [in] identifierChain     List of string containing the identifying information of the item.
+     *      @param [in] componentInstance   Component instance containing the memory item.
+     *      @param [in] parent              The parent item.
      */
-    MemoryDesignerGraphicsItem(QString const& itemName, QString const& displayName, QString const& instanceName,
+    MemoryDesignerGraphicsItem(QString const& itemName, QString const& displayName,
+        QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> componentInstance,
         QGraphicsItem* parent = 0);
 
 	/*!
@@ -145,11 +155,11 @@ public:
     virtual void fitLabel(QGraphicsTextItem* label);
 
     /*!
-     *  Get the name of the containing component instance.
+     *  Get the containing component instance.
      *
-     *      @return Name of the containing component instance.
+     *      @return The containing component instance.
      */
-    QString getContainingInstance() const;
+    QSharedPointer<ConnectivityComponent> getContainingInstance() const;
 
     /*!
      *  Change the address range of the memory item.
@@ -228,6 +238,43 @@ protected:
      */
     virtual void setLabelPositions() = 0;
 
+    /*!
+     *  Handler for context menu.
+     *
+     *      @param [in] event   The context menu event.
+     */
+    void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
+    /*!
+     *  Get the identifying information of the memory item.
+     *
+     *      @return The identifying information.
+     */
+    QVector<QString> getIdentifierChain() const;
+
+signals:
+
+    /*!
+     *  Open the document from which the containing component instance has been built from. Identifying
+     *  information allows the editor to be opened from the memory item.
+     *
+     *      @param [in] vlnv                VLNV of the component.
+     *      @param [in] identifierChain     Identifying information for the memory item.
+     */
+    void openComponentDocument(VLNV const& vlnv, QVector<QString> identifierChain);
+
+private slots:
+
+    /*!
+     *  Open the editor for the containing component.
+     */
+    void openContainingComponent();
+
+    /*!
+     *  Open the item editor from the containing component.
+     */
+    void openItemEditor();
+
 private:
     // Disable copying.
     MemoryDesignerGraphicsItem(MemoryDesignerGraphicsItem const& rhs);
@@ -263,6 +310,13 @@ private:
      */
     void setupToolTip(QString const& identifier);
 
+    /*!
+     *  Get the VLNV of the component from the containing component instance.
+     *
+     *      @return The VLNV of the component.
+     */
+    VLNV getVLNVFromContainingInstance();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -294,11 +348,23 @@ private:
     //! Display name of the item.
     QString displayName_;
 
-    //! Name of the containing component instance.
-    QString instanceName_;
+    //! The containing component instance.
+    QSharedPointer<ConnectivityComponent> containingInstance_;
 
     //! Map containing memory connection items and their base addresses.
     QMap<quint64, MemoryConnectionItem*> memoryConnections_;
+
+    //! Action for opening the component document editor.
+    QAction* openComponentAction_;
+
+    //! Action for opening the component editor in the memory item.
+    QAction* openItemEditorAction_;
+
+    //! VLNV for the containing component.
+    VLNV componentVLNV_;
+
+    //! List of string identifying the memory item.
+    QVector<QString> identifierChain_;
 };
 
 //-----------------------------------------------------------------------------

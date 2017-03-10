@@ -35,11 +35,13 @@ public:
      *
      *      @param [in] segmentItem         The memory item containing address segment data.
      *      @param [in] isEmptySegment      Boolean value to inform of an empty segment.
+     *      @param [in] identifierChain     Chain of strings identifying this item.
      *      @param [in] containingInstance  Name of the containing component instance.
      *      @param [in] spaceItem           The address space item containing the address segment.
      */
     AddressSegmentGraphicsItem(QSharedPointer<MemoryItem> segmentItem, bool isEmptySegment,
-        QString const& containingInstance, AddressSpaceGraphicsItem* spaceItem);
+        QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+        AddressSpaceGraphicsItem* spaceItem);
 
 	/*!
      *  The destructor.

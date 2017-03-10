@@ -372,3 +372,43 @@ void ComponentEditorTreeModel::onSelectItem( ComponentEditorItem* item )
 	QModelIndex itemIndex = index(item);
 	emit selectItem(itemIndex);
 }
+
+//-----------------------------------------------------------------------------
+// Function: componenteditortreemodel::getIndexOfItem()
+//-----------------------------------------------------------------------------
+QModelIndex ComponentEditorTreeModel::getIndexOfItem(QVector<QString> itemIdentifierChain) const
+{
+    QModelIndex itemIndex;
+
+    foreach (QString currentIdentifier, itemIdentifierChain)
+    {
+        itemIndex = findIndexByItemIdentifier(currentIdentifier, itemIndex);
+    }
+
+    return itemIndex;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditortreemodel::findIndexByItemIdentifier()
+//-----------------------------------------------------------------------------
+QModelIndex ComponentEditorTreeModel::findIndexByItemIdentifier(QString const& identifier, QModelIndex parentIndex)
+    const
+{
+    int numberOfRows = rowCount(parentIndex);
+    int columnNumber = 0;
+
+    for (int rowIndex = 0; rowIndex < numberOfRows; ++rowIndex)
+    {
+        QModelIndex indexCandidate = index(rowIndex, columnNumber, parentIndex);
+        if (indexCandidate.isValid())
+        {
+            QString indexedItemName = indexCandidate.data(Qt::DisplayRole).toString();
+            if (indexedItemName.compare(identifier, Qt::CaseInsensitive) == 0)
+            {
+                return indexCandidate;
+            }
+        }
+    }
+
+    return parentIndex;
+}

@@ -125,6 +125,15 @@ public:
 	 */
 	virtual QModelIndex parent(const QModelIndex& index) const;
 
+    /*!
+     *  Get the model index of the selected item.
+     *
+     *      @param [in] itemIdentifierChain     List of strings identifying the selected item.
+     *
+     *      @return The model index of the selected item.
+     */
+    QModelIndex getIndexOfItem(QVector<QString> itemIdentifierChain) const;
+
 public slots:
 
 	/*!
@@ -227,6 +236,21 @@ private:
 	//! No copying or assignment.
 	ComponentEditorTreeModel(const ComponentEditorTreeModel& other);
 	ComponentEditorTreeModel& operator=(const ComponentEditorTreeModel& other);
+
+    /*!
+     *  Find the model index using the name of the item.
+     *
+     *      @param [in] identifier      Identifies the selected item.
+     *      @param [in] parentIndex     Parent index of the selected item.
+     *
+     *      @return The model index of the selected item.
+     */
+    QModelIndex findIndexByItemIdentifier(QString const& identifier, QModelIndex parentIndex = QModelIndex())
+        const;
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
 	//! Pointer to the root item of the tree.
 	QSharedPointer<ComponentEditorRootItem> rootItem_;

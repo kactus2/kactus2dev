@@ -25,12 +25,12 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockGraphicsItem::AddressBlockGraphicsItem()
 //-----------------------------------------------------------------------------
-AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock,
-    bool filterRegisters, bool filterFields, qreal addressBlockWidth, QString const& containingInstanceName,
+AddressBlockGraphicsItem::AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem,
+    QVector<QString> identifierChain, bool isEmptyBlock, bool filterRegisters, bool filterFields,
+    qreal addressBlockWidth, QSharedPointer<ConnectivityComponent> containingInstance,
     MemoryMapGraphicsItem* memoryMapItem):
-MemoryDesignerChildGraphicsItem(blockItem->getName(), blockItem->getDisplayName(), QStringLiteral("Address Block"),
-    blockItem->getAddress().toULongLong(), blockItem->getRange().toULongLong(), addressBlockWidth,
-    containingInstanceName, memoryMapItem),
+MemoryDesignerChildGraphicsItem(blockItem, QStringLiteral("Address Block"), blockItem->getAddress().toULongLong(),
+    blockItem->getRange().toULongLong(), addressBlockWidth, identifierChain, containingInstance, memoryMapItem),
 SubMemoryLayout(blockItem, MemoryDesignerConstants::REGISTER_TYPE, filterRegisters, this),
 addressUnitBits_(blockItem->getAUB()),
 filterFields_(filterFields)
@@ -91,8 +91,13 @@ MemoryDesignerChildGraphicsItem* AddressBlockGraphicsItem::createNewSubItem(
 {
     int registerWidth = getRegisterWidth();
 
-    return new RegisterGraphicsItem(
-        subMemoryItem, isEmpty, registerWidth, filterFields_, getContainingInstance(), this);
+    RegisterGraphicsItem* registerItem = new RegisterGraphicsItem(
+        subMemoryItem, isEmpty, registerWidth, getIdentifierChain(), filterFields_, getContainingInstance(), this);
+
+    connect(registerItem, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
+        this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
+
+    return registerItem;
 }
 
 //-----------------------------------------------------------------------------

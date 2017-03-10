@@ -29,10 +29,11 @@ public:
      *      @param [in] positionY           Y position of the extension.
      *      @param [in] extensionWidth      Width of the extension.
      *      @param [in] extensionHeight     Height of the extension.
+     *      @param [in] containingInstance  Component instance containing this memory item.
      *      @param [in] parentItem          Parent item.
      */
     MemoryExtensionGraphicsItem(qreal positionX, qreal positionY, qreal extensionWidth, qreal extensionHeight,
-        QGraphicsItem* parentItem);
+        QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.

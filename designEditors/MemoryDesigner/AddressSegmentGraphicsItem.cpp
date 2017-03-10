@@ -23,10 +23,11 @@
 // Function: AddressSegmentGraphicsItem::AddressSegmentGraphicsItem()
 //-----------------------------------------------------------------------------
 AddressSegmentGraphicsItem::AddressSegmentGraphicsItem(QSharedPointer<MemoryItem> segmentItem, bool isEmptySegment,
-    QString const& containingInstance, AddressSpaceGraphicsItem* spaceItem):
-MemoryDesignerChildGraphicsItem(segmentItem->getName(), segmentItem->getDisplayName(), QStringLiteral("Segment"),
-    segmentItem->getOffset().toULongLong(), segmentItem->getRange().toULongLong(), getSegmentItemWidth(spaceItem),
-    containingInstance, spaceItem)
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+    AddressSpaceGraphicsItem* spaceItem):
+MemoryDesignerChildGraphicsItem(segmentItem, QStringLiteral("Segment"), segmentItem->getOffset().toULongLong(),
+    segmentItem->getRange().toULongLong(), getSegmentItemWidth(spaceItem), identifierChain, containingInstance,
+    spaceItem)
 {
     setColors(KactusColors::ADDRESS_SEGMENT, isEmptySegment);
     setLabelPositions();

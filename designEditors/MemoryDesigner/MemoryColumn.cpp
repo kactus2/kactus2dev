@@ -250,8 +250,8 @@ void MemoryColumn::extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, Memory
         qreal positionY = spaceLowRight.y() - 0.5;
         qreal extensionHeight = connectionLow - spaceLowRight.y();
 
-        MemoryExtensionGraphicsItem* extensionItem = new MemoryExtensionGraphicsItem(
-            positionX, positionY, extensionWidth, extensionHeight, graphicsItem);
+        MemoryExtensionGraphicsItem* extensionItem = new MemoryExtensionGraphicsItem(positionX, positionY,
+            extensionWidth, extensionHeight, graphicsItem->getContainingInstance(), graphicsItem);
         graphicsItem->setExtensionItem(extensionItem);
 
         spaceYPlacement += extensionHeight;

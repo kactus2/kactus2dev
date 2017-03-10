@@ -29,8 +29,8 @@ itemHandler_(new MemoryGraphicsItemHandler()),
 connectionHandler_(new MemoryConnectionHandler(columnHandler_)),
 widthBoundary_(0)
 {
-    connect(itemHandler_.data(), SIGNAL(openComponentDocument(VLNV const&)),
-        this, SIGNAL(openComponentDocument(VLNV const&)), Qt::UniqueConnection);
+    connect(itemHandler_.data(), SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
+        this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

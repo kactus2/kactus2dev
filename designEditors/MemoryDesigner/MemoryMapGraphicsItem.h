@@ -37,14 +37,16 @@ public:
      *  The constructor.
      *
      *      @param [in] memoryItem              Memory item containing memory map data.
+     *      @param [in] identifierChain         List of string identifying the memory item.
      *      @param [in] filterAddressBlocks     Value for filtering memory map address blocks.
      *      @param [in] filterRegisters         Value for filtering address block registers.
      *      @param [in] filterFields            Value for filtering register fields.
      *      @param [in] containingInstance      Instance containing the memory map.
      *      @param [in] parent                  The parent item.
      */
-    MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem, bool filterAddressBlocks, bool filterRegisters,
-        bool filterFields, QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent = 0);
+    MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QVector<QString> identifierChain,
+        bool filterAddressBlocks, bool filterRegisters, bool filterFields,
+        QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent = 0);
 
 	/*!
      *  The destructor.
