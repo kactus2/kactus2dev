@@ -15,7 +15,7 @@ software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
 What you can do with Kactus2
 ----------------------------------------------------
 
-Pack IPs for reuse and exchange
+Package IPs for reuse and exchange
  * Import your existing IPs as IP-XACT components
  * Create new IP-XACT components and generate their HDL module headers
  * Reuse IP-XACT files from any standard compatible vendor
@@ -28,13 +28,13 @@ Create HW designs with hierarchy
 
 Integrate HW and SW
  * Use memory designer to preview memory maps and address spaces in your hierarchy
- * Pack software to IP-XACT components and map them to hardware
+ * Package software to IP-XACT components and map them to hardware
  * Generate makefiles that build executables with rules defined in IP-XACT components
  
 What you cannot do with Kactus2</h2>
 ----------------------------------------------------
- * Behavioral logic: Neither Kactus2 or IP-XACT handles module implementations
- * Synthesis or simulation: This requires tools that are specificly created for the purpose
+ * Behavioral logic: Neither Kactus2 nor IP-XACT handles module implementations
+ * Synthesis or simulation: These require tools that are specificly created for the purpose
  
 Examples
 ----------------------------------------------------
