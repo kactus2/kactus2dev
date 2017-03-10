@@ -33,11 +33,11 @@ namespace MemoryMapItemConstants
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::MemoryMapGraphicsItem()
 //-----------------------------------------------------------------------------
-MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem, bool filterAddressBlocks,
-    bool filterRegisters, bool filterFields, QSharedPointer<ConnectivityComponent> containingInstance,
-    QGraphicsItem* parent):
+MemoryMapGraphicsItem::MemoryMapGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
+    QVector<QString> identifierChain, bool filterAddressBlocks, bool filterRegisters, bool filterFields,
+    QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem, containingInstance, MemoryDesignerConstants::ADDRESSBLOCK_TYPE,
-    filterAddressBlocks, parent),
+    filterAddressBlocks, identifierChain, parent),
 addressUnitBits_(memoryItem->getAUB()),
 filterAddressBlocks_(filterAddressBlocks),
 filterRegisters_(filterRegisters),
@@ -206,16 +206,22 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QShared
 {
     MemoryDesignerChildGraphicsItem* childItem = 0;
 
+    QVector<QString> remappedIdentifierChain = getIdentifierChain();
+    remappedIdentifierChain.append(QStringLiteral("Default"));
+
     if (!filterAddressBlocks_)
     {
-        childItem = new AddressBlockGraphicsItem(
-            subMemoryItem, isEmpty, filterRegisters_, filterFields_, subItemWidth_, getContainingInstance(), this);
+        childItem = new AddressBlockGraphicsItem(subMemoryItem, remappedIdentifierChain, isEmpty, filterRegisters_,
+            filterFields_, subItemWidth_, getContainingInstance(), this);
     }
     else if (!filterRegisters_)
     {
-        childItem = new RegisterGraphicsItem(
-            subMemoryItem, isEmpty, subItemWidth_, filterFields_, getContainingInstance(), this);
+        childItem = new RegisterGraphicsItem(subMemoryItem, isEmpty, subItemWidth_, remappedIdentifierChain,
+            filterFields_, getContainingInstance(), this);
     }
+
+    connect(childItem, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
+        this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
 
     return childItem;
 }

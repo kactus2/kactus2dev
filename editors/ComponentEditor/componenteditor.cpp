@@ -844,3 +844,16 @@ void ComponentEditor::changeFileName(QString const& from, QString const& to, QSh
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: componenteditor::openItemEditor()
+//-----------------------------------------------------------------------------
+void ComponentEditor::openItemEditor(QVector<QString> itemIdentifierChain)
+{
+    QModelIndex itemIndex = navigationModel_.getIndexOfItem(itemIdentifierChain);
+    if (itemIndex.isValid())
+    {
+        onExpand(itemIndex);
+        onItemActivated(itemIndex);
+    }
+}

@@ -39,6 +39,7 @@ public:
      *  The constructor.
      *
      *      @param [in] blockItem               Memory item containing the address block data.
+     *      @param [in] identifierChain         Chain of strings identifying this item.
      *      @param [in] isEmptyBlock            Boolean value for existing blocks.
      *      @param [in] filterRegisters         Filtering value for address block registers.
      *      @param [in] filterFields            Filtering value for register fields.
@@ -46,9 +47,9 @@ public:
      *      @param [in] containingInstanceName  Name of the containing component instance.
      *      @param [in] memoryMapItem           The parent memory map item.
      */
-    AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, bool isEmptyBlock, bool filterRegisters,
-        bool filterFields, qreal addressBlockWidth, QString const& containingInstanceName,
-        MemoryMapGraphicsItem* memoryMapItem);
+    AddressBlockGraphicsItem(QSharedPointer<MemoryItem> blockItem, QVector<QString> identifierChain,
+        bool isEmptyBlock, bool filterRegisters, bool filterFields, qreal addressBlockWidth,
+        QSharedPointer<ConnectivityComponent> containingInstance, MemoryMapGraphicsItem* memoryMapItem);
 
 	/*!
      *  The destructor.

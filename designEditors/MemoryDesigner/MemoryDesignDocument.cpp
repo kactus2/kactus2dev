@@ -34,8 +34,8 @@ libraryHandler_(library),
 identifyingVLNV_(),
 designViewName_()
 {
-    connect(diagram_, SIGNAL(openComponentDocument(VLNV const&)),
-        this, SIGNAL(openComponentDocument(VLNV const&)), Qt::UniqueConnection);
+    connect(diagram_, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
+        this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
 
     view_->setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
     view_->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);

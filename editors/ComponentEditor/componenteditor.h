@@ -100,6 +100,13 @@ public:
 	 */
 	static QStringList getSwItemNames();
 
+    /*!
+     *  Open item editor for a component.
+     *
+     *      @param [in] itemIdentifierChain     List of string identifying the item to be opened.
+     */
+    void openItemEditor(QVector<QString> itemIdentifierChain);
+
 public slots:
 
     /*!

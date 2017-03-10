@@ -4237,14 +4237,14 @@
     <ClCompile Include="GeneratedFiles\moc_MemoryGraphicsItemHandler.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_MainMemoryGraphicsItem.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_MemoryDesignConstructor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\BusIfInterfaceMirroredMaster.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\moc_MemoryDesignerGraphicsItem.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

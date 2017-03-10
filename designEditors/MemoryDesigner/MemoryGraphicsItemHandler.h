@@ -120,9 +120,10 @@ signals:
     /*!
      *  Open the component document for the selected VLNV.
      *
-     *      @param [in] vlnv    VLNV of the containing component.
+     *      @param [in] vlnv                VLNV of the containing component.
+     *      @param [in] identifierChain     List of string identifying the memory item.
      */
-    void openComponentDocument(VLNV const& vlnv);
+    void openComponentDocument(VLNV const& vlnv, QVector<QString> identifierChain);
 
 private:
     // Disable copying.
@@ -133,20 +134,22 @@ private:
      *  Create an address space item.
      *
      *      @param [in] spaceItem           Memory item containing address space data.
+     *      @param [in] identifierChain     List of string identifying the memory item.
      *      @param [in] containingInstance  The component instance containing the selected address space.
      *      @param [in] containingColumn    The address space column.
      */
-    void createAddressSpaceItem(QSharedPointer<MemoryItem> spaceItem,
+    void createAddressSpaceItem(QSharedPointer<MemoryItem> spaceItem, QVector<QString> identifierChain,
         QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* containingColumn);
 
     /*!
      *  Create a memory map item.
      *
      *      @param [in] mapItem             Memory item containing memory map data.
+     *      @param [in] identifierChain     List of string identifying the memory item.
      *      @param [in] containingInstance  The component instance containing the selected memory map.
      *      @param [in] containingColumn    The memory map column.
      */
-    void createMemoryMapItem(QSharedPointer<MemoryItem> mapItem,
+    void createMemoryMapItem(QSharedPointer<MemoryItem> mapItem, QVector<QString> identifierChain,
         QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* containingColumn);
 
     /*!
