@@ -13,17 +13,18 @@
 
 #include <QHelpContentWidget>
 #include <QCoreApplication>
+#include <QDesktopServices>
 #include <QApplication>
 
 //-----------------------------------------------------------------------------
 // Function: ContextHelpBrowser::ContextHelpBrowser()
 //-----------------------------------------------------------------------------
-ContextHelpBrowser::ContextHelpBrowser(QHelpEngine* engine, QString const& urlPrefix,
-                                       QWidget* parent /*= 0*/)
-    : QTextBrowser(parent),
-      engine_(engine),
-      urlPrefix_(urlPrefix)
+ContextHelpBrowser::ContextHelpBrowser(QHelpEngine* engine,QString const& urlPrefix, QWidget* parent):
+QTextBrowser(parent),
+    engine_(engine),
+    urlPrefix_(urlPrefix)
 {
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -46,6 +47,21 @@ QVariant ContextHelpBrowser::loadResource(int type, QUrl const& url)
     {
         return QTextBrowser::loadResource(type, url);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ContextHelpBrowser::setSource()
+//-----------------------------------------------------------------------------
+void ContextHelpBrowser::setSource(QUrl const& url)
+{
+    if (url.scheme() == "http" || url.scheme() == "https")
+    {
+        QDesktopServices::openUrl(url);
+    }
+    else
+    {
+        QTextBrowser::setSource(url);
+    }    
 }
 
 //-----------------------------------------------------------------------------

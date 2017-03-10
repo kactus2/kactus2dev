@@ -176,7 +176,7 @@ QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& in
     QString section = input.mid(startOfPortList, endOfModule - startOfPortList);
     section = removeIgnoredLines(section);
 
-    return portList.match(section).captured(); //section.mid(firstPort, portSectionLength);
+    return portList.match(section).captured();
 }
 
 //-----------------------------------------------------------------------------
