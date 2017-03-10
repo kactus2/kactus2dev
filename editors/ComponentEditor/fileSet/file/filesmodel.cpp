@@ -190,7 +190,7 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
             }
             else
             {
-                return KactusColors::MANDATORY_FIELD;
+                return KactusColors::REGULAR_TEXT;
             }
         }
         if (index.column() == FileColumns::PATH_COLUMN && !(filePathExists(file) || isValidURI(file)))

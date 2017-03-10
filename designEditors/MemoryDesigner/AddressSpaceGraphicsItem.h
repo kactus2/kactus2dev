@@ -38,11 +38,12 @@ public:
      *  The constructor.
      *
      *      @param [in] memoryItem          Memory item containing address space data.
+     *      @param [in] identifierChain     Chain of strings identifying this item.
      *      @param [in] containingInstance  Data of the containing component instance.
      *      @param [in] filterSegments      Value for filtering address space segments.
      *      @param [in] parent              The parent item.
      */
-    AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
+    AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem, QVector<QString> identifierChain,
         QSharedPointer<ConnectivityComponent> containingInstance, bool filterSegments, QGraphicsItem* parent = 0);
 
 	/*!

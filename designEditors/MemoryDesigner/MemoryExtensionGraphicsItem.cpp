@@ -23,8 +23,9 @@
 // Function: MemoryExtensionGraphicsItem::MemoryExtensionGraphicsItem()
 //-----------------------------------------------------------------------------
 MemoryExtensionGraphicsItem::MemoryExtensionGraphicsItem(qreal positionX, qreal positionY, qreal extensionWidth,
-    qreal extensionHeight, QGraphicsItem* parentItem):
-MemoryDesignerGraphicsItem(QStringLiteral(""), QStringLiteral(""), QStringLiteral(""), parentItem)
+    qreal extensionHeight, QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parentItem):
+MemoryDesignerGraphicsItem(QStringLiteral(""), QStringLiteral(""), QVector<QString>(), containingInstance,
+    parentItem)
 {
     setRect(positionX, positionY, extensionWidth, extensionHeight);
     setPenAndBrush();

@@ -203,64 +203,73 @@ void MetaInstance::parsePorts(IPXactSystemVerilogParser& parser)
 
             foreach(QSharedPointer<PortMap> pMap, *mInterface->absType_->getPortMaps())
             {
-                if (pMap->getPhysicalPort()->name_ == cport->name())
+                // The mapping must have a physical port, which has the same name as the component port.
+                if (!pMap->getPhysicalPort() || pMap->getPhysicalPort()->name_ != cport->name())
                 {
-                    // The port mapping must have a corresponding port abstraction in the abstraction definition!
-                    QSharedPointer<PortAbstraction> portAbstraction = mInterface->absDef_->
-                        getPort(pMap->getLogicalPort()->name_);
-
-                    if (!portAbstraction)
-                    {
-                        messages_->errorMessage(QObject::tr("Component %1, Bus interface %2: Port abstraction"
-                            " was not found for logical port %3 at abstraction definition %4.")
-                            .arg(getComponent()->getVlnv().toString(),
-                            mInterface->interface_->name(),
-                            pMap->getLogicalPort()->name_,
-                            mInterface->absDef_->getVlnv().toString()));
-                        continue;
-                    }
-
-                    thisIfUsesThePort = true;
-
-                    // Every mapping using the port creates a new assignment for the port.
-                    QSharedPointer<MetaPortAssignment> mUpPortAssignment(new MetaPortAssignment);
-
-                    // The default value comes from the port abstraction.
-                    mUpPortAssignment->defaultValue_ = portAbstraction->getDefaultValue();
-
-                    // Parse the port map bounds.
-                    QPair<QString, QString> logicalBounds = logicalPortBoundsInMapping(parser, pMap);
-                    QPair<QString, QString> physicalBounds = physicalPortBoundsInMapping(parser, pMap);
-
-                    // If physical bounds do not exist, they are the same as the port bounds.
-                    if (physicalBounds.first.isEmpty() || physicalBounds.second.isEmpty())
-                    {
-                        physicalBounds = mPort->vectorBounds_;
-                    }
-
-                    // If logical bounds do not exist, they are the same as the physical bounds.
-                    if (logicalBounds.first.isEmpty() || logicalBounds.second.isEmpty())
-                    {
-                        // Pick the total width of the physical bounds.
-                        int left = parseExpression(parser, physicalBounds.first).toInt();
-                        int right = parseExpression(parser, physicalBounds.second).toInt();
-                        // This is [abs(physical.left – physical.right):0]
-                        int widthMinusOne = abs(left - right);
-                        logicalBounds.first = QString::number(widthMinusOne);
-                        logicalBounds.second = "0";
-                    }
-
-                    // Assign the values.
-                    mUpPortAssignment->logicalBounds_ = logicalBounds;
-                    mUpPortAssignment->physicalBounds_ = physicalBounds;
-
-                    // Create a copy of the assignments.
-                    QSharedPointer<MetaPortAssignment> mDownPortAssignment
-                        (new MetaPortAssignment(*mUpPortAssignment.data()));
-                    // There must be an assignment for both directions in hierarchy.
-                    mPort->upAssignments_.insert(pMap->getLogicalPort()->name_, mUpPortAssignment);
-                    mPort->downAssignments_.insert(pMap->getLogicalPort()->name_, mDownPortAssignment);
+                    continue;
                 }
+
+                // The mapping must have a logical port.
+                if (!pMap->getLogicalPort())
+                {
+                    continue;
+                }
+                
+                // The abstraction definition must have a port abstraction with the same name.
+                QSharedPointer<PortAbstraction> portAbstraction= mInterface->absDef_->
+                    getPort(pMap->getLogicalPort()->name_);
+
+                if (!portAbstraction)
+                {
+                    messages_->errorMessage(QObject::tr("Component %1, Bus interface %2: Port abstraction"
+                        " was not found for logical port %3 at abstraction definition %4.")
+                        .arg(getComponent()->getVlnv().toString(),
+                        mInterface->interface_->name(),
+                        pMap->getLogicalPort()->name_,
+                        mInterface->absDef_->getVlnv().toString()));
+                    continue;
+                }
+
+                thisIfUsesThePort = true;
+
+                // Every mapping using the port creates a new assignment for the port.
+                QSharedPointer<MetaPortAssignment> mUpPortAssignment(new MetaPortAssignment);
+
+                // The default value comes from the port abstraction.
+                mUpPortAssignment->defaultValue_ = portAbstraction->getDefaultValue();
+
+                // Parse the port map bounds.
+                QPair<QString, QString> logicalBounds = logicalPortBoundsInMapping(parser, pMap);
+                QPair<QString, QString> physicalBounds = physicalPortBoundsInMapping(parser, pMap);
+
+                // If physical bounds do not exist, they are the same as the port bounds.
+                if (physicalBounds.first.isEmpty() || physicalBounds.second.isEmpty())
+                {
+                    physicalBounds = mPort->vectorBounds_;
+                }
+
+                // If logical bounds do not exist, they are the same as the physical bounds.
+                if (logicalBounds.first.isEmpty() || logicalBounds.second.isEmpty())
+                {
+                    // Pick the total width of the physical bounds.
+                    int left = parseExpression(parser, physicalBounds.first).toInt();
+                    int right = parseExpression(parser, physicalBounds.second).toInt();
+                    // This is [abs(physical.left – physical.right):0]
+                    int widthMinusOne = abs(left - right);
+                    logicalBounds.first = QString::number(widthMinusOne);
+                    logicalBounds.second = "0";
+                }
+
+                // Assign the values.
+                mUpPortAssignment->logicalBounds_ = logicalBounds;
+                mUpPortAssignment->physicalBounds_ = physicalBounds;
+
+                // Create a copy of the assignments.
+                QSharedPointer<MetaPortAssignment> mDownPortAssignment
+                    (new MetaPortAssignment(*mUpPortAssignment.data()));
+                // There must be an assignment for both directions in hierarchy.
+                mPort->upAssignments_.insert(pMap->getLogicalPort()->name_, mUpPortAssignment);
+                mPort->downAssignments_.insert(pMap->getLogicalPort()->name_, mDownPortAssignment);
             }
 
             // Associate the meta port with any interface that uses it.

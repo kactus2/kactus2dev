@@ -33,9 +33,10 @@ namespace AddressSpaceItemConstants
 // Function: AddressSpaceGraphicsItem::AddressSpaceGraphicsItem()
 //-----------------------------------------------------------------------------
 AddressSpaceGraphicsItem::AddressSpaceGraphicsItem(QSharedPointer<MemoryItem> memoryItem,
-    QSharedPointer<ConnectivityComponent> containingInstance, bool filterSegments, QGraphicsItem* parent):
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+    bool filterSegments, QGraphicsItem* parent):
 MainMemoryGraphicsItem(memoryItem, containingInstance, MemoryDesignerConstants::ADDRESSSEGMENT_TYPE,
-    filterSegments, parent),
+    filterSegments, identifierChain, parent),
 cpuIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/compile.png"), this))
 {
     QBrush addressSpaceBrush(KactusColors::ADDRESS_SEGMENT);
@@ -100,7 +101,13 @@ void AddressSpaceGraphicsItem::setLabelPositions()
 MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createNewSubItem(
     QSharedPointer<MemoryItem> subMemoryItem, bool isEmpty)
 {
-    return new AddressSegmentGraphicsItem(subMemoryItem, isEmpty, getContainingInstance(), this);
+    AddressSegmentGraphicsItem* segmentItem = new AddressSegmentGraphicsItem(
+        subMemoryItem, isEmpty, getIdentifierChain(), getContainingInstance(), this);
+
+    connect(segmentItem, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
+        this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
+
+    return segmentItem;
 }
 
 //-----------------------------------------------------------------------------

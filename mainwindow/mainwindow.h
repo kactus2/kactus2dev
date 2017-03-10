@@ -556,6 +556,14 @@ private slots:
      */
     void onFilterFields(bool filterFields);
 
+    /*!
+     *  Open the document containing the selected component and select the identified component item editor.
+     *
+     *      @param [in] componentVLNV       VLNV of the selected component.
+     *      @param [in] identifierChain     List of string identifying the selected component item.
+     */
+    void onOpenComponentItem(const VLNV& componentVLNV, QVector<QString> identifierChain);
+
 private:
 	// Disable copying.
 	MainWindow(MainWindow const& rhs);

@@ -114,6 +114,12 @@ void MemoryGraphicsItemHandler::createMemoryItems(QSharedPointer<ConnectivityGra
 {
     memoryMapItems_.clear();
 
+    QVector<QString> addressSpaceIdentifiers;
+    addressSpaceIdentifiers.append(QStringLiteral("Address spaces"));
+
+    QVector<QString> memoryMapIdentifiers;
+    memoryMapIdentifiers.append(QStringLiteral("Memory maps"));
+
     foreach (QSharedPointer<ConnectivityComponent> componentInstance, connectionGraph->getInstances())
     {
         foreach (QSharedPointer<MemoryItem> memoryItem, componentInstance->getMemories())
@@ -121,12 +127,12 @@ void MemoryGraphicsItemHandler::createMemoryItems(QSharedPointer<ConnectivityGra
             if (memoryItem->getType().compare(
                 MemoryDesignerConstants::ADDRESSSPACE_TYPE, Qt::CaseInsensitive) == 0)
             {
-                createAddressSpaceItem(memoryItem, componentInstance, spaceColumn);
+                createAddressSpaceItem(memoryItem, addressSpaceIdentifiers, componentInstance, spaceColumn);
             }
             else if (memoryItem->getType().compare(
                 MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
             {
-                createMemoryMapItem(memoryItem, componentInstance, memoryMapColumn);
+                createMemoryMapItem(memoryItem, memoryMapIdentifiers, componentInstance, memoryMapColumn);
             }
         }
     }
@@ -136,12 +142,13 @@ void MemoryGraphicsItemHandler::createMemoryItems(QSharedPointer<ConnectivityGra
 // Function: MemoryGraphicsItemHandler::createAddressSpaceItem()
 //-----------------------------------------------------------------------------
 void MemoryGraphicsItemHandler::createAddressSpaceItem(QSharedPointer<MemoryItem> spaceItem,
-    QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* containingColumn)
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+    MemoryColumn* containingColumn)
 {
     if (containingColumn)
     {
         AddressSpaceGraphicsItem* spaceGraphicsItem = new AddressSpaceGraphicsItem(
-            spaceItem, containingInstance, filterAddressSpaceSegments_, containingColumn);
+            spaceItem, identifierChain, containingInstance, filterAddressSpaceSegments_, containingColumn);
         containingColumn->addItem(spaceGraphicsItem);
 
         connectGraphicsItemSignals(spaceGraphicsItem);
@@ -152,12 +159,13 @@ void MemoryGraphicsItemHandler::createAddressSpaceItem(QSharedPointer<MemoryItem
 // Function: MemoryGraphicsItemHandler::createMemoryMapItem()
 //-----------------------------------------------------------------------------
 void MemoryGraphicsItemHandler::createMemoryMapItem(QSharedPointer<MemoryItem> mapItem,
-    QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* containingColumn)
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+    MemoryColumn* containingColumn)
 {
     if (containingColumn)
     {
-        MemoryMapGraphicsItem* mapGraphicsItem = new MemoryMapGraphicsItem(
-            mapItem, filterAddressBlocks_, filterRegisters_, filterFields_, containingInstance, containingColumn);
+        MemoryMapGraphicsItem* mapGraphicsItem = new MemoryMapGraphicsItem(mapItem, identifierChain,
+            filterAddressBlocks_, filterRegisters_, filterFields_, containingInstance, containingColumn);
         containingColumn->addItem(mapGraphicsItem);
 
         memoryMapItems_.append(mapGraphicsItem);
@@ -171,8 +179,8 @@ void MemoryGraphicsItemHandler::createMemoryMapItem(QSharedPointer<MemoryItem> m
 //-----------------------------------------------------------------------------
 void MemoryGraphicsItemHandler::connectGraphicsItemSignals(MainMemoryGraphicsItem* graphicsItem)
 {
-    connect(graphicsItem, SIGNAL(openComponentDocument(VLNV const&)),
-        this, SIGNAL(openComponentDocument(VLNV const&)), Qt::UniqueConnection);
+    connect(graphicsItem, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
+        this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

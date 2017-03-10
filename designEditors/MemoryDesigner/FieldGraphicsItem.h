@@ -45,14 +45,16 @@ public:
      *      @param [in] fieldWidth          Width of the field.
      *      @param [in] fieldHeight         Height of the field.
      *      @param [in] isEmptyField        Value for empty fields.
+     *      @param [in] identifierChain     Chain of strings identifying this item.
      *      @param [in] labelFont           Font for the field labels.
      *      @param [in] containingInstance  Name of the containing component instance.
      *      @param [in] isOutsideRegister   Holds whether the field is out of bounds of the register or not.
      *      @param [in] parentItem          The parent graphics item.
      */
-    FieldGraphicsItem(QString const& fieldName, QString const& displayName, quint64 fieldOffset,
-        quint64 fieldLastBit, qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QFont labelFont,
-        QString const& containingInstance, bool isOutsideRegister, MemoryDesignerGraphicsItem* parentItem);
+    FieldGraphicsItem(QSharedPointer<MemoryItem> fieldItem, quint64 fieldOffset, quint64 fieldLastBit,
+        qreal fieldWidth, quint64 fieldHeight, bool isEmptyField, QVector<QString> identifierChain,
+        QFont labelFont, QSharedPointer<ConnectivityComponent> containingInstance, bool isOutsideRegister,
+        MemoryDesignerGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.

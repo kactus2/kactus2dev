@@ -106,7 +106,7 @@ QVariant ModuleParameterModel::data(QModelIndex const& index, int role) const
         }
         else if (editingDisabled_)
         {
-            return KactusColors::MANDATORY_FIELD;
+            return KactusColors::DISABLED_TEXT;
         }
     }
 

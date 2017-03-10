@@ -16,16 +16,21 @@
 #include <designEditors/MemoryDesigner/MemoryColumn.h>
 #include <designEditors/MemoryDesigner/MemoryConnectionItem.h>
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
+#include <designEditors/MemoryDesigner/ConnectivityComponent.h>
+#include <designEditors/MemoryDesigner/MemoryItem.h>
 
 #include <QFont>
 #include <QFontMetrics>
 #include <QGraphicsSceneMouseEvent>
+#include <QMenu>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem()
 //-----------------------------------------------------------------------------
 MemoryDesignerGraphicsItem::MemoryDesignerGraphicsItem(QString const& itemName, QString const& displayName,
-    QString const& instanceName, QGraphicsItem* parent):
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> componentInstance,
+    QGraphicsItem* parent):
+QObject(),
 QGraphicsRectItem(parent),
 nameLabel_(new QGraphicsTextItem(itemName, this)),
 startRangeLabel_(new QGraphicsTextItem(this)),
@@ -37,8 +42,27 @@ originalLastAddress_(0),
 itemName_(itemName),
 displayName_(displayName),
 memoryConnections_(),
-instanceName_(instanceName)
+containingInstance_(componentInstance),
+componentVLNV_(getVLNVFromContainingInstance()),
+openComponentAction_(new QAction(this)),
+openItemEditorAction_(new QAction(this)),
+identifierChain_(identifierChain)
 {
+    if (!itemName.isEmpty())
+    {
+        identifierChain_.append(itemName);
+    }
+
+    QString openComponentText = QStringLiteral("Open containing component");
+    openComponentAction_->setText(openComponentText);
+
+    QString openItemEditorText = QStringLiteral("Open editor for ") + itemName;
+    openItemEditorAction_->setText(openItemEditorText);
+
+    connect(openComponentAction_, SIGNAL(triggered()),
+        this, SLOT(openContainingComponent()), Qt::UniqueConnection);
+    connect(openItemEditorAction_, SIGNAL(triggered()), this, SLOT(openItemEditor()), Qt::UniqueConnection);
+
     if (!displayName_.isEmpty())
     {
         nameLabel_->setPlainText(displayName);
@@ -196,7 +220,8 @@ void MemoryDesignerGraphicsItem::setupToolTip(QString const& identifier)
         displayNameText = QStringLiteral("<b>Display Name:</b> ") + displayName() + lineEnd;
     }
 
-    QString instanceText = QStringLiteral("<b>Component Instance:</b> ") + instanceName_ + lineEnd + lineEnd;
+    QString instanceText = QStringLiteral("<b>Component Instance:</b> ") + containingInstance_->getName() +
+        lineEnd + lineEnd;
 
     QString baseAddressText =
         QStringLiteral("<b>Generic Base Address:</b> ") + getRangeStartLabel()->toPlainText() + lineEnd;
@@ -365,9 +390,9 @@ bool MemoryDesignerGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem*
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::getContainingInstance()
 //-----------------------------------------------------------------------------
-QString MemoryDesignerGraphicsItem::getContainingInstance() const
+QSharedPointer<ConnectivityComponent> MemoryDesignerGraphicsItem::getContainingInstance() const
 {
-    return instanceName_;
+    return containingInstance_;
 }
 
 //-----------------------------------------------------------------------------
@@ -416,4 +441,63 @@ void MemoryDesignerGraphicsItem::compressToUnCutAddresses(QVector<quint64> unCut
         qreal condensedHeight = boundingRect().height() - cutAreaHeight;
         condense(condensedHeight);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::contextMenuEvent()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    QMenu contextMenu;
+    contextMenu.addAction(openComponentAction_);
+    if (!identifierChain_.isEmpty())
+    {
+        contextMenu.addAction(openItemEditorAction_);
+    }
+
+    contextMenu.exec(event->screenPos());
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::openContainingComponent()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::openContainingComponent()
+{
+    emit openComponentDocument(componentVLNV_, QVector<QString>());
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::openItemEditor()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::openItemEditor()
+{
+    if (!identifierChain_.isEmpty())
+    {
+        emit openComponentDocument(componentVLNV_, identifierChain_);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::getVLNVFromContainingInstance()
+//-----------------------------------------------------------------------------
+VLNV MemoryDesignerGraphicsItem::getVLNVFromContainingInstance()
+{
+    if (containingInstance_)
+    {
+        VLNV::IPXactType vlnvType = VLNV::COMPONENT;
+        QString vlnvString = containingInstance_->getVlnv();
+
+        VLNV componentVLNV(vlnvType, vlnvString);
+        return componentVLNV;
+    }
+
+    return VLNV();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::getIdentifierChain()
+//-----------------------------------------------------------------------------
+QVector<QString> MemoryDesignerGraphicsItem::getIdentifierChain() const
+{
+    return identifierChain_;
 }

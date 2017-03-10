@@ -3333,12 +3333,33 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
 
     connect(memoryDesignWidget, SIGNAL(clearItemSelection()), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
-    connect(memoryDesignWidget, SIGNAL(openComponentDocument(VLNV const&)),
-        this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
+    connect(memoryDesignWidget, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
+        this, SLOT(onOpenComponentItem(const VLNV&, QVector<QString>)), Qt::UniqueConnection);
 
     designTabs_->addAndOpenDocument(memoryDesignWidget);
     
     QApplication::restoreOverrideCursor();
+}
+
+//-----------------------------------------------------------------------------
+// Function: mainwindow::onOpenComponentItem()
+//-----------------------------------------------------------------------------
+void MainWindow::onOpenComponentItem(const VLNV& componentVLNV, QVector<QString> identifierChain)
+{
+    openComponent(componentVLNV);
+
+    if (!identifierChain.isEmpty())
+    {
+        TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
+        if (doc)
+        {
+            ComponentEditor* componentEditor = dynamic_cast<ComponentEditor*>(doc);
+            if (componentEditor)
+            {
+                componentEditor->openItemEditor(identifierChain);
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

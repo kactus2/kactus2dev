@@ -38,12 +38,14 @@ public:
      *      @param [in] registerItem        Memory item containing the register data.
      *      @param [in] isEmptyRegister     Boolean value to represent empty registers.
      *      @param [in] registerWidth       Width of the register graphics item.
+     *      @param [in] identifierChain     List of string identifying the memory item.
      *      @param [in] filterFields        Value for filtering register fields.
      *      @param [in] containingInstance  Name of the containing component instance.
      *      @param [in] parentItem          The parent memory graphics item.
      */
     RegisterGraphicsItem(QSharedPointer<MemoryItem> registerItem, bool isEmptyRegister, qreal registerWidth,
-        bool filterFields, QString const& containingInstance, MemoryDesignerGraphicsItem* parentItem);
+        QVector<QString> identifierChain, bool filterFields,
+        QSharedPointer<ConnectivityComponent> containingInstance, MemoryDesignerGraphicsItem* parentItem);
 
 	/*!
      *  The destructor.
@@ -147,8 +149,7 @@ private:
     /*!
      *  Create a field graphics item.
      *
-     *      @param [in] fieldName               Name of the field.
-     *      @param [in] displayName             Display name of the field.
+     *      @param [in] fieldItem               The field memory item.
      *      @param [in] fieldOffset             Offset of the field.
      *      @param [in] fieldWidth              Width of the field.
      *      @param [in] isEmptyField            Holds whether the field is empty or not.
@@ -157,9 +158,8 @@ private:
      *      @param [in] fieldsStartPosition     The start coordinate for the field graphics items.
      *      @param [in] fieldFont               Font used in fields.
      */
-    void createFieldGraphicsItem(QString const& fieldName, QString const& displayName, quint64 fieldOffset,
-        quint64 fieldWidth, bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal fieldsStartPosition,
-        QFont fieldFont);
+    void createFieldGraphicsItem(QSharedPointer<MemoryItem> fieldItem, quint64 fieldOffset, quint64 fieldWidth,
+        bool isEmptyField, qreal oneBitWidth, quint64 registerEnd, qreal fieldsStartPosition, QFont fieldFont);
 
     /*!
      *  Get the width available for the register item.

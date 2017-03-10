@@ -28,18 +28,18 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] itemName        Name of the memory item.
-     *      @param [in] displayName     Display name of the memory item.
-     *      @param [in] toolTipType     The type of the memory item.
-     *      @param [in] baseAddress     Base address of the memory item.
-     *      @param [in] range           Range of the memory item.
-     *      @param [in] blockWidth      Width of the memory item.
-     *      @param [in] instanceName    Name of the containing component instance.
-     *      @param [in] parent          The parent item.
+     *      @param [in] subMemoryItem       The sub memory item.
+     *      @param [in] toolTipType         The type of the memory item.
+     *      @param [in] baseAddress         Base address of the memory item.
+     *      @param [in] range               Range of the memory item.
+     *      @param [in] blockWidth          Width of the memory item.
+     *      @param [in] identifierChain     List of strings to identify the component item.
+     *      @param [in] containingInstance  Component instance containing the sub memory item.
+     *      @param [in] parent              The parent item.
      */
-    MemoryDesignerChildGraphicsItem(QString const& itemName, QString const& displayName,
-        QString const& toolTipType, quint64 baseAddress, quint64 range, qreal blockWidth,
-        QString const& instanceName, QGraphicsItem* parent);
+    MemoryDesignerChildGraphicsItem(QSharedPointer<MemoryItem> subMemoryItem, QString const& toolTipType,
+        quint64 baseAddress, quint64 range, qreal blockWidth, QVector<QString> identifierChain,
+        QSharedPointer<ConnectivityComponent> containingInstance, QGraphicsItem* parent);
 
 	/*!
      *  The destructor.

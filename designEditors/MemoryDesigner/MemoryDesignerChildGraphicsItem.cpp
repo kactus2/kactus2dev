@@ -11,16 +11,20 @@
 
 #include "MemoryDesignerChildGraphicsItem.h"
 
+#include <designEditors/MemoryDesigner/MemoryItem.h>
+
 #include <QBrush>
 #include <QFont>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem()
 //-----------------------------------------------------------------------------
-MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem(QString const& itemName,
-    QString const& displayName, QString const& toolTipType, quint64 baseAddress, quint64 range, qreal blockWidth,
-    QString const& instanceName, QGraphicsItem* parent):
-MemoryDesignerGraphicsItem(itemName, displayName, instanceName, parent)
+MemoryDesignerChildGraphicsItem::MemoryDesignerChildGraphicsItem(QSharedPointer<MemoryItem> subMemoryItem,
+    QString const& toolTipType, quint64 baseAddress, quint64 range, qreal blockWidth,
+    QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
+    QGraphicsItem* parent):
+MemoryDesignerGraphicsItem(subMemoryItem->getName(), subMemoryItem->getDisplayName(), identifierChain,
+    containingInstance, parent)
 {
     if (range == 1)
     {

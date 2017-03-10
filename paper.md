@@ -35,7 +35,7 @@ bibliography: paper.bib
 
 # Summary
 
-Kactus2 is a graphical electronic design automation (EDA) tool [@DEV] targeted for packing and assembling building blocks for application-specific integrated circuits (ASIC) and field-programmable gate arrays (FPGA). Thus, the target audience is mostly hardware developers, but also co-operation with software development is enabled through software integration.
+Kactus2 is a graphical electronic design automation (EDA) tool [@DEV] for packing and assembling building blocks for application-specific integrated circuits (ASIC) and field-programmable gate arrays (FPGA). Thus, the target audience is mostly hardware developers, but also co-operation with software development is enabled through software integration.
 
 The core functionality of Kactus2 is creating and reusing intellectual property. This can be done for individual components as well as designs and hierarchies incorporating multiple component instances. In addition, the tool supports configuration for improving reusability. Furthermore, Kactus2 features integration support such as HDL generation and memory visualization.
 

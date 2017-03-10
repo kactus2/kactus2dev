@@ -11,6 +11,7 @@
     <filterAttribute>2.0</filterAttribute>
     <toc>
       <section title="Kactus2 Manual" ref="index.html">
+        <section title="What you can do with Kactus2" ref="whatYouCanDo.html"/>
         <section title="Getting Started" ref="gettingStarted/configureLibrary.html">
           <section title="Step 1: Configuring Library" ref="gettingStarted/configureLibrary.html"/>
           <section title="Step 2: Accessing Documents" ref="gettingStarted/accessingDocuments.html"/>
