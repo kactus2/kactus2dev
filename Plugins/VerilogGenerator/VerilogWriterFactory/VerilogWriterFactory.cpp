@@ -63,7 +63,7 @@ QSharedPointer<GenerationOutput> VerilogWriterFactory::prepareComponent(QString 
         messages_->errorMessage(error);
 
         // If parser says no-go, we dare do nothing.
-        return QSharedPointer<VerilogDocument>::QSharedPointer();
+        return QSharedPointer<VerilogDocument>();
     }
 
     QSharedPointer<VerilogDocument> document = initializeComponentWriters(component);
