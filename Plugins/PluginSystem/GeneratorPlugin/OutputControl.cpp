@@ -101,14 +101,14 @@ QSharedPointer<GenerationOutput> OutputControl::changeFileName(int index, QStrin
 {
     if (index >= outputs_->size() || index < 0)
     {
-        return QSharedPointer<GenerationOutput>::QSharedPointer();
+        return QSharedPointer<GenerationOutput>();
     }
 
     QSharedPointer<GenerationOutput> selection = outputs_->at(index);
 
     if (selection->fileName_ == newName)
     {
-        return QSharedPointer<GenerationOutput>::QSharedPointer();
+        return QSharedPointer<GenerationOutput>();
     }
 
     selection->fileName_ = newName;
