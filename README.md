@@ -15,7 +15,7 @@ software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
 What you can do with Kactus2
 ----------------------------------------------------
 
-Pack IPs for reuse and exchange
+Package IPs for reuse and exchange
  * Import your existing IPs as IP-XACT components
  * Create new IP-XACT components and generate their HDL module headers
  * Reuse IP-XACT files from any standard compatible vendor
@@ -28,30 +28,30 @@ Create HW designs with hierarchy
 
 Integrate HW and SW
  * Use memory designer to preview memory maps and address spaces in your hierarchy
- * Pack software to IP-XACT components and map them to hardware
+ * Package software to IP-XACT components and map them to hardware
  * Generate makefiles that build executables with rules defined in IP-XACT components
  
-What you cannot do with Kactus2</h2>
+What you cannot do with Kactus2
 ----------------------------------------------------
- * Behavioral logic: Neither Kactus2 or IP-XACT handles module implementations
- * Synthesis or simulation: This requires tools that are specificly created for the purpose
+ * Behavioral logic: Neither Kactus2 nor IP-XACT handles module implementations
+ * Synthesis or simulation: These require tools that are specificly created for the purpose
  
 Examples
 ----------------------------------------------------
 
-Example IPs are available at https://github.com/kactus2/ipxactexamplelib
+Example IPs are available in GitHub at https://github.com/kactus2/ipxactexamplelib
 
 Tutorials 
 ----------------------------------------------------
 
-Video tutorials are available at https://www.youtube.com/user/Kactus2Tutorial
+Video tutorials are available in Youtube at https://www.youtube.com/user/Kactus2Tutorial
 
 Community Guidelines 
 ----------------------------------------------------
 
-Issues should be left at Kactus2 project management site: https://kactus2.cs.tut.fi
+Issues should be reported at Kactus2 project management site: https://kactus2.cs.tut.fi
 
-Otherwise support is provided via our email: kactus2@cs.tut.fi
+Otherwise support is provided by email: kactus2@cs.tut.fi
 
 When contributing to Kactus2, you should see the wiki at the project management site.
 It will guide on essentials like building with Visual Studio and plugin development.
