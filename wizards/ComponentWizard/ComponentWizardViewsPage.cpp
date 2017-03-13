@@ -52,8 +52,12 @@ validator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(parame
            parent_->getComponent()->getModel())
 {
     setTitle(tr("Views"));
-    setSubTitle(tr("Setup the views for the component."));
+    setSubTitle(tr("Setup the view(s) for the component.\n"
+        "Views specify different representations of the component for e.g. simulation and synthesis."));
     setFinalPage(true);
+
+    addButton_->setToolTip(tr("Add new view"));
+    removeButton_->setToolTip(tr("Remove selection"));
 
     viewList_->setSelectionMode(QAbstractItemView::SingleSelection);
     viewList_->setModel(viewModel_);
@@ -107,15 +111,6 @@ void ComponentWizardViewsPage::initializePage()
 //-----------------------------------------------------------------------------
 bool ComponentWizardViewsPage::isComplete() const
 {
-    /*for(int i = 0; i < editorTabs_->count(); i++)
-    {
-        ViewEditor* editor = dynamic_cast<ViewEditor*>(editorTabs_->widget(i));
-        if (!editor->isValid())
-        {         
-            return false;
-        }
-    }*/
-
     return true;
 }
 
@@ -243,10 +238,11 @@ void ComponentWizardViewsPage::setupLayout()
     viewListButtons->addButton(addButton_, QDialogButtonBox::ActionRole);
     viewListButtons->addButton(removeButton_, QDialogButtonBox::ActionRole);
     
-    QHBoxLayout* viewsLayout = new QHBoxLayout();
+    QGroupBox* viewsBox = new QGroupBox(tr("Component views"), this);
+    QHBoxLayout* viewsLayout = new QHBoxLayout(viewsBox);
     viewsLayout->addWidget(viewList_);
     viewsLayout->addWidget(viewListButtons);
 
-    topLayout->addLayout(viewsLayout);
+    topLayout->addWidget(viewsBox);
     topLayout->addWidget(editorTabs_, 1);
 }

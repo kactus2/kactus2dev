@@ -197,7 +197,7 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
             }
             else
             {
-                return KactusColors::DISABLED_FIELD;
+                return KactusColors::DISABLED_TEXT;
             }
         }
         else
@@ -234,7 +234,7 @@ QVariant ConfigurableElementsModel::data(QModelIndex const& index, int role) con
     {
         if (!index.parent().isValid())
         {
-            return KactusColors::DISABLED_FIELD;
+            return KactusColors::CATALOG_HEADER;
         }
     }
     else if (role == Qt::DecorationRole)

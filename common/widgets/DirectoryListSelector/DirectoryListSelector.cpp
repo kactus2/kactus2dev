@@ -19,10 +19,9 @@
 // Function: DirectoryListSelector::DirectoryListSelector()
 //-----------------------------------------------------------------------------
 DirectoryListSelector::DirectoryListSelector(QString const& basePath,
-                                             QStringList const& initialDirs,                                             
-                                             QWidget* parent) : 
-    QWidget(parent),
-    buttonAdd_(new QPushButton(QIcon(":/icons/common/graphics/add.png"), QString(), this)),
+    QStringList const& initialDirs, QWidget* parent) : 
+QWidget(parent),
+    buttonAdd_(new QPushButton(QIcon(":/icons/common/graphics/folder-horizontal-open.png"), QString(), this)),
     buttonRemove_(new QPushButton(QIcon(":/icons/common/graphics/remove.png"), QString(), this)),    
     directoryListView_(new QListView(this)),
     directoryListModel_(new QStringListModel(initialDirs)),
@@ -31,7 +30,10 @@ DirectoryListSelector::DirectoryListSelector(QString const& basePath,
 {
     directoryListView_->setModel(directoryListModel_);
    
+    buttonAdd_->setToolTip(tr("Browse..."));
+
     buttonRemove_->setEnabled(false); 
+    buttonRemove_->setToolTip(tr("Remove selection"));
 
     connect(buttonAdd_, SIGNAL(clicked()), this, SLOT(addDirectory()));
     connect(buttonRemove_, SIGNAL(clicked()), this, SLOT(removeDirectory()));
@@ -172,7 +174,8 @@ void DirectoryListSelector::setupLayout()
     addRemoveButtonBox->addButton(buttonAdd_, QDialogButtonBox::ActionRole);
     addRemoveButtonBox->addButton(buttonRemove_, QDialogButtonBox::ActionRole);
 
-    QHBoxLayout* topLayout = new QHBoxLayout(this);
+    QHBoxLayout* topLayout = new QHBoxLayout(this);    
     topLayout->addWidget(directoryListView_, 1);
     topLayout->addWidget(addRemoveButtonBox);
+    topLayout->setContentsMargins(0, 0, 0, 0);
 }

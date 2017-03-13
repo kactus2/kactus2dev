@@ -39,7 +39,9 @@ ViewListModel::~ViewListModel()
 //-----------------------------------------------------------------------------
 void ViewListModel::setComponent(QSharedPointer<Component> component)
 {
+    beginResetModel();
     component_ = component;
+    endResetModel();
 }
 
 //-----------------------------------------------------------------------------
