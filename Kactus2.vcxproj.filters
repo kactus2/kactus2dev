@@ -6416,6 +6416,9 @@
     <ClInclude Include="designEditors\MemoryDesigner\FieldOverlapItem.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
     </ClInclude>
+    <ClInclude Include="settings\FileTypeColumns.h">
+      <Filter>Header Files\settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="designEditors\common\DiagramUtil.inl">

@@ -14,26 +14,26 @@
 #include <common/widgets/listManager/listmanager.h>
 #include <common/widgets/SnippetTextEdit/SnippetTextEdit.h>
 
-#include <QVBoxLayout>
-#include <QDir>
-#include <QPushButton>
-#include <QFileDialog>
-#include <QLabel>
 #include <QCoreApplication>
+#include <QDir>
+#include <QFileDialog>
+#include <QFormLayout>
+#include <QLabel>
 #include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: NamingPolicySettingsPage()
 //-----------------------------------------------------------------------------
-NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings)
-    : SettingsPage(settings),
-      categories_(),
-      curCategoryIndex_(-1),
-      categoryLabel_(new QLabel(tr("Show naming policy for:"), this)),
-      categoryCombo_(new QComboBox(this)),
-      valuesList_(new ListManager(tr("Values"), this)),
-      formatGroup_(new QGroupBox(tr("Format"), this)),
-      formatEdit_(new SnippetTextEdit(this))
+NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings):
+SettingsPage(settings),
+    categories_(),
+    curCategoryIndex_(-1),
+    categoryCombo_(new QComboBox(this)),
+    valuesList_(new ListManager(tr("Suggested values"), this)),
+    formatGroup_(new QGroupBox(tr("Format"), this)),
+    formatEdit_(new SnippetTextEdit(this))
 {
     // Add categories.
     categories_.append(PolicyCategory("Policies/InstanceNames", "Component Instance Names", POLICY_FORMAT));
@@ -48,12 +48,14 @@ NamingPolicySettingsPage::NamingPolicySettingsPage(QSettings& settings)
     formatLayout->addWidget(formatEdit_);
 
     // Setup the layout.
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(categoryLabel_);
-    layout->addWidget(categoryCombo_);
-    layout->addWidget(valuesList_);
-    layout->addWidget(formatGroup_);
-    layout->addStretch(1);
+    QFormLayout* policyLayout = new QFormLayout();
+    policyLayout->addRow(tr("Naming policy:"), categoryCombo_);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    topLayout->addLayout(policyLayout);
+    topLayout->addWidget(valuesList_);
+    topLayout->addWidget(formatGroup_);
+    topLayout->addStretch(1);
 
     // Setup connections.
     connect(categoryCombo_, SIGNAL(currentIndexChanged(int)), 

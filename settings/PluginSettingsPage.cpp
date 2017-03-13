@@ -40,8 +40,8 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: PluginSettingsPage::PluginSettingsPage()
 //-----------------------------------------------------------------------------
-PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& pluginMgr)
-    : SettingsPage(settings),
+PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& pluginMgr):
+SettingsPage(settings),
     settings_(settings),
     pluginMgr_(pluginMgr),
     localManager_(QStringList()),
@@ -324,20 +324,20 @@ void PluginSettingsPage::resetStacks()
 //-----------------------------------------------------------------------------
 void PluginSettingsPage::setupLayout()
 {
-    QGroupBox* settingsGroup = new QGroupBox(tr("Plugin settings"), this);
-
-    QVBoxLayout* settingsLayout = new QVBoxLayout(settingsGroup);
-    settingsLayout->addWidget(&settingsStack_);
-
     QGroupBox* infoGroup = new QGroupBox(tr("Plugin general information"), this);
 
     QVBoxLayout* infoLayout = new QVBoxLayout(infoGroup);
     infoLayout->addWidget(&infoStack_);
 
+    QGroupBox* settingsGroup = new QGroupBox(tr("Plugin settings"), this);
+
+    QVBoxLayout* settingsLayout = new QVBoxLayout(settingsGroup);
+    settingsLayout->addWidget(&settingsStack_);
+
     QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(new QLabel(tr("Plugin directories"), this));
+    layout->addWidget(new QLabel(tr("Plugin directories:"), this));
     layout->addWidget(&pluginDirSelector_);
-    layout->addWidget(new QLabel(tr("Available plugins"), this));
+    layout->addWidget(new QLabel(tr("Available plugins:"), this));
     layout->addWidget(&pluginsTree_);
     layout->addWidget(infoGroup);
     layout->addWidget(settingsGroup, 1);

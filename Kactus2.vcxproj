@@ -6376,6 +6376,7 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\moc_%(Filename).cpp"  -DQT_DLL -DQT_HELP_LIB "-I.\IPXactWrapper\ComponentEditor\software\swView" "-I.\common\widgets\cpuSelector" "-I.\common\widgets\fileTypeSelector" "-I.\common\dialogs\commandLineGeneratorDialog" "-I$(QTDIR)\..\qttools\include" "-I$(QTDIR)\..\qttools\include\QtHelp" "-I.\editors\ComponentEditor\common" "-I.\editors\ComponentEditor\addressSpaces" "-I.\mainwindow"</Command>
     </CustomBuild>
     <ClInclude Include="Plugins\PluginSystem\PluginSettingsModel.h" />
+    <ClInclude Include="settings\FileTypeColumns.h" />
     <ClInclude Include="VersionHelper.h" />
     <ClInclude Include="wizards\common\ComponentComparator\ComponentComparator.h" />
     <ClInclude Include="wizards\common\IPXactDiff.h" />

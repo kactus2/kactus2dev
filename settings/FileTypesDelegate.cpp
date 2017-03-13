@@ -11,7 +11,7 @@
 
 #include "FileTypesDelegate.h"
 
-#include "FileTypesModel.h"
+#include "FileTypeColumns.h"
 
 #include <IPXACTmodels/common/FileTypes.h>
 
@@ -22,8 +22,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileTypesDelegate::FileTypesDelegate()
 //-----------------------------------------------------------------------------
-FileTypesDelegate::FileTypesDelegate(QObject* parent /*= 0*/)
-    : QStyledItemDelegate(parent)
+FileTypesDelegate::FileTypesDelegate(QObject* parent): QStyledItemDelegate(parent)
 {
 
 }
@@ -40,39 +39,32 @@ FileTypesDelegate::~FileTypesDelegate()
 //-----------------------------------------------------------------------------
 QWidget* FileTypesDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
-    switch (index.column())
+    if (index.column() == FileTypeColumns::NAME)
     {
-    case FILE_TYPES_COL_NAME:
+        QComboBox* combo = new QComboBox(parent);
+
+        // Get all file types that have been defined already.
+        QStringList usedTypes = index.model()->data(index, Qt::UserRole).toStringList();
+        for (unsigned int i = 0; i < FileTypes::FILE_TYPE_COUNT; ++i)
         {
-            QComboBox* combo = new QComboBox(parent);
-
-				// contains all file types that have been defined already
-				QStringList usedTypes = index.model()->data(index, Qt::UserRole).toStringList();
-
-            for (unsigned int i = 0; i < FileTypes::FILE_TYPE_COUNT; ++i)
+            // if the file type is not yet defined then add it to the list of possible types
+            if (!usedTypes.contains(FileTypes::FILE_TYPES[i]))
             {
-                // if the file type is not yet defined then add it to the list of possible types
-                if (!usedTypes.contains(FileTypes::FILE_TYPES[i]))
-                {
-                    combo->addItem(FileTypes::FILE_TYPES[i]);
-                }
+                combo->addItem(FileTypes::FILE_TYPES[i]);
             }
-            
-            combo->setEditable(true);
-            return combo;
         }
 
-    case FILE_TYPES_COL_EXTENSIONS:
-        {
-            QLineEdit* line = new QLineEdit(parent);
-            return line;
-        }
-
-    default:
-        {
-            return QStyledItemDelegate::createEditor(parent, option, index);
-        }
+        combo->setEditable(true);
+        return combo;
     }
+
+    else if (index.column() == FileTypeColumns::EXTENSIONS)
+    {
+        QLineEdit* line = new QLineEdit(parent);
+        return line;
+    }
+
+    return QStyledItemDelegate::createEditor(parent, option, index);
 }
 
 //-----------------------------------------------------------------------------
@@ -80,33 +72,27 @@ QWidget* FileTypesDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 //-----------------------------------------------------------------------------
 void FileTypesDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
 {
-    switch (index.column())
+    if (index.column() == FileTypeColumns::NAME)
     {
-    case FILE_TYPES_COL_NAME:
-        {
-            QComboBox* combo = qobject_cast<QComboBox*>(editor);
-            Q_ASSERT_X(combo, "FileTypesDelegate::setEditorData", "Type conversion failed for QComboBox");
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT_X(combo, "FileTypesDelegate::setEditorData", "Type conversion failed for QComboBox");
 
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            combo->setEditText(text);
-            break;
-        }
-        
-    case FILE_TYPES_COL_EXTENSIONS:
-        {
-            QLineEdit* line = qobject_cast<QLineEdit*>(editor);
-            Q_ASSERT_X(line, "FileTypesDelegate::setEditorData", "Type conversion failed for QLineEdit");
+        QString text = index.model()->data(index, Qt::DisplayRole).toString();
+        combo->setEditText(text);
+    }
 
-            QString text = index.model()->data(index, Qt::DisplayRole).toString();
-            line->setText(text);
-            break;
-        }
+    else if (index.column() == FileTypeColumns::EXTENSIONS)
+    {
+        QLineEdit* line = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT_X(line, "FileTypesDelegate::setEditorData", "Type conversion failed for QLineEdit");
 
-    default:
-        {
-            QStyledItemDelegate::setEditorData(editor, index);
-            break;
-        }
+        QString text = index.model()->data(index, Qt::DisplayRole).toString();
+        line->setText(text);
+    }
+
+    else
+    {
+        QStyledItemDelegate::setEditorData(editor, index);
     }
 }
 
@@ -115,32 +101,26 @@ void FileTypesDelegate::setEditorData(QWidget* editor, const QModelIndex& index)
 //-----------------------------------------------------------------------------
 void FileTypesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
-    switch (index.column())
+    if (index.column() == FileTypeColumns::NAME)
     {
-    case FILE_TYPES_COL_NAME:
-        {
-            QComboBox* combo = qobject_cast<QComboBox*>(editor);
-            Q_ASSERT_X(combo, "FileTypesDelegate::setEditorData", "Type conversion failed for QComboBox");
+        QComboBox* combo = qobject_cast<QComboBox*>(editor);
+        Q_ASSERT_X(combo, "FileTypesDelegate::setEditorData", "Type conversion failed for QComboBox");
 
-            QString text = combo->currentText();
-            model->setData(index, text, Qt::EditRole);
-            break;
-        }
+        QString text = combo->currentText();
+        model->setData(index, text, Qt::EditRole);
+    }
 
-    case FILE_TYPES_COL_EXTENSIONS:
-        {
-            QLineEdit* line = qobject_cast<QLineEdit*>(editor);
-            Q_ASSERT_X(line, "FileTypesDelegate::setEditorData", "Type conversion failed for QLineEdit");
+    else if (index.column() == FileTypeColumns::EXTENSIONS)
+    {
+        QLineEdit* line = qobject_cast<QLineEdit*>(editor);
+        Q_ASSERT_X(line, "FileTypesDelegate::setEditorData", "Type conversion failed for QLineEdit");
 
-            QString text = line->text();
-            model->setData(index, text, Qt::EditRole);
-            break;
-        }
+        QString text = line->text();
+        model->setData(index, text, Qt::EditRole);
+    }
 
-    default:
-        {
-            QStyledItemDelegate::setModelData(editor, model, index);
-            break;
-        }
+    else
+    {
+        QStyledItemDelegate::setModelData(editor, model, index);
     }
 }

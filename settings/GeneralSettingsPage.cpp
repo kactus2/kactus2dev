@@ -14,34 +14,25 @@
 #include <common/utils.h>
 
 #include <QCoreApplication>
+#include <QFormLayout>
 #include <QLabel>
 #include <QMessageBox>
 #include <QSettings>
-#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: GeneralSettingsPage()
 //-----------------------------------------------------------------------------
 GeneralSettingsPage::GeneralSettingsPage(QSettings& settings):
 SettingsPage(settings),
-usernameEdit_(0)
+usernameEdit_(new QLineEdit(this))
 {
-    // Create the username line edit and label.
-    QLabel* usernameLabel = new QLabel(tr("User name:"), this);
-
     QString username = settings.value("General/Username", Utils::getCurrentUser()).toString();
-    usernameEdit_ = new QLineEdit(username, this);
-
-    QLabel* settingsFileLabel = new QLabel(tr("Settings file:"), this);
-    QLabel* settingsLabel = new QLabel(settings.fileName(), this);
+    usernameEdit_->setText(username);
 
     // Setup the layout.
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(usernameLabel);
-    layout->addWidget(usernameEdit_);
-    layout->addWidget(settingsFileLabel);
-    layout->addWidget(settingsLabel);
-    layout->addStretch(1);
+    QFormLayout* layout = new QFormLayout(this);
+    layout->addRow(tr("User name:"), usernameEdit_);
+    layout->addRow(tr("Settings file:"), new QLabel(settings.fileName(), this));
 }
 
 //-----------------------------------------------------------------------------

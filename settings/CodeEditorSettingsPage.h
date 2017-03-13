@@ -124,7 +124,7 @@ private:
     QCheckBox* italicCheckBox_;
 
     //! Color box for showing a sample of the highlighted text.
-    ColorBox* sampleBox_;
+    ColorBox* previewBox_;
 
     //! The current (non-saved) highlight styles.
     HighlightStyleDesc styles_[CSourceHighlighter::STYLE_COUNT];

@@ -13,7 +13,9 @@
 #include "VersionHelper.h"
 
 // Used to convert defined values to string.
-#define TOSTRING(str) #str
+// Double stringize is required to expand possible macros in str.
+#define DOUBLE_STR(x) #x
+#define TOSTRING(str) DOUBLE_STR(str)
 
 //-----------------------------------------------------------------------------
 // Function: VersionHelper::createVersionString()
