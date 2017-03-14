@@ -169,7 +169,7 @@ QVariant MemoryMapsModel::data(QModelIndex const& index, int role) const
 		return QVariant();
 	}
 
-    if (Qt::DisplayRole == role) 
+    if (role == Qt::DisplayRole) 
     {
         if (isValidExpressionColumn(index))
         {
@@ -223,7 +223,7 @@ QVariant MemoryMapsModel::data(QModelIndex const& index, int role) const
             (!index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN) ||
             (index.parent().isValid() && index.column() == MemoryMapsColumns::AUB_COLUMN))
         {
-            return KactusColors::MANDATORY_FIELD;
+            return KactusColors::DISABLED_TEXT;
         }
 
         return blackForValidOrRedForInvalidIndex(index);

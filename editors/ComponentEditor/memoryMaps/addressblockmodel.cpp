@@ -212,7 +212,7 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
             if (index.column() != AddressBlockColumns::IS_PRESENT && reg &&
                 (!reg->getIsPresent().isEmpty() && parseExpressionToDecimal(reg->getIsPresent()).toInt() != 1))
             {
-                return KactusColors::MANDATORY_FIELD;
+                return KactusColors::DISABLED_TEXT;
             }
             else
             {

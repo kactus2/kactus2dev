@@ -232,7 +232,7 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
             if (index.column() != RegisterColumns::IS_PRESENT_COLUMN && 
                 (!isPresentValue.isEmpty() && parseExpressionToDecimal(isPresentValue).toInt() != 1))
             {
-                return KactusColors::MANDATORY_FIELD;
+                return KactusColors::DISABLED_TEXT;
             }
             else
             {
