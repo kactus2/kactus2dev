@@ -10,14 +10,14 @@
 //-----------------------------------------------------------------------------
 
 #include "FileTypesModel.h"
+#include "FileTypeColumns.h"
 
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
 // Function: FileTypesModel::FileTypesModel()
 //-----------------------------------------------------------------------------
-FileTypesModel::FileTypesModel(QSettings& settings, QObject *parent)
-    : QAbstractTableModel(parent)
+FileTypesModel::FileTypesModel(QSettings& settings, QObject *parent): QAbstractTableModel(parent)
 {
     // Parse existing file types from settings.
     beginResetModel();
@@ -50,7 +50,7 @@ FileTypesModel::~FileTypesModel()
 //-----------------------------------------------------------------------------
 // Function: FileTypesModel::rowCount()
 //-----------------------------------------------------------------------------
-int FileTypesModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int FileTypesModel::rowCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
@@ -63,20 +63,20 @@ int FileTypesModel::rowCount(QModelIndex const& parent /*= QModelIndex()*/) cons
 //-----------------------------------------------------------------------------
 // Function: FileTypesModel::columnCount()
 //-----------------------------------------------------------------------------
-int FileTypesModel::columnCount(QModelIndex const& parent /*= QModelIndex()*/) const
+int FileTypesModel::columnCount(QModelIndex const& parent) const
 {
     if (parent.isValid())
     {
         return 0;
     }
 
-    return FILE_TYPES_COL_COUNT;
+    return FileTypeColumns::COLUMN_COUNT;
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileTypesModel::data()
 //-----------------------------------------------------------------------------
-QVariant FileTypesModel::data(QModelIndex const& index, int role /*= Qt::DisplayRole*/) const
+QVariant FileTypesModel::data(QModelIndex const& index, int role) const
 {
     // Check for invalid index.
     if (!index.isValid() || index.row() < 0 || index.row() >= entries_.size())
@@ -88,31 +88,29 @@ QVariant FileTypesModel::data(QModelIndex const& index, int role /*= Qt::Display
     {
         FileTypeEntry const& entry = entries_.at(index.row());
 
-        switch (index.column())
+        if (index.column() == FileTypeColumns::NAME)
         {
-        case FILE_TYPES_COL_NAME:
-            {
-                return entry.name;
-			}
-		case FILE_TYPES_COL_EDIT_IN_KACTUS:
-			{
-				return entry.editInKactus;
-			}
-        case FILE_TYPES_COL_EXTENSIONS:
-            {
-                return entry.extensions;
-            }
-        case FILE_TYPES_COL_EXECUTABLE:
-            {
-                return entry.executable;
-            }
-        default:
-            {
-                return QVariant();
-            }
+            return entry.name;
+        }
+        else if (index.column() == FileTypeColumns::EDITABLE_IN_KACTUS)
+        {
+            return entry.editInKactus;
+        }
+        else if (index.column() == FileTypeColumns::EXTENSIONS)
+        {
+            return entry.extensions;
+        }
+        else if (index.column() == FileTypeColumns::EXECUTABLE)
+        {
+            return entry.executable;
+        }
+        else
+        {
+            return QVariant();
         }
     }
-	else if (Qt::UserRole == role)
+
+	else if (role == Qt::UserRole)
     {
         QStringList specifiedFileTypes;
         foreach (FileTypeEntry const& entry, entries_) 
@@ -129,35 +127,29 @@ QVariant FileTypesModel::data(QModelIndex const& index, int role /*= Qt::Display
 //-----------------------------------------------------------------------------
 // Function: FileTypesModel::headerData()
 //-----------------------------------------------------------------------------
-QVariant FileTypesModel::headerData(int section, Qt::Orientation orientation, int role /*= Qt::DisplayRole*/) const
+QVariant FileTypesModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (role == Qt::DisplayRole)
+    if (role == Qt::DisplayRole && orientation == Qt::Horizontal)
     {
-        if (orientation == Qt::Horizontal)
+        if (section == FileTypeColumns::NAME)
         {
-            switch (section)
-            {
-            case FILE_TYPES_COL_NAME:
-                {
-                    return tr("File type");
-                }
-			case FILE_TYPES_COL_EDIT_IN_KACTUS:
-				{
-					return tr("Edit in Kactus2");
-				}
-            case FILE_TYPES_COL_EXTENSIONS:
-                {
-                    return tr("Extensions");
-                }
-            case FILE_TYPES_COL_EXECUTABLE:
-                {
-                    return tr("Executed with");
-				}
-            default:
-                {
-                    return QVariant();
-                }
-            }
+            return tr("File type");
+        }
+        else if (section == FileTypeColumns::EDITABLE_IN_KACTUS)
+        {
+            return tr("Edit in Kactus2");
+        }
+        else if (section == FileTypeColumns::EXTENSIONS)
+        {
+            return tr("Extensions");
+        }
+        else if (section == FileTypeColumns::EXECUTABLE)
+        {
+            return tr("Execute with");
+        }
+        else
+        {
+            return QVariant();
         }
     }
 
@@ -167,7 +159,7 @@ QVariant FileTypesModel::headerData(int section, Qt::Orientation orientation, in
 //-----------------------------------------------------------------------------
 // Function: FileTypesModel::setData()
 //-----------------------------------------------------------------------------
-bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/)
+bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
     // Check for invalid index.
     if (!index.isValid() || index.row() < 0 || index.row() >= entries_.size())
@@ -177,40 +169,36 @@ bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, in
 
     if (role == Qt::EditRole)
     {
-        switch (index.column())
+        if (index.column() == FileTypeColumns::NAME)
         {
-        case FILE_TYPES_COL_NAME:
-            {
-					QString name = value.toString();
+            QString name = value.toString();
 
-					// if the file type has already been defined
-					foreach (const FileTypesModel::FileTypeEntry& entry, entries_) {
-						if (entry.name.compare(name, Qt::CaseInsensitive) == 0) {
-							return false;
-						}
-					}
+            // if the file type has already been defined
+            foreach (const FileTypesModel::FileTypeEntry& entry, entries_)
+            {
+                if (entry.name.compare(name, Qt::CaseInsensitive) == 0)
+                {
+                    return false;
+                }
+            }
 
-                entries_[index.row()].name = name;
-                break;
-            }
-		case FILE_TYPES_COL_EDIT_IN_KACTUS:
-			{
-                entries_[index.row()].editInKactus = value.toBool();
-                break;
-			}
-        case FILE_TYPES_COL_EXTENSIONS:
-            {
-                entries_[index.row()].extensions = value.toString();
-                break;
-            }
-        case  FILE_TYPES_COL_EXECUTABLE:
-            {
-                entries_[index.row()].executable = value.toString();
-			}
-        default:
-            {
-                return false;
-            }
+            entries_[index.row()].name = name;
+        }
+        else if (index.column() == FileTypeColumns::EDITABLE_IN_KACTUS)
+        {
+            entries_[index.row()].editInKactus = value.toBool();
+        }
+        else if (index.column() == FileTypeColumns::EXTENSIONS)
+        {
+            entries_[index.row()].extensions = value.toString();
+        }
+        else if (index.column() ==  FileTypeColumns::EXECUTABLE)
+        {
+            entries_[index.row()].executable = value.toString();
+        }
+        else
+        {
+            return false;
         }
 
         emit dataChanged(index, index);
@@ -223,26 +211,14 @@ bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, in
 //-----------------------------------------------------------------------------
 // Function: FileTypesModel::flags()
 //-----------------------------------------------------------------------------
-Qt::ItemFlags FileTypesModel::flags(const QModelIndex& index) const
+Qt::ItemFlags FileTypesModel::flags(QModelIndex const& index) const
 {
     if (!index.isValid())
     {
         return Qt::NoItemFlags;
     }
 
-    switch (index.column())
-    {
-	case FILE_TYPES_COL_NAME:
-	case FILE_TYPES_COL_EDIT_IN_KACTUS:
-    case FILE_TYPES_COL_EXTENSIONS:
-	case FILE_TYPES_COL_EXECUTABLE:
-        {
-            return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
-        }
-
-    default:
-        return Qt::ItemIsEnabled;
-    }
+    return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
 //-----------------------------------------------------------------------------

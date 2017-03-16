@@ -2203,9 +2203,6 @@
     <ClCompile Include="GeneratedFiles\moc_fileeditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="GeneratedFiles\moc_desceditor.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_generaleditor.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -2628,9 +2625,6 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\fileSet\file\filetypeeditordelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet\file</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\general\desceditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\general</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\general\generaleditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\general</Filter>
@@ -3928,9 +3922,6 @@
     <ClCompile Include="GeneratedFiles\moc_NewBusDefinitionPage.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\fileSet\groupmanagerdelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\general</Filter>
-    </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_absdefgroup.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
@@ -4245,6 +4236,9 @@
     </ClCompile>
     <ClCompile Include="GeneratedFiles\moc_MemoryDesignerGraphicsItem.cpp">
       <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\fileSet\groupmanagerdelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\fileSet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4979,9 +4973,6 @@
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\fileSet\file\fileeditor.h">
       <Filter>Header Files\editors\ComponentEditor\fileSet\file</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\general\desceditor.h">
-      <Filter>Header Files\editors\ComponentEditor\general</Filter>
     </CustomBuild>
     <CustomBuild Include="editors\ComponentEditor\general\generaleditor.h">
       <Filter>Header Files\editors\ComponentEditor\general</Filter>
@@ -6415,6 +6406,9 @@
     </ClInclude>
     <ClInclude Include="designEditors\MemoryDesigner\FieldOverlapItem.h">
       <Filter>Header Files\designEditors\MemoryDesigner</Filter>
+    </ClInclude>
+    <ClInclude Include="settings\FileTypeColumns.h">
+      <Filter>Header Files\settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

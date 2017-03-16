@@ -42,6 +42,13 @@ public:
      */
     virtual QVariant loadResource(int type, QUrl const& url);
 
+    /*!
+     *  Sets the content for the browser.
+     *
+     *      @param [in] url   The url to the content to set.
+     */
+    virtual void setSource(QUrl const& url);
+
 public slots:
     /*!
      *  Shows the given help page.
@@ -54,6 +61,7 @@ private:
     // Disable copying.
     ContextHelpBrowser(ContextHelpBrowser const& rhs);
     ContextHelpBrowser& operator=(ContextHelpBrowser const& rhs);
+
 
     //! The help engine.
     QHelpEngine* engine_;

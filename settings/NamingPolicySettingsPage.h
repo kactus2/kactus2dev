@@ -108,9 +108,6 @@ private:
     //! The index of the currently selected category.
     int curCategoryIndex_;
 
-    //! Label for element selection.
-    QLabel* categoryLabel_;
-
     //! Element selection combo box.
     QComboBox* categoryCombo_;
 

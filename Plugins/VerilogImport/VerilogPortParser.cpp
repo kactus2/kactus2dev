@@ -125,8 +125,8 @@ QStringList VerilogPortParser::findPortDeclarations(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::findPortsSection(QString const& input) const
 {
-    bool noValidModule = (input.indexOf(VerilogSyntax::MODULE_BEGIN) == -1 || 
-        input.indexOf(VerilogSyntax::MODULE_END) == -1);
+    bool noValidModule = input.indexOf(VerilogSyntax::MODULE_BEGIN) == -1 || 
+        input.indexOf(VerilogSyntax::MODULE_END) == -1;
 
     if (noValidModule)
     {
@@ -142,6 +142,7 @@ QString VerilogPortParser::findPortsSection(QString const& input) const
     {
         portSection = findVerilog2001PortsSection(input);
     }
+
     return portSection;
 }
 
@@ -167,25 +168,15 @@ int VerilogPortParser::findStartOfPortList(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& input) const
 {    
+    QRegularExpression portList(PORT_1995.pattern() +"(\\s*" + PORT_1995.pattern() +"\\s*)*");
+
     int startOfPortList = findStartOfPortList(input);    
     int endOfModule = input.indexOf(VerilogSyntax::MODULE_END, startOfPortList);
 
     QString section = input.mid(startOfPortList, endOfModule - startOfPortList);
     section = removeIgnoredLines(section);
 
-    int firstPort = section.indexOf(PORT_1995);
-    int lastPort = section.lastIndexOf(PORT_1995);
-    int endOfPorts = lastPort += PORT_1995.match(section, lastPort).capturedLength();
-
-    bool noPorts = (firstPort == -1 || lastPort == -1);
-    if (noPorts)
-    {
-        return QString();
-    }
-
-    int portSectionLength = endOfPorts - firstPort;
-
-    return section.mid(firstPort, portSectionLength);
+    return portList.match(section).captured();
 }
 
 //-----------------------------------------------------------------------------
@@ -217,7 +208,7 @@ QString VerilogPortParser::removeIgnoredLines(QString portSection) const
 {    
     QRegularExpression multilineComment(VerilogSyntax::MULTILINE_COMMENT);
   
-    return portSection.remove(VerilogSyntax::COMMENTLINE).remove(multilineComment);
+    return  portSection.remove(VerilogSyntax::COMMENTLINE).remove(multilineComment);
 }
 
 //-----------------------------------------------------------------------------
@@ -302,15 +293,15 @@ DirectionTypes::Direction VerilogPortParser::parseDirection(QString const& portD
     QString directionString = PORT_EXP.match(portDeclaration).captured(1);
 
     DirectionTypes::Direction portDirection = DirectionTypes::DIRECTION_INVALID;
-    if (directionString == "input")
+    if (directionString == QLatin1String("input"))
     {
         portDirection = DirectionTypes::IN;
     }
-    else if (directionString == "output")
+    else if (directionString == QLatin1String("output"))
     {
         portDirection = DirectionTypes::OUT;
     }
-    else if(directionString == "inout")
+    else if(directionString == QLatin1String("inout"))
     {
         portDirection = DirectionTypes::INOUT;
     }
@@ -335,8 +326,8 @@ QPair<QString, QString> VerilogPortParser::parseArrayBounds(QString const& portD
 QPair<QString, QString> VerilogPortParser::parseLeftAndRight(QString const& bounds,
 	QSharedPointer<Component> targetComponent, QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const
 {
-    QString leftBound = "";
-    QString rightBound = "";
+    QString leftBound = QString();
+    QString rightBound = QString();
 
     if (!bounds.isEmpty())
     {
@@ -417,7 +408,7 @@ QStringList VerilogPortParser::parsePortNames(QString const& portDeclaration) co
 {
     QString names = PORT_EXP.match(portDeclaration).captured(5);
     
-    return names.split(QRegularExpression("\\s*[,]\\s*"), QString::SkipEmptyParts);
+    return names.split(QRegularExpression(QStringLiteral("\\s*[,]\\s*")), QString::SkipEmptyParts);
 }
 
 //-----------------------------------------------------------------------------

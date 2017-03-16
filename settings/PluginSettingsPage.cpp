@@ -40,8 +40,8 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: PluginSettingsPage::PluginSettingsPage()
 //-----------------------------------------------------------------------------
-PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& pluginMgr)
-    : SettingsPage(settings),
+PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& pluginMgr):
+SettingsPage(settings),
     settings_(settings),
     pluginMgr_(pluginMgr),
     localManager_(QStringList()),
@@ -58,8 +58,7 @@ PluginSettingsPage::PluginSettingsPage(QSettings& settings, PluginManager& plugi
 
     pluginsTree_.setHeaderHidden(true);
     pluginsTree_.setColumnCount(1);
-    pluginsTree_.setSelectionBehavior(QAbstractItemView::SelectItems);
-    pluginsTree_.setMaximumHeight(140);
+    pluginsTree_.setSelectionBehavior(QAbstractItemView::SelectItems);    
 
     setupLayout();
 
@@ -324,21 +323,28 @@ void PluginSettingsPage::resetStacks()
 //-----------------------------------------------------------------------------
 void PluginSettingsPage::setupLayout()
 {
-    QGroupBox* settingsGroup = new QGroupBox(tr("Plugin settings"), this);
+    pluginDirSelector_.setMinimumHeight(120);
+    pluginDirSelector_.setMinimumWidth(240);
 
-    QVBoxLayout* settingsLayout = new QVBoxLayout(settingsGroup);
-    settingsLayout->addWidget(&settingsStack_);
+    infoStack_.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
 
     QGroupBox* infoGroup = new QGroupBox(tr("Plugin general information"), this);
 
     QVBoxLayout* infoLayout = new QVBoxLayout(infoGroup);
     infoLayout->addWidget(&infoStack_);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(new QLabel(tr("Plugin directories"), this));
-    layout->addWidget(&pluginDirSelector_);
-    layout->addWidget(new QLabel(tr("Available plugins"), this));
-    layout->addWidget(&pluginsTree_);
-    layout->addWidget(infoGroup);
-    layout->addWidget(settingsGroup, 1);
+    QGroupBox* settingsGroup = new QGroupBox(tr("Plugin settings"), this);
+
+    QVBoxLayout* settingsLayout = new QVBoxLayout(settingsGroup);
+    settingsLayout->addWidget(&settingsStack_);
+
+    QGridLayout* layout = new QGridLayout(this);
+    layout->addWidget(new QLabel(tr("Plugin directories:"), this), 0, 0, 1, 1);
+    layout->addWidget(new QLabel(tr("Available plugins:"), this), 0, 1, 1, 1);
+    layout->addWidget(&pluginDirSelector_, 1, 0, 1, 1);
+    layout->addWidget(&pluginsTree_, 1, 1, 1, 1);
+    layout->addWidget(infoGroup, 2, 0, 1, 2);
+    layout->addWidget(settingsGroup, 3, 0, 1, 2);
+    layout->setColumnStretch(0, 1);
+    layout->setColumnStretch(1, 1);
 }

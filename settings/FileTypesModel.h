@@ -20,19 +20,6 @@
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
-//! File types column enumeration.
-//-----------------------------------------------------------------------------
-enum FileTypesColumn
-{
-	FILE_TYPES_COL_NAME,
-	FILE_TYPES_COL_EDIT_IN_KACTUS,
-    FILE_TYPES_COL_EXTENSIONS,
-	FILE_TYPES_COL_EXECUTABLE,
-    FILE_TYPES_COL_COUNT
-};
-
-
-//-----------------------------------------------------------------------------
 //! Data model for the address editor.
 //-----------------------------------------------------------------------------
 class FileTypesModel : public QAbstractTableModel
@@ -149,8 +136,8 @@ public slots:
 private:
     // Disable copying.
     FileTypesModel(FileTypesModel const& rhs);
-    FileTypesModel& operator=(FileTypesModel const& rhs);
-    
+    FileTypesModel& operator=(FileTypesModel const& rhs);  
+
     //-----------------------------------------------------------------------------
     //! FileTypeEntry structure.
     //-----------------------------------------------------------------------------

@@ -143,7 +143,7 @@ QVariant AdHocVisibilityModel::data(QModelIndex const& index, int role /*= Qt::D
     {
         if (!visibilityPolicy_->canChangeVisibility(adhocPort))
         {
-            return KactusColors::DISABLED_FIELD;
+            return KactusColors::DISABLED_TEXT;
         }
         else
         {

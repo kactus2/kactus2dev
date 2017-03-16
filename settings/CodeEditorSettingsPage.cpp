@@ -28,7 +28,7 @@
 #include <QGridLayout>
 #include <QColorDialog>
 #include <QMetaType>
-#include <QDebug>
+#include <QFormLayout>
 
 namespace
 {
@@ -51,11 +51,35 @@ namespace
 //-----------------------------------------------------------------------------
 CodeEditorSettingsPage::CodeEditorSettingsPage(QSettings& settings) : 
 SettingsPage(settings),
-indentWidthEdit_(0),
-fontCombo_(0),
-fontSizeCombo_(0),
-highlightTypeList_(0)
+    indentWidthEdit_(0),
+    fontCombo_(new QFontComboBox()),
+    fontSizeCombo_(new QComboBox()),
+    highlightTypeList_(new QListWidget()),
+    colorBox_(new ColorBox(QSize(32, 32))),
+    boldCheckBox_(new QCheckBox()),
+    italicCheckBox_(new QCheckBox()),
+    previewBox_(new ColorBox(QSize(200, 64))),
+    styles_()
 {
+    fontCombo_->setWritingSystem(QFontDatabase::Latin);
+
+    fontSizeCombo_->setMaxVisibleItems(MAX_FONT_SIZE - MIN_FONT_SIZE + 1);
+
+    for (int size = MIN_FONT_SIZE; size <= MAX_FONT_SIZE; ++size)
+    {
+        fontSizeCombo_->addItem(QString::number(size));
+    }
+
+    for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
+    {
+        highlightTypeList_->addItem(STYLE_NAMES[i]);
+    }
+
+    previewBox_->setFixedSize(QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+    //previewBox_->setFixedHeight();
+    previewBox_->setColor(Qt::white);
+    previewBox_->setText("AaBbCcXxYyZz");
+
     setupLayout();
 
     connect(fontCombo_, SIGNAL(currentFontChanged(QFont const&)), this, SLOT(updateSample()));
@@ -153,14 +177,14 @@ void CodeEditorSettingsPage::selectColor()
 //-----------------------------------------------------------------------------
 void CodeEditorSettingsPage::updateSample()
 {
-    sampleBox_->setTextColor(colorBox_->getColor());
+    previewBox_->setTextColor(colorBox_->getColor());
 
     QFont font = fontCombo_->currentFont();
     font.setPointSize(fontSizeCombo_->currentText().toInt());
     font.setBold(boldCheckBox_->isChecked());
     font.setItalic(italicCheckBox_->isChecked());
 
-    sampleBox_->setTextFont(font);
+    previewBox_->setTextFont(font);
 }
 
 //-----------------------------------------------------------------------------
@@ -208,85 +232,38 @@ void CodeEditorSettingsPage::setupLayout()
     indentStyleRadioButtons_[INDENT_STYLE_TAB] = new QRadioButton(tr("Use tabs"), indentGroup);
     indentStyleRadioButtons_[INDENT_STYLE_SPACES] = new QRadioButton(tr("Use spaces"), indentGroup);
 
-    QVBoxLayout* indentLayout = new QVBoxLayout(indentGroup);
-    indentLayout->addLayout(widthLayout);
+    QVBoxLayout* indentLayout = new QVBoxLayout(indentGroup);    
     indentLayout->addWidget(indentStyleRadioButtons_[INDENT_STYLE_TAB]);
     indentLayout->addWidget(indentStyleRadioButtons_[INDENT_STYLE_SPACES]);
+    indentLayout->addLayout(widthLayout);
 
-    // Create the font & colors group and all of its widgets.
-    QGroupBox* fontColorGroup = new QGroupBox(tr("Font and Colors"), this);
+    QGroupBox* fontGroup = new QGroupBox(tr("Font"), this);
 
-    QLabel* fontLabel = new QLabel(tr("Font:"), fontColorGroup);
-    fontCombo_ = new QFontComboBox(fontColorGroup);
-    fontCombo_->setWritingSystem(QFontDatabase::Latin);
-    fontCombo_->setFixedWidth(320);
+    QFormLayout* fontAndSizeLayout = new QFormLayout(fontGroup);
+    fontAndSizeLayout->addRow(tr("Font:"), fontCombo_);
+    fontAndSizeLayout->addRow(tr("Size:"), fontSizeCombo_);
 
-    QLabel* fontSizeLabel = new QLabel(tr("Size:"), fontColorGroup);
-    fontSizeCombo_ = new QComboBox(fontColorGroup);
-    fontSizeCombo_->setFixedWidth(80);
-    fontSizeCombo_->setMaxVisibleItems(MAX_FONT_SIZE - MIN_FONT_SIZE + 1);
-
-    for (int size = MIN_FONT_SIZE; size <= MAX_FONT_SIZE; ++size)
-    {
-        fontSizeCombo_->addItem(QString::number(size));
-    }
-
-    QGridLayout* fontLayout = new QGridLayout();
-    fontLayout->addWidget(fontLabel, 0, 0, 1, 1, Qt::AlignLeft);
-    fontLayout->addWidget(fontCombo_, 1, 0, 1, 1, Qt::AlignLeft);
-    fontLayout->addWidget(fontSizeLabel, 0, 1, 1, 1, Qt::AlignLeft);
-    fontLayout->addWidget(fontSizeCombo_, 1, 1, 1, 1, Qt::AlignLeft);
-    fontLayout->setColumnStretch(1, 1);
-
-    QLabel* highlightLabel = new QLabel(tr("Syntax highlight for:"), fontColorGroup);
-    highlightTypeList_ = new QListWidget(fontColorGroup);
     highlightTypeList_->setFixedWidth(208);
 
+    QGroupBox* highlightGroup = new QGroupBox(tr("Syntax highlighting"), this);
 
-    for (int i = 0; i < CSourceHighlighter::STYLE_COUNT; ++i)
-    {
-        highlightTypeList_->addItem(STYLE_NAMES[i]);
-    }
+    QFormLayout* syntaxOptionsLayout = new QFormLayout();    
+    syntaxOptionsLayout->addRow(tr("Bold:"), boldCheckBox_);
+    syntaxOptionsLayout->addRow(tr("Italic:"), italicCheckBox_);
+    syntaxOptionsLayout->addRow(tr("Color:"), colorBox_);
+    syntaxOptionsLayout->addRow(tr("Preview:"), previewBox_);
 
-    QLabel* colorLabel = new QLabel(tr("Color:"), fontColorGroup);
-    colorBox_ = new ColorBox(QSize(56, 56), fontColorGroup);
-
-    boldCheckBox_ = new QCheckBox(tr("Bold"), fontColorGroup);
-
-    italicCheckBox_ = new QCheckBox(tr("Italic"), fontColorGroup);  
-
-    QVBoxLayout* checkLayout = new QVBoxLayout();
-    checkLayout->addWidget(boldCheckBox_);
-    checkLayout->addWidget(italicCheckBox_);
-
-    QLabel* sampleLabel = new QLabel(tr("Sample:"), fontColorGroup);
-    sampleBox_ = new ColorBox(QSize(208, 44), fontColorGroup);
-    sampleBox_->setColor(Qt::white);
-    sampleBox_->setText("AaBbCcXxYyZz");
-
-    QVBoxLayout* sampleLayout = new QVBoxLayout();
-    sampleLayout->addWidget(sampleLabel);
-    sampleLayout->addWidget(sampleBox_);
-
-    QGridLayout* colorLayout = new QGridLayout();
-    colorLayout->addWidget(highlightLabel, 0, 0, 1, 1, Qt::AlignLeft);
-    colorLayout->addWidget(highlightTypeList_, 1, 0, 2, 1, Qt::AlignLeft);
-    colorLayout->addWidget(colorLabel, 0, 1, 1, 1, Qt::AlignLeft);
-    colorLayout->addWidget(colorBox_, 1, 1, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-    colorLayout->addLayout(checkLayout, 1, 2, 1, 1, Qt::AlignLeft | Qt::AlignTop);
-    colorLayout->addLayout(sampleLayout, 2, 1, 1, 2, Qt::AlignLeft | Qt::AlignTop);
-    colorLayout->setColumnStretch(2, 1);
-
-    QVBoxLayout* fontColorLayout = new QVBoxLayout(fontColorGroup);
-    fontColorLayout->addLayout(fontLayout);
-    fontColorLayout->addSpacing(12);
-    fontColorLayout->addLayout(colorLayout);
+    QGridLayout* highlightLayout = new QGridLayout(highlightGroup);
+    highlightLayout->addWidget(highlightTypeList_, 0, 0, 1, 1);
+    highlightLayout->addLayout(syntaxOptionsLayout, 0, 1, 1, 1);
 
     // Setup the layout.
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(indentGroup);
-    layout->addWidget(fontColorGroup);
-    layout->addStretch(1);
+    QGridLayout* topLayout = new QGridLayout(this);
+    topLayout->addWidget(fontGroup, 0, 0, 1, 1);
+    topLayout->addWidget(indentGroup, 0, 1, 1, 1);
+    topLayout->addWidget(highlightGroup, 1, 0, 1, 2);
+    topLayout->setColumnStretch(0, 1);
+    topLayout->setColumnStretch(1, 1);
 }
 
 //-----------------------------------------------------------------------------

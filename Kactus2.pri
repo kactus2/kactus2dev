@@ -127,6 +127,7 @@ HEADERS += ./VersionHelper.h \
     ./mainwindow/SaveHierarchy/SaveHierarchyDelegate.h \
     ./mainwindow/SaveHierarchy/HierarchicalSaveBuildStrategy.h \
     ./mainwindow/SaveHierarchy/SaveHierarchyDialog.h \
+    ./settings/FileTypeColumns.h \
     ./settings/SettingsUpdater.h \
     ./settings/ComponentEditorSettingsPage.h \
     ./settings/SettingsPage.h \
@@ -235,7 +236,6 @@ HEADERS += ./VersionHelper.h \
     ./editors/ComponentEditor/componenteditor.h \
     ./editors/ComponentEditor/itemeditor.h \
     ./editors/ComponentEditor/itemvisualizer.h \
-    ./editors/ComponentEditor/general/desceditor.h \
     ./editors/ComponentEditor/general/generaleditor.h \
     ./editors/ComponentEditor/ports/PortColumns.h \
     ./editors/ComponentEditor/ports/PortTagEditorDelegate.h \
@@ -967,7 +967,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySortFilter.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.cpp \
     ./editors/ComponentEditor/fileSet/groupmanagerdelegate.cpp \
-    ./editors/ComponentEditor/general/desceditor.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
     ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \

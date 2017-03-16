@@ -354,7 +354,17 @@ void tst_VerilogPortParser::testVerilog1995PortIsParsed_data()
     "\n"
     "endmodule"
     << "clk" << "" <<  DirectionTypes::IN << "" << "" << "";
-    
+
+    QTest::newRow("Keywords in comments within implementation.") <<
+        "module test (data);\n"        
+        "    input data;\n"
+        "\n"
+        "wire data;   // Data input\n"
+        "wire data_out;  // Data output\n"
+        "\n"
+        "endmodule"
+        << "data" << "" <<  DirectionTypes::IN << "" << "" << "";
+
 }
 
 //-----------------------------------------------------------------------------

@@ -140,6 +140,10 @@ QVariant PhysicalPortMappingTableModel::data(QModelIndex const& index, int role)
             {
                 return QIcon(":icons/common/graphics/control-dual.png");
             }
+            else if (direction == DirectionTypes::DIRECTION_PHANTOM)
+            {
+                return QIcon(":icons/common/graphics/draw-triangle3.png");
+            }
             else
             {
                 return QIcon(":icons/common/graphics/cross.png");

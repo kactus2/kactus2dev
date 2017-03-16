@@ -175,6 +175,12 @@ void DocumentReader::parseKactusAndVendorExtensions(QDomNode const& documentNode
         parseKactusAttributes(attributesNode, document);
     }
 
+    QDomNode licenseNode = extensionNodes.firstChildElement(QStringLiteral("kactus2:license"));
+    if (!licenseNode.isNull())
+    {
+        document->setLicense(licenseNode.firstChild().nodeValue());
+    }
+
     parseVendorExtensions(documentNode, document);
 }
 

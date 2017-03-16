@@ -95,7 +95,7 @@ QVariant ObjectRemoveModel::data( const QModelIndex& index,
 		}
 		else if (role == Qt::ForegroundRole) {
 			if (items_.at(index.row()).locked_) {
-				return KactusColors::DISABLED_FIELD;
+				return KactusColors::DISABLED_TEXT;
 			}
 			else {
 				return KactusColors::REGULAR_TEXT;

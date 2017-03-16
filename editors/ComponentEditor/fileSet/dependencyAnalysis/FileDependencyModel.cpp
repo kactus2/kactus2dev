@@ -306,7 +306,7 @@ QVariant FileDependencyModel::data(QModelIndex const& index, int role) const
             }
             else if (item->getFileSets().empty())
             {
-                return KactusColors::DISABLED_FIELD;
+                return KactusColors::DISABLED_TEXT;
             }
         }
     }

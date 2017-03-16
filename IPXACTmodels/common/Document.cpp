@@ -459,6 +459,43 @@ void Document::setFirmness(KactusAttribute::Firmness firmness)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Document::getLicense()
+//-----------------------------------------------------------------------------
+QString Document::getLicense() const
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == QLatin1String("kactus2:license"))
+        {
+            QSharedPointer<Kactus2Value> licenseExtension = extension.dynamicCast<Kactus2Value>();
+            return licenseExtension->value();
+        }
+    }
+
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Document::setLicense()
+//-----------------------------------------------------------------------------
+void Document::setLicense(QString const& license)
+{
+    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    {
+        if (extension->type() == QLatin1String("kactus2:license"))
+        {
+            getVendorExtensions()->removeAll(extension);
+        }
+    }
+
+    if (!license.isEmpty())
+    {
+        QSharedPointer<Kactus2Value> licenseValue (new Kactus2Value(QStringLiteral("kactus2:license"), license));
+        getVendorExtensions()->append(licenseValue);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: Document::addDefaultNameSpaces()
 //-----------------------------------------------------------------------------
 void Document::addDefaultNameSpaces()
