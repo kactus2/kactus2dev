@@ -141,7 +141,7 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
 
     return retval;
 }
-
+#include <QDebug>
 //-----------------------------------------------------------------------------
 // Function: MetaDesign::parseDesign()
 //-----------------------------------------------------------------------------
@@ -150,6 +150,59 @@ void MetaDesign::parseDesign()
     parseInstances();
     parseInterconnections();
     parseAdHocs();
+
+    foreach(QSharedPointer<MetaInstance> mInstance, *instances_)
+    {
+        foreach(QSharedPointer<MetaPort> mPort, *mInstance->getPorts())
+        {
+            QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator iter = mPort->upAssignments_.begin();
+            QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator end = mPort->upAssignments_.end();
+
+            for (; iter != end;)
+            {
+                QSharedPointer<MetaPortAssignment> mpa = *iter;
+
+                if (mpa->wire_ && mpa->wire_->refCount < 2)
+                {
+                    mpa->wire_ = QSharedPointer<MetaWire>();
+                }
+
+                if (!mpa->wire_ && mpa->defaultValue_.isEmpty())
+                {
+                    iter = mPort->upAssignments_.erase(iter);
+                }
+                else
+                {
+                    ++iter;
+                }
+            }
+        }
+    }
+
+    foreach(QSharedPointer<MetaPort> mPort, *topInstance_->getPorts())
+    {
+        QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator iter = mPort->downAssignments_.begin();
+        QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator end = mPort->downAssignments_.end();
+
+        for (; iter != end;)
+        {
+            QSharedPointer<MetaPortAssignment> mpa = *iter;
+
+            if (mpa->wire_ && mpa->wire_->refCount < 2)
+            {
+                mpa->wire_ = QSharedPointer<MetaWire>();
+            }
+
+            if (!mpa->wire_ && mpa->defaultValue_.isEmpty())
+            {
+                iter = mPort->downAssignments_.erase(iter);
+            }
+            else
+            {
+                ++iter;
+            }
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -383,10 +436,12 @@ void MetaDesign::wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
                 {
                     mWire = QSharedPointer<MetaWire>(new MetaWire);
                     mWire->name_ = mIterconnect->name_ + pAbs->getLogicalName();
+                    mWire->refCount = 0;
 
                     mIterconnect->wires_.insert(pAbs->getLogicalName(), mWire);
                 }
 
+                mWire->refCount = mWire->refCount+  1;
                 mpa->wire_ = mWire;
                 // Also assign larger bounds for wire, if applicable.
                 assignLargerBounds(mWire, mpa->logicalBounds_);
@@ -489,6 +544,7 @@ void MetaDesign::parseAdHocs()
         {
             mWire = QSharedPointer<MetaWire>(new MetaWire);
             mWire->name_ = wireName;
+            mWire->refCount = 0;
 
             // Append to the pool of detected interconnections.
             adHocWires_->append(mWire);
@@ -518,10 +574,21 @@ void MetaDesign::parseAdHocs()
                 defaultValue = connection->getTiedValue();
             }
 
-            // No wire and default value means no assignment.
-            if (defaultValue.isEmpty() && !mWire)
+            // No wire or default value means no assignment.
+            if (!mWire)
             {
-                continue;
+                if (defaultValue.isEmpty() )
+                {
+                    messages_->errorMessage(QObject::tr("Design %1: Ad-hoc connection %2 needs either more ports or a tie-off.")
+                        .arg(design_->getVlnv().toString(),
+                        connection->name()));
+
+                    continue;
+                }
+            }
+            else
+            {
+                mWire->refCount = mWire->refCount + 1;
             }
 
             bool isHierarchical = foundHierPorts.contains(mPort);
@@ -558,13 +625,14 @@ void MetaDesign::parseAdHocs()
                 mpa->physicalBounds_ = mPort->vectorBounds_;
             }
 
+            // Determine the part of the wire that shall be assigned to the port:
+            // This is [abs(physical.left – physical.right):0]
             QPair<QString, QString> newBounds;
             newBounds.second = "0";
 
             int right = mpa->physicalBounds_.first.toInt() - mpa->physicalBounds_.second.toInt();
             newBounds.first = QString::number(right);
 
-            // Logical bounds are still used to determine wire bounds.
             mpa->logicalBounds_ = newBounds;
 
             // Also assign larger bounds for the wire, if applicable.

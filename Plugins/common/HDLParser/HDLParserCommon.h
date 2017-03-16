@@ -56,6 +56,8 @@ struct MetaWire
     QString name_;
     //! The hierarchical ports that are assigned to the wire.
     QList<QSharedPointer<MetaPort> > hierPorts_;
+    //! How many times to the wire is referred by a prot assignment.
+    int refCount;
 };
 
 struct MetaPortAssignment

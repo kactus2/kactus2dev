@@ -82,11 +82,17 @@ private:
     
     /*!
      *  Culls and parses the ports of the component.
-     *  Creates assignments for port maps.
      *
      *      @param [in] parser          Used to parse expressions.
      */
     virtual void parsePorts(IPXactSystemVerilogParser& parser);
+    
+    /*!
+     *  Creates assignments for port maps.
+     *
+     *      @param [in] parser          Used to parse expressions.
+     */
+    virtual void parsePortAssignments(IPXactSystemVerilogParser& parser);
     
     /*!
     *   Parses the expression using the parser and returns the result.

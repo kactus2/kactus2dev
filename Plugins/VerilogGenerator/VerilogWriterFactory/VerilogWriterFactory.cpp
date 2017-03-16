@@ -123,22 +123,6 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::initializeComponentWriters
     retval->topWriter_ = QSharedPointer<ComponentVerilogWriter>(new ComponentVerilogWriter
         (topComponent, settings_->generateInterfaces_));
 
-    retval->instanceWriters_.clear();
-
-    retval->interconnectionWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
-
-    retval->connectionWireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
-
-    retval->adHocWireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
-
-    retval->portWireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
-
-    retval->topAssignmentWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
-
-    retval->topDefaultWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
-
-    retval->instanceAssignmentWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
-
     return retval;
 }
 
@@ -147,6 +131,22 @@ QSharedPointer<VerilogDocument> VerilogWriterFactory::initializeComponentWriters
 //-----------------------------------------------------------------------------
 void VerilogWriterFactory::initializeDesignWriters(QSharedPointer<MetaDesign> design, QSharedPointer<VerilogDocument> document)
 {
+    document->instanceWriters_.clear();
+
+    document->interconnectionWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    document->connectionWireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    document->adHocWireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    document->portWireWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    document->topAssignmentWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    document->topDefaultWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
+    document->instanceAssignmentWriters_ = QSharedPointer<WriterGroup>(new WriterGroup());
+
     // Comment for top for assignments.
     if (design->getTopInstance()->getPorts()->size() > 0)
     {
