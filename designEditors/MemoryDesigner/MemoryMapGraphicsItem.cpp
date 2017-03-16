@@ -42,7 +42,8 @@ addressUnitBits_(memoryItem->getAUB()),
 filterAddressBlocks_(filterAddressBlocks),
 filterRegisters_(filterRegisters),
 filterFields_(filterFields),
-subItemWidth_(0)
+subItemWidth_(0),
+filteredBlocks_()
 {
     QPair<quint64, quint64> memoryRanges = getMemoryRanges(memoryItem);
     quint64 baseAddress = memoryRanges.first;
@@ -105,6 +106,16 @@ void MemoryMapGraphicsItem::setupSubItems(qreal blockXPosition, QSharedPointer<M
         {
             if (subItem->getType().compare(MemoryDesignerConstants::ADDRESSBLOCK_TYPE, Qt::CaseInsensitive) == 0)
             {
+                quint64 blockBaseAddress = subItem->getAddress().toULongLong();
+                quint64 blockRange = subItem->getRange().toULongLong();
+
+                FilteredBlock blockItem;
+                blockItem.blockName_ = subItem->getName();
+                blockItem.blockBaseAddress_ = blockBaseAddress;
+                blockItem.blockLastAddress_ = blockBaseAddress + blockRange - 1;
+
+                filteredBlocks_.append(blockItem);
+
                 foreach (QSharedPointer<MemoryItem> registerItem, subItem->getChildItems())
                 {
                     usedMemoryItem->addChild(registerItem);
@@ -218,12 +229,42 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createNewSubItem(QShared
     {
         childItem = new RegisterGraphicsItem(subMemoryItem, isEmpty, subItemWidth_, remappedIdentifierChain,
             filterFields_, getContainingInstance(), this);
+
+        QString containingBlockName =
+            getContainingAddressBlockName(childItem->getBaseAddress(), childItem->getLastAddress());
+        if (!containingBlockName.isEmpty())
+        {
+            remappedIdentifierChain.append(containingBlockName);
+            remappedIdentifierChain.append(subMemoryItem->getName());
+
+            childItem->setNewIdentifierChain(remappedIdentifierChain);
+        }
     }
 
     connect(childItem, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)),
         this, SIGNAL(openComponentDocument(VLNV const&, QVector<QString>)), Qt::UniqueConnection);
 
     return childItem;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapGraphicsItem::getContainingAddressBlockName()
+//-----------------------------------------------------------------------------
+QString MemoryMapGraphicsItem::getContainingAddressBlockName(quint64 registerBaseAddress,
+    quint64 registerLastAddress) const
+{
+    foreach (MemoryMapGraphicsItem::FilteredBlock blockItem, filteredBlocks_)
+    {
+        if (registerBaseAddress >= blockItem.blockBaseAddress_ &&
+            registerBaseAddress <= blockItem.blockLastAddress_ &&
+            registerLastAddress >= blockItem.blockBaseAddress_ &&
+            registerLastAddress <= blockItem.blockLastAddress_)
+        {
+            return blockItem.blockName_;
+        }
+    }
+
+    return QStringLiteral("");
 }
 
 //-----------------------------------------------------------------------------

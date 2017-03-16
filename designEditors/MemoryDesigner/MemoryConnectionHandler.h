@@ -22,6 +22,7 @@ class MainMemoryGraphicsItem;
 class MemoryConnectionItem;
 class MemoryCollisionItem;
 class MemoryColumnHandler;
+class MemoryItem;
 
 //-----------------------------------------------------------------------------
 //! Constructs the memory connections for the memory design diagram.
@@ -226,6 +227,23 @@ private:
         QString columnType) const;
 
     /*!
+     *  Get the local memory map graphics item of the selected address space interface.
+     *
+     *      @param [in] spaceInterface  Interface node referencing the selected address space item.
+     *
+     *      @return The local memory map graphics item of contained within the selected interface node.
+     */
+    MainMemoryGraphicsItem* getLocalMemoryMapItem(QSharedPointer<ConnectivityInterface> spaceInterface) const;
+
+    /*!
+     *  Get the memory item node referencing the selected local memory map.
+     *
+     *      @param [in] spaceInterface  Interface node containing the selected local memory map.
+     */
+    QSharedPointer<MemoryItem> getMemoryItemForLocalMap(QSharedPointer<ConnectivityInterface> spaceInterface)
+        const;
+
+    /*!
      *  Create a connection between two address space items.
      *
      *      @param [in] connectionStartItem     Start item of the connection.
@@ -314,6 +332,17 @@ private:
      */
     MainMemoryGraphicsItem* getCollidingSpaceItem(QRectF spaceRectangle, int spaceLineWidth,
         MemoryColumn* currentColumn) const;
+
+    /*!
+     *  Change the address range of the selected memory graphics item.
+     *
+     *      @param [in] connectionEndItem       The selected memory graphics item.
+     *      @param [in] remappedAddress         Remapped address of the memory connection.
+     *      @param [in] memoryMapBaseAddress    Base address of the memory graphics item.
+     *      @param [in] hasRemappedRange        Value for connections through mirrored slaves.
+     */
+    void changeConnectionEndItemRanges(MainMemoryGraphicsItem* connectionEndItem, quint64 remappedAddress,
+        quint64 memoryMapBaseAddress, bool hasRemappedRange);
 
     //-----------------------------------------------------------------------------
     // Data.

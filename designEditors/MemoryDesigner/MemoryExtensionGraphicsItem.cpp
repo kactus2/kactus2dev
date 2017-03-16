@@ -31,6 +31,7 @@ MemoryDesignerGraphicsItem(QStringLiteral(""), QStringLiteral(""), QVector<QStri
     setPenAndBrush();
     setLabelPositions();
 
+    setFlag(QGraphicsItem::ItemStacksBehindParent);
     setZValue(-10);
 }
 

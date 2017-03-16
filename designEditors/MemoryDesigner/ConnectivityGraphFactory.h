@@ -25,7 +25,9 @@ class Design;
 class DesignConfiguration;
 class Field;
 class Interconnection;
+class AddressSpace;
 class MemoryMap;
+class MemoryMapBase;
 class Register;
 class View;
 
@@ -130,7 +132,7 @@ private:
      *
      *      @return Representation for the memory map.
      */
-    QSharedPointer<MemoryItem> createMemoryMapData(QSharedPointer<const MemoryMap> map, int addressableUnitBits, 
+    QSharedPointer<MemoryItem> createMemoryMapData(QSharedPointer<const MemoryMapBase> map, int addressableUnitBits, 
         QSharedPointer<ConnectivityComponent> containingInstance) const;
 
     /*!
@@ -210,16 +212,54 @@ private:
      *  Creates graph elements for component instance internal connections and a possible sub design.
      *
      *      @param [in] instancedComponent      The instanced component to transform.
+     *      @param [in] instanceNode            The node containing the component instance.
      *      @param [in] instanceName            The name of the instance.
      *      @param [in] activeView              The active view of the component instance.
      *      @param [in] instanceInterfaces      The graph interfaces for the instanced component.
      *      @param [in/out] graph               The graph to add elements into.
      */
     void createInteralConnectionsAndDesigns(QSharedPointer<const Component> instancedComponent,
-        QString const& instanceName,
-        QString const& activeView,
+        QSharedPointer<ConnectivityComponent> instanceNode, QString const& instanceName, QString const& activeView,
         QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
         QSharedPointer<ConnectivityGraph> graph) const;
+
+    /*!
+     *  Create a connection between an address space and its local memory map.
+     *
+     *      @param [in] instancedComponent  Instanced component containing the address space.
+     *      @param [in] instanceNode        The node containing the component instance.
+     *      @param [in] instanceName        Name of the instance.
+     *      @param [in] addressSpace        The selected address space.
+     *      @param [in] instanceInterfaces  Interfaces within the instanced component.
+     *      @param [in/out] graph               The graph to add elements into.
+     */
+    void createInternalSpaceMapConnection(QSharedPointer<const Component> instancedComponent,
+        QSharedPointer<ConnectivityComponent> instanceNode,
+        QString const& instanceName, QSharedPointer<AddressSpace> addressSpace,
+        QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
+        QSharedPointer<ConnectivityGraph> graph) const;
+
+    /*!
+     *  Get the bus interface that references the selected address space.
+     *
+     *      @param [in] instancedComponent  Instanced component containing the address space.
+     *      @param [in] spaceName           Name of the selected address space.
+     *
+     *      @return The bus interface referencing the selected address space.
+     */
+    QSharedPointer<BusInterface> getBusInterfaceReferencingAddressSpace(
+        QSharedPointer<const Component> instancedComponent, QString const& spaceName) const;
+
+    /*!
+     *  Get the memory item node containing the selected memory item.
+     *
+     *      @param [in] memoryReference     Name of the selected memory item.
+     *      @param [in] instanceNode        The node containing the component instance.
+     *
+     *      @return The node containing the selected memory item.
+     */
+    QSharedPointer<MemoryItem> getMemoryItemNode(QString const& memoryReference,
+        QSharedPointer<ConnectivityComponent> instanceNode) const;
 
     /*!
      *   Creates graph elements for component instance sub designs.

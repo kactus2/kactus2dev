@@ -113,3 +113,11 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraph::getInterface(QString co
 
     return QSharedPointer<ConnectivityInterface>();
 }
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraph::getConnections()
+//-----------------------------------------------------------------------------
+QVector<QSharedPointer<ConnectivityConnection> > ConnectivityGraph::getConnections() const
+{
+    return edges_;
+}

@@ -175,6 +175,20 @@ public:
      *      @param [in] CUTMODIFIER     Modifier for the cut areas.
      */
     virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER);
+    
+    /*!
+     *  Get the identifying information of the memory item.
+     *
+     *      @return The identifying information.
+     */
+    QVector<QString> getIdentifierChain() const;
+
+    /*!
+     *  Set a new identifier chain.
+     *
+     *      @param [in] newIdentifiers  A list of strings containing the new memory identifier chain.
+     */
+    void setNewIdentifierChain(QVector<QString> newIdentifiers);
 
 protected:
 
@@ -244,13 +258,6 @@ protected:
      *      @param [in] event   The context menu event.
      */
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
-
-    /*!
-     *  Get the identifying information of the memory item.
-     *
-     *      @return The identifying information.
-     */
-    QVector<QString> getIdentifierChain() const;
 
 signals:
 

@@ -108,6 +108,13 @@ public:
     MemoryConnectionItem* getLastConnection() const;
 
     /*!
+     *  Get the first memory connection item connected to this memory graphics item.
+     *
+     *      @return The memory connection item with the lowest base address.
+     */
+    MemoryConnectionItem* getFirstConnection() const;
+
+    /*!
      *  Check if the memory graphics item has been compressed.
      *
      *      @return True, if the item has been compressed, false otherwise.

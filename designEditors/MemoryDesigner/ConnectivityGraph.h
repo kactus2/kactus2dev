@@ -91,6 +91,13 @@ public:
     QSharedPointer<ConnectivityInterface> getInterface(QString const& interfaceName,
         QString const& instanceName) const;
 
+    /*!
+     *  Get all connections in the graph.
+     *
+     *      @return All connections in the graph.
+     */
+    QVector<QSharedPointer<ConnectivityConnection> > getConnections() const;
+
 private:
 
 	// Disable copying.
