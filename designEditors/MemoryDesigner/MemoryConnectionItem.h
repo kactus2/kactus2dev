@@ -266,6 +266,13 @@ private:
     void moveConnectedItemWithoutConnections(QSharedPointer<QVector<MainMemoryGraphicsItem*> > movedItems,
         MainMemoryGraphicsItem* movementOrigin, MainMemoryGraphicsItem* connectedItem, qreal transferY);
 
+    /*!
+     *  Check if this connection is between an address space and its local memory map.
+     *
+     *      @return True, if the connection is a local memory map connection.
+     */
+    bool isLocalMapConnection() const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

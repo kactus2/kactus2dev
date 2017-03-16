@@ -93,7 +93,8 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
                 if (subItemsInOrder.firstKey() > itemBaseAddress)
                 {
                     subItemLastAddress = subItemsInOrder.firstKey() - 1;
-                    createAndPositionNewEmptySubItem(0, subItemLastAddress, subItemPositionX, itemBaseAddress);
+                    createAndPositionNewEmptySubItem(
+                        itemBaseAddress, subItemLastAddress, subItemPositionX, itemBaseAddress);
                 }
 
                 QMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(subItemsInOrder);
@@ -121,7 +122,8 @@ void SubMemoryLayout::setupSubItems(qreal subItemPositionX, QString const& subIt
                 }
             }
         }
-        else
+
+        if (getSubMemoryItems().isEmpty())
         {
             createAndPositionNewEmptySubItem(itemBaseAddress, itemLastAddress, subItemPositionX, itemBaseAddress);
         }

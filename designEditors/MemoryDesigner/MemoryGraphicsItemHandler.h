@@ -136,10 +136,12 @@ private:
      *      @param [in] spaceItem           Memory item containing address space data.
      *      @param [in] identifierChain     List of string identifying the memory item.
      *      @param [in] containingInstance  The component instance containing the selected address space.
-     *      @param [in] containingColumn    The address space column.
+     *      @param [in] spaceColumn         The address space column.
+     *      @param [in] mapColumn           The memory map column.
      */
     void createAddressSpaceItem(QSharedPointer<MemoryItem> spaceItem, QVector<QString> identifierChain,
-        QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* containingColumn);
+        QSharedPointer<ConnectivityComponent> containingInstance, MemoryColumn* spaceColumn,
+        MemoryColumn* mapColumn);
 
     /*!
      *  Create a memory map item.

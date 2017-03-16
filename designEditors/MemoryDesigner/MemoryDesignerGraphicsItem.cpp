@@ -501,3 +501,11 @@ QVector<QString> MemoryDesignerGraphicsItem::getIdentifierChain() const
 {
     return identifierChain_;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerGraphicsItem::setNewIdentifierChain()
+//-----------------------------------------------------------------------------
+void MemoryDesignerGraphicsItem::setNewIdentifierChain(QVector<QString> newIdentifiers)
+{
+    identifierChain_ = newIdentifiers;
+}

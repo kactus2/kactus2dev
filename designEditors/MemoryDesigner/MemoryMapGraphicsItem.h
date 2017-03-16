@@ -116,6 +116,16 @@ private:
         bool isEmpty);
 
     /*!
+     *  Get the name of the address block containing the selected register.
+     *
+     *      @param [in] registerBaseAddress     Base address of the selected register.
+     *      @param [in] registerLastAddress     Last address of the selected register.
+     *
+     *      @return The name of the address block contianing the selected register.
+     */
+    QString getContainingAddressBlockName(quint64 registerBaseAddress, quint64 registerLastAddress) const;
+
+    /*!
      *  Create an empty address block graphics item.
      *
      *      @param [in] beginAddress    Base address of the empty address block graphics item.
@@ -151,6 +161,19 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    //! Information of the filtered address blocks.
+    struct FilteredBlock
+    {
+        //! Name of the filtered address blocks.
+        QString blockName_;
+
+        //! Base address of the filtered address block.
+        quint64 blockBaseAddress_;
+
+        //! Last address of the filtered address block.
+        quint64 blockLastAddress_;
+    };
+
     //! The address unit bits of a memory map.
     QString addressUnitBits_;
 
@@ -165,6 +188,9 @@ private:
 
     //! Width of the contained memory sub items.
     qreal subItemWidth_;
+
+    //! List of filtered address blocks.
+    QVector<MemoryMapGraphicsItem::FilteredBlock> filteredBlocks_;
 };
 
 //-----------------------------------------------------------------------------

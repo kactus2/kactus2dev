@@ -179,11 +179,7 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
                 memoryItem->condenseItemAndChildItems(movedConnectionItems);
             }
 
-            MemoryConnectionItem* lastConnection = memoryItem->getLastConnection();
-            if (lastConnection)
-            {
-                extendMemoryItem(memoryItem, lastConnection, spaceYPlacement);
-            }
+            extendMemoryItem(memoryItem, spaceYPlacement);
 
             if (condenseMemoryItems)
             {
@@ -234,27 +230,56 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, int& spaceYPl
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn::extendMemoryItem()
 //-----------------------------------------------------------------------------
-void MemoryColumn::extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, MemoryConnectionItem* connectionItem,
-    int& spaceYPlacement)
+void MemoryColumn::extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, int& spacePlacementY)
 {
-    QPointF spaceTopLeft = graphicsItem->boundingRect().topLeft();
-    QPointF spaceLowRight = graphicsItem->boundingRect().bottomRight();
+    MemoryConnectionItem* firstConnection = graphicsItem->getFirstConnection();
+    MemoryConnectionItem* lastConnection = graphicsItem->getLastConnection();
 
-    qreal connectionLow =
-        graphicsItem->mapFromItem(connectionItem, connectionItem->boundingRect().bottomRight()).y();
-
-    if (connectionLow > spaceLowRight.y())
+    if (firstConnection && lastConnection)
     {
-        qreal positionX = spaceTopLeft.x() + 0.5;
-        qreal extensionWidth = spaceLowRight.x() - spaceTopLeft.x() - 1;
-        qreal positionY = spaceLowRight.y() - 0.5;
-        qreal extensionHeight = connectionLow - spaceLowRight.y();
+        QPointF itemTopLeft = graphicsItem->boundingRect().topLeft();
+        QPointF itemLowRight = graphicsItem->boundingRect().bottomRight();
 
-        MemoryExtensionGraphicsItem* extensionItem = new MemoryExtensionGraphicsItem(positionX, positionY,
-            extensionWidth, extensionHeight, graphicsItem->getContainingInstance(), graphicsItem);
-        graphicsItem->setExtensionItem(extensionItem);
+        int lineWidth = graphicsItem->pen().width();
 
-        spaceYPlacement += extensionHeight;
+        qreal connectionTop =
+            graphicsItem->mapFromItem(firstConnection, firstConnection->boundingRect().topLeft()).y() + lineWidth;
+        qreal connectionLow =
+            graphicsItem->mapFromItem(lastConnection, lastConnection->boundingRect().bottomRight()).y();
+
+        bool connectionsAreBeyond = false;
+
+        qreal extensionTop = itemLowRight.y();
+        if (connectionTop < itemTopLeft.y())
+        {
+            extensionTop = connectionTop;
+            connectionsAreBeyond = true;
+        }
+
+        qreal extensionLow = itemTopLeft.y();
+        if (connectionLow > itemLowRight.y())
+        {
+            extensionLow = connectionLow;
+            connectionsAreBeyond = true;
+        }
+
+        if (connectionsAreBeyond)
+        {
+            qreal positionX = itemTopLeft.x() + lineWidth;
+            qreal extensionWidth = itemLowRight.x() - itemTopLeft.x() - lineWidth;
+            qreal positionY = extensionTop;
+            qreal extensionHeight = extensionLow - extensionTop;
+
+            MemoryExtensionGraphicsItem* extensionItem = new MemoryExtensionGraphicsItem(positionX, positionY,
+                extensionWidth, extensionHeight, graphicsItem->getContainingInstance(), graphicsItem);
+            graphicsItem->setExtensionItem(extensionItem);
+
+            if (extensionLow > itemLowRight.y())
+            {
+                qreal placementAddition = extensionLow - itemLowRight.y();
+                spacePlacementY += placementAddition;
+            }
+        }
     }
 }
 

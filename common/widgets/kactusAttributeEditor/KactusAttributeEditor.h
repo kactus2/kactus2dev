@@ -34,7 +34,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~KactusAttributeEditor();
+    virtual ~KactusAttributeEditor();
 
     /*!
      *  Hides the editable attributes.
@@ -82,12 +82,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    enum
-    {
-        PROD_HIER_COUNT = 6,
-        FIRMNESS_COUNT = 4
-    };
 
     //! Product hierarchy label.
     QLabel* prodHierLabel_;

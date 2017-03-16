@@ -127,7 +127,8 @@ void MemoryGraphicsItemHandler::createMemoryItems(QSharedPointer<ConnectivityGra
             if (memoryItem->getType().compare(
                 MemoryDesignerConstants::ADDRESSSPACE_TYPE, Qt::CaseInsensitive) == 0)
             {
-                createAddressSpaceItem(memoryItem, addressSpaceIdentifiers, componentInstance, spaceColumn);
+                createAddressSpaceItem(
+                    memoryItem, addressSpaceIdentifiers, componentInstance, spaceColumn, memoryMapColumn);
             }
             else if (memoryItem->getType().compare(
                 MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
@@ -143,15 +144,25 @@ void MemoryGraphicsItemHandler::createMemoryItems(QSharedPointer<ConnectivityGra
 //-----------------------------------------------------------------------------
 void MemoryGraphicsItemHandler::createAddressSpaceItem(QSharedPointer<MemoryItem> spaceItem,
     QVector<QString> identifierChain, QSharedPointer<ConnectivityComponent> containingInstance,
-    MemoryColumn* containingColumn)
+    MemoryColumn* spaceColumn, MemoryColumn* mapColumn)
 {
-    if (containingColumn)
+    if (spaceColumn)
     {
         AddressSpaceGraphicsItem* spaceGraphicsItem = new AddressSpaceGraphicsItem(
-            spaceItem, identifierChain, containingInstance, filterAddressSpaceSegments_, containingColumn);
-        containingColumn->addItem(spaceGraphicsItem);
+            spaceItem, identifierChain, containingInstance, filterAddressSpaceSegments_, spaceColumn);
+        spaceColumn->addItem(spaceGraphicsItem);
 
         connectGraphicsItemSignals(spaceGraphicsItem);
+
+        if (!spaceItem->getChildItems().isEmpty())
+        {
+            QSharedPointer<MemoryItem> lastChild = spaceItem->getChildItems().last();
+            if (lastChild->getType().compare(MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
+            {
+                QVector<QString> localMapIdentifierChain = spaceGraphicsItem->getIdentifierChain();
+                createMemoryMapItem(lastChild, localMapIdentifierChain, containingInstance, mapColumn);
+            }
+        }
     }
 }
 

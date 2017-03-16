@@ -27,8 +27,6 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
-#include <editors/ComponentEditor/general/desceditor.h>
-
 #include <QGridLayout>
 #include <QSortFilterProxyModel>
 

@@ -42,7 +42,19 @@ QVector<QVector<QSharedPointer<ConnectivityInterface> > > MasterSlavePathSearch:
     foreach (QSharedPointer<ConnectivityInterface> masterInterface, findInitialMasterInterfaces(graph))
     {       
         findPaths(masterInterface, QSharedPointer<ConnectivityConnection>(0), 
-            QVector<QSharedPointer<ConnectivityInterface> >(), graph);          
+            QVector<QSharedPointer<ConnectivityInterface> >(), graph);
+    }
+
+    foreach (QSharedPointer<ConnectivityConnection> edge, graph->getConnections())
+    {
+        if (edge->getName().contains(QStringLiteral("_to_local_memory_map_")) &&
+            edge->getFirstInterface() == edge->getSecondInterface())
+        {
+            QVector<QSharedPointer<ConnectivityInterface> > localConnection;
+            localConnection.append(edge->getFirstInterface());
+            localConnection.append(edge->getSecondInterface());
+            masterPaths_.append(localConnection);
+        }
     }
 
     return masterPaths_;

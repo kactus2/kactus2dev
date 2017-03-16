@@ -77,7 +77,7 @@ private slots:
     void readComInterfaces();
     void readApiInterfaces();
     void readFileDependencies();
-    void readAuthor();
+    void readAuthorAndLicense();
 };
 
 //-----------------------------------------------------------------------------
@@ -1248,9 +1248,9 @@ void tst_ComponentReader::readFileDependencies()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ComponentReader::readAuthor()
+// Function: tst_ComponentReader::readAuthorAndLicense()
 //-----------------------------------------------------------------------------
-void tst_ComponentReader::readAuthor()
+void tst_ComponentReader::readAuthorAndLicense()
 {
     QString documentContent(
         "<?xml version=\"1.0\"?>"
@@ -1265,11 +1265,11 @@ void tst_ComponentReader::readAuthor()
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
             "<ipxact:vendorExtensions>"
-                "<kactus2:author>tester</kactus2:author>"              
+                "<kactus2:author>tester</kactus2:author>"
+                "<kactus2:license>testLicense</kactus2:license>"    
             "</ipxact:vendorExtensions>"
         "</ipxact:component>"
         );
-
 
     QDomDocument document;
     document.setContent(documentContent);
@@ -1279,6 +1279,7 @@ void tst_ComponentReader::readAuthor()
     QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
 
     QCOMPARE(testComponent->getAuthor(), QString("tester"));
+    QCOMPARE(testComponent->getLicense(), QString("testLicense"));
 }
 
 

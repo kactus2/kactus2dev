@@ -18,6 +18,7 @@
 #include <designEditors/MemoryDesigner/MemoryDesignerConstants.h>
 #include <designEditors/MemoryDesigner/MemoryMapGraphicsItem.h>
 #include <designEditors/MemoryDesigner/MemoryExtensionGraphicsItem.h>
+#include <designEditors/MemoryDesigner/MemoryItem.h>
 
 #include <QBrush>
 #include <QPen>
@@ -108,6 +109,11 @@ QPainterPath MemoryConnectionItem::createConnectionPath(QPointF highStartPoint, 
         path.lineTo(highEndPoint);
         path.moveTo(lowStartPoint);
         path.lineTo(lowEndPoint);
+
+        if (isLocalMapConnection())
+        {
+            connectionPen.setColor(QColor(0, 128, 255));
+        }
     }
     else
     {
@@ -126,7 +132,7 @@ QPainterPath MemoryConnectionItem::createConnectionPath(QPointF highStartPoint, 
         path.lineTo(bridgeLastPillarX, bridgeHighY);
         path.lineTo(bridgeEndX, bridgeHighLineY);
         path.lineTo(highEndPoint);
-        
+
         path.moveTo(lowStartPoint);
         path.lineTo(bridgeStartX, bridgeLowLineY);
         path.lineTo(bridgeFirstPillarX, bridgeLowY);
@@ -140,6 +146,25 @@ QPainterPath MemoryConnectionItem::createConnectionPath(QPointF highStartPoint, 
     setPen(connectionPen);
 
     return path;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::isLocalMapConnection()
+//-----------------------------------------------------------------------------
+bool MemoryConnectionItem::isLocalMapConnection() const
+{
+    QSharedPointer<MemoryItem> startMemory = startItem_->getMemoryItem();
+    QSharedPointer<MemoryItem> endMemory = endItem_->getMemoryItem();
+
+    foreach (QSharedPointer<MemoryItem> startSubMemory, startMemory->getChildItems())
+    {
+        if (startSubMemory == endMemory)
+        {
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 //-----------------------------------------------------------------------------

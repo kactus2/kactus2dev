@@ -182,11 +182,9 @@ private:
      *  Construct a memory graphics extension for the selected memory item.
      *
      *      @param [in] graphicsItem        The selected memory graphics item.
-     *      @param [in] connectionItem      Connection item needing the extension.
      *      @param [in] spaceYPlacement     Y-coordinate of the graphics item.
      */
-    void extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, MemoryConnectionItem* connectionItem,
-        int& spaceYPlacement);
+    void extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, int& spacePlacementY);
 
     /*!
      *  Get the position for the unconnected memory items.

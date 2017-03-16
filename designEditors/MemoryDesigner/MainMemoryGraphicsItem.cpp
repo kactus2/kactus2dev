@@ -159,11 +159,9 @@ void MainMemoryGraphicsItem::changeChildItemRanges(quint64 offset)
 MemoryConnectionItem* MainMemoryGraphicsItem::getLastConnection() const
 {
     MemoryConnectionItem* lastConnection = 0;
-
-    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
-
     quint64 lastConnectionRangeEnd = 0;
 
+    QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();
@@ -178,6 +176,36 @@ MemoryConnectionItem* MainMemoryGraphicsItem::getLastConnection() const
     }
 
     return lastConnection;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getFirstConnection()
+//-----------------------------------------------------------------------------
+MemoryConnectionItem* MainMemoryGraphicsItem::getFirstConnection() const
+{
+    MemoryConnectionItem* firstConnection = 0;
+
+    if (!getMemoryConnections().isEmpty())
+    {
+        firstConnection = getMemoryConnections().first();
+        quint64 firstConnectionRangeStart = firstConnection->getRangeStartValue();
+
+        QMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
+        while (connectionIterator.hasNext())
+        {
+            connectionIterator.next();
+
+            MemoryConnectionItem* connection = connectionIterator.value();
+            quint64 connectionRangeStart = connection->getRangeStartValue();
+            if (connectionRangeStart <= firstConnectionRangeStart)
+            {
+                firstConnection = connection;
+                firstConnectionRangeStart = connectionRangeStart;
+            }
+        }
+    }
+
+    return firstConnection;
 }
 
 //-----------------------------------------------------------------------------

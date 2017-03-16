@@ -201,6 +201,15 @@ QVariant MemoryMapModel::data(QModelIndex const& index, int role) const
 
 	else if (role == Qt::ForegroundRole)
     {
+        QSharedPointer<MemoryBlockBase> memoryBlock = memoryBlocks_->at(index.row());
+
+        if (index.column() != MemoryMapColumns::IS_PRESENT &&
+            (!memoryBlock->getIsPresent().isEmpty() &&
+             parseExpressionToDecimal(memoryBlock->getIsPresent()).toInt() != 1))
+        {
+            return KactusColors::DISABLED_TEXT;
+        }
+
         return blackForValidOrRedForInvalidIndex(index);
     }
     else if (role == Qt::BackgroundRole)

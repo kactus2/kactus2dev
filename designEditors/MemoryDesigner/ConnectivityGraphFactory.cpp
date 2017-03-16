@@ -34,6 +34,7 @@
 #include <IPXACTmodels/Component/MasterInterface.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
+#include <IPXACTmodels/Component/MemoryMapBase.h>
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
@@ -118,8 +119,8 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<const Design> design
             QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces =
                 createInterfacesForInstance(instancedComponent, instanceNode, graph);
 
-            createInteralConnectionsAndDesigns(instancedComponent, componentInstance->getInstanceName(),
-                activeView, instanceInterfaces, graph);
+            createInteralConnectionsAndDesigns(instancedComponent, instanceNode,
+                componentInstance->getInstanceName(), activeView, instanceInterfaces, graph);
 
             interfacesInDesign += instanceInterfaces;
 
@@ -181,11 +182,13 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
         if (space->getIsPresent().isEmpty() ||
             expressionParser_->parseExpression(space->getIsPresent()).toInt() == 1)
         {
+            QString spaceAUB = space->getAddressUnitBits();
             QString spaceIdentifier = instanceIdentifier + "." + space->name();
+
             QSharedPointer<MemoryItem> spaceItem(new MemoryItem(space->name(), "addressSpace"));
             spaceItem->setIdentifier(spaceIdentifier);
             spaceItem->setDisplayName(space->displayName());
-            spaceItem->setAUB(space->getAddressUnitBits());
+            spaceItem->setAUB(spaceAUB);
             spaceItem->setAddress("0");
 
             if (!space->getRange().isEmpty())
@@ -213,6 +216,15 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
 
                     spaceItem->addChild(segmentItem);
                 }
+            }
+
+            if (space->hasLocalMemoryMap())
+            {
+                QSharedPointer<MemoryMapBase> localMap = space->getLocalMemoryMap();
+                int aubInInt = expressionParser_->parseExpression(spaceAUB).toInt();
+
+                QSharedPointer<MemoryItem> localMemoryItem = createMemoryMapData(localMap, aubInInt, newInstance);
+                spaceItem->addChild(localMemoryItem);
             }
         }
     }
@@ -246,7 +258,7 @@ void ConnectivityGraphFactory::addMemoryMapMemories(QSharedPointer<ConnectivityC
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::createMemoryMapData()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QSharedPointer<const MemoryMap> map,
+QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QSharedPointer<const MemoryMapBase> map,
     int addressableUnitBits, QSharedPointer<ConnectivityComponent> containingInstance) const
 {
     QString mapIdentifier = containingInstance->getVlnv().replace(':', '.') + "." + 
@@ -468,11 +480,11 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::createInteralConnectionsAndDesigns()
 //-----------------------------------------------------------------------------
-void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(QSharedPointer<const Component> instancedComponent,
-    QString const& instanceName,
-    QString const& activeView,
-    QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
-    QSharedPointer<ConnectivityGraph> graph) const
+void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(
+    QSharedPointer<const Component> instancedComponent, QSharedPointer<ConnectivityComponent> instanceNode,
+    QString const& instanceName, QString const& activeView,
+    QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces, QSharedPointer<ConnectivityGraph> graph)
+    const
 {
     foreach (QSharedPointer<Channel> channel, *instancedComponent->getChannels())
     {
@@ -487,7 +499,87 @@ void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(QSharedPointer
         }
     }
     
+    foreach (QSharedPointer<AddressSpace> space, *instancedComponent->getAddressSpaces())
+    {
+        if (space->hasLocalMemoryMap())
+        {
+            createInternalSpaceMapConnection(
+                instancedComponent, instanceNode, instanceName, space, instanceInterfaces, graph);
+        }
+    }
+
     createConnectionsForDesign(instancedComponent, activeView, instanceInterfaces, graph);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::createInternalSpaceMapConnection()
+//-----------------------------------------------------------------------------
+void ConnectivityGraphFactory::createInternalSpaceMapConnection(QSharedPointer<const Component> instancedComponent,
+    QSharedPointer<ConnectivityComponent> instanceNode, QString const& instanceName,
+    QSharedPointer<AddressSpace> addressSpace, QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
+    QSharedPointer<ConnectivityGraph> graph) const
+{
+    QSharedPointer<BusInterface> containingBus =
+        getBusInterfaceReferencingAddressSpace(instancedComponent, addressSpace->name());
+    QSharedPointer<ConnectivityInterface> localConnectionInterface;
+
+    if (containingBus)
+    {
+        localConnectionInterface = getInterface(containingBus->name(), instanceName, instanceInterfaces);
+    }
+    else
+    {
+        QSharedPointer<MemoryItem> interfacedMemory = getMemoryItemNode(addressSpace->name(), instanceNode);
+        if (interfacedMemory)
+        {
+            localConnectionInterface = QSharedPointer<ConnectivityInterface>(new ConnectivityInterface(
+                addressSpace->name() + QStringLiteral(" interface")));
+
+            localConnectionInterface->setConnectedMemory(interfacedMemory);
+            localConnectionInterface->setInstance(instanceNode);
+
+            graph->addInterface(localConnectionInterface);
+        }
+    }
+
+    QString connectionName =
+        addressSpace->name() + "_to_local_memory_map_" + addressSpace->getLocalMemoryMap()->name();
+
+    graph->addConnection(connectionName, localConnectionInterface, localConnectionInterface);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::getBusInterfaceReferencingAddressSpace()
+//-----------------------------------------------------------------------------
+QSharedPointer<BusInterface> ConnectivityGraphFactory::getBusInterfaceReferencingAddressSpace(
+    QSharedPointer<const Component> instancedComponent, QString const& spaceName) const
+{
+    foreach (QSharedPointer<BusInterface> busInterface, *instancedComponent->getBusInterfaces())
+    {
+        if (busInterface->getAddressSpaceRef().compare(spaceName) == 0)
+        {
+            return busInterface;
+        }
+    }
+
+    return QSharedPointer<BusInterface>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::getMemoryItemNode()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> ConnectivityGraphFactory::getMemoryItemNode(QString const& memoryReference,
+    QSharedPointer<ConnectivityComponent> instanceNode) const
+{
+    foreach (QSharedPointer<MemoryItem> memory, instanceNode->getMemories())
+    {
+        if (memory->getName().compare(memoryReference) == 0)
+        {
+            return memory;
+        }
+    }
+
+    return QSharedPointer<MemoryItem>();
 }
 
 //-----------------------------------------------------------------------------

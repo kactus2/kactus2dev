@@ -23,12 +23,11 @@
 //-----------------------------------------------------------------------------
 // Function: HelpWindow::HelpWindow()
 //-----------------------------------------------------------------------------
-HelpWindow::HelpWindow(QHelpEngine* engine, QWidget* parent /*= 0*/)
-    : QMainWindow(parent),
-      engine_(engine),
-      menu_(new QMenuBar(this)),
-      tocDock_(new QDockWidget(tr("Contents"), this)),
-      browser_(new ContextHelpBrowser(engine, "qthelp://com.tut.kactus2.2.0/doc", this))
+HelpWindow::HelpWindow(QHelpEngine* engine, QWidget* parent): QMainWindow(parent),
+    engine_(engine),
+    menu_(new QMenuBar(this)),
+    tocDock_(new QDockWidget(tr("Contents"), this)),
+    browser_(new ContextHelpBrowser(engine, "qthelp://com.tut.kactus2.2.0/doc", this))
 {
     setWindowTitle(tr("Kactus2 Help"));
     resize(800, 500);
@@ -71,4 +70,5 @@ HelpWindow::~HelpWindow()
 void HelpWindow::showEvent(QShowEvent* /*event*/)
 {
     browser_->onHelpRequested("index.html");
+    engine_->contentWidget()->expandToDepth(0);
 }

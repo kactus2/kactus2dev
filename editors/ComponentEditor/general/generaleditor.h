@@ -12,8 +12,6 @@
 #ifndef GENERALEDITOR_H
 #define GENERALEDITOR_H
 
-#include "desceditor.h"
-
 #include <editors/ComponentEditor/itemeditor.h>
 
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
@@ -21,6 +19,7 @@
 #include <QSharedPointer>
 #include <QLineEdit>
 #include <QSettings>
+#include <QPlainTextEdit>
 
 class Component;
 class LibraryInterface;
@@ -88,11 +87,17 @@ private slots:
     //! Handler for changes in author field.
     void onAuthorChange();
 
+    //! Handler for changes in license field.
+    void onLicenseChange();
+
 private:
 
     // Disable copying.
     GeneralEditor(const GeneralEditor& other);
     GeneralEditor& operator=(const GeneralEditor& other);
+
+    //! Sets the widget layout.
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -107,11 +112,14 @@ private:
     //! The author editor.
     QLineEdit* authorEditor_;
 
+    //! Editor for component license.
+    QLineEdit* licenseEditor_;
+
     //! The description editor.
-    DescEditor* descEditor_;
+    QPlainTextEdit* descriptionEditor_;
 
 	//! The editor to view/edit the header of the XML-file.
-	DescEditor* headerEditor_;
+	QPlainTextEdit* headerEditor_;
 
     //! The preview box.
     ComponentPreviewBox* previewBox_;

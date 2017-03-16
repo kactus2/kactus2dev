@@ -13,13 +13,13 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <QGridLayout>
+#include <QFormLayout>
 #include <QString>
 
 //-----------------------------------------------------------------------------
 // Function: KactusAttributeEditor::KactusAttributeEditor()
 //-----------------------------------------------------------------------------
-KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Kactus Attributes"), parent),
+KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Kactus attributes"), parent),
     prodHierLabel_(new QLabel(tr("Product Hierarchy:"), this)), 
     prodHierCombo_(new QComboBox(this)),
     firmnessLabel_(new QLabel(tr("Firmness:"), this)),
@@ -43,15 +43,11 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
         firmnessCombo_->addItem(KactusAttribute::firmnessToString(val));
     }
 
-    QGridLayout* layout = new QGridLayout(this);
-    layout->addWidget(prodHierLabel_, 0, 0, 1, 1);
-    layout->addWidget(prodHierCombo_, 0, 1, 1, 1);
-    layout->addWidget(firmnessLabel_, 1, 0, 1, 1);
-    layout->addWidget(firmnessCombo_, 1, 1, 1, 1);
-    layout->addWidget(implementationLabel_, 2, 0, 1, 1);
-    layout->addWidget(implementationValue_, 2, 1, 1, 1);
-    layout->setColumnStretch(3, 1);
-
+    QFormLayout* layout = new QFormLayout(this);
+    layout->addRow(prodHierLabel_, prodHierCombo_);
+    layout->addRow(firmnessLabel_, firmnessCombo_);
+    layout->addRow(implementationLabel_, implementationValue_);
+    
     connect(prodHierCombo_, SIGNAL(currentIndexChanged(int)), this, SIGNAL(contentChanged()));
     connect(prodHierCombo_, SIGNAL(currentIndexChanged(int)), this, SIGNAL(productHierarchyChanged()));
     connect(firmnessCombo_, SIGNAL(currentIndexChanged(int)), this, SIGNAL(contentChanged()));
