@@ -19,22 +19,24 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QGroupBox>
-#include <QStringList>
+#include <QHBoxLayout>
 #include <QLineEdit>
+#include <QSplitter>
+#include <QStringList>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
-// Function: GeneralEditor()
+// Function: GeneralEditor::GeneralEditor()
 //-----------------------------------------------------------------------------
 GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget *parent):
 ItemEditor(component, libHandler, parent),
     vlnvDisplayer_(new VLNVDisplayer(this, component->getVlnv())),
     attributeEditor_(new KactusAttributeEditor(this)),
-    authorEditor_(new QLineEdit()),
-    descEditor_(new DescEditor()),
-    headerEditor_(new DescEditor()),
+    authorEditor_(new QLineEdit(this)),
+    licenseEditor_(new QLineEdit(this)),
+    descriptionEditor_(new QPlainTextEdit(this)),
+    headerEditor_(new QPlainTextEdit(this)),
     previewBox_(new ComponentPreviewBox(libHandler, this))
 {
     Q_ASSERT(libHandler != 0);
@@ -44,47 +46,27 @@ ItemEditor(component, libHandler, parent),
     vlnvDisplayer_->setTitle(tr("Component VLNV and location"));
 	vlnvDisplayer_->setPath(xmlPath);
 
-    headerEditor_->setTitle(tr("XML header"));
-
     previewBox_->setInteractive(true);
     previewBox_->setComponent(component);
-    previewBox_->setFixedWidth(280);
+    //previewBox_->setFixedWidth(280);
     previewBox_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    // Create the VLNV displayer and attribute & description editors.
-    QVBoxLayout* layout = new QVBoxLayout();
-    layout->setContentsMargins(0, 0, 0, 0);
+    setupLayout();
 
-    QGroupBox* authorBox = new QGroupBox("Author", this);
-
-    QVBoxLayout* authorLayout = new QVBoxLayout(authorBox);
-    authorLayout->addWidget(authorEditor_);
-
-    layout->addWidget(new SummaryLabel(tr("Component summary"), this), 0, Qt::AlignCenter);
-    layout->addWidget(vlnvDisplayer_);
-    layout->addWidget(attributeEditor_);
-    layout->addWidget(authorBox);    
-    layout->addWidget(descEditor_);
-	layout->addWidget(headerEditor_);
-
-    QHBoxLayout* topLayout = new QHBoxLayout(this);
-    topLayout->addLayout(layout, 1);
-    topLayout->addWidget(previewBox_);
-    topLayout->setContentsMargins(4, 0, 0, 0);
-
-    // Connect the contentChanged() signals.
     connect(previewBox_, SIGNAL(endpointsRearranged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(attributeEditor_, SIGNAL(contentChanged()), this, SLOT(onAttributesChange()), Qt::UniqueConnection);
-    connect(descEditor_, SIGNAL(contentChanged()), this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
-	connect(headerEditor_, SIGNAL(contentChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
+    connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
+    connect(headerEditor_, SIGNAL(textChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
     connect(authorEditor_, SIGNAL(textChanged(const QString &)),
         this, SLOT(onAuthorChange()), Qt::UniqueConnection);
+    connect(licenseEditor_, SIGNAL(textChanged(const QString &)),
+        this, SLOT(onLicenseChange()), Qt::UniqueConnection);
 
     refresh();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~GeneralEditor()
+// Function: GeneralEditor::~GeneralEditor()
 //-----------------------------------------------------------------------------
 GeneralEditor::~GeneralEditor()
 {
@@ -92,7 +74,7 @@ GeneralEditor::~GeneralEditor()
 }
 
 //-----------------------------------------------------------------------------
-// Function: isValid()
+// Function: GeneralEditor::isValid()
 //-----------------------------------------------------------------------------
 bool GeneralEditor::isValid() const
 {
@@ -121,20 +103,23 @@ void GeneralEditor::refresh()
 	connect(attributeEditor_, SIGNAL(contentChanged()), this, SLOT(onAttributesChange()), Qt::UniqueConnection);
 
 	disconnect(authorEditor_, SIGNAL(textChanged(const QString &)), this, SLOT(onAuthorChange()));
-    QString author = component()->getAuthor();
 	authorEditor_->setText(component()->getAuthor());
 	connect(authorEditor_, SIGNAL(textChanged(const QString &)),
         this, SLOT(onAuthorChange()), Qt::UniqueConnection);
 
-	disconnect(descEditor_, SIGNAL(contentChanged()), this, SLOT(onDescriptionChange()));
-	descEditor_->setDescription(component()->getDescription());
-	connect(descEditor_, SIGNAL(contentChanged()), this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
+    disconnect(licenseEditor_, SIGNAL(textChanged(const QString &)), this, SLOT(onAuthorChange()));
+    licenseEditor_->setText(component()->getLicense());
+    connect(licenseEditor_, SIGNAL(textChanged(const QString &)),
+        this, SLOT(onLicenseChange()), Qt::UniqueConnection);
 
-	disconnect(headerEditor_, SIGNAL(contentChanged()), this, SLOT(onHeaderChange()));
-	QStringList comments = component()->getTopComments();
-	QString comment = comments.join("\n");
-	headerEditor_->setDescription(comment);
-	connect(headerEditor_, SIGNAL(contentChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
+	disconnect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChange()));
+	descriptionEditor_->setPlainText(component()->getDescription());
+	connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
+
+	disconnect(headerEditor_, SIGNAL(textChanged()), this, SLOT(onHeaderChange()));
+	QString comment = component()->getTopComments().join("\n");
+	headerEditor_->setPlainText(comment);
+	connect(headerEditor_, SIGNAL(textChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -158,7 +143,7 @@ void GeneralEditor::onAttributesChange()
 //-----------------------------------------------------------------------------
 void GeneralEditor::onDescriptionChange()
 {
-	component()->setDescription(descEditor_->description());
+	component()->setDescription(descriptionEditor_->toPlainText());
 	emit contentChanged();
 }
 
@@ -178,7 +163,7 @@ void GeneralEditor::showEvent( QShowEvent* event )
 //-----------------------------------------------------------------------------
 void GeneralEditor::onHeaderChange()
 {
-	component()->setTopComments(headerEditor_->description());
+	component()->setTopComments(headerEditor_->toPlainText());
 	emit contentChanged();
 }
 
@@ -189,4 +174,56 @@ void GeneralEditor::onAuthorChange()
 {
     component()->setAuthor(authorEditor_->text());
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneralEditor::onLicenseChange()
+//-----------------------------------------------------------------------------
+void GeneralEditor::onLicenseChange()
+{
+    component()->setLicense(licenseEditor_->text());
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GeneralEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void GeneralEditor::setupLayout()
+{
+    QWidget* topWidget = new QWidget(this);
+    QGridLayout* layout = new QGridLayout(topWidget);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    QGroupBox* descriptionBox = new QGroupBox("Description", this);
+
+    QVBoxLayout* descriptionLayout = new QVBoxLayout(descriptionBox);
+    descriptionLayout->addWidget(descriptionEditor_);
+
+    QGroupBox* commentBox = new QGroupBox("XML header", this);
+
+    QVBoxLayout* commentLayout = new QVBoxLayout(commentBox);
+    commentLayout->addWidget(headerEditor_);
+
+    QGroupBox* authorBox = new QGroupBox("Copyright information", this);
+
+    QFormLayout* copyrightLayout = new QFormLayout(authorBox);
+    copyrightLayout->addRow(tr("Author:"), authorEditor_);
+    copyrightLayout->addRow(tr("License:"), licenseEditor_);
+
+    layout->addWidget(new SummaryLabel(tr("Component summary"), this), 0, 0, 1, 2, Qt::AlignCenter);
+    layout->addWidget(vlnvDisplayer_, 1, 0, 1, 2);
+    layout->addWidget(attributeEditor_, 2, 0, 1, 1);
+    layout->addWidget(authorBox, 2, 1, 1, 1);    
+    layout->addWidget(descriptionBox, 3, 0, 1, 1);
+    layout->addWidget(commentBox, 3, 1, 1, 1);
+
+    QSplitter* splitter = new QSplitter(Qt::Vertical, this);    
+    splitter->addWidget(topWidget);
+    splitter->addWidget(previewBox_);
+    splitter->setStretchFactor(0, 1);
+    splitter->setStretchFactor(1, 2);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    topLayout->addWidget(splitter);
+    topLayout->setContentsMargins(4, 0, 0, 0);
 }

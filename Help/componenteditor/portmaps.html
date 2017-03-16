@@ -11,22 +11,7 @@
         User can map the <i>logical signals</i> of a bus interface to the physical <i>ports</i> of the component.
         The physical ports are located in the top table, while the logical signals and port maps are located in
         the bottom table.
-    </p>
-    
-    <h4>Physical port filters</h4>
-    <ul>
-        <li>
-            <b>Port name</b> allows regular expressions to filter ports not matching the given expression.
-        </li>
-        <li>
-            <b>Direction</b> allows the selection of a port direction and filtering all the other ports with
-            different directions.
-        </li>
-        <li>
-            Connected ports can also be hidden through <b>Hide connected ports</b>. By default, this filter is on,
-            but can be removed.
-        </li>
-    </ul>
+    </p>    
 
     <h3>Creating a port map</h3>
     <ul>
@@ -65,6 +50,21 @@
         </li>
     </ul>
     
+    <h3>Physical port filters</h3>
+    <ul>
+        <li>
+            <b>Port name</b> allows regular expressions to filter ports not matching the given expression.
+        </li>
+        <li>
+            <b>Direction</b> allows the selection of a port direction and filtering all the other ports with
+            different directions.
+        </li>
+        <li>
+            Connected ports can also be hidden through <b>Hide connected ports</b>. By default, this filter is on,
+            but can be removed.
+        </li>
+    </ul>
+	
     <h3>Port maps</h3>
     <p>
         The port maps table consists of both the <i>logical signals</i> and the <i>port maps</i> referencing
@@ -137,14 +137,15 @@
         The lower table contains the <i>logical signals</i> that were defined in the associated
         <i>abstraction definition</i>. The upper table contains a list of the physical <i>ports</i> in the
         component. The bottom table displays the mappings between logical signals and physical ports. The mapped
-        physical ports disappear from the physical ports table.
+        physical ports are removed from the physical ports table unless <b>Hide connected ports</b> is unchecked.
     </p>
 	<p>
         The port directions are shown using the following icons:
         <ul>
-            <li><img src="../images/control-180.png"></img>in</li>
-            <li><img src="../images/control.png"></img>out</li>
-            <li><img src="../images/control-dual.png">inout</img></li>
+            <li><img src="../images/control-180.png"></img> in</li>
+            <li><img src="../images/control.png"></img> out</li>
+            <li><img src="../images/control-dual.png"> inout</img></li>
+			<li><img src="../images/draw-triangle3.png"> phantom</img></li>
         </ul>
     </p>
     <p>

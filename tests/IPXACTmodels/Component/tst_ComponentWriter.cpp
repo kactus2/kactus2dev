@@ -969,6 +969,7 @@ void tst_ComponentWriter::writeVendorExtensions()
 
     testComponent_->getVendorExtensions()->append(testExtension);
     testComponent_->setVersion("3.0.0");
+    testComponent_->setLicense("testLicense");
 
     QString expectedOutput(
         "<?xml version=\"1.0\"?>\n"
@@ -985,6 +986,7 @@ void tst_ComponentWriter::writeVendorExtensions()
             "\t<ipxact:vendorExtensions>\n"
                 "\t\t<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>\n"
                 "\t\t<kactus2:version>3.0.0</kactus2:version>\n"
+                "\t\t<kactus2:license>testLicense</kactus2:license>\n"
             "\t</ipxact:vendorExtensions>\n"
         "</ipxact:component>\n"
         );

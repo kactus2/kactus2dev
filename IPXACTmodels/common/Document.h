@@ -261,6 +261,15 @@ public:
      *      @param [in] firmness    The new firmness value.
      */
     void setFirmness(KactusAttribute::Firmness firmness);
+    
+    /*!
+     *  Get the document license.
+     *
+     *      @return The license of the document, if any.
+     */
+    QString getLicense() const;
+
+    void setLicense(QString const& license);
 
 private:
 
@@ -289,7 +298,7 @@ private:
      *      @param [in] other   The document to copy extensions from.
      */
     void copyVendorExtensions(const Document & other);
-
+    
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

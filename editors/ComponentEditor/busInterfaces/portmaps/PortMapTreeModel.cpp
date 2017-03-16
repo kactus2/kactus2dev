@@ -472,6 +472,10 @@ QIcon PortMapTreeModel::getIconForDirection(DirectionTypes::Direction direction)
     {
         directionPath = ":icons/common/graphics/control-dual.png";
     }
+    else if (direction == DirectionTypes::DIRECTION_PHANTOM)
+    {
+        directionPath = ":icons/common/graphics/draw-triangle3.png";
+    }
 
     return QIcon(directionPath);
 }
@@ -1107,8 +1111,8 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
     {
         DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_);
         DirectionTypes::Direction physicalDirection = physicalPort->getDirection();
-        if ((logicalDirection != DirectionTypes::INOUT && physicalDirection != DirectionTypes::INOUT &&
-            logicalDirection != physicalDirection) ||
+        if ((logicalDirection != physicalDirection && (physicalDirection != DirectionTypes::INOUT && 
+            physicalDirection != DirectionTypes::DIRECTION_PHANTOM)) ||
             logicalDirection == DirectionTypes::DIRECTION_INVALID ||
             physicalDirection == DirectionTypes::DIRECTION_INVALID)
         {
