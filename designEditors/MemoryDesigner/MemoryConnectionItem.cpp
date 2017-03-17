@@ -104,16 +104,11 @@ QPainterPath MemoryConnectionItem::createConnectionPath(QPointF highStartPoint, 
     QPen connectionPen = pen();
     connectionPen.setWidth(LINEWIDTH);
 
-    if (dynamic_cast<MemoryMapGraphicsItem*>(endItem_))
+    if (dynamic_cast<MemoryMapGraphicsItem*>(endItem_) && !isLocalMapConnection())
     {
         path.lineTo(highEndPoint);
         path.moveTo(lowStartPoint);
         path.lineTo(lowEndPoint);
-
-        if (isLocalMapConnection())
-        {
-            connectionPen.setColor(QColor(0, 128, 255));
-        }
     }
     else
     {
@@ -127,20 +122,40 @@ QPainterPath MemoryConnectionItem::createConnectionPath(QPointF highStartPoint, 
         qreal bridgeEndX = highEndPoint.x() - BRIDGEMODIFIER;
         qreal bridgeLastPillarX = bridgeEndX - BRIDGEMODIFIER;
 
-        path.lineTo(bridgeStartX, bridgeHighLineY);
-        path.lineTo(bridgeFirstPillarX, bridgeHighY);
-        path.lineTo(bridgeLastPillarX, bridgeHighY);
-        path.lineTo(bridgeEndX, bridgeHighLineY);
-        path.lineTo(highEndPoint);
+        if (isLocalMapConnection())
+        {
+            path.lineTo(bridgeFirstPillarX, bridgeHighLineY);
+            path.lineTo(bridgeFirstPillarX, bridgeHighY);
+            path.lineTo(bridgeLastPillarX, bridgeHighY);
+            path.lineTo(bridgeLastPillarX, bridgeHighLineY);
+            path.lineTo(highEndPoint);
+            path.moveTo(lowStartPoint);
+            path.lineTo(bridgeFirstPillarX, bridgeLowLineY);
+            path.lineTo(bridgeFirstPillarX, bridgeLowY);
+            path.lineTo(bridgeLastPillarX, bridgeLowY);
+            path.lineTo(bridgeLastPillarX, bridgeLowLineY);
+            path.lineTo(lowEndPoint);
 
-        path.moveTo(lowStartPoint);
-        path.lineTo(bridgeStartX, bridgeLowLineY);
-        path.lineTo(bridgeFirstPillarX, bridgeLowY);
-        path.lineTo(bridgeLastPillarX, bridgeLowY);
-        path.lineTo(bridgeEndX, bridgeLowLineY);
-        path.lineTo(lowEndPoint);
+            connectionPen.setColor(QColor(0, 128, 255));
+        }
 
-        connectionPen.setColor(QColor(60, 153, 60));
+        else
+        {
+            path.lineTo(bridgeStartX, bridgeHighLineY);
+            path.lineTo(bridgeFirstPillarX, bridgeHighY);
+            path.lineTo(bridgeLastPillarX, bridgeHighY);
+            path.lineTo(bridgeEndX, bridgeHighLineY);
+            path.lineTo(highEndPoint);
+
+            path.moveTo(lowStartPoint);
+            path.lineTo(bridgeStartX, bridgeLowLineY);
+            path.lineTo(bridgeFirstPillarX, bridgeLowY);
+            path.lineTo(bridgeLastPillarX, bridgeLowY);
+            path.lineTo(bridgeEndX, bridgeLowLineY);
+            path.lineTo(lowEndPoint);
+
+            connectionPen.setColor(QColor(60, 153, 60));
+        }
     }
 
     setPen(connectionPen);
