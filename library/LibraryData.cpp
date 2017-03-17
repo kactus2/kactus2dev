@@ -9,10 +9,10 @@
 // LibraryData is the data model that manages the actual VLNV library.
 //-----------------------------------------------------------------------------
 
-#include "librarydata.h"
+#include "LibraryData.h"
 
-#include "libraryhandler.h"
-#include "librarytreemodel.h"
+#include "LibraryHandler.h"
+#include "LibraryTreeModel.h"
 
 #include <common/utils.h>
 #include <common/widgets/ScanProgressWidget/scanprogresswidget.h>

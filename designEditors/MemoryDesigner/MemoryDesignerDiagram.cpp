@@ -11,7 +11,7 @@
 
 #include "MemoryDesignerDiagram.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <common/graphicsItems/GraphicsColumnLayout.h>
 

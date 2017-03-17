@@ -8,7 +8,7 @@
 
 #include "componenteditoritem.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 
 #include <QEvent>

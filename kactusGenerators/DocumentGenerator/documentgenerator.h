@@ -13,7 +13,7 @@
 #include <editors/ComponentEditor/common/ExpressionFormatterFactory.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>

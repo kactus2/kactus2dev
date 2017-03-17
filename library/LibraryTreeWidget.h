@@ -12,7 +12,7 @@
 #ifndef LIBRARYTREEWIDGET_H
 #define LIBRARYTREEWIDGET_H
 
-#include "librarytreeview.h"
+#include "LibraryTreeView.h"
 
 #include <IPXACTmodels/common/VLNV.h>
 

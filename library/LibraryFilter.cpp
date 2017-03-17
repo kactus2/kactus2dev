@@ -11,7 +11,7 @@
 
 #include "LibraryFilter.h"
 
-#include "libraryitem.h"
+#include "LibraryItem.h"
 
 #include <IPXACTmodels/Component/Component.h>
 

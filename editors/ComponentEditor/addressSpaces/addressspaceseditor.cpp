@@ -20,7 +20,7 @@
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

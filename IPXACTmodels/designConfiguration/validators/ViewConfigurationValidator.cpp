@@ -11,7 +11,7 @@
 
 #include "ViewConfigurationValidator.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/designConfiguration/ViewConfiguration.h>
 

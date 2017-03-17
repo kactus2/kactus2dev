@@ -12,8 +12,8 @@
 #ifndef LIBRARYTREEMODEL_H
 #define LIBRARYTREEMODEL_H
 
-#include "libraryitem.h"
-#include "librarydata.h"
+#include "LibraryItem.h"
+#include "LibraryData.h"
 
 #include <IPXACTmodels/common/VLNV.h>
 

@@ -14,7 +14,7 @@
 #include <common/widgets/accessComboBox/accesscombobox.h>
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>

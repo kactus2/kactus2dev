@@ -9,9 +9,9 @@
 // LibraryTreeWidget is the widget that displays the library content in a tree.
 //-----------------------------------------------------------------------------
 
-#include "librarytreewidget.h"
-#include "librarytreeview.h"
-#include "librarytreemodel.h"
+#include "LibraryTreeWidget.h"
+#include "LibraryTreeView.h"
+#include "LibraryTreeModel.h"
 
 #include <QObject>
 #include <QVBoxLayout>

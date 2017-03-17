@@ -12,7 +12,7 @@
 #include "InterfacePortMapModel.h"
 #include "InterfacePortMapColumns.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <editors/ComponentEditor/common/ComponentParameterFinder.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>

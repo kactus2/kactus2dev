@@ -11,7 +11,7 @@
 
 #include "componenteditorcominterfaceitem.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <editors/ComponentEditor/software/comInterface/ComInterfaceEditor.h>
 

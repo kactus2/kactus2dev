@@ -17,7 +17,7 @@
 
 #include <editors/CSourceEditor/CSourceTextEdit.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>

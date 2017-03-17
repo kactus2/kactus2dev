@@ -11,7 +11,7 @@
 
 #include "componenteditorapiinterfaceitem.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <editors/ComponentEditor/software/apiInterface/ApiInterfaceEditor.h>
 

@@ -51,7 +51,7 @@
 #include <designEditors/HWDesign/undoCommands/ReplaceComponentCommand.h>
 #include <designEditors/HWDesign/undoCommands/HWComponentAddCommand.h>
 
-#include <library/LibraryManager/libraryhandler.h>
+#include <library/LibraryHandler.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/PartSelect.h>

@@ -16,7 +16,7 @@
 
 #include "columnview/HWColumn.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <common/IEditProvider.h>
 #include <common/KactusColors.h>

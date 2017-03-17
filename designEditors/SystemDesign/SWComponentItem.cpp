@@ -19,7 +19,7 @@
 #include <IPXACTmodels/Component/Model.h>
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/IGraphicsItemStack.h>

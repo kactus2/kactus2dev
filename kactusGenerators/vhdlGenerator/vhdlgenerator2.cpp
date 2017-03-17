@@ -18,7 +18,7 @@
 
 #include "vhdlgeneral.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/PortAlignment.h>

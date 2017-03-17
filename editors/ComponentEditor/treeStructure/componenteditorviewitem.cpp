@@ -12,7 +12,7 @@
 #include "componenteditorviewitem.h"
 #include <editors/ComponentEditor/views/vieweditor.h>
 
-#include <library/LibraryManager/libraryhandler.h>
+#include <library/LibraryHandler.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>

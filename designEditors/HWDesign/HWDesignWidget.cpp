@@ -42,7 +42,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/GenericEditProvider.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <Plugins/common/NameGenerationPolicy.h>
 

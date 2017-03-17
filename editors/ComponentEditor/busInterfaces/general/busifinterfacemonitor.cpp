@@ -7,7 +7,7 @@
 
 #include "busifinterfacemonitor.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/VLNV.h>

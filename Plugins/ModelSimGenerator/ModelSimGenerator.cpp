@@ -12,7 +12,7 @@
 #include "ModelSimGenerator.h"
 
 #include <IPXACTmodels/common/VLNV.h>
-#include <library/LibraryManager/libraryhandler.h>
+#include <library/LibraryHandler.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/File.h>

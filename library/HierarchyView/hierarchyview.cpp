@@ -14,7 +14,7 @@
 #include "hierarchyfilter.h"
 #include "hierarchyitem.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/Component/Component.h>

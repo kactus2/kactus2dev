@@ -25,7 +25,7 @@
 #include <designEditors/HWDesign/AdHocVisibilityEditor/AdHocVisibilityEditor.h>
 #include <designEditors/common/Association/AssociationAddCommand.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>

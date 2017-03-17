@@ -11,7 +11,7 @@
 
 #include "AbstractionDefinitionValidator.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 

@@ -18,7 +18,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/View.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 #include <Plugins/PluginSystem/IPluginUtility.h>
 
 class Component;

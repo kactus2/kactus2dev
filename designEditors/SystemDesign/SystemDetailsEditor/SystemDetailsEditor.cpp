@@ -25,7 +25,7 @@
 
 #include <IPXACTmodels/kactusExtensions/SWInstance.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <QVBoxLayout>
 #include <QGridLayout>

@@ -18,7 +18,7 @@
 #include <designEditors/common/DrawMode.h>
 #include <common/widgets/tabDocument/TabDocument.h>
 
-#include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
+#include <library/VLNVDialer/vlnvdialer.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>

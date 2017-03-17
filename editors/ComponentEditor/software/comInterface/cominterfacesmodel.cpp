@@ -13,7 +13,7 @@
 
 #include "ComInterfaceColumns.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
 

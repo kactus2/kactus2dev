@@ -44,7 +44,7 @@
 #include <designEditors/SystemDesign/UndoCommands/SystemChangeCommands.h>
 #include <designEditors/SystemDesign/UndoCommands/ReplaceSystemComponentCommand.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 

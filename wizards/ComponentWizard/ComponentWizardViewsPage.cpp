@@ -17,7 +17,7 @@
 #include <editors/ComponentEditor/views/vieweditor.h>
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/View.h>

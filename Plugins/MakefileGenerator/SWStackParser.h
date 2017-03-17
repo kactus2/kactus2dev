@@ -24,7 +24,7 @@
 #include <IPXACTmodels/Component/BuildCommand.h>
 #include <IPXACTmodels/Component/View.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <Plugins/PluginSystem/GeneratorPlugin/IGeneratorPlugin.h>
 

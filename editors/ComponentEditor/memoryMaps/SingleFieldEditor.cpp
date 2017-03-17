@@ -11,7 +11,7 @@
 
 #include "SingleFieldEditor.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <editors/ComponentEditor/memoryMaps/WriteValueConstraintComboBox.h>
 #include <editors/ComponentEditor/memoryMaps/fieldeditor.h>

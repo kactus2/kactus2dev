@@ -24,7 +24,7 @@
 #include <designEditors/common/DiagramUtil.h>
 #include <designEditors/common/DesignWidget.h>
 
-#include <library/LibraryManager/libraryhandler.h>
+#include <library/LibraryHandler.h>
 
 #include <QGraphicsSceneMouseEvent>
 #include <QString>

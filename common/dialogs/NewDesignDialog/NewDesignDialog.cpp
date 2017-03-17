@@ -25,7 +25,7 @@
 
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 #include <common/widgets/LineEditEx/LineEditEx.h>
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: NewDesignDialog::NewDesignDialog()

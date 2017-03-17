@@ -12,7 +12,7 @@
 #ifndef LIBRARYTREEVIEW_H
 #define LIBRARYTREEVIEW_H
 
-#include "librarytreefilter.h"
+#include "LibraryTreeFilter.h"
 
 #include <QTreeView>
 #include <QContextMenuEvent>

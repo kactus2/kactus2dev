@@ -17,7 +17,7 @@
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 
 #include <Plugins/PluginSystem/IPluginUtility.h>
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <QDateTime>
 #include <QDir>

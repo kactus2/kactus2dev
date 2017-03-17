@@ -14,7 +14,7 @@
 
 #include <designEditors/common/DesignWidget.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 //! Interface for constructing design widgets.

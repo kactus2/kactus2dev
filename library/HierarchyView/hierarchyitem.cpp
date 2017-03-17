@@ -9,9 +9,9 @@
 // Represents a single component in the library in hierarchy view.
 //-----------------------------------------------------------------------------
 
-#include "hierarchyitem.h"
+#include "HierarchyItem.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 

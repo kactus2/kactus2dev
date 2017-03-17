@@ -7,7 +7,7 @@
 
 #include "systemheadersavemodel.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <QDir>
 #include <QFileInfo>

@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "PluginUtilityAdapter.h"
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: PluginUtilityAdapter::PluginUtilityAdapter()

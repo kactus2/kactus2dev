@@ -13,7 +13,7 @@
 
 #include <common/widgets/FileSelector/fileselector.h>
 
-#include <library/LibraryManager/libraryhandler.h>
+#include <library/LibraryHandler.h>
 
 #include <editors/ComponentEditor/common/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/ports/portseditor.h>

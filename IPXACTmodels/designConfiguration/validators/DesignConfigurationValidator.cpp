@@ -25,7 +25,7 @@
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <QRegularExpression>
 
