@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "localheadersavemodel.h"
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 

@@ -15,7 +15,7 @@
 #include <common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h>
 
 #include <IPXACTmodels/common/VLNV.h>
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <QVBoxLayout>
 #include <QFont>

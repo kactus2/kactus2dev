@@ -16,6 +16,7 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QSizePolicy>
+
 //-----------------------------------------------------------------------------
 // Function: TableViewDialog::TableViewDialog()
 //-----------------------------------------------------------------------------

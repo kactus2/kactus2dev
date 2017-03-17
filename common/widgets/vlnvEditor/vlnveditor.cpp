@@ -13,9 +13,9 @@
 
 #include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
 
-#include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/libraryitem.h>
-#include <library/LibraryManager/libraryhandler.h>
+#include <library/LibraryInterface.h>
+#include <library/LibraryItem.h>
+#include <library/LibraryHandler.h>
 
 #include <IPXACTmodels/validators/namevalidator.h>
 #include <IPXACTmodels/validators/NMTokenValidator.h>

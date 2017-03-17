@@ -11,9 +11,9 @@
 
 #include "hierarchymodel.h"
 
-#include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/libraryhandler.h>
-#include <library/LibraryManager/librarydata.h>
+#include <library/LibraryInterface.h>
+#include <library/LibraryHandler.h>
+#include <library/LibraryData.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>

@@ -19,7 +19,7 @@
 #include <designEditors/common/Association/Association.h>
 #include <designEditors/common/Association/AssociationRemoveCommand.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

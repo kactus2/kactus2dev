@@ -12,7 +12,7 @@
 #ifndef LIBRARYITEM_H
 #define LIBRARYITEM_H
 
-#include "librarydata.h"
+#include "LibraryData.h"
 
 #include <QVector>
 #include <QString>

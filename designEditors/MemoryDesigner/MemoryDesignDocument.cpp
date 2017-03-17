@@ -13,7 +13,7 @@
 
 #include <designEditors/MemoryDesigner/MemoryDesignerDiagram.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Design/Design.h>

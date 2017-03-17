@@ -19,7 +19,7 @@
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Component.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <editors/BusDefinitionEditor/absdefgroup.h>
 #include <editors/BusDefinitionEditor/busdefgroup.h>

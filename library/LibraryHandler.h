@@ -12,10 +12,11 @@
 #ifndef LIBRARYHANDLER_H
 #define LIBRARYHANDLER_H
 
-#include "libraryinterface.h"
-#include "librarytreewidget.h"
-#include "librarydata.h"
-#include "librarytreemodel.h"
+#include "LibraryInterface.h"
+#include "LibraryTreeWidget.h"
+#include "LibraryData.h"
+#include "LibraryTreeModel.h"
+
 #include "HierarchyView/hierarchymodel.h"
 #include "HierarchyView/hierarchywidget.h"
 

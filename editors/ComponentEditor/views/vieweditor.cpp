@@ -13,7 +13,7 @@
 
 #include "envidentifiereditor.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <Plugins/common/NameGenerationPolicy.h>
 

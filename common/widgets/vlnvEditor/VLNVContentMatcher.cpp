@@ -17,7 +17,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: VLNVContentMatcher()

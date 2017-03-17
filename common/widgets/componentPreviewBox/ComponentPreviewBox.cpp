@@ -15,7 +15,7 @@
 #include <designEditors/HWDesign/HWComponentItem.h>
 #include <designEditors/common/diagramgrid.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>

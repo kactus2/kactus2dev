@@ -198,30 +198,14 @@ HEADERS += ./VersionHelper.h \
     ./Plugins/common/NameGenerationPolicy.h \
     ./Plugins/common/SourceHighlightStyle.h \
     ./Plugins/common/LanguageHighlighter.h \
-    ./library/LibraryManager/TableViewDialog.h \
-    ./library/LibraryManager/libraryinterface.h \
-    ./library/LibraryManager/LibraryUtils.h \
-    ./library/LibraryManager/LibraryFilter.h \
-    ./library/LibraryManager/librarydata.h \
-    ./library/LibraryManager/LibraryErrorModel.h \
-    ./library/LibraryManager/libraryhandler.h \
-    ./library/LibraryManager/libraryitem.h \
-    ./library/LibraryManager/librarytreefilter.h \
-    ./library/LibraryManager/librarytreemodel.h \
-    ./library/LibraryManager/librarytreewidget.h \
-    ./library/LibraryManager/librarytreeview.h \
-    ./library/LibraryManager/VLNVDialer/dialerwidget.h \
-    ./library/LibraryManager/VLNVDialer/filterwidget.h \
-    ./library/LibraryManager/VLNVDialer/firmnessgroup.h \
-    ./library/LibraryManager/VLNVDialer/hierarchygroup.h \
-    ./library/LibraryManager/VLNVDialer/implementationgroup.h \
-    ./library/LibraryManager/VLNVDialer/typegroup.h \
-    ./library/LibraryManager/VLNVDialer/vlnvdialer.h \
-    ./library/LibraryManager/HierarchyView/hierarchyfilter.h \
-    ./library/LibraryManager/HierarchyView/hierarchyitem.h \
-    ./library/LibraryManager/HierarchyView/hierarchymodel.h \
-    ./library/LibraryManager/HierarchyView/hierarchywidget.h \
-    ./library/LibraryManager/HierarchyView/hierarchyview.h \
+    ./library/LibraryErrorModel.h \
+    ./library/LibraryData.h \
+    ./library/LibraryUtils.h \
+    ./library/LibraryTreeView.h \
+    ./library/LibraryTreeWidget.h \
+    ./library/LibraryTreeModel.h \
+    ./library/LibraryTreeFilter.h \
+    ./library/LibraryItem.h \
     ./editors/ApiDefinitionEditor/ApiFunctionColumns.h \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.h \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.h \
@@ -711,7 +695,23 @@ HEADERS += ./VersionHelper.h \
     ./kactusGenerators/vhdlGenerator/vhdlobject.h \
     ./kactusGenerators/vhdlGenerator/vhdlport.h \
     ./kactusGenerators/vhdlGenerator/vhdlsignal.h \
-    ./kactusGenerators/DocumentGenerator/documentgenerator.h
+    ./kactusGenerators/DocumentGenerator/documentgenerator.h \
+    ./library/VLNVDialer/vlnvdialer.h \
+    ./library/VLNVDialer/typegroup.h \
+    ./library/VLNVDialer/implementationgroup.h \
+    ./library/HierarchyView/hierarchymodel.h \
+    ./library/VLNVDialer/hierarchygroup.h \
+    ./library/HierarchyView/hierarchyitem.h \
+    ./library/HierarchyView/hierarchyfilter.h \
+    ./library/HierarchyView/hierarchywidget.h \
+    ./library/HierarchyView/hierarchyview.h \
+    ./library/VLNVDialer/firmnessgroup.h \
+    ./library/TableViewDialog.h \
+    ./library/LibraryInterface.h \
+    ./library/LibraryFilter.h \
+    ./library/LibraryHandler.h \
+    ./library/VLNVDialer/filterwidget.h \
+    ./library/VLNVDialer/dialerwidget.h
 SOURCES += ./VersionHelper.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/TextEditProvider.cpp \
@@ -869,29 +869,29 @@ SOURCES += ./VersionHelper.cpp \
     ./Plugins/common/LanguageHighlighter.cpp \
     ./Plugins/common/NameGenerationPolicy.cpp \
     ./Plugins/common/SourceHighlightStyle.cpp \
-    ./library/LibraryManager/librarydata.cpp \
-    ./library/LibraryManager/LibraryErrorModel.cpp \
-    ./library/LibraryManager/LibraryFilter.cpp \
-    ./library/LibraryManager/libraryhandler.cpp \
-    ./library/LibraryManager/libraryitem.cpp \
-    ./library/LibraryManager/librarytreefilter.cpp \
-    ./library/LibraryManager/librarytreemodel.cpp \
-    ./library/LibraryManager/librarytreeview.cpp \
-    ./library/LibraryManager/librarytreewidget.cpp \
-    ./library/LibraryManager/LibraryUtils.cpp \
-    ./library/LibraryManager/TableViewDialog.cpp \
-    ./library/LibraryManager/VLNVDialer/dialerwidget.cpp \
-    ./library/LibraryManager/VLNVDialer/filterwidget.cpp \
-    ./library/LibraryManager/VLNVDialer/firmnessgroup.cpp \
-    ./library/LibraryManager/VLNVDialer/hierarchygroup.cpp \
-    ./library/LibraryManager/VLNVDialer/implementationgroup.cpp \
-    ./library/LibraryManager/VLNVDialer/typegroup.cpp \
-    ./library/LibraryManager/VLNVDialer/vlnvdialer.cpp \
-    ./library/LibraryManager/HierarchyView/hierarchyfilter.cpp \
-    ./library/LibraryManager/HierarchyView/hierarchyitem.cpp \
-    ./library/LibraryManager/HierarchyView/hierarchymodel.cpp \
-    ./library/LibraryManager/HierarchyView/hierarchyview.cpp \
-    ./library/LibraryManager/HierarchyView/hierarchywidget.cpp \
+    ./library/TableViewDialog.cpp \
+    ./library/LibraryUtils.cpp \
+    ./library/LibraryTreeView.cpp \
+    ./library/LibraryTreeWidget.cpp \
+    ./library/LibraryTreeModel.cpp \
+    ./library/LibraryTreeFilter.cpp \
+    ./library/LibraryItem.cpp \
+    ./library/LibraryHandler.cpp \
+    ./library/LibraryFilter.cpp \
+    ./library/LibraryErrorModel.cpp \
+    ./library/LibraryData.cpp \
+    ./library/HierarchyView/hierarchymodel.cpp \
+    ./library/HierarchyView/hierarchyitem.cpp \
+    ./library/HierarchyView/hierarchyfilter.cpp \
+    ./library/HierarchyView/hierarchyview.cpp \
+    ./library/HierarchyView/hierarchywidget.cpp \
+    ./library/VLNVDialer/vlnvdialer.cpp \
+    ./library/VLNVDialer/typegroup.cpp \
+    ./library/VLNVDialer/implementationgroup.cpp \
+    ./library/VLNVDialer/hierarchygroup.cpp \
+    ./library/VLNVDialer/firmnessgroup.cpp \
+    ./library/VLNVDialer/filterwidget.cpp \
+    ./library/VLNVDialer/dialerwidget.cpp \
     ./editors/ApiDefinitionEditor/ApiDefinitionEditor.cpp \
     ./editors/ApiDefinitionEditor/ApiFunctionEditor.cpp \
     ./editors/ApiDefinitionEditor/ApiFunctionModel.cpp \
@@ -945,6 +945,7 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/fileSet/filesetseditor.cpp \
     ./editors/ComponentEditor/fileSet/filesetsmodel.cpp \
     ./editors/ComponentEditor/fileSet/groupmanager.cpp \
+    ./editors/ComponentEditor/fileSet/groupmanagerdelegate.cpp \
     ./editors/ComponentEditor/fileSet/file/filebuildcommand.cpp \
     ./editors/ComponentEditor/fileSet/file/filedefinemodel.cpp \
     ./editors/ComponentEditor/fileSet/file/filedefineview.cpp \
@@ -966,7 +967,6 @@ SOURCES += ./VersionHelper.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySortFilter.cpp \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.cpp \
-    ./editors/ComponentEditor/fileSet/groupmanagerdelegate.cpp \
     ./editors/ComponentEditor/general/generaleditor.cpp \
     ./editors/ComponentEditor/parameters/ChoiceCreatorDelegate.cpp \
     ./editors/ComponentEditor/parameters/ComponentParameterModel.cpp \

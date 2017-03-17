@@ -13,7 +13,7 @@
 
 #include <editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>

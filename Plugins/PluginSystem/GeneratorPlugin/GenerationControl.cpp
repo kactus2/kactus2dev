@@ -11,7 +11,7 @@
 
 #include "GenerationControl.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Design/Design.h>

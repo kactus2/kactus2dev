@@ -14,7 +14,7 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

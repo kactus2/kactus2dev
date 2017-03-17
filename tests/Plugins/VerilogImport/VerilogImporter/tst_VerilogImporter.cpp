@@ -984,6 +984,7 @@ void tst_VerilogImporter::testModuleIsHighlighted_data()
         "    xor(sum, bit1, bit2);\n"
         "    and(carry, bit1, bit2);\n"
         "endmodule\n";
+
 }
 
 //-----------------------------------------------------------------------------
@@ -1068,6 +1069,13 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView_data()
         "\n"
         <<
         "half_adder";
+
+    QTest::newRow("Keyword module in comments before module declaration") <<
+        "// module comment \n"
+        "module real_name();\n"
+        "endmodule\n"
+        <<
+        "real_name";
 }
 
 //-----------------------------------------------------------------------------

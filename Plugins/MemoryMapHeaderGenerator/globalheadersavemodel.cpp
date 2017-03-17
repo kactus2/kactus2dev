@@ -11,7 +11,7 @@
 
 #include "globalheadersavemodel.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <QDir>

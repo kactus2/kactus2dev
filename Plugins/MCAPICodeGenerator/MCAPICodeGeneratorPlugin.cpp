@@ -17,7 +17,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: MCAPICodeGeneratorPlugin::MCAPICodeGeneratorPlugin()

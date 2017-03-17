@@ -11,8 +11,8 @@
 
 #include "VLNVDataTree.h"
 
-#include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/libraryitem.h>
+#include <library/LibraryInterface.h>
+#include <library/LibraryItem.h>
 
 #include <IPXACTmodels/Component/Component.h>
 

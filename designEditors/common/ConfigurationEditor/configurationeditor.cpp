@@ -18,7 +18,7 @@
 
 #include <common/dialogs/createConfigurationDialog/createconfigurationdialog.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Design/Design.h>

@@ -11,7 +11,7 @@
 
 #include "createconfigurationdialog.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <common/widgets/LineEditEx/LineEditEx.h>

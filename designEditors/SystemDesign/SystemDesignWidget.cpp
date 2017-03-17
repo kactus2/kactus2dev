@@ -35,8 +35,8 @@
 #include <designEditors/SystemDesign/UndoCommands/SystemDeleteCommands.h>
 #include <designEditors/SystemDesign/UndoCommands/SystemComponentDeleteCommand.h>
 
-#include <library/LibraryManager/libraryinterface.h>
-#include <library/LibraryManager/LibraryUtils.h>
+#include <library/LibraryInterface.h>
+#include <library/LibraryUtils.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>

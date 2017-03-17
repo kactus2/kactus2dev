@@ -11,7 +11,7 @@
 
 #include "VerilogWriterFactory.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <Plugins/VerilogGenerator/CommentWriter/CommentWriter.h>
 #include <Plugins/common/PortSorter/InterfaceDirectionNameSorter.h>

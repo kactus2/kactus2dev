@@ -16,7 +16,7 @@
 #include <common/utils.h>
 #include <common/KactusColors.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 

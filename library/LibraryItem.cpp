@@ -9,7 +9,7 @@
 // LibraryItem class is used to create the hierarchical structure of IP library.
 //-----------------------------------------------------------------------------
 
-#include "libraryitem.h"
+#include "LibraryItem.h"
 
 #include <IPXACTmodels/common/VLNV.h>
 

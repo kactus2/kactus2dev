@@ -34,7 +34,7 @@
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <QFont>
 #include <QGraphicsDropShadowEffect>

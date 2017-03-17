@@ -12,7 +12,7 @@
 #include "PortMapTreeModel.h"
 #include "PortMapsColumns.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionParser.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>

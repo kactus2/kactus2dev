@@ -9,9 +9,9 @@
 // The widget to display the library in a tree.
 //-----------------------------------------------------------------------------
 
-#include "librarytreeview.h"
-#include "libraryitem.h"
-#include "libraryinterface.h"
+#include "LibraryTreeView.h"
+#include "LibraryItem.h"
+#include "LibraryInterface.h"
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/Document.h>

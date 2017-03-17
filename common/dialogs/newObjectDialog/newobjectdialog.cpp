@@ -14,7 +14,7 @@
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <QDialogButtonBox>
 #include <QHBoxLayout>

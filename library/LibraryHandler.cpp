@@ -9,13 +9,13 @@
 // LibraryHandler is the class that implements the services to manage the IP-XACT library.
 //-----------------------------------------------------------------------------
 
-#include "libraryhandler.h"
+#include "LibraryHandler.h"
 
 #include "LibraryFilter.h"
 #include "LibraryErrorModel.h"
 #include "TableViewDialog.h"
 
-#include <library/LibraryManager/VLNVDialer/vlnvdialer.h>
+#include <library/VLNVDialer/vlnvdialer.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/ObjectRemoveDialog/objectremovedialog.h>

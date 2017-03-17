@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/designConfiguration/InterconnectionConfiguration.h>
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/Interconnection.h>

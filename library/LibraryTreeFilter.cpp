@@ -9,10 +9,10 @@
 // The class that does the filtering and sorting of items for the library tree view.
 //-----------------------------------------------------------------------------
 
-#include "librarytreefilter.h"
-#include "libraryitem.h"
+#include "LibraryTreeFilter.h"
 
-#include "libraryinterface.h"
+#include "LibraryItem.h"
+#include "LibraryInterface.h"
 
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/Design/Design.h>

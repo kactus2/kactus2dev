@@ -13,7 +13,7 @@
 #include "ViewConfigurerColumns.h"
 #include "ViewConfigurerDelegate.h"
 
-#include <library/LibraryManager/libraryhandler.h>
+#include <library/LibraryHandler.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/Component.h>

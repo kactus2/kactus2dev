@@ -9,10 +9,10 @@
 // The model that contains the LibraryItems to display library hierarchically.
 //-----------------------------------------------------------------------------
 
-#include "librarytreemodel.h"
-#include "librarydata.h"
-#include "libraryitem.h"
-#include "libraryinterface.h"
+#include "LibraryTreeModel.h"
+#include "LibraryData.h"
+#include "LibraryItem.h"
+#include "LibraryInterface.h"
 
 #include <IPXACTmodels/common/Document.h>
 

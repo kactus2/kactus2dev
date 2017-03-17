@@ -11,7 +11,7 @@
 
 #include "MetaInstance.h"
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <editors/ComponentEditor/common/MultipleParameterFinder.h>
 #include "editors/ComponentEditor/common/ExpressionFormatter.h"

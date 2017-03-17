@@ -13,7 +13,7 @@
 #define BUSINTERFACEWIZARDGENERALOPTIONSPAGE_H
 
 #include <editors/ComponentEditor/busInterfaces/general/busifgeneraltab.h>
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <editors/ComponentEditor/common/ParameterFinder.h>
 #include <editors/ComponentEditor/common/ExpressionFormatter.h>
