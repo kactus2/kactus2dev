@@ -9,7 +9,7 @@
 // Represents a single component in the library in hierarchy view.
 //-----------------------------------------------------------------------------
 
-#include "HierarchyItem.h"
+#include "hierarchyitem.h"
 
 #include <library/LibraryInterface.h>
 
