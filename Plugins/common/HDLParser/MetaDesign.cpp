@@ -141,7 +141,7 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
 
     return retval;
 }
-#include <QDebug>
+
 //-----------------------------------------------------------------------------
 // Function: MetaDesign::parseDesign()
 //-----------------------------------------------------------------------------
@@ -151,58 +151,7 @@ void MetaDesign::parseDesign()
     parseInterconnections();
     parseAdHocs();
 
-    foreach(QSharedPointer<MetaInstance> mInstance, *instances_)
-    {
-        foreach(QSharedPointer<MetaPort> mPort, *mInstance->getPorts())
-        {
-            QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator iter = mPort->upAssignments_.begin();
-            QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator end = mPort->upAssignments_.end();
-
-            for (; iter != end;)
-            {
-                QSharedPointer<MetaPortAssignment> mpa = *iter;
-
-                if (mpa->wire_ && mpa->wire_->refCount < 2)
-                {
-                    mpa->wire_ = QSharedPointer<MetaWire>();
-                }
-
-                if (!mpa->wire_ && mpa->defaultValue_.isEmpty())
-                {
-                    iter = mPort->upAssignments_.erase(iter);
-                }
-                else
-                {
-                    ++iter;
-                }
-            }
-        }
-    }
-
-    foreach(QSharedPointer<MetaPort> mPort, *topInstance_->getPorts())
-    {
-        QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator iter = mPort->downAssignments_.begin();
-        QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator end = mPort->downAssignments_.end();
-
-        for (; iter != end;)
-        {
-            QSharedPointer<MetaPortAssignment> mpa = *iter;
-
-            if (mpa->wire_ && mpa->wire_->refCount < 2)
-            {
-                mpa->wire_ = QSharedPointer<MetaWire>();
-            }
-
-            if (!mpa->wire_ && mpa->defaultValue_.isEmpty())
-            {
-                iter = mPort->downAssignments_.erase(iter);
-            }
-            else
-            {
-                ++iter;
-            }
-        }
-    }
+    removeUnconnectedAssignments();
 }
 
 //-----------------------------------------------------------------------------
@@ -639,6 +588,72 @@ void MetaDesign::parseAdHocs()
             if (mWire)
             {
                 assignLargerBounds(mWire, mpa->logicalBounds_);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::removeUnconnectedAssignments()
+//-----------------------------------------------------------------------------
+void MetaDesign::removeUnconnectedAssignments()
+{
+    // Go through each meta instance.
+    foreach(QSharedPointer<MetaInstance> mInstance, *instances_)
+    {
+        // Go through its ports.
+        foreach(QSharedPointer<MetaPort> mPort, *mInstance->getPorts())
+        {
+            QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator iter = mPort->upAssignments_.begin();
+            QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator end = mPort->upAssignments_.end();
+
+            while (iter != end)
+            {
+                QSharedPointer<MetaPortAssignment> mpa = *iter;
+
+                // Wire does not have at least two users -> remove.
+                if (mpa->wire_ && mpa->wire_->refCount < 2)
+                {
+                    mpa->wire_ = QSharedPointer<MetaWire>();
+                }
+
+                // Remove port that do not match the criteria.
+                if (!mpa->wire_ && mpa->defaultValue_.isEmpty())
+                {
+                    iter = mPort->upAssignments_.erase(iter);
+                }
+                else
+                {
+                    ++iter;
+                }
+            }
+        }
+    }
+
+    // Go through ports of the top instance.
+    foreach(QSharedPointer<MetaPort> mPort, *topInstance_->getPorts())
+    {
+        QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator iter = mPort->downAssignments_.begin();
+        QMap<QString, QSharedPointer<MetaPortAssignment> >::iterator end = mPort->downAssignments_.end();
+
+        while (iter != end)
+        {
+            QSharedPointer<MetaPortAssignment> mpa = *iter;
+
+            // Wire does not have at least two users -> remove.
+            if (mpa->wire_ && mpa->wire_->refCount < 2)
+            {
+                mpa->wire_ = QSharedPointer<MetaWire>();
+            }
+
+            // Remove port that do not match the criteria.
+            if (!mpa->wire_ && mpa->defaultValue_.isEmpty())
+            {
+                iter = mPort->downAssignments_.erase(iter);
+            }
+            else
+            {
+                ++iter;
             }
         }
     }
