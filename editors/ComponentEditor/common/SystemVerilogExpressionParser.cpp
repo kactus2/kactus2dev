@@ -470,6 +470,12 @@ int SystemVerilogExpressionParser::findMatchingEndParenthesis(QString const& equ
     while (depth > 0)
     {
         position = equation.indexOf(parenthesesExpression, position);
+
+        if (position < 0 || position >= equation.size())
+        {
+            return -1;
+        }
+
         if (parenthesesExpression.match(equation.at(position)).captured() == "(")
         {
             depth++;

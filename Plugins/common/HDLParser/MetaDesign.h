@@ -82,7 +82,7 @@ private:
      *  Parses the design_: The instances, the interconnections, the ad-hocs.
      */
     void parseDesign();
-    
+
     /*!
      *  Parses instance in the design_.
      */
@@ -107,6 +107,12 @@ private:
      *  Parses ad-hocs in the design_.
      */
     void parseAdHocs();
+    
+    /*!
+     *  Removes assignments without wire or default value from down ports of the topInstance_ and
+     *  up ports of others.
+     */
+    void removeUnconnectedAssignments();
     
     /*!
      *  Tries to find hierarchy from mInstance for the active view and then create a sub design.

@@ -4648,55 +4648,58 @@ void MainWindow::setPluginVisibilities()
     QSharedPointer<Design const> design;
     QSharedPointer<DesignConfiguration const> designConfiguration;
 
-    if (doc != 0)
+    if (doc)
     {
         compVLNV = doc->getDocumentVLNV();
         desVLNV = doc->getIdentifyingVLNV();
         QSharedPointer<Document const> libComp = libraryHandler_->getModelReadOnly(compVLNV);
         component = libComp.dynamicCast<Component const>();
 
-        // if the design is supported by the document type
-        DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
-        if (desWidget)
+        if (component)
         {
-            // design is the object that identifies the editor
-            QSharedPointer<Document const> libDes = libraryHandler_->getModelReadOnly(desVLNV);
-            design = libDes.dynamicCast<Design const>();
-
-            // find the design config is one exists
-			QString viewName = desWidget->getOpenViewName();
-
-			// The name must exist!
-			Q_ASSERT(!viewName.isEmpty());
-
-            VLNV desConfVLNV;
-
-            // the implementation defines where to search for the hierarchy ref
-            switch (desWidget->getImplementation())
+            // if the design is supported by the document type
+            DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
+            if (desWidget)
             {
-            case KactusAttribute::HW:
-            case KactusAttribute::SW: 
-                {
-                    desConfVLNV = component->getHierRef(viewName);
-                    break;
-                }
-            case KactusAttribute::SYSTEM:
-                {
-                    desConfVLNV = component->getHierSystemRef(viewName);
-                    break;
-                }
-            default:
-                {
-                    Q_ASSERT(false);
-                    return;
-                }
-            }
+                // design is the object that identifies the editor
+                QSharedPointer<Document const> libDes = libraryHandler_->getModelReadOnly(desVLNV);
+                design = libDes.dynamicCast<Design const>();
 
-            // if the hierarchy ref is not directly to the design but design config is in between
-            if (desConfVLNV.isValid() && desConfVLNV != desVLNV)
-            {
-                 QSharedPointer<Document const> libDesConf = libraryHandler_->getModelReadOnly(desConfVLNV);
-                 designConfiguration = libDesConf.dynamicCast<DesignConfiguration const>();
+                // find the design config is one exists
+			    QString viewName = desWidget->getOpenViewName();
+
+			    // The name must exist!
+			    Q_ASSERT(!viewName.isEmpty());
+
+                VLNV desConfVLNV;
+
+                // the implementation defines where to search for the hierarchy ref
+                switch (desWidget->getImplementation())
+                {
+                case KactusAttribute::HW:
+                case KactusAttribute::SW: 
+                    {
+                        desConfVLNV = component->getHierRef(viewName);
+                        break;
+                    }
+                case KactusAttribute::SYSTEM:
+                    {
+                        desConfVLNV = component->getHierSystemRef(viewName);
+                        break;
+                    }
+                default:
+                    {
+                        Q_ASSERT(false);
+                        return;
+                    }
+                }
+
+                // if the hierarchy ref is not directly to the design but design config is in between
+                if (desConfVLNV.isValid() && desConfVLNV != desVLNV)
+                {
+                     QSharedPointer<Document const> libDesConf = libraryHandler_->getModelReadOnly(desConfVLNV);
+                     designConfiguration = libDesConf.dynamicCast<DesignConfiguration const>();
+                }
             }
         }
     }

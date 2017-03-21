@@ -1,18 +1,18 @@
 //-----------------------------------------------------------------------------
 // File: LibraryMock.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 06.08.2014
 //
 // Description:
-// <Short description of the class/file contents>
+// Mock of the IP-XACT library to use in unit tests.
 //-----------------------------------------------------------------------------
 
 #ifndef LIBRARYMOCK_H
 #define LIBRARYMOCK_H
 
-#include <library/LibraryManager/libraryinterface.h>
+#include <library/LibraryInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
 

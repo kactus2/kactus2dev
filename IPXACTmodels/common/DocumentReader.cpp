@@ -81,14 +81,13 @@ void DocumentReader::parseNamespaceDeclarations(QDomNode const& documentNode,
     QSharedPointer<Document> document) const
 {
     QDomNamedNodeMap attributeMap = documentNode.attributes();
+    QString nameSpaceIdentifier = QStringLiteral("xmlns:");
 
     for (int i = 0; i < attributeMap.count(); ++i)
     {
         QDomNode attr = attributeMap.item(i);
 
         QString name = attr.nodeName();
-
-        QString nameSpaceIdentifier = QStringLiteral("xmlns:");
 
         // Must be xmlns.
         if (name.startsWith(nameSpaceIdentifier))

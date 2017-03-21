@@ -148,7 +148,7 @@ public:
     QVector<QPair<QString, QString> > getXmlProcessingInstructions() const;
         
     /*!
-     *  Adds a new XML namespace for the document.
+     *  Adds a new XML namespace for the document, if it does not already exist within the document.
      *
      *      @param [in] nameSpace  The name of the namespace.
      *      @param [in] uri        The uri of the namespace.
