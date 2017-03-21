@@ -168,15 +168,16 @@ int VerilogPortParser::findStartOfPortList(QString const& input) const
 //-----------------------------------------------------------------------------
 QString VerilogPortParser::findVerilog1995PortsSectionInModule(QString const& input) const
 {    
-    QRegularExpression portList(PORT_1995.pattern() +"(\\s*" + PORT_1995.pattern() +"\\s*)*");
+    QString section = input;
 
-    int startOfPortList = findStartOfPortList(input);    
-    int endOfModule = input.indexOf(VerilogSyntax::MODULE_END, startOfPortList);
+    int startOfPortList = section.indexOf(QRegularExpression("[)]\\s*;"), findStartOfPortList(input)); 
+    int endOfModule = section.indexOf(VerilogSyntax::MODULE_END, startOfPortList);
+    
+    QRegularExpression lastPort(PORT_1995.pattern() + "(?!\\s*(" + VerilogSyntax::COMMENT + ")?\\s*" + PORT_1995.pattern() + ")");
 
-    QString section = input.mid(startOfPortList, endOfModule - startOfPortList);
-    section = removeIgnoredLines(section);
+    int endOfPortList = qMin(lastPort.match(section, startOfPortList).capturedEnd(), endOfModule);
 
-    return portList.match(section).captured();
+    return section.mid(startOfPortList, endOfPortList - startOfPortList);
 }
 
 //-----------------------------------------------------------------------------
@@ -218,12 +219,10 @@ QStringList VerilogPortParser::portDeclarationsIn(QString const& portSection) co
 {
     QStringList portDeclarations;
 
-    int index = portSection.indexOf(PORT_EXP, 0);
-    while(index != -1)
+    QRegularExpressionMatchIterator matches = PORT_EXP.globalMatch(portSection);
+    while (matches.hasNext())
     {
-        QRegularExpressionMatch portMatch = PORT_EXP.match(portSection, index);
-        portDeclarations.append(portMatch.captured());
-        index = portSection.indexOf(PORT_EXP, index + portMatch.capturedLength());
+        portDeclarations.append(matches.next().captured());
     }
 
     return portDeclarations;

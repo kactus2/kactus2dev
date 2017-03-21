@@ -1053,6 +1053,12 @@ void tst_VerilogImporter::testModelNameAndEnvironmentIsImportedToView_data()
         <<
         "tb";
 
+    QTest::newRow("Macromodule keyword") <<
+        "macromodule tb;\n"
+        "endmodule\n"
+        <<
+        "tb";
+
     QTest::newRow("Ports and parameters") <<
         "// File header for half_adder.\n"
         "module half_adder(\n"        
