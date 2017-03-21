@@ -213,16 +213,19 @@ QVector<QPair<QString, QString> > Document::getXmlProcessingInstructions() const
 //-----------------------------------------------------------------------------
 void Document::addXmlNameSpace(QString const& nameSpace, QString const& uri)
 {
+    // Go through all known xml name spaces.
     for (int i = 0; i < xmlNameSpaces_.size(); ++i)
     {
         QPair<QString, QString> value = xmlNameSpaces_[i];
 
+        // Discard the change if it already exists.
         if (value.first == nameSpace)
         {
             return;
         }
     }
 
+    // Otherwise append to the list.
     xmlNameSpaces_.append(qMakePair(nameSpace, uri));
 }
 
