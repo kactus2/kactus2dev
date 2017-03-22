@@ -8,19 +8,19 @@
               * Changed or Information
 ===============================================================================
 
-dd/03/2017 3.4.0
+22/03/2017 3.4.0
 ----------------------------------------------------
 
 + Enhanced features for Memory Designer:
-    * Added feature to visualize overlapping memory items
-	* Added feature to open the containing component and the editor for the selected item
-	* Added feature to visualize local memory maps
-	* Changed the visual look of a connection through a bridge
-	* Changed display name to be shown instead of element name, if defined
+    * Added feature to visualize overlapping memory items    
+    * Added feature to open the containing component and the editor for the selected item
+    * Added feature to visualize local memory maps
+    * Changed the visual look of a connection through a bridge
+    * Changed display name to be shown instead of element name, if defined
 + Improvements to Verilog generation:
-	* Added preview for generated files
-	* Added message console for reporting generation status
-	* Improved port assignment and vector boundary generation logic
+    * Added preview for generated files
+    * Added message console for reporting generation status
+    * Improved port assignment and vector boundary generation logic
 + Fixed error in importing Verilog ports
 + Added editor for Catalogs
 + Component editor layout updated for most editors
@@ -40,7 +40,7 @@ dd/03/2017 3.4.0
 - Fixed crashing when a design did not have a configuration
 - Fixed crashing when closing a design in specific cases
 - Fixed modifications to design connections while the document was unlocked
-- Fixed CSV import/export of signal definitions in abstraction definition	
+- Fixed CSV import/export of signal definitions in abstraction definition
 - Fixed missing component editor visibility options
 
 * System mode bus interface coloring changed from red to purple to avoid confusion with invalid interfaces
@@ -48,15 +48,15 @@ dd/03/2017 3.4.0
 * Toolbar "Check intergrity" changed to show listing of all errors within the library
   in separate window.
 * Exit screen is displayed longer
-	
+
 09/12/2016 3.3.0
 ----------------------------------------------------
 
 + Enhanced features for Memory Designer:
     * Register fields added 
     * Compression of items to minimize the required space
-	* Multiple address spaces can now be shown as part of the same connection
-	* Filtering options added
+    * Multiple address spaces can now be shown as part of the same connection
+    * Filtering options added
 + Memory connectivity analysis now manages also instances with identical names
 + File paths within filesets now accept URI expressions
 + Files can be drag-dropped to filesets from the file system
@@ -66,25 +66,25 @@ dd/03/2017 3.4.0
 + Zooming now follows mouse location in design
 + Enhanced usage of drafts in design:
     * Bus interface definitions copying when connecting hierarchical draft interface fixed
-	* Bus interface definitions copying when connecting non-hierarchical draft interface removed
-	* Bus interface definitions and port copying to draft instances changed to take place on
-	  packaging of the containing draft component instance
-	* Copy-paste of bus interface to a draft component instance changed to copy only the name and 
-	  the mode of the interface
+    * Bus interface definitions copying when connecting non-hierarchical draft interface removed
+    * Bus interface definitions and port copying to draft instances changed to take place on
+      packaging of the containing draft component instance
+    * Copy-paste of bus interface to a draft component instance changed to copy only the name and 
+      the mode of the interface
 + Notification on trying to read XML files of previous standard versions added
 + Improvements to Verilog generation:
     * Generation setup dialog simplified
     * Register definition creation set as optional
-	* Module name is correctly used for component instances
+    * Module name is correctly used for component instances
     * Environmental identifier created by the generator changed
 + Improvements to Verilog import:
     * Port type parsing improved for Verilog-2001 style ports
-	* Parameter parsing improved for lists of parameters
-	* Environmental identifier created by the import changed
+    * Parameter parsing improved for lists of parameters
+    * Environmental identifier created by the import changed
 + Improved features for MakefileGenerator:
     * Conflicting file selection added
-	* Launcher script creation set to optional
-	
+    * Launcher script creation set to optional
+    
 - Bus interface creation wizard fixed from preventing user to proceed from the general
   settings page due to missing port maps
 - Component instance replace in design changed to better preserve existing connections
@@ -118,11 +118,11 @@ KNOWN UNRESOLVED ISSUES:
 
 + Added preliminary version of memory designer:
     * Address spaces and Memory maps within design hierarchy are visualized with their
-	  addressing information
-	* Connectivity between spaces and maps are visualized
+      addressing information
+    * Connectivity between spaces and maps are visualized
 + Added preliminary version of memory connectivity analysis within designs
     * Added plugin for generating memory listing in CSV format
-+ Improvements to Verilog generation	
++ Improvements to Verilog generation
 + Added "Getting started" section to help
 + Fixed performance issues
 
@@ -137,13 +137,13 @@ KNOWN UNRESOLVED ISSUES:
 ----------------------------------------------------
 
 + New design for port map editor:
-	* Added feature to auto-connect logical and physical ports
-	* Logical and physical bounds are now easily editable	
+    * Added feature to auto-connect logical and physical ports
+    * Logical and physical bounds are now easily editable
 + Added support for tieoff values in design and port maps
 + Added feature to copy memory-elements along with their sub-elements
 + Improved expression support:
-	* Basic comparison operators are now accepted
-	* Values true/false are now accepted
+    * Basic comparison operators are now accepted
+    * Values true/false are now accepted
 + System group names are now visible and editable in Bus editor
 + Generated Verilog parameters are now correctly ordered for references
 + Performance improvements
@@ -162,21 +162,21 @@ KNOWN UNRESOLVED ISSUES:
 + Improved validation for many IP-XACT elements
 + Updated Verilog generation for one-to-many ad-hoc connections.
 + Added new view related editors for component editor:
-	* Component instantiations
-	* Design instantiations
-	* Design configuration instantiations.
+    * Component instantiations
+    * Design instantiations
+    * Design configuration instantiations.
 + Updated port editor to accept ports without defined left and right bounds as ports with a width of 1.
 + Updated parameter referencing.
 + Updated expression parser.
 + Updated component editor memory map visualization.
 + In component editor, changed cut command to copy and remove selected cells of a table.
 + Updated HW design editor:
-	* Updated component instance creation.
-	* Updated component instance removing.
-	* Updated component instance replacing.
-	* Updated connection removing.
-	* Invalid ad-hoc interfaces and ports are displayed with a red colour.
-	* Enabled deleting of invalid ad-hoc interfaces and ports.
+    * Updated component instance creation.
+    * Updated component instance removing.
+    * Updated component instance replacing.
+    * Updated connection removing.
+    * Invalid ad-hoc interfaces and ports are displayed with a red colour.
+    * Enabled deleting of invalid ad-hoc interfaces and ports.
 + Usability fixing.
 
 KNOWN UNRESOLVED ISSUES:
@@ -197,8 +197,8 @@ KNOWN UNRESOLVED ISSUES:
 * Memory map header generation from a system design does not work properly.
 * SystemVerilog expressions are not supported by some features including generators.
   If expressions or references have been used, it may cause at least the following issues:
-	* VHDL generator will generate wrong values.
-	* Port maps will not automatically adjust to changes in port size.
+    * VHDL generator will generate wrong values.
+    * Port maps will not automatically adjust to changes in port size.
 * VHDL import does not preserve references to model parameters.
 * In ports editor, creating a bus interface through ports is not possible for name column.
 * VHDL generator crashes unexpectedly during run
@@ -216,8 +216,8 @@ KNOWN UNRESOLVED ISSUES:
   change in id formatting. The fastest way to fix this is to re-create the parameters.
 * SystemVerilog expressions are not supported by some features including generators.
   If expressions or references have been used, it may cause at least the following issues:
-	* VHDL generator will generate wrong values.
-	* Port maps will not automatically adjust to changes in port size.
+    * VHDL generator will generate wrong values.
+    * Port maps will not automatically adjust to changes in port size.
 * VHDL import does not preserve references to model parameters.
 * In ports editor, creating a bus interface through ports is not possible for name column.
 * VHDL generator crashes unexpectedly during run
@@ -227,9 +227,9 @@ KNOWN UNRESOLVED ISSUES:
 
 + Added feature to import parameters from include files.
 + Improved configurable element variables editor
-	* Synchronizes with the enhanced model parameter definition.
-	* The parameters of the top component can be used in the configurable element variables.
-	* Variables are now grouped according to their location in the component.
+    * Synchronizes with the enhanced model parameter definition.
+    * The parameters of the top component can be used in the configurable element variables.
+    * Variables are now grouped according to their location in the component.
 + Added editors for IP-XACT elements remapState and memoryRemap.
 + Added support for expressions in memory map elements.
 + Added support for parameter references in generated header files.
@@ -242,8 +242,8 @@ KNOWN UNRESOLVED ISSUES:
   change in id formatting. The fastest way to fix this is to re-create the parameters.
 * SystemVerilog expressions are not supported by some features including generators.
   If expressions or references have been used, it may cause at least the following issues:
-	* VHDL generator will generate wrong values.
-	* Port maps will not automatically adjust to changes in port size.
+    * VHDL generator will generate wrong values.
+    * Port maps will not automatically adjust to changes in port size.
 * VHDL import does not preserve references to model parameters.
 * In ports editor, creating a bus interface through ports is not possible for name column.
 
@@ -263,8 +263,8 @@ KNOWN UNRESOLVED ISSUES:
   change in id formatting. The fastest way to fix this is to re-create the parameters.
 * SystemVerilog expressions are not supported by some features including generators.
   If expressions or references have been used, it may cause at least the following issues:
-	* VHDL generator will generate wrong values.
-	* Port maps will not automatically adjust to changes in port size.
+    * VHDL generator will generate wrong values.
+    * Port maps will not automatically adjust to changes in port size.
 * VHDL import does not preserve references to model parameters.
 
 09/04/2015 2.7.572
@@ -283,9 +283,9 @@ KNOWN UNRESOLVED ISSUES:
 * SystemVerilog expressions are not supported by some features including generators.
   If expressions or references have been used, it may cause at least the following issues:
     * Memory map header generator will generate wrong offsets for registers.
-	* Memory maps visualization shows wrong offset for register and aligns them wrong.
-	* VHDL generator will generate wrong values.
-	* Port maps will not automatically adjust to changes in port size.
+    * Memory maps visualization shows wrong offset for register and aligns them wrong.
+    * VHDL generator will generate wrong values.
+    * Port maps will not automatically adjust to changes in port size.
 * VHDL import does not preserve references to model parameters.
 
 27/03/2015 2.7.463
@@ -294,9 +294,9 @@ KNOWN UNRESOLVED ISSUES:
 + Added support for referencing parameters in top component of a design.
 + Added new editor for parameter values in an array.
 + Improved validation of configurable element values:
-	* Minimum, maximum and type restrictions are enforced.
-	* Choices can be selected from drop-down list.
-	* Arrays can be edited in similar fashion to component editor.
+    * Minimum, maximum and type restrictions are enforced.
+    * Choices can be selected from drop-down list.
+    * Arrays can be edited in similar fashion to component editor.
 + Added support for enabling/disabling register fields.
 + Added support for expressions in AddressBlock base addrss, range and width.
 + Added validity checks and separate display for referenced designs in hierarchical views. 
@@ -311,9 +311,9 @@ KNOWN UNRESOLVED ISSUES:
 * SystemVerilog expressions are not supported by some features including generators.
   If expressions or references have been used, it may cause at least the following issues:
     * Memory map header generator will generate wrong offsets for registers.
-	* Memory maps visualization shows wrong offset for register and aligns them wrong.
-	* VHDL generator will generate wrong values.
-	* Port maps will not automatically adjust to changes in port size.
+    * Memory maps visualization shows wrong offset for register and aligns them wrong.
+    * VHDL generator will generate wrong values.
+    * Port maps will not automatically adjust to changes in port size.
 * VHDL import does not preserve references to model parameters.
 
 06/03/2015 2.7.192
@@ -323,14 +323,14 @@ KNOWN UNRESOLVED ISSUES:
 + Verilog importer accepts semicolons in comments.
 + Added memory maps and registers to html documentation.
 + Added support for references in import wizard.
-	* Replaced evaluated value with IDs in Verilog import.
+    * Replaced evaluated value with IDs in Verilog import.
 + Improved usability of expression editor.
 + Added support for references in document generator.
 + Implemented module parameters in views.
 + Added name as a frozen column to parameters, model parameters and module parameters.
-	* Name and port number columns were frozen in port table.
+    * Name and port number columns were frozen in port table.
 + Where expressions are used, changed the table to show the expression by default.
-	* The tooltip now shows the evaluated value.
+    * The tooltip now shows the evaluated value.
 + Register reset value and reset mask can now be inserted as a bit type value.
 + Arrays can be insterted as a value for parameters.
 
@@ -340,9 +340,9 @@ KNOWN UNRESOLVED ISSUES:
 * SystemVerilog expressions are not supported by some features including generators.
   If expressions or references have been used, it may cause at least the following issues:
     * Memory map header generator will generate wrong offsets for registers.
-	* Memory maps visualization shows wrong offset for register and aligns them wrong.
-	* VHDL generator will generate wrong values.
-	* Port maps will not automatically adjust to changes in port size.
+    * Memory maps visualization shows wrong offset for register and aligns them wrong.
+    * VHDL generator will generate wrong values.
+    * Port maps will not automatically adjust to changes in port size.
 * VHDL import does not preserve references to model parameters.
 
 06/02/2015 2.7.0
@@ -350,9 +350,9 @@ KNOWN UNRESOLVED ISSUES:
 
 + Added support for SystemVerilog expressions in
     * component parameter and model parameter value,
-	* component port bounds and default value,
-	* component register offset, size and dimension and
-	* design configurable element values.
+    * component port bounds and default value,
+    * component register offset, size and dimension and
+    * design configurable element values.
 + Added support for referencing parameter and model parameter values in expressions.
 + Added autocomplete feature for available parameter names in expressions.
 + Added feature to view all elements referencing a parameter or model parameter.
@@ -367,9 +367,9 @@ KNOWN UNRESOLVED ISSUES:
 * SystemVerilog expressions are not supported by some features including generators.
   If expressions or references have been used, it may cause at least the following issues:
     * Memory map header generator will generate wrong offsets for registers.
-	* Memory maps visualization shows wrong offset for register and aligns them wrong.
-	* VHDL and Verilog generator will generate wrong values.
-	* Port maps will not automatically adjust to changes in port size.
+    * Memory maps visualization shows wrong offset for register and aligns them wrong.
+    * VHDL and Verilog generator will generate wrong values.
+    * Port maps will not automatically adjust to changes in port size.
 * VHDL import does not preserve references to model parameters.
 
 31/10/2014 2.6.0
@@ -377,9 +377,9 @@ KNOWN UNRESOLVED ISSUES:
 
 + New plugin interface for file import.
 + New plugins:
-	* Verilog import.
-	* Verilog generator for components and designs.
-	* Makefile generator.
+    * Verilog import.
+    * Verilog generator for components and designs.
+    * Makefile generator.
 + Added feature to run import from component editor.
 + Added editing of views to component wizard.
 + Added feature to sort port list by port number.
@@ -418,7 +418,7 @@ KNOWN UNRESOLVED ISSUES:
     - New Bus and Abstraction definition generation based on ports in a 
       component.
     - Bus interface and port map generation to component using the
-	  generatarted or existing Bus and Abstraction definitions.
+      generatarted or existing Bus and Abstraction definitions.
 + Added help page for keyboard and mouse shortcuts.
 
 - Fixed numerous non-critical bugs and usability issues.
