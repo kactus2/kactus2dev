@@ -196,6 +196,12 @@ QList<QSharedPointer<ModuleParameter> > VerilogParameterParser::parseParameters(
         moduleParameter->setArrayRight(arrayRight);
         moduleParameter->setDescription(description);
 
+        // No type plus has vectors, means that we set type as bit for compatibility.
+        if (!moduleParameter->getVectors()->isEmpty() && moduleParameter->getType().isEmpty())
+        {
+            moduleParameter->setType(QStringLiteral("bit"));
+        }
+
         parameters.append(moduleParameter);
     }
 

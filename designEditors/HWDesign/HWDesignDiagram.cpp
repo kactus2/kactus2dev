@@ -2361,6 +2361,12 @@ void HWDesignDiagram::createAdHocTieOffConnection(QSharedPointer<AdHocConnection
     foreach (QSharedPointer<PortReference> internalPort, *connection->getInternalPortReferences())
     {
         HWComponentItem* comp1 = getComponentItem(internalPort->getComponentRef());
+
+        if (!comp1)
+        {
+            continue;
+        }
+
         AdHocItem* componentPort = comp1->getAdHocPort(internalPort->getPortRef());
 
         if (!componentPort)
