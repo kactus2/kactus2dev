@@ -8,6 +8,47 @@
               * Changed or Information
 ===============================================================================
 
+dd/03/2017 3.4.0
+----------------------------------------------------
+
++ Enhanced features for Memory Designer:
+    * Added feature to visualize overlapping memory items
+	* Added feature to open the containing component and the editor for the selected item
+	* Added feature to visualize local memory maps
+	* Changed the visual look of a connection through a bridge
+	* Changed display name to be shown instead of element name, if defined
++ Improvements to Verilog generation:
+	* Added preview for generated files
+	* Added message console for reporting generation status
+	* Improved port assignment and vector boundary generation logic
++ Fixed error in importing Verilog ports
++ Added editor for Catalogs
++ Component editor layout updated for most editors
++ Enabled expressions in parameter value when using a choice
++ Added isPresent-property to memory maps, address blocks, address spaces and segments
++ Improved completion help for fileset filetypes and groups 
++ Enabled CSV import/export of files in a fileset
++ Added feature to hide immediate values from configurable element values
++ Enabled keyboard navigation in VLNV tree view
++ Added expand/collapse options in VLNV tree view context menu
++ Help and tooltips updated
++ Custom XML namespaces are retained in XML files
+
+- Removed address space reference and base address from mirrored-master bus interface
+- Fixed crashing when adding port maps in component
+- Fixed a referencing issue with configurable element values when changing active view
+- Fixed crashing when a design did not have a configuration
+- Fixed crashing when closing a design in specific cases
+- Fixed modifications to design connections while the document was unlocked
+- Fixed CSV import/export of signal definitions in abstraction definition	
+- Fixed missing component editor visibility options
+
+* System mode bus interface coloring changed from red to purple to avoid confusion with invalid interfaces
+* Changed "frozen column" in editors to use vertical headers instead of a separate table
+* Toolbar "Check intergrity" changed to show listing of all errors within the library
+  in separate window.
+* Exit screen is displayed longer
+	
 09/12/2016 3.3.0
 ----------------------------------------------------
 
