@@ -104,9 +104,16 @@ QString VerilogAssignmentWriter::assignmentForPort() const
     }
     else if ((!isInHierPort_ && isInPort) || (isInHierPort_ && isOutPort))
     {
+        QString defaultValue = mpa_->defaultValue_;
+
+        if (defaultValue.isEmpty())
+        {
+            defaultValue = mPort_->defaultValue_;
+        }
+
         // If a default value is assigned to a physical port, it shall be used.
         assignmentString.remove("[<logicalLeft>:<logicalRight>]");
-        assignmentString.replace("<logicalWireName>", mpa_->defaultValue_);
+        assignmentString.replace("<logicalWireName>", defaultValue);
     }
     else
     {

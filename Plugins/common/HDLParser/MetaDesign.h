@@ -110,9 +110,13 @@ private:
     
     /*!
      *  Removes assignments without wire or default value from down ports of the topInstance_ and
-     *  up ports of others.
+     *  up ports of others. Also culls cases where the wire has only one attached port assignment.
+     *  
+     *      @param [in] allowDefault		    If true, assignments containing default values are not culled.
+     *  
      */
-    void removeUnconnectedAssignments();
+    void removeUnconnectedInterfaceAssignments();
+    void removeUnconnectedAdHocAssignments();
     
     /*!
      *  Tries to find hierarchy from mInstance for the active view and then create a sub design.
