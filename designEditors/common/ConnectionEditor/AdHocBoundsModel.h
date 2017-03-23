@@ -17,7 +17,7 @@
 
 class PortReference;
 
-class AdHocConnectionItem;
+class AdHocConnection;
 class IEditProvider;
 
 //-----------------------------------------------------------------------------
@@ -46,7 +46,7 @@ public:
      *      @param [in] connection      The connection.
      *      @param [in] editProvider    The edit provider for undo/redo.
      */
-    void setConnection(AdHocConnectionItem* connection, QSharedPointer<IEditProvider> editProvider);
+    void setConnection(QSharedPointer<AdHocConnection> connection, QSharedPointer<IEditProvider> editProvider);
 
 	/*!
      *  Returns the number of rows in the model.
@@ -141,7 +141,7 @@ private:
     QSharedPointer<IEditProvider> editProvider_;
 
     //! The ad-hoc connection currently being edited.
-    AdHocConnectionItem* connection_;
+    QSharedPointer<AdHocConnection> connection_;
 };
 
 //-----------------------------------------------------------------------------

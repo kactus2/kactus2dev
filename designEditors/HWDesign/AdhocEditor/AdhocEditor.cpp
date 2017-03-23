@@ -11,6 +11,8 @@
 
 #include "AdhocEditor.h"
 
+#include <designEditors/common/ConnectionEditor/AdHocBoundColumns.h>
+
 #include <common/graphicsItems/ComponentItem.h>
 #include <common/GenericEditProvider.h>
 
@@ -31,6 +33,10 @@
 #include <IPXACTmodels/Design/Design.h>
 
 #include <QFormLayout>
+#include <QVBoxLayout>
+#include <QAbstractItemView>
+#include <QSortFilterProxyModel>
+#include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: AdhocEditor::AdHocEditor()
@@ -47,7 +53,9 @@ rightBoundValue_(new QLabel(this)),
 tiedValueEditor_(new ExpressionEditor(componentFinder_, this)),
 containedPortItem_(),
 editProvider_(),
-designDiagram_()
+designDiagram_(),
+adHocBoundsTable_(this),
+adHocBoundsModel_(this)
 {
     tiedValueEditor_->setFixedHeight(20);
 
@@ -65,9 +73,24 @@ designDiagram_()
 
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
+    // Set settings for the table view.
+    adHocBoundsTable_.setSortingEnabled(true);
+    adHocBoundsTable_.setSelectionMode(QAbstractItemView::SingleSelection);
+    adHocBoundsTable_.verticalHeader()->hide();
+
+    QSortFilterProxyModel* adHocPortProxy = new QSortFilterProxyModel(this);
+    adHocPortProxy->setSourceModel(&adHocBoundsModel_);
+    adHocBoundsTable_.setModel(adHocPortProxy);
+
+    adHocBoundsTable_.setColumnWidth(AdHocBoundColumns::LEFT_BOUND, 70);
+    adHocBoundsTable_.setColumnWidth(AdHocBoundColumns::RIGHT_BOUND, 70);
+    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::LEFT_BOUND, QHeaderView::Fixed);
+    adHocBoundsTable_.horizontalHeader()->setSectionResizeMode(AdHocBoundColumns::RIGHT_BOUND, QHeaderView::Fixed);
+
     setupLayout();
 
-    connect(tiedValueEditor_, SIGNAL(editingFinished()), this, SLOT(onTiedValueChanged()), Qt::UniqueConnection);
+    connect(tiedValueEditor_, SIGNAL(textChanged()), this, SLOT(onTiedValueChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,6 +106,7 @@ AdHocEditor::~AdHocEditor()
 //-----------------------------------------------------------------------------
 void AdHocEditor::setupLayout()
 {
+    QVBoxLayout* topLayout = new QVBoxLayout();
     QFormLayout* overallLayout = new QFormLayout();
 
     overallLayout->addRow(tr("Name:"), portName_);
@@ -91,7 +115,10 @@ void AdHocEditor::setupLayout()
     overallLayout->addRow(tr("Right bound:"), rightBoundValue_);
     overallLayout->addRow(tr("Tied value:"), tiedValueEditor_);
 
-    setLayout(overallLayout);
+    topLayout->addLayout(overallLayout);
+    topLayout->addWidget(&adHocBoundsTable_);
+
+    setLayout(topLayout);
 }
 
 //-----------------------------------------------------------------------------
@@ -114,6 +141,7 @@ void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingD
     leftBoundValue_->show();
     rightBoundValue_->show();
     tiedValueEditor_->show();
+    adHocBoundsTable_.show();
 
     AdHocPortItem* adhocPortItem = dynamic_cast<AdHocPortItem*>(containedPortItem_);
     AdHocInterfaceItem* adhocInterfaceItem = dynamic_cast<AdHocInterfaceItem*>(containedPortItem_);
@@ -149,10 +177,13 @@ void AdHocEditor::setAdhocPort(AdHocItem* endPoint, HWDesignDiagram* containingD
         {
             tiedValue = getTiedValue(containingItemName);
             tiedValueEditor_->setEnabled(!designDiagram_->isProtected());
+
+            updateBoundsTable(containingItemName);
         }
         else
         {
             tiedValueEditor_->setEnabled(false);
+            adHocBoundsTable_.setEnabled(false);
         }
 
         tiedValueEditor_->blockSignals(true);
@@ -276,6 +307,34 @@ void AdHocEditor::onTiedValueChanged()
     setTiedValueEditorToolTip(newTiedValue);
 
     createTieOffChangeCommand(newTiedValue);
+
+    QString instanceName = "";
+    ComponentItem* containingInstance = containedPortItem_->encompassingComp();
+    if (containingInstance)
+    {
+        instanceName = containingInstance->name();
+    }
+
+    updateBoundsTable(instanceName);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AdhocEditor::getParsedTieOffValue()
+//-----------------------------------------------------------------------------
+void AdHocEditor::updateBoundsTable(QString instanceName)
+{
+    QSharedPointer<AdHocConnection> connection = getTiedConnection(instanceName);
+    adHocBoundsModel_.setConnection(connection, designDiagram_->getEditProvider());
+    adHocBoundsTable_.resizeRowsToContents();
+
+    if (connection)
+    {
+        adHocBoundsTable_.setEnabled(!designDiagram_->isProtected());
+    }
+    else
+    {     
+        adHocBoundsTable_.setEnabled(false);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -357,6 +416,7 @@ void AdHocEditor::clear()
     leftBoundValue_->hide();
     rightBoundValue_->hide();
     tiedValueEditor_->hide();
+    adHocBoundsTable_.hide();
 
     parentWidget()->setMaximumHeight(20);
 }

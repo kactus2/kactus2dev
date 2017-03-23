@@ -12,8 +12,11 @@
 #ifndef ADHOCEDITOR_H
 #define ADHOCEDITOR_H
 
+#include <designEditors/common/ConnectionEditor/AdHocBoundsModel.h>
+
 #include <QWidget>
 #include <QLabel>
+#include <QTableWidget>
 
 class ExpressionEditor;
 class ExpressionParser;
@@ -24,6 +27,7 @@ class AdHocItem;
 class IEditProvider;
 class HWDesignDiagram;
 class ExpressionFormatter;
+class AdHocBoundsModel;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the details of an Ad hoc port in designAd-hoc editor.
@@ -137,6 +141,14 @@ private:
      *      @param [in] tiedValue   The new tied value.
      */
     void setTiedValueEditorToolTip(QString const& tiedValue);
+    
+    /*!
+     *  Update table used for the part selection of the tie-off.
+     *  Will also enable or disable the table depending circumstances.
+     *
+     *      @param [in] instanceName    Name of the instance containing the port. Empty for top level ports.
+     */
+    void updateBoundsTable(QString instanceName);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -174,6 +186,12 @@ private:
 
     //! The design diagram containing the ad hoc port item.
     HWDesignDiagram* designDiagram_;
+
+    //! The port ad-hoc bounds table.
+    QTableView adHocBoundsTable_;
+
+    //! The ad-hoc bounds model.
+    AdHocBoundsModel adHocBoundsModel_;
 };
 
 #endif // ADHOCEDITOR_H

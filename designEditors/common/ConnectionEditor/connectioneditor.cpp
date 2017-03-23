@@ -150,7 +150,7 @@ void ConnectionEditor::clear()
 	nameEdit_.clear();
 	descriptionEdit_.clear();
 	portWidget_.clearContents();
-    adHocBoundsModel_.setConnection(0, QSharedPointer<IEditProvider>());
+    adHocBoundsModel_.setConnection(QSharedPointer<AdHocConnection>(), QSharedPointer<IEditProvider>());
 
 	// set objects as hidden
 	type_.hide();
@@ -244,7 +244,8 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
     }
     else if (endpoint1->isAdHoc())
     {
-        adHocBoundsModel_.setConnection(static_cast<AdHocConnectionItem*>(connection_), diagram->getEditProvider());
+        AdHocConnectionItem* adHoc = static_cast<AdHocConnectionItem*>(connection_);
+        adHocBoundsModel_.setConnection(adHoc->getAdHocConnection(), diagram->getEditProvider());
         adHocBoundsTable_.resizeRowsToContents();
     }
 
