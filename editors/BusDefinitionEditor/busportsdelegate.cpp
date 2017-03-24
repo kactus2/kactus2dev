@@ -44,15 +44,7 @@ BusPortsDelegate::~BusPortsDelegate()
 QWidget* BusPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     const QModelIndex& index ) const
 {
-    if (index.column() == LogicalPortColumns::NAME || 
-        index.column() == LogicalPortColumns::DESCRIPTION)
-    {
-        QLineEdit* line = new QLineEdit(parent);
-        connect(line, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-        return line;
-    }
-
-    else if (index.column() == LogicalPortColumns::QUALIFIER)
+    if (index.column() == LogicalPortColumns::QUALIFIER)
     {
         QComboBox* box = new QComboBox(parent);
         QStringList list;
@@ -69,8 +61,7 @@ QWidget* BusPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem co
         return box;
     }
 
-    else if (index.column() == LogicalPortColumns::WIDTH ||
-        index.column() == LogicalPortColumns::DEFAULT_VALUE)
+    else if (index.column() == LogicalPortColumns::WIDTH)
     {
         QLineEdit* line = new QLineEdit(parent);
 
