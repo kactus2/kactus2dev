@@ -1550,7 +1550,7 @@ void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sou
                 DirectionTypes::Direction directionOverride = sourcePort->getDirection();
                 if (absDef && absDef->hasPort(logicalName, mode))
                 { 
-                    directionOverride = absDef->getPortDirection(logicalName, mode);
+                    directionOverride = absDef->getPortDirection(logicalName, mode, target->getBusInterface()->getSystem());
                 }
 
                 QSharedPointer<Port> clonePort = createConnectingPhysicalPort(sourcePort, directionOverride, reservedNames);

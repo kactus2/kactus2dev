@@ -61,8 +61,10 @@ public:
      *
      *      @param [in] abstractionDefinitionVLNV   VLNV of the abstraction definition.
      *      @param [in] newMode                     The new interface mode.
+     *      @param [in] systemGroup                 The used system group in case of system mode.
      */
-    void setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV, General::InterfaceMode newMode);
+    void setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV, General::InterfaceMode newMode,
+        QString systemGroup);
 
 public slots:
 
@@ -235,6 +237,9 @@ private:
 
     //! The used interface mode.
     General::InterfaceMode interfaceMode_;
+
+    //! The system group name in case of system mode.
+    QString systemGroup_;
 };
 
 //-----------------------------------------------------------------------------

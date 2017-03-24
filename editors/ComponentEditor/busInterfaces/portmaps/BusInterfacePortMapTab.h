@@ -77,10 +77,11 @@ public:
 	/*!
      *  Set the abstraction type that defines the logical signals to use.
 	 *
-	 *      @param [in] vlnv    VLNV of the new abstraction type.
-     *      @param [in] mode    The interface mode of the bus interface.
+	 *      @param [in] vlnv            VLNV of the new abstraction type.
+     *      @param [in] mode            The interface mode of the bus interface.
+     *      @param [in] systemGroup     The used system group in case of system mode.
 	 */
-	virtual void setAbsType(const VLNV& vlnv, General::InterfaceMode mode);
+	virtual void setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString systemGroup);
 
     /*!
      *  Sets a subset of component ports to be visible in the physical port list.

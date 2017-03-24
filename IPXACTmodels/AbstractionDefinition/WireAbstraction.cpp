@@ -161,6 +161,22 @@ QSharedPointer<QList<QSharedPointer<WirePort> > > WireAbstraction::getSystemPort
 }
 
 //-----------------------------------------------------------------------------
+// Function: WireAbstraction::findSystemPort()
+//-----------------------------------------------------------------------------
+QSharedPointer<WirePort> WireAbstraction::findSystemPort(QString groupName) const
+{
+    foreach(QSharedPointer<WirePort> systemPort, *onSystem_)
+    {
+        if (systemPort->getSystemGroup() == groupName)
+        {
+            return systemPort;
+        }
+    }
+
+    return QSharedPointer<WirePort>();
+}
+
+//-----------------------------------------------------------------------------
 // Function: WireAbstraction::hasMasterPort()
 //-----------------------------------------------------------------------------
 bool WireAbstraction::hasMasterPort() const
@@ -250,7 +266,8 @@ General::DriverType WireAbstraction::getDriverType() const
 //-----------------------------------------------------------------------------
 // Function: WireAbstraction::getDirection()
 //-----------------------------------------------------------------------------
-DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode mode) const
+DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode mode,
+    QString systemGroup) const
 {
     if (mode == General::MASTER && hasMasterPort())
     {
@@ -270,11 +287,25 @@ DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode m
     }   
     else if (mode == General::SYSTEM && !getSystemPorts()->isEmpty())
     {
-        return getSystemPorts()->first()->getDirection();
+        QSharedPointer<WirePort> systemPort = findSystemPort(systemGroup);
+
+        if (!systemPort)
+        {
+            systemPort = getSystemPorts()->first();
+        }
+
+        return systemPort->getDirection();
     } 
     else if (mode == General::MIRROREDSYSTEM && !getSystemPorts()->isEmpty())
     {
-        return DirectionTypes::convert2Mirrored(getSystemPorts()->first()->getDirection());
+        QSharedPointer<WirePort> systemPort = findSystemPort(systemGroup);
+
+        if (!systemPort)
+        {
+            systemPort = getSystemPorts()->first();
+        }
+
+        return DirectionTypes::convert2Mirrored(systemPort->getDirection());
     }
     else
     {

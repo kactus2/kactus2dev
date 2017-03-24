@@ -50,6 +50,7 @@ handler_(handler),
 containingBusInterface_(busif),
 absDef_(),
 interfaceMode_(General::MASTER),
+systemGroup_(),
 formatter_(expressionFormatter),
 portMappings_(),
 portMapValidator_(portMapValidator)
@@ -385,7 +386,7 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
             DirectionTypes::Direction direction = DirectionTypes::DIRECTION_INVALID;
             if (absDef_ && abstractPort)
             {
-                direction = absDef_->getPortDirection(abstractPort->name(), interfaceMode_);
+                direction = absDef_->getPortDirection(abstractPort->name(), interfaceMode_, systemGroup_);
             }
 
             return getIconForDirection(direction);
@@ -999,9 +1000,10 @@ void PortMapTreeModel::reset()
 //-----------------------------------------------------------------------------
 // Function: PortMapTreeModel::setAbsType()
 //-----------------------------------------------------------------------------
-void PortMapTreeModel::setAbsType(VLNV const& vlnv, General::InterfaceMode mode)
+void PortMapTreeModel::setAbsType(const VLNV& vlnv, General::InterfaceMode mode, QString systemGroup)
 {
     interfaceMode_ = mode;
+    systemGroup_ = systemGroup;
 
     absDef_ = QSharedPointer<AbstractionDefinition>();
 
@@ -1109,7 +1111,7 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
         (!physicalPortName.isEmpty() || physicalPortName.compare(MULTIPLE_SELECTED) != 0) && physicalPort &&
         logicalPort->getWire())
     {
-        DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_);
+        DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_, systemGroup_);
         DirectionTypes::Direction physicalDirection = physicalPort->getDirection();
         if ((logicalDirection != physicalDirection && (physicalDirection != DirectionTypes::INOUT && 
             physicalDirection != DirectionTypes::DIRECTION_PHANTOM)) ||

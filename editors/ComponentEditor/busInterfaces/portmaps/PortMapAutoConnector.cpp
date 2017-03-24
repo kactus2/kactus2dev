@@ -55,9 +55,11 @@ PortMapAutoConnector::~PortMapAutoConnector()
 // Function: PortMapAutoConnector::setAbstractionDefinition()
 //-----------------------------------------------------------------------------
 void PortMapAutoConnector::setAbstractionDefinition(VLNV const& abstractionDefinitionVLNV,
-    General::InterfaceMode newMode)
+    General::InterfaceMode newMode,
+    QString systemGroup)
 {
     interfaceMode_ = newMode;
+    systemGroup_ =  systemGroup;
     absDef_.clear();
 
     if (abstractionDefinitionVLNV.isValid())
@@ -177,7 +179,7 @@ QMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(QSharedPoin
 {
     QMap<double, QString> weightedPhysicalPorts;
 
-    DirectionTypes::Direction logicalDirection = absDef_->getPortDirection(logicalPort->name(), interfaceMode_);
+    DirectionTypes::Direction logicalDirection = absDef_->getPortDirection(logicalPort->name(), interfaceMode_, systemGroup_);
     
     QMap<QSharedPointer<Port>, double> availablePorts = getPortsByDirection(logicalDirection);
     if (!availablePorts.isEmpty())

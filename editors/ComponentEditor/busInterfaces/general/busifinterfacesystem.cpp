@@ -114,8 +114,18 @@ void BusIfInterfaceSystem::refresh()
 	// add the system names to the list
 	groupEditor_.addItems(groupList);
 
-	// select the same text that was previously selected if it still can be found
-	int index = groupEditor_.findText(oldText);
+    // select the same text that was previously selected if it still can be found
+    int index;
+
+    if (oldText.isEmpty())
+    {
+         index = groupEditor_.findText(busif_->getSystem());
+    }
+    else
+    {
+        index = groupEditor_.findText(oldText);
+    }
+
 	groupEditor_.setCurrentIndex(index);
 
 	// reconnect the combo box

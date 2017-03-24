@@ -75,7 +75,8 @@ int BusInterfaceWizardPortMapPage::nextId() const
 //-----------------------------------------------------------------------------
 void BusInterfaceWizardPortMapPage::initializePage()
 {
-    portMapTab_.setAbsType(*busIf_->getAbstractionTypes()->first()->getAbstractionRef(), busIf_->getInterfaceMode());
+    portMapTab_.setAbsType(*busIf_->getAbstractionTypes()->first()->getAbstractionRef(),
+        busIf_->getInterfaceMode(), busIf_->getSystem());
     
     portMapTab_.refresh();    
 }

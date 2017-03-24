@@ -116,12 +116,14 @@ public:
     /*!
      *  Gets the direction for a port in a given mode.
      *
-     *      @param [in] portName    The name of the port to get the direction for.
-     *      @param [in] mode        The mode to get the direction for.
+     *      @param [in] portName            The name of the port to get the direction for.
+     *      @param [in] mode                The mode to get the direction for.
+     *      @param [in] newSystemGroup      Used system group of the new bus interface.
      *
      *      @return The direction for the port in the given mode.
      */
-    DirectionTypes::Direction getPortDirection(QString const& portName, General::InterfaceMode mode) const;
+    DirectionTypes::Direction getPortDirection(QString const& portName, General::InterfaceMode mode,
+        QString newSystemGroup) const;
 
     /*!
      *  Gets a logical port with the given name.

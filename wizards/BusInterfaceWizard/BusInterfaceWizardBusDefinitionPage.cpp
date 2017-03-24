@@ -108,7 +108,7 @@ void BusInterfaceWizardBusDefinitionEditorPage::initializePage()
         mappingMode_ = GENERATE_SINGLE;
         QString logicalSignal = absDef->getPortNames(busIf_->getInterfaceMode()).first();
         createLogicalMappings(physicalPorts_, logicalSignal, 
-            absDef->getPortDirection(logicalSignal, busIf_->getInterfaceMode()));
+            absDef->getPortDirection(logicalSignal, busIf_->getInterfaceMode(), busIf_->getSystem()));
     }
     else
     {

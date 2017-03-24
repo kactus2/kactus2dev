@@ -81,6 +81,8 @@ public:
      */
     QSharedPointer<QList<QSharedPointer<WirePort> > > getSystemPorts() const;
 
+    QSharedPointer<WirePort> findSystemPort(QString groupName) const;
+
     /*!
      *  Checks if the wire has a port definition for master mode.
      *
@@ -154,11 +156,13 @@ public:
     /*!
      *  Gets the wire direction for a given interface mode.
      *
-     *      @param [in] mode   The mode to get the direction for.
+     *      @param [in] mode            The mode to get the direction for.
+     *      @param [in] systemGroup     The system group to get direction for.
      *
      *      @return The direction of the wire for the given interface mode.
      */
-    DirectionTypes::Direction getDirection(General::InterfaceMode mode) const;
+    DirectionTypes::Direction getDirection(General::InterfaceMode mode,
+        QString systemGroup) const;
 
     /*!
      *  Gets the wire width for a given interface mode.

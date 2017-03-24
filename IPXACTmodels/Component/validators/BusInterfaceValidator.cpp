@@ -236,7 +236,7 @@ bool BusInterfaceValidator::abstractionTypeHasValidPortMaps(QSharedPointer<BusIn
         }
         else if (!abstraction->getPortMaps()->isEmpty())
         {
-            portMapValidator_->busInterfaceChanged(abstraction->getAbstractionRef(), busInterface->getInterfaceMode());
+            portMapValidator_->busInterfaceChanged(abstraction->getAbstractionRef(), busInterface->getInterfaceMode(), busInterface->getSystem());
 
             MemoryReserve reservedArea;
             foreach (QSharedPointer<PortMap> portMap, *abstraction->getPortMaps())
@@ -913,7 +913,7 @@ void BusInterfaceValidator::findErrorsInAbstractionPortMaps(QVector<QString>& er
 
         if (!abstraction->getPortMaps()->isEmpty())
         {
-            portMapValidator_->busInterfaceChanged(abstraction->getAbstractionRef(), busInterface->getInterfaceMode());
+            portMapValidator_->busInterfaceChanged(abstraction->getAbstractionRef(), busInterface->getInterfaceMode(), busInterface->getSystem());
 
             QStringList portNames;
 

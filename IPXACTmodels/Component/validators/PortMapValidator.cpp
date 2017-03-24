@@ -36,6 +36,7 @@ availablePorts_(ports),
 abstractionReference_(),
 abstractionDefinition_(),
 interfaceMode_(General::INTERFACE_MODE_COUNT),
+systemGroup_(),
 libraryHandler_(libraryHandler)
 {
     if (abstractionReference_)
@@ -58,7 +59,7 @@ PortMapValidator::~PortMapValidator()
 // Function: PortMapValidator::busInterfaceChanged()
 //-----------------------------------------------------------------------------
 void PortMapValidator::busInterfaceChanged(QSharedPointer<ConfigurableVLNVReference> newAbstractionReference,
-    General::InterfaceMode newInterfaceMode)
+    General::InterfaceMode newInterfaceMode, QString newGroupName)
 {
     if (newAbstractionReference)
     {
@@ -70,6 +71,7 @@ void PortMapValidator::busInterfaceChanged(QSharedPointer<ConfigurableVLNVRefere
     }
 
     interfaceMode_ = newInterfaceMode;
+    systemGroup_ = newGroupName;
 }
 
 //-----------------------------------------------------------------------------
@@ -312,7 +314,7 @@ bool PortMapValidator::connectedPortsHaveValidDirections(QSharedPointer<PortAbst
         if (logicalPort->getWire() && physicalPort->getWire() &&
             !physicalPort->getWire()->getAllLogicalDirectionsAllowed())
         {
-            DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_);
+            DirectionTypes::Direction logicalDirection = logicalPort->getWire()->getDirection(interfaceMode_, systemGroup_);
             DirectionTypes::Direction physicalDirection = physicalPort->getWire()->getDirection();
 
             if ((logicalDirection == DirectionTypes::IN && physicalDirection == DirectionTypes::OUT) ||
@@ -508,7 +510,7 @@ void PortMapValidator::findErrorsInPortConnection(QVector<QString>& errors, QSha
 		if (!connectedPortsHaveValidDirections(logicalPort, physicalPort))
         {
             QString logicalDirection =
-                DirectionTypes::direction2Str(logicalPort->getWire()->getDirection(interfaceMode_));
+                DirectionTypes::direction2Str(logicalPort->getWire()->getDirection(interfaceMode_, systemGroup_));
             QString physicalDirection = DirectionTypes::direction2Str(physicalPort->getWire()->getDirection());
 
             errors.append(QObject::tr("Invalid connection made between logical port %1 with direction %2 and "
