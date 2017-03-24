@@ -19,7 +19,6 @@
 
 #include <common/KactusColors.h>
 
-
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
@@ -353,7 +352,9 @@ bool BusPortsModel::setData(QModelIndex const& index, QVariant const& value, int
     }
     else if (index.column() == LogicalPortColumns::DIRECTION)
     {
-        port.wire_->setDirection(DirectionTypes::str2Direction(value.toString(), DirectionTypes::DIRECTION_INVALID));    }
+        port.wire_->setDirection(DirectionTypes::str2Direction(value.toString(),
+            DirectionTypes::DIRECTION_INVALID)); 
+    }
     else if (index.column() == LogicalPortColumns::PRESENCE)
     {
         port.wire_->setPresence(PresenceTypes::str2Presence(value.toString(), PresenceTypes::UNKNOWN));
