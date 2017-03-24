@@ -148,10 +148,12 @@ QList<QSharedPointer<MetaDesign> > MetaDesign::parseHierarchy(LibraryInterface* 
 void MetaDesign::parseDesign()
 {
     parseInstances();
-    parseInterconnections();
-    parseAdHocs();
 
-    removeUnconnectedAssignments();
+    parseInterconnections();
+    removeUnconnectedInterfaceAssignments();
+
+    parseAdHocs();
+    removeUnconnectedAdHocAssignments();
 }
 
 //-----------------------------------------------------------------------------
@@ -390,7 +392,7 @@ void MetaDesign::wireInterfacePorts(QSharedPointer<MetaInterface> mInterface,
                     mIterconnect->wires_.insert(pAbs->getLogicalName(), mWire);
                 }
 
-                mWire->refCount = mWire->refCount+  1;
+                mWire->refCount = mWire->refCount + 1;
                 mpa->wire_ = mWire;
                 // Also assign larger bounds for wire, if applicable.
                 assignLargerBounds(mWire, mpa->logicalBounds_);
@@ -594,9 +596,48 @@ void MetaDesign::parseAdHocs()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MetaDesign::removeUnconnectedAssignments()
+// Function: MetaDesign::removeUnconnectedInterfaceAssignments()
 //-----------------------------------------------------------------------------
-void MetaDesign::removeUnconnectedAssignments()
+void MetaDesign::removeUnconnectedInterfaceAssignments()
+{
+    // Go through each meta instance.
+    foreach(QSharedPointer<MetaInstance> mInstance, *instances_)
+    {
+        foreach(QSharedPointer<MetaInterface> mInterface, *mInstance->getInterfaces())
+        {
+            if (mInterface->upInterconnection_)
+            {
+                continue;
+            }
+
+            // Go through its ports.
+            foreach(QSharedPointer<MetaPort> mPort, mInterface->ports_)
+            {
+                mPort->upAssignments_.clear();
+            }
+        }
+    }
+
+    // Go through ports of the top instance.
+    foreach(QSharedPointer<MetaInterface> mInterface, *topInstance_->getInterfaces())
+    {
+        if (mInterface->downInterconnection_)
+        {
+            continue;
+        }
+
+        // Go through its ports.
+        foreach(QSharedPointer<MetaPort> mPort, mInterface->ports_)
+        {
+            mPort->downAssignments_.clear();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MetaDesign::removeUnconnectedAdHocAssignments()
+//-----------------------------------------------------------------------------
+void MetaDesign::removeUnconnectedAdHocAssignments()
 {
     // Go through each meta instance.
     foreach(QSharedPointer<MetaInstance> mInstance, *instances_)
@@ -610,6 +651,7 @@ void MetaDesign::removeUnconnectedAssignments()
             while (iter != end)
             {
                 QSharedPointer<MetaPortAssignment> mpa = *iter;
+                bool isAdHocWire = getAdHocWires()->contains(mpa->wire_);
 
                 // Wire does not have at least two users -> remove.
                 if (mpa->wire_ && mpa->wire_->refCount < 2)
@@ -617,8 +659,8 @@ void MetaDesign::removeUnconnectedAssignments()
                     mpa->wire_ = QSharedPointer<MetaWire>();
                 }
 
-                // Remove port that do not match the criteria.
-                if (!mpa->wire_ && mpa->defaultValue_.isEmpty())
+                // Remove port assignment that do not match the criteria. Applies only to the ad hoc wires.
+                if (!mpa->wire_ && mpa->defaultValue_.isEmpty() && isAdHocWire)
                 {
                     iter = mPort->upAssignments_.erase(iter);
                 }
@@ -639,15 +681,16 @@ void MetaDesign::removeUnconnectedAssignments()
         while (iter != end)
         {
             QSharedPointer<MetaPortAssignment> mpa = *iter;
+            bool isAdHocWire = getAdHocWires()->contains(mpa->wire_);
 
-            // Wire does not have at least two users -> remove.
+            // Wire does not have at least two users -> remove. Applies only to the ad hoc wires.
             if (mpa->wire_ && mpa->wire_->refCount < 2)
             {
                 mpa->wire_ = QSharedPointer<MetaWire>();
             }
 
-            // Remove port that do not match the criteria.
-            if (!mpa->wire_ && mpa->defaultValue_.isEmpty())
+            // Remove port assignment that do not match the criteria. Applies only to the ad hoc wires.
+            if (!mpa->wire_ && mpa->defaultValue_.isEmpty() && isAdHocWire)
             {
                 iter = mPort->downAssignments_.erase(iter);
             }

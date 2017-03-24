@@ -65,7 +65,7 @@ private slots:
     void testMasterToMultipleSlavesInterconnections();
     void testInterconnectionToVaryingSizeLogicalMaps();
     void testSlicedInterconnection();
-    void testAbsDefDefault();
+    //void testAbsDefDefault();
     void testPortDefaultValueInComponentInstance();
     void testHierarchicalPortDefaultValue();
 
@@ -1379,7 +1379,7 @@ void tst_HDLParser::testSlicedInterconnection()
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::testAbsDefDefault()
 //-----------------------------------------------------------------------------
-void tst_HDLParser::testAbsDefDefault()
+/*void tst_HDLParser::testAbsDefDefault()
 {
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
 
@@ -1453,7 +1453,7 @@ void tst_HDLParser::testAbsDefDefault()
     QCOMPARE(mpa->logicalBounds_.first, QString("2"));
     QCOMPARE(mpa->logicalBounds_.second, QString("0"));
     QCOMPARE(mpa->defaultValue_, QString("5"));
-}
+}*/
 
 //-----------------------------------------------------------------------------
 // Function: tst_HDLParser::testPortDefaultValueInComponentInstance()
