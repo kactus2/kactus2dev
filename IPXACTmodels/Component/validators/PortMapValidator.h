@@ -55,7 +55,7 @@ public:
      */
     void busInterfaceChanged(QSharedPointer<ConfigurableVLNVReference> newAbstractionReference,
         General::InterfaceMode newInterfaceMode,
-        QString newSystemGroup);
+        QString const& newSystemGroup);
 
     /*!
      *  Handle the change of abstraction definition.

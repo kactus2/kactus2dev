@@ -59,7 +59,7 @@ PortMapValidator::~PortMapValidator()
 // Function: PortMapValidator::busInterfaceChanged()
 //-----------------------------------------------------------------------------
 void PortMapValidator::busInterfaceChanged(QSharedPointer<ConfigurableVLNVReference> newAbstractionReference,
-    General::InterfaceMode newInterfaceMode, QString newGroupName)
+    General::InterfaceMode newInterfaceMode, QString const& newSystemGroup)
 {
     if (newAbstractionReference)
     {
@@ -71,7 +71,7 @@ void PortMapValidator::busInterfaceChanged(QSharedPointer<ConfigurableVLNVRefere
     }
 
     interfaceMode_ = newInterfaceMode;
-    systemGroup_ = newGroupName;
+    systemGroup_ = newSystemGroup;
 }
 
 //-----------------------------------------------------------------------------
@@ -195,13 +195,13 @@ bool PortMapValidator::logicalPortRangeIsWithinAbstractionWidth(QSharedPointer<P
 {
     if (referencedPort)
     {
-        if (logicalPort->range_ && referencedPort->getWire() && !referencedPort->getWire()->getWidth(interfaceMode_).isEmpty())
+        if (logicalPort->range_ && referencedPort->getWire() && !referencedPort->getWire()->getWidth(interfaceMode_, systemGroup_).isEmpty())
         {
             quint64 rangeLeft = expressionParser_->parseExpression(logicalPort->range_->getLeft()).toULongLong();
             quint64 rangeRight = expressionParser_->parseExpression(logicalPort->range_->getRight()).toULongLong();
 
             quint64 abstractionWidth = expressionParser_->parseExpression(
-                referencedPort->getWire()->getWidth(interfaceMode_)).toULongLong();
+                referencedPort->getWire()->getWidth(interfaceMode_, systemGroup_)).toULongLong();
 
             return rangeLeft <= abstractionWidth - 1 && rangeRight <= abstractionWidth - 1;
         }

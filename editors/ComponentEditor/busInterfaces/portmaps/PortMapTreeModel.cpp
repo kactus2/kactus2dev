@@ -290,7 +290,7 @@ QVariant PortMapTreeModel::data(QModelIndex const& index, int role) const
 
         else if (!index.parent().isValid() && index.column() == PortMapsColumns::LOGICAL_PRESENCE)
         {
-            PresenceTypes::Presence requirement = abstractPort->getPresence(interfaceMode_);
+            PresenceTypes::Presence requirement = abstractPort->getPresence(interfaceMode_, systemGroup_);
             if (requirement == PresenceTypes::UNKNOWN)
             {
                 requirement = PresenceTypes::OPTIONAL;
@@ -432,7 +432,7 @@ QVariant PortMapTreeModel::getBackgroundColour(QModelIndex const& index,
 {
     if (!index.parent().isValid())
     {
-        if (logicalPort->getPresence(interfaceMode_) == PresenceTypes::REQUIRED &&
+        if (logicalPort->getPresence(interfaceMode_, systemGroup_) == PresenceTypes::REQUIRED &&
             index.column() == PortMapsColumns::PHYSICAL_PORT)
         {
             return KactusColors::MANDATORY_FIELD;
@@ -611,7 +611,7 @@ QVariant PortMapTreeModel::getLogicalLeftBound(QSharedPointer<PortAbstraction> l
         QSharedPointer<WireAbstraction> abstractWire = logicalPort->getWire();
         if (abstractWire)
         {
-            QString logicalWidth = abstractWire->getWidth(interfaceMode_);
+            QString logicalWidth = abstractWire->getWidth(interfaceMode_, systemGroup_);
             if (!logicalWidth.isEmpty())
             {
                 int logicalLeft = parseExpressionToDecimal(logicalWidth).toInt() - 1;
@@ -945,7 +945,7 @@ void PortMapTreeModel::reset()
     {
         foreach (QSharedPointer<PortAbstraction> logicalPort, *absDef_->getLogicalPorts())
         {
-            if (logicalPort->hasMode(interfaceMode_))
+            if (logicalPort->hasMode(interfaceMode_, systemGroup_))
             {
                 PortMapping newMapping;
                 newMapping.logicalPort_ = logicalPort;
@@ -1069,7 +1069,7 @@ QVariant PortMapTreeModel::expressionOrValueForIndex(QModelIndex const& index) c
     }
     else if (index.column() == PortMapsColumns::LOGICAL_PRESENCE)
     {
-        return PresenceTypes::presence2Str(abstractPort->getPresence(interfaceMode_));
+        return PresenceTypes::presence2Str(abstractPort->getPresence(interfaceMode_, systemGroup_));
     }
     else
     {
@@ -1175,7 +1175,7 @@ bool PortMapTreeModel::validateIndex(QModelIndex const& index) const
     {
         QSharedPointer<PortAbstraction> logicalPort = portMappings_.at(index.row()).logicalPort_;
         bool hasPortMaps = !portMappings_.at(index.row()).portMaps_.isEmpty();
-        if (logicalPort && (logicalPort->getPresence(interfaceMode_) == PresenceTypes::ILLEGAL) && hasPortMaps)
+        if (logicalPort && (logicalPort->getPresence(interfaceMode_, systemGroup_) == PresenceTypes::ILLEGAL) && hasPortMaps)
         {
             return false;
         }

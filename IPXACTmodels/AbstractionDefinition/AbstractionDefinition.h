@@ -123,7 +123,7 @@ public:
      *      @return The direction for the port in the given mode.
      */
     DirectionTypes::Direction getPortDirection(QString const& portName, General::InterfaceMode mode,
-        QString newSystemGroup) const;
+        QString const& newSystemGroup) const;
 
     /*!
      *  Gets a logical port with the given name.

@@ -93,7 +93,7 @@ void PortMapAutoConnector::connectSelectedLogicalPorts(QList<QSharedPointer<Port
     foreach (QSharedPointer<PortAbstraction> logicalPort, logicalPorts)
     {
         if (!logicalPortHasReferencingPortMap(logicalPort->name()) &&
-            logicalPort->getPresence(interfaceMode_) != PresenceTypes::ILLEGAL)
+            logicalPort->getPresence(interfaceMode_, systemGroup_) != PresenceTypes::ILLEGAL)
         {
             QMap<double, QString> physicalPorts = getWeightedPhysicalPorts(logicalPort);
 
@@ -246,7 +246,7 @@ QString PortMapAutoConnector::getLogicalPortWidth(QSharedPointer<PortAbstraction
     QSharedPointer<WireAbstraction> abstractWire = logicalPort->getWire();
     if (abstractWire)
     {
-        return abstractWire->getWidth(interfaceMode_);
+        return abstractWire->getWidth(interfaceMode_, systemGroup_);
     }
 
     return QString();
@@ -374,9 +374,9 @@ void PortMapAutoConnector::connectPorts(QSharedPointer<PortAbstraction> portAbst
         QSharedPointer<PortMap::LogicalPort> newMappedLogical(new PortMap::LogicalPort(portAbstraction->name()));
         
         QSharedPointer<WireAbstraction> logicalWire = portAbstraction->getWire();
-        if (logicalWire && !logicalWire->getWidth(interfaceMode_).isEmpty())
+        if (logicalWire && !logicalWire->getWidth(interfaceMode_, systemGroup_).isEmpty())
         {
-            int logicalSize = parser_->parseExpression(logicalWire->getWidth(interfaceMode_)).toInt();
+            int logicalSize = parser_->parseExpression(logicalWire->getWidth(interfaceMode_, systemGroup_)).toInt();
             int logicalLeft = logicalSize - 1;
             int logicalRight = 0;
 
